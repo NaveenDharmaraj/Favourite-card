@@ -1,12 +1,14 @@
 import React, { cloneElement } from 'react';
+import {connect} from 'react-redux'
+import { validateUser } from '../actions/user';
 
-import DonationNew from '../components/give/donation/new';
-import TaxReceipt from '../components/give/taxReceipt'
+import Donation from '../components/give/Donation';
+import TaxReceipt from '../components/give/TaxReceipt'
 
 const renderChildWithProps = (props) => {
     console.log('render with props called')
     if (props.step === 'new') {
-        return (<DonationNew />);
+        return (<Donation />);
     } else if (props.step === 'tax-receipt') {
         return (<TaxReceipt />);
     }
@@ -14,12 +16,21 @@ const renderChildWithProps = (props) => {
 }
 
 
-class Donation extends React.Component {
+class Donations extends React.Component {
     static async getInitialProps ({query}) {
-        return { step: query.step }
+        return { 
+            step: query.step,
+        }
+    }
+
+    componentDidMount() {
+        const {dispatch} = this.props
+        validateUser(dispatch);
+        validateUser(dispatch);
     }
 
     render() {
+        console.log(this.props);
         return (
             <div>Donations page ! {this.props.step}
                 { renderChildWithProps({...this.props}) }
@@ -28,6 +39,12 @@ class Donation extends React.Component {
         );
     }
     
-  }
+}
+
+function mapStateToProps (state) {
+    return {
+        auth: state.user.auth,
+    }
+}
   
-export default Donation;
+export default connect(mapStateToProps)(Donations)

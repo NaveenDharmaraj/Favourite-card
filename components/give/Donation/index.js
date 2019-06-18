@@ -1,5 +1,5 @@
-function DonationNew() {
+function Donation() {
     return <div>Donation New component!</div>;
   }
   
-export default DonationNew;
+export default Donation;
