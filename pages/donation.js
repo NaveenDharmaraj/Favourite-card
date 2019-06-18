@@ -2,18 +2,9 @@ import React, { cloneElement } from 'react';
 import {connect} from 'react-redux'
 import { validateUser } from '../actions/user';
 
-import Donation from '../components/give/Donation';
-import TaxReceipt from '../components/give/TaxReceipt'
-
-const renderChildWithProps = (props) => {
-    console.log('render with props called')
-    if (props.step === 'new') {
-        return (<Donation />);
-    } else if (props.step === 'tax-receipt') {
-        return (<TaxReceipt />);
-    }
-    return null;
-}
+import Donation from '../components/Give/Donation';
+import GiveWrapper from '../components/Give';
+// import TaxReceipt from '../components/give/TaxReceipt'
 
 
 class Donations extends React.Component {
@@ -26,14 +17,15 @@ class Donations extends React.Component {
     componentDidMount() {
         const {dispatch} = this.props
         validateUser(dispatch);
-        validateUser(dispatch);
     }
 
     render() {
         console.log(this.props);
         return (
             <div>Donations page ! {this.props.step}
-                { renderChildWithProps({...this.props}) }
+                <GiveWrapper {...this.props}>
+                    <Donation />
+                </GiveWrapper>
             </div>
 
         );
