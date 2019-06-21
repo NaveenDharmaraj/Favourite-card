@@ -2,6 +2,7 @@ import React, { cloneElement } from 'react';
 import {connect} from 'react-redux'
 import { validateUser } from '../actions/user';
 
+import Layout from '../components/shared/Layout';
 import Donation from '../components/give/Donation';
 import TaxReceipt from '../components/give/TaxReceipt'
 
@@ -32,10 +33,11 @@ class Donations extends React.Component {
     render() {
         console.log(this.props);
         return (
-            <div>Donations page ! {this.props.step}
-                { renderChildWithProps({...this.props}) }
-            </div>
-
+            <Layout>
+                <div>Donations page ! {this.props.step}
+                    { renderChildWithProps({...this.props}) }
+                </div>
+            </Layout>
         );
     }
     
