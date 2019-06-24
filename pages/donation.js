@@ -1,5 +1,4 @@
 import React, { cloneElement } from 'react';
-import {connect} from 'react-redux'
 import { validateUser } from '../actions/user';
 
 import Donation from '../components/Give/Donation';
@@ -20,7 +19,6 @@ class Donations extends React.Component {
     }
 
     render() {
-        console.log(this.props);
         return (
             <div>Donations page ! {this.props.step}
                 <GiveWrapper {...this.props}>
@@ -32,11 +30,5 @@ class Donations extends React.Component {
     }
     
 }
-
-function mapStateToProps (state) {
-    return {
-        auth: state.user.auth,
-    }
-}
   
-export default connect(mapStateToProps)(Donations)
+export default Donations
