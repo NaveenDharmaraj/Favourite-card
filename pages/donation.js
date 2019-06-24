@@ -4,7 +4,7 @@ import { validateUser } from '../actions/user';
 import Donation from '../components/Give/Donation';
 import GiveWrapper from '../components/Give';
 // import TaxReceipt from '../components/give/TaxReceipt'
-
+import Layout from '../components/shared/Layout';
 
 class Donations extends React.Component {
     static async getInitialProps ({query}) {
@@ -20,12 +20,12 @@ class Donations extends React.Component {
 
     render() {
         return (
-            <div>Donations page ! {this.props.step}
+            <Layout>
+                Donations page ! {this.props.step}
                 <GiveWrapper {...this.props}>
                     <Donation />
-                </GiveWrapper>
-            </div>
-
+                </GiveWrapper> 
+            </Layout>
         );
     }
     
