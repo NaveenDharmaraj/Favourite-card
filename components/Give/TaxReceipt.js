@@ -10,7 +10,7 @@ class TaxReceipt extends React.Component {
   }
   componentDidMount() {
     const {dispatch} = this.props
-    if (flowObject) {
+    if (this.state.flowObject) {
       reInitNextStep(dispatch, this.state.flowObject)
     }
   }
