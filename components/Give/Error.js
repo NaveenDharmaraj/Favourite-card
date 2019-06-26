@@ -57,9 +57,10 @@ const Error = ()=> {
                                 className="error-message"
                             >
                                 <Link route='/' >
-                                <button className="ui primary blue basic button">
-                                 <a> Go back to your dashboard </a>
-                                 </button> 
+                                <Button 
+                                color="blue"
+                                content="Go back to your dashboard"
+                                />
                                 </Link>
                             </Grid.Column>
                         </Grid.Row>
