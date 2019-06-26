@@ -1,6 +1,5 @@
 
 import { Grid,Icon,Button } from 'semantic-ui-react';
-import Layout from '../shared/Layout';
 import { Link } from '../../routes';
 
 const Error = ()=> {
