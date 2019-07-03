@@ -1,13 +1,16 @@
 import React, { cloneElement } from 'react';
+import dynamic from 'next/dynamic';
 import {connect} from 'react-redux'
 import _ from 'lodash';
 import {Router} from '../../routes'
 
 
-import TaxReceipt from './TaxReceipt'
-import Review from './Review'
-import Success from './Success'
-import Error from './Error'
+
+const TaxReceipt = dynamic(() => import('./TaxReceipt'));
+const Review = dynamic(() => import('./Review'));
+const Success = dynamic(() => import('./Success'));
+const Error = dynamic(() => import('./Error'));
+
 
 const flowStepsDefault = ['new', 'tax-receipt', 'review', 'success', 'error']
 
@@ -92,7 +95,7 @@ class Give extends React.Component {
     render() {
         console.log('props from give wrapper', this.props);
         return ( 
-            <div>{renderChildWithProps(this.props, this.state.stepIndex, this.state.flowSteps)} 
+            <div>{renderChildWithProps(this.props, this.state.stepIndex, this.state.flowSteps)}
             </div>
         )
     }
