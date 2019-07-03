@@ -1,7 +1,7 @@
 import React, { cloneElement } from 'react';
 import {connect} from 'react-redux'
 import _ from 'lodash';
-import {Router} from '../../routes'
+import {Router} from '../../routes';
 
 
 import TaxReceipt from './TaxReceipt'
@@ -25,7 +25,6 @@ const renderChildWithProps = (props, stepIndex) => {
                 }) }
                 </div>
             );
-            break;
         case "tax-receipt" :
             return (<TaxReceipt
                 dispatch={props.dispatch}
@@ -33,7 +32,6 @@ const renderChildWithProps = (props, stepIndex) => {
                 flowSteps={flowSteps}
                 stepIndex={_.indexOf(flowSteps, props.step)}
             />);
-            break;
         case "review" :
             return (<Review
                 dispatch={props.dispatch}
@@ -41,16 +39,15 @@ const renderChildWithProps = (props, stepIndex) => {
                 flowSteps={flowSteps}
                 stepIndex={_.indexOf(flowSteps, props.step)}
             />);
-            break;
         case "success" :
-            return (<Success />);
-            break;
+            return (<Success 
+                dispatch={props.dispatch}
+                flowObject={props.flowObject}
+            />);
         case "error" :
             return (<Error />);
-            break;
         default:
             return null;
-            break;
     }
 }
 
@@ -92,7 +89,8 @@ class Give extends React.Component {
 
 function mapStateToProps (state) {
     return {
-        auth: state.user.auth,
+        auth: state.user.isAuthenticated,
+        currentUser: state.user.userinfo,
         flowObject: state.give.flowObject
     }
 }

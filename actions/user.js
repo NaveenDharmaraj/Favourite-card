@@ -6,7 +6,14 @@ export const actionTypes = {
 
 export const validateUser = (dispatch) => {
     return coreApi.get('/users/888000?include=chimpAdminRole,donorRole,fund').then((result) => {
-        return dispatch({type: actionTypes.USER_AUTH, payload: {isAuthenticated: true}})
+        console.log(result);
+        return dispatch({
+            type: actionTypes.USER_AUTH, 
+            payload: {
+                isAuthenticated: true,
+                userinfo : result.data,
+            }
+        });
     }).catch((error) => {
         console.log(JSON.stringify(error));
     });
