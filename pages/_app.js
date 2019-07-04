@@ -2,6 +2,7 @@ import App, {Container} from 'next/app'
 import React from 'react'
 import withReduxStore from '../store/with-redux-store'
 import { Provider } from 'react-redux'
+import { appWithTranslation } from '../i18n'
 
 class MainApp extends App {
   render () {
@@ -16,4 +17,4 @@ class MainApp extends App {
   }
 }
 
-export default withReduxStore(MainApp)
+export default withReduxStore(appWithTranslation(MainApp))

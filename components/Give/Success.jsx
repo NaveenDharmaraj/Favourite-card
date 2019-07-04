@@ -16,7 +16,7 @@ import {
     getNextAllocationMonth,
     percentage,
     setDateForRecurring,
-} from '../../components/helpers/utils';
+} from '../../helpers/give/utils';
 import { reInitNextStep } from '../../actions/give';
 /**
 * Format number to corresponding currency
@@ -353,14 +353,14 @@ const Success = (props) => {
 
 Success.propTypes = {
     successData: PropTypes.shape({
-        giveData: {
-            giveFrom: {
+        giveData: PropTypes.shape({
+            giveFrom: PropTypes.shape({
                 type: PropTypes.string,
-            },
-            giveTo: {
+            }),
+            giveTo: PropTypes.shape({
                 type: PropTypes.string,
-            },
-        },
+            }),
+        }),
         quaziSuccessStatus: PropTypes.bool,
         recipientLists: PropTypes.arrayOf,
         type: PropTypes.string,
@@ -384,6 +384,7 @@ Success.defaultProps = {
                 value: '',
             },
             giveTo: {
+                type: null,
                 value: null,
             },
             newCreditCardId: null,

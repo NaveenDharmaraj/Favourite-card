@@ -7,11 +7,10 @@ const emailRgx = /^(([^<>()\[\]\\.,;:\s@']+(\.[^<>()\[\]\\.,;:\s@']+)*)|('.+'))@
 
 
 export const parseEmails = (emails) => {
-
     const result = _.replace(emails, /\s/g, '');
 
-    return result.length > 0 ?
-        _.filter(
+    return result.length > 0
+        ? _.filter(
             _.split(
                 result,
                 ',',
@@ -19,8 +18,8 @@ export const parseEmails = (emails) => {
             (email) => (
                 email.length > 0
             ),
-        ) :
-        [];
+        )
+        : [];
 };
 
 // Check if a single email address is valid
@@ -117,8 +116,8 @@ export const isLessThanNChars = (input, n) => {
 };
 
 export const isAmountCoverGive = (amount, coverFees, coverFeesAmount, giveAmount, balance) => {
-    const totalAmount = (coverFees) ?
-        (Number(giveAmount) + Number(coverFeesAmount)) : Number(giveAmount);
+    const totalAmount = (coverFees)
+        ? (Number(giveAmount) + Number(coverFeesAmount)) : Number(giveAmount);
     return (Number(amount) + Number(balance)) >= Number(totalAmount);
 };
 
