@@ -22,7 +22,7 @@ class Donations extends React.Component {
         return (
             <Layout>
                 Donations page ! {this.props.step}
-                <GiveWrapper {...this.props}>
+                <GiveWrapper {...this.props} baseUrl='/donations'>
                     <Donation />
                 </GiveWrapper> 
             </Layout>
