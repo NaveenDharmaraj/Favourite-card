@@ -1,13 +1,14 @@
 import React, { cloneElement } from 'react';
-import {connect} from 'react-redux'
+import {connect} from 'react-redux';
 import _ from 'lodash';
-import {Router} from '../../routes'
+
+import {Router} from '../../routes';
 
 
-import TaxReceipt from './TaxReceipt'
-import Review from './Review'
-import Success from './Success'
-import Error from './Error'
+import TaxReceipt from './TaxReceipt';
+import Review from './Review';
+import Success from './Success';
+import Error from './Error';
 
 const flowStepsDefault = ['new', 'tax-receipt', 'review', 'success', 'error']
 
@@ -18,6 +19,8 @@ const renderChildWithProps = (props, stepIndex, flowSteps) => {
             return (
                 <div>
                 { cloneElement(props.children, {
+                    ...props,
+                    flowSteps,
                     dispatch: props.dispatch,
                     flowObject: props.flowObject,
                     flowSteps: flowSteps,
@@ -54,10 +57,9 @@ const renderChildWithProps = (props, stepIndex, flowSteps) => {
             return null;
             break;
     }
-}
+};
 
 class Give extends React.Component {
-
     constructor(props) {
         super(props)
         const parentFlowSteps = (props.flowSteps) ? props.flowSteps : flowStepsDefault
@@ -74,7 +76,7 @@ class Give extends React.Component {
             console.log(routeUrl)
             Router.pushRoute(routeUrl);
         }
-        console.log('componentWillUpdate -> ', nextProps);
+        // console.log('componentWillUpdate -> ', nextProps);
     }
 
     componentDidMount() {
@@ -94,16 +96,22 @@ class Give extends React.Component {
         return ( 
             <div>{renderChildWithProps(this.props, this.state.stepIndex, this.state.flowSteps)} 
             </div>
-        )
+        );
     }
-
 }
 
-function mapStateToProps (state) {
+function mapStateToProps(state) {
     return {
         auth: state.user.auth,
-        flowObject: state.give.flowObject
-    }
+        companiesAccountsData: state.user.companiesAccountsData,
+        defaultTaxReceiptProfile: state.user.defaultTaxReceiptProfile,
+        donationMatchData: state.user.donationMatchData,
+        flowObject: state.give.flowObject,
+        fund: state.user.fund,
+        paymentInstrumentsData: state.user.paymentInstrumentsData,
+        // userCampaigns: state.user.userCampaigns,
+        // userGroups: state.user.userGroups,
+    };
 }
 
 export default connect(mapStateToProps)(Give);
