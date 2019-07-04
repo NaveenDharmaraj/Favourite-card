@@ -1,0 +1,202 @@
+{
+	"env": {
+		"es6": true
+	},
+	"extends": "airbnb",
+	"parserOptions": {
+		"ecmaVersion": 2018
+	},
+	"plugins": [
+		"import"
+	],
+	"root": true,
+	"rules": {
+		"array-bracket-newline": [
+			"error",
+			{
+				"minItems": 1,
+				"multiline": true
+			}
+		],
+		"array-element-newline": [
+			"error",
+			{
+				"minItems": 1,
+				"multiline": true
+			}
+		],
+		"arrow-parens": [
+			"error",
+			"always"
+		],
+		"curly": [
+			"error",
+			"all"
+		],
+		"eol-last": [
+			"error",
+			"always"
+		],
+		"function-paren-newline": [
+			"error",
+			"consistent"
+		],
+		"import/exports-last": "error",
+		"import/extensions": [
+			"error",
+			"ignorePackages",
+			{
+				"js": "never",
+				"jsx": "never"
+			}
+		],
+		"import/no-deprecated": "error",
+		"import/no-extraneous-dependencies": "warn",
+		"import/no-unresolved": "off",
+		"import/order": [
+			"error",
+			{
+				"groups": [
+					"builtin",
+					"external",
+					"internal",
+					"parent",
+					"sibling",
+					"index"
+				],
+				"newlines-between": "always"
+			}
+		],
+		"indent": [
+			"error",
+			4,
+			{
+				"SwitchCase": 1
+			}
+		],
+		"jsx-a11y/anchor-is-valid": [
+			"error", {
+				"components": [
+					"GeminiLink",
+					"Link"
+				],
+				"specialLink": [
+					"path",
+					"to"
+				]
+			}
+		],
+		"jsx-a11y/label-has-for": [
+			"error", {
+				"required": {
+					"some": [
+						"id",
+						"nesting"
+					]
+				}
+			}
+		],
+		"no-bitwise": "off",
+		"no-case-declarations": "off",
+		"no-multi-assign": "off",
+		"no-param-reassign": [
+			"error",
+			{
+				"props": false
+			}
+		],
+		"no-plusplus": "off",
+		"no-underscore-dangle": "off",
+		"no-unused-expressions": [
+			"error",
+			{
+				"allowShortCircuit": true
+			}
+		],
+		"no-void": "off",
+		"object-curly-newline": [
+			"error",
+			{
+				"consistent": true,
+				"minProperties": 2
+			}
+		],
+		"object-property-newline": [
+			"error",
+			{
+				"allowMultiplePropertiesPerLine": false
+			}
+		],
+		"quotes": [
+			"error",
+			"single",
+			{
+				"allowTemplateLiterals": true
+			}
+		],
+		"react/no-children-prop": "off",
+		"react/no-unescaped-entities": "off",
+		"react/prop-types": [
+			"error",
+			{
+				"ignore": [
+					"children",
+					"className"
+				]
+			}
+		],
+		"react/require-default-props": [
+			"error", {
+				"ignore": [
+					"children",
+					"className"
+				]
+			}
+		],
+		"react/jsx-indent": [
+			"error",
+			4
+		],
+		"react/jsx-indent-props": [
+			"error",
+			4
+		],
+		"sort-keys": [
+			"error",
+			"asc",
+			{
+				"caseSensitive": false,
+				"natural": true
+			}
+		],
+		"valid-jsdoc": [
+			"error", {
+				"prefer": {
+					"arg": "param",
+					"argument": "param",
+					"returns": "return"
+				},
+				"requireParamDescription": true
+			}
+		]
+	},
+	"overrides": [{
+		"env": {
+			"mocha": true
+		},
+		"files": [
+			"**/*.spec.js",
+			"**/*.spec.jsx"
+		],
+		"rules": {
+			"func-names": "off",
+			"no-unused-expressions": "off",
+			"prefer-arrow-callback": [
+				"error"
+			]
+		}
+	}],
+	"settings": {
+		"import/resolver": "webpack"
+	}
+}
