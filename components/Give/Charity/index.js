@@ -2,7 +2,7 @@ import React from 'react';
 
 import {proceed} from '../../../actions/give';
 
-import { beneficiaryDefaultProps } from '../../../utils/give/defaultProps';
+import { beneficiaryDefaultProps } from '../../../helpers/give/defaultProps';
 
 class Charity extends React.Component {
   constructor(props) {

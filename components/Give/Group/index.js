@@ -2,7 +2,7 @@ import React from 'react';
 
 import {proceed} from '../../../actions/give';
 
-import { groupDefaultProps } from '../../../utils/give/defaultProps';
+import { groupDefaultProps } from '../../../helpers/give/defaultProps';
 
 class Group extends React.Component {
   constructor(props) {
