@@ -2,12 +2,13 @@ export const donationDefaultProps = {
     flowObject: {
         currency: 'USD',
         giveData: {
+            automaticDonation: false,
             creditCard: {
                 value: null,
             },
             donationAmount: '',
             donationMatch: {
-                value: null,
+                value: null
             },
             giftType: {
                 value: 0,
@@ -31,6 +32,7 @@ export const donationDefaultProps = {
         type: 'donations',
     },
 };
+
 
 export const beneficiaryDefaultProps = {
     flowObject: {
@@ -118,3 +120,4 @@ export const groupDefaultProps = {
         type: 'give/to/group',
     },
 };
+
