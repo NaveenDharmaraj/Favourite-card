@@ -13,6 +13,7 @@ import {
     Checkbox,
 } from 'semantic-ui-react';
 
+import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 import { beneficiaryDefaultProps } from '../../../helpers/give/defaultProps';
 import NoteTo from '../NoteTo';
 import SpecialInstruction from '../SpecialInstruction';
@@ -128,10 +129,11 @@ class Charity extends React.Component {
                         />
                         {giveFromField}
                     </Form.Field>
-                    {/* <FormValidationErrorMessage
-                        condition={!validity.isValidGiveFrom}
-                        errorMessage={formatMessage(errorMessages.blankError)}
-                    /> */}
+                    <FormValidationErrorMessage
+                        // condition={!validity.isValidGiveFrom}
+                        // errorMessage={formatMessage(errorMessages.blankError)}
+                        errorMessage="Can't be blank"
+                    />
                 </Fragment>
             );
         }
@@ -418,21 +420,24 @@ class Charity extends React.Component {
                             value="" // {giveAmount}
                         />
                     </Form.Field>
-                    {/* <FormValidationErrorMessage
-                        condition={!validity.doesAmountExist || !validity.isAmountMoreThanOneDollor
-                        || !validity.isValidPositiveNumber}
-                        errorMessage={formatMessage(errorMessages.amountLessOrInvalid, {
-                            minAmount: 5,
-                        })}
+                    <FormValidationErrorMessage
+                        // condition={!validity.doesAmountExist || !validity.isAmountMoreThanOneDollor
+                        // || !validity.isValidPositiveNumber}
+                        // errorMessage={formatMessage(errorMessages.amountLessOrInvalid, {
+                        //     minAmount: 5,
+                        // })}
+                        errorMessage="Please choose an amount of 5 or more"
                     />
                     <FormValidationErrorMessage
-                        condition={!validity.isAmountLessThanOneBillion}
-                        errorMessage={formatMessage(errorMessages.invalidMaxAmountError)}
+                        // condition={!validity.isAmountLessThanOneBillion}
+                        // errorMessage={formatMessage(errorMessages.invalidMaxAmountError)}
+                        errorMessage="$9,999 is the maximum we can process here. For larger amounts, please get in touch with us: hello@chimp.net or 1-877-531-0580."
                     />
                     <FormValidationErrorMessage
-                        condition={!validity.isAmountCoverGive}
-                        errorMessage={formatMessage(errorMessages.giveAmountGreaterThanBalance)}
-                    /> */}
+                        // condition={!validity.isAmountCoverGive}
+                        // errorMessage={formatMessage(errorMessages.giveAmountGreaterThanBalance)}
+                        errorMessage="Sorry, you can't give more money than what is in your account."
+                    />
 
                     { this.renderGiveFromField(giveFromList, formatMessage, validity, giveFrom)}
 

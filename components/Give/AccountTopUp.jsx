@@ -12,7 +12,7 @@ import {
     Select,
 } from 'semantic-ui-react';
 
-// import FormValidationErrorMessage from 'client/giving/components/FormValidationErrorMessage';
+import FormValidationErrorMessage from '../shared/FormValidationErrorMessage';
 
 
 const AccountTopUp = (props) => {
@@ -55,23 +55,26 @@ const AccountTopUp = (props) => {
                         value={donationAmount}
                     />
                 </Form.Field>
-                {/* <FormValidationErrorMessage
-                    condition={!validity.isDonationAmountBlank || !validity.isDonationAmountMoreThan1Dollor
-                    || !validity.isDonationAmountPositive}
-                    errorMessage={formatMessage(errorMessages.amountLessOrInvalid, {
-                        minAmount: 5,
-                    })}
+                <FormValidationErrorMessage
+                    // condition={!validity.isDonationAmountBlank || !validity.isDonationAmountMoreThan1Dollor
+                    // || !validity.isDonationAmountPositive}
+                    // errorMessage={formatMessage(errorMessages.amountLessOrInvalid, {
+                    //     minAmount: 5,
+                    // })}
+                    errorMessage="Please choose an amount of 5 or more"
                 />
-                    <FormValidationErrorMessage
-                        condition={!validity.isDonationAmountLessThan1Billion}
-                        errorMessage={formatMessage(errorMessages.invalidMaxAmountError)}
-                    />
-                    <FormValidationErrorMessage
-                        condition={!!validity.isDonationAmountPositive && !validity.isDonationAmountCoverGive}
-                        errorMessage={formatMessage(errorMessages.donationAmountIsLess, {
-                            topupAmount,
-                        })}
-                    /> */}
+                <FormValidationErrorMessage
+                    // condition={!validity.isDonationAmountLessThan1Billion}
+                    // errorMessage={formatMessage(errorMessages.invalidMaxAmountError)}
+                    errorMessage="$9,999 is the maximum we can process here. For larger amounts, please get in touch with us: hello@chimp.net or 1-877-531-0580."
+                />
+                <FormValidationErrorMessage
+                    // condition={!!validity.isDonationAmountPositive && !validity.isDonationAmountCoverGive}
+                    // errorMessage={formatMessage(errorMessages.donationAmountIsLess, {
+                    //     topupAmount,
+                    // })}
+                    errorMessage="Top up your account balance by Top_Up_Amount or more to send this gift."
+                />
             </Fragment>
         );
     }

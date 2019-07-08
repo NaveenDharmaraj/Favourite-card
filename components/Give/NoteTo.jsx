@@ -13,7 +13,7 @@ import {
 } from 'semantic-ui-react';
 
 import { beneficiaryDefaultProps } from '../../helpers/give/defaultProps';
-// import FormValidationErrorMessage from 'client/giving/components/FormValidationErrorMessage';
+import FormValidationErrorMessage from '../shared/FormValidationErrorMessage';
 
 import TextAreaWithInfo from './TextAreaWithInfo';
 
@@ -90,14 +90,16 @@ const NoteTo = (props) => {
                     value=""// {noteToCharity}
                 />
             </Form.Field>
-            {/* <FormValidationErrorMessage
-                    condition={!validity.isNoteToCharityInLimit}
-                    errorMessage={formatMessage(errorMessages.invalidLengthError)}
-                />
-                <FormValidationErrorMessage
-                    condition={!validity.isValidNoteToCharityText}
-                    errorMessage={formatMessage(errorMessages.invalidNoteTextError)}
-                /> */}
+            <FormValidationErrorMessage
+                // condition={!validity.isNoteToCharityInLimit}
+                // errorMessage={formatMessage(errorMessages.invalidLengthError)}
+                errorMessage="is too long (maximum is 1000 characters)"
+            />
+            <FormValidationErrorMessage
+                // condition={!validity.isValidNoteToCharityText}
+                // errorMessage={formatMessage(errorMessages.invalidNoteTextError)}
+                errorMessage="Only standard letters and numbers are allowed here"
+            />
             <Form.Field>
                 <label htmlFor="noteToSelf" id="noteToSelfLabel">
                         "labelTextIds"
@@ -134,14 +136,16 @@ const NoteTo = (props) => {
                     value=""// {noteToSelf}
                 />
             </Form.Field>
-            {/* <FormValidationErrorMessage
-                    condition={!validity.isNoteToSelfInLimit}
-                    errorMessage={formatMessage(errorMessages.invalidLengthError)}
-                />
-                <FormValidationErrorMessage
-                    condition={!validity.isValidNoteSelfText}
-                    errorMessage={formatMessage(errorMessages.invalidNoteTextError)}
-                /> */}
+            <FormValidationErrorMessage
+                // condition={!validity.isNoteToSelfInLimit}
+                // errorMessage={formatMessage(errorMessages.invalidLengthError)}
+                errorMessage="is too long (maximum is 1000 characters)"
+            />
+            <FormValidationErrorMessage
+                // condition={!validity.isValidNoteSelfText}
+                // errorMessage={formatMessage(errorMessages.invalidNoteTextError)}
+                errorMessage="Only standard letters and numbers are allowed here"
+            />
         </Fragment>
     );
 };
