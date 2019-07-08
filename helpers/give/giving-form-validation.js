@@ -92,7 +92,7 @@ export const isAmountLessThanOneBillion = (number) => {
 
 // Check if input is blank
 export const isInputBlank = (input) => {
-    return input === '';
+    return (input === '' || input === null);
 };
 
 // Check if input has at least two chars
