@@ -7,6 +7,11 @@ const user = (state = {}, action) => {
                 auth: action.payload,
             }
             break;
+        case "TAX_RECEIPT_PROFILES" :
+            state = {
+                ...state,
+                taxReceiptProfiles: action.payload.taxReceiptProfiles,
+            }
     }
     return state;
 }

@@ -2,7 +2,7 @@ import React from 'react';
 
 import {proceed} from '../../../actions/give';
 
-import { donationDefaultProps } from '../../../utils/give/defaultProps';
+import { donationDefaultProps } from '../../../helpers/give/defaultProps';
 
 class Donation extends React.Component {
   constructor(props) {
@@ -11,6 +11,7 @@ class Donation extends React.Component {
       flowObject: props.flowObject
     }
   }
+  
   handleInputChange = () => {
     this.setState({
       flowObject: {
@@ -22,11 +23,37 @@ class Donation extends React.Component {
       }
     })
   }
+
   handleSubmit = () => {
+
+    let {
+      flowObject,
+    } = this.state;
+
+      flowObject = {
+        ...flowObject,
+        selectedTaxReceiptProfile: {
+          attributes: {
+            fullName: "John Doe y test",
+            // isDefault: false,
+            addressOne: "5678 Anywhere Lane",
+            addressTwo: "",
+            city: "Anyville",
+            province: "BC",
+            postalCode: "V1V1V1",
+            country: "CA",
+            accountNumber: "0000RF7D0000RFF5"
+          },
+          id: "999264",
+          type:"taxReceiptProfiles"
+        }
+      }
     const {dispatch, stepIndex, flowSteps} = this.props
-    dispatch(proceed(this.state.flowObject, flowSteps[stepIndex+1]))
+    dispatch(proceed(flowObject, flowSteps[stepIndex+1]))
   }
+
   render() {
+    console.log('new page props')
     console.log(this.props);
     return (
       <div>
@@ -36,6 +63,7 @@ class Donation extends React.Component {
       </div>
     )
   }
+
 }
 
 Donation.defaultProps = donationDefaultProps;
