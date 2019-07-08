@@ -11,6 +11,7 @@ const user = (state = {}, action) => {
             state = {
                 ...state,
                 taxReceiptProfiles: action.payload.taxReceiptProfiles,
+                taxReceiptGetApiStatus: true,
             }
     }
     return state;

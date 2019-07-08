@@ -18,16 +18,18 @@ export const getTaxReceiptProfile = (dispatch,userId) => {
     return coreApi.get(`/users/${userId}/taxReceiptProfiles`).then((result) => {
         console.log('api result');
         console.log(result.data);
-        return dispatch({type:actionTypes.TAX_RECEIPT_PROFILES, payload:{ taxReceiptProfiles:result.data}})
+        return dispatch(setTaxReceiptProfile(result.data))
     }).catch((error) => {
         console.log(error);
     })
 }
 
-export const updateTaxReceiptProfile = (taxReceiptProfile, action) => {
+export const setTaxReceiptProfile = (data) => {
+    return (dispatch) => dispatch({type:actionTypes.TAX_RECEIPT_PROFILES, payload:{ taxReceiptProfiles:data}})
+}
+
+export const updateTaxReceiptProfile = (taxReceiptProfile, action, dispatch) => {
     let result = {};
-    console.log('inside actions');
-    console.log(taxReceiptProfile)
     if (action === 'update') {
         const params = {
             data: {
@@ -47,19 +49,17 @@ export const updateTaxReceiptProfile = (taxReceiptProfile, action) => {
                 type: taxReceiptProfile.type,
             },
         };
-        result = coreApi.patch(`/taxReceiptProfiles/${taxReceiptProfile.id}`, {
+        return coreApi.patch(`/taxReceiptProfiles/${taxReceiptProfile.id}`, {
             data: params.data,
         });
-        console.log(result)
     } else {
         const params = {
             data: taxReceiptProfile,
         };
-        result = coreApi.post('/taxReceiptProfiles', {
+        return coreApi.post('/taxReceiptProfiles', {
             data: params.data,
             uxCritical: true,
         });
-        console.log(result)
     }
-    return result;
+    // return setTaxReceiptProfile(dispatch, result.data)
 };

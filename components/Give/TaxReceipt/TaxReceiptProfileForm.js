@@ -48,6 +48,7 @@ class TaxReceiptProfileForm extends React.Component {
                                                 id="fullName"
                                                 name="fullName"
                                                 size="large"
+                                                error={!this.props.validity.isValidFullName}
                                                 onBlur={this.handleInputOnBlur}
                                                 onChange={this.handleInputChange}
                                                 value={this.props.data.attributes.fullName}
@@ -62,6 +63,7 @@ class TaxReceiptProfileForm extends React.Component {
                                                 id="addressOne"
                                                 name="addressOne"
                                                 size="large"
+                                                error={!this.props.validity.isValidAddress}
                                                 onBlur={this.handleInputOnBlur}
                                                 onChange={this.handleInputChange}
                                                 value={this.props.data.attributes.addressOne}
@@ -76,6 +78,7 @@ class TaxReceiptProfileForm extends React.Component {
                                                 id="addressTwo"
                                                 name="addressTwo"
                                                 size="large"
+                                                error={!this.props.validity.isValidSecondAddress}
                                                 onBlur={this.handleInputOnBlur}
                                                 onChange={this.handleInputChange}
                                                 value={_.isEmpty(this.props.data.attributes.addressTwo) ? '' : this.props.data.attributes.addressTwo}
@@ -117,6 +120,7 @@ class TaxReceiptProfileForm extends React.Component {
                                                 id="postalCode"
                                                 name="postalCode"
                                                 size="large"
+                                                // error={!validity.isValidPostalCode}
                                                 onBlur={this.handleInputOnBlur}
                                                 onChange={this.handleInputChange}
                                                 value={this.props.data.attributes.postalCode}

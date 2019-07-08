@@ -116,7 +116,6 @@ import {
         taxReceiptProfiles
       } = this.props
       taxReceiptProfiles = !_.isEmpty(taxReceiptProfiles) ? taxReceiptProfiles : [this.props.flowObject.selectedTaxReceiptProfile];
-      console.log(taxReceiptProfiles);
 
       const {
         flowObject: {
@@ -141,7 +140,6 @@ import {
       ) {
         data = selectedTaxReceiptProfile;
       }
-      console.log(data)
       return (_.isEmpty(data)) ? _.merge({}, intializeFormData) : data;
     }
 
@@ -161,6 +159,8 @@ import {
       validity = validateTaxReceiptProfileForm('city', city, validity);
       validity = validateTaxReceiptProfileForm('postalCode', postalCode, validity);
       validity = validateTaxReceiptProfileForm('province', province, validity);
+      console.log('validation result');
+      console.log(validity);
       this.setState({
         validity
       });
@@ -222,17 +222,19 @@ import {
         // this.props.proceed({
         //   ...flowObject,
         // });
+        const {
+          dispatch,
+          stepIndex,
+          flowSteps
+        } = this.props
+        dispatch(proceed(this.state.flowObject, flowSteps[stepIndex + 1], stepIndex ));
+
       } else {
         this.setState({
           buttonClicked: false,
         });
       }
-      const {
-        dispatch,
-        stepIndex,
-        flowSteps
-      } = this.props
-      dispatch(proceed(this.state.flowObject, flowSteps[stepIndex + 1]))
+
     }
 
     populateOptions = (taxReceiptProfiles, selectedTaxReceiptProfile) => {
@@ -327,17 +329,19 @@ import {
       return this.validity;
     }
 
-    render() {
-      console.log('Tax receipt  state->> ')
-      console.log(this.state);
+    displayTaxReceiptFrom() {
       const {
         flowObject: {
           selectedTaxReceiptProfile,
         },
         showFormData,
-        selectedValue
+        selectedValue,
+        validity
       } = this.state;
-      return (
+      console.log(this.props.taxReceiptGetApiStatus);
+      console.log(this.props.taxReceiptProfiles)
+      if(this.state.taxReceiptGetApiStatus){
+        return(
         <div>
           TaxReceipt component!
           {/* <div onClick={()=> this.handleInputChange()}>set state here </div><br/> */}
@@ -356,25 +360,42 @@ import {
                   value={selectedValue}
                 />
               </Form.Field>
-              <Form.Field>
-                <TaxReceiptFrom
-                showFormData = {showFormData}
-                handleDisplayForm={this.handleDisplayForm}
-                parentInputChange={this.handleChildInputChange}
-                parentOnBlurChange={this.handleChildOnBlurChange}
-                data={selectedTaxReceiptProfile}
-                />
-              </Form.Field>
+                <Form.Field>
+                  <TaxReceiptFrom
+                  showFormData = {showFormData}
+                  handleDisplayForm={this.handleDisplayForm}
+                  parentInputChange={this.handleChildInputChange}
+                  parentOnBlurChange={this.handleChildOnBlurChange}
+                  data={selectedTaxReceiptProfile}
+                  validity={validity}
+                  />
+                </Form.Field>
           </Form>
           <div onClick={() => this.handleSubmit()} >Continue</div>
         </div>);
+          } else{
+            return (
+            <div>Loading data...</div>
+            );
+          }
+
+    }
+
+    render() {
+      console.log('Tax receipt  state->> ')
+      console.log(this.state);
+
+      return (
+        this.displayTaxReceiptFrom()
+        );
     }
 
   }
 
   function mapStateToProps(state) {
     return {
-      taxReceiptProfiles: state.user.taxReceiptProfiles
+      taxReceiptProfiles: state.user.taxReceiptProfiles,
+      taxReceiptGetApiStatus:state.taxReceiptGetApiStatus
     }
   }
 
