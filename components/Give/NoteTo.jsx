@@ -14,8 +14,7 @@ import {
 
 import { beneficiaryDefaultProps } from '../../helpers/give/defaultProps';
 import FormValidationErrorMessage from '../shared/FormValidationErrorMessage';
-
-import TextAreaWithInfo from './TextAreaWithInfo';
+import TextAreaWithInfo from '../shared/TextAreaWithInfo';
 
 const handleInputChange = (event) => {
     const {
