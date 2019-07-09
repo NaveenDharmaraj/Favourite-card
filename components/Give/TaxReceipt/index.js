@@ -329,7 +329,7 @@ import {
       return this.validity;
     }
 
-    displayTaxReceiptFrom() {
+    renderTaxReceiptFrom() {
       const {
         flowObject: {
           selectedTaxReceiptProfile,
@@ -386,7 +386,7 @@ import {
       console.log(this.state);
 
       return (
-        this.displayTaxReceiptFrom()
+        this.renderTaxReceiptFrom()
         );
     }
 
