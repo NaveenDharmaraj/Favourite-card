@@ -10,7 +10,10 @@ import {
   import TaxReceiptFrom from './TaxReceiptProfileForm';
   import {
     Form,
-    Select
+    Select,
+    Input,
+    Icon,
+    Button
   } from 'semantic-ui-react';
   import {
     getTaxReceiptProfile
@@ -66,6 +69,10 @@ import {
     }
 
     componentDidUpdate(prevProps) {
+      console.log('component did update')
+      console.log(this.props.taxReceiptProfiles);
+      console.log(this.props.taxReceiptGetApiStatus)
+      console.log(prevProps.taxReceiptProfiles)
       // Typical usage (don't forget to compare props):
       if (this.props.taxReceiptProfiles !== prevProps.taxReceiptProfiles) {
         const {
@@ -328,8 +335,65 @@ import {
       };
       return this.validity;
     }
-
     renderTaxReceiptFrom() {
+      const {
+        flowObject: {
+          selectedTaxReceiptProfile,
+        },
+        selectedValue,
+      } = this.state;
+      console.log(this.props.taxReceiptGetApiStatus);
+      console.log(this.props.taxReceiptProfiles)
+      let fieldData = (
+        <Form.Field
+          className="field-loader"
+          control={Input}
+          disabled
+          id="taxReceiptRecipient"
+          icon={<Icon name="spinner" loading />}
+          iconPosition="left"
+          name="taxReceiptRecipient"
+          placeholder="preloadedAccountPlaceHolder"
+        />
+      );
+      if(this.props.taxReceiptGetApiStatus){
+        fieldData = (
+          <Form.Field
+            control={Select}
+            id="taxReceiptRecipient"
+            name="taxReceiptRecipient"
+            options={this.state.receiptOptions}
+            onChange={this.handleInputChange}
+            value={selectedValue}
+          />
+        )
+      }
+        return(
+          <Form.Field>
+            <label htmlFor="addingTo">
+                  TaxReceipt Profile
+            </label>
+            {fieldData}
+          </Form.Field>
+
+        );
+    }
+    renderContinueButton() {
+      let button = (
+        <Button primary onClick={() => this.handleSubmit()}>Continue</Button>
+      );
+      console.log(this.props.taxReceiptGetApiStatus)
+      if( !this.props.taxReceiptGetApiStatus || this.state.buttonClicked) {
+        button = (
+          <Button primary disabled onClick={() => this.handleSubmit()}>Continue</Button>
+        ); 
+      }
+      return (button);
+
+    }
+    render() {
+      console.log('Tax receipt  state->> ')
+      console.log(this.state);
       const {
         flowObject: {
           selectedTaxReceiptProfile,
@@ -338,28 +402,13 @@ import {
         selectedValue,
         validity
       } = this.state;
-      console.log(this.props.taxReceiptGetApiStatus);
-      console.log(this.props.taxReceiptProfiles)
-      if(this.state.taxReceiptGetApiStatus){
-        return(
+      return (
         <div>
           TaxReceipt component!
-          {/* <div onClick={()=> this.handleInputChange()}>set state here </div><br/> */}
           <div> tax form  </div>
           <Form>
-              <Form.Field>
-                <label htmlFor="addingTo">
-                      TaxReceipt Profile
-                </label>
-                <Form.Field
-                  control={Select}
-                  id="taxReceiptRecipient"
-                  name="taxReceiptRecipient"
-                  options={this.state.receiptOptions}
-                  onChange={this.handleInputChange}
-                  value={selectedValue}
-                />
-              </Form.Field>
+
+        {this.renderTaxReceiptFrom()}
                 <Form.Field>
                   <TaxReceiptFrom
                   showFormData = {showFormData}
@@ -371,31 +420,21 @@ import {
                   />
                 </Form.Field>
           </Form>
-          <div onClick={() => this.handleSubmit()} >Continue</div>
-        </div>);
-          } else{
-            return (
-            <div>Loading data...</div>
-            );
-          }
+          {this.renderContinueButton()}
 
-    }
-
-    render() {
-      console.log('Tax receipt  state->> ')
-      console.log(this.state);
-
-      return (
-        this.renderTaxReceiptFrom()
+        </div>
+        
         );
     }
 
   }
 
   function mapStateToProps(state) {
+    console.log('state');
+    console.log(state);
     return {
       taxReceiptProfiles: state.user.taxReceiptProfiles,
-      taxReceiptGetApiStatus:state.taxReceiptGetApiStatus
+      taxReceiptGetApiStatus:state.user.taxReceiptGetApiStatus
     }
   }
 

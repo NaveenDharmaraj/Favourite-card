@@ -172,7 +172,10 @@ export const getTaxReceiptProfile = (dispatch,userId) => {
 }
 
 export const setTaxReceiptProfile = (data) => {
-    return (dispatch) => dispatch({type:actionTypes.TAX_RECEIPT_PROFILES, payload:{ taxReceiptProfiles:data}})
+    console.log('data in settaxReceiptProfile');
+    console.log(data)
+    return (dispatch) => dispatch({type:actionTypes.TAX_RECEIPT_PROFILES, payload:{ taxReceiptProfiles:data,
+                                                                                    taxReceiptGetApiStatus:true }})
 }
 
 export const updateTaxReceiptProfile = (taxReceiptProfile, action, dispatch) => {

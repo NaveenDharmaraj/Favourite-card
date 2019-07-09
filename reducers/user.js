@@ -38,14 +38,15 @@ const user = (state = {}, action) => {
                 },
             };
             break;
+        case "TAX_RECEIPT_PROFILES" :
+            console.log(action.payload);
+                newState = {
+                    ...state,
+                    taxReceiptProfiles: Object.assign([], state.taxReceiptProfiles, action.payload.taxReceiptProfiles),
+                    taxReceiptGetApiStatus:action.payload.taxReceiptGetApiStatus,
+                }
         default:
             break;
-        case "TAX_RECEIPT_PROFILES" :
-            state = {
-                ...state,
-                taxReceiptProfiles: action.payload.taxReceiptProfiles,
-                taxReceiptGetApiStatus: true,
-            }
     }
     return newState;
 };
