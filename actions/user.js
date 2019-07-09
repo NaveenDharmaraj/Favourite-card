@@ -154,7 +154,7 @@ export const getDonationMatchAndPaymentInstruments = () => {
 
 
 export const validateUser = (dispatch) => {
-    return coreApi.get('/users/999000?include=chimpAdminRole,donorRole,fund').then((result) => {
+    return coreApi.get('/users/888000?include=chimpAdminRole,donorRole,fund').then((result) => {
         return dispatch({type: actionTypes.USER_AUTH, payload: {isAuthenticated: true}})
     }).catch((error) => {
         console.log(JSON.stringify(error));
