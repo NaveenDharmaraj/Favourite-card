@@ -533,7 +533,6 @@ class Donation extends React.Component {
 
     )
   }
-
 }
 
 Donation.defaultProps = {

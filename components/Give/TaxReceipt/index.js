@@ -69,10 +69,6 @@ import {
     }
 
     componentDidUpdate(prevProps) {
-      console.log('component did update')
-      console.log(this.props.taxReceiptProfiles);
-      console.log(this.props.taxReceiptGetApiStatus)
-      console.log(prevProps.taxReceiptProfiles)
       // Typical usage (don't forget to compare props):
       if (this.props.taxReceiptProfiles !== prevProps.taxReceiptProfiles) {
         const {
@@ -166,8 +162,6 @@ import {
       validity = validateTaxReceiptProfileForm('city', city, validity);
       validity = validateTaxReceiptProfileForm('postalCode', postalCode, validity);
       validity = validateTaxReceiptProfileForm('province', province, validity);
-      console.log('validation result');
-      console.log(validity);
       this.setState({
         validity
       });
@@ -342,8 +336,6 @@ import {
         },
         selectedValue,
       } = this.state;
-      console.log(this.props.taxReceiptGetApiStatus);
-      console.log(this.props.taxReceiptProfiles)
       let fieldData = (
         <Form.Field
           className="field-loader"
@@ -382,7 +374,6 @@ import {
       let button = (
         <Button primary onClick={() => this.handleSubmit()}>Continue</Button>
       );
-      console.log(this.props.taxReceiptGetApiStatus)
       if( !this.props.taxReceiptGetApiStatus || this.state.buttonClicked) {
         button = (
           <Button primary disabled onClick={() => this.handleSubmit()}>Continue</Button>
@@ -392,8 +383,6 @@ import {
 
     }
     render() {
-      console.log('Tax receipt  state->> ')
-      console.log(this.state);
       const {
         flowObject: {
           selectedTaxReceiptProfile,
@@ -430,8 +419,6 @@ import {
   }
 
   function mapStateToProps(state) {
-    console.log('state');
-    console.log(state);
     return {
       taxReceiptProfiles: state.user.taxReceiptProfiles,
       taxReceiptGetApiStatus:state.user.taxReceiptGetApiStatus

@@ -1,12 +1,12 @@
 import React from 'react';
 import {Form, Input, FormField} from 'semantic-ui-react';
 
-class TaxReceiptProfileForm extends React.Component {
+function TaxReceiptProfileForm(props)  {
 
-    handleInputChange = (e, {
+    const handleInputChange = (e, {
         value, name,
     }) => {
-        this.props.parentInputChange(name, value);
+        props.parentInputChange(name, value);
     }
 
     /**
@@ -15,28 +15,28 @@ class TaxReceiptProfileForm extends React.Component {
      * @param  {object} options The Options of event
      * @return {Void} { void } The return nothing.
      */
-    handleInputOnBlur = (event, options) => {
+    const handleInputOnBlur = (event, options) => {
         // options values are getting from select control
         if (options !== undefined) {
             const {
                 name,
                 value,
             } = options;
-            this.props.parentOnBlurChange(name, value);
+            props.parentOnBlurChange(name, value);
         } else {
             const {
                 name,
                 value,
             } = event.target;
-            this.props.parentOnBlurChange(name, value);
+            props.parentOnBlurChange(name, value);
         }
     }
 
-    displayForm() {
-        if(this.props.data.attributes){
-            return(
+    const displayForm = () => {
+        if (props.data.attributes) {
+            return (
                 <React.Fragment>
-                    { !!this.props.showFormData &&
+                    { !!props.showFormData &&
                                 <div>
                                     <div>
                                         <Form.Field>
@@ -48,10 +48,10 @@ class TaxReceiptProfileForm extends React.Component {
                                                 id="fullName"
                                                 name="fullName"
                                                 size="large"
-                                                error={!this.props.validity.isValidFullName}
-                                                onBlur={this.handleInputOnBlur}
-                                                onChange={this.handleInputChange}
-                                                value={this.props.data.attributes.fullName}
+                                                error={!props.validity.isValidFullName}
+                                                onBlur={handleInputOnBlur}
+                                                onChange={handleInputChange}
+                                                value={props.data.attributes.fullName}
                                             />
                                         </Form.Field>
                                         <Form.Field>
@@ -63,10 +63,10 @@ class TaxReceiptProfileForm extends React.Component {
                                                 id="addressOne"
                                                 name="addressOne"
                                                 size="large"
-                                                error={!this.props.validity.isValidAddress}
-                                                onBlur={this.handleInputOnBlur}
-                                                onChange={this.handleInputChange}
-                                                value={this.props.data.attributes.addressOne}
+                                                error={!props.validity.isValidAddress}
+                                                onBlur={handleInputOnBlur}
+                                                onChange={handleInputChange}
+                                                value={props.data.attributes.addressOne}
                                             />
                                         </Form.Field>
                                         <Form.Field>
@@ -78,10 +78,10 @@ class TaxReceiptProfileForm extends React.Component {
                                                 id="addressTwo"
                                                 name="addressTwo"
                                                 size="large"
-                                                error={!this.props.validity.isValidSecondAddress}
-                                                onBlur={this.handleInputOnBlur}
-                                                onChange={this.handleInputChange}
-                                                value={_.isEmpty(this.props.data.attributes.addressTwo) ? '' : this.props.data.attributes.addressTwo}
+                                                error={!props.validity.isValidSecondAddress}
+                                                onBlur={handleInputOnBlur}
+                                                onChange={handleInputChange}
+                                                value={_.isEmpty(props.data.attributes.addressTwo) ? '' : props.data.attributes.addressTwo}
                                                 />
                                         </Form.Field>
                                         <Form.Field>
@@ -93,9 +93,9 @@ class TaxReceiptProfileForm extends React.Component {
                                                 id="city"
                                                 name="city"
                                                 size="large"
-                                                onBlur={this.handleInputOnBlur}
-                                                onChange={this.handleInputChange}
-                                                value={this.props.data.attributes.city}
+                                                onBlur={handleInputOnBlur}
+                                                onChange={handleInputChange}
+                                                value={props.data.attributes.city}
                                             />
                                         </Form.Field>
                                         <Form.Field>
@@ -106,9 +106,9 @@ class TaxReceiptProfileForm extends React.Component {
                                                 control={Input}
                                                 id="country"
                                                 name="country"
-                                                onBlur={this.handleInputOnBlur}
-                                                onChange={this.handleInputChange}
-                                                value={this.props.data.attributes.country}
+                                                onBlur={handleInputOnBlur}
+                                                onChange={handleInputChange}
+                                                value={props.data.attributes.country}
                                             />
                                         </Form.Field>
                                         <Form.Field>
@@ -121,9 +121,9 @@ class TaxReceiptProfileForm extends React.Component {
                                                 name="postalCode"
                                                 size="large"
                                                 // error={!validity.isValidPostalCode}
-                                                onBlur={this.handleInputOnBlur}
-                                                onChange={this.handleInputChange}
-                                                value={this.props.data.attributes.postalCode}
+                                                onBlur={handleInputOnBlur}
+                                                onChange={handleInputChange}
+                                                value={props.data.attributes.postalCode}
                                             />
                                         </Form.Field>
                                         <Form.Field>
@@ -134,9 +134,9 @@ class TaxReceiptProfileForm extends React.Component {
                                                 control={Input}
                                                 id="province"
                                                 name="province"
-                                                onBlur={this.handleInputOnBlur}
-                                                onChange={this.handleInputChange}
-                                                value={this.props.data.attributes.province}
+                                                onBlur={handleInputOnBlur}
+                                                onChange={handleInputChange}
+                                                value={props.data.attributes.province}
                                             />
                                         </Form.Field>
                                     </div>
@@ -148,33 +148,27 @@ class TaxReceiptProfileForm extends React.Component {
                                         </Form.Field>
                                     </div>
                                 </div>
-                            }
-                            { !this.props.showFormData &&
-                                <div className="taxprofilelink">
-                                    <Form.Field>
-                                        Edit Tax receipt
-                                            <a
-                                                className="achPointer ach-padding"
-                                                onClick={this.props.handleDisplayForm}
-                                            >
-                                                Edit tax receipt
-                                            </a>
-                                    </Form.Field>
-                                </div>
+                    }
+                    { !props.showFormData &&
+                        <div className="taxprofilelink">
+                            <Form.Field>
+                                Edit Tax receipt
+                                    <a
+                                        className="achPointer ach-padding"
+                                        onClick={props.handleDisplayForm}
+                                    >
+                                        Edit tax receipt
+                                    </a>
+                            </Form.Field>
+                        </div>
                     }
                 </React.Fragment>)
-        } else{
-            return(<div>Hi</div>)
+        } else {
+            return (<div>No data available</div>)
         }
-    }
-
-    render() {
-        console.log('From tax receipt form ------------> ');
-        console.log(this.props);
-        return(
-           this.displayForm()
-        )
-    }
+    };
+    return (
+        displayForm()
+    );
 }
-
 export default TaxReceiptProfileForm;

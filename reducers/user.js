@@ -39,12 +39,12 @@ const user = (state = {}, action) => {
             };
             break;
         case "TAX_RECEIPT_PROFILES" :
-            console.log(action.payload);
-                newState = {
-                    ...state,
-                    taxReceiptProfiles: Object.assign([], state.taxReceiptProfiles, action.payload.taxReceiptProfiles),
-                    taxReceiptGetApiStatus:action.payload.taxReceiptGetApiStatus,
-                }
+            newState = {
+                ...state,
+                taxReceiptGetApiStatus: action.payload.taxReceiptGetApiStatus,
+                taxReceiptProfiles: Object.assign([], state.taxReceiptProfiles, action.payload.taxReceiptProfiles),
+            };
+            break;
         default:
             break;
     }

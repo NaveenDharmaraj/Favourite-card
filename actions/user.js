@@ -159,24 +159,25 @@ export const validateUser = (dispatch) => {
     }).catch((error) => {
         console.log(JSON.stringify(error));
     });   
-}
+};
+
+export const setTaxReceiptProfile = (data) => {
+    return (dispatch) => dispatch({
+        type: actionTypes.TAX_RECEIPT_PROFILES,
+        payload: {
+            taxReceiptGetApiStatus: true,
+            taxReceiptProfiles: data,
+        },
+    });
+};
 
 export const getTaxReceiptProfile = (dispatch,userId) => {
     return coreApi.get(`/users/${userId}/taxReceiptProfiles`).then((result) => {
-        console.log('api result');
-        console.log(result.data);
         return dispatch(setTaxReceiptProfile(result.data))
     }).catch((error) => {
         console.log(error);
     })
-}
-
-export const setTaxReceiptProfile = (data) => {
-    console.log('data in settaxReceiptProfile');
-    console.log(data)
-    return (dispatch) => dispatch({type:actionTypes.TAX_RECEIPT_PROFILES, payload:{ taxReceiptProfiles:data,
-                                                                                    taxReceiptGetApiStatus:true }})
-}
+};
 
 export const updateTaxReceiptProfile = (taxReceiptProfile, action, dispatch) => {
     let result = {};

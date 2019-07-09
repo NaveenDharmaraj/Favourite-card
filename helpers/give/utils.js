@@ -460,7 +460,6 @@ const validateDonationForm = (field, value, validity) => {
             break;
         default: break;
     }
-    console.log(validity);
     return validity;
 };
 
