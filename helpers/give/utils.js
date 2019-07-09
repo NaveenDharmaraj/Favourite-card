@@ -361,6 +361,40 @@ const populatePaymentInstrument = (paymentInstrumentsData) => {
     return null;
 };
 
+/**
+ * Determine whether the supplied field is valid.
+ * @param  {String} field The add money form field name
+ * @param  {any} value    The field's value
+ * @param  {object} validity  The validaty object contains properties of addMoney form validations
+ * @return {object}  validity Return the validity object.
+ */
+const validateDonationForm = (field, value, validity) => {
+    switch (field) {
+        case 'donationAmount':
+            validity.doesAmountExist = !isInputBlank(value);
+            validity.isAmountLessThanOneBillion = isAmountLessThanOneBillion(value);
+            validity.isAmountMoreThanOneDollor = isAmountMoreThanOneDollor(value);
+            validity.isValidPositiveNumber = isValidPositiveNumber(value);
+            break;
+        case 'noteToSelf':
+            validity.isNoteToSelfInLimit = isInputLengthLessThanOneThousand(value);
+            validity.isValidNoteSelfText = isValidNoteData(value);
+            validity.isNoteToSelfValid = _.every(
+                _.pick(validity, [
+                    'isNoteToSelfInLimit',
+                    'isValidNoteSelfText',
+                ]),
+            );
+            break;
+        case 'giveTo':
+            validity.isValidAddingToSource = !isInputBlank(value);
+            break;
+        default: break;
+    }
+    console.log(validity);
+    return validity;
+};
+
 export {
     onWhatDayList,
     isValidGiftAmount,
@@ -370,4 +404,5 @@ export {
     populatePaymentInstrument,
     formatAmount,
     getDefaultCreditCard,
+    validateDonationForm,
 };

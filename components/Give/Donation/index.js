@@ -16,6 +16,7 @@ import {
     connect,
 } from 'react-redux';
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
+import Note from '../../shared/Note';
 import TextAreaWithInfo from '../../shared/TextAreaWithInfo';
 import DropDownAccountOptions from './DropDownAccountOptions';
 import {proceed} from '../../../actions/give';
@@ -32,6 +33,7 @@ import {
   populatePaymentInstrument,
   formatAmount,
   getDefaultCreditCard,
+  validateDonationForm,
 } from '../../../helpers/give/utils';
 
 
@@ -69,6 +71,65 @@ class Donation extends React.Component {
             isValidPositiveNumber: true,
             };
         return this.validity;
+    }
+
+    /**
+     * Synchronise form data with React state
+     * @param  {Event} event The Event instance object.
+     * @param  {object} options The Options of event
+     * @return {Void} { void } The return nothing.
+     */
+    handleInputOnBlur = (event, data) => {
+        event.preventDefault();
+        const {
+            name,
+            value,
+        } = !_.isEmpty(data) ? data : event.target;
+        const {
+            flowObject: {
+                giveData,
+            },
+        } = this.state;
+        let {
+            validity,
+        } = this.state;
+        let inputValue = value;
+        const isNumber = /^\d+(\.\d*)?$/;
+        if ((name === 'donationAmount') && !_.isEmpty(value) && value.match(isNumber)) {
+            giveData[name] = formatAmount(value);
+            inputValue = formatAmount(value);
+        }
+        validity = validateDonationForm(name, inputValue, validity)
+        this.setState({
+            flowObject: {
+                ...this.state.flowObject,
+                giveData,
+            },
+            validity,
+        });
+    };
+
+    /**
+     * validateForm() when click on continue on AddMoney view
+     * @return {void}
+     */
+    validateForm() {
+        const {
+            flowObject:{
+                giveData:{
+                    giveTo,
+                    donationAmount,
+                    noteToSelf
+                },
+            },
+        } = this.state;
+        let { validity } = this.state;
+        validity = validateDonationForm('donationAmount', donationAmount, validity);
+        validity = validateDonationForm('noteToSelf', noteToSelf, validity);
+        validity = validateDonationForm('giveTo', giveTo, validity);
+        this.setState({ validity });
+
+        return _.every(validity);
     }
 
     handleInputChange = (event, data) =>  {
@@ -138,10 +199,35 @@ class Donation extends React.Component {
         }
     }
 
-  handleSubmit = () => {
-    const {dispatch, stepIndex, flowSteps} = this.props
-    dispatch(proceed(this.state.flowObject, flowSteps[stepIndex+1]))
-  }
+
+    handleSubmit = () => {
+        const {
+            dispatch,
+            stepIndex,
+            flowSteps,
+            companyDetails:{
+                companyDefaultTaxReceiptProfile,
+            },
+            defaultTaxReceiptProfile,
+        } = this.props
+        const {
+            flowObject,
+        } = this.state;
+        const {
+            giveData: {
+                giveTo,
+                creditCard,
+            },
+        } = flowObject;
+        if(this.validateForm()){
+            if (creditCard.value > 0) {
+                flowObject.selectedTaxReceiptProfile = (giveTo.type === 'companies') ?
+                    companyDefaultTaxReceiptProfile :
+                    defaultTaxReceiptProfile;
+            }
+        }
+        dispatch(proceed(flowObject, flowSteps[stepIndex+1]))
+    }
     /**
      * Renders the JSX for the donation amount field.
      * @param {number} amount The donation amount.
@@ -163,34 +249,21 @@ class Donation extends React.Component {
                   iconPosition="left"
                   name="donationAmount"
                   maxLength="7"
-                  // onBlur={this.handleInputOnBlur}
+                  onBlur={this.handleInputOnBlur}
                   onChange={this.handleInputChange}
                   placeholder='Enter Amount'
                   size="large"
                   value={amount}
               />
                 <FormValidationErrorMessage
-                        condition={!validity.isDonationAmountBlank || !validity.isDonationAmountMoreThan1Dollor
-                        || !validity.isDonationAmountPositive}
-                        errorMessage='Min 5'
-                        // errorMessage={formatMessage(errorMessages.amountLessOrInvalid, {
-                        //     minAmount: 5,
-                        // })}
+                    condition={!validity.doesAmountExist || !validity.isAmountMoreThanOneDollor
+                    || !validity.isValidPositiveNumber}
+                    errorMessage='Min 5'
                 />
                 <FormValidationErrorMessage
-                        condition={!validity.isDonationAmountLessThan1Billion}
-                        errorMessage='less than one million'
-                        // errorMessage={formatMessage(errorMessages.invalidMaxAmountError)}
+                    condition={!validity.isAmountLessThanOneBillion}
+                    errorMessage='less than one million'
                 />
-              {/* <FormValidationErrorMessage
-                  condition={!validity.doesAmountExist || !validity.isAmountMoreThanOneDollor
-                  || !validity.isValidPositiveNumber}
-                  errorMessage='Min 5'
-              />
-              <FormValidationErrorMessage
-                  condition={!validity.isAmountLessThanOneBillion}
-                  errorMessage='less than one million'
-              /> */}
           </Form.Field>
       );
   }
@@ -288,7 +361,7 @@ class Donation extends React.Component {
                   name="noteToSelf"
                   id="noteToSelf"
                   info='remainingChars'
-                  //onBlur={this.handleInputOnBlur}
+                  onBlur={this.handleInputOnBlur}
                   onChange={this.handleInputChange}
                   placeholder='noteToSelfPlaceHolder'
                   value={reason}
@@ -370,17 +443,8 @@ class Donation extends React.Component {
     if(giveData.giveTo.type === 'companies' && this.props.companyDetails !== oldProps.companyDetails) {
         giveData.creditCard = getDefaultCreditCard(populatePaymentInstrument(this.props.companyDetails.companyPaymentInstrumentsData));
         doSetState = true;
-        // this.setState({
-        //     flowObject: {
-        //         ...this.state.flowObject,
-        //         giveData:{
-        //             ...this.state.flowObject.giveData,
-        //             giveData,
-        //         },
-        //     },
-        // });
     }
-    if(this.props.companiesAccountsData !== oldProps.companiesAccountsData){
+    if(this.props.companiesAccountsData !== oldProps.companiesAccountsData && giveData.giveTo.value === null){
         if(_.isEmpty(this.props.companiesAccountsData) && !_.isEmpty(this.props.fund)){
             const {
                 fund,
@@ -392,7 +456,7 @@ class Donation extends React.Component {
                     fundType: 'user',
                 },
                 disabled: false,
-                id: '999614',
+                id: '888000',
                 name: `Namee`,
                 text: `${fund.attributes.name}`, // (${currencyFormatting(fund.attributes.balance, formatNumber, currency)})`,
                 type: 'user',
@@ -405,15 +469,6 @@ class Donation extends React.Component {
                 giveData.donationMatch = defaultMatch;
             }
             doSetState = true;
-            // this.setState({
-            //     flowObject: {
-            //         ...this.state.flowObject,
-            //         giveData:{
-            //             ...this.state.flowObject.giveData,
-            //             giveData,
-            //         },
-            //     },
-            // });
         }
     }
     if(doSetState) {
@@ -452,13 +507,21 @@ class Donation extends React.Component {
         <Form onSubmit={this.handleSubmit}>
         { this.renderDonationAmountField(giveData.donationAmount, validity) }
         <DropDownAccountOptions
-          validity= {validity}
+          validity= {validity.isValidAddingToSource}
           selectedValue={giveData.giveTo.value}
           parentInputChange={this.handleInputChange}
-          // parentOnBlurChange={this.handleChildOnBlurChange}
+          parentOnBlurChange={this.handleInputOnBlur}
         />
         { this.renderingRecurringDonationFields(giveData) }
-        {/* { this.renderNotesFields(giveData.noteToSelf, validity) } */}
+        <Note
+            fieldName="noteToSelf"
+            handleOnInputChange={this.handleInputChange}
+            handleOnInputBlur={this.handleOnInputBlur}
+            labelText={`noteToSelfLabel`}
+            popupText={`noteToSelfPopup`}
+            placeholderText={`noteToSelfPlaceholderText`}
+            text={giveData.noteToSelf}
+        />
         { this.renderdonationMatchOptions(giveData, donationMatchOptions)}
         { this.renderpaymentInstrumentOptions(giveData, paymentInstrumenOptions)}
 
