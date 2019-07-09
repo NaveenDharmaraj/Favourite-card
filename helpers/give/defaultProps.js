@@ -81,8 +81,6 @@ export const groupDefaultProps = {
     flowObject: {
         currency: 'USD',
         giveData: {
-            coverFees: false,
-            coverFeesAmount: null,
             creditCard: {
                 value: null,
             },
