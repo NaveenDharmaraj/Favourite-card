@@ -23,6 +23,7 @@ class DropDownAccountOptions extends React.Component {
             selectedValue,
             validity,
             parentInputChange,
+            parentOnBlurChange,
         } = this.props;
         let fieldData = (
             <Form.Field
@@ -40,10 +41,10 @@ class DropDownAccountOptions extends React.Component {
             fieldData = (
                 <Form.Field
                     control={Select}
-                    error={!validity.isValidGiveFrom}
+                    error={!validity}
                     id="giveTo"
                     name="giveTo"
-                    // onBlur={this.props.handleInputOnBlur}
+                    onBlur={parentOnBlurChange}
                     onChange={parentInputChange}
                     options={dropDownData}
                     placeholder="accountPlaceHolder"
@@ -72,7 +73,7 @@ class DropDownAccountOptions extends React.Component {
                         {fieldData}
                     </Form.Field>
                     <FormValidationErrorMessage
-                        condition={!validity.isValidGiveFrom}
+                        condition={!validity}
                         errorMessage="blankError"
                     />
                 </Fragment>
