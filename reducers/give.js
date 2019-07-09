@@ -1,18 +1,36 @@
 const give = (state = {}, action) => {
-    console.log(action.type);
+    let newState = {
+        ...state,
+    };
     switch (action.type) {
-        case "SAVE_FLOW_OBJECT" :
-            state = {
+        case 'SAVE_FLOW_OBJECT':
+            newState = {
                 ...state,
                 flowObject: {
                     ...state.flowObject,
-                    ...action.payload
+                    ...action.payload,
                 },
-            }
-            console.log('payload in reducer is -> ', action.payload)
+            };
+            break;
+        case 'DONATIONS_ADDTO_DROPDOWN':
+            const {
+                donationAddToData,
+            } = action.payload;
+            newState = {
+                ...state,
+                donationAddToData: Object.assign([], state.donationAddToData, donationAddToData),
+            };
+            break;
+        case 'GET_COMPANY_PAYMENT_AND_TAXRECEIPT':
+            newState = {
+                ...state,
+                companyData: Object.assign({}, state.companyData, action.payload),
+            };
+            break;
+        default:
             break;
     }
-    return state;
-}
+    return newState;
+};
 
 export default give;
