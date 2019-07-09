@@ -36,7 +36,6 @@ import {
   validateDonationForm,
 } from '../../../helpers/give/utils';
 
-import { donationDefaultProps } from '../../../helpers/give/defaultProps';
 
 class Donation extends React.Component {
     constructor(props) {

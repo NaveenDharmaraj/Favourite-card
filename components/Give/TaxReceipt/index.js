@@ -85,7 +85,7 @@ import {
       const {
         dispatch
       } = this.props
-      getTaxReceiptProfile(dispatch, 999000);
+      getTaxReceiptProfile(dispatch, 888000);
       if (this.state.flowObject) {
         reInitNextStep(dispatch, this.state.flowObject)
       }
@@ -200,7 +200,7 @@ import {
         } else {
           flowObject.selectedTaxReceiptProfile.relationships = {
             accountHoldable: {
-              data: { id:999000,
+              data: { id:888000,
                       type:"user"
                     },
             },
