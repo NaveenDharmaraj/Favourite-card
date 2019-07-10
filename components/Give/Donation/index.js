@@ -22,6 +22,11 @@ import DropDownAccountOptions from './DropDownAccountOptions';
 import {proceed} from '../../../actions/give';
 import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
 import { getCompanyPaymentAndTax } from '../../../actions/give';
+import CreditCard from '../../shared/CreditCard';
+import {
+    Elements,
+    StripeProvider
+} from 'react-stripe-elements';
 
 import {
   donationDefaultProps,
@@ -55,6 +60,12 @@ class Donation extends React.Component {
     }
 
     componentDidMount() {
+        const script = document.createElement("script");
+
+        script.src = "https://js.stripe.com/v3/";
+        script.async = true;
+
+        document.body.appendChild(script);
         const {dispatch} = this.props;
         dispatch(getDonationMatchAndPaymentInstruments());
     }
@@ -524,7 +535,13 @@ class Donation extends React.Component {
         />
         { this.renderdonationMatchOptions(giveData, donationMatchOptions)}
         { this.renderpaymentInstrumentOptions(giveData, paymentInstrumenOptions)}
-
+        <Form.Field>
+            <StripeProvider apiKey='123456'>
+                <Elements>
+                    <CreditCard />
+                </Elements>
+            </StripeProvider>
+        </Form.Field>
         </Form>
         <div>
         <div onClick={() => this.handleSubmit()} >Continue</div>
