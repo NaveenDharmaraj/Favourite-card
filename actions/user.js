@@ -1,23 +1,15 @@
+/* eslint-disable no-else-return */
 
-import _split from 'lodash/split';
-import _isEmpty from 'lodash/isEmpty';
+import _ from 'lodash';
 
 import {
     populateAccountOptions,
 } from '../helpers/give/utils';
 import coreApi from '../services/coreApi';
-import _pick from 'lodash/pick';
-
-export const actionTypes = {
-    USER_AUTH: 'USER_AUTH',
-    TAX_RECEIPT_PROFILES: 'TAX_RECEIPT_PROFILES',
-    GET_MATCH_POLICIES_PAYMENTINSTRUMENTS: 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS',
-    DONATIONS_ADDTO_DROPDOWN: 'DONATIONS_ADDTO_DROPDOWN',
-}
 
 const getAllPaginationData = async (url, params = null) => {
     // Right now taking the only relative url from the absolute url.
-    const replacedUrl = _split(url, '/core/v2').pop();
+    const replacedUrl = _.split(url, '/core/v2').pop();
     const result = await coreApi.get(replacedUrl);
     const dataArray = result.data;
     if (result.links.next) {
@@ -29,7 +21,7 @@ const getAllPaginationData = async (url, params = null) => {
 const callApiAndGetData = (url, params) => getAllPaginationData(url, params).then(
     (result) => {
         const allData = [];
-        if (result && !_isEmpty(result)) {
+        if (result && !_.isEmpty(result)) {
             result.map((item) => {
                 const {
                     attributes,
@@ -46,6 +38,14 @@ const callApiAndGetData = (url, params) => getAllPaginationData(url, params).the
         return allData;
     },
 );
+
+export const actionTypes = {
+    DONATIONS_ADDTO_DROPDOWN: 'DONATIONS_ADDTO_DROPDOWN',
+    GET_MATCH_POLICIES_PAYMENTINSTRUMENTS: 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS',
+    TAX_RECEIPT_PROFILES: 'TAX_RECEIPT_PROFILES',
+    USER_AUTH: 'USER_AUTH',
+};
+
 
 export const getDonationMatchAndPaymentInstruments = () => {
 
@@ -88,7 +88,7 @@ export const getDonationMatchAndPaymentInstruments = () => {
             .then(
                 (data) => {
                     const userData = data[0];
-                    if (!_isEmpty(userData.included)) {
+                    if (!_.isEmpty(userData.included)) {
                         const { included } = userData;
                         const dataMap = {
                             donationMatches: 'donationMatchData',
@@ -171,9 +171,9 @@ export const setTaxReceiptProfile = (data) => {
     });
 };
 
-export const getTaxReceiptProfile = (dispatch,userId) => {
+export const getTaxReceiptProfile = (dispatch, userId) => {
     return coreApi.get(`/users/${userId}/taxReceiptProfiles`).then((result) => {
-        return dispatch(setTaxReceiptProfile(result.data))
+        return dispatch(setTaxReceiptProfile(result.data));
     }).catch((error) => {
         console.log(error);
     })
@@ -184,7 +184,7 @@ export const updateTaxReceiptProfile = (taxReceiptProfile, action, dispatch) => 
     if (action === 'update') {
         const params = {
             data: {
-                attributes: _pick(
+                attributes: _.pick(
                     taxReceiptProfile.attributes,
                     [
                         'addressOne',
@@ -214,3 +214,4 @@ export const updateTaxReceiptProfile = (taxReceiptProfile, action, dispatch) => 
     }
     // return setTaxReceiptProfile(dispatch, result.data)
 };
+

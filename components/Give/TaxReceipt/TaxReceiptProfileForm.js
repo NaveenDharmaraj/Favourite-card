@@ -1,13 +1,14 @@
 import React from 'react';
-import {Form, Input, FormField} from 'semantic-ui-react';
+import {
+    Form, Input,
+} from 'semantic-ui-react';
 
-function TaxReceiptProfileForm(props)  {
-
+function TaxReceiptProfileForm(props) {
     const handleInputChange = (e, {
         value, name,
     }) => {
         props.parentInputChange(name, value);
-    }
+    };
 
     /**
      * Synchronise form data with React state
@@ -30,7 +31,7 @@ function TaxReceiptProfileForm(props)  {
             } = event.target;
             props.parentOnBlurChange(name, value);
         }
-    }
+    };
 
     const displayForm = () => {
         if (props.data.attributes) {
