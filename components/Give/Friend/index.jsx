@@ -4,7 +4,7 @@ import {proceed} from '../../../actions/give';
 
 import { beneficiaryDefaultProps } from '../../../helpers/give/defaultProps';
 
-class Charity extends React.Component {
+class Friend extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -30,7 +30,7 @@ class Charity extends React.Component {
     console.log(this.props);
     return (
       <div>
-        Charity new page - slug is {this.props.slug}
+        Friend new page - slug is {this.props.slug}
         <div onClick={()=> this.handleInputChange()}>set state here {this.state.flowObject.giveData.donationAmount}</div><br/>
         <div onClick={() => this.handleSubmit()} >Continue</div>
       </div>
@@ -38,6 +38,6 @@ class Charity extends React.Component {
   }
 }
 
-Charity.defaultProps = beneficiaryDefaultProps;
+Friend.defaultProps = beneficiaryDefaultProps;
 
-export default Charity
+export default Friend
