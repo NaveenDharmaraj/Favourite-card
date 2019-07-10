@@ -1,3 +1,6 @@
+import {
+    updateTaxReceiptProfile
+} from './user';
 import _ from 'lodash';
 
 import coreApi from '../services/coreApi';
@@ -8,10 +11,23 @@ export const actionTypes = {
     GET_COMPANY_PAYMENT_AND_TAXRECEIPT: 'GET_COMPANY_PAYMENT_AND_TAXRECEIPT',
 };
 
-export const proceed = (flowObject, nextStep, lastStep = false) => {
-    flowObject.nextStep = nextStep;
-    return (dispatch) => dispatch({type: actionTypes.SAVE_FLOW_OBJECT, payload: flowObject})
-
+export const proceed = (flowObject, nextStep,stepIndex, lastStep = false) => {
+    return (dispatch) => {
+        flowObject.nextStep = nextStep;
+        if (flowObject.taxReceiptProfileAction !== 'no_change' && stepIndex === 1) {
+            let result = updateTaxReceiptProfile(
+                flowObject.selectedTaxReceiptProfile,
+                flowObject.taxReceiptProfileAction, dispatch
+            ).then((result) => {
+                flowObject.selectedTaxReceiptProfile = result.data;
+                dispatch({type: actionTypes.SAVE_FLOW_OBJECT, payload: flowObject});
+            }).catch((error) => {
+                console.log(error);
+            });
+        } else {
+            dispatch({type: actionTypes.SAVE_FLOW_OBJECT, payload: flowObject})
+        }
+    }
 }
 
 export const reInitNextStep = (dispatch, flowObject) => {

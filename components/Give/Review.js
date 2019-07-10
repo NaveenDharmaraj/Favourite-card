@@ -16,6 +16,7 @@ class Review extends React.Component {
     dispatch(proceed(flowObject, flowSteps[stepIndex+1], true))
   }
   render() {
+    console.log(this.props.flowObject);
     return (
         <div>
         { (this.props.flowObject) && 

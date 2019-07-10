@@ -1,21 +1,15 @@
+/* eslint-disable no-else-return */
 
-import _split from 'lodash/split';
-import _isEmpty from 'lodash/isEmpty';
+import _ from 'lodash';
 
 import {
     populateAccountOptions,
 } from '../helpers/give/utils';
 import coreApi from '../services/coreApi';
 
-export const actionTypes = {
-    USER_AUTH: 'USER_AUTH',
-    GET_MATCH_POLICIES_PAYMENTINSTRUMENTS: 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS',
-    DONATIONS_ADDTO_DROPDOWN: 'DONATIONS_ADDTO_DROPDOWN',
-}
-
 const getAllPaginationData = async (url, params = null) => {
     // Right now taking the only relative url from the absolute url.
-    const replacedUrl = _split(url, '/core/v2').pop();
+    const replacedUrl = _.split(url, '/core/v2').pop();
     const result = await coreApi.get(replacedUrl);
     const dataArray = result.data;
     if (result.links.next) {
@@ -27,7 +21,7 @@ const getAllPaginationData = async (url, params = null) => {
 const callApiAndGetData = (url, params) => getAllPaginationData(url, params).then(
     (result) => {
         const allData = [];
-        if (result && !_isEmpty(result)) {
+        if (result && !_.isEmpty(result)) {
             result.map((item) => {
                 const {
                     attributes,
@@ -44,6 +38,14 @@ const callApiAndGetData = (url, params) => getAllPaginationData(url, params).the
         return allData;
     },
 );
+
+export const actionTypes = {
+    DONATIONS_ADDTO_DROPDOWN: 'DONATIONS_ADDTO_DROPDOWN',
+    GET_MATCH_POLICIES_PAYMENTINSTRUMENTS: 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS',
+    TAX_RECEIPT_PROFILES: 'TAX_RECEIPT_PROFILES',
+    USER_AUTH: 'USER_AUTH',
+};
+
 
 export const getDonationMatchAndPaymentInstruments = () => {
 
@@ -86,7 +88,7 @@ export const getDonationMatchAndPaymentInstruments = () => {
             .then(
                 (data) => {
                     const userData = data[0];
-                    if (!_isEmpty(userData.included)) {
+                    if (!_.isEmpty(userData.included)) {
                         const { included } = userData;
                         const dataMap = {
                             donationMatches: 'donationMatchData',
@@ -155,6 +157,61 @@ export const validateUser = (dispatch) => {
     return coreApi.get('/users/888000?include=chimpAdminRole,donorRole,fund').then((result) => {
         return dispatch({type: actionTypes.USER_AUTH, payload: {isAuthenticated: true}})
     }).catch((error) => {
-        // console.log(JSON.stringify(error));
+        console.log(JSON.stringify(error));
+    });   
+};
+
+export const setTaxReceiptProfile = (data) => {
+    return (dispatch) => dispatch({
+        type: actionTypes.TAX_RECEIPT_PROFILES,
+        payload: {
+            taxReceiptGetApiStatus: true,
+            taxReceiptProfiles: data,
+        },
     });
 };
+
+export const getTaxReceiptProfile = (dispatch, userId) => {
+    return coreApi.get(`/users/${userId}/taxReceiptProfiles`).then((result) => {
+        return dispatch(setTaxReceiptProfile(result.data));
+    }).catch((error) => {
+        console.log(error);
+    })
+};
+
+export const updateTaxReceiptProfile = (taxReceiptProfile, action, dispatch) => {
+    let result = {};
+    if (action === 'update') {
+        const params = {
+            data: {
+                attributes: _.pick(
+                    taxReceiptProfile.attributes,
+                    [
+                        'addressOne',
+                        'addressTwo',
+                        'city',
+                        'country',
+                        'fullName',
+                        'postalCode',
+                        'province',
+                    ],
+                ),
+                id: taxReceiptProfile.id,
+                type: taxReceiptProfile.type,
+            },
+        };
+        return coreApi.patch(`/taxReceiptProfiles/${taxReceiptProfile.id}`, {
+            data: params.data,
+        });
+    } else {
+        const params = {
+            data: taxReceiptProfile,
+        };
+        return coreApi.post('/taxReceiptProfiles', {
+            data: params.data,
+            uxCritical: true,
+        });
+    }
+    // return setTaxReceiptProfile(dispatch, result.data)
+};
+
