@@ -1,20 +1,42 @@
+import {
+    updateTaxReceiptProfile,
+    callApiAndGetData,
+} from './user';
 import _ from 'lodash';
 
 import coreApi from '../services/coreApi';
 import realtypeof from '../helpers/realtypeof';
 
 export const actionTypes = {
-    SAVE_FLOW_OBJECT: 'SAVE_FLOW_OBJECT',
     GET_COMPANY_PAYMENT_AND_TAXRECEIPT: 'GET_COMPANY_PAYMENT_AND_TAXRECEIPT',
-};
+    GET_COMPANY_TAXRECEIPTS: 'GET_COMPANY_TAXRECEIPTS',
+    SAVE_FLOW_OBJECT: 'SAVE_FLOW_OBJECT',
 
 export const proceed = (flowObject, nextStep, lastStep = false) => {
-    flowObject.nextStep = nextStep;
-//    if(nextStep === 'success'){
-//         flowObject.stepsCompleted = true;
-//     } 
+    flowObject.nextStep = nextStep; 
     return (dispatch) => dispatch({type: actionTypes.SAVE_FLOW_OBJECT, payload: flowObject})
+};
 
+export const proceed = (flowObject, nextStep, stepIndex, lastStep = false) => {
+    return (dispatch) => {
+        flowObject.nextStep = nextStep;
+        if (flowObject.taxReceiptProfileAction !== 'no_change' && stepIndex === 1) {
+            updateTaxReceiptProfile(
+                flowObject.selectedTaxReceiptProfile,
+                flowObject.taxReceiptProfileAction, dispatch,
+            ).then((result) => {
+                flowObject.selectedTaxReceiptProfile = result.data;
+                dispatch({
+                    payload: flowObject,
+                    type: actionTypes.SAVE_FLOW_OBJECT,
+                });
+            }).catch((error) => {
+                console.log(error);
+            });
+        } else {
+            dispatch({type: actionTypes.SAVE_FLOW_OBJECT, payload: flowObject})
+        }
+    }
 }
 
 export const reInitNextStep = (dispatch, flowObject) => {
@@ -34,12 +56,11 @@ export const getCompanyPaymentAndTax = (dispatch, companyId) => {
             companyDefaultTaxReceiptProfile: {},
             companyId,
             companyPaymentInstrumentsData: [],
-            taxReceiptProfileData: [],
         },
         type: actionTypes.GET_COMPANY_PAYMENT_AND_TAXRECEIPT,
     };
 
-    return coreApi.get(`/companies/${companyId}?include=defaultTaxReceiptProfile,activePaymentInstruments,taxReceiptProfiles`).then((result) => {
+    return coreApi.get(`/companies/${companyId}?include=defaultTaxReceiptProfile,activePaymentInstruments`).then((result) => {
         const { data } = result;
         let defaultTaxReceiptId = null;
         if (!_.isEmpty(data.relationships.defaultTaxReceiptProfile.data)) {
@@ -67,14 +88,25 @@ export const getCompanyPaymentAndTax = (dispatch, companyId) => {
                             type,
                         };
                     }
-                    fsa.payload.taxReceiptProfileData.push({
-                        attributes,
-                        id,
-                        type,
-                    });
                 }
             });
         }
+        return dispatch(fsa);
+    }).catch((error) => {
+        console.log(error);
+    });
+};
+
+export const getCompanyTaxReceiptProfile = (dispatch, companyId) => {
+    return callApiAndGetData(`/companies/${companyId}/taxReceiptProfiles?page[size]=50&sort=-id`).then((result) => {
+        // return dispatch(setTaxReceiptProfile(result, type = ''));
+        const fsa = {
+            payload: {
+                companyTaxReceiptProfiles: (!_.isEmpty(result)) ? result : [],
+                taxReceiptGetApiStatus: true,
+            },
+            type: actionTypes.GET_COMPANY_TAXRECEIPTS,
+        };
         return dispatch(fsa);
     }).catch((error) => {
         console.log(error);
