@@ -14,7 +14,7 @@ import {
   Input,
   Visibility,
 } from 'semantic-ui-react'
-//import logo from './logo.png';
+import logo from './logo.png';
 class DesktopHeader extends Component {
   state = {}
   state = { visible: false }
@@ -38,7 +38,7 @@ class DesktopHeader extends Component {
       >
         <Container>
         <Menu.Item className="brand">
-          <Image className="c-logo-m" src='' />
+          <Image className="c-logo-m" src={logo} />
 
         </Menu.Item>
         <div className="flexbox-wraper w-100">

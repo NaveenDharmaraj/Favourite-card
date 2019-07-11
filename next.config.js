@@ -1,4 +1,9 @@
 const withLess = require('@zeit/next-less')
-module.exports = withLess({
-  /* config options here */
-})
+const withPlugins = require('next-compose-plugins');
+
+const withImages = require('next-images')
+module.exports = withPlugins([
+    [withLess],
+    [withImages],
+]);
+
