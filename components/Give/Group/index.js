@@ -3,6 +3,7 @@ import React from 'react';
 import {proceed} from '../../../actions/give';
 
 import { groupDefaultProps } from '../../../helpers/give/defaultProps';
+import { getGroupsFromSlug } from '../../../actions/user';
 
 class Group extends React.Component {
   constructor(props) {
@@ -25,6 +26,16 @@ class Group extends React.Component {
   handleSubmit = () => {
     const {dispatch, stepIndex, flowSteps} = this.props
     dispatch(proceed(this.state.flowObject, flowSteps[stepIndex+1]))
+  }
+
+  componentDidMount() {
+    const {
+      slug,
+    } = this.props;
+    if(slug !== null) {
+      console.log(slug)
+      getGroupsFromSlug(slug);
+    }
   }
   render() {
     console.log(this.props);
