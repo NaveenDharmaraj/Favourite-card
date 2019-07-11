@@ -19,7 +19,7 @@ import {
     isValidNoteData,
     isUniqueArray,
     parseEmails,
-} from '../give/giving-form-validation';
+} from './giving-form-validation';
 /**
 * Determine whether the supplied field is valid.
 * @param  {String} field The tax receipt profile form field name
@@ -429,6 +429,125 @@ const populatePaymentInstrument = (paymentInstrumentsData) => {
     }
     return null;
 };
+/**
+ * full Month Names for donation match policies.
+ * @param {*} intl react-intl object
+ * @return {Array} fullMonthNames
+ */
+const fullMonthNames = () => {
+    const fullMonths = [
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December',
+    ];
+    return fullMonths;
+};
+
+/**
+* calculating percentage for selected donation match
+* @param  {Object}  donationMatch recurringDonation date
+* @return {Number} donation match amount
+*/
+const percentage = (donationMatch) => {
+    let matchAmount = {};
+    if (!_.isEmpty(donationMatch)) {
+        matchAmount = (donationMatch.donationAmount / 100) * donationMatch.policyPercentage;
+        const matchRemainingAmount =
+            Number(donationMatch.policyMax) - Number(donationMatch.totalMatched);
+        if (Number(matchRemainingAmount) < Number(matchAmount)) {
+            matchAmount = Number(matchRemainingAmount);
+        }
+    }
+    return matchAmount;
+};
+
+/**
+* set date for recurring danations
+* @param  {Date}  date recurringDonation date
+* @param {object} intl react-intl
+* @return {string} recurring full date format
+*/
+const setDateForRecurring = (date) => {
+    const currentDate = new Date();
+    const monthNames = fullMonthNames();
+    let month = currentDate.getDate() < date ?
+        monthNames[currentDate.getMonth()] : monthNames[currentDate.getMonth() + 1];
+    let year = currentDate.getFullYear();
+    if (!month) {
+        month = monthNames[0];
+        year = currentDate.getFullYear() + 1;
+    }
+    return (`${month} ${date}, ${year}`);
+};
+
+const setDateFormat = (nextTuesday, monthNames) => `Tuesday  ${monthNames[nextTuesday.getMonth()]} ${nextTuesday.getDate()}`;
+
+const getNextTuesday = (currentDateUTC, monthNames) => {
+    const day = currentDateUTC.getDay();
+    const normalizedDay = (day + 5) % 7;
+    const daysForward = 7 - normalizedDay;
+    const nextTuesday = new Date(+currentDateUTC + (daysForward * 24 * 60 * 60 * 1000));
+    return setDateFormat(nextTuesday, monthNames);
+};
+
+const getFirstThirdTuesday = (currentDateUTC, monthNames) => {
+    // To Find 1st and 3rd Tuesdays
+    const tuesdays = [];
+    const refDate = new Date();
+    const refDateUTC = new Date(refDate.getTime() + (refDate.getTimezoneOffset() * 60000));
+    refDateUTC.setHours(refDateUTC.getHours() - 8);
+    const month = refDateUTC.getMonth();
+    refDateUTC.setDate(1);
+    // Get the first Monday in the month
+    while (refDateUTC.getDay() !== 2) {
+        refDateUTC.setDate(refDateUTC.getDate() + 1);
+    }
+    // Get all the other Tuesdays in the month
+    while (refDateUTC.getMonth() === month) {
+        tuesdays.push(new Date(refDateUTC.getTime()));
+        refDateUTC.setDate(refDateUTC.getDate() + 7);
+    }
+
+    if (currentDateUTC.getDate() >= 1 && currentDateUTC.getDate() < tuesdays[0].getDate()) {
+        return setDateFormat(tuesdays[0], monthNames);
+    }
+    // Checking Condition for 3rd week Tuesday
+    if (currentDateUTC.getDate() >= tuesdays[0].getDate() &&
+                currentDateUTC.getDate() < tuesdays[2].getDate()) {
+        return setDateFormat(tuesdays[2], monthNames);
+    }
+    const nextMonthTuesday = new Date(tuesdays[tuesdays.length - 1].getTime()
+                                        + (7 * 24 * 60 * 60 * 1000));
+    return setDateFormat(nextMonthTuesday, monthNames);
+};
+
+/**
+* get date for single allocation to sent.
+* @param {object} intl react-intl
+* @return {string} recurring full date format
+*/
+
+const getNextAllocationMonth = (eftEnabled) => {
+    const currentDate = new Date();
+    const currentDateUTC = new Date(currentDate.getTime() +
+                                (currentDate.getTimezoneOffset() * 60000));
+    currentDateUTC.setHours(currentDateUTC.getHours() - 8);
+    const monthNames = fullMonthNames();
+    if (eftEnabled) {
+        return getNextTuesday(currentDateUTC, monthNames);
+    }
+    return getFirstThirdTuesday(currentDateUTC, monthNames);
+};
+
 
 /**
  * Determine whether the supplied field is valid.
@@ -464,6 +583,8 @@ const validateDonationForm = (field, value, validity) => {
 };
 
 export {
+    percentage,
+    fullMonthNames,
     validateTaxReceiptProfileForm,
     onWhatDayList,
     isValidGiftAmount,
@@ -473,5 +594,7 @@ export {
     populatePaymentInstrument,
     formatAmount,
     getDefaultCreditCard,
+    getNextAllocationMonth,
+    setDateForRecurring,
     validateDonationForm,
 };
