@@ -65,6 +65,12 @@ const user = (state = {}, action) => {
                 groupFromUrl: false,
             };
             break;
+        case 'SET_USER_TAX_API_STATUS_FALSE':
+            newState = {
+                ...state,
+                taxReceiptGetApiStatus: action.payload.taxReceiptGetApiStatus,
+            };
+            break;
         default:
             break;
     }

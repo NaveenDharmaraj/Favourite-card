@@ -18,7 +18,7 @@ const getAllPaginationData = async (url, params = null) => {
     return dataArray;
 };
 
-const callApiAndGetData = (url, params) => getAllPaginationData(url, params).then(
+export const callApiAndGetData = (url, params) => getAllPaginationData(url, params).then(
     (result) => {
         const allData = [];
         if (result && !_.isEmpty(result)) {
