@@ -12,6 +12,7 @@ class Donations extends React.Component {
             namespacesRequired: [
                 'donation',
                 'taxReceipt',
+                'error',
             ],
             step: query.step,
         };
