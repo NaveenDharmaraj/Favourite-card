@@ -3,7 +3,6 @@ import React from 'react';
 import {proceed} from '../../../actions/give';
 
 import { groupDefaultProps } from '../../../helpers/give/defaultProps';
-import { getGroupsFromSlug } from '../../../actions/user';
 
 class Group extends React.Component {
   constructor(props) {
@@ -27,16 +26,6 @@ class Group extends React.Component {
     const {dispatch, stepIndex, flowSteps} = this.props
     dispatch(proceed(this.state.flowObject, flowSteps[stepIndex+1]))
   }
-
-  componentDidMount() {
-    const {
-      slug,
-    } = this.props;
-    if(slug !== null) {
-      console.log(slug)
-      getGroupsFromSlug(slug);
-    }
-  }
   render() {
     console.log(this.props);
     return (
@@ -51,17 +40,4 @@ class Group extends React.Component {
 
 Group.defaultProps = groupDefaultProps;
 
-const  mapStateToProps = (state, props) => {
-
-  if(props.flowObject.giveData.giveTo.type === 'user') {
-    return {
-      taxReceiptProfiles: state.user.taxReceiptProfiles,
-      taxReceiptGetApiStatus:state.user.taxReceiptGetApiStatus
-    }
-  }
-  return {
-    taxReceiptProfiles: state.give.companyData.taxReceiptProfiles,
-    taxReceiptGetApiStatus:state.give.companyData.taxReceiptGetApiStatus
-  }
-}
-export default connect(mapStateToProps)(Group)
+export default Group

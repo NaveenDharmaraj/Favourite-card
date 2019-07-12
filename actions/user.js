@@ -42,10 +42,10 @@ export const callApiAndGetData = (url, params) => getAllPaginationData(url, para
 export const actionTypes = {
     DONATIONS_ADDTO_DROPDOWN: 'DONATIONS_ADDTO_DROPDOWN',
     GET_MATCH_POLICIES_PAYMENTINSTRUMENTS: 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS',
-    GROUP_FROM_SLUG: 'GROUP_FROM_SLUG',
     TAX_RECEIPT_PROFILES: 'TAX_RECEIPT_PROFILES',
     USER_AUTH: 'USER_AUTH',
 };
+
 
 export const getDonationMatchAndPaymentInstruments = () => {
 
@@ -152,6 +152,7 @@ export const getDonationMatchAndPaymentInstruments = () => {
     };
 };
 
+
 export const validateUser = (dispatch) => {
     return coreApi.get('/users/888000?include=chimpAdminRole,donorRole,fund').then((result) => {
         console.log(result);
@@ -164,16 +165,16 @@ export const validateUser = (dispatch) => {
         });
     }).catch((error) => {
         console.log(JSON.stringify(error));
-    });
+    });   
 };
 
 export const setTaxReceiptProfile = (data) => {
     return (dispatch) => dispatch({
+        type: actionTypes.TAX_RECEIPT_PROFILES,
         payload: {
             taxReceiptGetApiStatus: true,
             taxReceiptProfiles: data,
         },
-        type: actionTypes.TAX_RECEIPT_PROFILES,
     });
 };
 
@@ -182,10 +183,11 @@ export const getTaxReceiptProfile = (dispatch, userId) => {
         return dispatch(setTaxReceiptProfile(result.data));
     }).catch((error) => {
         console.log(error);
-    });
+    })
 };
 
 export const updateTaxReceiptProfile = (taxReceiptProfile, action, dispatch) => {
+    let result = {};
     if (action === 'update') {
         const params = {
             data: {
@@ -218,24 +220,4 @@ export const updateTaxReceiptProfile = (taxReceiptProfile, action, dispatch) => 
         });
     }
     // return setTaxReceiptProfile(dispatch, result.data)
-};
-
-export const getGroupsFromSlug = (slug) => {
-    return coreApi.get(`groups/find_by_slug`, {
-        params: {
-            slug,
-        },
-    }).then(
-        (result) => {
-            console.log(result);
-            return (dispatch) => dispatch({
-                payload: {
-                    groupDetails: result.data,
-                },
-                type: actionTypes.GROUP_FROM_SLUG,
-            });
-        },
-    ).catch((error) => {
-        console.log(error);
-    });
 };
