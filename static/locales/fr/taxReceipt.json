@@ -8,8 +8,14 @@
     "country": "Pays",
     "postalCode": "Code postal",
     "province": "Province",
+    "provincePlaceHolder":"Select a province/state",
     "taxReceiptRecipientLabel": "Destinataire du reçu fiscal",
     "changeAddressText": "Voulez-vous changer cette adresse? ",
     "makeChangesText": "Faire des modifications ici",
-    "fullNamePopup": "Ce nom doit être celui de la personne qui paie la facture de carte de crédit. Veuillez inclure votre prénom, l’initiale de votre second prénom, et votre nom de famille."
+    "fullNamePopup": "Ce nom doit être celui de la personne qui paie la facture de carte de crédit. Veuillez inclure votre prénom, l’initiale de votre second prénom, et votre nom de famille.",
+    "invalidFullName": "Include your full name (use a minimum of 2 characters)",
+    "invalidAddress": "Include your street address (use a minimum of 2 characters)",
+    "invalidCity": "Include the name of your city (use a minimum of 2 characters)",
+    "invalidPostalCode": "Include a valid postal code",
+    "usCountryNote": "Note: The tax receipt will only be valuable to people who earn Canadian income. Why? The receipts are issued by the CHIMP: Charitable Impact Foundation which is a Canadian charity."
 }
