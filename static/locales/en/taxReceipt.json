@@ -1,5 +1,5 @@
 {
-    "city": "city",
+    "city": "City",
     "cityPlaceHolder": "cityPlaceHolder",
     "fullName": "Full Name",
     "fullNamePlaceHolder":"Full legal name",
@@ -8,7 +8,8 @@
     "country": "Country",
     "postalCode": "Postal Code",
     "province": "Province",
-    "taxReceiptProfile": "Tax Receipt Profile",
-    "editTaxReceipt": "Edit Tax Receipt",
+    "taxReceiptRecipientLabel": "Tax Receipt recipient",
+    "changeAddressText": "Want to change this address? ",
+    "makeChangesText": "Make changes here",
     "fullNamePopup": "This must be the name of the person who pays the credit card bill. Please include your first name, middle initial, and last name."
 }

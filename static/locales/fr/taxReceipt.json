@@ -1,0 +1,15 @@
+{
+    "city": "Ville",
+    "cityPlaceHolder": "Nom de la ville",
+    "fullName": "Nom complet",
+    "fullNamePlaceHolder":"Nom légal complet",
+    "secondAddress": "Deuxième adresse",
+    "address": "Adresse",
+    "country": "Pays",
+    "postalCode": "Code postal",
+    "province": "Province",
+    "taxReceiptRecipientLabel": "Destinataire du reçu fiscal",
+    "changeAddressText": "Voulez-vous changer cette adresse? ",
+    "makeChangesText": "Faire des modifications ici",
+    "fullNamePopup": "Ce nom doit être celui de la personne qui paie la facture de carte de crédit. Veuillez inclure votre prénom, l’initiale de votre second prénom, et votre nom de famille."
+}

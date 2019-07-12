@@ -388,7 +388,7 @@ import {
         return(
           <Form.Field>
             <label htmlFor="addingTo">
-                  {formatMessage('taxReceiptProfile')}
+                  {formatMessage('taxReceiptRecipientLabel')}
             </label>
             {fieldData}
           </Form.Field>

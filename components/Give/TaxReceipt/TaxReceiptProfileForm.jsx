@@ -174,15 +174,15 @@ function TaxReceiptProfileForm(props) {
                     { !props.showFormData &&
                         <div className="taxprofilelink">
                             <Form.Field>
-                                {formatMessage('editTaxReceipt')}
-                                <Button secondary onClick={props.handleDisplayForm}>
-                                    {formatMessage('editTaxReceipt')}
+                                {formatMessage('changeAddressText')}
+                                <Button secondary style={{marginLeft:'1rem'}} onClick={props.handleDisplayForm}>
+                                    {formatMessage('makeChangesText')}
                                 </Button>
                                     
                             </Form.Field>
                         </div>
                     }
-                </React.Fragment>)
+                </React.Fragment>);
         } else {
             return (<div>No data available</div>)
         }
