@@ -27,6 +27,25 @@ const give = (state = {}, action) => {
                 companyData: Object.assign({}, state.companyData, action.payload),
             };
             break;
+        case 'GET_COMPANY_TAXRECEIPTS':
+            newState = {
+                ...state,
+                companyData: {
+                    ...state.companyData,
+                    taxReceiptGetApiStatus: action.payload.taxReceiptGetApiStatus,
+                    taxReceiptProfiles: action.payload.companyTaxReceiptProfiles,
+                },
+            };
+            break;
+        case 'SET_COMPANY_TAX_API_STATUS_FALSE':
+            newState = {
+                ...state,
+                companyData: {
+                    ...state.companyData,
+                    taxReceiptGetApiStatus: action.payload.taxReceiptGetApiStatus,
+                },
+            };
+            break;
         default:
             break;
     }

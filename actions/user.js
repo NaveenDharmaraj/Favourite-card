@@ -18,7 +18,7 @@ const getAllPaginationData = async (url, params = null) => {
     return dataArray;
 };
 
-const callApiAndGetData = (url, params) => getAllPaginationData(url, params).then(
+export const callApiAndGetData = (url, params) => getAllPaginationData(url, params).then(
     (result) => {
         const allData = [];
         if (result && !_.isEmpty(result)) {
@@ -155,7 +155,14 @@ export const getDonationMatchAndPaymentInstruments = () => {
 
 export const validateUser = (dispatch) => {
     return coreApi.get('/users/888000?include=chimpAdminRole,donorRole,fund').then((result) => {
-        return dispatch({type: actionTypes.USER_AUTH, payload: {isAuthenticated: true}})
+        console.log(result);
+        return dispatch({
+            type: actionTypes.USER_AUTH, 
+            payload: {
+                isAuthenticated: true,
+                userinfo : result.data,
+            }
+        });
     }).catch((error) => {
         console.log(JSON.stringify(error));
     });   
@@ -214,4 +221,3 @@ export const updateTaxReceiptProfile = (taxReceiptProfile, action, dispatch) => 
     }
     // return setTaxReceiptProfile(dispatch, result.data)
 };
-

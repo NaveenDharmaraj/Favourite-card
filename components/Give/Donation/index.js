@@ -236,8 +236,9 @@ class Donation extends React.Component {
                     companyDefaultTaxReceiptProfile :
                     defaultTaxReceiptProfile;
             }
+            dispatch(proceed({
+                ...flowObject}, flowSteps[stepIndex+1]))
         }
-        dispatch(proceed(flowObject, flowSteps[stepIndex+1]))
     }
     /**
      * Renders the JSX for the donation amount field.
