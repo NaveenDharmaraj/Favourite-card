@@ -221,4 +221,3 @@ export const updateTaxReceiptProfile = (taxReceiptProfile, action, dispatch) => 
     }
     // return setTaxReceiptProfile(dispatch, result.data)
 };
-

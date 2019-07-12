@@ -22,6 +22,7 @@ import {
   import {
     validateTaxReceiptProfileForm
   } from '../../../helpers/give/utils'
+  import { withTranslation } from '../../../i18n';
 
   const messageList = {
     taxReceiptDefault: {
@@ -350,6 +351,7 @@ import {
       };
       return this.validity;
     }
+
     renderTaxReceiptFrom() {
       const {
         flowObject: {
@@ -357,6 +359,8 @@ import {
         },
         selectedValue,
       } = this.state;
+      const formatMessage = this.props.t;
+
       let fieldData = (
         <Form.Field
           className="field-loader"
@@ -384,13 +388,14 @@ import {
         return(
           <Form.Field>
             <label htmlFor="addingTo">
-                  TaxReceipt Profile
+                  {formatMessage('taxReceiptRecipientLabel')}
             </label>
             {fieldData}
           </Form.Field>
 
         );
     }
+
     renderContinueButton() {
       let button = (
         <Button primary onClick={() => this.handleSubmit()}>Continue</Button>
@@ -403,6 +408,7 @@ import {
       return (button);
 
     }
+
     render() {
       const {
         flowObject: {
@@ -412,6 +418,7 @@ import {
         selectedValue,
         validity
       } = this.state;
+      const formatMessage = this.props.t;
       return (
         <div>
           TaxReceipt component!
@@ -427,6 +434,7 @@ import {
                   parentOnBlurChange={this.handleChildOnBlurChange}
                   data={selectedTaxReceiptProfile}
                   validity={validity}
+                  formatMessage={formatMessage}
                   />
                 </Form.Field>
           </Form>
@@ -453,4 +461,4 @@ import {
     }
   }
 
-  export default connect(mapStateToProps)(TaxReceipt);
+export default withTranslation('taxReceipt')(connect(mapStateToProps)(TaxReceipt))
