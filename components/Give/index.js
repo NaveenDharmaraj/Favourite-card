@@ -27,7 +27,6 @@ const renderChildWithProps = (props, stepIndex, flowSteps) => {
                 }) }
                 </div>
             );
-            break;
         case "tax-receipt" :
             return (<TaxReceipt
                 dispatch={props.dispatch}
@@ -35,7 +34,6 @@ const renderChildWithProps = (props, stepIndex, flowSteps) => {
                 flowSteps={flowSteps}
                 stepIndex={_.indexOf(flowSteps, props.step)}
             />);
-            break;
         case "review" :
             return (<Review
                 dispatch={props.dispatch}
@@ -44,16 +42,15 @@ const renderChildWithProps = (props, stepIndex, flowSteps) => {
                 stepIndex={_.indexOf(flowSteps, props.step)}
                 slug={props.slug}
             />);
-            break;
         case "success" :
-            return (<Success />);
-            break;
+            return (<Success 
+                dispatch={props.dispatch}
+                flowObject={props.flowObject}
+            />);
         case "error" :
             return (<Error />);
-            break;
         default:
             return null;
-            break;
     }
 };
 

@@ -1,17 +1,16 @@
-import {
-    updateTaxReceiptProfile,
-    callApiAndGetData,
-} from './user';
 import _ from 'lodash';
 
 import coreApi from '../services/coreApi';
 import realtypeof from '../helpers/realtypeof';
+import {
+    updateTaxReceiptProfile,
+    callApiAndGetData,
+} from './user';
 
 export const actionTypes = {
     GET_COMPANY_PAYMENT_AND_TAXRECEIPT: 'GET_COMPANY_PAYMENT_AND_TAXRECEIPT',
     GET_COMPANY_TAXRECEIPTS: 'GET_COMPANY_TAXRECEIPTS',
     SAVE_FLOW_OBJECT: 'SAVE_FLOW_OBJECT',
-
 };
 
 export const proceed = (flowObject, nextStep, stepIndex, lastStep = false) => {
