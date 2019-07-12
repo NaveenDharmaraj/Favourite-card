@@ -29,7 +29,6 @@ import { groupDefaultProps } from '../../../helpers/give/defaultProps';
 class Group extends React.Component {
   constructor(props) {
     super(props)
-    debugger;
     this.state = {
       flowObject: props.flowObject
     }
@@ -105,7 +104,6 @@ class Group extends React.Component {
         }
 
         if (true){// giveFrom.value > 0) {
-          debugger;
           privacyOptionComponent = (
               <PrivacyOptions
                   formatMessage={formatMessage}
