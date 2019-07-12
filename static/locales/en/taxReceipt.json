@@ -1,0 +1,14 @@
+{
+    "city": "city",
+    "cityPlaceHolder": "cityPlaceHolder",
+    "fullName": "Full Name",
+    "fullNamePlaceHolder":"Full legal name",
+    "secondAddress": "Address Two",
+    "address": "Address",
+    "country": "Country",
+    "postalCode": "Postal Code",
+    "province": "Province",
+    "taxReceiptProfile": "Tax Receipt Profile",
+    "editTaxReceipt": "Edit Tax Receipt"
+
+}

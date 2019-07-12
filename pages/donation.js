@@ -7,14 +7,19 @@ import GiveWrapper from '../components/Give';
 import Layout from '../components/shared/Layout';
 
 class Donations extends React.Component {
-    static async getInitialProps ({query}) {
-        return { 
+    static async getInitialProps({ query }) {
+        return {
+            namespacesRequired: [
+                'group',
+                'noteTo',
+                'accountTopUp',
+            ],
             step: query.step,
-        }
+        };
     }
 
     componentDidMount() {
-        const {dispatch} = this.props
+        const { dispatch } = this.props;
         validateUser(dispatch);
     }
 

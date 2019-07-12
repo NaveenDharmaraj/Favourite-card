@@ -51,4 +51,17 @@ class Group extends React.Component {
 
 Group.defaultProps = groupDefaultProps;
 
-export default Group
+const  mapStateToProps = (state, props) => {
+
+  if(props.flowObject.giveData.giveTo.type === 'user') {
+    return {
+      taxReceiptProfiles: state.user.taxReceiptProfiles,
+      taxReceiptGetApiStatus:state.user.taxReceiptGetApiStatus
+    }
+  }
+  return {
+    taxReceiptProfiles: state.give.companyData.taxReceiptProfiles,
+    taxReceiptGetApiStatus:state.give.companyData.taxReceiptGetApiStatus
+  }
+}
+export default connect(mapStateToProps)(Group)
