@@ -3,8 +3,10 @@
 import React from 'react';
 import {
     Form,
+    Icon,
     Input,
     Button,
+    Popup,
 } from 'semantic-ui-react';
 
 
@@ -41,17 +43,29 @@ function TaxReceiptProfileForm(props) {
     const displayForm = () => {
         const {
             formatMessage,
+            showFormData,
         } = props;
         if (props.data.attributes) {
             return (
                 <React.Fragment>
-                    { !!props.showFormData 
+                    { !!showFormData
                     && <div>
                         <div>
                             <Form.Field>
                                 <label htmlFor="fullName">
                                     {formatMessage('fullName')}
                                 </label>
+                                <Popup
+                                    content={formatMessage('fullNamePopup')}
+                                    position="top center"
+                                    trigger={
+                                        <Icon
+                                            color="blue"
+                                            name="question circle"
+                                            size="large"
+                                        />
+                                    }
+                                />
                                 <Form.Field
                                     control={Input}
                                     id="fullName"

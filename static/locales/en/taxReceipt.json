@@ -9,6 +9,6 @@
     "postalCode": "Postal Code",
     "province": "Province",
     "taxReceiptProfile": "Tax Receipt Profile",
-    "editTaxReceipt": "Edit Tax Receipt"
-
+    "editTaxReceipt": "Edit Tax Receipt",
+    "fullNamePopup": "This must be the name of the person who pays the credit card bill. Please include your first name, middle initial, and last name."
 }
