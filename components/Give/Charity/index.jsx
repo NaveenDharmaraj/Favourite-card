@@ -22,6 +22,7 @@ import _merge from 'lodash/merge';
 import {
     connect,
 } from 'react-redux';
+
 //import { Link } from '../../../routes';
 import { beneficiaryDefaultProps } from '../../../helpers/give/defaultProps';
 import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
@@ -154,7 +155,6 @@ class Charity extends React.Component {
                 this.state.flowObject.groupFromUrl = true;
             }
         }
-        this.state.flowObject.flowRoutes = props.flowRoutes;
         this.state.flowObject.sourceAccountHolderId = currentSourceAccountHolderId;
         this.state.flowObject.groupId = currentGroupId;
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -186,7 +186,6 @@ class Charity extends React.Component {
 
     componentDidUpdate(prevProps, prevState)  {
         if (!_isEqual(this.props, prevProps)) {
-            console.log('entered------>')
             const {
                 benificiaryIndex,
                 dropDownOptions,
@@ -255,15 +254,14 @@ class Charity extends React.Component {
                     value: giveGroupBenificairyDetails.benificiaryDetails[benificiaryIndex].attributes.fundId,
                 };
             }
-            // giveData = Charity.initFields(
-            //     giveData, fund, id, accountOptions, paymentInstrumentOptions,
-            //     companyPaymentInstrumentChanged,
-            //     `${firstName} ${lastName}`,
-            // );
-
-            console.log('taxReceiptProfiles', taxReceiptProfiles);
-            console.log('companyDetails', companyDetails);
-            console.log('giveData', giveData);
+            console.log('fund', fund);
+            if (!_isEmpty(fund)) {
+                giveData = Charity.initFields(
+                    giveData, fund, id, accountOptions, paymentInstrumentOptions,
+                    companyPaymentInstrumentChanged,
+                    `${firstName} ${lastName}`,
+                );
+            }
             this.setState({
                 buttonClicked: false,
                 dropDownOptions: {
@@ -325,6 +323,7 @@ class Charity extends React.Component {
             giveData.giveFrom.id = id;
             giveData.giveFrom.value = fund.id;
             giveData.giveFrom.type = 'user';
+
             giveData.giveFrom.text = `${fund.attributes.name} ($${fund.attributes.balance})`;
             giveData.giveFrom.balance = fund.attributes.balance;
             giveData.giveFrom.name = name;
@@ -833,9 +832,6 @@ class Charity extends React.Component {
      */
 
     renderCoverFees(giveFrom, giveAmount, coverFeesData, coverFees) {
-        console.log('giveFrom.value', giveFrom.value);
-        console.log('giveAmount', giveAmount);
-        console.log('coverFeesData', coverFeesData);
         if (Number(giveFrom.value) > 0 && Number(giveAmount) > 0 &&
             !_isEmpty(coverFeesData)
         ) {
@@ -862,13 +858,13 @@ class Charity extends React.Component {
                         <Popup
                             content="Banks and credit card companies charge a processing fee to complete online transactions, including online donations. CHIMP does not benefit from these fees, but we do pass them on to gift recipients. You can choose to cover this fee so the recipient receives 100% of your intended gift."
                             position="top center"
-                            trigger={
+                            trigger={(
                                 <Icon
                                     color="blue"
                                     name="question circle"
                                     size="large"
                                 />
-                            }
+                            )}
                         />
                     </Form.Field>
                 );
@@ -1147,6 +1143,8 @@ function mapStateToProps(state) {
         accountOptions: state.give.allocationGiveFromData,
         companyDetails: state.give.companyData,
         coverFeesData: state.give.coverFeesData,
+        giveCharityDetails: state.give.charityDetails,
+        giveGroupBenificairyDetails: state.give.benificiaryForGroupDetails,
         taxReceiptProfiles: state.user.taxReceiptProfiles,
         userAccountsFetched: state.user.userAccountsFetched,
     };

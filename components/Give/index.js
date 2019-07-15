@@ -124,8 +124,6 @@ function mapStateToProps(state) {
         donationMatchData: state.user.donationMatchData,
         flowObject: state.give.flowObject,
         fund: state.user.fund,
-        giveCharityDetails: state.give.charityDetails,
-        giveGroupBenificairyDetails: state.give.benificiaryForGroupDetails,
         paymentInstrumentsData: state.user.paymentInstrumentsData,
         userCampaigns: state.user.userCampaigns,
         userGroups: state.user.userGroups,

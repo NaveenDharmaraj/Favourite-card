@@ -18,7 +18,7 @@ const give = (state = {}, action) => {
             } = action.payload;
             newState = {
                 ...state,
-                coverFeesData: Object.assign([], state.coverFees, coverFees),
+                coverFeesData: Object.assign({}, state.coverFees, coverFees),
             };
             break;
         case 'DONATIONS_ADDTO_DROPDOWN':
