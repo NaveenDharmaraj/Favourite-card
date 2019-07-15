@@ -1,25 +1,34 @@
-import _ from 'lodash';
-import _concat from 'lodash/concat';
-import _isEmpty from 'lodash/isEmpty';
+import _ from 'lodash';_
+
 import {
-    hasMinTwoChars,
     hasMinFiveChars,
+    hasMinTwoChars,
+    isAmountCoverGive,
     isEmailListContainsSenderEmail,
-    isLessThanNChars,
     isInputLengthLessThanOneThousand,
     isValidPositiveNumber,
-    isAmountCoverGive,
-    isAmountMoreOrEqualToOneDollor,
     isAmountMoreThanOneDollor,
     isAmountLessThanOneBillion,
+    isAmountMoreOrEqualToOneDollor,
     isInputBlank,
+    isLessThanNChars,
     isNumberOfEmailsLessThanMax,
+    isUniqueArray,
     isValidDecimalAmount,
     isValidEmailList,
     isValidNoteData,
-    isUniqueArray,
     parseEmails,
-} from './giving-form-validation';
+}  from '../give/giving-form-validation';
+
+
+/**
+ * Checks if giveData contains any credit card information
+ * @param {*} giveData state object for give page
+ * @return {boolean} true if no credit card data is present, false otherwise.
+ */
+const isCreditCardBlank = (giveData) => {
+    return (_.isEmpty(giveData.creditCard) || giveData.creditCard.value === null);
+};
 
 const formatCurrency = (value, language, currencyType) => {
     const currencyFormat = {
@@ -103,6 +112,7 @@ const validateTaxReceiptProfileForm = (field, value, validity) => {
     return validity;
 };
 
+
 /**
  * full Month Names for donation match policies.
  * @param {*} formatMessage formatmessage
@@ -141,7 +151,7 @@ const getDefaultCreditCard = (paymentInstrumentList) => {
     let creditCard = {
         value: 0,
     };
-    if (!_isEmpty(paymentInstrumentList)) {
+    if (!_.isEmpty(paymentInstrumentList)) {
         const [
             firstCard,
         ] = paymentInstrumentList;
@@ -210,7 +220,7 @@ const getDropDownOptionFromApiData = (data, formatMessage, getValue, textFormat,
             type: item.type,
             value: getValue(item),
         };
-        if (!_isEmpty(extraField)) {
+        if (!_.isEmpty(extraField)) {
             extraField.map((field) => {
                 eachOption[field.key] = field.getValue(attributes);
             });
@@ -240,9 +250,9 @@ const populateAccountOptions = (data, giveToId = null, allocationType = null, is
         userGroups,
     } = data;
     const currency = 'USD';
-    if ((!_isEmpty(companiesAccountsData)
-    || !_isEmpty(userCampaigns)
-    || !_isEmpty(userGroups))
+    if ((!_.isEmpty(companiesAccountsData)
+    || !_.isEmpty(userCampaigns)
+    || !_.isEmpty(userGroups))
     ) {
         const personalAccount = [
             {
@@ -292,7 +302,7 @@ const populateAccountOptions = (data, giveToId = null, allocationType = null, is
         ];
         let accountOptionsArray = personalAccount;
 
-        if (!_isEmpty(userGroups)) {
+        if (!_.isEmpty(userGroups)) {
             if (!isGiveFromGroupUrl) {
                 _.remove(userGroups, {
                     attributes: {
@@ -310,7 +320,7 @@ const populateAccountOptions = (data, giveToId = null, allocationType = null, is
                 });
             }
 
-            accountOptionsArray = _concat(accountOptionsArray, groupAccountLabel,
+            accountOptionsArray = _.concat(accountOptionsArray, groupAccountLabel,
                 getDropDownOptionFromApiData(
                     userGroups,
                     null,
@@ -338,7 +348,7 @@ const populateAccountOptions = (data, giveToId = null, allocationType = null, is
                 ));
         }
 
-        if (!_isEmpty(userCampaigns)) {
+        if (!_.isEmpty(userCampaigns)) {
             _.remove(userCampaigns, {
                 attributes: {
                     fundId: giveToId,
@@ -354,7 +364,7 @@ const populateAccountOptions = (data, giveToId = null, allocationType = null, is
                 });
             }
 
-            accountOptionsArray = _concat(accountOptionsArray, campaignAccountLabel,
+            accountOptionsArray = _.concat(accountOptionsArray, campaignAccountLabel,
                 getDropDownOptionFromApiData(
                     userCampaigns,
                     null,
@@ -381,8 +391,8 @@ const populateAccountOptions = (data, giveToId = null, allocationType = null, is
                     ],
                 ));
         }
-        if (!_isEmpty(companiesAccountsData)) {
-            accountOptionsArray = _concat(accountOptionsArray, companiesAccountLabel,
+        if (!_.isEmpty(companiesAccountsData)) {
+            accountOptionsArray = _.concat(accountOptionsArray, companiesAccountLabel,
                 getDropDownOptionFromApiData(
                     companiesAccountsData,
                     null,
@@ -415,7 +425,7 @@ const populateAccountOptions = (data, giveToId = null, allocationType = null, is
 };
 
 const populateDonationMatch = (donationMatchData, formatMessage, language) => {
-    if (!_isEmpty(donationMatchData)) {
+    if (!_.isEmpty(donationMatchData)) {
         const noDonationMatch = {
             disabled: false,
             text: formatMessage('doNotMatchLabel'),
@@ -424,7 +434,7 @@ const populateDonationMatch = (donationMatchData, formatMessage, language) => {
         };
         return (
             _.sortBy(
-                _concat(
+                _.concat(
                     getDropDownOptionFromApiData(
                         donationMatchData,
                         formatMessage,
@@ -450,6 +460,32 @@ const populateDonationMatch = (donationMatchData, formatMessage, language) => {
 };
 
 /**
+* Populate gift type drop down options
+* @param {object} intl for getting intl text
+* @return {object[]} drop down options array
+*/
+
+const populateGiftType = () => {
+    //const { formatMessage } = intl;
+    return [
+        {
+            disabled: false,
+            text: `id: 'giving.giftTypeSingle'`,
+            value: 0,
+        },
+        {
+            disabled: false,
+            text: `formatMessage({ id: 'giving.giftTypeRecurring1' })`,
+            value: 1,
+        },
+        {
+            disabled: false,
+            text: `formatMessage({ id: 'giving.giftTypeRecurring15' })`,
+            value: 15,
+        },
+    ];
+};
+/**
 * Populate payment instrument drop down options
 * @param  {object} paymentInstrumentsData API data
 * @param {object} intl for getting intl text
@@ -457,7 +493,7 @@ const populateDonationMatch = (donationMatchData, formatMessage, language) => {
 */
 
 const populatePaymentInstrument = (paymentInstrumentsData, formatMessage) => {
-    if (!_isEmpty(paymentInstrumentsData)) {
+    if (!_.isEmpty(paymentInstrumentsData)) {
         const newCreditCard = [
             {
                 disabled: false,
@@ -465,7 +501,7 @@ const populatePaymentInstrument = (paymentInstrumentsData, formatMessage) => {
                 value: 0,
             },
         ];
-        return _concat(
+        return _.concat(
             getDropDownOptionFromApiData(
                 paymentInstrumentsData,
                 null,
@@ -589,6 +625,461 @@ const validateDonationForm = (field, value, validity) => {
     }
     return validity;
 };
+
+
+const populateGiveToGroupsofUser = (giveToGroupsData) => {
+    if (!_.isEmpty(giveToGroupsData)) {
+        return (
+            getDropDownOptionFromApiData(
+                giveToGroupsData.benificiaryDetails,
+                null,
+                (item) => item.attributes.fundId,
+                (attributes) => `${attributes.name}`,
+                (attributes) => false,
+            )
+        );
+    }
+    return null;
+};
+/**
+* Populate info to share drop down options
+* @param {object[]} taxReceiptProfile tax receipt profile list
+* @param {object[]} companyDetails company deteils
+* @param {object} intl for getting intl text
+* @param {object} giveFrom selected account details
+* @param {object} userDetails user details like name & email
+* @return {object[]} drop down options array
+*/
+
+const populateInfoToShare = (taxReceiptProfile,
+    companyDetails, giveFrom, userDetails) => {
+    //const { formatMessage } = intl;
+    let infoToShareList = null;
+    switch (giveFrom.type) {
+        case 'user':
+            const {
+                displayName,
+                email,
+            } = userDetails;
+            const userTaxProfileData = !_.isEmpty(taxReceiptProfile)
+                ? getDropDownOptionFromApiData(taxReceiptProfile, null, (item) => `name_address_email|${item.id}`,
+                    (attributes) => `${attributes.fullName}, ${attributes.addressOne}, ${attributes.city}, ${attributes.province}, ${attributes.postalCode}`,
+                    (attributes) => false) : null;
+            infoToShareList = [
+                {
+                    disabled: false,
+                    text: `formatMessage({ id: 'giving.infoToShareAnonymous' })`,
+                    value: 'anonymous',
+                },
+                {
+                    disabled: false,
+                    text: `${displayName}`,
+                    value: 'name',
+                },
+                {
+                    disabled: false,
+                    text: `${displayName} (${email})`,
+                    value: 'name_email',
+                },
+            ];
+            if (!_.isEmpty(userTaxProfileData)) {
+                infoToShareList = _.concat(
+                    infoToShareList,
+                    userTaxProfileData,
+                );
+            }
+            break;
+        case 'companies':
+            const companyTaxProfileData = (!_.isEmpty(companyDetails)
+                && !_.isEmpty(companyDetails.taxReceiptProfileData))
+                ? getDropDownOptionFromApiData(
+                    companyDetails.taxReceiptProfileData,
+                    null,
+                    (item) => `name_address_email|${item.id}`,
+                    (attributes) => `${attributes.fullName}, ${attributes.addressOne}, ${attributes.city}, ${attributes.province}, ${attributes.postalCode}`,
+                    (attributes) => false,
+                ) : null;
+            infoToShareList = [
+                {
+                    disabled: false,
+                    text: `formatMessage({ id: 'giving.infoToShareAnonymous' })`,
+                    value: 'anonymous',
+                },
+                {
+                    disabled: false,
+                    text: giveFrom.name,
+                    value: 'name',
+                },
+            ];
+            if (!_.isEmpty(companyTaxProfileData)) {
+                infoToShareList = _.concat(
+                    infoToShareList,
+                    companyTaxProfileData,
+                );
+            }
+            break;
+        default:
+            infoToShareList = [
+                {
+                    disabled: false,
+                    text: `formatMessage({ id: 'giving.infoToShareAnonymous' })`,
+                    value: 'anonymous',
+                },
+                {
+                    disabled: false,
+                    text: giveFrom.name,
+                    value: 'name',
+                },
+            ];
+            break;
+    }
+    return infoToShareList;
+};
+
+/**
+* Set donation amount
+* @param {object} giveData state object for give page
+* @return {object} selected credit card option
+*/
+
+const setDonationAmount = (giveData, coverFeesData) => {
+    let donationAmount = '';
+    const coverFeesGreaterThan0 = (!_.isEmpty(coverFeesData)
+    && !_.isEmpty(coverFeesData.coverFees)
+    && Number(coverFeesData.coverFees.giveAmountFees) > 0
+    );
+    const giveAmount = (giveData.coverFees && coverFeesGreaterThan0)
+        ? (Number(giveData.giveAmount) + Number(coverFeesData.coverFees.giveAmountFees))
+        : Number(giveData.giveAmount);
+    if (Number(giveAmount) > Number(giveData.giveFrom.balance)
+    && giveData.giftType.value === 0
+    ) {
+        donationAmount = (formatAmount(giveData.giveAmount) - formatAmount(giveData.giveFrom.balance));
+        donationAmount = formatAmount(donationAmount);
+        if (Number(donationAmount) < 5) {
+            donationAmount = 5;
+        }
+    }
+    return donationAmount;
+};
+
+
+/**
+* Reset give page data for give amount change
+* @param {object} giveData state object for give page
+* @param {object} dropDownOptions full drop down options for give page
+* @return {object} selected credit card option
+*/
+
+const resetDataForGiveAmountChange = (giveData, dropDownOptions, coverFeesData) => {
+    giveData.coverFees = false;
+    if ((giveData.giveFrom.type === 'user' || giveData.giveFrom.type === 'companies')
+    && giveData.giftType.value === 0) {
+        giveData.donationAmount = setDonationAmount(giveData, coverFeesData);
+        if (Number(giveData.donationAmount) > 0 && isCreditCardBlank(giveData)
+        ) {
+            giveData.creditCard = getDefaultCreditCard(
+                dropDownOptions.paymentInstrumentList,
+            );
+        } else if (giveData.donationAmount === '') {
+            giveData.creditCard = {
+                value: null,
+            };
+        }
+        if (giveData.giveFrom.type === 'user'
+            && !_.isEmpty(dropDownOptions.donationMatchList)
+            && (_.isEmpty(giveData.donationMatch)
+                || giveData.donationMatch.value === null)
+                && giveData.donationAmount > 0
+        ) {
+            const [
+                defaultMatch,
+            ] = dropDownOptions.donationMatchList;
+            giveData.donationMatch = defaultMatch;
+        } else if (giveData.donationAmount === '') {
+            giveData.donationMatch = {
+                value: null,
+            };
+        }
+    }
+    return giveData;
+};
+
+/**
+* Reset give page data for account change
+* @param {object} giveData state object for give page
+* @param {object} dropDownOptions full drop down options for give page
+* @param {object} props props for give page
+* @return {object} selected credit card option
+*/
+
+const resetDataForAccountChange = (giveData, dropDownOptions, props, type) => {
+    const {
+        companyDetails,
+        coverFeesData,
+        currentUser: {
+            displayName,
+            email,
+        },
+        paymentInstrumentsData,
+        taxReceiptProfile,
+    } = props;
+    // irrespective of the seletion coverFees should be reset
+    giveData.coverFees = false;
+    if (giveData.giveFrom.type === 'groups' || giveData.giveFrom.type === 'campaigns') {
+        giveData.giftType = {
+            value: 0,
+        };
+        giveData.donationAmount = '';
+        giveData.donationMatch = {
+            value: null,
+        };
+        giveData.creditCard = {
+            value: null,
+        };
+    } else if (giveData.giveFrom.type === 'companies') {
+        giveData.donationAmount = setDonationAmount(giveData, coverFeesData);
+        giveData.donationMatch = {
+            value: null,
+        };
+        giveData.creditCard = {
+            value: null,
+        };
+        if (!_.isEmpty(companyDetails)
+            && companyDetails.companyId === Number(giveData.giveFrom.id)) {
+            dropDownOptions.paymentInstrumentList = populatePaymentInstrument(
+                (!_.isEmpty(companyDetails)
+                && !_.isEmpty(companyDetails.companyPaymentInstrumentsData))
+                    ? companyDetails.companyPaymentInstrumentsData : null,
+                props.intl,
+            );
+            if ((giveData.giftType.value > 0
+                || Number(giveData.giveAmount) > Number(giveData.giveFrom.balance))) {
+                giveData.creditCard = getDefaultCreditCard(
+                    dropDownOptions.paymentInstrumentList,
+                );
+            }
+        }
+    } else if (giveData.giveFrom.type === 'user') {
+        giveData.donationAmount = setDonationAmount(giveData, coverFeesData);
+        giveData.donationMatch = {
+            value: null,
+        };
+        if (!_.isEmpty(dropDownOptions.donationMatchList)
+            && (giveData.giftType.value > 0
+                || Number(giveData.giveAmount) > Number(giveData.giveFrom.balance))
+        ) {
+            const [
+                defaultMatch,
+            ] = dropDownOptions.donationMatchList;
+            giveData.donationMatch = defaultMatch;
+        }
+        giveData.creditCard = {
+            value: null,
+        };
+        dropDownOptions.paymentInstrumentList = populatePaymentInstrument(
+            paymentInstrumentsData,
+            props.intl,
+        );
+        if ((giveData.giftType.value > 0
+            || Number(giveData.giveAmount) > Number(giveData.giveFrom.balance))) {
+            giveData.creditCard = getDefaultCreditCard(
+                dropDownOptions.paymentInstrumentList,
+            );
+        }
+    }
+    if (type === 'give/to/charity') {
+        giveData.infoToShare = {
+            value: 'anonymous',
+        };
+        dropDownOptions.infoToShareList = populateInfoToShare(
+            taxReceiptProfile,
+            companyDetails,
+            giveData.giveFrom,
+            {
+                displayName,
+                email,
+            },
+        );
+    } else if (type === 'give/to/group') {
+        giveData.privacyShareEmail = false;
+        giveData.privacyShareAddress = false;
+    }
+    return {
+        modifiedDropDownOptions: dropDownOptions,
+        modifiedGiveData: giveData,
+    };
+};
+
+/**
+ * Determine whether the supplied field is valid.
+ * @param  {String} field The add money form field name
+ * @param  {any} value    The field's value
+ * @param  {object} validity  The validaty object contains properties of addMoney form validations
+ * @param {object} giveData give page state object
+ * @param {String} coverFeesAmount fee amount for give
+ * @param {String} senderEmail email of the sender
+ * @return {object}  validity Return the validity object.
+ */
+const validateGiveForm = (field, value, validity, giveData, coverFeesAmount, senderEmail = null) => {
+    const giveAmount = giveData.totalP2pGiveAmount
+        ? giveData.totalP2pGiveAmount
+        : giveData.giveAmount;
+
+    switch (field) {
+        case 'giveAmount':
+            validity.doesAmountExist = !isInputBlank(value);
+            validity.isAmountLessThanOneBillion = (giveData.giftType.value > 0)
+                ? isAmountLessThanOneBillion(value) : true;
+            validity.isAmountMoreThanOneDollor = (giveData.giveTo.type === 'beneficiaries')
+                ? isAmountMoreThanOneDollor(value) : isAmountMoreOrEqualToOneDollor(value);
+            validity.isValidPositiveNumber = isValidPositiveNumber(value);
+            validity.isAmountCoverGive = (giveData.giveFrom.type === 'groups'
+                    || giveData.giveFrom.type === 'campaigns')
+                ? isAmountCoverGive(
+                    0,
+                    giveData.coverFees,
+                    coverFeesAmount,
+                    giveAmount,
+                    giveData.giveFrom.balance,
+                ) : true;
+            validity.isValidDecimalAmount = isValidDecimalAmount(value);
+            validity.isValidGiveAmount = _.every(
+                _.pick(validity, [
+                    'doesAmountExist',
+                    'isAmountLessThanOneBillion',
+                    'isAmountMoreThanOneDollor',
+                    'isValidPositiveNumber',
+                    'isAmountCoverGive',
+                ]),
+            );
+            break;
+        case 'giveFrom':
+            validity.isValidGiveFrom = !isInputBlank(value);
+            validity.isValidGiveTo = !((value.type === giveData.giveTo.type)
+                    && (giveData.giveTo.value === value.value));
+            break;
+        case 'noteToSelf':
+            validity.isNoteToSelfInLimit = isInputLengthLessThanOneThousand(value);
+            validity.isValidNoteSelfText = isValidNoteData(value);
+            validity.isValidNoteToSelf = _.every(
+                _.pick(validity, [
+                    'isNoteToSelfInLimit',
+                    'isValidNoteSelfText',
+                ]),
+            );
+            break;
+        case 'noteToCharity':
+        case 'noteToRecipients':
+            validity.isNoteToCharityInLimit = isInputLengthLessThanOneThousand(value);
+            validity.isValidNoteToCharityText = isValidNoteData(value);
+            validity.isValidNoteToCharity = _.every(
+                _.pick(validity, [
+                    'isNoteToCharityInLimit',
+                    'isValidNoteToCharityText',
+                ]),
+            );
+            break;
+        case 'donationAmount':
+            const isDonationAmountApplicable = (
+                Number(giveAmount) > Number(giveData.giveFrom.balance)
+                    || (giveData.coverFees
+                        && (Number(giveAmount) + Number(coverFeesAmount))
+                        > Number(giveData.giveFrom.balance))
+            );
+            const eligibleForTopup = ((giveData.giveFrom.type === 'user' || giveData.giveFrom.type === 'companies')
+                    && giveData.giftType.value === 0 && isDonationAmountApplicable
+            );
+            validity.isDonationAmountBlank = (eligibleForTopup) ? !isInputBlank(value) : true;
+            validity.isDonationAmountLessThan1Billion = (eligibleForTopup)
+                ? isAmountLessThanOneBillion(value) : true;
+            validity.isDonationAmountMoreThan1Dollor = (eligibleForTopup)
+                ? isAmountMoreThanOneDollor(value) : true;
+            validity.isDonationAmountPositive = (eligibleForTopup)
+                ? isValidPositiveNumber(value) : true;
+            validity.isDonationAmountCoverGive = (eligibleForTopup)
+                ? isAmountCoverGive(
+                    value,
+                    giveData.coverFees,
+                    coverFeesAmount, giveAmount, giveData.giveFrom.balance,
+                ) : true;
+            validity.isValidDecimalDonationAmount = (eligibleForTopup)
+                ? isValidDecimalAmount(value) : true;
+            validity.isValidDonationAmount = _.every(
+                _.pick(validity, [
+                    'isDonationAmountBlank',
+                    'isDonationAmountLessThan1Billion',
+                    'isDonationAmountMoreThan1Dollor',
+                    'isDonationAmountPositive',
+                    'isDonationAmountCoverGive',
+                ]),
+            );
+            break;
+        case 'recipients':
+            validity.isValidEmailList = isValidEmailList(giveData.recipients);
+            validity.isRecipientListUnique = isUniqueArray(giveData.recipients);
+            validity.isRecipientHaveSenderEmail = isEmailListContainsSenderEmail(giveData.recipients, senderEmail);
+            validity.isNumberOfEmailsLessThanMax = isNumberOfEmailsLessThanMax(giveData.recipients, 25);
+            break;
+        default: break;
+    }
+    return validity;
+};
+/**
+* Reset give page data for gift type change
+* @param {object} giveData state object for give page
+* @param {object} dropDownOptions full drop down options for give page
+* @return {object} selected credit card option
+*/
+
+const resetDataForGiftTypeChange = (giveData, dropDownOptions, coverFeesData) => {
+    giveData.coverFees = false;
+    if (giveData.giftType.value > 0) {
+        giveData.donationAmount = '';
+        if (isCreditCardBlank(giveData)) {
+            giveData.creditCard = getDefaultCreditCard(
+                dropDownOptions.paymentInstrumentList,
+            );
+        }
+        if (giveData.giveFrom.type === 'user' &&
+            !_.isEmpty(dropDownOptions.donationMatchList) &&
+            (_.isEmpty(giveData.donationMatch) ||
+                giveData.donationMatch.value === null)
+        ) {
+            const [
+                defaultMatch,
+            ] = dropDownOptions.donationMatchList;
+            giveData.donationMatch = defaultMatch;
+        }
+    } else if (giveData.giftType.value === 0) {
+        giveData.donationAmount = setDonationAmount(giveData, coverFeesData);
+        if (Number(giveData.donationAmount) > 0 && isCreditCardBlank(giveData)) {
+            giveData.creditCard = getDefaultCreditCard(
+                dropDownOptions.paymentInstrumentList,
+            );
+        } else if (giveData.donationAmount === '') {
+            giveData.creditCard = {
+                value: null,
+            };
+        }
+        if (Number(giveData.donationAmount) > 0 &&
+            giveData.giveFrom.type === 'user' &&
+            !_.isEmpty(dropDownOptions.donationMatchList) &&
+            (_.isEmpty(giveData.donationMatch) ||
+                giveData.donationMatch.value === null)
+        ) {
+            const [
+                defaultMatch,
+            ] = dropDownOptions.donationMatchList;
+            giveData.donationMatch = defaultMatch;
+        } else if (giveData.donationAmount === '') {
+            giveData.donationMatch = {
+                value: null,
+            };
+        }
+    }
+    return giveData;
+}
 
 const populateCardData = (selectCardDetails, cardAmount) => {
     const isEnglishCard = selectCardDetails.indexOf(' ending ');
@@ -716,7 +1207,7 @@ const populateDonationReviewPage = (giveData, data, currency, formatMessage, lan
             }
         }
         if (donationMatch.value > 0) {
-            const matchedData =  getDonationMatchedData(donationMatch.id, donationAmount, donationMatchData);
+            const matchedData = getDonationMatchedData(donationMatch.id, donationAmount, donationMatchData);
             if (!_.isEmpty(matchedData)) {
                 sources.push(matchedData);
             }
@@ -1030,12 +1521,20 @@ export {
     getDropDownOptionFromApiData,
     populateAccountOptions,
     populateDonationMatch,
+    populateGiveToGroupsofUser,
     populatePaymentInstrument,
+    populateGiftType,
+    populateInfoToShare,
     formatAmount,
     getDefaultCreditCard,
     getNextAllocationMonth,
     setDateForRecurring,
     validateDonationForm,
+    resetDataForGiveAmountChange,
+    resetDataForAccountChange,
+    resetDataForGiftTypeChange,
+    setDonationAmount,
+    validateGiveForm,
     populateDonationReviewPage,
     populateGiveReviewPage,
     formatCurrency,

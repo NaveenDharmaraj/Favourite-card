@@ -18,7 +18,7 @@ import {
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 import Note from '../../shared/Note';
 import TextAreaWithInfo from '../../shared/TextAreaWithInfo';
-import DropDownAccountOptions from './DropDownAccountOptions';
+import DropDownAccountOptions from '../../shared/DropDownAccountOptions';
 import {proceed} from '../../../actions/give';
 import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
 import { getCompanyPaymentAndTax } from '../../../actions/give';
@@ -540,6 +540,7 @@ class Donation extends React.Component {
         flowObject: {
             currency,
             giveData,
+            type,
         },
         validity,
     } = this.state;
@@ -563,10 +564,12 @@ class Donation extends React.Component {
         <Form onSubmit={this.handleSubmit}>
         { this.renderDonationAmountField(giveData.donationAmount, validity, formatMessage) }
         <DropDownAccountOptions
-            validity= {validity.isValidAddingToSource}
-            selectedValue={giveData.giveTo.value}
-            parentInputChange={this.handleInputChange}
-            parentOnBlurChange={this.handleInputOnBlur}
+          type={type}
+          validity= {validity.isValidAddingToSource}
+          selectedValue={giveData.giveTo.value}
+          name="giveTo"
+          parentInputChange={this.handleInputChange}
+          parentOnBlurChange={this.handleInputOnBlur}
         />
         { this.renderingRecurringDonationFields(giveData, formatMessage, language) }
         <Note

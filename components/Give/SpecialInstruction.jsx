@@ -9,27 +9,23 @@ import {
     Popup,
     Select,
 } from 'semantic-ui-react';
-// import PropTypes from 'prop-types';
 
-import { beneficiaryDefaultProps } from '../../helpers/give/defaultProps';
 
 const SpecialInstruction = (props) => {
     const {
-        // formatMessage,
-        // giftType,
+        giftType,
         giftTypeList,
-        // giveFrom,
+        giveFrom,
         handleInputChange,
-        // infoToShare,
+        infoToShare,
         infoToShareList,
     } = props;
     let repeatGift = null;
-    if (true) { // giveFrom.type === 'user' || giveFrom.type === 'companies') {
+    if (giveFrom.type === 'user' || giveFrom.type === 'companies') {
         repeatGift = (
             <Form.Field>
                 <label htmlFor="giftType">
-                 Repeat this gift?
-                    {/* {formatMessage(messageList.repeatThisGiftLabel)} */} 
+                    Repeat this gift?
                 </label>
                 <Form.Field
                     control={Select}
@@ -37,7 +33,7 @@ const SpecialInstruction = (props) => {
                     name="giftType"
                     options={giftTypeList}
                     onChange={handleInputChange}
-                    value=""// {giftType.value}
+                    value={giftType.value}
                 />
             </Form.Field>
         );
@@ -49,23 +45,15 @@ const SpecialInstruction = (props) => {
                 <Divider className="dividerMargin" />
             </Form.Field>
             <Form.Field>
-                {/* <Header as="h3">{formatMessage(messageList.specialInstructionLabel)}
-                </Header> */}
                 <Header as="h3">Special instructions</Header>
             </Form.Field>
             {repeatGift}
             <Form.Field>
                 <label htmlFor="infoToShare">
                     Info to share
-                    { /* {formatMessage(messageList.infoToShareLabel)} */}
                 </label>
                 <Popup
                     content="When you give anonymously, none of your personal details are shared with the recipient.  If you don’t give anonymously, you may choose what details you’d like us to share."
-                    // {
-                    //     formatMessage(
-                    //         messageList.allocationsInfotoSharePopup,
-                    //     )
-                    // }
                     position="top center"
                     trigger={(
                         <Icon
@@ -81,26 +69,11 @@ const SpecialInstruction = (props) => {
                     name="infoToShare"
                     options={infoToShareList}
                     onChange={handleInputChange}
-                    value="" // {infoToShare.value}
+                    value={infoToShare.value}
                 />
             </Form.Field>
         </Fragment>
     );
-};
+}
 
-
-SpecialInstruction.propTypes = {
-    giftTypeList: [],
-    handleInputChange: () => { },
-    infoToShareList: [],
-
-};
-
-SpecialInstruction.defaultProps = {
-    giftTypeList: [],
-    handleInputChange: () => { },
-    infoToShareList: [],
-};
-
-SpecialInstruction.defaultProps = beneficiaryDefaultProps;
 export default SpecialInstruction;

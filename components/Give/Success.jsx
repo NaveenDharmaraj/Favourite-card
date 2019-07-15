@@ -2,6 +2,9 @@ import React, {
     Fragment,
     useEffect,
 } from 'react';
+import {
+    connect,
+} from 'react-redux';
 import _ from 'lodash';
 import {
     Button,
@@ -92,7 +95,7 @@ const Success = (props) => {
     let fourthButton = null; // CTA
     let needLearnmore = false;
     let recurringDonationsLink = '/user/recurring-donations';
-    let displayAmount = Number(donationAmount);
+    let displayAmount = donationAmount;
     // donationmatch value exists it get added to displayamount
     if (donationMatch !== '' && donationMatch.value !== 0) {
         displayAmount += Number(donationMatch.value);
@@ -391,10 +394,14 @@ Success.defaultProps = {
             noteToSelf: '',
             userInteracted: false,
         },
-        quaziSuccessStatus: null,
+        quaziSuccessStatus: false,
         stepsCompleted: false,
         type: null,
     },
 };
 
-export default Success;
+const mapStateToProps = (state) => ({
+    successData: state.give.successData,
+});
+
+export default connect(mapStateToProps)(Success);
