@@ -434,6 +434,7 @@ import {
                   parentOnBlurChange={this.handleChildOnBlurChange}
                   data={selectedTaxReceiptProfile}
                   validity={validity}
+                  apiStatus={this.props.taxReceiptGetApiStatus}
                   formatMessage={formatMessage}
                   />
                 </Form.Field>
