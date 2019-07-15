@@ -1147,7 +1147,7 @@ function mapStateToProps(state) {
         accountOptions: state.give.allocationGiveFromData,
         companyDetails: state.give.companyData,
         coverFeesData: state.give.coverFeesData,
-        taxReceiptProfiles:state.user.taxReceiptProfiles,
+        taxReceiptProfiles: state.user.taxReceiptProfiles,
         userAccountsFetched: state.user.userAccountsFetched,
     };
 }

@@ -45,6 +45,7 @@ const give = (state = {}, action) => {
                 companyData: Object.assign({}, state.companyData, action.payload),
             };
             break;
+
         case 'GET_BENIFICIARY_FOR_GROUP':
             newState = {
                 ...state,
@@ -55,6 +56,25 @@ const give = (state = {}, action) => {
             newState = {
                 ...state,
                 charityDetails: Object.assign({}, state.charityDetails, action.payload),
+            };
+            break;
+        case 'GET_COMPANY_TAXRECEIPTS':
+            newState = {
+                ...state,
+                companyData: {
+                    ...state.companyData,
+                    taxReceiptGetApiStatus: action.payload.taxReceiptGetApiStatus,
+                    taxReceiptProfiles: action.payload.companyTaxReceiptProfiles,
+                },
+            };
+            break;
+        case 'SET_COMPANY_TAX_API_STATUS_FALSE':
+            newState = {
+                ...state,
+                companyData: {
+                    ...state.companyData,
+                    taxReceiptGetApiStatus: action.payload.taxReceiptGetApiStatus,
+                },
             };
             break;
         default:

@@ -1,32 +1,39 @@
 /* eslint-disable import/exports-last */
 import {
+    callApiAndGetData,
     updateTaxReceiptProfile
 } from './user';
 import _ from 'lodash';
 
 import coreApi from '../services/coreApi';
 import realtypeof from '../helpers/realtypeof';
-import { callApiAndGetData } from '../helpers/give/utils';
-//import {Router} from '../../routes';
+
 
 export const actionTypes = {
     COVER_FEES: 'COVER_FEES',
     GET_BENEFICIARY_FROM_SLUG: 'GET_BENEFICIARY_FROM_SLUG',
     GET_BENIFICIARY_FOR_GROUP: 'GET_BENIFICIARY_FOR_GROUP',
     GET_COMPANY_PAYMENT_AND_TAXRECEIPT: 'GET_COMPANY_PAYMENT_AND_TAXRECEIPT',
+    GET_COMPANY_PAYMENT_AND_TAXRECEIPT: 'GET_COMPANY_PAYMENT_AND_TAXRECEIPT',
+    GET_COMPANY_TAXRECEIPTS: 'GET_COMPANY_TAXRECEIPTS',
     SAVE_FLOW_OBJECT: 'SAVE_FLOW_OBJECT',
 };
 
-export const proceed = (flowObject, nextStep,stepIndex, lastStep = false) => {
+
+
+export const proceed = (flowObject, nextStep, stepIndex, lastStep = false) => {
     return (dispatch) => {
         flowObject.nextStep = nextStep;
         if (flowObject.taxReceiptProfileAction !== 'no_change' && stepIndex === 1) {
-            let result = updateTaxReceiptProfile(
+            updateTaxReceiptProfile(
                 flowObject.selectedTaxReceiptProfile,
-                flowObject.taxReceiptProfileAction, dispatch
+                flowObject.taxReceiptProfileAction, dispatch,
             ).then((result) => {
                 flowObject.selectedTaxReceiptProfile = result.data;
-                dispatch({type: actionTypes.SAVE_FLOW_OBJECT, payload: flowObject});
+                dispatch({
+                    payload: flowObject,
+                    type: actionTypes.SAVE_FLOW_OBJECT,
+                });
             }).catch((error) => {
                 console.log(error);
             });
@@ -53,12 +60,11 @@ export const getCompanyPaymentAndTax = (dispatch, companyId) => {
             companyDefaultTaxReceiptProfile: {},
             companyId,
             companyPaymentInstrumentsData: [],
-            taxReceiptProfileData: [],
         },
         type: actionTypes.GET_COMPANY_PAYMENT_AND_TAXRECEIPT,
     };
 
-    return coreApi.get(`/companies/${companyId}?include=defaultTaxReceiptProfile,activePaymentInstruments,taxReceiptProfiles`).then((result) => {
+    return coreApi.get(`/companies/${companyId}?include=defaultTaxReceiptProfile,activePaymentInstruments`).then((result) => {
         const { data } = result;
         let defaultTaxReceiptId = null;
         if (!_.isEmpty(data.relationships.defaultTaxReceiptProfile.data)) {
@@ -86,11 +92,6 @@ export const getCompanyPaymentAndTax = (dispatch, companyId) => {
                             type,
                         };
                     }
-                    fsa.payload.taxReceiptProfileData.push({
-                        attributes,
-                        id,
-                        type,
-                    });
                 }
             });
         }
@@ -212,4 +213,19 @@ export const getCoverFees = async (feeData, fundId, giveAmount, dispatch) => {
     // GIVEB-1912 with recent updates given we don't need 2 versions of text
     // hence no need to fetch the fees for balance
     dispatch(fsa);
+};
+export const getCompanyTaxReceiptProfile = (dispatch, companyId) => {
+    return callApiAndGetData(`/companies/${companyId}/taxReceiptProfiles?page[size]=50&sort=-id`).then((result) => {
+        // return dispatch(setTaxReceiptProfile(result, type = ''));
+        const fsa = {
+            payload: {
+                companyTaxReceiptProfiles: (!_.isEmpty(result)) ? result : [],
+                taxReceiptGetApiStatus: true,
+            },
+            type: actionTypes.GET_COMPANY_TAXRECEIPTS,
+        };
+        return dispatch(fsa);
+    }).catch((error) => {
+        console.log(error);
+    });
 };

@@ -25,7 +25,7 @@ const getAllPaginationData = async (url, params = null) => {
     return dataArray;
 };
 
-const callApiAndGetData = (url, params) => getAllPaginationData(url, params).then(
+export const callApiAndGetData = (url, params) => getAllPaginationData(url, params).then(
     (result) => {
         const allData = [];
         if (result && !_.isEmpty(result)) {
@@ -154,6 +154,7 @@ export const getDonationMatchAndPaymentInstruments = () => {
                 dispatch({
                     payload: {
                         donationAddToData: populateAccountOptions({
+                            avatar: 'https://d3hx908nsoe1le.cloudfront.net/users/logos/888000/display/data.jpeg?1552460497',
                             companiesAccountsData,
                             firstName: 'Demo',
                             fund,
@@ -183,14 +184,15 @@ export const getDonationMatchAndPaymentInstruments = () => {
 
 
 export const validateUser = (dispatch) => {
-    coreApi.get('/users/888000?include=chimpAdminRole,donorRole,fund').then((result) => {
+    return coreApi.get('/users/888000?include=chimpAdminRole,donorRole,fund').then((result) => {
+        console.log(result);
         return dispatch({
-            type: actionTypes.USER_AUTH, 
+            type: actionTypes.USER_AUTH,
             payload: {
-                currentUser: result.data.attributes,
                 isAuthenticated: true,
+                userinfo: result.data,
             },
-            })
+        });
     }).catch((error) => {
         console.log(JSON.stringify(error));
     });   
@@ -249,4 +251,3 @@ export const updateTaxReceiptProfile = (taxReceiptProfile, action, dispatch) => 
     }
     // return setTaxReceiptProfile(dispatch, result.data)
 };
-
