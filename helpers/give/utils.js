@@ -110,18 +110,18 @@ const validateTaxReceiptProfileForm = (field, value, validity) => {
  */
 const fullMonthNames = (formatMessage) => {
     const fullMonths = [
-        formatMessage('common:fullMonthName.januaryLabel'),
-        formatMessage('common:fullMonthName.februaryLabel'),
-        formatMessage('common:fullMonthName.marchLabel'),
-        formatMessage('common:fullMonthName.aprilLabel'),
-        formatMessage('common:fullMonthName.mayLabel'),
-        formatMessage('common:fullMonthName.juneLabel'),
-        formatMessage('common:fullMonthName.julyLabel'),
-        formatMessage('common:fullMonthName.augustLabel'),
-        formatMessage('common:fullMonthName.septemberLabel'),
-        formatMessage('common:fullMonthName.octoberLabel'),
-        formatMessage('common:fullMonthName.novemberLabel'),
-        formatMessage('common:fullMonthName.decemberLabel'),
+        formatMessage('giveCommon:fullMonthName.januaryLabel'),
+        formatMessage('giveCommon:fullMonthName.februaryLabel'),
+        formatMessage('giveCommon:fullMonthName.marchLabel'),
+        formatMessage('giveCommon:fullMonthName.aprilLabel'),
+        formatMessage('giveCommon:fullMonthName.mayLabel'),
+        formatMessage('giveCommon:fullMonthName.juneLabel'),
+        formatMessage('giveCommon:fullMonthName.julyLabel'),
+        formatMessage('giveCommon:fullMonthName.augustLabel'),
+        formatMessage('giveCommon:fullMonthName.septemberLabel'),
+        formatMessage('giveCommon:fullMonthName.octoberLabel'),
+        formatMessage('giveCommon:fullMonthName.novemberLabel'),
+        formatMessage('giveCommon:fullMonthName.decemberLabel'),
     ];
     return fullMonths;
 };
@@ -157,35 +157,36 @@ const formatAmount = (amount) => parseFloat(amount).toFixed(2);
 * @param  {object}  intl formatMessage for i18n
 * @return {Array} recurringDayList
 */
-const onWhatDayList = () => {
+const onWhatDayList = (formatMessage) => {
     const recurringDayList = [
         {
             disabled: false,
-            text: 'recurringMonthlyFirstLabel',
+            text: formatMessage('recurringMonthlyFirstLabel'),
             value: 1,
         },
         {
             disabled: false,
-            text: 'recurringMonthlyFifteenLabel',
+            text: formatMessage('recurringMonthlyFifteenLabel'),
             value: 15,
         },
     ];
     return recurringDayList;
 };
 
-const createDonationMatchString = (attributes) => {
+const createDonationMatchString = (attributes, formatMessage, language) => {
     let policyPeriodText = `${attributes.policyPeriod}`;
     switch (attributes.policyPeriod) {
         case 'month':
-            policyPeriodText = `forMonth`;// formatMessage({ id: 'giving.forMonth' });
+            policyPeriodText = formatMessage('giveCommon:forMonth');
             break;
         case 'year':
-            policyPeriodText = `forYear`; // formatMessage({ id: 'giving.forYear' });
+            policyPeriodText = formatMessage('giveCommon:forYear');
             break;
         default:
             break;
     }
-    return `${attributes.displayName} ($forPer${policyPeriodText})`;
+    return `${attributes.displayName} (${formatCurrency(attributes.policyMax, language, 'USD')} ${formatMessage('giveCommon:forPer')} ${policyPeriodText})`;
+
 };
 
 /**
@@ -198,7 +199,7 @@ const createDonationMatchString = (attributes) => {
 * @return {object[]} drop down options array
 */
 
-const getDropDownOptionFromApiData = (data, formatMessage, getValue, textFormat, isDisabled, extraField) => {
+const getDropDownOptionFromApiData = (data, formatMessage, getValue, textFormat, isDisabled, extraField, language = 'en') => {
     const options = [];
     data.map((item) => {
         const { attributes } = item;
@@ -238,10 +239,6 @@ const populateAccountOptions = (data, giveToId = null, allocationType = null, is
         userCampaigns,
         userGroups,
     } = data;
-    // const {
-    //     formatMessage,
-    //     formatNumber,
-    // } = intl;
     const currency = 'USD';
     if ((!_isEmpty(companiesAccountsData)
     || !_isEmpty(userCampaigns)
@@ -417,11 +414,11 @@ const populateAccountOptions = (data, giveToId = null, allocationType = null, is
     return null;
 };
 
-const populateDonationMatch = (donationMatchData) => {
+const populateDonationMatch = (donationMatchData, formatMessage, language) => {
     if (!_isEmpty(donationMatchData)) {
         const noDonationMatch = {
             disabled: false,
-            text: `doNotMatchLabel`, // formatMessage({ id: 'giving.doNotMatchLabel' }),
+            text: formatMessage('doNotMatchLabel'),
             type: '',
             value: 0,
         };
@@ -430,16 +427,18 @@ const populateDonationMatch = (donationMatchData) => {
                 _concat(
                     getDropDownOptionFromApiData(
                         donationMatchData,
-                        null,
+                        formatMessage,
                         (item) => item.attributes.employeeRoleId,
                         (attributes) => {
                             if (attributes.policyPercentage === null
                                 || attributes.policyMax === 0) {
-                                return `${attributes.displayName} (forNoMatchingPolicy)`;
+                                return `${attributes.displayName} (${formatMessage('forNoMatchingPolicy')})`;
                             }
-                            return createDonationMatchString(attributes);
+                            return createDonationMatchString(attributes, formatMessage, language);
                         },
                         (attributes) => !!(attributes.policyPercentage === null || attributes.policyMax === 0),
+                        null,
+                        language,
                     ),
                     noDonationMatch,
                 ),
@@ -457,12 +456,12 @@ const populateDonationMatch = (donationMatchData) => {
 * @return {object[]} drop down options array
 */
 
-const populatePaymentInstrument = (paymentInstrumentsData) => {
+const populatePaymentInstrument = (paymentInstrumentsData, formatMessage) => {
     if (!_isEmpty(paymentInstrumentsData)) {
         const newCreditCard = [
             {
                 disabled: false,
-                text: `useNewCreditCardLable`, // formatMessage({ id: 'giving.useNewCreditCardLable' }),
+                text: formatMessage('giveCommon:useNewCreditCardLabel'),
                 value: 0,
             },
         ];
@@ -1038,5 +1037,6 @@ export {
     setDateForRecurring,
     validateDonationForm,
     populateDonationReviewPage,
-    populateGiveReviewPage
+    populateGiveReviewPage,
+    formatCurrency,
 };

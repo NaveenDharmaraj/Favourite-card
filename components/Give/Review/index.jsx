@@ -124,4 +124,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default withTranslation(['review', 'common'])(connect(mapStateToProps)(Review));
+export default withTranslation(['review', 'giveCommon'])(connect(mapStateToProps)(Review));
