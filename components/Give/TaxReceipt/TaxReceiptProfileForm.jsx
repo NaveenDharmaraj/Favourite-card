@@ -7,8 +7,15 @@ import {
     Input,
     Button,
     Popup,
+    Select,
 } from 'semantic-ui-react';
 
+import {
+    canadaProvinceOptions,
+    countryOptions,
+    usStateOptions,
+} from '../../../helpers/constants';
+import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 
 function TaxReceiptProfileForm(props) {
     const handleInputChange = (e, {
@@ -42,13 +49,34 @@ function TaxReceiptProfileForm(props) {
 
     const displayForm = () => {
         const {
+            apiStatus,
             formatMessage,
             showFormData,
+            data: {
+                attributes: {
+                    fullName,
+                    addressOne,
+                    addressTwo,
+                    city,
+                    country,
+                    postalCode,
+                    province,
+                },
+            },
+            validity,
         } = props;
+        let provinceOptions = canadaProvinceOptions;
+        let showUSNote = false;
+        let provinceMessage = 'province';
+        if (country !== countryOptions[0].value) {
+            provinceOptions = usStateOptions;
+            provinceMessage = 'state';
+            showUSNote = true;
+        }
         if (props.data.attributes) {
             return (
                 <React.Fragment>
-                    { !!showFormData
+                    { !!showFormData && !!apiStatus
                     && <div>
                         <div>
                             <Form.Field>
@@ -71,10 +99,14 @@ function TaxReceiptProfileForm(props) {
                                     id="fullName"
                                     name="fullName"
                                     size="large"
-                                    error={!props.validity.isValidFullName}
+                                    error={!validity.isValidFullName}
                                     onBlur={handleInputOnBlur}
                                     onChange={handleInputChange}
-                                    value={props.data.attributes.fullName}
+                                    value={fullName}
+                                />
+                                <FormValidationErrorMessage
+                                    condition={!validity.isValidFullName}
+                                    errorMessage={formatMessage('invalidFullName')}
                                 />
                             </Form.Field>
                             <Form.Field>
@@ -86,10 +118,14 @@ function TaxReceiptProfileForm(props) {
                                     id="addressOne"
                                     name="addressOne"
                                     size="large"
-                                    error={!props.validity.isValidAddress}
+                                    error={!validity.isValidAddress}
                                     onBlur={handleInputOnBlur}
                                     onChange={handleInputChange}
-                                    value={props.data.attributes.addressOne}
+                                    value={addressOne}
+                                />
+                                <FormValidationErrorMessage
+                                    condition={!validity.isValidAddress}
+                                    errorMessage={formatMessage('invalidAddress')}
                                 />
                             </Form.Field>
                             <Form.Field>
@@ -101,11 +137,12 @@ function TaxReceiptProfileForm(props) {
                                     id="addressTwo"
                                     name="addressTwo"
                                     size="large"
-                                    error={!props.validity.isValidSecondAddress}
+                                    error={!validity.isValidSecondAddress}
                                     onBlur={handleInputOnBlur}
                                     onChange={handleInputChange}
-                                    value={_.isEmpty(props.data.attributes.addressTwo) ? '' : props.data.attributes.addressTwo}
+                                    value={_.isEmpty(addressTwo) ? '' : addressTwo}
                                 />
+                                
                             </Form.Field>
                             <Form.Field>
                                 <label htmlFor="city">
@@ -116,22 +153,29 @@ function TaxReceiptProfileForm(props) {
                                     id="city"
                                     name="city"
                                     size="large"
+                                    error={!validity.isValidCity}
                                     onBlur={handleInputOnBlur}
                                     onChange={handleInputChange}
-                                    value={props.data.attributes.city}
+                                    value={city}
+                                />
+                                <FormValidationErrorMessage
+                                    condition={!validity.isValidCity}
+                                    errorMessage={formatMessage('invalidCity')}
                                 />
                             </Form.Field>
                             <Form.Field>
                                 <label htmlFor="country">
-                                    {formatMessage('coutnry')}
+                                    {formatMessage('country')}
                                 </label>
                                 <Form.Field
-                                    control={Input}
+                                    control={Select}
                                     id="country"
                                     name="country"
                                     onBlur={handleInputOnBlur}
+                                    options={countryOptions}
                                     onChange={handleInputChange}
-                                    value={props.data.attributes.country}
+                                    selection
+                                    value={country}
                                 />
                             </Form.Field>
                             <Form.Field>
@@ -143,25 +187,39 @@ function TaxReceiptProfileForm(props) {
                                     id="postalCode"
                                     name="postalCode"
                                     size="large"
-                                    // error={!validity.isValidPostalCode}
+                                    error={!validity.isValidPostalCode}
                                     onBlur={handleInputOnBlur}
                                     onChange={handleInputChange}
-                                    value={props.data.attributes.postalCode}
+                                    value={postalCode}
+                                />
+                                <FormValidationErrorMessage
+                                    condition={!validity.isValidAddress}
+                                    errorMessage={formatMessage('invalidPostalCode')}
                                 />
                             </Form.Field>
                             <Form.Field>
                                 <label htmlFor="province">
-                                    {formatMessage('province')}
+                                    {formatMessage(provinceMessage)}
                                 </label>
                                 <Form.Field
-                                    control={Input}
+                                    control={Select}
                                     id="province"
                                     name="province"
                                     onBlur={handleInputOnBlur}
+                                    options={provinceOptions}
                                     onChange={handleInputChange}
-                                    value={props.data.attributes.province}
+                                    placeholder={formatMessage('provincePlaceHolder')}
+
+                                    value={province}
                                 />
                             </Form.Field>
+                            { showUSNote &&
+                            <div id="usNote">
+                                <p>
+                                    {formatMessage('usCountryNote')}
+                                </p>
+                            </div>
+                            }
                         </div>
 
                         <div className="taxprofilelink">
@@ -175,7 +233,7 @@ function TaxReceiptProfileForm(props) {
                         <div className="taxprofilelink">
                             <Form.Field>
                                 {formatMessage('changeAddressText')}
-                                <Button secondary style={{marginLeft:'1rem'}} onClick={props.handleDisplayForm}>
+                                <Button secondary style={{ marginLeft: '1rem' }} onClick={props.handleDisplayForm}>
                                     {formatMessage('makeChangesText')}
                                 </Button>
                                     

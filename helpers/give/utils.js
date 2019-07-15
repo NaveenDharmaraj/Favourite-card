@@ -20,6 +20,19 @@ import {
     isUniqueArray,
     parseEmails,
 } from './giving-form-validation';
+
+const formatCurrency = (value, language, currencyType) => {
+    const currencyFormat = {
+        currency: currencyType,
+        currencyDisplay: 'symbol',
+        style: 'currency',
+    };
+    return _.replace(new Intl.NumberFormat(
+        language,
+        currencyFormat,
+    ).format(value), 'US', '');
+};
+
 /**
 * Determine whether the supplied field is valid.
 * @param  {String} field The tax receipt profile form field name
@@ -88,6 +101,29 @@ const validateTaxReceiptProfileForm = (field, value, validity) => {
         default: break;
     }
     return validity;
+};
+
+/**
+ * full Month Names for donation match policies.
+ * @param {*} formatMessage formatmessage
+ * @return {Array} fullMonthNames
+ */
+const fullMonthNames = (formatMessage) => {
+    const fullMonths = [
+        formatMessage('common:fullMonthName.januaryLabel'),
+        formatMessage('common:fullMonthName.februaryLabel'),
+        formatMessage('common:fullMonthName.marchLabel'),
+        formatMessage('common:fullMonthName.aprilLabel'),
+        formatMessage('common:fullMonthName.mayLabel'),
+        formatMessage('common:fullMonthName.juneLabel'),
+        formatMessage('common:fullMonthName.julyLabel'),
+        formatMessage('common:fullMonthName.augustLabel'),
+        formatMessage('common:fullMonthName.septemberLabel'),
+        formatMessage('common:fullMonthName.octoberLabel'),
+        formatMessage('common:fullMonthName.novemberLabel'),
+        formatMessage('common:fullMonthName.decemberLabel'),
+    ];
+    return fullMonths;
 };
 
 const isValidGiftAmount = (validity) => {
@@ -194,6 +230,7 @@ const getDropDownOptionFromApiData = (data, formatMessage, getValue, textFormat,
 const populateAccountOptions = (data, giveToId = null, allocationType = null, isGiveFromGroupUrl = false) => {
     const {
         companiesAccountsData,
+        avatar,
         firstName,
         fund,
         id,
@@ -218,6 +255,7 @@ const populateAccountOptions = (data, giveToId = null, allocationType = null, is
                 value: 'user',
             },
             {
+                avatar,
                 balance: fund.attributes.balance,
                 data: {
                     fundName: fund.attributes.name,
@@ -284,6 +322,10 @@ const populateAccountOptions = (data, giveToId = null, allocationType = null, is
                     (attributes) => false,
                     [
                         {
+                            getValue: (attributes) => attributes.avatar,
+                            key: 'avatar',
+                        },
+                        {
                             getValue: (attributes) => attributes.balance,
                             key: 'balance',
                         },
@@ -324,6 +366,10 @@ const populateAccountOptions = (data, giveToId = null, allocationType = null, is
                     (attributes) => false,
                     [
                         {
+                            getValue: (attributes) => attributes.avatar,
+                            key: 'avatar',
+                        },
+                        {
                             getValue: (attributes) => attributes.balance,
                             key: 'balance',
                         },
@@ -347,6 +393,10 @@ const populateAccountOptions = (data, giveToId = null, allocationType = null, is
                     (attributes) => `${attributes.companyFundName}`, // (${currencyFormatting(attributes.balance, formatNumber, currency)})`,
                     (attributes) => false,
                     [
+                        {
+                            getValue: (attributes) => attributes.avatar,
+                            key: 'avatar',
+                        },
                         {
                             getValue: (attributes) => attributes.balance,
                             key: 'balance',
@@ -429,28 +479,6 @@ const populatePaymentInstrument = (paymentInstrumentsData) => {
     }
     return null;
 };
-/**
- * full Month Names for donation match policies.
- * @param {*} intl react-intl object
- * @return {Array} fullMonthNames
- */
-const fullMonthNames = () => {
-    const fullMonths = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December',
-    ];
-    return fullMonths;
-};
 
 /**
 * calculating percentage for selected donation match
@@ -468,25 +496,6 @@ const percentage = (donationMatch) => {
         }
     }
     return matchAmount;
-};
-
-/**
-* set date for recurring danations
-* @param  {Date}  date recurringDonation date
-* @param {object} intl react-intl
-* @return {string} recurring full date format
-*/
-const setDateForRecurring = (date) => {
-    const currentDate = new Date();
-    const monthNames = fullMonthNames();
-    let month = currentDate.getDate() < date ?
-        monthNames[currentDate.getMonth()] : monthNames[currentDate.getMonth() + 1];
-    let year = currentDate.getFullYear();
-    if (!month) {
-        month = monthNames[0];
-        year = currentDate.getFullYear() + 1;
-    }
-    return (`${month} ${date}, ${year}`);
 };
 
 const setDateFormat = (nextTuesday, monthNames) => `Tuesday  ${monthNames[nextTuesday.getMonth()]} ${nextTuesday.getDate()}`;
@@ -582,6 +591,437 @@ const validateDonationForm = (field, value, validity) => {
     return validity;
 };
 
+const populateCardData = (selectCardDetails, cardAmount) => {
+    const isEnglishCard = selectCardDetails.indexOf(' ending ');
+    const cardData = {
+        amount: cardAmount,
+        type: 'card',
+    };
+    const selectedCardName = _.split(selectCardDetails, ' ');
+    if (isEnglishCard !== -1) {
+        cardData.displayName = _.replace(selectedCardName[0], '\'s', '');
+        cardData.processor = selectedCardName[selectedCardName.indexOf('ending') - 1].toLowerCase().trim();
+        cardData.truncatedPaymentId = selectedCardName[selectedCardName.length - 1];
+    } else {
+        cardData.displayName = _.replace(selectedCardName[2], '\'s', '');
+        cardData.processor = selectedCardName[0].toLowerCase().trim();
+        cardData.truncatedPaymentId = selectedCardName[selectedCardName.length - 1];
+    }
+    return cardData;
+};
+
+/**
+* set date for recurring danations
+* @param  {Date}  date recurringDonation date
+* @param {function} formatMessage react-intl
+* @param {object} lang language
+* @return {string} recurring full date format
+*/
+const setDateForRecurring = (date, formatMessage, lang = 'en') => {
+    const currentDate = new Date();
+    const monthNames = fullMonthNames(formatMessage);
+    let month = currentDate.getDate() < date
+        ? monthNames[currentDate.getMonth()] : monthNames[currentDate.getMonth() + 1];
+    let year = currentDate.getFullYear();
+    if (!month) {
+        month = monthNames[0];
+        year = currentDate.getFullYear() + 1;
+    }
+    // Now considering french only.
+    return (lang === 'fr') ? `${date}er ${month} ${year}` : `${month} ${date}, ${year}`;
+};
+
+const getDonationMatchedData = (donationMatchId, donationAmount, donationMatchData) => {
+    const donationMatchedData = _.find(
+        donationMatchData, (item) => item.attributes.employeeRoleId == donationMatchId,
+    );
+    if (!_.isEmpty(donationMatchedData)) {
+        const {
+            attributes: {
+                companyName,
+                policyMax,
+                policyPercentage,
+                totalMatched,
+            },
+            id,
+        } = donationMatchedData;
+        const donationMatchedAmount = percentage({
+            donationAmount,
+            policyMax,
+            policyPercentage,
+            totalMatched,
+        });
+        const matchedData = {
+            accountId: id,
+            amount: donationMatchedAmount,
+            displayName: companyName,
+            type: 'donationMatch',
+        };
+        return matchedData;
+    }
+    return null;
+}
+
+const populateDonationReviewPage = (giveData, data, currency, formatMessage, language) => {
+    const {
+        creditCard,
+        donationAmount,
+        donationMatch,
+        giftType,
+        giveTo,
+    } = giveData;
+    const {
+        companiesAccountsData,
+        donationMatchData,
+        fund,
+    } = data;
+
+    const state = {
+    };
+
+    const paymentMap = {
+        companies: 'companyPaymentInstrumentsData',
+        user: 'paymentInstrumentsData',
+    };
+
+    const sources = [];
+    const recipients = [];
+    let giveToData = {};
+    if (!_.isEmpty(giveTo)) {
+        if (giveTo.type === 'user') {
+            giveToData = {
+                accountId: giveTo.id,
+                avatar: giveTo.avatar,
+                displayName: fund.attributes.name,
+                type: giveTo.type,
+            };
+        } else {
+            const selectedData = _.find(companiesAccountsData, { id: giveTo.id });
+            if (!_.isEmpty(selectedData)) {
+                giveToData = {
+                    accountId: selectedData.id,
+                    displayName: selectedData.attributes.name,
+                    type: 'company',
+                };
+            }
+        }
+        recipients.push(giveToData);
+        if (creditCard.value > 0) {
+            const creditCardData = _.find(data[paymentMap[giveTo.type]],
+                { id: creditCard.id });
+            if (!_.isEmpty(creditCardData)) {
+                const cardData = populateCardData(creditCardData.attributes.description,
+                    (donationAmount) ? Number(donationAmount) : null);
+                cardData.accountId = creditCard.id;
+                sources.push(cardData);
+            }
+        }
+        if (donationMatch.value > 0) {
+            const matchedData =  getDonationMatchedData(donationMatch.id, donationAmount, donationMatchData);
+            if (!_.isEmpty(matchedData)) {
+                sources.push(matchedData);
+            }
+        }
+        if (giftType.value === 1 || giftType.value === 15) {
+            state.startsOn = setDateForRecurring(giftType.value, formatMessage, language);
+        }
+
+        state.totalAmount = formatCurrency(
+            _.sumBy(sources, (item) => Number(item.amount)),
+            language,
+            currency,
+        );
+
+        const buildAccounts = (item) => {
+            const val = item.amount;
+            if (val > 0) {
+                return {
+                    ...item,
+                    amount: formatCurrency(
+                        val,
+                        language,
+                        currency,
+                    ),
+                };
+            }
+            return item;
+        };
+        state.sources = _.map(sources, buildAccounts);
+        state.recipients = _.map(recipients, buildAccounts);
+        console.log(state);
+        return (state);
+    }
+};
+
+/**
+* Setup the display parameters for review page
+* @param {object} giveData state object for give page
+* @param {object[]} data with all details like tax, payment,donationmatch etc
+* @param {object} intl format message and format number
+* @param {string} language language
+* @return {string} currency
+*/
+
+const populateGiveReviewPage = (giveData, data, currency, formatMessage, language) => {
+    const {
+        fund,
+        activeGroupMatch,
+    } = data;
+    const {
+        coverFeesAmount,
+        coverFees,
+        creditCard,
+        donationAmount,
+        donationMatch,
+        giftType,
+        giveAmount,
+        giveFrom,
+        giveTo,
+        privacyShareAddress,
+        privacyShareAmount,
+        privacyShareEmail,
+        privacyShareName,
+        newCreditCardId,
+        totalP2pGiveAmount,
+    } = giveData;
+
+    // Create this constant to not conflict with recipient constant.
+    const emails = giveData.recipients;
+    const state = {
+        fromList: [],
+        givingGroupMessage: '',
+        givingOrganizerMessage: '',
+        toList: [],
+    };
+    const sources = [];
+    const recipients = [];
+    let amountToGiveFrom = 0;
+    let amountFromGroupMatch = 0;
+    let fromData = {};
+    let privacyShareNameMessage = '';
+    let privacyShareEmailMessage = '';
+    const dataMap = {
+        campaigns: 'userCampaigns',
+        companies: 'companiesAccountsData',
+        donationMatches: 'donationMatchData',
+        groups: 'userGroups',
+    };
+    const paymentMap = {
+        companies: 'companiesPaymentInstrumentsList',
+        user: 'paymentInstrumentsData',
+    };
+
+    const typeMap = {
+        beneficiaries: 'beneficiary',
+        campaigns: 'group',
+        companies: 'company',
+        donationMatches: 'donationMatch',
+        groups: 'group',
+    };
+
+    if (!_.isEmpty(giveFrom)) {
+        if (giveFrom.type === 'user') {
+            fromData = {
+                accountId: giveFrom.id,
+                displayName: fund.attributes.name,
+                type: giveFrom.type,
+            };
+        } else {
+            const selectedData = _.find(data[dataMap[giveFrom.type]], { id: giveFrom.id });
+            if (!_.isEmpty(selectedData)) {
+                fromData = {
+                    accountId: selectedData.id,
+                    displayName: selectedData.attributes.name,
+                    type: typeMap[giveFrom.type],
+                };
+            }
+        }
+
+        const amountToGive = totalP2pGiveAmount ? Number(totalP2pGiveAmount) : Number(giveAmount);
+        const amountFromDonation = (donationAmount) ? Number(donationAmount) : 0;
+        const coverFeesAmt = (coverFeesAmount) ? Number(coverFeesAmount) : 0;
+        amountToGiveFrom = (amountFromDonation >= (amountToGive + coverFeesAmt)) ?
+            (amountFromDonation - (amountToGive + coverFeesAmt)) : 0;
+
+        if (!_.isEmpty(fromData) &&
+            (amountToGiveFrom === 0 && (amountFromDonation !== (amountToGive + coverFeesAmt)))) {
+            const {
+                value,
+            } = giftType;
+            let amt = (amountToGive - amountFromDonation) + coverFeesAmt;
+            amt = (value === 0 || value === null) ? amt : null;
+            fromData.amount = amt;
+            sources.push(fromData);
+            const displayAmount = (amt) ? ` (${formatCurrency(amt, language, currency)})` : ``;
+            state.fromList.push(
+                `${fromData.displayName}${displayAmount}`,
+            );
+        }
+        if (creditCard.value > 0) {
+            const creditCardData = _.find(data[paymentMap[giveFrom.type]],
+                { id: creditCard.id });
+            if (!_.isEmpty(creditCardData)) {
+                const cardData = populateCardData(creditCardData.attributes.description,
+                    (donationAmount) ? Number(donationAmount) : null);
+                cardData.accountId = creditCard.id;
+                sources.push(cardData);
+                const displayAmount = (cardData.amount) ? ` (${formatCurrency(cardData.amount, language, currency)})` : ``;
+                state.fromList.push(
+                    `${formatMessage('giveAccounts_withoutAmountCard', {
+                        displayName: cardData.displayName,
+                        processor: _.capitalize(cardData.processor),
+                        truncatedPaymentId: cardData.truncatedPaymentId,
+                    })}${displayAmount}`,
+                );
+            }
+        }
+        if (donationMatch.value > 0) {
+            const matchedData =  getDonationMatchedData(donationMatch.id, donationAmount, donationMatchData);
+            if (!_.isEmpty(matchedData)) {
+                sources.push(matchedData);
+                const displayAmount = (giftType.value === 0 || giftType.value === null) ?
+                    ` (${formatCurrency(matchedData.amount, language, currency)})` : ``;
+                state.matchList = `${matchedData.displayName}${displayAmount}`;
+            }
+        }
+        if (!_.isEmpty(activeGroupMatch)) {
+            const {
+                company,
+                companyId,
+                maxMatchAmount,
+                balance,
+            } = activeGroupMatch;
+            const maxMatchedAmount = (Number(maxMatchAmount) <= Number(balance)) ?
+                Number(maxMatchAmount) : Number(balance);
+            const activeMatchedAmount = (Number(giveAmount) > maxMatchedAmount) ?
+                maxMatchedAmount : Number(giveAmount);
+
+            const groupMatchedData = {
+                accountId: companyId,
+                amount: activeMatchedAmount,
+                displayName: company,
+                type: 'company',
+            };
+            amountFromGroupMatch = Number(groupMatchedData.amount);
+            sources.push(groupMatchedData);
+            state.groupMatchedBy = `${groupMatchedData.displayName} (${formatCurrency(groupMatchedData.amount, language, currency)})`;
+        }
+        const buildAccounts = (item) => {
+            const val = item.amount;
+            if (val > 0) {
+                return {
+                    ...item,
+                    amount: formatCurrency(
+                        val,
+                        language,
+                        currency,
+                    ),
+                };
+            }
+            return item;
+        };
+        state.totalAmount = (giftType.value === 0 || giftType.value === null) ?
+            formatCurrency(_.sumBy(sources, (item) => {
+                return Number(item.amount);
+            }), language, currency) : formatCurrency((Number(giveAmount) + coverFeesAmt),
+                language, currency);
+        state.sources = _.map(sources, buildAccounts);
+
+        if (coverFees) {
+            const amount = formatCurrency(coverFeesAmt, language, currency);
+            state.coverFessText = (giftType.value === 0 || giftType.value === null) ?
+                formatMessage('givingAllocationSingleCoverFeesText',
+                    {
+                        amount,
+                    }) : formatMessage(givingAllocationRecurringingCoverFeesText,
+                    {
+                        amount,
+                    });
+        }
+
+        if (giveTo) {
+            const {
+                value,
+            } = giftType;
+
+            if (emails) {
+                // build recipients images
+                _.each(emails, (email) => {
+                    const recipientData = {
+                        displayName: email,
+                        type: 'email',
+                    };
+                    recipients.push(recipientData);
+
+                    const displayAmount = (recipientData.amount) ? ` (${formatCurrency(recipientData.amount, language, currency)})` : ``;
+                    state.toList.push(
+                        `${recipientData.displayName}${displayAmount}`,
+                    );
+                });
+            } else {
+                const recipientData = {
+                    accountId: giveTo.id,
+                    amount: (value === 0 || value === null) ?
+                        (Number(giveAmount) + Number(amountFromGroupMatch)) : null,
+                    displayName: giveTo.name,
+                    type: typeMap[giveTo.type],
+                };
+                recipients.push(recipientData);
+
+                const displayAmount = (recipientData.amount) ? ` (${formatCurrency(recipientData.amount, language, currency)})` : ``;
+                state.toList.push(
+                    `${recipientData.displayName}${displayAmount}`,
+                );
+            }
+            if ((value === 0) &&
+                (amountToGiveFrom > 0)
+                && !_.isEmpty(fromData)) {
+                fromData.amount = amountToGiveFrom;
+                recipients.push(fromData);
+                state.toList.push(
+                    `${fromData.displayName} (${formatCurrency(fromData.amount, language, currency)})`,
+                );
+            }
+        }
+        if (giftType.value === 1 || giftType.value === 15) {
+            state.startsOn = setDateForRecurring(giftType.value, formatMessage, language);
+        }
+        state.showTaxOnRecurring = false;
+        if (newCreditCardId) {
+            state.showTaxOnRecurring = (
+                (newCreditCardId === creditCard.value) &&
+                (giftType.value !== 0 || giftType.value !== null)
+            );
+        }
+
+        if (privacyShareAmount && privacyShareName) {
+            privacyShareNameMessage = formatMessage('givingGroups.privacyShareGiftAndName');
+        } else if (!privacyShareAmount && privacyShareName) {
+            privacyShareNameMessage = formatMessage('givingGroups.privacyShareNameHideGift');
+        } else if (privacyShareAmount && !privacyShareName) {
+            privacyShareNameMessage = formatMessage('givingGroups.privacyShareGiftHideName');
+        } else {
+            privacyShareNameMessage = formatMessage('givingGroups.privacyHideGiftAndName');
+        }
+        state.givingGroupMessage = privacyShareNameMessage;
+
+        if (privacyShareEmail && privacyShareAddress) {
+            privacyShareEmailMessage = formatMessage('givingGroups.privacyShareEmailAndPostal');
+        } else if (!privacyShareEmail && privacyShareAddress) {
+            privacyShareEmailMessage = formatMessage('givingGroups.privacySharePostal');
+        } else if (privacyShareEmail && !privacyShareAddress) {
+            privacyShareEmailMessage = formatMessage('givingGroups.privacyShareEmail');
+        } else {
+            privacyShareEmailMessage = formatMessage('givingGroups.privacyHideEmailAndPostal');
+        }
+        state.givingOrganizerMessage = privacyShareEmailMessage;
+
+        state.recipients = _.map(recipients, buildAccounts);
+        console.log(state);
+        return state;
+    }
+};
+
 export {
     percentage,
     fullMonthNames,
@@ -597,4 +1037,6 @@ export {
     getNextAllocationMonth,
     setDateForRecurring,
     validateDonationForm,
+    populateDonationReviewPage,
+    populateGiveReviewPage
 };

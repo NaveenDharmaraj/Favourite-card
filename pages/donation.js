@@ -10,7 +10,9 @@ class Donations extends React.Component {
     static async getInitialProps({ query }) {
         return {
             namespacesRequired: [
+                'common',
                 'donation',
+                'review',
                 'taxReceipt',
             ],
             step: query.step,
@@ -25,14 +27,11 @@ class Donations extends React.Component {
     render() {
         return (
             <Layout>
-                Donations page ! {this.props.step}
                 <GiveWrapper {...this.props} baseUrl='/donations'>
                     <Donation />
                 </GiveWrapper> 
             </Layout>
         );
     }
-    
 }
-  
-export default Donations
+export default Donations;

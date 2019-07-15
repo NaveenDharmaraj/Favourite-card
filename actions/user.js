@@ -139,6 +139,7 @@ export const getDonationMatchAndPaymentInstruments = () => {
                 dispatch({
                     payload: {
                         donationAddToData: populateAccountOptions({
+                            avatar: 'https://d3hx908nsoe1le.cloudfront.net/users/logos/888000/display/data.jpeg?1552460497',
                             companiesAccountsData,
                             firstName: 'Demo',
                             fund,
