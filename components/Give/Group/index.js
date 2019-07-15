@@ -1,6 +1,43 @@
+/* eslint-disable react/destructuring-assignment */
+/* eslint-disable react/prop-types */
 import React from 'react';
+import PropTypes from 'prop-types';
+import {
+    Checkbox,
+    Divider,
+    Form,
+    Icon,
+    Image,
+    Input,
+    List,
+    Popup,
+    Select,
+} from 'semantic-ui-react';
+import _find from 'lodash/find';
+import _isEmpty from 'lodash/isEmpty';
+import _isEqual from 'lodash/isEqual';
+import _every from 'lodash/every';
+import _map from 'lodash/map';
+import _merge from 'lodash/merge';
+import {
+    connect,
+} from 'react-redux';
 
-import {proceed} from '../../../actions/give';
+import { beneficiaryDefaultProps } from '../../../helpers/give/defaultProps';
+import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
+import {
+    getDefaultCreditCard,
+    populateDonationMatch,
+    populateGiveToGroupsofUser,
+    populateGiftType,
+    populatePaymentInstrument,
+    populateInfoToShare,
+} from '../../../helpers/give/utils';
+import {
+    getBeneficiariesForGroup,
+    getBeneficiaryFromSlug,
+    proceed,
+} from '../../../actions/give';
 
 import { groupDefaultProps } from '../../../helpers/give/defaultProps';
 
@@ -37,6 +74,7 @@ class Group extends React.Component {
     )
   }
 }
+
 
 Group.defaultProps = groupDefaultProps;
 

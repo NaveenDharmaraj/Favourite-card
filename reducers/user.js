@@ -7,7 +7,8 @@ const user = (state = {}, action) => {
         case 'USER_AUTH':
             newState = {
                 ...state,
-                auth: action.payload,
+                auth: action.payload.isAuthenticated,
+                currentUser: action.payload.currentUser,
             };
             break;
         case 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS':
@@ -17,7 +18,10 @@ const user = (state = {}, action) => {
                 paymentInstrumentsData,
                 defaultTaxReceiptProfile,
                 fund,
+                taxReceiptProfiles,
                 userAccountsFetched,
+                userCampaigns,
+                userGroups,
             } = action.payload;
             newState = {
                 ...state,
@@ -32,10 +36,13 @@ const user = (state = {}, action) => {
                     ...fund,
                 },
                 paymentInstrumentsData: Object.assign([], state.paymentInstrumentsData, paymentInstrumentsData),
+                taxReceiptProfiles: Object.assign([], state.taxReceiptProfiles, taxReceiptProfiles),
                 userAccountsFetched: {
                     ...state.userAccountsFetched,
                     ...userAccountsFetched,
                 },
+                userCampaigns: Object.assign([], state.userCampaigns, userCampaigns),
+                userGroups: Object.assign([], state.userGroups, userGroups),
             };
             break;
         case 'TAX_RECEIPT_PROFILES':
