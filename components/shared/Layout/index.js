@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import Head from 'next/head';
-import { Responsive, Container, Segment } from 'semantic-ui-react';
+import { Responsive, Container, Segment, Grid } from 'semantic-ui-react';
 
 import Header from '../Header';
 import Footer from '../Footer';
@@ -30,11 +30,19 @@ const Layout = (props) => {
             </Head>
             <Fragment>
                 <DesktopContainer>
-                    <Container
-                        style={{minHeight: 500}}
-                    >
-                        {props.children}
-                    </Container>
+                    <div className="pageWraper">
+                        <Container
+                            style={{minHeight: 500}}
+                        >
+                            <Grid stackable columns={1}>
+                                <Grid.Row>
+                                    <Grid.Column mobile={16} tablet={16} computer={12}>
+                                        {props.children}
+                                    </Grid.Column>
+                                </Grid.Row>
+                            </Grid>
+                        </Container>
+                    </div>
                     <Footer/>
                 </DesktopContainer>
                 <MobileContainer>

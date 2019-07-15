@@ -1,0 +1,33 @@
+{
+    "commonFrom": "From",
+    "commonTo": "To",
+    "donationAddLabel": "Add",
+    "donationRecurringAddLabel": "Add monthly",
+    "giveAccounts_applePay": "{{displayName}}'s Apple account ({{amount}})",
+    "giveAccounts_beneficiary": "{{displayName}}'s account ({{amount}})",
+    "giveAccounts_community": "{{displayName}} community matching ({{amount}})",
+    "giveAccounts_company": "{{displayName}} ({{amount}})",
+    "giveAccounts_creditCard": "{{displayName}}'s {{processor}} ending with {{truncatedPaymentId}} ({{amount}})",
+    "giveAccounts_crypto": "{{displayName}}'s digital wallet ({{amount}})",
+    "giveAccounts_donationMatch": "{{displayName}} company matching ({{amount}})",
+    "giveAccounts_email": "{{displayName}}'s email",
+    "giveAccounts_googlePay": "{{displayName}}'s Google wallet ({{amount}})",
+    "giveAccounts_group": "{{displayName}}'s account ({{amount}})",
+    "giveAccounts_paypal": "{{displayName}}'s Paypal account ({{amount}})",
+    "giveAccounts_recipientUser": "{{displayName}}",
+    "giveAccounts_user": "{{displayName}} ({{amount}})",
+    "giveAccounts_withoutAmountAccount": "{{displayName}}",
+    "giveAccounts_withoutAmountCard": "{{displayName}}'s {{processor}} ending with {{truncatedPaymentId}}",
+    "givingAllocationSingleCoverFeesText": "Cover {{amount}} in third-party processing fees so the recipient receives 100% of your gift",
+    "givingAllocationRecurringingCoverFeesText": "You've chosen to cover third-party processing fees on behalf of the recipient. The third-party fees will be calculated at the time the gift is made to ensure the recipient receives 100% of your intended gift. If the entire gift comes from your credit card, {amount} in third-party fees will be covered and charged to your card.",
+    "givingGroups": {
+        "privacyShareGiftAndName": "Share my gift amount and name",
+        "privacyShareNameHideGift": "Share my name but hide my gift amount",
+        "privacyShareGiftHideName": "Share my gift amount but hide my name",
+        "privacyHideGiftAndName": "Hide my name and gift amount",
+        "privacyShareEmailAndPostal": "Share my email and postal address",
+        "privacySharePostal": "Share my postal address",
+        "privacyShareEmail": "Share my email",
+        "privacyHideEmailAndPostal": "Hide my email and postal address"
+    }
+}
