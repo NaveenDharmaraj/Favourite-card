@@ -8,7 +8,7 @@
     "country": "Pays",
     "postalCode": "Code postal",
     "province": "Province",
-    "provincePlaceHolder":"Select a province/state",
+    "provincePlaceHolder":"Sélectionnez une province / un état",
     "taxReceiptRecipientLabel": "Destinataire du reçu fiscal",
     "changeAddressText": "Voulez-vous changer cette adresse? ",
     "makeChangesText": "Faire des modifications ici",
