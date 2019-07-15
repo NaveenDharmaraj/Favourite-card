@@ -14,6 +14,7 @@ class Donations extends React.Component {
                 'donation',
                 'review',
                 'taxReceipt',
+                'error',
             ],
             step: query.step,
         };
