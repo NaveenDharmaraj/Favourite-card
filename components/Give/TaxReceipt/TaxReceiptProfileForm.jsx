@@ -49,6 +49,7 @@ function TaxReceiptProfileForm(props) {
 
     const displayForm = () => {
         const {
+            apiStatus,
             formatMessage,
             showFormData,
             data: {
@@ -75,7 +76,7 @@ function TaxReceiptProfileForm(props) {
         if (props.data.attributes) {
             return (
                 <React.Fragment>
-                    { !!showFormData
+                    { !!showFormData && !!apiStatus
                     && <div>
                         <div>
                             <Form.Field>
