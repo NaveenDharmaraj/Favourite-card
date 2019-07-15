@@ -74,38 +74,8 @@ class Group extends React.Component {
     )
   }
 }
-Charity.propTypes = {
-    dispatch: PropTypes.func,
-    flowSteps: PropTypes.arrayOf,
-    stepIndex: PropTypes.number,
-};
-const defProps = {
-    currentUser: {
-        displayName: "Demo",
-        email:"chimp.net",
-    },
-    giveData: {
-        giveFrom: {
-            type: 'user',
-        },
-    },
-    groupId: null,
-    id: '888000',
-    slug: null,
-};
 
-<<<<<<< Updated upstream:components/Give/Group/index.js
+
 Group.defaultProps = groupDefaultProps;
 
 export default Group
-=======
-Charity.defaultProps = Object.assign({}, beneficiaryDefaultProps, defProps);
-
-function mapStateToProps(state) {
-    return {
-        accountOptions: state.give.allocationGiveFromData,
-        companyDetails: state.give.companyData,
-    };
-}
-export default connect(mapStateToProps)(Charity);
->>>>>>> Stashed changes:components/Give/Charity/index.js
