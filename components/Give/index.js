@@ -97,13 +97,16 @@ function mapStateToProps(state) {
     return {
         auth: state.user.auth,
         companiesAccountsData: state.user.companiesAccountsData,
+        currentUser: state.user.currentUser,
         defaultTaxReceiptProfile: state.user.defaultTaxReceiptProfile,
         donationMatchData: state.user.donationMatchData,
         flowObject: state.give.flowObject,
         fund: state.user.fund,
+        giveCharityDetails: state.give.charityDetails,
+        giveGroupBenificairyDetails: state.give.benificiaryForGroupDetails,
         paymentInstrumentsData: state.user.paymentInstrumentsData,
-        // userCampaigns: state.user.userCampaigns,
-        // userGroups: state.user.userGroups,
+        userCampaigns: state.user.userCampaigns,
+        userGroups: state.user.userGroups,
     };
 }
 

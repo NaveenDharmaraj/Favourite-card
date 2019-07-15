@@ -1,6 +1,5 @@
 import React, { cloneElement } from 'react';
 import { validateUser } from '../actions/user';
-
 import Charity from '../components/Give/Charity';
 import GiveWrapper from '../components/Give';
 // import TaxReceipt from '../components/give/TaxReceipt'
@@ -9,16 +8,18 @@ import Layout from '../components/shared/Layout';
 const flowSteps = ['gift/new', 'tax-receipt', 'review', 'success', 'error']
 
 class Charities extends React.Component {
-    static async getInitialProps ({query}) {
-        console.log(query);
+    static async getInitialProps({ query }) {
+        console.log('querycheck', query);
         return {
+            groupId: query.group_id,
             slug: query.slug,
+            sourceAccountHolderId: query.source_account_holder_id,
             step: (query.gift) ? `${query.gift}/${query.step}` : query.step,
-        }
+        };
     }
 
     componentDidMount() {
-        const {dispatch} = this.props
+        const { dispatch } = this.props;
         validateUser(dispatch);
     }
 

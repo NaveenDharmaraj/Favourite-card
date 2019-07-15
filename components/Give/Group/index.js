@@ -1,6 +1,43 @@
+/* eslint-disable react/destructuring-assignment */
+/* eslint-disable react/prop-types */
 import React from 'react';
+import PropTypes from 'prop-types';
+import {
+    Checkbox,
+    Divider,
+    Form,
+    Icon,
+    Image,
+    Input,
+    List,
+    Popup,
+    Select,
+} from 'semantic-ui-react';
+import _find from 'lodash/find';
+import _isEmpty from 'lodash/isEmpty';
+import _isEqual from 'lodash/isEqual';
+import _every from 'lodash/every';
+import _map from 'lodash/map';
+import _merge from 'lodash/merge';
+import {
+    connect,
+} from 'react-redux';
 
-import {proceed} from '../../../actions/give';
+import { beneficiaryDefaultProps } from '../../../helpers/give/defaultProps';
+import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
+import {
+    getDefaultCreditCard,
+    populateDonationMatch,
+    populateGiveToGroupsofUser,
+    populateGiftType,
+    populatePaymentInstrument,
+    populateInfoToShare,
+} from '../../../helpers/give/utils';
+import {
+    getBeneficiariesForGroup,
+    getBeneficiaryFromSlug,
+    proceed,
+} from '../../../actions/give';
 
 import { groupDefaultProps } from '../../../helpers/give/defaultProps';
 
@@ -37,7 +74,38 @@ class Group extends React.Component {
     )
   }
 }
+Charity.propTypes = {
+    dispatch: PropTypes.func,
+    flowSteps: PropTypes.arrayOf,
+    stepIndex: PropTypes.number,
+};
+const defProps = {
+    currentUser: {
+        displayName: "Demo",
+        email:"chimp.net",
+    },
+    giveData: {
+        giveFrom: {
+            type: 'user',
+        },
+    },
+    groupId: null,
+    id: '888000',
+    slug: null,
+};
 
+<<<<<<< Updated upstream:components/Give/Group/index.js
 Group.defaultProps = groupDefaultProps;
 
 export default Group
+=======
+Charity.defaultProps = Object.assign({}, beneficiaryDefaultProps, defProps);
+
+function mapStateToProps(state) {
+    return {
+        accountOptions: state.give.allocationGiveFromData,
+        companyDetails: state.give.companyData,
+    };
+}
+export default connect(mapStateToProps)(Charity);
+>>>>>>> Stashed changes:components/Give/Charity/index.js
