@@ -22,12 +22,7 @@ import DropDownAccountOptions from './DropDownAccountOptions';
 import {proceed} from '../../../actions/give';
 import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
 import { getCompanyPaymentAndTax } from '../../../actions/give';
-import CreditCard from '../../shared/CreditCard';
-import {
-    Elements,
-    StripeProvider
-} from 'react-stripe-elements';
-
+import dynamic from 'next/dynamic';
 import {
   donationDefaultProps,
  } from '../../../helpers/give/defaultProps';
@@ -41,6 +36,9 @@ import {
   validateDonationForm,
 } from '../../../helpers/give/utils';
 
+const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper'), {
+    ssr: false
+})
 
 class Donation extends React.Component {
     constructor(props) {
@@ -537,11 +535,7 @@ class Donation extends React.Component {
         { this.renderdonationMatchOptions(giveData, donationMatchOptions)}
         { this.renderpaymentInstrumentOptions(giveData, paymentInstrumenOptions)}
         <Form.Field>
-            <StripeProvider apiKey='123456'>
-                <Elements>
-                    <CreditCard />
-                </Elements>
-            </StripeProvider>
+            <CreditCardWrapper />
         </Form.Field>
         </Form>
         <div>

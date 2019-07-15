@@ -189,8 +189,9 @@ class CreditCard extends React.Component {
             nameOnCard: '',
             showTestCardClicked: false,
             showTestCardLabel: ' Show Test Cards',
-            showTestCards: true,
+            showTestCards: false,
         };
+        this.handleTestCreditCardList = this.handleTestCreditCardList.bind(this);
     }
 
     testCreditCardList() {
@@ -205,11 +206,11 @@ class CreditCard extends React.Component {
     }
 
     handleTestCreditCardList() {
-        // this.setState({
-        //     showTestCardClicked: !this.state.showTestCardClicked,
-        //     showTestCardLabel: this.state.showTestCardClicked ? ' Show Test Cards' : ' Hide Test Cards',
-        //     showTestCards: !this.state.showTestCardClicked,
-        // });
+        this.setState({
+            showTestCardClicked: !this.state.showTestCardClicked,
+            showTestCardLabel: this.state.showTestCardClicked ? ' Show Test Cards' : ' Hide Test Cards',
+            showTestCards: !this.state.showTestCardClicked,
+        });
     }
 
     render() {
