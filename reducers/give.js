@@ -77,6 +77,12 @@ const give = (state = {}, action) => {
                 },
             };
             break;
+        case 'SAVE_SUCCESS_DATA':
+            newState = {
+                ...state,
+                successData: action.payload.successData,
+            };
+            break;
         default:
             break;
     }

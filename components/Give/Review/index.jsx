@@ -30,8 +30,8 @@ class Review extends React.Component {
     }
   }
   handleSubmit = () => {
-    const { dispatch, stepIndex, flowSteps, flowObject } = this.props
-    dispatch(proceed(flowObject, flowSteps[stepIndex + 1], true))
+    const { dispatch, stepIndex, flowSteps, flowObject } = this.props;
+    dispatch(proceed(flowObject, flowSteps[stepIndex+1], stepIndex, true));
   }
   render() {
     const {

@@ -17,11 +17,160 @@ export const actionTypes = {
     GET_COMPANY_PAYMENT_AND_TAXRECEIPT: 'GET_COMPANY_PAYMENT_AND_TAXRECEIPT',
     GET_COMPANY_TAXRECEIPTS: 'GET_COMPANY_TAXRECEIPTS',
     SAVE_FLOW_OBJECT: 'SAVE_FLOW_OBJECT',
+    SAVE_SUCCESS_DATA: 'SAVE_SUCCESS_DATA',
+};
+
+const setDonationData = (donation) => {
+    const {
+        giveData: {
+            creditCard,
+            donationAmount,
+            donationMatch,
+            giveTo,
+        },
+        selectedTaxReceiptProfile,
+    } = donation;
+    const donationData = {
+        attributes: {
+            amount: donationAmount,
+        },
+        relationships: {
+            fund: {
+                data: {
+                    id: giveTo.value,
+                    type: 'funds',
+                },
+            },
+            paymentInstrument: {
+                data: {
+                    id: creditCard.value,
+                    type: 'paymentInstruments',
+                },
+            },
+            taxReceiptProfile: {
+                data: {
+                    id: selectedTaxReceiptProfile.id,
+                    type: 'taxReceiptProfiles',
+                },
+            },
+        },
+        type: 'donations',
+    };
+    if (donationMatch.value > 0) {
+        donationData.relationships.employeeRole = {
+            data: {
+                id: donationMatch.value,
+                type: 'roles',
+            },
+        };
+    }
+
+    return donationData;
+};
+
+const saveDonations = (donation) => {
+    const {
+        giveData: {
+            automaticDonation,
+            giftType,
+            noteToSelf,
+        },
+    } = donation;
+    let donationUrl = '/donations';
+    const donationData = setDonationData(donation);
+    donationData.attributes.reason = noteToSelf;
+    if (automaticDonation) {
+        donationData.attributes.dayOfMonth = giftType.value;
+        donationData.type = 'recurringDonations';
+        donationUrl = '/recurringDonations';
+    }
+    const result = coreApi.post(donationUrl, {
+        data: donationData,
+        // uxCritical: true,
+    });
+    return result;
+};
+
+/**
+ * Check if it is a quazi success.
+ * @param  {object} error error object.
+ * @return {boolean} wether quazzi succes or not
+ */
+const checkForQuaziSuccess = (error) => {
+    if (!_.isEmpty(error) && error.length === 1) {
+        const checkQuaziSuccess = error[0];
+        if (!_.isEmpty(checkQuaziSuccess.meta)
+            && !_.isEmpty(checkQuaziSuccess.meta.recoverableState)
+            && (checkQuaziSuccess.meta.recoverableState === 'true'
+            || checkQuaziSuccess.meta.recoverableState === true)) {
+            return true;
+        }
+    }
+    return false;
 };
 
 
 
 export const proceed = (flowObject, nextStep, stepIndex, lastStep = false) => {
+    if (lastStep) {
+        return (dispatch) => {
+            let fn;
+            let successData = {};
+            let nextStepToProcced = nextStep;
+            switch (flowObject.type) {
+                case 'donations':
+                    fn = saveDonations;
+                    break;
+                case 'give/to/friend':
+                    fn = saveP2pAllocations;
+                    break;
+                case 'give/to/group':
+                    fn = saveGroupAllocation;
+                    break;
+                default:
+                    break;
+            }
+
+            Promise.all(
+                [
+                    fn(flowObject),
+                ],
+            ).then((results) => {
+                if (!_.isEmpty(results[0])) {
+                    successData = _.merge({}, flowObject);
+                    // For p2p, we create an array of arrays, I'm not to clear on the
+                    // the correct syntax to make this more redable.
+                    // if (type === 'give/to/friend') {
+                    //     fsa.payload.allocation.allocationData = results[0];
+                    // } else {
+                    //     fsa.payload.allocation.allocationData = results[0].data;
+                    // }
+                }
+            }).catch((err) => {
+                // logger.error(err);
+                if (checkForQuaziSuccess(err.errors)) {
+                    successData.quaziSuccessStatus = true;
+                } else {
+                    successData.quaziSuccessStatus = false;
+                    nextStepToProcced = 'error';
+                }
+            }).finally(() => {
+                dispatch({
+                    payload: {
+                        successData,
+                    },
+                    type: actionTypes.SAVE_SUCCESS_DATA,
+                });
+                dispatch({
+                    payload: {
+                        nextStep: nextStepToProcced,
+                    },
+                    type: actionTypes.SAVE_FLOW_OBJECT,
+                });
+                // fetchUser(userId);
+            });
+        };
+    }
     return (dispatch) => {
         flowObject.nextStep = nextStep;
         if (flowObject.taxReceiptProfileAction !== 'no_change' && stepIndex === 1) {
@@ -38,15 +187,21 @@ export const proceed = (flowObject, nextStep, stepIndex, lastStep = false) => {
                 console.log(error);
             });
         } else {
-            dispatch({type: actionTypes.SAVE_FLOW_OBJECT, payload: flowObject})
+            dispatch({
+                payload: flowObject,
+                type: actionTypes.SAVE_FLOW_OBJECT,
+            });
         }
-    }
-}
+    };
+};
 
 export const reInitNextStep = (dispatch, flowObject) => {
     flowObject.nextStep = null;
-    return dispatch({type: actionTypes.SAVE_FLOW_OBJECT, payload: flowObject})
-}
+    return dispatch({
+        payload: flowObject,
+        type: actionTypes.SAVE_FLOW_OBJECT,
+    });
+};
 
 /**
  * Send the allocation data to the relevant endpoint.

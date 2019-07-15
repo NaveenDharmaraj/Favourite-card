@@ -19,7 +19,7 @@ instance.interceptors.response.use(function (response) {
     // Do something with response data
     return response.data;
   }, function (error) {
-    return Promise.reject(error);
+    return Promise.reject(error.response.data);
   });
 
 export default instance;

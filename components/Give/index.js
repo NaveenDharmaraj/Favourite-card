@@ -71,7 +71,7 @@ class Give extends React.Component {
 
     componentWillUpdate(nextProps, nextState) {
         if(nextProps.flowObject && !_.isEmpty(nextProps.flowObject.nextStep) && nextProps.flowObject.nextStep!==nextProps.step) {
-            const routeUrl = `${nextProps.baseUrl}/${nextProps.flowObject.nextStep}`
+            const routeUrl = `${nextProps.baseUrl}/${nextProps.flowObject.nextStep}`;
             Router.pushRoute(routeUrl);
         }
     }
