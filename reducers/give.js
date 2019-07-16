@@ -77,6 +77,23 @@ const give = (state = {}, action) => {
                 },
             };
             break;
+        case 'GET_GROUP_FROM_SLUG':
+            newState = {
+                ...state,
+                giveData: {
+                    giveTo: {
+                        id: action.payload.groupDetails.id,
+                        isCampaign: action.payload.groupDetails.attributes.isCampaign,
+                        name: action.payload.groupDetails.attributes.name,
+                        recurringEnabled: action.payload.groupDetails.attributes.recurringEnabled,
+                        text: action.payload.groupDetails.attributes.name,
+                        type: action.payload.groupDetails.type,
+                        value: action.payload.groupDetails.attributes.fundId,
+                    },
+                },
+                groupFromUrl: false,
+            };
+            break;
         case 'SAVE_SUCCESS_DATA':
             newState = {
                 ...state,

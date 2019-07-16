@@ -14,8 +14,8 @@ export const actionTypes = {
     GET_BENEFICIARY_FROM_SLUG: 'GET_BENEFICIARY_FROM_SLUG',
     GET_BENIFICIARY_FOR_GROUP: 'GET_BENIFICIARY_FOR_GROUP',
     GET_COMPANY_PAYMENT_AND_TAXRECEIPT: 'GET_COMPANY_PAYMENT_AND_TAXRECEIPT',
-    GET_COMPANY_PAYMENT_AND_TAXRECEIPT: 'GET_COMPANY_PAYMENT_AND_TAXRECEIPT',
     GET_COMPANY_TAXRECEIPTS: 'GET_COMPANY_TAXRECEIPTS',
+    GET_GROUP_FROM_SLUG: 'GET_GROUP_FROM_SLUG',
     SAVE_FLOW_OBJECT: 'SAVE_FLOW_OBJECT',
     SAVE_SUCCESS_DATA: 'SAVE_SUCCESS_DATA',
 };
@@ -381,6 +381,25 @@ export const getCompanyTaxReceiptProfile = (dispatch, companyId) => {
         };
         return dispatch(fsa);
     }).catch((error) => {
+        console.log(error);
+    });
+};
+
+export const getGroupsFromSlug = (dispatch, slug) => {
+    return coreApi.get(`groups/find_by_slug`, {
+        params: {
+            slug,
+        },
+    }).then(
+        (result) => {
+            dispatch({
+                payload: {
+                    groupDetails: result.data,
+                },
+                type: actionTypes.GET_GROUP_FROM_SLUG,
+            });
+        },
+    ).catch((error) => {
         console.log(error);
     });
 };

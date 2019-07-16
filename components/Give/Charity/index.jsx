@@ -23,7 +23,8 @@ import {
     connect,
 } from 'react-redux';
 
-//import { Link } from '../../../routes';
+// import { Link } from '../../../routes';
+
 import { beneficiaryDefaultProps } from '../../../helpers/give/defaultProps';
 import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
 import {
