@@ -6,6 +6,7 @@ import {
 } from '../../../helpers/give/utils';
 import GiveAccounts from './GiveAccounts';
 import { withTranslation } from '../../../i18n';
+import { Link } from '../../../routes'
 
 import {
     Button,
@@ -105,6 +106,16 @@ class Review extends React.Component {
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
+
+            {/* <Link className="paragraph-third" route="/donations/tax-receipt-profile">
+                Tax
+            </Link>
+            <br/>
+            
+            <br/>
+            <Link className="paragraph-third" route="/donations/new">
+                New
+            </Link> */}
       </div>
     );
   }

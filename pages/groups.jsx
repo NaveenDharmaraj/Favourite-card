@@ -8,7 +8,7 @@ import Layout from '../components/shared/Layout';
 
 const flowSteps = [
     'gift/new',
-    'tax-receipt',
+    'tax-receipt-profile',
     'review',
     'success',
     'error',
