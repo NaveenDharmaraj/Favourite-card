@@ -7,6 +7,14 @@ import {
 } from '../helpers/give/utils';
 import coreApi from '../services/coreApi';
 
+export const actionTypes = {
+    USER_AUTH: 'USER_AUTH',
+    GET_MATCH_POLICIES_PAYMENTINSTRUMENTS: 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS',
+    DONATIONS_ADDTO_DROPDOWN: 'DONATIONS_ADDTO_DROPDOWN',
+    ALLOCATIONS_GIVE_FROM_DROPDOWN:'ALLOCATIONS_GIVE_FROM_DROPDOWN',
+    TAX_RECEIPT_PROFILES:'TAX_RECEIPT_PROFILES',
+}
+
 const getAllPaginationData = async (url, params = null) => {
     // Right now taking the only relative url from the absolute url.
     const replacedUrl = _.split(url, '/core/v2').pop();
@@ -39,14 +47,6 @@ export const callApiAndGetData = (url, params) => getAllPaginationData(url, para
     },
 );
 
-export const actionTypes = {
-    DONATIONS_ADDTO_DROPDOWN: 'DONATIONS_ADDTO_DROPDOWN',
-    GET_MATCH_POLICIES_PAYMENTINSTRUMENTS: 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS',
-    TAX_RECEIPT_PROFILES: 'TAX_RECEIPT_PROFILES',
-    USER_AUTH: 'USER_AUTH',
-};
-
-
 export const getDonationMatchAndPaymentInstruments = () => {
 
     // const fetchData = coreApi.get(`/users/${userId}`, {
@@ -69,20 +69,21 @@ export const getDonationMatchAndPaymentInstruments = () => {
                 donationMatchData: [],
                 fund: {},
                 paymentInstrumentsData: [],
+                taxReceiptProfiles: [],
                 userAccountsFetched: false,
-                // userCampaigns: [],
-                // userGroups: [],
+                userCampaigns: [],
+                userGroups: [],
             },
             type: actionTypes.GET_MATCH_POLICIES_PAYMENTINSTRUMENTS,
         };
-        const fetchData = coreApi.get(`/users/${userId}?include=donationMatchPolicies,activePaymentInstruments,defaultTaxReceiptProfile,fund`);
-        // const groupData =  callApiAndGetData(`/users/${userId}/administeredGroups?page[size]=50&sort=-id`);
-        // const campaignsData =  callApiAndGetData(`/users/${userId}/administeredCampaigns?page[size]=50&sort=-id`);
+        const fetchData = coreApi.get(`/users/${userId}?include=donationMatchPolicies,activePaymentInstruments,defaultTaxReceiptProfile,taxReceiptProfiles,fund`);
+        const groupData = callApiAndGetData(`/users/${userId}/administeredGroups?page[size]=50&sort=-id`);
+        const campaignsData = callApiAndGetData(`/users/${userId}/administeredCampaigns?page[size]=50&sort=-id`);
         const companiesData = callApiAndGetData(`/users/${userId}/administeredCompanies?page[size]=50&sort=-id`);
         Promise.all([
             fetchData,
-            // groupData,
-            // campaignsData,
+            groupData,
+            campaignsData,
             companiesData,
         ])
             .then(
@@ -91,9 +92,16 @@ export const getDonationMatchAndPaymentInstruments = () => {
                     if (!_.isEmpty(userData.included)) {
                         const { included } = userData;
                         const dataMap = {
+                            campaigns: 'userCampaigns',
+                            companies: 'companiesAccountsData',
                             donationMatches: 'donationMatchData',
+                            groups: 'userGroups',
                             paymentInstruments: 'paymentInstrumentsData',
                         };
+                        let defaultTaxReceiptId = null;
+                        if (!_.isEmpty(userData.data.relationships.defaultTaxReceiptProfile.data)) {
+                            defaultTaxReceiptId = userData.data.relationships.defaultTaxReceiptProfile.data.id;
+                        }
                         included.map((item) => {
                             const {
                                 attributes,
@@ -101,12 +109,18 @@ export const getDonationMatchAndPaymentInstruments = () => {
                                 type,
                             } = item;
                             if (type === 'taxReceiptProfiles') {
-                                // Getting the default taxReceiptProfiles
-                                fsa.payload.defaultTaxReceiptProfile = {
+                                if (id === defaultTaxReceiptId) {
+                                    fsa.payload.defaultTaxReceiptProfile = {
+                                        attributes,
+                                        id,
+                                        type,
+                                    };
+                                }
+                                fsa.payload.taxReceiptProfiles.push({
                                     attributes,
                                     id,
                                     type,
-                                };
+                                });
                             } else if (type === 'funds') {
                                 fsa.payload.fund = {
                                     attributes,
@@ -122,9 +136,9 @@ export const getDonationMatchAndPaymentInstruments = () => {
                             }
                         });
                     }
-                    // fsa.payload.userGroups = data[1];
-                    // fsa.payload.userCampaigns = data[2];
-                    fsa.payload.companiesAccountsData = data[1];
+                    fsa.payload.userGroups = data[1];
+                    fsa.payload.userCampaigns = data[2];
+                    fsa.payload.companiesAccountsData = data[3];
                     fsa.payload.userAccountsFetched = true;
                 },
             ).catch((error) => {
@@ -134,6 +148,8 @@ export const getDonationMatchAndPaymentInstruments = () => {
                 const {
                     companiesAccountsData,
                     fund,
+                    userCampaigns,
+                    userGroups,
                 } = fsa.payload;
                 dispatch(fsa);
                 dispatch({
@@ -149,6 +165,20 @@ export const getDonationMatchAndPaymentInstruments = () => {
                     },
                     type: actionTypes.DONATIONS_ADDTO_DROPDOWN,
                 });
+                dispatch({
+                    payload: {
+                        allocationGiveFromData: populateAccountOptions({
+                            companiesAccountsData,
+                            firstName: 'Demo',
+                            fund,
+                            id: '888000', // 888000 // 999614
+                            lastName: 'UI',
+                            userCampaigns,
+                            userGroups,
+                        }),
+                    },
+                    type: actionTypes.ALLOCATIONS_GIVE_FROM_DROPDOWN,
+                });
             });
     };
 };
@@ -158,11 +188,11 @@ export const validateUser = (dispatch) => {
     return coreApi.get('/users/888000?include=chimpAdminRole,donorRole,fund').then((result) => {
         console.log(result);
         return dispatch({
-            type: actionTypes.USER_AUTH, 
+            type: actionTypes.USER_AUTH,
             payload: {
                 isAuthenticated: true,
-                userinfo : result.data,
-            }
+                userinfo: result.data,
+            },
         });
     }).catch((error) => {
         console.log(JSON.stringify(error));

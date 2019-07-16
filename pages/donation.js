@@ -10,10 +10,11 @@ class Donations extends React.Component {
     static async getInitialProps({ query }) {
         return {
             namespacesRequired: [
-                'common',
                 'donation',
+                'giveCommon',
                 'review',
                 'taxReceipt',
+                'error',
             ],
             step: query.step,
         };
