@@ -691,9 +691,9 @@ const populateInfoToShare = (taxReceiptProfile,
             break;
         case 'companies':
             const companyTaxProfileData = (!_.isEmpty(companyDetails)
-                && !_.isEmpty(companyDetails.taxReceiptProfileData))
+                && !_.isEmpty(companyDetails.taxReceiptProfiles))
                 ? getDropDownOptionFromApiData(
-                    companyDetails.taxReceiptProfileData,
+                    companyDetails.taxReceiptProfiles,
                     null,
                     (item) => `name_address_email|${item.id}`,
                     (attributes) => `${attributes.fullName}, ${attributes.addressOne}, ${attributes.city}, ${attributes.province}, ${attributes.postalCode}`,

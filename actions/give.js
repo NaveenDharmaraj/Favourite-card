@@ -214,11 +214,12 @@ export const getCompanyPaymentAndTax = (dispatch, companyId) => {
             companyDefaultTaxReceiptProfile: {},
             companyId,
             companyPaymentInstrumentsData: [],
+            taxReceiptProfiles: [],
         },
         type: actionTypes.GET_COMPANY_PAYMENT_AND_TAXRECEIPT,
     };
 
-    return coreApi.get(`/companies/${companyId}?include=defaultTaxReceiptProfile,activePaymentInstruments`).then((result) => {
+    return coreApi.get(`/companies/${companyId}?include=defaultTaxReceiptProfile,activePaymentInstruments,taxReceiptProfiles`).then((result) => {
         const { data } = result;
         let defaultTaxReceiptId = null;
         if (!_.isEmpty(data.relationships.defaultTaxReceiptProfile.data)) {
@@ -246,6 +247,11 @@ export const getCompanyPaymentAndTax = (dispatch, companyId) => {
                             type,
                         };
                     }
+                    fsa.payload.taxReceiptProfiles.push({
+                        attributes,
+                        id,
+                        type,
+                    });
                 }
             });
         }
