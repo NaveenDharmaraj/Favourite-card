@@ -60,7 +60,6 @@ import { withTranslation } from '../../../i18n';
 class Charity extends React.Component {
     constructor(props) {
         super(props);
-        debugger
         const {
             companyDetails,
             companiesAccountsData,
@@ -301,7 +300,6 @@ class Charity extends React.Component {
     // eslint-disable-next-line react/sort-comp
     static initFields(giveData, fund, id, paymentInstrumentOptions,
         companyPaymentInstrumentChanged, name, companiesAccountsData, userGroups, userCampaigns) {
-        debugger
         if (
             (giveData.giveFrom.type === 'user' || giveData.giveFrom.type === 'companies')
             && (giveData.creditCard.value === null || companyPaymentInstrumentChanged)
