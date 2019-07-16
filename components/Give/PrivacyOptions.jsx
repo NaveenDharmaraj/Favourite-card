@@ -14,6 +14,7 @@ import {
 const PrivacyOptions = (props) => {
     const {
         formatMessage,
+        giveToType,
     } = props;
 
     return (
@@ -23,15 +24,13 @@ const PrivacyOptions = (props) => {
             </Form.Field>
             <Form.Field>
                 <Header as="h3">{formatMessage('privacyOptions:privacyOptionsLabel')}</Header>
-                {/* <Header as="h3">Privacy options</Header> */}
             </Form.Field>
             <Form.Field>
                 <label
                     className="privacy-header"
                     htmlFor="privacyShareName"
                 >
-                    {/* {formatMessage(messageList[`forGiving${giveToType}Label`])} */}
-                    For Giving Group
+                    {formatMessage(`forGiving${giveToType}Label`)}
                 </label>
                 <br />
                 <Form.Field
@@ -63,10 +62,7 @@ const PrivacyOptions = (props) => {
                                 htmlFor="privacyShareEmail"
                             >
                                 {
-                                    // formatMessage(
-                                    //     messageList[`forGiving${giveToType}OrganizersLabel`],
-                                    // )
-                                    'For Giving Campaign organizers'
+                                    formatMessage(`forGiving${giveToType}OrganizersLabel`)
                                 }
                             </label>
                             <br />

@@ -1,4 +1,8 @@
 {
     "privacyOptionsLabel": "Options de confidentialité",
-    "selectNameAndAddressLabel": "Sélectionner une adresse"
+    "selectNameAndAddressLabel": "Sélectionner une adresse",
+    "forGivingCampaignLabel": "Pour la Campagne",
+    "forGivingCampaignOrganizersLabel": "Pour les organisateurs de la Campagne",
+    "forGivingGroupLabel": "Pour les Groupes de dons",
+    "forGivingGroupOrganizersLabel": "Pour les organisateurs du Groupe de dons"
 }

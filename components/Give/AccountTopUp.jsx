@@ -28,6 +28,7 @@ const AccountTopUp = (props) => {
         paymentInstrumentList,
         topupAmount,
         validity,
+        formatMessage,
     } = props;
 
     let donationAmountField = null;
