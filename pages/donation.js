@@ -7,28 +7,32 @@ import GiveWrapper from '../components/Give';
 import Layout from '../components/shared/Layout';
 
 class Donations extends React.Component {
-    static async getInitialProps ({query}) {
-        return { 
+    static async getInitialProps({ query }) {
+        return {
+            namespacesRequired: [
+                'common',
+                'donation',
+                'review',
+                'taxReceipt',
+                'error',
+            ],
             step: query.step,
-        }
+        };
     }
 
     componentDidMount() {
-        const {dispatch} = this.props
+        const { dispatch } = this.props;
         validateUser(dispatch);
     }
 
     render() {
         return (
             <Layout>
-                Donations page ! {this.props.step}
                 <GiveWrapper {...this.props} baseUrl='/donations'>
                     <Donation />
                 </GiveWrapper> 
             </Layout>
         );
     }
-    
 }
-  
-export default Donations
+export default Donations;

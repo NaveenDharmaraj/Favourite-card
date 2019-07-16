@@ -1,7 +1,7 @@
 import React, {
     Fragment,
 } from 'react';
-// import _isEmpty from 'lodash/isEmpty';
+import _isEmpty from 'lodash/isEmpty';
 // import {
 //     defineMessages,
 // } from 'react-intl';
@@ -16,38 +16,40 @@ import { beneficiaryDefaultProps } from '../../helpers/give/defaultProps';
 import FormValidationErrorMessage from '../shared/FormValidationErrorMessage';
 import TextAreaWithInfo from '../shared/TextAreaWithInfo';
 
-const handleInputChange = (event) => {
+const handleInputChange = (event, props) => {
     const {
         name,
         value,
     } = event.target;
-    this.props.handleInputChange(event, {
+    props.handleInputChange(event, {
         name,
         value,
     });
 };
 
-// const labelTextIds = {
-//     campaigns: 'noteToSelfLabelReview',
-//     companies: 'noteToCompanyLabel',
-//     groups: 'noteToGroupLabel',
-//     user: 'noteToSelfLabelReview',
-// };
+const labelTextIds = {
+    campaigns: 'Note to self',
+    companies: 'Note to company',
+    groups: 'Note to group',
+    user: 'Note to self',
+};
 
-
-
-// const giveFromType = (!_isEmpty(giveFrom.type)) ? giveFrom.type : 'user';
 
 const NoteTo = (props) => {
     const {
         // formatMessage,
-        // giveFrom,
+        giveFrom,
         handleInputOnBlur,
         // noteToCharity,
         // noteToSelf,
         // validity,
         formatMessage,
     } = props;
+    const currentCountNoteToSelf = (!_isEmpty(noteToSelf)) ? Math.max(0, (1000 - Number(noteToSelf.length))) : 1000;
+    const infoNoteToSelf = `${currentCountNoteToSelf} of 1000 characters left`;
+    const currentCountNoteToCharity = (!_isEmpty(noteToCharity)) ? Math.max(0, (1000 - Number(noteToCharity.length))) : 1000;
+    const infoNoteToCharity = `${currentCountNoteToCharity} of 1000 characters left`;
+    const giveFromType = (!_isEmpty(giveFrom.type)) ? giveFrom.type : 'user';
     return (
         <Fragment>
             <Form.Field>
@@ -73,17 +75,11 @@ const NoteTo = (props) => {
                 <Form.Field
                     className="with-info"
                     control={TextAreaWithInfo}
-                    error="" // {!validity.isValidNoteToCharity}
+                    error={!validity.isValidNoteToCharity}
                     name="noteToCharity"
                     id="noteToCharity"
-                    // info={formatMessage(
-                    //     fields.remainingChars,
-                    //     {
-                    //         currentCount: (!_isEmpty(noteToCharity)) ? Math.max(0, (1000 - Number(noteToCharity.length))) : 1000,
-                    //         maximum: 1000,
-                    //     },
-                    // )}
-                    onChange={handleInputChange}
+                    info={infoNoteToCharity}
+                    onChange={(e) => { handleInputChange(e, props); }}
                     onBlur={handleInputOnBlur}
                     placeholder={formatMessage('noteTo:generalInputPlaceHolder')}
                     value=""// {noteToCharity}
@@ -99,7 +95,7 @@ const NoteTo = (props) => {
             />
             <Form.Field>
                 <label htmlFor="noteToSelf" id="noteToSelfLabel">
-                        "labelTextIds"
+                    {labelTextIds[giveFromType]}
                     {/* {formatMessage(fields[labelTextIds[giveFromType]])} */}
                 </label>
                 <Popup
@@ -116,17 +112,11 @@ const NoteTo = (props) => {
                 <Form.TextArea
                     className="with-info"
                     control={TextAreaWithInfo}
-                    error="" // </Form.Field>{!validity.isValidNoteToSelf}
+                    error={!validity.isValidNoteToSelf}
                     name="noteToSelf"
                     id="noteToSelf"
-                    // info={formatMessage(
-                    //     fields.remainingChars,
-                    //     {
-                    //         currentCount: (!_isEmpty(noteToSelf)) ? Math.max(0, (1000 - Number(noteToSelf.length))) : 1000,
-                    //         maximum: 1000,
-                    //     },
-                    // )}
-                    onChange={handleInputChange}
+                    info={infoNoteToSelf}
+                    onChange={(e) => { handleInputChange(e, props); }}
                     onBlur={handleInputOnBlur}
                     placeholder={formatMessage('noteTo:noteToSelfPlaceHolder')}
                     value=""// {noteToSelf}
@@ -144,10 +134,6 @@ const NoteTo = (props) => {
     );
 };
 
-NoteTo.propTypes = {
-    handleInputOnBlur: () => { },
-
-};
 
 NoteTo.defaultProps = {
     handleInputOnBlur: () => { },

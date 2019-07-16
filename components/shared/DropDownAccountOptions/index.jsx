@@ -24,16 +24,18 @@ class DropDownAccountOptions extends React.Component {
             validity,
             parentInputChange,
             parentOnBlurChange,
+            name,
         } = this.props;
+        console.log(dropDownData);
         let fieldData = (
             <Form.Field
                 className="field-loader"
                 control={Input}
                 disabled
-                id="giveTo"
+                id={name}
                 icon={<Icon name="spinner" loading />}
                 iconPosition="left"
-                name="giveTo"
+                name={name}
                 placeholder="preloadedAccountPlaceHolder"
             />
         );
@@ -42,8 +44,8 @@ class DropDownAccountOptions extends React.Component {
                 <Form.Field
                     control={Select}
                     error={!validity}
-                    id="giveTo"
-                    name="giveTo"
+                    id={name}
+                    name={name}
                     onBlur={parentOnBlurChange}
                     onChange={parentInputChange}
                     options={dropDownData}
@@ -91,12 +93,21 @@ class DropDownAccountOptions extends React.Component {
     }
 }
 
-function mapStateToProps(state) {
+const mapStateToProps = (state, props) => {
+    if (props.type === 'donations') {
+        return {
+            dropDownData: state.give.donationAddToData,
+            userAccountsFetched: state.user.userAccountsFetched,
+        };
+    }
     return {
-        dropDownData: state.give.donationAddToData,
+        dropDownData: state.give.allocationGiveFromData,
         userAccountsFetched: state.user.userAccountsFetched,
-
-
     };
-}
+};
+
+DropDownAccountOptions.defaultProps = {
+    type: '',
+};
+
 export default connect(mapStateToProps)(DropDownAccountOptions);

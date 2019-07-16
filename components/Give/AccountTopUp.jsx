@@ -21,7 +21,6 @@ const AccountTopUp = (props) => {
         donationAmount,
         donationMatch,
         donationMatchList,
-        formatMessage,
         handleInputChange,
         handleInputOnBlur,
         isAmountFieldVisible,
@@ -32,7 +31,8 @@ const AccountTopUp = (props) => {
     } = props;
 
     let donationAmountField = null;
-    if (true) { // (isAmountFieldVisible) {
+    let topUpAmountErrorMessage = `Top up your account balance by ${topupAmount} or more to send this gift.`
+    if (isAmountFieldVisible) {
         donationAmountField = (
             <Fragment>
                 <Form.Field>
@@ -42,7 +42,7 @@ const AccountTopUp = (props) => {
                     <Form.Field
                         control={Input}
                         id="donationAmount"
-                        // error={!validity.isValidDonationAmount}
+                        error={!validity.isValidDonationAmount}
                         icon="dollar"
                         iconPosition="left"
                         name="donationAmount"
@@ -76,7 +76,7 @@ const AccountTopUp = (props) => {
     }
 
     let donationMatchField = null;
-    if (true) { // (isDonationMatchFieldVisible) {
+    if (isDonationMatchFieldVisible) {
         donationMatchField = (
             <Form.Field>
                 <label htmlFor="donationMatch">
@@ -99,14 +99,14 @@ const AccountTopUp = (props) => {
                     name="donationMatch"
                     onChange={handleInputChange}
                     options={donationMatchList}
-                    value="" // {donationMatch.value}
+                    value={donationMatch.value}
                 />
             </Form.Field>
         );
     }
 
     let creditCardField = null;
-    if (true) { // (!_isEmpty(paymentInstrumentList)) {
+    if (!_isEmpty(paymentInstrumentList)) {
         creditCardField = (
             <Form.Field>
                 <label htmlFor="creditCard">

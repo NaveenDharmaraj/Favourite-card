@@ -1,7 +1,12 @@
-import React, { cloneElement } from 'react';
+import React, { cloneElement, Fragment } from 'react';
 import dynamic from 'next/dynamic';
 import {connect} from 'react-redux'
 import _ from 'lodash';
+import {
+    Header,
+    Grid,
+    Breadcrumb,
+} from 'semantic-ui-react';
 
 import {Router} from '../../routes';
 const TaxReceipt = dynamic(() => import('./TaxReceipt'));
@@ -27,7 +32,6 @@ const renderChildWithProps = (props, stepIndex, flowSteps) => {
                 }) }
                 </div>
             );
-            break;
         case "tax-receipt" :
             return (<TaxReceipt
                 dispatch={props.dispatch}
@@ -35,7 +39,6 @@ const renderChildWithProps = (props, stepIndex, flowSteps) => {
                 flowSteps={flowSteps}
                 stepIndex={_.indexOf(flowSteps, props.step)}
             />);
-            break;
         case "review" :
             return (<Review
                 dispatch={props.dispatch}
@@ -44,16 +47,15 @@ const renderChildWithProps = (props, stepIndex, flowSteps) => {
                 stepIndex={_.indexOf(flowSteps, props.step)}
                 slug={props.slug}
             />);
-            break;
         case "success" :
-            return (<Success />);
-            break;
+            return (<Success 
+                dispatch={props.dispatch}
+                flowObject={props.flowObject}
+            />);
         case "error" :
             return (<Error />);
-            break;
         default:
             return null;
-            break;
     }
 };
 
@@ -69,7 +71,7 @@ class Give extends React.Component {
 
     componentWillUpdate(nextProps, nextState) {
         if(nextProps.flowObject && !_.isEmpty(nextProps.flowObject.nextStep) && nextProps.flowObject.nextStep!==nextProps.step) {
-            const routeUrl = `${nextProps.baseUrl}/${nextProps.flowObject.nextStep}`
+            const routeUrl = `${nextProps.baseUrl}/${nextProps.flowObject.nextStep}`;
             Router.pushRoute(routeUrl);
         }
     }
@@ -86,9 +88,29 @@ class Give extends React.Component {
     }
 
     render() {
-        return ( 
-            <div>{renderChildWithProps(this.props, this.state.stepIndex, this.state.flowSteps)}
-            </div>
+        return (
+            <Fragment>
+                <div className="pageHeader">
+                    <Grid columns={2} verticalAlign='middle'>
+                        <Grid.Row>
+                        <Grid.Column >
+                            <Header as='h2'>Review</Header>
+                        </Grid.Column>
+                        <Grid.Column >
+                            <Breadcrumb floated='right'>
+                            <Breadcrumb.Section link>Give</Breadcrumb.Section>
+                            <Breadcrumb.Divider icon='triangle right' />
+                            <Breadcrumb.Section link>Review</Breadcrumb.Section>
+                            <Breadcrumb.Divider icon='triangle right' />
+                            <Breadcrumb.Section active>Confirmation</Breadcrumb.Section>
+                            </Breadcrumb>
+                        </Grid.Column>
+                        </Grid.Row>
+                    </Grid>
+                    </div>
+                    
+                {renderChildWithProps(this.props, this.state.stepIndex, this.state.flowSteps)}
+            </Fragment>
         );
     }
 }
@@ -97,13 +119,14 @@ function mapStateToProps(state) {
     return {
         auth: state.user.auth,
         companiesAccountsData: state.user.companiesAccountsData,
+        currentUser: state.user.currentUser,
         defaultTaxReceiptProfile: state.user.defaultTaxReceiptProfile,
         donationMatchData: state.user.donationMatchData,
         flowObject: state.give.flowObject,
         fund: state.user.fund,
         paymentInstrumentsData: state.user.paymentInstrumentsData,
-        // userCampaigns: state.user.userCampaigns,
-        // userGroups: state.user.userGroups,
+        userCampaigns: state.user.userCampaigns,
+        userGroups: state.user.userGroups,
     };
 }
 

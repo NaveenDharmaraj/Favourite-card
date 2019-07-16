@@ -4,6 +4,7 @@ import {
     connect
   } from 'react-redux'
 import {
+    getCompanyTaxReceiptProfile,
     reInitNextStep,
     proceed
   } from '../../../actions/give';
@@ -21,6 +22,7 @@ import {
   import {
     validateTaxReceiptProfileForm
   } from '../../../helpers/give/utils'
+  import { withTranslation } from '../../../i18n';
 
   const messageList = {
     taxReceiptDefault: {
@@ -68,9 +70,33 @@ import {
 
     }
 
+    componentDidMount() {
+      const {
+        dispatch
+      } = this.props;
+
+      const {
+        flowObject:{
+          giveData:{
+            giveTo,
+          },
+        },
+      } = this.state;
+      if(giveTo.type === 'user') {
+        dispatch({type: 'SET_USER_TAX_API_STATUS_FALSE', payload: {taxReceiptGetApiStatus: false}})
+          getTaxReceiptProfile(dispatch, giveTo.id);
+      } else {
+          dispatch({type: 'SET_COMPANY_TAX_API_STATUS_FALSE', payload: {taxReceiptGetApiStatus: false}})
+          getCompanyTaxReceiptProfile(dispatch, giveTo.id);
+      }
+      if (this.state.flowObject) {
+        reInitNextStep(dispatch, this.state.flowObject)
+      }
+    }
+
     componentDidUpdate(prevProps) {
       // Typical usage (don't forget to compare props):
-      if (this.props.taxReceiptProfiles !== prevProps.taxReceiptProfiles) {
+      if (!_.isEqual(this.props.taxReceiptProfiles, prevProps.taxReceiptProfiles)) {
         const {
           options,
           taxSelected
@@ -81,16 +107,6 @@ import {
           selectedValue: taxSelected
         });
         // this.forceUpdate();
-      }
-    }
-
-    componentDidMount() {
-      const {
-        dispatch
-      } = this.props
-      getTaxReceiptProfile(dispatch, 888000);
-      if (this.state.flowObject) {
-        reInitNextStep(dispatch, this.state.flowObject)
       }
     }
 
@@ -176,7 +192,6 @@ import {
       const isValid = this.validateForm();
       if (isValid) {
         const {
-          accountHoldableData,
           flowObject,
           selectedValue,
         } = this.state;
@@ -184,6 +199,12 @@ import {
           nextStep,
           taxReceiptProfiles,
         } = this.props;
+        const {
+          giveData: {
+            giveTo,
+            giveFrom,
+          },
+        } = flowObject;
         flowObject.nextSteptoProceed = nextStep;
         flowObject.taxReceiptProfileAction = 'no_change';
         if (!_.isEmpty(selectedValue) && selectedValue !== 0) {
@@ -201,9 +222,10 @@ import {
         } else {
           flowObject.selectedTaxReceiptProfile.relationships = {
             accountHoldable: {
-              data: { id:888000,
-                      type:"user"
-                    },
+              data: { 
+                id: (flowObject.type === 'donations') ? giveTo.id: giveFrom.id,
+                type: (flowObject.type === 'donations') ? giveTo.type: giveFrom.type,
+              },
             },
           };
           flowObject.taxReceiptProfileAction = 'create';
@@ -228,7 +250,7 @@ import {
           stepIndex,
           flowSteps
         } = this.props
-        dispatch(proceed(this.state.flowObject, flowSteps[stepIndex + 1], stepIndex ));
+        dispatch(proceed(flowObject, flowSteps[stepIndex + 1], stepIndex ));
 
       } else {
         this.setState({
@@ -329,6 +351,7 @@ import {
       };
       return this.validity;
     }
+
     renderTaxReceiptFrom() {
       const {
         flowObject: {
@@ -336,6 +359,8 @@ import {
         },
         selectedValue,
       } = this.state;
+      const formatMessage = this.props.t;
+
       let fieldData = (
         <Form.Field
           className="field-loader"
@@ -363,13 +388,14 @@ import {
         return(
           <Form.Field>
             <label htmlFor="addingTo">
-                  TaxReceipt Profile
+                  {formatMessage('taxReceiptRecipientLabel')}
             </label>
             {fieldData}
           </Form.Field>
 
         );
     }
+
     renderContinueButton() {
       let button = (
         <Button primary onClick={() => this.handleSubmit()}>Continue</Button>
@@ -382,6 +408,7 @@ import {
       return (button);
 
     }
+
     render() {
       const {
         flowObject: {
@@ -391,6 +418,7 @@ import {
         selectedValue,
         validity
       } = this.state;
+      const formatMessage = this.props.t;
       return (
         <div>
           TaxReceipt component!
@@ -406,6 +434,8 @@ import {
                   parentOnBlurChange={this.handleChildOnBlurChange}
                   data={selectedTaxReceiptProfile}
                   validity={validity}
+                  apiStatus={this.props.taxReceiptGetApiStatus}
+                  formatMessage={formatMessage}
                   />
                 </Form.Field>
           </Form>
@@ -418,11 +448,18 @@ import {
 
   }
 
-  function mapStateToProps(state) {
+  const  mapStateToProps = (state, props) => {
+
+    if(props.flowObject.giveData.giveTo.type === 'user') {
+      return {
+        taxReceiptProfiles: state.user.taxReceiptProfiles,
+        taxReceiptGetApiStatus:state.user.taxReceiptGetApiStatus
+      }
+    }
     return {
-      taxReceiptProfiles: state.user.taxReceiptProfiles,
-      taxReceiptGetApiStatus:state.user.taxReceiptGetApiStatus
+      taxReceiptProfiles: state.give.companyData.taxReceiptProfiles,
+      taxReceiptGetApiStatus:state.give.companyData.taxReceiptGetApiStatus
     }
   }
 
-  export default connect(mapStateToProps)(TaxReceipt);
+export default withTranslation('taxReceipt')(connect(mapStateToProps)(TaxReceipt))

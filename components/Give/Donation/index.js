@@ -18,7 +18,7 @@ import {
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 import Note from '../../shared/Note';
 import TextAreaWithInfo from '../../shared/TextAreaWithInfo';
-import DropDownAccountOptions from './DropDownAccountOptions';
+import DropDownAccountOptions from '../../shared/DropDownAccountOptions';
 import {proceed} from '../../../actions/give';
 import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
 import { getCompanyPaymentAndTax } from '../../../actions/give';
@@ -225,8 +225,9 @@ class Donation extends React.Component {
                     companyDefaultTaxReceiptProfile :
                     defaultTaxReceiptProfile;
             }
+            dispatch(proceed({
+                ...flowObject}, flowSteps[stepIndex+1]))
         }
-        dispatch(proceed(flowObject, flowSteps[stepIndex+1]))
     }
     /**
      * Renders the JSX for the donation amount field.
@@ -444,6 +445,10 @@ class Donation extends React.Component {
         giveData.creditCard = getDefaultCreditCard(populatePaymentInstrument(this.props.companyDetails.companyPaymentInstrumentsData));
         doSetState = true;
     }
+    console.log('testing',this.props.companiesAccountsData, oldProps.companiesAccountsData);
+    if(_.isEqual(this.props.companiesAccountsData,oldProps.companiesAccountsData)){
+        console.log("hiiiiii");
+    }
     if(this.props.companiesAccountsData !== oldProps.companiesAccountsData && giveData.giveTo.value === null){
         if(_.isEmpty(this.props.companiesAccountsData) && !_.isEmpty(this.props.fund)){
             const {
@@ -488,6 +493,7 @@ class Donation extends React.Component {
     const {
       flowObject: {
         giveData,
+        type,
       },
       validity,
     } = this.state;
@@ -507,8 +513,10 @@ class Donation extends React.Component {
         <Form onSubmit={this.handleSubmit}>
         { this.renderDonationAmountField(giveData.donationAmount, validity) }
         <DropDownAccountOptions
+          type={type}
           validity= {validity.isValidAddingToSource}
           selectedValue={giveData.giveTo.value}
+          name="giveTo"
           parentInputChange={this.handleInputChange}
           parentOnBlurChange={this.handleInputOnBlur}
         />
