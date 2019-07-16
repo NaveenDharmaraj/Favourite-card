@@ -125,8 +125,6 @@ function mapStateToProps(state) {
         flowObject: state.give.flowObject,
         fund: state.user.fund,
         paymentInstrumentsData: state.user.paymentInstrumentsData,
-        userCampaigns: state.user.userCampaigns,
-        userGroups: state.user.userGroups,
     };
 }
 

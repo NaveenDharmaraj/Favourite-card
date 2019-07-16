@@ -824,6 +824,7 @@ const resetDataForAccountChange = (giveData, dropDownOptions, props, type) => {
         paymentInstrumentsData,
         taxReceiptProfile,
     } = props;
+    const formatMessage = props.t;
     // irrespective of the seletion coverFees should be reset
     giveData.coverFees = false;
     if (giveData.giveFrom.type === 'groups' || giveData.giveFrom.type === 'campaigns') {
@@ -851,7 +852,7 @@ const resetDataForAccountChange = (giveData, dropDownOptions, props, type) => {
                 (!_.isEmpty(companyDetails)
                 && !_.isEmpty(companyDetails.companyPaymentInstrumentsData))
                     ? companyDetails.companyPaymentInstrumentsData : null,
-                props.intl,
+                formatMessage,
             );
             if ((giveData.giftType.value > 0
                 || Number(giveData.giveAmount) > Number(giveData.giveFrom.balance))) {
@@ -879,7 +880,7 @@ const resetDataForAccountChange = (giveData, dropDownOptions, props, type) => {
         };
         dropDownOptions.paymentInstrumentList = populatePaymentInstrument(
             paymentInstrumentsData,
-            props.intl,
+            formatMessage,
         );
         if ((giveData.giftType.value > 0
             || Number(giveData.giveAmount) > Number(giveData.giveFrom.balance))) {

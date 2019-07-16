@@ -23,7 +23,6 @@ import {
     connect,
 } from 'react-redux';
 
-import { beneficiaryDefaultProps } from '../../../helpers/give/defaultProps';
 import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
 import {
     getDefaultCreditCard,

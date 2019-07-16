@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, {
     Fragment,
 } from 'react';
@@ -13,12 +14,19 @@ import {
     Select,
 } from 'semantic-ui-react';
 
+import {
+    populateAccountOptions,
+} from '../../../helpers/give/utils';
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 
 class DropDownAccountOptions extends React.Component {
+
     renderDropDownFeild() {
         const {
-            dropDownData,
+            companiesAccountsData,
+            fund,
+            userCampaigns,
+            userGroups,
             userAccountsFetched,
             selectedValue,
             validity,
@@ -26,7 +34,19 @@ class DropDownAccountOptions extends React.Component {
             parentOnBlurChange,
             name,
         } = this.props;
-        console.log(dropDownData);
+        let dropDownData = null;
+        if (!_.isEmpty(companiesAccountsData) || !_.isEmpty(userCampaigns) || !_.isEmpty(userGroups)) {
+            dropDownData = populateAccountOptions({
+                companiesAccountsData,
+                firstName: 'Demo',
+                fund,
+                id: '888000', // 888000 // 999614,
+                lastName: 'UI',
+                userCampaigns,
+                userGroups,
+            }, null);
+        }
+        dropDownData = !_.isEmpty(dropDownData) ? dropDownData : null;
         let fieldData = (
             <Form.Field
                 className="field-loader"
@@ -96,13 +116,17 @@ class DropDownAccountOptions extends React.Component {
 const mapStateToProps = (state, props) => {
     if (props.type === 'donations') {
         return {
-            dropDownData: state.give.donationAddToData,
+            companiesAccountsData: state.user.companiesAccountsData,
+            fund: state.user.fund,
             userAccountsFetched: state.user.userAccountsFetched,
         };
     }
     return {
-        dropDownData: state.give.allocationGiveFromData,
+        companiesAccountsData: state.user.companiesAccountsData,
+        fund: state.user.fund,
         userAccountsFetched: state.user.userAccountsFetched,
+        userCampaigns: state.user.userCampaigns,
+        userGroups: state.user.userGroups,
     };
 };
 
