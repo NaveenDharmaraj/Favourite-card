@@ -22,6 +22,7 @@ import DropDownAccountOptions from '../../shared/DropDownAccountOptions';
 import {proceed} from '../../../actions/give';
 import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
 import { getCompanyPaymentAndTax } from '../../../actions/give';
+import { withTranslation } from '../../../i18n';
 
 import {
   donationDefaultProps,
@@ -33,7 +34,10 @@ import {
   populatePaymentInstrument,
   formatAmount,
   getDefaultCreditCard,
+  setDateForRecurring,
   validateDonationForm,
+  fullMonthNames,
+  formatCurrency,
 } from '../../../helpers/give/utils';
 
 
@@ -43,6 +47,7 @@ class Donation extends React.Component {
     this.state = {
         flowObject: props.flowObject,
         buttonClicked: false,
+        disableButton: !props.userAccountsFetched,
         // forceContinue: props.forceContinue,
         inValidCardNameValue: true,
         inValidCardNumber: true,
@@ -126,9 +131,8 @@ class Donation extends React.Component {
         let { validity } = this.state;
         validity = validateDonationForm('donationAmount', donationAmount, validity);
         validity = validateDonationForm('noteToSelf', noteToSelf, validity);
-        validity = validateDonationForm('giveTo', giveTo, validity);
+        validity = validateDonationForm('giveTo', giveTo.value, validity);
         this.setState({ validity });
-
         return _.every(validity);
     }
 
@@ -151,8 +155,14 @@ class Donation extends React.Component {
                 type,
             },
         } = this.state;
-
+        const {
+            i18n:{
+                language,
+            },
+        } = this.props;
+        const formatMessage = this.props.t;
         let newValue = (!_.isEmpty(options)) ? _.find(options, { value }) : value;
+        let setDisableFlag = false;
         if (giveData[name] !== newValue) {
             giveData[name] = newValue;
             giveData.userInteracted = true;
@@ -161,6 +171,7 @@ class Donation extends React.Component {
                     if(giveData.giveTo.type === 'companies') {
                         const {dispatch} = this.props;
                         getCompanyPaymentAndTax(dispatch, Number(giveData.giveTo.id));
+                        setDisableFlag = true;
                         giveData.creditCard = {
                             value: null,
                         };
@@ -168,10 +179,10 @@ class Donation extends React.Component {
                             value: null,
                         };
                     } else {
-                            giveData.creditCard = getDefaultCreditCard(populatePaymentInstrument(this.props.paymentInstrumentsData));
+                            giveData.creditCard = getDefaultCreditCard(populatePaymentInstrument(this.props.paymentInstrumentsData, formatMessage));
                             const [
                                 defaultMatch,
-                            ] = populateDonationMatch(this.props.donationMatchData);
+                            ] = populateDonationMatch(this.props.donationMatchData,formatMessage, language);
                             giveData.donationMatch = defaultMatch;
                     }
                     break;
@@ -187,6 +198,7 @@ class Donation extends React.Component {
                 default: break;
             }
             this.setState({
+                disableButton: setDisableFlag,
                 flowObject: {
                     ...this.state.flowObject,
                     giveData,
@@ -219,6 +231,9 @@ class Donation extends React.Component {
                 creditCard,
             },
         } = flowObject;
+        this.setState({
+            buttonClicked: true,
+        });
         if(this.validateForm()){
             if (creditCard.value > 0) {
                 flowObject.selectedTaxReceiptProfile = (giveTo.type === 'companies') ?
@@ -227,20 +242,25 @@ class Donation extends React.Component {
             }
             dispatch(proceed({
                 ...flowObject}, flowSteps[stepIndex+1]))
+        } else {
+            this.setState({
+                buttonClicked: false,
+            });
         }
     }
     /**
      * Renders the JSX for the donation amount field.
      * @param {number} amount The donation amount.
      * @param {object} validity The validity object.
+     * @param {function} formatMessage I18 formatting.
      * @return {JSX} JSX representing donation amount.
      */
 
-    renderDonationAmountField(amount, validity) {
+    renderDonationAmountField(amount, validity, formatMessage) {
       return (
           <Form.Field>
               <label htmlFor="donationAmount">
-                  Amount
+                {formatMessage('amountLabel')}
               </label>
               <Form.Field
                   control={Input}
@@ -252,18 +272,20 @@ class Donation extends React.Component {
                   maxLength="7"
                   onBlur={this.handleInputOnBlur}
                   onChange={this.handleInputChange}
-                  placeholder='Enter Amount'
+                  placeholder={formatMessage('amountPlaceHolder')}
                   size="large"
                   value={amount}
               />
                 <FormValidationErrorMessage
                     condition={!validity.doesAmountExist || !validity.isAmountMoreThanOneDollor
                     || !validity.isValidPositiveNumber}
-                    errorMessage='Min 5'
+                    errorMessage={formatMessage('giveCommon:errorMessages.amountLessOrInvalid', {
+                        minAmount: 5,
+                    })}
                 />
                 <FormValidationErrorMessage
                     condition={!validity.isAmountLessThanOneBillion}
-                    errorMessage='less than one million'
+                    errorMessage={formatMessage('giveCommon:errorMessages.invalidMaxAmountError')}
                 />
           </Form.Field>
       );
@@ -272,18 +294,19 @@ class Donation extends React.Component {
       /**
      * Render recurring donation option.
      * @param {object} formData The state object representing form data.
-     * @param {boolean} isMobile True if render fields for mobile, false otherwise.
+     * @param {function} formatMessage  I18 formatting.
+     * @param {string} language language
      * @return {JSX} JSX representing the adding to source selection.
      */
-    renderingRecurringDonationFields(formData) {
+    renderingRecurringDonationFields(formData, formatMessage, language) {
       return (
           <Fragment>
               <Form.Field>
                   <label htmlFor="automaticDonation">
-                    Repeat monthly
+                    {formatMessage('automaticDonationLabel')}
                   </label>
                   <Popup
-                      content={<div>content</div>}
+                      content={<div>{formatMessage('automaticDonationPopup')}</div>}
                       position="top center"
                       trigger={
                           <Icon
@@ -304,7 +327,7 @@ class Donation extends React.Component {
                       toggle
                   />
                   <div>
-                    recurringMontlyDonationLabel
+                    {formatMessage('recurringMontlyDonationLabel')}
                   </div>
               </Form.Field>
               {
@@ -317,12 +340,17 @@ class Donation extends React.Component {
                               control={Select}
                               id="giftType"
                               name="giftType"
-                              options={onWhatDayList()}
+                              options={onWhatDayList(formatMessage)}
                               onChange={this.handleInputChange}
                               value={formData.giftType.value}
                           />
                           <div className="recurringMsg">
-                            donationRecurringDateNote
+                          {formatMessage(
+                                    'donationRecurringDateNote',
+                                    { 
+                                        recurringDate: setDateForRecurring(formData.giftType.value, formatMessage, language)
+                                    },
+                                )}
                           </div>
                       </Form.Field>
                   )
@@ -331,64 +359,37 @@ class Donation extends React.Component {
       );
   }
 
-      /**
-     * Render the notes field.
-     * @param {function} formatMessage I18 formatting.
-     * @param {string} reason The donor's reason to donate.
-     * @param {*} validity The validity object.
-     * @return {JSX} JSX representing the notes field.
-     */
-    renderNotesFields(reason, validity) {
-      return (
-          <Form.Field>
-              <label htmlFor="noteToSelf">
-                noteToSelfLabel
-              </label>
-              <Popup
-                  content={<div>donationsNoteToSelfPopup</div>}
-                  position="top center"
-                  trigger={
-                      <Icon
-                          color="blue"
-                          name="question circle"
-                          size="large"
-                      />
-                  }
-              />
-              <Form.Field
-                  className="with-info"
-                  control={TextAreaWithInfo}
-                  error={!validity.isNoteToSelfValid}
-                  name="noteToSelf"
-                  id="noteToSelf"
-                  info='remainingChars'
-                  onBlur={this.handleInputOnBlur}
-                  onChange={this.handleInputChange}
-                  placeholder='noteToSelfPlaceHolder'
-                  value={reason}
-              />
-              <FormValidationErrorMessage
-                  condition={!validity.isNoteToSelfInLimit}
-                  errorMessage='invalidLengthError'
-              />
-              <FormValidationErrorMessage
-                  condition={!validity.isValidNoteSelfText}
-                  errorMessage='invalidNoteTextError'
-              />
-          </Form.Field>
-      );
-  }
-
-  renderdonationMatchOptions(formData, options){
+  renderdonationMatchOptions(
+        formData,
+        options,
+        formatMessage,
+        donationMatchData,
+        language,
+        currency,
+    ){
     let donationMatchField = null;
     if (formData.giveTo.type === 'user' && !_.isEmpty(options)) {
+        let donationMatchedData = {};
+        let convertedPolicyPeriod = formatMessage('policyPeriodYear');
+        const currentDate = new Date();
+        let donationMonth = currentDate.getFullYear();
+        if(formData.donationMatch.value > 0) {
+            donationMatchedData = _.find(
+                donationMatchData, (item) => item.attributes.employeeRoleId == formData.donationMatch.value,
+            );
+            if (donationMatchedData.attributes.policyPeriod === 'month') {
+                convertedPolicyPeriod = formatMessage('policyPeriodMonth');
+                const months = fullMonthNames(formatMessage);
+                donationMonth = months[currentDate.getMonth()];
+            }
+        }
         donationMatchField = (
             <Form.Field>
                 <label htmlFor="donationMatch">
-                donationMatchLabel{/*{formatMessage(fields.donationMatchLabel)} */}
+                {formatMessage('donationMatchLabel')}
                 </label>
                 <Popup
-                    content={<div>donationsMatchPopup</div>}
+                    content={<div>{formatMessage('donationsMatchPopup')}</div>}
                     position="top center"
                     trigger={
                         <Icon
@@ -406,17 +407,58 @@ class Donation extends React.Component {
                     options={options}
                     value={formData.donationMatch.value}
                 />
+                {
+                    (!_.isEmpty(donationMatchedData)) && (
+                        <Form.Field>
+                            <div className="recurringMsg">
+                                {formatMessage('donationMatchNote', {
+                                    companyName:
+                                        donationMatchedData.attributes.companyName,
+                                    donationMonth: donationMonth,
+                                    totalMatched:
+                                        formatCurrency(
+                                            donationMatchedData.attributes.totalMatched,
+                                            language,
+                                            currency,
+                                        ),
+                                    totalRequested:
+                                        formatCurrency(
+                                            donationMatchedData.attributes.totalRequested,
+                                            language,
+                                            currency,
+                                        ),
+                                })}
+                                <br />
+                                {formatMessage(
+                                    'donationMatchPolicyNote', {
+                                        companyName:
+                                            donationMatchedData.attributes.companyName,
+                                        policyMax:
+                                            formatCurrency(
+                                                donationMatchedData.attributes.policyMax,
+                                                language,
+                                                currency,
+                                            ),
+                                        policyPercentage:
+                                            donationMatchedData.attributes.policyPercentage,
+                                        policyPeriod: convertedPolicyPeriod,
+                                    },
+                                )}
+                            </div>
+                        </Form.Field>
+                    )
+                }
             </Form.Field>
         );
     }
     return donationMatchField;
   }
 
-  renderpaymentInstrumentOptions(formData, options){
+  renderpaymentInstrumentOptions(formData, options, formatMessage){
         const creditCardField = (
             <Form.Field>
                 <label htmlFor="creditCard">
-                creditCardLabel
+                {formatMessage('creditCardLabel')}
                 </label>
                 <Form.Field
                     control={Select}
@@ -424,7 +466,7 @@ class Donation extends React.Component {
                     name="creditCard"
                     onChange={this.handleInputChange}
                     options={options}
-                    placeholder={'creditCardPlaceholder'}
+                    placeholder={formatMessage('creditCardPlaceholder')}
                     value={formData.creditCard.value}
                 />
             </Form.Field>
@@ -440,16 +482,18 @@ class Donation extends React.Component {
             giveData,
         }
     } = this.state;
+    const {
+        i18n:{
+            language,
+        },
+    } = this.props;
+    const formatMessage = this.props.t;
     let doSetState = false;
-    if(giveData.giveTo.type === 'companies' && this.props.companyDetails !== oldProps.companyDetails) {
-        giveData.creditCard = getDefaultCreditCard(populatePaymentInstrument(this.props.companyDetails.companyPaymentInstrumentsData));
+    if(giveData.giveTo.type === 'companies' && !_.isEqual(this.props.companyDetails, oldProps.companyDetails)) {
+        giveData.creditCard = getDefaultCreditCard(populatePaymentInstrument(this.props.companyDetails.companyPaymentInstrumentsData, formatMessage));
         doSetState = true;
     }
-    console.log('testing',this.props.companiesAccountsData, oldProps.companiesAccountsData);
-    if(_.isEqual(this.props.companiesAccountsData,oldProps.companiesAccountsData)){
-        console.log("hiiiiii");
-    }
-    if(this.props.companiesAccountsData !== oldProps.companiesAccountsData && giveData.giveTo.value === null){
+    if(!_.isEqual(this.props.companiesAccountsData, oldProps.companiesAccountsData) && giveData.giveTo.value === null){
         if(_.isEmpty(this.props.companiesAccountsData) && !_.isEmpty(this.props.fund)){
             const {
                 fund,
@@ -470,7 +514,7 @@ class Donation extends React.Component {
             if(!_.isEmpty(this.props.donationMatchData)){
                 const [
                     defaultMatch,
-                ] = populateDonationMatch(this.props.donationMatchData);
+                ] = populateDonationMatch(this.props.donationMatchData, formatMessage, language);
                 giveData.donationMatch = defaultMatch;
             }
             doSetState = true;
@@ -478,6 +522,8 @@ class Donation extends React.Component {
     }
     if(doSetState) {
         this.setState({
+            buttonClicked: false,
+            disableButton:false,
             flowObject: {
                 ...this.state.flowObject,
                 giveData:{
@@ -491,27 +537,32 @@ class Donation extends React.Component {
 
   render() {
     const {
-      flowObject: {
-        giveData,
-        type,
-      },
-      validity,
+        flowObject: {
+            currency,
+            giveData,
+            type,
+        },
+        validity,
     } = this.state;
     const {
         donationMatchData,
         paymentInstrumentsData,
         companyDetails,
+        i18n:{
+            language,
+        },
     } = this.props;
-    const donationMatchOptions = populateDonationMatch(donationMatchData);
+    const formatMessage = this.props.t;
+    const donationMatchOptions = populateDonationMatch(donationMatchData, formatMessage, language);
     let paymentInstruments = paymentInstrumentsData;
     if(giveData.giveTo.type === 'companies'){
         paymentInstruments = !_.isEmpty(companyDetails.companyPaymentInstrumentsData) ? companyDetails.companyPaymentInstrumentsData : [];
     }
-    const paymentInstrumenOptions  = populatePaymentInstrument(paymentInstruments);
+    const paymentInstrumenOptions  = populatePaymentInstrument(paymentInstruments, formatMessage);
     return (
       <Fragment>
         <Form onSubmit={this.handleSubmit}>
-        { this.renderDonationAmountField(giveData.donationAmount, validity) }
+        { this.renderDonationAmountField(giveData.donationAmount, validity, formatMessage) }
         <DropDownAccountOptions
           type={type}
           validity= {validity.isValidAddingToSource}
@@ -520,22 +571,31 @@ class Donation extends React.Component {
           parentInputChange={this.handleInputChange}
           parentOnBlurChange={this.handleInputOnBlur}
         />
-        { this.renderingRecurringDonationFields(giveData) }
+        { this.renderingRecurringDonationFields(giveData, formatMessage, language) }
         <Note
             fieldName="noteToSelf"
             handleOnInputChange={this.handleInputChange}
             handleOnInputBlur={this.handleOnInputBlur}
-            labelText={`noteToSelfLabel`}
-            popupText={`noteToSelfPopup`}
-            placeholderText={`noteToSelfPlaceholderText`}
+            formatMessage ={formatMessage}
+            labelText={formatMessage('noteToSelfLabel')}
+            popupText={formatMessage('donorNoteToSelfPopup')}
+            placeholderText={formatMessage('noteToSelfPlaceHolder')}
             text={giveData.noteToSelf}
         />
-        { this.renderdonationMatchOptions(giveData, donationMatchOptions)}
-        { this.renderpaymentInstrumentOptions(giveData, paymentInstrumenOptions)}
-
+        { this.renderdonationMatchOptions(giveData, donationMatchOptions, formatMessage, donationMatchData, language, currency)}
+        { this.renderpaymentInstrumentOptions(giveData, paymentInstrumenOptions, formatMessage)}
+        <Divider hidden />
+            <Form.Button
+                // className={isMobile ? 'mobBtnPadding' : 'btnPadding'}
+                content={(!this.state.buttonClicked) ? formatMessage('giveCommon:continueButton')
+                    : formatMessage('giveCommon:submittingButton')}
+                disabled={(this.state.buttonClicked) || this.state.disableButton}
+                // fluid={isMobile}
+                type="submit"
+            />
         </Form>
         <div>
-        <div onClick={() => this.handleSubmit()} >Continue</div>
+        {/* <div onClick={() => this.handleSubmit()} >Continue</div> */}
         </div>
       </Fragment>
 
@@ -548,10 +608,10 @@ Donation.defaultProps = {
     companyDetails: [],
 };
 
-function mapStateToProps(state) {
+const  mapStateToProps = (state) => {
     return {
         companyDetails: state.give.companyData,
+        userAccountsFetched: state.user.userAccountsFetched,
     };
 }
-export default connect(mapStateToProps)(Donation);
-// export default Donation;
+export default withTranslation(['donation', 'giveCommon'])(connect(mapStateToProps)(Donation));
