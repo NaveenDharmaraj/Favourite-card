@@ -192,9 +192,11 @@ class Charity extends React.Component {
             const {
                 companyDetails,
                 companiesAccountsData,
+                currentUser: {
+                    displayName,
+                    email,
+                },
                 donationMatchData,
-                displayName,
-                email,
                 firstName,
                 fund,
                 id,
