@@ -18,6 +18,12 @@ class Groups extends React.Component {
     static async getInitialProps({ query }) {
         console.log(query);
         return {
+            namespacesRequired: [
+                'group',
+                'noteTo',
+                'accountTopUp',
+                'privacyOptions',
+            ],
             slug: query.slug,
             step: (query.gift) ? `${query.gift}/${query.step}` : query.step,
         };
