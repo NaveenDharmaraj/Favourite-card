@@ -1,6 +1,7 @@
 import React, {
     Fragment,
 } from 'react';
+import dynamic from 'next/dynamic';
 import _isEmpty from 'lodash/isEmpty';
 import _merge from 'lodash/merge';
 import {
@@ -18,6 +19,10 @@ import { beneficiaryDefaultProps } from '../../../helpers/give/defaultProps';
 import NoteTo from '../NoteTo';
 import SpecialInstruction from '../SpecialInstruction';
 import AccountTopUp from '../AccountTopUp';
+
+const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper'), {
+    ssr: false
+});
 
 class Charity extends React.Component {
     constructor(props) {
@@ -452,7 +457,9 @@ class Charity extends React.Component {
                     )}
 
                     {accountTopUpComponent}
-                    {stripeCardComponent}
+                    <Form.Field>
+                        <CreditCardWrapper />
+                    </Form.Field>
                     <Form.Field>
                         <Divider className="dividerMargin" />
                     </Form.Field>

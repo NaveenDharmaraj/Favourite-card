@@ -38,7 +38,7 @@ import {
 
 const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper'), {
     ssr: false
-})
+});
 
 class Donation extends React.Component {
     constructor(props) {
@@ -55,15 +55,9 @@ class Donation extends React.Component {
         validity: this.intializeValidations(),
         dropDownOptions: {},
     }
-    }
+}
 
-    componentDidMount() {
-        const script = document.createElement("script");
-
-        script.src = "https://js.stripe.com/v3/";
-        script.async = true;
-
-        document.body.appendChild(script);
+    componentDidMount() {        
         const {dispatch} = this.props;
         dispatch(getDonationMatchAndPaymentInstruments());
     }
