@@ -203,7 +203,7 @@ const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper')
                     break;
                 case 'creditCard':
                     selectedCreditCard = giveData.creditCard.value > 0 ? '' : 'new';                    
-                  default: break;
+                default: break;
               }
               this.setState({
                   disableButton: setDisableFlag,
