@@ -43,18 +43,16 @@ const handleOnInputChangeWrapper = (event, handleOnInputChange) => {
     });
 };
 
-const renderInfo = (enableCharacterCount, text) => {
+const renderInfo = (enableCharacterCount, formatMessage, text) => {
     if (enableCharacterCount) {
-        // return formatMessage(
-        //     fields.remainingChars,
-        //     {
-        //         currentCount: (!_.isEmpty(text)) ? Math.max(0, (1000 - Number(text.length))) : 1000,
-        //         maximum: 1000,
-        //     },
-        // );
-        return text;
+        return formatMessage(
+            'giveCommon:noteRemainingChars1000',
+            {
+                currentCount: (!_.isEmpty(text)) ? Math.max(0, (1000 - Number(text.length))) : 1000,
+                maximum: 1000,
+            },
+        );
     }
-
     return '';
 };
 
@@ -71,6 +69,7 @@ const isValidText = (enableCharacterCount, text) =>
 const Note = ({
     enableCharacterCount,
     fieldName,
+    formatMessage,
     handleOnInputBlur,
     handleOnInputChange,
     labelText,
@@ -103,7 +102,7 @@ const Note = ({
                 info={
                     renderInfo(
                         enableCharacterCount,
-                        // formatMessage,
+                        formatMessage,
                         text,
                     )
                 }
@@ -115,11 +114,11 @@ const Note = ({
         </Form.Field>
         <FormValidationErrorMessage
             condition={!isValidTextCount(enableCharacterCount, text)}
-            errorMessage="invalidLengthError"
+            errorMessage={formatMessage('giveCommon:errorMessages.invalidLengthError')}
         />
         <FormValidationErrorMessage
             condition={!isValidNoteData(text)}
-            errorMessage="invalidNoteTextError"
+            errorMessage={formatMessage('giveCommon:errorMessages.invalidNoteTextError')}
         />
     </Fragment>
 );

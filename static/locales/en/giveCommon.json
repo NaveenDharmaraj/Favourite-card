@@ -1,0 +1,38 @@
+{
+    "fullMonthName": {
+        "januaryLabel": "January",
+        "februaryLabel": "February",
+        "marchLabel": "March",
+        "aprilLabel": "April",
+        "mayLabel": "May",
+        "juneLabel": "June",
+        "julyLabel": "July",
+        "augustLabel": "August",
+        "septemberLabel": "September",
+        "octoberLabel": "October",
+        "novemberLabel": "November",
+        "decemberLabel": "December"
+    },
+    "errorMessages": {
+        "amountLessOrInvalid": "Please choose an amount of ${{minAmount}} or more",
+        "invalidMaxAmountError":  "$9,999 is the maximum we can process here. For larger amounts, please get in touch with us: hello@chimp.net or 1-877-531-0580.",
+        "invalidLengthError": "is too long (maximum is 1000 characters)",
+        "invalidNoteTextError":  "Only standard letters and numbers are allowed here"
+
+
+    },
+    "noteRemainingChars1000": "{{currentCount}} of {{maximum}} characters left ",
+    "forMonth": "month",
+    "forYear": "year",
+    "forPer": "per",
+    "continueButton": "Continue",
+    "submittingButton": "Submitting...",
+    "useNewCreditCardLabel": "Use a new credit card"
+
+
+
+
+
+
+
+}
