@@ -1106,7 +1106,7 @@ class Charity extends React.Component {
                         )}
                         {accountTopUpComponent}
                         {
-                            creditCard.value === 0 && (
+                            (_isEmpty(paymentInstrumentList) || creditCard.value === 0) && (
                                 <Form.Field>
                                     <CreditCardWrapper />
                                 </Form.Field>

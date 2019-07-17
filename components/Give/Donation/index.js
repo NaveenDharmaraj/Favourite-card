@@ -3,6 +3,7 @@ import React, {
   } from 'react';
   import _ from 'lodash';
   import dynamic from 'next/dynamic';
+  import _isEmpty from 'lodash/isEmpty';
   import {
     Checkbox,
     Divider,
@@ -591,7 +592,7 @@ const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper')
           { this.renderdonationMatchOptions(giveData, donationMatchOptions, formatMessage, donationMatchData, language, currency)}
           { this.renderpaymentInstrumentOptions(giveData, paymentInstrumenOptions, formatMessage)}
         {
-            giveData.creditCard.value === 0 && (
+            (_isEmpty(paymentInstrumenOptions)|| giveData.creditCard.value === 0) && (
                 <Form.Field>
                     <CreditCardWrapper />
                 </Form.Field>
