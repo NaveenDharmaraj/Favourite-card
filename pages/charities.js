@@ -5,7 +5,7 @@ import GiveWrapper from '../components/Give';
 // import TaxReceipt from '../components/give/TaxReceipt'
 import Layout from '../components/shared/Layout';
 
-const flowSteps = ['gift/new', 'tax-receipt', 'review', 'success', 'error']
+const flowSteps = ['gift/new', 'tax-receipt-profile', 'review', 'success', 'error']
 
 class Charities extends React.Component {
     static async getInitialProps({ query }) {

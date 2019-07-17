@@ -1,0 +1,18 @@
+{
+    "repeatThisGiftLabel": "Repeat this gift?",
+    "giveToLabel": "Give to",
+    "giveGroupToEqualGiveFrom": "The source and destination group cannot be the same",
+    "amountLabel": "Amount",
+    "giveFromLabel": "Give from",
+    "donorGiveFromPopup": "We’re asking you to select an account because you administer more than one CHIMP Account.  Note that Group accounts with a Matching Campaign are not listed because they can only give directly to a charity.",
+    "groupToGive":"Select a Group to Give",
+    "amountPlaceHolder": "Enter amount",
+    "preloadedAccountPlaceHolder": "Your list of accounts is loading. This may take a moment",
+    "accountPlaceHolder": "Select a source account",
+    "amountLessOrInvalid": "Please choose an amount of ${{minAmount}} or more",
+    "invalidMaxAmountError":  "$9,999 is the maximum we can process here. For larger amounts, please get in touch with us: hello@chimp.net or 1-877-531-0580.",
+    "giveAmountGreaterThanBalance": "Sorry, you can't give more money than what is in your account.",
+    "blankError":  "Can't be blank",
+    "continueButton": "Continue",
+    "submitingButton": "Submitting..."
+}
