@@ -9,7 +9,6 @@ const flowSteps = ['gift/new', 'tax-receipt-profile', 'review', 'success', 'erro
 
 class Charities extends React.Component {
     static async getInitialProps({ query }) {
-        console.log('querycheck', query);
         return {
             groupId: query.group_id,
             namespacesRequired: [

@@ -325,8 +325,6 @@ import {
         selectedValue,
       } = this.state;
       const formatMessage = this.props.t;
-      console.log(this.props);
-      console.log('state',this.state)
       let fieldData = (
         <Form.Field
           className="field-loader"
