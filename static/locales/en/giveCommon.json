@@ -22,6 +22,13 @@
 
 
     },
+    "breadCrumb" : {
+        "new" : "Add money",
+        "give": "Give",
+        "taxReceipt": "Tax receipt",
+        "review": "Review",
+        "success": "Confirmation",
+    },
     "amountLabel": "Amount",
     "amountPlaceHolder": "Enter amount",
     "noteRemainingChars1000": "{{currentCount}} of {{maximum}} characters left ",
