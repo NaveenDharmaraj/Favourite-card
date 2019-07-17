@@ -648,8 +648,6 @@ class Charity extends React.Component {
                         giveData, newValue, coverFeesData, dropDownOptions,
                     );
                     break;
-                case 'creditCard':
-                    selectedCreditCard = giveData.creditCard.value > 0 ? '' : 'new';                    
                 default: break;
             }
             this.setState({
@@ -660,7 +658,6 @@ class Charity extends React.Component {
                 flowObject: {
                     ...this.state.flowObject,
                     giveData,
-                    selectedCreditCard
                 },
                 validity: {
                     ...this.state.validity,
@@ -944,7 +941,6 @@ class Charity extends React.Component {
                 sourceAccountHolderId,
                 stepsCompleted,
                 type,
-                selectedCreditCard,
             },
             dropDownOptions: {
                 donationMatchList,
@@ -1110,7 +1106,7 @@ class Charity extends React.Component {
                         )}
                         {accountTopUpComponent}
                         {
-                            selectedCreditCard === 'new' && (
+                            creditCard.value === 0 && (
                                 <Form.Field>
                                     <CreditCardWrapper />
                                 </Form.Field>

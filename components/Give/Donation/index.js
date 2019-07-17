@@ -200,9 +200,7 @@ const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper')
                 case 'giftType':
                     //giveData.giftType.value = newValue.value;
                     // giveData = resetDataForGiftTypeChange(giveData, dropDownOptions, coverFeesData);
-                    break;
-                case 'creditCard':
-                    selectedCreditCard = giveData.creditCard.value > 0 ? '' : 'new';                    
+                    break;                                 
                 default: break;
               }
               this.setState({
@@ -210,7 +208,6 @@ const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper')
                   flowObject: {
                       ...this.state.flowObject,
                       giveData,
-                      selectedCreditCard
                   },
                   validity: {
                       ...this.state.validity,
@@ -550,7 +547,6 @@ const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper')
               currency,
               giveData,
               type,
-              selectedCreditCard
           },
           validity,
       } = this.state;
@@ -595,7 +591,7 @@ const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper')
           { this.renderdonationMatchOptions(giveData, donationMatchOptions, formatMessage, donationMatchData, language, currency)}
           { this.renderpaymentInstrumentOptions(giveData, paymentInstrumenOptions, formatMessage)}
         {
-            selectedCreditCard === 'new' && (
+            giveData.creditCard.value === 0 && (
                 <Form.Field>
                     <CreditCardWrapper />
                 </Form.Field>
