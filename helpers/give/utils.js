@@ -839,7 +839,6 @@ const resetDataForAccountChange = (giveData, dropDownOptions, props, type) => {
             value: null,
         };
     } else if (giveData.giveFrom.type === 'companies') {
-        debugger
         giveData.donationAmount = setDonationAmount(giveData, coverFeesData);
         giveData.donationMatch = {
             value: null,
@@ -863,7 +862,6 @@ const resetDataForAccountChange = (giveData, dropDownOptions, props, type) => {
             }
         }
     } else if (giveData.giveFrom.type === 'user') {
-        debugger
         giveData.donationAmount = setDonationAmount(giveData, coverFeesData);
         giveData.donationMatch = {
             value: null,
