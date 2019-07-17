@@ -48,7 +48,7 @@ const AccountTopUp = (props) => {
                         maxLength="7"
                         onBlur={handleInputOnBlur}
                         onChange={handleInputChange}
-                        placeholder={formatMessage('AccountTopUp.amountPlaceHolder')}
+                        placeholder={formatMessage('giveCommon:amountPlaceHolder')}
                         size="large"
                         value={donationAmount}
                     />
@@ -67,7 +67,7 @@ const AccountTopUp = (props) => {
                 />
                 <FormValidationErrorMessage
                     condition={!!validity.isDonationAmountPositive && !validity.isDonationAmountCoverGive}
-                    errorMessage={formatMessage('AccountTopUp.donationAmountIsLess', {
+                    errorMessage={formatMessage('accountTopUp:donationAmountIsLess', {
                         topupAmount,
                     })}
                 />
@@ -80,10 +80,10 @@ const AccountTopUp = (props) => {
         donationMatchField = (
             <Form.Field>
                 <label htmlFor="donationMatch">
-                    {formatMessage('AccountTopUp.donationMatchLabel')}
+                    {formatMessage('accountTopUp:donationMatchLabel')}
                 </label>
                 <Popup
-                    content={<div>{formatMessage('AccountTopUp.donationsMatchPopup')}</div>}
+                    content={<div>{formatMessage('accountTopUp:donationsMatchPopup')}</div>}
                     position="top center"
                     trigger={(
                         <Icon
@@ -110,7 +110,7 @@ const AccountTopUp = (props) => {
         creditCardField = (
             <Form.Field>
                 <label htmlFor="creditCard">
-                    {formatMessage('AccountTopUp.creditCardLabel')}
+                    {formatMessage('accountTopUp:creditCardLabel')}
                 </label>
                 <Form.Field
                     control={Select}
@@ -118,7 +118,7 @@ const AccountTopUp = (props) => {
                     name="creditCard"
                     onChange={handleInputChange}
                     options={paymentInstrumentList}
-                    placeholder={formatMessage('AccountTopUp.creditCardPlaceholder')}
+                    placeholder={formatMessage('accountTopUp:creditCardPlaceholder')}
                     value={creditCard.value}
                 />
             </Form.Field>
@@ -132,7 +132,7 @@ const AccountTopUp = (props) => {
             </Form.Field>
             <Form.Field>
                 <Header as="h3"> 
-                    {formatMessage('AccountTopUp.accountTopUpHeaderLabel')}
+                    {formatMessage('accountTopUp:accountTopUpHeaderLabel')}
                 </Header>
             </Form.Field>
             {donationAmountField}

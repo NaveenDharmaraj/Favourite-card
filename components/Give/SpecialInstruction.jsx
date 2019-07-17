@@ -26,7 +26,7 @@ const SpecialInstruction = (props) => {
         repeatGift = (
             <Form.Field>
                 <label htmlFor="giftType">
-                    {formatMessage('SpecialInstruction.repeatThisGiftLabel')}
+                    {formatMessage('specialInstruction:repeatThisGiftLabel')}
                 </label>
                 <Form.Field
                     control={Select}
@@ -46,15 +46,15 @@ const SpecialInstruction = (props) => {
                 <Divider className="dividerMargin" />
             </Form.Field>
             <Form.Field>
-                <Header as="h3">{formatMessage('SpecialInstruction.specialInstructionLabel')}</Header>
+                <Header as="h3">{formatMessage('specialInstruction:specialInstructionLabel')}</Header>
             </Form.Field>
             {repeatGift}
             <Form.Field>
                 <label htmlFor="infoToShare">
-                    {formatMessage('SpecialInstruction.infoToShareLabel')}
+                    {formatMessage('specialInstruction:infoToShareLabel')}
                 </label>
                 <Popup
-                    content={formatMessage('SpecialInstruction.infotoSharePopup')}
+                    content={formatMessage('specialInstruction:infotoSharePopup')}
                     position="top center"
                     trigger={(
                         <Icon

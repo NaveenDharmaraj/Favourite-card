@@ -14,6 +14,9 @@ class Charities extends React.Component {
             namespacesRequired: [
                 'charity',
                 'giveCommon',
+                'accountTopUp',
+                'noteTo',
+                'specialInstruction',
                 'review',
                 'taxReceipt',
                 'error',

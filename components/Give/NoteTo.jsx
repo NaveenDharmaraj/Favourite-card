@@ -53,15 +53,15 @@ const NoteTo = (props) => {
         <Fragment>
             <Form.Field>
                 <Header as="h3"> 
-                    {formatMessage('NoteTo.includeMessageLabel')}
+                    {formatMessage('noteTo:includeMessageLabel')}
                 </Header>
             </Form.Field>
             <Form.Field>
                 <label htmlFor="noteToCharity">
-                    {formatMessage('NoteTo.fortheCharityLabel')}
+                    {formatMessage('noteTo:fortheCharityLabel')}
                 </label>
                 <Popup
-                    content={formatMessage('NoteTo.allocationsForthCharityPopup')}
+                    content={formatMessage('noteTo:allocationsForthCharityPopup')}
                     position="top center"
                     trigger={(
                         <Icon
@@ -80,7 +80,7 @@ const NoteTo = (props) => {
                     info={infoNoteToCharity}
                     onChange={(e) => { handleInputChange(e, props); }}
                     onBlur={handleInputOnBlur}
-                    placeholder={formatMessage('NoteTo.generalInputPlaceHolder')}
+                    placeholder={formatMessage('noteTo:generalInputPlaceHolder')}
                     value={noteToCharity}
                 />
             </Form.Field>
@@ -94,10 +94,10 @@ const NoteTo = (props) => {
             />
             <Form.Field>
                 <label htmlFor="noteToSelf" id="noteToSelfLabel">
-                    {formatMessage(`NoteTo.${labelText}`)}
+                    {formatMessage(`noteTo:${labelText}`)}
                 </label>
                 <Popup
-                    content={formatMessage('NoteTo.givingNoteToSelfPopup')}
+                    content={formatMessage('noteTo:givingNoteToSelfPopup')}
                     position="top center"
                     trigger={(
                         <Icon
@@ -116,7 +116,7 @@ const NoteTo = (props) => {
                     info={infoNoteToSelf}
                     onChange={(e) => { handleInputChange(e, props); }}
                     onBlur={handleInputOnBlur}
-                    placeholder={formatMessage('NoteTo.noteToSelfPlaceHolder')}
+                    placeholder={formatMessage('noteTo:noteToSelfPlaceHolder')}
                     value={noteToSelf}
                 />
             </Form.Field>

@@ -1160,4 +1160,7 @@ function mapStateToProps(state) {
 export default withTranslation([
     'charity',
     'giveCommon',
+    'accountTopUp',
+    'noteTo',
+    'specialInstruction',
 ])(connect(mapStateToProps)(Charity));
