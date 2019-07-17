@@ -13,6 +13,7 @@ import {
 
 const SpecialInstruction = (props) => {
     const {
+        formatMessage,
         giftType,
         giftTypeList,
         giveFrom,
@@ -25,7 +26,7 @@ const SpecialInstruction = (props) => {
         repeatGift = (
             <Form.Field>
                 <label htmlFor="giftType">
-                    Repeat this gift?
+                    {formatMessage('SpecialInstruction.repeatThisGiftLabel')}
                 </label>
                 <Form.Field
                     control={Select}
@@ -45,15 +46,15 @@ const SpecialInstruction = (props) => {
                 <Divider className="dividerMargin" />
             </Form.Field>
             <Form.Field>
-                <Header as="h3">Special instructions</Header>
+                <Header as="h3">{formatMessage('SpecialInstruction.specialInstructionLabel')}</Header>
             </Form.Field>
             {repeatGift}
             <Form.Field>
                 <label htmlFor="infoToShare">
-                    Info to share
+                    {formatMessage('SpecialInstruction.infoToShareLabel')}
                 </label>
                 <Popup
-                    content="When you give anonymously, none of your personal details are shared with the recipient.  If you don’t give anonymously, you may choose what details you’d like us to share."
+                    content={formatMessage('SpecialInstruction.infotoSharePopup')}
                     position="top center"
                     trigger={(
                         <Icon
@@ -74,6 +75,6 @@ const SpecialInstruction = (props) => {
             </Form.Field>
         </Fragment>
     );
-}
+};
 
 export default SpecialInstruction;

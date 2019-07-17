@@ -465,22 +465,22 @@ const populateDonationMatch = (donationMatchData, formatMessage, language) => {
 * @return {object[]} drop down options array
 */
 
-const populateGiftType = () => {
+const populateGiftType = (formatMessage) => {
     //const { formatMessage } = intl;
     return [
         {
             disabled: false,
-            text: `id: 'giving.giftTypeSingle'`,
+            text: formatMessage('giftTypeSingle'),
             value: 0,
         },
         {
             disabled: false,
-            text: `formatMessage({ id: 'giving.giftTypeRecurring1' })`,
+            text: formatMessage('giftTypeRecurring1'),
             value: 1,
         },
         {
             disabled: false,
-            text: `formatMessage({ id: 'giving.giftTypeRecurring15' })`,
+            text: formatMessage('giftTypeRecurring15'),
             value: 15,
         },
     ];
@@ -652,7 +652,7 @@ const populateGiveToGroupsofUser = (giveToGroupsData) => {
 */
 
 const populateInfoToShare = (taxReceiptProfile,
-    companyDetails, giveFrom, userDetails) => {
+    companyDetails, giveFrom, userDetails, formatMessage) => {
     //const { formatMessage } = intl;
     let infoToShareList = null;
     switch (giveFrom.type) {
@@ -668,7 +668,7 @@ const populateInfoToShare = (taxReceiptProfile,
             infoToShareList = [
                 {
                     disabled: false,
-                    text: `formatMessage({ id: 'giving.infoToShareAnonymous' })`,
+                    text: formatMessage('infoToShareAnonymous'),
                     value: 'anonymous',
                 },
                 {
@@ -702,7 +702,7 @@ const populateInfoToShare = (taxReceiptProfile,
             infoToShareList = [
                 {
                     disabled: false,
-                    text: `formatMessage({ id: 'giving.infoToShareAnonymous' })`,
+                    text: formatMessage('infoToShareAnonymous' ),
                     value: 'anonymous',
                 },
                 {
@@ -722,7 +722,7 @@ const populateInfoToShare = (taxReceiptProfile,
             infoToShareList = [
                 {
                     disabled: false,
-                    text: `formatMessage({ id: 'giving.infoToShareAnonymous' })`,
+                    text: formatMessage('infoToShareAnonymous'),
                     value: 'anonymous',
                 },
                 {
@@ -839,6 +839,7 @@ const resetDataForAccountChange = (giveData, dropDownOptions, props, type) => {
             value: null,
         };
     } else if (giveData.giveFrom.type === 'companies') {
+        debugger
         giveData.donationAmount = setDonationAmount(giveData, coverFeesData);
         giveData.donationMatch = {
             value: null,
@@ -862,6 +863,7 @@ const resetDataForAccountChange = (giveData, dropDownOptions, props, type) => {
             }
         }
     } else if (giveData.giveFrom.type === 'user') {
+        debugger
         giveData.donationAmount = setDonationAmount(giveData, coverFeesData);
         giveData.donationMatch = {
             value: null,
@@ -901,6 +903,7 @@ const resetDataForAccountChange = (giveData, dropDownOptions, props, type) => {
                 displayName,
                 email,
             },
+            formatMessage,
         );
     } else if (type === 'give/to/group') {
         giveData.privacyShareEmail = false;
@@ -1257,6 +1260,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
     const {
         fund,
         activeGroupMatch,
+        donationMatchData,
     } = data;
     const {
         coverFeesAmount,
@@ -1298,7 +1302,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
         groups: 'userGroups',
     };
     const paymentMap = {
-        companies: 'companiesPaymentInstrumentsList',
+        companies: 'companyPaymentInstrumentsData',
         user: 'paymentInstrumentsData',
     };
 
@@ -1367,7 +1371,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
             }
         }
         if (donationMatch.value > 0) {
-            const matchedData =  getDonationMatchedData(donationMatch.id, donationAmount, donationMatchData);
+            const matchedData = getDonationMatchedData(donationMatch.id, donationAmount, donationMatchData);
             if (!_.isEmpty(matchedData)) {
                 sources.push(matchedData);
                 const displayAmount = (giftType.value === 0 || giftType.value === null) ?
@@ -1424,7 +1428,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
                 formatMessage('givingAllocationSingleCoverFeesText',
                     {
                         amount,
-                    }) : formatMessage(givingAllocationRecurringingCoverFeesText,
+                    }) : formatMessage('givingAllocationRecurringingCoverFeesText',
                     {
                         amount,
                     });

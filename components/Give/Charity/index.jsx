@@ -93,13 +93,13 @@ class Charity extends React.Component {
             currentGroupId = groupId;
         }
         const paymentInstruments = (!_isEmpty(props.flowObject.giveData.giveFrom) && props.flowObject.giveData.giveFrom.type === 'companies') ? companyDetails.companyPaymentInstrumentsData : paymentInstrumentsData;
-        const formatMessage = this.props.t;
+        const formatMessage = props.t;
         this.state = {
             benificiaryIndex: 0,
             buttonClicked: false,
             dropDownOptions: {
                 donationMatchList: populateDonationMatch(donationMatchData, formatMessage),
-                giftTypeList: populateGiftType(),
+                giftTypeList: populateGiftType(formatMessage),
                 giveToList: populateGiveToGroupsofUser(giveGroupBenificairyDetails),
                 infoToShareList: populateInfoToShare(
                     taxReceiptProfiles,
@@ -109,6 +109,7 @@ class Charity extends React.Component {
                         displayName,
                         email,
                     },
+                    formatMessage,
                 ),
                 paymentInstrumentList: populatePaymentInstrument(paymentInstruments, formatMessage),
             },
@@ -262,7 +263,7 @@ class Charity extends React.Component {
                 dropDownOptions: {
                     ...dropDownOptions,
                     donationMatchList: donationMatchOptions,
-                    giftTypeList: populateGiftType(),
+                    giftTypeList: populateGiftType(formatMessage),
                     giveToList: giveToOptions,
                     infoToShareList: populateInfoToShare(
                         taxReceiptProfiles,
@@ -272,6 +273,7 @@ class Charity extends React.Component {
                             displayName,
                             email,
                         },
+                        formatMessage,
                     ),
                     paymentInstrumentList: paymentInstrumentOptions,
                 },
@@ -735,10 +737,11 @@ class Charity extends React.Component {
         const {
             showAnotherRecipient,
         } = this.state;
+        const formatMessage = this.props.t;
         this.setState({
             findAnotherRecipientLabel: showAnotherRecipient
-                ? 'Find another recipient'
-                : 'Cancel',
+                ? formatMessage('findAnotherRecipientMessage')
+                : formatMessage('findAnotherRecipientCancel'),
             showAnotherRecipient: !showAnotherRecipient,
         });
     }
@@ -758,6 +761,7 @@ class Charity extends React.Component {
         friendUrlEndpoint,
         groupUrlEndpoint,
         findAnotherRecipientLabel,
+        formatMessage,
     ) {
         return (
             <Fragment>
@@ -778,9 +782,9 @@ class Charity extends React.Component {
                                     src={IconCharity}
                                 />
                                 <List.Content className="lst-cnt">
-                                    Charity Or
+                                    {formatMessage('goToCharityFirstLabel')}
                                     <br />
-                                    Giving Group
+                                    {formatMessage('goToCharitySecondLabel')}
                                 </List.Content>
                             </List.Item>
                             <List.Item className="lstitm" to={friendUrlEndpoint}>
@@ -789,9 +793,9 @@ class Charity extends React.Component {
                                     src={IconIndividual}
                                 />
                                 <List.Content className="lst-cnt">
-                                    Friends and
+                                    {formatMessage('goToFriendsFirstLabel')}
                                     <br />
-                                    Family
+                                    {formatMessage('goToFriendsSecondLabel')}
                                 </List.Content>
                             </List.Item>
                             <List.Item className="lstitm" to={groupUrlEndpoint}>
@@ -800,9 +804,9 @@ class Charity extends React.Component {
                                     src={IconGroup}
                                 />
                                 <List.Content className="lst-cnt">
-                                    Giving Group
+                                    {formatMessage('goToGroupFirstLabel')}
                                     <br />
-                                    you belong to
+                                    {formatMessage('goToGroupSecondLabel')}
                                 </List.Content>
                             </List.Item>
                         </List>
@@ -824,7 +828,7 @@ class Charity extends React.Component {
      * @return {JSX} JSX representing payment fields.
      */
 
-    renderCoverFees(giveFrom, giveAmount, coverFeesData, coverFees) {
+    renderCoverFees(giveFrom, giveAmount, coverFeesData, coverFees, formatMessage) {
         if (Number(giveFrom.value) > 0 && Number(giveAmount) > 0 &&
             !_isEmpty(coverFeesData)
         ) {
@@ -834,7 +838,10 @@ class Charity extends React.Component {
                 const feeAmount = formatAmount(coverFeesData.giveAmountFees);
                 const totalAmount = formatAmount(Number(giveAmount) +
                 Number(coverFeesData.giveAmountFees));
-                coverNoteText = `Cover ${feeAmount} in third-party processing fees on behalf of this charity, for a total amount of ${totalAmount}.`;
+                coverNoteText = formatMessage('feeAmountCoverageNote', {
+                    feeAmount,
+                    totalAmount,
+                });
             }
             if (!_isEmpty(coverNoteText)) {
                 return (
@@ -849,7 +856,7 @@ class Charity extends React.Component {
                             onChange={this.handleInputChange}
                         />
                         <Popup
-                            content="Banks and credit card companies charge a processing fee to complete online transactions, including online donations. CHIMP does not benefit from these fees, but we do pass them on to gift recipients. You can choose to cover this fee so the recipient receives 100% of your intended gift."
+                            content={formatMessage('feeAmountCoveragePopup')}
                             position="top center"
                             trigger={(
                                 <Icon
@@ -878,7 +885,7 @@ class Charity extends React.Component {
      */
 
     renderSpecialInstructionComponent(
-        giveFrom, giftType, giftTypeList, infoToShare, infoToShareList,
+        giveFrom, giftType, giftTypeList, infoToShare, infoToShareList, formatMessage
     ) {
         if (!_isEmpty(giveFrom) && giveFrom.value > 0) {
             return (
@@ -889,6 +896,7 @@ class Charity extends React.Component {
                     handleInputChange={this.handleInputChange}
                     infoToShare={infoToShare}
                     infoToShareList={infoToShareList}
+                    formatMessage={formatMessage}
                 />
             );
         }
@@ -940,6 +948,7 @@ class Charity extends React.Component {
         let stripeCardComponent = null;
         const groupUrlEndpoint = Number(sourceAccountHolderId) > 0 ? `/give/to/group/new?source_account_holder_id=${sourceAccountHolderId}` : null;
         const friendUrlEndpoint = `/give/to/friend/new`;
+        const formatMessage = this.props.t;
         const giveAmountWithCoverFees = (coverFees)
             ? Number(giveAmount) + Number(coverFeesData.giveAmountFees)
             : Number(giveAmount);
@@ -955,6 +964,7 @@ class Charity extends React.Component {
                     donationAmount={donationAmount}
                     donationMatch={donationMatch}
                     donationMatchList={donationMatchList}
+                    formatMessage={formatMessage}
                     getStripeCreditCard={this.getStripeCreditCard}
                     handleInputChange={this.handleInputChange}
                     handleInputOnBlur={this.handleInputOnBlur}
@@ -982,7 +992,7 @@ class Charity extends React.Component {
                                 <div>
                                     <Form.Field>
                                         <label htmlFor="giveTo">
-                                                Give to
+                                            {formatMessage('giveToLabel')}
                                         </label>
                                         <Form.Field
                                             control={Input}
@@ -1001,6 +1011,7 @@ class Charity extends React.Component {
                                                 friendUrlEndpoint,
                                                 groupUrlEndpoint,
                                                 findAnotherRecipientLabel,
+                                                formatMessage,
                                             )
                                     }
                                 </div>
@@ -1011,7 +1022,7 @@ class Charity extends React.Component {
                                 <div>
                                     <Form.Field>
                                         <label htmlFor="giveTo">
-                                            Give to
+                                            {formatMessage('giveToLabel')}
                                         </label>
                                         <Form.Field
                                             control={Select}
@@ -1029,13 +1040,14 @@ class Charity extends React.Component {
                                         friendUrlEndpoint,
                                         groupUrlEndpoint,
                                         findAnotherRecipientLabel,
+                                        formatMessage,
                                     )}
                                 </div>
                             )
                         }
                         <Form.Field>
                             <label htmlFor="giveAmount">
-                                Amount
+                                {formatMessage('giveCommon:amountLabel')}
                             </label>
                             <Form.Field
                                 control={Input}
@@ -1047,7 +1059,7 @@ class Charity extends React.Component {
                                 name="giveAmount"
                                 onBlur={this.handleInputOnBlur}
                                 onChange={this.handleInputChange}
-                                placeholder="Enter amount"
+                                placeholder={formatMessage('giveCommon:amountPlaceHolder')}
                                 size="large"
                                 value={giveAmount}
                             />
@@ -1055,15 +1067,17 @@ class Charity extends React.Component {
                         <FormValidationErrorMessage
                             condition={!validity.doesAmountExist || !validity.isAmountMoreThanOneDollor
                         || !validity.isValidPositiveNumber}
-                            errorMessage="Please choose an amount of 5 or more"
+                            errorMessage={formatMessage('giveCommon:errorMessages.amountLessOrInvalid', {
+                                minAmount: 5,
+                            })}
                         />
                         <FormValidationErrorMessage
                             condition={!validity.isAmountLessThanOneBillion}
-                            errorMessage="$9,999 is the maximum we can process here. For larger amounts, please get in touch with us: hello@chimp.net or 1-877-531-0580."
+                            errorMessage={formatMessage('giveCommon:errorMessages.invalidMaxAmountError')}
                         />
                         <FormValidationErrorMessage
                             condition={!validity.isAmountCoverGive}
-                            errorMessage="Sorry, you can't give more money than what is in your account."
+                            errorMessage={formatMessage('giveCommon:errorMessages.giveAmountGreaterThanBalance')}
                         />
                         <DropDownAccountOptions
                             type={type}
@@ -1074,11 +1088,11 @@ class Charity extends React.Component {
                             parentOnBlurChange={this.handleInputOnBlur}
                         />
                         {this.renderCoverFees(
-                            giveFrom, giveAmount, coverFeesData, coverFees,
+                            giveFrom, giveAmount, coverFeesData, coverFees, formatMessage,
                         )}
                         {this.renderSpecialInstructionComponent(
                             giveFrom,
-                            giftType, giftTypeList, infoToShare, infoToShareList,
+                            giftType, giftTypeList, infoToShare, infoToShareList, formatMessage,
                         )}
                         {accountTopUpComponent}
                         {stripeCardComponent}
@@ -1087,6 +1101,7 @@ class Charity extends React.Component {
                         </Form.Field>
                         <NoteTo
                             allocationType={type}
+                            formatMessage={formatMessage}
                             giveFrom={giveFrom}
                             noteToCharity={noteToCharity}
                             handleInputChange={this.handleInputChange}
@@ -1097,7 +1112,7 @@ class Charity extends React.Component {
                         <Divider hidden />
                         {/* { !stepsCompleted && */}
                         <Form.Button
-                            content={(!this.state.buttonClicked) ? 'Continue' : 'Submit'}
+                            content={(!this.state.buttonClicked) ? formatMessage('giveCommon:continueButton') : formatMessage('giveCommon:submittingButton')}
                             disabled={(this.state.buttonClicked) || !this.props.userAccountsFetched}
                             type="submit"
                         />
@@ -1142,4 +1157,7 @@ function mapStateToProps(state) {
         userGroups: state.user.userGroups,
     };
 }
-export default withTranslation(['giveCommon'])(connect(mapStateToProps)(Charity));
+export default withTranslation([
+    'charity',
+    'giveCommon',
+])(connect(mapStateToProps)(Charity));

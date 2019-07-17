@@ -1,0 +1,42 @@
+{
+    "giveToLabel": "Give to",
+    "findAnotherRecipientMessage": "Find another recipient",
+    "findAnotherRecipientCancel": "Cancel",
+    "goToCharityFirstLabel": "Charity Or ",
+    "goToCharitySecondLabel": "Giving Group",
+    "goToFriendsFirstLabel": "Friends and ",
+    "goToFriendsSecondLabel": "Family",
+    "goToGroupFirstLabel": "Giving Group ",
+    "goToGroupSecondLabel": "you belong to",
+    "feeAmountCoveragePopup": "Banks and credit card companies charge a processing fee to complete online transactions, including online donations. CHIMP does not benefit from these fees, but we do pass them on to gift recipients. You can choose to cover this fee so the recipient receives 100% of your intended gift.",
+    "feeAmountCoverageNote": "Cover {{feeAmount}} in third-party processing fees on behalf of this charity, for a total amount of {{totalAmount}}.",
+    "giftTypeSingle": "This is a one time gift",
+    "giftTypeRecurring1": "Make this gift repeat on the 1st of every month",
+    "SpecialInstruction":{
+        "infoToShareLabel" :"Info to share",
+        "giftTypeRecurring15": "Make this gift repeat on the 15th of every month",
+        "repeatThisGiftLabel": "Repeat this gift?",
+        "specialInstructionLabel": "Special instructions",
+        "infotoSharePopup": "When you give anonymously, none of your personal details are shared with the recipient.  If you don’t give anonymously, you may choose what details you’d like us to share."
+    },
+    "AccountTopUp": {
+        "donationAmountIsLess": "Top up your account balance by {{topupAmount}} or more to send this gift.",
+        "donationMatchLabel": "Donation match",
+        "donationsMatchPopup": "If there’s an opportunity for this money to be matched, it will appear here. A request will go to the matching party (your employer, for example) who can then choose to match it according to their policy.",
+        "creditCardLabel": "Credit card",
+        "creditCardPlaceholder": "Select Credit Card",
+        "accountTopUpHeaderLabel": "Top up your account balance to give this gift",
+    },
+    "NoteTo": {
+        "includeMessageLabel": "Include a message (optional)",
+        "fortheCharityLabel": "For the recipient",
+        "allocationsForthCharityPopup": "You can tell the recipient why you're giving to them, provide recommendations on how you'd prefer your gift is spent, let them know if you're giving in honour of someone, or just tell them to keep up the good work.",
+        "generalInputPlaceHolder": "What would you like to say to the recipient?",
+        "givingNoteToSelfPopup": "Write a note to yourself for later—for example, a reminder of why you gave this gift. This will only be visible to you on your Dashboard.",
+        "noteToSelfPlaceHolder": "Write a note to yourself for later",
+        "noteToSelfLabelReview" : "Note to self",
+        "noteToCompanyLabel": "Note to company",
+        "noteToGroupLabel": "Note to group"
+    }   
+}
+

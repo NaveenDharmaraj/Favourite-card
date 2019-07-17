@@ -21,6 +21,7 @@ const AccountTopUp = (props) => {
         donationAmount,
         donationMatch,
         donationMatchList,
+        formatMessage,
         handleInputChange,
         handleInputOnBlur,
         isAmountFieldVisible,
@@ -28,17 +29,14 @@ const AccountTopUp = (props) => {
         paymentInstrumentList,
         topupAmount,
         validity,
-        formatMessage,
     } = props;
-
     let donationAmountField = null;
-    let topUpAmountErrorMessage = `Top up your account balance by ${topupAmount} or more to send this gift.`
     if (isAmountFieldVisible) {
         donationAmountField = (
             <Fragment>
                 <Form.Field>
                     <label htmlFor="donationAmount">
-                        {formatMessage('accountTopUp:amountLabel')}
+                        {formatMessage('giveCommon:amountLabel')}
                     </label>
                     <Form.Field
                         control={Input}
@@ -50,25 +48,26 @@ const AccountTopUp = (props) => {
                         maxLength="7"
                         onBlur={handleInputOnBlur}
                         onChange={handleInputChange}
-                        placeholder={formatMessage('accountTopUp:amountPlaceHolder')}
+                        placeholder={formatMessage('AccountTopUp.amountPlaceHolder')}
                         size="large"
                         value={donationAmount}
                     />
                 </Form.Field>
                 <FormValidationErrorMessage
-                    // condition={!validity.isDonationAmountBlank || !validity.isDonationAmountMoreThan1Dollor
-                    // || !validity.isDonationAmountPositive}
-                    errorMessage={formatMessage('accountTopUp:amountLessOrInvalid', {
+                    condition={!validity.isDonationAmountBlank || !validity.isDonationAmountMoreThan1Dollor
+                    || !validity.isDonationAmountPositive}
+                    errorMessage={formatMessage('giveCommon:errorMessages.amountLessOrInvalid', {
                         minAmount: 5,
                     })}
+                  
                 />
                 <FormValidationErrorMessage
-                    // condition={!validity.isDonationAmountLessThan1Billion}
-                    errorMessage={formatMessage('accountTopUp:invalidMaxAmountError')}
+                    condition={!validity.isDonationAmountLessThan1Billion}
+                    errorMessage={formatMessage('giveCommon:errorMessages.invalidMaxAmountError')}
                 />
                 <FormValidationErrorMessage
-                    // condition={!!validity.isDonationAmountPositive && !validity.isDonationAmountCoverGive}
-                    errorMessage={formatMessage('accountTopUp:donationAmountIsLess', {
+                    condition={!!validity.isDonationAmountPositive && !validity.isDonationAmountCoverGive}
+                    errorMessage={formatMessage('AccountTopUp.donationAmountIsLess', {
                         topupAmount,
                     })}
                 />
@@ -81,10 +80,10 @@ const AccountTopUp = (props) => {
         donationMatchField = (
             <Form.Field>
                 <label htmlFor="donationMatch">
-                    {formatMessage('accountTopUp:donationMatchLabel')}
+                    {formatMessage('AccountTopUp.donationMatchLabel')}
                 </label>
                 <Popup
-                    content={<div>{formatMessage('accountTopUp:donationsMatchPopup')}</div>}
+                    content={<div>{formatMessage('AccountTopUp.donationsMatchPopup')}</div>}
                     position="top center"
                     trigger={(
                         <Icon
@@ -111,7 +110,7 @@ const AccountTopUp = (props) => {
         creditCardField = (
             <Form.Field>
                 <label htmlFor="creditCard">
-                    {formatMessage('accountTopUp:creditCardLabel')}
+                    {formatMessage('AccountTopUp.creditCardLabel')}
                 </label>
                 <Form.Field
                     control={Select}
@@ -119,8 +118,8 @@ const AccountTopUp = (props) => {
                     name="creditCard"
                     onChange={handleInputChange}
                     options={paymentInstrumentList}
-                    placeholder={formatMessage('accountTopUp:creditCardPlaceholder')}
-                    value=""// {creditCard.value}
+                    placeholder={formatMessage('AccountTopUp.creditCardPlaceholder')}
+                    value={creditCard.value}
                 />
             </Form.Field>
         );
@@ -132,7 +131,9 @@ const AccountTopUp = (props) => {
                 <Divider className="dividerMargin" />
             </Form.Field>
             <Form.Field>
-                <Header as="h3">{formatMessage('accountTopUp:accountTopUpHeaderLabel')}</Header>
+                <Header as="h3"> 
+                    {formatMessage('AccountTopUp.accountTopUpHeaderLabel')}
+                </Header>
             </Form.Field>
             {donationAmountField}
             {donationMatchField}
