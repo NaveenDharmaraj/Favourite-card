@@ -260,7 +260,7 @@ class Donation extends React.Component {
       return (
           <Form.Field>
               <label htmlFor="donationAmount">
-                {formatMessage('amountLabel')}
+                {formatMessage('giveCommon:amountLabel')}
               </label>
               <Form.Field
                   control={Input}
@@ -272,7 +272,7 @@ class Donation extends React.Component {
                   maxLength="7"
                   onBlur={this.handleInputOnBlur}
                   onChange={this.handleInputChange}
-                  placeholder={formatMessage('amountPlaceHolder')}
+                  placeholder={formatMessage('giveCommon:amountPlaceHolder')}
                   size="large"
                   value={amount}
               />
