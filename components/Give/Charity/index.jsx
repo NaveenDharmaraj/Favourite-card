@@ -1086,6 +1086,7 @@ class Charity extends React.Component {
                             name="giveFrom"
                             parentInputChange={this.handleInputChange}
                             parentOnBlurChange={this.handleInputOnBlur}
+                            formatMessage={formatMessage}
                         />
                         {this.renderCoverFees(
                             giveFrom, giveAmount, coverFeesData, coverFees, formatMessage,
@@ -1161,6 +1162,7 @@ export default withTranslation([
     'charity',
     'giveCommon',
     'accountTopUp',
+    'dropDownAccountOptions',
     'noteTo',
     'specialInstruction',
 ])(connect(mapStateToProps)(Charity));

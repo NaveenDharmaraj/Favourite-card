@@ -25,6 +25,7 @@ class DropDownAccountOptions extends React.Component {
         const {
             companiesAccountsData,
             fund,
+            formatMessage,
             userCampaigns,
             userGroups,
             userAccountsFetched,
@@ -33,8 +34,11 @@ class DropDownAccountOptions extends React.Component {
             parentInputChange,
             parentOnBlurChange,
             name,
+            type,
         } = this.props;
         let dropDownData = null;
+        const giveFromHeader = (type === 'donations') ? formatMessage('dropDownAccountOptions:addingToLabel') : formatMessage('dropDownAccountOptions:giveFromLabel');
+        const giveFromPlaceHolder = (type === 'donations') ? formatMessage('dropDownAccountOptions:destinationaccountPlaceHolder') : formatMessage('dropDownAccountOptions:accountPlaceHolder');
         if (!_.isEmpty(companiesAccountsData) || !_.isEmpty(userCampaigns) || !_.isEmpty(userGroups)) {
             dropDownData = populateAccountOptions({
                 companiesAccountsData,
@@ -56,7 +60,7 @@ class DropDownAccountOptions extends React.Component {
                 icon={<Icon name="spinner" loading />}
                 iconPosition="left"
                 name={name}
-                placeholder="preloadedAccountPlaceHolder"
+                placeholder={formatMessage('dropDownAccountOptions:preloadedAccountPlaceHolder')}
             />
         );
         if (!_.isEmpty(dropDownData)) {
@@ -69,7 +73,7 @@ class DropDownAccountOptions extends React.Component {
                     onBlur={parentOnBlurChange}
                     onChange={parentInputChange}
                     options={dropDownData}
-                    placeholder="accountPlaceHolder"
+                    placeholder={giveFromPlaceHolder}
                     value={selectedValue}
                 />
             );
@@ -79,10 +83,10 @@ class DropDownAccountOptions extends React.Component {
                 <Fragment>
                     <Form.Field>
                         <label htmlFor="giveFrom">
-                            'giveFromLabel'
+                            {giveFromHeader}
                         </label>
                         <Popup
-                            content="allocationsGiveFromPopup"
+                            content={formatMessage('dropDownAccountOptions:allocationsGiveFromPopup')}
                             position="top center"
                             trigger={(
                                 <Icon

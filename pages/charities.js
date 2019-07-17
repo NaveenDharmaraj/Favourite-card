@@ -17,6 +17,7 @@ class Charities extends React.Component {
                 'accountTopUp',
                 'noteTo',
                 'specialInstruction',
+                'dropDownAccountOptions',
                 'review',
                 'taxReceipt',
                 'error',

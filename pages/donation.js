@@ -14,6 +14,7 @@ class Donations extends React.Component {
                 'giveCommon',
                 'review',
                 'taxReceipt',
+                'dropDownAccountOptions',
                 'error',
             ],
             step: query.step,
