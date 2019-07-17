@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { reInitNextStep, proceed } from '../../../actions/give';
 import {
   populateDonationReviewPage,
+  populateGiveReviewPage,
 } from '../../../helpers/give/utils';
 import GiveAccounts from './GiveAccounts';
 import { withTranslation } from '../../../i18n';
@@ -53,24 +54,53 @@ class Review extends React.Component {
         i18n:{
             language,
         },
+        userCampaigns,
+        userGroups,
     } = this.props;
     const formatMessage = this.props.t;
+    let reviewData = {};
+    let activeGroupMatch = null;
+    if(type === 'donations'){
+        reviewData = populateDonationReviewPage(giveData, {
+            companiesAccountsData,
+            companyPaymentInstrumentsData,
+            donationMatchData,
+            fund,
+            paymentInstrumentsData,
+        },
+        currency,
+        formatMessage,
+        language,
+        );
+    } else {
+        reviewData = populateGiveReviewPage(giveData, {
+            activeGroupMatch,
+            companiesAccountsData,
+            companyPaymentInstrumentsData,
+            donationMatchData,
+            fund,
+            paymentInstrumentsData,
+            userCampaigns,
+            userGroups,
+        }, currency,
+        formatMessage,
+        language,);
+    }
+    let circleLabel = '';
     const {
         sources,
         recipients,
+        startsOn,
         totalAmount,
-    } = populateDonationReviewPage(giveData, {
-        companiesAccountsData,
-        companyPaymentInstrumentsData,
-        donationMatchData,
-        fund,
-        paymentInstrumentsData,
-    },
-    currency,
-    formatMessage,
-    language,
-    );
-    let circleLabel = '';
+        matchList,
+        fromList,
+        toList,
+        coverFessText,
+        givingGroupMessage,
+        givingOrganizerMessage,
+        groupMatchedBy,
+        showTaxOnRecurring,
+    } = reviewData
     if(type === 'donations') {
         circleLabel = (giveData.automaticDonation)
                         ? formatMessage('donationRecurringAddLabel')
@@ -200,6 +230,8 @@ function mapStateToProps(state) {
         fund: state.user.fund,
         paymentInstrumentsData: state.user.paymentInstrumentsData,
         companyDetails: state.give.companyData,
+        userCampaigns: state.user.userCampaigns,
+        userGroups: state.user.userGroups,
     };
 }
 

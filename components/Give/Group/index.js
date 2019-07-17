@@ -22,7 +22,6 @@ import NoteTo from '../NoteTo';
 import AccountTopUp from '../AccountTopUp';
 import PrivacyOptions from '../PrivacyOptions';
 
-import { beneficiaryDefaultProps } from '../../../helpers/give/defaultProps';
 import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
 import {
     getDefaultCreditCard,

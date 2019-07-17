@@ -8,11 +8,9 @@ import {
 import coreApi from '../services/coreApi';
 
 export const actionTypes = {
-    USER_AUTH: 'USER_AUTH',
     GET_MATCH_POLICIES_PAYMENTINSTRUMENTS: 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS',
-    DONATIONS_ADDTO_DROPDOWN: 'DONATIONS_ADDTO_DROPDOWN',
-    ALLOCATIONS_GIVE_FROM_DROPDOWN:'ALLOCATIONS_GIVE_FROM_DROPDOWN',
     TAX_RECEIPT_PROFILES:'TAX_RECEIPT_PROFILES',
+    USER_AUTH: 'USER_AUTH',
 }
 
 const getAllPaginationData = async (url, params = null) => {
@@ -152,33 +150,6 @@ export const getDonationMatchAndPaymentInstruments = () => {
                     userGroups,
                 } = fsa.payload;
                 dispatch(fsa);
-                dispatch({
-                    payload: {
-                        donationAddToData: populateAccountOptions({
-                            avatar: 'https://d3hx908nsoe1le.cloudfront.net/users/logos/888000/display/data.jpeg?1552460497',
-                            companiesAccountsData,
-                            firstName: 'Demo',
-                            fund,
-                            id: '888000', // 888000 // 999614
-                            lastName: 'UI',
-                        }),
-                    },
-                    type: actionTypes.DONATIONS_ADDTO_DROPDOWN,
-                });
-                dispatch({
-                    payload: {
-                        allocationGiveFromData: populateAccountOptions({
-                            companiesAccountsData,
-                            firstName: 'Demo',
-                            fund,
-                            id: '888000', // 888000 // 999614
-                            lastName: 'UI',
-                            userCampaigns,
-                            userGroups,
-                        }),
-                    },
-                    type: actionTypes.ALLOCATIONS_GIVE_FROM_DROPDOWN,
-                });
             });
     };
 };

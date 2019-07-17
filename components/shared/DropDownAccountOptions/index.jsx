@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, {
     Fragment,
 } from 'react';
@@ -13,20 +14,43 @@ import {
     Select,
 } from 'semantic-ui-react';
 
+import {
+    populateAccountOptions,
+} from '../../../helpers/give/utils';
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 
 class DropDownAccountOptions extends React.Component {
+
     renderDropDownFeild() {
         const {
-            dropDownData,
+            companiesAccountsData,
+            fund,
+            formatMessage,
+            userCampaigns,
+            userGroups,
             userAccountsFetched,
             selectedValue,
             validity,
             parentInputChange,
             parentOnBlurChange,
             name,
+            type,
         } = this.props;
-        console.log(dropDownData);
+        let dropDownData = null;
+        const giveFromHeader = (type === 'donations') ? formatMessage('dropDownAccountOptions:addingToLabel') : formatMessage('dropDownAccountOptions:giveFromLabel');
+        const giveFromPlaceHolder = (type === 'donations') ? formatMessage('dropDownAccountOptions:destinationaccountPlaceHolder') : formatMessage('dropDownAccountOptions:accountPlaceHolder');
+        if (!_.isEmpty(companiesAccountsData) || !_.isEmpty(userCampaigns) || !_.isEmpty(userGroups)) {
+            dropDownData = populateAccountOptions({
+                companiesAccountsData,
+                firstName: 'Demo',
+                fund,
+                id: '888000', // 888000 // 999614,
+                lastName: 'UI',
+                userCampaigns,
+                userGroups,
+            }, null);
+        }
+        dropDownData = !_.isEmpty(dropDownData) ? dropDownData : null;
         let fieldData = (
             <Form.Field
                 className="field-loader"
@@ -36,7 +60,7 @@ class DropDownAccountOptions extends React.Component {
                 icon={<Icon name="spinner" loading />}
                 iconPosition="left"
                 name={name}
-                placeholder="preloadedAccountPlaceHolder"
+                placeholder={formatMessage('dropDownAccountOptions:preloadedAccountPlaceHolder')}
             />
         );
         if (!_.isEmpty(dropDownData)) {
@@ -49,7 +73,7 @@ class DropDownAccountOptions extends React.Component {
                     onBlur={parentOnBlurChange}
                     onChange={parentInputChange}
                     options={dropDownData}
-                    placeholder="accountPlaceHolder"
+                    placeholder={giveFromPlaceHolder}
                     value={selectedValue}
                 />
             );
@@ -59,10 +83,10 @@ class DropDownAccountOptions extends React.Component {
                 <Fragment>
                     <Form.Field>
                         <label htmlFor="giveFrom">
-                            'giveFromLabel'
+                            {giveFromHeader}
                         </label>
                         <Popup
-                            content="allocationsGiveFromPopup"
+                            content={formatMessage('dropDownAccountOptions:allocationsGiveFromPopup')}
                             position="top center"
                             trigger={(
                                 <Icon
@@ -96,13 +120,17 @@ class DropDownAccountOptions extends React.Component {
 const mapStateToProps = (state, props) => {
     if (props.type === 'donations') {
         return {
-            dropDownData: state.give.donationAddToData,
+            companiesAccountsData: state.user.companiesAccountsData,
+            fund: state.user.fund,
             userAccountsFetched: state.user.userAccountsFetched,
         };
     }
     return {
-        dropDownData: state.give.allocationGiveFromData,
+        companiesAccountsData: state.user.companiesAccountsData,
+        fund: state.user.fund,
         userAccountsFetched: state.user.userAccountsFetched,
+        userCampaigns: state.user.userCampaigns,
+        userGroups: state.user.userGroups,
     };
 };
 

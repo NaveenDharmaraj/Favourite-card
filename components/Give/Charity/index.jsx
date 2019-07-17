@@ -55,6 +55,7 @@ import DropDownAccountOptions from '../../shared/DropDownAccountOptions';
 import IconCharity from '../../../static/images/chimp-icon-charity.png';
 import IconGroup from '../../../static/images/chimp-icon-giving-group.png';
 import IconIndividual from '../../../static/images/chimp-icon-individual.png';
+import { withTranslation } from '../../../i18n';
 
 class Charity extends React.Component {
     constructor(props) {
@@ -92,22 +93,13 @@ class Charity extends React.Component {
             currentGroupId = groupId;
         }
         const paymentInstruments = (!_isEmpty(props.flowObject.giveData.giveFrom) && props.flowObject.giveData.giveFrom.type === 'companies') ? companyDetails.companyPaymentInstrumentsData : paymentInstrumentsData;
+        const formatMessage = props.t;
         this.state = {
-            flowObject: _merge({}, props.flowObject),
             benificiaryIndex: 0,
             buttonClicked: false,
             dropDownOptions: {
-                donationMatchList: populateDonationMatch(donationMatchData),
-                giftTypeList: populateGiftType(),
-                // giveFromList: populateAccountOptions({
-                //     companiesAccountsData,
-                //     firstName,
-                //     fund,
-                //     id,
-                //     lastName,
-                //     userCampaigns,
-                //     userGroups,
-                // }),
+                donationMatchList: populateDonationMatch(donationMatchData, formatMessage),
+                giftTypeList: populateGiftType(formatMessage),
                 giveToList: populateGiveToGroupsofUser(giveGroupBenificairyDetails),
                 infoToShareList: populateInfoToShare(
                     taxReceiptProfiles,
@@ -117,10 +109,12 @@ class Charity extends React.Component {
                         displayName,
                         email,
                     },
+                    formatMessage,
                 ),
-                paymentInstrumentList: populatePaymentInstrument(paymentInstruments),
+                paymentInstrumentList: populatePaymentInstrument(paymentInstruments, formatMessage),
             },
             findAnotherRecipientLabel: 'Find another recipient',
+            flowObject: _merge({}, props.flowObject),
             inValidCardNameValue: true,
             inValidCardNumber: true,
             inValidCvv: true,
@@ -184,7 +178,7 @@ class Charity extends React.Component {
         dispatch(getDonationMatchAndPaymentInstruments());
     }
 
-    componentDidUpdate(prevProps, prevState)  {
+    componentDidUpdate(prevProps)  {
         if (!_isEqual(this.props, prevProps)) {
             const {
                 benificiaryIndex,
@@ -197,12 +191,13 @@ class Charity extends React.Component {
                 groupFromUrl,
             } = this.state;
             const {
-                accountOptions,
                 companyDetails,
                 companiesAccountsData,
+                currentUser: {
+                    displayName,
+                    email,
+                },
                 donationMatchData,
-                displayName,
-                email,
                 firstName,
                 fund,
                 id,
@@ -217,6 +212,7 @@ class Charity extends React.Component {
             } = this.props;
             let paymentInstruments = null;
             let companyPaymentInstrumentChanged = false;
+            const formatMessage = this.props.t;
             if (giveData.giveFrom.type === 'companies' && !_isEmpty(companyDetails)) {
                 if (_isEmpty(this.props.companyDetails)
                      || !_isEqual(companyDetails.companyPaymentInstrumentsData,
@@ -229,10 +225,10 @@ class Charity extends React.Component {
                 paymentInstruments = paymentInstrumentsData;
             }
             const paymentInstrumentOptions = populatePaymentInstrument(
-                paymentInstruments,
+                paymentInstruments, formatMessage,
             );
             const giveToOptions = populateGiveToGroupsofUser(giveGroupBenificairyDetails);
-            const donationMatchOptions = populateDonationMatch(donationMatchData);
+            const donationMatchOptions = populateDonationMatch(donationMatchData, formatMessage);
             if (!_isEmpty(giveCharityDetails) && !_isEmpty(giveCharityDetails.charityDetails)) {
                 groupFromUrl = false;
                 giveData.giveTo = {
@@ -257,9 +253,9 @@ class Charity extends React.Component {
             console.log('fund', fund);
             if (!_isEmpty(fund)) {
                 giveData = Charity.initFields(
-                    giveData, fund, id, accountOptions, paymentInstrumentOptions,
+                    giveData, fund, id, paymentInstrumentOptions,
                     companyPaymentInstrumentChanged,
-                    `${firstName} ${lastName}`,
+                    `${firstName} ${lastName}`, companiesAccountsData, userGroups, userCampaigns,
                 );
             }
             this.setState({
@@ -267,8 +263,7 @@ class Charity extends React.Component {
                 dropDownOptions: {
                     ...dropDownOptions,
                     donationMatchList: donationMatchOptions,
-                    giftTypeList: populateGiftType(),
-                    //giveFromList: accountOptions,
+                    giftTypeList: populateGiftType(formatMessage),
                     giveToList: giveToOptions,
                     infoToShareList: populateInfoToShare(
                         taxReceiptProfiles,
@@ -278,6 +273,7 @@ class Charity extends React.Component {
                             displayName,
                             email,
                         },
+                        formatMessage,
                     ),
                     paymentInstrumentList: paymentInstrumentOptions,
                 },
@@ -299,7 +295,6 @@ class Charity extends React.Component {
      * @param {object} giveData full form data.
      * @param {object} fund user fund details from API.
      * @param {String} id user id from API.
-     * @param {object[]} accountOptions account list.
      * @param {object[]} paymentInstrumentOptions creditcard list.
      * @param {boolean} companyPaymentInstrumentChanged creditcard changed or not.
      * @param {String} name user name from API.
@@ -307,8 +302,8 @@ class Charity extends React.Component {
      */
 
     // eslint-disable-next-line react/sort-comp
-    static initFields(giveData, fund, id, accountOptions, paymentInstrumentOptions,
-        companyPaymentInstrumentChanged, name) {
+    static initFields(giveData, fund, id, paymentInstrumentOptions,
+        companyPaymentInstrumentChanged, name, companiesAccountsData, userGroups, userCampaigns) {
         if (
             (giveData.giveFrom.type === 'user' || giveData.giveFrom.type === 'companies')
             && (giveData.creditCard.value === null || companyPaymentInstrumentChanged)
@@ -319,7 +314,7 @@ class Charity extends React.Component {
                 paymentInstrumentOptions,
             );
         }
-        if (_isEmpty(accountOptions) && !giveData.userInteracted) {
+        if (_isEmpty(companiesAccountsData) && _isEmpty(userGroups) && _isEmpty(userCampaigns) && !giveData.userInteracted) {
             giveData.giveFrom.id = id;
             giveData.giveFrom.value = fund.id;
             giveData.giveFrom.type = 'user';
@@ -327,7 +322,7 @@ class Charity extends React.Component {
             giveData.giveFrom.text = `${fund.attributes.name} ($${fund.attributes.balance})`;
             giveData.giveFrom.balance = fund.attributes.balance;
             giveData.giveFrom.name = name;
-        } else if (!_isEmpty(accountOptions) && !giveData.userInteracted) {
+        } else if (!_isEmpty(companiesAccountsData) && !_isEmpty(userGroups) && !_isEmpty(userCampaigns) && !giveData.userInteracted) {
             giveData.giveFrom = {
                 value: '',
             };
@@ -742,10 +737,11 @@ class Charity extends React.Component {
         const {
             showAnotherRecipient,
         } = this.state;
+        const formatMessage = this.props.t;
         this.setState({
             findAnotherRecipientLabel: showAnotherRecipient
-                ? 'Find another recipient'
-                : 'Cancel',
+                ? formatMessage('findAnotherRecipientMessage')
+                : formatMessage('findAnotherRecipientCancel'),
             showAnotherRecipient: !showAnotherRecipient,
         });
     }
@@ -765,6 +761,7 @@ class Charity extends React.Component {
         friendUrlEndpoint,
         groupUrlEndpoint,
         findAnotherRecipientLabel,
+        formatMessage,
     ) {
         return (
             <Fragment>
@@ -785,9 +782,9 @@ class Charity extends React.Component {
                                     src={IconCharity}
                                 />
                                 <List.Content className="lst-cnt">
-                                    Charity Or
+                                    {formatMessage('goToCharityFirstLabel')}
                                     <br />
-                                    Giving Group
+                                    {formatMessage('goToCharitySecondLabel')}
                                 </List.Content>
                             </List.Item>
                             <List.Item className="lstitm" to={friendUrlEndpoint}>
@@ -796,9 +793,9 @@ class Charity extends React.Component {
                                     src={IconIndividual}
                                 />
                                 <List.Content className="lst-cnt">
-                                    Friends and
+                                    {formatMessage('goToFriendsFirstLabel')}
                                     <br />
-                                    Family
+                                    {formatMessage('goToFriendsSecondLabel')}
                                 </List.Content>
                             </List.Item>
                             <List.Item className="lstitm" to={groupUrlEndpoint}>
@@ -807,9 +804,9 @@ class Charity extends React.Component {
                                     src={IconGroup}
                                 />
                                 <List.Content className="lst-cnt">
-                                    Giving Group
+                                    {formatMessage('goToGroupFirstLabel')}
                                     <br />
-                                    you belong to
+                                    {formatMessage('goToGroupSecondLabel')}
                                 </List.Content>
                             </List.Item>
                         </List>
@@ -831,7 +828,7 @@ class Charity extends React.Component {
      * @return {JSX} JSX representing payment fields.
      */
 
-    renderCoverFees(giveFrom, giveAmount, coverFeesData, coverFees) {
+    renderCoverFees(giveFrom, giveAmount, coverFeesData, coverFees, formatMessage) {
         if (Number(giveFrom.value) > 0 && Number(giveAmount) > 0 &&
             !_isEmpty(coverFeesData)
         ) {
@@ -841,7 +838,10 @@ class Charity extends React.Component {
                 const feeAmount = formatAmount(coverFeesData.giveAmountFees);
                 const totalAmount = formatAmount(Number(giveAmount) +
                 Number(coverFeesData.giveAmountFees));
-                coverNoteText = `Cover ${feeAmount} in third-party processing fees on behalf of this charity, for a total amount of ${totalAmount}.`;
+                coverNoteText = formatMessage('feeAmountCoverageNote', {
+                    feeAmount,
+                    totalAmount,
+                });
             }
             if (!_isEmpty(coverNoteText)) {
                 return (
@@ -856,7 +856,7 @@ class Charity extends React.Component {
                             onChange={this.handleInputChange}
                         />
                         <Popup
-                            content="Banks and credit card companies charge a processing fee to complete online transactions, including online donations. CHIMP does not benefit from these fees, but we do pass them on to gift recipients. You can choose to cover this fee so the recipient receives 100% of your intended gift."
+                            content={formatMessage('feeAmountCoveragePopup')}
                             position="top center"
                             trigger={(
                                 <Icon
@@ -885,7 +885,7 @@ class Charity extends React.Component {
      */
 
     renderSpecialInstructionComponent(
-        giveFrom, giftType, giftTypeList, infoToShare, infoToShareList,
+        giveFrom, giftType, giftTypeList, infoToShare, infoToShareList, formatMessage
     ) {
         if (!_isEmpty(giveFrom) && giveFrom.value > 0) {
             return (
@@ -896,6 +896,7 @@ class Charity extends React.Component {
                     handleInputChange={this.handleInputChange}
                     infoToShare={infoToShare}
                     infoToShareList={infoToShareList}
+                    formatMessage={formatMessage}
                 />
             );
         }
@@ -947,6 +948,7 @@ class Charity extends React.Component {
         let stripeCardComponent = null;
         const groupUrlEndpoint = Number(sourceAccountHolderId) > 0 ? `/give/to/group/new?source_account_holder_id=${sourceAccountHolderId}` : null;
         const friendUrlEndpoint = `/give/to/friend/new`;
+        const formatMessage = this.props.t;
         const giveAmountWithCoverFees = (coverFees)
             ? Number(giveAmount) + Number(coverFeesData.giveAmountFees)
             : Number(giveAmount);
@@ -962,6 +964,7 @@ class Charity extends React.Component {
                     donationAmount={donationAmount}
                     donationMatch={donationMatch}
                     donationMatchList={donationMatchList}
+                    formatMessage={formatMessage}
                     getStripeCreditCard={this.getStripeCreditCard}
                     handleInputChange={this.handleInputChange}
                     handleInputOnBlur={this.handleInputOnBlur}
@@ -980,7 +983,6 @@ class Charity extends React.Component {
                 );
             }
         }
-        console.log('dropdownoptions', this.state.dropDownOptions);
         return (
             <Form onSubmit={this.handleSubmit}>
                 { (Number(giveTo.value) > 0) && (
@@ -990,7 +992,7 @@ class Charity extends React.Component {
                                 <div>
                                     <Form.Field>
                                         <label htmlFor="giveTo">
-                                                Give to
+                                            {formatMessage('giveToLabel')}
                                         </label>
                                         <Form.Field
                                             control={Input}
@@ -1009,6 +1011,7 @@ class Charity extends React.Component {
                                                 friendUrlEndpoint,
                                                 groupUrlEndpoint,
                                                 findAnotherRecipientLabel,
+                                                formatMessage,
                                             )
                                     }
                                 </div>
@@ -1019,7 +1022,7 @@ class Charity extends React.Component {
                                 <div>
                                     <Form.Field>
                                         <label htmlFor="giveTo">
-                                            Give to
+                                            {formatMessage('giveToLabel')}
                                         </label>
                                         <Form.Field
                                             control={Select}
@@ -1037,13 +1040,14 @@ class Charity extends React.Component {
                                         friendUrlEndpoint,
                                         groupUrlEndpoint,
                                         findAnotherRecipientLabel,
+                                        formatMessage,
                                     )}
                                 </div>
                             )
                         }
                         <Form.Field>
                             <label htmlFor="giveAmount">
-                                Amount
+                                {formatMessage('giveCommon:amountLabel')}
                             </label>
                             <Form.Field
                                 control={Input}
@@ -1055,7 +1059,7 @@ class Charity extends React.Component {
                                 name="giveAmount"
                                 onBlur={this.handleInputOnBlur}
                                 onChange={this.handleInputChange}
-                                placeholder="Enter amount"
+                                placeholder={formatMessage('giveCommon:amountPlaceHolder')}
                                 size="large"
                                 value={giveAmount}
                             />
@@ -1063,30 +1067,33 @@ class Charity extends React.Component {
                         <FormValidationErrorMessage
                             condition={!validity.doesAmountExist || !validity.isAmountMoreThanOneDollor
                         || !validity.isValidPositiveNumber}
-                            errorMessage="Please choose an amount of 5 or more"
+                            errorMessage={formatMessage('giveCommon:errorMessages.amountLessOrInvalid', {
+                                minAmount: 5,
+                            })}
                         />
                         <FormValidationErrorMessage
                             condition={!validity.isAmountLessThanOneBillion}
-                            errorMessage="$9,999 is the maximum we can process here. For larger amounts, please get in touch with us: hello@chimp.net or 1-877-531-0580."
+                            errorMessage={formatMessage('giveCommon:errorMessages.invalidMaxAmountError')}
                         />
                         <FormValidationErrorMessage
                             condition={!validity.isAmountCoverGive}
-                            errorMessage="Sorry, you can't give more money than what is in your account."
+                            errorMessage={formatMessage('giveCommon:errorMessages.giveAmountGreaterThanBalance')}
                         />
                         <DropDownAccountOptions
                             type={type}
-                            validity={validity.isValidAddingToSource}
+                            validity={validity.isValidGiveFrom}
                             selectedValue={this.state.flowObject.giveData.giveFrom.value}
                             name="giveFrom"
                             parentInputChange={this.handleInputChange}
                             parentOnBlurChange={this.handleInputOnBlur}
+                            formatMessage={formatMessage}
                         />
                         {this.renderCoverFees(
-                            giveFrom, giveAmount, coverFeesData, coverFees,
+                            giveFrom, giveAmount, coverFeesData, coverFees, formatMessage,
                         )}
                         {this.renderSpecialInstructionComponent(
                             giveFrom,
-                            giftType, giftTypeList, infoToShare, infoToShareList,
+                            giftType, giftTypeList, infoToShare, infoToShareList, formatMessage,
                         )}
                         {accountTopUpComponent}
                         {stripeCardComponent}
@@ -1095,6 +1102,7 @@ class Charity extends React.Component {
                         </Form.Field>
                         <NoteTo
                             allocationType={type}
+                            formatMessage={formatMessage}
                             giveFrom={giveFrom}
                             noteToCharity={noteToCharity}
                             handleInputChange={this.handleInputChange}
@@ -1105,7 +1113,7 @@ class Charity extends React.Component {
                         <Divider hidden />
                         {/* { !stepsCompleted && */}
                         <Form.Button
-                            content={(!this.state.buttonClicked) ? 'Continue' : 'Submit'}
+                            content={(!this.state.buttonClicked) ? formatMessage('giveCommon:continueButton') : formatMessage('giveCommon:submittingButton')}
                             disabled={(this.state.buttonClicked) || !this.props.userAccountsFetched}
                             type="submit"
                         />
@@ -1118,7 +1126,6 @@ class Charity extends React.Component {
 }
 Charity.propTypes = {
     dispatch: PropTypes.func,
-    flowSteps: PropTypes.arrayOf,
     stepIndex: PropTypes.number,
 };
 const defProps = {
@@ -1140,13 +1147,22 @@ Charity.defaultProps = Object.assign({}, beneficiaryDefaultProps, defProps);
 
 function mapStateToProps(state) {
     return {
-        accountOptions: state.give.allocationGiveFromData,
+        companiesAccountsData: state.user.companiesAccountsData,
         companyDetails: state.give.companyData,
         coverFeesData: state.give.coverFeesData,
         giveCharityDetails: state.give.charityDetails,
         giveGroupBenificairyDetails: state.give.benificiaryForGroupDetails,
         taxReceiptProfiles: state.user.taxReceiptProfiles,
         userAccountsFetched: state.user.userAccountsFetched,
+        userCampaigns: state.user.userCampaigns,
+        userGroups: state.user.userGroups,
     };
 }
-export default connect(mapStateToProps)(Charity);
+export default withTranslation([
+    'charity',
+    'giveCommon',
+    'accountTopUp',
+    'dropDownAccountOptions',
+    'noteTo',
+    'specialInstruction',
+])(connect(mapStateToProps)(Charity));

@@ -28,32 +28,31 @@ const handleInputChange = (event, props) => {
 };
 
 const labelTextIds = {
-    campaigns: 'Note to self',
-    companies: 'Note to company',
-    groups: 'Note to group',
-    user: 'Note to self',
+    campaigns: 'noteToSelfLabelReview',
+    companies: 'noteToCompanyLabel',
+    groups: 'noteToGroupLabel',
+    user: 'noteToSelfLabelReview',
 };
-
 
 const NoteTo = (props) => {
     const {
-        // formatMessage,
+        formatMessage,
         giveFrom,
         handleInputOnBlur,
-        // noteToCharity,
-        // noteToSelf,
-        // validity,
-        formatMessage,
+        noteToCharity,
+        noteToSelf,
+        validity,
     } = props;
     const currentCountNoteToSelf = (!_isEmpty(noteToSelf)) ? Math.max(0, (1000 - Number(noteToSelf.length))) : 1000;
     const infoNoteToSelf = `${currentCountNoteToSelf} of 1000 characters left`;
     const currentCountNoteToCharity = (!_isEmpty(noteToCharity)) ? Math.max(0, (1000 - Number(noteToCharity.length))) : 1000;
     const infoNoteToCharity = `${currentCountNoteToCharity} of 1000 characters left`;
     const giveFromType = (!_isEmpty(giveFrom.type)) ? giveFrom.type : 'user';
+    const labelText = labelTextIds[giveFromType];
     return (
         <Fragment>
             <Form.Field>
-                <Header as="h3">
+                <Header as="h3"> 
                     {formatMessage('noteTo:includeMessageLabel')}
                 </Header>
             </Form.Field>
@@ -82,21 +81,20 @@ const NoteTo = (props) => {
                     onChange={(e) => { handleInputChange(e, props); }}
                     onBlur={handleInputOnBlur}
                     placeholder={formatMessage('noteTo:generalInputPlaceHolder')}
-                    value=""// {noteToCharity}
+                    value={noteToCharity}
                 />
             </Form.Field>
             <FormValidationErrorMessage
-                // condition={!validity.isNoteToCharityInLimit}
-                errorMessage={formatMessage('noteTo:invalidLengthError')}
+                condition={!validity.isNoteToCharityInLimit}
+                errorMessage={formatMessage('errorMessages.invalidLengthError')}
             />
             <FormValidationErrorMessage
-                // condition={!validity.isValidNoteToCharityText}
-                errorMessage={formatMessage('noteTo:invalidNoteTextError')}
+                condition={!validity.isValidNoteToCharityText}
+                errorMessage={formatMessage('errorMessages.invalidNoteTextError')}
             />
             <Form.Field>
                 <label htmlFor="noteToSelf" id="noteToSelfLabel">
-                    {labelTextIds[giveFromType]}
-                    {/* {formatMessage(fields[labelTextIds[giveFromType]])} */}
+                    {formatMessage(`noteTo:${labelText}`)}
                 </label>
                 <Popup
                     content={formatMessage('noteTo:givingNoteToSelfPopup')}
@@ -119,16 +117,16 @@ const NoteTo = (props) => {
                     onChange={(e) => { handleInputChange(e, props); }}
                     onBlur={handleInputOnBlur}
                     placeholder={formatMessage('noteTo:noteToSelfPlaceHolder')}
-                    value=""// {noteToSelf}
+                    value={noteToSelf}
                 />
             </Form.Field>
             <FormValidationErrorMessage
-                // condition={!validity.isNoteToSelfInLimit}
-                errorMessage={formatMessage('noteTo:invalidLengthError')}
+                condition={!validity.isNoteToSelfInLimit}
+                errorMessage={formatMessage('errorMessages.invalidLengthError')}
             />
             <FormValidationErrorMessage
-                // condition={!validity.isValidNoteSelfText}
-                errorMessage={formatMessage('noteTo:invalidNoteTextError')}
+                condition={!validity.isValidNoteSelfText}
+                errorMessage={formatMessage('errorMessages.invalidNoteTextError')}
             />
         </Fragment>
     );

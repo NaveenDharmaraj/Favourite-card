@@ -260,7 +260,7 @@ class Donation extends React.Component {
       return (
           <Form.Field>
               <label htmlFor="donationAmount">
-                {formatMessage('amountLabel')}
+                {formatMessage('giveCommon:amountLabel')}
               </label>
               <Form.Field
                   control={Input}
@@ -272,7 +272,7 @@ class Donation extends React.Component {
                   maxLength="7"
                   onBlur={this.handleInputOnBlur}
                   onChange={this.handleInputChange}
-                  placeholder={formatMessage('amountPlaceHolder')}
+                  placeholder={formatMessage('giveCommon:amountPlaceHolder')}
                   size="large"
                   value={amount}
               />
@@ -564,6 +564,7 @@ class Donation extends React.Component {
         <Form onSubmit={this.handleSubmit}>
         { this.renderDonationAmountField(giveData.donationAmount, validity, formatMessage) }
         <DropDownAccountOptions
+          formatMessage={formatMessage}
           type={type}
           validity= {validity.isValidAddingToSource}
           selectedValue={giveData.giveTo.value}
@@ -614,4 +615,4 @@ const  mapStateToProps = (state) => {
         userAccountsFetched: state.user.userAccountsFetched,
     };
 }
-export default withTranslation(['donation', 'giveCommon'])(connect(mapStateToProps)(Donation));
+export default withTranslation(['donation', 'giveCommon', 'dropDownAccountOptions'])(connect(mapStateToProps)(Donation));
