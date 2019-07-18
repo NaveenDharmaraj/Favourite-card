@@ -14,6 +14,7 @@ import {
 } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 
+import { withTranslation } from '../../i18n';
 import {
     formatAmount,
     getNextAllocationMonth,
@@ -65,6 +66,7 @@ const Success = (props) => {
     }, []);
     const {
         successData,
+        t: formatMessage,
     } = props;
     const {
         giveData: {
@@ -83,7 +85,7 @@ const Success = (props) => {
         quaziSuccessStatus,
         type,
     } = successData;
-    let linkToDashboardText = 'Go to your dashboard';
+    let linkToDashboardText = formatMessage('goToYourDashboard');// Go to your dashboard';
     let taxProfileLink = (giveFrom.type !== 'user')
         ? `/${giveFrom.type}/${giveFrom.slug}/tax-receipts` : '/user/tax-receipts';
     let dashboardLink = '/dashboard';
@@ -101,10 +103,25 @@ const Success = (props) => {
         displayAmount += Number(donationMatch.value);
     }
     const donationMatchData = [];
-    const creditCardMessage = `${creditCard.name}'s ${_.capitalize(creditCard.processor)} ending with ${creditCard.truncatedPaymentId} was used to complete this transaction, which will appear on your credit card statement as "CHIMP FDN * DONATION".`;
+    const creditCardMessage = formatMessage('creditCardMessage', {
+        name: creditCard.name,
+        cardType: _.capitalize(creditCard.processor),
+        lastFourDigitCardNo: creditCard.truncatedPaymentId,
+    });
+    // `${creditCard.name}'s ${_.capitalize(creditCard.processor)} ending with
+    // ${creditCard.truncatedPaymentId} was used to complete this transaction, which will appear on
+    // your credit card statement as "CHIMP FDN * DONATION".`;
     const recurringDay = (giftType.value === 1) ? `${giftType.value}st` : `${giftType.value}th`;
     const startsOn = setDateForRecurring(giftType.value);
-    const recurringCreditCardMessage = `${creditCard.displayName}'s ${_.capitalize(creditCard.processor)} ending with ${creditCard.truncatedPaymentId} will be charged ${displayAmount} on the ${recurringDay} of each month, starting on ${startsOn}.`;
+    const recurringCreditCardMessage = formatMessage('recurringCreditCardMessage', {
+        name: creditCard.displayName,
+        cardType: _.capitalize(creditCard.processor),
+        lastFourDigitCardNo: creditCard.truncatedPaymentId,
+        amount: displayAmount,
+        recurringDay: recurringDay,
+        recurringDate: startsOn,
+    });
+    // `${creditCard.displayName}'s ${_.capitalize(creditCard.processor)} ending with ${creditCard.truncatedPaymentId} will be charged ${displayAmount} on the ${recurringDay} of each month, starting on ${startsOn}.`;
     let amount = null;
     let total = null;
     const fromName = giveFrom.name;
@@ -118,31 +135,42 @@ const Success = (props) => {
 
     // Quazi status message
     if (quaziSuccessStatus) {
-        firstParagraph = type !== 'donations' ? `Apologies,${donationDetails.name}. To send your gift,please wait for a confirmation email from us."`
-            : `Thank you, ${donationDetails.name}. We're processing your transcation and will add ${formatAmount(donationDetails.amount)} to your Chimp Account shortly."`;
-        secondParagraph = type !== 'donations' ? 'We\'ll send you an email within 24 hours confirming that the amount has been added.'
-            : `It's taking us a little longer than expected to process the ${formatAmount(donationAmount)} top up that's needed to send your gift. We're still working on it and will send you an email within 24 hours confirming that the amount has been added to your CHIMP Account.`;
+        firstParagraph = type !== 'donations' ? formatMessage('quaziDonationMessageForAllocations', { name: donationDetails.name }) // `Apologies,${donationDetails.name}. To send your gift,please wait for a confirmation email from us."`
+            : formatMessage('quaziDonationSuccessMessage', {
+                name: donationDetails.name,
+                amount: formatAmount(donationDetails.amount),
+            });
+        // `Thank you, ${donationDetails.name}. We're processing your transcation and will add ${formatAmount(donationDetails.amount)} to your Chimp Account shortly."`;
+        secondParagraph = type !== 'donations' ? formatMessage('quaziDonationSuccessMessageTwo') // 'We\'ll send you an email within 24 hours confirming that the amount has been added.'
+            : formatMessage('quaziSuccessSecondMessageforAllocation', { amount: formatAmount(donationAmount) }); // `It's taking us a little longer than expected to process the ${formatAmount(donationAmount)} top up that's needed to send your gift. We're still working on it and will send you an email within 24 hours confirming that the amount has been added to your CHIMP Account.`;
 
         const recipientList = (type !== 'donations' && type !== p2pLink) ? giveTo.name
             : separateByComma(recipients);
-        thirdParagraph = `When you get the email from us, please come back to your CHIMP Account to send your gift to ${recipientList}.`;
+        thirdParagraph = formatMessage('quaziSuccessThirdMessageforAllocation', { recipient: recipientList });// `When you get the email from us, please come back to your CHIMP Account to send your gift to ${recipientList}.`;
     } else if (giftType.value === 0) {
         // This flow is based on giftType(recurring)..
         if (giveTo.type === 'companies') {
             taxProfileLink = `/companies/${giveTo.slug}/tax-receipts`;
             dashboardLink = `/companies/${giveTo.slug}`;
-            linkToDashboardText = `go to the ${giveTo.name} Dashboard`;
-            firstParagraph = `"Nicely done, ${donationDetails.name}. You add ${donationDetails.amount} to the ${giveTo.name} CHIMP Account."`;
+            linkToDashboardText = formatMessage('goToCompanyDashboard', { companyName: giveTo.name });// `go to the ${giveTo.name} Dashboard`;
+            firstParagraph = formatMessage('companyAddMoney', {
+                name: donationDetails.name,
+                amount: donationDetails.amount,
+                companyName: giveTo.name,
+            });// `"Nicely done, ${donationDetails.name}. You add ${donationDetails.amount} to the ${giveTo.name} CHIMP Account."`;
         }
         if (giveTo.type === 'user') {
-            firstParagraph = `Nicely done, ${donationDetails.name}. You added ${donationDetails.amount} to your CHIMP Account.`;
+            firstParagraph = formatMessage('addMoney', {
+                name: donationDetails.name,
+                amount: donationDetails.amount,
+            });// `Nicely done, ${donationDetails.name}. You added ${donationDetails.amount} to your CHIMP Account.`;
         }
         secondParagraph = creditCardMessage;
         fourthButton = (
             <Button
                 // as={GeminiLink}
                 color="blue"
-                content="See your tax receipt"
+                content={formatMessage('seeYourTaxReceipt')}
                 id="taxReceiptsLink"
                 path={taxProfileLink}
             />
@@ -155,13 +183,33 @@ const Success = (props) => {
 
         if (coverFees) {
             // Based on cover fees first paragraph gets changed.
-            firstParagraph = (giveFrom.type === 'user') ? `Thank you, ${donationDetails.name}. You gave ${formatAmount(giveAmount)} (plus ${coverFeesAmount} in covered third-party processing fees) to ${giveTo.text}.`
-                : `Thank you, ${donationDetails.name}. You gave ${formatAmount(giveAmount)} (plus ${coverFeesAmount} in fees) from ${fromName}'s CHIMP Account to ${giveTo.text}.`;
+            firstParagraph = (giveFrom.type === 'user') ? formatMessage('userSingleCoverFeesAllocation', {
+                name: donationDetails.name,
+                amount: formatAmount(giveAmount),
+                coverFeesAmount: coverFeesAmount,
+                to: giveTo.text,
+            }) // `Thank you, ${donationDetails.name}. You gave ${formatAmount(giveAmount)} (plus ${coverFeesAmount} in covered third-party processing fees) to ${giveTo.text}.`
+                : formatMessage('nonUserSingleCoverFeesAllocation', {
+                    name: donationDetails.name,
+                    amount: formatAmount(giveAmount),
+                    coverFeesAmount: coverFeesAmount,
+                    fromName: fromName,
+                    to: giveTo.text,
+                });// `Thank you, ${donationDetails.name}. You gave ${formatAmount(giveAmount)} (plus ${coverFeesAmount} in fees) from ${fromName}'s CHIMP Account to ${giveTo.text}.`;
         }
         // Should not enter the condition if type is donation
         else if (type !== p2pLink && type !== 'donations') {
-            firstParagraph = (giveFrom.type === 'user') ? `Thank you, ${donationDetails.name}. You gave ${formatAmount(giveAmount)} to ${giveTo.text}.`
-                : `Thank you, ${donationDetails.name}. You gave ${formatAmount(giveAmount)} from ${fromName}'s CHIMP Account to ${giveTo.text}.`;
+            firstParagraph = (giveFrom.type === 'user') ? formatMessage('userSingleAllocation', {
+                name: donationDetails.name,
+                amount: formatAmount(giveAmount),
+                to: giveTo.text,
+            })// `Thank you, ${donationDetails.name}. You gave ${formatAmount(giveAmount)} to ${giveTo.text}.`
+                : formatMessage('nonUserSingleAllocation', {
+                    name: donationDetails.name,
+                    amount: formatAmount(giveAmount),
+                    fromName: fromName,
+                    to: giveTo.text,
+                });// `Thank you, ${donationDetails.name}. You gave ${formatAmount(giveAmount)} from ${fromName}'s CHIMP Account to ${giveTo.text}.`;
         } else {
             // This condition is used to check  recipients array is present
             // eslint-disable-next-line no-lonely-if
@@ -184,7 +232,12 @@ const Success = (props) => {
                         currency: 'USD',
                         style: 'currency',
                     });
-                    firstParagraph = `Nice work, ${donationDetails.name}. You gave ${numberOfRecipient} gifts of ${amount} for a total of ${total} sent.`;
+                    firstParagraph = formatMessage('fromToMultipleRecipient', {
+                        name: donationDetails.name,
+                        number: numberOfRecipient,
+                        amount: amount,
+                        total: total,
+                    }); // `Nice work, ${donationDetails.name}. You gave ${numberOfRecipient} gifts of ${amount} for a total of ${total} sent.`;
                 } else {
                     amount = formatNumber(
                         p2pGiveAmount, {
@@ -192,12 +245,18 @@ const Success = (props) => {
                             style: 'currency',
                         },
                     );
-                    firstParagraph = `Nice work, ${donationDetails.name}. You gave ${amount} to ${recipientEmail}.`;
+                    firstParagraph = formatMessage('fromToSingleRecipient', {
+                        name: donationDetails.name,
+                        amount: amount,
+                        emailAddress: recipientEmail,
+                    }); // `Nice work, ${donationDetails.name}. You gave ${amount} to ${recipientEmail}.`;
                 }
             }
         }
         if (creditCard.value > 0) {
-            secondParagraph = `${creditCard.text} was used to complete this transaction, which will appear on the credit card statement as "CHIMP FDN * DONATION".`;
+            secondParagraph = formatMessage('nonrecurringCCAllocationDetails', {
+                creditCard: creditCard.text,
+            }); // `${creditCard.text} was used to complete this transaction, which will appear on the credit card statement as "CHIMP FDN * DONATION".`;
         }
         if (donationMatch.value > 0) {
             const donationMatchedData = _.find(donationMatchData, (item) => {
@@ -223,12 +282,16 @@ const Success = (props) => {
                         style: 'currency',
                     },
                 );
-                const donationMessage = `In addition, ${amount} was matched by ${giveTo.name} and added to ${donationDetails.name}'s CHIMP Account.`;
+                const donationMessage = formatMessage('nonrecurringDonationDetails', {
+                    amount: amount,
+                    matchingParty: giveTo.name,
+                    to: donationDetails.name,
+                }); // `In addition, ${amount} was matched by ${giveTo.name} and added to ${donationDetails.name}'s CHIMP Account.`;
                 secondParagraph = `${secondParagraph} ${donationMessage}`;
             }
         }
         thirdParagraph = (giveFrom.type === charityLink)
-            ? `Your gift will be sent to the recipient at the beginning of ${month}.` : null;
+            ? formatMessage('timeForSendingCharity', { month: month, }) : null;// `Your gift will be sent to the recipient at the beginning of ${month}.` : null;
         if (!_.isEmpty(thirdParagraph)) {
             needLearnmore = true;
         }
@@ -236,24 +299,46 @@ const Success = (props) => {
         // Allocation
         if (type !== 'donations') {
             firstParagraph = (giveFrom.type === 'user')
-                ? `Thank you, ${donationDetails.name}. You scheduled a monthly gift of ${formatAmount(giveAmount)} to go to ${giveTo.text}.`
-                : `Thank you, ${donationDetails.name}. You scheduled a monthly gift of ${formatAmount(giveAmount)} by ${fromName} to ${giveTo.text}.`;
-            secondParagraph = `This gift will be made from ${fromName}'s CHIMP Account on the ${recurringDay} of each month, starting on ${startsOn}.`;
-            thirdParagraph = `If there isn't enough money in this CHIMP Account to cover the gift, we'll charge ${creditCard.text}. A new tax receipt will be issued and the charge will appear on the credit card statement as "CHIMP FDN * DONATION".`;
+                ? formatMessage('userRecurringAllocation', {
+                    name: donationDetails.name,
+                    amount: formatAmount(giveAmount),
+                    to: giveTo.text,
+                }) // `Thank you, ${donationDetails.name}. You scheduled a monthly gift of ${formatAmount(giveAmount)} to go to ${giveTo.text}.`
+                : formatMessage('nonUserRecurringAllocation', {
+                    name: donationDetails.name,
+                    amount: formatAmount(giveAmount),
+                    fromName: fromName,
+                    to: giveTo.text,
+                }); // `Thank you, ${donationDetails.name}. You scheduled a monthly gift of ${formatAmount(giveAmount)} by ${fromName} to ${giveTo.text}.`;
+            secondParagraph = formatMessage('recurringAllocationDetails', {
+                fromName: fromName,
+                dayOfMonth: recurringDay,
+                startsOn: startsOn,
+            });// `This gift will be made from ${fromName}'s CHIMP Account on the ${recurringDay} of each month, starting on ${startsOn}.`;
+            thirdParagraph = formatMessage('recurringAllocationNotes', {
+                creditCard: creditCard.text,
+            });// `If there isn't enough money in this CHIMP Account to cover the gift, we'll charge ${creditCard.text}. A new tax receipt will be issued and the charge will appear on the credit card statement as "CHIMP FDN * DONATION".`;
         } else if (giveTo.type === 'companies') {
-            firstParagraph = `Nicely done, ${donationDetails.name}. You add ${donationDetails.amount} to the ${giveTo.name} CHIMP Account each month.`;
-            thirdParagraph = `Each time, a tax receipt will be automatically posted to the ${giveTo.name} CHIMP Account and the transaction will appear on the credit card statement as "CHIMP FDN * DONATION".`;
+            firstParagraph = formatMessage('companyRecurringDonation', {
+                name: donationDetails.name,
+                amount: donationDetails.amount,
+                companyName: giveTo.name,
+            });// `Nicely done, ${donationDetails.name}. You add ${donationDetails.amount} to the ${giveTo.name} CHIMP Account each month.`;
+            thirdParagraph = formatMessage('companyRecurringTaxReceiptMessage', { companyName: giveTo.name});// `Each time, a tax receipt will be automatically posted to the ${giveTo.name} CHIMP Account and the transaction will appear on the credit card statement as "CHIMP FDN * DONATION".`;
             recurringDonationsLink = `/companies/${giveTo.slug}/recurring-donations`;
         } else if (giveTo.type === 'user') {
-            firstParagraph = `Nicely done, ${donationDetails.name}. You scheduled ${donationDetails.amount} to be added to your CHIMP Account each month.`;
-            thirdParagraph = `Each time, a tax receipt will automatically be posted to your CHIMP Account and the transaction will appear on your credit card statement as 'CHIMP FDN * DONATION'.`;
+            firstParagraph = formatMessage('recurringDonation', {
+                name: donationDetails.name,
+                amount: donationDetails.amount,
+            }); // `Nicely done, ${donationDetails.name}. You scheduled ${donationDetails.amount} to be added to your CHIMP Account each month.`;
+            thirdParagraph = formatMessage('recurringTaxReceiptMessage');// `Each time, a tax receipt will automatically be posted to your CHIMP Account and the transaction will appear on your credit card statement as 'CHIMP FDN * DONATION'.`;
         }
         secondParagraph = recurringCreditCardMessage;
         fourthButton = (
             <Button
                 // as={GeminiLink}
                 color="blue"
-                content="View your monthly transactions"
+                content={formatMessage('recurringTransactions')}
                 path={recurringDonationsLink}
             />
         );
@@ -368,6 +453,7 @@ Success.propTypes = {
         recipientLists: PropTypes.arrayOf,
         type: PropTypes.string,
     }),
+    t: PropTypes.func,
 };
 Success.defaultProps = {
     successData: {
@@ -398,10 +484,10 @@ Success.defaultProps = {
         stepsCompleted: false,
         type: null,
     },
+    t: _.noop,
 };
 
 const mapStateToProps = (state) => ({
     successData: state.give.successData,
 });
-
-export default connect(mapStateToProps)(Success);
+export default withTranslation('success')(connect(mapStateToProps)(Success));
