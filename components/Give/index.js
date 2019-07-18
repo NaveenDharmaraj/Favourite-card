@@ -7,14 +7,16 @@ import {
     Grid,
     Breadcrumb,
 } from 'semantic-ui-react';
-
+import {actionTypes} from '../../actions/give';
+import FlowBreadcrumbs from './FlowBreadcrumbs';
+import { withTranslation } from '../../i18n';
 import {Router} from '../../routes';
 const TaxReceipt = dynamic(() => import('./TaxReceipt'));
 const Review = dynamic(() => import('./Review'));
 const Success = dynamic(() => import('./Success'));
 const Error = dynamic(() => import('./Error'));
 
-const flowStepsDefault = ['new', 'tax-receipt', 'review', 'success', 'error']
+const flowStepsDefault = ['new', 'tax-receipt-profile', 'review', 'success', 'error']
 
 const renderChildWithProps = (props, stepIndex, flowSteps) => {
     switch (props.step) {
@@ -32,7 +34,7 @@ const renderChildWithProps = (props, stepIndex, flowSteps) => {
                 }) }
                 </div>
             );
-        case "tax-receipt" :
+        case "tax-receipt-profile" :
             return (<TaxReceipt
                 dispatch={props.dispatch}
                 flowObject={props.flowObject}
@@ -70,15 +72,38 @@ class Give extends React.Component {
     }
 
     componentWillUpdate(nextProps, nextState) {
-        if(nextProps.flowObject && !_.isEmpty(nextProps.flowObject.nextStep) && nextProps.flowObject.nextStep!==nextProps.step) {
-            const routeUrl = `${nextProps.baseUrl}/${nextProps.flowObject.nextStep}`;
+        const {
+            flowObject,
+            dispatch,
+        } = nextProps;
+        const {
+            flowSteps,
+        } = this.state;
+        if(flowObject && !_.isEmpty(flowObject.nextStep) && flowObject.nextStep!==nextProps.step) {
+            if (
+                (!_.isEmpty(flowObject.selectedTaxReceiptProfile)
+                || (_.isEmpty(flowObject.selectedTaxReceiptProfile)
+                    && (flowObject.giveData.creditCard.value === null))
+                )
+                && flowObject.nextStep === 'tax-receipt-profile'
+            ) {
+                return dispatch({
+                    payload: {
+                        ...flowObject,
+                        nextStep: flowSteps[2]
+                    },
+                    type: actionTypes.SAVE_FLOW_OBJECT,
+                });
+            }
+            const  routeUrl = `${nextProps.baseUrl}/${flowObject.nextStep}`;
+            // const routeUrl = `${nextProps.baseUrl}/${nextProps.flowObject.nextStep}`;
             Router.pushRoute(routeUrl);
         }
     }
 
     componentDidMount() {
         const {
-            flowSteps
+            flowSteps,
         } = this.state;
         if(_.indexOf(flowSteps, this.props.step) < 0) {
             // const routeUrl = Router.asPath.replace(/\/[^\/]*$/, `/${flowSteps[0]}`)
@@ -88,22 +113,40 @@ class Give extends React.Component {
     }
 
     render() {
+        const {
+            baseUrl,
+            step,
+        } = this.props;
+        const {
+            flowSteps,
+        } = this.state;
+        const formatMessage = this.props.t;
+        const breadcrumbArray = [
+            (baseUrl === '/donations') ? formatMessage('breadCrumb.new') : formatMessage('breadCrumb.give'),
+            formatMessage('breadCrumb.taxReceipt'),
+            formatMessage('breadCrumb.review'),
+            formatMessage('breadCrumb.success'),
+        ]
         return (
             <Fragment>
                 <div className="pageHeader">
                     <Grid columns={2} verticalAlign='middle'>
                         <Grid.Row>
+                        {(step !== 'error') &&
+                            <Grid.Column >
+                                <Header as='h2'>
+                                    {breadcrumbArray[_.indexOf(flowSteps, step)]}
+                                </Header>
+                            </Grid.Column>
+                        }
                         <Grid.Column >
-                            <Header as='h2'>Review</Header>
-                        </Grid.Column>
-                        <Grid.Column >
-                            <Breadcrumb floated='right'>
-                            <Breadcrumb.Section link>Give</Breadcrumb.Section>
-                            <Breadcrumb.Divider icon='triangle right' />
-                            <Breadcrumb.Section link>Review</Breadcrumb.Section>
-                            <Breadcrumb.Divider icon='triangle right' />
-                            <Breadcrumb.Section active>Confirmation</Breadcrumb.Section>
-                            </Breadcrumb>
+                            <FlowBreadcrumbs
+                                currentStep={step}
+                                formatMessage={formatMessage}
+                                steps={flowSteps}
+                                breadcrumbArray={breadcrumbArray}
+
+                            />
                         </Grid.Column>
                         </Grid.Row>
                     </Grid>
@@ -125,9 +168,7 @@ function mapStateToProps(state) {
         flowObject: state.give.flowObject,
         fund: state.user.fund,
         paymentInstrumentsData: state.user.paymentInstrumentsData,
-        userCampaigns: state.user.userCampaigns,
-        userGroups: state.user.userGroups,
     };
 }
 
-export default connect(mapStateToProps)(Give);
+export default withTranslation('giveCommon')(connect(mapStateToProps)(Give));

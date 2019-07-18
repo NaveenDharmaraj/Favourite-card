@@ -264,24 +264,35 @@ const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper')
        */
   
     renderDonationAmountField(amount, validity, formatMessage) {
-        return (
-            <Form.Field>
-                <label htmlFor="donationAmount">
-                  {formatMessage('amountLabel')}
-                </label>
-                <Form.Field
-                    control={Input}
-                    id="donationAmount"
-                    error={!isValidGiftAmount(validity)}
-                    icon="dollar"
-                    iconPosition="left"
-                    name="donationAmount"
-                    maxLength="7"
-                    onBlur={this.handleInputOnBlur}
-                    onChange={this.handleInputChange}
-                    placeholder={formatMessage('amountPlaceHolder')}
-                    size="large"
-                    value={amount}
+      return (
+          <Form.Field>
+              <label htmlFor="donationAmount">
+                {formatMessage('giveCommon:amountLabel')}
+              </label>
+              <Form.Field
+                  control={Input}
+                  id="donationAmount"
+                  error={!isValidGiftAmount(validity)}
+                  icon="dollar"
+                  iconPosition="left"
+                  name="donationAmount"
+                  maxLength="7"
+                  onBlur={this.handleInputOnBlur}
+                  onChange={this.handleInputChange}
+                  placeholder={formatMessage('giveCommon:amountPlaceHolder')}
+                  size="large"
+                  value={amount}
+              />
+                <FormValidationErrorMessage
+                    condition={!validity.doesAmountExist || !validity.isAmountMoreThanOneDollor
+                    || !validity.isValidPositiveNumber}
+                    errorMessage={formatMessage('giveCommon:errorMessages.amountLessOrInvalid', {
+                        minAmount: 5,
+                    })}
+                />
+                <FormValidationErrorMessage
+                    condition={!validity.isAmountLessThanOneBillion}
+                    errorMessage={formatMessage('giveCommon:errorMessages.invalidMaxAmountError')}
                 />
                   <FormValidationErrorMessage
                       condition={!validity.doesAmountExist || !validity.isAmountMoreThanOneDollor
@@ -540,57 +551,58 @@ const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper')
               },
           });
       }
+    }  
+    
+  render() {
+    const {
+        flowObject: {
+            currency,
+            giveData,
+            type,
+        },
+        validity,
+    } = this.state;
+    const {
+        donationMatchData,
+        paymentInstrumentsData,
+        companyDetails,
+        i18n:{
+            language,
+        },
+    } = this.props;
+    const formatMessage = this.props.t;
+    const donationMatchOptions = populateDonationMatch(donationMatchData, formatMessage, language);
+    let paymentInstruments = paymentInstrumentsData;
+    if(giveData.giveTo.type === 'companies'){
+        paymentInstruments = !_.isEmpty(companyDetails.companyPaymentInstrumentsData) ? companyDetails.companyPaymentInstrumentsData : [];
     }
-  
-    render() {
-      const {
-          flowObject: {
-              currency,
-              giveData,
-              type,
-          },
-          validity,
-      } = this.state;
-      const {
-          donationMatchData,
-          paymentInstrumentsData,
-          companyDetails,
-          i18n:{
-              language,
-          },
-      } = this.props;
-      const formatMessage = this.props.t;
-      const donationMatchOptions = populateDonationMatch(donationMatchData, formatMessage, language);
-      let paymentInstruments = paymentInstrumentsData;
-      if(giveData.giveTo.type === 'companies'){
-          paymentInstruments = !_.isEmpty(companyDetails.companyPaymentInstrumentsData) ? companyDetails.companyPaymentInstrumentsData : [];
-      }
-      const paymentInstrumenOptions  = populatePaymentInstrument(paymentInstruments, formatMessage);
-      return (
-        <Fragment>
-          <Form onSubmit={this.handleSubmit}>
-          { this.renderDonationAmountField(giveData.donationAmount, validity, formatMessage) }
-          <DropDownAccountOptions
-            type={type}
-            validity= {validity.isValidAddingToSource}
-            selectedValue={giveData.giveTo.value}
-            name="giveTo"
-            parentInputChange={this.handleInputChange}
-            parentOnBlurChange={this.handleInputOnBlur}
-          />
-          { this.renderingRecurringDonationFields(giveData, formatMessage, language) }
-          <Note
-              fieldName="noteToSelf"
-              handleOnInputChange={this.handleInputChange}
-              handleOnInputBlur={this.handleOnInputBlur}
-              formatMessage ={formatMessage}
-              labelText={formatMessage('noteToSelfLabel')}
-              popupText={formatMessage('donorNoteToSelfPopup')}
-              placeholderText={formatMessage('noteToSelfPlaceHolder')}
-              text={giveData.noteToSelf}
-          />
-          { this.renderdonationMatchOptions(giveData, donationMatchOptions, formatMessage, donationMatchData, language, currency)}
-          { this.renderpaymentInstrumentOptions(giveData, paymentInstrumenOptions, formatMessage)}
+    const paymentInstrumenOptions  = populatePaymentInstrument(paymentInstruments, formatMessage);
+    return (
+      <Fragment>
+        <Form onSubmit={this.handleSubmit}>
+        { this.renderDonationAmountField(giveData.donationAmount, validity, formatMessage) }
+        <DropDownAccountOptions
+          formatMessage={formatMessage}
+          type={type}
+          validity= {validity.isValidAddingToSource}
+          selectedValue={giveData.giveTo.value}
+          name="giveTo"
+          parentInputChange={this.handleInputChange}
+          parentOnBlurChange={this.handleInputOnBlur}
+        />
+        { this.renderingRecurringDonationFields(giveData, formatMessage, language) }
+        <Note
+            fieldName="noteToSelf"
+            handleOnInputChange={this.handleInputChange}
+            handleOnInputBlur={this.handleOnInputBlur}
+            formatMessage ={formatMessage}
+            labelText={formatMessage('noteToSelfLabel')}
+            popupText={formatMessage('donorNoteToSelfPopup')}
+            placeholderText={formatMessage('noteToSelfPlaceHolder')}
+            text={giveData.noteToSelf}
+        />
+        { this.renderdonationMatchOptions(giveData, donationMatchOptions, formatMessage, donationMatchData, language, currency)}
+        { this.renderpaymentInstrumentOptions(giveData, paymentInstrumenOptions, formatMessage)}
         {
             (_isEmpty(paymentInstrumenOptions)|| giveData.creditCard.value === 0) && (
                 <Form.Field>
@@ -598,34 +610,34 @@ const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper')
                 </Form.Field>
             )
         }
-          <Divider hidden />
-              <Form.Button
-                  // className={isMobile ? 'mobBtnPadding' : 'btnPadding'}
-                  content={(!this.state.buttonClicked) ? formatMessage('giveCommon:continueButton')
-                      : formatMessage('giveCommon:submittingButton')}
-                  disabled={(this.state.buttonClicked) || this.state.disableButton}
-                  // fluid={isMobile}
-                  type="submit"
-              />
-          </Form>
-          <div>
-          {/* <div onClick={() => this.handleSubmit()} >Continue</div> */}
-          </div>
-        </Fragment>
-  
-      )
-    }
+        <Divider hidden />
+            <Form.Button
+                // className={isMobile ? 'mobBtnPadding' : 'btnPadding'}
+                content={(!this.state.buttonClicked) ? formatMessage('giveCommon:continueButton')
+                    : formatMessage('giveCommon:submittingButton')}
+                disabled={(this.state.buttonClicked) || this.state.disableButton}
+                // fluid={isMobile}
+                type="submit"
+            />
+        </Form>
+        <div>
+        {/* <div onClick={() => this.handleSubmit()} >Continue</div> */}
+        </div>
+      </Fragment>
+
+    )
   }
-  
-  Donation.defaultProps = {
-      ...donationDefaultProps,
-      companyDetails: [],
-  };
-  
-  const  mapStateToProps = (state) => {
-      return {
-          companyDetails: state.give.companyData,
-          userAccountsFetched: state.user.userAccountsFetched,
-      };
-  }
-  export default withTranslation(['donation', 'giveCommon'])(connect(mapStateToProps)(Donation));
+}
+
+Donation.defaultProps = {
+    ...donationDefaultProps,
+    companyDetails: [],
+};
+
+const  mapStateToProps = (state) => {
+    return {
+        companyDetails: state.give.companyData,
+        userAccountsFetched: state.user.userAccountsFetched,
+    };
+}
+export default withTranslation(['donation', 'giveCommon', 'dropDownAccountOptions'])(connect(mapStateToProps)(Donation));

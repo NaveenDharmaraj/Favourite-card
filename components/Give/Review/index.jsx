@@ -1,21 +1,25 @@
-import React from 'react';
+import React, {
+    Fragment,
+  } from 'react';
 import { connect } from 'react-redux';
 import { reInitNextStep, proceed } from '../../../actions/give';
 import {
   populateDonationReviewPage,
+  populateGiveReviewPage,
 } from '../../../helpers/give/utils';
 import GiveAccounts from './GiveAccounts';
 import { withTranslation } from '../../../i18n';
+import { Link } from '../../../routes'
 
 import {
-    Button,
-    Container,
+    Image,
     Header,
     Segment,
     Grid,
     List,
-    Card,
-    Breadcrumb,
+    Divider,
+    Container,
+    Button
 } from 'semantic-ui-react';
 
 const square = { width: 175, height: 175 }
@@ -50,30 +54,60 @@ class Review extends React.Component {
         i18n:{
             language,
         },
+        userCampaigns,
+        userGroups,
     } = this.props;
     const formatMessage = this.props.t;
+    let reviewData = {};
+    let activeGroupMatch = null;
+    if(type === 'donations'){
+        reviewData = populateDonationReviewPage(giveData, {
+            companiesAccountsData,
+            companyPaymentInstrumentsData,
+            donationMatchData,
+            fund,
+            paymentInstrumentsData,
+        },
+        currency,
+        formatMessage,
+        language,
+        );
+    } else {
+        reviewData = populateGiveReviewPage(giveData, {
+            activeGroupMatch,
+            companiesAccountsData,
+            companyPaymentInstrumentsData,
+            donationMatchData,
+            fund,
+            paymentInstrumentsData,
+            userCampaigns,
+            userGroups,
+        }, currency,
+        formatMessage,
+        language,);
+    }
+    let circleLabel = '';
     const {
         sources,
         recipients,
+        startsOn,
         totalAmount,
-    } = populateDonationReviewPage(giveData, {
-        companiesAccountsData,
-        companyPaymentInstrumentsData,
-        donationMatchData,
-        fund,
-        paymentInstrumentsData,
-    },
-    currency,
-    formatMessage,
-    language,
-    );
-    let circleLabel = '';
+        matchList,
+        fromList,
+        toList,
+        coverFessText,
+        givingGroupMessage,
+        givingOrganizerMessage,
+        groupMatchedBy,
+        showTaxOnRecurring,
+    } = reviewData
     if(type === 'donations') {
         circleLabel = (giveData.automaticDonation)
                         ? formatMessage('donationRecurringAddLabel')
                         : formatMessage('donationAddLabel');
     }
     return (
+        <Fragment>
         <div className="reviewWraper">
             <Grid stackable columns={3}>
                 <Grid.Row>
@@ -105,7 +139,82 @@ class Review extends React.Component {
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
-      </div>
+
+            {/* <Link className="paragraph-third" route="/donations/tax-receipt-profile">
+                Tax
+            </Link>
+            <br/>
+            
+            <br/>
+            <Link className="paragraph-third" route="/donations/new">
+                New
+            </Link> */}
+        </div>
+        <List divided relaxed size={'large'} className="reviewList">
+            <List.Item>
+                <List.Content>
+                    <Grid>
+                        <Grid.Row>
+                            <Grid.Column mobile={16} tablet={8} computer={8} className="grdTaxDisplay">
+                                <Image verticalAlign='middle' src="../../../../static/images/note.svg" className="imgTax"/>
+                                <List.Header >Tax receipt recipient</List.Header>
+                            </Grid.Column>
+                            <Grid.Column mobile={16} tablet={8} computer={8}>
+                                <div className="reviewList-description">
+                                    <div className="list-desc-head">Demo UI</div>
+                                    <div>test, test</div>
+                                    <div>Doylehave, MB A0B2J0</div>
+                                    <a href="">Change</a>
+                                </div>
+                            </Grid.Column>
+                        </Grid.Row>
+                    </Grid>
+                </List.Content>
+            </List.Item>
+            <List.Item>
+                <List.Content>
+                    <Grid>
+                        <Grid.Row>
+                            <Grid.Column mobile={16} tablet={8} computer={8} className="grdTaxDisplay">
+                                <List.Header >Starts on</List.Header>
+                            </Grid.Column>
+                            <Grid.Column mobile={16} tablet={8} computer={8}>
+                                <div className="reviewList-description">
+                                    <div className="list-desc-head">August 1, 2019</div>
+                                    <div>Your credit card will be charged each month starting on this date. Each time, a tax receipt will automatically be posted to your CHIMP Account and the transaction will appear as "CHIMP FDN * DONATION".</div>
+                                </div>
+                            </Grid.Column>
+                        </Grid.Row>
+                    </Grid>
+                </List.Content>
+            </List.Item>
+            <List.Item>
+                <List.Content>
+                    <Grid>
+                        <Grid.Row>
+                            <Grid.Column mobile={16} tablet={8} computer={8} className="grdTaxDisplay">
+                                <List.Header >Note to self</List.Header>
+                            </Grid.Column>
+                            <Grid.Column mobile={16} tablet={8} computer={8}>
+                                <div className="reviewList-description">
+                                    <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </div>
+                                </div>
+                            </Grid.Column>
+                        </Grid.Row>
+                    </Grid>
+                </List.Content>
+            </List.Item>
+        </List>
+        <Divider />
+        <Divider hidden/>
+        <Container textAlign='center'>
+            <Button primary className="btnReview">Schedule monthly transaction</Button>
+            <Divider hidden/>
+            <p className="paragraph">or <a href="">make changes</a></p>
+            <p className="paragraph">Completed transactions are non-refundable, but you can cancel your monthly transactions before the date they're scheduled to occur.'</p>
+        </Container>
+      </Fragment>
+      
     );
   }
 }
@@ -121,6 +230,8 @@ function mapStateToProps(state) {
         fund: state.user.fund,
         paymentInstrumentsData: state.user.paymentInstrumentsData,
         companyDetails: state.give.companyData,
+        userCampaigns: state.user.userCampaigns,
+        userGroups: state.user.userGroups,
     };
 }
 

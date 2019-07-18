@@ -14,7 +14,6 @@ export const actionTypes = {
     GET_BENEFICIARY_FROM_SLUG: 'GET_BENEFICIARY_FROM_SLUG',
     GET_BENIFICIARY_FOR_GROUP: 'GET_BENIFICIARY_FOR_GROUP',
     GET_COMPANY_PAYMENT_AND_TAXRECEIPT: 'GET_COMPANY_PAYMENT_AND_TAXRECEIPT',
-    GET_COMPANY_PAYMENT_AND_TAXRECEIPT: 'GET_COMPANY_PAYMENT_AND_TAXRECEIPT',
     GET_COMPANY_TAXRECEIPTS: 'GET_COMPANY_TAXRECEIPTS',
     SAVE_FLOW_OBJECT: 'SAVE_FLOW_OBJECT',
     SAVE_SUCCESS_DATA: 'SAVE_SUCCESS_DATA',
@@ -215,11 +214,12 @@ export const getCompanyPaymentAndTax = (dispatch, companyId) => {
             companyDefaultTaxReceiptProfile: {},
             companyId,
             companyPaymentInstrumentsData: [],
+            taxReceiptProfiles: [],
         },
         type: actionTypes.GET_COMPANY_PAYMENT_AND_TAXRECEIPT,
     };
 
-    return coreApi.get(`/companies/${companyId}?include=defaultTaxReceiptProfile,activePaymentInstruments`).then((result) => {
+    return coreApi.get(`/companies/${companyId}?include=defaultTaxReceiptProfile,activePaymentInstruments,taxReceiptProfiles`).then((result) => {
         const { data } = result;
         let defaultTaxReceiptId = null;
         if (!_.isEmpty(data.relationships.defaultTaxReceiptProfile.data)) {
@@ -247,6 +247,11 @@ export const getCompanyPaymentAndTax = (dispatch, companyId) => {
                             type,
                         };
                     }
+                    fsa.payload.taxReceiptProfiles.push({
+                        attributes,
+                        id,
+                        type,
+                    });
                 }
             });
         }

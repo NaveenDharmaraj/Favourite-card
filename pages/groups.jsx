@@ -8,7 +8,7 @@ import Layout from '../components/shared/Layout';
 
 const flowSteps = [
     'gift/new',
-    'tax-receipt',
+    'tax-receipt-profile',
     'review',
     'success',
     'error',
@@ -18,6 +18,12 @@ class Groups extends React.Component {
     static async getInitialProps({ query }) {
         console.log(query);
         return {
+            namespacesRequired: [
+                'group',
+                'noteTo',
+                'accountTopUp',
+                'privacyOptions',
+            ],
             slug: query.slug,
             step: (query.gift) ? `${query.gift}/${query.step}` : query.step,
         };

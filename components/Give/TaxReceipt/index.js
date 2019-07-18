@@ -56,7 +56,7 @@ import {
       const {
         options,
         taxSelected
-      } = this.populateOptions([props.flowObject.selectedTaxReceiptProfile], props.flowObject.selectedTaxReceiptProfile)
+      } = this.populateOptions(props.taxReceiptProfiles, props.flowObject.selectedTaxReceiptProfile)
       this.state = {
         flowObject: {
           ...props.flowObject,
@@ -82,31 +82,9 @@ import {
           },
         },
       } = this.state;
-      if(giveTo.type === 'user') {
-        dispatch({type: 'SET_USER_TAX_API_STATUS_FALSE', payload: {taxReceiptGetApiStatus: false}})
-          getTaxReceiptProfile(dispatch, giveTo.id);
-      } else {
-          dispatch({type: 'SET_COMPANY_TAX_API_STATUS_FALSE', payload: {taxReceiptGetApiStatus: false}})
-          getCompanyTaxReceiptProfile(dispatch, giveTo.id);
-      }
+
       if (this.state.flowObject) {
         reInitNextStep(dispatch, this.state.flowObject)
-      }
-    }
-
-    componentDidUpdate(prevProps) {
-      // Typical usage (don't forget to compare props):
-      if (!_.isEqual(this.props.taxReceiptProfiles, prevProps.taxReceiptProfiles)) {
-        const {
-          options,
-          taxSelected
-        } = this.populateOptions(this.props.taxReceiptProfiles, this.props.flowObject.selectedTaxReceiptProfile)
-
-        this.setState({
-          receiptOptions: options,
-          selectedValue: taxSelected
-        });
-        // this.forceUpdate();
       }
     }
 
@@ -231,20 +209,7 @@ import {
           flowObject.taxReceiptProfileAction = 'create';
           flowObject.visitedTaxPage = true;
         }
-        // if (_.isEqual(flowObject.selectedTaxReceiptProfile,
-        //     this.props.flowObject.selectedTaxReceiptProfile)) {
-        //   forceContinue = (forceContinue === this.props.nextStep.path) ?
-        //     this.props.currentStep.path : this.props.nextStep.path;
-        // }
-        // Removing the error status from the layout
-        // if (!_.isEmpty(appErrors) && appErrors.length > 0) {
-        //   _.map(this.props.appErrors, (err) => {
-        //     dismissUxCritialErrors(err);
-        //   });
-        // }
-        // this.props.proceed({
-        //   ...flowObject,
-        // });
+
         const {
           dispatch,
           stepIndex,
@@ -360,7 +325,6 @@ import {
         selectedValue,
       } = this.state;
       const formatMessage = this.props.t;
-
       let fieldData = (
         <Form.Field
           className="field-loader"
@@ -373,7 +337,6 @@ import {
           placeholder="preloadedAccountPlaceHolder"
         />
       );
-      if(this.props.taxReceiptGetApiStatus){
         fieldData = (
           <Form.Field
             control={Select}
@@ -384,7 +347,6 @@ import {
             value={selectedValue}
           />
         )
-      }
         return(
           <Form.Field>
             <label htmlFor="addingTo">
@@ -400,7 +362,7 @@ import {
       let button = (
         <Button primary onClick={() => this.handleSubmit()}>Continue</Button>
       );
-      if( !this.props.taxReceiptGetApiStatus || this.state.buttonClicked) {
+      if(this.state.buttonClicked) {
         button = (
           <Button primary disabled onClick={() => this.handleSubmit()}>Continue</Button>
         ); 
@@ -426,6 +388,8 @@ import {
           <Form>
 
         {this.renderTaxReceiptFrom()}
+
+
                 <Form.Field>
                   <TaxReceiptFrom
                   showFormData = {showFormData}
@@ -434,7 +398,6 @@ import {
                   parentOnBlurChange={this.handleChildOnBlurChange}
                   data={selectedTaxReceiptProfile}
                   validity={validity}
-                  apiStatus={this.props.taxReceiptGetApiStatus}
                   formatMessage={formatMessage}
                   />
                 </Form.Field>
@@ -449,8 +412,10 @@ import {
   }
 
   const  mapStateToProps = (state, props) => {
-
-    if(props.flowObject.giveData.giveTo.type === 'user') {
+    const type  = (props.flowObject.type === 'donations') ?
+        props.flowObject.giveData.giveTo.type :
+        props.flowObject.giveData.giveFrom.type;
+    if(type === 'user') {
       return {
         taxReceiptProfiles: state.user.taxReceiptProfiles,
         taxReceiptGetApiStatus:state.user.taxReceiptGetApiStatus

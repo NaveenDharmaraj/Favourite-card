@@ -465,22 +465,22 @@ const populateDonationMatch = (donationMatchData, formatMessage, language) => {
 * @return {object[]} drop down options array
 */
 
-const populateGiftType = () => {
+const populateGiftType = (formatMessage) => {
     //const { formatMessage } = intl;
     return [
         {
             disabled: false,
-            text: `id: 'giving.giftTypeSingle'`,
+            text: formatMessage('giftTypeSingle'),
             value: 0,
         },
         {
             disabled: false,
-            text: `formatMessage({ id: 'giving.giftTypeRecurring1' })`,
+            text: formatMessage('giftTypeRecurring1'),
             value: 1,
         },
         {
             disabled: false,
-            text: `formatMessage({ id: 'giving.giftTypeRecurring15' })`,
+            text: formatMessage('giftTypeRecurring15'),
             value: 15,
         },
     ];
@@ -652,7 +652,7 @@ const populateGiveToGroupsofUser = (giveToGroupsData) => {
 */
 
 const populateInfoToShare = (taxReceiptProfile,
-    companyDetails, giveFrom, userDetails) => {
+    companyDetails, giveFrom, userDetails, formatMessage) => {
     //const { formatMessage } = intl;
     let infoToShareList = null;
     switch (giveFrom.type) {
@@ -668,7 +668,7 @@ const populateInfoToShare = (taxReceiptProfile,
             infoToShareList = [
                 {
                     disabled: false,
-                    text: `formatMessage({ id: 'giving.infoToShareAnonymous' })`,
+                    text: formatMessage('infoToShareAnonymous'),
                     value: 'anonymous',
                 },
                 {
@@ -691,9 +691,9 @@ const populateInfoToShare = (taxReceiptProfile,
             break;
         case 'companies':
             const companyTaxProfileData = (!_.isEmpty(companyDetails)
-                && !_.isEmpty(companyDetails.taxReceiptProfileData))
+                && !_.isEmpty(companyDetails.taxReceiptProfiles))
                 ? getDropDownOptionFromApiData(
-                    companyDetails.taxReceiptProfileData,
+                    companyDetails.taxReceiptProfiles,
                     null,
                     (item) => `name_address_email|${item.id}`,
                     (attributes) => `${attributes.fullName}, ${attributes.addressOne}, ${attributes.city}, ${attributes.province}, ${attributes.postalCode}`,
@@ -702,7 +702,7 @@ const populateInfoToShare = (taxReceiptProfile,
             infoToShareList = [
                 {
                     disabled: false,
-                    text: `formatMessage({ id: 'giving.infoToShareAnonymous' })`,
+                    text: formatMessage('infoToShareAnonymous' ),
                     value: 'anonymous',
                 },
                 {
@@ -722,7 +722,7 @@ const populateInfoToShare = (taxReceiptProfile,
             infoToShareList = [
                 {
                     disabled: false,
-                    text: `formatMessage({ id: 'giving.infoToShareAnonymous' })`,
+                    text: formatMessage('infoToShareAnonymous'),
                     value: 'anonymous',
                 },
                 {
@@ -824,6 +824,7 @@ const resetDataForAccountChange = (giveData, dropDownOptions, props, type) => {
         paymentInstrumentsData,
         taxReceiptProfile,
     } = props;
+    const formatMessage = props.t;
     // irrespective of the seletion coverFees should be reset
     giveData.coverFees = false;
     if (giveData.giveFrom.type === 'groups' || giveData.giveFrom.type === 'campaigns') {
@@ -851,7 +852,7 @@ const resetDataForAccountChange = (giveData, dropDownOptions, props, type) => {
                 (!_.isEmpty(companyDetails)
                 && !_.isEmpty(companyDetails.companyPaymentInstrumentsData))
                     ? companyDetails.companyPaymentInstrumentsData : null,
-                props.intl,
+                formatMessage,
             );
             if ((giveData.giftType.value > 0
                 || Number(giveData.giveAmount) > Number(giveData.giveFrom.balance))) {
@@ -879,7 +880,7 @@ const resetDataForAccountChange = (giveData, dropDownOptions, props, type) => {
         };
         dropDownOptions.paymentInstrumentList = populatePaymentInstrument(
             paymentInstrumentsData,
-            props.intl,
+            formatMessage,
         );
         if ((giveData.giftType.value > 0
             || Number(giveData.giveAmount) > Number(giveData.giveFrom.balance))) {
@@ -900,6 +901,7 @@ const resetDataForAccountChange = (giveData, dropDownOptions, props, type) => {
                 displayName,
                 email,
             },
+            formatMessage,
         );
     } else if (type === 'give/to/group') {
         giveData.privacyShareEmail = false;
@@ -1256,6 +1258,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
     const {
         fund,
         activeGroupMatch,
+        donationMatchData,
     } = data;
     const {
         coverFeesAmount,
@@ -1297,7 +1300,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
         groups: 'userGroups',
     };
     const paymentMap = {
-        companies: 'companiesPaymentInstrumentsList',
+        companies: 'companyPaymentInstrumentsData',
         user: 'paymentInstrumentsData',
     };
 
@@ -1366,7 +1369,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
             }
         }
         if (donationMatch.value > 0) {
-            const matchedData =  getDonationMatchedData(donationMatch.id, donationAmount, donationMatchData);
+            const matchedData = getDonationMatchedData(donationMatch.id, donationAmount, donationMatchData);
             if (!_.isEmpty(matchedData)) {
                 sources.push(matchedData);
                 const displayAmount = (giftType.value === 0 || giftType.value === null) ?
@@ -1423,7 +1426,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
                 formatMessage('givingAllocationSingleCoverFeesText',
                     {
                         amount,
-                    }) : formatMessage(givingAllocationRecurringingCoverFeesText,
+                    }) : formatMessage('givingAllocationRecurringingCoverFeesText',
                     {
                         amount,
                     });

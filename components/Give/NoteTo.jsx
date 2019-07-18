@@ -28,16 +28,15 @@ const handleInputChange = (event, props) => {
 };
 
 const labelTextIds = {
-    campaigns: 'Note to self',
-    companies: 'Note to company',
-    groups: 'Note to group',
-    user: 'Note to self',
+    campaigns: 'noteToSelfLabelReview',
+    companies: 'noteToCompanyLabel',
+    groups: 'noteToGroupLabel',
+    user: 'noteToSelfLabelReview',
 };
-
 
 const NoteTo = (props) => {
     const {
-        // formatMessage,
+        formatMessage,
         giveFrom,
         handleInputOnBlur,
         noteToCharity,
@@ -49,20 +48,20 @@ const NoteTo = (props) => {
     const currentCountNoteToCharity = (!_isEmpty(noteToCharity)) ? Math.max(0, (1000 - Number(noteToCharity.length))) : 1000;
     const infoNoteToCharity = `${currentCountNoteToCharity} of 1000 characters left`;
     const giveFromType = (!_isEmpty(giveFrom.type)) ? giveFrom.type : 'user';
+    const labelText = labelTextIds[giveFromType];
     return (
         <Fragment>
             <Form.Field>
-                {/* <Header as="h3"> {formatMessage(messageList.includeMessageLabel)}</Header> */}
-                <Header as="h3"> Include a message</Header>
+                <Header as="h3"> 
+                    {formatMessage('noteTo:includeMessageLabel')}
+                </Header>
             </Form.Field>
             <Form.Field>
                 <label htmlFor="noteToCharity">
-                    For the recipient
-                    {/* {formatMessage(messageList.fortheCharityLabel)} */}
+                    {formatMessage('noteTo:fortheCharityLabel')}
                 </label>
                 <Popup
-                // content={formatMessage(messageList.allocationsForthCharityPopup)}
-                    content="You can tell the recipient why you're giving to them, provide recommendations on how you'd prefer your gift is spent, let them know if you're giving in honour of someone, or just tell them to keep up the good work."
+                    content={formatMessage('noteTo:allocationsForthCharityPopup')}
                     position="top center"
                     trigger={(
                         <Icon
@@ -81,28 +80,24 @@ const NoteTo = (props) => {
                     info={infoNoteToCharity}
                     onChange={(e) => { handleInputChange(e, props); }}
                     onBlur={handleInputOnBlur}
-                    placeholder="What would you like to say to the recipient?"// {formatMessage(fields.generalInputPlaceHolder)}
+                    placeholder={formatMessage('noteTo:generalInputPlaceHolder')}
                     value={noteToCharity}
                 />
             </Form.Field>
             <FormValidationErrorMessage
                 condition={!validity.isNoteToCharityInLimit}
-                // errorMessage={formatMessage(errorMessages.invalidLengthError)}
-                errorMessage="is too long (maximum is 1000 characters)"
+                errorMessage={formatMessage('errorMessages.invalidLengthError')}
             />
             <FormValidationErrorMessage
                 condition={!validity.isValidNoteToCharityText}
-                // errorMessage={formatMessage(errorMessages.invalidNoteTextError)}
-                errorMessage="Only standard letters and numbers are allowed here"
+                errorMessage={formatMessage('errorMessages.invalidNoteTextError')}
             />
             <Form.Field>
                 <label htmlFor="noteToSelf" id="noteToSelfLabel">
-                    {labelTextIds[giveFromType]}
-                    {/* {formatMessage(fields[labelTextIds[giveFromType]])} */}
+                    {formatMessage(`noteTo:${labelText}`)}
                 </label>
                 <Popup
-                    content="Write a note to yourself for later—for example, a reminder of why you gave this gift. This will only be visible to you on your Dashboard."
-                    // content={formatMessage(fields.givingNoteToSelfPopup)}
+                    content={formatMessage('noteTo:givingNoteToSelfPopup')}
                     position="top center"
                     trigger={(
                         <Icon
@@ -121,19 +116,17 @@ const NoteTo = (props) => {
                     info={infoNoteToSelf}
                     onChange={(e) => { handleInputChange(e, props); }}
                     onBlur={handleInputOnBlur}
-                    placeholder="Why are you giving today?"// {formatMessage(fields.noteToSelfPlaceHolder)}
+                    placeholder={formatMessage('noteTo:noteToSelfPlaceHolder')}
                     value={noteToSelf}
                 />
             </Form.Field>
             <FormValidationErrorMessage
                 condition={!validity.isNoteToSelfInLimit}
-                // errorMessage={formatMessage(errorMessages.invalidLengthError)}
-                errorMessage="is too long (maximum is 1000 characters)"
+                errorMessage={formatMessage('errorMessages.invalidLengthError')}
             />
             <FormValidationErrorMessage
                 condition={!validity.isValidNoteSelfText}
-                // errorMessage={formatMessage(errorMessages.invalidNoteTextError)}
-                errorMessage="Only standard letters and numbers are allowed here"
+                errorMessage={formatMessage('errorMessages.invalidNoteTextError')}
             />
         </Fragment>
     );
