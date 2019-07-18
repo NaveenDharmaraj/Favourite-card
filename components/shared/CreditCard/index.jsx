@@ -74,7 +74,6 @@ class CreditCard extends React.Component {
             inValidNameOnCard: false,
             isStripeElementsValid: false,
             nameOnCard: '',
-            showTestCardClicked: false,
             showTestCardLabel: ' Show Test Cards',
             showTestCards: false,
         };
@@ -94,9 +93,8 @@ class CreditCard extends React.Component {
 
     handleTestCreditCardList() {
         this.setState({
-            showTestCardClicked: !this.state.showTestCardClicked,
-            showTestCardLabel: this.state.showTestCardClicked ? ' Show Test Cards' : ' Hide Test Cards',
-            showTestCards: !this.state.showTestCardClicked,
+            showTestCardLabel: this.state.showTestCards ? ' Show Test Cards' : ' Hide Test Cards',
+            showTestCards: !this.state.showTestCards,
         });
     }
 
@@ -154,6 +152,7 @@ class CreditCard extends React.Component {
                         name="nameOnCard"
                         placeholder='Name on Card'
                         size="large"
+                        value={nameOnCard}
                     />
                 </Form.Field>
                 <Form.Group widths="equal">
