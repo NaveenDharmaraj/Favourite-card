@@ -497,7 +497,7 @@ const populatePaymentInstrument = (paymentInstrumentsData, formatMessage) => {
         const newCreditCard = [
             {
                 disabled: false,
-                text: formatMessage('giveCommon:useNewCreditCardLabel'),
+                text: 'Use new Credit Card',
                 value: 0,
             },
         ];

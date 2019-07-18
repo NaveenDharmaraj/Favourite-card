@@ -1,6 +1,11 @@
+import React, {
+    Fragment,
+} from 'react';
+import dynamic from 'next/dynamic';
+import _isEmpty from 'lodash/isEmpty';
+import _merge from 'lodash/merge';
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/prop-types */
-import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import {
     Checkbox,
@@ -14,11 +19,9 @@ import {
     Select,
 } from 'semantic-ui-react';
 import _find from 'lodash/find';
-import _isEmpty from 'lodash/isEmpty';
 import _isEqual from 'lodash/isEqual';
 import _every from 'lodash/every';
 import _map from 'lodash/map';
-import _merge from 'lodash/merge';
 import {
     connect,
 } from 'react-redux';
@@ -57,6 +60,10 @@ import IconGroup from '../../../static/images/chimp-icon-giving-group.png';
 import IconIndividual from '../../../static/images/chimp-icon-individual.png';
 import { withTranslation } from '../../../i18n';
 
+const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper'), {
+    ssr: false
+});
+
 class Charity extends React.Component {
     constructor(props) {
         super(props);
@@ -80,7 +87,9 @@ class Charity extends React.Component {
             giveGroupBenificairyDetails,
             giveCharityDetails,
             taxReceiptProfiles,
-
+            i18n: {
+                language,
+            }
         } = props;
         let currentSourceAccountHolderId = null;
         let currentGroupId = null;
@@ -209,10 +218,13 @@ class Charity extends React.Component {
                 giveGroupBenificairyDetails,
                 slug,
                 taxReceiptProfiles,
+                i18n: {
+                    language,
+                }
             } = this.props;
+            const formatMessage = this.props.t;
             let paymentInstruments = null;
             let companyPaymentInstrumentChanged = false;
-            const formatMessage = this.props.t;
             if (giveData.giveFrom.type === 'companies' && !_isEmpty(companyDetails)) {
                 if (_isEmpty(this.props.companyDetails)
                      || !_isEqual(companyDetails.companyPaymentInstrumentsData,
@@ -575,6 +587,7 @@ class Charity extends React.Component {
                 giveData,
             },
             dropDownOptions,
+            selectedCreditCard,
             validity,
         } = this.state;
         const {
@@ -974,14 +987,7 @@ class Charity extends React.Component {
                     topupAmount={topupAmount}
                     validity={validity}
                 />
-            );
-            if (_isEmpty(paymentInstrumentList) || creditCard.value === 0) {
-                stripeCardComponent = (
-                    <Form.Field>
-
-                    </Form.Field>
-                );
-            }
+            );            
         }
         return (
             <Form onSubmit={this.handleSubmit}>
@@ -1096,7 +1102,13 @@ class Charity extends React.Component {
                             giftType, giftTypeList, infoToShare, infoToShareList, formatMessage,
                         )}
                         {accountTopUpComponent}
-                        {stripeCardComponent}
+                        {
+                            (_isEmpty(paymentInstrumentList) || creditCard.value === 0) && (
+                                    <Form.Field>
+                                        <CreditCardWrapper />
+                                    </Form.Field>
+                            )
+                        }                      
                         <Form.Field>
                             <Divider className="dividerMargin" />
                         </Form.Field>
@@ -1135,7 +1147,7 @@ const defProps = {
     },
     giveData: {
         giveFrom: {
-            type: 'user',
+            type: 'user'
         },
     },
     groupId: null,
