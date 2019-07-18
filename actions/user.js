@@ -10,7 +10,7 @@ import coreApi from '../services/coreApi';
 export const actionTypes = {
     GET_MATCH_POLICIES_PAYMENTINSTRUMENTS: 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS',
     TAX_RECEIPT_PROFILES:'TAX_RECEIPT_PROFILES',
-    USER_AUTH: 'USER_AUTH',
+    SET_USER_INFO: 'SET_USER_INFO',
 }
 
 const getAllPaginationData = async (url, params = null) => {
@@ -155,19 +155,40 @@ export const getDonationMatchAndPaymentInstruments = () => {
 };
 
 
-export const validateUser = (dispatch) => {
-    return coreApi.get('/users/888000?include=chimpAdminRole,donorRole,fund').then((result) => {
-        console.log(result);
-        return dispatch({
-            type: actionTypes.USER_AUTH,
-            payload: {
-                isAuthenticated: true,
-                userinfo: result.data,
+export const getUser = async (dispatch, token = null) => {
+    const payload = {
+        isAuthenticated: false,
+        userInfo: null,
+    };
+    let params = null;
+    if (!_.isEmpty(token)) {
+        params = {
+            headers: {
+                Authorization: `Bearer ${token}`,
             },
-        });
+        };
+    }
+
+    await coreApi.get('/users/888000?include=chimpAdminRole,donorRole', params).then((result) => {
+        payload.isAuthenticated = true;
+        payload.userInfo = result.data;
     }).catch((error) => {
         console.log(JSON.stringify(error));
-    });   
+    }).finally(() => {
+        dispatch({
+            type: 'SET_AUTH',
+            payload: {
+                isAuthenticated: payload.isAuthenticated,
+            },
+        });
+        dispatch({
+            type: actionTypes.SET_USER_INFO,
+            payload: {
+                userInfo: payload.userInfo,
+            },
+        });
+        return null;
+    });
 };
 
 export const setTaxReceiptProfile = (data) => {
