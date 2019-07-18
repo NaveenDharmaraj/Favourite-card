@@ -90,6 +90,197 @@ const saveDonations = (donation) => {
     return result;
 };
 
+
+const postAllocation = async (allocationData) => {
+    const result = await coreApi.post(`/${allocationData.type}`, {
+        data: allocationData,
+        // uxCritical: true,
+    });
+    return result;
+};
+
+const saveCharityAllocation = (allocation) => {
+    const {
+        giveData,
+        selectedTaxReceiptProfile,
+    } = allocation;
+
+    const {
+        coverFees,
+        creditCard,
+        donationAmount,
+        donationMatch,
+        giftType,
+        giveAmount,
+        giveFrom,
+        giveTo,
+        infoToShare,
+        noteToCharity,
+        noteToSelf,
+    } = giveData;
+
+    const allocationData = {
+        attributes: {
+            amount: giveAmount,
+            coverFees,
+            noteToCharity,
+            noteToSelf,
+            privacyData: (infoToShare.id) ? infoToShare.id : null,
+            privacySetting: _.split(infoToShare.value, '|')[0],
+        },
+        relationships: {
+            destinationFund: {
+                data: {
+                    id: giveTo.value,
+                    type: 'accountHolders',
+                },
+            },
+            fund: {
+                data: {
+                    id: giveFrom.value,
+                    type: 'accountHolders',
+                },
+            },
+        },
+    };
+    if (giftType.value === 0) {
+        allocationData.type = 'allocations';
+        if (donationAmount) {
+            return saveDonations({
+                selectedTaxReceiptProfile,
+                giveData: {
+                    automaticDonation: false,
+                    creditCard,
+                    donationAmount,
+                    donationMatch,
+                    giveTo : giveFrom,
+                    noteToSelf: '',
+                }
+            }).then((result) => {
+                allocationData.relationships.donation = {
+                    data: {
+                        id: result.data.id,
+                        type: 'donations',
+                    },
+                };
+                return postAllocation(allocationData);
+            });
+        }
+    } else {
+        allocationData.type = 'recurringAllocations';
+        allocationData.attributes.dayOfMonth = giftType.value;
+        if (donationMatch.value > 0) {
+            allocationData.relationships.employeeRole = {
+                data: {
+                    id: donationMatch.value,
+                    type: 'roles',
+                },
+            };
+        }
+        allocationData.relationships.paymentInstrument = {
+            data: {
+                id: creditCard.value,
+                type: 'paymentInstruments',
+            },
+        };
+    }
+    return postAllocation(allocationData);
+}
+
+const saveGroupAllocation = (allocation) => {
+    const {
+        giveData,
+        selectedTaxReceiptProfile,
+    } = allocation;
+
+    const {
+        creditCard,
+        donationAmount,
+        donationMatch,
+        giftType,
+        giveAmount,
+        giveFrom,
+        giveTo,
+        infoToShare,
+        noteToCharity,
+        noteToSelf,
+        privacyShareAddress,
+        privacyShareAmount,
+        privacyShareEmail,
+        privacyShareName,
+    } = giveData;
+
+    const allocationData = {
+        attributes: {
+            amount: giveAmount,
+            noteToGroup: noteToCharity,
+            noteToSelf,
+            privacyShareAddress,
+            privacyShareAmount,
+            privacyShareEmail,
+            privacyShareName,
+            privacyTrpId: privacyShareAddress ? infoToShare.id : null,
+        },
+        relationships: {
+
+            destinationFund: {
+                data: {
+                    id: giveTo.value,
+                    type: 'accountHolders',
+                },
+            },
+            fund: {
+                data: {
+                    id: giveFrom.value,
+                    type: 'accountHolders',
+                },
+            },
+        },
+    };
+    if (giftType.value === 0) {
+        allocationData.type = 'groupAllocations';
+        if (donationAmount) {
+            return saveDonations({
+                selectedTaxReceiptProfile,
+                giveData: {
+                    automaticDonation: false,
+                    creditCard,
+                    donationAmount,
+                    donationMatch,
+                    giveTo : giveFrom,
+                    noteToSelf: '',
+                }
+            }).then((result) => {
+                allocationData.relationships.donation = {
+                    data: {
+                        id: result.data.id,
+                        type: 'donations',
+                    },
+                };
+                return postAllocation(allocationData);
+            });
+        }
+    } else {
+        allocationData.type = 'recurringGroupAllocations';
+        allocationData.attributes.dayOfMonth = giftType.value;
+        if (donationMatch.value > 0) {
+            allocationData.relationships.employeeRole = {
+                data: {
+                    id: donationMatch.value,
+                    type: 'roles',
+                },
+            };
+        }
+        allocationData.relationships.paymentInstrument = {
+            data: {
+                id: creditCard.value,
+                type: 'paymentInstruments',
+            },
+        };
+    }
+    return postAllocation(allocationData);
+};
+
 /**
  * Check if it is a quazi success.
  * @param  {object} error error object.
@@ -119,6 +310,9 @@ export const proceed = (flowObject, nextStep, stepIndex, lastStep = false) => {
             switch (flowObject.type) {
                 case 'donations':
                     fn = saveDonations;
+                    break;
+                case 'give/to/charity':
+                    fn = saveCharityAllocation;
                     break;
                 case 'give/to/friend':
                     fn = saveP2pAllocations;
