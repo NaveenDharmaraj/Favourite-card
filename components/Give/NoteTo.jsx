@@ -40,9 +40,9 @@ const NoteTo = (props) => {
         // formatMessage,
         giveFrom,
         handleInputOnBlur,
-        // noteToCharity,
-        // noteToSelf,
-        // validity,
+        noteToCharity,
+        noteToSelf,
+        validity,
         formatMessage,
     } = props;
     const currentCountNoteToSelf = (!_isEmpty(noteToSelf)) ? Math.max(0, (1000 - Number(noteToSelf.length))) : 1000;
@@ -82,15 +82,15 @@ const NoteTo = (props) => {
                     onChange={(e) => { handleInputChange(e, props); }}
                     onBlur={handleInputOnBlur}
                     placeholder={formatMessage('noteTo:generalInputPlaceHolder')}
-                    value=""// {noteToCharity}
+                    value={noteToCharity}
                 />
             </Form.Field>
             <FormValidationErrorMessage
-                // condition={!validity.isNoteToCharityInLimit}
+                condition={!validity.isNoteToCharityInLimit}
                 errorMessage={formatMessage('noteTo:invalidLengthError')}
             />
             <FormValidationErrorMessage
-                // condition={!validity.isValidNoteToCharityText}
+                condition={!validity.isValidNoteToCharityText}
                 errorMessage={formatMessage('noteTo:invalidNoteTextError')}
             />
             <Form.Field>
@@ -119,15 +119,15 @@ const NoteTo = (props) => {
                     onChange={(e) => { handleInputChange(e, props); }}
                     onBlur={handleInputOnBlur}
                     placeholder={formatMessage('noteTo:noteToSelfPlaceHolder')}
-                    value=""// {noteToSelf}
+                    value={noteToSelf}
                 />
             </Form.Field>
             <FormValidationErrorMessage
-                // condition={!validity.isNoteToSelfInLimit}
+                condition={!validity.isNoteToSelfInLimit}
                 errorMessage={formatMessage('noteTo:invalidLengthError')}
             />
             <FormValidationErrorMessage
-                // condition={!validity.isValidNoteSelfText}
+                condition={!validity.isValidNoteSelfText}
                 errorMessage={formatMessage('noteTo:invalidNoteTextError')}
             />
         </Fragment>

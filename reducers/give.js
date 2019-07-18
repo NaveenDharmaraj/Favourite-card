@@ -80,18 +80,9 @@ const give = (state = {}, action) => {
         case 'GET_GROUP_FROM_SLUG':
             newState = {
                 ...state,
-                giveData: {
-                    giveTo: {
-                        id: action.payload.groupDetails.id,
-                        isCampaign: action.payload.groupDetails.attributes.isCampaign,
-                        name: action.payload.groupDetails.attributes.name,
-                        recurringEnabled: action.payload.groupDetails.attributes.recurringEnabled,
-                        text: action.payload.groupDetails.attributes.name,
-                        type: action.payload.groupDetails.type,
-                        value: action.payload.groupDetails.attributes.fundId,
-                    },
+                groupSlugDetails: {
+                    ...action.payload.groupDetails,
                 },
-                groupFromUrl: false,
             };
             break;
         case 'SAVE_SUCCESS_DATA':

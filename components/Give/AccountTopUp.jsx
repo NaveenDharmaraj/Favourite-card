@@ -21,6 +21,7 @@ const AccountTopUp = (props) => {
         donationAmount,
         donationMatch,
         donationMatchList,
+        formatMessage,
         handleInputChange,
         handleInputOnBlur,
         isAmountFieldVisible,
@@ -28,17 +29,16 @@ const AccountTopUp = (props) => {
         paymentInstrumentList,
         topupAmount,
         validity,
-        formatMessage,
     } = props;
-
+    console.log('account topup props');
+    console.log(props);
     let donationAmountField = null;
-    let topUpAmountErrorMessage = `Top up your account balance by ${topupAmount} or more to send this gift.`
     if (isAmountFieldVisible) {
         donationAmountField = (
             <Fragment>
                 <Form.Field>
                     <label htmlFor="donationAmount">
-                        {formatMessage('accountTopUp:amountLabel')}
+                        {formatMessage('giveCommon:amountLabel')}
                     </label>
                     <Form.Field
                         control={Input}
@@ -50,24 +50,25 @@ const AccountTopUp = (props) => {
                         maxLength="7"
                         onBlur={handleInputOnBlur}
                         onChange={handleInputChange}
-                        placeholder={formatMessage('accountTopUp:amountPlaceHolder')}
+                        placeholder={formatMessage('giveCommon:amountPlaceHolder')}
                         size="large"
                         value={donationAmount}
                     />
                 </Form.Field>
                 <FormValidationErrorMessage
-                    // condition={!validity.isDonationAmountBlank || !validity.isDonationAmountMoreThan1Dollor
-                    // || !validity.isDonationAmountPositive}
-                    errorMessage={formatMessage('accountTopUp:amountLessOrInvalid', {
+                    condition={!validity.isDonationAmountBlank || !validity.isDonationAmountMoreThan1Dollor
+                    || !validity.isDonationAmountPositive}
+                    errorMessage={formatMessage('giveCommon:errorMessages.amountLessOrInvalid', {
                         minAmount: 5,
                     })}
+                  
                 />
                 <FormValidationErrorMessage
-                    // condition={!validity.isDonationAmountLessThan1Billion}
-                    errorMessage={formatMessage('accountTopUp:invalidMaxAmountError')}
+                    condition={!validity.isDonationAmountLessThan1Billion}
+                    errorMessage={formatMessage('giveCommon:errorMessages.invalidMaxAmountError')}
                 />
                 <FormValidationErrorMessage
-                    // condition={!!validity.isDonationAmountPositive && !validity.isDonationAmountCoverGive}
+                    condition={!!validity.isDonationAmountPositive && !validity.isDonationAmountCoverGive}
                     errorMessage={formatMessage('accountTopUp:donationAmountIsLess', {
                         topupAmount,
                     })}
@@ -77,7 +78,9 @@ const AccountTopUp = (props) => {
     }
 
     let donationMatchField = null;
-    if (isDonationMatchFieldVisible) {
+    // if (isDonationMatchFieldVisible) {
+    if (true) {
+
         donationMatchField = (
             <Form.Field>
                 <label htmlFor="donationMatch">
@@ -108,6 +111,7 @@ const AccountTopUp = (props) => {
 
     let creditCardField = null;
     if (!_isEmpty(paymentInstrumentList)) {
+
         creditCardField = (
             <Form.Field>
                 <label htmlFor="creditCard">
@@ -120,7 +124,7 @@ const AccountTopUp = (props) => {
                     onChange={handleInputChange}
                     options={paymentInstrumentList}
                     placeholder={formatMessage('accountTopUp:creditCardPlaceholder')}
-                    value=""// {creditCard.value}
+                    value={creditCard.value}
                 />
             </Form.Field>
         );
@@ -132,7 +136,9 @@ const AccountTopUp = (props) => {
                 <Divider className="dividerMargin" />
             </Form.Field>
             <Form.Field>
-                <Header as="h3">{formatMessage('accountTopUp:accountTopUpHeaderLabel')}</Header>
+                <Header as="h3"> 
+                    {formatMessage('accountTopUp:accountTopUpHeaderLabel')}
+                </Header>
             </Form.Field>
             {donationAmountField}
             {donationMatchField}

@@ -14,9 +14,18 @@ import {
 const PrivacyOptions = (props) => {
     const {
         formatMessage,
+        giveFrom,
         giveToType,
+        privacyShareAddress,
+        privacyShareAmount,
+        privacyShareEmail,
+        privacyShareName,
+        handleInputChange,
+        infoToShare,
+        infoToShareList,
     } = props;
-
+    console.log('privacy options props');
+    console.log(props);
     return (
         <Fragment>
             <Form.Field>
@@ -34,79 +43,80 @@ const PrivacyOptions = (props) => {
                 </label>
                 <br />
                 <Form.Field
-                    checked="" // {privacyShareName}
+                    checked={privacyShareName}
                     className="ui checkbox checkbox-text"
                     control={Checkbox}
                     id="privacyShareName"
-                    label="" // {privacyShareNameLabel}
+                    label="Share my name with the Giving Group I’m giving to" // {privacyShareNameLabel}
                     name="privacyShareName"
-                    onChange="" // {handleInputChange}
+                    onChange={handleInputChange}
                 />
                 <br />
                 <Form.Field
-                    checked="" // {privacyShareAmount}
+                    checked={privacyShareAmount}
                     className="ui checkbox checkbox-text"
                     control={Checkbox}
                     id="privacyShareAmount"
-                    label="" // {privacyShareAmountLabel}
+                    label="Share my gift amount with Giving Group I’m giving to" // {privacyShareAmountLabel}
                     name="privacyShareAmount"
-                    onChange="" // {handleInputChange}
+                    onChange={handleInputChange}
                 />
             </Form.Field>
-            {
-                true && (// (giveFrom.type === 'user') && (
-                    <Fragment>
-                        <Form.Field>
-                            <label
-                                className="privacy-header"
-                                htmlFor="privacyShareEmail"
-                            >
-                                {
-                                    formatMessage(`forGiving${giveToType}OrganizersLabel`)
-                                }
-                            </label>
-                            <br />
+            {(giveFrom.type === 'user') && (
+
+                <Fragment>
+                    <Form.Field>
+                        <label
+                            className="privacy-header"
+                            htmlFor="privacyShareEmail"
+                        >
+                            {
+                                formatMessage(`forGiving${giveToType}OrganizersLabel`)
+                            }
+                        </label>
+                        <br />
+                        <Form.Field
+                            checked={privacyShareEmail}
+                            className="ui checkbox checkbox-text"
+                            control={Checkbox}
+                            id="privacyShareEmail"
+                            label="Share my email address with the Giving Group organizers" // {privacyShareEmailLabel}
+                            name="privacyShareEmail"
+                            onChange={handleInputChange}
+                        />
+                        <br />
+                        {/* { !_.isEmpty(infoToShareList) && infoToShareList.length > 0 && */}
+                        {true && (
                             <Form.Field
-                                checked="" // {privacyShareEmail}
+                                checked={privacyShareAddress}
                                 className="ui checkbox checkbox-text"
                                 control={Checkbox}
-                                id="privacyShareEmail"
-                                label="" // {privacyShareEmailLabel}
-                                name="privacyShareEmail"
-                                onChange=""// {handleInputChange}
+                                id="privacyShareAddress"
+                                label="Share my postal address with the Giving Group organizers" // {privacyShareAddressLabel}
+                                name="privacyShareAddress"
+                                onChange={handleInputChange}
                             />
-                            <br />
-                            {/* { !_.isEmpty(infoToShareList) && infoToShareList.length > 0 &&
+)}
+                    </Form.Field>
+                    {
+                        !_.isEmpty(infoToShareList) && !!privacyShareAddress && (
+                            <Form.Field>
+                                <label htmlFor="infoToShare">
+                                    {formatMessage('privacyOptions:selectNameAndAddressLabel')}
+                                </label>
                                 <Form.Field
-                                    checked={privacyShareAddress}
-                                    className="ui checkbox checkbox-text"
-                                    control={Checkbox}
-                                    id="privacyShareAddress"
-                                    label={privacyShareAddressLabel}
-                                    name="privacyShareAddress"
+                                    control={Select}
+                                    id="infoToShare"
+                                    name="infoToShare"
+                                    options={infoToShareList}
                                     onChange={handleInputChange}
+                                    value={infoToShare.value}
                                 />
-                            } */}
-                        </Form.Field>
-                        {/* {
-                            !_.isEmpty(infoToShareList) && !!privacyShareAddress && (
-                                <Form.Field>
-                                    <label htmlFor="infoToShare">
-                                        {formatMessage('privacyOptions:selectNameAndAddressLabel')}
-                                    </label>
-                                    <Form.Field
-                                        control={Select}
-                                        id="infoToShare"
-                                        name="infoToShare"
-                                        options={infoToShareList}
-                                        onChange={handleInputChange}
-                                        value={infoToShare.value}
-                                    />
-                                </Form.Field>
-                            )
-                        } */}
-                    </Fragment>
-                )
+                            </Form.Field>
+                        )
+                    }
+                </Fragment>
+            )
             }
         </Fragment>
     );
