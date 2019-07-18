@@ -17,17 +17,37 @@
         "amountLessOrInvalid": "Veuillez choisir un montant de {{minAmount}} $ ou plus",
         "invalidMaxAmountError": "9 999 $ est le maximum que nous pouvons traiter ici. Pour des montants plus importants, veuillez nous contacter: hello@chimp.net ou 1-877-531-0580.",
         "invalidLengthError": "est trop long (maximum de 1000 caractères)",
-        "invalidNoteTextError":  "Seuls les lettres et les chiffres standard sont autorisés ici"
+        "invalidNoteTextError":  "Seuls les lettres et les chiffres standard sont autorisés ici",
+        "giveAmountGreaterThanBalance": "Désolé, vous ne pouvez pas envoyer plus d'argent qu'il n'y en a dans votre compte."
 
 
     },
+    "breadCrumb" : {
+        "new" : "Ajoutez de l'argent",
+        "give": "Donner",
+        "taxReceipt": "Reçu fiscal",
+        "review": "Révision",
+        "success": "Confirmation"
+    },
+    "amountLabel": "Montant",
+    "amountPlaceHolder": "Inscrivez le montant",
     "noteRemainingChars1000": "{{currentCount}} sur {{maximum}} caractères restants",
     "forMonth": "mois",
     "forYear": "année",
     "forPer": "par",
     "continueButton": "Suivant",
     "submittingButton": "En cours de soumission",
-    "useNewCreditCardLabel": "Utiliser une nouvelle carte de crédit"
+    "useNewCreditCardLabel": "Utiliser une nouvelle carte de crédit",
+    "infoToShareAnonymous": "Don anonyme",
+    "change": "Changer",
+    "startsOn": "Date de début",
+    "emptyMessage": "Aucun contenu disponible",
+    "commonOr": "ou ",
+    "commonMakeChanges": "apporter des modifications"
+
+
+
+
 
 
 

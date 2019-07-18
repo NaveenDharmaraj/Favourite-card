@@ -6,5 +6,8 @@
     "invalidLengthError": "is too long (maximum is 1000 characters)",
     "invalidNoteTextError":  "Only standard letters and numbers are allowed here",
     "givingNoteToSelfPopup": "Write a note to yourself for later—for example, a reminder of why you gave this gift. This will only be visible to you on your Dashboard.",
-    "noteToSelfPlaceHolder": "Write a note to yourself for later"
+    "noteToSelfPlaceHolder": "Write a note to yourself for later",
+    "noteToSelfLabelReview" : "Note to self",
+    "noteToCompanyLabel": "Note to company",
+    "noteToGroupLabel": "Note to group"
 }

@@ -6,5 +6,8 @@
     "invalidLengthError": "est trop long (maximum de 1000 caractères)",
     "invalidNoteTextError":  "Seuls les lettres et les chiffres standard sont autorisés ici",
     "givingNoteToSelfPopup": "Laissez-vous une note personnelle pour plus tard, par exemple, un rappel des raisons qui vous ont motivé à faire ce don de charité. Ce message ne sera visible que sur votre Tableau de bord.",
-    "noteToSelfPlaceHolder": "Laissez-vous une note personnelle pour plus tard"
+    "noteToSelfPlaceHolder": "Laissez-vous une note personnelle pour plus tard",
+    "noteToSelfLabelReview" : "Note à votre intention",
+    "noteToCompanyLabel": "Note pour l'entreprise",
+    "noteToGroupLabel": "Note pour le groupe"
 }

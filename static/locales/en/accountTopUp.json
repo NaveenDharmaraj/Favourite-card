@@ -1,8 +1,4 @@
 {
-    "amountLabel": "Amount",
-    "amountPlaceHolder": "Enter amount",
-    "amountLessOrInvalid": "Please choose an amount of ${minAmount} or more",
-    "invalidMaxAmountError":  "$9,999 is the maximum we can process here. For larger amounts, please get in touch with us: hello@chimp.net or 1-877-531-0580.",
     "donationAmountIsLess": "Top up your account balance by ${topupAmount} or more to send this gift.",
     "donationMatchLabel": "Donation match",
     "donationsMatchPopup": "If there’s an opportunity for this money to be matched, it will appear here. A request will go to the matching party (your employer, for example) who can then choose to match it according to their policy.",

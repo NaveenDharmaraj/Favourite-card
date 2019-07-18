@@ -21,24 +21,6 @@ const give = (state = {}, action) => {
                 coverFeesData: Object.assign({}, state.coverFees, coverFees),
             };
             break;
-        case 'DONATIONS_ADDTO_DROPDOWN':
-            const {
-                donationAddToData,
-            } = action.payload;
-            newState = {
-                ...state,
-                donationAddToData: Object.assign([], state.donationAddToData, donationAddToData),
-            };
-            break;
-        case 'ALLOCATIONS_GIVE_FROM_DROPDOWN':
-            const {
-                allocationGiveFromData,
-            } = action.payload;
-            newState = {
-                ...state,
-                allocationGiveFromData: Object.assign([], state.allocationGiveFromData, allocationGiveFromData),
-            };
-            break;
         case 'GET_COMPANY_PAYMENT_AND_TAXRECEIPT':
             newState = {
                 ...state,

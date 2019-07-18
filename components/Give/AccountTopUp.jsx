@@ -30,8 +30,6 @@ const AccountTopUp = (props) => {
         topupAmount,
         validity,
     } = props;
-    console.log('account topup props');
-    console.log(props);
     let donationAmountField = null;
     if (isAmountFieldVisible) {
         donationAmountField = (
