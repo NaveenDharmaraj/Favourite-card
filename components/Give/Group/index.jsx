@@ -727,6 +727,7 @@ class Group extends React.Component {
                             validity={validity.isValidAddingToSource}
                             selectedValue={this.state.flowObject.giveData.giveFrom.value}
                             name="giveFrom"
+                            formatMessage={formatMessage}
                             parentInputChange={this.handleInputChange}
                             parentOnBlurChange={this.handleInputOnBlur}
                         />
