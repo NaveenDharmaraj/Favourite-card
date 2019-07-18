@@ -91,7 +91,6 @@ class Charity extends React.Component {
                 language,
             }
         } = props;
-        const formatMessage = this.props.t;
         let currentSourceAccountHolderId = null;
         let currentGroupId = null;
         if (!_isEmpty(sourceAccountHolderId)
@@ -226,7 +225,6 @@ class Charity extends React.Component {
             const formatMessage = this.props.t;
             let paymentInstruments = null;
             let companyPaymentInstrumentChanged = false;
-            const formatMessage = this.props.t;
             if (giveData.giveFrom.type === 'companies' && !_isEmpty(companyDetails)) {
                 if (_isEmpty(this.props.companyDetails)
                      || !_isEqual(companyDetails.companyPaymentInstrumentsData,
@@ -989,14 +987,7 @@ class Charity extends React.Component {
                     topupAmount={topupAmount}
                     validity={validity}
                 />
-            );
-            if (_isEmpty(paymentInstrumentList) || creditCard.value === 0) {
-                stripeCardComponent = (
-                    <Form.Field>
-
-                    </Form.Field>
-                );
-            }
+            );            
         }
         return (
             <Form onSubmit={this.handleSubmit}>
@@ -1113,11 +1104,11 @@ class Charity extends React.Component {
                         {accountTopUpComponent}
                         {
                             (_isEmpty(paymentInstrumentList) || creditCard.value === 0) && (
-                                <Form.Field>
-                                    <CreditCardWrapper />
-                                </Form.Field>
+                                    <Form.Field>
+                                        <CreditCardWrapper />
+                                    </Form.Field>
                             )
-                        }
+                        }                      
                         <Form.Field>
                             <Divider className="dividerMargin" />
                         </Form.Field>
