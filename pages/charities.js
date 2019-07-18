@@ -17,7 +17,6 @@ class Charities extends React.Component {
                 'accountTopUp',
                 'noteTo',
                 'specialInstruction',
-                'dropDownAccountOptions',
                 'review',
                 'taxReceipt',
                 'error',
@@ -37,7 +36,6 @@ class Charities extends React.Component {
         const baseUrl = (this.props.slug) ? `/give/to/charity/${this.props.slug}` : '/give/to/charity'
         return (
             <Layout>
-                Charity page ! {this.props.step}
                 <GiveWrapper {...this.props} baseUrl={baseUrl} flowSteps={(this.props.slug) ? flowSteps : null}>
                     <Charity />
                 </GiveWrapper> 

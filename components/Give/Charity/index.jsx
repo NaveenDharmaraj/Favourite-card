@@ -1174,7 +1174,6 @@ export default withTranslation([
     'charity',
     'giveCommon',
     'accountTopUp',
-    'dropDownAccountOptions',
     'noteTo',
     'specialInstruction',
 ])(connect(mapStateToProps)(Charity));

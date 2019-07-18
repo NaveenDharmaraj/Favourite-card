@@ -32,9 +32,9 @@ const isCreditCardBlank = (giveData) => {
 
 const formatCurrency = (value, language, currencyType) => {
     const currencyFormat = {
-        currency: currencyType,
+        currency: currencyType.currency,
         currencyDisplay: 'symbol',
-        style: 'currency',
+        style: currencyType.style,
     };
     return _.replace(new Intl.NumberFormat(
         language,
@@ -42,6 +42,18 @@ const formatCurrency = (value, language, currencyType) => {
     ).format(value), 'US', '');
 };
 
+const currencyFormatting = (value, language, currencyType) => {
+    const currencyFormat = {
+        currency: currencyType,
+        currencyDisplay: 'symbol',
+        style: 'currency',
+    };
+    return _.replace(formatCurrency(
+        value,
+        language,
+        currencyFormat,
+    ));
+};
 /**
 * Determine whether the supplied field is valid.
 * @param  {String} field The tax receipt profile form field name
@@ -238,7 +250,7 @@ const getDropDownOptionFromApiData = (data, formatMessage, getValue, textFormat,
 * @param {boolean} isGiveFromGroupUrl IS it a group from url
 * @return {object[]} drop down options array
 */
-const populateAccountOptions = (data, giveToId = null, allocationType = null, isGiveFromGroupUrl = false) => {
+const populateAccountOptions = (data, translate, giveToId = null, allocationType = null, isGiveFromGroupUrl = false) => {
     const {
         companiesAccountsData,
         avatar,
@@ -249,6 +261,10 @@ const populateAccountOptions = (data, giveToId = null, allocationType = null, is
         userCampaigns,
         userGroups,
     } = data;
+    const {
+        formatMessage,
+        language,
+    } = translate;
     const currency = 'USD';
     if ((!_.isEmpty(companiesAccountsData)
     || !_.isEmpty(userCampaigns)
@@ -258,7 +274,7 @@ const populateAccountOptions = (data, giveToId = null, allocationType = null, is
             {
                 className: 'ddlGroup',
                 disabled: true,
-                text: `personal`, //formatMessage({ id: 'giving.personalAccountLabel' }),
+                text: formatMessage('personalAccountLabel' ),
                 value: 'user',
             },
             {
@@ -271,7 +287,7 @@ const populateAccountOptions = (data, giveToId = null, allocationType = null, is
                 disabled: false,
                 id,
                 name: `${firstName} ${lastName}`,
-                text: `${fund.attributes.name}`, // (${currencyFormatting(fund.attributes.balance, formatNumber, currency)})`,
+                text: `${fund.attributes.name} (${currencyFormatting(fund.attributes.balance, language, currency)})`,
                 type: 'user',
                 value: fund.id,
             },
@@ -280,7 +296,7 @@ const populateAccountOptions = (data, giveToId = null, allocationType = null, is
             {
                 className: 'ddlGroup',
                 disabled: true,
-                text: `company label`, //formatMessage({ id: 'giving.companiesAccountLabel' }),
+                text: formatMessage('companiesAccountLabel'),
                 value: 'company',
             },
         ];
@@ -288,7 +304,7 @@ const populateAccountOptions = (data, giveToId = null, allocationType = null, is
             {
                 className: 'ddlGroup',
                 disabled: true,
-                text: `groupHeader`, //formatMessage({ id: 'giving.groupHeader' }),
+                text: formatMessage('groupHeader'),
                 value: 'group',
             },
         ];
@@ -296,7 +312,7 @@ const populateAccountOptions = (data, giveToId = null, allocationType = null, is
             {
                 className: 'ddlGroup',
                 disabled: true,
-                text: `campaignHeader` , //formatMessage({ id: 'giving.campaignHeader' }),
+                text: formatMessage('campaignHeader' ),
                 value: 'campaign',
             },
         ];
@@ -325,7 +341,7 @@ const populateAccountOptions = (data, giveToId = null, allocationType = null, is
                     userGroups,
                     null,
                     (item) => item.attributes.fundId,
-                    (attributes) => `${attributes.fundName}`, // (${currencyFormatting(attributes.balance, formatNumber, currency)})`,
+                    (attributes) => `${attributes.fundName} (${currencyFormatting(attributes.balance, language, currency)})`,
                     (attributes) => false,
                     [
                         {
@@ -369,7 +385,7 @@ const populateAccountOptions = (data, giveToId = null, allocationType = null, is
                     userCampaigns,
                     null,
                     (item) => item.attributes.fundId,
-                    (attributes) => `${attributes.fundName}`, // (${currencyFormatting(attributes.balance, formatNumber, currency)})`,
+                    (attributes) => `${attributes.fundName} (${currencyFormatting(attributes.balance, language, currency)})`,
                     (attributes) => false,
                     [
                         {
@@ -397,7 +413,7 @@ const populateAccountOptions = (data, giveToId = null, allocationType = null, is
                     companiesAccountsData,
                     null,
                     (item) => item.attributes.companyFundId,
-                    (attributes) => `${attributes.companyFundName}`, // (${currencyFormatting(attributes.balance, formatNumber, currency)})`,
+                    (attributes) => `${attributes.companyFundName} (${currencyFormatting(attributes.balance, language, currency)})`,
                     (attributes) => false,
                     [
                         {
@@ -1516,6 +1532,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
 };
 
 export {
+    currencyFormatting,
     percentage,
     fullMonthNames,
     validateTaxReceiptProfileForm,

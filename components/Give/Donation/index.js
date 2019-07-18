@@ -640,4 +640,4 @@ const  mapStateToProps = (state) => {
         userAccountsFetched: state.user.userAccountsFetched,
     };
 }
-export default withTranslation(['donation', 'giveCommon', 'dropDownAccountOptions'])(connect(mapStateToProps)(Donation));
+export default withTranslation(['donation', 'giveCommon'])(connect(mapStateToProps)(Donation));

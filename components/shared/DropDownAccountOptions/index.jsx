@@ -18,6 +18,7 @@ import {
     populateAccountOptions,
 } from '../../../helpers/give/utils';
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
+import { withTranslation } from '../../../i18n';
 
 class DropDownAccountOptions extends React.Component {
 
@@ -25,7 +26,6 @@ class DropDownAccountOptions extends React.Component {
         const {
             companiesAccountsData,
             fund,
-            formatMessage,
             userCampaigns,
             userGroups,
             userAccountsFetched,
@@ -37,8 +37,14 @@ class DropDownAccountOptions extends React.Component {
             type,
         } = this.props;
         let dropDownData = null;
-        const giveFromHeader = (type === 'donations') ? formatMessage('dropDownAccountOptions:addingToLabel') : formatMessage('dropDownAccountOptions:giveFromLabel');
-        const giveFromPlaceHolder = (type === 'donations') ? formatMessage('dropDownAccountOptions:destinationaccountPlaceHolder') : formatMessage('dropDownAccountOptions:accountPlaceHolder');
+        const formatMessage = this.props.t;
+        const {
+            i18n: {
+                language,
+            },
+        } = this.props;
+        const giveFromHeader = (type === 'donations') ? formatMessage('addingToLabel') : formatMessage('giveFromLabel');
+        const giveFromPlaceHolder = (type === 'donations') ? formatMessage('destinationaccountPlaceHolder') : formatMessage('accountPlaceHolder');
         if (!_.isEmpty(companiesAccountsData) || !_.isEmpty(userCampaigns) || !_.isEmpty(userGroups)) {
             dropDownData = populateAccountOptions({
                 companiesAccountsData,
@@ -48,7 +54,7 @@ class DropDownAccountOptions extends React.Component {
                 lastName: 'UI',
                 userCampaigns,
                 userGroups,
-            }, null);
+            },  {formatMessage, language });
         }
         dropDownData = !_.isEmpty(dropDownData) ? dropDownData : null;
         let fieldData = (
@@ -60,7 +66,7 @@ class DropDownAccountOptions extends React.Component {
                 icon={<Icon name="spinner" loading />}
                 iconPosition="left"
                 name={name}
-                placeholder={formatMessage('dropDownAccountOptions:preloadedAccountPlaceHolder')}
+                placeholder={formatMessage('preloadedAccountPlaceHolder')}
             />
         );
         if (!_.isEmpty(dropDownData)) {
@@ -86,7 +92,7 @@ class DropDownAccountOptions extends React.Component {
                             {giveFromHeader}
                         </label>
                         <Popup
-                            content={formatMessage('dropDownAccountOptions:allocationsGiveFromPopup')}
+                            content={formatMessage('allocationsGiveFromPopup')}
                             position="top center"
                             trigger={(
                                 <Icon
@@ -138,4 +144,4 @@ DropDownAccountOptions.defaultProps = {
     type: '',
 };
 
-export default connect(mapStateToProps)(DropDownAccountOptions);
+export default withTranslation(['dropDownAccountOptions'])(connect(mapStateToProps)(DropDownAccountOptions));

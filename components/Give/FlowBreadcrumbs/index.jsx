@@ -1,7 +1,5 @@
 import {
     arrayOf,
-    bool,
-    func,
     PropTypes,
     string,
 } from 'prop-types';
@@ -24,7 +22,7 @@ const FlowBreadcrumbs = ({
     steps,
     breadcrumbArray,
 }) => {
-    const currentStepIndex = _.indexOf(steps,currentStep);
+    const currentStepIndex = _.indexOf(steps, currentStep);
     const stepsCount = steps.length;
     const makeBreadcrumb = (step, i) => {
         if (currentStepIndex !== 1 && i === 1) {
@@ -70,9 +68,9 @@ const FlowBreadcrumbs = ({
     );
 };
 FlowBreadcrumbs.propTypes = {
+    breadcrumbArray: arrayOf(PropTypes.element).isRequired,
     currentStep: string.isRequired,
     steps: arrayOf(PropTypes.element).isRequired,
-    breadcrumbArray: arrayOf(PropTypes.element).isRequired,
 };
 
 export default FlowBreadcrumbs;
