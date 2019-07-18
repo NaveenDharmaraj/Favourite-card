@@ -27,7 +27,7 @@
         "give": "Give",
         "taxReceipt": "Tax receipt",
         "review": "Review",
-        "success": "Confirmation",
+        "success": "Confirmation"
     },
     "amountLabel": "Amount",
     "amountPlaceHolder": "Enter amount",
@@ -38,7 +38,16 @@
     "continueButton": "Continue",
     "submittingButton": "Submitting...",
     "useNewCreditCardLabel": "Use a new credit card",
-    "infoToShareAnonymous": "Give anonymously"
+    "infoToShareAnonymous": "Give anonymously",
+    "change":"Change ",
+    "startsOn": "Starts On",
+    "emptyMessage" : "No content ",
+    "commonOr": "or ",
+    "commonMakeChanges" : "make changes "
+
+
+
+
 
 
 
