@@ -10,5 +10,5 @@ app.prepare().then(() => {
     const server = express();
     server.use(nextI18NextMiddleware(nextI18next));
     server.use(handler);
-    server.listen(3000);
+    server.listen(process.env.PORT || 3000);
 });
