@@ -32,9 +32,9 @@ const isCreditCardBlank = (giveData) => {
 
 const formatCurrency = (value, language, currencyType) => {
     const currencyFormat = {
-        currency: currencyType.currency,
+        currency: currencyType,
         currencyDisplay: 'symbol',
-        style: currencyType.style,
+        style: 'currency',
     };
     return _.replace(new Intl.NumberFormat(
         language,
@@ -42,18 +42,6 @@ const formatCurrency = (value, language, currencyType) => {
     ).format(value), 'US', '');
 };
 
-const currencyFormatting = (value, language, currencyType) => {
-    const currencyFormat = {
-        currency: currencyType,
-        currencyDisplay: 'symbol',
-        style: 'currency',
-    };
-    return _.replace(formatCurrency(
-        value,
-        language,
-        currencyFormat,
-    ));
-};
 /**
 * Determine whether the supplied field is valid.
 * @param  {String} field The tax receipt profile form field name
@@ -287,7 +275,7 @@ const populateAccountOptions = (data, translate, giveToId = null, allocationType
                 disabled: false,
                 id,
                 name: `${firstName} ${lastName}`,
-                text: `${fund.attributes.name} (${currencyFormatting(fund.attributes.balance, language, currency)})`,
+                text: `${fund.attributes.name} (${formatCurrency(fund.attributes.balance, language, currency)})`,
                 type: 'user',
                 value: fund.id,
             },
@@ -341,7 +329,7 @@ const populateAccountOptions = (data, translate, giveToId = null, allocationType
                     userGroups,
                     null,
                     (item) => item.attributes.fundId,
-                    (attributes) => `${attributes.fundName} (${currencyFormatting(attributes.balance, language, currency)})`,
+                    (attributes) => `${attributes.fundName} (${formatCurrency(attributes.balance, language, currency)})`,
                     (attributes) => false,
                     [
                         {
@@ -385,7 +373,7 @@ const populateAccountOptions = (data, translate, giveToId = null, allocationType
                     userCampaigns,
                     null,
                     (item) => item.attributes.fundId,
-                    (attributes) => `${attributes.fundName} (${currencyFormatting(attributes.balance, language, currency)})`,
+                    (attributes) => `${attributes.fundName} (${formatCurrency(attributes.balance, language, currency)})`,
                     (attributes) => false,
                     [
                         {
@@ -413,7 +401,7 @@ const populateAccountOptions = (data, translate, giveToId = null, allocationType
                     companiesAccountsData,
                     null,
                     (item) => item.attributes.companyFundId,
-                    (attributes) => `${attributes.companyFundName} (${currencyFormatting(attributes.balance, language, currency)})`,
+                    (attributes) => `${attributes.companyFundName} (${formatCurrency(attributes.balance, language, currency)})`,
                     (attributes) => false,
                     [
                         {
@@ -1183,7 +1171,6 @@ const populateDonationReviewPage = (giveData, data, currency, formatMessage, lan
         donationMatchData,
         fund,
     } = data;
-
     const state = {
     };
 
@@ -1256,7 +1243,6 @@ const populateDonationReviewPage = (giveData, data, currency, formatMessage, lan
         };
         state.sources = _.map(sources, buildAccounts);
         state.recipients = _.map(recipients, buildAccounts);
-        console.log(state);
         return (state);
     }
 };
@@ -1349,11 +1335,11 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
         const amountToGive = totalP2pGiveAmount ? Number(totalP2pGiveAmount) : Number(giveAmount);
         const amountFromDonation = (donationAmount) ? Number(donationAmount) : 0;
         const coverFeesAmt = (coverFeesAmount) ? Number(coverFeesAmount) : 0;
-        amountToGiveFrom = (amountFromDonation >= (amountToGive + coverFeesAmt)) ?
-            (amountFromDonation - (amountToGive + coverFeesAmt)) : 0;
+        amountToGiveFrom = (amountFromDonation >= (amountToGive + coverFeesAmt))
+            ? (amountFromDonation - (amountToGive + coverFeesAmt)) : 0;
 
-        if (!_.isEmpty(fromData) &&
-            (amountToGiveFrom === 0 && (amountFromDonation !== (amountToGive + coverFeesAmt)))) {
+        if (!_.isEmpty(fromData)
+            && (amountToGiveFrom === 0 && (amountFromDonation !== (amountToGive + coverFeesAmt)))) {
             const {
                 value,
             } = giftType;
@@ -1526,13 +1512,11 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
         state.givingOrganizerMessage = privacyShareEmailMessage;
 
         state.recipients = _.map(recipients, buildAccounts);
-        console.log(state);
         return state;
     }
 };
 
 export {
-    currencyFormatting,
     percentage,
     fullMonthNames,
     validateTaxReceiptProfileForm,
