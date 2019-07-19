@@ -1,8 +1,9 @@
 import Auth0Lock from 'auth0-lock';
 import _ from 'lodash';
 import jwt from 'jwt-decode';
-import {Router} from '../routes';
+import getConfig from 'next/config';
 
+import { Router } from '../routes';
 import storage from '../helpers/storage';
 import chimpLogo from '../static/images/chimp-logo-new.png';
 import {
@@ -14,6 +15,16 @@ import {
 import isUndefinedOrEmpty from '../helpers/object';
 
 import coreApi from './coreApi';
+
+const { publicRuntimeConfig } = getConfig();
+
+const {
+    APP_URL_ORIGIN,
+    AUTH0_DOMAIN,
+    AUTH0_WEB_CLIENT_ID,
+    AUTH0_WEB_AUDIENCE,
+} = publicRuntimeConfig;
+
 /**
  * @var {object} _auth0lockConfig - The static configuration options used for the Lock widget.
  * @see https://github.com/auth0/lock#customization
@@ -81,8 +92,6 @@ const lockScreenMap = {
     login: 'login',
     new: 'signUp',
 };
-const domain = 'chimptech-dev.auth0.com';
-const clientID = 'nflJDPtqECgZfeCSahw86tgDAOVhBQ74';
 let _auth0lock = null;
 let _auth0lockInitialScreen = '';
 /**
@@ -416,10 +425,10 @@ const _handleLockFailure = async ({ errorDescription }) => {
  * @return {auth0lock} - The auth0lock instance.
  */
 function _makeLock() {
-    _auth0lock = new Auth0Lock(clientID, domain, _auth0lockConfig, _.merge(_auth0lockConfig, {
+    _auth0lock = new Auth0Lock(AUTH0_WEB_CLIENT_ID, AUTH0_DOMAIN, _auth0lockConfig, _.merge(_auth0lockConfig, {
         auth: {
-            audience: 'https://lab.24467.org/api/v2/',
-            redirectUrl: 'http://localhost:3000/auth/callback',
+            audience: `${AUTH0_WEB_AUDIENCE}`,
+            redirectUrl: `${APP_URL_ORIGIN}/auth/callback`,
         },
     }))
         .on('authenticated', _handleLockSuccess)

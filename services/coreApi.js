@@ -1,10 +1,19 @@
 import axios from 'axios';
 import _isEmpty from 'lodash/isEmpty';
+import getConfig from 'next/config';
 
 import auth0 from '../services/auth';
 
+const { publicRuntimeConfig } = getConfig();
+
+const {
+    CORE_API_BASE,
+    CORE_API_DOMAIN,
+    CORE_API_VERSION,
+} = publicRuntimeConfig;
+
 const instance = axios.create({
-    baseURL: 'https://api-dev-1.herokuapp.com/core/v2',
+    baseURL: `${CORE_API_DOMAIN}/${CORE_API_BASE}/${CORE_API_VERSION}`,
     headers: {
         'Accept': 'application/vnd.api+json',
         'Content-Type': 'application/vnd.api+json',
