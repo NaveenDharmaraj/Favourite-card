@@ -1,14 +1,13 @@
-
-FROM node:10.14.2-alpine
+FROM node:10-alpine
 
 ARG NODE_ENV=dev
-ARG PORT=6320
+ARG PORT=6310
 ENV NODE_ENV=${NODE_ENV} 
 ENV PORT=${PORT}
 
 
 # dependencies
-RUN apk --no-cache add --update bash ttf-dejavu fontconfig curl wget
+RUN apk --no-cache add --update bash ttf-dejavu fontconfig curl wget git
 
 # install chamber
 ARG CHAMBER_AWS_REGION
@@ -24,5 +23,5 @@ COPY package.json /app
 RUN npm install
 
 COPY . /app
-ENTRYPOINT ["node", "index.js"]
+ENTRYPOINT ["node", "server.js"]
 EXPOSE ${PORT}
