@@ -29,6 +29,7 @@
         "review": "Révision",
         "success": "Confirmation"
     },
+    "blankError":  "Doit être rempli",
     "amountLabel": "Montant",
     "amountPlaceHolder": "Inscrivez le montant",
     "noteRemainingChars1000": "{{currentCount}} sur {{maximum}} caractères restants",

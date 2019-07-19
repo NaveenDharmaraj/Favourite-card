@@ -20,11 +20,6 @@ class Donations extends React.Component {
         };
     }
 
-    componentDidMount() {
-        const { dispatch } = this.props;
-        validateUser(dispatch);
-    }
-
     render() {
         return (
             <Layout>

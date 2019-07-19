@@ -106,7 +106,7 @@ class DropDownAccountOptions extends React.Component {
                     </Form.Field>
                     <FormValidationErrorMessage
                         condition={!validity}
-                        errorMessage="blankError"
+                        errorMessage={formatMessage('giveCommon:blankError')}
                     />
                 </Fragment>
             );
