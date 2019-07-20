@@ -59,9 +59,14 @@ const DonationListing = ({
                                             {attributes.city}
                                             {`, ${attributes.province} ${attributes.postalCode}`}
                                         </div>
-                                        <Link className="lnkChange" route="/donations/tax-receipt-profile">
-                                            {formatMessage('giveCommon:change')}
-                                        </Link>
+                                        { !disableButton
+                                            && (
+                                                <Link className="lnkChange" route="/donations/tax-receipt-profile">
+                                                    {formatMessage('giveCommon:change')}
+                                                </Link>
+                                            )
+                                        }
+
                                     </div>
                                 </Grid.Column>
                             </Grid.Row>

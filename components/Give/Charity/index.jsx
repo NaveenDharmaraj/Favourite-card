@@ -263,7 +263,6 @@ class Charity extends React.Component {
                     value: giveGroupBenificairyDetails.benificiaryDetails[benificiaryIndex].attributes.fundId,
                 };
             }
-            console.log('fund', fund);
             if (!_isEmpty(fund)) {
                 giveData = Charity.initFields(
                     giveData, fund, id, paymentInstrumentOptions,
@@ -1175,7 +1174,6 @@ export default withTranslation([
     'charity',
     'giveCommon',
     'accountTopUp',
-    'dropDownAccountOptions',
     'noteTo',
     'specialInstruction',
 ])(connect(mapStateToProps)(Charity));

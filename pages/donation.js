@@ -14,16 +14,10 @@ class Donations extends React.Component {
                 'giveCommon',
                 'review',
                 'taxReceipt',
-                'dropDownAccountOptions',
                 'error',
             ],
             step: query.step,
         };
-    }
-
-    componentDidMount() {
-        const { dispatch } = this.props;
-        validateUser(dispatch);
     }
 
     render() {

@@ -7,6 +7,9 @@ import _ from 'lodash';
 
 import coreApi from '../services/coreApi';
 import realtypeof from '../helpers/realtypeof';
+import {
+    getDonationMatchAndPaymentInstruments,
+} from './user';
 
 
 export const actionTypes = {
@@ -300,7 +303,13 @@ const checkForQuaziSuccess = (error) => {
     return false;
 };
 
-
+const callApiAndDispatchData = (dispatch, account) => {
+    if (account.type === 'user') {
+        dispatch(getDonationMatchAndPaymentInstruments());
+    } else {
+        getCompanyPaymentAndTax(dispatch, Number(account.id));
+    }
+};
 
 export const proceed = (flowObject, nextStep, stepIndex, lastStep = false) => {
     if (lastStep) {
@@ -367,6 +376,16 @@ export const proceed = (flowObject, nextStep, stepIndex, lastStep = false) => {
     }
     return (dispatch) => {
         flowObject.nextStep = nextStep;
+        const {
+            giveData: {
+                giveFrom,
+                giveTo,
+            },
+        } = flowObject;
+        const accountDetails = {
+            id: (flowObject.type === 'donations') ? giveTo.id : giveFrom.id,
+            type: (flowObject.type === 'donations') ? giveTo.type : giveFrom.type,
+        };
         if (flowObject.taxReceiptProfileAction !== 'no_change' && stepIndex === 1) {
             updateTaxReceiptProfile(
                 flowObject.selectedTaxReceiptProfile,
@@ -377,6 +396,7 @@ export const proceed = (flowObject, nextStep, stepIndex, lastStep = false) => {
                     payload: flowObject,
                     type: actionTypes.SAVE_FLOW_OBJECT,
                 });
+                callApiAndDispatchData(dispatch, accountDetails);
             }).catch((error) => {
                 console.log(error);
             });

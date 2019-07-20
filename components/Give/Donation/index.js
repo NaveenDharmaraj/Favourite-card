@@ -110,7 +110,9 @@ const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper')
               giveData[name] = formatAmount(value);
               inputValue = formatAmount(value);
           }
-          validity = validateDonationForm(name, inputValue, validity)
+            if(name !== 'giveTo') {
+                validity = validateDonationForm(name, inputValue, validity, giveData);
+            }
           this.setState({
               flowObject: {
                   ...this.state.flowObject,
@@ -169,16 +171,16 @@ const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper')
           } = this.props;
           const formatMessage = this.props.t;
           let newValue = (!_.isEmpty(options)) ? _.find(options, { value }) : value;
-          let setDisableFlag = false;
+          let setDisableFlag = this.state.disableButton;
           if (giveData[name] !== newValue) {
               giveData[name] = newValue;
               giveData.userInteracted = true;
             switch (name) {
                 case 'giveTo':
                     if(giveData.giveTo.type === 'companies') {
+                        setDisableFlag = true;
                         const {dispatch} = this.props;
                         getCompanyPaymentAndTax(dispatch, Number(giveData.giveTo.id));
-                        setDisableFlag = true;
                         giveData.creditCard = {
                             value: null,
                         };
@@ -197,10 +199,6 @@ const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper')
                     const inputValue  = target.checked;
                     giveData.automaticDonation = inputValue;
                     giveData.giftType.value = (inputValue) ? 1 : 0;
-
-                case 'giftType':
-                    //giveData.giftType.value = newValue.value;
-                    // giveData = resetDataForGiftTypeChange(giveData, dropDownOptions, coverFeesData);
                     break;                                 
                 default: break;
               }
@@ -294,17 +292,6 @@ const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper')
                     condition={!validity.isAmountLessThanOneBillion}
                     errorMessage={formatMessage('giveCommon:errorMessages.invalidMaxAmountError')}
                 />
-                  <FormValidationErrorMessage
-                      condition={!validity.doesAmountExist || !validity.isAmountMoreThanOneDollor
-                      || !validity.isValidPositiveNumber}
-                      errorMessage={formatMessage('giveCommon:errorMessages.amountLessOrInvalid', {
-                          minAmount: 5,
-                      })}
-                  />
-                  <FormValidationErrorMessage
-                      condition={!validity.isAmountLessThanOneBillion}
-                      errorMessage={formatMessage('giveCommon:errorMessages.invalidMaxAmountError')}
-                  />
             </Form.Field>
         );
     }
@@ -352,7 +339,7 @@ const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper')
                     !!formData.automaticDonation && (
                         <Form.Field>
                             <label htmlFor="onWhatDay">
-                              donationOnWhatDayLabel
+                                {formatMessage('donationOnWhatDayLabel')}
                             </label>
                             <Form.Field
                                 control={Select}
@@ -507,6 +494,9 @@ const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper')
       } = this.props;
       const formatMessage = this.props.t;
       let doSetState = false;
+      if(this.props.userAccountsFetched !== oldProps.userAccountsFetched){
+            doSetState = true;
+      }
       if(giveData.giveTo.type === 'companies' && !_.isEqual(this.props.companyDetails, oldProps.companyDetails)) {
           giveData.creditCard = getDefaultCreditCard(populatePaymentInstrument(this.props.companyDetails.companyPaymentInstrumentsData, formatMessage));
           doSetState = true;
@@ -546,7 +536,7 @@ const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper')
                   ...this.state.flowObject,
                   giveData:{
                       ...this.state.flowObject.giveData,
-                      giveData,
+                      ...giveData,
                   },
               },
           });
@@ -585,7 +575,7 @@ const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper')
           formatMessage={formatMessage}
           type={type}
           validity= {validity.isValidAddingToSource}
-          selectedValue={giveData.giveTo.value}
+          selectedValue={this.state.flowObject.giveData.giveTo.value}
           name="giveTo"
           parentInputChange={this.handleInputChange}
           parentOnBlurChange={this.handleInputOnBlur}
@@ -594,7 +584,7 @@ const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper')
         <Note
             fieldName="noteToSelf"
             handleOnInputChange={this.handleInputChange}
-            handleOnInputBlur={this.handleOnInputBlur}
+            handleOnInputBlur={this.handleInputOnBlur}
             formatMessage ={formatMessage}
             labelText={formatMessage('noteToSelfLabel')}
             popupText={formatMessage('donorNoteToSelfPopup')}
@@ -602,9 +592,14 @@ const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper')
             text={giveData.noteToSelf}
         />
         { this.renderdonationMatchOptions(giveData, donationMatchOptions, formatMessage, donationMatchData, language, currency)}
-        { this.renderpaymentInstrumentOptions(giveData, paymentInstrumenOptions, formatMessage)}
+
         {
-            (_isEmpty(paymentInstrumenOptions)|| giveData.creditCard.value === 0) && (
+            ((!_isEmpty(paymentInstrumenOptions) && giveData.giveTo.value > 0) &&
+                this.renderpaymentInstrumentOptions(giveData, paymentInstrumenOptions, formatMessage)
+            )
+        }
+        {
+            ((_isEmpty(paymentInstrumenOptions) && giveData.giveTo.value > 0)|| giveData.creditCard.value === 0) && (
                 <Form.Field>
                     <CreditCardWrapper />
                 </Form.Field>
@@ -612,6 +607,7 @@ const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper')
         }
         <Divider hidden />
             <Form.Button
+                primary
                 // className={isMobile ? 'mobBtnPadding' : 'btnPadding'}
                 content={(!this.state.buttonClicked) ? formatMessage('giveCommon:continueButton')
                     : formatMessage('giveCommon:submittingButton')}
@@ -620,9 +616,6 @@ const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper')
                 type="submit"
             />
         </Form>
-        <div>
-        {/* <div onClick={() => this.handleSubmit()} >Continue</div> */}
-        </div>
       </Fragment>
 
     )
@@ -640,4 +633,4 @@ const  mapStateToProps = (state) => {
         userAccountsFetched: state.user.userAccountsFetched,
     };
 }
-export default withTranslation(['donation', 'giveCommon', 'dropDownAccountOptions'])(connect(mapStateToProps)(Donation));
+export default withTranslation(['donation', 'giveCommon'])(connect(mapStateToProps)(Donation));
