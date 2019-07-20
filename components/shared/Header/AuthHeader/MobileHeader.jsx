@@ -1,27 +1,18 @@
 import React, { Component } from "react";
-import { render } from "react-dom";
 import {
-  Container,
-  Icon,
-  Image,
-  Menu,
-  Sidebar,
-  Responsive,
-  Button,
-  Accordion,
-  Segment,
-  Label,
-  Popup,
-  List
+    Icon,
+    Image,
+    Menu,
+    Sidebar,
+    Button,
 } from "semantic-ui-react";
-import logo from '../../../static/images/CharitableImpact.png';
+
+import logo from '../../../../static/images/CharitableImpact.png';
+
 const NavBarMobile = ({
-  state,
   children,
-  leftItems,
   onPusherClick,
   onToggle,
-  rightItems,
   visible
 }) => (
   <Sidebar.Pushable className="c-m-login-header">
@@ -56,7 +47,7 @@ const NavBarMobile = ({
     >
       <Menu secondary>
         <Menu.Item>
-          <Image size="mini" src="https://react.semantic-ui.com/logo.png" />
+          <Image size="mini" src={logo} />
         </Menu.Item>
         <Menu.Item onClick={onToggle}>
           <Icon name="sidebar" />
@@ -79,33 +70,7 @@ const NavBarMobile = ({
   </Sidebar.Pushable>
 );
 
-const NavBarDesktop = () => (
-  <Segment textAlign='center'
-  vertical
-  className='c-logout-header'>
-    <Container>
-      <Menu secondary>
-        <Menu.Item>
-          <Image src={logo} style={{width:'131px'}}/>
-        </Menu.Item>
-        <Menu.Menu position="right">
-          <Menu.Item>
-            Already have an account?
-          </Menu.Item>
-          <Menu.Item>
-            <Button basic  className="outline-btn">Sign in</Button>
-          </Menu.Item>
-        </Menu.Menu>
-      </Menu>
-    </Container>
-  </Segment>
-);
-
-const NavBarChildren = ({ children }) => (
-  <Container>{children}</Container>
-);
-
-class NavBar extends Component {
+class MobileHeader extends Component {
   state = {
     visible: false
   };
@@ -119,30 +84,21 @@ class NavBar extends Component {
   handleToggle = () => this.setState({ visible: !this.state.visible });
 
   render() {
-    const { children, leftItems, rightItems } = this.props;
+    const { children } = this.props;
     const { visible } = this.state;
 
     return (
-      <div>
-        <Responsive {...Responsive.onlyMobile}>
-          <NavBarMobile
-            leftItems={leftItems}
-            onPusherClick={this.handlePusher}
-            onToggle={this.handleToggle}
-            rightItems={rightItems}
-            visible={visible}
-          >
-            <NavBarChildren>{children}</NavBarChildren>
-          </NavBarMobile>
-        </Responsive>
-        <Responsive minWidth={Responsive.onlyTablet.minWidth}>
-          <NavBarDesktop leftItems={leftItems} rightItems={rightItems} />
-          <NavBarChildren>{children}</NavBarChildren>
-        </Responsive>
-      </div>
+      
+        <NavBarMobile
+        onPusherClick={this.handlePusher}
+        onToggle={this.handleToggle}
+        visible={visible}
+        >
+            {children}
+        </NavBarMobile>
     );
   }
 }
 
 
-export default NavBar;
+export default MobileHeader;
