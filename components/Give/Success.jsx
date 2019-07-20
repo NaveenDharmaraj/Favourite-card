@@ -75,7 +75,7 @@ const Success = (props) => {
     } = props;
     //Since there is no succesdata from review page currently copying flowObject values to success data  temporarily
     Object.assign(successData, props.flowObject);
-    
+
     const {
         giveData: {
             creditCard,
@@ -120,6 +120,8 @@ const Success = (props) => {
         donationMatchedData = getDonationMatchedData(donationMatch.id, donationAmount, donationMatchData);
         displayAmount += Number(donationMatchedData.amount);
     }
+
+    //currently we are not receiving processor,truncatedPaymentId, name from credit card instead text give all three data which affects during translation
     const creditCardMessage = formatMessage('creditCardMessage', {
         cardType: _.capitalize(creditCard.processor),
         lastFourDigitCardNo: creditCard.truncatedPaymentId,
