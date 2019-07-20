@@ -73,7 +73,9 @@ const Success = (props) => {
         successData,
         t: formatMessage,
     } = props;
+    //Since there is no succesdata from review page currently copying flowObject values to success data  temporarily
     Object.assign(successData, props.flowObject);
+    
     const {
         giveData: {
             creditCard,
