@@ -55,13 +55,14 @@ class TaxReceipt extends React.Component {
 		super(props);
 		const {
 			options,
-			taxSelected
+			taxSelected,
+			taxProfileData,
 		} = this.populateOptions(props.taxReceiptProfiles, props.flowObject.selectedTaxReceiptProfile);
 		this.state = {
 			flowObject: {
 				...props.flowObject,
+				selectedTaxReceiptProfile: taxProfileData,
 			},
-			selectedValue: props.flowObject.selectedTaxReceiptProfile.id,
 			showFormData: true,
 			validity: this.intializeValidations(),
 			receiptOptions: options,
@@ -92,11 +93,16 @@ class TaxReceipt extends React.Component {
 		if(!_.isEqual(this.props.taxReceiptProfiles, oldProps.taxReceiptProfiles)) {
 			const {
 				options,
-				taxSelected
+				taxSelected,
+				taxProfileData,
 			} = this.populateOptions(this.props.taxReceiptProfiles, this.state.flowObject.selectedTaxReceiptProfile);
 			this.setState({
 				receiptOptions: options,
-				selectedValue: taxSelected
+				selectedValue: taxSelected,
+				flowObject: {
+					...props.flowObject,
+					selectedTaxReceiptProfile: taxProfileData,
+				},
 			})
 		}
 	}
@@ -240,6 +246,7 @@ class TaxReceipt extends React.Component {
 
 	populateOptions = (taxReceiptProfiles, selectedTaxReceiptProfile) => {
 		let options = [];
+		let taxProfileData = selectedTaxReceiptProfile;
 		if (!_.isEmpty(taxReceiptProfiles)) {
 			taxReceiptProfiles.map((item) => {
 				const {
@@ -256,22 +263,17 @@ class TaxReceipt extends React.Component {
 			value: 0,
 		});
 		let taxSelected = options[options.length - 1].value;
-
 		if (!_.isEmpty(selectedTaxReceiptProfile) &&
 			!!(selectedTaxReceiptProfile.id)) {
 			taxSelected = selectedTaxReceiptProfile.id;
 		} else if (_.isEmpty(selectedTaxReceiptProfile)) {
-			selectedTaxReceiptProfile = _.merge({}, intializeFormData);
+			taxProfileData = _.merge({}, intializeFormData);
 		}
-
-		//      this.state.selectedValue = taxSelected;
 		return {
 			options,
-			taxSelected
+			taxSelected,
+			taxProfileData,
 		};
-		// this.setState({
-		//   receiptOptions: options
-		// })
 
 	}
 

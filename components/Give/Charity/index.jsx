@@ -225,7 +225,6 @@ class Charity extends React.Component {
             const formatMessage = this.props.t;
             let paymentInstruments = null;
             let companyPaymentInstrumentChanged = false;
-            const formatMessage = this.props.t;
             if (giveData.giveFrom.type === 'companies' && !_isEmpty(companyDetails)) {
                 if (_isEmpty(this.props.companyDetails)
                      || !_isEqual(companyDetails.companyPaymentInstrumentsData,

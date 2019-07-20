@@ -249,6 +249,7 @@ class Group extends React.Component {
                     paymentInstrumentList: paymentInstrumentOptions,
                 },
                 flowObject:{
+                    ...this.state.flowObject,
                     giveData:{
                         ...this.state.flowObject.giveData,
                         ...giveData,
@@ -462,7 +463,6 @@ class Group extends React.Component {
             flowObject.stepsCompleted = false;
             flowObject.nextSteptoProceed = nextStep;
             console.log(flowObject)
-            debugger
             dispatch(proceed(flowObject, flowSteps[stepIndex + 1]));
         } else {
             this.setState({
