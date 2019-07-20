@@ -1,5 +1,4 @@
-import React, { cloneElement } from 'react';
-import Layout from '../components/shared/Layout';
+import React from 'react';
 import {
   Button,
   Container,
@@ -19,6 +18,8 @@ import {
   Card,
   Breadcrumb,
 } from 'semantic-ui-react'
+
+import Layout from '../../components/shared/Layout';
 class Login extends React.Component {
 
     render() {

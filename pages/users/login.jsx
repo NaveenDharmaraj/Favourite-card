@@ -3,7 +3,9 @@ import querystring from 'querystring';
 import React from 'react';
 import { connect } from 'react-redux';
 import { // eslint-disable-line import/order
+    Container,
     Grid,
+    Header,
 } from 'semantic-ui-react';
 
 import auth0 from '../../services/auth';
@@ -42,23 +44,29 @@ class UserAuthView extends React.Component {
 
         return (
             <Layout>
-                <Grid
-                    centered
-                    column={1}
-                    padded="vertically"
-                >
-                    <Grid.Row>
-                        <Grid.Column
-                            mobile={16}
-                            tablet={6}
-                            computer={6}
-                            largeScreen={4}
-                            widescreen={3}
-                            id="auth0-lock-container"
-                            {...segmentProps}
-                        />
-                    </Grid.Row>
-                </Grid>
+                <div className="pageWraper">
+                    <Container>
+                        <div className="linebg" >
+                            <Grid columns={2} verticalAlign='middle'>
+                            <Grid.Row>
+                                    <Grid.Column className="left-bg"></Grid.Column>
+                                    <Grid.Column>
+                                        <div className="login-form-wraper">
+                                            <div className="reg-header">
+                                                <Header as="h3">Sign in to Charitable Impact</Header>
+                                                <Header as="h4">Enter your details below</Header>
+                                            </div>
+                                            <div id="auth0-lock-container">
+
+                                            </div>
+                                        </div>
+                                    </Grid.Column>
+                                </Grid.Row>
+
+                            </Grid>
+                        </div>
+                    </Container>
+                </div>
             </Layout>
         );
     }
