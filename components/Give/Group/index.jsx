@@ -134,100 +134,13 @@ class Group extends React.Component {
 
     }
 
-    handleInputChange(event, data) {
-        const {
-            name,
-            options,
-            value,
-        } = data;
-        let {
-            flowObject: {
-                giveData,
-            },
-            dropDownOptions,
-            validity,
-        } = this.state;
-        const {
-            flowObject: {
-                type,
-            },
-        } = this.state;
-        const {
-            coverFeesData,
-        } = this.props;
-        let newValue = (!_isEmpty(options)) ? _find(options, { value }) : value;
-        const privacyCheckbox = [
-            'privacyShareAddress',
-            'privacyShareAmount',
-            'privacyShareEmail',
-            'privacyShareName',
-        ];
-        const isValidPrivacyOption = _includes(privacyCheckbox, name);
-        if (isValidPrivacyOption) {
-            const {
-                target,
-            } = event;
-            newValue = target.checked;
-        }
-        if (giveData[name] !== newValue) {
-            giveData[name] = newValue;
-            giveData.userInteracted = true;
-            switch (name) {
-                case 'giveFrom':
-                    const {
-                        modifiedDropDownOptions,
-                        modifiedGiveData,
-                    } = resetDataForAccountChange(
-                        giveData, dropDownOptions, this.props, type,
-                    );
-                    giveData = modifiedGiveData;
-                    dropDownOptions = modifiedDropDownOptions;
-                    validity = validateGiveForm(
-                        name, giveData[name], validity, giveData, 0,
-                    );
-                    if (giveData.giveFrom.type === 'companies') {
-                        getCompanyPaymentAndTax(Number(giveData.giveFrom.id));
-                    }
-                    break;
-                case 'giftType':
-                    giveData = resetDataForGiftTypeChange(giveData, dropDownOptions, coverFeesData);
-                    break;
-                case 'giveAmount':
-                    giveData = resetDataForGiveAmountChange(
-                        giveData, dropDownOptions, coverFeesData,
-                    );
-                    break;
-                default: break;
-            }
-            this.setState({
-                flowObject: {
-                    ...this.state.flowObject,
-                    giveData,
-                },
-                dropDownOptions: {
-                    ...this.state.dropDownOptions,
-                    dropDownOptions,
-                },
-                validity: {
-                    ...this.state.validity,
-                    validity,
-                },
-            });
-        }
-    }
-
-    handleSubmit = () => {
-    const {dispatch, stepIndex, flowSteps} = this.props
-    dispatch(proceed(this.state.flowObject, flowSteps[stepIndex+1]))
-    }
-
     componentDidMount() {
         const {
-        slug,
-        dispatch
+            slug,
+            dispatch,
         } = this.props;
-        if(slug !== null) {
-        getGroupsFromSlug(dispatch, slug);
+        if (slug !== null) {
+            getGroupsFromSlug(dispatch, slug);
         }
         dispatch(getDonationMatchAndPaymentInstruments());
 
@@ -348,38 +261,105 @@ class Group extends React.Component {
             });        }        
     }
 
-    intializeValidations() {
-        this.validity = {
-            doesAmountExist: true,
-            isAmountCoverGive: true,
-            isAmountLessThanOneBillion: true,
-            isAmountMoreThanOneDollor: true,
-            isDonationAmountBlank: true,
-            isDonationAmountCoverGive: true,
-            isDonationAmountLessThan1Billion: true,
-            isDonationAmountMoreThan1Dollor: true,
-            isDonationAmountPositive: true,
-            isNoteToCharityInLimit: true,
-            isNoteToSelfInLimit: true,
-            isValidAddingToSource: true,
-            isValidDecimalAmount: true,
-            isValidDecimalDonationAmount: true,
-            isValidDonationAmount: true,
-            isValidGiveAmount: true,
-            isValidGiveFrom: true,
-            isValidNoteSelfText: true,
-            isValidNoteToCharity: true,
-            isValidNoteToCharityText: true,
-            isValidNoteToSelf: true,
-            isValidPositiveNumber: true,
-        };
-        return this.validity;
-    }
-
     static populateShareAddress(taxReceiptProfile) {
         return !_isEmpty(taxReceiptProfile) ? getDropDownOptionFromApiData(taxReceiptProfile, null, (item) => `name_address_email|${item.id}`,
             (attributes) => `${attributes.fullName}, ${attributes.addressOne}, ${attributes.city}, ${attributes.province}, ${attributes.postalCode}`,
             (attributes) => false) : null;
+    }
+
+    /**
+     * Init feilds on componentWillReceiveProps.
+     * @param {object} giveData full form data.
+     * @param {object} fund user fund details from API.
+     * @param {String} id user id from API.
+     * @param {object[]} paymentInstrumentOptions creditcard list.
+     * @param {boolean} companyPaymentInstrumentChanged creditcard changed or not.
+     * @param {String} name user name from API.
+     * @return {object} full form data.
+     */
+
+    // eslint-disable-next-line react/sort-comp
+    static initFields(giveData, fund, id, paymentInstrumentOptions,
+        companyPaymentInstrumentChanged, name, companiesAccountsData, userGroups, userCampaigns, addressToShareList) {
+        if (
+            (giveData.giveFrom.type === 'user' || giveData.giveFrom.type === 'companies')
+            && (giveData.creditCard.value === null || companyPaymentInstrumentChanged)
+            && (giveData.giftType.value > 0
+            || Number(giveData.giveAmount) > Number(giveData.giveFrom.balance))
+        ) {
+            giveData.creditCard = getDefaultCreditCard(
+                paymentInstrumentOptions,
+            );
+        }
+        if (_isEmpty(companiesAccountsData) && _isEmpty(userGroups) && _isEmpty(userCampaigns) && !giveData.userInteracted) {
+            giveData.giveFrom.id = id;
+            giveData.giveFrom.value = fund.id;
+            giveData.giveFrom.type = 'user';
+
+            giveData.giveFrom.text = `${fund.attributes.name} ($${fund.attributes.balance})`;
+            giveData.giveFrom.balance = fund.attributes.balance;
+            giveData.giveFrom.name = name;
+        } else if (!_isEmpty(companiesAccountsData) && !_isEmpty(userGroups) && !_isEmpty(userCampaigns) && !giveData.userInteracted) {
+            giveData.giveFrom = {
+                value: '',
+            };
+        }
+        if (!_isEmpty(addressToShareList) && addressToShareList.length > 0
+        && !giveData.userInteracted) {
+            const [
+                defaultAddress,
+            ] = addressToShareList;
+            giveData.infoToShare = defaultAddress;
+        }
+        return giveData;
+    }
+
+    getStripeCreditCard(data, cardHolderName) {
+        this.setState({
+            flowObject: {
+                ...this.state.flowObject,
+                cardHolderName,
+                stripeCreditCard: data,
+            },
+        });
+    }
+
+    validateForm() {
+        const {
+            flowObject: {
+                giveData,
+            },
+            inValidCardNumber,
+            inValidExpirationDate,
+            inValidNameOnCard,
+            inValidCvv,
+            inValidCardNameValue,
+        } = this.state;
+        let {
+            validity,
+        } = this.state;
+
+        validity = validateGiveForm('donationAmount', giveData.donationAmount, validity, giveData, 0);
+        validity = validateGiveForm('giveAmount', giveData.giveAmount, validity, giveData, 0);
+        validity = validateGiveForm('giveFrom', giveData.giveFrom.value, validity, giveData, 0);
+        validity = validateGiveForm('noteToSelf', giveData.noteToSelf, validity, giveData, 0);
+        validity = validateGiveForm('noteToCharity', giveData.noteToCharity, validity, giveData, 0);
+        if (giveData.giveTo.value === giveData.giveFrom.value) {
+            validity.isValidGiveTo = false;
+        } else {
+            validity.isValidGiveTo = true;
+        }
+        this.setState({ validity });
+        let validateCC = true;
+        if (giveData.creditCard.value === 0) {
+            this.StripeCreditCard.handleOnLoad(
+                inValidCardNumber, inValidExpirationDate, inValidNameOnCard,
+                inValidCvv, inValidCardNameValue,
+            );
+            validateCC = (!inValidCardNumber && !inValidExpirationDate &&
+                !inValidNameOnCard && !inValidCvv && !inValidCardNameValue);
+        }
+        return _every(validity) && validateCC;
     }
 
     handleInputOnBlur(event, data) {
@@ -423,99 +403,158 @@ class Group extends React.Component {
         });
     }
 
-    validateForm() {
+    intializeValidations() {
+        this.validity = {
+            doesAmountExist: true,
+            isAmountCoverGive: true,
+            isAmountLessThanOneBillion: true,
+            isAmountMoreThanOneDollor: true,
+            isDonationAmountBlank: true,
+            isDonationAmountCoverGive: true,
+            isDonationAmountLessThan1Billion: true,
+            isDonationAmountMoreThan1Dollor: true,
+            isDonationAmountPositive: true,
+            isNoteToCharityInLimit: true,
+            isNoteToSelfInLimit: true,
+            isValidAddingToSource: true,
+            isValidDecimalAmount: true,
+            isValidDecimalDonationAmount: true,
+            isValidDonationAmount: true,
+            isValidGiveAmount: true,
+            isValidGiveFrom: true,
+            isValidNoteSelfText: true,
+            isValidNoteToCharity: true,
+            isValidNoteToCharityText: true,
+            isValidNoteToSelf: true,
+            isValidPositiveNumber: true,
+        };
+        return this.validity;
+    }
+
+    handleSubmit = () => {
         const {
-            allocation: {
+            flowObject,
+        } = this.state;
+        const {
+            nextStep,
+            companyDetails,
+            currentUser: {
+                defaultTaxReceiptProfile,
+            },
+            dispatch,
+            flowSteps,
+            stepIndex
+        } = this.props;
+        let { forceContinue } = this.state;
+        const {
+            giveData: {
+                creditCard,
+            },
+        } = flowObject;
+        this.setState({
+            buttonClicked: true,
+        });
+        if (this.validateForm()) {
+            if (creditCard.value > 0) {
+                flowObject.selectedTaxReceiptProfile = (flowObject.giveData.giveFrom.type === 'companies') ?
+                    companyDetails.companyDefaultTaxReceiptProfile :
+                    defaultTaxReceiptProfile;
+            }
+            if (_isEqual(flowObject, this.props.flowObject)) {
+                forceContinue = (forceContinue === this.props.nextStep.path) ?
+                    this.props.currentStep.path : this.props.nextStep.path;
+            }
+            flowObject.stepsCompleted = false;
+            flowObject.nextSteptoProceed = nextStep;
+            dispatch(proceed(flowObject, flowSteps[stepIndex + 1]));
+            debugger
+        } else {
+            this.setState({
+                buttonClicked: false,
+            });
+        }
+    }
+
+    handleInputChange(event, data) {
+        const {
+            name,
+            options,
+            value,
+        } = data;
+        let {
+            flowObject: {
                 giveData,
             },
-            inValidCardNumber,
-            inValidExpirationDate,
-            inValidNameOnCard,
-            inValidCvv,
-            inValidCardNameValue,
-        } = this.state;
-        let {
+            dropDownOptions,
             validity,
         } = this.state;
-
-        validity = validateGiveForm('donationAmount', giveData.donationAmount, validity, giveData, 0);
-        validity = validateGiveForm('giveAmount', giveData.giveAmount, validity, giveData, 0);
-        validity = validateGiveForm('giveFrom', giveData.giveFrom.value, validity, giveData, 0);
-        validity = validateGiveForm('noteToSelf', giveData.noteToSelf, validity, giveData, 0);
-        validity = validateGiveForm('noteToCharity', giveData.noteToCharity, validity, giveData, 0);
-        if (giveData.giveTo.value === giveData.giveFrom.value) {
-            validity.isValidGiveTo = false;
-        } else {
-            validity.isValidGiveTo = true;
-        }
-        this.setState({ validity });
-        let validateCC = true;
-        if (giveData.creditCard.value === 0) {
-            this.StripeCreditCard.handleOnLoad(
-                inValidCardNumber, inValidExpirationDate, inValidNameOnCard,
-                inValidCvv, inValidCardNameValue,
-            );
-            validateCC = (!inValidCardNumber && !inValidExpirationDate &&
-                !inValidNameOnCard && !inValidCvv && !inValidCardNameValue);
-        }
-        return _every(validity) && validateCC;
-    }
-
-       /**
-     * Init feilds on componentWillReceiveProps.
-     * @param {object} giveData full form data.
-     * @param {object} fund user fund details from API.
-     * @param {String} id user id from API.
-     * @param {object[]} paymentInstrumentOptions creditcard list.
-     * @param {boolean} companyPaymentInstrumentChanged creditcard changed or not.
-     * @param {String} name user name from API.
-     * @return {object} full form data.
-     */
-
-    // eslint-disable-next-line react/sort-comp
-    static initFields(giveData, fund, id, paymentInstrumentOptions,
-        companyPaymentInstrumentChanged, name, companiesAccountsData, userGroups, userCampaigns, addressToShareList) {
-        if (
-            (giveData.giveFrom.type === 'user' || giveData.giveFrom.type === 'companies')
-            && (giveData.creditCard.value === null || companyPaymentInstrumentChanged)
-            && (giveData.giftType.value > 0
-            || Number(giveData.giveAmount) > Number(giveData.giveFrom.balance))
-        ) {
-            giveData.creditCard = getDefaultCreditCard(
-                paymentInstrumentOptions,
-            );
-        }
-        if (_isEmpty(companiesAccountsData) && _isEmpty(userGroups) && _isEmpty(userCampaigns) && !giveData.userInteracted) {
-            giveData.giveFrom.id = id;
-            giveData.giveFrom.value = fund.id;
-            giveData.giveFrom.type = 'user';
-
-            giveData.giveFrom.text = `${fund.attributes.name} ($${fund.attributes.balance})`;
-            giveData.giveFrom.balance = fund.attributes.balance;
-            giveData.giveFrom.name = name;
-        } else if (!_isEmpty(companiesAccountsData) && !_isEmpty(userGroups) && !_isEmpty(userCampaigns) && !giveData.userInteracted) {
-            giveData.giveFrom = {
-                value: '',
-            };
-        }
-        if (!_isEmpty(addressToShareList) && addressToShareList.length > 0
-        && !giveData.userInteracted) {
-        const [
-            defaultAddress,
-        ] = addressToShareList;
-        giveData.infoToShare = defaultAddress;
-    }
-        return giveData;
-    }
-
-    getStripeCreditCard(data, cardHolderName) {
-        this.setState({
-            allocation: {
-                ...this.state.allocation,
-                cardHolderName,
-                stripeCreditCard: data,
+        const {
+            flowObject: {
+                type,
             },
-        });
+        } = this.state;
+        const {
+            coverFeesData,
+        } = this.props;
+        let newValue = (!_isEmpty(options)) ? _find(options, { value }) : value;
+        const privacyCheckbox = [
+            'privacyShareAddress',
+            'privacyShareAmount',
+            'privacyShareEmail',
+            'privacyShareName',
+        ];
+        const isValidPrivacyOption = _includes(privacyCheckbox, name);
+        if (isValidPrivacyOption) {
+            const {
+                target,
+            } = event;
+            newValue = target.checked;
+        }
+        if (giveData[name] !== newValue) {
+            giveData[name] = newValue;
+            giveData.userInteracted = true;
+            switch (name) {
+                case 'giveFrom':
+                    const {
+                        modifiedDropDownOptions,
+                        modifiedGiveData,
+                    } = resetDataForAccountChange(
+                        giveData, dropDownOptions, this.props, type,
+                    );
+                    giveData = modifiedGiveData;
+                    dropDownOptions = modifiedDropDownOptions;
+                    validity = validateGiveForm(
+                        name, giveData[name], validity, giveData, 0,
+                    );
+                    if (giveData.giveFrom.type === 'companies') {
+                        getCompanyPaymentAndTax(Number(giveData.giveFrom.id));
+                    }
+                    break;
+                case 'giftType':
+                    giveData = resetDataForGiftTypeChange(giveData, dropDownOptions, coverFeesData);
+                    break;
+                case 'giveAmount':
+                    giveData = resetDataForGiveAmountChange(
+                        giveData, dropDownOptions, coverFeesData,
+                    );
+                    break;
+                default: break;
+            }
+            this.setState({
+                flowObject: {
+                    ...this.state.flowObject,
+                    giveData,
+                },
+                dropDownOptions: {
+                    ...this.state.dropDownOptions,
+                    dropDownOptions,
+                },
+                validity: {
+                    ...this.state.validity,
+                    validity,
+                },
+            });
+        }
     }
 
     render() {
