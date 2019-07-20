@@ -127,7 +127,6 @@ class Group extends React.Component {
             showAnotherRecipient: false,
             validity: this.intializeValidations(),
         };
-        console.log(paymentInstruments)
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleInputOnBlur = this.handleInputOnBlur.bind(this)
         this.getStripeCreditCard = this.getStripeCreditCard.bind(this);
@@ -147,8 +146,6 @@ class Group extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        console.log('props');
-        console.log(this.props);
         if(!_isEqual(this.props, prevProps)) {
             const {
                 benificiaryIndex,
@@ -181,6 +178,7 @@ class Group extends React.Component {
                 taxReceiptProfiles,
                 giveGroupDetails,
             } = this.props;
+
             let paymentInstruments = null;
             let companyPaymentInstrumentChanged = false;
             const formatMessage = this.props.t;
@@ -197,7 +195,6 @@ class Group extends React.Component {
             }
             const donationMatchOptions = populateDonationMatch(donationMatchData, formatMessage);
             const giveToOptions = populateGiveToGroupsofUser(giveGroupBenificairyDetails);
-            console.log(giveGroupDetails)
             if (!_isEmpty(giveGroupDetails)) {
                 groupFromUrl = false;
                 giveData.giveTo = {
@@ -223,7 +220,6 @@ class Group extends React.Component {
             //         value: giveUserGroups.userGroups[groupIndex].attributes.fundId,
             //     };
             // }
-            console.log('fund', fund);
             
             const paymentInstrumentOptions = populatePaymentInstrument(
                 paymentInstruments, formatMessage,
@@ -438,9 +434,7 @@ class Group extends React.Component {
         const {
             nextStep,
             companyDetails,
-            currentUser: {
-                defaultTaxReceiptProfile,
-            },
+            defaultTaxReceiptProfile,
             dispatch,
             flowSteps,
             stepIndex
@@ -455,19 +449,21 @@ class Group extends React.Component {
             buttonClicked: true,
         });
         if (this.validateForm()) {
-            if (creditCard.value > 0) {
-                flowObject.selectedTaxReceiptProfile = (flowObject.giveData.giveFrom.type === 'companies') ?
-                    companyDetails.companyDefaultTaxReceiptProfile :
-                    defaultTaxReceiptProfile;
-            }
+
+            // if (creditCard.value > 0) {
+            //     flowObject.selectedTaxReceiptProfile = (flowObject.giveData.giveFrom.type === 'companies') ?
+            //         companyDetails.companyDefaultTaxReceiptProfile :
+            //         defaultTaxReceiptProfile;
+            // }
             if (_isEqual(flowObject, this.props.flowObject)) {
                 forceContinue = (forceContinue === this.props.nextStep.path) ?
                     this.props.currentStep.path : this.props.nextStep.path;
             }
             flowObject.stepsCompleted = false;
             flowObject.nextSteptoProceed = nextStep;
-            dispatch(proceed(flowObject, flowSteps[stepIndex + 1]));
+            console.log(flowObject)
             debugger
+            dispatch(proceed(flowObject, flowSteps[stepIndex + 1]));
         } else {
             this.setState({
                 buttonClicked: false,
@@ -640,7 +636,7 @@ class Group extends React.Component {
             // }
         }
 
-        if (true){// giveFrom.value > 0) {
+        if ( giveFrom.value > 0) {
             privacyOptionComponent = (
                 <PrivacyOptions
                     formatMessage={formatMessage}
@@ -658,8 +654,8 @@ class Group extends React.Component {
         }
 
         let repeatGift = null;
-            if (true// (giveFrom.type === 'user' || giveFrom.type === 'companies') &&
-                // !!giveTo.recurringEnabled
+            if ( (giveFrom.type === 'user' || giveFrom.type === 'companies') &&
+                 !!giveTo.recurringEnabled
             ) {
                 repeatGift = (
                     <Form.Field>
@@ -760,7 +756,7 @@ class Group extends React.Component {
                             condition={!validity.isAmountCoverGive}
                             errorMessage={formatMessage('giveAmountGreaterThanBalance')}
                         />
-                        {true && (// (!this.props.currentUser.userAccountsFetched || !_isEmpty(giveFromList)) && (
+                        { (!this.props.currentUser.userAccountsFetched || !_isEmpty(giveFromList)) && (
                         <DropDownAccountOptions
                             type="group"
                             validity={validity.isValidAddingToSource}
@@ -780,8 +776,8 @@ class Group extends React.Component {
                         <NoteTo
                             allocationType=""// {type}
                             formatMessage={formatMessage}
-                            giveFrom='' // {giveFrom}
-                            giveToType='' // {giveToType}
+                            giveFrom= {giveFrom}
+                            giveToType= {giveToType}
                             noteToCharity= {noteToCharity}
                             handleInputChange={this.handleInputChange}
                             handleInputOnBlur={this.handleInputOnBlur}
@@ -790,7 +786,7 @@ class Group extends React.Component {
                         />
                         {privacyOptionComponent}
                         <Divider hidden />
-                        { true && // !stepsCompleted &&
+                        {/* { !stepsCompleted && */}
                             <Form.Button
                                 className='btnPadding' // {isMobile ? 'mobBtnPadding' : 'btnPadding'}
                                 // content={(!this.state.buttonClicked) ?
@@ -802,7 +798,7 @@ class Group extends React.Component {
                                 // fluid={isMobile}
                                 type="submit"
                             />
-                        }
+                        {/* } */}
                     </Fragment>
                 </Form>
         )
