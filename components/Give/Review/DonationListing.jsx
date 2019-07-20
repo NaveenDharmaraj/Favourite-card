@@ -39,7 +39,7 @@ const DonationListing = ({
     }
     return (
         <Fragment>
-            <List divided relaxed size="large" className="reviewList">
+            {/* <List divided relaxed size="large" className="reviewList">
                 <List.Item>
                     <List.Content>
                         <Grid>
@@ -118,7 +118,7 @@ const DonationListing = ({
                         </List.Item>
                     )
                 }
-            </List>
+            </List> */}
             <Divider />
             <Divider hidden />
             <Container textAlign="center">

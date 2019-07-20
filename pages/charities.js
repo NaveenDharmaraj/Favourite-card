@@ -26,6 +26,7 @@ class Charities extends React.Component {
                 'specialInstruction',
                 'review',
                 'taxReceipt',
+                'success',
                 'error',
             ],
             slug: query.slug,

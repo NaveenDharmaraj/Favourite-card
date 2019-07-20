@@ -14,7 +14,7 @@
     "userSingleCoverFeesAllocation": "Thank you, {{name}}. You gave {{amount}} (plus {{coverFeesAmount}} in covered third-party processing fees) to {{to}}.",
     "nonUserSingleCoverFeesAllocation": "Thank you, {{name}}. You gave {{amount}} (plus {{coverFeesAmount}} in fees) from {{fromName}}'s CHIMP Account to {{to}}.",
     "userSingleAllocation": "Thank you, {{name}}. You gave {{amount}} to {{to}}.",
-    "nonUserSingleAllocation": "Thank you, {{name}}. You gave {{amount} from {{fromName}}'s CHIMP Account to {{to}}.",
+    "nonUserSingleAllocation": "Thank you, {{name}}. You gave {{amount}} from {{fromName}}'s CHIMP Account to {{to}}.",
     "fromToMultipleRecipient": "Nice work, {{name}}. You gave {{number}} gifts of {{amount}} for a total of {{total}} sent.",
     "fromToSingleRecipient": "Nice work, {{name}}. You gave {{amount}} to {{emailAddress}}.",
     "nonrecurringCCAllocationDetails": "{{creditCard}} was used to complete this transaction, which will appear on the credit card statement as \"CHIMP FDN * DONATION\".",
