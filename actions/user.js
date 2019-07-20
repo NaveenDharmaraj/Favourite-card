@@ -8,11 +8,9 @@ import {
 import coreApi from '../services/coreApi';
 
 export const actionTypes = {
-    USER_AUTH: 'USER_AUTH',
     GET_MATCH_POLICIES_PAYMENTINSTRUMENTS: 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS',
-    DONATIONS_ADDTO_DROPDOWN: 'DONATIONS_ADDTO_DROPDOWN',
-    ALLOCATIONS_GIVE_FROM_DROPDOWN:'ALLOCATIONS_GIVE_FROM_DROPDOWN',
     TAX_RECEIPT_PROFILES:'TAX_RECEIPT_PROFILES',
+    SET_USER_INFO: 'SET_USER_INFO',
 }
 
 const getAllPaginationData = async (url, params = null) => {
@@ -152,51 +150,45 @@ export const getDonationMatchAndPaymentInstruments = () => {
                     userGroups,
                 } = fsa.payload;
                 dispatch(fsa);
-                dispatch({
-                    payload: {
-                        donationAddToData: populateAccountOptions({
-                            avatar: 'https://d3hx908nsoe1le.cloudfront.net/users/logos/888000/display/data.jpeg?1552460497',
-                            companiesAccountsData,
-                            firstName: 'Demo',
-                            fund,
-                            id: '888000', // 888000 // 999614
-                            lastName: 'UI',
-                        }),
-                    },
-                    type: actionTypes.DONATIONS_ADDTO_DROPDOWN,
-                });
-                dispatch({
-                    payload: {
-                        allocationGiveFromData: populateAccountOptions({
-                            companiesAccountsData,
-                            firstName: 'Demo',
-                            fund,
-                            id: '888000', // 888000 // 999614
-                            lastName: 'UI',
-                            userCampaigns,
-                            userGroups,
-                        }),
-                    },
-                    type: actionTypes.ALLOCATIONS_GIVE_FROM_DROPDOWN,
-                });
             });
     };
 };
 
 
-export const validateUser = (dispatch) => {
-    return coreApi.get('/users/888000?include=chimpAdminRole,donorRole,fund').then((result) => {
-        console.log(result);
-        return dispatch({
-            type: actionTypes.USER_AUTH,
-            payload: {
-                isAuthenticated: true,
-                userinfo: result.data,
+export const getUser = async (dispatch, token = null) => {
+    const payload = {
+        isAuthenticated: false,
+        userInfo: null,
+    };
+    let params = null;
+    if (!_.isEmpty(token)) {
+        params = {
+            headers: {
+                Authorization: `Bearer ${token}`,
             },
-        });
+        };
+    }
+
+    await coreApi.get('/users/888000?include=chimpAdminRole,donorRole', params).then((result) => {
+        payload.isAuthenticated = true;
+        payload.userInfo = result.data;
     }).catch((error) => {
         console.log(JSON.stringify(error));
-    });   
+    }).finally(() => {
+        dispatch({
+            type: 'SET_AUTH',
+            payload: {
+                isAuthenticated: payload.isAuthenticated,
+            },
+        });
+        dispatch({
+            type: actionTypes.SET_USER_INFO,
+            payload: {
+                userInfo: payload.userInfo,
+            },
+        });
+        return null;
+    });
 };
 
 export const setTaxReceiptProfile = (data) => {

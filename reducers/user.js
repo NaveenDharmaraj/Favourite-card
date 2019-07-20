@@ -4,11 +4,10 @@ const user = (state = {}, action) => {
         ...state,
     };
     switch (action.type) {
-        case 'USER_AUTH':
+        case 'SET_USER_INFO':
             newState = {
                 ...state,
-                auth: action.payload.isAuthenticated,
-                currentUser: action.payload.currentUser,
+                info: Object.assign({}, action.payload.userInfo),
             };
             break;
         case 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS':

@@ -1,14 +1,14 @@
-import React, { cloneElement } from 'react';
+import React from 'react';
 
-import { validateUser } from '../actions/user';
 import Group from '../components/Give/Group';
 import GiveWrapper from '../components/Give';
-// import TaxReceipt from '../components/give/TaxReceipt'
 import Layout from '../components/shared/Layout';
 
+const firstStep = 'gift/new';
+
 const flowSteps = [
-    'gift/new',
-    'tax-receipt',
+    firstStep,
+    'tax-receipt-profile',
     'review',
     'success',
     'error',
@@ -16,30 +16,29 @@ const flowSteps = [
 
 class Groups extends React.Component {
     static async getInitialProps({ query }) {
-        console.log(query);
         return {
+            namespacesRequired: [
+                'group',
+                'noteTo',
+                'accountTopUp',
+                'privacyOptions',
+            ],
             slug: query.slug,
-            step: (query.gift) ? `${query.gift}/${query.step}` : query.step,
+            step: (query.gift) ? `${query.slug}/${query.gift}/${query.step}` : query.step,
         };
-    }
-
-    componentDidMount() {
-        const {
-            dispatch,
-        } = this.props;
-        validateUser(dispatch);
     }
 
     render() {
         const {
             slug,
-            step,
         } = this.props;
-        const baseUrl = (slug) ? `/give/to/group/${slug}` : '/give/to/group';
+        // const baseUrl = (slug) ? `/give/to/group/${slug}` : '/give/to/group';
+        if (slug) {
+            flowSteps[0] = `${slug}/${firstStep}`;
+        }
         return (
             <Layout>
-                Group page ! {step}
-                <GiveWrapper {...this.props} baseUrl={baseUrl} flowSteps={(slug) ? flowSteps : null}>
+                <GiveWrapper {...this.props} baseUrl="/give/to/group" flowSteps={(slug) ? flowSteps : null}>
                     <Group />
                 </GiveWrapper>
             </Layout>

@@ -17,9 +17,6 @@ import {
     Popup,
 } from 'semantic-ui-react';
 
-// import {
-//     fields,
-// } from 'client/giving/common/messages';
 import {
     isValidNoteData,
 } from '../../../helpers/give/giving-form-validation';

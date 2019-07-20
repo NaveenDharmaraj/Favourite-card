@@ -8,7 +8,7 @@ export const donationDefaultProps = {
             },
             donationAmount: '',
             donationMatch: {
-                value: null
+                value: null,
             },
             giftType: {
                 value: 0,
@@ -24,9 +24,7 @@ export const donationDefaultProps = {
             noteToSelf: '',
             userInteracted: false,
         },
-        nextSteptoProceed: {},
         selectedTaxReceiptProfile: {},
-        sourceAccountHolderId: null,
         stepsCompleted: false,
         taxReceiptProfileAction: 'no_change',
         type: 'donations',
