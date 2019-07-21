@@ -11,6 +11,12 @@ import {
     getDonationMatchAndPaymentInstruments,
 } from './user';
 
+import {
+    beneficiaryDefaultProps,
+    donationDefaultProps,
+    groupDefaultProps,
+    p2pDefaultProps,
+} from '../helpers/give/defaultProps';
 
 export const actionTypes = {
     COVER_FEES: 'COVER_FEES',
@@ -447,6 +453,14 @@ export const proceed = (flowObject, nextStep, stepIndex, lastStep = false) => {
                     },
                     type: actionTypes.SAVE_SUCCESS_DATA,
                 });
+                const defaultProps = {
+                    'donations': donationDefaultProps,
+                    'give/to/charity': beneficiaryDefaultProps,
+                    'give/to/friend': p2pDefaultProps,
+                    'give/to/group': groupDefaultProps,
+                };
+                const payloadData = _.merge({}, defaultProps[flowObject.type]);
+                payloadData.flowObject.nextStep = nextStepToProcced;
                 dispatch({
                     payload: {
                         nextStep: nextStepToProcced,

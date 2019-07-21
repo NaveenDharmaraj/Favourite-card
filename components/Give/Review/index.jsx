@@ -69,7 +69,6 @@ class Review extends React.Component {
         userGroups,
     } = this.props;
 
-    console.log(this.props);
     const formatMessage = this.props.t;
     let reviewData = {};
     let activeGroupMatch = null;
