@@ -246,7 +246,7 @@ const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper')
                     defaultTaxReceiptProfile;
             }
             dispatch(proceed({
-                ...flowObject}, flowSteps[stepIndex+1]))
+                ...flowObject}, flowSteps[stepIndex+1]));
         } else {
             this.setState({
                 buttonClicked: false,
