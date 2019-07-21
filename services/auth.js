@@ -33,6 +33,7 @@ const {
 const _auth0lockConfig = {
     allowPasswordAutocomplete: true,
     allowShowPassword: false,
+    allowSignUp: false,
     auth: {
         responseType: 'token id_token',
         scope: 'openid',
@@ -81,7 +82,7 @@ const _auth0lockConfig = {
     socialButtonStyle: 'small',
     theme: {
         logo: chimpLogo,
-        primaryColor: '#FF4511',
+        primaryColor: '#2185D0',
     },
 };
 /**
