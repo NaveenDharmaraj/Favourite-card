@@ -459,14 +459,17 @@ export const proceed = (flowObject, nextStep, stepIndex, lastStep = false) => {
                     'give/to/friend': p2pDefaultProps,
                     'give/to/group': groupDefaultProps,
                 };
-                const payloadData = _.merge({}, defaultProps[flowObject.type]);
-                payloadData.flowObject.nextStep = nextStepToProcced;
-                dispatch({
-                    payload: {
-                        nextStep: nextStepToProcced,
-                    },
+                const defaultPropsData = _.merge({}, defaultProps[flowObject.type]);
+                const payload = {
+                    ...defaultPropsData.flowObject,
+                }
+                payload.nextStep = nextStepToProcced;
+                payload.stepsCompleted = true;
+                const fsa = {
+                    payload,
                     type: actionTypes.SAVE_FLOW_OBJECT,
-                });
+                }
+                dispatch(fsa);
                 // fetchUser(userId);
             });
         };
