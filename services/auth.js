@@ -10,6 +10,7 @@ import {
     validateAuth0Failure,
 } from '../actions/auth';
 import {
+    chimpLogin,
     getUser,
 } from '../actions/user'
 import isUndefinedOrEmpty from '../helpers/object';
@@ -33,6 +34,7 @@ const {
 const _auth0lockConfig = {
     allowPasswordAutocomplete: true,
     allowShowPassword: false,
+    allowSignUp: false,
     auth: {
         responseType: 'token id_token',
         scope: 'openid',
@@ -81,7 +83,7 @@ const _auth0lockConfig = {
     socialButtonStyle: 'small',
     theme: {
         logo: chimpLogo,
-        primaryColor: '#FF4511',
+        primaryColor: '#2185D0',
     },
 };
 /**
@@ -379,12 +381,20 @@ const _handleLockSuccess = async ({
 } = {}) => {
     if (!accessToken || !idToken) { return null(); }
     // Sets access token and expiry time in cookies
-    await (auth0.accessToken = accessToken);
-    const dispatch = auth0.storeDispatch;
-    await (getUser(dispatch));
+    chimpLogin(accessToken).then(async ({ currentUser }) => {
+        const userId = parseInt(currentUser, 10);
+        await (auth0.accessToken = accessToken);
+        await (storage.set('chimpUserId', userId, 'cookie'));
+        const dispatch = auth0.storeDispatch;
+        await (getUser(dispatch, userId));
+        const returnTo = '/';
+        Router.pushRoute(returnTo);
+    }).catch(() => {
+        Router.pushRoute('/users/login');
+    });
+    
     // After successfull login redirecting to home
-    const returnTo = '/';
-    Router.push(returnTo);
+    
     return null;
 };
 

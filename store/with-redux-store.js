@@ -1,6 +1,7 @@
 import React from 'react';
 
 import storage from '../helpers/storage';
+import _isEmpty from 'lodash/isEmpty';
 import {
     getUser,
 } from '../actions/user';
@@ -37,15 +38,27 @@ export default (App) => {
 
             // const { auth0AccessToken } = cookies(appContext.ctx)
             let auth0AccessToken = null;
+            let userId = null;
             if (typeof window === 'undefined') {
                 auth0AccessToken = storage.get('auth0AccessToken', 'cookie', appContext.ctx.req.headers.cookie);
+                userId = storage.get('chimpUserId', 'cookie', appContext.ctx.req.headers.cookie);
             }
 
             let appProps = {};
             if (typeof App.getInitialProps === 'function') {
                 appProps = await App.getInitialProps(appContext)
             }
-            await getUser(reduxStore.dispatch, auth0AccessToken);
+            if (typeof window === 'undefined') {
+                reduxStore.dispatch({
+                    type: 'SET_AUTH',
+                    payload: {
+                        isAuthenticated: false,
+                    },
+                });
+                if (!_isEmpty(auth0AccessToken) && !_isEmpty(userId)) {
+                    await getUser(reduxStore.dispatch, userId, auth0AccessToken);
+                }
+            }
 
             return {
                 ...appProps,

@@ -25,6 +25,7 @@ class DropDownAccountOptions extends React.Component {
     renderDropDownFeild() {
         const {
             companiesAccountsData,
+            currentUser,
             fund,
             userCampaigns,
             userGroups,
@@ -43,15 +44,24 @@ class DropDownAccountOptions extends React.Component {
                 language,
             },
         } = this.props;
+        const {
+            id,
+            attributes: {
+                avatar,
+                firstName,
+                lastName,
+            },
+        } = currentUser;
         const giveFromHeader = (type === 'donations') ? formatMessage('addingToLabel') : formatMessage('giveFromLabel');
         const giveFromPlaceHolder = (type === 'donations') ? formatMessage('destinationaccountPlaceHolder') : formatMessage('accountPlaceHolder');
         if (!_.isEmpty(companiesAccountsData) || !_.isEmpty(userCampaigns) || !_.isEmpty(userGroups)) {
             dropDownData = populateAccountOptions({
+                avatar,
                 companiesAccountsData,
-                firstName: 'Demo',
+                firstName,
                 fund,
-                id: '888000', // 888000 // 999614,
-                lastName: 'UI',
+                id,
+                lastName,
                 userCampaigns,
                 userGroups,
             },  {formatMessage, language });
@@ -127,12 +137,14 @@ const mapStateToProps = (state, props) => {
     if (props.type === 'donations') {
         return {
             companiesAccountsData: state.user.companiesAccountsData,
+            currentUser: state.user.info,
             fund: state.user.fund,
             userAccountsFetched: state.user.userAccountsFetched,
         };
     }
     return {
         companiesAccountsData: state.user.companiesAccountsData,
+        currentUser: state.user.info,
         fund: state.user.fund,
         userAccountsFetched: state.user.userAccountsFetched,
         userCampaigns: state.user.userCampaigns,

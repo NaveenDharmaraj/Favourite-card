@@ -160,7 +160,10 @@ const getDefaultCreditCard = (paymentInstrumentList) => {
     return creditCard;
 };
 
-const formatAmount = (amount) => parseFloat(amount).toFixed(2);
+const formatAmount = (amount) => {
+    console.log('parse amount', parseFloat(amount).toFixed(2))
+    return parseFloat(amount).toFixed(2);
+};
 
 /**
 * onWhatDayList array list
@@ -494,12 +497,12 @@ const populateGiftType = (formatMessage) => {
         },
         {
             disabled: false,
-            text: formatMessage('giftTypeRecurring1'),
+            text: formatMessage('specialInstruction:giftTypeRecurring1'),
             value: 1,
         },
         {
             disabled: false,
-            text: formatMessage('giftTypeRecurring15'),
+            text: formatMessage('specialInstruction:giftTypeRecurring15'),
             value: 15,
         },
     ];
@@ -599,12 +602,12 @@ const getFirstThirdTuesday = (currentDateUTC, monthNames) => {
 * @return {string} recurring full date format
 */
 
-const getNextAllocationMonth = (eftEnabled) => {
+const getNextAllocationMonth = (formatMessage, eftEnabled) => {
     const currentDate = new Date();
     const currentDateUTC = new Date(currentDate.getTime() +
                                 (currentDate.getTimezoneOffset() * 60000));
     currentDateUTC.setHours(currentDateUTC.getHours() - 8);
-    const monthNames = fullMonthNames();
+    const monthNames = fullMonthNames(formatMessage);
     if (eftEnabled) {
         return getNextTuesday(currentDateUTC, monthNames);
     }
@@ -1210,6 +1213,7 @@ const populateDonationReviewPage = (giveData, data, currency, formatMessage, lan
             if (!_.isEmpty(selectedData)) {
                 giveToData = {
                     accountId: selectedData.id,
+                    avatar: giveTo.avatar,
                     displayName: selectedData.attributes.name,
                     type: 'company',
                 };
@@ -1333,6 +1337,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
         if (giveFrom.type === 'user') {
             fromData = {
                 accountId: giveFrom.id,
+                avatar: giveFrom.avatar,
                 displayName: fund.attributes.name,
                 type: giveFrom.type,
             };
@@ -1341,6 +1346,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
             if (!_.isEmpty(selectedData)) {
                 fromData = {
                     accountId: selectedData.id,
+                    avatar: selectedData.attributes.avatar,
                     displayName: selectedData.attributes.name,
                     type: typeMap[giveFrom.type],
                 };
@@ -1471,6 +1477,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
             } else {
                 const recipientData = {
                     accountId: giveTo.id,
+                    avatar: giveTo.avatar,
                     amount: (value === 0 || value === null) ?
                         (Number(giveAmount) + Number(amountFromGroupMatch)) : null,
                     displayName: giveTo.name,
@@ -1525,11 +1532,11 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
             privacyShareEmailMessage = formatMessage('givingGroups.privacyHideEmailAndPostal');
         }
         state.givingOrganizerMessage = privacyShareEmailMessage;
-
         state.recipients = _.map(recipients, buildAccounts);
         return state;
     }
 };
+
 
 export {
     percentage,
@@ -1547,6 +1554,7 @@ export {
     populateInfoToShare,
     formatAmount,
     getDefaultCreditCard,
+    getDonationMatchedData,
     getNextAllocationMonth,
     setDateForRecurring,
     validateDonationForm,
@@ -1557,5 +1565,6 @@ export {
     validateGiveForm,
     populateDonationReviewPage,
     populateGiveReviewPage,
+    populateCardData,
     formatCurrency,
 };

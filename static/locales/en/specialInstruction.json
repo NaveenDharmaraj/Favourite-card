@@ -1,5 +1,6 @@
 {
         "infoToShareLabel" :"Info to share",
+        "giftTypeRecurring1": "Make this gift repeat on the 1st of every month" ,
         "giftTypeRecurring15": "Make this gift repeat on the 15th of every month",
         "repeatThisGiftLabel": "Repeat this gift?",
         "specialInstructionLabel": "Special instructions",

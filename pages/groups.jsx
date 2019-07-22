@@ -38,7 +38,7 @@ class Groups extends React.Component {
             flowSteps[0] = `${slug}/${firstStep}`;
         }
         return (
-            <Layout>
+            <Layout authRequired={true}>
                 <GiveWrapper {...this.props} baseUrl="/give/to/group" flowSteps={(slug) ? flowSteps : null}>
                     <Group />
                 </GiveWrapper>
