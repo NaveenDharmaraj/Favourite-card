@@ -76,6 +76,20 @@ const setDonationData = (donation) => {
     return donationData;
 };
 
+/**
+ * @param {*} cardDetails
+ * @param {*} cardHolderName
+ */
+const createToken = (cardDetails, cardHolderName) => new Promise((resolve, reject) => {
+    cardDetails.createToken({ name: cardHolderName }).then((result) => {
+        if (result.error) {
+            logger.error(result.error);
+            return reject(result.error);
+        }
+        return resolve(result.token);
+    });
+});
+
 const saveDonations = (donation) => {
     const {
         giveData: {
@@ -87,6 +101,21 @@ const saveDonations = (donation) => {
     let donationUrl = '/donations';
     const donationData = setDonationData(donation);
     donationData.attributes.reason = noteToSelf;
+    // return createToken(data.stripeCreditCard, data.cardHolderName).then((token) => {
+    // data.sources = addOrUpdate(data.sources, {
+    //     amount: data.donationData.attributes.amount,
+    //     displayName: data.cardHolderName,
+    //     processor: token.card.brand.toLowerCase(),
+    //     truncatedPaymentId: token.card.last4,
+    //     type: token.type,
+    // });
+    // data.paymentInstrumentsData.attributes.stripeToken = token.id;
+    // data.paymentInstrumentsData.relationships.paymentable.data.id =
+    //     data.fundAccountId.toString();
+    // data.paymentInstrumentsData.relationships.paymentable.data.type =
+    //     data.fundAccountType === 'companies' ? 'company' : data.fundAccountType;
+    // return savePaymentInstrument(data.paymentInstrumentsData);
+
     if (automaticDonation) {
         donationData.attributes.dayOfMonth = giftType.value;
         donationData.type = 'recurringDonations';
