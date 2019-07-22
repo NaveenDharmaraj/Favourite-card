@@ -160,7 +160,10 @@ const getDefaultCreditCard = (paymentInstrumentList) => {
     return creditCard;
 };
 
-const formatAmount = (amount) => parseFloat(amount).toFixed(2);
+const formatAmount = (amount) => {
+    console.log('parse amount', parseFloat(amount).toFixed(2))
+    return parseFloat(amount).toFixed(2);
+};
 
 /**
 * onWhatDayList array list
@@ -479,12 +482,12 @@ const populateGiftType = (formatMessage) => {
         },
         {
             disabled: false,
-            text: formatMessage('giftTypeRecurring1'),
+            text: formatMessage('specialInstruction:giftTypeRecurring1'),
             value: 1,
         },
         {
             disabled: false,
-            text: formatMessage('giftTypeRecurring15'),
+            text: formatMessage('specialInstruction:giftTypeRecurring15'),
             value: 15,
         },
     ];
@@ -584,12 +587,12 @@ const getFirstThirdTuesday = (currentDateUTC, monthNames) => {
 * @return {string} recurring full date format
 */
 
-const getNextAllocationMonth = (eftEnabled) => {
+const getNextAllocationMonth = (formatMessage, eftEnabled) => {
     const currentDate = new Date();
     const currentDateUTC = new Date(currentDate.getTime() +
                                 (currentDate.getTimezoneOffset() * 60000));
     currentDateUTC.setHours(currentDateUTC.getHours() - 8);
-    const monthNames = fullMonthNames();
+    const monthNames = fullMonthNames(formatMessage);
     if (eftEnabled) {
         return getNextTuesday(currentDateUTC, monthNames);
     }
@@ -1519,6 +1522,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
     }
 };
 
+
 export {
     percentage,
     fullMonthNames,
@@ -1534,6 +1538,7 @@ export {
     populateInfoToShare,
     formatAmount,
     getDefaultCreditCard,
+    getDonationMatchedData,
     getNextAllocationMonth,
     setDateForRecurring,
     validateDonationForm,
@@ -1544,5 +1549,6 @@ export {
     validateGiveForm,
     populateDonationReviewPage,
     populateGiveReviewPage,
+    populateCardData,
     formatCurrency,
 };

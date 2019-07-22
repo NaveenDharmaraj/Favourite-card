@@ -10,7 +10,6 @@
     "goToGroupSecondLabel": "you belong to",
     "feeAmountCoveragePopup": "Banks and credit card companies charge a processing fee to complete online transactions, including online donations. CHIMP does not benefit from these fees, but we do pass them on to gift recipients. You can choose to cover this fee so the recipient receives 100% of your intended gift.",
     "feeAmountCoverageNote": "Cover {{feeAmount}} in third-party processing fees on behalf of this charity, for a total amount of {{totalAmount}}.",
-    "giftTypeSingle": "This is a one time gift",
-    "giftTypeRecurring1": "Make this gift repeat on the 1st of every month" 
+    "giftTypeSingle": "This is a one time gift"
 }
 
