@@ -1522,6 +1522,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
     }
 };
 
+
 export {
     percentage,
     fullMonthNames,
@@ -1548,5 +1549,6 @@ export {
     validateGiveForm,
     populateDonationReviewPage,
     populateGiveReviewPage,
+    populateCardData,
     formatCurrency,
 };

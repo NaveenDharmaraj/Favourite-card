@@ -28,5 +28,6 @@
     "companyRecurringTaxReceiptMessage": "À chaque fois, un reçu fiscal sera automatiquement affiché dans le Compte CHIMP de {{companyName}} et la transaction apparaîtra sur le relevé de carte de crédit sous le nom \"CHIMP FDN * DONATION\".",
     "recurringDonation": "Nicely done, {{name}}. You scheduled {{amount}} to be added to your CHIMP Account each month.",
     "recurringTaxReceiptMessage": "À chaque fois, un reçu fiscal sera automatiquement affiché dans votre Compte CHIMP et la transaction apparaîtra sur le relevé de carte de crédit sous le nom \"CHIMP FDN * DONATION\".",
-    "recurringTransactions": "Voir vos transactions mensuelles"
+    "recurringTransactions": "Voir vos transactions mensuelles",
+    "withoutAmountCard": "Carte {{processor}} de {{displayName}} finissant par {{truncatedPaymentId}}"
 }

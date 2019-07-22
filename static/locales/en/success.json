@@ -28,5 +28,6 @@
     "companyRecurringTaxReceiptMessage": "Each time, a tax receipt will be automatically posted to the {{companyName}} CHIMP Account and the transaction will appear on the credit card statement as \"CHIMP FDN * DONATION\".",
     "recurringDonation": "Nicely done, {{name}}. You scheduled {{amount}} to be added to your CHIMP Account each month.",
     "recurringTaxReceiptMessage": "Each time, a tax receipt will automatically be posted to your CHIMP Account and the transaction will appear on your credit card statement as \"CHIMP FDN * DONATION\".",
-    "recurringTransactions": "View your monthly transactions"
+    "recurringTransactions": "View your monthly transactions",
+    "withoutAmountCard": "{{displayName}} {{processor}} ending with {{truncatedPaymentId}}"
 }
