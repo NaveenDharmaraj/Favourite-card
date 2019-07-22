@@ -51,7 +51,7 @@ const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper')
       constructor(props) {
       super(props)
       this.state = {
-          flowObject: props.flowObject,
+          flowObject: _.merge({}, props.flowObject),
           buttonClicked: false,
           disableButton: !props.userAccountsFetched,
           // forceContinue: props.forceContinue,
@@ -246,7 +246,7 @@ const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper')
                     defaultTaxReceiptProfile;
             }
             dispatch(proceed({
-                ...flowObject}, flowSteps[stepIndex+1]))
+                ...flowObject}, flowSteps[stepIndex+1]));
         } else {
             this.setState({
                 buttonClicked: false,

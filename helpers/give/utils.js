@@ -1198,6 +1198,7 @@ const populateDonationReviewPage = (giveData, data, currency, formatMessage, lan
             if (!_.isEmpty(selectedData)) {
                 giveToData = {
                     accountId: selectedData.id,
+                    avatar: giveTo.avatar,
                     displayName: selectedData.attributes.name,
                     type: 'company',
                 };
@@ -1321,6 +1322,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
         if (giveFrom.type === 'user') {
             fromData = {
                 accountId: giveFrom.id,
+                avatar: giveFrom.avatar,
                 displayName: fund.attributes.name,
                 type: giveFrom.type,
             };
@@ -1329,6 +1331,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
             if (!_.isEmpty(selectedData)) {
                 fromData = {
                     accountId: selectedData.id,
+                    avatar: selectedData.attributes.avatar,
                     displayName: selectedData.attributes.name,
                     type: typeMap[giveFrom.type],
                 };
@@ -1459,6 +1462,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
             } else {
                 const recipientData = {
                     accountId: giveTo.id,
+                    avatar: giveTo.avatar,
                     amount: (value === 0 || value === null) ?
                         (Number(giveAmount) + Number(amountFromGroupMatch)) : null,
                     displayName: giveTo.name,
@@ -1513,7 +1517,6 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
             privacyShareEmailMessage = formatMessage('givingGroups.privacyHideEmailAndPostal');
         }
         state.givingOrganizerMessage = privacyShareEmailMessage;
-
         state.recipients = _.map(recipients, buildAccounts);
         return state;
     }
