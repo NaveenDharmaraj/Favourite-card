@@ -11,6 +11,12 @@ import {
     getDonationMatchAndPaymentInstruments,
 } from './user';
 
+import {
+    beneficiaryDefaultProps,
+    donationDefaultProps,
+    groupDefaultProps,
+    p2pDefaultProps,
+} from '../helpers/give/defaultProps';
 
 export const actionTypes = {
     COVER_FEES: 'COVER_FEES',
@@ -447,12 +453,23 @@ export const proceed = (flowObject, nextStep, stepIndex, lastStep = false) => {
                     },
                     type: actionTypes.SAVE_SUCCESS_DATA,
                 });
-                dispatch({
-                    payload: {
-                        nextStep: nextStepToProcced,
-                    },
+                const defaultProps = {
+                    'donations': donationDefaultProps,
+                    'give/to/charity': beneficiaryDefaultProps,
+                    'give/to/friend': p2pDefaultProps,
+                    'give/to/group': groupDefaultProps,
+                };
+                const defaultPropsData = _.merge({}, defaultProps[flowObject.type]);
+                const payload = {
+                    ...defaultPropsData.flowObject,
+                }
+                payload.nextStep = nextStepToProcced;
+                payload.stepsCompleted = true;
+                const fsa = {
+                    payload,
                     type: actionTypes.SAVE_FLOW_OBJECT,
-                });
+                }
+                dispatch(fsa);
                 // fetchUser(userId);
             });
         };
