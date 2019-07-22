@@ -551,7 +551,11 @@ const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper')
               },
           });
       }
-    }  
+    }
+
+    getStripeCreditCard(data, cardHolderName) {
+        console.log('Im in getstripe Card');
+    }
     
   render() {
     const {
@@ -606,7 +610,7 @@ const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper')
         {
             (_isEmpty(paymentInstrumenOptions)|| giveData.creditCard.value === 0) && (
                 <Form.Field>
-                    <CreditCardWrapper />
+                    <CreditCardWrapper creditCardElement={this.getStripeCreditCard} />
                 </Form.Field>
             )
         }
