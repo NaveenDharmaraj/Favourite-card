@@ -6,6 +6,7 @@ import {
     populateAccountOptions,
 } from '../helpers/give/utils';
 import coreApi from '../services/coreApi';
+import authRorApi from '../services/authRorApi';
 
 export const actionTypes = {
     GET_MATCH_POLICIES_PAYMENTINSTRUMENTS: 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS',
@@ -154,8 +155,19 @@ export const getDonationMatchAndPaymentInstruments = () => {
     };
 };
 
+export const chimpLogin = (token = null) => {
+    let params = null;
+    if (!_.isEmpty(token)) {
+        params = {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        };
+    }
+    return authRorApi.post('/auth/login', null, params);
+};
 
-export const getUser = async (dispatch, token = null) => {
+export const getUser = async (dispatch, userId, token = null) => {
     const payload = {
         isAuthenticated: false,
         userInfo: null,
@@ -169,7 +181,7 @@ export const getUser = async (dispatch, token = null) => {
         };
     }
 
-    await coreApi.get('/users/888000?include=chimpAdminRole,donorRole', params).then((result) => {
+    await coreApi.get(`/users/${userId}?include=chimpAdminRole,donorRole`, params).then((result) => {
         payload.isAuthenticated = true;
         payload.userInfo = result.data;
     }).catch((error) => {
