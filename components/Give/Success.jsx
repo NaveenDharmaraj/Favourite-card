@@ -73,9 +73,6 @@ const Success = (props) => {
         successData,
         t: formatMessage,
     } = props;
-    //Since there is no succesdata from review page currently copying flowObject values to success data  temporarily
-    Object.assign(successData, props.flowObject);
-
     const {
         giveData: {
             creditCard,
@@ -205,7 +202,7 @@ const Success = (props) => {
             // Based on cover fees first paragraph gets changed.
             firstParagraph = (giveFrom.type === 'user') ? formatMessage('userSingleCoverFeesAllocation', {
                 name: donationDetails.name,
-                amount: formatCurrency((formatAmount(giveAmount), language, currency)),
+                amount: formatCurrency(formatAmount(giveAmount), language, currency),
                 coverFeesAmount,
                 to: giveTo.text,
             }) // `Thank you, ${donationDetails.name}. You gave ${formatAmount(giveAmount)} (plus ${coverFeesAmount} in covered third-party processing fees) to ${giveTo.text}.`
