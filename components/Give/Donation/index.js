@@ -512,12 +512,14 @@ const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper')
                   currentUser: {
                     id,
                     attributes: {
+                        avatar,
                         firstName,
                         lastName,
                     }
                   },
               } = this.props;
               giveData.giveTo = {
+                  avatar,
                   balance: fund.attributes.balance,
                   data: {
                       fundName: fund.attributes.name,
