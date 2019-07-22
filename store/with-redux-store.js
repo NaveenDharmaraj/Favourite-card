@@ -48,14 +48,16 @@ export default (App) => {
             if (typeof App.getInitialProps === 'function') {
                 appProps = await App.getInitialProps(appContext)
             }
-            reduxStore.dispatch({
-                type: 'SET_AUTH',
-                payload: {
-                    isAuthenticated: false,
-                },
-            });
-            if (typeof window === 'undefined' && !_isEmpty(auth0AccessToken) && !_isEmpty(userId)) {
-                await getUser(reduxStore.dispatch, userId, auth0AccessToken);
+            if (typeof window === 'undefined') {
+                reduxStore.dispatch({
+                    type: 'SET_AUTH',
+                    payload: {
+                        isAuthenticated: false,
+                    },
+                });
+                if (!_isEmpty(auth0AccessToken) && !_isEmpty(userId)) {
+                    await getUser(reduxStore.dispatch, userId, auth0AccessToken);
+                }
             }
 
             return {
