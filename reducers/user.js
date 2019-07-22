@@ -57,6 +57,12 @@ const user = (state = {}, action) => {
                 taxReceiptGetApiStatus: action.payload.taxReceiptGetApiStatus,
             };
             break;
+        case 'GET_USERS_GROUPS':
+            newState = {
+                ...state,
+                userAdministeredGroups: action.payload.userAdministeredGroups,
+            };
+            break;
         default:
             break;
     }

@@ -9,6 +9,7 @@ import coreApi from '../services/coreApi';
 
 export const actionTypes = {
     GET_MATCH_POLICIES_PAYMENTINSTRUMENTS: 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS',
+    GET_USERS_GROUPS: 'GET_USERS_GROUPS',
     TAX_RECEIPT_PROFILES:'TAX_RECEIPT_PROFILES',
     SET_USER_INFO: 'SET_USER_INFO',
 }
@@ -243,4 +244,32 @@ export const updateTaxReceiptProfile = (taxReceiptProfile, action, dispatch) => 
         });
     }
     // return setTaxReceiptProfile(dispatch, result.data)
+};
+export const getGroupsForUser = (dispatch, userId) => {
+    if (userId !== null) {
+        const fsa = {
+            payload: {
+                userGroups: [],
+            },
+            type: actionTypes.GET_USERS_GROUPS,
+        };
+        callApiAndGetData(`/users/${userId}/groupsWithMemberships?page[size]=50&sort=-id`)
+            .then(
+                (result) => {
+                    if (!_.isEmpty(result)) {
+                        fsa.payload.userAdministeredGroups = result;
+                    }
+                    dispatch(fsa);
+                },
+            ).catch((error) => {
+                console.log(error);
+                // redirect('/give/error');
+            });
+        // .finally(() => getBranch({
+        //     actions: types,
+        //     branchPath: '/giving/userGroupDetails',
+        // }).dispatch(fsa));
+    } else {
+        // redirect('/dashboard');
+    }
 };
