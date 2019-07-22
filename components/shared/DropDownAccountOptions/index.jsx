@@ -18,14 +18,15 @@ import {
     populateAccountOptions,
 } from '../../../helpers/give/utils';
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
+import { withTranslation } from '../../../i18n';
 
 class DropDownAccountOptions extends React.Component {
 
     renderDropDownFeild() {
         const {
             companiesAccountsData,
+            currentUser,
             fund,
-            formatMessage,
             userCampaigns,
             userGroups,
             userAccountsFetched,
@@ -37,18 +38,33 @@ class DropDownAccountOptions extends React.Component {
             type,
         } = this.props;
         let dropDownData = null;
-        const giveFromHeader = (type === 'donations') ? formatMessage('dropDownAccountOptions:addingToLabel') : formatMessage('dropDownAccountOptions:giveFromLabel');
-        const giveFromPlaceHolder = (type === 'donations') ? formatMessage('dropDownAccountOptions:destinationaccountPlaceHolder') : formatMessage('dropDownAccountOptions:accountPlaceHolder');
+        const formatMessage = this.props.t;
+        const {
+            i18n: {
+                language,
+            },
+        } = this.props;
+        const {
+            id,
+            attributes: {
+                avatar,
+                firstName,
+                lastName,
+            },
+        } = currentUser;
+        const giveFromHeader = (type === 'donations') ? formatMessage('addingToLabel') : formatMessage('giveFromLabel');
+        const giveFromPlaceHolder = (type === 'donations') ? formatMessage('destinationaccountPlaceHolder') : formatMessage('accountPlaceHolder');
         if (!_.isEmpty(companiesAccountsData) || !_.isEmpty(userCampaigns) || !_.isEmpty(userGroups)) {
             dropDownData = populateAccountOptions({
+                avatar,
                 companiesAccountsData,
-                firstName: 'Demo',
+                firstName,
                 fund,
-                id: '888000', // 888000 // 999614,
-                lastName: 'UI',
+                id,
+                lastName,
                 userCampaigns,
                 userGroups,
-            }, null);
+            },  {formatMessage, language });
         }
         dropDownData = !_.isEmpty(dropDownData) ? dropDownData : null;
         let fieldData = (
@@ -60,7 +76,7 @@ class DropDownAccountOptions extends React.Component {
                 icon={<Icon name="spinner" loading />}
                 iconPosition="left"
                 name={name}
-                placeholder={formatMessage('dropDownAccountOptions:preloadedAccountPlaceHolder')}
+                placeholder={formatMessage('preloadedAccountPlaceHolder')}
             />
         );
         if (!_.isEmpty(dropDownData)) {
@@ -86,7 +102,7 @@ class DropDownAccountOptions extends React.Component {
                             {giveFromHeader}
                         </label>
                         <Popup
-                            content={formatMessage('dropDownAccountOptions:allocationsGiveFromPopup')}
+                            content={formatMessage('allocationsGiveFromPopup')}
                             position="top center"
                             trigger={(
                                 <Icon
@@ -100,7 +116,7 @@ class DropDownAccountOptions extends React.Component {
                     </Form.Field>
                     <FormValidationErrorMessage
                         condition={!validity}
-                        errorMessage="blankError"
+                        errorMessage={formatMessage('giveCommon:blankError')}
                     />
                 </Fragment>
             );
@@ -121,12 +137,14 @@ const mapStateToProps = (state, props) => {
     if (props.type === 'donations') {
         return {
             companiesAccountsData: state.user.companiesAccountsData,
+            currentUser: state.user.info,
             fund: state.user.fund,
             userAccountsFetched: state.user.userAccountsFetched,
         };
     }
     return {
         companiesAccountsData: state.user.companiesAccountsData,
+        currentUser: state.user.info,
         fund: state.user.fund,
         userAccountsFetched: state.user.userAccountsFetched,
         userCampaigns: state.user.userCampaigns,
@@ -138,4 +156,4 @@ DropDownAccountOptions.defaultProps = {
     type: '',
 };
 
-export default connect(mapStateToProps)(DropDownAccountOptions);
+export default withTranslation(['dropDownAccountOptions'])(connect(mapStateToProps)(DropDownAccountOptions));

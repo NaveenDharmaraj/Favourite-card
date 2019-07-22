@@ -14,21 +14,16 @@ class Donations extends React.Component {
                 'giveCommon',
                 'review',
                 'taxReceipt',
-                'dropDownAccountOptions',
+                'success',
                 'error',
             ],
             step: query.step,
         };
     }
 
-    componentDidMount() {
-        const { dispatch } = this.props;
-        validateUser(dispatch);
-    }
-
     render() {
         return (
-            <Layout>
+            <Layout authRequired={true} >
                 <GiveWrapper {...this.props} baseUrl='/donations'>
                     <Donation />
                 </GiveWrapper> 

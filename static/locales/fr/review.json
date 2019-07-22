@@ -20,6 +20,26 @@
     "giveAccounts_withoutAmountCard": "Carte {{processor}} de {{displayName}} finissant par {{truncatedPaymentId}}",
     "givingAllocationSingleCoverFeesText": "Couvrez {{amount}} de frais tiers de traitement afin que le destinataire reçoive votre don à 100%",
     "givingAllocationRecurringingCoverFeesText": "Vous avez choisi de couvrir les frais tiers de traitement au lieu du destinataire. Les frais de tiers seront calculés au moment de la transaction du don afin d’assurer que le destinataire puisse recevoir votre contribution envisagée complète. Si le montant total du don est effectué par carte de crédit, les frais de tiers de {amount} seront couverts et facturés sur votre carte.",
+    "donationStartsOnMessage": "Votre carte de crédit sera facturée chaque mois à partir de cette date et apparaîtra sous la forme de \"CHIMP FDN * DONATION\".\" Un nouveau reçu fiscal sera automatiquement ajouté dans votre Compte CHIMP pour chaque transaction.",
+    "noteToSelfLabel": "Note à votre intention",
+    "donationsAddMoney": "Ajouter de l'argent",
+    "donationsScheduleMonthlyTransaction": "Activer une transaction mensuelle",
+    "commonNonrefundable": "Les dons ne sont pas remboursables.",
+    "commonRecurringNonrefundable": "Les transactions complétées ne sont pas remboursables, mais vous pouvez annuler vos contributions mensuelles avant la date prévue du prochain don.",
+    "allocationRecurringLabel": "Donnez mensuellement",
+    "allocationSendingLabel": "Donner",
+    "allocationAmountLabel": "Donner",
+    "coverFeesLabel": "Frais",
+    "matchedByLabel": "Apparié par",
+    "giftToGroupMatchedBy": "Apparié par",
+    "messageToReceipientLabel": "Message au destinataire",
+    "messageToRecipientsLabel": "Message au(x) destinataire(s)",
+    "privacyShareOrganizersCampaignLabel": "À partager avec les organisateurs de la Campagne",
+    "privacyShareOrganizersGroupLabel": "À partager avec les organisateurs du Groupe de dons",
+    "privacyShareGivingCampaignLabel" :	"À partager avec la Campagne de dons",
+    "privacyShareGivingGroupLabel":	"À partager avec le Groupe de dons",
+    "allocationGiveMoney": "Envoyez votre don",
+    "allocationRecurringGiveMoney": "Établir un don mensuel",
     "givingGroups": {
         "privacyShareGiftAndName": "Partager mon nom et le montant du don",
         "privacyShareNameHideGift": "Partager mon nom mais cacher le montant du don",
@@ -28,6 +48,7 @@
         "privacyShareEmailAndPostal": "Partager mon adresse courriel et adresse postale",
         "privacySharePostal": "Partager mon adresse postale",
         "privacyShareEmail": "Partager mon adresse courriel",
-        "privacyHideEmailAndPostal": "Cacher mon adresse courriel et adresse postale",    
-    }
+        "privacyHideEmailAndPostal": "Cacher mon adresse courriel et adresse postale"   
+    },
+    "taxReceiptRecipientLabel": "Destinataire du reçu fiscal"
 }

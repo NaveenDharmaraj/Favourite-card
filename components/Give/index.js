@@ -96,7 +96,6 @@ class Give extends React.Component {
                 });
             }
             const  routeUrl = `${nextProps.baseUrl}/${flowObject.nextStep}`;
-            // const routeUrl = `${nextProps.baseUrl}/${nextProps.flowObject.nextStep}`;
             Router.pushRoute(routeUrl);
         }
     }
@@ -106,7 +105,6 @@ class Give extends React.Component {
             flowSteps,
         } = this.state;
         if(_.indexOf(flowSteps, this.props.step) < 0) {
-            // const routeUrl = Router.asPath.replace(/\/[^\/]*$/, `/${flowSteps[0]}`)
             const routeUrl = `${this.props.baseUrl}/${flowSteps[0]}`
             Router.pushRoute(routeUrl);
         }

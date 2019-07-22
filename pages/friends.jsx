@@ -20,9 +20,7 @@ class Friends extends React.Component {
 
     render() {
         return (
-            <Layout>
-                Give to friend page !
-                { this.props.step }
+            <Layout authRequired={true}>
                 <GiveWrapper {...this.props} baseUrl='/give/to/friend'>
                     <Friend />
                 </GiveWrapper>

@@ -6,11 +6,12 @@ import {
     populateAccountOptions,
 } from '../helpers/give/utils';
 import coreApi from '../services/coreApi';
+import authRorApi from '../services/authRorApi';
 
 export const actionTypes = {
     GET_MATCH_POLICIES_PAYMENTINSTRUMENTS: 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS',
     TAX_RECEIPT_PROFILES:'TAX_RECEIPT_PROFILES',
-    USER_AUTH: 'USER_AUTH',
+    SET_USER_INFO: 'SET_USER_INFO',
 }
 
 const getAllPaginationData = async (url, params = null) => {
@@ -45,7 +46,7 @@ export const callApiAndGetData = (url, params) => getAllPaginationData(url, para
     },
 );
 
-export const getDonationMatchAndPaymentInstruments = () => {
+export const getDonationMatchAndPaymentInstruments = (userId) => {
 
     // const fetchData = coreApi.get(`/users/${userId}`, {
     //     params: {
@@ -59,7 +60,6 @@ export const getDonationMatchAndPaymentInstruments = () => {
     // });
 
     return async (dispatch) => {
-        const userId = '888000'; // 999614 , 888000
         const fsa = {
             payload: {
                 companiesAccountsData: [],
@@ -154,20 +154,52 @@ export const getDonationMatchAndPaymentInstruments = () => {
     };
 };
 
-
-export const validateUser = (dispatch) => {
-    return coreApi.get('/users/888000?include=chimpAdminRole,donorRole,fund').then((result) => {
-        console.log(result);
-        return dispatch({
-            type: actionTypes.USER_AUTH,
-            payload: {
-                isAuthenticated: true,
-                userinfo: result.data,
+export const chimpLogin = (token = null) => {
+    let params = null;
+    if (!_.isEmpty(token)) {
+        params = {
+            headers: {
+                Authorization: `Bearer ${token}`,
             },
-        });
+        };
+    }
+    return authRorApi.post('/auth/login', null, params);
+};
+
+export const getUser = async (dispatch, userId, token = null) => {
+    const payload = {
+        isAuthenticated: false,
+        userInfo: null,
+    };
+    let params = null;
+    if (!_.isEmpty(token)) {
+        params = {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        };
+    }
+
+    await coreApi.get(`/users/${userId}?include=chimpAdminRole,donorRole`, params).then((result) => {
+        payload.isAuthenticated = true;
+        payload.userInfo = result.data;
     }).catch((error) => {
         console.log(JSON.stringify(error));
-    });   
+    }).finally(() => {
+        dispatch({
+            type: 'SET_AUTH',
+            payload: {
+                isAuthenticated: payload.isAuthenticated,
+            },
+        });
+        dispatch({
+            type: actionTypes.SET_USER_INFO,
+            payload: {
+                userInfo: payload.userInfo,
+            },
+        });
+        return null;
+    });
 };
 
 export const setTaxReceiptProfile = (data) => {

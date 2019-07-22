@@ -29,6 +29,7 @@
         "review": "Révision",
         "success": "Confirmation"
     },
+    "blankError":  "Doit être rempli",
     "amountLabel": "Montant",
     "amountPlaceHolder": "Inscrivez le montant",
     "noteRemainingChars1000": "{{currentCount}} sur {{maximum}} caractères restants",
@@ -38,7 +39,16 @@
     "continueButton": "Suivant",
     "submittingButton": "En cours de soumission",
     "useNewCreditCardLabel": "Utiliser une nouvelle carte de crédit",
-    "infoToShareAnonymous": "Don anonyme"
+    "infoToShareAnonymous": "Don anonyme",
+    "change": "Changer",
+    "startsOn": "Date de début",
+    "emptyMessage": "Aucun contenu disponible",
+    "commonOr": "ou ",
+    "commonMakeChanges": "apporter des modifications"
+
+
+
+
 
 
 
