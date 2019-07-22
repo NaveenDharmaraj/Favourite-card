@@ -42,7 +42,7 @@ class Charities extends React.Component {
             flowSteps[0] = `${slug}/${firstStep}`;
         }
         return (
-            <Layout>
+            <Layout authRequired={true}>
                 <GiveWrapper {...this.props} baseUrl="/give/to/charity" flowSteps={(slug) ? flowSteps : null}>
                     <Charity />
                 </GiveWrapper> 

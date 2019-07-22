@@ -22,7 +22,7 @@ class Donations extends React.Component {
 
     render() {
         return (
-            <Layout>
+            <Layout authRequired={true} >
                 <GiveWrapper {...this.props} baseUrl='/donations'>
                     <Donation />
                 </GiveWrapper> 
