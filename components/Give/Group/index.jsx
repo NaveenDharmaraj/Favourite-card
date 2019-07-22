@@ -451,11 +451,11 @@ class Group extends React.Component {
         });
         if (this.validateForm()) {
 
-            // if (creditCard.value > 0) {
-            //     flowObject.selectedTaxReceiptProfile = (flowObject.giveData.giveFrom.type === 'companies') ?
-            //         companyDetails.companyDefaultTaxReceiptProfile :
-            //         defaultTaxReceiptProfile;
-            // }
+            if (creditCard.value > 0) {
+                flowObject.selectedTaxReceiptProfile = (flowObject.giveData.giveFrom.type === 'companies') ?
+                    companyDetails.companyDefaultTaxReceiptProfile :
+                    defaultTaxReceiptProfile;
+            }
             if (_isEqual(flowObject, this.props.flowObject)) {
                 forceContinue = (forceContinue === this.props.nextStep.path) ?
                     this.props.currentStep.path : this.props.nextStep.path;
