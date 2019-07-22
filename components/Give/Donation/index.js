@@ -19,7 +19,6 @@ import React, {
   } from 'react-redux';
   import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
   import Note from '../../shared/Note';
-  import TextAreaWithInfo from '../../shared/TextAreaWithInfo';
   import DropDownAccountOptions from '../../shared/DropDownAccountOptions';
   import {proceed} from '../../../actions/give';
   import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
@@ -54,7 +53,6 @@ const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper')
           flowObject: _.merge({}, props.flowObject),
           buttonClicked: false,
           disableButton: !props.userAccountsFetched,
-          // forceContinue: props.forceContinue,
           inValidCardNameValue: true,
           inValidCardNumber: true,
           inValidCvv: true,
@@ -66,8 +64,13 @@ const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper')
       }
   
       componentDidMount() {
-          const {dispatch} = this.props;
-          dispatch(getDonationMatchAndPaymentInstruments());
+          const {
+            dispatch,
+            currentUser: {
+                id,
+            }
+        } = this.props;
+          dispatch(getDonationMatchAndPaymentInstruments(id));
       }
   
       intializeValidations() {
@@ -484,6 +487,7 @@ const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper')
     componentDidUpdate(oldProps) {
       let {
           flowObject:{
+              currency,
               giveData,
           }
       } = this.state;
@@ -505,6 +509,13 @@ const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper')
           if(_.isEmpty(this.props.companiesAccountsData) && !_.isEmpty(this.props.fund)){
               const {
                   fund,
+                  currentUser: {
+                    id,
+                    attributes: {
+                        firstName,
+                        lastName,
+                    }
+                  },
               } = this.props;
               giveData.giveTo = {
                   balance: fund.attributes.balance,
@@ -513,9 +524,9 @@ const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper')
                       fundType: 'user',
                   },
                   disabled: false,
-                  id: '888000',
-                  name: `Namee`,
-                  text: `${fund.attributes.name}`, // (${currencyFormatting(fund.attributes.balance, formatNumber, currency)})`,
+                  id: id,
+                  name: `${firstName} ${lastName}`,
+                  text: `${fund.attributes.name} (${formatCurrency(fund.attributes.balance, language, currency)})`,
                   type: 'user',
                   value: fund.id,
               };
@@ -631,6 +642,7 @@ const  mapStateToProps = (state) => {
     return {
         companyDetails: state.give.companyData,
         userAccountsFetched: state.user.userAccountsFetched,
+        currentUser: state.user.info,
     };
 }
 export default withTranslation(['donation', 'giveCommon'])(connect(mapStateToProps)(Donation));

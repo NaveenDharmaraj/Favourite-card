@@ -46,7 +46,7 @@ export const callApiAndGetData = (url, params) => getAllPaginationData(url, para
     },
 );
 
-export const getDonationMatchAndPaymentInstruments = () => {
+export const getDonationMatchAndPaymentInstruments = (userId) => {
 
     // const fetchData = coreApi.get(`/users/${userId}`, {
     //     params: {
@@ -60,7 +60,6 @@ export const getDonationMatchAndPaymentInstruments = () => {
     // });
 
     return async (dispatch) => {
-        const userId = '888000'; // 999614 , 888000
         const fsa = {
             payload: {
                 companiesAccountsData: [],
