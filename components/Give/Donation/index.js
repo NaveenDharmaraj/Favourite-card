@@ -1,10 +1,10 @@
 import React, {
     Fragment,
   } from 'react';
-  import _ from 'lodash';
-  import dynamic from 'next/dynamic';
-  import _isEmpty from 'lodash/isEmpty';
-  import {
+import _ from 'lodash';
+import getConfig from 'next/config';
+import _isEmpty from 'lodash/isEmpty';
+import {
     Checkbox,
     Divider,
     Form,
@@ -13,22 +13,32 @@ import React, {
     Input,
     Popup,
     Select,
-  } from 'semantic-ui-react';
-  import {
-      connect,
-  } from 'react-redux';
-  import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
-  import Note from '../../shared/Note';
-  import DropDownAccountOptions from '../../shared/DropDownAccountOptions';
-  import {proceed} from '../../../actions/give';
-  import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
-  import { getCompanyPaymentAndTax } from '../../../actions/give';
-  import { withTranslation } from '../../../i18n';
+} from 'semantic-ui-react';
+import {
+    connect,
+} from 'react-redux';
+import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
+import Note from '../../shared/Note';
+import DropDownAccountOptions from '../../shared/DropDownAccountOptions';
+import {proceed} from '../../../actions/give';
+import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
+import { getCompanyPaymentAndTax } from '../../../actions/give';
+import { withTranslation } from '../../../i18n';
+import {
+    Elements,
+    StripeProvider
+} from 'react-stripe-elements';
+import CreditCard from '../../shared/CreditCard';
+const { publicRuntimeConfig } = getConfig();
+
+const {
+    STRIPE_KEY
+} = publicRuntimeConfig;
   
-  import {
+import {
     donationDefaultProps,
-   } from '../../../helpers/give/defaultProps';
-  import {
+} from '../../../helpers/give/defaultProps';
+import {
     isValidGiftAmount,
     onWhatDayList,
     populateDonationMatch,
@@ -39,186 +49,185 @@ import React, {
     validateDonationForm,
     fullMonthNames,
     formatCurrency,
-  } from '../../../helpers/give/utils';
+} from '../../../helpers/give/utils';
+  
+class Donation extends React.Component {
+    constructor(props) {
+    super(props)
+        this.state = {
+            flowObject: _.merge({}, props.flowObject),
+            buttonClicked: false,
+            disableButton: !props.userAccountsFetched,
+            inValidCardNameValue: true,
+            inValidCardNumber: true,
+            inValidCvv: true,
+            inValidExpirationDate: true,
+            inValidNameOnCard: true,
+            validity: this.intializeValidations(),
+            dropDownOptions: {},
+        }
+        this.validateStripeCreditCardNo = this.validateStripeCreditCardNo.bind(this);
+        this.validateStripeExpirationDate = this.validateStripeExpirationDate.bind(this);
+        this.validateCreditCardCvv = this.validateCreditCardCvv.bind(this);
+        this.validateCreditCardName = this.validateCreditCardName.bind(this);
+        this.getStripeCreditCard = this.getStripeCreditCard.bind(this);
+    }
 
-const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper'), {
-    ssr: false
-});
-  
-  
-  class Donation extends React.Component {
-      constructor(props) {
-      super(props)
-      this.state = {
-          flowObject: _.merge({}, props.flowObject),
-          buttonClicked: false,
-          disableButton: !props.userAccountsFetched,
-          inValidCardNameValue: true,
-          inValidCardNumber: true,
-          inValidCvv: true,
-          inValidExpirationDate: true,
-          inValidNameOnCard: true,
-          validity: this.intializeValidations(),
-          dropDownOptions: {},
-      }
-      }
-  
-      componentDidMount() {
-          const {
-            dispatch,
-            currentUser: {
-                id,
-            }
+    componentDidMount() {
+        const {
+        dispatch,
+        currentUser: {
+            id,
+        }
+    } = this.props;
+        dispatch(getDonationMatchAndPaymentInstruments(id));
+    }
+
+    intializeValidations() {
+        this.validity = {
+            doesAmountExist: true,
+            isAmountLessThanOneBillion: true,
+            isAmountMoreThanOneDollor: true,
+            isNoteToSelfInLimit: true,
+            isNoteToSelfValid: true,
+            isValidAddingToSource: true,
+            isValidNoteSelfText: true,
+            isValidPositiveNumber: true,
+            };
+        return this.validity;
+    }
+
+    /**
+     * Synchronise form data with React state
+     * @param  {Event} event The Event instance object.
+     * @param  {object} options The Options of event
+     * @return {Void} { void } The return nothing.
+     */
+    handleInputOnBlur = (event, data) => {
+        event.preventDefault();
+        const {
+            name,
+            value,
+        } = !_.isEmpty(data) ? data : event.target;
+        const {
+            flowObject: {
+                giveData,
+            },
+        } = this.state;
+        let {
+            validity,
+        } = this.state;
+        let inputValue = value;
+        const isNumber = /^\d+(\.\d*)?$/;
+        if ((name === 'donationAmount') && !_.isEmpty(value) && value.match(isNumber)) {
+            giveData[name] = formatAmount(value);
+            inputValue = formatAmount(value);
+        }
+        if(name !== 'giveTo') {
+            validity = validateDonationForm(name, inputValue, validity, giveData);
+        }
+        this.setState({
+            flowObject: {
+                ...this.state.flowObject,
+                giveData,
+            },
+            validity,
+        });
+    };
+
+    /**
+     * validateForm() when click on continue on AddMoney view
+     * @return {void}
+     */
+    validateForm() {
+        const {
+            flowObject:{
+                giveData:{
+                    giveTo,
+                    donationAmount,
+                    noteToSelf
+                },
+            },
+        } = this.state;
+        let { validity } = this.state;
+        validity = validateDonationForm('donationAmount', donationAmount, validity);
+        validity = validateDonationForm('noteToSelf', noteToSelf, validity);
+        validity = validateDonationForm('giveTo', giveTo.value, validity);
+        this.setState({ validity });
+        return _.every(validity);
+    }
+
+    handleInputChange = (event, data) =>  {
+        const {
+            name,
+            options,
+            value,
+        } = data;
+        const { target } = event;
+        let {
+            flowObject: {
+                giveData,
+                selectedCreditCard
+            },
+            // dropDownOptions,
+            validity,
+        } = this.state;
+        const {
+            flowObject: {
+                type,
+            },
+        } = this.state;
+        const {
+            i18n:{
+                language,
+            },
         } = this.props;
-          dispatch(getDonationMatchAndPaymentInstruments(id));
-      }
-  
-      intializeValidations() {
-          this.validity = {
-              doesAmountExist: true,
-              isAmountLessThanOneBillion: true,
-              isAmountMoreThanOneDollor: true,
-              isNoteToSelfInLimit: true,
-              isNoteToSelfValid: true,
-              isValidAddingToSource: true,
-              isValidNoteSelfText: true,
-              isValidPositiveNumber: true,
-              };
-          return this.validity;
-      }
-  
-      /**
-       * Synchronise form data with React state
-       * @param  {Event} event The Event instance object.
-       * @param  {object} options The Options of event
-       * @return {Void} { void } The return nothing.
-       */
-      handleInputOnBlur = (event, data) => {
-          event.preventDefault();
-          const {
-              name,
-              value,
-          } = !_.isEmpty(data) ? data : event.target;
-          const {
-              flowObject: {
-                  giveData,
-              },
-          } = this.state;
-          let {
-              validity,
-          } = this.state;
-          let inputValue = value;
-          const isNumber = /^\d+(\.\d*)?$/;
-          if ((name === 'donationAmount') && !_.isEmpty(value) && value.match(isNumber)) {
-              giveData[name] = formatAmount(value);
-              inputValue = formatAmount(value);
-          }
-            if(name !== 'giveTo') {
-                validity = validateDonationForm(name, inputValue, validity, giveData);
+        const formatMessage = this.props.t;
+        let newValue = (!_.isEmpty(options)) ? _.find(options, { value }) : value;
+        let setDisableFlag = this.state.disableButton;
+        if (giveData[name] !== newValue) {
+            giveData[name] = newValue;
+            giveData.userInteracted = true;
+        switch (name) {
+            case 'giveTo':
+                if(giveData.giveTo.type === 'companies') {
+                    setDisableFlag = true;
+                    const {dispatch} = this.props;
+                    getCompanyPaymentAndTax(dispatch, Number(giveData.giveTo.id));
+                    giveData.creditCard = {
+                        value: null,
+                    };
+                    giveData.donationMatch = {
+                        value: null,
+                    };
+                } else {
+                        giveData.creditCard = getDefaultCreditCard(populatePaymentInstrument(this.props.paymentInstrumentsData, formatMessage));
+                        const [
+                            defaultMatch,
+                        ] = populateDonationMatch(this.props.donationMatchData,formatMessage, language);
+                        giveData.donationMatch = defaultMatch;
+                }
+                break;
+            case 'automaticDonation':
+                const inputValue  = target.checked;
+                giveData.automaticDonation = inputValue;
+                giveData.giftType.value = (inputValue) ? 1 : 0;
+                break;                                 
+            default: break;
             }
-          this.setState({
-              flowObject: {
-                  ...this.state.flowObject,
-                  giveData,
-              },
-              validity,
-          });
-      };
-  
-      /**
-       * validateForm() when click on continue on AddMoney view
-       * @return {void}
-       */
-      validateForm() {
-          const {
-              flowObject:{
-                  giveData:{
-                      giveTo,
-                      donationAmount,
-                      noteToSelf
-                  },
-              },
-          } = this.state;
-          let { validity } = this.state;
-          validity = validateDonationForm('donationAmount', donationAmount, validity);
-          validity = validateDonationForm('noteToSelf', noteToSelf, validity);
-          validity = validateDonationForm('giveTo', giveTo.value, validity);
-          this.setState({ validity });
-          return _.every(validity);
-      }
-  
-      handleInputChange = (event, data) =>  {
-          const {
-              name,
-              options,
-              value,
-          } = data;
-          const { target } = event;
-          let {
-              flowObject: {
-                  giveData,
-                  selectedCreditCard
-              },
-              // dropDownOptions,
-              validity,
-          } = this.state;
-          const {
-              flowObject: {
-                  type,
-              },
-          } = this.state;
-          const {
-              i18n:{
-                  language,
-              },
-          } = this.props;
-          const formatMessage = this.props.t;
-          let newValue = (!_.isEmpty(options)) ? _.find(options, { value }) : value;
-          let setDisableFlag = this.state.disableButton;
-          if (giveData[name] !== newValue) {
-              giveData[name] = newValue;
-              giveData.userInteracted = true;
-            switch (name) {
-                case 'giveTo':
-                    if(giveData.giveTo.type === 'companies') {
-                        setDisableFlag = true;
-                        const {dispatch} = this.props;
-                        getCompanyPaymentAndTax(dispatch, Number(giveData.giveTo.id));
-                        giveData.creditCard = {
-                            value: null,
-                        };
-                        giveData.donationMatch = {
-                            value: null,
-                        };
-                    } else {
-                            giveData.creditCard = getDefaultCreditCard(populatePaymentInstrument(this.props.paymentInstrumentsData, formatMessage));
-                            const [
-                                defaultMatch,
-                            ] = populateDonationMatch(this.props.donationMatchData,formatMessage, language);
-                            giveData.donationMatch = defaultMatch;
-                    }
-                    break;
-                case 'automaticDonation':
-                    const inputValue  = target.checked;
-                    giveData.automaticDonation = inputValue;
-                    giveData.giftType.value = (inputValue) ? 1 : 0;
-                    break;                                 
-                default: break;
-              }
-              this.setState({
-                  disableButton: setDisableFlag,
-                  flowObject: {
-                      ...this.state.flowObject,
-                      giveData,
-                  },
-                  validity: {
-                      ...this.state.validity,
-                      validity,
-                  },
-              });
-          }
-      }
-  
+            this.setState({
+                disableButton: setDisableFlag,
+                flowObject: {
+                    ...this.state.flowObject,
+                    giveData,
+                },
+                validity: {
+                    ...this.state.validity,
+                    validity,
+                },
+            });
+        }
+    }  
   
     handleSubmit = () => {
         const {
@@ -232,6 +241,11 @@ const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper')
         } = this.props
         const {
             flowObject,
+            inValidCardNumber,
+            inValidExpirationDate,
+            inValidNameOnCard,
+            inValidCvv,
+            inValidCardNameValue,
         } = this.state;
         const {
             giveData: {
@@ -242,28 +256,36 @@ const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper')
         this.setState({
             buttonClicked: true,
         });
-        if(this.validateForm()){
+        const validateCC = this.isValidCC(
+            creditCard,
+            inValidCardNumber,
+            inValidExpirationDate,
+            inValidNameOnCard,
+            inValidCvv,
+            inValidCardNameValue,
+        );
+        if(this.validateForm() && validateCC){
             if (creditCard.value > 0) {
                 flowObject.selectedTaxReceiptProfile = (giveTo.type === 'companies') ?
                     companyDefaultTaxReceiptProfile :
                     defaultTaxReceiptProfile;
             }
             dispatch(proceed({
-                ...flowObject}, flowSteps[stepIndex+1]));
+                ...flowObject}, flowSteps[stepIndex+1], stepIndex));
         } else {
             this.setState({
                 buttonClicked: false,
             });
         }
     }
-      /**
-       * Renders the JSX for the donation amount field.
-       * @param {number} amount The donation amount.
-       * @param {object} validity The validity object.
-       * @param {function} formatMessage I18 formatting.
-       * @return {JSX} JSX representing donation amount.
-       */
-  
+
+    /**
+     * Renders the JSX for the donation amount field.
+     * @param {number} amount The donation amount.
+     * @param {object} validity The validity object.
+     * @param {function} formatMessage I18 formatting.
+     * @return {JSX} JSX representing donation amount.
+     */  
     renderDonationAmountField(amount, validity, formatMessage) {
       return (
           <Form.Field>
@@ -299,7 +321,7 @@ const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper')
         );
     }
   
-        /**
+    /**
        * Render recurring donation option.
        * @param {object} formData The state object representing form data.
        * @param {function} formatMessage  I18 formatting.
@@ -551,85 +573,196 @@ const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper')
               },
           });
       }
-    }  
-    
-  render() {
-    const {
-        flowObject: {
-            currency,
-            giveData,
-            type,
-        },
-        validity,
-    } = this.state;
-    const {
-        donationMatchData,
-        paymentInstrumentsData,
-        companyDetails,
-        i18n:{
-            language,
-        },
-    } = this.props;
-    const formatMessage = this.props.t;
-    const donationMatchOptions = populateDonationMatch(donationMatchData, formatMessage, language);
-    let paymentInstruments = paymentInstrumentsData;
-    if(giveData.giveTo.type === 'companies'){
-        paymentInstruments = !_.isEmpty(companyDetails.companyPaymentInstrumentsData) ? companyDetails.companyPaymentInstrumentsData : [];
     }
-    const paymentInstrumenOptions  = populatePaymentInstrument(paymentInstruments, formatMessage);
-    return (
-      <Fragment>
-        <Form onSubmit={this.handleSubmit}>
-        { this.renderDonationAmountField(giveData.donationAmount, validity, formatMessage) }
-        <DropDownAccountOptions
-          formatMessage={formatMessage}
-          type={type}
-          validity= {validity.isValidAddingToSource}
-          selectedValue={this.state.flowObject.giveData.giveTo.value}
-          name="giveTo"
-          parentInputChange={this.handleInputChange}
-          parentOnBlurChange={this.handleInputOnBlur}
-        />
-        { this.renderingRecurringDonationFields(giveData, formatMessage, language) }
-        <Note
-            fieldName="noteToSelf"
-            handleOnInputChange={this.handleInputChange}
-            handleOnInputBlur={this.handleInputOnBlur}
-            formatMessage ={formatMessage}
-            labelText={formatMessage('noteToSelfLabel')}
-            popupText={formatMessage('donorNoteToSelfPopup')}
-            placeholderText={formatMessage('noteToSelfPlaceHolder')}
-            text={giveData.noteToSelf}
-        />
-        { this.renderdonationMatchOptions(giveData, donationMatchOptions, formatMessage, donationMatchData, language, currency)}
 
-        {
-            ((!_isEmpty(paymentInstrumenOptions) && giveData.giveTo.value > 0) &&
-                this.renderpaymentInstrumentOptions(giveData, paymentInstrumenOptions, formatMessage)
-            )
+    /**
+     * validateStripeElements
+     * @param {boolean} inValidCardNumber credit card number
+     * @return {void}
+     */
+    validateStripeCreditCardNo(inValidCardNumber) {
+        this.setState({ inValidCardNumber });
+    }
+
+    /**
+     * validateStripeElements
+     * @param {boolean} inValidExpirationDate credit card expiry date
+     * @return {void}
+     */
+    validateStripeExpirationDate(inValidExpirationDate) {
+        this.setState({ inValidExpirationDate });
+    }
+
+    /**
+     * validateStripeElements
+     * @param {boolean} inValidCvv credit card CVV
+     * @return {void}
+     */
+    validateCreditCardCvv(inValidCvv) {
+        this.setState({ inValidCvv });
+    }
+
+    /**     
+     * @param {boolean} inValidNameOnCard credit card Name
+     * @param {boolean} inValidCardNameValue credit card Name Value
+     * @param {string} cardHolderName credit card Name Data
+     * @return {void}
+     */
+    validateCreditCardName(inValidNameOnCard, inValidCardNameValue, cardHolderName) {
+        let cardNameValid = inValidNameOnCard;
+        if (cardHolderName.trim() === '' || cardHolderName.trim() === null) {
+            cardNameValid = true;
+        } else {
+            this.setState({
+                flowObject: {
+                    ...this.state.flowObject,
+                    cardHolderName,
+                },
+            });
         }
-        {
-            ((_isEmpty(paymentInstrumenOptions) && giveData.giveTo.value > 0)|| giveData.creditCard.value === 0) && (
-                <Form.Field>
-                    <CreditCardWrapper />
-                </Form.Field>
-            )
+        this.setState({
+            inValidCardNameValue,
+            inValidNameOnCard: cardNameValid,
+        });
+    }
+
+    getStripeCreditCard(data, cardHolderName) {        
+        this.setState({
+            flowObject: {
+                ...this.state.flowObject,
+                cardHolderName,
+                stripeCreditCard: data,
+            }
+        });
+    }
+
+    isValidCC(
+        creditCard,
+        inValidCardNumber,
+        inValidExpirationDate,
+        inValidNameOnCard,
+        inValidCvv,
+        inValidCardNameValue,
+    ) {
+        let validCC = true;
+        if (creditCard.value === 0) {
+            this.CreditCard.handleOnLoad(
+                inValidCardNumber,
+                inValidExpirationDate,
+                inValidNameOnCard,
+                inValidCvv,
+                inValidCardNameValue,
+            );
+            validCC = (
+                !inValidCardNumber &&
+                !inValidExpirationDate &&
+                !inValidNameOnCard &&
+                !inValidCvv &&
+                !inValidCardNameValue
+            );
         }
-        <Divider hidden />
-            <Form.Button
-                primary
-                // className={isMobile ? 'mobBtnPadding' : 'btnPadding'}
-                content={(!this.state.buttonClicked) ? formatMessage('giveCommon:continueButton')
-                    : formatMessage('giveCommon:submittingButton')}
-                disabled={(this.state.buttonClicked) || this.state.disableButton}
-                // fluid={isMobile}
-                type="submit"
+
+        return validCC;
+    }    
+    
+    render() {
+        const {
+            flowObject: {
+                currency,
+                giveData,
+                type,
+            },
+            inValidCardNumber,
+            inValidExpirationDate,
+            inValidNameOnCard,
+            inValidCvv,
+            inValidCardNameValue,
+            validity,
+        } = this.state;
+        const {
+            donationMatchData,
+            paymentInstrumentsData,
+            companyDetails,
+            i18n:{
+                language,
+            },
+        } = this.props;
+        const formatMessage = this.props.t;
+        const donationMatchOptions = populateDonationMatch(donationMatchData, formatMessage, language);
+        let paymentInstruments = paymentInstrumentsData;
+        if(giveData.giveTo.type === 'companies'){
+            paymentInstruments = !_.isEmpty(companyDetails.companyPaymentInstrumentsData) ? companyDetails.companyPaymentInstrumentsData : [];
+        }
+        const paymentInstrumenOptions  = populatePaymentInstrument(paymentInstruments, formatMessage);
+        return (
+        <Fragment>
+            <Form onSubmit={this.handleSubmit}>
+            { this.renderDonationAmountField(giveData.donationAmount, validity, formatMessage) }
+            <DropDownAccountOptions
+            formatMessage={formatMessage}
+            type={type}
+            validity= {validity.isValidAddingToSource}
+            selectedValue={this.state.flowObject.giveData.giveTo.value}
+            name="giveTo"
+            parentInputChange={this.handleInputChange}
+            parentOnBlurChange={this.handleInputOnBlur}
             />
-        </Form>
-      </Fragment>
+            { this.renderingRecurringDonationFields(giveData, formatMessage, language) }
+            <Note
+                fieldName="noteToSelf"
+                handleOnInputChange={this.handleInputChange}
+                handleOnInputBlur={this.handleInputOnBlur}
+                formatMessage ={formatMessage}
+                labelText={formatMessage('noteToSelfLabel')}
+                popupText={formatMessage('donorNoteToSelfPopup')}
+                placeholderText={formatMessage('noteToSelfPlaceHolder')}
+                text={giveData.noteToSelf}
+            />
+            { this.renderdonationMatchOptions(giveData, donationMatchOptions, formatMessage, donationMatchData, language, currency)}
 
-    )
-  }
+            {
+                ((!_isEmpty(paymentInstrumenOptions) && giveData.giveTo.value > 0) &&
+                    this.renderpaymentInstrumentOptions(giveData, paymentInstrumenOptions, formatMessage)
+                )
+            }
+            {
+                ((_isEmpty(paymentInstrumenOptions) && giveData.giveTo.value > 0) || giveData.creditCard.value === 0) && (
+                    <StripeProvider apiKey={STRIPE_KEY}>
+                        <Elements>
+                            <CreditCard
+                                creditCardElement={this.getStripeCreditCard}
+                                creditCardValidate={inValidCardNumber}
+                                creditCardExpiryValidate={inValidExpirationDate}
+                                creditCardNameValidte={inValidNameOnCard}
+                                creditCardNameValueValidate={inValidCardNameValue}
+                                creditCardCvvValidate={inValidCvv}
+                                validateCCNo={this.validateStripeCreditCardNo}
+                                validateExpiraton={this.validateStripeExpirationDate}
+                                validateCvv={this.validateCreditCardCvv}
+                                validateCardName={this.validateCreditCardName}
+                                formatMessage = {formatMessage}
+                                // eslint-disable-next-line no-return-assign
+                                onRef={(ref) => (this.CreditCard = ref)}
+                            />
+                        </Elements>
+                    </StripeProvider>
+                )
+            }
+            <Divider hidden />
+                <Form.Button
+                    primary
+                    // className={isMobile ? 'mobBtnPadding' : 'btnPadding'}
+                    content={(!this.state.buttonClicked) ? formatMessage('giveCommon:continueButton')
+                        : formatMessage('giveCommon:submittingButton')}
+                    disabled={(this.state.buttonClicked) || this.state.disableButton}
+                    // fluid={isMobile}
+                    type="submit"
+                />
+            </Form>
+        </Fragment>
+
+        )
+    }
 }
 
 Donation.defaultProps = {

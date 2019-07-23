@@ -285,3 +285,10 @@ export const getGroupsForUser = (dispatch, userId) => {
         // redirect('/dashboard');
     }
 };
+
+export const savePaymentInstrument = (cardDetails) => {
+    const result = coreApi.post('/paymentInstruments', {
+        data: cardDetails,
+    });
+    return result;
+};
