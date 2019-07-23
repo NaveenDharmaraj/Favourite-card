@@ -1,6 +1,7 @@
 import React, {
   Fragment,
 } from 'react';
+import dynamic from 'next/dynamic';
 import {
     connect
   } from 'react-redux';
@@ -53,6 +54,10 @@ import {
 
 import { groupDefaultProps } from '../../../helpers/give/defaultProps';
 // import { stat } from 'fs';
+
+const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper'), {
+    ssr: false
+});
 
 class Group extends React.Component {
     constructor(props) {
@@ -470,7 +475,7 @@ class Group extends React.Component {
             }
             flowObject.stepsCompleted = false;
             flowObject.nextSteptoProceed = nextStep;
-            dispatch(proceed(flowObject, flowSteps[stepIndex + 1]));
+            dispatch(proceed(flowObject, flowSteps[stepIndex + 1], stepIndex));
         } else {
             this.setState({
                 buttonClicked: false,
@@ -664,30 +669,6 @@ class Group extends React.Component {
                     validity={validity}
                 />
             );
-            // if (_isEmpty(paymentInstrumentList) || creditCard.value === 0) {
-            //     stripeCardComponent = (
-            //         <Form.Field>
-            //             <StripeProvider apiKey={stripeKey}>
-            //                 <Elements>
-            //                     <StripeCreditCard
-            //                         creditCardElement={this.getStripeCreditCard}
-            //                         creditCardValidate={inValidCardNumber}
-            //                         creditCardExpiryValidate={inValidExpirationDate}
-            //                         creditCardNameValidte={inValidNameOnCard}
-            //                         creditCardNameValueValidate={inValidCardNameValue}
-            //                         creditCardCvvValidate={inValidCvv}
-            //                         // eslint-disable-next-line no-return-assign
-            //                         onRef={(ref) => (this.StripeCreditCard = ref)}
-            //                         validateCCNo={this.validateStripeCreditCardNo}
-            //                         validateExpiraton={this.validateStripeExpirationDate}
-            //                         validateCvv={this.validateCreditCardCvv}
-            //                         validateCardName={this.validateCreditCardName}
-            //                     />
-            //                 </Elements>
-            //             </StripeProvider>
-            //         </Form.Field>
-            //     );
-            // }
         }
 
         if ( giveFrom.value > 0) {
@@ -824,7 +805,13 @@ class Group extends React.Component {
                         )}
                         {repeatGift}
                         {accountTopUpComponent}
-                        {/* {stripeCardComponent} */}
+                        {
+                            (_isEmpty(paymentInstrumentList) || creditCard.value === 0) && (
+                                    <Form.Field>
+                                        <CreditCardWrapper />
+                                    </Form.Field>
+                            )
+                        } 
                         <Form.Field>
                             <Divider className="dividerMargin" />
                         </Form.Field>
