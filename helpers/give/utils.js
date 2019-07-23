@@ -32,9 +32,9 @@ const isCreditCardBlank = (giveData) => {
 
 const formatCurrency = (value, language, currencyType) => {
     const currencyFormat = {
-        currency: currencyType.currency,
+        currency: currencyType,
         currencyDisplay: 'symbol',
-        style: currencyType.style,
+        style: 'currency',
     };
     return _.replace(new Intl.NumberFormat(
         language,
@@ -42,18 +42,6 @@ const formatCurrency = (value, language, currencyType) => {
     ).format(value), 'US', '');
 };
 
-const currencyFormatting = (value, language, currencyType) => {
-    const currencyFormat = {
-        currency: currencyType,
-        currencyDisplay: 'symbol',
-        style: 'currency',
-    };
-    return _.replace(formatCurrency(
-        value,
-        language,
-        currencyFormat,
-    ));
-};
 /**
 * Determine whether the supplied field is valid.
 * @param  {String} field The tax receipt profile form field name
@@ -172,7 +160,9 @@ const getDefaultCreditCard = (paymentInstrumentList) => {
     return creditCard;
 };
 
-const formatAmount = (amount) => parseFloat(amount).toFixed(2);
+const formatAmount = (amount) => {
+    return parseFloat(amount).toFixed(2);
+};
 
 /**
 * onWhatDayList array list
@@ -287,7 +277,7 @@ const populateAccountOptions = (data, translate, giveToId = null, allocationType
                 disabled: false,
                 id,
                 name: `${firstName} ${lastName}`,
-                text: `${fund.attributes.name} (${currencyFormatting(fund.attributes.balance, language, currency)})`,
+                text: `${fund.attributes.name} (${formatCurrency(fund.attributes.balance, language, currency)})`,
                 type: 'user',
                 value: fund.id,
             },
@@ -341,7 +331,7 @@ const populateAccountOptions = (data, translate, giveToId = null, allocationType
                     userGroups,
                     null,
                     (item) => item.attributes.fundId,
-                    (attributes) => `${attributes.fundName} (${currencyFormatting(attributes.balance, language, currency)})`,
+                    (attributes) => `${attributes.fundName} (${formatCurrency(attributes.balance, language, currency)})`,
                     (attributes) => false,
                     [
                         {
@@ -385,7 +375,7 @@ const populateAccountOptions = (data, translate, giveToId = null, allocationType
                     userCampaigns,
                     null,
                     (item) => item.attributes.fundId,
-                    (attributes) => `${attributes.fundName} (${currencyFormatting(attributes.balance, language, currency)})`,
+                    (attributes) => `${attributes.fundName} (${formatCurrency(attributes.balance, language, currency)})`,
                     (attributes) => false,
                     [
                         {
@@ -413,7 +403,7 @@ const populateAccountOptions = (data, translate, giveToId = null, allocationType
                     companiesAccountsData,
                     null,
                     (item) => item.attributes.companyFundId,
-                    (attributes) => `${attributes.companyFundName} (${currencyFormatting(attributes.balance, language, currency)})`,
+                    (attributes) => `${attributes.companyFundName} (${formatCurrency(attributes.balance, language, currency)})`,
                     (attributes) => false,
                     [
                         {
@@ -491,12 +481,12 @@ const populateGiftType = (formatMessage) => {
         },
         {
             disabled: false,
-            text: formatMessage('giftTypeRecurring1'),
+            text: formatMessage('specialInstruction:giftTypeRecurring1'),
             value: 1,
         },
         {
             disabled: false,
-            text: formatMessage('giftTypeRecurring15'),
+            text: formatMessage('specialInstruction:giftTypeRecurring15'),
             value: 15,
         },
     ];
@@ -596,12 +586,12 @@ const getFirstThirdTuesday = (currentDateUTC, monthNames) => {
 * @return {string} recurring full date format
 */
 
-const getNextAllocationMonth = (eftEnabled) => {
+const getNextAllocationMonth = (formatMessage, eftEnabled) => {
     const currentDate = new Date();
     const currentDateUTC = new Date(currentDate.getTime() +
                                 (currentDate.getTimezoneOffset() * 60000));
     currentDateUTC.setHours(currentDateUTC.getHours() - 8);
-    const monthNames = fullMonthNames();
+    const monthNames = fullMonthNames(formatMessage);
     if (eftEnabled) {
         return getNextTuesday(currentDateUTC, monthNames);
     }
@@ -1183,7 +1173,6 @@ const populateDonationReviewPage = (giveData, data, currency, formatMessage, lan
         donationMatchData,
         fund,
     } = data;
-
     const state = {
     };
 
@@ -1208,6 +1197,7 @@ const populateDonationReviewPage = (giveData, data, currency, formatMessage, lan
             if (!_.isEmpty(selectedData)) {
                 giveToData = {
                     accountId: selectedData.id,
+                    avatar: giveTo.avatar,
                     displayName: selectedData.attributes.name,
                     type: 'company',
                 };
@@ -1256,7 +1246,6 @@ const populateDonationReviewPage = (giveData, data, currency, formatMessage, lan
         };
         state.sources = _.map(sources, buildAccounts);
         state.recipients = _.map(recipients, buildAccounts);
-        console.log(state);
         return (state);
     }
 };
@@ -1332,6 +1321,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
         if (giveFrom.type === 'user') {
             fromData = {
                 accountId: giveFrom.id,
+                avatar: giveFrom.avatar,
                 displayName: fund.attributes.name,
                 type: giveFrom.type,
             };
@@ -1340,6 +1330,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
             if (!_.isEmpty(selectedData)) {
                 fromData = {
                     accountId: selectedData.id,
+                    avatar: selectedData.attributes.avatar,
                     displayName: selectedData.attributes.name,
                     type: typeMap[giveFrom.type],
                 };
@@ -1349,11 +1340,11 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
         const amountToGive = totalP2pGiveAmount ? Number(totalP2pGiveAmount) : Number(giveAmount);
         const amountFromDonation = (donationAmount) ? Number(donationAmount) : 0;
         const coverFeesAmt = (coverFeesAmount) ? Number(coverFeesAmount) : 0;
-        amountToGiveFrom = (amountFromDonation >= (amountToGive + coverFeesAmt)) ?
-            (amountFromDonation - (amountToGive + coverFeesAmt)) : 0;
+        amountToGiveFrom = (amountFromDonation >= (amountToGive + coverFeesAmt))
+            ? (amountFromDonation - (amountToGive + coverFeesAmt)) : 0;
 
-        if (!_.isEmpty(fromData) &&
-            (amountToGiveFrom === 0 && (amountFromDonation !== (amountToGive + coverFeesAmt)))) {
+        if (!_.isEmpty(fromData)
+            && (amountToGiveFrom === 0 && (amountFromDonation !== (amountToGive + coverFeesAmt)))) {
             const {
                 value,
             } = giftType;
@@ -1470,6 +1461,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
             } else {
                 const recipientData = {
                     accountId: giveTo.id,
+                    avatar: giveTo.avatar,
                     amount: (value === 0 || value === null) ?
                         (Number(giveAmount) + Number(amountFromGroupMatch)) : null,
                     displayName: giveTo.name,
@@ -1524,15 +1516,13 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
             privacyShareEmailMessage = formatMessage('givingGroups.privacyHideEmailAndPostal');
         }
         state.givingOrganizerMessage = privacyShareEmailMessage;
-
         state.recipients = _.map(recipients, buildAccounts);
-        console.log(state);
         return state;
     }
 };
 
+
 export {
-    currencyFormatting,
     percentage,
     fullMonthNames,
     validateTaxReceiptProfileForm,
@@ -1547,6 +1537,7 @@ export {
     populateInfoToShare,
     formatAmount,
     getDefaultCreditCard,
+    getDonationMatchedData,
     getNextAllocationMonth,
     setDateForRecurring,
     validateDonationForm,
@@ -1557,5 +1548,6 @@ export {
     validateGiveForm,
     populateDonationReviewPage,
     populateGiveReviewPage,
+    populateCardData,
     formatCurrency,
 };

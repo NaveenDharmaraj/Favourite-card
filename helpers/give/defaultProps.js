@@ -1,5 +1,6 @@
 export const donationDefaultProps = {
     flowObject: {
+        cardHolderName: '',
         currency: 'USD',
         giveData: {
             automaticDonation: false,
@@ -8,7 +9,7 @@ export const donationDefaultProps = {
             },
             donationAmount: '',
             donationMatch: {
-                value: null
+                value: null,
             },
             giftType: {
                 value: 0,
@@ -24,10 +25,9 @@ export const donationDefaultProps = {
             noteToSelf: '',
             userInteracted: false,
         },
-        nextSteptoProceed: {},
         selectedTaxReceiptProfile: {},
-        sourceAccountHolderId: null,
         stepsCompleted: false,
+        stripeCreditCard: {},
         taxReceiptProfileAction: 'no_change',
         type: 'donations',
     },

@@ -68,9 +68,9 @@ const FlowBreadcrumbs = ({
     );
 };
 FlowBreadcrumbs.propTypes = {
-    breadcrumbArray: arrayOf(PropTypes.element).isRequired,
+    breadcrumbArray: arrayOf(string).isRequired,
     currentStep: string.isRequired,
-    steps: arrayOf(PropTypes.element).isRequired,
+    steps: arrayOf(string).isRequired,
 };
 
 export default FlowBreadcrumbs;

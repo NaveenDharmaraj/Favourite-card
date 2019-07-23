@@ -1,19 +1,31 @@
 import Auth0Lock from 'auth0-lock';
 import _ from 'lodash';
 import jwt from 'jwt-decode';
-import {Router} from '../routes';
+import getConfig from 'next/config';
 
+import { Router } from '../routes';
 import storage from '../helpers/storage';
 import chimpLogo from '../static/images/chimp-logo-new.png';
 import {
     validateAuth0Failure,
 } from '../actions/auth';
 import {
+    chimpLogin,
     getUser,
 } from '../actions/user'
 import isUndefinedOrEmpty from '../helpers/object';
 
 import coreApi from './coreApi';
+
+const { publicRuntimeConfig } = getConfig();
+
+const {
+    APP_URL_ORIGIN,
+    AUTH0_DOMAIN,
+    AUTH0_WEB_CLIENT_ID,
+    AUTH0_WEB_AUDIENCE,
+} = publicRuntimeConfig;
+
 /**
  * @var {object} _auth0lockConfig - The static configuration options used for the Lock widget.
  * @see https://github.com/auth0/lock#customization
@@ -22,6 +34,7 @@ import coreApi from './coreApi';
 const _auth0lockConfig = {
     allowPasswordAutocomplete: true,
     allowShowPassword: false,
+    allowSignUp: false,
     auth: {
         responseType: 'token id_token',
         scope: 'openid',
@@ -70,7 +83,7 @@ const _auth0lockConfig = {
     socialButtonStyle: 'small',
     theme: {
         logo: chimpLogo,
-        primaryColor: '#FF4511',
+        primaryColor: '#2185D0',
     },
 };
 /**
@@ -81,8 +94,6 @@ const lockScreenMap = {
     login: 'login',
     new: 'signUp',
 };
-const domain = 'chimptech-dev.auth0.com';
-const clientID = 'nflJDPtqECgZfeCSahw86tgDAOVhBQ74';
 let _auth0lock = null;
 let _auth0lockInitialScreen = '';
 /**
@@ -370,12 +381,20 @@ const _handleLockSuccess = async ({
 } = {}) => {
     if (!accessToken || !idToken) { return null(); }
     // Sets access token and expiry time in cookies
-    await (auth0.accessToken = accessToken);
-    const dispatch = auth0.storeDispatch;
-    await (getUser(dispatch));
+    chimpLogin(accessToken).then(async ({ currentUser }) => {
+        const userId = parseInt(currentUser, 10);
+        await (auth0.accessToken = accessToken);
+        await (storage.set('chimpUserId', userId, 'cookie'));
+        const dispatch = auth0.storeDispatch;
+        await (getUser(dispatch, userId));
+        const returnTo = '/';
+        Router.pushRoute(returnTo);
+    }).catch(() => {
+        Router.pushRoute('/users/login');
+    });
+    
     // After successfull login redirecting to home
-    const returnTo = '/';
-    Router.push(returnTo);
+    
     return null;
 };
 
@@ -416,10 +435,10 @@ const _handleLockFailure = async ({ errorDescription }) => {
  * @return {auth0lock} - The auth0lock instance.
  */
 function _makeLock() {
-    _auth0lock = new Auth0Lock(clientID, domain, _auth0lockConfig, _.merge(_auth0lockConfig, {
+    _auth0lock = new Auth0Lock(AUTH0_WEB_CLIENT_ID, AUTH0_DOMAIN, _auth0lockConfig, _.merge(_auth0lockConfig, {
         auth: {
-            audience: 'https://lab.24467.org/api/v2/',
-            redirectUrl: 'http://localhost:3000/auth/callback',
+            audience: `${AUTH0_WEB_AUDIENCE}`,
+            redirectUrl: `${APP_URL_ORIGIN}/auth/callback`,
         },
     }))
         .on('authenticated', _handleLockSuccess)

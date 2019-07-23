@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import auth0 from '../../services/auth';
+import Layout from '../../components/shared/Layout';
 
-class Callback extends Component {
+class AuthCallback extends Component {
     componentDidMount() {
         const { dispatch } = this.props;
         auth0.lock; // eslint-disable-line no-unused-expressions
@@ -23,9 +24,9 @@ class Callback extends Component {
 
     render() {
         return (
-            <div>
+            <Layout>
          Loading
-            </div>
+            </Layout>
         );
     }
 }
@@ -36,4 +37,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(Callback);
+export default connect(mapStateToProps)(AuthCallback);

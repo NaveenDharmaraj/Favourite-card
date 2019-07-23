@@ -7,7 +7,17 @@ import _ from 'lodash';
 
 import coreApi from '../services/coreApi';
 import realtypeof from '../helpers/realtypeof';
+import {
+    getDonationMatchAndPaymentInstruments,
+    savePaymentInstrument
+} from './user';
 
+import {
+    beneficiaryDefaultProps,
+    donationDefaultProps,
+    groupDefaultProps,
+    p2pDefaultProps,
+} from '../helpers/give/defaultProps';
 
 export const actionTypes = {
     COVER_FEES: 'COVER_FEES',
@@ -67,6 +77,19 @@ const setDonationData = (donation) => {
     return donationData;
 };
 
+/**
+ * @param {*} cardDetails
+ * @param {*} cardHolderName
+ */
+const createToken = (cardDetails, cardHolderName) => new Promise((resolve, reject) => {
+    cardDetails.createToken({ name: cardHolderName }).then((result) => {
+        if (result.error) {
+            return reject(result.error);
+        }
+        return resolve(result.token);
+    });
+});
+
 const saveDonations = (donation) => {
     const {
         giveData: {
@@ -99,35 +122,23 @@ const postAllocation = async (allocationData) => {
     return result;
 };
 
-const saveCharityAllocation = (allocation) => {
+const initializeAndCallAllocation = (allocation, attributes, type) => {
     const {
         giveData,
         selectedTaxReceiptProfile,
     } = allocation;
 
     const {
-        coverFees,
         creditCard,
         donationAmount,
         donationMatch,
         giftType,
-        giveAmount,
         giveFrom,
         giveTo,
-        infoToShare,
-        noteToCharity,
-        noteToSelf,
     } = giveData;
 
     const allocationData = {
-        attributes: {
-            amount: giveAmount,
-            coverFees,
-            noteToCharity,
-            noteToSelf,
-            privacyData: (infoToShare.id) ? infoToShare.id : null,
-            privacySetting: _.split(infoToShare.value, '|')[0],
-        },
+        attributes,
         relationships: {
             destinationFund: {
                 data: {
@@ -142,9 +153,10 @@ const saveCharityAllocation = (allocation) => {
                 },
             },
         },
-    };
+    }
     if (giftType.value === 0) {
-        allocationData.type = 'allocations';
+        allocationData.type = (type === 'charity')
+            ? 'allocations' : 'groupAllocations'
         if (donationAmount) {
             return saveDonations({
                 selectedTaxReceiptProfile,
@@ -168,6 +180,8 @@ const saveCharityAllocation = (allocation) => {
         }
     } else {
         allocationData.type = 'recurringAllocations';
+        allocationData.type = (type === 'charity')
+        ? 'recurringAllocations' : 'recurringGroupAllocations'
         allocationData.attributes.dayOfMonth = giftType.value;
         if (donationMatch.value > 0) {
             allocationData.relationships.employeeRole = {
@@ -187,20 +201,37 @@ const saveCharityAllocation = (allocation) => {
     return postAllocation(allocationData);
 }
 
-const saveGroupAllocation = (allocation) => {
+const saveCharityAllocation = (allocation) => {
     const {
         giveData,
-        selectedTaxReceiptProfile,
     } = allocation;
 
     const {
-        creditCard,
-        donationAmount,
-        donationMatch,
-        giftType,
+        coverFees,
         giveAmount,
-        giveFrom,
-        giveTo,
+        infoToShare,
+        noteToCharity,
+        noteToSelf,
+    } = giveData;
+
+    const attributes = {
+        amount: giveAmount,
+        coverFees,
+        noteToCharity,
+        noteToSelf,
+        privacyData: (infoToShare.id) ? infoToShare.id : null,
+        privacySetting: _.split(infoToShare.value, '|')[0],
+    };
+    return initializeAndCallAllocation(allocation, attributes, 'charity');
+}
+
+const saveGroupAllocation = (allocation) => {
+    const {
+        giveData,
+    } = allocation;
+
+    const {
+        giveAmount,
         infoToShare,
         noteToCharity,
         noteToSelf,
@@ -210,75 +241,151 @@ const saveGroupAllocation = (allocation) => {
         privacyShareName,
     } = giveData;
 
-    const allocationData = {
-        attributes: {
-            amount: giveAmount,
-            noteToGroup: noteToCharity,
-            noteToSelf,
-            privacyShareAddress,
-            privacyShareAmount,
-            privacyShareEmail,
-            privacyShareName,
-            privacyTrpId: privacyShareAddress ? infoToShare.id : null,
-        },
-        relationships: {
-
-            destinationFund: {
-                data: {
-                    id: giveTo.value,
-                    type: 'accountHolders',
-                },
-            },
-            fund: {
-                data: {
-                    id: giveFrom.value,
-                    type: 'accountHolders',
-                },
-            },
-        },
+    const attributes = {
+        amount: giveAmount,
+        noteToGroup: noteToCharity,
+        noteToSelf,
+        privacyShareAddress,
+        privacyShareAmount,
+        privacyShareEmail,
+        privacyShareName,
+        privacyTrpId: privacyShareAddress ? infoToShare.id : null,
     };
-    if (giftType.value === 0) {
-        allocationData.type = 'groupAllocations';
-        if (donationAmount) {
-            return saveDonations({
-                selectedTaxReceiptProfile,
-                giveData: {
-                    automaticDonation: false,
-                    creditCard,
-                    donationAmount,
-                    donationMatch,
-                    giveTo : giveFrom,
-                    noteToSelf: '',
-                }
-            }).then((result) => {
-                allocationData.relationships.donation = {
-                    data: {
-                        id: result.data.id,
-                        type: 'donations',
+    return initializeAndCallAllocation(allocation, attributes, 'group');
+};
+
+const postP2pAllocations = async (allocations) => {
+    const results = [];
+    let parentAllocationId = null;
+    for (const allocationData of allocations) {
+        let data = {};
+        if (parentAllocationId) {
+            const parent = {
+                relationships: {
+                    parentAllocation: {
+                        data: {
+                          type: 'fundAllocations',
+                          id: parentAllocationId ,
+                        },
                     },
-                };
-                return postAllocation(allocationData);
-            });
+                },
+            }
+            data = _.merge({}, allocationData, parent)
+        } else {
+            data = allocationData;
         }
-    } else {
-        allocationData.type = 'recurringGroupAllocations';
-        allocationData.attributes.dayOfMonth = giftType.value;
-        if (donationMatch.value > 0) {
-            allocationData.relationships.employeeRole = {
+
+        const params = {
+            data: data,
+        };
+
+        const result = await comms.post(`/${allocationData.type}`, {
+            data: params,
+        });
+
+        if  (result && result.data) {
+            parentAllocationId = result.data.id;
+        }
+        results.push(result);
+    };
+
+    return results;
+};
+
+const initializeP2pAllocations = (
+    recipients,
+    giveAmount,
+    noteToRecipients,
+    noteToSelf,
+    giveFrom,
+    donationId,
+) => {
+    const allocations = [];
+    _.each(recipients, (recipient) => {
+        const allocationData = {
+            attributes: {
+                amount: giveAmount,
+                email: _.replace(recipient, /[\n\r\t ]+/g, ''),
+                noteToRecipient: noteToRecipients,
+                noteToSelf,
+                suppressEmail: false,
+            },
+            relationships: {
+                sourceFund: {
+                    data: {
+                        id: giveFrom.value,
+                        type: 'accountHolders',
+                    },
+                },
+            },
+        };
+
+        if (donationId > 0) {
+            allocationData.relationships.donation = {
                 data: {
-                    id: donationMatch.value,
-                    type: 'roles',
+                    id: donationId,
+                    type: 'donations',
                 },
             };
         }
-        allocationData.relationships.paymentInstrument = {
-            data: {
-                id: creditCard.value,
-                type: 'paymentInstruments',
-            },
-        };
+        allocationData.type = 'fundAllocations';
+        allocations.push(allocationData);
+    });
+
+    return allocations;
+};
+
+/**
+ * We want to be able to send multiple P2ps at once
+ * @param {object} allocation The allocation object
+ */
+const saveP2pAllocations = (allocation) => {
+    const {
+        giveData: {
+            creditCard,
+            donationAmount,
+            donationMatch,
+            giveAmount,
+            giveFrom,
+            noteToRecipients,
+            noteToSelf,
+            recipients,
+        },
+        selectedTaxReceiptProfile,
+    } = allocation;
+
+    if (donationAmount) {
+        return saveDonations({
+            selectedTaxReceiptProfile,
+            giveData: {
+                automaticDonation: false,
+                creditCard,
+                donationAmount,
+                donationMatch,
+                giveTo : giveFrom,
+                noteToSelf: '',
+            }
+        }).then((result) => {
+            const allocations = initializeP2pAllocations(
+                recipients,
+                giveAmount,
+                noteToRecipients,
+                noteToSelf,
+                giveFrom,
+                result.data.id,
+            );
+            return postP2pAllocations(allocations);
+        });
     }
-    return postAllocation(allocationData);
+    const allocations = initializeP2pAllocations(
+        recipients,
+        giveAmount,
+        noteToRecipients,
+        noteToSelf,
+        giveFrom,
+        0,
+    );
+    return postP2pAllocations(allocations);
 };
 
 /**
@@ -299,7 +406,13 @@ const checkForQuaziSuccess = (error) => {
     return false;
 };
 
-
+const callApiAndDispatchData = (dispatch, account) => {
+    if (account.type === 'user') {
+        dispatch(getDonationMatchAndPaymentInstruments(account.id));
+    } else {
+        getCompanyPaymentAndTax(dispatch, Number(account.id));
+    }
+};
 
 export const proceed = (flowObject, nextStep, stepIndex, lastStep = false) => {
     if (lastStep) {
@@ -354,18 +467,40 @@ export const proceed = (flowObject, nextStep, stepIndex, lastStep = false) => {
                     },
                     type: actionTypes.SAVE_SUCCESS_DATA,
                 });
-                dispatch({
-                    payload: {
-                        nextStep: nextStepToProcced,
-                    },
+                const defaultProps = {
+                    'donations': donationDefaultProps,
+                    'give/to/charity': beneficiaryDefaultProps,
+                    'give/to/friend': p2pDefaultProps,
+                    'give/to/group': groupDefaultProps,
+                };
+                const defaultPropsData = _.merge({}, defaultProps[flowObject.type]);
+                const payload = {
+                    ...defaultPropsData.flowObject,
+                }
+                payload.nextStep = nextStepToProcced;
+                payload.stepsCompleted = true;
+                const fsa = {
+                    payload,
                     type: actionTypes.SAVE_FLOW_OBJECT,
-                });
+                }
+                dispatch(fsa);
                 // fetchUser(userId);
             });
         };
     }
     return (dispatch) => {
         flowObject.nextStep = nextStep;
+        const {
+            giveData: {
+                giveFrom,
+                giveTo,
+                creditCard,
+            },
+        } = flowObject;
+        const accountDetails = {
+            id: (flowObject.type === 'donations') ? giveTo.id : giveFrom.id,
+            type: (flowObject.type === 'donations') ? giveTo.type : giveFrom.type,
+        };
         if (flowObject.taxReceiptProfileAction !== 'no_change' && stepIndex === 1) {
             updateTaxReceiptProfile(
                 flowObject.selectedTaxReceiptProfile,
@@ -376,8 +511,47 @@ export const proceed = (flowObject, nextStep, stepIndex, lastStep = false) => {
                     payload: flowObject,
                     type: actionTypes.SAVE_FLOW_OBJECT,
                 });
+                callApiAndDispatchData(dispatch, accountDetails);
             }).catch((error) => {
                 console.log(error);
+            });
+        } else if (creditCard.value === 0 && stepIndex === 0) {
+            return createToken(flowObject.stripeCreditCard, flowObject.cardHolderName).then((token) => {
+                const paymentInstrumentsData = {
+                    attributes: {
+                        stripeToken: token.id,
+                    },
+                    relationships: {
+                        paymentable: {
+                            data: {
+                                id: accountDetails.id,
+                                type: accountDetails.type,
+                            },
+                        },
+                    },
+                    type: 'paymentInstruments',
+                };
+                return savePaymentInstrument(paymentInstrumentsData);
+            }).then((result) => {
+                const {
+                    data: {
+                        attributes: {
+                            description,
+                        },
+                        id,
+                    },
+                } = result;
+                flowObject.giveData.creditCard.id = id;
+                flowObject.giveData.creditCard.value = id;
+                flowObject.giveData.creditCard.text = description;
+                flowObject.giveData.newCreditCardId = id;
+                dispatch({
+                    payload: flowObject,
+                    type: actionTypes.SAVE_FLOW_OBJECT,
+                });
+                callApiAndDispatchData(dispatch, accountDetails);
+            }).catch((err) => {
+                console.log(err);
             });
         } else {
             dispatch({
