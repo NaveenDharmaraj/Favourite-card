@@ -161,7 +161,6 @@ const getDefaultCreditCard = (paymentInstrumentList) => {
 };
 
 const formatAmount = (amount) => {
-    console.log('parse amount', parseFloat(amount).toFixed(2))
     return parseFloat(amount).toFixed(2);
 };
 

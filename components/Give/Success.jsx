@@ -54,6 +54,11 @@ const Success = (props) => {
         }
     }, []);
     const {
+        currentUser: {
+            attributes: {
+                displayName,
+            },
+        },
         donationMatchData,
         successData,
         t: formatMessage,
@@ -128,8 +133,6 @@ const Success = (props) => {
         displayAmount += Number(donationMatchedData.amount);
     }
 
-   
-
     let amount = null;
     let total = null;
     const fromName = giveFrom.name;
@@ -138,7 +141,7 @@ const Success = (props) => {
     } = giveTo;
     const donationDetails = {
         amount: formatCurrency(formatAmount(displayAmount), language, currency),
-        name: 'demo',
+        name: displayName,
     };
 
     // Quazi status message
@@ -467,6 +470,7 @@ Success.defaultProps = {
 };
 
 const mapStateToProps = (state) => ({
+    currentUser: state.user.info,
     donationMatchData: state.user.donationMatchData,
     successData: state.give.successData,
 });

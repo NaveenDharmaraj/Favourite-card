@@ -521,10 +521,6 @@ const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper')
               giveData.giveTo = {
                   avatar,
                   balance: fund.attributes.balance,
-                  data: {
-                      fundName: fund.attributes.name,
-                      fundType: 'user',
-                  },
                   disabled: false,
                   id: id,
                   name: `${firstName} ${lastName}`,
@@ -532,6 +528,7 @@ const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper')
                   type: 'user',
                   value: fund.id,
               };
+              giveData.creditCard = getDefaultCreditCard(populatePaymentInstrument(this.props.paymentInstrumentsData, formatMessage));
               if(!_.isEmpty(this.props.donationMatchData)){
                   const [
                       defaultMatch,
