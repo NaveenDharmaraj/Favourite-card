@@ -1,7 +1,7 @@
 import React, {
   Fragment,
 } from 'react';
-import dynamic from 'next/dynamic';
+import getConfig from 'next/config';
 import {
     connect
   } from 'react-redux';
@@ -14,6 +14,10 @@ import _every from 'lodash/every';
 import _map from 'lodash/map';
 import _merge from 'lodash/merge';
 import {
+    Elements,
+    StripeProvider,
+} from 'react-stripe-elements';
+import {
   Divider,
   Form,
   Icon,
@@ -24,6 +28,7 @@ import {
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 import NoteTo from '../NoteTo';
 import AccountTopUp from '../AccountTopUp';
+import CreditCard from '../../shared/CreditCard';
 import PrivacyOptions from '../PrivacyOptions';
 import DropDownAccountOptions from '../../shared/DropDownAccountOptions';
 import { beneficiaryDefaultProps } from '../../../helpers/give/defaultProps';
@@ -51,13 +56,14 @@ import {
     getGroupsFromSlug,
     proceed,
 } from '../../../actions/give';
-
 import { groupDefaultProps } from '../../../helpers/give/defaultProps';
 // import { stat } from 'fs';
+const { publicRuntimeConfig } = getConfig();
 
-const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper'), {
-    ssr: false
-});
+const {
+    STRIPE_KEY
+} = publicRuntimeConfig;
+
 
 class Group extends React.Component {
     constructor(props) {
@@ -322,16 +328,6 @@ class Group extends React.Component {
             giveData.infoToShare = defaultAddress;
         }
         return giveData;
-    }
-
-    getStripeCreditCard(data, cardHolderName) {
-        this.setState({
-            flowObject: {
-                ...this.state.flowObject,
-                cardHolderName,
-                stripeCreditCard: data,
-            },
-        });
     }
 
     validateForm() {
@@ -612,6 +608,45 @@ class Group extends React.Component {
         });
     }
 
+    getStripeCreditCard(data, cardHolderName) {
+        this.setState({
+            flowObject: {
+                ...this.state.flowObject,
+                cardHolderName,
+                stripeCreditCard: data,
+            },
+        });
+    }
+
+    isValidCC(
+        creditCard,
+        inValidCardNumber,
+        inValidExpirationDate,
+        inValidNameOnCard,
+        inValidCvv,
+        inValidCardNameValue,
+    ) {
+        let validCC = true;
+        if (creditCard.value === 0) {
+            this.CreditCard.handleOnLoad(
+                inValidCardNumber,
+                inValidExpirationDate,
+                inValidNameOnCard,
+                inValidCvv,
+                inValidCardNameValue,
+            );
+            validCC = (
+                !inValidCardNumber &&
+                !inValidExpirationDate &&
+                !inValidNameOnCard &&
+                !inValidCvv &&
+                !inValidCardNameValue
+            );
+        }
+
+        return validCC;
+    }
+
     render() {
         let {
             flowObject: {
@@ -634,6 +669,11 @@ class Group extends React.Component {
                 groupFromUrl,
             },
             validity,
+            inValidCardNumber,
+            inValidExpirationDate,
+            inValidNameOnCard,
+            inValidCvv,
+            inValidCardNameValue,
             dropDownOptions:{
                 giftTypeList,
                 giveToList,
@@ -808,9 +848,25 @@ class Group extends React.Component {
                         {accountTopUpComponent}
                         {
                             (_isEmpty(paymentInstrumentList) || creditCard.value === 0) && (
-                                    <Form.Field>
-                                        <CreditCardWrapper />
-                                    </Form.Field>
+                                <StripeProvider apiKey={STRIPE_KEY}>
+                                    <Elements>
+                                        <CreditCard
+                                            creditCardElement={this.getStripeCreditCard}
+                                            creditCardValidate={inValidCardNumber}
+                                            creditCardExpiryValidate={inValidExpirationDate}
+                                            creditCardNameValidte={inValidNameOnCard}
+                                            creditCardNameValueValidate={inValidCardNameValue}
+                                            creditCardCvvValidate={inValidCvv}
+                                            validateCCNo={this.validateStripeCreditCardNo}
+                                            validateExpiraton={this.validateStripeExpirationDate}
+                                            validateCvv={this.validateCreditCardCvv}
+                                            validateCardName={this.validateCreditCardName}
+                                            formatMessage={formatMessage}
+                                            // eslint-disable-next-line no-return-assign
+                                            onRef={(ref) => (this.CreditCard = ref)}
+                                        />
+                                    </Elements>
+                                </StripeProvider>
                             )
                         } 
                         <Form.Field>
