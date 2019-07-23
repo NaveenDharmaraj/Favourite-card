@@ -4,5 +4,10 @@
     "forGivingCampaignLabel": "For Campaign",
     "forGivingCampaignOrganizersLabel": "For Campaign organizers",
     "forGivingGroupLabel": "For Giving Group",
-    "forGivingGroupOrganizersLabel": "For Giving Group organizers"
+    "forGivingGroupOrganizersLabel": "For Giving Group organizers",
+    "privacyShareNameLabel": "Share my name with the Giving Group I’m giving to",
+    "privacyShareAmountLabel": "Share my gift amount with Giving Group I’m giving to",
+    "privacyShareEmailLabel": "Share my email address with the Giving Group organizers",
+    "privacyShareAddressLabel": "Share my postal address with the Giving Group organizers"
+
 }

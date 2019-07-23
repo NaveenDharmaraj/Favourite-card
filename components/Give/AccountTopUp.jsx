@@ -76,8 +76,8 @@ const AccountTopUp = (props) => {
     }
 
     let donationMatchField = null;
-    // if (isDonationMatchFieldVisible) {
-    if (true) {
+    if (isDonationMatchFieldVisible) {
+    // if (true) {
 
         donationMatchField = (
             <Form.Field>
