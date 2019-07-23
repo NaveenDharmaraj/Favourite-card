@@ -255,3 +255,10 @@ export const updateTaxReceiptProfile = (taxReceiptProfile, action, dispatch) => 
     }
     // return setTaxReceiptProfile(dispatch, result.data)
 };
+
+export const savePaymentInstrument = (cardDetails) => {
+    const result = coreApi.post('/paymentInstruments', {
+        data: cardDetails,
+    });
+    return result;
+};

@@ -26,7 +26,7 @@ class Donations extends React.Component {
             <Layout authRequired={true} >
                 <GiveWrapper {...this.props} baseUrl='/donations'>
                     <Donation />
-                </GiveWrapper> 
+                </GiveWrapper>
             </Layout>
         );
     }

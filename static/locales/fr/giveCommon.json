@@ -29,6 +29,20 @@
         "review": "Révision",
         "success": "Confirmation"
     },
+    "creditCard": {
+        "testCreditCardListMessage": "More information on test accounts can be found at Stripe.",
+        "cardNumberLabel": "Credit card number",
+        "nameOnCardLabel": "Name on Card",
+        "expiryDateLabel": "Expiry Year",
+        "cvvLabel": "CVV"
+    },
+    "creditCardErrorMessages": {
+        "errorCardNumber": "Please use a valid Visa, Mastercard, or Amex card number",
+        "invalidNameOnCard": "Include the name on your card (use a minimum of 2 characters)",
+        "invalidCardNameError": "It looks like you've entered only numbers here, but we need the full name that appears on your card (use a minimum of 2 characters)",
+        "invalidExpiryYear": "Include the expiry month and year for your card",
+        "invalidCvv": "Include a valid CVV number for your card"
+    },
     "blankError":  "Doit être rempli",
     "amountLabel": "Montant",
     "amountPlaceHolder": "Inscrivez le montant",

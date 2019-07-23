@@ -44,17 +44,17 @@ class Layout extends React.Component {
                         rel="stylesheet"
                         href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.11/semantic.min.css"
                     />
-                    <script id="stripe-js" src="https://js.stripe.com/v3/" async />
+                    <script id="stripe-js" src="https://js.stripe.com/v3/" />
                 </Head>
                 <div>
                     <Responsive {...Responsive.onlyMobile}>
                         <AuthMobileHeader>
-                            <Container>{children}</Container>
+                            <Container><div className="pageWraper">{children}</div></Container>
                         </AuthMobileHeader>
                     </Responsive>
                     <Responsive minWidth={Responsive.onlyTablet.minWidth}>
                         <Header isAuthenticated={isAuthenticated} />
-                        <Container>{children}</Container>
+                        <Container><div className="pageWraper">{children}</div></Container>
                     </Responsive>
                     <Footer />
                 </div>
