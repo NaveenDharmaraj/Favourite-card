@@ -515,7 +515,7 @@ export const proceed = (flowObject, nextStep, stepIndex, lastStep = false) => {
             }).catch((error) => {
                 console.log(error);
             });
-        } else if ((creditCard.value === 0 || creditCard.value === null) && stepIndex === 0) {
+        } else if (creditCard.value === 0 && stepIndex === 0) {
             return createToken(flowObject.stripeCreditCard, flowObject.cardHolderName).then((token) => {
                 const paymentInstrumentsData = {
                     attributes: {
