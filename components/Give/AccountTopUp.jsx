@@ -77,8 +77,6 @@ const AccountTopUp = (props) => {
 
     let donationMatchField = null;
     if (isDonationMatchFieldVisible) {
-    // if (true) {
-
         donationMatchField = (
             <Form.Field>
                 <label htmlFor="donationMatch">
@@ -109,7 +107,6 @@ const AccountTopUp = (props) => {
 
     let creditCardField = null;
     if (!_isEmpty(paymentInstrumentList)) {
-
         creditCardField = (
             <Form.Field>
                 <label htmlFor="creditCard">

@@ -281,7 +281,7 @@ export const getGroupsForUser = (dispatch, userId) => {
         //     branchPath: '/giving/userGroupDetails',
         // }).dispatch(fsa));
     } else {
-        console.log('rediret to dashboard');
+        console.log('redirect to dashboard');
         // redirect('/dashboard');
     }
 };
