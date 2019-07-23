@@ -73,10 +73,10 @@ class Charity extends React.Component {
             companyDetails,
             companiesAccountsData,
             currentUser: {
-                displayName,
-                email,
-                firstName,
-                lastName,
+                attributes: {
+                    displayName,
+                    email,
+                },
             },
             donationMatchData,
             fund,
@@ -180,6 +180,9 @@ class Charity extends React.Component {
 
     componentDidMount() {
         const {
+            currentUser: {
+                id,
+            },
             dispatch,
             groupId,
             slug,
@@ -192,7 +195,7 @@ class Charity extends React.Component {
             //Redirect to dashboard need to be taken care
             console.log('redirect to dashboard');
         }
-        dispatch(getDonationMatchAndPaymentInstruments());
+        dispatch(getDonationMatchAndPaymentInstruments(id));
     }
 
     componentDidUpdate(prevProps)  {
@@ -211,14 +214,17 @@ class Charity extends React.Component {
                 companyDetails,
                 companiesAccountsData,
                 currentUser: {
-                    displayName,
-                    email,
+                    id,
+                    attributes: {
+                        avatar,
+                        displayName,
+                        email,
+                        firstName,
+                        lastName,
+                    },
                 },
                 donationMatchData,
-                firstName,
                 fund,
-                id,
-                lastName,
                 paymentInstrumentsData,
                 userCampaigns,
                 userGroups,
@@ -252,7 +258,7 @@ class Charity extends React.Component {
             if (!_isEmpty(giveCharityDetails) && !_isEmpty(giveCharityDetails.charityDetails)) {
                 groupFromUrl = false;
                 giveData.giveTo = {
-                    eftEnabled: giveCharityDetails.charityDetails.attributes.eftEnabled,
+                    avatar: giveCharityDetails.charityDetails.attributes.avatar,
                     id: giveCharityDetails.charityDetails.id,
                     name: giveCharityDetails.charityDetails.attributes.name,
                     text: giveCharityDetails.charityDetails.attributes.name,
@@ -262,6 +268,7 @@ class Charity extends React.Component {
             } else if (!_isEmpty(giveGroupBenificairyDetails)) {
                 groupFromUrl = true;
                 giveData.giveTo = {
+                    avatar:  giveGroupBenificairyDetails.benificiaryDetails[benificiaryIndex].attributes.avatar,
                     eftEnabled: giveGroupBenificairyDetails.benificiaryDetails[benificiaryIndex].attributes.eftEnabled,
                     id: giveGroupBenificairyDetails.benificiaryDetails[benificiaryIndex].attributes.fundId,
                     name: giveGroupBenificairyDetails.benificiaryDetails[benificiaryIndex].attributes.name,
@@ -272,7 +279,7 @@ class Charity extends React.Component {
             }
             if (!_isEmpty(fund)) {
                 giveData = Charity.initFields(
-                    giveData, fund, id, paymentInstrumentOptions,
+                    giveData, fund, id, avatar, paymentInstrumentOptions,
                     companyPaymentInstrumentChanged,
                     `${firstName} ${lastName}`, companiesAccountsData, userGroups, userCampaigns,
                 );
@@ -321,7 +328,7 @@ class Charity extends React.Component {
      */
 
     // eslint-disable-next-line react/sort-comp
-    static initFields(giveData, fund, id, paymentInstrumentOptions,
+    static initFields(giveData, fund, id, avatar,paymentInstrumentOptions,
         companyPaymentInstrumentChanged, name, companiesAccountsData, userGroups, userCampaigns) {
         if (
             (giveData.giveFrom.type === 'user' || giveData.giveFrom.type === 'companies')
@@ -334,10 +341,10 @@ class Charity extends React.Component {
             );
         }
         if (_isEmpty(companiesAccountsData) && _isEmpty(userGroups) && _isEmpty(userCampaigns) && !giveData.userInteracted) {
+            giveData.giveFrom.avatar = avatar,
             giveData.giveFrom.id = id;
             giveData.giveFrom.value = fund.id;
             giveData.giveFrom.type = 'user';
-
             giveData.giveFrom.text = `${fund.attributes.name} ($${fund.attributes.balance})`;
             giveData.giveFrom.balance = fund.attributes.balance;
             giveData.giveFrom.name = name;
@@ -1263,6 +1270,7 @@ function mapStateToProps(state) {
         companiesAccountsData: state.user.companiesAccountsData,
         companyDetails: state.give.companyData,
         coverFeesData: state.give.coverFeesData,
+        currentUser: state.user.info,
         giveCharityDetails: state.give.charityDetails,
         giveGroupBenificairyDetails: state.give.benificiaryForGroupDetails,
         taxReceiptProfiles: state.user.taxReceiptProfiles,

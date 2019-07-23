@@ -538,10 +538,6 @@ class Donation extends React.Component {
               giveData.giveTo = {
                   avatar,
                   balance: fund.attributes.balance,
-                  data: {
-                      fundName: fund.attributes.name,
-                      fundType: 'user',
-                  },
                   disabled: false,
                   id: id,
                   name: `${firstName} ${lastName}`,
@@ -549,6 +545,7 @@ class Donation extends React.Component {
                   type: 'user',
                   value: fund.id,
               };
+              giveData.creditCard = getDefaultCreditCard(populatePaymentInstrument(this.props.paymentInstrumentsData, formatMessage));
               if(!_.isEmpty(this.props.donationMatchData)){
                   const [
                       defaultMatch,
