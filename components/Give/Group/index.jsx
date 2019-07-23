@@ -124,13 +124,11 @@ class Group extends React.Component {
                 ),
                 paymentInstrumentList: populatePaymentInstrument(paymentInstruments),
             },
-            findAnotherRecipientLabel: 'Find another recipient',
             inValidCardNameValue: true,
             inValidCardNumber: true,
             inValidCvv: true,
             inValidExpirationDate: true,
             inValidNameOnCard: true,
-            showAnotherRecipient: false,
             validity: this.intializeValidations(),
         };
         this.state.flowObject.groupFromUrl = false;
@@ -199,6 +197,9 @@ class Group extends React.Component {
                     companyPaymentInstrumentChanged = true;
                 }
                 paymentInstruments = companyDetails.companyPaymentInstrumentsData;
+                giveData.creditCard = getDefaultCreditCard(
+                    paymentInstruments
+                );
             } else if (giveData.giveFrom.type === 'user') {
                 paymentInstruments = paymentInstrumentsData;
             }
