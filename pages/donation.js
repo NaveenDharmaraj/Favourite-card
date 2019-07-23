@@ -14,6 +14,7 @@ class Donations extends React.Component {
                 'giveCommon',
                 'review',
                 'taxReceipt',
+                'success',
                 'error',
             ],
             step: query.step,
@@ -22,10 +23,10 @@ class Donations extends React.Component {
 
     render() {
         return (
-            <Layout>
+            <Layout authRequired={true} >
                 <GiveWrapper {...this.props} baseUrl='/donations'>
                     <Donation />
-                </GiveWrapper> 
+                </GiveWrapper>
             </Layout>
         );
     }

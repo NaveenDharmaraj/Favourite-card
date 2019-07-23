@@ -160,7 +160,9 @@ const getDefaultCreditCard = (paymentInstrumentList) => {
     return creditCard;
 };
 
-const formatAmount = (amount) => parseFloat(amount).toFixed(2);
+const formatAmount = (amount) => {
+    return parseFloat(amount).toFixed(2);
+};
 
 /**
 * onWhatDayList array list
@@ -479,12 +481,12 @@ const populateGiftType = (formatMessage) => {
         },
         {
             disabled: false,
-            text: formatMessage('giftTypeRecurring1'),
+            text: formatMessage('specialInstruction:giftTypeRecurring1'),
             value: 1,
         },
         {
             disabled: false,
-            text: formatMessage('giftTypeRecurring15'),
+            text: formatMessage('specialInstruction:giftTypeRecurring15'),
             value: 15,
         },
     ];
@@ -584,7 +586,7 @@ const getFirstThirdTuesday = (currentDateUTC, monthNames) => {
 * @return {string} recurring full date format
 */
 
-const getNextAllocationMonth = (eftEnabled, formatMessage) => {
+const getNextAllocationMonth = (formatMessage, eftEnabled) => {
     const currentDate = new Date();
     const currentDateUTC = new Date(currentDate.getTime() +
                                 (currentDate.getTimezoneOffset() * 60000));
@@ -1614,6 +1616,7 @@ export {
     populateInfoToShare,
     formatAmount,
     getDefaultCreditCard,
+    getDonationMatchedData,
     getNextAllocationMonth,
     setDateForRecurring,
     validateDonationForm,
@@ -1624,6 +1627,7 @@ export {
     validateGiveForm,
     populateDonationReviewPage,
     populateGiveReviewPage,
+    populateCardData,
     formatCurrency,
     resetP2pDataForOnInputChange,
 };
