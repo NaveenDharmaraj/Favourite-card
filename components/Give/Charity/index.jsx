@@ -1,7 +1,7 @@
 import React, {
     Fragment,
 } from 'react';
-import dynamic from 'next/dynamic';
+import getConfig from 'next/config';
 import _isEmpty from 'lodash/isEmpty';
 import _merge from 'lodash/merge';
 /* eslint-disable react/destructuring-assignment */
@@ -24,7 +24,7 @@ import _every from 'lodash/every';
 import _map from 'lodash/map';
 import {
     Elements,
-    StripeProvider
+    StripeProvider,
 } from 'react-stripe-elements';
 import {
     connect,
@@ -64,6 +64,12 @@ import IconCharity from '../../../static/images/chimp-icon-charity.png';
 import IconGroup from '../../../static/images/chimp-icon-giving-group.png';
 import IconIndividual from '../../../static/images/chimp-icon-individual.png';
 import { withTranslation } from '../../../i18n';
+
+const { publicRuntimeConfig } = getConfig();
+
+const {
+    STRIPE_KEY
+} = publicRuntimeConfig;
 
 
 class Charity extends React.Component {
@@ -1197,7 +1203,7 @@ class Charity extends React.Component {
                         {accountTopUpComponent}
                         {
                             ((_isEmpty(paymentInstrumentList) && giveFrom.value) || creditCard.value === 0) && (
-                                <StripeProvider apiKey="pk_test_cfn382rPs5hlZdupsVj6Q5ur">
+                                <StripeProvider apiKey={STRIPE_KEY}>
                                     <Elements>
                                         <CreditCard
                                             creditCardElement={this.getStripeCreditCard}

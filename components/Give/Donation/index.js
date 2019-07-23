@@ -1,10 +1,10 @@
 import React, {
     Fragment,
   } from 'react';
-  import _ from 'lodash';
-  import dynamic from 'next/dynamic';
-  import _isEmpty from 'lodash/isEmpty';
-  import {
+import _ from 'lodash';
+import getConfig from 'next/config';
+import _isEmpty from 'lodash/isEmpty';
+import {
     Checkbox,
     Divider,
     Form,
@@ -13,27 +13,32 @@ import React, {
     Input,
     Popup,
     Select,
-  } from 'semantic-ui-react';
-  import {
-      connect,
-  } from 'react-redux';
-  import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
-  import Note from '../../shared/Note';
-  import DropDownAccountOptions from '../../shared/DropDownAccountOptions';
-  import {proceed} from '../../../actions/give';
-  import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
-  import { getCompanyPaymentAndTax } from '../../../actions/give';
-  import { withTranslation } from '../../../i18n';
-  import {
+} from 'semantic-ui-react';
+import {
+    connect,
+} from 'react-redux';
+import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
+import Note from '../../shared/Note';
+import DropDownAccountOptions from '../../shared/DropDownAccountOptions';
+import {proceed} from '../../../actions/give';
+import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
+import { getCompanyPaymentAndTax } from '../../../actions/give';
+import { withTranslation } from '../../../i18n';
+import {
     Elements,
     StripeProvider
 } from 'react-stripe-elements';
-  import CreditCard from '../../shared/CreditCard';
+import CreditCard from '../../shared/CreditCard';
+const { publicRuntimeConfig } = getConfig();
+
+const {
+    STRIPE_KEY
+} = publicRuntimeConfig;
   
-  import {
+import {
     donationDefaultProps,
-   } from '../../../helpers/give/defaultProps';
-  import {
+} from '../../../helpers/give/defaultProps';
+import {
     isValidGiftAmount,
     onWhatDayList,
     populateDonationMatch,
@@ -44,7 +49,7 @@ import React, {
     validateDonationForm,
     fullMonthNames,
     formatCurrency,
-  } from '../../../helpers/give/utils';
+} from '../../../helpers/give/utils';
   
 class Donation extends React.Component {
     constructor(props) {
@@ -722,7 +727,7 @@ class Donation extends React.Component {
             }
             {
                 ((_isEmpty(paymentInstrumenOptions) && giveData.giveTo.value > 0) || giveData.creditCard.value === 0) && (
-                    <StripeProvider apiKey="pk_test_cfn382rPs5hlZdupsVj6Q5ur">
+                    <StripeProvider apiKey={STRIPE_KEY}>
                         <Elements>
                             <CreditCard
                                 creditCardElement={this.getStripeCreditCard}
