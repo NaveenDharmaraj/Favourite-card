@@ -112,7 +112,7 @@ const Success = (props) => {
     // ${creditCard.truncatedPaymentId} was used to complete this transaction, which will appear on
     // your credit card statement as "CHIMP FDN * DONATION".`;
     const recurringDay = (giftType.value === 1) ? `${giftType.value}st` : `${giftType.value}th`;
-    const startsOn = setDateForRecurring(giftType.value);
+    const startsOn = setDateForRecurring(giftType.value,formatMessage);
     const recurringCreditCardMessage = formatMessage('recurringCreditCardMessage', {
         name: creditCard.displayName,
         cardType: _.capitalize(creditCard.processor),
@@ -179,7 +179,7 @@ const Success = (props) => {
         dashboardLink = (giveFrom && giveFrom.type !== 'user')
             ? `/${giveFrom.type}/${giveFrom.slug}` : dashboardLink;
         // Allocation
-        const month = getNextAllocationMonth(eftEnabled);
+        const month = getNextAllocationMonth(eftEnabled,formatMessage);
 
         if (coverFees) {
             // Based on cover fees first paragraph gets changed.
