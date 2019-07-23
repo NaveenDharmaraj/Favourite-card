@@ -23,6 +23,10 @@ import _isEqual from 'lodash/isEqual';
 import _every from 'lodash/every';
 import _map from 'lodash/map';
 import {
+    Elements,
+    StripeProvider
+} from 'react-stripe-elements';
+import {
     connect,
 } from 'react-redux';
 
@@ -54,15 +58,13 @@ import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage'
 import NoteTo from '../NoteTo';
 import SpecialInstruction from '../SpecialInstruction';
 import AccountTopUp from '../AccountTopUp';
+import CreditCard from '../../shared/CreditCard';
 import DropDownAccountOptions from '../../shared/DropDownAccountOptions';
 import IconCharity from '../../../static/images/chimp-icon-charity.png';
 import IconGroup from '../../../static/images/chimp-icon-giving-group.png';
 import IconIndividual from '../../../static/images/chimp-icon-individual.png';
 import { withTranslation } from '../../../i18n';
 
-const CreditCardWrapper = dynamic(() => import('../../shared/CreditCardWrapper'), {
-    ssr: false
-});
 
 class Charity extends React.Component {
     constructor(props) {
@@ -168,6 +170,12 @@ class Charity extends React.Component {
         this.validateForm = this.validateForm.bind(this);
         this.getStripeCreditCard = this.getStripeCreditCard.bind(this);
         this.handleCoverFees = this.handleCoverFees.bind(this);
+
+        this.validateStripeCreditCardNo = this.validateStripeCreditCardNo.bind(this);
+        this.validateStripeExpirationDate = this.validateStripeExpirationDate.bind(this);
+        this.validateCreditCardCvv = this.validateCreditCardCvv.bind(this);
+        this.validateCreditCardName = this.validateCreditCardName.bind(this);
+        this.getStripeCreditCard = this.getStripeCreditCard.bind(this);
     }
 
     componentDidMount() {
@@ -347,7 +355,6 @@ class Charity extends React.Component {
      * @param {object} coverFeesData coverfees data from API.
      * @return {Number} Fees amount.
      */
-
     static getCoverFeesAmount(giveData, coverFeesData) {
         return (giveData.coverFees && !_isEmpty(coverFeesData)
             && !_isEmpty(coverFeesData) && coverFeesData.giveAmountFees
@@ -362,7 +369,6 @@ class Charity extends React.Component {
      * @param {object} dropDownOptions full dropdown options in the page.
      * @return {object} full form data.
      */
-
     static resetDataForCoverFeesChange(giveData, newValue, coverFeesData, dropDownOptions) {
         if (newValue) {
             if (giveData.giveFrom.type === 'user' || giveData.giveFrom.type === 'companies') {
@@ -397,25 +403,10 @@ class Charity extends React.Component {
         return giveData;
     }
 
-
-    getStripeCreditCard(data, cardHolderName) {
-        const {
-            flowObject,
-        } = this.state;
-        this.setState({
-            flowObject: {
-                ...flowObject,
-                cardHolderName,
-                stripeCreditCard: data,
-            },
-        });
-    }
-
     /**
      * intializeValidations set validity status to true
      * @return {void}
      */
-
     intializeValidations() {
         this.validity = {
             doesAmountExist: true,
@@ -448,7 +439,6 @@ class Charity extends React.Component {
      * Validate the entire form fields.
      * @return {boolean}
      */
-
     validateForm() {
         const {
             flowObject: {
@@ -492,7 +482,6 @@ class Charity extends React.Component {
      * @param  {object} data The Options of event
      * @return {Void} { void } The return nothing.
      */
-
     handleInputOnBlur(event, data) {
         const {
             name,
@@ -548,7 +537,6 @@ class Charity extends React.Component {
      * handleCoverFees calls action for fetching the fees
      * @return {void}
      */
-
     handleCoverFees() {
         const {
             flowObject: {
@@ -568,13 +556,13 @@ class Charity extends React.Component {
             getCoverFees(coverFeesData, giveFrom.value, giveAmount, dispatch);
         }
     }
+
     /**
      * Synchronise form data with React state
      * @param  {Event} event The Event instance object.
      * @param  {object} data The Options of event
      * @return {Void} { void } The return nothing.
      */
-
     handleInputChange(event, data) {
         const {
             name,
@@ -661,6 +649,11 @@ class Charity extends React.Component {
     handleSubmit() {
         const {
             flowObject,
+            inValidCardNumber,
+            inValidExpirationDate,
+            inValidNameOnCard,
+            inValidCvv,
+            inValidCardNameValue,
         } = this.state;
         const {
             dispatch,
@@ -680,7 +673,15 @@ class Charity extends React.Component {
         this.setState({
             buttonClicked: true,
         });
-        if (this.validateForm()) {
+        const validateCC = this.isValidCC(
+            creditCard,
+            inValidCardNumber,
+            inValidExpirationDate,
+            inValidNameOnCard,
+            inValidCvv,
+            inValidCardNameValue,
+        );
+        if (this.validateForm() && validateCC) {
             if (creditCard.value > 0) {
                 flowObject.selectedTaxReceiptProfile = (flowObject.giveData.giveFrom.type === 'companies') ?
                     companyDetails.companyDefaultTaxReceiptProfile :
@@ -741,7 +742,7 @@ class Charity extends React.Component {
                     giveTo,
                 },
             },
-            
+
         });
     }
 
@@ -767,7 +768,6 @@ class Charity extends React.Component {
      * @param {string} findAnotherRecipientLabel lable text.
      * @return {JSX} JSX representing  find another recipent fields.
      */
-
     renderFindAnotherRecipient(
         showAnotherRecipient,
         friendUrlEndpoint,
@@ -829,7 +829,6 @@ class Charity extends React.Component {
         );
     }
 
-    
     /**
      * Render the cover fees fields.
      * @param {object} giveFrom give from field data.
@@ -839,7 +838,6 @@ class Charity extends React.Component {
      * @param {boolean} coverFees cover fees checkbox value.
      * @return {JSX} JSX representing payment fields.
      */
-
     renderCoverFees(giveFrom, giveAmount, coverFeesData, coverFees, formatMessage) {
         if (Number(giveFrom.value) > 0 && Number(giveAmount) > 0 &&
             !_isEmpty(coverFeesData)
@@ -895,7 +893,6 @@ class Charity extends React.Component {
      * @param {object[]} infoToShareList info to share options.
      * @return {JSX} JSX representing payment fields.
      */
-
     renderSpecialInstructionComponent(
         giveFrom, giftType, giftTypeList, infoToShare, infoToShareList, formatMessage
     ) {
@@ -913,6 +910,96 @@ class Charity extends React.Component {
             );
         }
         return null;
+    }
+
+    /**
+     * validateStripeElements
+     * @param {boolean} inValidCardNumber credit card number
+     * @return {void}
+     */
+    validateStripeCreditCardNo(inValidCardNumber) {
+        this.setState({ inValidCardNumber });
+    }
+
+    /**
+     * validateStripeElements
+     * @param {boolean} inValidExpirationDate credit card expiry date
+     * @return {void}
+     */
+    validateStripeExpirationDate(inValidExpirationDate) {
+        this.setState({ inValidExpirationDate });
+    }
+
+    /**
+     * validateStripeElements
+     * @param {boolean} inValidCvv credit card CVV
+     * @return {void}
+     */
+    validateCreditCardCvv(inValidCvv) {
+        this.setState({ inValidCvv });
+    }
+
+    /**
+     * @param {boolean} inValidNameOnCard credit card Name
+     * @param {boolean} inValidCardNameValue credit card Name Value
+     * @param {string} cardHolderName credit card Name Data
+     * @return {void}
+     */
+    validateCreditCardName(inValidNameOnCard, inValidCardNameValue, cardHolderName) {
+        let cardNameValid = inValidNameOnCard;
+        if (cardHolderName.trim() === '' || cardHolderName.trim() === null) {
+            cardNameValid = true;
+        } else {
+            this.setState({
+                flowObject: {
+                    ...this.state.flowObject,
+                    cardHolderName,
+                },
+            });
+        }
+        this.setState({
+            inValidCardNameValue,
+            inValidNameOnCard: cardNameValid,
+        });
+    }
+
+    getStripeCreditCard(data, cardHolderName) {
+        this.setState({
+            flowObject: {
+                ...this.state.flowObject,
+                cardHolderName,
+                stripeCreditCard: data,
+            },
+        });
+    }
+
+    isValidCC(
+        creditCard,
+        inValidCardNumber,
+        inValidExpirationDate,
+        inValidNameOnCard,
+        inValidCvv,
+        inValidCardNameValue,
+    ) {
+        let validCC = true;
+        if (creditCard.value === 0) {
+            this.CreditCard.handleOnLoad(
+                inValidCardNumber,
+                inValidExpirationDate,
+                inValidNameOnCard,
+                inValidCvv,
+                inValidCardNameValue,
+            );
+            validCC = (
+                !inValidCardNumber &&
+                !inValidExpirationDate &&
+                !inValidNameOnCard &&
+                !inValidCvv &&
+                !inValidCardNameValue
+            );
+        }
+
+        return validCC;
     }
 
     render() {
@@ -986,7 +1073,7 @@ class Charity extends React.Component {
                     topupAmount={topupAmount}
                     validity={validity}
                 />
-            );            
+            );
         }
         return (
             <Form onSubmit={this.handleSubmit}>
@@ -1103,11 +1190,26 @@ class Charity extends React.Component {
                         {accountTopUpComponent}
                         {
                             (_isEmpty(paymentInstrumentList) || creditCard.value === 0) && (
-                                    <Form.Field>
-                                        <CreditCardWrapper />
-                                    </Form.Field>
+                                <StripeProvider apiKey="pk_live_cfn382rPs5hlZdupsVj6Q5ur">
+                                    <Elements>
+                                        <CreditCard
+                                            creditCardElement={this.getStripeCreditCard}
+                                            creditCardValidate={inValidCardNumber}
+                                            creditCardExpiryValidate={inValidExpirationDate}
+                                            creditCardNameValidte={inValidNameOnCard}
+                                            creditCardNameValueValidate={inValidCardNameValue}
+                                            creditCardCvvValidate={inValidCvv}
+                                            validateCCNo={this.validateStripeCreditCardNo}
+                                            validateExpiraton={this.validateStripeExpirationDate}
+                                            validateCvv={this.validateCreditCardCvv}
+                                            validateCardName={this.validateCreditCardName}
+                                            // eslint-disable-next-line no-return-assign
+                                            onRef={(ref) => (this.CreditCard = ref)}
+                                        />
+                                    </Elements>
+                                </StripeProvider>
                             )
-                        }                      
+                        }
                         <Form.Field>
                             <Divider className="dividerMargin" />
                         </Form.Field>

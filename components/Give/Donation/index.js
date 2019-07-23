@@ -579,7 +579,6 @@ class Donation extends React.Component {
      * @return {void}
      */
     validateStripeCreditCardNo(inValidCardNumber) {
-        console.log('CC ' + inValidCardNumber);
         this.setState({ inValidCardNumber });
     }
 
@@ -608,7 +607,6 @@ class Donation extends React.Component {
      * @return {void}
      */
     validateCreditCardName(inValidNameOnCard, inValidCardNameValue, cardHolderName) {
-        console.log(cardHolderName);
         let cardNameValid = inValidNameOnCard;
         if (cardHolderName.trim() === '' || cardHolderName.trim() === null) {
             cardNameValid = true;
@@ -745,7 +743,6 @@ class Donation extends React.Component {
                             />
                         </Elements>
                     </StripeProvider>
-                    
                 )
             }
             <Divider hidden />
