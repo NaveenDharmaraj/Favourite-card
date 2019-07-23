@@ -142,7 +142,7 @@ const initializeAndCallAllocation = (allocation, attributes, type) => {
     }
     if (giftType.value === 0) {
         allocationData.type = (type === 'charity')
-            ? 'allocations' : 'groupAllocations'
+            ? 'allocations' : 'groupAllocations';
         if (donationAmount) {
             return saveDonations({
                 selectedTaxReceiptProfile,
@@ -185,7 +185,7 @@ const initializeAndCallAllocation = (allocation, attributes, type) => {
         };
     }
     return postAllocation(allocationData);
-}
+};
 
 const saveCharityAllocation = (allocation) => {
     const {
@@ -261,14 +261,14 @@ const postP2pAllocations = async (allocations) => {
             data = allocationData;
         }
 
-        const params = {
-            data: data,
-        };
-
-        const result = await comms.post(`/${allocationData.type}`, {
-            data: params,
+        // const params = {
+        //     data: data,
+        // };
+        const result = await coreApi.post(`/${allocationData.type}`, {
+            data : {
+                ...data,
+            }
         });
-
         if  (result && result.data) {
             parentAllocationId = result.data.id;
         }
@@ -287,36 +287,36 @@ const initializeP2pAllocations = (
     donationId,
 ) => {
     const allocations = [];
-    _.each(recipients, (recipient) => {
-        const allocationData = {
-            attributes: {
-                amount: giveAmount,
-                email: _.replace(recipient, /[\n\r\t ]+/g, ''),
-                noteToRecipient: noteToRecipients,
-                noteToSelf,
-                suppressEmail: false,
-            },
-            relationships: {
-                sourceFund: {
-                    data: {
-                        id: giveFrom.value,
-                        type: 'accountHolders',
-                    },
+    // _.each(recipients, (recipient) => {
+    const allocationData = {
+        attributes: {
+            amount: giveAmount,
+            noteToRecipient: noteToRecipients,
+            noteToSelf,
+            recipientEmails: _.replace(recipients, /[\n\r\t ]+/g, ''),
+            suppressEmail: false,
+        },
+        relationships: {
+            sourceFund: {
+                data: {
+                    id: giveFrom.value,
+                    type: 'accountHolders',
                 },
+            },
+        },
+    };
+
+    if (donationId > 0) {
+        allocationData.relationships.donation = {
+            data: {
+                id: donationId,
+                type: 'donations',
             },
         };
-
-        if (donationId > 0) {
-            allocationData.relationships.donation = {
-                data: {
-                    id: donationId,
-                    type: 'donations',
-                },
-            };
-        }
-        allocationData.type = 'fundAllocations';
-        allocations.push(allocationData);
-    });
+    }
+    allocationData.type = 'fundAllocations';
+    allocations.push(allocationData);
+    // });
 
     return allocations;
 };
