@@ -236,7 +236,6 @@ class CreditCard extends React.Component {
             <Form.Field>
                 <Form.Field>
                     <a
-                        className="achPointer"
                         onClick={this.handleTestCreditCardList}
                     >
                         {showTestCardLabel}
