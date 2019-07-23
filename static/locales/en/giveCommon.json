@@ -29,6 +29,20 @@
         "review": "Review",
         "success": "Confirmation"
     },
+    "creditCard": {
+        "testCreditCardListMessage": "",
+        "cardNumberLabel": "",
+        "nameOnCardLabel": "",
+        "expiryDateLabel": "",
+        "cvvLabel": ""
+    },
+    "creditCardErrorMessages": {
+        "errorCardNumber": "",
+        "invalidNameOnCard": "",
+        "invalidCardNameError": "",
+        "invalidExpiryYear": "",
+        "invalidCvv": ""
+    },
     "blankError":  "Can't be blank",
     "amountLabel": "Amount",
     "amountPlaceHolder": "Enter amount",

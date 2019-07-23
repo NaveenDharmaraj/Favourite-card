@@ -9,6 +9,7 @@ import coreApi from '../services/coreApi';
 import realtypeof from '../helpers/realtypeof';
 import {
     getDonationMatchAndPaymentInstruments,
+    savePaymentInstrument
 } from './user';
 
 import {
@@ -101,21 +102,6 @@ const saveDonations = (donation) => {
     let donationUrl = '/donations';
     const donationData = setDonationData(donation);
     donationData.attributes.reason = noteToSelf;
-    // return createToken(data.stripeCreditCard, data.cardHolderName).then((token) => {
-    // data.sources = addOrUpdate(data.sources, {
-    //     amount: data.donationData.attributes.amount,
-    //     displayName: data.cardHolderName,
-    //     processor: token.card.brand.toLowerCase(),
-    //     truncatedPaymentId: token.card.last4,
-    //     type: token.type,
-    // });
-    // data.paymentInstrumentsData.attributes.stripeToken = token.id;
-    // data.paymentInstrumentsData.relationships.paymentable.data.id =
-    //     data.fundAccountId.toString();
-    // data.paymentInstrumentsData.relationships.paymentable.data.type =
-    //     data.fundAccountType === 'companies' ? 'company' : data.fundAccountType;
-    // return savePaymentInstrument(data.paymentInstrumentsData);
-
     if (automaticDonation) {
         donationData.attributes.dayOfMonth = giftType.value;
         donationData.type = 'recurringDonations';
@@ -528,6 +514,41 @@ export const proceed = (flowObject, nextStep, stepIndex, lastStep = false) => {
                 callApiAndDispatchData(dispatch, accountDetails);
             }).catch((error) => {
                 console.log(error);
+            });
+        } else if (flowObject.creditCard.value === 0 && stepIndex === 0) {
+            console.log('Im in Saving CC token');
+            return createToken(flowObject.stripeCreditCard, flowObject.cardHolderName).then((token) => {
+                const paymentInstrumentsData = {
+                    attributes: {
+                        stripeToken: token.id,
+                    },
+                    relationships: {
+                        paymentable: {
+                            data: {
+                                id: accountDetails.id,
+                                type: accountDetails.type,
+                            },
+                        },
+                    },
+                    type: 'paymentInstruments',
+                };
+                return savePaymentInstrument(paymentInstrumentsData);
+            }).then((result) => {
+                const {
+                    data: {
+                        attributes: {
+                            description,
+                        },
+                        id,
+                    },
+                } = result;
+                flowObject.giveData.creditCard.id = id;
+                flowObject.giveData.creditCard.value = id;
+                flowObject.giveData.creditCard.text = description;
+                flowObject.giveData.newCreditCardId = id;
+                callApiAndDispatchData(accountDetails);
+            }).catch((err) => {
+                console.log(err);
             });
         } else {
             dispatch({
