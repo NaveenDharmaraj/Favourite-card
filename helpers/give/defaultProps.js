@@ -25,7 +25,6 @@ export const donationDefaultProps = {
             noteToSelf: '',
             userInteracted: false,
         },
-        selectedCreditCard: '',
         selectedTaxReceiptProfile: {},
         stepsCompleted: false,
         stripeCreditCard: {},
