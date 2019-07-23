@@ -60,7 +60,9 @@ const user = (state = {}, action) => {
         case 'GET_USERS_GROUPS':
             newState = {
                 ...state,
-                userAdministeredGroups: action.payload.userAdministeredGroups,
+                userMembershipGroups: {
+                    userGroups: action.payload.userMembershipGroups,
+                },
             };
             break;
         default:

@@ -268,7 +268,7 @@ export const getGroupsForUser = (dispatch, userId) => {
             .then(
                 (result) => {
                     if (!_.isEmpty(result)) {
-                        fsa.payload.userAdministeredGroups = result;
+                        fsa.payload.userMembershipGroups = result;
                     }
                     dispatch(fsa);
                 },
@@ -281,6 +281,7 @@ export const getGroupsForUser = (dispatch, userId) => {
         //     branchPath: '/giving/userGroupDetails',
         // }).dispatch(fsa));
     } else {
+        console.log('rediret to dashboard');
         // redirect('/dashboard');
     }
 };

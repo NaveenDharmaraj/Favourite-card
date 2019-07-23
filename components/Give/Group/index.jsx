@@ -132,6 +132,7 @@ class Group extends React.Component {
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleInputOnBlur = this.handleInputOnBlur.bind(this)
         this.getStripeCreditCard = this.getStripeCreditCard.bind(this);
+        this.handleInputChangeGiveTo = this.handleInputChangeGiveTo.bind(this);
 
     }
 
@@ -142,20 +143,16 @@ class Group extends React.Component {
             sourceAccountHolderId,
         } = this.props;
         if (Number(sourceAccountHolderId) > 0) {
-            console.log(this.props)
             getGroupsForUser(dispatch, this.props.currentUser.id);
         }  
         if (slug !== null) {
             getGroupsFromSlug(dispatch, slug);
         }
-        dispatch(getDonationMatchAndPaymentInstruments());
+        dispatch(getDonationMatchAndPaymentInstruments(888000));
 
     }
 
     componentDidUpdate(prevProps) {
-        console.log('from did update')
-        console.log(this.props)
-        console.log(this.props.userAdministeredGroups);
         if(!_isEqual(this.props, prevProps)) {
             const {
                 dropDownOptions,
@@ -184,9 +181,8 @@ class Group extends React.Component {
                 slug,
                 taxReceiptProfiles,
                 giveGroupDetails,
-                giveUserGroups,
+                userMembershipGroups
             } = this.props;
-
             let paymentInstruments = null;
             let companyPaymentInstrumentChanged = false;
             const formatMessage = this.props.t;
@@ -202,7 +198,8 @@ class Group extends React.Component {
                 paymentInstruments = paymentInstrumentsData;
             }
             const donationMatchOptions = populateDonationMatch(donationMatchData, formatMessage);
-            const giveToOptions = populateGiveToGroupsofUser(giveUserGroups);
+            const giveToOptions = populateGroupsOfUser(userMembershipGroups);
+            
             if (!_isEmpty(giveGroupDetails)) {
                 groupFromUrl = false;
                 giveData.giveTo = {
@@ -215,17 +212,18 @@ class Group extends React.Component {
                     value: giveGroupDetails.attributes.fundId,
                 };
             } 
-            else if (!_isEmpty(giveUserGroups)) {
+            else if (!_isEmpty(userMembershipGroups)) {
                 groupFromUrl = true;
+                const groupIndex = this.state.flowObject.groupIndex;
                 giveData.giveTo = {
-                    id: giveUserGroups.userGroups[groupIndex].id,
-                    isCampaign: giveUserGroups.userGroups[groupIndex].attributes.isCampaign,
-                    name: giveUserGroups.userGroups[groupIndex].attributes.name,
-                    recurringEnabled: giveUserGroups.userGroups[groupIndex]
+                    id: userMembershipGroups.userGroups[groupIndex].id,
+                    isCampaign: userMembershipGroups.userGroups[groupIndex].attributes.isCampaign,
+                    name: userMembershipGroups.userGroups[groupIndex].attributes.name,
+                    recurringEnabled: userMembershipGroups.userGroups[groupIndex]
                         .attributes.recurringEnabled,
-                    text: giveUserGroups.userGroups[groupIndex].attributes.name,
-                    type: giveUserGroups.userGroups[groupIndex].type,
-                    value: giveUserGroups.userGroups[groupIndex].attributes.fundId,
+                    text: userMembershipGroups.userGroups[groupIndex].attributes.name,
+                    type: userMembershipGroups.userGroups[groupIndex].type,
+                    value: userMembershipGroups.userGroups[groupIndex].attributes.fundId,
                 };
             }
             
@@ -428,6 +426,7 @@ class Group extends React.Component {
             isValidDonationAmount: true,
             isValidGiveAmount: true,
             isValidGiveFrom: true,
+            isValidGiveTo:true,
             isValidNoteSelfText: true,
             isValidNoteToCharity: true,
             isValidNoteToCharityText: true,
@@ -471,7 +470,6 @@ class Group extends React.Component {
             }
             flowObject.stepsCompleted = false;
             flowObject.nextSteptoProceed = nextStep;
-            console.log(flowObject)
             dispatch(proceed(flowObject, flowSteps[stepIndex + 1]));
         } else {
             this.setState({
@@ -577,9 +575,9 @@ class Group extends React.Component {
             validity,
         } = this.state;
         const {
-            giveUserGroups,
+            userMembershipGroups,
         } = this.props;
-        const dataUsers = giveUserGroups.userGroups;
+        const dataUsers = userMembershipGroups.userGroups;
         const groupId = options[data.options.findIndex((p) => p.value === value)].id;
         const benificiaryIndex = dataUsers.findIndex((p) => p.id === groupId);
         const benificiaryData = dataUsers[benificiaryIndex];
@@ -632,6 +630,7 @@ class Group extends React.Component {
             validity,
             dropDownOptions:{
                 giftTypeList,
+                giveToList,
                 paymentInstrumentList,
                 donationMatchList,
                 infoToShareList
@@ -639,7 +638,6 @@ class Group extends React.Component {
         } = this.state;
         const formatMessage = this.props.t;
         const giveToType = (giveTo.isCampaign) ? 'Campaign' : 'Group';
-
         let accountTopUpComponent = null;
         let stripeCardComponent = null;
         let privacyOptionComponent = null;
@@ -729,7 +727,6 @@ class Group extends React.Component {
                     </Form.Field>
                 );
             }
-            
         return (
         <Form onSubmit={this.handleSubmit}>
                     <Fragment>
@@ -765,7 +762,7 @@ class Group extends React.Component {
                                             id="giveToList"
                                             name="giveToList"
                                             onChange={this.handleInputChangeGiveTo}
-                                            options='' // {giveToList}
+                                            options={giveToList}
                                             placeholder={formatMessage('groupToGive')}
                                             value={giveTo.value}
                                         />
@@ -904,7 +901,7 @@ const  mapStateToProps = (state, props) => {
     userAccountsFetched: state.user.userAccountsFetched,
     userCampaigns: state.user.userCampaigns,
     userGroups: state.user.userGroups,
-    userAdministeredGroups:state.user.userAdministeredGroups,
+    userMembershipGroups:state.user.userMembershipGroups,
   }
 }
 
