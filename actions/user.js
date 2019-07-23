@@ -258,10 +258,7 @@ export const updateTaxReceiptProfile = (taxReceiptProfile, action, dispatch) => 
 
 export const savePaymentInstrument = (cardDetails) => {
     const result = coreApi.post('/paymentInstruments', {
-        data: {
-            data: cardDetails,
-        },
-        uxCritical: true,
+        data: cardDetails,
     });
     return result;
 };

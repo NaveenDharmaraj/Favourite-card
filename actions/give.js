@@ -84,7 +84,6 @@ const setDonationData = (donation) => {
 const createToken = (cardDetails, cardHolderName) => new Promise((resolve, reject) => {
     cardDetails.createToken({ name: cardHolderName }).then((result) => {
         if (result.error) {
-            logger.error(result.error);
             return reject(result.error);
         }
         return resolve(result.token);
@@ -409,7 +408,7 @@ const checkForQuaziSuccess = (error) => {
 
 const callApiAndDispatchData = (dispatch, account) => {
     if (account.type === 'user') {
-        dispatch(getDonationMatchAndPaymentInstruments());
+        dispatch(getDonationMatchAndPaymentInstruments(account.id));
     } else {
         getCompanyPaymentAndTax(dispatch, Number(account.id));
     }
@@ -495,6 +494,7 @@ export const proceed = (flowObject, nextStep, stepIndex, lastStep = false) => {
             giveData: {
                 giveFrom,
                 giveTo,
+                creditCard,
             },
         } = flowObject;
         const accountDetails = {
@@ -515,8 +515,7 @@ export const proceed = (flowObject, nextStep, stepIndex, lastStep = false) => {
             }).catch((error) => {
                 console.log(error);
             });
-        } else if (flowObject.creditCard.value === 0 && stepIndex === 0) {
-            console.log('Im in Saving CC token');
+        } else if (creditCard.value === 0 && stepIndex === 0) {
             return createToken(flowObject.stripeCreditCard, flowObject.cardHolderName).then((token) => {
                 const paymentInstrumentsData = {
                     attributes: {
@@ -546,7 +545,11 @@ export const proceed = (flowObject, nextStep, stepIndex, lastStep = false) => {
                 flowObject.giveData.creditCard.value = id;
                 flowObject.giveData.creditCard.text = description;
                 flowObject.giveData.newCreditCardId = id;
-                callApiAndDispatchData(accountDetails);
+                dispatch({
+                    payload: flowObject,
+                    type: actionTypes.SAVE_FLOW_OBJECT,
+                });
+                callApiAndDispatchData(dispatch, accountDetails);
             }).catch((err) => {
                 console.log(err);
             });

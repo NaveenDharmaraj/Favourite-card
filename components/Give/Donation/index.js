@@ -266,7 +266,7 @@ class Donation extends React.Component {
                     defaultTaxReceiptProfile;
             }
             dispatch(proceed({
-                ...flowObject}, flowSteps[stepIndex+1]));
+                ...flowObject}, flowSteps[stepIndex+1], stepIndex));
         } else {
             this.setState({
                 buttonClicked: false,
@@ -725,7 +725,7 @@ class Donation extends React.Component {
             }
             {
                 ((_isEmpty(paymentInstrumenOptions) && giveData.giveTo.value > 0) || giveData.creditCard.value === 0) && (
-                    <StripeProvider apiKey="pk_live_cfn382rPs5hlZdupsVj6Q5ur">
+                    <StripeProvider apiKey="pk_test_cfn382rPs5hlZdupsVj6Q5ur">
                         <Elements>
                             <CreditCard
                                 creditCardElement={this.getStripeCreditCard}
@@ -738,6 +738,7 @@ class Donation extends React.Component {
                                 validateExpiraton={this.validateStripeExpirationDate}
                                 validateCvv={this.validateCreditCardCvv}
                                 validateCardName={this.validateCreditCardName}
+                                formatMessage = {formatMessage}
                                 // eslint-disable-next-line no-return-assign
                                 onRef={(ref) => (this.CreditCard = ref)}
                             />

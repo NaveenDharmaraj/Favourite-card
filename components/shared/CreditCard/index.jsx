@@ -16,6 +16,7 @@ import {
 } from 'react-stripe-elements';
 
 import '../style/styles.less';
+import cvvImg from '../../../static/images/ccv-diagram.png';
 import { testCardList } from '../../../helpers/constants/index';
 import { hasMinTwoChars } from '../../../helpers/give/giving-form-validation';
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
@@ -230,6 +231,7 @@ class CreditCard extends React.Component {
             showTestCards,
             showTestCardLabel,
         } = this.state;
+        const formatMessage = this.props.formatMessage;
         return (
             <Form.Field>
                 <Form.Field>
@@ -244,7 +246,7 @@ class CreditCard extends React.Component {
                     !!showTestCards && (
                         <Form.Field>
                             <label htmlFor="showCreditCardList">
-                                More information on test accounts can be found at Stripe.
+                                {formatMessage('giveCommon:creditCard.testCreditCardListMessage')}
                             </label>
                             <Form.Field>
                                 {this.testCreditCardList()}
@@ -254,7 +256,7 @@ class CreditCard extends React.Component {
                 }
                 <Form.Field>
                     <label htmlFor="card-number">
-                        Card Number
+                        {formatMessage('giveCommon:creditCard.cardNumberLabel')}
                     </label>
                     <CardNumberElement
                         className="field fieldCC"
@@ -266,12 +268,12 @@ class CreditCard extends React.Component {
                     />
                     <FormValidationErrorMessage
                         condition={inValidCardNumber}
-                        errorMessage="{formatMessage({ id: 'giving.errorCardNumber' })}"
+                        errorMessage={formatMessage('giveCommon:creditCardErrorMessages.errorCardNumber')}
                     />
                 </Form.Field>
                 <Form.Field>
                     <label htmlFor="nameOnCard">
-                        Name on Card
+                        {formatMessage('giveCommon:creditCard.nameOnCardLabel')}
                     </label>
                     <Form.Field
                         control={Input}
@@ -279,23 +281,23 @@ class CreditCard extends React.Component {
                         name="nameOnCard"
                         onChange={this.handleNameChange}
                         onBlur={this.handleNameBlur}
-                        placeholder="Name on Card"
+                        placeholder={formatMessage('giveCommon:creditCard.nameOnCardLabel')}
                         size="large"
                         value={nameOnCard}
                     />
                     <FormValidationErrorMessage
                         condition={inValidNameOnCard}
-                        errorMessage="{formatMessage({ id: 'giving.invalidNameOnCard' })}"
+                        errorMessage={formatMessage('giveCommon:creditCardErrorMessages.invalidNameOnCard')}
                     />
                     <FormValidationErrorMessage
                         condition={!inValidNameOnCard && inValidCardNameValue}
-                        errorMessage="{formatMessage({ id: 'giving.invalidCardNameError' })}"
+                        errorMessage={formatMessage('giveCommon:creditCardErrorMessages.invalidCardNameError')}
                     />
                 </Form.Field>
                 <Form.Group widths="equal">
                     <Form.Field>
                         <label htmlFor="card-expiration">
-                            Expiration Date
+                            {formatMessage('giveCommon:creditCard.expiryDateLabel')}
                         </label>
                         <CardExpiryElement
                             className="field fieldCC"
@@ -305,13 +307,25 @@ class CreditCard extends React.Component {
                         />
                         <FormValidationErrorMessage
                             condition={inValidExpirationDate}
-                            errorMessage="{formatMessage(errorMessages.expiryYear)}"
+                            errorMessage={formatMessage('giveCommon:creditCardErrorMessages.invalidExpiryYear')}
                         />
                     </Form.Field>
                     <Form.Field>
                         <label htmlFor="card-cvv">
-                            CVV
+                            {formatMessage('giveCommon:creditCard.cvvLabel')}
                         </label>
+                        <Popup
+                            content={<Image src={cvvImg} />}
+                            position="top center"
+                            trigger={(
+                                <Icon
+                                    className="popCvv"
+                                    color="blue"
+                                    name="question circle"
+                                    size="large"
+                                />
+                            )}
+                        />
                         <CardCVCElement
                             className="field fieldCC"
                             id="card-cvv"
@@ -321,7 +335,7 @@ class CreditCard extends React.Component {
                         />
                         <FormValidationErrorMessage
                             condition={inValidCvv}
-                            errorMessage="{formatMessage(errorMessages.cvv)}"
+                            errorMessage={formatMessage('giveCommon:creditCardErrorMessages.invalidCvv')}
                         />
                     </Form.Field>
                 </Form.Group>
