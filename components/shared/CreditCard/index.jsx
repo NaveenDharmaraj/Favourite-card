@@ -231,7 +231,7 @@ class CreditCard extends React.Component {
             showTestCards,
             showTestCardLabel,
         } = this.state;
-        const formatMessage = this.props.formatMessage;
+        const { formatMessage } = this.props;
         return (
             <Form.Field>
                 <Form.Field>
