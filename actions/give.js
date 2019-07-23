@@ -497,7 +497,6 @@ export const proceed = (flowObject, nextStep, stepIndex, lastStep = false) => {
                 creditCard,
             },
         } = flowObject;
-        console.log(creditCard.value);
         const accountDetails = {
             id: (flowObject.type === 'donations') ? giveTo.id : giveFrom.id,
             type: (flowObject.type === 'donations') ? giveTo.type : giveFrom.type,

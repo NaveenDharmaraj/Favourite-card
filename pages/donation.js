@@ -24,11 +24,9 @@ class Donations extends React.Component {
     render() {
         return (
             <Layout authRequired={true} >
-                <div className="pageWraper">
-                    <GiveWrapper {...this.props} baseUrl='/donations'>
-                        <Donation />
-                    </GiveWrapper>
-                </div>
+                <GiveWrapper {...this.props} baseUrl='/donations'>
+                    <Donation />
+                </GiveWrapper>
             </Layout>
         );
     }

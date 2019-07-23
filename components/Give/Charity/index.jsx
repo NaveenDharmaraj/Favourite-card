@@ -706,7 +706,7 @@ class Charity extends React.Component {
             // this.props.proceed({
             //     ...allocation,
             // }, forceContinue);
-            dispatch(proceed(flowObject, flowSteps[stepIndex + 1]));
+            dispatch(proceed(flowObject, flowSteps[stepIndex + 1], stepIndex));
         } else {
             this.setState({
                 buttonClicked: false,
@@ -1196,8 +1196,8 @@ class Charity extends React.Component {
                         )}
                         {accountTopUpComponent}
                         {
-                            (_isEmpty(paymentInstrumentList) || creditCard.value === 0) && (
-                                <StripeProvider apiKey="pk_live_cfn382rPs5hlZdupsVj6Q5ur">
+                            ((_isEmpty(paymentInstrumentList) && giveFrom.value) || creditCard.value === 0) && (
+                                <StripeProvider apiKey="pk_test_cfn382rPs5hlZdupsVj6Q5ur">
                                     <Elements>
                                         <CreditCard
                                             creditCardElement={this.getStripeCreditCard}
@@ -1210,6 +1210,7 @@ class Charity extends React.Component {
                                             validateExpiraton={this.validateStripeExpirationDate}
                                             validateCvv={this.validateCreditCardCvv}
                                             validateCardName={this.validateCreditCardName}
+                                            formatMessage={formatMessage}
                                             // eslint-disable-next-line no-return-assign
                                             onRef={(ref) => (this.CreditCard = ref)}
                                         />

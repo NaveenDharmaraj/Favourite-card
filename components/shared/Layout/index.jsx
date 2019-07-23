@@ -49,12 +49,12 @@ class Layout extends React.Component {
                 <div>
                     <Responsive {...Responsive.onlyMobile}>
                         <AuthMobileHeader>
-                            <Container>{children}</Container>
+                            <Container><div className="pageWraper">{children}</div></Container>
                         </AuthMobileHeader>
                     </Responsive>
                     <Responsive minWidth={Responsive.onlyTablet.minWidth}>
                         <Header isAuthenticated={isAuthenticated} />
-                        <Container>{children}</Container>
+                        <Container><div className="pageWraper">{children}</div></Container>
                     </Responsive>
                     <Footer />
                 </div>
