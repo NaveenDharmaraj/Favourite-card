@@ -1053,7 +1053,6 @@ class Charity extends React.Component {
     }
 
     render() {
-        console.log('charity props ->>> ', this.props);
         const {
             coverFeesData,
         } = this.props;
