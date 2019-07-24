@@ -13,6 +13,8 @@ import {
     Popup,
     Select,
 } from 'semantic-ui-react';
+import _isEqual from 'lodash/isEqual';
+import _isEmpty from 'lodash/isEmpty';
 
 import {
     formatCurrency,
@@ -22,6 +24,7 @@ import {
     populateDonationMatch,
     populatePaymentInstrument,
     resetDataForAccountChange,
+    getDefaultCreditCard,
 } from '../../../helpers/give/utils';
 import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
 import {
@@ -87,18 +90,18 @@ class Friend extends React.Component {
             validity: this.initializeValidations(),
         };
         this.state.flowObject.flowRoutes = props.flowRoutes;  
-        if (userAccountsFetched) {
-            const giveData = Friend.setGiveFrom(
-                this.state.flowObject.giveData,
-                fund,
-                id,
-                // accountOptions,
-                `${firstName} ${lastName}`,
-                // props.intl,
-                formatNumber,
-            );
-            this.state.flowObject.giveData.giveFrom = giveData.giveFrom;
-        }
+        // if (userAccountsFetched) {
+        //     const giveData = Friend.setGiveFrom(
+        //         this.state.flowObject.giveData,
+        //         fund,
+        //         id,
+        //         // accountOptions,
+        //         `${firstName} ${lastName}`,
+        //         // props.intl,
+        //         formatNumber,
+        //     );
+        //     this.state.flowObject.giveData.giveFrom = giveData.giveFrom;
+        // }
 
         // this.dimissErrors();
 
@@ -118,29 +121,134 @@ class Friend extends React.Component {
         );
     }
 
-    static setGiveFrom(giveData, fund, id, accountOptions, name, formatNumber) {
-        if (_.isEmpty(accountOptions) && !giveData.userInteracted) {
+    // static setGiveFrom(giveData, fund, id, accountOptions, name, formatNumber) {
+    //     if (_.isEmpty(accountOptions) && !giveData.userInteracted) {
+    //         giveData.giveFrom.id = id;
+    //         giveData.giveFrom.value = fund.id;
+    //         giveData.giveFrom.type = 'user';
+    //         giveData.giveFrom.text = `${fund.attributes.name} (${currencyFormatting(fund.attributes.balance, formatNumber, 'USD')})`;
+    //         giveData.giveFrom.balance = fund.attributes.balance;
+    //         giveData.giveFrom.name = name;
+    //     } else if (!_.isEmpty(accountOptions) && !giveData.userInteracted) {
+    //         giveData.giveFrom = {
+    //             value: '',
+    //         };
+    //     }
+    //     return giveData;
+    // }
+
+    componentDidMount() {
+        const {
+            info: {
+                id,
+            },
+            dispatch,
+            groupId,
+            slug,
+        } = this.props;
+        dispatch(getDonationMatchAndPaymentInstruments(id));
+    }
+
+    componentDidUpdate(prevProps) {
+        if (!_isEqual(this.props, prevProps)) {
+            console.log(prevProps);
+            const {
+                dropDownOptions,
+            } = this.state;
+            let {
+                flowObject: {
+                    giveData,
+                },
+            } = this.state;
+
+            const {
+                companyDetails,
+                companiesAccountsData,
+                info: {
+                    id,
+                    attributes: {
+                        avatar,
+                        displayName,
+                        email,
+                        firstName,
+                        lastName,
+                    },
+                },
+                donationMatchData,
+                fund,
+                paymentInstrumentsData,
+                userCampaigns,
+                userGroups,
+                slug,
+                i18n: {
+                    language,
+                }
+            } = this.props;
+            const formatMessage = this.props.t;
+            let paymentInstruments = null;
+            let companyPaymentInstrumentChanged = false;
+            if (giveData.giveFrom.type === 'companies' && !_isEmpty(companyDetails)) {
+                if (_isEmpty(this.props.companyDetails)
+                     || !_isEqual(companyDetails.companyPaymentInstrumentsData,
+                         this.props.companyDetails.companyPaymentInstrumentsData)
+                ) {
+                    companyPaymentInstrumentChanged = true;
+                }
+                paymentInstruments = companyDetails.companyPaymentInstrumentsData;
+            } else if (giveData.giveFrom.type === 'user') {
+                paymentInstruments = paymentInstrumentsData;
+            }
+            const paymentInstrumentOptions = populatePaymentInstrument(
+                paymentInstruments, formatMessage,
+            );
+            const donationMatchOptions = populateDonationMatch(donationMatchData, formatMessage);
+            if (!_isEmpty(fund)) {
+                giveData = Friend.initFields(
+                    giveData, fund, id, avatar, paymentInstrumentOptions,
+                    companyPaymentInstrumentChanged,
+                    `${firstName} ${lastName}`, companiesAccountsData, userGroups, userCampaigns,
+                );
+            }
+            this.setState({
+                dropDownOptions: {
+                    ...dropDownOptions,
+                    donationMatchList: donationMatchOptions,
+                    paymentInstrumentList: paymentInstrumentOptions,
+                },
+                flowObject: {
+                    ...this.state.flowObject,
+                    giveData,
+                },
+            });
+        }
+    }
+
+    static initFields(giveData, fund, id, avatar,paymentInstrumentOptions,
+        companyPaymentInstrumentChanged, name, companiesAccountsData, userGroups, userCampaigns) {
+        if (
+            (giveData.giveFrom.type === 'user' || giveData.giveFrom.type === 'companies')
+            && (giveData.creditCard.value === null || companyPaymentInstrumentChanged)
+            && (giveData.giftType.value > 0
+            || Number(giveData.giveAmount) > Number(giveData.giveFrom.balance))
+        ) {
+            giveData.creditCard = getDefaultCreditCard(
+                paymentInstrumentOptions,
+            );
+        }
+        if (_isEmpty(companiesAccountsData) && _isEmpty(userGroups) && _isEmpty(userCampaigns) && !giveData.userInteracted) {
+            giveData.giveFrom.avatar = avatar,
             giveData.giveFrom.id = id;
             giveData.giveFrom.value = fund.id;
             giveData.giveFrom.type = 'user';
-            giveData.giveFrom.text = `${fund.attributes.name} (${currencyFormatting(fund.attributes.balance, formatNumber, 'USD')})`;
+            giveData.giveFrom.text = `${fund.attributes.name} (${fund.attributes.balance})`;
             giveData.giveFrom.balance = fund.attributes.balance;
             giveData.giveFrom.name = name;
-        } else if (!_.isEmpty(accountOptions) && !giveData.userInteracted) {
+        } else if (!_isEmpty(companiesAccountsData) && !_isEmpty(userGroups) && !_isEmpty(userCampaigns) && !giveData.userInteracted) {
             giveData.giveFrom = {
                 value: '',
             };
         }
         return giveData;
-    }
-
-    componentDidMount() {
-        const { dispatch } = this.props;
-        dispatch(getDonationMatchAndPaymentInstruments());
-    }
-
-    componentDidUpdate(prevProps){
-    console.log(prevProps);
     }
 
     initializeValidations() {
@@ -310,6 +418,9 @@ class Friend extends React.Component {
         const {
             userEmail,
         } = this.state;
+        const {
+            dispatch,
+        } = this.props;
         const newValue = (!_.isEmpty(options)) ? _.find(options, { value }) : value;
         if (giveData[name] !== newValue) {
             giveData[name] = newValue;
@@ -332,7 +443,7 @@ class Friend extends React.Component {
                         name, giveData[name], validity, giveData, 0,
                     );
                     if (giveData.giveFrom.type === 'companies') {
-                        getCompanyPaymentAndTax(Number(giveData.giveFrom.id));
+                        getCompanyPaymentAndTax(dispatch, Number(giveData.giveFrom.id));
                     }
                     break;
                 case 'giveAmount':
@@ -597,17 +708,17 @@ class Friend extends React.Component {
                     <FormValidationErrorMessage
                         condition={!validity.doesAmountExist || !validity.isAmountMoreThanOneDollor
                         || !validity.isValidPositiveNumber}
-                        errorMessage={formatMessage('giveCommon:amountLessOrInvalid', {
+                        errorMessage={formatMessage('giveCommon:errorMessages.amountLessOrInvalid', {
                             minAmount: 1,
                         })}
                     />
                     <FormValidationErrorMessage
                         condition={!validity.isAmountLessThanOneBillion}
-                        errorMessage={formatMessage('giveCommon:invalidMaxAmountError')}
+                        errorMessage={formatMessage('giveCommon:errorMessages.invalidMaxAmountError')}
                     />
                     <FormValidationErrorMessage
                         condition={!validity.isAmountCoverGive}
-                        errorMessage={formatMessage('giveCommon:giveAmountGreaterThanBalance')}
+                        errorMessage={formatMessage('giveCommon:errorMessages.giveAmountGreaterThanBalance')}
                     />
 
                     <DropDownAccountOptions
@@ -705,7 +816,7 @@ Friend.defaultProps = Object.assign({}, p2pDefaultProps);
 function mapStateToProps(state) {
     return {
         companiesAccountsData: state.user.companiesAccountsData,
-        companyDetails: state.give.companyDetails,
+        companyDetails: state.give.companyData,
         donationMatchData: state.user.donationMatchData,
         fund: state.user.fund,
         info: state.user.info,

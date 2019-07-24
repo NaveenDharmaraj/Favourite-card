@@ -26,13 +26,14 @@ import {
 import { reInitNextStep } from '../../actions/give';
 
 // #region P2p Helpers
-const calculateP2pTotalGiveAmount = (successData) => _.sumBy(
-    successData.recipientLists,
-    (recipientList) => Number(recipientList.data.attributes.amount),
-);
+// const calculateP2pTotalGiveAmount = (successData) => _.sumBy(
+//     successData.recipientLists,
+//     (recipientList) => Number(recipientList.data.attributes.amount),
+// );
 
 const calculateGiveAmount = (successData) => Number(
-    successData.recipientLists[0].data.attributes.amount,
+    // successData.recipientLists[0].data.attributes.amount,
+    successData.allocationData[0].data.attributes.amount,
 );
 
 const calculateRecipients = (successData) => successData.recipientLists.length;
@@ -132,25 +133,11 @@ const Success = (props) => {
         donationMatchedData = getDonationMatchedData(donationMatch.id, donationAmount, donationMatchData);
         displayAmount += Number(donationMatchedData.amount);
     }
-    const donationMatchData = [];
-    const creditCardMessage = formatMessage('creditCardMessage', {
-        name: creditCard.name,
-        cardType: _.capitalize(creditCard.processor),
-        lastFourDigitCardNo: creditCard.truncatedPaymentId,
-    });
+
     // `${creditCard.name}'s ${_.capitalize(creditCard.processor)} ending with
     // ${creditCard.truncatedPaymentId} was used to complete this transaction, which will appear on
     // your credit card statement as "CHIMP FDN * DONATION".`;
-    const recurringDay = (giftType.value === 1) ? `${giftType.value}st` : `${giftType.value}th`;
-    const startsOn = setDateForRecurring(giftType.value,formatMessage);
-    const recurringCreditCardMessage = formatMessage('recurringCreditCardMessage', {
-        name: creditCard.displayName,
-        cardType: _.capitalize(creditCard.processor),
-        lastFourDigitCardNo: creditCard.truncatedPaymentId,
-        amount: displayAmount,
-        recurringDay: recurringDay,
-        recurringDate: startsOn,
-    });
+    
     // `${creditCard.displayName}'s ${_.capitalize(creditCard.processor)} ending with ${creditCard.truncatedPaymentId} will be charged ${displayAmount} on the ${recurringDay} of each month, starting on ${startsOn}.`;
     let amount = null;
     let total = null;
@@ -245,7 +232,7 @@ const Success = (props) => {
             // eslint-disable-next-line no-lonely-if
             if (successData && recipientLists
                         && recipientLists.length > 0) {
-                const p2pTotalGiveAmount = calculateP2pTotalGiveAmount(props.successData);
+                // const p2pTotalGiveAmount = calculateP2pTotalGiveAmount(props.successData);
                 const numberOfRecipient = calculateRecipients(props.successData);
                 const p2pGiveAmount = calculateGiveAmount(props.successData);
                 const recipientEmail = getFirstEmailRecipient(props.successData);
@@ -256,7 +243,7 @@ const Success = (props) => {
                         language,
                         currency,
                     );
-                    total = formatCurrency(p2pTotalGiveAmount, language, currency);
+                    total = formatCurrency(p2pGiveAmount, language, currency);
                     firstParagraph = formatMessage('fromToMultipleRecipient', {
                         amount,
                         name: donationDetails.name,
