@@ -1,6 +1,7 @@
 import React, {
     Fragment,
 } from 'react';
+import dynamic from 'next/dynamic';
 import getConfig from 'next/config';
 import _isEmpty from 'lodash/isEmpty';
 import _merge from 'lodash/merge';
@@ -21,7 +22,6 @@ import {
 import _find from 'lodash/find';
 import _isEqual from 'lodash/isEqual';
 import _every from 'lodash/every';
-import _map from 'lodash/map';
 import {
     Elements,
     StripeProvider,
@@ -48,27 +48,29 @@ import {
     validateGiveForm,
 } from '../../../helpers/give/utils';
 import {
+    actionTypes,
     getCompanyPaymentAndTax,
     getCoverFees,
     getBeneficiariesForGroup,
     getBeneficiaryFromSlug,
     proceed,
 } from '../../../actions/give';
-import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
-import NoteTo from '../NoteTo';
-import SpecialInstruction from '../SpecialInstruction';
-import AccountTopUp from '../AccountTopUp';
-import CreditCard from '../../shared/CreditCard';
-import DropDownAccountOptions from '../../shared/DropDownAccountOptions';
 import IconCharity from '../../../static/images/chimp-icon-charity.png';
 import IconGroup from '../../../static/images/chimp-icon-giving-group.png';
 import IconIndividual from '../../../static/images/chimp-icon-individual.png';
 import { withTranslation } from '../../../i18n';
+const CreditCard = dynamic(() => import('../../shared/CreditCard'));
+const FormValidationErrorMessage = dynamic(() => import('../../shared/FormValidationErrorMessage'));
+const NoteTo = dynamic(() => import('../NoteTo'));
+const SpecialInstruction = dynamic(() => import('../SpecialInstruction'));
+const AccountTopUp = dynamic(() => import('../AccountTopUp'));
+const DropDownAccountOptions = dynamic(() => import('../../shared/DropDownAccountOptions'));
+
 
 const { publicRuntimeConfig } = getConfig();
 
 const {
-    STRIPE_KEY
+    STRIPE_KEY,
 } = publicRuntimeConfig;
 
 
@@ -184,6 +186,32 @@ class Charity extends React.Component {
         this.getStripeCreditCard = this.getStripeCreditCard.bind(this);
     }
 
+    componentWillMount() {
+        const {
+            baseUrl,
+            flowObject,
+            dispatch,
+            step,
+        } = this.props;
+        const flowType = _.replace(baseUrl, /\//, '');
+        if (flowObject.stepsCompleted || flowObject.type !== flowType) {
+            const defaultPropsData = _.merge({}, beneficiaryDefaultProps);
+            const payload = {
+                ...defaultPropsData.flowObject,
+                nextStep: step,
+            };
+            dispatch({
+                payload,
+                type: actionTypes.SAVE_FLOW_OBJECT,
+            });
+            this.setState({
+                flowObject: {
+                    ...payload,
+                },
+            });
+        }
+    }
+
     componentDidMount() {
         const {
             currentUser: {
@@ -236,11 +264,12 @@ class Charity extends React.Component {
                 userGroups,
                 giveCharityDetails,
                 giveGroupBenificairyDetails,
+                groupId,
                 slug,
                 taxReceiptProfiles,
                 i18n: {
                     language,
-                }
+                },
             } = this.props;
             const formatMessage = this.props.t;
             let paymentInstruments = null;
@@ -274,7 +303,7 @@ class Charity extends React.Component {
             } else if (!_isEmpty(giveGroupBenificairyDetails)) {
                 groupFromUrl = true;
                 giveData.giveTo = {
-                    avatar:  giveGroupBenificairyDetails.benificiaryDetails[benificiaryIndex].attributes.avatar,
+                    avatar: giveGroupBenificairyDetails.benificiaryDetails[benificiaryIndex].attributes.avatar,
                     eftEnabled: giveGroupBenificairyDetails.benificiaryDetails[benificiaryIndex].attributes.eftEnabled,
                     id: giveGroupBenificairyDetails.benificiaryDetails[benificiaryIndex].attributes.fundId,
                     name: giveGroupBenificairyDetails.benificiaryDetails[benificiaryIndex].attributes.name,
@@ -288,6 +317,7 @@ class Charity extends React.Component {
                     giveData, fund, id, avatar, paymentInstrumentOptions,
                     companyPaymentInstrumentChanged,
                     `${firstName} ${lastName}`, companiesAccountsData, userGroups, userCampaigns,
+                    giveGroupBenificairyDetails, groupId
                 );
             }
             this.setState({
@@ -335,7 +365,7 @@ class Charity extends React.Component {
 
     // eslint-disable-next-line react/sort-comp
     static initFields(giveData, fund, id, avatar,paymentInstrumentOptions,
-        companyPaymentInstrumentChanged, name, companiesAccountsData, userGroups, userCampaigns) {
+        companyPaymentInstrumentChanged, name, companiesAccountsData, userGroups, userCampaigns, giveGroupBenificairyDetails, groupId) {
         if (
             (giveData.giveFrom.type === 'user' || giveData.giveFrom.type === 'companies')
             && (giveData.creditCard.value === null || companyPaymentInstrumentChanged)
@@ -355,9 +385,16 @@ class Charity extends React.Component {
             giveData.giveFrom.balance = fund.attributes.balance;
             giveData.giveFrom.name = name;
         } else if (!_isEmpty(companiesAccountsData) && !_isEmpty(userGroups) && !_isEmpty(userCampaigns) && !giveData.userInteracted) {
-            giveData.giveFrom = {
-                value: '',
-            };
+            if (!_isEmpty(giveGroupBenificairyDetails)) {
+                const defaultGroupFrom = userGroups.find((userGroup) => userGroup.id === groupId);
+                giveData.giveFrom.value = defaultGroupFrom.attributes.fundId;
+            }
+            else{
+                giveData.giveFrom = {
+                    value: '',
+                };
+            }
+         
         }
         return giveData;
     }
@@ -1016,6 +1053,7 @@ class Charity extends React.Component {
     }
 
     render() {
+        console.log('charity props ->>> ', this.props);
         const {
             coverFeesData,
         } = this.props;
@@ -1255,22 +1293,8 @@ Charity.propTypes = {
     dispatch: PropTypes.func,
     stepIndex: PropTypes.number,
 };
-const defProps = {
-    currentUser: {
-        displayName: "Demo",
-        email:"chimp.net",
-    },
-    giveData: {
-        giveFrom: {
-            type: 'user'
-        },
-    },
-    groupId: null,
-    id: '888000',
-    slug: null,
-};
 
-Charity.defaultProps = Object.assign({}, beneficiaryDefaultProps, defProps);
+Charity.defaultProps = Object.assign({}, beneficiaryDefaultProps);
 
 function mapStateToProps(state) {
     return {

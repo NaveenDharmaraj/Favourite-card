@@ -46,7 +46,7 @@ export const callApiAndGetData = (url, params) => getAllPaginationData(url, para
     },
 );
 
-export const getDonationMatchAndPaymentInstruments = (userId) => {
+export const getDonationMatchAndPaymentInstruments = (userId, type) => {
 
     // const fetchData = coreApi.get(`/users/${userId}`, {
     //     params: {
@@ -75,8 +75,12 @@ export const getDonationMatchAndPaymentInstruments = (userId) => {
             type: actionTypes.GET_MATCH_POLICIES_PAYMENTINSTRUMENTS,
         };
         const fetchData = coreApi.get(`/users/${userId}?include=donationMatchPolicies,activePaymentInstruments,defaultTaxReceiptProfile,taxReceiptProfiles,fund`);
-        const groupData = callApiAndGetData(`/users/${userId}/administeredGroups?page[size]=50&sort=-id`);
-        const campaignsData = callApiAndGetData(`/users/${userId}/administeredCampaigns?page[size]=50&sort=-id`);
+        let groupData = null;
+        let campaignsData = null;
+        if (type !== 'donations') {
+            groupData = callApiAndGetData(`/users/${userId}/administeredGroups?page[size]=50&sort=-id`);
+            campaignsData = callApiAndGetData(`/users/${userId}/administeredCampaigns?page[size]=50&sort=-id`);
+        }
         const companiesData = callApiAndGetData(`/users/${userId}/administeredCompanies?page[size]=50&sort=-id`);
         Promise.all([
             fetchData,

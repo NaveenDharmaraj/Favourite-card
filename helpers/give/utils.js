@@ -1,4 +1,4 @@
-import _ from 'lodash';_
+import _ from 'lodash';
 
 import {
     hasMinFiveChars,
@@ -18,8 +18,14 @@ import {
     isValidEmailList,
     isValidNoteData,
     parseEmails,
-}  from '../give/giving-form-validation';
-
+} from '../give/giving-form-validation';
+import { actionTypes } from '../../actions/give';
+import {
+    beneficiaryDefaultProps,
+    donationDefaultProps,
+    groupDefaultProps,
+    p2pDefaultProps,
+} from '../../helpers/give/defaultProps';
 
 /**
  * Checks if giveData contains any credit card information
@@ -41,6 +47,7 @@ const formatCurrency = (value, language, currencyType) => {
         currencyFormat,
     ).format(value), 'US', '');
 };
+
 
 /**
 * Determine whether the supplied field is valid.
@@ -1087,7 +1094,7 @@ const resetDataForGiftTypeChange = (giveData, dropDownOptions, coverFeesData) =>
         }
     }
     return giveData;
-}
+};
 
 const populateCardData = (selectCardDetails, cardAmount) => {
     const isEnglishCard = selectCardDetails.indexOf(' ending ');
@@ -1158,7 +1165,7 @@ const getDonationMatchedData = (donationMatchId, donationAmount, donationMatchDa
         return matchedData;
     }
     return null;
-}
+};
 
 const populateDonationReviewPage = (giveData, data, currency, formatMessage, language) => {
     const {
