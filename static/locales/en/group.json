@@ -14,5 +14,7 @@
     "giveAmountGreaterThanBalance": "Sorry, you can't give more money than what is in your account.",
     "blankError":  "Can't be blank",
     "continueButton": "Continue",
-    "submitingButton": "Submitting..."
+    "submitingButton": "Submitting...",
+    "giftTypeSingle": "This is a one time gift"
+
 }

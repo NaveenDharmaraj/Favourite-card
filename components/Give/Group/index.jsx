@@ -2,6 +2,7 @@ import React, {
   Fragment,
 } from 'react';
 import getConfig from 'next/config';
+import dynamic from 'next/dynamic';
 import {
     connect
   } from 'react-redux';
@@ -28,10 +29,9 @@ import {
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 import NoteTo from '../NoteTo';
 import AccountTopUp from '../AccountTopUp';
-import CreditCard from '../../shared/CreditCard';
+// import CreditCard from '../../shared/CreditCard';
 import PrivacyOptions from '../PrivacyOptions';
 import DropDownAccountOptions from '../../shared/DropDownAccountOptions';
-import { beneficiaryDefaultProps } from '../../../helpers/give/defaultProps';
 import { 
     getDonationMatchAndPaymentInstruments,
     getGroupsForUser,
@@ -57,18 +57,21 @@ import {
     proceed,
 } from '../../../actions/give';
 import { groupDefaultProps } from '../../../helpers/give/defaultProps';
-// import { stat } from 'fs';
+                          
 const { publicRuntimeConfig } = getConfig();
 
 const {
     STRIPE_KEY
 } = publicRuntimeConfig;
 
+const CreditCard = dynamic(() => import('../../shared/CreditCard'), {
+    ssr: false
+});
 
 class Group extends React.Component {
     constructor(props) {
         props.flowObject.giveData.giveTo.type = 'user';
-        super(props)
+        super(props);
         const {
             companyDetails,
             companiesAccountsData,
@@ -142,22 +145,28 @@ class Group extends React.Component {
         this.handleInputOnBlur = this.handleInputOnBlur.bind(this)
         this.getStripeCreditCard = this.getStripeCreditCard.bind(this);
         this.handleInputChangeGiveTo = this.handleInputChangeGiveTo.bind(this);
-
     }
 
     componentDidMount() {
         const {
             slug,
             dispatch,
+            currentUser:{
+                id,
+            },
             sourceAccountHolderId,
         } = this.props;
         if (Number(sourceAccountHolderId) > 0) {
-            getGroupsForUser(dispatch, this.props.currentUser.id);
+            getGroupsForUser(dispatch,id);
         }  
         if (slug !== null) {
             getGroupsFromSlug(dispatch, slug);
         }
-        dispatch(getDonationMatchAndPaymentInstruments(888000));
+        console.log('this.props');
+        console.log(this.props);
+        
+        console.log(this.state);
+        dispatch(getDonationMatchAndPaymentInstruments(id));
 
     }
 
@@ -293,7 +302,6 @@ class Group extends React.Component {
      * @param {String} name user name from API.
      * @return {object} full form data.
      */
-
     // eslint-disable-next-line react/sort-comp
     static initFields(giveData, fund, id, paymentInstrumentOptions,
         companyPaymentInstrumentChanged, name, companiesAccountsData, userGroups, userCampaigns, addressToShareList) {
@@ -608,6 +616,57 @@ class Group extends React.Component {
         });
     }
 
+    /**
+     * validateStripeElements
+     * @param {boolean} inValidCardNumber credit card number
+     * @return {void}
+     */
+    validateStripeCreditCardNo(inValidCardNumber) {
+        this.setState({ inValidCardNumber });
+    }
+
+    /**
+     * validateStripeElements
+     * @param {boolean} inValidExpirationDate credit card expiry date
+     * @return {void}
+     */
+    validateStripeExpirationDate(inValidExpirationDate) {
+        this.setState({ inValidExpirationDate });
+    }
+
+    /**
+     * validateStripeElements
+     * @param {boolean} inValidCvv credit card CVV
+     * @return {void}
+     */
+    validateCreditCardCvv(inValidCvv) {
+        this.setState({ inValidCvv });
+    }
+
+    /**
+     * @param {boolean} inValidNameOnCard credit card Name
+     * @param {boolean} inValidCardNameValue credit card Name Value
+     * @param {string} cardHolderName credit card Name Data
+     * @return {void}
+     */
+    validateCreditCardName(inValidNameOnCard, inValidCardNameValue, cardHolderName) {
+        let cardNameValid = inValidNameOnCard;
+        if (cardHolderName.trim() === '' || cardHolderName.trim() === null) {
+            cardNameValid = true;
+        } else {
+            this.setState({
+                flowObject: {
+                    ...this.state.flowObject,
+                    cardHolderName,
+                },
+            });
+        }
+        this.setState({
+            inValidCardNameValue,
+            inValidNameOnCard: cardNameValid,
+        });
+    }
+
     getStripeCreditCard(data, cardHolderName) {
         this.setState({
             flowObject: {
@@ -765,7 +824,7 @@ class Group extends React.Component {
                                         id="giveTo"
                                         name="giveTo"
                                         size="large"
-                                        value={giveTo.text}
+                                        value={_.isEmpty(giveTo.text) ? '' : giveTo.text}
                                     />
                                 </Form.Field>
                                 )
@@ -846,7 +905,7 @@ class Group extends React.Component {
                         )}
                         {repeatGift}
                         {accountTopUpComponent}
-                        {
+                        {/* {
                             (_isEmpty(paymentInstrumentList) || creditCard.value === 0) && (
                                 <StripeProvider apiKey={STRIPE_KEY}>
                                     <Elements>
@@ -868,7 +927,7 @@ class Group extends React.Component {
                                     </Elements>
                                 </StripeProvider>
                             )
-                        } 
+                        }  */}
                         <Form.Field>
                             <Divider className="dividerMargin" />
                         </Form.Field>
@@ -949,5 +1008,12 @@ const  mapStateToProps = (state, props) => {
   }
 }
 
-export default withTranslation(['group','noteTo','accountTopUp','privacyOptions'])(connect(mapStateToProps)(Group))
+export default withTranslation([
+    'group',
+    'giveCommon',
+    'noteTo',
+    'accountTopUp',
+    'privacyOptions',
+    'specialInstruction',
+])(connect(mapStateToProps)(Group))
 

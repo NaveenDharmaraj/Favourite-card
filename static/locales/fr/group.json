@@ -14,5 +14,7 @@
     "giveAmountGreaterThanBalance": "Désolé, vous ne pouvez pas envoyer plus d'argent qu'il n'y en a dans votre compte.",
     "blankError":  "Doit être rempli",
     "continueButton": "Suivant",
-    "submitingButton": "En cours de soumission"
+    "submitingButton": "En cours de soumission",
+    "giftTypeSingle": "Ceci est un don unique"
+
 }
