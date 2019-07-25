@@ -38,7 +38,7 @@ const calculateGiveAmount = (successData) => Number(
 
 const calculateRecipients = (successData) => successData.recipientLists.length;
 
-const getFirstEmailRecipient = (successData) => successData.recipientLists[0].data.attributes.email;
+const getFirstEmailRecipient = (successData) => successData.allocationData[0].data.attributes.recipientEmails;// successData.recipientLists[0].data.attributes.email;
 
 const separateByComma = (recipients) => _.replace(_.toString(recipients), /,/g, ', ');
 
@@ -230,11 +230,10 @@ const Success = (props) => {
         } else {
             // This condition is used to check  recipients array is present
             // eslint-disable-next-line no-lonely-if
-            if (successData && recipientLists
-                        && recipientLists.length > 0) {
-                // const p2pTotalGiveAmount = calculateP2pTotalGiveAmount(props.successData);
-                const numberOfRecipient = calculateRecipients(props.successData);
-                const p2pGiveAmount = calculateGiveAmount(props.successData);
+            if (successData && recipients && recipients.length > 0) {
+                const p2pTotalGiveAmount = (successData.giveData.giveAmount * recipients.length); // calculateP2pTotalGiveAmount(props.successData);
+                const numberOfRecipient = recipients.length; // calculateRecipients(props.successData);
+                const p2pGiveAmount = successData.giveData.giveAmount;// calculateGiveAmount(props.successData);
                 const recipientEmail = getFirstEmailRecipient(props.successData);
 
                 if (numberOfRecipient > 1) {
@@ -243,7 +242,7 @@ const Success = (props) => {
                         language,
                         currency,
                     );
-                    total = formatCurrency(p2pGiveAmount, language, currency);
+                    total = formatCurrency(p2pTotalGiveAmount, language, currency);
                     firstParagraph = formatMessage('fromToMultipleRecipient', {
                         amount,
                         name: donationDetails.name,
