@@ -908,7 +908,7 @@ class Group extends React.Component {
                                 // content={(!this.state.buttonClicked) ?
                                 //     formatMessage('continueButton')
                                 //     : formatMessage('submitingButton')}
-                                content='Continue'
+                                content= {formatMessage('continueButton')}
                                 // disabled={(this.state.buttonClicked) ||
                                 //     !this.props.currentUser.userAccountsFetched}
                                 // fluid={isMobile}

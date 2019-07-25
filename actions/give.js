@@ -760,7 +760,7 @@ export const getCompanyTaxReceiptProfile = (dispatch, companyId) => {
 };
 
 export const getGroupsFromSlug = (dispatch, slug) => {
-    return coreApi.get(`groups/finsdfd_by_slug`, {
+    return coreApi.get(`groups/find_by_slug`, {
         params: {
             slug,
         },
