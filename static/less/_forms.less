@@ -1,0 +1,44 @@
+input,textarea{
+  &:focus,&:hover,&:active{
+    outline: none;
+    box-shadow: none;
+  }
+  &.form-control{
+    background-color: #f2f2f2;
+    &:focus{
+      background-color: #f2f2f2;
+      outline: none;
+      box-shadow: none;
+    }
+  }
+  &.form-control-plaintext{
+    display: block;
+    width: 100%;
+    padding: .375rem;
+    padding-bottom: .375rem;
+    margin-bottom: 0;
+    line-height: 1.5;
+    color: #212529;
+    background: #f1f1f1;
+    border: solid transparent;
+    border-width: 1px 0;
+  }
+}
+.custom-file{
+  .custom-file-label{
+    padding: 8px 15px;
+    &:after{
+      padding: 8px 15px;
+    }
+  }
+}
+label{
+  font-weight: 600;
+}
+.custom-control-label {
+    position: relative;
+    margin-bottom: 0;
+}
+.custom-control-label {
+    vertical-align: top;
+}

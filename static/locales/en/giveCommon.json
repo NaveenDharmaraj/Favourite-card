@@ -1,0 +1,73 @@
+{
+    "fullMonthName": {
+        "januaryLabel": "January",
+        "februaryLabel": "February",
+        "marchLabel": "March",
+        "aprilLabel": "April",
+        "mayLabel": "May",
+        "juneLabel": "June",
+        "julyLabel": "July",
+        "augustLabel": "August",
+        "septemberLabel": "September",
+        "octoberLabel": "October",
+        "novemberLabel": "November",
+        "decemberLabel": "December"
+    },
+    "errorMessages": {
+        "amountLessOrInvalid": "Please choose an amount of ${{minAmount}} or more",
+        "invalidMaxAmountError":  "$9,999 is the maximum we can process here. For larger amounts, please get in touch with us: hello@chimp.net or 1-877-531-0580.",
+        "invalidLengthError": "is too long (maximum is 1000 characters)",
+        "invalidNoteTextError":  "Only standard letters and numbers are allowed here",
+        "isAmountCoverGive": "Sorry, you can't give more money than what is in your account."
+
+
+    },
+    "breadCrumb" : {
+        "new" : "Add money",
+        "give": "Give",
+        "taxReceipt": "Tax receipt",
+        "review": "Review",
+        "success": "Confirmation"
+    },
+    "creditCard": {
+        "testCreditCardListMessage": "More information on test accounts can be found at Stripe.",
+        "cardNumberLabel": "Credit card number",
+        "nameOnCardLabel": "Name on Card",
+        "expiryDateLabel": "Expiry Year",
+        "cvvLabel": "CVV"
+    },
+    "creditCardErrorMessages": {
+        "errorCardNumber": "Please use a valid Visa, Mastercard, or Amex card number",
+        "invalidNameOnCard": "Include the name on your card (use a minimum of 2 characters)",
+        "invalidCardNameError": "It looks like you've entered only numbers here, but we need the full name that appears on your card (use a minimum of 2 characters)",
+        "invalidExpiryYear": "Include the expiry month and year for your card",
+        "invalidCvv": "Include a valid CVV number for your card"
+    },
+    "blankError":  "Can't be blank",
+    "amountLabel": "Amount",
+    "amountPlaceHolder": "Enter amount",
+    "noteRemainingChars1000": "{{currentCount}} of {{maximum}} characters left ",
+    "forMonth": "month",
+    "forYear": "year",
+    "forPer": "per",
+    "continueButton": "Continue",
+    "submittingButton": "Submitting...",
+    "useNewCreditCardLabel": "Use a new credit card",
+    "infoToShareAnonymous": "Give anonymously",
+    "change":"Change ",
+    "startsOn": "Starts On",
+    "emptyMessage" : "No content ",
+    "commonOr": "or ",
+    "commonMakeChanges" : "make changes "
+
+
+
+
+
+
+
+
+
+
+
+}

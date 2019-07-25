@@ -1,0 +1,39 @@
+@import "_mixins.less";
+
+html body{
+    height: 100%;
+    font-family: 'Lato', sans-serif;
+    font-synthesis: none;
+    -moz-font-feature-settings: 'kern';
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -.022em;
+    font-size: 16/@em;
+    line-height: 22/@em;
+    color: @font-color;
+}
+
+p {
+  font-size: 16/@em;
+}
+a{
+  color: @primary-color;
+  font-size: inherit;
+  &:hover,&:focus{
+    color: @primary-dark;
+    text-decoration: none;
+    transition: all 0.3s ease-out;
+  }
+}
+.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6{
+  margin-bottom: .5rem;
+  font-family: inherit;
+  font-weight: 500;
+  line-height: 1.2;
+  color: inherit;
+  color: @font-color;
+}
+
+body{
+
+}
