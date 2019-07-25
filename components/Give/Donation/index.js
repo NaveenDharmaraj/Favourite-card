@@ -5,6 +5,7 @@ import _ from 'lodash';
 import dynamic from 'next/dynamic';
 import getConfig from 'next/config';
 import _isEmpty from 'lodash/isEmpty';
+import _merge from 'lodash/merge';
 import {
     Checkbox,
     Divider,
@@ -54,19 +55,22 @@ const CreditCard = dynamic(() => import('../../shared/CreditCard'));
 class Donation extends React.Component {
     constructor(props) {
     super(props);
+    const flowType = _.replace(props.baseUrl, /\//, '');
+    let payload = null;
             //Initialize the flowObject to default value when got switched from other flows
             if (props.flowObject.type !== flowType) {
                 const defaultPropsData = _.merge({}, donationDefaultProps);
                 payload = {
-                    ...donationDefaultProps.flowObject,
+                    ...defaultPropsData.flowObject,
                     nextStep: props.step,
                 };
             }
             else{
                 payload =  _merge({}, props.flowObject)
             }  
+            debugger
         this.state = {
-            flowObject: _.merge({}, props.flowObject),
+            flowObject: payload,
             buttonClicked: false,
             disableButton: !props.userAccountsFetched,
             inValidCardNameValue: true,
@@ -682,7 +686,7 @@ class Donation extends React.Component {
     }    
     
     render() {
-        console.log('flowObect',this.props.flowObject);
+       
         const {
             flowObject: {
                 currency,
