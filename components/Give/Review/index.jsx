@@ -37,6 +37,7 @@ class Review extends React.Component {
     if (flowObject) {
         reInitNextStep(dispatch, flowObject)
     }
+    window.scrollTo(0, 0);
   }
   handleSubmit = () => {
     const { dispatch, stepIndex, flowSteps, flowObject } = this.props;
