@@ -53,7 +53,18 @@ const CreditCard = dynamic(() => import('../../shared/CreditCard'));
 
 class Donation extends React.Component {
     constructor(props) {
-    super(props)
+    super(props);
+            //Initialize the flowObject to default value when got switched from other flows
+            if (props.flowObject.type !== flowType) {
+                const defaultPropsData = _.merge({}, donationDefaultProps);
+                payload = {
+                    ...donationDefaultProps.flowObject,
+                    nextStep: props.step,
+                };
+            }
+            else{
+                payload =  _merge({}, props.flowObject)
+            }  
         this.state = {
             flowObject: _.merge({}, props.flowObject),
             buttonClicked: false,
@@ -75,27 +86,6 @@ class Donation extends React.Component {
         this.validateCreditCardCvv = this.validateCreditCardCvv.bind(this);
         this.validateCreditCardName = this.validateCreditCardName.bind(this);
         this.getStripeCreditCard = this.getStripeCreditCard.bind(this);
-    }
-    componentWillMount() {
-        const {
-            baseUrl,
-            flowObject,
-            dispatch,
-            step,
-        } = this.props;
-        const flowType = _.replace(baseUrl, /\//, '');
-        if(flowObject.stepsCompleted || flowObject.type !== flowType) {
-            const defaultPropsData =  _.merge({}, donationDefaultProps);
-            const payload = {
-                    ...defaultPropsData.flowObject,
-                    nextStep: step,
-                }
-            this.setState({
-                flowObject: {
-                    ...payload,
-                },
-            });
-        }
     }
 
     componentDidMount() {

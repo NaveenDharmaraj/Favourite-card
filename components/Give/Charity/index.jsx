@@ -77,6 +77,7 @@ const {
 class Charity extends React.Component {
     constructor(props) {
         super(props);
+        debugger
         const {
             companyDetails,
             companiesAccountsData,
@@ -113,6 +114,19 @@ class Charity extends React.Component {
         }
         const paymentInstruments = (!_isEmpty(props.flowObject.giveData.giveFrom) && props.flowObject.giveData.giveFrom.type === 'companies') ? companyDetails.companyPaymentInstrumentsData : paymentInstrumentsData;
         const formatMessage = props.t;
+        const flowType = _.replace(props.baseUrl, /\//, '');
+        let payload = null;
+        //Initialize the flowObject to default value when got switched from other flows
+        if (props.flowObject.type !== flowType) {
+            const defaultPropsData = _.merge({}, beneficiaryDefaultProps);
+            payload = {
+                ...defaultPropsData.flowObject,
+                nextStep: props.step,
+            };
+        }
+        else{
+                payload =  _merge({}, props.flowObject)
+            }
         this.state = {
             benificiaryIndex: 0,
             buttonClicked: false,
@@ -133,7 +147,7 @@ class Charity extends React.Component {
                 paymentInstrumentList: populatePaymentInstrument(paymentInstruments, formatMessage),
             },
             findAnotherRecipientLabel: 'Find another recipient',
-            flowObject: _merge({}, props.flowObject),
+            flowObject: payload,
             inValidCardNameValue: true,
             inValidCardNumber: true,
             inValidCvv: true,
@@ -142,6 +156,7 @@ class Charity extends React.Component {
             showAnotherRecipient: false,
             validity: this.intializeValidations(),
         };
+        debugger
         if (this.state.flowObject.giveData.giveTo.value === null) {
             if (!_isEmpty(giveCharityDetails) && !_isEmpty(giveCharityDetails.charityDetails)) {
                 this.state.flowObject.groupFromUrl = false;
@@ -186,29 +201,7 @@ class Charity extends React.Component {
         this.getStripeCreditCard = this.getStripeCreditCard.bind(this);
     }
 
-    componentWillMount() {
-        const {
-            baseUrl,
-            flowObject,
-            dispatch,
-            step,
-        } = this.props;
-        const flowType = _.replace(baseUrl, /\//, '');
-        if (flowObject.stepsCompleted || flowObject.type !== flowType) {
-            const defaultPropsData = _.merge({}, beneficiaryDefaultProps);
-            const payload = {
-                ...defaultPropsData.flowObject,
-                nextStep: step,
-            };
-            this.setState({
-                flowObject: {
-                    ...payload,
-                },
-            })
-        }
-    }
-
-    componentDidMount() {
+    componentDidMount() { 
         const {
             currentUser: {
                 id,
@@ -230,6 +223,7 @@ class Charity extends React.Component {
 
     componentDidUpdate(prevProps)  {
         if (!_isEqual(this.props, prevProps)) {
+            debugger
             const {
                 benificiaryIndex,
                 dropDownOptions,
@@ -1050,6 +1044,7 @@ class Charity extends React.Component {
     }
 
     render() {
+        console.log('testing render',this.state.flowObject);
         const {
             coverFeesData,
         } = this.props;
@@ -1145,6 +1140,7 @@ class Charity extends React.Component {
                 );
             }
         }
+
         return (
             <Form onSubmit={this.handleSubmit}>
                 { (Number(giveTo.value) > 0) && (
