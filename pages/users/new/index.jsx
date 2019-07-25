@@ -1,23 +1,8 @@
 /* eslint-disable react/prefer-stateless-function */
 import React from 'react';
 import {
-  Button,
-  Container,
-  Header,
-  Icon,
-  Image,
-  Menu,
-  Responsive,
-  Form,
-  Input,
-  Dropdown,
-  Divider,
-  Segment,
-  Visibility,
-  Grid,
-  List,
-  Card,
-  Breadcrumb,
+    Container,
+    Grid,
 } from 'semantic-ui-react';
 import _ from 'lodash';
 
@@ -50,12 +35,10 @@ class Login extends React.Component {
             options,
             value,
         } = data;
-        let {
+        const {
             attributes,
-            stepIndex,
         } = this.state;
-        let newValue = (!_.isEmpty(options)) ? _.find(options, { value }) : value;
-        console.log(newValue);
+        const newValue = (!_.isEmpty(options)) ? _.find(options, { value }) : value;
         if (attributes[name] !== newValue) {
             attributes[name] = newValue;
         }
