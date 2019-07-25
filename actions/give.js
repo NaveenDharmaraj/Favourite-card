@@ -1,23 +1,21 @@
 /* eslint-disable import/exports-last */
-import {
-    callApiAndGetData,
-    updateTaxReceiptProfile
-} from './user';
 import _ from 'lodash';
 
 import coreApi from '../services/coreApi';
-import realtypeof from '../helpers/realtypeof';
-import {
-    getDonationMatchAndPaymentInstruments,
-    savePaymentInstrument
-} from './user';
-
 import {
     beneficiaryDefaultProps,
     donationDefaultProps,
     groupDefaultProps,
-    p2pDefaultProps,
+    // p2pDefaultProps,
 } from '../helpers/give/defaultProps';
+
+import {
+    callApiAndGetData,
+    updateTaxReceiptProfile,
+    getDonationMatchAndPaymentInstruments,
+    savePaymentInstrument,
+    getUserFund,
+} from './user';
 
 export const actionTypes = {
     COVER_FEES: 'COVER_FEES',
@@ -407,6 +405,65 @@ const checkForQuaziSuccess = (error) => {
     return false;
 };
 
+/**
+ * Send the allocation data to the relevant endpoint.
+ * @param  {number} companyId Id of the company
+ * @return {promise}     The promise returned by the Communications utility.
+ */
+
+export const getCompanyPaymentAndTax = (dispatch, companyId) => {
+    const fsa = {
+        payload: {
+            companyDefaultTaxReceiptProfile: {},
+            companyId,
+            companyPaymentInstrumentsData: [],
+            taxReceiptProfiles: [],
+        },
+        type: actionTypes.GET_COMPANY_PAYMENT_AND_TAXRECEIPT,
+    };
+
+    return coreApi.get(`/companies/${companyId}?include=defaultTaxReceiptProfile,activePaymentInstruments,taxReceiptProfiles`).then((result) => {
+        const { data } = result;
+        let defaultTaxReceiptId = null;
+        if (!_.isEmpty(data.relationships.defaultTaxReceiptProfile.data)) {
+            defaultTaxReceiptId = data.relationships.defaultTaxReceiptProfile.data.id;
+        }
+        if (!_.isEmpty(result.included)) {
+            const { included } = result;
+            included.map((item) => {
+                const {
+                    attributes,
+                    id,
+                    type,
+                } = item;
+                if (type === 'paymentInstruments') {
+                    fsa.payload.companyPaymentInstrumentsData.push({
+                        attributes,
+                        id,
+                        type,
+                    });
+                } else if (type === 'taxReceiptProfiles') {
+                    if (id === defaultTaxReceiptId) {
+                        fsa.payload.companyDefaultTaxReceiptProfile = {
+                            attributes,
+                            id,
+                            type,
+                        };
+                    }
+                    fsa.payload.taxReceiptProfiles.push({
+                        attributes,
+                        id,
+                        type,
+                    });
+                }
+            });
+        }
+        return dispatch(fsa);
+    }).catch((error) => {
+        console.log(error);
+    });
+};
+
 const callApiAndDispatchData = (dispatch, account) => {
     if (account.type === 'user') {
         dispatch(getDonationMatchAndPaymentInstruments(account.id));
@@ -415,7 +472,9 @@ const callApiAndDispatchData = (dispatch, account) => {
     }
 };
 
-export const proceed = (flowObject, nextStep, stepIndex, lastStep = false) => {
+export const proceed = (
+    flowObject, nextStep, stepIndex, lastStep = false, currentUserId = null,
+) => {
     if (lastStep) {
         return (dispatch) => {
             let fn;
@@ -471,7 +530,7 @@ export const proceed = (flowObject, nextStep, stepIndex, lastStep = false) => {
                 const defaultProps = {
                     'donations': donationDefaultProps,
                     'give/to/charity': beneficiaryDefaultProps,
-                    'give/to/friend': p2pDefaultProps,
+                    // 'give/to/friend': p2pDefaultProps,
                     'give/to/group': groupDefaultProps,
                 };
                 const defaultPropsData = _.merge({}, defaultProps[flowObject.type]);
@@ -483,9 +542,9 @@ export const proceed = (flowObject, nextStep, stepIndex, lastStep = false) => {
                 const fsa = {
                     payload,
                     type: actionTypes.SAVE_FLOW_OBJECT,
-                }
+                };
                 dispatch(fsa);
-                // fetchUser(userId);
+                getUserFund(dispatch, currentUserId);
             });
         };
     }
@@ -568,65 +627,6 @@ export const reInitNextStep = (dispatch, flowObject) => {
     return dispatch({
         payload: flowObject,
         type: actionTypes.SAVE_FLOW_OBJECT,
-    });
-};
-
-/**
- * Send the allocation data to the relevant endpoint.
- * @param  {number} companyId Id of the company
- * @return {promise}     The promise returned by the Communications utility.
- */
-
-export const getCompanyPaymentAndTax = (dispatch, companyId) => {
-    const fsa = {
-        payload: {
-            companyDefaultTaxReceiptProfile: {},
-            companyId,
-            companyPaymentInstrumentsData: [],
-            taxReceiptProfiles: [],
-        },
-        type: actionTypes.GET_COMPANY_PAYMENT_AND_TAXRECEIPT,
-    };
-
-    return coreApi.get(`/companies/${companyId}?include=defaultTaxReceiptProfile,activePaymentInstruments,taxReceiptProfiles`).then((result) => {
-        const { data } = result;
-        let defaultTaxReceiptId = null;
-        if (!_.isEmpty(data.relationships.defaultTaxReceiptProfile.data)) {
-            defaultTaxReceiptId = data.relationships.defaultTaxReceiptProfile.data.id;
-        }
-        if (!_.isEmpty(result.included)) {
-            const { included } = result;
-            included.map((item) => {
-                const {
-                    attributes,
-                    id,
-                    type,
-                } = item;
-                if (type === 'paymentInstruments') {
-                    fsa.payload.companyPaymentInstrumentsData.push({
-                        attributes,
-                        id,
-                        type,
-                    });
-                } else if (type === 'taxReceiptProfiles') {
-                    if (id === defaultTaxReceiptId) {
-                        fsa.payload.companyDefaultTaxReceiptProfile = {
-                            attributes,
-                            id,
-                            type,
-                        };
-                    }
-                    fsa.payload.taxReceiptProfiles.push({
-                        attributes,
-                        id,
-                        type,
-                    });
-                }
-            });
-        }
-        return dispatch(fsa);
-    }).catch((error) => {
-        console.log(error);
     });
 };
 

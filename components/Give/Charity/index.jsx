@@ -1088,6 +1088,29 @@ class Charity extends React.Component {
                     validity={validity}
                 />
             );
+            if ((_isEmpty(paymentInstrumentList) && giveFrom.value) || creditCard.value === 0) {
+                stripeCardComponent = (
+                    <StripeProvider apiKey={STRIPE_KEY}>
+                        <Elements>
+                            <CreditCard
+                                creditCardElement={this.getStripeCreditCard}
+                                creditCardValidate={inValidCardNumber}
+                                creditCardExpiryValidate={inValidExpirationDate}
+                                creditCardNameValidte={inValidNameOnCard}
+                                creditCardNameValueValidate={inValidCardNameValue}
+                                creditCardCvvValidate={inValidCvv}
+                                validateCCNo={this.validateStripeCreditCardNo}
+                                validateExpiraton={this.validateStripeExpirationDate}
+                                validateCvv={this.validateCreditCardCvv}
+                                validateCardName={this.validateCreditCardName}
+                                formatMessage={formatMessage}
+                                // eslint-disable-next-line no-return-assign
+                                onRef={(ref) => (this.CreditCard = ref)}
+                            />
+                        </Elements>
+                    </StripeProvider>
+                );
+            }
         }
         return (
             <Form onSubmit={this.handleSubmit}>
@@ -1202,29 +1225,7 @@ class Charity extends React.Component {
                             giftType, giftTypeList, infoToShare, infoToShareList, formatMessage,
                         )}
                         {accountTopUpComponent}
-                        {
-                            ((_isEmpty(paymentInstrumentList) && giveFrom.value) || creditCard.value === 0) && (
-                                <StripeProvider apiKey={STRIPE_KEY}>
-                                    <Elements>
-                                        <CreditCard
-                                            creditCardElement={this.getStripeCreditCard}
-                                            creditCardValidate={inValidCardNumber}
-                                            creditCardExpiryValidate={inValidExpirationDate}
-                                            creditCardNameValidte={inValidNameOnCard}
-                                            creditCardNameValueValidate={inValidCardNameValue}
-                                            creditCardCvvValidate={inValidCvv}
-                                            validateCCNo={this.validateStripeCreditCardNo}
-                                            validateExpiraton={this.validateStripeExpirationDate}
-                                            validateCvv={this.validateCreditCardCvv}
-                                            validateCardName={this.validateCreditCardName}
-                                            formatMessage={formatMessage}
-                                            // eslint-disable-next-line no-return-assign
-                                            onRef={(ref) => (this.CreditCard = ref)}
-                                        />
-                                    </Elements>
-                                </StripeProvider>
-                            )
-                        }
+                        {stripeCardComponent}
                         <Form.Field>
                             <Divider className="dividerMargin" />
                         </Form.Field>
