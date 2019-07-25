@@ -11,7 +11,6 @@ import {
 
 import logo from '../../../static/images/CharitableImpact.png';
 
-import '../Header/header.less';
 import AuthHeader from './AuthHeader';
 import OnBoardingHeader from './OnBoarding';
 
