@@ -37,7 +37,7 @@ const PrivacyOptions = (props) => {
                     className="privacy-header"
                     htmlFor="privacyShareName"
                 >
-                    {formatMessage(`forGiving${giveToType}Label`)}
+                    {formatMessage(`privacyOptions:forGiving${giveToType}Label`)}
                 </label>
                 <br />
                 <Form.Field
@@ -69,7 +69,7 @@ const PrivacyOptions = (props) => {
                             htmlFor="privacyShareEmail"
                         >
                             {
-                                formatMessage(`forGiving${giveToType}OrganizersLabel`)
+                                formatMessage(`privacyOptions:forGiving${giveToType}OrganizersLabel`)
                             }
                         </label>
                         <br />
@@ -90,7 +90,7 @@ const PrivacyOptions = (props) => {
                                 className="ui checkbox checkbox-text"
                                 control={Checkbox}
                                 id="privacyShareAddress"
-                                label={formatMessage('privacyShareAddressLabel')}
+                                label={formatMessage('privacyOptions:privacyShareAddressLabel')}
                                 name="privacyShareAddress"
                                 onChange={handleInputChange}
                             />

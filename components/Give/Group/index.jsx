@@ -921,12 +921,11 @@ class Group extends React.Component {
                         {/* { !stepsCompleted && */}
                             <Form.Button
                                 className='btnPadding' // {isMobile ? 'mobBtnPadding' : 'btnPadding'}
-                                // content={(!this.state.buttonClicked) ?
-                                //     formatMessage('continueButton')
-                                //     : formatMessage('submitingButton')}
-                                content= {formatMessage('continueButton')}
-                                // disabled={(this.state.buttonClicked) ||
-                                //     !this.props.currentUser.userAccountsFetched}
+                                content={(!this.state.buttonClicked) ?
+                                    formatMessage('giveCommon:continueButton')
+                                    : formatMessage('giveCommon:submitingButton')}
+                                // content= {formatMessage('continueButton')}
+                                disabled={(this.state.buttonClicked) }
                                 // fluid={isMobile}
                                 type="submit"
                             />
