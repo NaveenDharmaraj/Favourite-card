@@ -68,7 +68,6 @@ class Donation extends React.Component {
             else{
                 payload =  _merge({}, props.flowObject)
             }  
-            debugger
         this.state = {
             flowObject: payload,
             buttonClicked: false,

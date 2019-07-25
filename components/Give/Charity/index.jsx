@@ -77,7 +77,6 @@ const {
 class Charity extends React.Component {
     constructor(props) {
         super(props);
-        debugger
         const {
             companyDetails,
             companiesAccountsData,
@@ -156,7 +155,6 @@ class Charity extends React.Component {
             showAnotherRecipient: false,
             validity: this.intializeValidations(),
         };
-        debugger
         if (this.state.flowObject.giveData.giveTo.value === null) {
             if (!_isEmpty(giveCharityDetails) && !_isEmpty(giveCharityDetails.charityDetails)) {
                 this.state.flowObject.groupFromUrl = false;
@@ -223,7 +221,6 @@ class Charity extends React.Component {
 
     componentDidUpdate(prevProps)  {
         if (!_isEqual(this.props, prevProps)) {
-            debugger
             const {
                 benificiaryIndex,
                 dropDownOptions,
