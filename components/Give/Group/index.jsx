@@ -92,16 +92,6 @@ class Group extends React.Component {
             taxReceiptProfiles,
 
         } = props;
-        let currentSourceAccountHolderId = null;
-        let currentGroupId = null;
-        if (!_isEmpty(sourceAccountHolderId)
-                && Number(sourceAccountHolderId) > 0) {
-            currentSourceAccountHolderId = sourceAccountHolderId;
-        }
-        if (!_isEmpty(groupId)
-                && Number(groupId) > 0) {
-            currentGroupId = groupId;
-        }
         const paymentInstruments = (!_isEmpty(props.flowObject.giveData.giveFrom) && props.flowObject.giveData.giveFrom.type === 'companies') ? companyDetails.companyPaymentInstrumentsData : paymentInstrumentsData;
         const formatMessage = props.t;
         this.state = {
@@ -111,16 +101,6 @@ class Group extends React.Component {
             dropDownOptions: {
                 donationMatchList: populateDonationMatch(donationMatchData, formatMessage),
                 giftTypeList: populateGiftType(formatMessage),
-                // giveFromList: populateAccountOptions({
-                //     companiesAccountsData,
-                //     firstName,
-                //     fund,
-                //     id,
-                //     lastName,
-                //     userCampaigns,
-                //     userGroups,
-                // }),
-                // giveToList: populateGroupsOfUser(giveUserGroups),
                 infoToShareList: populateInfoToShare(
                     taxReceiptProfiles,
                     companyDetails,
@@ -162,10 +142,6 @@ class Group extends React.Component {
         if (slug !== null) {
             getGroupsFromSlug(dispatch, slug);
         }
-        console.log('this.props');
-        console.log(this.props);
-        
-        console.log(this.state);
         dispatch(getDonationMatchAndPaymentInstruments(id));
 
     }
@@ -283,7 +259,8 @@ class Group extends React.Component {
                     },
                     groupFromUrl,
                 }
-            });        }        
+            });        
+        }        
     }
 
     static populateShareAddress(taxReceiptProfile) {
@@ -458,7 +435,6 @@ class Group extends React.Component {
             flowSteps,
             stepIndex
         } = this.props;
-        let { forceContinue } = this.state;
         const {
             giveData: {
                 creditCard,
@@ -473,10 +449,6 @@ class Group extends React.Component {
                 flowObject.selectedTaxReceiptProfile = (flowObject.giveData.giveFrom.type === 'companies') ?
                     companyDetails.companyDefaultTaxReceiptProfile :
                     defaultTaxReceiptProfile;
-            }
-            if (_isEqual(flowObject, this.props.flowObject)) {
-                forceContinue = (forceContinue === this.props.nextStep.path) ?
-                    this.props.currentStep.path : this.props.nextStep.path;
             }
             flowObject.stepsCompleted = false;
             flowObject.nextSteptoProceed = nextStep;

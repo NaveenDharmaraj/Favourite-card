@@ -257,33 +257,23 @@ export const updateTaxReceiptProfile = (taxReceiptProfile, action, dispatch) => 
     // return setTaxReceiptProfile(dispatch, result.data)
 };
 export const getGroupsForUser = (dispatch, userId) => {
-    if (userId !== null) {
-        const fsa = {
-            payload: {
-                userGroups: [],
+    const fsa = {
+        payload: {
+            userGroups: [],
+        },
+        type: actionTypes.GET_USERS_GROUPS,
+    };
+    callApiAndGetData(`/users/${userId}/groupsWithMemberships?page[size]=50&sort=-id`)
+        .then(
+            (result) => {
+                if (!_.isEmpty(result)) {
+                    fsa.payload.userMembershipGroups = result;
+                }
+                dispatch(fsa);
             },
-            type: actionTypes.GET_USERS_GROUPS,
-        };
-        callApiAndGetData(`/users/${userId}/groupsWithMemberships?page[size]=50&sort=-id`)
-            .then(
-                (result) => {
-                    if (!_.isEmpty(result)) {
-                        fsa.payload.userMembershipGroups = result;
-                    }
-                    dispatch(fsa);
-                },
-            ).catch((error) => {
-                console.log(error);
-                // redirect('/give/error');
-            });
-        // .finally(() => getBranch({
-        //     actions: types,
-        //     branchPath: '/giving/userGroupDetails',
-        // }).dispatch(fsa));
-    } else {
-        console.log('redirect to dashboard');
-        // redirect('/dashboard');
-    }
+        ).catch((error) => {
+            console.log(error);
+        });
 };
 
 export const savePaymentInstrument = (cardDetails) => {

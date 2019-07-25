@@ -16,7 +16,7 @@ import {
     beneficiaryDefaultProps,
     donationDefaultProps,
     groupDefaultProps,
-    p2pDefaultProps,
+    // p2pDefaultProps,
 } from '../helpers/give/defaultProps';
 
 export const actionTypes = {
