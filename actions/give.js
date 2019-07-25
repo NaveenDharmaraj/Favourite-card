@@ -471,13 +471,13 @@ export const proceed = (flowObject, nextStep, stepIndex, lastStep = false) => {
                 const defaultProps = {
                     'donations': donationDefaultProps,
                     'give/to/charity': beneficiaryDefaultProps,
-                    'give/to/friend': p2pDefaultProps,
+                    // 'give/to/friend': p2pDefaultProps,
                     'give/to/group': groupDefaultProps,
                 };
                 const defaultPropsData = _.merge({}, defaultProps[flowObject.type]);
                 const payload = {
                     ...defaultPropsData.flowObject,
-                }
+                };
                 payload.nextStep = nextStepToProcced;
                 payload.stepsCompleted = true;
                 const fsa = {

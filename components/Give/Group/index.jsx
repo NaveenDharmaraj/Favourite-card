@@ -129,7 +129,7 @@ class Group extends React.Component {
         if (Number(sourceAccountHolderId) > 0) {
             getGroupsForUser(dispatch,id);
         }  
-        if (slug !== null) {
+        else if (slug !== null) {
             getGroupsFromSlug(dispatch, slug);
         }
         dispatch(getDonationMatchAndPaymentInstruments(id));
@@ -433,16 +433,17 @@ class Group extends React.Component {
         this.setState({
             buttonClicked: true,
         });
-        const validateCC = this.isValidCC(
-            creditCard,
-            inValidCardNumber,
-            inValidExpirationDate,
-            inValidNameOnCard,
-            inValidCvv,
-            inValidCardNameValue,
-        );
+        // const validateCC = this.isValidCC(
+        //     creditCard,
+        //     inValidCardNumber,
+        //     inValidExpirationDate,
+        //     inValidNameOnCard,
+        //     inValidCvv,
+        //     inValidCardNameValue,
+        // );
 
-        if (this.validateForm() && validateCC) {
+        // if (this.validateForm() && validateCC) {
+        if (this.validateForm()) {
 
             if (creditCard.value > 0) {
                 flowObject.selectedTaxReceiptProfile = (flowObject.giveData.giveFrom.type === 'companies') ?
@@ -648,34 +649,34 @@ class Group extends React.Component {
         });
     }
 
-    isValidCC(
-        creditCard,
-        inValidCardNumber,
-        inValidExpirationDate,
-        inValidNameOnCard,
-        inValidCvv,
-        inValidCardNameValue,
-    ) {
-        let validCC = true;
-        if (creditCard.value === 0) {
-            this.CreditCard.handleOnLoad(
-                inValidCardNumber,
-                inValidExpirationDate,
-                inValidNameOnCard,
-                inValidCvv,
-                inValidCardNameValue,
-            );
-            validCC = (
-                !inValidCardNumber &&
-                !inValidExpirationDate &&
-                !inValidNameOnCard &&
-                !inValidCvv &&
-                !inValidCardNameValue
-            );
-        }
+    // isValidCC(
+    //     creditCard,
+    //     inValidCardNumber,
+    //     inValidExpirationDate,
+    //     inValidNameOnCard,
+    //     inValidCvv,
+    //     inValidCardNameValue,
+    // ) {
+    //     let validCC = true;
+    //     if (creditCard.value === 0) {
+    //         this.CreditCard.handleOnLoad(
+    //             inValidCardNumber,
+    //             inValidExpirationDate,
+    //             inValidNameOnCard,
+    //             inValidCvv,
+    //             inValidCardNameValue,
+    //         );
+    //         validCC = (
+    //             !inValidCardNumber &&
+    //             !inValidExpirationDate &&
+    //             !inValidNameOnCard &&
+    //             !inValidCvv &&
+    //             !inValidCardNameValue
+    //         );
+    //     }
 
-        return validCC;
-    }
+    //     return validCC;
+    // }
 
     render() {
         let {
