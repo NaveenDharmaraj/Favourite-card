@@ -70,7 +70,6 @@ const CreditCard = dynamic(() => import('../../shared/CreditCard'), {
 
 class Group extends React.Component {
     constructor(props) {
-        props.flowObject.giveData.giveTo.type = 'user';
         super(props);
         const {
             companyDetails,
@@ -152,10 +151,15 @@ class Group extends React.Component {
                 companyDetails,
                 companiesAccountsData,
                 donationMatchData,
-                firstName,
+                currentUser:{
+                    attributes:{
+                        firstName,
+                        lastName,
+
+                    },
+                    id,
+                },
                 fund,
-                id,
-                lastName,
                 paymentInstrumentsData,
                 userCampaigns,
                 userGroups,
@@ -429,7 +433,16 @@ class Group extends React.Component {
         this.setState({
             buttonClicked: true,
         });
-        if (this.validateForm()) {
+        const validateCC = this.isValidCC(
+            creditCard,
+            inValidCardNumber,
+            inValidExpirationDate,
+            inValidNameOnCard,
+            inValidCvv,
+            inValidCardNameValue,
+        );
+
+        if (this.validateForm() && validateCC) {
 
             if (creditCard.value > 0) {
                 flowObject.selectedTaxReceiptProfile = (flowObject.giveData.giveFrom.type === 'companies') ?
@@ -699,6 +712,8 @@ class Group extends React.Component {
                 infoToShareList
             },
         } = this.state;
+        console.log(this.props);
+        console.log(this.state);
         const formatMessage = this.props.t;
         const giveToType = (giveTo.isCampaign) ? 'Campaign' : 'Group';
         let accountTopUpComponent = null;
