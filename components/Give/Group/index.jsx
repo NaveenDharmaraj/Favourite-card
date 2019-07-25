@@ -74,21 +74,12 @@ class Group extends React.Component {
         super(props);
         const {
             companyDetails,
-            companiesAccountsData,
             currentUser: {
                 displayName,
                 email,
-                firstName,
-                lastName,
             },
             donationMatchData,
-            fund,
-            groupId,
-            sourceAccountHolderId,
-            id,
             paymentInstrumentsData,
-            userCampaigns,
-            userGroups,
             taxReceiptProfiles,
 
         } = props;
@@ -160,10 +151,6 @@ class Group extends React.Component {
             const {
                 companyDetails,
                 companiesAccountsData,
-                currentUser: {
-                    displayName,
-                    email,
-                },
                 donationMatchData,
                 firstName,
                 fund,
@@ -172,7 +159,6 @@ class Group extends React.Component {
                 paymentInstrumentsData,
                 userCampaigns,
                 userGroups,
-                slug,
                 taxReceiptProfiles,
                 giveGroupDetails,
                 userMembershipGroups
@@ -935,24 +921,7 @@ class Group extends React.Component {
     }
 }
 
-const defProps = {
-    currentUser: {
-        displayName: "Demo",
-        email:"chimp.net",
-        id:"888000"
-    },
-    giveData: {
-        giveFrom: {
-            type: 'user',
-        },
-    },
-    groupId: null,
-    id: '888000',
-    slug: null,
-};
-
-
-Group.defaultProps = Object.assign({}, groupDefaultProps, defProps);
+Group.defaultProps = Object.assign({}, groupDefaultProps);
 
 const  mapStateToProps = (state, props) => {
 
@@ -960,6 +929,7 @@ const  mapStateToProps = (state, props) => {
     giveGroupDetails: state.give.groupSlugDetails,
     companiesAccountsData: state.user.companiesAccountsData,
     companyDetails: state.give.companyData,
+    currentUser: state.user.info,
     giveGroupBenificairyDetails: state.give.benificiaryForGroupDetails,
     taxReceiptProfiles: state.user.taxReceiptProfiles,
     userAccountsFetched: state.user.userAccountsFetched,

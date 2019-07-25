@@ -7,6 +7,7 @@ import {
 } from '../helpers/give/utils';
 import coreApi from '../services/coreApi';
 import authRorApi from '../services/authRorApi';
+import { Router } from '../routes';
 
 export const actionTypes = {
     GET_MATCH_POLICIES_PAYMENTINSTRUMENTS: 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS',
@@ -273,6 +274,7 @@ export const getGroupsForUser = (dispatch, userId) => {
             },
         ).catch((error) => {
             console.log(error);
+            Router.pushRoute('/give/error');
         });
 };
 

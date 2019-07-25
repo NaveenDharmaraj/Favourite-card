@@ -4,7 +4,7 @@ import {
     updateTaxReceiptProfile
 } from './user';
 import _ from 'lodash';
-
+import { Router } from '../routes';
 import coreApi from '../services/coreApi';
 import realtypeof from '../helpers/realtypeof';
 import {
@@ -760,7 +760,7 @@ export const getCompanyTaxReceiptProfile = (dispatch, companyId) => {
 };
 
 export const getGroupsFromSlug = (dispatch, slug) => {
-    return coreApi.get(`groups/find_by_slug`, {
+    return coreApi.get(`groups/finsdfd_by_slug`, {
         params: {
             slug,
         },
@@ -775,5 +775,6 @@ export const getGroupsFromSlug = (dispatch, slug) => {
         },
     ).catch((error) => {
         console.log(error);
+        Router.pushRoute('/give/error');
     });
 };
