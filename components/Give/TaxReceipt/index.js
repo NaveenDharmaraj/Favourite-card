@@ -17,9 +17,6 @@ import {
 		Button
 } from 'semantic-ui-react';
 import {
-	getTaxReceiptProfile
-} from '../../../actions/user';
-import {
 	validateTaxReceiptProfileForm
 } from '../../../helpers/give/utils'
 import { withTranslation } from '../../../i18n';
@@ -89,6 +86,7 @@ class TaxReceipt extends React.Component {
 		if(flowObject && flowObject.stepsCompleted){
 			Router.pushRoute('/dashboard');
 		}
+		window.scrollTo(0, 0);
 	}
 
 	componentDidUpdate(oldProps) {

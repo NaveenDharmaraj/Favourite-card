@@ -2,9 +2,6 @@
 
 import _ from 'lodash';
 
-import {
-    populateAccountOptions,
-} from '../helpers/give/utils';
 import coreApi from '../services/coreApi';
 import authRorApi from '../services/authRorApi';
 
@@ -12,6 +9,7 @@ export const actionTypes = {
     GET_MATCH_POLICIES_PAYMENTINSTRUMENTS: 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS',
     TAX_RECEIPT_PROFILES:'TAX_RECEIPT_PROFILES',
     SET_USER_INFO: 'SET_USER_INFO',
+    UPDATE_USER_FUND: 'UPDATE_USER_FUND',
 }
 
 const getAllPaginationData = async (url, params = null) => {
@@ -47,17 +45,6 @@ export const callApiAndGetData = (url, params) => getAllPaginationData(url, para
 );
 
 export const getDonationMatchAndPaymentInstruments = (userId, type) => {
-
-    // const fetchData = coreApi.get(`/users/${userId}`, {
-    //     params: {
-    //         include: [
-    //             'donationMatchPolicies',
-    //             'activePaymentInstruments',
-    //             'taxReceiptProfiles',
-    //         ],
-    //     },
-    //     uxCritical: true,
-    // });
 
     return async (dispatch) => {
         const fsa = {
@@ -147,12 +134,6 @@ export const getDonationMatchAndPaymentInstruments = (userId, type) => {
                 fsa.error = error;
                 fsa.payload.userAccountsFetched = true;
             }).finally(() => {
-                const {
-                    companiesAccountsData,
-                    fund,
-                    userCampaigns,
-                    userGroups,
-                } = fsa.payload;
                 dispatch(fsa);
             });
     };
@@ -191,28 +172,62 @@ export const getUser = async (dispatch, userId, token = null) => {
         console.log(JSON.stringify(error));
     }).finally(() => {
         dispatch({
-            type: 'SET_AUTH',
             payload: {
                 isAuthenticated: payload.isAuthenticated,
             },
+            type: 'SET_AUTH',
         });
         dispatch({
-            type: actionTypes.SET_USER_INFO,
             payload: {
                 userInfo: payload.userInfo,
             },
+            type: actionTypes.SET_USER_INFO,
         });
         return null;
     });
 };
 
+export const getUserFund = (dispatch, userId) => {
+    return coreApi.get(`/users/${userId}?include=fund`).then((result) => {
+        const payload = {
+            userInfo: result.data,
+        };
+        if (!_.isEmpty(result.included)) {
+            const { included } = result;
+            included.map((item) => {
+                const {
+                    attributes,
+                    id,
+                    type,
+                } = item;
+                if (type === 'funds') {
+                    payload.fund = {
+                        attributes,
+                        id,
+                        type,
+                    };
+                }
+            });
+        }
+        return dispatch({
+            payload: {
+                fund: payload.fund,
+                userInfo: payload.userInfo,
+            },
+            type: actionTypes.UPDATE_USER_FUND,
+        });
+    }).catch((error) => {
+        console.log(error);
+    });
+};
+
 export const setTaxReceiptProfile = (data) => {
     return (dispatch) => dispatch({
-        type: actionTypes.TAX_RECEIPT_PROFILES,
         payload: {
             taxReceiptGetApiStatus: true,
             taxReceiptProfiles: data,
         },
+        type: actionTypes.TAX_RECEIPT_PROFILES,
     });
 };
 
@@ -224,8 +239,7 @@ export const getTaxReceiptProfile = (dispatch, userId) => {
     })
 };
 
-export const updateTaxReceiptProfile = (taxReceiptProfile, action, dispatch) => {
-    let result = {};
+export const updateTaxReceiptProfile = (taxReceiptProfile, action) => {
     if (action === 'update') {
         const params = {
             data: {

@@ -66,6 +66,10 @@ class Donation extends React.Component {
             validity: this.intializeValidations(),
             dropDownOptions: {},
         }
+        if (props.recurringType) {
+            this.state.flowObject.giveData.automaticDonation = true;
+            this.state.flowObject.giveData.giftType.value = 1;
+        }
         this.validateStripeCreditCardNo = this.validateStripeCreditCardNo.bind(this);
         this.validateStripeExpirationDate = this.validateStripeExpirationDate.bind(this);
         this.validateCreditCardCvv = this.validateCreditCardCvv.bind(this);
@@ -86,15 +90,11 @@ class Donation extends React.Component {
                     ...defaultPropsData.flowObject,
                     nextStep: step,
                 }
-            dispatch({
-                payload,
-                type: actionTypes.SAVE_FLOW_OBJECT,
-            });
             this.setState({
                 flowObject: {
                     ...payload,
-                }
-            })
+                },
+            });
         }
     }
 
@@ -295,6 +295,7 @@ class Donation extends React.Component {
                     companyDefaultTaxReceiptProfile :
                     defaultTaxReceiptProfile;
             }
+            flowObject.stepsCompleted = false;
             dispatch(proceed({
                 ...flowObject}, flowSteps[stepIndex+1], stepIndex));
         } else {
@@ -691,6 +692,7 @@ class Donation extends React.Component {
     }    
     
     render() {
+        console.log('flowObect',this.props.flowObject);
         const {
             flowObject: {
                 currency,

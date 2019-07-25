@@ -4,9 +4,8 @@ services:
   chimp-web-client-next:
     image: chimp-web-client-next
     build: .
-    environment:
-      NODE_ENV: dev
-      PORT: 6310
+    env_file:
+      - .env
     ports:
       - 6310:6310
     ## set your startup file here

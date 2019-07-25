@@ -12,7 +12,8 @@ import Footer from '../Footer';
 import AuthMobileHeader from '../Header/AuthHeader/MobileHeader';
 import { Router } from '../../../routes';
 
-import '../Header/header.less';
+import '../../../static/less/header.less';
+import '../../../static/less/style.less';
 
 const getWidth = () => {
     const isSSR = typeof window === 'undefined';
@@ -55,6 +56,15 @@ class Layout extends React.Component {
                     </Responsive>
                     <Responsive minWidth={Responsive.onlyTablet.minWidth}>
                         <Header isAuthenticated={isAuthenticated} />
+
+                    <Link route="/donations/new">
+                                   ADD
+                    </Link>
+                     <br/>
+                     <br/>
+                    <Link route="/give/to/charity/the-canadian-red-cross-society-la-societe-canadienne-de-la-croix-rouge/gift/new">
+                                   GIVE
+                    </Link>
                          <Container><div className="pageWraper">{children}</div></Container>
            
                     </Responsive>

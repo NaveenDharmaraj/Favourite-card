@@ -177,16 +177,28 @@ const Success = (props) => {
         }
         if (type === 'donations') {
             secondParagraph = creditCardMessage;
+            fourthButton = (
+                <Button
+                    // as={GeminiLink}
+                    color="blue"
+                    content={formatMessage('seeYourTaxReceipt')}
+                    id="taxReceiptsLink"
+                    path={taxProfileLink}
+                />
+            );
+        } else if (!_.isEmpty(creditCard) && creditCard.value > 0) {
+            taxProfileLink = (giveFrom.type !== 'user')
+                ? `/${giveFrom.type}/${giveFrom.slug}/tax-receipts` : taxProfileLink;
+            fourthButton = (
+                <Button
+                    //as={GeminiLink}
+                    color="blue"
+                    content={formatMessage({ id: 'giving.donations.success.seeYourTaxReceipt' })}
+                    id="taxReceiptsLink"
+                    path={taxProfileLink}
+                />
+            );
         }
-        fourthButton = (
-            <Button
-                // as={GeminiLink}
-                color="blue"
-                content={formatMessage('seeYourTaxReceipt')}
-                id="taxReceiptsLink"
-                path={taxProfileLink}
-            />
-        );
         // the check is to differentiate donation and allocation dashboardlink
         dashboardLink = (giveFrom && giveFrom.type !== 'user')
             ? `/${giveFrom.type}/${giveFrom.slug}` : dashboardLink;
@@ -313,15 +325,27 @@ const Success = (props) => {
         }
         if (type === 'donations') {
             secondParagraph = recurringCreditCardMessage;
+            fourthButton = (
+                <Button
+                    // as={GeminiLink}
+                    color="blue"
+                    content={formatMessage('recurringTransactions')}
+                    path={recurringDonationsLink}
+                />
+            );
+        } else if (!_.isEmpty(creditCard) && creditCard.value > 0) {
+            taxProfileLink = (giveFrom.type !== 'user')
+                ? `/${giveFrom.type}/${giveFrom.slug}/tax-receipts` : taxProfileLink;
+            fourthButton = (
+                <Button
+                    //as={GeminiLink}
+                    color="blue"
+                    content={formatMessage({ id: 'giving.donations.success.seeYourTaxReceipt' })}
+                    id="taxReceiptsLink"
+                    path={taxProfileLink}
+                />
+            );
         }
-        fourthButton = (
-            <Button
-                // as={GeminiLink}
-                color="blue"
-                content={formatMessage('recurringTransactions')}
-                path={recurringDonationsLink}
-            />
-        );
     }
 
     return (
