@@ -956,17 +956,6 @@ Group.defaultProps = Object.assign({}, groupDefaultProps, defProps);
 
 const  mapStateToProps = (state, props) => {
 
-
-  // if(props.flowObject && props.flowObject.giveData.giveTo.type === 'user') {
-  //   return {
-  //     taxReceiptProfiles: state.user.taxReceiptProfiles,
-  //     taxReceiptGetApiStatus:state.user.taxReceiptGetApiStatus
-  //   }
-  // }
-  // return {
-  //   taxReceiptProfiles: state.give.companyData.taxReceiptProfiles,
-  //   taxReceiptGetApiStatus:state.give.companyData.taxReceiptGetApiStatus
-  // }
   return {
     giveGroupDetails: state.give.groupSlugDetails,
     companiesAccountsData: state.user.companiesAccountsData,
