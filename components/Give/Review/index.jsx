@@ -1,6 +1,7 @@
 import React, {
     Fragment,
   } from 'react';
+import _ from 'lodash';
 import { connect } from 'react-redux';
 import { reInitNextStep, proceed } from '../../../actions/give';
 import {
@@ -45,7 +46,7 @@ class Review extends React.Component {
     dispatch(proceed(flowObject, flowSteps[stepIndex+1], stepIndex, true));
   }
   render() {
-    if (this.props.flowObject.stepsCompleted !== true) {
+    if ( !_.isEmpty(this.props.flowObject) && this.props.flowObject.stepsCompleted !== true) {
         const {
             flowObject: {
                 currency,

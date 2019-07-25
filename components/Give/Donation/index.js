@@ -66,6 +66,10 @@ class Donation extends React.Component {
             validity: this.intializeValidations(),
             dropDownOptions: {},
         }
+        if (props.recurringType) {
+            this.state.flowObject.giveData.automaticDonation = true;
+            this.state.flowObject.giveData.giftType.value = 1;
+        }
         this.validateStripeCreditCardNo = this.validateStripeCreditCardNo.bind(this);
         this.validateStripeExpirationDate = this.validateStripeExpirationDate.bind(this);
         this.validateCreditCardCvv = this.validateCreditCardCvv.bind(this);

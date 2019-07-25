@@ -11,7 +11,8 @@ import Footer from '../Footer';
 import AuthMobileHeader from '../Header/AuthHeader/MobileHeader';
 import { Router } from '../../../routes';
 
-import '../Header/header.less';
+import '../../../static/less/header.less';
+import '../../../static/less/style.less';
 
 const getWidth = () => {
     const isSSR = typeof window === 'undefined';

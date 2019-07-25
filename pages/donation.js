@@ -17,6 +17,7 @@ class Donations extends React.Component {
                 'success',
                 'error',
             ],
+            recurringType: query['donation_details[recurring]'],
             step: query.step,
         };
     }
