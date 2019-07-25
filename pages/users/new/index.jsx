@@ -73,7 +73,7 @@ class Login extends React.Component {
 
     intializeValidations() {
         this.validity = {
-            isEmailIdNotNull: true,
+            isEmailIdValid: true,
             isFirstNameNotNull: true,
             isLastNameNotNull: true,
             isPasswordNotNull: true,

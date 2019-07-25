@@ -45,7 +45,12 @@ function FirstComponent(props) {
                             />
                         </Form.Field>
                         <Form.Field>
-                            <label>Last Name<a style={{float:'right'}} className="forgot-link">Forgot Password?</a></label>
+                            <label>
+                                Last Name
+                                <a style={{float:'right'}} className="forgot-link">
+                                    Forgot Password?
+                                </a>
+                            </label>
                             <Form.Field
                                 control={Input}
                                 id="lastName"
@@ -61,7 +66,7 @@ function FirstComponent(props) {
                             />
                         </Form.Field>
                         <div className="reg-btn-wraper">
-                            <Button type='submit' onClick={handleSubmit} primary>Continue</Button>
+                            <Button type="submit" onClick={handleSubmit} primary>Continue</Button>
                         </div>
                     </Form>
                 </div>

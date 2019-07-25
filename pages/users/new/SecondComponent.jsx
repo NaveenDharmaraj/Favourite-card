@@ -34,12 +34,12 @@ function SecondComponent(props) {
                                 name="emailId"
                                 value={emailId}
                                 onChange={parentInputChange}
-                                error={!validity.isEmailIdNotNull}
+                                error={!validity.isEmailIdValid}
                                 placeholder="Your email Id"
                             />
                             <FormValidationErrorMessage
-                                condition={!validity.isEmailIdNotNull}
-                                errorMessage="Please input your email id"
+                                condition={!validity.isEmailIdValid}
+                                errorMessage="Please input a valid email id"
                             />
                         </Form.Field>
                         <Form.Field>

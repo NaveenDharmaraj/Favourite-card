@@ -182,7 +182,7 @@ function CausesComponent(props) {
                 <div className="reg-btn-wraper">
                     <Button
                         type="submit"
-                        active={(_.every(validity))}
+                        // active={(_.every(validity))}
                         primary
                         onClick={handleSubmit}
                     >
