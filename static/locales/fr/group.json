@@ -13,8 +13,6 @@
     "invalidMaxAmountError": "9 999 $ est le maximum que nous pouvons traiter ici. Pour des montants plus importants, veuillez nous contacter: hello@chimp.net ou 1-877-531-0580.",
     "giveAmountGreaterThanBalance": "Désolé, vous ne pouvez pas envoyer plus d'argent qu'il n'y en a dans votre compte.",
     "blankError":  "Doit être rempli",
-    "continueButton": "Suivant",
-    "submitingButton": "En cours de soumission",
     "giftTypeSingle": "Ceci est un don unique"
 
 }
