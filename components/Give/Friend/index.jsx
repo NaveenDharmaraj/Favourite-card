@@ -27,7 +27,6 @@ class Friend extends React.Component {
     dispatch(proceed(this.state.flowObject, flowSteps[stepIndex+1]))
   }
   render() {
-    console.log(this.props);
     return (
       <div>
         Friend new page - slug is {this.props.slug}

@@ -1,15 +1,24 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
     Grid,
     Icon,
     Button,
 } from 'semantic-ui-react';
 
+import { reInitNextStep } from '../../actions/give';
 import { Link } from '../../routes';
 import { withTranslation } from '../../i18n';
 
 const Error = (props) => {
-    let formatMessage = props.t;
+    useEffect(() => {
+        const {
+            dispatch, flowObject,
+        } = props;
+        if (flowObject) {
+            reInitNextStep(dispatch, flowObject);
+        }
+    }, []);
+    const formatMessage = props.t;
     return (
         <div>
             <Grid

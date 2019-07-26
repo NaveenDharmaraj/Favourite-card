@@ -6,7 +6,7 @@ import {
     beneficiaryDefaultProps,
     donationDefaultProps,
     groupDefaultProps,
-    // p2pDefaultProps,
+    //p2pDefaultProps,
 } from '../helpers/give/defaultProps';
 
 import {
@@ -478,7 +478,7 @@ export const proceed = (
     if (lastStep) {
         return (dispatch) => {
             let fn;
-            let successData = {};
+            let successData = _.merge({}, flowObject);
             let nextStepToProcced = nextStep;
             switch (flowObject.type) {
                 case 'donations':
@@ -503,7 +503,8 @@ export const proceed = (
                 ],
             ).then((results) => {
                 if (!_.isEmpty(results[0])) {
-                    successData = _.merge({}, flowObject);
+                    successData.result = results[0];
+                    //successData = _.merge({}, flowObject);
                     // For p2p, we create an array of arrays, I'm not to clear on the
                     // the correct syntax to make this more redable.
                     // if (type === 'give/to/friend') {
@@ -530,7 +531,7 @@ export const proceed = (
                 const defaultProps = {
                     'donations': donationDefaultProps,
                     'give/to/charity': beneficiaryDefaultProps,
-                    // 'give/to/friend': p2pDefaultProps,
+                    //'give/to/friend': p2pDefaultProps,
                     'give/to/group': groupDefaultProps,
                 };
                 const defaultPropsData = _.merge({}, defaultProps[flowObject.type]);
