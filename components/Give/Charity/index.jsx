@@ -503,12 +503,12 @@ class Charity extends React.Component {
         this.setState({ validity });
         let validateCC = true;
         if (giveData.creditCard.value === 0) {
-            // this.StripeCreditCard.handleOnLoad(
-            //     inValidCardNumber, inValidExpirationDate, inValidNameOnCard,
-            //     inValidCvv, inValidCardNameValue,
-            // );
-            // validateCC = (!inValidCardNumber && !inValidExpirationDate &&
-            //     !inValidNameOnCard && !inValidCvv && !inValidCardNameValue);
+            this.CreditCard.handleOnLoad(
+                inValidCardNumber, inValidExpirationDate, inValidNameOnCard,
+                inValidCvv, inValidCardNameValue,
+            );
+            validateCC = (!inValidCardNumber && !inValidExpirationDate &&
+                !inValidNameOnCard && !inValidCvv && !inValidCardNameValue);
         }
         return _every(validity) && validateCC;
     }
