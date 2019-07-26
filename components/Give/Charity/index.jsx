@@ -1041,7 +1041,6 @@ class Charity extends React.Component {
     }
 
     render() {
-        console.log('testing render',this.state.flowObject);
         const {
             coverFeesData,
         } = this.props;

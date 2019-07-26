@@ -48,7 +48,6 @@ const Success = (props) => {
         const {
             dispatch, flowObject,
         } = props;
-
         if (flowObject) {
             reInitNextStep(dispatch, flowObject);
         }

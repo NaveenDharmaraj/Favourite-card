@@ -66,7 +66,11 @@ class Donation extends React.Component {
                 };
             }
             else{
-                payload =  _merge({}, props.flowObject)
+                const defaultPropsData =  _merge({}, props.flowObject);
+                payload = {
+                    ...defaultPropsData,
+                    nextStep: props.step,
+                }
             }  
         this.state = {
             flowObject: payload,
@@ -685,7 +689,6 @@ class Donation extends React.Component {
     }    
     
     render() {
-       
         const {
             flowObject: {
                 currency,
