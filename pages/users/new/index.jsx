@@ -8,6 +8,7 @@ import _ from 'lodash';
 
 import Layout from '../../../components/shared/Layout';
 import validateUserRegistrationForm from '../../../helpers/users/utils';
+import { saveUser } from '../../../actions/user';
 
 import FirstComponent from './FirstComponent';
 import SecondComponent from './SecondComponent';
@@ -109,7 +110,24 @@ class Login extends React.Component {
         if (isValid) {
             let {
                 stepIndex,
+                attributes:{
+                    firstName,
+                    lastName,
+                    emailId,
+                    password,
+                },
             } = this.state;
+            if (stepIndex === 2) {
+                let userDetails = {};
+                userDetails.name = (firstName) ? firstName + lastName : '';
+                userDetails.given_name = firstName;
+                userDetails.family_name = lastName;
+                userDetails.email = emailId;
+                userDetails.password = password;
+                debugger
+
+                let result = saveUser(userDetails);
+            }
             stepIndex += 1;
             this.setState({
                 stepIndex,

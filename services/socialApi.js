@@ -1,3 +1,5 @@
+/* eslint-disable prefer-arrow-callback */
+/* eslint-disable func-names */
 import axios from 'axios';
 import _isEmpty from 'lodash/isEmpty';
 import getConfig from 'next/config';
@@ -25,7 +27,8 @@ instance.interceptors.request.use(function (config) {
         if (!_isEmpty(auth0) && !_isEmpty(auth0.accessToken)) {
             token = auth0.accessToken;
         }
-        config.headers.Authorization = `Bearer ${token}`;
+        // config.headers.Authorization = `Bearer ${token}`;
+        config.headers.Authorization = `Basic YWRtaW46WTJoaGJtZGxiV1U9`;
     }
     return config;
 }, function (error) {

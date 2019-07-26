@@ -14,7 +14,7 @@ const validateUserRegistrationForm = (field, value, validity) =>{
         case 'emailId':
             const emailValue = value;
             validity.isEmailIdNotNull = !(!value || value.length === 0);
-            validity.isEmailValidFormat = !_.isEmpty(emailValue) ? !(emailRegex).test(emailValue) : true;
+            validity.isEmailValidFormat = !_.isEmpty(emailValue) ? (emailRegex).test(emailValue) : true;
             validity.isEmailIdValid = _.every(
                 _.pick(validity, [
                     'isEmailIdNotNull',

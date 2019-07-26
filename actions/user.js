@@ -4,6 +4,7 @@ import _ from 'lodash';
 
 import coreApi from '../services/coreApi';
 import authRorApi from '../services/authRorApi';
+import socialApi from '../services/socialApi';
 
 export const actionTypes = {
     GET_MATCH_POLICIES_PAYMENTINSTRUMENTS: 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS',
@@ -304,5 +305,14 @@ export const savePaymentInstrument = (cardDetails) => {
     const result = coreApi.post('/paymentInstruments', {
         data: cardDetails,
     });
+    return result;
+};
+
+export const saveUser = (userDetails) => {
+    debugger
+    const result = socialApi.post('/create/user', {
+        data: userDetails,
+    });
+    debugger
     return result;
 };

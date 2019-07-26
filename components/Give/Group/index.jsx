@@ -159,7 +159,7 @@ class Group extends React.Component {
         if (Number(sourceAccountHolderId) > 0) {
             getGroupsForUser(dispatch,id);
         }  
-        if (slug !== null) {
+        else if (slug !== null) {
             getGroupsFromSlug(dispatch, slug);
         }
         console.log('this.props');

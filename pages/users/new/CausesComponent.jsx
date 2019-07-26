@@ -1,3 +1,4 @@
+/* eslint-disable operator-assignment */
 import React from 'react';
 
 import {
@@ -8,6 +9,7 @@ import {
 import _ from 'lodash';
 
 import FormValidationErrorMessage from '../../../components/shared/FormValidationErrorMessage';
+import CauseComponent from './CauseComponent';
 
 function CausesComponent(props) {
     let {
@@ -16,7 +18,37 @@ function CausesComponent(props) {
         userCauses,
         validity,
     } = props;
+    const causesArray = [
+        'arts_and_culture',
+        'health',
+        'education_and_research',
+        'religion_and_spirituality',
+        'human_rights',
+        'international',
+        'environment',
+        'sports_and_recreation',
+        'outreach_and_welfare',
+        'animals',
+        'community_development',
+        'youth_or_children',
+    ];
+    const renderCauses = () =>{
+        // if(!_.isEmpty(causesArray)){
+        let causesBlock = null;
+        if (true) {
+            causesArray.forEach((cause) => {
+                console.log(cause);
+                    <CauseComponent 
+                        parentHandleCauses={parentHandleCauses}
+                        userCauses={userCauses}
+                        cause={cause}
+                    />
+            });
+        }
+        return causesBlock;
+    };
     return (
+        // renderCauses()
         <Grid.Column mobile={16} tablet={14} computer={14} largeScreen={12}>
             <div className="prefered-wraper">
                 <div className="prefered-img" />
@@ -192,6 +224,7 @@ function CausesComponent(props) {
             </div>
             
         </Grid.Column>
+    
     );
 }
 
