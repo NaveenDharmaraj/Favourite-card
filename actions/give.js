@@ -505,11 +505,11 @@ export const proceed = (
                     successData = _.merge({}, flowObject);
                     // For p2p, we create an array of arrays, I'm not to clear on the
                     // the correct syntax to make this more redable.
-                    if (flowObject.type === 'give/to/friend') {
-                        successData.allocationData = results[0];
-                    } else {
-                        successData.allocationData = results[0].data;
-                    }
+                    // if (flowObject.type === 'give/to/friend') {
+                    //     successData.allocationData = results[0];
+                    // } else {
+                    //     successData.allocationData = results[0].data;
+                    // }
                 }
             }).catch((err) => {
                 // logger.error(err);

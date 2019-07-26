@@ -31,10 +31,10 @@ import { reInitNextStep } from '../../actions/give';
 //     (recipientList) => Number(recipientList.data.attributes.amount),
 // );
 
-const calculateGiveAmount = (successData) => Number(
-    // successData.recipientLists[0].data.attributes.amount,
-    successData.allocationData[0].data.attributes.amount,
-);
+// const calculateGiveAmount = (successData) => Number(
+//     // successData.recipientLists[0].data.attributes.amount,
+//     successData.allocationData[0].data.attributes.amount,
+// );
 
 const calculateRecipients = (successData) => successData.recipientLists.length;
 
@@ -234,7 +234,7 @@ const Success = (props) => {
                 const p2pTotalGiveAmount = (successData.giveData.giveAmount * recipients.length); // calculateP2pTotalGiveAmount(props.successData);
                 const numberOfRecipient = recipients.length; // calculateRecipients(props.successData);
                 const p2pGiveAmount = successData.giveData.giveAmount;// calculateGiveAmount(props.successData);
-                const recipientEmail = getFirstEmailRecipient(props.successData);
+                const recipientEmail = successData.giveData.recipients[0]; // getFirstEmailRecipient(props.successData);
 
                 if (numberOfRecipient > 1) {
                     amount = formatCurrency(
