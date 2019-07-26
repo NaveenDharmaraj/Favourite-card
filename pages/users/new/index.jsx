@@ -124,8 +124,6 @@ class Login extends React.Component {
                 userDetails.family_name = lastName;
                 userDetails.email = emailId;
                 userDetails.password = password;
-                debugger
-
                 let result = saveUser(userDetails);
             }
             stepIndex += 1;

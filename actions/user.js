@@ -309,10 +309,8 @@ export const savePaymentInstrument = (cardDetails) => {
 };
 
 export const saveUser = (userDetails) => {
-    debugger
     const result = socialApi.post('/create/user', {
-        data: userDetails,
+        ...userDetails,
     });
-    debugger
     return result;
 };
