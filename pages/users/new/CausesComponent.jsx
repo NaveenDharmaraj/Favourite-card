@@ -32,7 +32,7 @@ function CausesComponent(props) {
         'community_development',
         'youth_or_children',
     ];
-    const renderCauses = () =>{
+    const renderCauses = () => {
         const causesBlock = [];
         if (!_.isEmpty(causesArray)) {
             causesArray.forEach((cause) => {

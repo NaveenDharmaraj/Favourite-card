@@ -39,17 +39,30 @@ class Login extends React.Component {
         const {
             attributes,
         } = this.state;
+        let {
+            validity,
+        } = this.state;
+        // let pwdCharCount = 0;
+        // let pwdHasLwrCase = false;
+        // let pwdHasUprCase = false;
         const newValue = (!_.isEmpty(options)) ? _.find(options, { value }) : value;
         if (attributes[name] !== newValue) {
             attributes[name] = newValue;
         }
-        // switch(name) {
-        //     case 'firstName'
-        // }
+        switch (name) {
+            case 'password':
+                validity = validateUserRegistrationForm('password', newValue, validity);
+                break;
+            default:
+                break;
+        }
         this.setState({
             attributes: {
                 ...this.state.attributes,
                 ...attributes,
+                // pwdCharCount,
+                // pwdHasLwrCase,
+                // pwdHasUprCase,
             },
 
         });
@@ -60,7 +73,7 @@ class Login extends React.Component {
             isEmailIdValid: true,
             isFirstNameNotNull: true,
             isLastNameNotNull: true,
-            isPasswordNotNull: true,
+            isPasswordValid: true,
             isValidCauses: true,
         };
         return this.validity;
@@ -166,11 +179,12 @@ class Login extends React.Component {
             attributes: {
                 firstName,
                 lastName,
+                emailId,
+                password,
                 userCauses,
             },
             validity,
         } = this.state;
-        console.log(_.every(validity));
         return (
             <Layout>
                 <div className="pageWraper">
@@ -193,8 +207,8 @@ class Login extends React.Component {
                                         <SecondComponent
                                             parentInputChange={this.handleInputChange}
                                             handleSubmit={this.handleSubmit}
-                                            firstName={firstName}
-                                            lastName={lastName}
+                                            emailId={emailId}
+                                            password={password}
                                             validity={validity}
                                         />
                                     )

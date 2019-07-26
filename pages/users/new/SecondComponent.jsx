@@ -17,6 +17,9 @@ function SecondComponent(props) {
         password,
         validity
     } = props;
+    // let pwdCharCount =0;
+    console.log(validity);
+    let pwdCharCount = (password) ? password.length : 0;
     return (
         <Grid.Row>
             <Grid.Column className="left-bg"></Grid.Column>
@@ -50,17 +53,21 @@ function SecondComponent(props) {
                                 name="password"
                                 value={password}
                                 onChange={parentInputChange}
-                                error={!validity.isPasswordNotNull}
+                                // error={!validity.isPasswordValid}
                                 placeholder="Password"
                             />
                             <FormValidationErrorMessage
-                                condition={!validity.isPasswordNotNull}
+                                condition={!validity.isPasswordValid}
                                 errorMessage="Please input your account password"
                             />
                         </Form.Field>
                         <p>
-                            0/8 characters, lowercase letters (a-z), uppercase letters (A-Z),
-    special characters (e.g. !@#$%^&*)
+                            <span className={(validity.doesPwdHaveCount) ? 'blueText' : ''}>
+                                {pwdCharCount}/8 characters,
+                            </span>
+                            <span className={(validity.doesPwdhaveLowerCase) ? 'blueText' : ''}>lowercase letters (a-z),</span>
+                            <span className={(validity.doesPwdhaveUpperCase) ? 'blueText' : ''}>>uppercase letters (A-Z),</span>
+                            <span className={(validity.doesPwdhaveSpecialChars) ? 'blueText' : ''}>special characters (e.g. !@#$%^&*)</span>
                         </p>
                         <div className="reg-btn-wraper">
                             <Button type='submit' primary onClick={handleSubmit}>Continue</Button>
