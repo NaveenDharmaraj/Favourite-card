@@ -113,8 +113,13 @@ class Group extends React.Component {
         this.state.flowObject.groupFromUrl = false;
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleInputOnBlur = this.handleInputOnBlur.bind(this)
-        this.getStripeCreditCard = this.getStripeCreditCard.bind(this);
         this.handleInputChangeGiveTo = this.handleInputChangeGiveTo.bind(this);
+
+        this.validateStripeCreditCardNo = this.validateStripeCreditCardNo.bind(this);
+        this.validateStripeExpirationDate = this.validateStripeExpirationDate.bind(this);
+        this.validateCreditCardCvv = this.validateCreditCardCvv.bind(this);
+        this.validateCreditCardName = this.validateCreditCardName.bind(this);
+        this.getStripeCreditCard = this.getStripeCreditCard.bind(this);
     }
 
     componentDidMount() {
@@ -333,7 +338,7 @@ class Group extends React.Component {
         this.setState({ validity });
         let validateCC = true;
         if (giveData.creditCard.value === 0) {
-            this.StripeCreditCard.handleOnLoad(
+            this.CreditCard.handleOnLoad(
                 inValidCardNumber, inValidExpirationDate, inValidNameOnCard,
                 inValidCvv, inValidCardNameValue,
             );
@@ -416,6 +421,11 @@ class Group extends React.Component {
     handleSubmit = () => {
         const {
             flowObject,
+            inValidCardNumber,
+            inValidExpirationDate,
+            inValidNameOnCard,
+            inValidCvv,
+            inValidCardNameValue,
         } = this.state;
         const {
             nextStep,
@@ -433,17 +443,16 @@ class Group extends React.Component {
         this.setState({
             buttonClicked: true,
         });
-        // const validateCC = this.isValidCC(
-        //     creditCard,
-        //     inValidCardNumber,
-        //     inValidExpirationDate,
-        //     inValidNameOnCard,
-        //     inValidCvv,
-        //     inValidCardNameValue,
-        // );
+        const validateCC = this.isValidCC(
+            creditCard,
+            inValidCardNumber,
+            inValidExpirationDate,
+            inValidNameOnCard,
+            inValidCvv,
+            inValidCardNameValue,
+        );
 
-        // if (this.validateForm() && validateCC) {
-        if (this.validateForm()) {
+        if (this.validateForm() && validateCC) {
 
             if (creditCard.value > 0) {
                 flowObject.selectedTaxReceiptProfile = (flowObject.giveData.giveFrom.type === 'companies') ?
@@ -649,34 +658,34 @@ class Group extends React.Component {
         });
     }
 
-    // isValidCC(
-    //     creditCard,
-    //     inValidCardNumber,
-    //     inValidExpirationDate,
-    //     inValidNameOnCard,
-    //     inValidCvv,
-    //     inValidCardNameValue,
-    // ) {
-    //     let validCC = true;
-    //     if (creditCard.value === 0) {
-    //         this.CreditCard.handleOnLoad(
-    //             inValidCardNumber,
-    //             inValidExpirationDate,
-    //             inValidNameOnCard,
-    //             inValidCvv,
-    //             inValidCardNameValue,
-    //         );
-    //         validCC = (
-    //             !inValidCardNumber &&
-    //             !inValidExpirationDate &&
-    //             !inValidNameOnCard &&
-    //             !inValidCvv &&
-    //             !inValidCardNameValue
-    //         );
-    //     }
+    isValidCC(
+        creditCard,
+        inValidCardNumber,
+        inValidExpirationDate,
+        inValidNameOnCard,
+        inValidCvv,
+        inValidCardNameValue,
+    ) {
+        let validCC = true;
+        if (creditCard.value === 0) {
+            this.CreditCard.handleOnLoad(
+                inValidCardNumber,
+                inValidExpirationDate,
+                inValidNameOnCard,
+                inValidCvv,
+                inValidCardNameValue,
+            );
+            validCC = (
+                !inValidCardNumber &&
+                !inValidExpirationDate &&
+                !inValidNameOnCard &&
+                !inValidCvv &&
+                !inValidCardNameValue
+            );
+        }
 
-    //     return validCC;
-    // }
+        return validCC;
+    }
 
     render() {
         let {
@@ -743,6 +752,29 @@ class Group extends React.Component {
                     validity={validity}
                 />
             );
+            if ((_isEmpty(paymentInstrumentList) && giveFrom.value) || creditCard.value === 0) {
+                stripeCardComponent = (
+                    <StripeProvider apiKey={STRIPE_KEY}>
+                        <Elements>
+                            <CreditCard
+                                creditCardElement={this.getStripeCreditCard}
+                                creditCardValidate={inValidCardNumber}
+                                creditCardExpiryValidate={inValidExpirationDate}
+                                creditCardNameValidte={inValidNameOnCard}
+                                creditCardNameValueValidate={inValidCardNameValue}
+                                creditCardCvvValidate={inValidCvv}
+                                validateCCNo={this.validateStripeCreditCardNo}
+                                validateExpiraton={this.validateStripeExpirationDate}
+                                validateCvv={this.validateCreditCardCvv}
+                                validateCardName={this.validateCreditCardName}
+                                formatMessage={formatMessage}
+                                // eslint-disable-next-line no-return-assign
+                                onRef={(ref) => (this.CreditCard = ref)}
+                            />
+                        </Elements>
+                    </StripeProvider>
+                );
+            }
         }
 
         if ( giveFrom.value > 0) {
@@ -879,29 +911,7 @@ class Group extends React.Component {
                         )}
                         {repeatGift}
                         {accountTopUpComponent}
-                        {/* {
-                            (_isEmpty(paymentInstrumentList) || creditCard.value === 0) && (
-                                <StripeProvider apiKey={STRIPE_KEY}>
-                                    <Elements>
-                                        <CreditCard
-                                            creditCardElement={this.getStripeCreditCard}
-                                            creditCardValidate={inValidCardNumber}
-                                            creditCardExpiryValidate={inValidExpirationDate}
-                                            creditCardNameValidte={inValidNameOnCard}
-                                            creditCardNameValueValidate={inValidCardNameValue}
-                                            creditCardCvvValidate={inValidCvv}
-                                            validateCCNo={this.validateStripeCreditCardNo}
-                                            validateExpiraton={this.validateStripeExpirationDate}
-                                            validateCvv={this.validateCreditCardCvv}
-                                            validateCardName={this.validateCreditCardName}
-                                            formatMessage={formatMessage}
-                                            // eslint-disable-next-line no-return-assign
-                                            onRef={(ref) => (this.CreditCard = ref)}
-                                        />
-                                    </Elements>
-                                </StripeProvider>
-                            )
-                        }  */}
+                        {stripeCardComponent}
                         <Form.Field>
                             <Divider className="dividerMargin" />
                         </Form.Field>
