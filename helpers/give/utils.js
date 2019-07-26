@@ -430,6 +430,21 @@ const populateAccountOptions = (data, translate, giveToId = null, allocationType
     return null;
 };
 
+const populateGroupsOfUser = (giveToGroupsData) => {
+    if (!_.isEmpty(giveToGroupsData)) {
+        return (
+            getDropDownOptionFromApiData(
+                giveToGroupsData.userGroups,
+                null,
+                (item) => item.attributes.fundId,
+                (attributes) => `${attributes.name}`,
+                (attributes) => false,
+            )
+        );
+    }
+    return null;
+};
+
 const populateDonationMatch = (donationMatchData, formatMessage, language) => {
     if (!_.isEmpty(donationMatchData)) {
         const noDonationMatch = {
@@ -1532,6 +1547,7 @@ export {
     populateAccountOptions,
     populateDonationMatch,
     populateGiveToGroupsofUser,
+    populateGroupsOfUser,
     populatePaymentInstrument,
     populateGiftType,
     populateInfoToShare,

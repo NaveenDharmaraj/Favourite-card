@@ -259,6 +259,7 @@ class Charity extends React.Component {
             const paymentInstrumentOptions = populatePaymentInstrument(
                 paymentInstruments, formatMessage,
             );
+            giveData.creditCard = getDefaultCreditCard(paymentInstrumentOptions);
             const giveToOptions = populateGiveToGroupsofUser(giveGroupBenificairyDetails);
             const donationMatchOptions = populateDonationMatch(donationMatchData, formatMessage);
             if (!_isEmpty(giveCharityDetails) && !_isEmpty(giveCharityDetails.charityDetails)) {

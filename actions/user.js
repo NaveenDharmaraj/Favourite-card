@@ -4,9 +4,11 @@ import _ from 'lodash';
 
 import coreApi from '../services/coreApi';
 import authRorApi from '../services/authRorApi';
+import { Router } from '../routes';
 
 export const actionTypes = {
     GET_MATCH_POLICIES_PAYMENTINSTRUMENTS: 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS',
+    GET_USERS_GROUPS: 'GET_USERS_GROUPS',
     TAX_RECEIPT_PROFILES:'TAX_RECEIPT_PROFILES',
     SET_USER_INFO: 'SET_USER_INFO',
     UPDATE_USER_FUND: 'UPDATE_USER_FUND',
@@ -268,6 +270,26 @@ export const updateTaxReceiptProfile = (taxReceiptProfile, action) => {
         });
     }
     // return setTaxReceiptProfile(dispatch, result.data)
+};
+export const getGroupsForUser = (dispatch, userId) => {
+    const fsa = {
+        payload: {
+            userGroups: [],
+        },
+        type: actionTypes.GET_USERS_GROUPS,
+    };
+    callApiAndGetData(`/users/${userId}/groupsWithMemberships?page[size]=50&sort=-id`)
+        .then(
+            (result) => {
+                if (!_.isEmpty(result)) {
+                    fsa.payload.userMembershipGroups = result;
+                }
+                dispatch(fsa);
+            },
+        ).catch((error) => {
+            console.log(error);
+            Router.pushRoute('/give/error');
+        });
 };
 
 export const savePaymentInstrument = (cardDetails) => {
