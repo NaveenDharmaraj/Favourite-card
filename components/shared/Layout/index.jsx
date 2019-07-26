@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Link } from '../../../routes';
 import Head from 'next/head';
 import {
     Container,
@@ -56,6 +55,14 @@ class Layout extends React.Component {
                     </Responsive>
                     <Responsive minWidth={Responsive.onlyTablet.minWidth}>
                         <Header isAuthenticated={isAuthenticated} />
+                        <Link route="/donations/new">
+                                   ADD
+                    </Link>
+                     <br/>
+                     <br/>
+                    <Link route="/give/to/charity/the-canadian-red-cross-society-la-societe-canadienne-de-la-croix-rouge/gift/new">
+                                   GIVE
+                    </Link>
                          <Container><div className="pageWraper">{children}</div></Container>
                     </Responsive>
                     <Footer />
