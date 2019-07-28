@@ -722,8 +722,6 @@ class Group extends React.Component {
                 infoToShareList
             },
         } = this.state;
-        console.log(this.props);
-        console.log(this.state);
         const formatMessage = this.props.t;
         const giveToType = (giveTo.isCampaign) ? 'Campaign' : 'Group';
         let accountTopUpComponent = null;

@@ -24,6 +24,30 @@ const PrivacyOptions = (props) => {
         infoToShare,
         infoToShareList,
     } = props;
+    let privacyShareAddressLabel = null;
+    let privacyShareEmailLabel = null;
+    let privacyShareNameLabel = null;
+    const privacyEmail = formatMessage('privacyOptions:privacyDataEmail');
+    const privacyPostal = formatMessage('privacyOptions:privacyDataPostal');
+    const privacyShareAmountLabel = formatMessage(`privacyOptions:share${giveToType}PrivacyGiftAmount`);
+    const myGiveFromType = (giveFrom.type !== 'user') ? formatMessage(`privacyOptions:my${giveFrom.type}`) : '';
+    switch (giveFrom.type) {
+        case 'user':
+            privacyShareNameLabel = formatMessage(`privacyOptions:share${giveToType}UserName`);
+            privacyShareEmailLabel = formatMessage(`privacyOptions:share${giveToType}PrivacyPostal`, { privacyData: privacyEmail });
+            privacyShareAddressLabel = formatMessage(`privacyOptions:share${giveToType}PrivacyPostal`, { privacyData: privacyPostal });
+            break;
+        case 'companies':
+            privacyShareNameLabel = formatMessage(`privacyOptions:share${giveToType}PrivacyName`, { giveFrom: myGiveFromType });
+            break;
+        case 'groups':
+            privacyShareNameLabel = formatMessage(`privacyOptions:share${giveToType}PrivacyName`, { giveFrom: myGiveFromType });
+            break;
+        case 'campaigns':
+            privacyShareNameLabel = formatMessage(`privacyOptions:share${giveToType}PrivacyName`, { giveFrom: myGiveFromType });
+            break;
+        default: break;
+    }
     return (
         <Fragment>
             <Form.Field>
@@ -45,7 +69,7 @@ const PrivacyOptions = (props) => {
                     className="ui checkbox checkbox-text"
                     control={Checkbox}
                     id="privacyShareName"
-                    label={formatMessage('privacyOptions:privacyShareNameLabel')}
+                    label={privacyShareNameLabel}
                     name="privacyShareName"
                     onChange={handleInputChange}
                 />
@@ -55,7 +79,7 @@ const PrivacyOptions = (props) => {
                     className="ui checkbox checkbox-text"
                     control={Checkbox}
                     id="privacyShareAmount"
-                    label={formatMessage('privacyOptions:privacyShareAmountLabel')}
+                    label={privacyShareAmountLabel}
                     name="privacyShareAmount"
                     onChange={handleInputChange}
                 />
@@ -78,7 +102,7 @@ const PrivacyOptions = (props) => {
                             className="ui checkbox checkbox-text"
                             control={Checkbox}
                             id="privacyShareEmail"
-                            label={formatMessage('privacyOptions:privacyShareEmailLabel')}
+                            label={privacyShareEmailLabel}
                             name="privacyShareEmail"
                             onChange={handleInputChange}
                         />
@@ -90,7 +114,7 @@ const PrivacyOptions = (props) => {
                                 className="ui checkbox checkbox-text"
                                 control={Checkbox}
                                 id="privacyShareAddress"
-                                label={formatMessage('privacyOptions:privacyShareAddressLabel')}
+                                label={privacyShareAddressLabel}
                                 name="privacyShareAddress"
                                 onChange={handleInputChange}
                             />
