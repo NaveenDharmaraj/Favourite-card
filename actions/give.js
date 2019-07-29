@@ -1,12 +1,12 @@
 /* eslint-disable import/exports-last */
 import _ from 'lodash';
-
+import { Router } from '../routes';
 import coreApi from '../services/coreApi';
 import {
     beneficiaryDefaultProps,
     donationDefaultProps,
     groupDefaultProps,
-    // p2pDefaultProps,
+    //p2pDefaultProps,
 } from '../helpers/give/defaultProps';
 
 import {
@@ -23,6 +23,7 @@ export const actionTypes = {
     GET_BENIFICIARY_FOR_GROUP: 'GET_BENIFICIARY_FOR_GROUP',
     GET_COMPANY_PAYMENT_AND_TAXRECEIPT: 'GET_COMPANY_PAYMENT_AND_TAXRECEIPT',
     GET_COMPANY_TAXRECEIPTS: 'GET_COMPANY_TAXRECEIPTS',
+    GET_GROUP_FROM_SLUG: 'GET_GROUP_FROM_SLUG',
     SAVE_FLOW_OBJECT: 'SAVE_FLOW_OBJECT',
     SAVE_SUCCESS_DATA: 'SAVE_SUCCESS_DATA',
 };
@@ -477,7 +478,7 @@ export const proceed = (
     if (lastStep) {
         return (dispatch) => {
             let fn;
-            let successData = {};
+            let successData = _.merge({}, flowObject);
             let nextStepToProcced = nextStep;
             switch (flowObject.type) {
                 case 'donations':
@@ -502,7 +503,8 @@ export const proceed = (
                 ],
             ).then((results) => {
                 if (!_.isEmpty(results[0])) {
-                    successData = _.merge({}, flowObject);
+                    successData.result = results[0];
+                    //successData = _.merge({}, flowObject);
                     // For p2p, we create an array of arrays, I'm not to clear on the
                     // the correct syntax to make this more redable.
                     // if (flowObject.type === 'give/to/friend') {
@@ -529,13 +531,13 @@ export const proceed = (
                 const defaultProps = {
                     'donations': donationDefaultProps,
                     'give/to/charity': beneficiaryDefaultProps,
-                    // 'give/to/friend': p2pDefaultProps,
+                    //'give/to/friend': p2pDefaultProps,
                     'give/to/group': groupDefaultProps,
                 };
                 const defaultPropsData = _.merge({}, defaultProps[flowObject.type]);
                 const payload = {
                     ...defaultPropsData.flowObject,
-                }
+                };
                 payload.nextStep = nextStepToProcced;
                 payload.stepsCompleted = true;
                 const fsa = {
@@ -755,5 +757,25 @@ export const getCompanyTaxReceiptProfile = (dispatch, companyId) => {
         return dispatch(fsa);
     }).catch((error) => {
         console.log(error);
+    });
+};
+
+export const getGroupsFromSlug = (dispatch, slug) => {
+    return coreApi.get(`groups/find_by_slug`, {
+        params: {
+            slug,
+        },
+    }).then(
+        (result) => {
+            dispatch({
+                payload: {
+                    groupDetails: result.data,
+                },
+                type: actionTypes.GET_GROUP_FROM_SLUG,
+            });
+        },
+    ).catch((error) => {
+        console.log(error);
+        Router.pushRoute('/give/error');
     });
 };

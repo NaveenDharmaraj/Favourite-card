@@ -69,7 +69,6 @@ export const beneficiaryDefaultProps = {
         groupId: null,
         nextSteptoProceed: {},
         selectedTaxReceiptProfile: {},
-        slugValue: null,
         sourceAccountHolderId: null,
         stepsCompleted: false,
         taxReceiptProfileAction: 'no_change',

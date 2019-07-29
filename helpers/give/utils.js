@@ -1,4 +1,4 @@
-import _ from 'lodash';_
+import _ from 'lodash';
 
 import {
     hasMinFiveChars,
@@ -18,8 +18,14 @@ import {
     isValidEmailList,
     isValidNoteData,
     parseEmails,
-}  from '../give/giving-form-validation';
-
+} from '../give/giving-form-validation';
+import { actionTypes } from '../../actions/give';
+import {
+    beneficiaryDefaultProps,
+    donationDefaultProps,
+    groupDefaultProps,
+   // p2pDefaultProps,
+} from '../../helpers/give/defaultProps';
 
 /**
  * Checks if giveData contains any credit card information
@@ -41,6 +47,7 @@ const formatCurrency = (value, language, currencyType) => {
         currencyFormat,
     ).format(value), 'US', '');
 };
+
 
 /**
 * Determine whether the supplied field is valid.
@@ -426,6 +433,21 @@ const populateAccountOptions = (data, translate, giveToId = null, allocationType
                 ));
         }
         return accountOptionsArray;
+    }
+    return null;
+};
+
+const populateGroupsOfUser = (giveToGroupsData) => {
+    if (!_.isEmpty(giveToGroupsData)) {
+        return (
+            getDropDownOptionFromApiData(
+                giveToGroupsData.userGroups,
+                null,
+                (item) => item.attributes.fundId,
+                (attributes) => `${attributes.name}`,
+                (attributes) => false,
+            )
+        );
     }
     return null;
 };
@@ -823,7 +845,7 @@ const resetDataForAccountChange = (giveData, dropDownOptions, props, type) => {
     const {
         companyDetails,
         coverFeesData,
-        info: {
+        currentUser: {
             attributes: {
                 displayName,
                 email,
@@ -1089,7 +1111,7 @@ const resetDataForGiftTypeChange = (giveData, dropDownOptions, coverFeesData) =>
         }
     }
     return giveData;
-}
+};
 
 const populateCardData = (selectCardDetails, cardAmount) => {
     const isEnglishCard = selectCardDetails.indexOf(' ending ');
@@ -1160,7 +1182,7 @@ const getDonationMatchedData = (donationMatchId, donationAmount, donationMatchDa
         return matchedData;
     }
     return null;
-}
+};
 
 const populateDonationReviewPage = (giveData, data, currency, formatMessage, language) => {
     const {
@@ -1611,6 +1633,7 @@ export {
     populateAccountOptions,
     populateDonationMatch,
     populateGiveToGroupsofUser,
+    populateGroupsOfUser,
     populatePaymentInstrument,
     populateGiftType,
     populateInfoToShare,

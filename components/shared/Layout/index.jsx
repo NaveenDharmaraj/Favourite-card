@@ -55,7 +55,7 @@ class Layout extends React.Component {
                     </Responsive>
                     <Responsive minWidth={Responsive.onlyTablet.minWidth}>
                         <Header isAuthenticated={isAuthenticated} />
-                        <Container><div className="pageWraper">{children}</div></Container>
+                         <Container><div className="pageWraper">{children}</div></Container>
                     </Responsive>
                     <Footer />
                 </div>

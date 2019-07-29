@@ -4,5 +4,10 @@
     "forGivingCampaignLabel": "Pour la Campagne",
     "forGivingCampaignOrganizersLabel": "Pour les organisateurs de la Campagne",
     "forGivingGroupLabel": "Pour les Groupes de dons",
-    "forGivingGroupOrganizersLabel": "Pour les organisateurs du Groupe de dons"
+    "forGivingGroupOrganizersLabel": "Pour les organisateurs du Groupe de dons",
+    "privacyShareNameLabel": "Partager mon nom avec le Groupe de dons destinataire",
+    "privacyShareAmountLabel": "Partager le montant de mon don avec le Groupe de dons destinataire",
+    "privacyShareEmailLabel": "Partager mon adresse email avec le Groupe de dons destinataire",
+    "privacyShareAddressLabel": "Partager mon adresse postale avec le Groupe de dons destinataire"
+
 }

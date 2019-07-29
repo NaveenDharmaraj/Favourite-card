@@ -12,6 +12,6 @@
     "amountLessOrInvalid": "Please choose an amount of ${{minAmount}} or more",
     "invalidMaxAmountError":  "$9,999 is the maximum we can process here. For larger amounts, please get in touch with us: hello@chimp.net or 1-877-531-0580.",
     "blankError":  "Can't be blank",
-    "continueButton": "Continue",
-    "submitingButton": "Submitting..."
+    "giftTypeSingle": "This is a one time gift"
+
 }

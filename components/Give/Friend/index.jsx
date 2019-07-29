@@ -52,7 +52,7 @@ class Friend extends React.Component {
             userAccountsFetched,
             userCampaigns,
             userGroups,
-            info: {
+            currentUser: {
                 id,
                 attributes: {
                     email,
@@ -139,7 +139,7 @@ class Friend extends React.Component {
 
     componentDidMount() {
         const {
-            info: {
+            currentUser: {
                 id,
             },
             dispatch,
@@ -164,7 +164,7 @@ class Friend extends React.Component {
             const {
                 companyDetails,
                 companiesAccountsData,
-                info: {
+                currentUser: {
                     id,
                     attributes: {
                         avatar,
@@ -819,7 +819,7 @@ function mapStateToProps(state) {
         companyDetails: state.give.companyData,
         donationMatchData: state.user.donationMatchData,
         fund: state.user.fund,
-        info: state.user.info,
+        currentUser: state.user.info,
         paymentInstrumentsData: state.user.paymentInstrumentsData,
         userAccountsFetched: state.user.userAccountsFetched,
         userCampaigns: state.user.userCampaigns,

@@ -12,7 +12,7 @@ import GiveAccounts from './GiveAccounts';
 import DonationListing from './DonationListing';
 import AllocationListing from './AllocationListing';
 import { withTranslation } from '../../../i18n';
-
+import {Router} from '../../../routes';
 import {
     Image,
     Header,
@@ -36,6 +36,9 @@ class Review extends React.Component {
     const { dispatch, flowObject } = this.props
     if (flowObject) {
         reInitNextStep(dispatch, flowObject)
+    }
+    if(flowObject && flowObject.stepsCompleted){
+        Router.pushRoute('/dashboard');
     }
     window.scrollTo(0, 0);
   }
