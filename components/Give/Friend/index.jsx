@@ -89,7 +89,6 @@ class Friend extends React.Component {
             userEmail: email,
             validity: this.initializeValidations(),
         };
-        this.state.flowObject.flowRoutes = props.flowRoutes;  
         // if (userAccountsFetched) {
         //     const giveData = Friend.setGiveFrom(
         //         this.state.flowObject.giveData,
