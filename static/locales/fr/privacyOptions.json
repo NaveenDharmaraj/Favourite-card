@@ -5,9 +5,17 @@
     "forGivingCampaignOrganizersLabel": "Pour les organisateurs de la Campagne",
     "forGivingGroupLabel": "Pour les Groupes de dons",
     "forGivingGroupOrganizersLabel": "Pour les organisateurs du Groupe de dons",
-    "privacyShareNameLabel": "Partager mon nom avec le Groupe de dons destinataire",
-    "privacyShareAmountLabel": "Partager le montant de mon don avec le Groupe de dons destinataire",
-    "privacyShareEmailLabel": "Partager mon adresse email avec le Groupe de dons destinataire",
-    "privacyShareAddressLabel": "Partager mon adresse postale avec le Groupe de dons destinataire"
-
+    "shareGroupPrivacyName": "Partager le nom de {{giveFrom}} avec le Groupe de dons destinataire",
+    "shareCampaignPrivacyName": "Partager le nom de {{giveFrom}} avec la Campagne de dons destinataire",
+    "privacyDataPostal": "postale",
+    "privacyDataEmail":"courriel",
+    "shareGroupUserName":"Partager mon nom avec le Groupe de dons destinataire",
+    "shareCampaignUserName": "Partager mon nom avec la Campagne de dons destinataire",
+    "shareCampaignPrivacyGiftAmount":"Partager le montant de mon don avec la Campagne de dons destinataire",
+    "shareGroupPrivacyGiftAmount": "Partager le montant de mon don avec le Groupe de dons destinataire",
+    "shareGroupPrivacyPostal": "Partager mon adresse {{privacyData}} avec le Groupe de dons destinataire",
+    "shareCampaignPrivacyPostal": "Partager mon adresse {{privacyData}} avec la Campagne de dons destinataire",
+    "myCampaigns": "ma Campagne",
+    "myGroups": "mon Groupe",
+    "myCompanies": "mon Entreprise"
 }

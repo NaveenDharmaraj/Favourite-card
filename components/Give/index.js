@@ -55,7 +55,10 @@ const renderChildWithProps = (props, stepIndex, flowSteps) => {
                 flowObject={props.flowObject}
             />);
         case "error" :
-            return (<Error />);
+            return (<Error 
+                dispatch={props.dispatch}
+                flowObject={props.flowObject}
+                />);
         default:
             return null;
     }

@@ -70,38 +70,18 @@ const CreditCard = dynamic(() => import('../../shared/CreditCard'), {
 
 class Group extends React.Component {
     constructor(props) {
-        props.flowObject.giveData.giveTo.type = 'user';
         super(props);
         const {
             companyDetails,
-            companiesAccountsData,
             currentUser: {
                 displayName,
                 email,
-                firstName,
-                lastName,
             },
             donationMatchData,
-            fund,
-            groupId,
-            sourceAccountHolderId,
-            id,
             paymentInstrumentsData,
-            userCampaigns,
-            userGroups,
             taxReceiptProfiles,
 
         } = props;
-        let currentSourceAccountHolderId = null;
-        let currentGroupId = null;
-        if (!_isEmpty(sourceAccountHolderId)
-                && Number(sourceAccountHolderId) > 0) {
-            currentSourceAccountHolderId = sourceAccountHolderId;
-        }
-        if (!_isEmpty(groupId)
-                && Number(groupId) > 0) {
-            currentGroupId = groupId;
-        }
         const paymentInstruments = (!_isEmpty(props.flowObject.giveData.giveFrom) && props.flowObject.giveData.giveFrom.type === 'companies') ? companyDetails.companyPaymentInstrumentsData : paymentInstrumentsData;
         const formatMessage = props.t;
         this.state = {
@@ -111,16 +91,6 @@ class Group extends React.Component {
             dropDownOptions: {
                 donationMatchList: populateDonationMatch(donationMatchData, formatMessage),
                 giftTypeList: populateGiftType(formatMessage),
-                // giveFromList: populateAccountOptions({
-                //     companiesAccountsData,
-                //     firstName,
-                //     fund,
-                //     id,
-                //     lastName,
-                //     userCampaigns,
-                //     userGroups,
-                // }),
-                // giveToList: populateGroupsOfUser(giveUserGroups),
                 infoToShareList: populateInfoToShare(
                     taxReceiptProfiles,
                     companyDetails,
@@ -143,8 +113,13 @@ class Group extends React.Component {
         this.state.flowObject.groupFromUrl = false;
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleInputOnBlur = this.handleInputOnBlur.bind(this)
-        this.getStripeCreditCard = this.getStripeCreditCard.bind(this);
         this.handleInputChangeGiveTo = this.handleInputChangeGiveTo.bind(this);
+
+        this.validateStripeCreditCardNo = this.validateStripeCreditCardNo.bind(this);
+        this.validateStripeExpirationDate = this.validateStripeExpirationDate.bind(this);
+        this.validateCreditCardCvv = this.validateCreditCardCvv.bind(this);
+        this.validateCreditCardName = this.validateCreditCardName.bind(this);
+        this.getStripeCreditCard = this.getStripeCreditCard.bind(this);
     }
 
     componentDidMount() {
@@ -162,10 +137,6 @@ class Group extends React.Component {
         else if (slug !== null) {
             getGroupsFromSlug(dispatch, slug);
         }
-        console.log('this.props');
-        console.log(this.props);
-        
-        console.log(this.state);
         dispatch(getDonationMatchAndPaymentInstruments(id));
 
     }
@@ -184,19 +155,19 @@ class Group extends React.Component {
             const {
                 companyDetails,
                 companiesAccountsData,
-                currentUser: {
-                    displayName,
-                    email,
-                },
                 donationMatchData,
-                firstName,
+                currentUser:{
+                    attributes:{
+                        firstName,
+                        lastName,
+
+                    },
+                    id,
+                },
                 fund,
-                id,
-                lastName,
                 paymentInstrumentsData,
                 userCampaigns,
                 userGroups,
-                slug,
                 taxReceiptProfiles,
                 giveGroupDetails,
                 userMembershipGroups
@@ -283,7 +254,8 @@ class Group extends React.Component {
                     },
                     groupFromUrl,
                 }
-            });        }        
+            });        
+        }        
     }
 
     static populateShareAddress(taxReceiptProfile) {
@@ -366,7 +338,7 @@ class Group extends React.Component {
         this.setState({ validity });
         let validateCC = true;
         if (giveData.creditCard.value === 0) {
-            this.StripeCreditCard.handleOnLoad(
+            this.CreditCard.handleOnLoad(
                 inValidCardNumber, inValidExpirationDate, inValidNameOnCard,
                 inValidCvv, inValidCardNameValue,
             );
@@ -449,6 +421,11 @@ class Group extends React.Component {
     handleSubmit = () => {
         const {
             flowObject,
+            inValidCardNumber,
+            inValidExpirationDate,
+            inValidNameOnCard,
+            inValidCvv,
+            inValidCardNameValue,
         } = this.state;
         const {
             nextStep,
@@ -458,7 +435,6 @@ class Group extends React.Component {
             flowSteps,
             stepIndex
         } = this.props;
-        let { forceContinue } = this.state;
         const {
             giveData: {
                 creditCard,
@@ -467,16 +443,21 @@ class Group extends React.Component {
         this.setState({
             buttonClicked: true,
         });
-        if (this.validateForm()) {
+        const validateCC = this.isValidCC(
+            creditCard,
+            inValidCardNumber,
+            inValidExpirationDate,
+            inValidNameOnCard,
+            inValidCvv,
+            inValidCardNameValue,
+        );
+
+        if (this.validateForm() && validateCC) {
 
             if (creditCard.value > 0) {
                 flowObject.selectedTaxReceiptProfile = (flowObject.giveData.giveFrom.type === 'companies') ?
                     companyDetails.companyDefaultTaxReceiptProfile :
                     defaultTaxReceiptProfile;
-            }
-            if (_isEqual(flowObject, this.props.flowObject)) {
-                forceContinue = (forceContinue === this.props.nextStep.path) ?
-                    this.props.currentStep.path : this.props.nextStep.path;
             }
             flowObject.stepsCompleted = false;
             flowObject.nextSteptoProceed = nextStep;
@@ -769,6 +750,29 @@ class Group extends React.Component {
                     validity={validity}
                 />
             );
+            if ((_isEmpty(paymentInstrumentList) && giveFrom.value) || creditCard.value === 0) {
+                stripeCardComponent = (
+                    <StripeProvider apiKey={STRIPE_KEY}>
+                        <Elements>
+                            <CreditCard
+                                creditCardElement={this.getStripeCreditCard}
+                                creditCardValidate={inValidCardNumber}
+                                creditCardExpiryValidate={inValidExpirationDate}
+                                creditCardNameValidte={inValidNameOnCard}
+                                creditCardNameValueValidate={inValidCardNameValue}
+                                creditCardCvvValidate={inValidCvv}
+                                validateCCNo={this.validateStripeCreditCardNo}
+                                validateExpiraton={this.validateStripeExpirationDate}
+                                validateCvv={this.validateCreditCardCvv}
+                                validateCardName={this.validateCreditCardName}
+                                formatMessage={formatMessage}
+                                // eslint-disable-next-line no-return-assign
+                                onRef={(ref) => (this.CreditCard = ref)}
+                            />
+                        </Elements>
+                    </StripeProvider>
+                );
+            }
         }
 
         if ( giveFrom.value > 0) {
@@ -905,29 +909,7 @@ class Group extends React.Component {
                         )}
                         {repeatGift}
                         {accountTopUpComponent}
-                        {/* {
-                            (_isEmpty(paymentInstrumentList) || creditCard.value === 0) && (
-                                <StripeProvider apiKey={STRIPE_KEY}>
-                                    <Elements>
-                                        <CreditCard
-                                            creditCardElement={this.getStripeCreditCard}
-                                            creditCardValidate={inValidCardNumber}
-                                            creditCardExpiryValidate={inValidExpirationDate}
-                                            creditCardNameValidte={inValidNameOnCard}
-                                            creditCardNameValueValidate={inValidCardNameValue}
-                                            creditCardCvvValidate={inValidCvv}
-                                            validateCCNo={this.validateStripeCreditCardNo}
-                                            validateExpiraton={this.validateStripeExpirationDate}
-                                            validateCvv={this.validateCreditCardCvv}
-                                            validateCardName={this.validateCreditCardName}
-                                            formatMessage={formatMessage}
-                                            // eslint-disable-next-line no-return-assign
-                                            onRef={(ref) => (this.CreditCard = ref)}
-                                        />
-                                    </Elements>
-                                </StripeProvider>
-                            )
-                        }  */}
+                        {stripeCardComponent}
                         <Form.Field>
                             <Divider className="dividerMargin" />
                         </Form.Field>
@@ -947,12 +929,11 @@ class Group extends React.Component {
                         {/* { !stepsCompleted && */}
                             <Form.Button
                                 className='btnPadding' // {isMobile ? 'mobBtnPadding' : 'btnPadding'}
-                                // content={(!this.state.buttonClicked) ?
-                                //     formatMessage('continueButton')
-                                //     : formatMessage('submitingButton')}
-                                content='Continue'
-                                // disabled={(this.state.buttonClicked) ||
-                                //     !this.props.currentUser.userAccountsFetched}
+                                content={(!this.state.buttonClicked) ?
+                                    formatMessage('giveCommon:continueButton')
+                                    : formatMessage('giveCommon:submitingButton')}
+                                // content= {formatMessage('continueButton')}
+                                disabled={(this.state.buttonClicked) }
                                 // fluid={isMobile}
                                 type="submit"
                             />
@@ -963,42 +944,15 @@ class Group extends React.Component {
     }
 }
 
-const defProps = {
-    currentUser: {
-        displayName: "Demo",
-        email:"chimp.net",
-        id:"888000"
-    },
-    giveData: {
-        giveFrom: {
-            type: 'user',
-        },
-    },
-    groupId: null,
-    id: '888000',
-    slug: null,
-};
-
-
-Group.defaultProps = Object.assign({}, groupDefaultProps, defProps);
+Group.defaultProps = Object.assign({}, groupDefaultProps);
 
 const  mapStateToProps = (state, props) => {
 
-
-  // if(props.flowObject && props.flowObject.giveData.giveTo.type === 'user') {
-  //   return {
-  //     taxReceiptProfiles: state.user.taxReceiptProfiles,
-  //     taxReceiptGetApiStatus:state.user.taxReceiptGetApiStatus
-  //   }
-  // }
-  // return {
-  //   taxReceiptProfiles: state.give.companyData.taxReceiptProfiles,
-  //   taxReceiptGetApiStatus:state.give.companyData.taxReceiptGetApiStatus
-  // }
   return {
     giveGroupDetails: state.give.groupSlugDetails,
     companiesAccountsData: state.user.companiesAccountsData,
     companyDetails: state.give.companyData,
+    currentUser: state.user.info,
     giveGroupBenificairyDetails: state.give.benificiaryForGroupDetails,
     taxReceiptProfiles: state.user.taxReceiptProfiles,
     userAccountsFetched: state.user.userAccountsFetched,

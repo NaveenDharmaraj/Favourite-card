@@ -84,6 +84,9 @@ class TaxReceipt extends React.Component {
 		if (this.state.flowObject) {
 			reInitNextStep(dispatch, this.state.flowObject)
 		}
+		if(flowObject && flowObject.stepsCompleted){
+			Router.pushRoute('/dashboard');
+		}
 		window.scrollTo(0, 0);
 	}
 

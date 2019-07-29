@@ -5,6 +5,7 @@ import _ from 'lodash';
 import coreApi from '../services/coreApi';
 import authRorApi from '../services/authRorApi';
 import socialApi from '../services/socialApi';
+import { Router } from '../routes';
 
 export const actionTypes = {
     GET_MATCH_POLICIES_PAYMENTINSTRUMENTS: 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS',
@@ -46,7 +47,7 @@ export const callApiAndGetData = (url, params) => getAllPaginationData(url, para
     },
 );
 
-export const getDonationMatchAndPaymentInstruments = (userId) => {
+export const getDonationMatchAndPaymentInstruments = (userId, type) => {
 
     return async (dispatch) => {
         const fsa = {
@@ -64,8 +65,12 @@ export const getDonationMatchAndPaymentInstruments = (userId) => {
             type: actionTypes.GET_MATCH_POLICIES_PAYMENTINSTRUMENTS,
         };
         const fetchData = coreApi.get(`/users/${userId}?include=donationMatchPolicies,activePaymentInstruments,defaultTaxReceiptProfile,taxReceiptProfiles,fund`);
-        const groupData = callApiAndGetData(`/users/${userId}/administeredGroups?page[size]=50&sort=-id`);
-        const campaignsData = callApiAndGetData(`/users/${userId}/administeredCampaigns?page[size]=50&sort=-id`);
+        let groupData = null;
+        let campaignsData = null;
+        if (type !== 'donations') {
+            groupData = callApiAndGetData(`/users/${userId}/administeredGroups?page[size]=50&sort=-id`);
+            campaignsData = callApiAndGetData(`/users/${userId}/administeredCampaigns?page[size]=50&sort=-id`);
+        }
         const companiesData = callApiAndGetData(`/users/${userId}/administeredCompanies?page[size]=50&sort=-id`);
         Promise.all([
             fetchData,
@@ -272,33 +277,24 @@ export const updateTaxReceiptProfile = (taxReceiptProfile, action) => {
     // return setTaxReceiptProfile(dispatch, result.data)
 };
 export const getGroupsForUser = (dispatch, userId) => {
-    if (userId !== null) {
-        const fsa = {
-            payload: {
-                userGroups: [],
+    const fsa = {
+        payload: {
+            userGroups: [],
+        },
+        type: actionTypes.GET_USERS_GROUPS,
+    };
+    callApiAndGetData(`/users/${userId}/groupsWithMemberships?page[size]=50&sort=-id`)
+        .then(
+            (result) => {
+                if (!_.isEmpty(result)) {
+                    fsa.payload.userMembershipGroups = result;
+                }
+                dispatch(fsa);
             },
-            type: actionTypes.GET_USERS_GROUPS,
-        };
-        callApiAndGetData(`/users/${userId}/groupsWithMemberships?page[size]=50&sort=-id`)
-            .then(
-                (result) => {
-                    if (!_.isEmpty(result)) {
-                        fsa.payload.userMembershipGroups = result;
-                    }
-                    dispatch(fsa);
-                },
-            ).catch((error) => {
-                console.log(error);
-                // redirect('/give/error');
-            });
-        // .finally(() => getBranch({
-        //     actions: types,
-        //     branchPath: '/giving/userGroupDetails',
-        // }).dispatch(fsa));
-    } else {
-        console.log('redirect to dashboard');
-        // redirect('/dashboard');
-    }
+        ).catch((error) => {
+            console.log(error);
+            Router.pushRoute('/give/error');
+        });
 };
 
 export const savePaymentInstrument = (cardDetails) => {
