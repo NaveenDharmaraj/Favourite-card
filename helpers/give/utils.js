@@ -1653,4 +1653,5 @@ export {
     populateCardData,
     formatCurrency,
     resetP2pDataForOnInputChange,
+    calculateP2pTotalGiveAmount,
 };

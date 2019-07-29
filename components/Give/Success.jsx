@@ -22,6 +22,7 @@ import {
     populateCardData,
     setDateForRecurring,
     getDonationMatchedData,
+    calculateP2pTotalGiveAmount,
 } from '../../helpers/give/utils';
 import { reInitNextStep } from '../../actions/give';
 
@@ -242,7 +243,7 @@ const Success = (props) => {
             // This condition is used to check  recipients array is present
             // eslint-disable-next-line no-lonely-if
             if (successData && recipients && recipients.length > 0) {
-                const p2pTotalGiveAmount = (successData.giveData.giveAmount * recipients.length); // calculateP2pTotalGiveAmount(props.successData);
+                const p2pTotalGiveAmount = calculateP2pTotalGiveAmount(recipients.length, successData.giveData.giveAmount); // calculateP2pTotalGiveAmount(props.successData);
                 const numberOfRecipient = recipients.length; // calculateRecipients(props.successData);
                 const p2pGiveAmount = successData.giveData.giveAmount;// calculateGiveAmount(props.successData);
                 const recipientEmail = successData.giveData.recipients[0]; // getFirstEmailRecipient(props.successData);
