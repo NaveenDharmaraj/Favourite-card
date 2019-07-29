@@ -262,9 +262,9 @@ class Charity extends React.Component {
             let paymentInstruments = null;
             let companyPaymentInstrumentChanged = false;
             if (giveData.giveFrom.type === 'companies' && !_isEmpty(companyDetails)) {
-                if (_isEmpty(this.props.companyDetails)
+                if (_isEmpty(prevProps.companyDetails)
                      || !_isEqual(companyDetails.companyPaymentInstrumentsData,
-                         this.props.companyDetails.companyPaymentInstrumentsData)
+                         prevProps.companyDetails.companyPaymentInstrumentsData)
                 ) {
                     companyPaymentInstrumentChanged = true;
                 }
@@ -275,7 +275,6 @@ class Charity extends React.Component {
             const paymentInstrumentOptions = populatePaymentInstrument(
                 paymentInstruments, formatMessage,
             );
-            giveData.creditCard = getDefaultCreditCard(paymentInstrumentOptions);
             const giveToOptions = populateGiveToGroupsofUser(giveGroupBenificairyDetails);
             const donationMatchOptions = populateDonationMatch(donationMatchData, formatMessage);
             if (!_isEmpty(giveCharityDetails) && !_isEmpty(giveCharityDetails.charityDetails)) {
