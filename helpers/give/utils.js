@@ -846,8 +846,10 @@ const resetDataForAccountChange = (giveData, dropDownOptions, props, type) => {
         companyDetails,
         coverFeesData,
         currentUser: {
-            displayName,
-            email,
+            attributes: {
+                displayName,
+                email,
+            },
         },
         paymentInstrumentsData,
         taxReceiptProfile,
@@ -1543,6 +1545,83 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
     }
 };
 
+/**
+ * Calculates what we need to give in total to all of our recipients.
+ * @param {number} numberOfRecipients The number of recipients.
+ * @param {number} amountEachRecipient The give amount for each recipient
+ * @return {number} The total amount we are giving
+ */
+const calculateP2pTotalGiveAmount = (numberOfRecipients, amountEachRecipient) => (
+    numberOfRecipients * amountEachRecipient
+);
+
+/**
+* Set donation amount we need to give in order to give the total P2P give amount.
+* @param {object} giveData state object for give page
+* @return {object} selected credit card option
+*/
+const setP2pDonationAmount = (giveData) => {
+    let donationAmount = '';
+
+    if (Number(giveData.totalP2pGiveAmount) > Number(giveData.giveFrom.balance)) {
+        donationAmount = (formatAmount(giveData.totalP2pGiveAmount)
+        - formatAmount(giveData.giveFrom.balance));
+
+        donationAmount = formatAmount(donationAmount);
+
+        if (Number(donationAmount) < 5) {
+            donationAmount = 5;
+        }
+    }
+    return donationAmount;
+};
+
+/**
+* Reset P2P Give data for give amount or recipients change
+* @param {object} giveData state object for give page
+* @param {object} dropDownOptions full drop down options for give page
+* @return {object} The resetted Give Data
+*/
+const resetP2pDataForOnInputChange = (giveData, dropDownOptions) => {
+    giveData.totalP2pGiveAmount = calculateP2pTotalGiveAmount(
+        parseEmails(giveData.recipients).length,
+        giveData.giveAmount,
+    );
+
+    if ((giveData.giveFrom.type !== 'user' && giveData.giveFrom.type !== 'companies')) {
+        return giveData;
+    }
+
+    giveData.donationAmount = setP2pDonationAmount(giveData);
+
+    if (Number(giveData.donationAmount) > 0 && isCreditCardBlank(giveData)) {
+        giveData.creditCard = getDefaultCreditCard(
+            dropDownOptions.paymentInstrumentList,
+        );
+    } else if (giveData.donationAmount === '') {
+        giveData.creditCard = {
+            value: null,
+        };
+    }
+
+    if (giveData.giveFrom.type === 'user'
+        && !_.isEmpty(dropDownOptions.donationMatchList)
+        && (_.isEmpty(giveData.donationMatch)
+        || giveData.donationMatch.value === null)
+        && giveData.donationAmount > 0
+    ) {
+        const [
+            defaultMatch,
+        ] = dropDownOptions.donationMatchList;
+        giveData.donationMatch = defaultMatch;
+    } else if (giveData.donationAmount === '') {
+        giveData.donationMatch = {
+            value: null,
+        };
+    }
+
+    return giveData;
+};
 
 export {
     percentage,
@@ -1573,4 +1652,6 @@ export {
     populateGiveReviewPage,
     populateCardData,
     formatCurrency,
+    resetP2pDataForOnInputChange,
+    calculateP2pTotalGiveAmount,
 };

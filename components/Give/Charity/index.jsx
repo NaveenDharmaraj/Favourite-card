@@ -219,7 +219,7 @@ class Charity extends React.Component {
         dispatch(getDonationMatchAndPaymentInstruments(id));
     }
 
-    componentDidUpdate(prevProps)  {
+    componentDidUpdate(prevProps) {
         if (!_isEqual(this.props, prevProps)) {
             const {
                 benificiaryIndex,
