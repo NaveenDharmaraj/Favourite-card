@@ -142,8 +142,6 @@ class Friend extends React.Component {
                 id,
             },
             dispatch,
-            groupId,
-            slug,
         } = this.props;
         dispatch(getDonationMatchAndPaymentInstruments(id));
     }
@@ -816,9 +814,9 @@ function mapStateToProps(state) {
     return {
         companiesAccountsData: state.user.companiesAccountsData,
         companyDetails: state.give.companyData,
+        currentUser: state.user.info,
         donationMatchData: state.user.donationMatchData,
         fund: state.user.fund,
-        currentUser: state.user.info,
         paymentInstrumentsData: state.user.paymentInstrumentsData,
         userAccountsFetched: state.user.userAccountsFetched,
         userCampaigns: state.user.userCampaigns,
