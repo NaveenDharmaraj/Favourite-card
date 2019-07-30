@@ -513,6 +513,11 @@ class Friend extends React.Component {
     handleSubmit() {
         const {
             flowObject,
+            inValidCardNumber,
+            inValidExpirationDate,
+            inValidNameOnCard,
+            inValidCvv,
+            inValidCardNameValue,
         } = this.state;
         const {
             dispatch,
@@ -531,7 +536,15 @@ class Friend extends React.Component {
         this.setState({
             buttonClicked: true,
         });
-        if (this.validateForm()) {
+        const validateCC = this.isValidCC(
+            creditCard,
+            inValidCardNumber,
+            inValidExpirationDate,
+            inValidNameOnCard,
+            inValidCvv,
+            inValidCardNameValue,
+        );
+        if (this.validateForm() && validateCC) {
             if (creditCard.value > 0) {
                 flowObject.selectedTaxReceiptProfile = (flowObject.giveData.giveFrom.type === 'companies') ?
                     companyDetails.companyDefaultTaxReceiptProfile
@@ -554,7 +567,7 @@ class Friend extends React.Component {
             // this.props.proceed({
             //     ...flowObject,
             // }, forceContinue);
-            dispatch(proceed(flowObject, flowSteps[stepIndex + 1]));
+            dispatch(proceed(flowObject, flowSteps[stepIndex + 1], stepIndex));
         } else {
             this.setState({
                 buttonClicked: false,
