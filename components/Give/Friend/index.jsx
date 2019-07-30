@@ -15,6 +15,8 @@ import {
 } from 'semantic-ui-react';
 import _isEqual from 'lodash/isEqual';
 import _isEmpty from 'lodash/isEmpty';
+import _merge from 'lodash/merge';
+import _replace from 'lodash/replace';
 
 import {
     formatCurrency,
@@ -71,15 +73,26 @@ class Friend extends React.Component {
             companyDetails,
             paymentInstrumentsData,
         );
-
+        const flowType = _replace(props.baseUrl, /\//, '');
+        let payload = null;
+        // Initialize the flowObject to default value when got switched from other flows
+        if (props.flowObject.type !== flowType) {
+            const defaultPropsData = _merge({}, groupDefaultProps);
+            payload = {
+                ...defaultPropsData.flowObject,
+                nextStep: props.step,
+            };
+        } else {
+            payload = _merge({}, props.flowObject);
+        }
         this.state = {
-            flowObject: _.merge({}, props.flowObject),
             buttonClicked: false,
             dropDownOptions: {
                 donationMatchList: populateDonationMatch(donationMatchData, formatMessage, language),
                 // giveFromList: accountOptions,
                 paymentInstrumentList: populatePaymentInstrument(paymentInstruments, formatMessage),
             },
+            flowObject: payload,
             // forceContinue: props.forceContinue,
             inValidCardNameValue: true,
             inValidCardNumber: true,
@@ -185,9 +198,9 @@ class Friend extends React.Component {
             let paymentInstruments = null;
             let companyPaymentInstrumentChanged = false;
             if (giveData.giveFrom.type === 'companies' && !_isEmpty(companyDetails)) {
-                if (_isEmpty(this.props.companyDetails)
+                if (_isEmpty(prevProps.companyDetails)
                      || !_isEqual(companyDetails.companyPaymentInstrumentsData,
-                         this.props.companyDetails.companyPaymentInstrumentsData)
+                         prevProps.companyDetails.companyPaymentInstrumentsData)
                 ) {
                     companyPaymentInstrumentChanged = true;
                 }
