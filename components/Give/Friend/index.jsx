@@ -13,6 +13,12 @@ import {
     Popup,
     Select,
 } from 'semantic-ui-react';
+import dynamic from 'next/dynamic';
+import getConfig from 'next/config';
+import {
+    Elements,
+    StripeProvider,
+} from 'react-stripe-elements';
 import _isEqual from 'lodash/isEqual';
 import _isEmpty from 'lodash/isEmpty';
 import _merge from 'lodash/merge';
@@ -40,6 +46,14 @@ import DropDownAccountOptions from '../../shared/DropDownAccountOptions';
 import Note from '../../shared/Note';
 import AccountTopUp from '../AccountTopUp';
 import { p2pDefaultProps } from '../../../helpers/give/defaultProps';
+const { publicRuntimeConfig } = getConfig();
+const {
+    STRIPE_KEY
+} = publicRuntimeConfig;
+
+const CreditCard = dynamic(() => import('../../shared/CreditCard'), {
+    ssr: false
+});
 
 class Friend extends React.Component {
     constructor(props) {
@@ -121,6 +135,12 @@ class Friend extends React.Component {
         this.handleOnInputBlur = this.handleOnInputBlur.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.validateForm = this.validateForm.bind(this);
+
+        this.validateStripeCreditCardNo = this.validateStripeCreditCardNo.bind(this);
+        this.validateStripeExpirationDate = this.validateStripeExpirationDate.bind(this);
+        this.validateCreditCardCvv = this.validateCreditCardCvv.bind(this);
+        this.validateCreditCardName = this.validateCreditCardName.bind(this);
+        this.getStripeCreditCard = this.getStripeCreditCard.bind(this);
     }
 
 
@@ -161,7 +181,6 @@ class Friend extends React.Component {
 
     componentDidUpdate(prevProps) {
         if (!_isEqual(this.props, prevProps)) {
-            console.log(prevProps);
             const {
                 dropDownOptions,
             } = this.state;
@@ -494,6 +513,11 @@ class Friend extends React.Component {
     handleSubmit() {
         const {
             flowObject,
+            inValidCardNumber,
+            inValidExpirationDate,
+            inValidNameOnCard,
+            inValidCvv,
+            inValidCardNameValue,
         } = this.state;
         const {
             dispatch,
@@ -512,7 +536,15 @@ class Friend extends React.Component {
         this.setState({
             buttonClicked: true,
         });
-        if (this.validateForm()) {
+        const validateCC = this.isValidCC(
+            creditCard,
+            inValidCardNumber,
+            inValidExpirationDate,
+            inValidNameOnCard,
+            inValidCvv,
+            inValidCardNameValue,
+        );
+        if (this.validateForm() && validateCC) {
             if (creditCard.value > 0) {
                 flowObject.selectedTaxReceiptProfile = (flowObject.giveData.giveFrom.type === 'companies') ?
                     companyDetails.companyDefaultTaxReceiptProfile
@@ -535,12 +567,102 @@ class Friend extends React.Component {
             // this.props.proceed({
             //     ...flowObject,
             // }, forceContinue);
-            dispatch(proceed(flowObject, flowSteps[stepIndex + 1]));
+            dispatch(proceed(flowObject, flowSteps[stepIndex + 1], stepIndex));
         } else {
             this.setState({
                 buttonClicked: false,
             });
         }
+    }
+
+    /**
+     * validateStripeElements
+     * @param {boolean} inValidCardNumber credit card number
+     * @return {void}
+     */
+    validateStripeCreditCardNo(inValidCardNumber) {
+        this.setState({ inValidCardNumber });
+    }
+
+    /**
+     * validateStripeElements
+     * @param {boolean} inValidExpirationDate credit card expiry date
+     * @return {void}
+     */
+    validateStripeExpirationDate(inValidExpirationDate) {
+        this.setState({ inValidExpirationDate });
+    }
+
+    /**
+     * validateStripeElements
+     * @param {boolean} inValidCvv credit card CVV
+     * @return {void}
+     */
+    validateCreditCardCvv(inValidCvv) {
+        this.setState({ inValidCvv });
+    }
+
+    /**
+     * @param {boolean} inValidNameOnCard credit card Name
+     * @param {boolean} inValidCardNameValue credit card Name Value
+     * @param {string} cardHolderName credit card Name Data
+     * @return {void}
+     */
+    validateCreditCardName(inValidNameOnCard, inValidCardNameValue, cardHolderName) {
+        let cardNameValid = inValidNameOnCard;
+        if (cardHolderName.trim() === '' || cardHolderName.trim() === null) {
+            cardNameValid = true;
+        } else {
+            this.setState({
+                flowObject: {
+                    ...this.state.flowObject,
+                    cardHolderName,
+                },
+            });
+        }
+        this.setState({
+            inValidCardNameValue,
+            inValidNameOnCard: cardNameValid,
+        });
+    }
+
+    getStripeCreditCard(data, cardHolderName) {
+        this.setState({
+            flowObject: {
+                ...this.state.flowObject,
+                cardHolderName,
+                stripeCreditCard: data,
+            },
+        });
+    }
+
+    isValidCC(
+        creditCard,
+        inValidCardNumber,
+        inValidExpirationDate,
+        inValidNameOnCard,
+        inValidCvv,
+        inValidCardNameValue,
+    ) {
+        let validCC = true;
+        if (creditCard.value === 0) {
+            this.CreditCard.handleOnLoad(
+                inValidCardNumber,
+                inValidExpirationDate,
+                inValidNameOnCard,
+                inValidCvv,
+                inValidCardNameValue,
+            );
+            validCC = (
+                !inValidCardNumber &&
+                !inValidExpirationDate &&
+                !inValidNameOnCard &&
+                !inValidCvv &&
+                !inValidCardNameValue
+            );
+        }
+
+        return validCC;
     }
 
     validateForm() {
@@ -605,7 +727,6 @@ class Friend extends React.Component {
     }
 
     render() {
-        console.log('props', this.props);
         const {
             i18n:{
                 language,
@@ -668,30 +789,29 @@ class Friend extends React.Component {
                     validity={validity}
                 />
             );
-            // if (_.isEmpty(paymentInstrumentList) || creditCard.value === 0) {
-            //     stripeCardComponent = (
-            //         <Form.Field>
-            //             <StripeProvider apiKey={stripeKey}>
-            //                 <Elements>
-            //                     <StripeCreditCard
-            //                         creditCardElement={this.getStripeCreditCard}
-            //                         creditCardValidate={inValidCardNumber}
-            //                         creditCardExpiryValidate={inValidExpirationDate}
-            //                         creditCardNameValidte={inValidNameOnCard}
-            //                         creditCardNameValueValidate={inValidCardNameValue}
-            //                         creditCardCvvValidate={inValidCvv}
-            //                         // eslint-disable-next-line no-return-assign
-            //                         onRef={(ref) => (this.StripeCreditCard = ref)}
-            //                         validateCCNo={this.validateStripeCreditCardNo}
-            //                         validateExpiraton={this.validateStripeExpirationDate}
-            //                         validateCvv={this.validateCreditCardCvv}
-            //                         validateCardName={this.validateCreditCardName}
-            //                     />
-            //                 </Elements>
-            //             </StripeProvider>
-            //         </Form.Field>
-            //     );
-            // }
+            if ((_isEmpty(paymentInstrumentList) && giveFrom.value) || creditCard.value === 0) {
+                stripeCardComponent = (
+                    <StripeProvider apiKey={STRIPE_KEY}>
+                        <Elements>
+                            <CreditCard
+                                creditCardElement={this.getStripeCreditCard}
+                                creditCardValidate={inValidCardNumber}
+                                creditCardExpiryValidate={inValidExpirationDate}
+                                creditCardNameValidte={inValidNameOnCard}
+                                creditCardNameValueValidate={inValidCardNameValue}
+                                creditCardCvvValidate={inValidCvv}
+                                validateCCNo={this.validateStripeCreditCardNo}
+                                validateExpiraton={this.validateStripeExpirationDate}
+                                validateCvv={this.validateCreditCardCvv}
+                                validateCardName={this.validateCreditCardName}
+                                formatMessage={formatMessage}
+                                // eslint-disable-next-line no-return-assign
+                                onRef={(ref) => (this.CreditCard = ref)}
+                            />
+                        </Elements>
+                    </StripeProvider>
+                );
+            }
         }
         return (
             <Form onSubmit={this.handleSubmit}>
@@ -780,7 +900,7 @@ class Friend extends React.Component {
                     }
 
                     {accountTopUpComponent}
-                    {/* {stripeCardComponent} */}
+                    {stripeCardComponent}
                     <Form.Field>
                         <Divider className="dividerMargin" />
                     </Form.Field>
