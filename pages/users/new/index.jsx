@@ -11,9 +11,9 @@ import { Router } from '../../../routes';
 import Layout from '../../../components/shared/Layout';
 import validateUserRegistrationForm from '../../../helpers/users/utils';
 import { saveUser } from '../../../actions/user';
-import FirstComponent from '../../../components/New/FirstComponent';
-import SecondComponent from '../../../components/New/SecondComponent';
-import CausesComponent from '../../../components/New/CausesComponent';
+import FirstStep from '../../../components/New/FirstStep';
+import SecondStep from '../../../components/New/SecondStep';
+import CausesSelection from '../../../components/New/CausesSelection';
 import CreateComponent from '../../../components/New/CreateComponent';
 
 class Login extends React.Component {
@@ -263,7 +263,7 @@ class Login extends React.Component {
                             <Grid columns={2} verticalAlign="middle">
                                 {
                                     (stepIndex === 0) && (
-                                        <FirstComponent
+                                        <FirstStep
                                             parentInputChange={this.handleInputChange}
                                             handleSubmit={this.handleSubmit}
                                             firstName={firstName}
@@ -276,7 +276,7 @@ class Login extends React.Component {
                                 }
                                 {
                                     (stepIndex === 1) && (
-                                        <SecondComponent
+                                        <SecondStep
                                             parentInputChange={this.handleInputChange}
                                             handleSubmit={this.handleSubmit}
                                             emailId={emailId}
@@ -291,7 +291,7 @@ class Login extends React.Component {
                             {
                                 (stepIndex === 2) && (
                                     <Grid centered>
-                                        <CausesComponent
+                                        <CausesSelection
                                             parentInputChange={this.handleInputChange}
                                             parentHandleCauses={this.handleCauses}
                                             handleSubmit={this.handleSubmit}

@@ -10,7 +10,7 @@ import _ from 'lodash';
 
 import FormValidationErrorMessage from '../shared/FormValidationErrorMessage';
 
-function FirstComponent(props) {
+function FirstStep(props) {
     const {
         firstName,
         handleSubmit,
@@ -90,4 +90,4 @@ function FirstComponent(props) {
     );
 }
 
-export default FirstComponent;
+export default FirstStep;

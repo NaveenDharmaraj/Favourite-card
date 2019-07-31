@@ -8,7 +8,7 @@ import {
 } from 'semantic-ui-react';
 import _ from 'lodash';
 
-function CauseComponent(props) {
+function SingleCause(props) {
     let {
         cause,
         parentHandleCauses,
@@ -39,4 +39,4 @@ function CauseComponent(props) {
     );
 }
 
-export default CauseComponent;
+export default SingleCause;

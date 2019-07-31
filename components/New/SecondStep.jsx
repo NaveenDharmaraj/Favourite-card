@@ -10,7 +10,7 @@ import {
 
 import FormValidationErrorMessage from '../shared/FormValidationErrorMessage';
 
-function SecondComponent(props) {
+function SecondStep(props) {
     let {
         handleSubmit,
         emailId,
@@ -107,4 +107,4 @@ function SecondComponent(props) {
     );
 }
 
-export default SecondComponent;
+export default SecondStep;

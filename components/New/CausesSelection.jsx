@@ -11,9 +11,9 @@ import _ from 'lodash';
 
 import FormValidationErrorMessage from '../shared/FormValidationErrorMessage';
 
-import CauseComponent from './CauseComponent';
+import SingleCause from './SingleCause';
 
-function CausesComponent(props) {
+function CausesSelection(props) {
     const {
         handleSubmit,
         parentHandleCauses,
@@ -38,7 +38,7 @@ function CausesComponent(props) {
         const causesBlock = [];
         if (!_.isEmpty(causesArray)) {
             causesArray.forEach((cause) => {
-                causesBlock.push(<CauseComponent
+                causesBlock.push(<SingleCause
                     parentHandleCauses={parentHandleCauses}
                     userCauses={userCauses}
                     cause={cause}
@@ -80,4 +80,4 @@ function CausesComponent(props) {
     );
 }
 
-export default CausesComponent;
+export default CausesSelection;

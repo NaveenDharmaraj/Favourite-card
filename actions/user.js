@@ -321,7 +321,6 @@ export const saveUser = (dispatch, userDetails) => {
 
 export const validateNewUser = (emailId) => {
     return socialApi.get(`/verify/useremailid?emailid=${emailId}`).then((result) => {
-        debugger
         return result;
     }).catch((error) => {
         console.log(error);
