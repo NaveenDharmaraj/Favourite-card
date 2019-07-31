@@ -7,6 +7,7 @@ import {
 import _ from 'lodash';
 import { connect } from 'react-redux';
 
+import { Router } from '../../../routes';
 import Layout from '../../../components/shared/Layout';
 import validateUserRegistrationForm from '../../../helpers/users/utils';
 import { saveUser } from '../../../actions/user';
@@ -169,6 +170,7 @@ class Login extends React.Component {
                     lastName,
                     emailId,
                     password,
+                    userCauses,
                 },
                 validity,
             } = this.state;
@@ -184,8 +186,12 @@ class Login extends React.Component {
                 userDetails.family_name = lastName;
                 userDetails.email = emailId;
                 userDetails.password = password;
-                let result = saveUser(dispatch, userDetails);
-                console.log(result);
+                userDetails.signupSource=null;
+                userDetails.longitude=null;
+                userDetails.latitude=null;
+                userDetails.causes=userCauses;
+                saveUser(dispatch, userDetails);
+                Router.pushRoute('/users/email-verification');
             }
             stepIndex += 1;
             this.setState({

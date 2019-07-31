@@ -306,49 +306,24 @@ export const savePaymentInstrument = (cardDetails) => {
 };
 
 export const saveUser = (dispatch, userDetails) => {
-    const result = socialApi.post('/create/user', {
+    return socialApi.post('/create/user', {
         ...userDetails,
-    });
-    return result;
-    const fakeResponse = {
-        created_at: '2019-07-30T05:23:53.442Z',
-        email: userDetails.email,
-        email_verified: false,
-        identities: [
-            {
-                connection: 'Username-Password-Authentication',
-                isSocial: false,
-                provider: 'auth0',
-                user_id: '5d3fd469fb14cc0cc38f24f4',
+    }).then((result) => {
+        console.log(result);
+        return dispatch({
+            payload: {
+                newUserDetails: result,
             },
-        ],
-        name: userDetails.name,
-        nickname: 'testdoe',
-        picture: 'https://s.gravatar.com/avatar/4aff5620fc9ffe39968973ec80e7b0c9?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fjd.png',
-        updated_at: '2019-07-30T05:23:53.442Z',
-        user_id: 'auth0|5d3fd469fb14cc0cc38f24f4',
-        user_metadata: {
-            family_name: 'Doe',
-            given_name: 'John',
-        },
-    };
-    // return fakeResponse;
-    return dispatch({
-        payload: {
-            newUserDetails: fakeResponse,
-        },
-        type: actionTypes.CREATE_USER,
+            type: actionTypes.CREATE_USER,
+        });
     });
 };
 
 export const validateNewUser = (emailId) => {
-    // return socialApi.get(`/verify/useremailid?emailid=${emailId}`).then((result) => {
-    //     return result;
-    // }).catch((error) => {
-    //     console.log(error);
-    // });
-    const fakeResponse = {
-        "email_exists": false
-    };
-    return fakeResponse.email_exists;
+    return socialApi.get(`/verify/useremailid?emailid=${emailId}`).then((result) => {
+        debugger
+        return result;
+    }).catch((error) => {
+        console.log(error);
+    });
 };

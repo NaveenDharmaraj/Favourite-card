@@ -68,7 +68,7 @@ function CausesComponent(props) {
                 <div className="reg-btn-wraper">
                     <Button
                         type="submit"
-                        // active={(_.every(validity))}
+                        disabled={!(userCauses.length>=3)}
                         primary
                         onClick={handleSubmit}
                     >

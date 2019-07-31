@@ -11,7 +11,7 @@ import { connect } from 'react-redux';
 import Layout from '../../components/shared/Layout';
 
 function EmailVerification(props) {
-
+    console.log(props);
     return (
         <Layout>
             <div className="pageWraper">
@@ -49,7 +49,9 @@ function EmailVerification(props) {
         </Layout>
     );
 }
-function mapStateToProps() {
-    
+function mapStateToProps(state) {
+    return {
+        newUserDetails: state.user.newUserDetails,
+    };
 }
 export default (connect(mapStateToProps)(EmailVerification));
