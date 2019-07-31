@@ -10,11 +10,10 @@ import { connect } from 'react-redux';
 import Layout from '../../../components/shared/Layout';
 import validateUserRegistrationForm from '../../../helpers/users/utils';
 import { saveUser } from '../../../actions/user';
-
-import FirstComponent from './FirstComponent';
-import SecondComponent from './SecondComponent';
-import CausesComponent from './CausesComponent';
-import CreateComponent from './CreateComponent';
+import FirstComponent from '../../../components/New/FirstComponent';
+import SecondComponent from '../../../components/New/SecondComponent';
+import CausesComponent from '../../../components/New/CausesComponent';
+import CreateComponent from '../../../components/New/CreateComponent';
 
 class Login extends React.Component {
     constructor(props) {

@@ -8,7 +8,7 @@ import {
 } from 'semantic-ui-react';
 import _ from 'lodash';
 
-import FormValidationErrorMessage from '../../../components/shared/FormValidationErrorMessage';
+import FormValidationErrorMessage from '../shared/FormValidationErrorMessage';
 
 function FirstComponent(props) {
     const {

@@ -8,7 +8,7 @@ import {
     Grid,
 } from 'semantic-ui-react';
 
-import FormValidationErrorMessage from '../../../components/shared/FormValidationErrorMessage';
+import FormValidationErrorMessage from '../shared/FormValidationErrorMessage';
 
 function SecondComponent(props) {
     let {
