@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable operator-assignment */
 import React from 'react';
 
@@ -9,10 +10,11 @@ import {
 import _ from 'lodash';
 
 import FormValidationErrorMessage from '../../../components/shared/FormValidationErrorMessage';
+
 import CauseComponent from './CauseComponent';
 
 function CausesComponent(props) {
-    let {
+    const {
         handleSubmit,
         parentHandleCauses,
         userCauses,
@@ -45,7 +47,7 @@ function CausesComponent(props) {
         }
         return causesBlock;
     };
-    return (        
+    return (
         <Grid.Column mobile={16} tablet={14} computer={14} largeScreen={12}>
             <div className="prefered-wraper">
                 <div className="prefered-img" />
@@ -74,9 +76,7 @@ function CausesComponent(props) {
                     </Button>
                 </div>
             </div>
-            
         </Grid.Column>
-    
     );
 }
 

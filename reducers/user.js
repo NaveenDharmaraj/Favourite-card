@@ -75,6 +75,12 @@ const user = (state = {}, action) => {
                 },
             };
             break;
+        case 'CREATE_USER':
+            newState = {
+                ...state,
+                newUserDetails: action.payload.newUserDetails,
+            };
+            break;
         default:
             break;
     }

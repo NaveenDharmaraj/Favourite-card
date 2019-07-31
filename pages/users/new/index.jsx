@@ -5,6 +5,7 @@ import {
     Grid,
 } from 'semantic-ui-react';
 import _ from 'lodash';
+import { connect } from 'react-redux';
 
 import Layout from '../../../components/shared/Layout';
 import validateUserRegistrationForm from '../../../helpers/users/utils';
@@ -13,6 +14,7 @@ import { saveUser } from '../../../actions/user';
 import FirstComponent from './FirstComponent';
 import SecondComponent from './SecondComponent';
 import CausesComponent from './CausesComponent';
+import CreateComponent from './CreateComponent';
 
 class Login extends React.Component {
     constructor(props) {
@@ -24,10 +26,15 @@ class Login extends React.Component {
             stepIndex: 0,
             validity: this.intializeValidations(),
         };
+        const {
+            dispatch,
+        } = props;
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.validateForm = this.validateForm.bind(this);
         this.handleCauses = this.handleCauses.bind(this);
+        this.handleInputOnBlur = this.handleInputOnBlur.bind(this);
+        this.isButtonDisabled = this.isButtonDisabled.bind(this);
     }
 
     handleInputChange(event, data) {
@@ -40,6 +47,7 @@ class Login extends React.Component {
             attributes,
         } = this.state;
         let {
+            // eslint-disable-next-line no-unused-vars
             validity,
         } = this.state;
         // let pwdCharCount = 0;
@@ -53,6 +61,9 @@ class Login extends React.Component {
             case 'password':
                 validity = validateUserRegistrationForm('password', newValue, validity);
                 break;
+            // case 'emailId':
+            //     validity = validateUserRegistrationForm('emailId', newValue, validity);
+            //     break;
             default:
                 break;
         }
@@ -68,9 +79,42 @@ class Login extends React.Component {
         });
     }
 
+    handleInputOnBlur(event, data) {
+        const {
+            name,
+            value,
+        } = !_.isEmpty(data) ? data : event.target;
+        let {
+            validity,
+        } = this.state;
+        const inputValue = value;
+        switch (name) {
+            case 'firstName':
+                validity = validateUserRegistrationForm('firstName', inputValue, validity);
+                break;
+            case 'lastName':
+                validity = validateUserRegistrationForm('lastName', inputValue, validity);
+                break;
+            case 'emailId':
+                validity = validateUserRegistrationForm('emailId', inputValue, validity);
+                break;
+            case 'password':
+                validity = validateUserRegistrationForm('password', inputValue, validity);
+                break;
+            default:
+                break;
+        }
+        this.setState({
+            validity,
+        });
+    }
+
     intializeValidations() {
         this.validity = {
+            isEmailIdNew: true,
+            isEmailIdNotNull: true,
             isEmailIdValid: true,
+            isEmailValidFormat: true,
             isFirstNameNotNull: true,
             isLastNameNotNull: true,
             isPasswordValid: true,
@@ -103,7 +147,6 @@ class Login extends React.Component {
                 validity = validateUserRegistrationForm('password', password, validity);
                 break;
             case 2:
-                console.log(userCauses.length);
                 validity.isValidCauses = (userCauses.length >= 3);
                 break;
             default:
@@ -119,31 +162,37 @@ class Login extends React.Component {
 
     handleSubmit() {
         const isValid = this.validateForm();
-        console.log(isValid);
         if (isValid) {
             let {
                 stepIndex,
-                attributes:{
+                attributes: {
                     firstName,
                     lastName,
                     emailId,
                     password,
                 },
+                validity,
             } = this.state;
-            if (stepIndex === 2) {
-                let userDetails = {};
+            const {
+                dispatch,
+            } = this.props;
+            if (stepIndex === 1) {
+                validity = validateUserRegistrationForm('emailId', emailId, validity);
+            } else if (stepIndex === 3) {
+                const userDetails = {};
                 userDetails.name = (firstName) ? firstName + lastName : '';
                 userDetails.given_name = firstName;
                 userDetails.family_name = lastName;
                 userDetails.email = emailId;
                 userDetails.password = password;
-                let result = saveUser(userDetails);
+                let result = saveUser(dispatch, userDetails);
+                console.log(result);
             }
             stepIndex += 1;
             this.setState({
                 stepIndex,
             });
-        } else{
+        } else {
             console.log('invalid');
         }
     }
@@ -164,13 +213,29 @@ class Login extends React.Component {
         } else {
             userCauses.push(name);
         }
-        console.log(userCauses);
         this.setState({
             attributes: {
                 ...this.state.attributes,
                 userCauses,
             },
         });
+    }
+
+    isButtonDisabled(params) {
+        const {
+            attributes,
+            // validity,
+        } = { ...this.state };
+
+        let validity = {};
+        console.log(params);
+        params.forEach((param) => {
+            validity = validateUserRegistrationForm(param, attributes[param], validity);
+            console.log('localvariale', validity);
+        });
+        // console.log('state', this.state.validity);
+        console.log(_.every(validity));
+        return (_.every(validity));
     }
 
     render() {
@@ -190,13 +255,15 @@ class Login extends React.Component {
                 <div className="pageWraper">
                     <Container>
                         <div className="linebg">
-                            <Grid columns={2} verticalAlign='middle'>
+                            <Grid columns={2} verticalAlign="middle">
                                 {
                                     (stepIndex === 0) && (
                                         <FirstComponent
                                             parentInputChange={this.handleInputChange}
                                             handleSubmit={this.handleSubmit}
                                             firstName={firstName}
+                                            handleInputOnBlur={this.handleInputOnBlur}
+                                            isButtonDisabled={this.isButtonDisabled}
                                             lastName={lastName}
                                             validity={validity}
                                         />
@@ -208,6 +275,8 @@ class Login extends React.Component {
                                             parentInputChange={this.handleInputChange}
                                             handleSubmit={this.handleSubmit}
                                             emailId={emailId}
+                                            handleInputOnBlur={this.handleInputOnBlur}
+                                            isButtonDisabled={this.isButtonDisabled}
                                             password={password}
                                             validity={validity}
                                         />
@@ -227,6 +296,17 @@ class Login extends React.Component {
                                     </Grid>
                                 )
                             }
+                            {
+                                (stepIndex === 3) && (
+                                    <Grid columns={2} centered>
+                                        <Grid.Row>
+                                            <CreateComponent
+                                                handleSubmit={this.handleSubmit}
+                                            />
+                                        </Grid.Row>
+                                    </Grid>
+                                )
+                            }
 
                         </div>
                     </Container>
@@ -236,5 +316,8 @@ class Login extends React.Component {
         );
     }
 }
-
-export default Login;
+function mapStateToProps(state) {
+    return {
+    };
+}
+export default (connect(mapStateToProps)(Login));

@@ -1,5 +1,8 @@
 /* eslint-disable max-len */
 import _ from 'lodash';
+import {
+    validateNewUser,
+} from '../../actions/user';
 
 const hasLowerCase = (str) => {
     return (/[a-z]/.test(str));
@@ -14,7 +17,6 @@ const hasSpecialChar = (str) => {
 };
 
 const validateUserRegistrationForm = (field, value, validity) =>{
-    // console.log(value.length);
     const emailRegex = new RegExp(/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i);
     switch (field) {
         case 'firstName':
@@ -27,19 +29,21 @@ const validateUserRegistrationForm = (field, value, validity) =>{
             const emailValue = value;
             validity.isEmailIdNotNull = !(!value || value.length === 0);
             validity.isEmailValidFormat = !_.isEmpty(emailValue) ? (emailRegex).test(emailValue) : true;
+            validity.isEmailIdNew = (validity.isEmailValidFormat) ? !validateNewUser(emailValue) : false;
             validity.isEmailIdValid = _.every(
                 _.pick(validity, [
                     'isEmailIdNotNull',
                     'isEmailValidFormat',
+                    'isEmailIdNew',
                 ]),
             );
             break;
         case 'password':
             // validity.isPasswordNotNull = !(!value || value.length === 0);
-            validity.doesPwdHaveCount = (value.length >= 8) ? true : false;
-            validity.doesPwdhaveLowerCase = hasLowerCase(value);
-            validity.doesPwdhaveUpperCase = hasUpperCase(value);
-            validity.doesPwdhaveSpecialChars = hasSpecialChar(value);
+            validity.doesPwdHaveCount = !_.isEmpty(value) ? (value.length >= 8) : false;
+            validity.doesPwdhaveLowerCase = !_.isEmpty(value) ? hasLowerCase(value) : false;
+            validity.doesPwdhaveUpperCase = !_.isEmpty(value) ? hasUpperCase(value) : false;
+            validity.doesPwdhaveSpecialChars = !_.isEmpty(value) ? hasSpecialChar(value) : false;
             validity.isPasswordValid = _.every(
                 _.pick(validity, [
                     // 'isPasswordNotNull',

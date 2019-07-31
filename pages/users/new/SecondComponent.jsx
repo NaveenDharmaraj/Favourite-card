@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-one-expression-per-line */
 import React from 'react';
 import {
     Button,
@@ -14,11 +15,12 @@ function SecondComponent(props) {
         handleSubmit,
         emailId,
         parentInputChange,
+        handleInputOnBlur,
+        isButtonDisabled,
         password,
         validity
     } = props;
     // let pwdCharCount =0;
-    console.log(validity);
     let pwdCharCount = (password) ? password.length : 0;
     return (
         <Grid.Row>
@@ -37,12 +39,21 @@ function SecondComponent(props) {
                                 name="emailId"
                                 value={emailId}
                                 onChange={parentInputChange}
+                                onBlur={handleInputOnBlur}
                                 error={!validity.isEmailIdValid}
                                 placeholder="Your email Id"
                             />
                             <FormValidationErrorMessage
-                                condition={!validity.isEmailIdValid}
+                                condition={!validity.isEmailIdNotNull}
+                                errorMessage="Please input an email id"
+                            />
+                            <FormValidationErrorMessage
+                                condition={!validity.isEmailValidFormat}
                                 errorMessage="Please input a valid email id"
+                            />
+                            <FormValidationErrorMessage
+                                condition={!validity.isEmailIdNew && validity.isEmailValidFormat}
+                                errorMessage="This user already Exists!. Please Input a different Email Id"
                             />
                         </Form.Field>
                         <Form.Field>
@@ -51,15 +62,16 @@ function SecondComponent(props) {
                                 control={Input}
                                 id="password"
                                 name="password"
-                                value={password}
+                                value={_.isEmpty(password) ? '' : password}
                                 onChange={parentInputChange}
+                                onBlur={handleInputOnBlur}
                                 // error={!validity.isPasswordValid}
                                 placeholder="Password"
                             />
-                            <FormValidationErrorMessage
+                            {/* <FormValidationErrorMessage
                                 condition={!validity.isPasswordValid}
                                 errorMessage="Please input your account password"
-                            />
+                            /> */}
                         </Form.Field>
                         <p>
                             <span className={(validity.doesPwdHaveCount) ? 'blueText' : ''}>
@@ -70,7 +82,23 @@ function SecondComponent(props) {
                             <span className={(validity.doesPwdhaveSpecialChars) ? 'blueText' : ''}>special characters (e.g. !@#$%^&*)</span>
                         </p>
                         <div className="reg-btn-wraper">
-                            <Button type='submit' primary onClick={handleSubmit}>Continue</Button>
+                            {/* {(!emailId || !password)
+                            && <Button type='submit' primary disabled onClick={handleSubmit}>Continue</Button>
+                            }
+                            {(emailId && password)
+                            && <Button type='submit' primary onClick={handleSubmit}>Continue</Button>
+                            } */}
+                            <Button 
+                                type='submit'
+                                primary
+                                disabled={!isButtonDisabled([
+                                    'emailId',
+                                    'password',
+                                ])}
+                                onClick={handleSubmit}
+                            >
+                                Continue
+                            </Button>
                         </div>
                     </Form>
                 </div>

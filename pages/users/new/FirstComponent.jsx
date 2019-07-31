@@ -6,6 +6,7 @@ import {
     Grid,
     Input,
 } from 'semantic-ui-react';
+import _ from 'lodash';
 
 import FormValidationErrorMessage from '../../../components/shared/FormValidationErrorMessage';
 
@@ -13,8 +14,10 @@ function FirstComponent(props) {
     const {
         firstName,
         handleSubmit,
+        isButtonDisabled,
         lastName,
         parentInputChange,
+        handleInputOnBlur,
         validity
     } = props;
 
@@ -34,8 +37,9 @@ function FirstComponent(props) {
                                 control={Input}
                                 id="firstName"
                                 name="firstName"
-                                value={firstName}
+                                value={_.isEmpty(firstName) ? '' : firstName}
                                 onChange={parentInputChange}
+                                onBlur={handleInputOnBlur}
                                 error={!validity.isFirstNameNotNull}
                                 placeholder="Your first name"
                             />
@@ -47,16 +51,14 @@ function FirstComponent(props) {
                         <Form.Field>
                             <label>
                                 Last Name
-                                <a style={{float:'right'}} className="forgot-link">
-                                    Forgot Password?
-                                </a>
                             </label>
                             <Form.Field
                                 control={Input}
                                 id="lastName"
                                 name="lastName"
-                                value={lastName}
+                                value={_.isEmpty(lastName) ? '' : lastName}
                                 onChange={parentInputChange}
+                                onBlur={handleInputOnBlur}
                                 error={!validity.isLastNameNotNull}
                                 placeholder="Your last name"
                             />
@@ -66,7 +68,20 @@ function FirstComponent(props) {
                             />
                         </Form.Field>
                         <div className="reg-btn-wraper">
-                            <Button type="submit" onClick={handleSubmit} primary>Continue</Button>
+                            {/* { firstName && lastName
+                            && (<Button type="submit" onClick={handleSubmit} primary>Continue</Button>)}
+                            { (!firstName || !lastName)
+                            && (<Button type="submit" disabled onClick={handleSubmit} primary>Continue</Button>)} */}
+                            <Button type="submit" 
+                                onClick={handleSubmit}
+                                primary
+                                disabled={!isButtonDisabled([
+                                    'firstName',
+                                    'lastName',
+                                ])}
+                            >
+                                Continue
+                            </Button>
                         </div>
                     </Form>
                 </div>
