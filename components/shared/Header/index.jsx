@@ -14,9 +14,9 @@ import logo from '../../../static/images/CharitableImpact.png';
 import AuthHeader from './AuthHeader';
 import OnBoardingHeader from './OnBoarding';
 
-const renderHeader = (onBording, isAuthenticated) => {
+const renderHeader = (onBoarding, isAuthenticated) => {
     let headerComponent = null;
-    if (onBording) {
+    if (onBoarding) {
         headerComponent = <OnBoardingHeader />;
     } else if (isAuthenticated) {
         headerComponent = <AuthHeader />;
@@ -29,6 +29,7 @@ const renderHeader = (onBording, isAuthenticated) => {
 const Header = (props) => {
     const {
         isAuthenticated,
+        onBoarding,
     } = props;
     return (
         <Segment
@@ -41,7 +42,7 @@ const Header = (props) => {
                     <Menu.Item>
                         <Image style={{ width: '131px' }} src={logo} />
                     </Menu.Item>
-                    {renderHeader(false, isAuthenticated)}
+                    {renderHeader(onBoarding, isAuthenticated)}
                 </Menu>
             </Container>
         </Segment>

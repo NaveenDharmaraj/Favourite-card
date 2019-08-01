@@ -7,10 +7,14 @@ import {
 import _ from 'lodash';
 import { connect } from 'react-redux';
 
+import {
+    saveUser,
+    validateNewUser,
+} from '../../../actions/user';
+import storage from '../../../helpers/storage'
 import { Router } from '../../../routes';
 import Layout from '../../../components/shared/Layout';
 import validateUserRegistrationForm from '../../../helpers/users/utils';
-import { saveUser } from '../../../actions/user';
 import FirstStep from '../../../components/New/FirstStep';
 import SecondStep from '../../../components/New/SecondStep';
 import CausesSelection from '../../../components/New/CausesSelection';
@@ -24,6 +28,7 @@ class Login extends React.Component {
                 userCauses: [],
             },
             stepIndex: 0,
+            buttonClicked: false,
             validity: this.intializeValidations(),
         };
         const {
@@ -35,6 +40,36 @@ class Login extends React.Component {
         this.handleCauses = this.handleCauses.bind(this);
         this.handleInputOnBlur = this.handleInputOnBlur.bind(this);
         this.isButtonDisabled = this.isButtonDisabled.bind(this);
+    }
+
+    componentDidUpdate(prevProps) {
+        let{
+            validity,
+        } = this.state;
+        if(!_.isEqual(this.props, prevProps)) {
+            let isEmailIdNew;
+            if(this.props.userExists !== undefined) {
+                isEmailIdNew = !this.props.userExists
+            }
+            let isEmailIdValid = _.every(
+                _.pick(validity, [
+                    'isEmailIdNotNull',
+                    'isEmailValidFormat',
+                    'isEmailIdNew',
+                ]),
+            );
+            this.setState({
+                validity:{
+                    ...this.state.validity,
+                    isEmailIdNew,
+                    isEmailIdValid,
+                }
+            });
+            if (!_.isEmpty(this.props.newUserDetails)) {
+                storage.set('newUserDetails', this.props.newUserDetails, 'local', null);
+                Router.pushRoute('/users/email-verification');
+            }
+        }
     }
 
     handleInputChange(event, data) {
@@ -88,6 +123,9 @@ class Login extends React.Component {
             validity,
         } = this.state;
         const inputValue = value;
+        const {
+            dispatch,
+        } = this.props;
         switch (name) {
             case 'firstName':
                 validity = validateUserRegistrationForm('firstName', inputValue, validity);
@@ -96,7 +134,8 @@ class Login extends React.Component {
                 validity = validateUserRegistrationForm('lastName', inputValue, validity);
                 break;
             case 'emailId':
-                validity = validateUserRegistrationForm('emailId', inputValue, validity);
+                validity = validateUserRegistrationForm('emailId', inputValue, validity);                
+                validateNewUser(dispatch, inputValue);
                 break;
             case 'password':
                 validity = validateUserRegistrationForm('password', inputValue, validity);
@@ -180,6 +219,10 @@ class Login extends React.Component {
             if (stepIndex === 1) {
                 validity = validateUserRegistrationForm('emailId', emailId, validity);
             } else if (stepIndex === 3) {
+                this.setState({
+                    buttonClicked:true,
+                });
+
                 const userDetails = {};
                 userDetails.name = (firstName) ? firstName + lastName : '';
                 userDetails.given_name = firstName;
@@ -191,12 +234,13 @@ class Login extends React.Component {
                 userDetails.latitude=null;
                 userDetails.causes=userCauses;
                 saveUser(dispatch, userDetails);
-                Router.pushRoute('/users/email-verification');
             }
-            stepIndex += 1;
-            this.setState({
-                stepIndex,
-            });
+            if (stepIndex !== 3) {
+                stepIndex += 1;
+                this.setState({
+                    stepIndex,
+                });
+            }
         } else {
             console.log('invalid');
         }
@@ -233,13 +277,9 @@ class Login extends React.Component {
         } = { ...this.state };
 
         let validity = {};
-        console.log(params);
         params.forEach((param) => {
             validity = validateUserRegistrationForm(param, attributes[param], validity);
-            console.log('localvariale', validity);
         });
-        // console.log('state', this.state.validity);
-        console.log(_.every(validity));
         return (_.every(validity));
     }
 
@@ -253,10 +293,12 @@ class Login extends React.Component {
                 password,
                 userCauses,
             },
+            buttonClicked,
             validity,
         } = this.state;
+        // console.log(validity)
         return (
-            <Layout>
+            <Layout onBoarding={true}>
                 <div className="pageWraper">
                     <Container>
                         <div className="linebg">
@@ -307,6 +349,7 @@ class Login extends React.Component {
                                         <Grid.Row>
                                             <CreateComponent
                                                 handleSubmit={this.handleSubmit}
+                                                buttonClicked={buttonClicked}
                                             />
                                         </Grid.Row>
                                     </Grid>
@@ -323,6 +366,8 @@ class Login extends React.Component {
 }
 function mapStateToProps(state) {
     return {
+        newUserDetails: state.user.newUserDetails,
+        userExists: state.user.userExists,
     };
 }
 export default (connect(mapStateToProps)(Login));

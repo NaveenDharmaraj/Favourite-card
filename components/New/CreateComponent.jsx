@@ -8,6 +8,7 @@ import {
 function CreateComponent(props) {
     const {
         handleSubmit,
+        buttonClicked,
     } = props;
     return (
         <Fragment>
@@ -17,18 +18,21 @@ function CreateComponent(props) {
                     <div className="reg-header">
                         <Header as="h3">Create your Impact Account. </Header>
                         <Header as="h4">
-                            By clicking ‘Create your Impact Account’, you acknowlege that you have read the
-                            <a>Privacy Policy</a>
-                            , and agree to the
-                            <a>Terms & Conditions</a>
-                            and
-                            <a>Account Agreement</a>
+                            By clicking ‘Create your Impact Account’, you acknowlege that you have read the 
+                            <a> Privacy Policy</a>
+                            , and agree to the 
+                            <a> Terms & Conditions </a>
+                             and 
+                            <a> Account Agreement</a>
                             .
                         </Header>
                     </div>
                     <Form>
                         <div className="create-btn-wraper">
-                            <Button type="submit" onClick={handleSubmit} primary>Create your Impact Account</Button>
+                            {  !buttonClicked
+                                && <Button type="submit" onClick={handleSubmit} primary>Create your Impact Account</Button>}
+                            {buttonClicked
+                            && <Button type="submit" disabled primary>Submitting...</Button>}
                         </div>
                     </Form>
                 </div>

@@ -62,6 +62,7 @@ function SecondStep(props) {
                                 control={Input}
                                 id="password"
                                 name="password"
+                                type="password"
                                 value={_.isEmpty(password) ? '' : password}
                                 onChange={parentInputChange}
                                 onBlur={handleInputOnBlur}

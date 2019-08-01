@@ -6,7 +6,14 @@ import coreApi from '../services/coreApi';
 import authRorApi from '../services/authRorApi';
 import socialApi from '../services/socialApi';
 import { Router } from '../routes';
+import getConfig from 'next/config';
 
+const { publicRuntimeConfig } = getConfig();
+
+const {
+    AUTH0_WEB_CLIENT_ID
+} = publicRuntimeConfig;
+ 
 export const actionTypes = {
     CREATE_USER: 'CREATE_USER',
     GET_MATCH_POLICIES_PAYMENTINSTRUMENTS: 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS',
@@ -14,6 +21,7 @@ export const actionTypes = {
     TAX_RECEIPT_PROFILES:'TAX_RECEIPT_PROFILES',
     SET_USER_INFO: 'SET_USER_INFO',
     UPDATE_USER_FUND: 'UPDATE_USER_FUND',
+    USER_EXISTS: 'USER_EXISTS',
 }
 
 const getAllPaginationData = async (url, params = null) => {
@@ -319,10 +327,23 @@ export const saveUser = (dispatch, userDetails) => {
     });
 };
 
-export const validateNewUser = (emailId) => {
+export const validateNewUser = (dispatch, emailId) => {
     return socialApi.get(`/verify/useremailid?emailid=${emailId}`).then((result) => {
-        return result;
+        return dispatch({
+            payload: {
+                userExists: result.email_exists,
+            },
+            type: actionTypes.USER_EXISTS,
+        });
     }).catch((error) => {
         console.log(error);
+    });
+};
+
+export const resendVerificationEmail = (userId) => {
+
+    return socialApi.post(`/resend/verification`, {
+        client_id: AUTH0_WEB_CLIENT_ID,
+        user_id: userId,
     });
 };

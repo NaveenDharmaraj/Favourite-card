@@ -5,49 +5,102 @@ import {
     Header,
     Form,
     Grid,
+    Message,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
-
+import {resendVerificationEmail} from '../../actions/user'
 import Layout from '../../components/shared/Layout';
+import storage from '../../helpers/storage';
+import {Router} from '../../routes'
 
-function EmailVerification(props) {
-    console.log(props);
-    return (
-        <Layout>
-            <div className="pageWraper">
-                <Container>
-                    <div className="linebg" >
-                        <Grid columns={2} verticalAlign='middle'>
-                            <Grid.Row>
-                                <Grid.Column className="left-bg"></Grid.Column>
-                                <Grid.Column>
-                                    <div className="login-form-wraper">
-                                        <div className="reg-header">
-                                            <Header as="h3">Verify your email.</Header>
-                                            <Header as="h4">
-                                                We’ve emailed a verification link to 
-                                                <a>tammy.tuba@gmail.com</a>
-                                                .Click the link in that email to finish creating your account.
-                                            </Header>
-                                            <Header as="h4">
-                                                Don’t see an email from us?
-                                            </Header>
-                                        </div>
-                                        <Form>
-                                            <div className="create-btn-wraper">
-                                                <Button type='submit' primary>Resend email</Button>
+class EmailVerification extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            buttonClicked: false,
+        };
+        let {
+            newUserDetails,
+        } = this.props;
+        if (newUserDetails === undefined) {
+            let newUserDetailsLocal = storage.get('newUserDetails', 'local');
+            newUserDetails = JSON.parse(newUserDetailsLocal);
+        }
+        console.log(newUserDetails);
+        this.state.newUserDetails = newUserDetails;
+        if (newUserDetails === undefined) {
+            Router.pushRoute('/users/error');
+        }
+
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    handleSubmit() {
+        let {
+            newUserDetails,
+            buttonClicked,
+        } = this.state;
+        resendVerificationEmail(newUserDetails.user_id);
+        buttonClicked = true;
+        this.setState({
+            buttonClicked,
+        });
+        setTimeout(() => {
+            this.setState({ buttonClicked: false });
+        }, 3000);
+    }
+
+    render() {
+        let {
+            newUserDetails,
+            buttonClicked,
+        } = this.state;
+
+        console.log(buttonClicked);
+
+        return (
+            <Layout>
+                <div className="pageWraper">
+                    <Container>
+                        <div className="linebg" >
+                            <Grid columns={2} verticalAlign='middle'>
+                                <Grid.Row>
+                                    <Grid.Column className="left-bg"></Grid.Column>
+                                    <Grid.Column>
+                                        <div className="login-form-wraper">
+                                            <div className="reg-header">
+                                                <Header as="h3">Verify your email.</Header>
+                                                <Header as="h4">
+                                                    We’ve emailed a verification link to 
+                                                    <a>{newUserDetails.email}</a>
+                                                    .Click the link in that email to finish creating your account.
+                                                </Header>
+                                                <Header as="h4">
+                                                    Don’t see an email from us?
+                                                </Header>
                                             </div>
-                                        </Form>
-                                    </div>
-                                </Grid.Column>
-                            </Grid.Row>
+                                            <Form>
+                                                <div className="create-btn-wraper">
+                                                    <Button  type="submit" 
+                                                        onClick={this.handleSubmit}
+                                                        primary>
+                                                        Resend email
+                                                    </Button>
+                                                </div>
+                                                {!!buttonClicked && <Message compact color='green'>Email Sent</Message>}
 
-                        </Grid>
-                    </div>
-                </Container>
-            </div>
-        </Layout>
-    );
+                                            </Form>
+                                        </div>
+                                    </Grid.Column>
+                                </Grid.Row>
+
+                            </Grid>
+                        </div>
+                    </Container>
+                </div>
+            </Layout>
+        );
+    };
 }
 function mapStateToProps(state) {
     return {
