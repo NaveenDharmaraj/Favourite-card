@@ -27,8 +27,7 @@ instance.interceptors.request.use(function (config) {
         if (!_isEmpty(auth0) && !_isEmpty(auth0.accessToken)) {
             token = auth0.accessToken;
         }
-        // config.headers.Authorization = `Bearer ${token}`;
-        config.headers.Authorization = `Basic YWRtaW46WTJoaGJtZGxiV1U9`;
+        config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
 }, function (error) {

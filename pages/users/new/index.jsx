@@ -10,8 +10,8 @@ import { connect } from 'react-redux';
 import {
     saveUser,
     validateNewUser,
-} from '../../../actions/user';
-import storage from '../../../helpers/storage'
+} from '../../../actions/onBoarding';
+import storage from '../../../helpers/storage';
 import { Router } from '../../../routes';
 import Layout from '../../../components/shared/Layout';
 import validateUserRegistrationForm from '../../../helpers/users/utils';
@@ -372,8 +372,8 @@ class Login extends React.Component {
 }
 function mapStateToProps(state) {
     return {
-        newUserDetails: state.user.newUserDetails,
-        userExists: state.user.userExists,
+        newUserDetails: state.onBoarding.newUserDetails,
+        userExists: state.onBoarding.userExists,
     };
 }
 export default (connect(mapStateToProps)(Login));
