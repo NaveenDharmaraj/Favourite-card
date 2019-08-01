@@ -27,17 +27,20 @@ const validateUserRegistrationForm =  (field, value, validity) => {
             break;
         case 'emailId':
             const emailValue = value;
-            // const isUserNew = validateNewUser(emailValue);
             validity.isEmailIdNotNull = !(!value || value.length === 0);
             validity.isEmailValidFormat = !_.isEmpty(emailValue) ? (emailRegex).test(emailValue) : true;
-            // validity.isEmailIdNew = (validity.isEmailValidFormat) ? isUserNew.email_exists : false;
+            
+            const isUserNew = (validity.isEmailValidFormat) ? validateNewUser(emailValue) : false;
+
+            validity.isEmailIdNew = (validity.isEmailValidFormat) ? !isUserNew.email_exists : false;
             validity.isEmailIdValid = _.every(
                 _.pick(validity, [
                     'isEmailIdNotNull',
                     'isEmailValidFormat',
-                    // 'isEmailIdNew',
+                    'isEmailIdNew',
                 ]),
             );
+            console.log(validity.isEmailIdNew);
             break;
         case 'password':
             // validity.isPasswordNotNull = !(!value || value.length === 0);

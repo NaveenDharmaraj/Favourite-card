@@ -21,6 +21,7 @@ function SecondStep(props) {
         validity
     } = props;
     // let pwdCharCount =0;
+    console.log(validity);
     let pwdCharCount = (password) ? password.length : 0;
     return (
         <Grid.Row>

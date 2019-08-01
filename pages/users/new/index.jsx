@@ -43,13 +43,13 @@ class Login extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        let{
+        let {
             validity,
         } = this.state;
-        if(!_.isEqual(this.props, prevProps)) {
+        if (!_.isEqual(this.props, prevProps)) {
             let isEmailIdNew;
-            if(this.props.userExists !== undefined) {
-                isEmailIdNew = !this.props.userExists
+            if (this.props.userExists !== undefined) {
+                isEmailIdNew = !this.props.userExists;
             }
             let isEmailIdValid = _.every(
                 _.pick(validity, [
@@ -59,11 +59,11 @@ class Login extends React.Component {
                 ]),
             );
             this.setState({
-                validity:{
+                validity: {
                     ...this.state.validity,
                     isEmailIdNew,
                     isEmailIdValid,
-                }
+                },
             });
             if (!_.isEmpty(this.props.newUserDetails)) {
                 storage.set('newUserDetails', this.props.newUserDetails, 'local', null);
@@ -92,16 +92,16 @@ class Login extends React.Component {
         if (attributes[name] !== newValue) {
             attributes[name] = newValue;
         }
-        switch (name) {
-            case 'password':
-                validity = validateUserRegistrationForm('password', newValue, validity);
-                break;
-            // case 'emailId':
-            //     validity = validateUserRegistrationForm('emailId', newValue, validity);
-            //     break;
-            default:
-                break;
-        }
+        // switch (name) {
+        //     case 'password':
+        //         validity = validateUserRegistrationForm('password', newValue, validity);
+        //         break;
+        //     // case 'emailId':
+        //     //     validity = validateUserRegistrationForm('emailId', newValue, validity);
+        //     //     break;
+        //     default:
+        //         break;
+        // }
         this.setState({
             attributes: {
                 ...this.state.attributes,
@@ -280,6 +280,7 @@ class Login extends React.Component {
         params.forEach((param) => {
             validity = validateUserRegistrationForm(param, attributes[param], validity);
         });
+        console.log('button validity', validity);
         return (_.every(validity));
     }
 
