@@ -26,6 +26,16 @@ const renderHeader = (onBoarding, isAuthenticated) => {
     return headerComponent;
 };
 
+const getHeaderClassName = (onBoarding, isAuthenticated) => {
+    let className = 'c-default-header';
+    if (onBoarding) {
+        className = 'c-logout-header';
+    } else if (isAuthenticated) {
+        className = 'c-login-header';
+    }
+    return className;
+};
+
 const Header = (props) => {
     const {
         isAuthenticated,
@@ -35,7 +45,7 @@ const Header = (props) => {
         <Segment
             textAlign="center"
             vertical
-            className="c-login-header"
+            className={getHeaderClassName(onBoarding, isAuthenticated)}
         >
             <Container>
                 <Menu secondary>
@@ -51,6 +61,7 @@ const Header = (props) => {
 
 Header.propTypes = {
     isAuthenticated: boolean,
+    onBoarding: boolean,
 };
 
 export default Header;

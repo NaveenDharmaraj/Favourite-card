@@ -74,15 +74,11 @@ class TaxReceipt extends React.Component {
 		} = this.props;
 
 		const {
-			flowObject:{
-				giveData:{
-					giveTo,
-				},
-			},
+			flowObject
 		} = this.state;
 
-		if (this.state.flowObject) {
-			reInitNextStep(dispatch, this.state.flowObject)
+		if (flowObject) {
+			reInitNextStep(dispatch, flowObject)
 		}
 		if(flowObject && flowObject.stepsCompleted){
 			Router.pushRoute('/dashboard');

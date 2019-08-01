@@ -54,7 +54,7 @@ class Layout extends React.Component {
                         </AuthMobileHeader>
                     </Responsive>
                     <Responsive minWidth={Responsive.onlyTablet.minWidth}>
-                        <Header isAuthenticated={isAuthenticated} onBoarding={onBoarding}/>
+                        <Header isAuthenticated={isAuthenticated} onBoarding={onBoarding} />
                          <Container><div className="pageWraper">{children}</div></Container>
                     </Responsive>
                     <Footer />

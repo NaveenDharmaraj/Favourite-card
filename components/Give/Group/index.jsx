@@ -14,6 +14,7 @@ import _isEqual from 'lodash/isEqual';
 import _every from 'lodash/every';
 import _map from 'lodash/map';
 import _merge from 'lodash/merge';
+import _replace from 'lodash/replace';
 import {
     Elements,
     StripeProvider,
@@ -84,8 +85,21 @@ class Group extends React.Component {
         } = props;
         const paymentInstruments = (!_isEmpty(props.flowObject.giveData.giveFrom) && props.flowObject.giveData.giveFrom.type === 'companies') ? companyDetails.companyPaymentInstrumentsData : paymentInstrumentsData;
         const formatMessage = props.t;
+        const flowType = _replace(props.baseUrl, /\//, '');
+        let payload = null;
+        //Initialize the flowObject to default value when got switched from other flows
+        if (props.flowObject.type !== flowType) {
+            const defaultPropsData = _merge({}, groupDefaultProps);
+            payload = {
+                ...defaultPropsData.flowObject,
+                nextStep: props.step,
+            };
+        }
+        else{
+                payload =  _merge({}, props.flowObject)
+            }
         this.state = {
-            flowObject: _merge({}, props.flowObject),
+            flowObject:payload,
             benificiaryIndex: 0,
             buttonClicked: false,
             dropDownOptions: {
@@ -176,19 +190,19 @@ class Group extends React.Component {
             let companyPaymentInstrumentChanged = false;
             const formatMessage = this.props.t;
             if (giveData.giveFrom.type === 'companies' && !_isEmpty(companyDetails)) {
-                if (_isEmpty(this.props.companyDetails)
+                if (_isEmpty(prevProps.companyDetails)
                      || !_isEqual(companyDetails.companyPaymentInstrumentsData,
-                         this.props.companyDetails.companyPaymentInstrumentsData)
+                         prevProps.companyDetails.companyPaymentInstrumentsData)
                 ) {
                     companyPaymentInstrumentChanged = true;
                 }
                 paymentInstruments = companyDetails.companyPaymentInstrumentsData;
-                giveData.creditCard = getDefaultCreditCard(
-                    paymentInstruments
-                );
             } else if (giveData.giveFrom.type === 'user') {
                 paymentInstruments = paymentInstrumentsData;
             }
+            const paymentInstrumentOptions = populatePaymentInstrument(
+                paymentInstruments, formatMessage,
+            );
             const donationMatchOptions = populateDonationMatch(donationMatchData, formatMessage);
             const giveToOptions = populateGroupsOfUser(userMembershipGroups);
             
@@ -219,9 +233,6 @@ class Group extends React.Component {
                 };
             }
             
-            const paymentInstrumentOptions = populatePaymentInstrument(
-                paymentInstruments, formatMessage,
-            );
             if (!_isEmpty(fund)) {
                 const addressToShareList = Group.populateShareAddress(
                     taxReceiptProfiles,
@@ -489,6 +500,7 @@ class Group extends React.Component {
         } = this.state;
         const {
             coverFeesData,
+            dispatch,
         } = this.props;
         let newValue = (!_isEmpty(options)) ? _find(options, { value }) : value;
         const privacyCheckbox = [
@@ -521,7 +533,7 @@ class Group extends React.Component {
                         name, giveData[name], validity, giveData, 0,
                     );
                     if (giveData.giveFrom.type === 'companies') {
-                        getCompanyPaymentAndTax(Number(giveData.giveFrom.id));
+                        getCompanyPaymentAndTax(dispatch,Number(giveData.giveFrom.id));
                     }
                     break;
                 case 'giftType':

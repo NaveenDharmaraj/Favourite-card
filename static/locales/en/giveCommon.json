@@ -18,8 +18,8 @@
         "invalidMaxAmountError":  "$9,999 is the maximum we can process here. For larger amounts, please get in touch with us: hello@chimp.net or 1-877-531-0580.",
         "invalidLengthError": "is too long (maximum is 1000 characters)",
         "invalidNoteTextError":  "Only standard letters and numbers are allowed here",
-        "isAmountCoverGive": "Sorry, you can't give more money than what is in your account."
-
+        "isAmountCoverGive": "Sorry, you can't give more money than what is in your account.",
+        "giveAmountGreaterThanBalance": "Sorry, you can't give more money than what is in your account."
 
     },
     "breadCrumb" : {

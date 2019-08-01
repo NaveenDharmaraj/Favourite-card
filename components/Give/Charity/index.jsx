@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import getConfig from 'next/config';
 import _isEmpty from 'lodash/isEmpty';
 import _merge from 'lodash/merge';
+import _replace from 'lodash/replace';
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/prop-types */
 import PropTypes from 'prop-types';
@@ -113,7 +114,7 @@ class Charity extends React.Component {
         }
         const paymentInstruments = (!_isEmpty(props.flowObject.giveData.giveFrom) && props.flowObject.giveData.giveFrom.type === 'companies') ? companyDetails.companyPaymentInstrumentsData : paymentInstrumentsData;
         const formatMessage = props.t;
-        const flowType = _.replace(props.baseUrl, /\//, '');
+        const flowType = _replace(props.baseUrl, /\//, '');
         let payload = null;
         //Initialize the flowObject to default value when got switched from other flows
         if (props.flowObject.type !== flowType) {
@@ -219,7 +220,7 @@ class Charity extends React.Component {
         dispatch(getDonationMatchAndPaymentInstruments(id));
     }
 
-    componentDidUpdate(prevProps)  {
+    componentDidUpdate(prevProps) {
         if (!_isEqual(this.props, prevProps)) {
             const {
                 benificiaryIndex,
@@ -262,9 +263,9 @@ class Charity extends React.Component {
             let paymentInstruments = null;
             let companyPaymentInstrumentChanged = false;
             if (giveData.giveFrom.type === 'companies' && !_isEmpty(companyDetails)) {
-                if (_isEmpty(this.props.companyDetails)
+                if (_isEmpty(prevProps.companyDetails)
                      || !_isEqual(companyDetails.companyPaymentInstrumentsData,
-                         this.props.companyDetails.companyPaymentInstrumentsData)
+                         prevProps.companyDetails.companyPaymentInstrumentsData)
                 ) {
                     companyPaymentInstrumentChanged = true;
                 }
@@ -275,7 +276,6 @@ class Charity extends React.Component {
             const paymentInstrumentOptions = populatePaymentInstrument(
                 paymentInstruments, formatMessage,
             );
-            giveData.creditCard = getDefaultCreditCard(paymentInstrumentOptions);
             const giveToOptions = populateGiveToGroupsofUser(giveGroupBenificairyDetails);
             const donationMatchOptions = populateDonationMatch(donationMatchData, formatMessage);
             if (!_isEmpty(giveCharityDetails) && !_isEmpty(giveCharityDetails.charityDetails)) {
