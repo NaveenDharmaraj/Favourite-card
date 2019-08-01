@@ -51,7 +51,7 @@ function SecondStep(props) {
                                 errorMessage="Please input a valid email id"
                             />
                             <FormValidationErrorMessage
-                                condition={!validity.isEmailIdNew && validity.isEmailValidFormat}
+                                condition={!!userExists}
                                 errorMessage="This user already Exists!. Please Input a different Email Id"
                             />
                         </Form.Field>
@@ -91,7 +91,7 @@ function SecondStep(props) {
                             <Button 
                                 type='submit'
                                 primary
-                                disabled={validity.isEmailIdValid && validity.isPasswordValid && !!userExists}
+                                disabled={!validity.isEmailIdValid || !validity.isPasswordValid || !!userExists || typeof userExists === 'undefined'}
                                 onClick={handleSubmit}
                             >
                                 Continue

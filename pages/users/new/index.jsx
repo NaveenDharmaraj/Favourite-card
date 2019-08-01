@@ -47,24 +47,6 @@ class Login extends React.Component {
             validity,
         } = this.state;
         if (!_.isEqual(this.props, prevProps)) {
-            let isEmailIdNew;
-            if (this.props.userExists !== undefined) {
-                isEmailIdNew = !this.props.userExists;
-            }
-            let isEmailIdValid = _.every(
-                _.pick(validity, [
-                    'isEmailIdNotNull',
-                    'isEmailValidFormat',
-                    'isEmailIdNew',
-                ]),
-            );
-            this.setState({
-                validity: {
-                    ...this.state.validity,
-                    isEmailIdNew,
-                    isEmailIdValid,
-                },
-            });
             if (!_.isEmpty(this.props.newUserDetails)) {
                 storage.set('newUserDetails', this.props.newUserDetails, 'local', null);
                 Router.pushRoute('/users/email-verification');
@@ -85,9 +67,6 @@ class Login extends React.Component {
             // eslint-disable-next-line no-unused-vars
             validity,
         } = this.state;
-        // let pwdCharCount = 0;
-        // let pwdHasLwrCase = false;
-        // let pwdHasUprCase = false;
         const newValue = (!_.isEmpty(options)) ? _.find(options, { value }) : value;
         if (attributes[name] !== newValue) {
             attributes[name] = newValue;
@@ -96,9 +75,6 @@ class Login extends React.Component {
             case 'password':
                 validity = validateUserRegistrationForm('password', newValue, validity);
                 break;
-            // case 'emailId':
-            //     validity = validateUserRegistrationForm('emailId', newValue, validity);
-            //     break;
             default:
                 break;
         }
@@ -106,9 +82,6 @@ class Login extends React.Component {
             attributes: {
                 ...this.state.attributes,
                 ...attributes,
-                // pwdCharCount,
-                // pwdHasLwrCase,
-                // pwdHasUprCase,
             },
 
         });
@@ -152,7 +125,6 @@ class Login extends React.Component {
 
     intializeValidations() {
         this.validity = {
-            isEmailIdNew: true,
             isEmailIdNotNull: true,
             isEmailIdValid: true,
             isEmailValidFormat: true,
@@ -328,7 +300,6 @@ class Login extends React.Component {
                                             handleSubmit={this.handleSubmit}
                                             emailId={emailId}
                                             handleInputOnBlur={this.handleInputOnBlur}
-                                            // isButtonDisabled={this.isButtonDisabled}
                                             userExists={userExists}
                                             password={password}
                                             validity={validity}
