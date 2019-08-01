@@ -18,7 +18,7 @@ import validateUserRegistrationForm from '../../../helpers/users/utils';
 import FirstStep from '../../../components/New/FirstStep';
 import SecondStep from '../../../components/New/SecondStep';
 import CausesSelection from '../../../components/New/CausesSelection';
-import CreateComponent from '../../../components/New/CreateComponent';
+import FinalStep from '../../../components/New/FinalStep';
 
 class Login extends React.Component {
     constructor(props) {
@@ -92,16 +92,16 @@ class Login extends React.Component {
         if (attributes[name] !== newValue) {
             attributes[name] = newValue;
         }
-        // switch (name) {
-        //     case 'password':
-        //         validity = validateUserRegistrationForm('password', newValue, validity);
-        //         break;
-        //     // case 'emailId':
-        //     //     validity = validateUserRegistrationForm('emailId', newValue, validity);
-        //     //     break;
-        //     default:
-        //         break;
-        // }
+        switch (name) {
+            case 'password':
+                validity = validateUserRegistrationForm('password', newValue, validity);
+                break;
+            // case 'emailId':
+            //     validity = validateUserRegistrationForm('emailId', newValue, validity);
+            //     break;
+            default:
+                break;
+        }
         this.setState({
             attributes: {
                 ...this.state.attributes,
@@ -134,8 +134,10 @@ class Login extends React.Component {
                 validity = validateUserRegistrationForm('lastName', inputValue, validity);
                 break;
             case 'emailId':
-                validity = validateUserRegistrationForm('emailId', inputValue, validity);                
-                validateNewUser(dispatch, inputValue);
+                validity = validateUserRegistrationForm('emailId', inputValue, validity);
+                if (validity.isEmailIdValid) {
+                    validateNewUser(dispatch, inputValue);
+                }    
                 break;
             case 'password':
                 validity = validateUserRegistrationForm('password', inputValue, validity);
@@ -220,7 +222,7 @@ class Login extends React.Component {
                 validity = validateUserRegistrationForm('emailId', emailId, validity);
             } else if (stepIndex === 3) {
                 this.setState({
-                    buttonClicked:true,
+                    buttonClicked: true,
                 });
 
                 const userDetails = {};
@@ -280,7 +282,6 @@ class Login extends React.Component {
         params.forEach((param) => {
             validity = validateUserRegistrationForm(param, attributes[param], validity);
         });
-        console.log('button validity', validity);
         return (_.every(validity));
     }
 
@@ -298,6 +299,9 @@ class Login extends React.Component {
             validity,
         } = this.state;
         // console.log(validity)
+        const {
+            userExists,
+        } = this.props;
         return (
             <Layout onBoarding={true}>
                 <div className="pageWraper">
@@ -324,7 +328,8 @@ class Login extends React.Component {
                                             handleSubmit={this.handleSubmit}
                                             emailId={emailId}
                                             handleInputOnBlur={this.handleInputOnBlur}
-                                            isButtonDisabled={this.isButtonDisabled}
+                                            // isButtonDisabled={this.isButtonDisabled}
+                                            userExists={userExists}
                                             password={password}
                                             validity={validity}
                                         />
@@ -348,7 +353,7 @@ class Login extends React.Component {
                                 (stepIndex === 3) && (
                                     <Grid columns={2} centered>
                                         <Grid.Row>
-                                            <CreateComponent
+                                            <FinalStep
                                                 handleSubmit={this.handleSubmit}
                                                 buttonClicked={buttonClicked}
                                             />

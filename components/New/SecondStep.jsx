@@ -16,12 +16,10 @@ function SecondStep(props) {
         emailId,
         parentInputChange,
         handleInputOnBlur,
-        isButtonDisabled,
         password,
-        validity
+        userExists,
+        validity,
     } = props;
-    // let pwdCharCount =0;
-    console.log(validity);
     let pwdCharCount = (password) ? password.length : 0;
     return (
         <Grid.Row>
@@ -41,7 +39,7 @@ function SecondStep(props) {
                                 value={emailId}
                                 onChange={parentInputChange}
                                 onBlur={handleInputOnBlur}
-                                error={!validity.isEmailIdValid}
+                                error={!validity.isEmailIdValid || userExists}
                                 placeholder="Your email Id"
                             />
                             <FormValidationErrorMessage
@@ -93,10 +91,7 @@ function SecondStep(props) {
                             <Button 
                                 type='submit'
                                 primary
-                                disabled={!isButtonDisabled([
-                                    'emailId',
-                                    'password',
-                                ])}
+                                disabled={validity.isEmailIdValid && validity.isPasswordValid && !!userExists}
                                 onClick={handleSubmit}
                             >
                                 Continue

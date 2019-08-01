@@ -29,15 +29,10 @@ const validateUserRegistrationForm =  (field, value, validity) => {
             const emailValue = value;
             validity.isEmailIdNotNull = !(!value || value.length === 0);
             validity.isEmailValidFormat = !_.isEmpty(emailValue) ? (emailRegex).test(emailValue) : true;
-            
-            const isUserNew = (validity.isEmailValidFormat) ? validateNewUser(emailValue) : false;
-
-            validity.isEmailIdNew = (validity.isEmailValidFormat) ? !isUserNew.email_exists : false;
             validity.isEmailIdValid = _.every(
                 _.pick(validity, [
                     'isEmailIdNotNull',
                     'isEmailValidFormat',
-                    'isEmailIdNew',
                 ]),
             );
             console.log(validity.isEmailIdNew);

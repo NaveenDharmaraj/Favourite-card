@@ -5,7 +5,7 @@ import {
     Form,
     Grid,
 } from 'semantic-ui-react';
-function CreateComponent(props) {
+function FinalStep(props) {
     const {
         handleSubmit,
         buttonClicked,
@@ -41,4 +41,4 @@ function CreateComponent(props) {
     );
 }
 
-export default CreateComponent;
+export default FinalStep;
