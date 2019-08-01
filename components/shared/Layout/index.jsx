@@ -31,7 +31,7 @@ class Layout extends React.Component {
         }
     };
 
-    renderLayout = (authRequired, children, isAuthenticated) => {
+    renderLayout = (authRequired, children, isAuthenticated, onBoarding) => {
         if (authRequired && !isAuthenticated) {
             return null;
         }
@@ -54,7 +54,7 @@ class Layout extends React.Component {
                         </AuthMobileHeader>
                     </Responsive>
                     <Responsive minWidth={Responsive.onlyTablet.minWidth}>
-                        <Header isAuthenticated={isAuthenticated} />
+                        <Header isAuthenticated={isAuthenticated} onBoarding={onBoarding} />
                          <Container><div className="pageWraper">{children}</div></Container>
                     </Responsive>
                     <Footer />
@@ -68,9 +68,10 @@ class Layout extends React.Component {
             authRequired,
             children,
             isAuthenticated,
+            onBoarding,
         } = this.props;
         return (
-            this.renderLayout(authRequired, children, isAuthenticated)
+            this.renderLayout(authRequired, children, isAuthenticated, onBoarding)
         );
     }
 };

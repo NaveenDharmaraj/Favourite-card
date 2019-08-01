@@ -1,3 +1,113 @@
+button{
+  &.ui{
+    &.primary{
+      &.button{
+        min-height: 40px;
+        &.mini{
+          min-height: auto;
+          padding: 6/@rem 12/@rem;
+        }
+        &.blue-btn-rounded{
+          background-color: @blueButton;
+          border-radius: 2rem;
+          &:hover{
+            background-color: @blueButton-hover;
+          }
+        }
+      }
+      
+    }
+    &.button{
+      &.blue-bordr-btn-round{
+        padding: 11/@rem 40/@rem;	
+        border: 1/@rem solid @blueButton;	
+        border-radius: 20.5/@rem;
+        background-color: #fff;
+        color: @blueButton;
+        font-size: 18/@rem;
+        font-weight: 400;
+        min-height: 40px;
+      }
+      &.white-btn-round{
+        //height: 41/@rem;	
+        //width: 160/@rem;
+        padding: 11/@rem 40/@rem;	
+        border: 1/@rem solid @card-border;	
+        border-radius: 20.5/@rem;
+        background-color: #fff;
+        color: @blueButton;
+        font-size: 18/@rem;
+        font-weight: 400;
+      }
+      &.transparent-btn-round{
+        background-color: transparent;
+        color: @blueButton;
+        &:hover{
+          color: @blueButton-hover;
+        }
+        &.small{
+          height: 23px;	width: 70px;	
+          border: 1px solid @blueButton;	
+          border-radius: 20px;
+          padding: 0px;
+        }
+      }
+    }
+  }
+  &.ui{
+    &.primary{
+      &.button{
+        &.mini{
+
+        }
+      }
+    }
+    &.button{
+      &.btn-small-white{
+        padding: 10/@rem 40/@rem;
+        border-radius: 24/@rem;	
+        background-color: #FFFFFF;
+        color: @link;
+      }
+      &.btn-small-white-border{
+        height: 20px;	width: 51.85px;
+        border-radius: 24/@rem;	
+        background-color: #FFFFFF;
+        font-size: 12px;
+        padding: 0px;
+        color: @link;
+        border:1px solid @primary-color;
+      }
+    }
+  }
+}
+.btn-function(@color,@color-hover){
+  background-color: @color;
+  border: 1px solid @color;
+  &:hover{
+    background-color: @color-hover;
+  }
+  &.OutLine{
+    background-color: #fff;
+    color: @color;
+    border-color: @color;
+    &:hover{
+      color: @color-hover;
+      border-color: @color-hover;
+    }
+  }
+}
+button{
+  &.ui{
+    &.button{
+      &.primary{
+        .btn-function(@defaultButton,@defaultButton-hover);
+      }
+    }
+  }
+}
+
+
 .button-color(@color, @bg-color) {
   color: @color;
   background-color: @bg-color;
