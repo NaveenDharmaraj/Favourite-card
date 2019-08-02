@@ -35,7 +35,6 @@ const validateUserRegistrationForm =  (field, value, validity) => {
                     'isEmailValidFormat',
                 ]),
             );
-            console.log(validity.isEmailIdNew);
             break;
         case 'password':
             // validity.isPasswordNotNull = !(!value || value.length === 0);

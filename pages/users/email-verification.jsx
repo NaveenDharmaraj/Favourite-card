@@ -8,10 +8,11 @@ import {
     Message,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
-import {resendVerificationEmail} from '../../actions/user'
+
+import { resendVerificationEmail } from '../../actions/user';
 import Layout from '../../components/shared/Layout';
 import storage from '../../helpers/storage';
-import {Router} from '../../routes'
+import { Router } from '../../routes';
 
 class EmailVerification extends React.Component {
     constructor(props) {
@@ -26,7 +27,6 @@ class EmailVerification extends React.Component {
             let newUserDetailsLocal = storage.get('newUserDetails', 'local');
             newUserDetails = JSON.parse(newUserDetailsLocal);
         }
-        console.log(newUserDetails);
         this.state.newUserDetails = newUserDetails;
         if (newUserDetails === undefined) {
             Router.pushRoute('/users/error');
@@ -56,7 +56,6 @@ class EmailVerification extends React.Component {
             buttonClicked,
         } = this.state;
 
-        console.log(buttonClicked);
 
         return (
             <Layout>
