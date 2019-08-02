@@ -16,6 +16,12 @@ const onBoarding = (state = {}, action) => {
                 userExists: action.payload.userExists,
             };
             break;
+        case 'USER_API_VALIDATING':
+            newState = {
+                ...state,
+                apiValidating: action.payload.apiValidating,
+            };
+            break;
         default:
             break;
     }

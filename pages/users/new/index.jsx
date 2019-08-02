@@ -273,6 +273,7 @@ class Login extends React.Component {
         // console.log(validity)
         const {
             userExists,
+            apiValidating,
         } = this.props;
         return (
             <Layout onBoarding={true}>
@@ -296,6 +297,7 @@ class Login extends React.Component {
                                 {
                                     (stepIndex === 1) && (
                                         <SecondStep
+                                            apiValidating={apiValidating}
                                             parentInputChange={this.handleInputChange}
                                             handleSubmit={this.handleSubmit}
                                             emailId={emailId}
@@ -343,6 +345,7 @@ class Login extends React.Component {
 }
 function mapStateToProps(state) {
     return {
+        apiValidating: state.onBoarding.apiValidating,
         newUserDetails: state.onBoarding.newUserDetails,
         userExists: state.onBoarding.userExists,
     };

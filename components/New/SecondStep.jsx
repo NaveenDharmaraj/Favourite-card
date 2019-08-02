@@ -6,12 +6,14 @@ import {
     Input,
     Form,
     Grid,
+    Message,
 } from 'semantic-ui-react';
 
 import FormValidationErrorMessage from '../shared/FormValidationErrorMessage';
 
 function SecondStep(props) {
     let {
+        apiValidating,
         handleSubmit,
         emailId,
         parentInputChange,
@@ -88,14 +90,13 @@ function SecondStep(props) {
                             {(emailId && password)
                             && <Button type='submit' primary onClick={handleSubmit}>Continue</Button>
                             } */}
-                            <Button 
+                            <Button
                                 type='submit'
                                 primary
+                                content={(apiValidating === true) ? 'Validating..' : 'Continue'}
                                 disabled={!validity.isEmailIdValid || !validity.isPasswordValid || !!userExists || typeof userExists === 'undefined'}
                                 onClick={handleSubmit}
-                            >
-                                Continue
-                            </Button>
+                            />
                         </div>
                     </Form>
                 </div>

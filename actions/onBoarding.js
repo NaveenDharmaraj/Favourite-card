@@ -22,6 +22,7 @@ if (!_.isEmpty(BASIC_AUTH_KEY)) {
 
 export const actionTypes = {
     CREATE_USER: 'CREATE_USER',
+    USER_API_VALIDATING: 'USER_API_VALIDATING',
     USER_EXISTS: 'USER_EXISTS',
 };
 
@@ -41,7 +42,19 @@ export const saveUser = (dispatch, userDetails) => {
 };
 
 export const validateNewUser = (dispatch, emailId) => {
+    dispatch({
+        payload: {
+            apiValidating: true,
+        },
+        type: actionTypes.USER_API_VALIDATING,
+    });
     return socialApi.get(`/verify/useremailid?emailid=${emailId}`, BASIC_AUTH_HEADER).then((result) => {
+        dispatch({
+            payload: {
+                apiValidating: false,
+            },
+            type: actionTypes.USER_API_VALIDATING,
+        });
         return dispatch({
             payload: {
                 userExists: result.email_exists,
