@@ -10,7 +10,6 @@ import {
     Checkbox,
     Divider,
     Form,
-    Header,
     Icon,
     Input,
     Popup,
@@ -23,8 +22,9 @@ import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage'
 import Note from '../../shared/Note';
 import DropDownAccountOptions from '../../shared/DropDownAccountOptions';
 import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
-import { actionTypes, proceed, getCompanyPaymentAndTax } from '../../../actions/give';
+import { proceed, getCompanyPaymentAndTax } from '../../../actions/give';
 import { withTranslation } from '../../../i18n';
+import { dismissAllUxCritialErrors } from '../../../actions/error';
 import {
     Elements,
     StripeProvider
@@ -93,6 +93,7 @@ class Donation extends React.Component {
         this.validateCreditCardCvv = this.validateCreditCardCvv.bind(this);
         this.validateCreditCardName = this.validateCreditCardName.bind(this);
         this.getStripeCreditCard = this.getStripeCreditCard.bind(this);
+        dismissAllUxCritialErrors(props.dispatch);
     }
 
     componentDidMount() {
@@ -102,7 +103,7 @@ class Donation extends React.Component {
             id,
         }
     } = this.props;
-        dispatch(getDonationMatchAndPaymentInstruments(id));
+        dispatch(getDonationMatchAndPaymentInstruments(id, 'donations'));
     }
 
     intializeValidations() {
@@ -228,6 +229,7 @@ class Donation extends React.Component {
                             defaultMatch,
                         ] = populateDonationMatch(this.props.donationMatchData,formatMessage, language);
                         giveData.donationMatch = defaultMatch;
+                        setDisableFlag = false;
                 }
                 break;
             case 'automaticDonation':
@@ -293,6 +295,7 @@ class Donation extends React.Component {
                     defaultTaxReceiptProfile;
             }
             flowObject.stepsCompleted = false;
+            dismissAllUxCritialErrors(this.props.dispatch);
             dispatch(proceed({
                 ...flowObject}, flowSteps[stepIndex+1], stepIndex));
         } else {

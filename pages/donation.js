@@ -1,6 +1,4 @@
 import React, { cloneElement } from 'react';
-import { validateUser } from '../actions/user';
-
 import Donation from '../components/Give/Donation';
 import GiveWrapper from '../components/Give';
 // import TaxReceipt from '../components/give/TaxReceipt'
