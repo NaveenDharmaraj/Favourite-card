@@ -1,0 +1,69 @@
+{
+    "fullMonthName": {
+        "aprilLabel": "avril",
+        "augustLabel": "août",
+        "decemberLabel": "décembre",
+        "februaryLabel": "février",
+        "januaryLabel": "janvier",
+        "julyLabel": "juillet",
+        "juneLabel": "juin",
+        "marchLabel": "mars",
+        "mayLabel": "mai",
+        "novemberLabel": "novembre",
+        "octoberLabel": "octobre",
+        "septemberLabel": "septembre"
+    },
+    "errorMessages": {
+        "amountLessOrInvalid": "Veuillez choisir un montant de {{minAmount}} $ ou plus",
+        "invalidMaxAmountError": "9 999 $ est le maximum que nous pouvons traiter ici. Pour des montants plus importants, veuillez nous contacter: hello@chimp.net ou 1-877-531-0580.",
+        "invalidLengthError": "est trop long (maximum de 1000 caractères)",
+        "invalidNoteTextError":  "Seuls les lettres et les chiffres standard sont autorisés ici",
+        "giveAmountGreaterThanBalance": "Désolé, vous ne pouvez pas envoyer plus d'argent qu'il n'y en a dans votre compte."
+
+
+    },
+    "breadCrumb" : {
+        "new" : "Ajoutez de l'argent",
+        "give": "Donner",
+        "taxReceipt": "Reçu fiscal",
+        "review": "Révision",
+        "success": "Confirmation"
+    },
+    "creditCard": {
+        "testCreditCardListMessage": "More information on test accounts can be found at Stripe.",
+        "cardNumberLabel": "Credit card number",
+        "nameOnCardLabel": "Name on Card",
+        "expiryDateLabel": "Expiry Year",
+        "cvvLabel": "CVV"
+    },
+    "creditCardErrorMessages": {
+        "errorCardNumber": "Please use a valid Visa, Mastercard, or Amex card number",
+        "invalidNameOnCard": "Include the name on your card (use a minimum of 2 characters)",
+        "invalidCardNameError": "It looks like you've entered only numbers here, but we need the full name that appears on your card (use a minimum of 2 characters)",
+        "invalidExpiryYear": "Include the expiry month and year for your card",
+        "invalidCvv": "Include a valid CVV number for your card"
+    },
+    "blankError":  "Doit être rempli",
+    "amountLabel": "Montant",
+    "amountPlaceHolder": "Inscrivez le montant",
+    "noteRemainingChars1000": "{{currentCount}} sur {{maximum}} caractères restants",
+    "forMonth": "mois",
+    "forYear": "année",
+    "forPer": "par",
+    "continueButton": "Suivant",
+    "submittingButton": "En cours de soumission",
+    "useNewCreditCardLabel": "Utiliser une nouvelle carte de crédit",
+    "infoToShareAnonymous": "Don anonyme",
+    "change": "Changer",
+    "startsOn": "Date de début",
+    "emptyMessage": "Aucun contenu disponible",
+    "commonOr": "ou ",
+    "commonMakeChanges": "apporter des modifications"
+
+
+
+
+
+
+
+}

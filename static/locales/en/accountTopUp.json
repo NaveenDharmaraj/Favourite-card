@@ -1,0 +1,8 @@
+{
+    "donationAmountIsLess": "Top up your account balance by ${{topupAmount}} or more to send this gift.",
+    "donationMatchLabel": "Donation match",
+    "donationsMatchPopup": "If there’s an opportunity for this money to be matched, it will appear here. A request will go to the matching party (your employer, for example) who can then choose to match it according to their policy.",
+    "creditCardLabel": "Credit card",
+    "creditCardPlaceholder": "Select Credit Card ",
+    "accountTopUpHeaderLabel": "Top up your account balance to give this gift"
+}
