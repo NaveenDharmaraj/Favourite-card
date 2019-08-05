@@ -29,10 +29,12 @@ function FinalStep(props) {
                     </div>
                     <Form>
                         <div className="create-btn-wraper">
-                            {  !buttonClicked
-                                && <Button type="submit" onClick={handleSubmit} primary>Create your Impact Account</Button>}
-                            {buttonClicked
-                            && <Button type="submit" disabled primary>Submitting...</Button>}
+                            <Button
+                                type="submit"
+                                disabled
+                                primary
+                                content={buttonClicked ? 'Submitting' : 'Create Your ImpactAccount'}
+                            />
                         </div>
                     </Form>
                 </div>

@@ -21,7 +21,7 @@ function SingleCause(props) {
         }
         return splitStr.join(' ');
     }
-    const capStrng = titleCase(cause);
+    const causeName = titleCase(cause);
 
     return (
         <Grid.Column mobile={16} tablet={8} computer={4}>
@@ -33,7 +33,7 @@ function SingleCause(props) {
                 name={cause}
                 onClick={parentHandleCauses}
             >
-                {capStrng}
+                {causeName}
             </Button>
         </Grid.Column>
     );

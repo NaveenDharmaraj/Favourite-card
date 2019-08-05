@@ -83,6 +83,7 @@ class Login extends React.Component {
                 ...this.state.attributes,
                 ...attributes,
             },
+            validity,
 
         });
     }
@@ -99,24 +100,9 @@ class Login extends React.Component {
         const {
             dispatch,
         } = this.props;
-        switch (name) {
-            case 'firstName':
-                validity = validateUserRegistrationForm('firstName', inputValue, validity);
-                break;
-            case 'lastName':
-                validity = validateUserRegistrationForm('lastName', inputValue, validity);
-                break;
-            case 'emailId':
-                validity = validateUserRegistrationForm('emailId', inputValue, validity);
-                if (validity.isEmailIdValid) {
-                    validateNewUser(dispatch, inputValue);
-                }    
-                break;
-            case 'password':
-                validity = validateUserRegistrationForm('password', inputValue, validity);
-                break;
-            default:
-                break;
+        validity = validateUserRegistrationForm(name, inputValue, validity)
+        if (name === 'emailId' && validity.isEmailIdValid) {
+            validateNewUser(dispatch, inputValue);
         }
         this.setState({
             validity,
@@ -190,23 +176,20 @@ class Login extends React.Component {
             const {
                 dispatch,
             } = this.props;
-            if (stepIndex === 1) {
-                validity = validateUserRegistrationForm('emailId', emailId, validity);
-            } else if (stepIndex === 3) {
+            if (stepIndex === 3) {
                 this.setState({
                     buttonClicked: true,
                 });
-
                 const userDetails = {};
                 userDetails.name = (firstName) ? firstName + lastName : '';
                 userDetails.given_name = firstName;
                 userDetails.family_name = lastName;
                 userDetails.email = emailId;
                 userDetails.password = password;
-                userDetails.signupSource=null;
-                userDetails.longitude=null;
-                userDetails.latitude=null;
-                userDetails.causes=userCauses;
+                userDetails.signupSource = null;
+                userDetails.longitude = null;
+                userDetails.latitude = null;
+                userDetails.causes = userCauses;
                 saveUser(dispatch, userDetails);
             }
             if (stepIndex !== 3) {

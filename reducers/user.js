@@ -75,18 +75,6 @@ const user = (state = {}, action) => {
                 },
             };
             break;
-        case 'CREATE_USER':
-            newState = {
-                ...state,
-                newUserDetails: action.payload.newUserDetails,
-            };
-            break;
-        case 'USER_EXISTS':
-            newState = {
-                ...state,
-                userExists: action.payload.userExists,
-            };
-            break;
         default:
             break;
     }

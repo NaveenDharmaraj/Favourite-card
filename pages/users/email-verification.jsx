@@ -99,11 +99,11 @@ class EmailVerification extends React.Component {
                 </div>
             </Layout>
         );
-    };
+    }
 }
 function mapStateToProps(state) {
     return {
-        newUserDetails: state.user.newUserDetails,
+        newUserDetails: state.onBoarding.newUserDetails,
     };
 }
 export default (connect(mapStateToProps)(EmailVerification));
