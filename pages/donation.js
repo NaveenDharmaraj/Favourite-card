@@ -8,6 +8,7 @@ class Donations extends React.Component {
     static async getInitialProps({ query }) {
         return {
             namespacesRequired: [
+                'authHeader',
                 'donation',
                 'giveCommon',
                 'review',

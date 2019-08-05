@@ -10,6 +10,7 @@ class Friends extends React.Component {
     static async getInitialProps({ query }) {
         return {
             namespacesRequired: [
+                'authHeader',
                 'giveCommon',
                 'friends',
                 'accountTopUp',

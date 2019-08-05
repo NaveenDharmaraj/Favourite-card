@@ -76,7 +76,7 @@ export const getDonationMatchAndPaymentInstruments = (userId, flowType) => {
         let campaignsData = null;
         if (flowType !== 'donations') {
             groupData = callApiAndGetData(
-                `/users/${userId}/administeredGroup-s?page[size]=50&sort=-id`,
+                `/users/${userId}/administeredGroups?page[size]=50&sort=-id`,
                 {
                     params: {
                         dispatch,
