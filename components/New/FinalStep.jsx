@@ -31,7 +31,8 @@ function FinalStep(props) {
                         <div className="create-btn-wraper">
                             <Button
                                 type="submit"
-                                disabled
+                                disabled={buttonClicked}
+                                onClick={handleSubmit}
                                 primary
                                 content={buttonClicked ? 'Submitting' : 'Create Your ImpactAccount'}
                             />

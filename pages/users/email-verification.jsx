@@ -9,7 +9,7 @@ import {
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 
-import { resendVerificationEmail } from '../../actions/user';
+import { resendVerificationEmail } from '../../actions/onBoarding';
 import Layout from '../../components/shared/Layout';
 import storage from '../../helpers/storage';
 import { Router } from '../../routes';
