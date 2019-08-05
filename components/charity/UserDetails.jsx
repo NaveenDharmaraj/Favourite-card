@@ -5,7 +5,11 @@ import {
     List,
     Header,
     Icon,
+    Container,
+    Form,
+    Button,
 } from 'semantic-ui-react';
+import ShareDetails from '../charity/ShareDetails';
 
 class UserDetails extends React.Component {
     static createUserDetails(valuesObject) {
@@ -29,7 +33,7 @@ class UserDetails extends React.Component {
                 name: 'linkify',
             },
             {
-                Content: '1404 full-time staff',
+                Content: valuesObject.staffCount,// '1404 full-time staff',
                 name: 'users',
             },
             {
@@ -37,7 +41,7 @@ class UserDetails extends React.Component {
                 name: 'briefcase',
             },
             {
-                Content: '400 Cooper Street, Suite 8000, Ottawa ON, K2P2H8',
+                Content:valuesObject.businessNumber, // '400 Cooper Street, Suite 8000, Ottawa ON, K2P2H8',
                 name: 'map marker alternate',
             },
 
@@ -47,25 +51,58 @@ class UserDetails extends React.Component {
 
     static detailsView(valuesObject) {
         const values = this.createUserDetails(valuesObject);
+        debugger;
         return (
-            values.map((value) => (
-                <List.Item>
-                    <List.Icon name={value.name} />
-                    {value.link && (
-                        <List.Content>
-                            <a href={value.link}>
-                                {value.Content}
-                            </a>
-                        </List.Content>
-                    )}
-                    {!value.link
-                    && (
-                        <List.Content>
+            <Grid.Row>
+            <Grid.Column>
+            <List>
+            {values.map((value,index) => (
+            (value.Content && index <= 3
+                && <List.Item>
+                <List.Icon name={value.name} />
+                {value.link && (
+                    <List.Content>
+                        <a href={value.link}>
                             {value.Content}
-                        </List.Content>
-                    )}
-                </List.Item>
-            ))
+                        </a>
+                    </List.Content>
+                )}
+                {!value.link
+                && (
+                    <List.Content>
+                        {value.Content}
+                    </List.Content>
+                )}
+            </List.Item>
+                )
+            ))}
+            </List>
+            </Grid.Column>
+            <Grid.Column>
+              <List>
+              {values.map((value,index) => (
+            (value.Content && index >=4
+                && <List.Item>
+                <List.Icon name={value.name} />
+                {value.link && (
+                    <List.Content>
+                        <a href={value.link}>
+                            {value.Content}
+                        </a>
+                    </List.Content>
+                )}
+                {!value.link
+                && (
+                    <List.Content>
+                        {value.Content}
+                    </List.Content>
+                )}
+            </List.Item>
+                )
+            ))}
+            </List>  
+            </Grid.Column>
+            </Grid.Row>
         );
     }
 
@@ -74,42 +111,44 @@ class UserDetails extends React.Component {
             charityDetails,
             isAUthenticated,
         } = this.props;
-        let favouriteComponent = null;
-        if (isAUthenticated) {
-            favouriteComponent = (
-                <Header as="h5" icon>
-                    <a className="hoverable">
-                        <Icon name="file text outline" />
-                        <Header.Subheader>Favourite</Header.Subheader>
-                    </a>
-                </Header>
-            );
-        }
+        // let favouriteComponent = null;
+        // if (isAUthenticated) {
+        //     favouriteComponent = (
+        //         <Header as="h5" icon>
+        //             <a className="hoverable">
+        //                 <Icon name="file text outline" />
+        //                 <Header.Subheader>Favourite</Header.Subheader>
+        //             </a>
+        //         </Header>
+        //     );
+        // }
         return (
-            <Grid.Column>
-                <Grid>
-                    <Grid.Row>
-                        <Grid.Column mobile={16} tablet={12} computer={13}>
-                            <List>
-                                {(charityDetails && charityDetails.charityDetails)
+            <div className="profile-info-wraper pb-3">
+                    <Container>
+                        <div className="profile-info-card charity">
+                            <Header as="h3">
+                                Charity information 
+                            </Header>
+                            <Grid divided stackable>
+                                <Grid.Row>
+                                    <Grid.Column mobile={16} tablet={10} computer={10}>
+                                        <Grid columns={2}>
+                                            {(charityDetails && charityDetails.charityDetails)
                                     && (UserDetails.detailsView(charityDetails.charityDetails.attributes))
-                                }
-                            </List>
-                        </Grid.Column>
-                        <Grid.Column mobile={16} tablet={4} computer={3}>
-                            <div className="share-charity-link">
-                                {favouriteComponent}
-                                <Header as="h5" icon>
-                                    <a className="hoverable">
-                                        <Icon name="share alternate" />
-                                        <Header.Subheader>Share</Header.Subheader>
-                                    </a>
-                                </Header>
-                            </div>
-                        </Grid.Column>
-                    </Grid.Row>
-                </Grid>
-            </Grid.Column>
+                                            }
+                                    </Grid>
+                                    </Grid.Column>
+                                    {(isAUthenticated
+                                    && <ShareDetails />)}
+
+                                </Grid.Row>
+                            </Grid>
+                            <p className="mt-1">
+                            Is this your chariy? You can claim your free profile page on your platform <a href="#">by following these steps</a>
+                            </p>
+                        </div>
+                    </Container>
+                </div>
         );
     }
 }

@@ -31,9 +31,10 @@ class CharityProfile extends React.Component {
     render() {
         return (
             <Layout>
-                <div className="charity-profile-box">
+                {/* <div className="charity-profile-box">
                     <CharityProfileWrapper {...this.props} />
-                </div>
+                </div> */}
+            <CharityProfileWrapper {...this.props} />
             </Layout>
         );
     }
