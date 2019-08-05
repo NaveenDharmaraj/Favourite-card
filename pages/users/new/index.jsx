@@ -83,8 +83,10 @@ class Login extends React.Component {
                 ...this.state.attributes,
                 ...attributes,
             },
-            validity,
-
+            validity: {
+                ...this.state.validity,
+                validity,
+            },
         });
     }
 
