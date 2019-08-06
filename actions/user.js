@@ -2,22 +2,22 @@
 
 import _ from 'lodash';
 
-import {
-    populateAccountOptions,
-} from '../helpers/give/utils';
 import coreApi from '../services/coreApi';
 import authRorApi from '../services/authRorApi';
+import { Router } from '../routes';
 
 export const actionTypes = {
     GET_MATCH_POLICIES_PAYMENTINSTRUMENTS: 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS',
+    GET_USERS_GROUPS: 'GET_USERS_GROUPS',
     TAX_RECEIPT_PROFILES:'TAX_RECEIPT_PROFILES',
     SET_USER_INFO: 'SET_USER_INFO',
+    UPDATE_USER_FUND: 'UPDATE_USER_FUND',
 }
 
 const getAllPaginationData = async (url, params = null) => {
     // Right now taking the only relative url from the absolute url.
     const replacedUrl = _.split(url, '/core/v2').pop();
-    const result = await coreApi.get(replacedUrl);
+    const result = await coreApi.get(replacedUrl, params);
     const dataArray = result.data;
     if (result.links.next) {
         return dataArray.concat(await getAllPaginationData(result.links.next, params));
@@ -46,18 +46,7 @@ export const callApiAndGetData = (url, params) => getAllPaginationData(url, para
     },
 );
 
-export const getDonationMatchAndPaymentInstruments = (userId) => {
-
-    // const fetchData = coreApi.get(`/users/${userId}`, {
-    //     params: {
-    //         include: [
-    //             'donationMatchPolicies',
-    //             'activePaymentInstruments',
-    //             'taxReceiptProfiles',
-    //         ],
-    //     },
-    //     uxCritical: true,
-    // });
+export const getDonationMatchAndPaymentInstruments = (userId, flowType) => {
 
     return async (dispatch) => {
         const fsa = {
@@ -74,10 +63,46 @@ export const getDonationMatchAndPaymentInstruments = (userId) => {
             },
             type: actionTypes.GET_MATCH_POLICIES_PAYMENTINSTRUMENTS,
         };
-        const fetchData = coreApi.get(`/users/${userId}?include=donationMatchPolicies,activePaymentInstruments,defaultTaxReceiptProfile,taxReceiptProfiles,fund`);
-        const groupData = callApiAndGetData(`/users/${userId}/administeredGroups?page[size]=50&sort=-id`);
-        const campaignsData = callApiAndGetData(`/users/${userId}/administeredCampaigns?page[size]=50&sort=-id`);
-        const companiesData = callApiAndGetData(`/users/${userId}/administeredCompanies?page[size]=50&sort=-id`);
+        const fetchData = coreApi.get(
+            `/users/${userId}?include=donationMatchPolicies,activePaymentInstruments,defaultTaxReceiptProfile,taxReceiptProfiles,fund`,
+            {
+                params: {
+                    dispatch,
+                    uxCritical: true,
+                },
+            },
+        );
+        let groupData = null;
+        let campaignsData = null;
+        if (flowType !== 'donations') {
+            groupData = callApiAndGetData(
+                `/users/${userId}/administeredGroups?page[size]=50&sort=-id`,
+                {
+                    params: {
+                        dispatch,
+                        uxCritical: true,
+                    },
+                },
+            );
+            campaignsData = callApiAndGetData(
+                `/users/${userId}/administeredCampaigns?page[size]=50&sort=-id`,
+                {
+                    params: {
+                        dispatch,
+                        uxCritical: true,
+                    },
+                },
+            );
+        }
+        const companiesData = callApiAndGetData(
+            `/users/${userId}/administeredCompanies?page[size]=50&sort=-id`,
+            {
+                params: {
+                    dispatch,
+                    uxCritical: true,
+                },
+            },
+        );
         Promise.all([
             fetchData,
             groupData,
@@ -143,12 +168,6 @@ export const getDonationMatchAndPaymentInstruments = (userId) => {
                 fsa.error = error;
                 fsa.payload.userAccountsFetched = true;
             }).finally(() => {
-                const {
-                    companiesAccountsData,
-                    fund,
-                    userCampaigns,
-                    userGroups,
-                } = fsa.payload;
                 dispatch(fsa);
             });
     };
@@ -187,28 +206,62 @@ export const getUser = async (dispatch, userId, token = null) => {
         console.log(JSON.stringify(error));
     }).finally(() => {
         dispatch({
-            type: 'SET_AUTH',
             payload: {
                 isAuthenticated: payload.isAuthenticated,
             },
+            type: 'SET_AUTH',
         });
         dispatch({
-            type: actionTypes.SET_USER_INFO,
             payload: {
                 userInfo: payload.userInfo,
             },
+            type: actionTypes.SET_USER_INFO,
         });
         return null;
     });
 };
 
+export const getUserFund = (dispatch, userId) => {
+    return coreApi.get(`/users/${userId}?include=fund`).then((result) => {
+        const payload = {
+            userInfo: result.data,
+        };
+        if (!_.isEmpty(result.included)) {
+            const { included } = result;
+            included.map((item) => {
+                const {
+                    attributes,
+                    id,
+                    type,
+                } = item;
+                if (type === 'funds') {
+                    payload.fund = {
+                        attributes,
+                        id,
+                        type,
+                    };
+                }
+            });
+        }
+        return dispatch({
+            payload: {
+                fund: payload.fund,
+                userInfo: payload.userInfo,
+            },
+            type: actionTypes.UPDATE_USER_FUND,
+        });
+    }).catch((error) => {
+        console.log(error);
+    });
+};
+
 export const setTaxReceiptProfile = (data) => {
     return (dispatch) => dispatch({
-        type: actionTypes.TAX_RECEIPT_PROFILES,
         payload: {
             taxReceiptGetApiStatus: true,
             taxReceiptProfiles: data,
         },
+        type: actionTypes.TAX_RECEIPT_PROFILES,
     });
 };
 
@@ -217,43 +270,64 @@ export const getTaxReceiptProfile = (dispatch, userId) => {
         return dispatch(setTaxReceiptProfile(result.data));
     }).catch((error) => {
         console.log(error);
-    })
+    });
 };
 
 export const updateTaxReceiptProfile = (taxReceiptProfile, action, dispatch) => {
-    let result = {};
     if (action === 'update') {
-        const params = {
-            data: {
-                attributes: _.pick(
-                    taxReceiptProfile.attributes,
-                    [
-                        'addressOne',
-                        'addressTwo',
-                        'city',
-                        'country',
-                        'fullName',
-                        'postalCode',
-                        'province',
-                    ],
-                ),
-                id: taxReceiptProfile.id,
-                type: taxReceiptProfile.type,
-            },
+        const data = {
+            attributes: _.pick(
+                taxReceiptProfile.attributes,
+                [
+                    'addressOne',
+                    'addressTwo',
+                    'city',
+                    'country',
+                    'fullName',
+                    'postalCode',
+                    'province',
+                ],
+            ),
+            id: taxReceiptProfile.id,
+            type: taxReceiptProfile.type,
         };
-        return coreApi.patch(`/taxReceiptProfiles/${taxReceiptProfile.id}`, {
-            data: params.data,
+        return coreApi.patch(`/taxReceiptProfilesf/${taxReceiptProfile.id}`, {
+            data,
         });
     } else {
-        const params = {
-            data: taxReceiptProfile,
-        };
         return coreApi.post('/taxReceiptProfiles', {
-            data: params.data,
-            uxCritical: true,
+            data: taxReceiptProfile,
         });
     }
-    // return setTaxReceiptProfile(dispatch, result.data)
+};
+
+export const getGroupsForUser = (dispatch, userId) => {
+    const fsa = {
+        payload: {
+            userGroups: [],
+        },
+        type: actionTypes.GET_USERS_GROUPS,
+    };
+    callApiAndGetData(
+        `/users/${userId}/groupsWithMemberships?page[size]=50&sort=-id`,
+        {
+            params: {
+                dispatch,
+                uxCritical: true,
+            },
+        },
+    )
+        .then(
+            (result) => {
+                if (!_.isEmpty(result)) {
+                    fsa.payload.userMembershipGroups = result;
+                }
+                dispatch(fsa);
+            },
+        ).catch((error) => {
+            console.log(error);
+            Router.pushRoute('/give/error');
+        });
 };
 
 export const savePaymentInstrument = (cardDetails) => {

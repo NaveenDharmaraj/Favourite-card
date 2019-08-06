@@ -2,13 +2,14 @@ import React, {
     Fragment,
   } from 'react';
 import _ from 'lodash';
+import dynamic from 'next/dynamic';
 import getConfig from 'next/config';
 import _isEmpty from 'lodash/isEmpty';
+import _merge from 'lodash/merge';
 import {
     Checkbox,
     Divider,
     Form,
-    Header,
     Icon,
     Input,
     Popup,
@@ -20,15 +21,14 @@ import {
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 import Note from '../../shared/Note';
 import DropDownAccountOptions from '../../shared/DropDownAccountOptions';
-import {proceed} from '../../../actions/give';
 import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
-import { getCompanyPaymentAndTax } from '../../../actions/give';
+import { proceed, getCompanyPaymentAndTax } from '../../../actions/give';
 import { withTranslation } from '../../../i18n';
+import { dismissAllUxCritialErrors } from '../../../actions/error';
 import {
     Elements,
     StripeProvider
 } from 'react-stripe-elements';
-import CreditCard from '../../shared/CreditCard';
 const { publicRuntimeConfig } = getConfig();
 
 const {
@@ -50,12 +50,30 @@ import {
     fullMonthNames,
     formatCurrency,
 } from '../../../helpers/give/utils';
-  
+const CreditCard = dynamic(() => import('../../shared/CreditCard'));
+
 class Donation extends React.Component {
     constructor(props) {
-    super(props)
+    super(props);
+    const flowType = _.replace(props.baseUrl, /\//, '');
+    let payload = null;
+            //Initialize the flowObject to default value when got switched from other flows
+            if (props.flowObject.type !== flowType) {
+                const defaultPropsData = _.merge({}, donationDefaultProps);
+                payload = {
+                    ...defaultPropsData.flowObject,
+                    nextStep: props.step,
+                };
+            }
+            else{
+                const defaultPropsData =  _merge({}, props.flowObject);
+                payload = {
+                    ...defaultPropsData,
+                    nextStep: props.step,
+                }
+            }  
         this.state = {
-            flowObject: _.merge({}, props.flowObject),
+            flowObject: payload,
             buttonClicked: false,
             disableButton: !props.userAccountsFetched,
             inValidCardNameValue: true,
@@ -75,6 +93,7 @@ class Donation extends React.Component {
         this.validateCreditCardCvv = this.validateCreditCardCvv.bind(this);
         this.validateCreditCardName = this.validateCreditCardName.bind(this);
         this.getStripeCreditCard = this.getStripeCreditCard.bind(this);
+        dismissAllUxCritialErrors(props.dispatch);
     }
 
     componentDidMount() {
@@ -84,7 +103,7 @@ class Donation extends React.Component {
             id,
         }
     } = this.props;
-        dispatch(getDonationMatchAndPaymentInstruments(id));
+        dispatch(getDonationMatchAndPaymentInstruments(id, 'donations'));
     }
 
     intializeValidations() {
@@ -210,6 +229,7 @@ class Donation extends React.Component {
                             defaultMatch,
                         ] = populateDonationMatch(this.props.donationMatchData,formatMessage, language);
                         giveData.donationMatch = defaultMatch;
+                        setDisableFlag = false;
                 }
                 break;
             case 'automaticDonation':
@@ -274,6 +294,8 @@ class Donation extends React.Component {
                     companyDefaultTaxReceiptProfile :
                     defaultTaxReceiptProfile;
             }
+            flowObject.stepsCompleted = false;
+            dismissAllUxCritialErrors(this.props.dispatch);
             dispatch(proceed({
                 ...flowObject}, flowSteps[stepIndex+1], stepIndex));
         } else {

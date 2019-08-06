@@ -76,5 +76,12 @@ const SpecialInstruction = (props) => {
         </Fragment>
     );
 };
-
+SpecialInstruction.defaultProps = {
+    giftType: {
+        value: null,
+    },
+    infoToShare: {
+        value: null,
+    },
+};
 export default SpecialInstruction;

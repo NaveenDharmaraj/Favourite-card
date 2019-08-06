@@ -1,3 +1,32 @@
+.two-icon-brdr-btm-input{
+  .ui{
+    &.input{
+      position: relative;
+      input{
+        border-top: 0px solid transparent;
+        border-left: 0px solid transparent;
+        border-right: 0px solid transparent;
+        border-radius: 0px;
+      }
+      .ui{
+        &.icon{
+          &.button{
+            border-radius: 0px !important;
+            box-shadow: none;
+            background-color: transparent;
+            border-bottom: 0px solid #ccc;
+            position: absolute;
+            right: 0rem;
+            font-size: 20/@rem;
+            &:nth-child(2){
+              right: 2.5rem;
+            }
+          }
+        }
+      }
+    }
+  }
+}
 input,textarea{
   &:focus,&:hover,&:active{
     outline: none;

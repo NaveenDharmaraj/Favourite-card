@@ -9,13 +9,14 @@ import Layout from '../components/shared/Layout';
 class Friends extends React.Component {
     static async getInitialProps({ query }) {
         return {
+            namespacesRequired: [
+                'authHeader',
+                'giveCommon',
+                'friends',
+                'accountTopUp',
+            ],
             step: query.step,
         };
-    }
-
-    componentDidMount() {
-        const { dispatch } = this.props;
-        validateUser(dispatch);
     }
 
     render() {

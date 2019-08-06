@@ -21,7 +21,14 @@ RUN curl -sLo chamber https://github.com/segmentio/chamber/releases/download/v${
 
 WORKDIR /usr/src/app
 COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "./"]
+<<<<<<< HEAD
 RUN npm install --silent && mv node_modules ../
 COPY . .
 CMD ["node", "server.js"]
+=======
+RUN npm install --silent && mv node_modules ./
+COPY . .
+RUN npm run build
+CMD ["npm", "run","start"]
+>>>>>>> integration/web_client_2.0
 EXPOSE ${PORT}
