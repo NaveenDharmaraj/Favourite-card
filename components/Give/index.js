@@ -35,27 +35,48 @@ const renderChildWithProps = (props, stepIndex, flowSteps) => {
                 </div>
             );
         case "tax-receipt-profile" :
-            return (<TaxReceipt
-                dispatch={props.dispatch}
-                flowObject={props.flowObject}
-                flowSteps={flowSteps}
-                stepIndex={_.indexOf(flowSteps, props.step)}
-            />);
+            if(!_.isEmpty(props.flowObject)){
+                return (<TaxReceipt
+                    dispatch={props.dispatch}
+                    flowObject={props.flowObject}
+                    flowSteps={flowSteps}
+                    stepIndex={_.indexOf(flowSteps, props.step)}
+                />);
+            }
+            else{
+                Router.pushRoute('/dashboard');
+                break;
+            }
         case "review" :
-            return (<Review
-                dispatch={props.dispatch}
-                flowObject={props.flowObject}
-                flowSteps={flowSteps}
-                stepIndex={_.indexOf(flowSteps, props.step)}
-                slug={props.slug}
-            />);
+            if(!_.isEmpty(props.flowObject)){
+                return (<Review
+                    dispatch={props.dispatch}
+                    flowObject={props.flowObject}
+                    flowSteps={flowSteps}
+                    stepIndex={_.indexOf(flowSteps, props.step)}
+                    slug={props.slug}
+                />);
+            }
+            else{
+                Router.pushRoute('/dashboard');
+                break;
+            }
         case "success" :
-            return (<Success 
+            if(!_.isEmpty(props.flowObject)){
+                return (<Success 
+                    dispatch={props.dispatch}
+                    flowObject={props.flowObject}
+                />);
+            }
+            else{
+                Router.pushRoute('/dashboard');
+                break;
+            }
+        case "error" :
+            return (<Error 
                 dispatch={props.dispatch}
                 flowObject={props.flowObject}
-            />);
-        case "error" :
-            return (<Error />);
+                />);
         default:
             return null;
     }

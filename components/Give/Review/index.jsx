@@ -12,7 +12,7 @@ import GiveAccounts from './GiveAccounts';
 import DonationListing from './DonationListing';
 import AllocationListing from './AllocationListing';
 import { withTranslation } from '../../../i18n';
-
+import {Router} from '../../../routes';
 import {
     Image,
     Header,
@@ -37,14 +37,17 @@ class Review extends React.Component {
     if (flowObject) {
         reInitNextStep(dispatch, flowObject)
     }
+    if(flowObject && flowObject.stepsCompleted){
+        Router.pushRoute('/dashboard');
+    }
     window.scrollTo(0, 0);
   }
   handleSubmit = () => {
-    const { dispatch, stepIndex, flowSteps, flowObject } = this.props;
+    const { dispatch, stepIndex, flowSteps, flowObject, currentUser } = this.props;
     this.setState({
         buttonClicked: true,
     });
-    dispatch(proceed(flowObject, flowSteps[stepIndex+1], stepIndex, true));
+    dispatch(proceed(flowObject, flowSteps[stepIndex+1], stepIndex, true, currentUser.id));
   }
   render() {
     if ( !_.isEmpty(this.props.flowObject) && this.props.flowObject.stepsCompleted !== true) {
@@ -194,6 +197,7 @@ Review.defaultProps = {
 function mapStateToProps(state) {
     return {
         companiesAccountsData: state.user.companiesAccountsData,
+        currentUser: state.user.info,
         donationMatchData: state.user.donationMatchData,
         fund: state.user.fund,
         paymentInstrumentsData: state.user.paymentInstrumentsData,
