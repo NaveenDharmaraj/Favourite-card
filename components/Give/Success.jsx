@@ -25,6 +25,7 @@ import {
     calculateP2pTotalGiveAmount,
 } from '../../helpers/give/utils';
 import { reInitNextStep } from '../../actions/give';
+import { Link } from '../../routes';
 
 const separateByComma = (recipients) => _.replace(_.toString(recipients), /,/g, ', ');
 
@@ -72,7 +73,7 @@ const Success = (props) => {
         },
     } = props;
     let linkToDashboardText = formatMessage('goToYourDashboard');
-    let taxProfileLink = (giveFrom.type !== 'user')
+    let taxProfileLink = (!_.isEmpty(giveFrom) && giveFrom.type !== 'user')
         ? `/${giveFrom.type}/${giveFrom.slug}/tax-receipts` : '/user/tax-receipts';
     let dashboardLink = '/dashboard';
     const p2pLink = 'give/to/friend';
@@ -124,7 +125,7 @@ const Success = (props) => {
 
     let amount = null;
     let total = null;
-    const fromName = giveFrom.name;
+    const fromName = (type !== 'donations') ? giveFrom.name : giveTo.name;
     const {
         eftEnabled,
     } = giveTo;
@@ -401,9 +402,9 @@ const Success = (props) => {
                                 {(!!fourthButton && (
                                     <Fragment>
                                       or
-                                        <div className="paragraph-third" path={dashboardLink}>
+                                        <Link className="paragraph-third" route={dashboardLink}>
                                             {linkToDashboardText}
-                                        </div>
+                                        </Link>
                                     </Fragment>
                                 ))}
                                 {(!fourthButton
@@ -412,12 +413,12 @@ const Success = (props) => {
                                 //  linkToDashboardText.slice(1) }
                                 //   </GeminiLink>
                                 && (
-                                    <div className="paragraph-third" path={dashboardLink}>
+                                    <Link className="paragraph-third" route={dashboardLink}>
                                         {
                                             linkToDashboardText.charAt(0).toUpperCase()
                                             + linkToDashboardText.slice(1)
                                         }
-                                    </div>
+                                    </Link>
                                 )
                                 )}
                             </Grid.Column>

@@ -7,7 +7,7 @@ import Group from '../components/Give/Group';
 import GiveWrapper from '../components/Give';
 import Layout from '../components/shared/Layout';
 
-const firstStep = 'gift/new';
+const firstStep = 'new';
 
 const flowSteps = [
     firstStep,
@@ -29,7 +29,7 @@ class Groups extends React.Component {
             ],
             slug: query.slug,
             sourceAccountHolderId: query.source_account_holder_id,
-            step: (query.gift) ? `${query.slug}/${query.gift}/${query.step}` : query.step,
+            step: (query.slug) ? `${query.slug}/${query.step}` : query.step,
         };
     }
 

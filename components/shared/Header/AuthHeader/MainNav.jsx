@@ -3,21 +3,27 @@ import {
     Menu,
 } from 'semantic-ui-react';
 
+import { Link } from '../../../../routes';
+
 const MainNav = () => (
     <Menu.Menu position="right">
-        <Menu.Item as="a" to="https://github.com">
-            Explore
-        </Menu.Item>
+        <Link route="/search" >
+            <Menu.Item as="a" to="https://github.com">
+                Explore
+            </Menu.Item>
+        </Link>
         <Menu.Item as="a" to="https://github.com">
             Giving Groups & Campaign
         </Menu.Item>
-        <Menu.Item as="a" to="https://github.com">
+        <Menu.Item as="a" href="/user/followed-charities">
             Favorites
         </Menu.Item>
-        <Menu.Item as="a" to="https://github.com">
-            Tools
-        </Menu.Item>
-        <Menu.Item as="a" to="https://github.com">
+        <Link route="/user/recurring-donations" >
+            <Menu.Item as="a" to="https://github.com">
+                Tools
+            </Menu.Item>
+        </Link>
+        <Menu.Item as="a" href="/user/tax-receipts">
             Tax receipts
         </Menu.Item>
     </Menu.Menu>

@@ -92,7 +92,7 @@ class Friend extends React.Component {
         let payload = null;
         // Initialize the flowObject to default value when got switched from other flows
         if (props.flowObject.type !== flowType) {
-            const defaultPropsData = _merge({}, groupDefaultProps);
+            const defaultPropsData = _merge({}, p2pDefaultProps);
             payload = {
                 ...defaultPropsData.flowObject,
                 nextStep: props.step,
@@ -902,7 +902,8 @@ class Friend extends React.Component {
                     />
                     <Divider hidden />
                     <Form.Button
-                        className="btnPadding"// {isMobile ? 'mobBtnPadding' : 'btnPadding'}
+                        primary
+                        className="blue-btn-rounded"// {isMobile ? 'mobBtnPadding' : 'btnPadding'}
                         content={(!this.state.buttonClicked) ? formatMessage('giveCommon:continueButton')
                             : formatMessage('giveCommon:submitingButton')}
                         disabled={(this.state.buttonClicked) || !this.props.userAccountsFetched}
