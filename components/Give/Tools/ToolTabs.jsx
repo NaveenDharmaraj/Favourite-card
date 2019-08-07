@@ -70,11 +70,12 @@ class ToolTabs extends React.Component {
                             />
                         <Grid.Column textAlign="right">
                             <div className="db-pagination right-align pt-2">
-                                <PaginationComponent
+                            {!this.props.monthlyTransactionApiCall && <PaginationComponent
                                     activePage={activePage}
                                     onPageChanged={this.onPageChange}
                                     totalPages={(upcomingTransactionsMeta)? upcomingTransactionsMeta.pageCount: 1}
                                 />
+                            }
                             </div>
 
                         </Grid.Column>
@@ -110,11 +111,13 @@ class ToolTabs extends React.Component {
                                 monthlyTransactionApiCall={this.props.monthlyTransactionApiCall}
                             />
                             <Grid.Column textAlign="right">
-                            <PaginationComponent
+                            <div className="db-pagination right-align pt-2">
+                            {!this.props.monthlyTransactionApiCall && <PaginationComponent
                                 activePage={activePage}
                                 onPageChanged={this.onPageChange}
                                 totalPages={(upcomingTransactionsMeta) ? upcomingTransactionsMeta.pageCount: 1}
-                            />
+                            />}
+                            </div>
                         </Grid.Column>
                         </Segment>
                     </div>
