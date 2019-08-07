@@ -13,6 +13,7 @@ import logo from '../../../static/images/CharitableImpact.png';
 
 import AuthHeader from './AuthHeader';
 import OnBoardingHeader from './OnBoarding';
+import NonAuthHeader from './NonAuthHeader';
 
 const renderHeader = (onBoarding, isAuthenticated) => {
     let headerComponent = null;
@@ -21,7 +22,7 @@ const renderHeader = (onBoarding, isAuthenticated) => {
     } else if (isAuthenticated) {
         headerComponent = <AuthHeader />;
     } else {
-        headerComponent = <OnBoardingHeader />;
+        headerComponent = <NonAuthHeader />;
     }
     return headerComponent;
 };
