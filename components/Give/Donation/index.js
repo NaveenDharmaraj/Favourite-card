@@ -231,6 +231,7 @@ class Donation extends React.Component {
                         giveData.donationMatch = defaultMatch;
                         setDisableFlag = false;
                 }
+                validity = validateDonationForm(name, newValue, validity, giveData);
                 break;
             case 'automaticDonation':
                 const inputValue  = target.checked;
@@ -720,6 +721,7 @@ class Donation extends React.Component {
             paymentInstruments = !_.isEmpty(companyDetails.companyPaymentInstrumentsData) ? companyDetails.companyPaymentInstrumentsData : [];
         }
         const paymentInstrumenOptions  = populatePaymentInstrument(paymentInstruments, formatMessage);
+
         return (
         <Fragment>
             <Form onSubmit={this.handleSubmit}>
