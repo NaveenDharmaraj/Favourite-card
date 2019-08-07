@@ -8,18 +8,21 @@ import {
     Segment,
     Grid,
     Tab,
-    Table
+    Table,
+    Form,
+    Input
 } from 'semantic-ui-react';
 import AllocationsTable from './AllocationsTable';
 import DonationsTable from './DonationsTable';
 import GivingGoalsTable from './GivingGoalsTable';
+import ModalContent from './modalContent';
 
-import { Router } from '../../../routes';
+import { Router, Link } from '../../../routes';
 import { connect } from 'react-redux';
 import PaginationComponent from '../../shared/Pagination';
 
 import { getUpcomingTransactions,deleteUpcomingTransaction } from '../../../actions/give';
-import { getUserGivingGoal } from '../../../actions/user';
+import { getUserGivingGoal, setUserGivingGoal } from '../../../actions/user';
 const tabMenus = [
     '/user/recurring-donations',
     '/user/recurring-gifts',
@@ -31,14 +34,43 @@ class ToolTabs extends React.Component {
         super(props);
         this.state = {
             activePage:1,
-            showModal: false
+            showModal: false,
+            newGoal:'',
         };
         this.onTabChangeFunc = this.onTabChangeFunc.bind(this);
         this.deleteTransaction = this.deleteTransaction.bind(this);
         this.onPageChange = this.onPageChange.bind(this);
+        this.handleInputChange = this.handleInputChange.bind(this);
+        
     }
     closeModal = () => {
         this.setState({ showModal: false });
+    }
+    closeModalAndSave = () =>{
+        const {
+            newGoal,
+        } = this.state;
+        const{
+            dispatch,
+            currentUser:{
+                id,
+            }
+        } = this.props;
+        this.setState({ showModal: false });
+        setUserGivingGoal(dispatch, newGoal, id);
+    }
+    handleInputChange(event, data) {
+        const {
+            name,
+            options,
+            value,
+        } = data;
+       
+        const {
+            target,
+        } = event;
+        let newValue = (!_isEmpty(options)) ? _find(options, { value }) : value;
+     
     }
     panes = [
         {
@@ -66,7 +98,7 @@ class ToolTabs extends React.Component {
                                         </Header>
                                     </Grid.Column>
                                     <Grid.Column mobile={16} tablet={5} computer={5} textAlign="right">
-                                        <a href="/donations/new" className="ui button primary" primary fluid>Create new monthly donation</a>
+                                        <Link route="/donations/new"><a href="" className="ui button primary blue-btn-rounded" fluid>Create new monthly donation</a></Link>
                                     </Grid.Column>
                                 </Grid.Row>
                             </Grid>
@@ -138,6 +170,9 @@ class ToolTabs extends React.Component {
                 const {
                     userGivingGoalDetails
                 } = this.props
+                const {
+                    newGoal,
+                } = this.state;
                 return (
                     <Tab.Pane attached={false}>
                         <div className="tools-tabpane">
@@ -153,7 +188,39 @@ class ToolTabs extends React.Component {
                                             </Header>
                                         </Grid.Column>
                                         <Grid.Column mobile={16} tablet={5} computer={5} textAlign="right">
-                                            <Button primary fluid>Set a giving goal </Button>
+                                            {/* <Button primary fluid>Set a giving goal </Button> */}
+                                <Modal 
+                                    closeIcon
+                                    onClose={this.closeModal}
+                                    open={this.state.showModal}
+                                    trigger={
+                                        <Button
+                                            onClick={() => this.setState({ showModal: true })}
+                                            primary 
+                                            className="ui button primary blue-btn-rounded" 
+                                        >
+                                            Set a giving goal
+                                        </Button>
+                                    }
+                                >
+                                    <Modal.Header>Set Your Giving Goal for 2019</Modal.Header>
+                                    <Modal.Content>
+                                       <ModalContent 
+                                            handleInputChange={this.handleInputChange}
+                                            newGoal={newGoal}
+                                       />
+                                        
+                                    </Modal.Content>
+                                    <Modal.Actions>
+                                            <Button
+                                                color='red'
+                                                onClick={this.closeModalAndSave}
+                                            >
+                                                SaveChanges
+                                            </Button>
+                                        </Modal.Actions>
+                                </Modal>
+                            
                                         </Grid.Column>
                                     </Grid.Row>
                                     <Grid.Row>
@@ -164,39 +231,7 @@ class ToolTabs extends React.Component {
                                         </Grid.Column>
                                     </Grid.Row>
                                 </Grid>
-                                <Modal 
-                                    closeIcon
-                                    onClose={this.closeModal}
-                                    open={this.state.showModal}
-                                    trigger={
-                                        <Button
-                                            onClick={() => this.setState({ showModal: true })}
-                                            basic
-                                            color='blue'
-                                            content='Blue' 
-                                        >
-                                            Delete
-                                        </Button>
-                                    }
-                                >
-                                    <Modal.Header>Are you sure you want to cancel the transaction?</Modal.Header>
-                                    <Modal.Content>
-                                        <Modal.Actions>
-                                            <Button
-                                                color='red'
-                                                onClick={this.closeModalAndDelete}
-                                            >
-                                                Yes
-                                            </Button>
-                                            <Button
-                                                onClick={() => this.setState({ showModal: false })}
-                                            >
-                                                No
-                                            </Button>
-                                        </Modal.Actions>
-                                    </Modal.Content>
-                                </Modal>
-                            </Segment>
+                               </Segment>
                         </div>
                     </Tab.Pane>
                 )
@@ -218,7 +253,6 @@ class ToolTabs extends React.Component {
         } else if(defaultActiveIndex === "1") {
             url+= `?filter[type]=RecurringAllocation,RecurringFundAllocation&page[size]=10`
         }
-        // console.log(this.props.currentUser);
         getUpcomingTransactions(dispatch, url);
         if(id){
             debugger
@@ -234,8 +268,6 @@ class ToolTabs extends React.Component {
         const {
             activePage
         } = this.state;
-        console.log(id)
-        console.log(transactionType);
         debugger
         if(id && transactionType){
             deleteUpcomingTransaction(dispatch,id, transactionType, activePage, this.props.currentUser.id)

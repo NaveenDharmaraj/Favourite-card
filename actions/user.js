@@ -354,3 +354,18 @@ export const getUserGivingGoal = (dispatch, userId) => {
             console.log(error);
         })
 };
+export const setUserGivingGoal = (dispatch, goalAmount, userId) => {
+    debugger
+    const payload = {
+        attributes: {
+            amount: goalAmount,
+        },
+        type: 'givingGoals',
+    };
+    return coreApi.post('givingGoals', {
+        data: payload,
+    }).then((result)=> {
+        debugger
+        getUserGivingGoal(dispatch, userId);
+    })
+}

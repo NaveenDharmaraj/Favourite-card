@@ -17,7 +17,6 @@ function AllocationsTable(props) {
         deleteTransaction,
         monthlyTransactionApiCall,
     } = props;
-    console.log(monthlyTransactionApiCall);
     const renderTableData = () => {
         const tableBody = [];
         if (!_.isEmpty(upcomingTransactions)) {

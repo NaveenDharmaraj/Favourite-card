@@ -9,7 +9,28 @@ import {
 import _ from 'lodash';
 
 function GivingGoalsTable(props) {
+    const {
+        userGivingGoalDetails,
+    } = props;
     console.log(props);
+    const renderTableData = () => {
+        const tableBody = [];
+        if (!_.isEmpty(userGivingGoalDetails)) {
+            userGivingGoalDetails.forEach((goal) => {
+                const {
+                    attributes,
+                } = goal;
+                const goalString = `You've given $${attributes.donatedAmount}, and your goal is ${attributes.amount}`;
+                tableBody.push(
+                    <Table.Row>
+                        <Table.Cell>{attributes.year}</Table.Cell>
+                        <Table.Cell>{goalString}</Table.Cell>
+                    </Table.Row>
+                );
+            });
+        }
+        return tableBody;
+    };
     return (
         <Table padded unstackable className="no-border-table">
             <Table.Header>
@@ -20,10 +41,9 @@ function GivingGoalsTable(props) {
             </Table.Header>
 
             <Table.Body>
-                <Table.Row>
-                    <Table.Cell>Cell</Table.Cell>
-                    <Table.Cell>Cell</Table.Cell>
-                </Table.Row>
+                {
+                    renderTableData()
+                }                    
             </Table.Body>
         </Table>
     );
