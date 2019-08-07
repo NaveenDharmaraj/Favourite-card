@@ -10,12 +10,13 @@ class BreadcrumbDetails extends React.Component {
         const {
             charityDetails
         } = this.props;
+        debugger
         return (
             <Container>
                         <Breadcrumb className="c-breadcrumb">
                             <Breadcrumb.Section link>Explore</Breadcrumb.Section>
                             <Breadcrumb.Divider icon="caret right"/>
-                            <Breadcrumb.Section link>{(charityDetails && charityDetails.charityDetails && charityDetails.charityDetails.type)}</Breadcrumb.Section>
+                            <Breadcrumb.Section link>Charities</Breadcrumb.Section>
                             <Breadcrumb.Divider icon="caret right"/>
                             <Breadcrumb.Section active>{(charityDetails && charityDetails.charityDetails
                                 && charityDetails.charityDetails.attributes && charityDetails.charityDetails.attributes.name)}</Breadcrumb.Section>

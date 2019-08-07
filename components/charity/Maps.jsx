@@ -40,10 +40,11 @@ class Maps extends React.Component {
           google={this.props.google}
           zoom={8}
           style={mapStyles}
-        //   initialCenter={{ lat: 12.9716, lng: 77.5946}}
+          initialCenter={{ lat: 56.1304, lng: 106.3468}}
         >
-            {Maps.getGeoCoding()}
-        {/* <Marker position={{ lat: 12.9716, lng: 77.5946}} /> */}
+            {/* {Maps.getGeoCoding()} */}
+        <Marker position={{ lat: 56.1304, lng: 106.3468}} />
+        <Marker position={{ lat: 37.0902, lng: 95.7129}} />
         </Map>
         </div>
         );

@@ -41,7 +41,7 @@ class UserDetails extends React.Component {
                 name: 'briefcase',
             },
             {
-                Content:valuesObject.primaryAddress, // '400 Cooper Street, Suite 8000, Ottawa ON, K2P2H8',
+                Content:valuesObject.address, // '400 Cooper Street, Suite 8000, Ottawa ON, K2P2H8',
                 name: 'map marker alternate',
             },
 
@@ -50,6 +50,14 @@ class UserDetails extends React.Component {
     }
 
     static detailsView(valuesObject) {
+        let address = '';
+        if (valuesObject.primaryAddress && valuesObject.primaryAddress.address_one) {
+            address = `${valuesObject.primaryAddress.address_one}, ${valuesObject.primaryAddress.city}, ${valuesObject.primaryAddress.province}, ${valuesObject.primaryAddress.country}`;
+            valuesObject = {
+                address,
+                ...valuesObject,
+            };
+        }
         const values = this.createUserDetails(valuesObject);
         return (
             <Grid.Row>
@@ -110,6 +118,7 @@ class UserDetails extends React.Component {
             charityDetails,
             isAUthenticated,
         } = this.props;
+        debugger;
         // let favouriteComponent = null;
         // if (isAUthenticated) {
         //     favouriteComponent = (
@@ -123,31 +132,31 @@ class UserDetails extends React.Component {
         // }
         return (
             <div className="profile-info-wraper pb-3">
-                    <Container>
-                        <div className="profile-info-card charity">
-                            <Header as="h3">
-                                Charity information 
-                            </Header>
-                            <Grid divided stackable>
-                                <Grid.Row>
-                                    <Grid.Column mobile={16} tablet={10} computer={10}>
-                                        <Grid columns={2}>
-                                            {(charityDetails && charityDetails.charityDetails)
-                                    && (UserDetails.detailsView(charityDetails.charityDetails.attributes))
-                                            }
+                <Container>
+                    <div className="profile-info-card charity">
+                        <Header as="h3">
+                            Charity information 
+                        </Header>
+                        <Grid divided stackable>
+                            <Grid.Row>
+                                <Grid.Column mobile={16} tablet={10} computer={10}>
+                                    <Grid columns={2}>
+                                        {(charityDetails && charityDetails.charityDetails)
+                                && (UserDetails.detailsView(charityDetails.charityDetails.attributes))
+                                        }
                                     </Grid>
-                                    </Grid.Column>
-                                    {(isAUthenticated
-                                    && <ShareDetails />)}
+                                </Grid.Column>
+                                {(isAUthenticated
+                                && <ShareDetails />)}
 
-                                </Grid.Row>
-                            </Grid>
-                            <p className="mt-1">
-                            Is this your chariy? You can claim your free profile page on your platform <a href="#">by following these steps</a>
-                            </p>
-                        </div>
-                    </Container>
-                </div>
+                            </Grid.Row>
+                        </Grid>
+                        <p className="mt-1">
+                        Is this your chariy? You can claim your free profile page on your platform <a href="#">by following these steps</a>
+                        </p>
+                    </div>
+                </Container>
+            </div>
         );
     }
 }

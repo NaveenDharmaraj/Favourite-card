@@ -31,7 +31,7 @@ class ShareDetails extends React.Component {
     }
 
     handleOnClick(event, data) {
-        const{
+        const {
             dispatch,
             userId,
             charityDetails,
