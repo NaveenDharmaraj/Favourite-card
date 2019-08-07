@@ -59,20 +59,24 @@ class ToolTabs extends React.Component {
                                         </Header>
                                     </Grid.Column>
                                     <Grid.Column mobile={16} tablet={5} computer={5} textAlign="right">
-                                        <Button primary fluid>Create new monthly donation</Button>
+                                        <a href="/donations/new" className="ui button primary" primary fluid>Create new monthly donation</a>
                                     </Grid.Column>
                                 </Grid.Row>
                             </Grid>
                             <DonationsTable
                                 upcomingTransactions={upcomingTransactions}
                                 deleteTransaction={this.deleteTransaction}
+                                monthlyTransactionApiCall={this.props.monthlyTransactionApiCall}
                             />
                         <Grid.Column textAlign="right">
-                            <PaginationComponent
-                                activePage={activePage}
-                                onPageChanged={this.onPageChange}
-                                totalPages={(upcomingTransactionsMeta)? upcomingTransactionsMeta.pageCount: 1}
-                            />
+                            <div className="db-pagination right-align pt-2">
+                                <PaginationComponent
+                                    activePage={activePage}
+                                    onPageChanged={this.onPageChange}
+                                    totalPages={(upcomingTransactionsMeta)? upcomingTransactionsMeta.pageCount: 1}
+                                />
+                            </div>
+
                         </Grid.Column>
                         </Segment>
                     </div>
@@ -103,6 +107,7 @@ class ToolTabs extends React.Component {
                             <AllocationsTable 
                                 upcomingTransactions={upcomingTransactions}
                                 deleteTransaction={this.deleteTransaction}
+                                monthlyTransactionApiCall={this.props.monthlyTransactionApiCall}
                             />
                             <Grid.Column textAlign="right">
                             <PaginationComponent
@@ -157,7 +162,7 @@ class ToolTabs extends React.Component {
         if(defaultActiveIndex === "0") {
             url+= `?filter[type]=RecurringDonation&page[size]=10`
         } else if(defaultActiveIndex === "1") {
-            url+= `?filter[type]=RecurringAllocation&page[size]=10`
+            url+= `?filter[type]=RecurringAllocation,RecurringFundAllocation&page[size]=10`
         }
         console.log(url);
         getUpcomingTransactions(dispatch, url);
@@ -190,7 +195,7 @@ class ToolTabs extends React.Component {
         if(defaultActiveIndex === "0") {
             url+= `&filter[type]=RecurringDonation`
         } else if(defaultActiveIndex === "1") {
-            url+= `&filter[type]=RecurringAllocation`
+            url+= `&filter[type]=RecurringAllocation,RecurringFundAllocation`
         }
         getUpcomingTransactions(dispatch, url);
         this.setState({
@@ -230,11 +235,11 @@ class ToolTabs extends React.Component {
     }
 }
 function mapStateToProps(state) {
-    debugger
     return {
         currentUser: state.user.info,
         upcomingTransactions: state.give.upcomingTransactions,
         upcomingTransactionsMeta: state.give.upcomingTransactionsMeta,
+        monthlyTransactionApiCall: state.give.monthlyTransactionApiCall,
     };
 }
 export default (connect(mapStateToProps)(ToolTabs));

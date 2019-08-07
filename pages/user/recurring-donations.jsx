@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import Layout from '../../components/shared/Layout';
 
 import ToolTabs from '../../components/Give/Tools/ToolTabs';
-import { getUpcomingTransactions } from '../../actions/give';
 // import charityLogo from '../static/images/canadian_red_cross.png';
 
 function RecurringDonations(props) {
@@ -11,7 +10,7 @@ function RecurringDonations(props) {
         <Layout authRequired={true} >
             <div className="charityTab n-border">
                 <ToolTabs
-                defaultActiveIndex='0'
+                    defaultActiveIndex="0"
                 // onTabChangeFunc={this.onTabChangeFunc}
                 />
 
@@ -22,4 +21,3 @@ function RecurringDonations(props) {
 
 
 export default RecurringDonations;
-

@@ -135,7 +135,23 @@ const fullMonthNames = (formatMessage) => {
     ];
     return fullMonths;
 };
-
+const monthNamesForGivingTools = () => {
+    const shortMonths = [
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec',
+    ];
+    return shortMonths;
+};
 const isValidGiftAmount = (validity) => {
     const giftAmountValidity = _.pick(validity, [
         'doesAmountExist',
@@ -1131,7 +1147,13 @@ const setDateForRecurring = (date, formatMessage, lang = 'en') => {
 
 const formatDateForGivingTools = (date) => {
     let unformattedDate = new Date(date);
-    console.log(unformattedDate.getMonth());
+    const monthNames = monthNamesForGivingTools();
+    // Need to use the original function, using this now as we need to integrate translaction for that
+    const day = unformattedDate.getDate();
+    const month = monthNames[unformattedDate.getMonth()];
+    const year = unformattedDate.getFullYear();
+    
+    return `${month} ${day}, ${year}`;
 };
 
 const getDonationMatchedData = (donationMatchId, donationAmount, donationMatchData) => {

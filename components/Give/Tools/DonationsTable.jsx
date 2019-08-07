@@ -3,14 +3,19 @@
 import React from 'react';
 import {
     Table,
+    Placeholder,
 } from 'semantic-ui-react';
 import _ from 'lodash';
+
+import { formatDateForGivingTools } from '../../../helpers/give/utils';
+
 import TransactionTableRow from './TransactionsTableRow';
 
 function DonationsTable(props) {
     const {
         upcomingTransactions,
         deleteTransaction,
+        monthlyTransactionApiCall,
     } = props;
     const renderTableData = () => {
         const tableBody = [];
@@ -26,13 +31,14 @@ function DonationsTable(props) {
                     donationMatchString = attributes.donationMatch.slice(0, lastOccuranceOfOpenBrace);
                 }
                 const transactionDate = (attributes.transactionDate.includes(15)) ? '15th' : '1st';
+                const formattedDate = formatDateForGivingTools(attributes.createdAt);
 
                 tableBody.push(<TransactionTableRow
                     firstColoumn={attributes.paymentInformation}
                     secondColoumn={attributes.amount}
                     thirdColoumn={transactionDate}
                     fourthColoumn={donationMatchString}
-                    fifthColoumn={attributes.createdAt}
+                    fifthColoumn={formattedDate}
                     transactionId={id}
                     transactionType={attributes.transactionType}
                     deleteTransaction={deleteTransaction}
@@ -54,11 +60,24 @@ function DonationsTable(props) {
                         <Table.HeaderCell>Actions</Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
-                <Table.Body>
+                {!monthlyTransactionApiCall
+                && <Table.Body>
                     {
                         renderTableData()
                     }
                 </Table.Body>
+                }
+                {monthlyTransactionApiCall
+                && 
+                <Table.Body>
+                    <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
+                    <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
+                    <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
+                    <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
+                    <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
+                    <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
+                </Table.Body>
+                }
             </Table>
         </div>
     );

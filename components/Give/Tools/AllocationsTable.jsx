@@ -2,19 +2,22 @@
 /* eslint-disable react/jsx-closing-bracket-location */
 import React from 'react';
 import {
-    Button,
     Table,
+    Placeholder
 } from 'semantic-ui-react';
 import _ from 'lodash';
 
+import { formatDateForGivingTools } from '../../../helpers/give/utils';
+
 import TransactionTableRow from './TransactionsTableRow';
-import {formatDateForGivingTools} from '../../../helpers/give/utils';
+
 function AllocationsTable(props) {
     let {
         upcomingTransactions,
         deleteTransaction,
+        monthlyTransactionApiCall,
     } = props;
-
+    console.log(monthlyTransactionApiCall);
     const renderTableData = () => {
         const tableBody = [];
         if (!_.isEmpty(upcomingTransactions)) {
@@ -31,7 +34,7 @@ function AllocationsTable(props) {
                     secondColoumn={attributes.amount}
                     thirdColoumn={transactionDate}
                     fourthColoumn={attributes.paymentInformation}
-                    fifthColoumn={attributes.createdAt}
+                    fifthColoumn={formattedDate}
                     deleteTransaction={deleteTransaction}
                     transactionType={attributes.transactionType}
                     transactionId={id}
@@ -54,11 +57,24 @@ function AllocationsTable(props) {
                         <Table.HeaderCell>Actions</Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
-                <Table.Body>
+                {!monthlyTransactionApiCall
+                && <Table.Body>
                     {
                         renderTableData()
                     }
                 </Table.Body>
+                }
+                {monthlyTransactionApiCall
+                && 
+                <Table.Body>
+                    <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
+                    <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
+                    <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
+                    <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
+                    <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
+                    <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
+                </Table.Body>
+                }
             </Table>
         </div>
     );
