@@ -43,7 +43,7 @@ class UserAuthView extends React.Component {
         }
 
         return (
-            <Layout>
+            <Layout onBoarding={true} >
                 <div className="pageWraper">
                     <Container>
                         <div className="linebg" >

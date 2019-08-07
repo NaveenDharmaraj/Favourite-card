@@ -13,35 +13,47 @@ import logo from '../../../static/images/CharitableImpact.png';
 
 import AuthHeader from './AuthHeader';
 import OnBoardingHeader from './OnBoarding';
+import NonAuthHeader from './NonAuthHeader';
 
-const renderHeader = (onBording, isAuthenticated) => {
+const renderHeader = (onBoarding, isAuthenticated) => {
     let headerComponent = null;
-    if (onBording) {
+    if (onBoarding) {
         headerComponent = <OnBoardingHeader />;
     } else if (isAuthenticated) {
         headerComponent = <AuthHeader />;
     } else {
-        headerComponent = <OnBoardingHeader />;
+        headerComponent = <NonAuthHeader />;
     }
     return headerComponent;
+};
+
+const getHeaderClassName = (onBoarding, isAuthenticated) => {
+    let className = 'c-default-header';
+    if (onBoarding) {
+        className = 'c-logout-header';
+    } else if (isAuthenticated) {
+        className = 'c-login-header';
+    }
+    return className;
 };
 
 const Header = (props) => {
     const {
         isAuthenticated,
+        onBoarding,
     } = props;
     return (
         <Segment
             textAlign="center"
             vertical
-            className="c-login-header"
+            className={getHeaderClassName(onBoarding, isAuthenticated)}
         >
             <Container>
                 <Menu secondary>
                     <Menu.Item>
                         <Image style={{ width: '131px' }} src={logo} />
                     </Menu.Item>
-                    {renderHeader(false, isAuthenticated)}
+                    {renderHeader(onBoarding, isAuthenticated)}
                 </Menu>
             </Container>
         </Segment>
@@ -50,6 +62,7 @@ const Header = (props) => {
 
 Header.propTypes = {
     isAuthenticated: boolean,
+    onBoarding: boolean,
 };
 
 export default Header;

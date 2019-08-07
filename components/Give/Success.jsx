@@ -22,22 +22,9 @@ import {
     populateCardData,
     setDateForRecurring,
     getDonationMatchedData,
+    calculateP2pTotalGiveAmount,
 } from '../../helpers/give/utils';
 import { reInitNextStep } from '../../actions/give';
-
-// #region P2p Helpers
-const calculateP2pTotalGiveAmount = (successData) => _.sumBy(
-    successData.recipientLists,
-    (recipientList) => Number(recipientList.data.attributes.amount),
-);
-
-const calculateGiveAmount = (successData) => Number(
-    successData.recipientLists[0].data.attributes.amount,
-);
-
-const calculateRecipients = (successData) => successData.recipientLists.length;
-
-const getFirstEmailRecipient = (successData) => successData.recipientLists[0].data.attributes.email;
 
 const separateByComma = (recipients) => _.replace(_.toString(recipients), /,/g, ', ');
 
@@ -48,7 +35,6 @@ const Success = (props) => {
         const {
             dispatch, flowObject,
         } = props;
-
         if (flowObject) {
             reInitNextStep(dispatch, flowObject);
         }
@@ -76,7 +62,6 @@ const Success = (props) => {
             giftType,
             recipients,
         },
-        recipientLists,
         quaziSuccessStatus,
         type,
     } = successData;
@@ -129,7 +114,11 @@ const Success = (props) => {
     }
     // donationmatch value exists it get added to displayamount
     if (!_.isEmpty(donationMatch) && donationMatch.value > 0) {
-        donationMatchedData = getDonationMatchedData(donationMatch.id, donationAmount, donationMatchData);
+        donationMatchedData = getDonationMatchedData(
+            donationMatch.id,
+            donationAmount,
+            donationMatchData,
+        );
         displayAmount += Number(donationMatchedData.amount);
     }
 
@@ -164,9 +153,9 @@ const Success = (props) => {
             dashboardLink = `/companies/${giveTo.slug}`;
             linkToDashboardText = formatMessage('goToCompanyDashboard', { companyName: giveTo.name });
             firstParagraph = formatMessage('companyAddMoney', {
-                name: donationDetails.name,
                 amount: formatCurrency((donationDetails.amount), language, currency),
                 companyName: giveTo.name,
+                name: donationDetails.name,
             });
         }
         if (giveTo.type === 'user') {
@@ -177,16 +166,28 @@ const Success = (props) => {
         }
         if (type === 'donations') {
             secondParagraph = creditCardMessage;
+            fourthButton = (
+                <Button
+                    // as={GeminiLink}
+                    color="blue"
+                    content={formatMessage('seeYourTaxReceipt')}
+                    id="taxReceiptsLink"
+                    path={taxProfileLink}
+                />
+            );
+        } else if (!_.isEmpty(creditCard) && creditCard.value > 0) {
+            taxProfileLink = (giveFrom.type !== 'user')
+                ? `/${giveFrom.type}/${giveFrom.slug}/tax-receipts` : taxProfileLink;
+            fourthButton = (
+                <Button
+                    as={GeminiLink}
+                    color="blue"
+                    content={formatMessage({ id: 'giving.donations.success.seeYourTaxReceipt' })}
+                    id="taxReceiptsLink"
+                    path={taxProfileLink}
+                />
+            );
         }
-        fourthButton = (
-            <Button
-                // as={GeminiLink}
-                color="blue"
-                content={formatMessage('seeYourTaxReceipt')}
-                id="taxReceiptsLink"
-                path={taxProfileLink}
-            />
-        );
         // the check is to differentiate donation and allocation dashboardlink
         dashboardLink = (giveFrom && giveFrom.type !== 'user')
             ? `/${giveFrom.type}/${giveFrom.slug}` : dashboardLink;
@@ -208,28 +209,25 @@ const Success = (props) => {
                     name: donationDetails.name,
                     to: giveTo.text,
                 });
-        }
-        // Should not enter the condition if type is donation
-        else if (type !== p2pLink && type !== 'donations') {
+        } else if (type !== p2pLink && type !== 'donations') { // Should not enter the condition if type is donation
             firstParagraph = (giveFrom.type === 'user') ? formatMessage('userSingleAllocation', {
                 amount: formatCurrency(formatAmount(giveAmount), language, currency),
                 name: donationDetails.name,
-                to: giveTo.text
+                to: giveTo.text,
             }) : formatMessage('nonUserSingleAllocation', {
                 amount: formatCurrency(formatAmount(giveAmount), language, currency),
                 fromName,
                 name: donationDetails.name,
-                to: giveTo.text
+                to: giveTo.text,
             });
         } else {
             // This condition is used to check  recipients array is present
             // eslint-disable-next-line no-lonely-if
-            if (successData && recipientLists
-                        && recipientLists.length > 0) {
-                const p2pTotalGiveAmount = calculateP2pTotalGiveAmount(props.successData);
-                const numberOfRecipient = calculateRecipients(props.successData);
-                const p2pGiveAmount = calculateGiveAmount(props.successData);
-                const recipientEmail = getFirstEmailRecipient(props.successData);
+            if (successData && recipients && recipients.length > 0) {
+                const p2pTotalGiveAmount = calculateP2pTotalGiveAmount(recipients.length, successData.giveData.giveAmount);
+                const numberOfRecipient = recipients.length;
+                const p2pGiveAmount = successData.giveData.giveAmount;
+                const recipientEmail = successData.giveData.recipients[0];
 
                 if (numberOfRecipient > 1) {
                     amount = formatCurrency(
@@ -313,15 +311,27 @@ const Success = (props) => {
         }
         if (type === 'donations') {
             secondParagraph = recurringCreditCardMessage;
+            fourthButton = (
+                <Button
+                    // as={GeminiLink}
+                    color="blue"
+                    content={formatMessage('recurringTransactions')}
+                    path={recurringDonationsLink}
+                />
+            );
+        } else if (!_.isEmpty(creditCard) && creditCard.value > 0) {
+            taxProfileLink = (giveFrom.type !== 'user')
+                ? `/${giveFrom.type}/${giveFrom.slug}/tax-receipts` : taxProfileLink;
+            fourthButton = (
+                <Button
+                    //as={GeminiLink}
+                    color="blue"
+                    content={formatMessage({ id: 'giving.donations.success.seeYourTaxReceipt' })}
+                    id="taxReceiptsLink"
+                    path={taxProfileLink}
+                />
+            );
         }
-        fourthButton = (
-            <Button
-                // as={GeminiLink}
-                color="blue"
-                content={formatMessage('recurringTransactions')}
-                path={recurringDonationsLink}
-            />
-        );
     }
 
     return (
@@ -420,31 +430,76 @@ const Success = (props) => {
 };
 
 Success.propTypes = {
+    currentUser: PropTypes.shape({
+        attributes: PropTypes.shape({
+            displayName: PropTypes.string,
+        }),
+    }),
     donationMatchData: PropTypes.arrayOf,
+    i18n: PropTypes.shape({
+        language: PropTypes.string,
+    }),
     successData: PropTypes.shape({
         giveData: PropTypes.shape({
+            coverFees: PropTypes.bool,
+            coverFeesAmount: PropTypes.string,
+            creditCard: PropTypes.shape({
+                text: PropTypes.string,
+                value: PropTypes.any,
+            }),
+            donationAmount: PropTypes.string,
+            donationMatch: PropTypes.shape({
+                id: PropTypes.any,
+                value: PropTypes.string,
+            }),
+            giftType: PropTypes.shape({
+                value: PropTypes.oneOfType([
+                    PropTypes.number,
+                    PropTypes.string,
+                ]),
+            }),
+            giveAmount: PropTypes.string,
             giveFrom: PropTypes.shape({
+                name: PropTypes.string,
+                slug: PropTypes.string,
                 type: PropTypes.string,
             }),
             giveTo: PropTypes.shape({
+                eftEnabled: PropTypes.bool,
+                name: PropTypes.string,
+                slug: PropTypes.string,
+                text: PropTypes.string,
                 type: PropTypes.string,
+                value: PropTypes.string,
             }),
+            recipients: PropTypes.arrayOf(PropTypes.element),
         }),
         quaziSuccessStatus: PropTypes.bool,
-        recipientLists: PropTypes.arrayOf,
         type: PropTypes.string,
     }),
     t: PropTypes.func,
 };
 Success.defaultProps = {
+    currentUser: {
+        attributes: {
+            displayName: '',
+        },
+    },
     donationMatchData: [],
+    i18n: {
+        language: 'en',
+    },
     successData: {
         giveData: {
+            coverFees: false,
+            coverFeesAmount: '',
             creditCard: {
+                text: null,
                 value: null,
             },
             donationAmount: '',
             donationMatch: {
+                id: null,
                 value: null,
             },
             giftType: {
@@ -452,15 +507,19 @@ Success.defaultProps = {
             },
             giveAmount: '',
             giveFrom: {
+                name: '',
+                slug: '',
                 value: '',
             },
             giveTo: {
-                type: null,
+                eftEnabled: false,
+                name: '',
+                slug: '',
+                text: '',
+                type: '',
                 value: null,
             },
-            newCreditCardId: null,
-            noteToSelf: '',
-            userInteracted: false,
+            recipients: [],
         },
         quaziSuccessStatus: false,
         stepsCompleted: false,

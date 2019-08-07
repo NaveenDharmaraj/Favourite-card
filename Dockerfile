@@ -21,7 +21,8 @@ RUN curl -sLo chamber https://github.com/segmentio/chamber/releases/download/v${
 
 WORKDIR /usr/src/app
 COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "./"]
-RUN npm install --silent && mv node_modules ../
+RUN npm install --silent && mv node_modules ./
 COPY . .
-CMD ["node", "server.js"]
+RUN npm run build
+CMD ["npm", "run","start"]
 EXPOSE ${PORT}

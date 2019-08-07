@@ -10,6 +10,16 @@ const user = (state = {}, action) => {
                 info: Object.assign({}, action.payload.userInfo),
             };
             break;
+        case 'UPDATE_USER_FUND':
+            newState = {
+                ...state,
+                fund: {
+                    ...state.fund,
+                    ...action.payload.fund,
+                },
+                info: Object.assign({}, action.payload.userInfo),
+            };
+            break;
         case 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS':
             const {
                 companiesAccountsData,
@@ -55,6 +65,14 @@ const user = (state = {}, action) => {
             newState = {
                 ...state,
                 taxReceiptGetApiStatus: action.payload.taxReceiptGetApiStatus,
+            };
+            break;
+        case 'GET_USERS_GROUPS':
+            newState = {
+                ...state,
+                userMembershipGroups: {
+                    userGroups: action.payload.userMembershipGroups,
+                },
             };
             break;
         default:

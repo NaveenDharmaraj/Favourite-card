@@ -19,6 +19,7 @@ class Charities extends React.Component {
         return {
             groupId: query.group_id,
             namespacesRequired: [
+                'authHeader',
                 'charity',
                 'giveCommon',
                 'accountTopUp',

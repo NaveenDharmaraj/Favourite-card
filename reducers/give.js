@@ -59,6 +59,14 @@ const give = (state = {}, action) => {
                 },
             };
             break;
+        case 'GET_GROUP_FROM_SLUG':
+            newState = {
+                ...state,
+                groupSlugDetails: {
+                    ...action.payload.groupDetails,
+                },
+            };
+            break;
         case 'SAVE_SUCCESS_DATA':
             newState = {
                 ...state,
