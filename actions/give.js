@@ -16,7 +16,6 @@ import {
     beneficiaryDefaultProps,
     donationDefaultProps,
     groupDefaultProps,
-    p2pDefaultProps,
 } from '../helpers/give/defaultProps';
 
 export const actionTypes = {
@@ -25,6 +24,7 @@ export const actionTypes = {
     GET_BENIFICIARY_FOR_GROUP: 'GET_BENIFICIARY_FOR_GROUP',
     GET_COMPANY_PAYMENT_AND_TAXRECEIPT: 'GET_COMPANY_PAYMENT_AND_TAXRECEIPT',
     GET_COMPANY_TAXRECEIPTS: 'GET_COMPANY_TAXRECEIPTS',
+    GET_UPCOMING_TRANSACTIONS: 'GET_UPCOMING_TRANSACTIONS',
     SAVE_FLOW_OBJECT: 'SAVE_FLOW_OBJECT',
     SAVE_SUCCESS_DATA: 'SAVE_SUCCESS_DATA',
 };
@@ -757,3 +757,62 @@ export const getCompanyTaxReceiptProfile = (dispatch, companyId) => {
         console.log(error);
     });
 };
+
+export const getUpcomingTransactions = (dispatch, url) => {
+    return coreApi.get(url).then(
+        (result) => {
+            dispatch({
+                payload:{
+                    upcomingTransactions: result.data,
+                    upcomingTransactionsMeta: result.meta,
+            },
+            type: actionTypes.GET_UPCOMING_TRANSACTIONS,
+        })
+    }
+    ).catch((error) => {
+        console.log(error);
+        // Router.pushRoute('/give/error');
+    })
+}
+
+export const deleteUpcomingTransaction = (dispatch, id, transactionType, activePage, userId) => {
+    let url = null;
+    switch(transactionType) {
+        case 'RecurringAllocation':
+            url=`recurringAllocations/${id}`
+            break;
+        case 'RecurringDonation':
+            url=`recurringDonations/${id}`
+            break;
+        case 'RecurringFundAllocation':
+            url=`recurringGroupAllocations/${id}`
+            break;
+        default:
+            break;
+    }
+    debugger
+    return coreApi.delete(url).then(
+        (result) =>{
+            console.log(result)
+            let activepageUrl = `users/${userId}/upcomingTransactions?page[number]=${activePage}&page[size]=2`
+            debugger
+            getUpcomingTransactions(dispatch,activepageUrl)
+            // let filtered = _.filter(upcomingTransactions, function(transaction){
+            //     return transaction.id!==id;
+            // });
+            // dispatch({
+            //         payload:{
+            //             upcomingTransactions: filtered,
+            //     },
+            //     type: actionTypes.GET_UPCOMING_TRANSACTIONS,
+            // })
+            // if(_.isEmpty(result.data)){
+
+            // }else{
+            //     dispatch({
+            //         paylo
+            //     })
+            // }
+        }
+    )
+}

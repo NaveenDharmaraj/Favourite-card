@@ -1,3 +1,5 @@
+import { actionTypes } from "../actions/auth";
+
 const give = (state = {}, action) => {
     let newState = {
         ...state,
@@ -64,6 +66,13 @@ const give = (state = {}, action) => {
                 ...state,
                 successData: action.payload.successData,
             };
+            break;
+        case 'GET_UPCOMING_TRANSACTIONS':
+            newState = {
+                ...state,
+                upcomingTransactions: action.payload.upcomingTransactions,
+                upcomingTransactionsMeta: action.payload.upcomingTransactionsMeta,
+            }
             break;
         default:
             break;
