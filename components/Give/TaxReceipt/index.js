@@ -97,7 +97,7 @@ class TaxReceipt extends React.Component {
 				receiptOptions: options,
 				selectedValue: taxSelected,
 				flowObject: {
-					...props.flowObject,
+					...this.props.flowObject,
 					selectedTaxReceiptProfile: taxProfileData,
 				},
 			})

@@ -18,6 +18,7 @@ class Groups extends React.Component {
     static async getInitialProps({ query }) {
         return {
             namespacesRequired: [
+                'authHeader',
                 'group',
                 'noteTo',
                 'accountTopUp',

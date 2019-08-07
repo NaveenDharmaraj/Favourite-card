@@ -17,6 +17,10 @@ import {
     getUserFund,
 } from './user';
 
+import {
+    triggerUxCritialErrors,
+} from './error';
+
 export const actionTypes = {
     COVER_FEES: 'COVER_FEES',
     GET_BENEFICIARY_FROM_SLUG: 'GET_BENEFICIARY_FROM_SLUG',
@@ -152,7 +156,7 @@ const initializeAndCallAllocation = (allocation, attributes, type) => {
                 },
             },
         },
-    }
+    };
     if (giftType.value === 0) {
         allocationData.type = (type === 'charity')
             ? 'allocations' : 'groupAllocations';
@@ -166,7 +170,7 @@ const initializeAndCallAllocation = (allocation, attributes, type) => {
                     donationMatch,
                     giveTo : giveFrom,
                     noteToSelf: '',
-                }
+                },
             }).then((result) => {
                 allocationData.relationships.donation = {
                     data: {
@@ -180,7 +184,7 @@ const initializeAndCallAllocation = (allocation, attributes, type) => {
     } else {
         allocationData.type = 'recurringAllocations';
         allocationData.type = (type === 'charity')
-        ? 'recurringAllocations' : 'recurringGroupAllocations'
+            ? 'recurringAllocations' : 'recurringGroupAllocations';
         allocationData.attributes.dayOfMonth = giftType.value;
         if (donationMatch.value > 0) {
             allocationData.relationships.employeeRole = {
@@ -361,9 +365,9 @@ const saveP2pAllocations = (allocation) => {
                 creditCard,
                 donationAmount,
                 donationMatch,
-                giveTo : giveFrom,
+                giveTo: giveFrom,
                 noteToSelf: '',
-            }
+            },
         }).then((result) => {
             const allocations = initializeP2pAllocations(
                 recipients,
@@ -422,7 +426,15 @@ export const getCompanyPaymentAndTax = (dispatch, companyId) => {
         type: actionTypes.GET_COMPANY_PAYMENT_AND_TAXRECEIPT,
     };
 
-    return coreApi.get(`/companies/${companyId}?include=defaultTaxReceiptProfile,activePaymentInstruments,taxReceiptProfiles`).then((result) => {
+    return coreApi.get(
+        `/companies/${companyId}?include=defaultTaxReceiptProfile,activePaymentInstruments,taxReceiptProfiles`,
+        {
+            params: {
+                dispatch,
+                uxCritical: true,
+            },
+        },
+    ).then((result) => {
         const { data } = result;
         let defaultTaxReceiptId = null;
         if (!_.isEmpty(data.relationships.defaultTaxReceiptProfile.data)) {
@@ -470,6 +482,28 @@ const callApiAndDispatchData = (dispatch, account) => {
     } else {
         getCompanyPaymentAndTax(dispatch, Number(account.id));
     }
+};
+
+// Fuction to convert stripe error format into JSON API error format
+const transformStripeErrorToJsonApi = (err) => {
+    const {
+        type,
+        message,
+    } = err;
+    const status = parseInt('402', 10);
+
+    return {
+        errors: [
+            {
+                detail: message,
+                source: {
+                    issuer: 'Stripe',
+                },
+                status,
+                title: type,
+            },
+        ],
+    };
 };
 
 export const proceed = (
@@ -573,8 +607,9 @@ export const proceed = (
                     type: actionTypes.SAVE_FLOW_OBJECT,
                 });
                 callApiAndDispatchData(dispatch, accountDetails);
-            }).catch((error) => {
-                console.log(error);
+            }).catch((err) => {
+                triggerUxCritialErrors(err.errors || err, dispatch);
+                console.log(err);
             });
         } else if (creditCard.value === 0 && stepIndex === 0) {
             return createToken(flowObject.stripeCreditCard, flowObject.cardHolderName).then((token) => {
@@ -639,7 +674,13 @@ export const getBeneficiariesForGroup = (dispatch, groupId) => {
             },
             type: actionTypes.GET_BENIFICIARY_FOR_GROUP,
         };
-        callApiAndGetData(`/groups/${groupId}/groupBeneficiaries`)
+        callApiAndGetData(`/groups/${groupId}/groupBeneficiaries`,
+            {
+                params: {
+                    dispatch,
+                    uxCritical: true,
+                },
+            })
             .then(
                 (result) => {
                     if (!_.isEmpty(result)) {
@@ -668,9 +709,11 @@ export const getBeneficiaryFromSlug = (dispatch, slug) => {
         };
         coreApi.get(`/beneficiaries/find_by_slug`, {
             params: {
+                dispatch,
                 slug: [
                     slug,
                 ],
+                uxCritical: true,
             },
         }).then(
             (result) => {
@@ -763,7 +806,9 @@ export const getCompanyTaxReceiptProfile = (dispatch, companyId) => {
 export const getGroupsFromSlug = (dispatch, slug) => {
     return coreApi.get(`groups/find_by_slug`, {
         params: {
+            dispatch,
             slug,
+            uxCritical: true,
         },
     }).then(
         (result) => {

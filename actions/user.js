@@ -17,7 +17,7 @@ export const actionTypes = {
 const getAllPaginationData = async (url, params = null) => {
     // Right now taking the only relative url from the absolute url.
     const replacedUrl = _.split(url, '/core/v2').pop();
-    const result = await coreApi.get(replacedUrl);
+    const result = await coreApi.get(replacedUrl, params);
     const dataArray = result.data;
     if (result.links.next) {
         return dataArray.concat(await getAllPaginationData(result.links.next, params));
@@ -46,7 +46,7 @@ export const callApiAndGetData = (url, params) => getAllPaginationData(url, para
     },
 );
 
-export const getDonationMatchAndPaymentInstruments = (userId, type) => {
+export const getDonationMatchAndPaymentInstruments = (userId, flowType) => {
 
     return async (dispatch) => {
         const fsa = {
@@ -63,14 +63,46 @@ export const getDonationMatchAndPaymentInstruments = (userId, type) => {
             },
             type: actionTypes.GET_MATCH_POLICIES_PAYMENTINSTRUMENTS,
         };
-        const fetchData = coreApi.get(`/users/${userId}?include=donationMatchPolicies,activePaymentInstruments,defaultTaxReceiptProfile,taxReceiptProfiles,fund`);
+        const fetchData = coreApi.get(
+            `/users/${userId}?include=donationMatchPolicies,activePaymentInstruments,defaultTaxReceiptProfile,taxReceiptProfiles,fund`,
+            {
+                params: {
+                    dispatch,
+                    uxCritical: true,
+                },
+            },
+        );
         let groupData = null;
         let campaignsData = null;
-        if (type !== 'donations') {
-            groupData = callApiAndGetData(`/users/${userId}/administeredGroups?page[size]=50&sort=-id`);
-            campaignsData = callApiAndGetData(`/users/${userId}/administeredCampaigns?page[size]=50&sort=-id`);
+        if (flowType !== 'donations') {
+            groupData = callApiAndGetData(
+                `/users/${userId}/administeredGroups?page[size]=50&sort=-id`,
+                {
+                    params: {
+                        dispatch,
+                        uxCritical: true,
+                    },
+                },
+            );
+            campaignsData = callApiAndGetData(
+                `/users/${userId}/administeredCampaigns?page[size]=50&sort=-id`,
+                {
+                    params: {
+                        dispatch,
+                        uxCritical: true,
+                    },
+                },
+            );
         }
-        const companiesData = callApiAndGetData(`/users/${userId}/administeredCompanies?page[size]=50&sort=-id`);
+        const companiesData = callApiAndGetData(
+            `/users/${userId}/administeredCompanies?page[size]=50&sort=-id`,
+            {
+                params: {
+                    dispatch,
+                    uxCritical: true,
+                },
+            },
+        );
         Promise.all([
             fetchData,
             groupData,
@@ -238,43 +270,37 @@ export const getTaxReceiptProfile = (dispatch, userId) => {
         return dispatch(setTaxReceiptProfile(result.data));
     }).catch((error) => {
         console.log(error);
-    })
+    });
 };
 
-export const updateTaxReceiptProfile = (taxReceiptProfile, action) => {
+export const updateTaxReceiptProfile = (taxReceiptProfile, action, dispatch) => {
     if (action === 'update') {
-        const params = {
-            data: {
-                attributes: _.pick(
-                    taxReceiptProfile.attributes,
-                    [
-                        'addressOne',
-                        'addressTwo',
-                        'city',
-                        'country',
-                        'fullName',
-                        'postalCode',
-                        'province',
-                    ],
-                ),
-                id: taxReceiptProfile.id,
-                type: taxReceiptProfile.type,
-            },
+        const data = {
+            attributes: _.pick(
+                taxReceiptProfile.attributes,
+                [
+                    'addressOne',
+                    'addressTwo',
+                    'city',
+                    'country',
+                    'fullName',
+                    'postalCode',
+                    'province',
+                ],
+            ),
+            id: taxReceiptProfile.id,
+            type: taxReceiptProfile.type,
         };
-        return coreApi.patch(`/taxReceiptProfiles/${taxReceiptProfile.id}`, {
-            data: params.data,
+        return coreApi.patch(`/taxReceiptProfilesf/${taxReceiptProfile.id}`, {
+            data,
         });
     } else {
-        const params = {
-            data: taxReceiptProfile,
-        };
         return coreApi.post('/taxReceiptProfiles', {
-            data: params.data,
-            uxCritical: true,
+            data: taxReceiptProfile,
         });
     }
-    // return setTaxReceiptProfile(dispatch, result.data)
 };
+
 export const getGroupsForUser = (dispatch, userId) => {
     const fsa = {
         payload: {
@@ -282,7 +308,15 @@ export const getGroupsForUser = (dispatch, userId) => {
         },
         type: actionTypes.GET_USERS_GROUPS,
     };
-    callApiAndGetData(`/users/${userId}/groupsWithMemberships?page[size]=50&sort=-id`)
+    callApiAndGetData(
+        `/users/${userId}/groupsWithMemberships?page[size]=50&sort=-id`,
+        {
+            params: {
+                dispatch,
+                uxCritical: true,
+            },
+        },
+    )
         .then(
             (result) => {
                 if (!_.isEmpty(result)) {
