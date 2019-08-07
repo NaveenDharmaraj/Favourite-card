@@ -75,6 +75,12 @@ const user = (state = {}, action) => {
                 },
             };
             break;
+        case 'USER_GIVING_GOAL_DETAILS':
+            newState = {
+                ...state,
+                userGivingGoalDetails: action.payload.userGivingGoalDetails,
+            };
+            break;
         default:
             break;
     }

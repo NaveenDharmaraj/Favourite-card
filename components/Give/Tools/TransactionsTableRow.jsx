@@ -4,9 +4,6 @@
 import React from 'react';
 import {
     Button,
-    Header,
-    Form,
-    Icon,
     Modal,
     Table,
 } from 'semantic-ui-react';

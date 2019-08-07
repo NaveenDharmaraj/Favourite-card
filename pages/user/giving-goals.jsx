@@ -6,17 +6,17 @@ import ToolTabs from '../../components/Give/Tools/ToolTabs';
 
 function GivingGoals(props) {
 
-        return (
-            <Layout authRequired={true} >
-                <div className="charityTab n-border">
-                    <ToolTabs
+    return (
+        <Layout authRequired={true} >
+            <div className="charityTab n-border">
+                <ToolTabs
                     defaultActiveIndex='2'
-                    // onTabChangeFunc={this.onTabChangeFunc}
-                    />
+                // onTabChangeFunc={this.onTabChangeFunc}
+                />
 
-                </div>
-            </Layout>
-        );
+            </div>
+        </Layout>
+    );
 }
 
 

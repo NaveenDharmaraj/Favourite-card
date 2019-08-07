@@ -4,18 +4,22 @@ import React from 'react';
 import {
     Button,
     Header,
+    Modal,
     Segment,
     Grid,
     Tab,
+    Table
 } from 'semantic-ui-react';
 import AllocationsTable from './AllocationsTable';
 import DonationsTable from './DonationsTable';
+import GivingGoalsTable from './GivingGoalsTable';
+
 import { Router } from '../../../routes';
 import { connect } from 'react-redux';
 import PaginationComponent from '../../shared/Pagination';
 
 import { getUpcomingTransactions,deleteUpcomingTransaction } from '../../../actions/give';
-
+import { getUserGivingGoal } from '../../../actions/user';
 const tabMenus = [
     '/user/recurring-donations',
     '/user/recurring-gifts',
@@ -26,13 +30,16 @@ class ToolTabs extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            activePage:1
+            activePage:1,
+            showModal: false
         };
         this.onTabChangeFunc = this.onTabChangeFunc.bind(this);
         this.deleteTransaction = this.deleteTransaction.bind(this);
         this.onPageChange = this.onPageChange.bind(this);
     }
-
+    closeModal = () => {
+        this.setState({ showModal: false });
+    }
     panes = [
         {
             menuItem: 'Add money monthly',
@@ -127,29 +134,73 @@ class ToolTabs extends React.Component {
         },
         {
             menuItem: 'Your giving goal',
-            render: () => (
-                <Tab.Pane attached={false}>
-                    <div className="tools-tabpane">
-                        <Segment>
-                            <Grid verticalAlign="middle">
-                                <Grid.Row>
-                                    <Grid.Column mobile={16} tablet={11} computer={11}>
-                                        <Header as="h3" className="mb-1">
-                                            Giving goal
-                                            <Header.Subheader className="mt-1">
-                                            Set a goal for how much you'd like to donate to your account this year. You can track your progress throughout the year and feel super satisfied when you hit it. Giving it away might feel even better.
-                                            </Header.Subheader>
-                                        </Header>
-                                    </Grid.Column>
-                                    <Grid.Column mobile={16} tablet={5} computer={5} textAlign="right">
-                                        <Button primary fluid>Set a giving goal </Button>
-                                    </Grid.Column>
-                                </Grid.Row>
-                            </Grid>
-                        </Segment>
-                    </div>
-                </Tab.Pane>
-            ),
+            render: () => {
+                const {
+                    userGivingGoalDetails
+                } = this.props
+                return (
+                    <Tab.Pane attached={false}>
+                        <div className="tools-tabpane">
+                            <Segment>
+                                <Grid verticalAlign="middle">
+                                    <Grid.Row>
+                                        <Grid.Column mobile={16} tablet={11} computer={11}>
+                                            <Header as="h3" className="mb-1">
+                                                Giving goal
+                                                <Header.Subheader className="mt-1">
+                                                Set a goal for how much you'd like to donate to your account this year. You can track your progress throughout the year and feel super satisfied when you hit it. Giving it away might feel even better.
+                                                </Header.Subheader>
+                                            </Header>
+                                        </Grid.Column>
+                                        <Grid.Column mobile={16} tablet={5} computer={5} textAlign="right">
+                                            <Button primary fluid>Set a giving goal </Button>
+                                        </Grid.Column>
+                                    </Grid.Row>
+                                    <Grid.Row>
+                                        <Grid.Column width="16">
+                                            <GivingGoalsTable
+                                                userGivingGoalDetails={userGivingGoalDetails}
+                                            />
+                                        </Grid.Column>
+                                    </Grid.Row>
+                                </Grid>
+                                <Modal 
+                                    closeIcon
+                                    onClose={this.closeModal}
+                                    open={this.state.showModal}
+                                    trigger={
+                                        <Button
+                                            onClick={() => this.setState({ showModal: true })}
+                                            basic
+                                            color='blue'
+                                            content='Blue' 
+                                        >
+                                            Delete
+                                        </Button>
+                                    }
+                                >
+                                    <Modal.Header>Are you sure you want to cancel the transaction?</Modal.Header>
+                                    <Modal.Content>
+                                        <Modal.Actions>
+                                            <Button
+                                                color='red'
+                                                onClick={this.closeModalAndDelete}
+                                            >
+                                                Yes
+                                            </Button>
+                                            <Button
+                                                onClick={() => this.setState({ showModal: false })}
+                                            >
+                                                No
+                                            </Button>
+                                        </Modal.Actions>
+                                    </Modal.Content>
+                                </Modal>
+                            </Segment>
+                        </div>
+                    </Tab.Pane>
+                )
+            }
         },
     ];
     
@@ -167,8 +218,13 @@ class ToolTabs extends React.Component {
         } else if(defaultActiveIndex === "1") {
             url+= `?filter[type]=RecurringAllocation,RecurringFundAllocation&page[size]=10`
         }
-        console.log(url);
+        // console.log(this.props.currentUser);
         getUpcomingTransactions(dispatch, url);
+        if(id){
+            debugger
+            getUserGivingGoal(dispatch, id);
+
+        }
     }
 
     deleteTransaction(id, transactionType){
@@ -243,6 +299,7 @@ function mapStateToProps(state) {
         upcomingTransactions: state.give.upcomingTransactions,
         upcomingTransactionsMeta: state.give.upcomingTransactionsMeta,
         monthlyTransactionApiCall: state.give.monthlyTransactionApiCall,
+        userGivingGoalDetails: state.user.userGivingGoalDetails,
     };
 }
 export default (connect(mapStateToProps)(ToolTabs));

@@ -12,6 +12,7 @@ export const actionTypes = {
     TAX_RECEIPT_PROFILES:'TAX_RECEIPT_PROFILES',
     SET_USER_INFO: 'SET_USER_INFO',
     UPDATE_USER_FUND: 'UPDATE_USER_FUND',
+    USER_GIVING_GOAL_DETAILS: 'USER_GIVING_GOAL_DETAILS',
 }
 
 const getAllPaginationData = async (url, params = null) => {
@@ -335,4 +336,21 @@ export const savePaymentInstrument = (cardDetails) => {
         data: cardDetails,
     });
     return result;
+};
+
+export const getUserGivingGoal = (dispatch, userId) => {
+    debugger
+    console.log(userId);
+    return coreApi.get(`users/${userId}/givingGoals`)
+        .then((result) => {
+            debugger
+            dispatch({
+                payload: {
+                    userGivingGoalDetails: result.data,
+                },
+                type: actionTypes.USER_GIVING_GOAL_DETAILS,
+            });
+        }).catch((error) => {
+            console.log(error);
+        })
 };
