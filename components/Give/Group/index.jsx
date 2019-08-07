@@ -943,7 +943,8 @@ class Group extends React.Component {
                         <Divider hidden />
                         {/* { !stepsCompleted && */}
                             <Form.Button
-                                className='btnPadding' // {isMobile ? 'mobBtnPadding' : 'btnPadding'}
+                                primary
+                                className='blue-btn-rounded' // {isMobile ? 'mobBtnPadding' : 'btnPadding'}
                                 content={(!this.state.buttonClicked) ?
                                     formatMessage('giveCommon:continueButton')
                                     : formatMessage('giveCommon:submitingButton')}
