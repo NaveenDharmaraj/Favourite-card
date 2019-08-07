@@ -1,4 +1,8 @@
-import React, { cloneElement } from 'react';
+import React from 'react';
+import {
+    Container,
+} from 'semantic-ui-react';
+
 import Charity from '../components/Give/Charity';
 import GiveWrapper from '../components/Give';
 // import TaxReceipt from '../components/give/TaxReceipt'
@@ -45,9 +49,13 @@ class Charities extends React.Component {
         }
         return (
             <Layout authRequired={true}>
-                <GiveWrapper {...this.props} baseUrl="/give/to/charity" flowSteps={(slug) ? flowSteps : null}>
-                    <Charity />
-                </GiveWrapper> 
+                <Container>
+                    <div className="pageWraper">
+                        <GiveWrapper {...this.props} baseUrl="/give/to/charity" flowSteps={(slug) ? flowSteps : null}>
+                            <Charity />
+                        </GiveWrapper>
+                    </div>
+                </Container>
             </Layout>
         );
     }

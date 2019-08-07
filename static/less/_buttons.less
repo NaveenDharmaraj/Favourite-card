@@ -1,3 +1,18 @@
+.blue-btn-rounded{
+  button{
+    &.ui{
+      &.primary{
+        &.button{
+          background-color: @blueButton;
+          border-radius: 2rem;
+          &:hover{
+            background-color: @blueButton-hover;
+          }
+        }
+      }
+    }
+  }
+}
 button{
   &.ui{
     &.primary{
@@ -38,6 +53,9 @@ button{
         color: @blueButton;
         font-size: 18/@rem;
         font-weight: 400;
+      }
+      &.rounded-btn{
+        border-radius: 20.5/@rem;
       }
       &.transparent-btn-round{
         background-color: transparent;

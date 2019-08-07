@@ -779,6 +779,7 @@ class Donation extends React.Component {
             <Divider hidden />
                 <Form.Button
                     primary
+                    className="blue-btn-rounded"
                     // className={isMobile ? 'mobBtnPadding' : 'btnPadding'}
                     content={(!this.state.buttonClicked) ? formatMessage('giveCommon:continueButton')
                         : formatMessage('giveCommon:submittingButton')}

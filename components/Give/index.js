@@ -151,22 +151,22 @@ class Give extends React.Component {
                 <div className="pageHeader">
                     <Grid columns={2} verticalAlign='middle'>
                         <Grid.Row>
-                        {(step !== 'error') &&
                             <Grid.Column >
-                                <Header as='h2'>
-                                    {breadcrumbArray[_.indexOf(flowSteps, step)]}
-                                </Header>
+                                {(step !== 'error') &&
+                                    <Header as='h2'>
+                                        {breadcrumbArray[_.indexOf(flowSteps, step)]}
+                                    </Header>
+                                }
                             </Grid.Column>
-                        }
-                        <Grid.Column >
-                            <FlowBreadcrumbs
-                                currentStep={step}
-                                formatMessage={formatMessage}
-                                steps={flowSteps}
-                                breadcrumbArray={breadcrumbArray}
+                            <Grid.Column >
+                                <FlowBreadcrumbs
+                                    currentStep={step}
+                                    formatMessage={formatMessage}
+                                    steps={flowSteps}
+                                    breadcrumbArray={breadcrumbArray}
 
-                            />
-                        </Grid.Column>
+                                />
+                            </Grid.Column>
                         </Grid.Row>
                     </Grid>
                     </div>
