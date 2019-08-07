@@ -153,12 +153,11 @@ class ToolTabs extends React.Component {
             dispatch,
             defaultActiveIndex
         } = this.props;
-        console.log(defaultActiveIndex);
         let url = `users/${id}/upcomingTransactions`;
         if(defaultActiveIndex === "0") {
-            url+= `?filter[type]=RecurringDonation&page[size]=2`
+            url+= `?filter[type]=RecurringDonation&page[size]=10`
         } else if(defaultActiveIndex === "1") {
-            url+= `?filter[type]=RecurringAllocation&page[size]=2`
+            url+= `?filter[type]=RecurringAllocation&page[size]=10`
         }
         console.log(url);
         getUpcomingTransactions(dispatch, url);
@@ -173,6 +172,7 @@ class ToolTabs extends React.Component {
         } = this.state;
         console.log(id)
         console.log(transactionType);
+        debugger
         if(id && transactionType){
             deleteUpcomingTransaction(dispatch,id, transactionType, activePage, this.props.currentUser.id)
         }
@@ -186,13 +186,12 @@ class ToolTabs extends React.Component {
             dispatch,
             defaultActiveIndex
         } = this.props;
-        let url = `users/${id}/upcomingTransactions?page[number]=${data.activePage}&page[size]=2`;
+        let url = `users/${id}/upcomingTransactions?page[number]=${data.activePage}&page[size]=10`;
         if(defaultActiveIndex === "0") {
             url+= `&filter[type]=RecurringDonation`
         } else if(defaultActiveIndex === "1") {
             url+= `&filter[type]=RecurringAllocation`
         }
-        console.log(url);
         getUpcomingTransactions(dispatch, url);
         this.setState({
             activePage:data.activePage,
@@ -231,6 +230,7 @@ class ToolTabs extends React.Component {
     }
 }
 function mapStateToProps(state) {
+    debugger
     return {
         currentUser: state.user.info,
         upcomingTransactions: state.give.upcomingTransactions,

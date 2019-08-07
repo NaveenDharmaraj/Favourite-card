@@ -1129,6 +1129,11 @@ const setDateForRecurring = (date, formatMessage, lang = 'en') => {
     return (lang === 'fr') ? `${date}er ${month} ${year}` : `${month} ${date}, ${year}`;
 };
 
+const formatDateForGivingTools = (date) => {
+    let unformattedDate = new Date(date);
+    console.log(unformattedDate.getMonth());
+};
+
 const getDonationMatchedData = (donationMatchId, donationAmount, donationMatchData) => {
     const donationMatchedData = _.find(
         donationMatchData, (item) => item.attributes.employeeRoleId == donationMatchId,
@@ -1158,7 +1163,7 @@ const getDonationMatchedData = (donationMatchId, donationAmount, donationMatchDa
         return matchedData;
     }
     return null;
-}
+};
 
 const populateDonationReviewPage = (giveData, data, currency, formatMessage, language) => {
     const {
@@ -1550,4 +1555,5 @@ export {
     populateGiveReviewPage,
     populateCardData,
     formatCurrency,
+    formatDateForGivingTools,
 };

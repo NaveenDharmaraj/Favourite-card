@@ -762,57 +762,45 @@ export const getUpcomingTransactions = (dispatch, url) => {
     return coreApi.get(url).then(
         (result) => {
             dispatch({
-                payload:{
+                payload: {
                     upcomingTransactions: result.data,
                     upcomingTransactionsMeta: result.meta,
-            },
-            type: actionTypes.GET_UPCOMING_TRANSACTIONS,
-        })
-    }
+                },
+                type: actionTypes.GET_UPCOMING_TRANSACTIONS,
+            });
+        },
     ).catch((error) => {
         console.log(error);
         // Router.pushRoute('/give/error');
-    })
-}
+    });
+};
 
 export const deleteUpcomingTransaction = (dispatch, id, transactionType, activePage, userId) => {
     let url = null;
-    switch(transactionType) {
+    switch (transactionType) {
         case 'RecurringAllocation':
-            url=`recurringAllocations/${id}`
+            url = `recurringAllocations/${id}`;
             break;
         case 'RecurringDonation':
-            url=`recurringDonations/${id}`
+            url = `recurringDonations/${id}`;
             break;
         case 'RecurringFundAllocation':
-            url=`recurringGroupAllocations/${id}`
+            url = `recurringGroupAllocations/${id}`;
             break;
         default:
             break;
     }
-    debugger
     return coreApi.delete(url).then(
-        (result) =>{
-            console.log(result)
-            let activepageUrl = `users/${userId}/upcomingTransactions?page[number]=${activePage}&page[size]=2`
-            debugger
-            getUpcomingTransactions(dispatch,activepageUrl)
-            // let filtered = _.filter(upcomingTransactions, function(transaction){
-            //     return transaction.id!==id;
-            // });
-            // dispatch({
-            //         payload:{
-            //             upcomingTransactions: filtered,
-            //     },
-            //     type: actionTypes.GET_UPCOMING_TRANSACTIONS,
-            // })
-            // if(_.isEmpty(result.data)){
-
-            // }else{
-            //     dispatch({
-            //         paylo
-            //     })
-            // }
-        }
-    )
-}
+        (result) => {
+            let activepageUrl = `users/${userId}/upcomingTransactions?page[number]=${activePage}&page[size]=10`;
+            if (transactionType === 'RecurringAllocation') {
+                activepageUrl += '&filter[type]=RecurringAllocation';
+            } else {
+                activepageUrl += '&filter[type]=RecurringDonation';
+            }
+            getUpcomingTransactions(dispatch, activepageUrl);
+        },
+    ).catch((error) => {
+        console.log(error);
+    });
+};
