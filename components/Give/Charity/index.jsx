@@ -60,6 +60,7 @@ import IconCharity from '../../../static/images/chimp-icon-charity.png';
 import IconGroup from '../../../static/images/chimp-icon-giving-group.png';
 import IconIndividual from '../../../static/images/chimp-icon-individual.png';
 import { withTranslation } from '../../../i18n';
+import { dismissAllUxCritialErrors } from '../../../actions/error';
 const CreditCard = dynamic(() => import('../../shared/CreditCard'));
 const FormValidationErrorMessage = dynamic(() => import('../../shared/FormValidationErrorMessage'));
 const NoteTo = dynamic(() => import('../NoteTo'));
@@ -198,6 +199,7 @@ class Charity extends React.Component {
         this.validateCreditCardCvv = this.validateCreditCardCvv.bind(this);
         this.validateCreditCardName = this.validateCreditCardName.bind(this);
         this.getStripeCreditCard = this.getStripeCreditCard.bind(this);
+        dismissAllUxCritialErrors(props.dispatch);
     }
 
     componentDidMount() { 
@@ -725,19 +727,10 @@ class Charity extends React.Component {
                     companyDetails.companyDefaultTaxReceiptProfile :
                     defaultTaxReceiptProfile;
             }
-            // if (_isEqual(allocation, this.props.allocation)) {
-            //     forceContinue = (forceContinue === this.props.nextStep.path) ?
-            //         this.props.currentStep.path : this.props.nextStep.path;
-            // }
             flowObject.giveData.coverFeesAmount = (coverFees) ?
                 coverFeesData.giveAmountFees : null;
-            // allocation.stepsCompleted = false;
-            // allocation.nextSteptoProceed = nextStep;
-            // this.dimissErrors();
-            // this.props.proceed({
-            //     ...allocation,
-            // }, forceContinue);
             flowObject.stepsCompleted = false;
+            dismissAllUxCritialErrors(this.props.dispatch);
             dispatch(proceed(flowObject, flowSteps[stepIndex + 1], stepIndex));
         } else {
             this.setState({

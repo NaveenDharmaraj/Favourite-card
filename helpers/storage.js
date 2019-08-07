@@ -2,7 +2,7 @@ import _isEmpty from 'lodash/isEmpty';
 
 function getLocalStorage(name) {
     if (typeof Storage !== 'undefined') {
-        localStorage.getItem(name);
+        return localStorage.getItem(name);
     }
 }
 function getCookies(name, serverCookies = null) {

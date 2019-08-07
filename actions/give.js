@@ -6,7 +6,7 @@ import {
     beneficiaryDefaultProps,
     donationDefaultProps,
     groupDefaultProps,
-    //p2pDefaultProps,
+    p2pDefaultProps,
 } from '../helpers/give/defaultProps';
 
 import {
@@ -565,7 +565,7 @@ export const proceed = (
                 const defaultProps = {
                     'donations': donationDefaultProps,
                     'give/to/charity': beneficiaryDefaultProps,
-                    //'give/to/friend': p2pDefaultProps,
+                    'give/to/friend': p2pDefaultProps,
                     'give/to/group': groupDefaultProps,
                 };
                 const defaultPropsData = _.merge({}, defaultProps[flowObject.type]);
