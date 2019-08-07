@@ -58,7 +58,7 @@ class CharityDetails extends React.Component {
                             <Grid.Row>
                                 <Grid.Column mobile={16} tablet={3} computer={2}>
                                     <div className="profile-img-rounded">
-                                    <Image src={(charityDetails && charityDetails.charityDetails && charityDetails.charityDetails.attributes) && charityDetails.charityDetails.attributes.avatar} />
+                                    <Image circular src={(charityDetails && charityDetails.charityDetails && charityDetails.charityDetails.attributes) && charityDetails.charityDetails.attributes.avatar} />
                                     </div>
                                 </Grid.Column>
                                 <Grid.Column mobile={16} tablet={10} computer={11}>
@@ -67,7 +67,7 @@ class CharityDetails extends React.Component {
                                         {(charityDetails && charityDetails.charityDetails && charityDetails.charityDetails.attributes) && charityDetails.charityDetails.attributes.name}
                                             <Header.Subheader>{(charityDetails && charityDetails.charityDetails && charityDetails.charityDetails.attributes) && charityDetails.charityDetails.attributes.location}</Header.Subheader>
                                         </Header>
-                                        <div>
+                                        <div className="badge-group">
                                         {(charityDetails && charityDetails.charityDetails && charityDetails.charityDetails.attributes)
                                             && CharityDetails.getCauses(charityDetails.charityDetails.attributes.causes)}
                                         </div>
