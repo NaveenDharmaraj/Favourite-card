@@ -8,8 +8,11 @@ import {
 
 import Header from '../Header';
 import Footer from '../Footer';
-import AuthMobileHeader from '../Header/AuthHeader/MobileHeader';
+import MobileHeader from '../Header/MobileHeader';
 import { Router } from '../../../routes';
+import ErrorBoundary from '../ErrorBoundary';
+import { dismissUxCritialErrors } from '../../../actions/error';
+import StatusMessage from '../StatusMessage';
 
 import '../../../static/less/header.less';
 import '../../../static/less/style.less';
@@ -31,7 +34,7 @@ class Layout extends React.Component {
         }
     };
 
-    renderLayout = (authRequired, children, isAuthenticated) => {
+    renderLayout = (authRequired, children, isAuthenticated, onBoarding, dispatch, appErrors) => {
         if (authRequired && !isAuthenticated) {
             return null;
         }
@@ -48,16 +51,52 @@ class Layout extends React.Component {
                     <script id="stripe-js" src="https://js.stripe.com/v3/" />
                 </Head>
                 <div>
-                    <Responsive {...Responsive.onlyMobile}>
-                        <AuthMobileHeader>
-                            <Container><div className="pageWraper">{children}</div></Container>
-                        </AuthMobileHeader>
-                    </Responsive>
-                    <Responsive minWidth={Responsive.onlyTablet.minWidth}>
-                        <Header isAuthenticated={isAuthenticated} />
-                        <Container><div className="pageWraper">{children}</div></Container>
-                    </Responsive>
-                    <Footer />
+                    <ErrorBoundary>
+                        <Responsive {...Responsive.onlyMobile}>
+                            <MobileHeader isAuthenticated={isAuthenticated} onBoarding={onBoarding} >
+                                <Container>
+                                    <div className="pageWraper">
+                                        {!_.isEmpty(appErrors) &&
+                                            <Container
+                                                className="app-status-messages"
+                                            >
+                                                {_.map(appErrors, (err) => (
+                                                    <StatusMessage
+                                                        key={err.heading}
+                                                        handleDismiss={() => dismissUxCritialErrors(err, appErrors, dispatch)}
+                                                        {...err}
+                                                    />
+                                                ))}
+                                            </Container>
+                                        }
+                                        {children}
+                                    </div>
+                                </Container>
+                            </MobileHeader>
+                        </Responsive>
+                        <Responsive minWidth={Responsive.onlyTablet.minWidth}>
+                            <Header isAuthenticated={isAuthenticated} onBoarding={onBoarding} />
+                                <Container>
+                                    <div className="pageWraper">
+                                        {!_.isEmpty(appErrors) &&
+                                            <Container
+                                                className="app-status-messages"
+                                            >
+                                                {_.map(appErrors, (err) => (
+                                                    <StatusMessage
+                                                        key={err.heading}
+                                                        handleDismiss={() => dismissUxCritialErrors(err, appErrors, dispatch)}
+                                                        {...err}
+                                                    />
+                                                ))}
+                                            </Container>
+                                        }
+                                        {children}
+                                    </div>
+                                </Container>
+                        </Responsive>
+                        <Footer />
+                    </ErrorBoundary>
                 </div>
             </Responsive>
         );
@@ -65,12 +104,15 @@ class Layout extends React.Component {
 
     render() {
         const {
+            appErrors,
             authRequired,
             children,
             isAuthenticated,
+            dispatch,
+            onBoarding,
         } = this.props;
         return (
-            this.renderLayout(authRequired, children, isAuthenticated)
+            this.renderLayout(authRequired, children, isAuthenticated, onBoarding, dispatch, appErrors)
         );
     }
 };
@@ -78,6 +120,7 @@ class Layout extends React.Component {
 function mapStateToProps(state) {
     return {
         isAuthenticated: state.auth.isAuthenticated,
+        appErrors: state.app.errors,
     };
 }
 

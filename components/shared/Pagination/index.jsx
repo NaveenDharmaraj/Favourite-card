@@ -11,6 +11,8 @@ const PaginationComponent = (props) => {
         <Pagination onPageChange={onPageChanged} activePage={activePage} totalPages={totalPages} />
     );
 };
+
+
 PaginationComponent.propTypes = {
     activePage: PropTypes.number,
     totalPages: PropTypes.number,

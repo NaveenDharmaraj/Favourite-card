@@ -69,7 +69,6 @@ export const beneficiaryDefaultProps = {
         groupId: null,
         nextSteptoProceed: {},
         selectedTaxReceiptProfile: {},
-        slugValue: null,
         sourceAccountHolderId: null,
         stepsCompleted: false,
         taxReceiptProfileAction: 'no_change',
@@ -118,5 +117,45 @@ export const groupDefaultProps = {
         stepsCompleted: false,
         taxReceiptProfileAction: 'no_change',
         type: 'give/to/group',
+    },
+};
+
+export const p2pDefaultProps = {
+    flowObject: {
+        currency: 'USD',
+        giveData: {
+            creditCard: {
+                value: null,
+            },
+            donationAmount: '',
+            donationMatch: {
+                value: null,
+            },
+            // P2P gift type is always 0
+            giftType: {
+                value: 0,
+            },
+            giveAmount: '',
+            giveFrom: {
+                value: '',
+            },
+            giveTo: {
+                value: null,
+            },
+            infoToShare: {
+                value: 'anonymous',
+            },
+            newCreditCardId: null,
+            noteToRecipients: '',
+            noteToSelf: '',
+            recipients: [],
+            totalP2pGiveAmount: 0,
+            userInteracted: false,
+        },
+        nextSteptoProceed: {},
+        selectedTaxReceiptProfile: {},
+        stepsCompleted: false,
+        taxReceiptProfileAction: 'no_change',
+        type: 'give/to/friend',
     },
 };

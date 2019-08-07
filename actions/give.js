@@ -1,22 +1,24 @@
 /* eslint-disable import/exports-last */
-import {
-    callApiAndGetData,
-    updateTaxReceiptProfile
-} from './user';
 import _ from 'lodash';
-
+import { Router } from '../routes';
 import coreApi from '../services/coreApi';
-import realtypeof from '../helpers/realtypeof';
-import {
-    getDonationMatchAndPaymentInstruments,
-    savePaymentInstrument
-} from './user';
-
 import {
     beneficiaryDefaultProps,
     donationDefaultProps,
     groupDefaultProps,
 } from '../helpers/give/defaultProps';
+
+import {
+    callApiAndGetData,
+    updateTaxReceiptProfile,
+    getDonationMatchAndPaymentInstruments,
+    savePaymentInstrument,
+    getUserFund,
+} from './user';
+
+import {
+    triggerUxCritialErrors,
+} from './error';
 
 export const actionTypes = {
     COVER_FEES: 'COVER_FEES',
@@ -24,6 +26,7 @@ export const actionTypes = {
     GET_BENIFICIARY_FOR_GROUP: 'GET_BENIFICIARY_FOR_GROUP',
     GET_COMPANY_PAYMENT_AND_TAXRECEIPT: 'GET_COMPANY_PAYMENT_AND_TAXRECEIPT',
     GET_COMPANY_TAXRECEIPTS: 'GET_COMPANY_TAXRECEIPTS',
+    GET_GROUP_FROM_SLUG: 'GET_GROUP_FROM_SLUG',
     GET_UPCOMING_TRANSACTIONS: 'GET_UPCOMING_TRANSACTIONS',
     MONTHLY_TRANSACTION_API_CALL: 'MONTHLY_TRANSACTION_API_CALL',
     SAVE_FLOW_OBJECT: 'SAVE_FLOW_OBJECT',
@@ -154,10 +157,10 @@ const initializeAndCallAllocation = (allocation, attributes, type) => {
                 },
             },
         },
-    }
+    };
     if (giftType.value === 0) {
         allocationData.type = (type === 'charity')
-            ? 'allocations' : 'groupAllocations'
+            ? 'allocations' : 'groupAllocations';
         if (donationAmount) {
             return saveDonations({
                 selectedTaxReceiptProfile,
@@ -168,7 +171,7 @@ const initializeAndCallAllocation = (allocation, attributes, type) => {
                     donationMatch,
                     giveTo : giveFrom,
                     noteToSelf: '',
-                }
+                },
             }).then((result) => {
                 allocationData.relationships.donation = {
                     data: {
@@ -182,7 +185,7 @@ const initializeAndCallAllocation = (allocation, attributes, type) => {
     } else {
         allocationData.type = 'recurringAllocations';
         allocationData.type = (type === 'charity')
-        ? 'recurringAllocations' : 'recurringGroupAllocations'
+            ? 'recurringAllocations' : 'recurringGroupAllocations';
         allocationData.attributes.dayOfMonth = giftType.value;
         if (donationMatch.value > 0) {
             allocationData.relationships.employeeRole = {
@@ -200,7 +203,7 @@ const initializeAndCallAllocation = (allocation, attributes, type) => {
         };
     }
     return postAllocation(allocationData);
-}
+};
 
 const saveCharityAllocation = (allocation) => {
     const {
@@ -276,14 +279,14 @@ const postP2pAllocations = async (allocations) => {
             data = allocationData;
         }
 
-        const params = {
-            data: data,
-        };
-
-        const result = await comms.post(`/${allocationData.type}`, {
-            data: params,
+        // const params = {
+        //     data: data,
+        // };
+        const result = await coreApi.post(`/${allocationData.type}`, {
+            data : {
+                ...data,
+            }
         });
-
         if  (result && result.data) {
             parentAllocationId = result.data.id;
         }
@@ -302,36 +305,36 @@ const initializeP2pAllocations = (
     donationId,
 ) => {
     const allocations = [];
-    _.each(recipients, (recipient) => {
-        const allocationData = {
-            attributes: {
-                amount: giveAmount,
-                email: _.replace(recipient, /[\n\r\t ]+/g, ''),
-                noteToRecipient: noteToRecipients,
-                noteToSelf,
-                suppressEmail: false,
-            },
-            relationships: {
-                sourceFund: {
-                    data: {
-                        id: giveFrom.value,
-                        type: 'accountHolders',
-                    },
+    // _.each(recipients, (recipient) => {
+    const allocationData = {
+        attributes: {
+            amount: giveAmount,
+            noteToRecipient: noteToRecipients,
+            noteToSelf,
+            recipientEmails: _.replace(recipients, /[\n\r\t ]+/g, ''),
+            suppressEmail: false,
+        },
+        relationships: {
+            sourceFund: {
+                data: {
+                    id: giveFrom.value,
+                    type: 'accountHolders',
                 },
+            },
+        },
+    };
+
+    if (donationId > 0) {
+        allocationData.relationships.donation = {
+            data: {
+                id: donationId,
+                type: 'donations',
             },
         };
-
-        if (donationId > 0) {
-            allocationData.relationships.donation = {
-                data: {
-                    id: donationId,
-                    type: 'donations',
-                },
-            };
-        }
-        allocationData.type = 'fundAllocations';
-        allocations.push(allocationData);
-    });
+    }
+    allocationData.type = 'fundAllocations';
+    allocations.push(allocationData);
+    // });
 
     return allocations;
 };
@@ -363,9 +366,9 @@ const saveP2pAllocations = (allocation) => {
                 creditCard,
                 donationAmount,
                 donationMatch,
-                giveTo : giveFrom,
+                giveTo: giveFrom,
                 noteToSelf: '',
-            }
+            },
         }).then((result) => {
             const allocations = initializeP2pAllocations(
                 recipients,
@@ -407,6 +410,73 @@ const checkForQuaziSuccess = (error) => {
     return false;
 };
 
+/**
+ * Send the allocation data to the relevant endpoint.
+ * @param  {number} companyId Id of the company
+ * @return {promise}     The promise returned by the Communications utility.
+ */
+
+export const getCompanyPaymentAndTax = (dispatch, companyId) => {
+    const fsa = {
+        payload: {
+            companyDefaultTaxReceiptProfile: {},
+            companyId,
+            companyPaymentInstrumentsData: [],
+            taxReceiptProfiles: [],
+        },
+        type: actionTypes.GET_COMPANY_PAYMENT_AND_TAXRECEIPT,
+    };
+
+    return coreApi.get(
+        `/companies/${companyId}?include=defaultTaxReceiptProfile,activePaymentInstruments,taxReceiptProfiles`,
+        {
+            params: {
+                dispatch,
+                uxCritical: true,
+            },
+        },
+    ).then((result) => {
+        const { data } = result;
+        let defaultTaxReceiptId = null;
+        if (!_.isEmpty(data.relationships.defaultTaxReceiptProfile.data)) {
+            defaultTaxReceiptId = data.relationships.defaultTaxReceiptProfile.data.id;
+        }
+        if (!_.isEmpty(result.included)) {
+            const { included } = result;
+            included.map((item) => {
+                const {
+                    attributes,
+                    id,
+                    type,
+                } = item;
+                if (type === 'paymentInstruments') {
+                    fsa.payload.companyPaymentInstrumentsData.push({
+                        attributes,
+                        id,
+                        type,
+                    });
+                } else if (type === 'taxReceiptProfiles') {
+                    if (id === defaultTaxReceiptId) {
+                        fsa.payload.companyDefaultTaxReceiptProfile = {
+                            attributes,
+                            id,
+                            type,
+                        };
+                    }
+                    fsa.payload.taxReceiptProfiles.push({
+                        attributes,
+                        id,
+                        type,
+                    });
+                }
+            });
+        }
+        return dispatch(fsa);
+    }).catch((error) => {
+        console.log(error);
+    });
+};
+
 const callApiAndDispatchData = (dispatch, account) => {
     if (account.type === 'user') {
         dispatch(getDonationMatchAndPaymentInstruments(account.id));
@@ -415,11 +485,35 @@ const callApiAndDispatchData = (dispatch, account) => {
     }
 };
 
-export const proceed = (flowObject, nextStep, stepIndex, lastStep = false) => {
+// Fuction to convert stripe error format into JSON API error format
+const transformStripeErrorToJsonApi = (err) => {
+    const {
+        type,
+        message,
+    } = err;
+    const status = parseInt('402', 10);
+
+    return {
+        errors: [
+            {
+                detail: message,
+                source: {
+                    issuer: 'Stripe',
+                },
+                status,
+                title: type,
+            },
+        ],
+    };
+};
+
+export const proceed = (
+    flowObject, nextStep, stepIndex, lastStep = false, currentUserId = null,
+) => {
     if (lastStep) {
         return (dispatch) => {
             let fn;
-            let successData = {};
+            let successData = _.merge({}, flowObject);
             let nextStepToProcced = nextStep;
             switch (flowObject.type) {
                 case 'donations':
@@ -444,13 +538,14 @@ export const proceed = (flowObject, nextStep, stepIndex, lastStep = false) => {
                 ],
             ).then((results) => {
                 if (!_.isEmpty(results[0])) {
-                    successData = _.merge({}, flowObject);
+                    successData.result = results[0];
+                    //successData = _.merge({}, flowObject);
                     // For p2p, we create an array of arrays, I'm not to clear on the
                     // the correct syntax to make this more redable.
-                    // if (type === 'give/to/friend') {
-                    //     fsa.payload.allocation.allocationData = results[0];
+                    // if (flowObject.type === 'give/to/friend') {
+                    //     successData.allocationData = results[0];
                     // } else {
-                    //     fsa.payload.allocation.allocationData = results[0].data;
+                    //     successData.allocationData = results[0].data;
                     // }
                 }
             }).catch((err) => {
@@ -477,15 +572,15 @@ export const proceed = (flowObject, nextStep, stepIndex, lastStep = false) => {
                 const defaultPropsData = _.merge({}, defaultProps[flowObject.type]);
                 const payload = {
                     ...defaultPropsData.flowObject,
-                }
+                };
                 payload.nextStep = nextStepToProcced;
                 payload.stepsCompleted = true;
                 const fsa = {
                     payload,
                     type: actionTypes.SAVE_FLOW_OBJECT,
-                }
+                };
                 dispatch(fsa);
-                // fetchUser(userId);
+                getUserFund(dispatch, currentUserId);
             });
         };
     }
@@ -513,8 +608,9 @@ export const proceed = (flowObject, nextStep, stepIndex, lastStep = false) => {
                     type: actionTypes.SAVE_FLOW_OBJECT,
                 });
                 callApiAndDispatchData(dispatch, accountDetails);
-            }).catch((error) => {
-                console.log(error);
+            }).catch((err) => {
+                triggerUxCritialErrors(err.errors || err, dispatch);
+                console.log(err);
             });
         } else if (creditCard.value === 0 && stepIndex === 0) {
             return createToken(flowObject.stripeCreditCard, flowObject.cardHolderName).then((token) => {
@@ -571,65 +667,6 @@ export const reInitNextStep = (dispatch, flowObject) => {
     });
 };
 
-/**
- * Send the allocation data to the relevant endpoint.
- * @param  {number} companyId Id of the company
- * @return {promise}     The promise returned by the Communications utility.
- */
-
-export const getCompanyPaymentAndTax = (dispatch, companyId) => {
-    const fsa = {
-        payload: {
-            companyDefaultTaxReceiptProfile: {},
-            companyId,
-            companyPaymentInstrumentsData: [],
-            taxReceiptProfiles: [],
-        },
-        type: actionTypes.GET_COMPANY_PAYMENT_AND_TAXRECEIPT,
-    };
-
-    return coreApi.get(`/companies/${companyId}?include=defaultTaxReceiptProfile,activePaymentInstruments,taxReceiptProfiles`).then((result) => {
-        const { data } = result;
-        let defaultTaxReceiptId = null;
-        if (!_.isEmpty(data.relationships.defaultTaxReceiptProfile.data)) {
-            defaultTaxReceiptId = data.relationships.defaultTaxReceiptProfile.data.id;
-        }
-        if (!_.isEmpty(result.included)) {
-            const { included } = result;
-            included.map((item) => {
-                const {
-                    attributes,
-                    id,
-                    type,
-                } = item;
-                if (type === 'paymentInstruments') {
-                    fsa.payload.companyPaymentInstrumentsData.push({
-                        attributes,
-                        id,
-                        type,
-                    });
-                } else if (type === 'taxReceiptProfiles') {
-                    if (id === defaultTaxReceiptId) {
-                        fsa.payload.companyDefaultTaxReceiptProfile = {
-                            attributes,
-                            id,
-                            type,
-                        };
-                    }
-                    fsa.payload.taxReceiptProfiles.push({
-                        attributes,
-                        id,
-                        type,
-                    });
-                }
-            });
-        }
-        return dispatch(fsa);
-    }).catch((error) => {
-        console.log(error);
-    });
-};
-
 export const getBeneficiariesForGroup = (dispatch, groupId) => {
     if (groupId !== null) {
         const fsa = {
@@ -638,7 +675,13 @@ export const getBeneficiariesForGroup = (dispatch, groupId) => {
             },
             type: actionTypes.GET_BENIFICIARY_FOR_GROUP,
         };
-        callApiAndGetData(`/groups/${groupId}/groupBeneficiaries`)
+        callApiAndGetData(`/groups/${groupId}/groupBeneficiaries`,
+            {
+                params: {
+                    dispatch,
+                    uxCritical: true,
+                },
+            })
             .then(
                 (result) => {
                     if (!_.isEmpty(result)) {
@@ -667,9 +710,11 @@ export const getBeneficiaryFromSlug = (dispatch, slug) => {
         };
         coreApi.get(`/beneficiaries/find_by_slug`, {
             params: {
+                dispatch,
                 slug: [
                     slug,
                 ],
+                uxCritical: true,
             },
         }).then(
             (result) => {
@@ -822,5 +867,26 @@ export const deleteUpcomingTransaction = (dispatch, id, transactionType, activeP
         },
     ).catch((error) => {
         console.log(error);
+    });
+};
+export const getGroupsFromSlug = (dispatch, slug) => {
+    return coreApi.get(`groups/find_by_slug`, {
+        params: {
+            dispatch,
+            slug,
+            uxCritical: true,
+        },
+    }).then(
+        (result) => {
+            dispatch({
+                payload: {
+                    groupDetails: result.data,
+                },
+                type: actionTypes.GET_GROUP_FROM_SLUG,
+            });
+        },
+    ).catch((error) => {
+        console.log(error);
+        Router.pushRoute('/give/error');
     });
 };
