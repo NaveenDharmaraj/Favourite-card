@@ -1,4 +1,7 @@
 import React from 'react';
+import {
+    Container,
+} from 'semantic-ui-react';
 
 import Group from '../components/Give/Group';
 import GiveWrapper from '../components/Give';
@@ -40,9 +43,13 @@ class Groups extends React.Component {
         }
         return (
             <Layout authRequired={true}>
-                <GiveWrapper {...this.props} baseUrl="/give/to/group" flowSteps={(slug) ? flowSteps : null}>
-                    <Group />
-                </GiveWrapper>
+                <Container>
+                    <div className="pageWraper">
+                        <GiveWrapper {...this.props} baseUrl="/give/to/group" flowSteps={(slug) ? flowSteps : null}>
+                            <Group />
+                        </GiveWrapper>
+                    </div>
+                </Container>
             </Layout>
         );
     }

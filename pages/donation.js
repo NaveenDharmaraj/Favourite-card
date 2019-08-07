@@ -1,4 +1,8 @@
-import React, { cloneElement } from 'react';
+import React from 'react';
+import {
+    Container,
+} from 'semantic-ui-react';
+
 import Donation from '../components/Give/Donation';
 import GiveWrapper from '../components/Give';
 // import TaxReceipt from '../components/give/TaxReceipt'
@@ -24,9 +28,13 @@ class Donations extends React.Component {
     render() {
         return (
             <Layout authRequired={true} >
-                <GiveWrapper {...this.props} baseUrl='/donations'>
-                    <Donation />
-                </GiveWrapper>
+                <Container>
+                    <div className="pageWraper">
+                        <GiveWrapper {...this.props} baseUrl='/donations'>
+                            <Donation />
+                        </GiveWrapper>
+                    </div>
+                </Container>
             </Layout>
         );
     }
