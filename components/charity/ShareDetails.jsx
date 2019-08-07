@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 import getConfig from 'next/config';
 import {
     Grid,
@@ -11,10 +12,15 @@ import {
     Button,
 } from 'semantic-ui-react';
 import {
+    copyDeepLink,
     saveFollowStatus,
     deleteFollowStatus,
 } from '../../actions/charity';
 
+const actionTypes = {
+    DISABLE_COPYLINK_BUTTON: 'DISABLE_COPYLINK_BUTTON',
+    DISABLE_FOLLOW_BUTTON: 'DISABLE_FOLLOW_BUTTON',
+};
 const { publicRuntimeConfig } = getConfig();
 
 const {
@@ -25,9 +31,41 @@ class ShareDetails extends React.Component {
     constructor(props) {
         super(props);
         // this.state = {
-        //     color: props
-        // }
+        //     copyText: '',
+        // };
         this.handleOnClick = this.handleOnClick.bind(this);
+        this.handleCopyLink = this.handleCopyLink.bind(this);
+        this.handleFollow = this.handleFollow.bind(this);
+    }
+
+    componentDidUpdate(prevProps) {
+        const{
+            dispatch,
+            userId,
+            charityDetails,
+        } = this.props;
+        if (!_.isEqual(this.props.charityDetails, prevProps.charityDetails) && _.isEmpty(this.props.deepLink)) {
+            copyDeepLink(`deeplink?profileType=charityprofile&sourceId=${userId}&profileId=${charityDetails.charityDetails.id}`, dispatch);
+        }
+    }
+
+
+    handleFollow() {
+        const{
+            dispatch,
+            userId,
+            charityDetails,
+        } = this.props;
+        dispatch({
+            payload: {
+            },
+            type: actionTypes.DISABLE_FOLLOW_BUTTON,
+        });
+        if (charityDetails.charityDetails.attributes.following) {
+            deleteFollowStatus(dispatch, userId, charityDetails.charityDetails.id);
+        } else {
+            saveFollowStatus(dispatch, userId, charityDetails.charityDetails.id);
+        }
     }
 
     handleOnClick(event, data) {
@@ -66,11 +104,19 @@ class ShareDetails extends React.Component {
         }
     }
 
+    handleCopyLink = (e) => {
+        this.textArea.select();
+        document.execCommand('copy');
+        e.target.focus();
+      };
+
     render() {
         const {
             charityDetails,
             isAUthenticated,
+            deepLink,
         } = this.props;
+        const inputValue = (!_.isEmpty(deepLink)) ? deepLink.attributes["short-link"] : '';
         return (
             <Grid.Column mobile={16} tablet={6} computer={6}>
                 <div className="profile-social-wraper">
@@ -81,7 +127,8 @@ class ShareDetails extends React.Component {
                                     id="follow"
                                     color={(charityDetails && charityDetails.charityDetails && charityDetails.charityDetails.attributes.following) ? "red" : "blue"}
                                     name={(charityDetails && charityDetails.charityDetails && charityDetails.charityDetails.attributes.following) ? "heart outline" : "heart"}
-                                    onClick={this.handleOnClick}
+                                    onClick={this.handleFollow}
+                                    disabled={this.props.disableFollow}
                                 />
                             </List.Item>
                             <List.Item as="a">
@@ -104,9 +151,17 @@ class ShareDetails extends React.Component {
                         <Form>
                             <Form.Field>
                                 <label>Or share link</label>
-                                <input value="https://charitableimpact.com/share-this-awe…"/>
+                                <input
+                                    value={inputValue}
+                                    ref={(textarea) => this.textArea = textarea}
+                                />
                             </Form.Field>
-                            <Button className="transparent-btn-round small">Copy link</Button>
+                            <Button
+                                className="transparent-btn-round small"
+                                onClick={this.handleCopyLink}
+                            >
+                                Copy link
+                            </Button>
                         </Form>
                     </div>
                 </div>
@@ -118,6 +173,8 @@ class ShareDetails extends React.Component {
 function mapStateToProps(state) {
     return {
         charityDetails: state.give.charityDetails,
+        deepLink: state.charity.charityDeepLink,
+        disableFollow: state.give.disableFollow,
         isAUthenticated: state.auth.isAuthenticated,
         userId: state.user.info.id,
     };
