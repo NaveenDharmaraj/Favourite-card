@@ -46,6 +46,7 @@ import DropDownAccountOptions from '../../shared/DropDownAccountOptions';
 import Note from '../../shared/Note';
 import AccountTopUp from '../AccountTopUp';
 import { p2pDefaultProps } from '../../../helpers/give/defaultProps';
+import { dismissAllUxCritialErrors } from '../../../actions/error';
 const { publicRuntimeConfig } = getConfig();
 const {
     STRIPE_KEY
@@ -141,6 +142,7 @@ class Friend extends React.Component {
         this.validateCreditCardCvv = this.validateCreditCardCvv.bind(this);
         this.validateCreditCardName = this.validateCreditCardName.bind(this);
         this.getStripeCreditCard = this.getStripeCreditCard.bind(this);
+        dismissAllUxCritialErrors(props.dispatch);
     }
 
 
@@ -407,23 +409,6 @@ class Friend extends React.Component {
             : [];
     }
 
-    // /**
-    //  * Dismisses UX Crital errors.
-    //  * @param {object[]} appErrors Array of app errors.
-    //  * @return {void}
-    //  */
-    // dimissErrors() {
-    //     const {
-    //         appErrors,
-    //     } = this.props;
-    //     // Removing the error status from the layout
-    //     if (!_.isEmpty(appErrors) && appErrors.length > 0) {
-    //         _.map(appErrors, (err) => {
-    //             dismissUxCritialErrors(err);
-    //         });
-    //     }
-    // }
-
     /**
      * Handle inputt changes to give from, give amount fields.
      * @param {*} event The event object.
@@ -554,19 +539,7 @@ class Friend extends React.Component {
             flowObject.giveData.recipients = parseEmails(
                 flowObject.giveData.recipients,
             );
-
-            // if (_.isEqual(flowObject, this.props.flowObject)) {
-            //     forceContinue = (forceContinue === this.props.nextStep.path) ?
-            //         this.props.currentStep.path : this.props.nextStep.path;
-            // }
-
-            // flowObject.stepsCompleted = false;
-            // flowObject.nextSteptoProceed = nextStep;
-
-            // this.dimissErrors();
-            // this.props.proceed({
-            //     ...flowObject,
-            // }, forceContinue);
+            dismissAllUxCritialErrors(this.props.dispatch);
             dispatch(proceed(flowObject, flowSteps[stepIndex + 1], stepIndex));
         } else {
             this.setState({

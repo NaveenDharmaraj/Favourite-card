@@ -58,6 +58,7 @@ import {
     proceed,
 } from '../../../actions/give';
 import { groupDefaultProps } from '../../../helpers/give/defaultProps';
+import { dismissAllUxCritialErrors } from '../../../actions/error';
                           
 const { publicRuntimeConfig } = getConfig();
 
@@ -134,6 +135,7 @@ class Group extends React.Component {
         this.validateCreditCardCvv = this.validateCreditCardCvv.bind(this);
         this.validateCreditCardName = this.validateCreditCardName.bind(this);
         this.getStripeCreditCard = this.getStripeCreditCard.bind(this);
+        dismissAllUxCritialErrors(props.dispatch);
     }
 
     componentDidMount() {
@@ -472,6 +474,7 @@ class Group extends React.Component {
             }
             flowObject.stepsCompleted = false;
             flowObject.nextSteptoProceed = nextStep;
+            dismissAllUxCritialErrors(this.props.dispatch);
             dispatch(proceed(flowObject, flowSteps[stepIndex + 1], stepIndex));
         } else {
             this.setState({

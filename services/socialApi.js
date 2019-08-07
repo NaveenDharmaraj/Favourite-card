@@ -1,3 +1,5 @@
+/* eslint-disable prefer-arrow-callback */
+/* eslint-disable func-names */
 import axios from 'axios';
 import _isEmpty from 'lodash/isEmpty';
 import getConfig from 'next/config';
