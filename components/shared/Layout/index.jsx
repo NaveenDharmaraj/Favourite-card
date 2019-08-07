@@ -8,7 +8,7 @@ import {
 
 import Header from '../Header';
 import Footer from '../Footer';
-import AuthMobileHeader from '../Header/AuthHeader/MobileHeader';
+import MobileHeader from '../Header/MobileHeader';
 import { Router } from '../../../routes';
 import ErrorBoundary from '../ErrorBoundary';
 import { dismissUxCritialErrors } from '../../../actions/error';
@@ -34,7 +34,7 @@ class Layout extends React.Component {
         }
     };
 
-    renderLayout = (authRequired, children, isAuthenticated, dispatch, appErrors) => {
+    renderLayout = (authRequired, children, isAuthenticated, onBoarding, dispatch, appErrors) => {
         if (authRequired && !isAuthenticated) {
             return null;
         }
@@ -53,7 +53,7 @@ class Layout extends React.Component {
                 <div>
                     <ErrorBoundary>
                         <Responsive {...Responsive.onlyMobile}>
-                            <AuthMobileHeader>
+                            <MobileHeader isAuthenticated={isAuthenticated} onBoarding={onBoarding} >
                                 <Container>
                                     <div className="pageWraper">
                                         {!_.isEmpty(appErrors) &&
@@ -72,10 +72,10 @@ class Layout extends React.Component {
                                         {children}
                                     </div>
                                 </Container>
-                            </AuthMobileHeader>
+                            </MobileHeader>
                         </Responsive>
                         <Responsive minWidth={Responsive.onlyTablet.minWidth}>
-                            <Header isAuthenticated={isAuthenticated} />
+                            <Header isAuthenticated={isAuthenticated} onBoarding={onBoarding} />
                                 <Container>
                                     <div className="pageWraper">
                                         {!_.isEmpty(appErrors) &&
@@ -109,9 +109,10 @@ class Layout extends React.Component {
             children,
             isAuthenticated,
             dispatch,
+            onBoarding,
         } = this.props;
         return (
-            this.renderLayout(authRequired, children, isAuthenticated, dispatch, appErrors)
+            this.renderLayout(authRequired, children, isAuthenticated, onBoarding, dispatch, appErrors)
         );
     }
 };
