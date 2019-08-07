@@ -67,6 +67,29 @@ const give = (state = {}, action) => {
             break;
         default:
             break;
+        case 'SAVE_FOLLOW_STATUS':
+            newState = {
+                ...state,
+                charityDetails: {
+                    ...state.charityDetails,
+                    charityDetails: {
+                        ...state.charityDetails.charityDetails,
+                        attributes: {
+                            ...state.charityDetails.charityDetails.attributes,
+                            following: action.payload.followStatus,
+
+                        },
+                    },
+                },
+                disableFollow: false,
+            };
+            break;
+        case 'DISABLE_FOLLOW_BUTTON':
+            newState = {
+                ...state,
+                disableFollow: true,
+            };
+            break;
     }
     return newState;
 };

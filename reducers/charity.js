@@ -9,11 +9,12 @@ const charity = (state = {}, action) => {
                 donationDetails: Object.assign({}, state.donationDetails, action.payload),
             };
             break;
-        case 'SAVE_FOLLOW_STATUS':
-                newState = {
-                    ...state,
-                    followStatus: Object.assign({}, state.donationDetails, action.payload),
-                };
+        case 'SAVE_DEEP_LINK':
+            newState = {
+                ...state,
+                charityDeepLink: action.payload.deepLink,
+            };
+            break;
         default:
             break;
     }
