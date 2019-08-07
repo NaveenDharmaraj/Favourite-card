@@ -30,7 +30,7 @@ function AllocationsTable(props) {
                     firstColoumn={attributes.accountName}
                     secondColoumn={attributes.amount}
                     thirdColoumn={transactionDate}
-                    fourthColoumn={attributes.paymentMethod}
+                    fourthColoumn={attributes.paymentInformation}
                     fifthColoumn={attributes.createdAt}
                     deleteTransaction={deleteTransaction}
                     transactionType={attributes.transactionType}
