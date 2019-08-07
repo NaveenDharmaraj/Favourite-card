@@ -8,6 +8,7 @@ const configVars = {
         AUTH0_DOMAIN: process.env.AUTH0_DOMAIN,
         AUTH0_WEB_AUDIENCE: process.env.AUTH0_WEB_AUDIENCE,
         AUTH0_WEB_CLIENT_ID: process.env.AUTH0_WEB_CLIENT_ID,
+        BASIC_AUTH_KEY: process.env.BASIC_AUTH_KEY,
         CORE_API_BASE: process.env.CORE_API_BASE,
         CORE_API_DOMAIN: process.env.CORE_API_DOMAIN,
         CORE_API_VERSION: process.env.CORE_API_VERSION,
