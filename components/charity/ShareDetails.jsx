@@ -9,11 +9,35 @@ import {
     Form,
     Button,
 } from 'semantic-ui-react';
+import {
+    saveFollowStatus,
+    deleteFollowStatus,
+} from '../../actions/charity';
 
 
 class ShareDetails extends React.Component {
-    componentDidMount() {
-        console.log("didmount called");
+    constructor(props) {
+        super(props);
+        debugger;
+        // this.state = {
+        //     color: props
+        // }
+        this.handleOnClick = this.handleOnClick.bind(this);
+    }
+
+    handleOnClick() {
+        const{
+            dispatch,
+            userId,
+            charityDetails,
+        } = this.props;
+        debugger;
+        console.log('clicked');
+        if (charityDetails.charityDetails.attributes.following) {
+            deleteFollowStatus(dispatch, userId, charityDetails.charityDetails.id);
+        } else {
+            saveFollowStatus(dispatch, userId, charityDetails.charityDetails.id);
+        }
     }
 
     render() {
@@ -28,7 +52,11 @@ class ShareDetails extends React.Component {
                     <div className="profile-social-links">
                         <List horizontal>
                             <List.Item as="a">
-                                <Icon name="heart outline" />
+                                <Icon
+                                    color={(charityDetails && charityDetails.charityDetails && charityDetails.charityDetails.attributes.following) ? "red" : ""}
+                                    name="heart outline"
+                                    onClick={this.handleOnClick}
+                                />
                             </List.Item>
                             <List.Item as="a">
                                 <Icon name="twitter" />
@@ -50,13 +78,14 @@ class ShareDetails extends React.Component {
                 </div>
             </Grid.Column>
         );
-    };
+    }
 }
 
 function mapStateToProps(state) {
     return {
         charityDetails: state.give.charityDetails,
         isAUthenticated: state.auth.isAuthenticated,
+        userId: state.user.info.id,
     };
 }
 

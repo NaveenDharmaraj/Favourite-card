@@ -41,7 +41,7 @@ class UserDetails extends React.Component {
                 name: 'briefcase',
             },
             {
-                Content:valuesObject.businessNumber, // '400 Cooper Street, Suite 8000, Ottawa ON, K2P2H8',
+                Content:valuesObject.primaryAddress, // '400 Cooper Street, Suite 8000, Ottawa ON, K2P2H8',
                 name: 'map marker alternate',
             },
 
@@ -51,7 +51,6 @@ class UserDetails extends React.Component {
 
     static detailsView(valuesObject) {
         const values = this.createUserDetails(valuesObject);
-        debugger;
         return (
             <Grid.Row>
             <Grid.Column>

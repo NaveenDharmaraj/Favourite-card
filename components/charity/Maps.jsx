@@ -1,33 +1,61 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import {
-    Grid,
-} from 'semantic-ui-react';
-import {
     Map,
     GoogleApiWrapper,
+    Marker,
 } from 'google-maps-react';
+import Geocode from "react-geocode";
 
+Geocode.setApiKey("AIzaSyCtg_drc6h-eoCfnWhVANWbcqiO_p922BA");
 const mapStyles = {
     width: '100%',
     height: '100%',
 };
 
 class Maps extends React.Component {
-    render() {
+    static getGeoCoding() {
         return (
-            <Grid width="30px">
+            Geocode.fromAddress("Eiffel Tower").then(
+            response => {
+                const { lat, lng } = response.results[0].geometry.location;
+                console.log(lat, lng);
+                <Marker position={{ lat: lat, lng: lng}} />
+            },
+            error => {
+              console.error(error);
+            }
+          )
+          );
+    }
+    render() {
+        const {
+            charityDetails,
+        } = this.props;
+        // Maps.getGeoCoding();
+        debugger;
+        return (
+            <div style={{position:'relative',height:'500px'}}>
             <Map
           google={this.props.google}
           zoom={8}
           style={mapStyles}
-          initialCenter={{ lat: 47.444, lng: -122.176}}
-        />
-        </Grid>
+        //   initialCenter={{ lat: 12.9716, lng: 77.5946}}
+        >
+            {Maps.getGeoCoding()}
+        {/* <Marker position={{ lat: 12.9716, lng: 77.5946}} /> */}
+        </Map>
+        </div>
         );
     }
 }
 
+function mapStateToProps(state) {
+    return {
+        charityDetails: state.give.charityDetails,
+    };
+}
+
 export default GoogleApiWrapper({
-    apiKey: 'AIzaSyBB6dSc3n4M8We6X_-ZBV08m_bCp6cyksM',
-})(Maps);
+    apiKey: 'AIzaSyCtg_drc6h-eoCfnWhVANWbcqiO_p922BA',
+})(connect(mapStateToProps)(Maps));
