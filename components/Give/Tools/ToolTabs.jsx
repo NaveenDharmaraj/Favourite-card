@@ -83,6 +83,7 @@ class ToolTabs extends React.Component {
                 const {
                     activePage
                 } =this.state;
+                let totalPages = (upcomingTransactionsMeta)? upcomingTransactionsMeta.pageCount: 1;
                 return (
                 <Tab.Pane attached={false}>
                     <div className="tools-tabpane">
@@ -109,10 +110,12 @@ class ToolTabs extends React.Component {
                             />
                         <Grid.Column textAlign="right">
                             <div className="db-pagination right-align pt-2">
-                            {!this.props.monthlyTransactionApiCall && <PaginationComponent
+                            {!this.props.monthlyTransactionApiCall && (totalPages > 1) && <PaginationComponent
                                     activePage={activePage}
                                     onPageChanged={this.onPageChange}
-                                    totalPages={(upcomingTransactionsMeta)? upcomingTransactionsMeta.pageCount: 1}
+                                    totalPages={totalPages}
+                                    firstItem={null}
+                                    lastItem={null}
                                 />
                             }
                             </div>
@@ -131,6 +134,7 @@ class ToolTabs extends React.Component {
                     upcomingTransactions,
                     upcomingTransactionsMeta
                 } = this.props;
+                const totalPages = (upcomingTransactionsMeta) ? upcomingTransactionsMeta.pageCount: 1;
                 const {
                     activePage
                 } =this.state;
@@ -151,10 +155,10 @@ class ToolTabs extends React.Component {
                             />
                             <Grid.Column textAlign="right">
                             <div className="db-pagination right-align pt-2">
-                            {!this.props.monthlyTransactionApiCall && <PaginationComponent
+                            {!this.props.monthlyTransactionApiCall && (totalPages > 1) && <PaginationComponent
                                 activePage={activePage}
                                 onPageChanged={this.onPageChange}
-                                totalPages={(upcomingTransactionsMeta) ? upcomingTransactionsMeta.pageCount: 1}
+                                totalPages={totalPages}
                             />}
                             </div>
                         </Grid.Column>
@@ -255,7 +259,6 @@ class ToolTabs extends React.Component {
         }
         getUpcomingTransactions(dispatch, url);
         if(id){
-            debugger
             getUserGivingGoal(dispatch, id);
 
         }

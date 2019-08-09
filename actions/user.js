@@ -339,11 +339,9 @@ export const savePaymentInstrument = (cardDetails) => {
 };
 
 export const getUserGivingGoal = (dispatch, userId) => {
-    debugger
     console.log(userId);
     return coreApi.get(`users/${userId}/givingGoals`)
         .then((result) => {
-            debugger
             dispatch({
                 payload: {
                     userGivingGoalDetails: result.data,
@@ -355,7 +353,6 @@ export const getUserGivingGoal = (dispatch, userId) => {
         })
 };
 export const setUserGivingGoal = (dispatch, goalAmount, userId) => {
-    debugger
     const payload = {
         attributes: {
             amount: goalAmount,
@@ -365,7 +362,6 @@ export const setUserGivingGoal = (dispatch, goalAmount, userId) => {
     return coreApi.post('givingGoals', {
         data: payload,
     }).then((result)=> {
-        debugger
         getUserGivingGoal(dispatch, userId);
-    })
-}
+    });
+};

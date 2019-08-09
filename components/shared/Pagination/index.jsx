@@ -6,9 +6,21 @@ const PaginationComponent = (props) => {
         activePage,
         totalPages,
         onPageChanged,
+        firstItem,
+        lastItem,
+        prevItem,
+        nextItem,
     } = props;
     return (
-        <Pagination onPageChange={onPageChanged} activePage={activePage} totalPages={totalPages} />
+        <Pagination
+            onPageChange={onPageChanged}
+            activePage={activePage}
+            totalPages={totalPages}
+            firstItem={firstItem}
+            lastItem={lastItem}
+            prevItem={prevItem}
+            nextItem={nextItem}
+        />
     );
 };
 
