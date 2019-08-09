@@ -1,0 +1,17 @@
+{
+    "repeatThisGiftLabel": "Répéter ce don?",
+    "giveToLabel": "Donner à",
+    "giveGroupToEqualGiveFrom": "Le groupe d’origine doit être différent du groupe de destination",
+    "amountLabel": "Montant",
+    "giveFromLabel": "Donner de la part de",
+    "donorGiveFromPopup": "Nous vous demandons de sélectionner un compte puisque vous administrez plus d'un Compte CHIMP.",
+    "groupToGive":"Select a Group to Give",
+    "amountPlaceHolder": "Inscrivez le montant",
+    "preloadedAccountPlaceHolder": "Votre liste de comptes est en cours de chargement. Cela peut prendre un instant.",
+    "accountPlaceHolder": "Sélectionnez un compte source",
+    "amountLessOrInvalid": "Veuillez choisir un montant de {{minAmount}} $ ou plus",
+    "invalidMaxAmountError": "9 999 $ est le maximum que nous pouvons traiter ici. Pour des montants plus importants, veuillez nous contacter: hello@chimp.net ou 1-877-531-0580.",
+    "blankError":  "Doit être rempli",
+    "giftTypeSingle": "Ceci est un don unique"
+
+}

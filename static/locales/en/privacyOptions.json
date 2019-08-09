@@ -1,0 +1,21 @@
+{
+    "privacyOptionsLabel": "Privacy options",
+    "selectNameAndAddressLabel": "Select a name and address",
+    "forGivingCampaignLabel": "For Campaign",
+    "forGivingCampaignOrganizersLabel": "For Campaign organizers",
+    "forGivingGroupLabel": "For Giving Group",
+    "forGivingGroupOrganizersLabel": "For Giving Group organizers",
+    "shareGroupPrivacyName": "Share {{giveFrom}} name with the Giving Group I’m giving to",
+    "shareCampaignPrivacyName": "Share my {{giveFrom}} name with the Giving Campaign I’m giving to",
+    "privacyDataPostal": "postal",
+    "privacyDataEmail":"email",
+    "shareGroupUserName":"Share my name with the Giving Group I’m giving to",
+    "shareCampaignUserName": "Share my name with the Giving Campaign I’m giving to",
+    "shareCampaignPrivacyGiftAmount":"Share my gift amount with Giving Campaign I’m giving to",
+    "shareGroupPrivacyGiftAmount": "Share my gift amount with Giving Group I’m giving to",
+    "shareGroupPrivacyPostal": "Share my {{privacyData}} address with the Giving Group organizers",
+    "shareCampaignPrivacyPostal": "Share my {{privacyData}} address with the Giving Campaign organizers",
+    "myCampaigns": "my Campaign",
+    "myGroups": "my Group",
+    "myCompanies": "my Company"
+}

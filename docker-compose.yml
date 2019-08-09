@@ -1,0 +1,12 @@
+version: '2.1'
+
+services:
+  chimp-web-client-next:
+    image: chimp-web-client-next
+    build: .
+    env_file:
+      - .env
+    ports:
+      - 6310:6310
+    ## set your startup file here
+    command: node --inspect server.js      
