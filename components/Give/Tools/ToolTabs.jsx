@@ -201,7 +201,7 @@ class ToolTabs extends React.Component {
                                         </Grid.Column>
                                         <Grid.Column mobile={16} tablet={5} computer={5} textAlign="right">
                                             {/* <Button primary fluid>Set a giving goal </Button> */}
-                                <Modal
+                                {/* <Modal
                                     size="tiny"
                                     dimmer="inverted"
                                     closeIcon
@@ -233,7 +233,7 @@ class ToolTabs extends React.Component {
                                                 SaveChanges
                                             </Button>
                                         </Modal.Actions>
-                                </Modal>
+                                </Modal> */}
                             
                                         </Grid.Column>
                                     </Grid.Row>
