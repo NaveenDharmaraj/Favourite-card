@@ -8,7 +8,7 @@ import { Link } from '../../../../routes';
 const MainNav = () => (
     <Menu.Menu position="right">
         <Link route="/search" >
-            <Menu.Item as="a" to="https://github.com">
+            <Menu.Item as="a">
                 Explore
             </Menu.Item>
         </Link>
@@ -19,7 +19,7 @@ const MainNav = () => (
             Favorites
         </Menu.Item>
         <Link route="/user/recurring-donations" >
-            <Menu.Item as="a" to="https://github.com">
+            <Menu.Item as="a">
                 Tools
             </Menu.Item>
         </Link>
