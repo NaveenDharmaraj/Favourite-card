@@ -21,4 +21,3 @@ function GivingGoals(props) {
 
 
 export default GivingGoals;
-

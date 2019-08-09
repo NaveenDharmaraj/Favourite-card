@@ -24,4 +24,3 @@ function RecurringGifts(props){
 
 
 export default RecurringGifts;
-

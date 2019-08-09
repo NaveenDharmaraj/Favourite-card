@@ -1,5 +1,3 @@
-import { actionTypes } from "../actions/auth";
-
 const give = (state = {}, action) => {
     let newState = {
         ...state,
