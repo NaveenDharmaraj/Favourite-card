@@ -75,19 +75,6 @@ const give = (state = {}, action) => {
                 successData: action.payload.successData,
             };
             break;
-        case 'GET_UPCOMING_TRANSACTIONS':
-            newState = {
-                ...state,
-                upcomingTransactions: action.payload.upcomingTransactions,
-                upcomingTransactionsMeta: action.payload.upcomingTransactionsMeta,
-            };
-            break;
-        case 'MONTHLY_TRANSACTION_API_CALL':
-            newState = {
-                ...state,
-                monthlyTransactionApiCall: action.payload.apiCallStats,
-            };
-            break;
         default:
             break;
     }

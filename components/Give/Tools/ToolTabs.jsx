@@ -16,12 +16,11 @@ import AllocationsTable from './AllocationsTable';
 import DonationsTable from './DonationsTable';
 import GivingGoalsTable from './GivingGoalsTable';
 import ModalContent from './modalContent';
-
 import { Router, Link } from '../../../routes';
 import { connect } from 'react-redux';
 import PaginationComponent from '../../shared/Pagination';
 
-import { getUpcomingTransactions,deleteUpcomingTransaction } from '../../../actions/give';
+import { getUpcomingTransactions,deleteUpcomingTransaction } from '../../../actions/user';
 import { getUserGivingGoal, setUserGivingGoal } from '../../../actions/user';
 const tabMenus = [
     '/user/recurring-donations',
@@ -110,12 +109,15 @@ class ToolTabs extends React.Component {
                             />
                         <Grid.Column textAlign="right">
                             <div className="db-pagination right-align pt-2">
-                            {!this.props.monthlyTransactionApiCall && (totalPages > 1) && <PaginationComponent
+                            {!this.props.monthlyTransactionApiCall && (totalPages > 1) && 
+                                <PaginationComponent
                                     activePage={activePage}
                                     onPageChanged={this.onPageChange}
                                     totalPages={totalPages}
-                                    firstItem={null}
-                                    lastItem={null}
+                                    firstItem={(activePage === 1) ? null : undefined}
+                                    lastItem={(activePage === totalPages) ? null : undefined}
+                                    prevItem={(activePage === 1) ? null : undefined}
+                                    nextItem={(activePage === totalPages) ? null : undefined}
                                 />
                             }
                             </div>
@@ -155,10 +157,16 @@ class ToolTabs extends React.Component {
                             />
                             <Grid.Column textAlign="right">
                             <div className="db-pagination right-align pt-2">
-                            {!this.props.monthlyTransactionApiCall && (totalPages > 1) && <PaginationComponent
+                            {!this.props.monthlyTransactionApiCall && (totalPages > 1) &&
+                            <PaginationComponent
                                 activePage={activePage}
                                 onPageChanged={this.onPageChange}
                                 totalPages={totalPages}
+                                firstItem={(activePage === 1) ? null : undefined}
+                                lastItem={(activePage === totalPages) ? null : undefined}
+                                prevItem={(activePage === 1) ? null : undefined}
+                                nextItem={(activePage === totalPages) ? null : undefined}
+
                             />}
                             </div>
                         </Grid.Column>
@@ -193,7 +201,9 @@ class ToolTabs extends React.Component {
                                         </Grid.Column>
                                         <Grid.Column mobile={16} tablet={5} computer={5} textAlign="right">
                                             {/* <Button primary fluid>Set a giving goal </Button> */}
-                                <Modal 
+                                <Modal
+                                    size="tiny"
+                                    dimmer="inverted"
                                     closeIcon
                                     onClose={this.closeModal}
                                     open={this.state.showModal}
@@ -217,7 +227,7 @@ class ToolTabs extends React.Component {
                                     </Modal.Content>
                                     <Modal.Actions>
                                             <Button
-                                                color='red'
+                                                className="ui button primary blue-btn-rounded"
                                                 onClick={this.closeModalAndSave}
                                             >
                                                 SaveChanges
@@ -315,6 +325,7 @@ class ToolTabs extends React.Component {
         const {
             defaultActiveIndex,
         } = this.props;
+        console.log(this.props)
         return (
             <Tab
             menu={{
@@ -331,11 +342,12 @@ class ToolTabs extends React.Component {
 function mapStateToProps(state) {
     return {
         currentUser: state.user.info,
-        upcomingTransactions: state.give.upcomingTransactions,
-        upcomingTransactionsMeta: state.give.upcomingTransactionsMeta,
-        monthlyTransactionApiCall: state.give.monthlyTransactionApiCall,
+        upcomingTransactions: state.user.upcomingTransactions,
+        upcomingTransactionsMeta: state.user.upcomingTransactionsMeta,
+        monthlyTransactionApiCall: state.user.monthlyTransactionApiCall,
         userGivingGoalDetails: state.user.userGivingGoalDetails,
     };
 }
 export default (connect(mapStateToProps)(ToolTabs));
+
 

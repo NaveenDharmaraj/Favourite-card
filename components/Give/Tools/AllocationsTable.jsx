@@ -7,7 +7,11 @@ import {
 } from 'semantic-ui-react';
 import _ from 'lodash';
 
-import { formatDateForGivingTools } from '../../../helpers/give/utils';
+import { withTranslation } from '../../../i18n';
+import {
+    formatDateForGivingTools,
+    formatCurrency,
+} from '../../../helpers/give/utils';
 
 import TransactionTableRow from './TransactionsTableRow';
 
@@ -16,6 +20,11 @@ function AllocationsTable(props) {
         upcomingTransactions,
         deleteTransaction,
         monthlyTransactionApiCall,
+    } = props;
+    const {
+        i18n:{
+            language,
+        },
     } = props;
     const renderTableData = () => {
         const tableBody = [];
@@ -28,9 +37,12 @@ function AllocationsTable(props) {
 
                 const transactionDate = (attributes.transactionDate.includes(15)) ? '15th' : '1st';
                 const formattedDate = formatDateForGivingTools(attributes.createdAt);
+                const destinationType = (attributes.destinationAccount === 'Beneficiary') ? 'Charity' : attributes.destinationAccount;
+                const recipientAccount = `${attributes.accountName} (${destinationType})`;
+                const formattedAmount = formatCurrency(attributes.amount, language, 'USD');
                 tableBody.push(<TransactionTableRow
-                    firstColoumn={attributes.accountName}
-                    secondColoumn={attributes.amount}
+                    firstColoumn={recipientAccount}
+                    secondColoumn={formattedAmount}
                     thirdColoumn={transactionDate}
                     fourthColoumn={attributes.paymentInformation}
                     fifthColoumn={formattedDate}
@@ -66,16 +78,26 @@ function AllocationsTable(props) {
                 {monthlyTransactionApiCall
                 && 
                 <Table.Body>
-                    <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
-                    <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
-                    <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
-                    <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
-                    <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
-                    <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
+                    <Table.Row>
+                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
+                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
+                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
+                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
+                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
+                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
+                    </Table.Row>
+                    <Table.Row>
+                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
+                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
+                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
+                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
+                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
+                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
+                    </Table.Row>
                 </Table.Body>
                 }
             </Table>
         </div>
     );
 }
-export default AllocationsTable;
+export default withTranslation()(AllocationsTable);

@@ -9,6 +9,8 @@ import { Router } from '../routes';
 export const actionTypes = {
     GET_MATCH_POLICIES_PAYMENTINSTRUMENTS: 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS',
     GET_USERS_GROUPS: 'GET_USERS_GROUPS',
+    GET_UPCOMING_TRANSACTIONS: 'GET_UPCOMING_TRANSACTIONS',
+    MONTHLY_TRANSACTION_API_CALL: 'MONTHLY_TRANSACTION_API_CALL',
     TAX_RECEIPT_PROFILES:'TAX_RECEIPT_PROFILES',
     SET_USER_INFO: 'SET_USER_INFO',
     UPDATE_USER_FUND: 'UPDATE_USER_FUND',
@@ -363,5 +365,71 @@ export const setUserGivingGoal = (dispatch, goalAmount, userId) => {
         data: payload,
     }).then((result)=> {
         getUserGivingGoal(dispatch, userId);
+    });
+};
+
+export const getUpcomingTransactions = (dispatch, url) => {
+    dispatch({
+        payload: {
+            apiCallStats: true,
+        },
+        type: actionTypes.MONTHLY_TRANSACTION_API_CALL,
+    });
+    return coreApi.get(url).then(
+        (result) => {
+            dispatch({
+                payload: {
+                    apiCallStats: false,
+                },
+                type: actionTypes.MONTHLY_TRANSACTION_API_CALL,
+            });
+            dispatch({
+                payload: {
+                    upcomingTransactions: result.data,
+                    upcomingTransactionsMeta: result.meta,
+                    
+                },
+                type: actionTypes.GET_UPCOMING_TRANSACTIONS,
+            });
+        },
+    ).catch((error) => {
+        console.log(error);
+        // Router.pushRoute('/give/error');
+    });
+};
+
+export const deleteUpcomingTransaction = (dispatch, id, transactionType, activePage, userId) => {
+    let url = null;
+    switch (transactionType) {
+        case 'RecurringAllocation':
+            url = `recurringAllocations/${id}`;
+            break;
+        case 'RecurringDonation':
+            url = `recurringDonations/${id}`;
+            break;
+        case 'RecurringFundAllocation':
+            url = `recurringGroupAllocations/${id}`;
+            break;
+        default:
+            break;
+    }
+    dispatch({
+        payload: {
+            apiCallStats: true,
+        },
+        type: actionTypes.MONTHLY_TRANSACTION_API_CALL,
+    });
+    return coreApi.delete(url).then(
+        (result) => {
+            let activepageUrl = `users/${userId}/upcomingTransactions?page[number]=${activePage}&page[size]=10`;
+            if (transactionType === 'RecurringAllocation') {
+                activepageUrl += '&filter[type]=RecurringAllocation,RecurringFundAllocation';
+            } else {
+                activepageUrl += '&filter[type]=RecurringDonation';
+            }
+            getUpcomingTransactions(dispatch, activepageUrl);
+        },
+    ).catch((error) => {
+        console.log(error);
     });
 };

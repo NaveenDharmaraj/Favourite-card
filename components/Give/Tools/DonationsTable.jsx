@@ -7,7 +7,11 @@ import {
 } from 'semantic-ui-react';
 import _ from 'lodash';
 
-import { formatDateForGivingTools } from '../../../helpers/give/utils';
+import {
+    formatDateForGivingTools,
+    formatCurrency,
+} from '../../../helpers/give/utils';
+import { withTranslation } from '../../../i18n';
 
 import TransactionTableRow from './TransactionsTableRow';
 
@@ -16,6 +20,9 @@ function DonationsTable(props) {
         upcomingTransactions,
         deleteTransaction,
         monthlyTransactionApiCall,
+        i18n:{
+            language,
+        },
     } = props;
     const renderTableData = () => {
         const tableBody = [];
@@ -32,10 +39,11 @@ function DonationsTable(props) {
                 }
                 const transactionDate = (attributes.transactionDate.includes(15)) ? '15th' : '1st';
                 const formattedDate = formatDateForGivingTools(attributes.createdAt);
+                const formattedAmount = formatCurrency(attributes.amount, language, 'USD');
 
                 tableBody.push(<TransactionTableRow
                     firstColoumn={attributes.paymentInformation}
-                    secondColoumn={attributes.amount}
+                    secondColoumn={formattedAmount}
                     thirdColoumn={transactionDate}
                     fourthColoumn={donationMatchString}
                     fifthColoumn={formattedDate}
@@ -70,16 +78,26 @@ function DonationsTable(props) {
                 {monthlyTransactionApiCall
                 && 
                 <Table.Body>
-                    <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
-                    <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
-                    <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
-                    <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
-                    <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
-                    <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
+                    <Table.Row>
+                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
+                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
+                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
+                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
+                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
+                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
+                    </Table.Row>
+                    <Table.Row>
+                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
+                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
+                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
+                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
+                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
+                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
+                    </Table.Row>
                 </Table.Body>
                 }
             </Table>
         </div>
     );
 }
-export default DonationsTable;
+export default withTranslation()(DonationsTable);
