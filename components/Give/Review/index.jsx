@@ -42,7 +42,6 @@ class Review extends React.Component {
     }
     window.scrollTo(0, 0);
   }
-
   handleSubmit = () => {
     const { dispatch, stepIndex, flowSteps, flowObject, currentUser } = this.props;
     this.setState({
@@ -50,7 +49,6 @@ class Review extends React.Component {
     });
     dispatch(proceed(flowObject, flowSteps[stepIndex+1], stepIndex, true, currentUser.id));
   }
-  
   render() {
     if ( !_.isEmpty(this.props.flowObject) && this.props.flowObject.stepsCompleted !== true) {
         const {
