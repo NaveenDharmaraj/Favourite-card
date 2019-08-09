@@ -39,6 +39,10 @@ const Success = (props) => {
         if (flowObject) {
             reInitNextStep(dispatch, flowObject);
         }
+        if (typeof window !== 'undefined') {
+            window.scrollTo(0, 0);
+        }
+       
     }, []);
     const {
         currentUser: {
@@ -168,25 +172,27 @@ const Success = (props) => {
         if (type === 'donations') {
             secondParagraph = creditCardMessage;
             fourthButton = (
-                <Button
-                    // as={GeminiLink}
-                    color="blue"
-                    content={formatMessage('seeYourTaxReceipt')}
-                    id="taxReceiptsLink"
-                    path={taxProfileLink}
-                />
+                <Link route={taxProfileLink}>              
+                    <Button
+                        color="blue"
+                        content={formatMessage('seeYourTaxReceipt')}
+                        id="taxReceiptsLink"
+                    />
+                </Link>
+
             );
         } else if (!_.isEmpty(creditCard) && creditCard.value > 0) {
             taxProfileLink = (giveFrom.type !== 'user')
                 ? `/${giveFrom.type}/${giveFrom.slug}/tax-receipts` : taxProfileLink;
             fourthButton = (
-                <Button
-                    as={GeminiLink}
-                    color="blue"
-                    content={formatMessage({ id: 'giving.donations.success.seeYourTaxReceipt' })}
-                    id="taxReceiptsLink"
-                    path={taxProfileLink}
-                />
+                <Link route={taxProfileLink}>
+                    <Button
+                        color="blue"
+                        content={formatMessage('seeYourTaxReceipt')}
+                        id="taxReceiptsLink"
+                        path={taxProfileLink}
+                    />
+                </Link>
             );
         }
         // the check is to differentiate donation and allocation dashboardlink
@@ -313,24 +319,25 @@ const Success = (props) => {
         if (type === 'donations') {
             secondParagraph = recurringCreditCardMessage;
             fourthButton = (
-                <Button
-                    // as={GeminiLink}
-                    color="blue"
-                    content={formatMessage('recurringTransactions')}
-                    path={recurringDonationsLink}
-                />
+                <Link route={recurringDonationsLink}>
+                    <Button
+                        color="blue"
+                        content={formatMessage('recurringTransactions')}
+                    />
+                </Link>
             );
         } else if (!_.isEmpty(creditCard) && creditCard.value > 0) {
             taxProfileLink = (giveFrom.type !== 'user')
                 ? `/${giveFrom.type}/${giveFrom.slug}/tax-receipts` : taxProfileLink;
             fourthButton = (
-                <Button
-                    //as={GeminiLink}
-                    color="blue"
-                    content={formatMessage({ id: 'giving.donations.success.seeYourTaxReceipt' })}
-                    id="taxReceiptsLink"
-                    path={taxProfileLink}
-                />
+                <Link route={taxProfileLink}>
+                    <Button
+                        color="blue"
+                        content={formatMessage('seeYourTaxReceipt')}
+                        id="taxReceiptsLink"
+                        path={taxProfileLink}
+                    />
+                </Link>
             );
         }
     }
@@ -401,7 +408,7 @@ const Success = (props) => {
                             <Grid.Column>
                                 {(!!fourthButton && (
                                     <Fragment>
-                                      or
+                                      or &nbsp;
                                         <Link className="paragraph-third" route={dashboardLink}>
                                             {linkToDashboardText}
                                         </Link>
