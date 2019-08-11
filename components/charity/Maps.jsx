@@ -33,7 +33,6 @@ class Maps extends React.Component {
             charityDetails,
         } = this.props;
         // Maps.getGeoCoding();
-        debugger;
         return (
             <div style={{position:'relative',height:'500px'}}>
             <Map

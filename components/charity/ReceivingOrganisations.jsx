@@ -4,18 +4,20 @@ import {
     Table,
 } from 'semantic-ui-react';
 
-class ReceivingOrganisations extends React.Component {
-    constructor(props) {
-        super(props);
-        console.log("ReceivingOrganisations component props");
-    }
+import { formatCurrency } from '../../helpers/give/utils';
 
+class ReceivingOrganisations extends React.Component {
     static showList(list) {
+        const currency = 'USD';
+        const language = 'en';
+        // TODO 'language' from withTranslation
         return (
             list.map((donee) => (
                 <Table.Row>
                     <Table.Cell>{donee.donee_name}</Table.Cell>
-                    <Table.Cell className="bold">{donee.gifts_total}</Table.Cell>
+                    <Table.Cell className="bold">
+                        {formatCurrency(donee.gifts_total, language, currency)}
+                    </Table.Cell>
                 </Table.Row>
             )));
     }

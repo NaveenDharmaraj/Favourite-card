@@ -30,9 +30,6 @@ const {
 class ShareDetails extends React.Component {
     constructor(props) {
         super(props);
-        // this.state = {
-        //     copyText: '',
-        // };
         this.handleOnClick = this.handleOnClick.bind(this);
         this.handleCopyLink = this.handleCopyLink.bind(this);
         this.handleFollow = this.handleFollow.bind(this);
@@ -70,8 +67,6 @@ class ShareDetails extends React.Component {
 
     handleOnClick(event, data) {
         const {
-            dispatch,
-            userId,
             charityDetails,
         } = this.props;
         let url = '';

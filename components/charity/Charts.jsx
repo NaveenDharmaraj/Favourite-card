@@ -10,26 +10,22 @@ import {
     Grid,
     Divider,
 } from 'semantic-ui-react';
-import { compose } from 'redux';
+import { formatCurrency } from '../../helpers/give/utils';
 
 class Charts extends React.Component {
-    constructor(props) {
-        super(props);
-        console.log('Charts component');
-    }
-
     static getChartData(type, values) {
-        let graphValues = values.graphValues;
-        let otherValues = values.otherGraphValues;
-        let charityPrograms = values.charityPrograms;
+        const {
+            graphValues,
+            otherGraphValues,
+        } = values;
         let percentageData = [];
-        let actualData = [];
-        let total_amount = null;
-        let labels_data=[];
-        let bgColor=[];
+        const actualData = [];
+        let totalAmount = null;
+        let labelsData = [];
+        let bgColor = [];
         switch (type) {
             case 'revenue':
-                labels_data = [
+                labelsData = [
                     'Tax Receipted Cash Gifts',
                     'Tax Receipted Non-cash Gifts',
                     'Gifts from Other Charities',
@@ -42,81 +38,85 @@ class Charts extends React.Component {
                     graphValues.revenue_other_charities,
                     graphValues.revenue_non_tax_receipted,
                     graphValues.revenue_government,
-                    otherValues.revenue_other];
-                    total_amount = graphValues.revenue_total;
+                    otherGraphValues.revenue_other,
+                ];
+                    totalAmount = graphValues.revenue_total;
                 break;
             case 'expenditure':
-                labels_data = [
+                labelsData = [
                     'Programs',
                     'Fundraising',
                     'Management and Admin',
                     'Gifts to Qualified Donees',
                     'Other',
-                ],  
+                ],
                 percentageData = [graphValues.expenditure_programs,
                     graphValues.expenditure_fundraising,
                     graphValues.expenditure_mgmt_admin,
                     graphValues.expenditure_qualified_donees,
-                    otherValues.expenditure_other];
-                    total_amount = graphValues.expenditure_total;
+                    otherGraphValues.expenditure_other,
+                ];
+                    totalAmount = graphValues.expenditure_total;
                 break;
             case 'assets':
-                    labels_data = [
-                        'Cash',
-                        'Receivables',
-                        'Investments',
-                        ['Land, Buildings, and Capital',' Assets'],
-                        'Other',
-                    ],  
-                    percentageData = [graphValues.assets_cash,
-                        graphValues.assets_receivable,
-                        graphValues.assets_invested,
-                        graphValues.assets_land_buildings_capital,
-                        otherValues.assets_other];
-                        total_amount = graphValues.assets_total;
-                    break;
-            case 'liabilities':
-                    labels_data = [
-                        'Short term, arm’s length',
-                        'Non-arm’s length',
-                        'Other',
+                labelsData = [
+                    'Cash',
+                    'Receivables',
+                    'Investments',
+                    ['Land, Buildings, and Capital',' Assets'],
+                    'Other',
                     ],
-                    percentageData = [graphValues.liabilities_short_term_arms_length,
-                        graphValues.liabilities_non_arms_length,
-                        otherValues.liabilities_other],
-                        total_amount = graphValues.liabilities_total;
+                percentageData = [graphValues.assets_cash,
+                    graphValues.assets_receivable,
+                    graphValues.assets_invested,
+                    graphValues.assets_land_buildings_capital,
+                    otherGraphValues.assets_other,
+                ];
+                    totalAmount = graphValues.assets_total;
+                break;
+            case 'liabilities':
+                labelsData = [
+                    'Short term, arm’s length',
+                    'Non-arm’s length',
+                    'Other',
+                    ],
+                percentageData = [graphValues.liabilities_short_term_arms_length,
+                    graphValues.liabilities_non_arms_length,
+                    otherGraphValues.liabilities_other,
+                ],
+                    totalAmount = graphValues.liabilities_total;
                 break;
             case 'breakdown_of_Programs':
-                    bgColor = [
-                        '#009585',
-                        '#00bba7',
-                        '#32c8b8'
-                        ],
-                    charityPrograms.map((program)=>{
-                        labels_data.push(program.name);
-                        actualData.push(program.percentage);
+                bgColor = [
+                    '#009585',
+                    '#00bba7',
+                    '#32c8b8'
+                    ],
+                    values.charityPrograms.map((program)=>{
+                    labelsData.push(program.name);
+                    actualData.push(program.percentage);
                 });
                 break;
             default:
                 break;
         }
         if (_.isEmpty(actualData)) {
-        percentageData.map((data) => {
-                actualData.push(Math.round((data * 100) / total_amount));
+            percentageData.map((data) => {
+                actualData.push(Math.round((data * 100) / totalAmount));
             });
         }
         const data = {
-            labels: labels_data,
             datasets: [
                 {
                     backgroundColor: (_.isEmpty(bgColor) ? '#00BBA7' : bgColor),
                     borderColor: (_.isEmpty(bgColor) ? '#00BBA7' : bgColor),
                     borderWidth: 1,
+                    data: actualData,
                     hoverBackgroundColor: '#7fddd3',
                     hoverBorderColor: '#7fddd3',
-                    data: actualData,
                 },
             ],
+            labels: labelsData,
         };
         return data;
     }
@@ -125,101 +125,106 @@ class Charts extends React.Component {
         const {
             values,
         } = this.props;
-    return (
-        <Grid stackable columns="2">
-            <Grid.Row>
-                <Grid.Column style={{ marginBottom: '30px' }}>
-                    <HorizontalBar
-                        data={Charts.getChartData('revenue', values)}
-                        width={100}
-                        height={400}
-                        options={{
-                            plugins: {
-                                datalabels: {
-                                    align: 'end',
-                                    anchor: 'end',
-                                }
-                            },
-                            scales: {
-                                xAxes: [
+        const currency = 'USD';
+        const language = 'en';
+        // TODO 'language' from withTranslation
+        return (
+            <Grid stackable columns="2">
+                <Grid.Row>
+                    <Grid.Column style={{ marginBottom: '30px' }}>
+                        <HorizontalBar
+                            data={Charts.getChartData('revenue', values)}
+                            width={100}
+                            height={400}
+                            options={{
+                                legend: false,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    datalabels: {
+                                        align: 'end',
+                                        anchor: 'end',
+                                    },
+                                },
+                                scales: {
+                                    xAxes: [
                                         {
                                             display: true,
                                             ticks: {
                                                 beginAtZero: true,
+                                                max: 100,
                                                 steps: 10,
                                                 stepValue: 5,
-                                                max: 100,
                                             },
                                         },
                                     ],
                                 },
-                                maintainAspectRatio: false,
-                                tooltips: false,
-                                legend: false,
                                 title: {
                                     display: true,
-                                    text: `2019 Revenues: $${(values) && (values.graphValues.revenue_total)}`
+                                    text: `2019 Revenues: ${(values) && formatCurrency(values.graphValues.revenue_total, language, currency)}`,
                                 },
+                                tooltips: false,
                             }}
-                    />
-                </Grid.Column>
-                <Grid.Column style={{ marginBottom: '30px' }}>
-                    <HorizontalBar
-                        data={Charts.getChartData('expenditure', values)}
-                        width={100}
-                        height={400}
-                        options={{
-                            plugins: {
-                                datalabels: {
-                                    align: 'end',
-                                    anchor: 'end',
-                                }
-                            },
-                            scales: {
-                                xAxes: [
+                        />
+                    </Grid.Column>
+                    <Grid.Column style={{ marginBottom: '30px' }}>
+                        <HorizontalBar
+                            data={Charts.getChartData('expenditure', values)}
+                            width={100}
+                            height={400}
+                            options={{
+                                legend: false,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    datalabels: {
+                                        align: 'end',
+                                        anchor: 'end',
+                                    },
+                                },
+                                scales: {
+                                    xAxes: [
                                         {
                                             display: true,
                                             ticks: {
                                                 beginAtZero: true,
+                                                max: 100,
                                                 steps: 10,
                                                 stepValue: 5,
-                                                max: 100,
                                             },
                                         },
                                     ],
                                 },
-                            maintainAspectRatio: false,
-                            tooltips: false,
-                            legend: false,
-                            title: {
-                                display: true,
-                                text: `2019 Expenditures: $${(values) && (values.graphValues.expenditure_total)}`
-                            }
-                        }}
-                    />
-                </Grid.Column>
-                <Divider/>
-                <Grid.Column style={{ marginBottom: '30px' }}>
-                    <HorizontalBar
-                        data={Charts.getChartData('assets', values)}
-                        width={100}
-                        height={400}
-                        options={{
-                            plugins: {
-                                datalabels: {
-                                    align: 'end',
-                                    anchor: 'end',
-                                }
-                            },
-                            scales: {
-                                xAxes: [
+                                title: {
+                                    display: true,
+                                    text: `2019 Expenditures: ${(values) && formatCurrency(values.graphValues.expenditure_total, language, currency)}`,
+                                },
+                                tooltips: false,
+                            }}
+                        />
+                    </Grid.Column>
+                    <Divider />
+                    <Grid.Column style={{ marginBottom: '30px' }}>
+                        <HorizontalBar
+                            data={Charts.getChartData('assets', values)}
+                            width={100}
+                            height={400}
+                            options={{
+                                legend: false,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    datalabels: {
+                                        align: 'end',
+                                        anchor: 'end',
+                                    },
+                                },
+                                scales: {
+                                    xAxes: [
                                         {
                                             display: true,
                                             ticks: {
                                                 beginAtZero: true,
+                                                max: 100,
                                                 steps: 10,
                                                 stepValue: 5,
-                                                max: 100,
                                             },
                                         },
                                     ],
@@ -229,56 +234,53 @@ class Charts extends React.Component {
                                         },
                                     ],
                                 },
-                                maintainAspectRatio: false,
-                                tooltips: false,
-                                legend: false,
                                 title: {
                                     display: true,
-                                    text: `2019 Assets: $${(values) && (values.graphValues.assets_total)}`
+                                    text: `2019 Assets: $${(values) && formatCurrency(values.graphValues.assets_total, language, currency)}`,
                                 },
+                                tooltips: false,
                             }}
                         />
-                </Grid.Column>
-                <Grid.Column style={{ marginBottom: '30px' }}>
-                    <HorizontalBar
-                        data={Charts.getChartData('liabilities', values)}
-                        width={100}
-                        height={400}
-                        options={{
-                            plugins: {
-                                datalabels: {
-                                    align: 'end',
-                                    anchor: 'end',
-                                }
-                            },
-                            scales: {
-                                xAxes: [
+                    </Grid.Column>
+                    <Grid.Column style={{ marginBottom: '30px' }}>
+                        <HorizontalBar
+                            data={Charts.getChartData('liabilities', values)}
+                            width={100}
+                            height={400}
+                            options={{
+                                legend: false,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    datalabels: {
+                                        align: 'end',
+                                        anchor: 'end',
+                                    },
+                                },
+                                scales: {
+                                    xAxes: [
                                         {
                                             display: true,
                                             ticks: {
                                                 beginAtZero: true,
+                                                max: 100,
                                                 steps: 10,
                                                 stepValue: 5,
-                                                max: 100,
                                             },
                                         },
                                     ],
                                 },
-                                maintainAspectRatio: false,
-                                tooltips: false,
-                                legend: false,
                                 title: {
                                     display: true,
-                                    text: `2019 Liabilities: $${(values) && (values.graphValues.liabilities_total)}`
+                                    text: `2019 Liabilities: $${(values) && formatCurrency(values.graphValues.liabilities_total, language, currency)}`,
                                 },
+                                tooltips: false,
                             }}
                         />
-                </Grid.Column>
+                    </Grid.Column>
                     <Grid.Column style={{ marginBottom: '30px' }}>
                         <Doughnut
                             data={Charts.getChartData('breakdown_of_Programs', values)}
                             options={{
-                                tooltips: false,
                                 legend: {
                                     display: true,
                                 },
@@ -286,11 +288,12 @@ class Charts extends React.Component {
                                     display: true,
                                     text: 'Breakdown of Programs',
                                 },
+                                tooltips: false,
                             }}
                         />
                     </Grid.Column>
-            </Grid.Row>
-        </Grid>
+                </Grid.Row>
+            </Grid>
 
         );
     }

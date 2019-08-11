@@ -1,5 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import {
+    func,
+    PropTypes,
+    string,
+} from 'prop-types';
 
 import {
     getBeneficiaryFromSlug,
@@ -31,14 +36,19 @@ class CharityProfile extends React.Component {
     render() {
         return (
             <Layout>
-                {/* <div className="charity-profile-box">
-                    <CharityProfileWrapper {...this.props} />
-                </div> */}
-            <CharityProfileWrapper {...this.props} />
+                <CharityProfileWrapper {...this.props} />
             </Layout>
         );
     }
 }
+
+CharityProfile.defaultProps = {
+    slug: '',
+};
+
+CharityProfile.propTypes = {
+    slug: string,
+};
 
 function mapStateToProps(state) {
     return {

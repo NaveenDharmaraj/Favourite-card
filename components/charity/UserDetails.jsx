@@ -1,165 +1,182 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import {
+    bool,
+    PropTypes,
+    string,
+} from 'prop-types';
+import _isEmpty from 'lodash/isEmpty';
+import {
     Grid,
     List,
     Header,
-    Icon,
     Container,
-    Form,
-    Button,
 } from 'semantic-ui-react';
-import ShareDetails from '../charity/ShareDetails';
 
-class UserDetails extends React.Component {
-    static createUserDetails(valuesObject) {
-        const data = [
-            {
-                Content: valuesObject.contactName, // 'Contact : Red Cross Donor',
-                name: 'user',
-            },
-            {
-                Content: valuesObject.contactPhone, // '(613) 740-1900',
-                name: 'phone',
-            },
-            {
-                Content: valuesObject.email, // 'wecare@recross.ca',
-                link: `mailto:${valuesObject.email}`, // 'mailto:wecare@recross.ca',
-                name: 'mail',
-            },
-            {
-                Content: valuesObject.website, // 'http://www.redcross.ca',
-                link: valuesObject.website, // 'http://www.redcross.ca',
-                name: 'linkify',
-            },
-            {
-                Content: valuesObject.staffCount,// '1404 full-time staff',
-                name: 'users',
-            },
-            {
-                Content: valuesObject.businessNumber, // 'Business #11921723487',
-                name: 'briefcase',
-            },
-            {
-                Content:valuesObject.address, // '400 Cooper Street, Suite 8000, Ottawa ON, K2P2H8',
-                name: 'map marker alternate',
-            },
+import ShareDetails from './ShareDetails';
 
-        ];
-        return data;
+const createUserDetails = (valuesObject) => {
+    const data = [
+        {
+            Content: valuesObject.contactName,
+            name: 'user',
+        },
+        {
+            Content: valuesObject.contactPhone,
+            name: 'phone',
+        },
+        {
+            Content: valuesObject.email,
+            link: `mailto:${valuesObject.email}`,
+            name: 'mail',
+        },
+        {
+            Content: valuesObject.website,
+            link: valuesObject.website,
+            name: 'linkify',
+        },
+        {
+            Content: valuesObject.staffCount,
+            name: 'users',
+        },
+        {
+            Content: valuesObject.businessNumber,
+            name: 'briefcase',
+        },
+        {
+            Content: valuesObject.address,
+            name: 'map marker alternate',
+        },
+
+    ];
+    return data;
+};
+
+const detailsView = (valuesObject) => {
+    let address = '';
+    if (valuesObject.primaryAddress && valuesObject.primaryAddress.address_one) {
+        address = `${valuesObject.primaryAddress.address_one}, ${valuesObject.primaryAddress.city}, ${valuesObject.primaryAddress.province}, ${valuesObject.primaryAddress.country}`;
+        valuesObject = {
+            ...valuesObject,
+            address,
+        };
     }
-
-    static detailsView(valuesObject) {
-        let address = '';
-        if (valuesObject.primaryAddress && valuesObject.primaryAddress.address_one) {
-            address = `${valuesObject.primaryAddress.address_one}, ${valuesObject.primaryAddress.city}, ${valuesObject.primaryAddress.province}, ${valuesObject.primaryAddress.country}`;
-            valuesObject = {
-                address,
-                ...valuesObject,
-            };
-        }
-        const values = this.createUserDetails(valuesObject);
-        return (
-            <Grid.Row>
+    const values = createUserDetails(valuesObject);
+    return (
+        <Grid.Row>
             <Grid.Column>
-            <List>
-            {values.map((value,index) => (
-            (value.Content && index <= 3
-                && <List.Item>
-                <List.Icon name={value.name} />
-                {value.link && (
-                    <List.Content>
-                        <a href={value.link}>
-                            {value.Content}
-                        </a>
-                    </List.Content>
-                )}
-                {!value.link
-                && (
-                    <List.Content>
-                        {value.Content}
-                    </List.Content>
-                )}
-            </List.Item>
-                )
-            ))}
-            </List>
+                <List>
+                    {values.map((value, index) => (
+                        (value.Content && index <= 3
+                        && (
+                            <List.Item>
+                                <List.Icon name={value.name} />
+                                {value.link && (
+                                    <List.Content>
+                                        <a href={value.link}>
+                                            {value.Content}
+                                        </a>
+                                    </List.Content>
+                                )}
+                                {!value.link
+                                && (
+                                    <List.Content>
+                                        {value.Content}
+                                    </List.Content>
+                                )}
+                            </List.Item>
+                        )
+                        )
+                    ))}
+                </List>
             </Grid.Column>
             <Grid.Column>
-              <List>
-              {values.map((value,index) => (
-            (value.Content && index >=4
-                && <List.Item>
-                <List.Icon name={value.name} />
-                {value.link && (
-                    <List.Content>
-                        <a href={value.link}>
-                            {value.Content}
-                        </a>
-                    </List.Content>
-                )}
-                {!value.link
-                && (
-                    <List.Content>
-                        {value.Content}
-                    </List.Content>
-                )}
-            </List.Item>
-                )
-            ))}
-            </List>  
+                <List>
+                    {values.map((value, index) => (
+                        (value.Content && index >= 4
+                            && (
+                                <List.Item>
+                                    <List.Icon name={value.name} />
+                                    {value.link && (
+                                        <List.Content>
+                                            <a href={value.link}>
+                                                {value.Content}
+                                            </a>
+                                        </List.Content>
+                                    )}
+                                    {!value.link
+                                    && (
+                                        <List.Content>
+                                            {value.Content}
+                                        </List.Content>
+                                    )}
+                                </List.Item>
+                            )
+                        )
+                    ))}
+                </List>
             </Grid.Column>
-            </Grid.Row>
-        );
-    }
+        </Grid.Row>
+    );
+};
 
-    render() {
-        const {
-            charityDetails,
-            isAUthenticated,
-        } = this.props;
-        debugger;
-        // let favouriteComponent = null;
-        // if (isAUthenticated) {
-        //     favouriteComponent = (
-        //         <Header as="h5" icon>
-        //             <a className="hoverable">
-        //                 <Icon name="file text outline" />
-        //                 <Header.Subheader>Favourite</Header.Subheader>
-        //             </a>
-        //         </Header>
-        //     );
-        // }
-        return (
-            <div className="profile-info-wraper pb-3">
-                <Container>
-                    <div className="profile-info-card charity">
-                        <Header as="h3">
-                            Charity information 
-                        </Header>
-                        <Grid divided stackable>
-                            <Grid.Row>
-                                <Grid.Column mobile={16} tablet={10} computer={10}>
-                                    <Grid columns={2}>
-                                        {(charityDetails && charityDetails.charityDetails)
-                                && (UserDetails.detailsView(charityDetails.charityDetails.attributes))
-                                        }
-                                    </Grid>
-                                </Grid.Column>
-                                {(isAUthenticated
-                                && <ShareDetails />)}
+const UserDetails = (props) => {
+    const {
+        charityDetails,
+        isAUthenticated,
+    } = props;
 
-                            </Grid.Row>
-                        </Grid>
-                        <p className="mt-1">
-                        Is this your chariy? You can claim your free profile page on your platform <a href="#">by following these steps</a>
-                        </p>
-                    </div>
-                </Container>
-            </div>
-        );
-    }
-}
+    return (
+        <div className="profile-info-wraper pb-3">
+            <Container>
+                <div className="profile-info-card charity">
+                    <Header as="h3">
+                        Charity information
+                    </Header>
+                    <Grid divided stackable>
+                        <Grid.Row>
+                            <Grid.Column mobile={16} tablet={10} computer={10}>
+                                <Grid columns={2}>
+                                    {((!_isEmpty(charityDetails.charityDetails.attributes))
+                                    && detailsView(charityDetails.charityDetails.attributes))}
+                                </Grid>
+                            </Grid.Column>
+                            {(isAUthenticated
+                            && <ShareDetails />)}
+
+                        </Grid.Row>
+                    </Grid>
+                    <p className="mt-1">
+                    Is this your chariy? You can claim your free profile page on your platform
+                        <a href="#">by following these steps</a>
+                    </p>
+                </div>
+            </Container>
+        </div>
+    );
+};
+
+UserDetails.defaultProps = {
+    charityDetails: {
+        charityDetails: {
+            attributes: {
+                contactName: '',
+            },
+        },
+    },
+    isAUthenticated: false,
+};
+
+UserDetails.propTypes = {
+    charityDetails: {
+        charityDetails: {
+            attributes: PropTypes.shape({
+                contactName: string,
+            }),
+        },
+    },
+    isAUthenticated: bool,
+};
 
 function mapStateToProps(state) {
     return {
