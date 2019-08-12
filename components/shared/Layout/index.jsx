@@ -76,24 +76,20 @@ class Layout extends React.Component {
                         </Responsive>
                         <Responsive minWidth={Responsive.onlyTablet.minWidth}>
                             <Header isAuthenticated={isAuthenticated} onBoarding={onBoarding} />
-                                <Container>
-                                    <div className="pageWraper">
-                                        {!_.isEmpty(appErrors) &&
-                                            <Container
-                                                className="app-status-messages"
-                                            >
-                                                {_.map(appErrors, (err) => (
-                                                    <StatusMessage
-                                                        key={err.heading}
-                                                        handleDismiss={() => dismissUxCritialErrors(err, appErrors, dispatch)}
-                                                        {...err}
-                                                    />
-                                                ))}
-                                            </Container>
-                                        }
-                                        {children}
-                                    </div>
-                                </Container>
+                                {!_.isEmpty(appErrors) &&
+                                    <Container
+                                        className="app-status-messages"
+                                    >
+                                        {_.map(appErrors, (err) => (
+                                            <StatusMessage
+                                                key={err.heading}
+                                                handleDismiss={() => dismissUxCritialErrors(err, appErrors, dispatch)}
+                                                {...err}
+                                            />
+                                        ))}
+                                    </Container>
+                                }
+                                {children}
                         </Responsive>
                         <Footer />
                     </ErrorBoundary>

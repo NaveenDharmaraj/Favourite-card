@@ -124,7 +124,7 @@ const DonationListing = ({
             <Container textAlign="center">
                 <Button
                     primary
-                    className="btnReview"
+                    className="btnReview blue-btn-rounded"
                     content={(!disableButton)
                         ? buttonText
                         : formatMessage('giveCommon:submitingButton')}

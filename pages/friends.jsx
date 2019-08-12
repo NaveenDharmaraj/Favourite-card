@@ -1,5 +1,7 @@
-import React, { cloneElement } from 'react';
-import { validateUser } from '../actions/user';
+import React from 'react';
+import {
+    Container,
+} from 'semantic-ui-react';
 
 import Friend from '../components/Give/Friend';
 import GiveWrapper from '../components/Give';
@@ -21,10 +23,14 @@ class Friends extends React.Component {
 
     render() {
         return (
-            <Layout authRequired={true}>
-                <GiveWrapper {...this.props} baseUrl='/give/to/friend'>
-                    <Friend />
-                </GiveWrapper>
+            <Layout authRequired={true} >
+                <Container>
+                    <div className="pageWraper">
+                        <GiveWrapper {...this.props} baseUrl='/give/to/friend'>
+                            <Friend />
+                        </GiveWrapper>
+                    </div>
+                </Container>
             </Layout>
         );
     }
