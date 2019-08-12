@@ -50,7 +50,7 @@ const Header = (props) => {
         >
             <Container>
                 <Menu secondary>
-                    <Menu.Item>
+                    <Menu.Item as="a" href="/dashboard">
                         <Image style={{ width: '131px' }} src={logo} />
                     </Menu.Item>
                     {renderHeader(onBoarding, isAuthenticated)}

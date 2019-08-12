@@ -25,6 +25,7 @@ import {
     calculateP2pTotalGiveAmount,
 } from '../../helpers/give/utils';
 import { reInitNextStep } from '../../actions/give';
+import { Link } from '../../routes';
 
 const separateByComma = (recipients) => _.replace(_.toString(recipients), /,/g, ', ');
 
@@ -38,6 +39,10 @@ const Success = (props) => {
         if (flowObject) {
             reInitNextStep(dispatch, flowObject);
         }
+        if (typeof window !== 'undefined') {
+            window.scrollTo(0, 0);
+        }
+       
     }, []);
     const {
         currentUser: {
@@ -72,7 +77,7 @@ const Success = (props) => {
         },
     } = props;
     let linkToDashboardText = formatMessage('goToYourDashboard');
-    let taxProfileLink = (giveFrom.type !== 'user')
+    let taxProfileLink = (!_.isEmpty(giveFrom) && giveFrom.type !== 'user')
         ? `/${giveFrom.type}/${giveFrom.slug}/tax-receipts` : '/user/tax-receipts';
     let dashboardLink = '/dashboard';
     const p2pLink = 'give/to/friend';
@@ -124,7 +129,7 @@ const Success = (props) => {
 
     let amount = null;
     let total = null;
-    const fromName = giveFrom.name;
+    const fromName = (type !== 'donations') ? giveFrom.name : giveTo.name;
     const {
         eftEnabled,
     } = giveTo;
@@ -167,25 +172,27 @@ const Success = (props) => {
         if (type === 'donations') {
             secondParagraph = creditCardMessage;
             fourthButton = (
-                <Button
-                    // as={GeminiLink}
-                    color="blue"
-                    content={formatMessage('seeYourTaxReceipt')}
-                    id="taxReceiptsLink"
-                    path={taxProfileLink}
-                />
+                <Link route={taxProfileLink}>              
+                    <Button
+                        color="blue"
+                        content={formatMessage('seeYourTaxReceipt')}
+                        id="taxReceiptsLink"
+                    />
+                </Link>
+
             );
         } else if (!_.isEmpty(creditCard) && creditCard.value > 0) {
             taxProfileLink = (giveFrom.type !== 'user')
                 ? `/${giveFrom.type}/${giveFrom.slug}/tax-receipts` : taxProfileLink;
             fourthButton = (
-                <Button
-                    as={GeminiLink}
-                    color="blue"
-                    content={formatMessage({ id: 'giving.donations.success.seeYourTaxReceipt' })}
-                    id="taxReceiptsLink"
-                    path={taxProfileLink}
-                />
+                <Link route={taxProfileLink}>
+                    <Button
+                        color="blue"
+                        content={formatMessage('seeYourTaxReceipt')}
+                        id="taxReceiptsLink"
+                        path={taxProfileLink}
+                    />
+                </Link>
             );
         }
         // the check is to differentiate donation and allocation dashboardlink
@@ -312,24 +319,25 @@ const Success = (props) => {
         if (type === 'donations') {
             secondParagraph = recurringCreditCardMessage;
             fourthButton = (
-                <Button
-                    // as={GeminiLink}
-                    color="blue"
-                    content={formatMessage('recurringTransactions')}
-                    path={recurringDonationsLink}
-                />
+                <Link route={recurringDonationsLink}>
+                    <Button
+                        color="blue"
+                        content={formatMessage('recurringTransactions')}
+                    />
+                </Link>
             );
         } else if (!_.isEmpty(creditCard) && creditCard.value > 0) {
             taxProfileLink = (giveFrom.type !== 'user')
                 ? `/${giveFrom.type}/${giveFrom.slug}/tax-receipts` : taxProfileLink;
             fourthButton = (
-                <Button
-                    //as={GeminiLink}
-                    color="blue"
-                    content={formatMessage({ id: 'giving.donations.success.seeYourTaxReceipt' })}
-                    id="taxReceiptsLink"
-                    path={taxProfileLink}
-                />
+                <Link route={taxProfileLink}>
+                    <Button
+                        color="blue"
+                        content={formatMessage('seeYourTaxReceipt')}
+                        id="taxReceiptsLink"
+                        path={taxProfileLink}
+                    />
+                </Link>
             );
         }
     }
@@ -400,10 +408,10 @@ const Success = (props) => {
                             <Grid.Column>
                                 {(!!fourthButton && (
                                     <Fragment>
-                                      or
-                                        <div className="paragraph-third" path={dashboardLink}>
+                                      or &nbsp;
+                                        <Link className="paragraph-third" route={dashboardLink}>
                                             {linkToDashboardText}
-                                        </div>
+                                        </Link>
                                     </Fragment>
                                 ))}
                                 {(!fourthButton
@@ -412,12 +420,12 @@ const Success = (props) => {
                                 //  linkToDashboardText.slice(1) }
                                 //   </GeminiLink>
                                 && (
-                                    <div className="paragraph-third" path={dashboardLink}>
+                                    <Link className="paragraph-third" route={dashboardLink}>
                                         {
                                             linkToDashboardText.charAt(0).toUpperCase()
                                             + linkToDashboardText.slice(1)
                                         }
-                                    </div>
+                                    </Link>
                                 )
                                 )}
                             </Grid.Column>

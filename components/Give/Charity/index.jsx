@@ -61,6 +61,7 @@ import IconGroup from '../../../static/images/chimp-icon-giving-group.png';
 import IconIndividual from '../../../static/images/chimp-icon-individual.png';
 import { withTranslation } from '../../../i18n';
 import { dismissAllUxCritialErrors } from '../../../actions/error';
+import { Router } from '../../../routes';
 const CreditCard = dynamic(() => import('../../shared/CreditCard'));
 const FormValidationErrorMessage = dynamic(() => import('../../shared/FormValidationErrorMessage'));
 const NoteTo = dynamic(() => import('../NoteTo'));
@@ -216,8 +217,7 @@ class Charity extends React.Component {
         } else if (slug != null) {
             getBeneficiaryFromSlug(dispatch, slug);
         } else {
-            //Redirect to dashboard need to be taken care
-            console.log('redirect to dashboard');
+            Router.pushRoute('/dashboard');
         }
         dispatch(getDonationMatchAndPaymentInstruments(id));
     }
@@ -290,7 +290,7 @@ class Charity extends React.Component {
                     type: giveCharityDetails.charityDetails.type,
                     value: giveCharityDetails.charityDetails.attributes.fundId,
                 };
-            } else if (!_isEmpty(giveGroupBenificairyDetails)) {
+            } else if (!_isEmpty(giveGroupBenificairyDetails) && !_isEmpty(giveGroupBenificairyDetails.benificiaryDetails)) {
                 groupFromUrl = true;
                 giveData.giveTo = {
                     avatar: giveGroupBenificairyDetails.benificiaryDetails[benificiaryIndex].attributes.avatar,
@@ -301,6 +301,10 @@ class Charity extends React.Component {
                     type: 'beneficiaries',
                     value: giveGroupBenificairyDetails.benificiaryDetails[benificiaryIndex].attributes.fundId,
                 };
+            } else if( !_isEqual(giveGroupBenificairyDetails, prevProps.giveGroupBenificairyDetails)){   
+                if(_isEmpty(giveGroupBenificairyDetails))
+                debugger
+                Router.pushRoute('/dashboard');
             }
             if (!_isEmpty(fund)) {
                 giveData = Charity.initFields(
@@ -375,9 +379,11 @@ class Charity extends React.Component {
             giveData.giveFrom.balance = fund.attributes.balance;
             giveData.giveFrom.name = name;
         } else if (!_isEmpty(companiesAccountsData) && !_isEmpty(userGroups) && !_isEmpty(userCampaigns) && !giveData.userInteracted) {
-            if (!_isEmpty(giveGroupBenificairyDetails)) {
+            if (!_isEmpty(giveGroupBenificairyDetails) && !_isEmpty(giveGroupBenificairyDetails.benificiaryDetails)) {
                 const defaultGroupFrom = userGroups.find((userGroup) => userGroup.id === groupId);
+                if(!_isEmpty(defaultGroupFrom)){
                 giveData.giveFrom.value = defaultGroupFrom.attributes.fundId;
+             }
             }
             else{
                 giveData.giveFrom = {

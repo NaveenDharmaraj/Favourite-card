@@ -126,6 +126,9 @@ class Group extends React.Component {
             validity: this.intializeValidations(),
         };
         this.state.flowObject.groupFromUrl = false;
+        if(props.sourceAccountHolderId ){
+        this.state.flowObject.sourceAccountHolderId = props.sourceAccountHolderId;
+        }
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleInputOnBlur = this.handleInputOnBlur.bind(this)
         this.handleInputChangeGiveTo = this.handleInputChangeGiveTo.bind(this);
@@ -943,7 +946,8 @@ class Group extends React.Component {
                         <Divider hidden />
                         {/* { !stepsCompleted && */}
                             <Form.Button
-                                className='btnPadding' // {isMobile ? 'mobBtnPadding' : 'btnPadding'}
+                                primary
+                                className='blue-btn-rounded' // {isMobile ? 'mobBtnPadding' : 'btnPadding'}
                                 content={(!this.state.buttonClicked) ?
                                     formatMessage('giveCommon:continueButton')
                                     : formatMessage('giveCommon:submitingButton')}
