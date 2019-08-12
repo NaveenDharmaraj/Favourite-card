@@ -212,6 +212,8 @@ class ToolTabs extends React.Component {
                     givingGoal,
                     validity
                 } = this.state;
+                const date = new Date();
+                const currentYear = date.getFullYear();
                 return (
                     <Tab.Pane attached={false}>
                         <div className="tools-tabpane">
@@ -243,12 +245,13 @@ class ToolTabs extends React.Component {
                                                     </Button>
                                                 }
                                             >
-                                            <Modal.Header>Set Your Giving Goal for 2019</Modal.Header>
+                                            <Modal.Header>Set Your Giving Goal for {currentYear}</Modal.Header>
                                             <Modal.Content>
                                                 <ModalContent 
                                                         handleInputChange={this.handleInputChange}
                                                         givingGoal={givingGoal}
                                                         validity={validity}
+                                                        currentYear={currentYear}
                                                 />
                                             </Modal.Content>
                                             <Modal.Actions>

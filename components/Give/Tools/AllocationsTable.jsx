@@ -68,16 +68,11 @@ function AllocationsTable(props) {
                         <Table.HeaderCell>Actions</Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
-                {!monthlyTransactionApiCall
-                && <Table.Body>
+                {!monthlyTransactionApiCall ? (<Table.Body>
                     {
                         renderTableData()
                     }
-                </Table.Body>
-                }
-                {monthlyTransactionApiCall
-                && 
-                <Table.Body>
+                </Table.Body>) : (<Table.Body>
                     <Table.Row>
                         <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
                         <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
@@ -94,7 +89,7 @@ function AllocationsTable(props) {
                         <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
                         <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
                     </Table.Row>
-                </Table.Body>
+                </Table.Body>)
                 }
             </Table>
         </div>

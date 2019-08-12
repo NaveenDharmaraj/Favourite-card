@@ -13,11 +13,12 @@ function ModalContent(props) {
         handleInputChange,
         givngGoal,
         validity,
+        currentYear,
     } = props;
     return (
         <Form>
             <Form.Field inline>
-                <label>My 2019 Goal is</label>
+                <label>My {currentYear} Goal is</label>
                 <Form.Field
                     placeholder="$"
                     control={Input}
