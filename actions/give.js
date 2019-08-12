@@ -1,11 +1,13 @@
 /* eslint-disable import/exports-last */
 import _ from 'lodash';
+
 import { Router } from '../routes';
 import coreApi from '../services/coreApi';
 import {
     beneficiaryDefaultProps,
     donationDefaultProps,
     groupDefaultProps,
+    p2pDefaultProps,
 } from '../helpers/give/defaultProps';
 
 import {
@@ -15,7 +17,6 @@ import {
     savePaymentInstrument,
     getUserFund,
 } from './user';
-
 import {
     triggerUxCritialErrors,
 } from './error';

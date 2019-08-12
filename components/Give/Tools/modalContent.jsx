@@ -9,20 +9,21 @@ import {
 function ModalContent(props) {
     const {
         handleInputChange,
-        newGoal
+        givngGoal,
     } = props;
     return (
         <Form>
             <Form.Field inline>
                 <label>My 2019 Goal is</label>
                 <Form.Field
-                    placeholder='$'
+                    placeholder="$"
                     control={Input}
-                    id="giving-goal"
-                    name="giving-goal"
-                    value={newGoal}
-                    handleInputChange={handleInputChange}
-                    fluid/>
+                    id="givingGoal"
+                    name="givingGoal"
+                    value={givngGoal}
+                    onChange={handleInputChange}
+                    fluid
+                />
             </Form.Field>
         </Form>
     );

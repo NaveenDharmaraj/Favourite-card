@@ -341,7 +341,6 @@ export const savePaymentInstrument = (cardDetails) => {
 };
 
 export const getUserGivingGoal = (dispatch, userId) => {
-    console.log(userId);
     return coreApi.get(`users/${userId}/givingGoals`)
         .then((result) => {
             dispatch({

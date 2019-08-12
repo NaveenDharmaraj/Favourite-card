@@ -12,7 +12,6 @@ function GivingGoalsTable(props) {
     const {
         userGivingGoalDetails,
     } = props;
-    console.log(props);
     const renderTableData = () => {
         const tableBody = [];
         if (!_.isEmpty(userGivingGoalDetails)) {

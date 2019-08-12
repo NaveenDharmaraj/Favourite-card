@@ -34,7 +34,7 @@ class ToolTabs extends React.Component {
         this.state = {
             activePage:1,
             showModal: false,
-            newGoal:'',
+            givingGoal:'',
         };
         this.onTabChangeFunc = this.onTabChangeFunc.bind(this);
         this.deleteTransaction = this.deleteTransaction.bind(this);
@@ -47,7 +47,7 @@ class ToolTabs extends React.Component {
     }
     closeModalAndSave = () =>{
         const {
-            newGoal,
+            givingGoal,
         } = this.state;
         const{
             dispatch,
@@ -56,20 +56,19 @@ class ToolTabs extends React.Component {
             }
         } = this.props;
         this.setState({ showModal: false });
-        setUserGivingGoal(dispatch, newGoal, id);
+        setUserGivingGoal(dispatch, givingGoal, id);
     }
-    handleInputChange(event, data) {
-        const {
-            name,
-            options,
-            value,
-        } = data;
+    handleInputChange(event) {
+
        
         const {
-            target,
+            target: {
+                name, value
+            },
         } = event;
-        let newValue = (!_isEmpty(options)) ? _find(options, { value }) : value;
-     
+        this.setState({
+            givingGoal:value
+        });
     }
     panes = [
         {
@@ -183,7 +182,7 @@ class ToolTabs extends React.Component {
                     userGivingGoalDetails
                 } = this.props
                 const {
-                    newGoal,
+                    givingGoal,
                 } = this.state;
                 return (
                     <Tab.Pane attached={false}>
@@ -201,7 +200,7 @@ class ToolTabs extends React.Component {
                                         </Grid.Column>
                                         <Grid.Column mobile={16} tablet={5} computer={5} textAlign="right">
                                             {/* <Button primary fluid>Set a giving goal </Button> */}
-                                {/* <Modal
+                                <Modal
                                     size="tiny"
                                     dimmer="inverted"
                                     closeIcon
@@ -221,7 +220,7 @@ class ToolTabs extends React.Component {
                                     <Modal.Content>
                                        <ModalContent 
                                             handleInputChange={this.handleInputChange}
-                                            newGoal={newGoal}
+                                            givingGoal={givingGoal}
                                        />
                                         
                                     </Modal.Content>
@@ -233,7 +232,7 @@ class ToolTabs extends React.Component {
                                                 SaveChanges
                                             </Button>
                                         </Modal.Actions>
-                                </Modal> */}
+                                </Modal>
                             
                                         </Grid.Column>
                                     </Grid.Row>
@@ -325,7 +324,6 @@ class ToolTabs extends React.Component {
         const {
             defaultActiveIndex,
         } = this.props;
-        console.log(this.props)
         return (
             <Tab
             menu={{
