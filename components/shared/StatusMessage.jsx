@@ -74,28 +74,30 @@ class StatusMessage extends Component {
             >
                 {/* force Message to sit on its own row */}
                 <Message
-                    {...props}
+                    {...props} icon className="chimp-center-msg"
                 >
-                    <Message.Header>
-                        <Icon
-                            className="status-icon"
-                            name={`${iconMap[type]} circle`}
-                        />
-                        {typeof heading === 'string'
-                            ? (<span>{heading}</span>)
-                            : heading
-                        }
-                    </Message.Header>
-                    {hasList && (
-                        <Message.List
-                            items={items}
-                        />
-                    )}
-                    {!!message && (
-                        <Message.Content
-                            content={message}
-                        />
-                    )}
+                    <Icon
+                        className="status-icon"
+                        name={`${iconMap[type]} circle`}
+                    />
+                    <Message.Content>
+                        <Message.Header>
+                            {typeof heading === 'string'
+                                ? (<span>{heading}</span>)
+                                : heading
+                            }
+                        </Message.Header>
+                        {hasList && (
+                            <Message.List
+                                items={items}
+                            />
+                        )}
+                        {!!message && (
+                            <Message.Content
+                                content={message}
+                            />
+                        )}
+                    </Message.Content>
                 </Message>
             </div>
         );

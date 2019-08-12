@@ -372,11 +372,11 @@ class TaxReceipt extends React.Component {
 
 	renderContinueButton() {
 		let button = (
-			<Button primary onClick={() => this.handleSubmit()}>Continue</Button>
+			<Button primary onClick={() => this.handleSubmit()} className="blue-btn-rounded">Continue</Button>
 		);
 		if(this.state.buttonClicked) {
 			button = (
-				<Button primary disabled onClick={() => this.handleSubmit()}>Continue</Button>
+				<Button primary disabled onClick={() => this.handleSubmit()} className="blue-btn-rounded">Continue</Button>
 			); 
 		}
 		return (button);
@@ -409,6 +409,7 @@ class TaxReceipt extends React.Component {
 							/>
 						</Form.Field>
 				</Form>
+				<br />
 				{this.renderContinueButton()}
 			</div>
 		);

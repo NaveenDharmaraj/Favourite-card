@@ -8,6 +8,7 @@ import _ from 'lodash';
 import { connect } from 'react-redux';
 
 import {
+    getUserCauses,
     saveUser,
     validateNewUser,
 } from '../../../actions/onBoarding';
@@ -40,6 +41,13 @@ class Login extends React.Component {
         this.handleCauses = this.handleCauses.bind(this);
         this.handleInputOnBlur = this.handleInputOnBlur.bind(this);
         this.isButtonDisabled = this.isButtonDisabled.bind(this);
+    }
+
+    componentDidMount() {
+        const {
+            dispatch,
+        } = this.props;
+        getUserCauses(dispatch);
     }
 
     componentDidUpdate(prevProps) {
@@ -257,6 +265,7 @@ class Login extends React.Component {
         } = this.state;
         // console.log(validity)
         const {
+            causesList,
             userExists,
             apiValidating,
         } = this.props;
@@ -302,6 +311,7 @@ class Login extends React.Component {
                                             parentHandleCauses={this.handleCauses}
                                             handleSubmit={this.handleSubmit}
                                             userCauses={userCauses}
+                                            causesList={causesList}
                                             validity={validity}
                                         />
                                     </Grid>
@@ -331,6 +341,7 @@ class Login extends React.Component {
 function mapStateToProps(state) {
     return {
         apiValidating: state.onBoarding.apiValidating,
+        causesList: state.onBoarding.causesList,
         newUserDetails: state.onBoarding.newUserDetails,
         userExists: state.onBoarding.userExists,
     };
