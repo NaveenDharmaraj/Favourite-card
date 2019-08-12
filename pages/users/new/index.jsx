@@ -14,7 +14,7 @@ import {
 import storage from '../../../helpers/storage';
 import { Router } from '../../../routes';
 import Layout from '../../../components/shared/Layout';
-import validateUserRegistrationForm from '../../../helpers/users/utils';
+import { validateUserRegistrationForm } from '../../../helpers/users/utils';
 import FirstStep from '../../../components/New/FirstStep';
 import SecondStep from '../../../components/New/SecondStep';
 import CausesSelection from '../../../components/New/CausesSelection';

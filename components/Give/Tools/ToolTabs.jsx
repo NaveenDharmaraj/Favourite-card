@@ -8,10 +8,8 @@ import {
     Segment,
     Grid,
     Tab,
-    Table,
-    Form,
-    Input
 } from 'semantic-ui-react';
+import _ from 'lodash'
 import AllocationsTable from './AllocationsTable';
 import DonationsTable from './DonationsTable';
 import GivingGoalsTable from './GivingGoalsTable';
@@ -19,7 +17,7 @@ import ModalContent from './modalContent';
 import { Router, Link } from '../../../routes';
 import { connect } from 'react-redux';
 import PaginationComponent from '../../shared/Pagination';
-
+import {validateGivingGoal} from '../../../helpers/users/utils';
 import { getUpcomingTransactions,deleteUpcomingTransaction } from '../../../actions/user';
 import { getUserGivingGoal, setUserGivingGoal } from '../../../actions/user';
 const tabMenus = [
@@ -35,6 +33,7 @@ class ToolTabs extends React.Component {
             activePage:1,
             showModal: false,
             givingGoal:'',
+            validity: this.intializeValidations()
         };
         this.onTabChangeFunc = this.onTabChangeFunc.bind(this);
         this.deleteTransaction = this.deleteTransaction.bind(this);
@@ -55,8 +54,11 @@ class ToolTabs extends React.Component {
                 id,
             }
         } = this.props;
-        this.setState({ showModal: false });
-        setUserGivingGoal(dispatch, givingGoal, id);
+        let dwf = this.validateForm;
+        if(this.validateForm()) {
+            this.setState({ showModal: false });
+            setUserGivingGoal(dispatch, givingGoal, id);
+        }
     }
     handleInputChange(event) {
 
@@ -69,6 +71,31 @@ class ToolTabs extends React.Component {
         this.setState({
             givingGoal:value
         });
+    }
+    intializeValidations() {
+        this.validity = {
+            doesAmountExist: true,
+            isAmountLessThanOneBillion: true,
+            isAmountMoreThanOneDollor: true,
+            isValidPositiveNumber: true,
+            isValidGiveAmount:true,
+        };
+        return this.validity;
+    }
+    validateForm() {
+        const {
+            givingGoal
+        } = this.state;
+        let {
+            validity,
+        } = this.state;
+
+
+        validity = validateGivingGoal(givingGoal, validity);
+        this.setState({
+            validity,
+        })
+        return _.every(validity);
     }
     panes = [
         {
@@ -183,6 +210,7 @@ class ToolTabs extends React.Component {
                 } = this.props
                 const {
                     givingGoal,
+                    validity
                 } = this.state;
                 return (
                     <Tab.Pane attached={false}>
@@ -221,6 +249,7 @@ class ToolTabs extends React.Component {
                                        <ModalContent 
                                             handleInputChange={this.handleInputChange}
                                             givingGoal={givingGoal}
+                                            validity={validity}
                                        />
                                         
                                     </Modal.Content>
@@ -280,7 +309,6 @@ class ToolTabs extends React.Component {
         const {
             activePage
         } = this.state;
-        debugger
         if(id && transactionType){
             deleteUpcomingTransaction(dispatch,id, transactionType, activePage, this.props.currentUser.id)
         }
