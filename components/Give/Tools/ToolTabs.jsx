@@ -227,41 +227,39 @@ class ToolTabs extends React.Component {
                                             </Header>
                                         </Grid.Column>
                                         <Grid.Column mobile={16} tablet={5} computer={5} textAlign="right">
-                                            {/* <Button primary fluid>Set a giving goal </Button> */}
-                                <Modal
-                                    size="tiny"
-                                    dimmer="inverted"
-                                    closeIcon
-                                    onClose={this.closeModal}
-                                    open={this.state.showModal}
-                                    trigger={
-                                        <Button
-                                            onClick={() => this.setState({ showModal: true })}
-                                            primary 
-                                            className="ui button primary blue-btn-rounded" 
-                                        >
-                                            Set a giving goal
-                                        </Button>
-                                    }
-                                >
-                                    <Modal.Header>Set Your Giving Goal for 2019</Modal.Header>
-                                    <Modal.Content>
-                                       <ModalContent 
-                                            handleInputChange={this.handleInputChange}
-                                            givingGoal={givingGoal}
-                                            validity={validity}
-                                       />
-                                        
-                                    </Modal.Content>
-                                    <Modal.Actions>
-                                            <Button
-                                                className="ui button primary blue-btn-rounded"
-                                                onClick={this.closeModalAndSave}
+                                            <Modal
+                                                size="tiny"
+                                                dimmer="inverted"
+                                                closeIcon
+                                                onClose={this.closeModal}
+                                                open={this.state.showModal}
+                                                trigger={
+                                                    <Button
+                                                        onClick={() => this.setState({ showModal: true })}
+                                                        primary 
+                                                        className="ui button primary blue-btn-rounded" 
+                                                    >
+                                                        Set a giving goal
+                                                    </Button>
+                                                }
                                             >
-                                                SaveChanges
-                                            </Button>
-                                        </Modal.Actions>
-                                </Modal>
+                                            <Modal.Header>Set Your Giving Goal for 2019</Modal.Header>
+                                            <Modal.Content>
+                                                <ModalContent 
+                                                        handleInputChange={this.handleInputChange}
+                                                        givingGoal={givingGoal}
+                                                        validity={validity}
+                                                />
+                                            </Modal.Content>
+                                            <Modal.Actions>
+                                                    <Button
+                                                        className="ui button primary blue-btn-rounded"
+                                                        onClick={this.closeModalAndSave}
+                                                    >
+                                                        SaveChanges
+                                                    </Button>
+                                                </Modal.Actions>
+                                            </Modal>
                             
                                         </Grid.Column>
                                     </Grid.Row>
