@@ -60,6 +60,7 @@ import IconCharity from '../../../static/images/chimp-icon-charity.png';
 import IconGroup from '../../../static/images/chimp-icon-giving-group.png';
 import IconIndividual from '../../../static/images/chimp-icon-individual.png';
 import { withTranslation } from '../../../i18n';
+import '../../shared/style/styles.less';
 import { dismissAllUxCritialErrors } from '../../../actions/error';
 import { Router } from '../../../routes';
 const CreditCard = dynamic(() => import('../../shared/CreditCard'));

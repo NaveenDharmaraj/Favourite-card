@@ -1,0 +1,235 @@
+import React from 'react';
+import _ from 'lodash';
+import {
+    Container,
+    Table,
+    Image,
+    List,
+    Grid,
+    Icon,
+    Header,
+    Popup,
+} from 'semantic-ui-react';
+import {
+    connect,
+} from 'react-redux';
+
+import {
+    getDashBoardData,
+} from '../../../actions/dashboard';
+import Pagination from '../../shared/Pagination';
+
+
+class DashboradList extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            currentActivePage: 1,
+        };
+        this.onPageChanged = this.onPageChanged.bind(this);
+    }
+
+    componentDidMount() {
+        const {
+            currentUser: {
+                id,
+            },
+            dispatch,
+        } = this.props;
+        getDashBoardData(dispatch, 'all', id, 1);
+    }
+
+    onPageChanged(e, data) {
+        const {
+            currentUser: {
+                id,
+            },
+            dispatch,
+        } = this.props;
+        getDashBoardData(dispatch, 'all', id, data.activePage);
+        this.setState({
+            currentActivePage: data.activePage,
+        });
+    }
+
+    listItem() {
+        const {
+            currentUser: {
+                id,
+            },
+            dataList,
+        } = this.props;
+        let accordianHead = 'No Data';
+        let compareDate = '';
+        if (dataList && dataList.data && _.size(dataList.data) > 0) {
+            accordianHead = dataList.data.map((data, index) => {
+                let date = new Date(data.attributes.createdAt);
+                const dd = date.getDate();
+                const mm = date.getMonth();
+                const month = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ];
+                const yyyy = date.getFullYear();
+                date = `${month[mm]} ${dd} ,${yyyy}`;
+                if (date !== compareDate) {
+                    compareDate = date;
+                } else {
+                    date = '';
+                }
+                let givingType = ''; let rowClass = ''; let givingTypeClass = ''; let descriptionType = ''; let entity = ''; let transactionSign = '';
+                let imageCls = 'ui image';
+                if (data.attributes.destination !== null) {
+                    if (data.attributes.destination.type.toLowerCase() === 'group') {
+                        givingType = 'giving group';
+                        rowClass = 'm-allocation';
+                        givingTypeClass = 'grp-color';
+                        data.attributes.transactionType = 'Allocation';
+                        descriptionType = 'Given to ';
+                        entity = data.attributes.destination.name;
+                        transactionSign = '-';
+                    } else if (data.attributes.destination.type.toLowerCase() === 'beneficiary') {
+                        givingType = 'charity';
+                        rowClass = 'allocation';
+                        givingTypeClass = 'charity-color';
+                        descriptionType = 'Given to ';
+                        entity = data.attributes.destination.name;
+                        transactionSign = '-';
+                    } else if (data.attributes.transactionType.toLowerCase() === 'fundallocation' && data.attributes.destination.id !== Number(id)) {
+                        givingType = '';
+                        rowClass = 'gift';
+                        data.attributes.transactionType = 'Gift';
+                        descriptionType = 'Given to ';
+                        entity = data.attributes.destination.name;
+                        transactionSign = '-';
+                    } else if (data.attributes.transactionType.toLowerCase() === 'donation') {
+                        givingType = '';
+                        rowClass = 'donation';
+                        descriptionType = 'Added to ';
+                        entity = 'Your account';
+                        transactionSign = '+';
+                        imageCls = 'ui avatar image';
+                    } else if (data.attributes.destination.id === Number(id)) {
+                        givingType = '';
+                        rowClass = 'gift';
+                        descriptionType = 'Received a gift from ';
+                        data.attributes.transactionType = 'Gift';
+                        entity = data.attributes.source.name;
+                        transactionSign = '+';
+                    }
+                } else if (data.attributes.transactionType.toLowerCase() === 'fundallocation') {
+                    givingType = '';
+                    rowClass = 'gift';
+                    data.attributes.transactionType = 'Gift';
+                    descriptionType = 'Given to ';
+                    entity = data.attributes.recipientEmail;
+                    transactionSign = '-';
+                }
+
+                return (
+                    <Table.Row className={rowClass}>
+                        <Table.Cell className="date">{date}</Table.Cell>
+                        <Table.Cell>
+                            <List verticalAlign="middle">
+                                <List.Item>
+                                    <Image className={imageCls} size="tiny" src={data.attributes.imageUrl} />
+                                    <List.Content>
+                                        <List.Header>
+                                            {descriptionType}
+                                            <b>
+                                                {entity}
+                                            </b>
+                                        </List.Header>
+                                        <List.Description className={givingTypeClass}>
+                                            {givingType}
+                                        </List.Description>
+                                    </List.Content>
+                                </List.Item>
+                            </List>
+                        </Table.Cell>
+                        <Table.Cell className="reason">{data.attributes.transactionType}</Table.Cell>
+                        <Table.Cell className="amount">
+                            {transactionSign}
+                            $
+                            {data.attributes.amount}
+                        </Table.Cell>
+                    </Table.Row>
+                );
+            });
+        }
+        return (
+            <Table basic="very" className="brdr-top-btm db-activity-tbl">
+                <Table.Body>
+                    {accordianHead}
+                </Table.Body>
+            </Table>
+        );
+    }
+
+    render() {
+        const {
+            dataList,
+        } = this.props;
+        const {
+            currentActivePage,
+        } = this.state;
+        return (
+            <div className="pt-2 pb-2">
+                <Container>
+                    <Grid verticalAlign="middle">
+                        <Grid.Row>
+                            <Grid.Column mobile={16} tablet={12} computer={12}>
+                                <Header as="h3">
+                                    <Header.Content>
+                                    Account activity
+                                    </Header.Content>
+                                </Header>
+                            </Grid.Column>
+                            {/* <Grid.Column mobile={16} tablet={4} computer={4}>
+                                <div className="text-right">
+                                    <Popup
+                                        basic
+                                        className="filterPopup"
+                                        on="click"
+                                        pinned
+                                        position="bottom right"
+                                        trigger={<a><Icon name="filter" />Filter</a>}>
+                                        <div className="filterPanel">
+                                            <div className="filterPanelContent">
+                                                <div className="filterPanelItem">
+                                                    <div className="filter-header font-18 font-bold">All</div>
+                                                    <div className="filter-header font-18 font-bold">Money In</div>
+                                                    <div className="filter-header font-18 font-bold">Money Out</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </Popup>
+                                </div>
+                            </Grid.Column> */}
+                        </Grid.Row>
+                    </Grid>
+                    <div className="pt-2">
+                        {this.listItem()}
+                    </div>
+                    <div className="db-pagination right-align pt-2">
+                        {
+                            !_.isEmpty(dataList) && (
+                                <Pagination
+                                    activePage={currentActivePage}
+                                    totalPages={dataList.count}
+                                    onPageChanged={this.onPageChanged}
+                                />
+                            )
+                        }
+                    </div>
+                </Container>
+            </div>
+        );
+    }
+}
+
+function mapStateToProps(state) {
+    return {
+        currentUser: state.user.info,
+        dataList: state.dashboard.dashboardData,
+    };
+}
+
+export default (connect(mapStateToProps)(DashboradList));

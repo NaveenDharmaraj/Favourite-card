@@ -39,6 +39,9 @@ import {
     getCompanyPaymentAndTax,
     proceed,
 } from '../../../actions/give';
+import {
+    storeEmailIdToGive,
+} from '../../../actions/dashboard';
 import { withTranslation } from '../../../i18n';
 import { parseEmails } from '../../../helpers/give/giving-form-validation';
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
@@ -48,6 +51,7 @@ import AccountTopUp from '../AccountTopUp';
 import { p2pDefaultProps } from '../../../helpers/give/defaultProps';
 import { dismissAllUxCritialErrors } from '../../../actions/error';
 const { publicRuntimeConfig } = getConfig();
+import '../../shared/style/styles.less';
 const {
     STRIPE_KEY
 } = publicRuntimeConfig;
@@ -82,7 +86,6 @@ class Friend extends React.Component {
                 language,
             }
         } = props;
-
         const paymentInstruments = Friend.constructPaymentInstruments(
             props,
             companyDetails,
@@ -131,7 +134,7 @@ class Friend extends React.Component {
         // }
 
         // this.dimissErrors();
-
+        
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleOnInputBlur = this.handleOnInputBlur.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -209,12 +212,13 @@ class Friend extends React.Component {
                 fund,
                 paymentInstrumentsData,
                 userCampaigns,
-                userGroups,
+                userGroups,                
                 slug,
                 i18n: {
                     language,
                 }
             } = this.props;
+            console.log(this.props);
             const formatMessage = this.props.t;
             let paymentInstruments = null;
             let companyPaymentInstrumentChanged = false;
@@ -239,7 +243,7 @@ class Friend extends React.Component {
                     companyPaymentInstrumentChanged,
                     `${firstName} ${lastName}`, companiesAccountsData, userGroups, userCampaigns,
                 );
-            }
+            }            
             this.setState({
                 dropDownOptions: {
                     ...dropDownOptions,
