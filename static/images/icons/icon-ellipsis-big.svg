@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="25px" height="7px" viewBox="0 0 25 7" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 56.3 (81716) - https://sketch.com -->
+    <title>icon-ellipsis-big</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="Icons" transform="translate(-365.000000, -752.000000)" stroke="#263238" stroke-width="1.5">
+            <g id="icon-ellipsis-big" transform="translate(366.000000, 753.000000)">
+                <path d="M2.625,0 C4.075,0 5.25,1.175 5.25,2.625 C5.25,4.075 4.075,5.25 2.625,5.25 C1.175,5.25 0,4.075 0,2.625 C0,1.175 1.175,0 2.625,0 Z" id="Stroke-1"></path>
+                <path d="M19.875,0 C21.325,0 22.5,1.175 22.5,2.625 C22.5,4.075 21.325,5.25 19.875,5.25 C18.425,5.25 17.25,4.075 17.25,2.625 C17.25,1.175 18.425,0 19.875,0 Z" id="Stroke-3"></path>
+                <path d="M11.25,0 C12.7,0 13.875,1.175 13.875,2.625 C13.875,4.075 12.7,5.25 11.25,5.25 C9.8,5.25 8.625,4.075 8.625,2.625 C8.625,1.175 9.8,0 11.25,0 Z" id="Stroke-5"></path>
+            </g>
+        </g>
+    </g>
+</svg>
