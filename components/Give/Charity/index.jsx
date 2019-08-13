@@ -304,7 +304,6 @@ class Charity extends React.Component {
                 };
             } else if( !_isEqual(giveGroupBenificairyDetails, prevProps.giveGroupBenificairyDetails)){   
                 if(_isEmpty(giveGroupBenificairyDetails))
-                debugger
                 Router.pushRoute('/dashboard');
             }
             if (!_isEmpty(fund)) {
