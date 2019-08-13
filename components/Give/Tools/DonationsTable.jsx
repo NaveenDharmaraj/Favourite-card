@@ -12,6 +12,7 @@ import {
     formatCurrency,
 } from '../../../helpers/give/utils';
 import { withTranslation } from '../../../i18n';
+import PlaceholderGrid from '../../shared/PlaceHolder';
 
 import TransactionTableRow from './TransactionsTableRow';
 
@@ -72,24 +73,7 @@ function DonationsTable(props) {
                     {
                         renderTableData()
                     }
-                </Table.Body>) : (<Table.Body>
-                    <Table.Row>
-                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
-                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
-                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
-                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
-                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
-                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
-                    </Table.Row>
-                    <Table.Row>
-                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
-                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
-                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
-                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
-                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
-                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
-                    </Table.Row>
-                </Table.Body>)
+                </Table.Body>) : (<PlaceholderGrid row={2} column={6} placeholderType="table" />)
                 }
             </Table>
         </div>

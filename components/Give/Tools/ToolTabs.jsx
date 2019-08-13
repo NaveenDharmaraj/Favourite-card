@@ -10,13 +10,12 @@ import {
     Tab,
 } from 'semantic-ui-react';
 import _ from 'lodash'
-import AllocationsTable from './AllocationsTable';
-import DonationsTable from './DonationsTable';
+import AllocationsTab from './AllocationsTab';
 import GivingGoalsTable from './GivingGoalsTable';
+import DonationsTab from './DonationsTab'
 import ModalContent from './modalContent';
-import { Router, Link } from '../../../routes';
+import { Router } from '../../../routes';
 import { connect } from 'react-redux';
-import PaginationComponent from '../../shared/Pagination';
 import {validateGivingGoal} from '../../../helpers/users/utils';
 import { getUpcomingTransactions,deleteUpcomingTransaction } from '../../../actions/user';
 import { getUserGivingGoal, setUserGivingGoal } from '../../../actions/user';
@@ -54,7 +53,6 @@ class ToolTabs extends React.Component {
                 id,
             }
         } = this.props;
-        let dwf = this.validateForm;
         if(this.validateForm()) {
             this.setState({ showModal: false });
             setUserGivingGoal(dispatch, givingGoal, id);
@@ -102,6 +100,7 @@ class ToolTabs extends React.Component {
             menuItem: 'Add money monthly',
             render: () => {
                 const {
+                    monthlyTransactionApiCall,
                     upcomingTransactions,
                     upcomingTransactionsMeta,
                 } = this.props
@@ -112,44 +111,14 @@ class ToolTabs extends React.Component {
                 return (
                 <Tab.Pane attached={false}>
                     <div className="tools-tabpane">
-                        <Segment>
-                            <Grid verticalAlign="middle">
-                                <Grid.Row>
-                                    <Grid.Column mobile={16} tablet={11} computer={11}>
-                                        <Header as="h3" className="mb-1">
-                                            Add money monthly
-                                            <Header.Subheader className="mt-1">
-                                            Set up a monthly recurring donation, and you can regularly add money to your Impact Account without having to think about it. When you're inspired to give some away, it'll be ready and waiting for you.
-                                            </Header.Subheader>
-                                        </Header>
-                                    </Grid.Column>
-                                    <Grid.Column mobile={16} tablet={5} computer={5} textAlign="right">
-                                        <Link route="/donations/new"><a href="" className="ui button primary blue-btn-rounded" fluid>Create new monthly donation</a></Link>
-                                    </Grid.Column>
-                                </Grid.Row>
-                            </Grid>
-                            <DonationsTable
-                                upcomingTransactions={upcomingTransactions}
-                                deleteTransaction={this.deleteTransaction}
-                                monthlyTransactionApiCall={this.props.monthlyTransactionApiCall}
-                            />
-                        <Grid.Column textAlign="right">
-                            <div className="db-pagination right-align pt-2">
-                            {!this.props.monthlyTransactionApiCall && (totalPages > 1) && 
-                                <PaginationComponent
-                                    activePage={activePage}
-                                    onPageChanged={this.onPageChange}
-                                    totalPages={totalPages}
-                                    firstItem={(activePage === 1) ? null : undefined}
-                                    lastItem={(activePage === totalPages) ? null : undefined}
-                                    prevItem={(activePage === 1) ? null : undefined}
-                                    nextItem={(activePage === totalPages) ? null : undefined}
-                                />
-                            }
-                            </div>
-
-                        </Grid.Column>
-                        </Segment>
+                       <DonationsTab
+                            activePage={activePage}
+                            onPageChange={this.onPageChange}
+                            upcomingTransactions={upcomingTransactions}
+                            deleteTransaction={this.deleteTransaction}
+                            monthlyTransactionApiCall={monthlyTransactionApiCall}
+                            totalPages={totalPages}
+                       />
                     </div>
                 </Tab.Pane>
             );
@@ -159,6 +128,7 @@ class ToolTabs extends React.Component {
             menuItem: 'Your monthly giving',
             render: () => {
                 const {
+                    monthlyTransactionApiCall,
                     upcomingTransactions,
                     upcomingTransactionsMeta
                 } = this.props;
@@ -169,34 +139,14 @@ class ToolTabs extends React.Component {
                 return (
                 <Tab.Pane attached={false}>
                     <div className="tools-tabpane">
-                        <Segment className="no-border no-shadow">
-                            <Header as="h3">
-                                Your monthly giving
-                                <Header.Subheader className="mt-1">
-                                Setup a new monthly gift by searching for a charity, Giving Group, or Campaign and then selecting 'Give' on the page. Your credit card will only be charged if your account balance is less than the amount you are attempting to give.
-                                </Header.Subheader>
-                            </Header>
-                            <AllocationsTable 
-                                upcomingTransactions={upcomingTransactions}
-                                deleteTransaction={this.deleteTransaction}
-                                monthlyTransactionApiCall={this.props.monthlyTransactionApiCall}
-                            />
-                            <Grid.Column textAlign="right">
-                            <div className="db-pagination right-align pt-2">
-                            {!this.props.monthlyTransactionApiCall && (totalPages > 1) &&
-                            <PaginationComponent
-                                activePage={activePage}
-                                onPageChanged={this.onPageChange}
-                                totalPages={totalPages}
-                                firstItem={(activePage === 1) ? null : undefined}
-                                lastItem={(activePage === totalPages) ? null : undefined}
-                                prevItem={(activePage === 1) ? null : undefined}
-                                nextItem={(activePage === totalPages) ? null : undefined}
-
-                            />}
-                            </div>
-                        </Grid.Column>
-                        </Segment>
+                        <AllocationsTab
+                            activePage={activePage}
+                            onPageChange={this.onPageChange}
+                            upcomingTransactions={upcomingTransactions}
+                            deleteTransaction={this.deleteTransaction}
+                            monthlyTransactionApiCall={monthlyTransactionApiCall}
+                            totalPages={totalPages}
+                        />
                     </div>
                 </Tab.Pane>
             )
@@ -336,17 +286,20 @@ class ToolTabs extends React.Component {
     }
     onTabChangeFunc(event, data) {
         const {
-            dispatch
+            dispatch,
+            defaultActiveIndex
         } = this.props;
-        dispatch({
-                payload:{
-                    upcomingTransactions: {},
-                    upcomingTransactionsMeta: {},
-            },
-            type: 'GET_UPCOMING_TRANSACTIONS',
-        });
-        event.preventDefault();
-        Router.pushRoute(tabMenus[data.activeIndex]);
+        if(defaultActiveIndex != data.activeIndex){
+            dispatch({
+                    payload:{
+                        upcomingTransactions: {},
+                        upcomingTransactionsMeta: {},
+                },
+                type: 'GET_UPCOMING_TRANSACTIONS',
+            });
+            event.preventDefault();
+            Router.pushRoute(tabMenus[data.activeIndex]);
+        }
     }
     
     render(){

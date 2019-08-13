@@ -3,7 +3,6 @@
 import React from 'react';
 import {
     Table,
-    Placeholder
 } from 'semantic-ui-react';
 import _ from 'lodash';
 
@@ -12,6 +11,7 @@ import {
     formatDateForGivingTools,
     formatCurrency,
 } from '../../../helpers/give/utils';
+import PlaceholderGrid from '../../shared/PlaceHolder';
 
 import TransactionTableRow from './TransactionsTableRow';
 
@@ -72,24 +72,7 @@ function AllocationsTable(props) {
                     {
                         renderTableData()
                     }
-                </Table.Body>) : (<Table.Body>
-                    <Table.Row>
-                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
-                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
-                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
-                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
-                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
-                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
-                    </Table.Row>
-                    <Table.Row>
-                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
-                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
-                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
-                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
-                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
-                        <Table.Cell>  <Placeholder><Placeholder.Line length='full' /></Placeholder></Table.Cell>
-                    </Table.Row>
-                </Table.Body>)
+                </Table.Body>) : (<PlaceholderGrid row={2} column={6} placeholderType="table" />)
                 }
             </Table>
         </div>
