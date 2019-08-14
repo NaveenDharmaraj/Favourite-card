@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 
 import user from './user';
+import userProfile from './userProfile';
 import give from './give';
 import auth from './auth';
 import onBoarding from './onBoarding';
@@ -12,6 +13,7 @@ const root = combineReducers({
     give,
     onBoarding,
     user,
+    userProfile,
 });
 
 export default root;
