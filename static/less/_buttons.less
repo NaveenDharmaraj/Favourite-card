@@ -1,3 +1,60 @@
+.blue-btn-rounded{
+  button{
+    &.ui{
+      &.primary{
+        &.button{
+          background-color: @blueButton;
+          border-radius: 2rem;
+          &:hover{
+            background-color: @blueButton-hover;
+          }
+        }
+      }
+    }
+  }
+}
+button{
+  &.ui{
+    &.button{
+      &.moreOption-btn{
+        padding: 18px 9px;
+        &.transparent{
+          background-color: transparent;
+          &:focus{
+            background-color: #F3F3F7;
+          }
+          &:active{
+            background-color: #F3F3F7;
+          }
+        }
+      }
+      &.blue-btn-rounded-def{
+        color: #fff;
+        background-color: @link;
+        border-radius: 2rem;
+        border: 1px solid @link;
+        &.c-small{
+          padding: .5rem 1.5rem
+        }
+        &:hover{
+          background-color: @link-hover;
+        }
+      }
+      &.blue-bordr-btn-round-def{
+        border: 1px solid @link;
+        background: transparent;
+        color: @link;
+        border-radius: 2rem;
+        &.c-small{
+          padding: .5rem 1.5rem
+        }
+        &:hover{
+          border-color: @link-hover;
+        }
+      }
+    }
+  }
+}
 button{
   &.ui{
     &.primary{
@@ -38,6 +95,9 @@ button{
         color: @blueButton;
         font-size: 18/@rem;
         font-weight: 400;
+      }
+      &.rounded-btn{
+        border-radius: 20.5/@rem;
       }
       &.transparent-btn-round{
         background-color: transparent;

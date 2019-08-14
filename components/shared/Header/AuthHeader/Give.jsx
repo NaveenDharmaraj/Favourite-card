@@ -59,7 +59,7 @@ const Give = () => (
                             <br />
                         </Grid.Column>
                         <Grid.Column mobile={16} tablet={6} computer={6}>
-                            <Link route="/give/to/friend/new">
+                            <Link href="/give/to/friend/new">
                                 <Button fluid basic content="Give" />
                             </Link>
                         </Grid.Column>

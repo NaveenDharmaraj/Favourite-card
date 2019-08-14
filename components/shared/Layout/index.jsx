@@ -46,7 +46,7 @@ class Layout extends React.Component {
                     </title>
                     <link
                         rel="stylesheet"
-                        href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.11/semantic.min.css"
+                        href="//cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css"
                     />
                     <script id="stripe-js" src="https://js.stripe.com/v3/" />
                 </Head>
@@ -76,24 +76,20 @@ class Layout extends React.Component {
                         </Responsive>
                         <Responsive minWidth={Responsive.onlyTablet.minWidth}>
                             <Header isAuthenticated={isAuthenticated} onBoarding={onBoarding} />
-                                <Container>
-                                    <div className="pageWraper">
-                                        {!_.isEmpty(appErrors) &&
-                                            <Container
-                                                className="app-status-messages"
-                                            >
-                                                {_.map(appErrors, (err) => (
-                                                    <StatusMessage
-                                                        key={err.heading}
-                                                        handleDismiss={() => dismissUxCritialErrors(err, appErrors, dispatch)}
-                                                        {...err}
-                                                    />
-                                                ))}
-                                            </Container>
-                                        }
-                                        {children}
-                                    </div>
-                                </Container>
+                                {!_.isEmpty(appErrors) &&
+                                    <Container
+                                        className="app-status-messages"
+                                    >
+                                        {_.map(appErrors, (err) => (
+                                            <StatusMessage
+                                                key={err.heading}
+                                                handleDismiss={() => dismissUxCritialErrors(err, appErrors, dispatch)}
+                                                {...err}
+                                            />
+                                        ))}
+                                    </Container>
+                                }
+                                {children}
                         </Responsive>
                         <Footer />
                     </ErrorBoundary>

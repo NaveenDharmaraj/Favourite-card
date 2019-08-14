@@ -25,6 +25,7 @@ import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
 import { proceed, getCompanyPaymentAndTax } from '../../../actions/give';
 import { withTranslation } from '../../../i18n';
 import { dismissAllUxCritialErrors } from '../../../actions/error';
+import '../../shared/style/styles.less';
 import {
     Elements,
     StripeProvider
@@ -779,6 +780,7 @@ class Donation extends React.Component {
             <Divider hidden />
                 <Form.Button
                     primary
+                    className="blue-btn-rounded"
                     // className={isMobile ? 'mobBtnPadding' : 'btnPadding'}
                     content={(!this.state.buttonClicked) ? formatMessage('giveCommon:continueButton')
                         : formatMessage('giveCommon:submittingButton')}

@@ -254,7 +254,7 @@ const AllocationListing = ({
             <Container textAlign="center">
                 <Button
                     primary
-                    className="btnReview"
+                    className="blue-btn-rounded"
                     content={(!disableButton)
                         ? buttonText
                         : formatMessage('giveCommon:submitingButton')}
