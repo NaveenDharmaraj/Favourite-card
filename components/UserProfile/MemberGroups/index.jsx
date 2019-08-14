@@ -97,7 +97,7 @@ class UserMemberGroupList extends React.Component {
                     <Header as="h4" className="underline">
                     Joined Groups
                     </Header>
-                    { userMemberGroupListLoader ? <PlaceholderGrid row={2} column={3} /> : (
+                    { userMemberGroupListLoader ? <PlaceholderGrid row={1} column={3} /> : (
                         this.userMemberGroupList()
                     )}
                 </Container>

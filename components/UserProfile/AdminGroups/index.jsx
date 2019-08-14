@@ -102,7 +102,7 @@ class UserAdminGroupList extends React.Component {
                     <Header as="h4" className="underline">
                     {firstName}'s Giving Groups
                     </Header>
-                    { userAdminGroupListLoader ? <PlaceholderGrid row={2} column={3} /> : (
+                    { userAdminGroupListLoader ? <PlaceholderGrid row={1} column={3} /> : (
                         this.userAdminGroupList()
                     )}
                 </Container>

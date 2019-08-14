@@ -102,7 +102,7 @@ class FavouritesList extends React.Component {
                     <Header as="h4" className="underline">
                     Favourites
                     </Header>
-                    { favouritesListLoader ? <PlaceholderGrid row={2} column={3} /> : (
+                    { favouritesListLoader ? <PlaceholderGrid row={1} column={3} /> : (
                         this.favouriteList()
                     )}
                 </Container>
