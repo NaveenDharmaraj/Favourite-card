@@ -8,7 +8,7 @@ import {
 
 import {
     getBeneficiaryFromSlug,
-} from '../actions/give';
+} from '../actions/charity';
 import Layout from '../components/shared/Layout';
 import CharityProfileWrapper from '../components/charity';
 

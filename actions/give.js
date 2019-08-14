@@ -707,7 +707,7 @@ export const getBeneficiaryFromSlug = (dispatch, slug) => {
             },
             type: actionTypes.GET_BENEFICIARY_FROM_SLUG,
         };
-        coreApi.get(`/beneficiaries/find_by_slug?load_full_profile=true`, {
+        coreApi.get(`/beneficiaries/find_by_slug`, {
             params: {
                 dispatch,
                 slug: [

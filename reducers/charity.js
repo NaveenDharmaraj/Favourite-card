@@ -15,6 +15,12 @@ const charity = (state = {}, action) => {
                 charityDeepLink: action.payload.deepLink,
             };
             break;
+        case 'GET_BENEFICIARY_FROM_SLUG':
+            newState = {
+                ...state,
+                charityDetails: Object.assign({}, state.charityDetails, action.payload),
+            };
+            break;
         default:
             break;
     }

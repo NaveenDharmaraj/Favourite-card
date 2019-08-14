@@ -1,7 +1,11 @@
+import _ from 'lodash';
+
 import socialApi from '../services/socialApi';
+import coreApi from '../services/coreApi';
 
 export const actionTypes = {
     GET_BENEFICIARY_DONEE_LIST: 'GET_BENEFICIARY_DONEE_LIST',
+    GET_BENEFICIARY_FROM_SLUG: 'GET_BENEFICIARY_FROM_SLUG',
     SAVE_DEEP_LINK: 'SAVE_DEEP_LINK',
     SAVE_FOLLOW_STATUS: 'SAVE_FOLLOW_STATUS',
 };
@@ -102,4 +106,39 @@ export const copyDeepLink = (url, dispatch) => {
     ).catch((error) => {
         console.log(error);
     }).finally(() => dispatch(fsa));
+};
+
+export const getBeneficiaryFromSlug = (dispatch, slug) => {
+    if (slug !== ':slug') {
+        const fsa = {
+            payload: {
+                charityDetails: {},
+            },
+            type: actionTypes.GET_BENEFICIARY_FROM_SLUG,
+        };
+        coreApi.get(`/beneficiaries/find_by_slug?load_full_profile=true`, {
+            params: {
+                dispatch,
+                slug: [
+                    slug,
+                ],
+                uxCritical: true,
+            },
+        }).then(
+            (result) => {
+                if (result && !_.isEmpty(result.data)) {
+                    fsa.payload.charityDetails = result.data;
+                }
+                return dispatch(fsa);
+            },
+        ).catch((e) => {
+            //redirect('/give/error');
+            console.log('redirect to error-->', e);
+        }).finally(() => {
+            return dispatch(fsa);
+        });
+    } else {
+        //redirect('/dashboard');
+        console.log('dashboard');
+    }
 };
