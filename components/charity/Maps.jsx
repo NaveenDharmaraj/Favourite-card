@@ -1,51 +1,79 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import getConfig from 'next/config';
 import {
     Map,
     GoogleApiWrapper,
     Marker,
 } from 'google-maps-react';
-import Geocode from "react-geocode";
+import Geocode from 'react-geocode';
 
-Geocode.setApiKey("AIzaSyCtg_drc6h-eoCfnWhVANWbcqiO_p922BA");
+const { publicRuntimeConfig } = getConfig();
+
+const {
+    GOOGLE_MAP_API_KEY,
+} = publicRuntimeConfig;
+
+Geocode.setApiKey(`${GOOGLE_MAP_API_KEY}`);
 const mapStyles = {
     width: '100%',
     height: '100%',
 };
 
 class Maps extends React.Component {
-    static getGeoCoding() {
-        return (
-            Geocode.fromAddress("Eiffel Tower").then(
-            response => {
-                const { lat, lng } = response.results[0].geometry.location;
-                console.log(lat, lng);
-                <Marker position={{ lat: lat, lng: lng}} />
+    static getGeoCoding(name) {
+        const values = {};
+        Geocode.fromAddress(name).then(
+            (response) => {
+                const {
+                    lat,
+                    lng,
+                } = response.results[0].geometry.location;
+                // console.log(lat, lng);
+                values.lat = lat;
+                values.lng = lng;
+                return values;
             },
-            error => {
-              console.error(error);
-            }
-          )
-          );
+            (error) => {
+                console.error(error);
+            },
+        );
+        return values;
     }
+
     render() {
         const {
             charityDetails,
         } = this.props;
-        // Maps.getGeoCoding();
         return (
-            <div style={{position:'relative',height:'500px'}}>
-            <Map
-          google={this.props.google}
-          zoom={8}
-          style={mapStyles}
-          initialCenter={{ lat: 56.1304, lng: 106.3468}}
-        >
-            {/* {Maps.getGeoCoding()} */}
-        <Marker position={{ lat: 56.1304, lng: 106.3468}} />
-        <Marker position={{ lat: 37.0902, lng: 95.7129}} />
-        </Map>
-        </div>
+            <div style={{
+                position: 'relative',
+                height: '500px',
+            }}
+            >
+                <Map
+                    google={this.props.google}
+                    zoom={8}
+                    style={mapStyles}
+                    initialCenter={
+                        Maps.getGeoCoding((charityDetails.charityDetails
+                            && charityDetails.charityDetails.attributes)
+                            && charityDetails.charityDetails.attributes.countries[0].name)
+                    }
+                >
+                    {(charityDetails.charityDetails && charityDetails.charityDetails.attributes)
+                    && charityDetails.charityDetails.attributes.countries.map((country) => {
+                        const location = Maps.getGeoCoding(country.name);
+                        return (
+                            <Marker position={{
+                                lat: location.lat,
+                                lng: location.lng,
+                            }}
+                            />
+                        );
+                    })}
+                </Map>
+            </div>
         );
     }
 }
@@ -57,5 +85,5 @@ function mapStateToProps(state) {
 }
 
 export default GoogleApiWrapper({
-    apiKey: 'AIzaSyCtg_drc6h-eoCfnWhVANWbcqiO_p922BA',
+    apiKey: `${GOOGLE_MAP_API_KEY}`,
 })(connect(mapStateToProps)(Maps));
