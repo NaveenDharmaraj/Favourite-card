@@ -46,7 +46,7 @@ class MyProfile extends React.Component {
             percentage = (givenAmount * 100) / givingAmount;
         }
         return (
-            <Layout>
+            <Layout authRequired>
                 <BasicProfile userData={userData} />
                 <CharitableInterestsList />
                 <GivingGoal
