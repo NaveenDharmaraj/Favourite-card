@@ -6,6 +6,7 @@ import {
     Grid,
     Card,
 } from 'semantic-ui-react';
+import PropTypes from 'prop-types';
 
 import { Link } from '../../../routes';
 
@@ -28,7 +29,11 @@ const LeftImageCard = (props) => {
                         <Grid.Column width={10}>
                             <Header as="h4">
                                 <Header.Content>
-                                    <Header.Subheader className={typeClass}>{type}</Header.Subheader>
+                                    <Header.Subheader
+                                        className={typeClass}
+                                    >
+                                        {type}
+                                    </Header.Subheader>
                                     {entityName}
                                 </Header.Content>
                             </Header>
@@ -42,5 +47,22 @@ const LeftImageCard = (props) => {
         </Grid.Column>
     );
 };
+
+LeftImageCard.propTypes = {
+    entityName: PropTypes.string,
+    placeholder: PropTypes.string,
+    type: PropTypes.string,
+    typeClass: PropTypes.string,
+    url: PropTypes.string,
+};
+
+LeftImageCard.defaultProps = {
+    entityName: '',
+    placeholder: '',
+    type: '',
+    typeClass: '',
+    url: '',
+};
+
 
 export default LeftImageCard;
