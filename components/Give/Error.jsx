@@ -24,6 +24,7 @@ const Error = (props) => {
             <Grid
                 className="u-margin-bottom-lg u-margin-top-lg"
                 container
+                centered
                 columns={2}
             >
                 <Grid.Column
@@ -74,9 +75,11 @@ const Error = (props) => {
                             <Grid.Column
                                 className="error-message"
                             >
-                                <Link href="/">
+                                <Link route="/dashboard">
                                     <Button
                                         color="blue"
+                                        primary
+                                        className="blue-btn-rounded"
                                         content={formatMessage('errorGoToDashboard')}
                                     />
                                 </Link>

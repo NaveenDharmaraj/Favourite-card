@@ -15,9 +15,6 @@ export const donationDefaultProps = {
                 value: 0,
             },
             giveAmount: '',
-            giveFrom: {
-                value: '',
-            },
             giveTo: {
                 value: null,
             },

@@ -22,6 +22,7 @@ if (!_.isEmpty(BASIC_AUTH_KEY)) {
 
 export const actionTypes = {
     CREATE_USER: 'CREATE_USER',
+    GET_USER_CAUSES: 'GET_USER_CAUSES',
     USER_API_VALIDATING: 'USER_API_VALIDATING',
     USER_EXISTS: 'USER_EXISTS',
 };
@@ -71,4 +72,20 @@ export const resendVerificationEmail = (userId) => {
         client_id: AUTH0_WEB_CLIENT_ID,
         user_id: userId,
     }, BASIC_AUTH_HEADER);
+};
+
+export const getUserCauses = (dispatch) => {
+    const fsa = {
+        payload: {
+            causesList: null,
+        },
+        type: actionTypes.GET_USER_CAUSES,
+    };
+    return socialApi.get(`/user/causes`, BASIC_AUTH_HEADER).then((result) => {
+        fsa.payload.causesList = result.data;
+    }).catch((error) => {
+        console.log(error);
+    }).finally(() => {
+        dispatch(fsa);
+    });
 };

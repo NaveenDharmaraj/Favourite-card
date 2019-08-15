@@ -387,8 +387,9 @@ const _handleLockSuccess = async ({
         await (storage.set('chimpUserId', userId, 'cookie'));
         const dispatch = auth0.storeDispatch;
         await (getUser(dispatch, userId));
-        const returnTo = '/';
+        const returnTo = '/dashboard';
         Router.pushRoute(returnTo);
+        // window.location.href = 
     }).catch(() => {
         Router.pushRoute('/users/login');
     });
