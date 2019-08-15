@@ -17,20 +17,10 @@ class CharityProfile extends React.Component {
         reduxStore,
         query,
     }) {
-        // TODO get api data from getInitialProps instead of componentDidMount
-        // getBeneficiaryFromSlug(reduxStore.dispatch, query.slug);
-        // console.log("Initialprops called --------> reduxStore --->",reduxStore);
+        await getBeneficiaryFromSlug(reduxStore.dispatch, query.slug);
         return {
             slug: query.slug,
         };
-    }
-
-    componentDidMount() {
-        const {
-            dispatch,
-            slug,
-        } = this.props;
-        getBeneficiaryFromSlug(dispatch, slug);
     }
 
     render() {
