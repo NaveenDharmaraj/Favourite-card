@@ -5,7 +5,7 @@ import {
     string,
 } from 'prop-types';
 import {
-    Tab,
+    Tab, Container,
 } from 'semantic-ui-react';
 
 import {
@@ -59,16 +59,20 @@ class ProfileDetails extends React.Component {
             },
         ];
         return (
-            <div className="charityTab">
-                <Tab
-                    menu={
-                        {
-                            pointing: true,
-                            secondary: true,
-                        }}
-                    panes={panes}
-                    onTabChange={(event, data) => this.onTabChangeFunc(event, data)}
-                />
+            <div className="pb-3">
+                <Container>
+                    <div className="charityTab">
+                        <Tab
+                            menu={
+                                {
+                                    pointing: true,
+                                    secondary: true,
+                                }}
+                            panes={panes}
+                            onTabChange={(event, data) => this.onTabChangeFunc(event, data)}
+                        />
+                    </div>
+                </Container>
             </div>
         );
     }
