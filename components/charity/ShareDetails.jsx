@@ -15,6 +15,7 @@ import {
     copyDeepLink,
     saveFollowStatus,
     deleteFollowStatus,
+    getBeneficiaryFromSlug,
 } from '../../actions/charity';
 
 const actionTypes = {
@@ -35,13 +36,15 @@ class ShareDetails extends React.Component {
         this.handleFollow = this.handleFollow.bind(this);
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidMount() {
         const{
             dispatch,
             userId,
             charityDetails,
+            deepLink,
         } = this.props;
-        if (!_.isEqual(this.props.charityDetails, prevProps.charityDetails) && _.isEmpty(this.props.deepLink)) {
+        getBeneficiaryFromSlug(dispatch, charityDetails.charityDetails.attributes.slug);
+        if (_.isEmpty(deepLink)) {
             copyDeepLink(`deeplink?profileType=charityprofile&sourceId=${userId}&profileId=${charityDetails.charityDetails.id}`, dispatch);
         }
     }
