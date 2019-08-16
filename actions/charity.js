@@ -26,7 +26,7 @@ export const getBeneficiaryDoneeList = (dispatch, charityId) => {
             return dispatch(fsa);
         },
     ).catch((error) => {
-        console.log(error);
+        // console.log(error);
     }).finally(() => {
         return dispatch(fsa);
     });
@@ -59,7 +59,7 @@ export const saveFollowStatus = (dispatch, userId, charityId) => {
             fsa.payload.followStatus = true;
         },
     ).catch((error) => {
-        console.log(error);
+        // console.log(error);
     }).finally(() => dispatch(fsa));
 };
 
@@ -89,7 +89,7 @@ export const deleteFollowStatus = (dispatch, userId, charityId) => {
             fsa.payload.followStatus = false;
         },
     ).catch((error) => {
-        console.log(error);
+        // console.log(error);
     }).finally(() => dispatch(fsa));
 };
 
@@ -105,7 +105,7 @@ export const copyDeepLink = (url, dispatch) => {
             fsa.payload.deepLink = result.data;
         },
     ).catch((error) => {
-        console.log(error);
+        // console.log(error);
     }).finally(() => dispatch(fsa));
 };
 
@@ -133,7 +133,7 @@ export const getBeneficiaryFromSlug = async (dispatch, slug) => {
             },
         ).catch((e) => {
             //redirect('/give/error');
-            console.log('redirect to error-->', e);
+            // console.log('redirect to error-->', e);
         }).finally(() => {
             dispatch(fsa);
         });
