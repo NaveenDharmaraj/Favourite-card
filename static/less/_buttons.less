@@ -15,6 +15,48 @@
 }
 button{
   &.ui{
+    &.button{
+      &.moreOption-btn{
+        padding: 18px 9px;
+        &.transparent{
+          background-color: transparent;
+          &:focus{
+            background-color: #F3F3F7;
+          }
+          &:active{
+            background-color: #F3F3F7;
+          }
+        }
+      }
+      &.blue-btn-rounded-def{
+        color: #fff;
+        background-color: @link;
+        border-radius: 2rem;
+        border: 1px solid @link;
+        &.c-small{
+          padding: .5rem 1.5rem
+        }
+        &:hover{
+          background-color: @link-hover;
+        }
+      }
+      &.blue-bordr-btn-round-def{
+        border: 1px solid @link;
+        background: transparent;
+        color: @link;
+        border-radius: 2rem;
+        &.c-small{
+          padding: .5rem 1.5rem
+        }
+        &:hover{
+          border-color: @link-hover;
+        }
+      }
+    }
+  }
+}
+button{
+  &.ui{
     &.primary{
       &.button{
         min-height: 40px;
