@@ -1,6 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
+import {
+    bool,
+    string,
+    any,
+} from 'prop-types';
 import getConfig from 'next/config';
 import {
     Grid,
@@ -78,14 +83,8 @@ class ShareDetails extends React.Component {
         let height = 436;
         let top = (screen.height/2)-(height/2);
         let left = (screen.width/2)-(width/2);
-        let type='';
-        let slug='';
-        if (charityDetails && charityDetails.charityDetails && charityDetails.charityDetails.type
-                && charityDetails.charityDetails.attributes) {
-            type = charityDetails.charityDetails.type;
-            slug = charityDetails.charityDetails.attributes.slug;
-            name = charityDetails.charityDetails.attributes.name;
-        }
+        let slug = charityDetails.charityDetails.attributes.slug;
+        let name = charityDetails.charityDetails.attributes.name;
         switch (data.id) {
             case 'twitter':
                 url=encodeURIComponent(`${APP_URL_ORIGIN}/charities/${slug}`);
@@ -123,8 +122,8 @@ class ShareDetails extends React.Component {
                             <List.Item as="a">
                                 <Icon
                                     id="follow"
-                                    color={(charityDetails && charityDetails.charityDetails && charityDetails.charityDetails.attributes.following) ? "red" : "blue"}
-                                    name={(charityDetails && charityDetails.charityDetails && charityDetails.charityDetails.attributes.following) ? "heart outline" : "heart"}
+                                    color={(charityDetails.charityDetails.attributes.following) ? "red" : "blue"}
+                                    name={(charityDetails.charityDetails.attributes.following) ? "heart outline" : "heart"}
                                     onClick={this.handleFollow}
                                     disabled={this.props.disableFollow}
                                 />
@@ -167,6 +166,34 @@ class ShareDetails extends React.Component {
         );
     }
 }
+
+ShareDetails.defaultProps = {
+    charityDetails: {
+        charityDetails: {
+            attributes: {
+                following: false,
+                slug: '',
+                name: '',
+            },
+            id:null,
+        },
+        type:'',
+    },
+};
+
+ShareDetails.propTypes = {
+    charityDetails: {
+        charityDetails: {
+            attributes: {
+                following: bool,
+                slug: string,
+                name: string,
+            },
+            id:any,
+        },
+        type: string,
+    },
+};
 
 function mapStateToProps(state) {
     return {
