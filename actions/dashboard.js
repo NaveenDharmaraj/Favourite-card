@@ -1,7 +1,8 @@
 import _ from 'lodash';
 
 import coreApi from '../services/coreApi';
-import socialApi from '../services/socialApi';
+import graphApi from '../services/graphApi';
+import utilityApi from '../services/utilityApi';
 
 export const actionTypes = {
     USER_DASHBOARD: 'USER_DASHBOARD',
@@ -51,7 +52,7 @@ const getFriendsList = (dispatch, email) => {
         type: actionTypes.USER_FRIENDS,
     };
 
-    socialApi.get(`/user/myfriends?userid=${email}&page[number]=1&page[size]=6`).then(
+    graphApi.get(`/user/myfriends?userid=${email}&page[number]=1&page[size]=6`).then(
         (result) => {
             fsa.payload = {
                 count: result.meta.recordCount,
@@ -73,7 +74,7 @@ const getRecommendationList = (dispatch, userId) => {
         type: actionTypes.USER_RECOMMENDATIONS,
     };
 
-    socialApi.get(`/recommend/all?userid=${Number(userId)}&page[number]=1&page[size]=3`).then(
+    graphApi.get(`/recommend/all?userid=${Number(userId)}&page[number]=1&page[size]=9`).then(
         (result) => {
             fsa.payload = {
                 count: result.meta.recordCount,
@@ -94,7 +95,7 @@ const getStoriesList = (dispatch, userId) => {
         },
         type: actionTypes.USER_STORIES,
     };
-    socialApi.get(`/blogs/newBlogs?size=7`).then(
+    utilityApi.get(`/blogs/newBlogs?size=7`).then(
         (result) => {
             fsa.payload = {
                 count: result.totalCount,
