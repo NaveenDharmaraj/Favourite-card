@@ -9,13 +9,13 @@ import auth0 from '../services/auth';
 const { publicRuntimeConfig } = getConfig();
 
 const {
-    SOCIAL_API_BASE,
+    GRAPH_API_BASE,
     SOCIAL_API_DOMAIN,
     SOCIAL_API_VERSION,
 } = publicRuntimeConfig;
 
 const instance = axios.create({
-    baseURL: `${SOCIAL_API_DOMAIN}/${SOCIAL_API_BASE}/${SOCIAL_API_VERSION}`,
+    baseURL: `${SOCIAL_API_DOMAIN}/${GRAPH_API_BASE}/${SOCIAL_API_VERSION}`,
     headers: {
         'Accept': 'application/vnd.api+json',
         'Content-Type': 'application/vnd.api+json',
