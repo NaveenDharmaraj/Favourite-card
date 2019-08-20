@@ -9,13 +9,13 @@ import auth0 from '../services/auth';
 const { publicRuntimeConfig } = getConfig();
 
 const {
-    SOCIAL_API_BASE,
+    SEARCH_API_BASE,
     SOCIAL_API_DOMAIN,
     SOCIAL_API_VERSION,
 } = publicRuntimeConfig;
 
 const instance = axios.create({
-    baseURL: `${SOCIAL_API_DOMAIN}/${SOCIAL_API_BASE}/${SOCIAL_API_VERSION}`,
+    baseURL: `${SOCIAL_API_DOMAIN}/${SEARCH_API_BASE}/${SOCIAL_API_VERSION}`,
     headers: {
         'Accept': 'application/vnd.api+json',
         'Content-Type': 'application/vnd.api+json',
@@ -26,8 +26,8 @@ instance.interceptors.request.use(function (config) {
         let token = '';
         if (!_isEmpty(auth0) && !_isEmpty(auth0.accessToken)) {
             token = auth0.accessToken;
+            config.headers.Authorization = `Bearer ${token}`;
         }
-        config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
 }, function (error) {
