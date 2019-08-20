@@ -48,7 +48,6 @@ const formatCurrency = (value, language, currencyType) => {
     ).format(value), 'US', '');
 };
 
-
 /**
 * Determine whether the supplied field is valid.
 * @param  {String} field The tax receipt profile form field name

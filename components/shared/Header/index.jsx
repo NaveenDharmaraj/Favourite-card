@@ -10,6 +10,7 @@ import {
 } from 'semantic-ui-react';
 
 import logo from '../../../static/images/CharitableImpact.png';
+import { Link } from '../../../routes';
 
 import AuthHeader from './AuthHeader';
 import OnBoardingHeader from './OnBoarding';
@@ -50,8 +51,10 @@ const Header = (props) => {
         >
             <Container>
                 <Menu secondary>
-                    <Menu.Item as="a" href="/dashboard">
-                        <Image style={{ width: '131px' }} src={logo} />
+                    <Menu.Item>
+                        <Link className="lnkChange" route={`/dashboard`}>
+                            <Image style={{ width: '131px' }} src={logo} />
+                        </Link>
                     </Menu.Item>
                     {renderHeader(onBoarding, isAuthenticated)}
                 </Menu>

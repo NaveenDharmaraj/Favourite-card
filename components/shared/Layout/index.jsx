@@ -46,7 +46,7 @@ class Layout extends React.Component {
                     </title>
                     <link
                         rel="stylesheet"
-                        href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.11/semantic.min.css"
+                        href="//cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css"
                     />
                     <script id="stripe-js" src="https://js.stripe.com/v3/" />
                 </Head>
