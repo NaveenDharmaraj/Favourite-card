@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import socialApi from '../services/socialApi';
+import graphApi from '../services/graphApi';
 
 export const actionTypes = {
     USER_PROFILE_BASIC: 'USER_PROFILE_BASIC',
@@ -17,7 +17,7 @@ const getUserProfileBasic = (dispatch, email, userId) => {
         },
         type: actionTypes.USER_PROFILE_BASIC,
     };
-    socialApi.get(`/recommendation/user?emailid=${email}&targetId=0&sourceId=${Number(userId)}`).then(
+    graphApi.get(`/recommendation/user?emailid=${email}&targetId=0&sourceId=${Number(userId)}`).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -37,7 +37,7 @@ const getUserCharitableInterests = (dispatch, userId) => {
         },
         type: actionTypes.USER_PROFILE_CHARITABLE_INTERESTS,
     };
-    socialApi.get(`/get/user/causetags?userid=${Number(userId)}`).then(
+    graphApi.get(`/get/user/causetags?userid=${Number(userId)}`).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -57,7 +57,7 @@ const getUserMemberGroup = (dispatch, userId) => {
         },
         type: actionTypes.USER_PROFILE_MEMBER_GROUP,
     };
-    socialApi.get(`/user/groupbyrelationship?type=member&userid=${Number(userId)}&limit=9`).then(
+    graphApi.get(`/user/groupbyrelationship?type=member&userid=${Number(userId)}&limit=9`).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -77,7 +77,7 @@ const getUserAdminGroup = (dispatch, userId) => {
         },
         type: actionTypes.USER_PROFILE_ADMIN_GROUP,
     };
-    socialApi.get(`/user/groupbyrelationship?type=admin&userid=${Number(userId)}&limit=9`).then(
+    graphApi.get(`/user/groupbyrelationship?type=admin&userid=${Number(userId)}&limit=9`).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -97,7 +97,7 @@ const getUserFavourites = (dispatch, userId) => {
         },
         type: actionTypes.USER_PROFILE_FAVOURITES,
     };
-    socialApi.get(`/user/favourites?userid=${Number(userId)}`).then(
+    graphApi.get(`/user/favourites?userid=${Number(userId)}`).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
