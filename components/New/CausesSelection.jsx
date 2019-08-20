@@ -15,33 +15,21 @@ import SingleCause from './SingleCause';
 
 function CausesSelection(props) {
     const {
+        causesList,
         handleSubmit,
         parentHandleCauses,
         userCauses,
         validity,
     } = props;
-    const causesArray = [
-        'arts_and_culture',
-        'health',
-        'education_and_research',
-        'religion_and_spirituality',
-        'human_rights',
-        'international',
-        'environment',
-        'sports_and_recreation',
-        'outreach_and_welfare',
-        'animals',
-        'community_development',
-        'youth_or_children',
-    ];
     const renderCauses = () => {
         const causesBlock = [];
-        if (!_.isEmpty(causesArray)) {
-            causesArray.forEach((cause) => {
+        if (!_.isEmpty(causesList)) {
+            causesList.forEach((cause, i) => {
                 causesBlock.push(<SingleCause
                     parentHandleCauses={parentHandleCauses}
                     userCauses={userCauses}
                     cause={cause}
+                    index={i % 12}
                 />);
             });
         }

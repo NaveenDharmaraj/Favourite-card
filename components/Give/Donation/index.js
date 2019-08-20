@@ -25,6 +25,7 @@ import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
 import { proceed, getCompanyPaymentAndTax } from '../../../actions/give';
 import { withTranslation } from '../../../i18n';
 import { dismissAllUxCritialErrors } from '../../../actions/error';
+import '../../shared/style/styles.less';
 import {
     Elements,
     StripeProvider

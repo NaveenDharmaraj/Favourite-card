@@ -22,6 +22,12 @@ const onBoarding = (state = {}, action) => {
                 apiValidating: action.payload.apiValidating,
             };
             break;
+        case 'GET_USER_CAUSES':
+            newState = {
+                ...state,
+                causesList: action.payload.causesList,
+            };
+            break;
         default:
             break;
     }
