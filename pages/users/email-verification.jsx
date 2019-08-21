@@ -61,8 +61,8 @@ class EmailVerification extends React.Component {
             <Layout>
                 <div className="pageWraper">
                     <Container>
-                        <div className="linebg" >
-                            <Grid columns={2} verticalAlign='middle'>
+                        <div className="linebg">
+                            <Grid columns={2} verticalAlign="middle">
                                 <Grid.Row>
                                     <Grid.Column className="left-bg"></Grid.Column>
                                     <Grid.Column>
@@ -70,9 +70,8 @@ class EmailVerification extends React.Component {
                                             <div className="reg-header">
                                                 <Header as="h3">Verify your email.</Header>
                                                 <Header as="h4">
-                                                    We’ve emailed a verification link to 
-                                                    <a>{newUserDetails.email}</a>
-                                                    .Click the link in that email to finish creating your account.
+                                                    We’ve emailed a verification link to <a>{newUserDetails.email}</a>
+                                                    . Click the link in that email to finish creating your account.
                                                 </Header>
                                                 <Header as="h4">
                                                     Don’t see an email from us?
@@ -80,9 +79,11 @@ class EmailVerification extends React.Component {
                                             </div>
                                             <Form>
                                                 <div className="create-btn-wraper">
-                                                    <Button  type="submit" 
+                                                    <Button
+                                                        type="submit"
                                                         onClick={this.handleSubmit}
-                                                        primary>
+                                                        primary
+                                                    >
                                                         Resend email
                                                     </Button>
                                                 </div>

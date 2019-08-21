@@ -1,8 +1,12 @@
 /* eslint-disable max-len */
 import _ from 'lodash';
+
 import {
-    validateNewUser,
-} from '../../actions/user';
+    isValidPositiveNumber,
+    isAmountLessThanOneBillionDollars,
+    isAmountMoreOrEqualToOneDollor,
+    isInputBlank,
+} from '../give/giving-form-validation';
 
 const hasLowerCase = (str) => {
     return (/[a-z]/.test(str));
@@ -16,7 +20,7 @@ const hasSpecialChar = (str) => {
     return (/[!@#$%^&]/.test(str));
 };
 
-const validateUserRegistrationForm =  (field, value, validity) => {
+const validateUserRegistrationForm = (field, value, validity) => {
     const emailRegex = new RegExp(/^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i);
     switch (field) {
         case 'firstName':
@@ -57,6 +61,25 @@ const validateUserRegistrationForm =  (field, value, validity) => {
     }
     return validity;
 };
+const validateGivingGoal = (givingGoal, validity) => {
+    validity.doesAmountExist = !isInputBlank(givingGoal);
+    validity.isAmountLessThanOneBillion = (givingGoal > 0)
+        ? isAmountLessThanOneBillionDollars(givingGoal) : true;
+    validity.isAmountMoreThanOneDollor = isAmountMoreOrEqualToOneDollor(givingGoal);
+    validity.isValidPositiveNumber = isValidPositiveNumber(givingGoal);
 
+    validity.isValidGiveAmount = _.every(
+        _.pick(validity, [
+            'doesAmountExist',
+            'isAmountLessThanOneBillion',
+            'isAmountMoreThanOneDollor',
+            'isValidPositiveNumber',
+        ]),
+    );
+    return validity;
+};
 
-export default validateUserRegistrationForm;
+export {
+    validateGivingGoal,
+    validateUserRegistrationForm,
+};
