@@ -12,6 +12,7 @@ const configVars = {
         CORE_API_BASE: process.env.CORE_API_BASE,
         CORE_API_DOMAIN: process.env.CORE_API_DOMAIN,
         CORE_API_VERSION: process.env.CORE_API_VERSION,
+        GOOGLE_MAP_API_KEY: process.env.GOOGLE_MAP_API_KEY,
         EVENT_API_BASE: process.env.EVENT_API_BASE,
         GRAPH_API_BASE: process.env.GRAPH_API_BASE,
         RAILS_APP_URL_ORIGIN: process.env.RAILS_APP_URL_ORIGIN,
