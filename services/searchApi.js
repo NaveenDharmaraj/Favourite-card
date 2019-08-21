@@ -21,7 +21,7 @@ const instance = axios.create({
         'Content-Type': 'application/vnd.api+json',
     },
 });
-instance.interceptors.request.use(function (config) {
+instance.interceptors.request.use((config) => {
     if (_isEmpty(config.headers.Authorization)) {
         let token = '';
         if (!_isEmpty(auth0) && !_isEmpty(auth0.accessToken)) {
@@ -30,15 +30,15 @@ instance.interceptors.request.use(function (config) {
         }
     }
     return config;
-}, function (error) {
+}, (error) => {
     return Promise.reject(error);
 });
 
-instance.interceptors.response.use(function (response) {
+instance.interceptors.response.use((response) => {
     // Do something with response data
     return response.data;
-  }, function (error) {
-    return Promise.reject(error.response.data);
-  });
+}, (error) => {
+    return Promise.reject(error);
+});
 
 export default instance;
