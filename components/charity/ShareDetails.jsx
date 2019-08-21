@@ -197,7 +197,7 @@ ShareDetails.propTypes = {
 
 function mapStateToProps(state) {
     return {
-        charityDetails: state.give.charityDetails,
+        charityDetails: state.charity.charityDetails,
         deepLink: state.charity.charityDeepLink,
         disableFollow: state.give.disableFollow,
         isAUthenticated: state.auth.isAuthenticated,

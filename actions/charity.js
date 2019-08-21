@@ -1,6 +1,7 @@
 import _ from 'lodash';
 
-import socialApi from '../services/socialApi';
+import utilityApi from '../services/utilityApi';
+import graphApi from '../services/graphApi';
 import coreApi from '../services/coreApi';
 import { async } from 'regenerator-runtime';
 
@@ -18,7 +19,7 @@ export const getBeneficiaryDoneeList = (dispatch, charityId) => {
         },
         type: actionTypes.GET_BENEFICIARY_DONEE_LIST,
     };
-    socialApi.get(`/beneficiaryDoneeList/${charityId}?locale=en_ca&tenant_name=chimp&page=1&size=10`).then(
+    utilityApi.get(`/beneficiaryDoneeList/${charityId}?locale=en_ca&tenant_name=chimp&page=1&size=10`).then(
         (result) => {
             if (result) {
                 fsa.payload.donationDetails = result;
@@ -39,7 +40,7 @@ export const saveFollowStatus = (dispatch, userId, charityId) => {
         },
         type: actionTypes.SAVE_FOLLOW_STATUS,
     };
-    socialApi.post(`/graph/create/relationship`,
+    graphApi.post(`/core/create/relationship`,
         {
             relationship: 'FOLLOWS',
             source: {
@@ -70,7 +71,7 @@ export const deleteFollowStatus = (dispatch, userId, charityId) => {
         },
         type: actionTypes.SAVE_FOLLOW_STATUS,
     };
-    socialApi.post(`/users/deleterelationship`, {
+    graphApi.post(`/users/deleterelationship`, {
         relationship: 'FOLLOWS',
         source: {
             entity: 'user',
@@ -100,7 +101,7 @@ export const copyDeepLink = (url, dispatch) => {
         },
         type: actionTypes.SAVE_DEEP_LINK,
     };
-    socialApi.get(url).then(
+    utilityApi.get(url).then(
         (result) => {
             fsa.payload.deepLink = result.data;
         },
