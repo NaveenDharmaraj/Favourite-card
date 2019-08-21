@@ -92,7 +92,7 @@ class ShareDetails extends React.Component {
                 window.open('https://twitter.com/share?url='+url+'&text='+title,'sharer','toolbar=0,location=0,status=0,width='+width+',height='+height+',top='+top+',left='+left);
                 break;
             case 'facebook':
-                url=encodeURIComponent(`https://24467.org/charities/${slug}`);
+                url=encodeURIComponent(`${APP_URL_ORIGIN}/charities/${slug}`);
                 title = encodeURIComponent("Give to any canadian charity");
                 window.open('http://www.facebook.com/sharer.php?u='+url+'&t='+title,'sharer','toolbar=0,location=0,status=0,width='+width+',height='+height+',top='+top+',left='+left);
                 break;
