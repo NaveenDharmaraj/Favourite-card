@@ -7,6 +7,9 @@ import _isEmpty from 'lodash/isEmpty';
 import {
     connect,
 } from 'react-redux';
+import {
+    Container,
+} from 'semantic-ui-react';
 
 import Layout from '../components/shared/Layout';
 import SearchBanner from '../components/Search/SearchBanner';
@@ -181,7 +184,7 @@ class Search extends React.Component {
             // eslint-disable-next-line no-else-return
             } else {
                 return (
-                    <PaginationComponent className="pagiantionField" onPageChanged={this.onPageChanged} activePage={currentPageClicked} totalPages={pageCount} />
+                    <PaginationComponent onPageChanged={this.onPageChanged} activePage={currentPageClicked} totalPages={pageCount} />
                 );
             }
         }
@@ -209,24 +212,27 @@ class Search extends React.Component {
         } = this.props;
         return (
             <Layout>
-                <SearchBanner searchType={searchType} searchWordProps={searchWord} />
-                <SearchButtonWrapper currentTab={searchType} dispatch={dispatch} isAuthenticated={isAuthenticated} searchWord={searchWord} />
-                <SearchResults
-                    currentTab={currentTab}
-                    charityLoader={!charityFlag}
-                    groupLoader={!groupFlag}
-                    charities={charities}
-                    isAuthenticated={isAuthenticated}
-                    groups={groups}
-                    searchWord={searchWord}
-                    textSearchedCharitiesGroups={textSearchedCharitiesGroups}
-                    textSearchedCharities={textSearchedCharities}
-                    textSearchedGroups={textSearchedGroups}
-                    dispatch={dispatch}
-                />
-                {
-                    pageCount && this.renderPaginationComponent(pageCount, searchType, searchWord, currentPageClicked, !charityFlag, !groupFlag)
-                }
+                <Container>
+                    <SearchBanner searchType={searchType} searchWordProps={searchWord} />
+                    <SearchButtonWrapper currentTab={searchType} dispatch={dispatch} isAuthenticated={isAuthenticated} searchWord={searchWord} />
+                    <SearchResults
+                        currentTab={currentTab}
+                        charityLoader={!charityFlag}
+                        groupLoader={!groupFlag}
+                        charities={charities}
+                        isAuthenticated={isAuthenticated}
+                        groups={groups}
+                        searchWord={searchWord}
+                        textSearchedCharitiesGroups={textSearchedCharitiesGroups}
+                        textSearchedCharities={textSearchedCharities}
+                        textSearchedGroups={textSearchedGroups}
+                        dispatch={dispatch}
+                    />
+                    {
+                        pageCount && this.renderPaginationComponent(pageCount, searchType, searchWord, currentPageClicked, !charityFlag, !groupFlag)
+                    }
+                </Container>
+                
             </Layout>
         );
     }

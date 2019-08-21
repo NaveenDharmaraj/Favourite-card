@@ -39,30 +39,27 @@ class TextSearchResultsAll extends React.Component {
         return (
 
             <div>
-                <Grid>
-                    {textSearchCharityGroupLoader ? <PlaceholderGrid row={2} column={1} /> : (
-                        <Fragment>
-                            {
-                                !_isEmpty(CharityGroups) && (
-                                    <Fragment>
-                                        <Grid.Row>
-                                            <Grid.Column style={{"display": "flex", "justifyContent": "flex-end"}}>
-                                                <FilterComponent
-                                                    dispatch={dispatch}
-                                                    FilterHeaders={(!_isEmpty(filterValuesShowed)) ? Object.keys(filterobj) : null}
-                                                    FilterValues={(!_isEmpty(filterValuesShowed)) ? Object.values(filterobj) : null}
-                                                />
-                                            </Grid.Column>
-                                        </Grid.Row>
-                                        <Grid.Row>
-                                            <SearchResultSingleCharityGroups charityGroups={CharityGroups.data} />
-                                        </Grid.Row>
-                                    </Fragment>
-                                )}
-                            
-                        </Fragment>
-                    )}
-                </Grid>
+                {textSearchCharityGroupLoader ? <PlaceholderGrid row={2} column={1} /> : (
+                    <Fragment>
+                        {!_isEmpty(CharityGroups) && (
+                            <Fragment>
+                                <Grid>
+                                    <Grid.Row>
+                                        <Grid.Column style={{"display": "flex", "justifyContent": "flex-end"}}>
+                                            <FilterComponent
+                                                dispatch={dispatch}
+                                                FilterHeaders={(!_isEmpty(filterValuesShowed)) ? Object.keys(filterobj) : null}
+                                                FilterValues={(!_isEmpty(filterValuesShowed)) ? Object.values(filterobj) : null}
+                                            />
+                                        </Grid.Column>
+                                    </Grid.Row>
+                                </Grid>
+                                <SearchResultSingleCharityGroups CharityGroups={CharityGroups.data} />
+                            </Fragment>
+                        )}
+                        
+                    </Fragment>
+                )}
             </div>
         );
     }

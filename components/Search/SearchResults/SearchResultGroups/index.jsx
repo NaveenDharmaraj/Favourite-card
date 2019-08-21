@@ -64,9 +64,9 @@ class SearchResultGroups extends React.Component {
         return (
 
             <div>
-                <Grid>
-                    {groupLoader ? <PlaceholderGrid row={2} column={1} /> : (
-                        <Fragment>
+                {groupLoader ? <PlaceholderGrid row={2} column={1} /> : (
+                    <Fragment>
+                        <Grid>
                             <Grid.Row style={{
                                 display: 'flex',
                                 justifyContent: 'space-between',
@@ -76,11 +76,11 @@ class SearchResultGroups extends React.Component {
                                     <Grid.Column mobile={11} tablet={12} computer={12}>
                                         <Header as='h2'>
                                             <Header.Content>
-                                       GROUPS
+                                    GROUPS
                                                 <span className="num-result font-s-20">
                                                     {this.renderResultCount()}
 
-                                       results
+                                    results
                                                 </span>
                                             </Header.Content>
                                         </Header>
@@ -97,12 +97,10 @@ class SearchResultGroups extends React.Component {
                                         )}
                                 </Grid.Column>
                             </Grid.Row>
-                            <Grid.Row>
-                                {(groups && groups.data) && <SearchResultSingleCharityGroups charityGroups={groups.data} />}
-                            </Grid.Row>
-                        </Fragment>
-                    )}
-                </Grid>
+                        </Grid>
+                        {(groups && groups.data) && <SearchResultSingleCharityGroups CharityGroups={groups.data} />}
+                    </Fragment>
+                )}
             </div>
         );
     }
