@@ -14,6 +14,7 @@ import {
     getStoriesList,
 } from '../../../actions/dashboard';
 import PlaceholderGrid from '../../shared/PlaceHolder';
+import { Link } from '../../../routes';
 
 class StoriesList extends React.Component {
     constructor(props) {
@@ -25,10 +26,10 @@ class StoriesList extends React.Component {
 
     componentDidMount() {
         const {
-            currentUser,
             dispatch,
         } = this.props;
-        getStoriesList(dispatch, currentUser.id);
+        const url =    `/blogs/newBlogs?size=7`;
+        getStoriesList(dispatch, url);
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -54,7 +55,8 @@ class StoriesList extends React.Component {
         } = this.props;
         let storiesList = 'No Data';
         if (storiesData && storiesData.data && _.size(storiesData.data) > 0) {
-            storiesList = storiesData.data.map((data, index) => {
+            const showData = _.slice(storiesData.data, 0, 7);
+            storiesList = showData.map((data, index) => {
                 return (
                     <Grid.Column>
                         <Card as="a" href={data.blog_URL} target="_blank" className="tips-card" style={{ backgroundImage: `url(${data.blog_image_URL})` }}>
@@ -87,14 +89,14 @@ class StoriesList extends React.Component {
         let viewAllDiv = null;
         if (storiesData && storiesData.count > 7) {
             viewAllDiv = (
-                <div className="text-right">
+                <Link route={`/user/stories`}>
                     <a>
                         View all
                         (
                         {storiesData.count}
                         )
                     </a>
-                </div>
+                </Link>
             );
         }
         return (

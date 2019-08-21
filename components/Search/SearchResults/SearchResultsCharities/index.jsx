@@ -10,7 +10,7 @@ import {
     connect,
 } from 'react-redux';
 import SearchResultSingleCharityGroups from '../common/SearchResultSingleCharityGroups';
-import PlaceholderGrid from '../../../shared/placeHolder';
+import PlaceholderGrid from '../../../shared/PlaceHolder';
 import FilterComponent from '../../../shared/Filter/index';
 
 
@@ -105,7 +105,7 @@ class SearchResultsCharities extends React.Component {
                             </Grid.Column>
                         </Grid.Row>
                         <Grid.Row>
-                            {(charities && charities.data) && <SearchResultSingleCharityGroups CharityGroups={charities.data} /> }
+                            {(charities && charities.data) && <SearchResultSingleCharityGroups charityGroups={charities.data} /> }
                         </Grid.Row>
                     </Fragment>
                 )}

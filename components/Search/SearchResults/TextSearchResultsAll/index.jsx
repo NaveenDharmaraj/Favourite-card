@@ -9,7 +9,7 @@ import {
 } from 'react-redux';
 import FilterComponent from '../../../shared/Filter';
 import SearchResultSingleCharityGroups from '../common/SearchResultSingleCharityGroups';
-import PlaceholderGrid from '../../../shared/placeHolder';
+import PlaceholderGrid from '../../../shared/PlaceHolder';
 // eslint-disable-next-line react/prefer-stateless-function
 class TextSearchResultsAll extends React.Component {
 
@@ -55,7 +55,7 @@ class TextSearchResultsAll extends React.Component {
                                             </Grid.Column>
                                         </Grid.Row>
                                         <Grid.Row>
-                                            <SearchResultSingleCharityGroups CharityGroups={CharityGroups.data} />
+                                            <SearchResultSingleCharityGroups charityGroups={CharityGroups.data} />
                                         </Grid.Row>
                                     </Fragment>
                                 )}

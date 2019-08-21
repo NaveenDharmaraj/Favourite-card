@@ -11,7 +11,7 @@ import _isEmpty from 'lodash/isEmpty';
 
 import FilterComponent from '../../../shared/Filter/index';
 import SearchResultSingleCharityGroups from '../common/SearchResultSingleCharityGroups';
-import PlaceholderGrid from '../../../shared/placeHolder';
+import PlaceholderGrid from '../../../shared/PlaceHolder';
 
 // eslint-disable-next-line react/prefer-stateless-function
 class SearchResultGroups extends React.Component {
@@ -98,7 +98,7 @@ class SearchResultGroups extends React.Component {
                                 </Grid.Column>
                             </Grid.Row>
                             <Grid.Row>
-                                {(groups && groups.data) && <SearchResultSingleCharityGroups CharityGroups={groups.data} />}
+                                {(groups && groups.data) && <SearchResultSingleCharityGroups charityGroups={groups.data} />}
                             </Grid.Row>
                         </Fragment>
                     )}
