@@ -4,6 +4,7 @@ import user from './user';
 import give from './give';
 import auth from './auth';
 import charity from './charity';
+import search from './search';
 import dashboard from './dashboard';
 import onBoarding from './onBoarding';
 import app from './app';
@@ -13,6 +14,7 @@ const root = combineReducers({
     auth,
     dashboard,
     give,
+    search,
     onBoarding,
     user,
     charity,

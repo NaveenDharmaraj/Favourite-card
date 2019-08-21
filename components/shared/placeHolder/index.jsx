@@ -16,7 +16,6 @@ const columnComponent = (column) => {
                     }}
                     >
                         <Placeholder image square />
-
                     </Placeholder>
                     <Placeholder>
                         <Placeholder.Header>
