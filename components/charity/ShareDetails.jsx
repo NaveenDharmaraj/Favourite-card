@@ -199,7 +199,7 @@ function mapStateToProps(state) {
     return {
         charityDetails: state.charity.charityDetails,
         deepLink: state.charity.charityDeepLink,
-        disableFollow: state.give.disableFollow,
+        disableFollow: state.charity.disableFollow,
         isAUthenticated: state.auth.isAuthenticated,
         userId: state.user.info.id,
     };

@@ -21,9 +21,9 @@ const mapStyles = {
 };
 
 class Maps extends React.Component {
-    static getGeoCoding(name) {
+    static async getGeoCoding(name) {
         const values = {};
-        Geocode.fromAddress(name).then(
+        await Geocode.fromAddress(name).then(
             (response) => {
                 const {
                     lat,
