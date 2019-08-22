@@ -16,6 +16,9 @@
 button{
   &.ui{
     &.button{
+      &.sizeBig{
+        padding: 18px;
+      }
       &.moreOption-btn{
         padding: 18px 9px;
         &.transparent{
@@ -38,6 +41,18 @@ button{
         }
         &:hover{
           background-color: @link-hover;
+        }
+      }
+      &.success-btn-rounded-def{
+        color: #fff;
+        background-color: @success;
+        border-radius: 2rem;
+        border: 1px solid @success;
+        &.c-small{
+          padding: .5rem 1.5rem
+        }
+        &:hover{
+          background-color: @success-hover;
         }
       }
       &.blue-bordr-btn-round-def{

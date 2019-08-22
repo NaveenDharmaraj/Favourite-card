@@ -2,7 +2,8 @@
 import _ from 'lodash';
 import getConfig from 'next/config';
 
-import socialApi from '../services/socialApi';
+import securityApi from '../services/securityApi';
+import graphApi from '../services/graphApi';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -27,9 +28,8 @@ export const actionTypes = {
     USER_EXISTS: 'USER_EXISTS',
 };
 
-
 export const saveUser = (dispatch, userDetails) => {
-    return socialApi.post('/create/user', {
+    return securityApi.post('/create/user', {
         ...userDetails,
     }, BASIC_AUTH_HEADER).then((result) => {
         console.log(result);
@@ -49,7 +49,7 @@ export const validateNewUser = (dispatch, emailId) => {
         },
         type: actionTypes.USER_API_VALIDATING,
     });
-    return socialApi.get(`/verify/useremailid?emailid=${emailId}`, BASIC_AUTH_HEADER).then((result) => {
+    return securityApi.get(`/verify/useremailid?emailid=${emailId}`, BASIC_AUTH_HEADER).then((result) => {
         dispatch({
             payload: {
                 apiValidating: false,
@@ -68,7 +68,7 @@ export const validateNewUser = (dispatch, emailId) => {
 };
 
 export const resendVerificationEmail = (userId) => {
-    return socialApi.post(`/resend/verification`, {
+    return securityApi.post(`/resend/verification`, {
         client_id: AUTH0_WEB_CLIENT_ID,
         user_id: userId,
     }, BASIC_AUTH_HEADER);
@@ -81,7 +81,7 @@ export const getUserCauses = (dispatch) => {
         },
         type: actionTypes.GET_USER_CAUSES,
     };
-    return socialApi.get(`/user/causes`, BASIC_AUTH_HEADER).then((result) => {
+    return graphApi.get(`/user/causes`, BASIC_AUTH_HEADER).then((result) => {
         fsa.payload.causesList = result.data;
     }).catch((error) => {
         console.log(error);

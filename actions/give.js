@@ -1,5 +1,6 @@
 /* eslint-disable import/exports-last */
 import _ from 'lodash';
+
 import { Router } from '../routes';
 import coreApi from '../services/coreApi';
 import {
@@ -16,7 +17,6 @@ import {
     savePaymentInstrument,
     getUserFund,
 } from './user';
-
 import {
     triggerUxCritialErrors,
 } from './error';
@@ -802,6 +802,7 @@ export const getCompanyTaxReceiptProfile = (dispatch, companyId) => {
         console.log(error);
     });
 };
+
 
 export const getGroupsFromSlug = (dispatch, slug) => {
     return coreApi.get(`groups/find_by_slug`, {
