@@ -12,6 +12,7 @@ class UserBasciProfile extends React.Component {
     render() {
         const {
             userData,
+            isEdit,
         } = this.props;
         return (
             <div>
@@ -41,7 +42,7 @@ class UserBasciProfile extends React.Component {
                                                         <Header.Subheader>
                                                             <Icon name="users" />
                                                             {userData.number_of_friends}
-                                                            friends
+                                                            &nbsp; friends
                                                         </Header.Subheader>
                                                     </Header>
                                                 </div>
@@ -53,16 +54,20 @@ class UserBasciProfile extends React.Component {
                         </Grid>
                     </Container>
                 </div>
-                <div className="pb-3">
-                    <Container>
-                        <Header as="h4" className="underline">
-                            About
-                        </Header>
-                        <p className="font-s-14">
-                            {userData.description}
-                        </p>
-                    </Container>
-                </div>
+                {
+                    !isEdit && (
+                        <div className="pb-3">
+                            <Container>
+                                <Header as="h4" className="underline">
+                                    About
+                                </Header>
+                                <p className="font-s-14">
+                                    {userData.description}
+                                </p>
+                            </Container>
+                        </div>
+                    )
+                }
             </div>
         );
     }

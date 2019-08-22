@@ -34,6 +34,24 @@ const userProfile = (state = {}, action) => {
                 userProfileFavouritesData: Object.assign({}, action.payload),
             };
             break;
+        case 'USER_PROFILE_CAUSES':
+            newState = {
+                ...state,
+                userCausesList: action.payload.userCausesList,
+            };
+            break;
+        case 'USER_PROFILE_FOLLOWED_TAGS':
+            newState = {
+                ...state,
+                userTagsFollowedList: Object.assign({}, action.payload),
+            };
+            break;
+        case 'USER_PROFILE_RECOMMENDED_TAGS':
+            newState = {
+                ...state,
+                userTagsRecommendedList: Object.assign({}, action.payload),
+            };
+            break;
         default:
             break;
     }

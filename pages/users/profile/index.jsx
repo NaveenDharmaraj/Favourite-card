@@ -47,7 +47,7 @@ class MyProfile extends React.Component {
         }
         return (
             <Layout authRequired>
-                <BasicProfile userData={userData} />
+                <BasicProfile userData={userData} isEdit={false} />
                 <CharitableInterestsList />
                 <GivingGoal
                     givingAmount={givingAmount}
