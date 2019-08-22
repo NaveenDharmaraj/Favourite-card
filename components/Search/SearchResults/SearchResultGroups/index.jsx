@@ -98,7 +98,7 @@ class SearchResultGroups extends React.Component {
                                 </Grid.Column>
                             </Grid.Row>
                         </Grid>
-                        {(groups && groups.data) && <SearchResultSingleCharityGroups CharityGroups={groups.data} />}
+                        {(groups && groups.data) && <SearchResultSingleCharityGroups charityGroups={groups.data} />}
                     </Fragment>
                 )}
             </div>

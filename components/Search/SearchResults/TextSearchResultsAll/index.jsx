@@ -54,7 +54,7 @@ class TextSearchResultsAll extends React.Component {
                                         </Grid.Column>
                                     </Grid.Row>
                                 </Grid>
-                                <SearchResultSingleCharityGroups CharityGroups={CharityGroups.data} />
+                                <SearchResultSingleCharityGroups charityGroups={CharityGroups.data} />
                             </Fragment>
                         )}
                         

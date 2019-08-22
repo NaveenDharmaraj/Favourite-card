@@ -184,7 +184,7 @@ class Search extends React.Component {
             // eslint-disable-next-line no-else-return
             } else {
                 return (
-                    <PaginationComponent onPageChanged={this.onPageChanged} activePage={currentPageClicked} totalPages={pageCount} />
+                    <PaginationComponent className="pagiantionField" onPageChanged={this.onPageChanged} activePage={currentPageClicked} totalPages={pageCount} />
                 );
             }
         }
