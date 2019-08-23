@@ -44,7 +44,7 @@ class TransactionDetails extends React.Component {
             id: groupId,
             dispatch,
         } = this.props;
-        const url = `groups/${groupId}/activities?filter[moneyItems]=all&page[number]=${data.activePage}&page[size]=2`;
+        const url = `groups/${groupId}/activities?filter[moneyItems]=all&page[number]=${data.activePage}&page[size]=10`;
         getTransactionDetails(dispatch, groupId, url);
         this.setState({
             activePage: data.activePage,
