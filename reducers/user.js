@@ -75,6 +75,24 @@ const user = (state = {}, action) => {
                 },
             };
             break;
+        case 'GIVING_GROUPS_AND_CAMPAIGNS':
+            const {
+                administeredGroups,
+                administeredCampaigns,
+            } = action.payload;
+            newState = {
+                ...state,
+                administeredGroups: Object.assign({}, state.administeredGroups, action.payload.administeredGroups),
+                administeredCampaigns: Object.assign({}, state.administeredCampaigns, action.payload.administeredCampaigns),
+                groupsWithMemberships: Object.assign({}, state.groupsWithMemberships, action.payload.groupsWithMemberships),
+            };
+            break;
+        case 'LEAVE_GROUP_ERROR_MESSAGE':
+            newState = {
+                ...state,
+                leaveErrorMessage : action.payload,
+            }
+            break;
         case 'USER_GIVING_GOAL_DETAILS':
             newState = {
                 ...state,

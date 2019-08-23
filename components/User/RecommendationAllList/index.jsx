@@ -3,11 +3,9 @@ import React, {
 } from 'react';
 import _ from 'lodash';
 import {
-    Button,
     Container,
     Header,
     Grid,
-    Icon,
 } from 'semantic-ui-react';
 import {
     connect,
@@ -28,9 +26,6 @@ import {
     getRecommendationList,
 } from '../../../actions/dashboard';
 import Pagination from '../../shared/Pagination';
-import placeholderCharity from '../../../static/images/no-data-avatar-charity-profile.png';
-import placeholderGroup from '../../../static/images/no-data-avatar-giving-group-profile.png';
-import { Link } from '../../../routes';
 import SearchResultSingleCharityGroups from '../../Search/SearchResults/common/SearchResultSingleCharityGroups';
 
 class RecommendationAllList extends React.Component {
@@ -114,13 +109,13 @@ class RecommendationAllList extends React.Component {
                             charityGroups={(!_.isEmpty(recommendationData)) ? recommendationData.data : []}/>
                     {
                         !_.isEmpty(recommendationData) && (
-                            <div className="db-pagination right-align">
+                            // <div className="db-pagination right-align">
                                 <Pagination
                                     activePage={currentActivePage}
                                     totalPages={recommendationData.pageCount}
                                     onPageChanged={this.onPageChanged}
                                 />
-                            </div>
+                            // </div>
 
                         )
                     }

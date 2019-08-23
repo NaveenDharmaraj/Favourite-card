@@ -63,8 +63,8 @@ class SearchResultSingleCharityGroups extends React.Component {
                     <Grid stackable>
                         <Grid.Row stretched key={i}>
                             <Grid.Column mobile={16} tablet={5} computer={5}>
-                                <Image src={displayAvatar} className="search-left-img" />
-                                {/* <div className="leftSideImage" style={{backgroundImage:`url(${this.showAvatar(charityGroup.attributes.avatar, charityGroup.attributes.type)})`}}></div> */}
+                                {/* <Image src={displayAvatar} className="search-left-img" /> */}
+                                <div className="leftSideImage" style={{backgroundImage:`url(${displayAvatar})`}}></div>
                             </Grid.Column>
                             <Grid.Column mobile={16} tablet={7} computer={8} verticalAlign="top">
                                 <div className=" description">

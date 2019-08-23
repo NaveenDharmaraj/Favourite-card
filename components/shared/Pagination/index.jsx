@@ -16,10 +16,10 @@ const PaginationComponent = (props) => {
             onPageChange={onPageChanged}
             activePage={activePage}
             totalPages={totalPages}
-            firstItem={firstItem}
-            lastItem={lastItem}
-            prevItem={prevItem}
-            nextItem={nextItem}
+            firstItem={(activePage === 1) ? null : undefined}
+            lastItem={(activePage === totalPages) ? null : undefined}
+            prevItem={(activePage === 1) ? null : undefined}
+            nextItem={(activePage === totalPages) ? null : undefined}
         />
     );
 };
