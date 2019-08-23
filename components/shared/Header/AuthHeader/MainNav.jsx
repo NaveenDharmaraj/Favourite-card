@@ -12,7 +12,7 @@ const MainNav = () => (
                 Explore
             </Menu.Item>
         </Link>
-        <Menu.Item as="a" to="https://github.com">
+        <Menu.Item as="a" href="/user/groups">
             Giving Groups & Campaign
         </Menu.Item>
         <Menu.Item as="a" href="/user/followed-charities">
