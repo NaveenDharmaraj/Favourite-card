@@ -7,12 +7,14 @@ import search from './search';
 import dashboard from './dashboard';
 import onBoarding from './onBoarding';
 import app from './app';
+import group from './group';
 
 const root = combineReducers({
     app,
     auth,
     dashboard,
     give,
+    group,
     search,
     onBoarding,
     user,
