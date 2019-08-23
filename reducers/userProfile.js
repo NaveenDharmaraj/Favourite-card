@@ -52,6 +52,18 @@ const userProfile = (state = {}, action) => {
                 userTagsRecommendedList: Object.assign({}, action.payload),
             };
             break;
+        case 'USER_PROFILE_MY_FRIENDS':
+            newState = {
+                ...state,
+                userMyFriendsList: Object.assign({}, action.payload),
+            };
+            break;
+        case 'USER_PROFILE_FIND_FRIENDS':
+            newState = {
+                ...state,
+                userFindFriendsList: Object.assign({}, action.payload),
+            };
+            break;
         default:
             break;
     }

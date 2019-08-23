@@ -1,113 +1,130 @@
 import React from 'react';
 import {
-    Button,
-    Header,
-    Image,
-    Grid,
-    List,
-    Checkbox,
     Responsive,
     Tab,
 } from 'semantic-ui-react';
 
-import pswdicon from '../../../static/images/icons/icon-home.svg';
-import privacyicon from '../../../static/images/icons/icon-home.svg';
-import notifyicon from '../../../static/images/icons/icon-home.svg';
-import supporticon from '../../../static/images/icons/icon-home.svg';
-import legalicon from '../../../static/images/icons/icon-home.svg';
 
 import ManagePassword from './managePassword';
+import Privacy from './privacy';
+import CreditCard from './creditCard';
+import Notifications from './notifications';
+import Support from './support';
+import Legal from './legal';
 
 const panes1 = [
-    { menuItem: { key: 'Manage password', icon: 'privacy', iconPosition:'left', content: 'Manage password' }, render: () => <Tab.Pane><ManagePassword /></Tab.Pane> },
-    { menuItem: { key: 'Privacy & Security', icon: 'privacy', iconPosition:'left', content: 'Privacy & Security' }, render: () => <Tab.Pane>
-        <div className="remove-gutter">
-            <div className="userSettingsContainer">
-                <div className="settingsDetailWraper">
-                    <Header as="h4">Discoverability <Checkbox toggle defaultChecked className="c-chkBox right"/></Header>
-                    <p>You can manage your discoverability settings - manage whether you show up on searches or your name appears on Giving Group profiles. </p>
-                </div>
-                <div className="settingsDetailWraper">
-                    <Header as="h4">Blocked users</Header>
-                    <List divided verticalAlign='middle' className="userList">
-                        <List.Item>
-                            <List.Content floated='right'>
-                                <span className="date">Blocked on January 9, 2019</span>
-                                <Button className="blue-bordr-btn-round-def c-small">Unblock</Button>
-                            </List.Content>
-                            <Image avatar src='https://react.semantic-ui.com/images/avatar/small/daniel.jpg' />
-                            <List.Content>
-                                <List.Header>Daniel Louise</List.Header>
-                                <List.Description>Vancouver, BC</List.Description>
-                            </List.Content>
-                        </List.Item>
-                        <List.Item>
-                            <List.Content floated='right'>
-                                <span className="date">Blocked on January 9, 2019</span>
-                                <Button className="blue-bordr-btn-round-def c-small">Unblock</Button>
-                            </List.Content>
-                            <Image avatar src='https://react.semantic-ui.com/images/avatar/small/stevie.jpg' />
-                            <List.Content>
-                                <List.Header>Daniel Louise</List.Header>
-                                <List.Description>Vancouver, BC</List.Description>
-                            </List.Content>
-                        </List.Item>
-                        <List.Item>
-                            <List.Content floated='right'>
-                                <span className="date">Blocked on January 9, 2019</span>
-                                <Button className="blue-bordr-btn-round-def c-small">Unblock</Button>
-                            </List.Content>
-                            <Image avatar src='https://react.semantic-ui.com/images/avatar/small/elliot.jpg' />
-                            <List.Content>
-                                <List.Header>Daniel Louise</List.Header>
-                                <List.Description>Vancouver, BC</List.Description>
-                            </List.Content>
-                        </List.Item>
-                        <List.Item>
-                            <List.Content floated='right'>
-                                <span className="date">Blocked on January 9, 2019</span>
-                                <Button className="blue-bordr-btn-round-def c-small">Unblock</Button>
-                            </List.Content>
-                            <Image avatar src='https://react.semantic-ui.com/images/avatar/small/tom.jpg' />
-                            <List.Content>
-                                <List.Header>Daniel Louise</List.Header>
-                                <List.Description>Vancouver, BC</List.Description>
-                            </List.Content>
-                        </List.Item>
-                        <List.Item>
-                            <List.Content floated='right'>
-                                <span className="date">Blocked on January 9, 2019</span>
-                                <Button className="blue-bordr-btn-round-def c-small">Unblock</Button>
-                            </List.Content>
-                            <Image avatar src='https://react.semantic-ui.com/images/avatar/small/daniel.jpg' />
-                            <List.Content>
-                                <List.Header>Daniel Louise</List.Header>
-                                <List.Description>Vancouver, BC</List.Description>
-                            </List.Content>
-                        </List.Item>
+    {
+        menuItem: {
+            content: 'Manage password',
+            icon: 'privacy',
+            iconPosition: 'left',
+            key: 'Manage password',
+        },
+        render: () => {
+            return (
+                <Tab.Pane attached={false}>
+                    <ManagePassword />
+                </Tab.Pane>
+            );
+        },
+    },
+    {
+        menuItem: {
+            content: 'Privacy & Security',
+            icon: 'privacy',
+            iconPosition: 'left',
+            key: 'Privacy & Security',
+        },
+        render: () => (
+            <Tab.Pane>
+                <Privacy />
+            </Tab.Pane>
+        ),
+    },
+    {
+        menuItem: {
+            content: 'Credit Cards',
+            icon: 'credit card outline',
+            iconPosition: 'left',
+            key: 'Credit Cards',
+        },
+        render: () => (
+            <Tab.Pane>
+                <CreditCard />
+            </Tab.Pane>
+        ),
+    },
+    {
+        menuItem: {
+            content: 'Notifications',
+            icon: 'bell outline',
+            iconPosition: 'left',
+            key: 'Notifications',
+        },
+        render: () => (
+            <Tab.Pane>
+                <Notifications />
+            </Tab.Pane>
+        ),
+    },
+    {
+        menuItem: {
+            content: 'Support',
+            icon: 'question circle outline',
+            iconPosition: 'left',
+            key: 'Support',
+        },
+        render: () => (
+            <Tab.Pane>
+                <Support />
+            </Tab.Pane>
+        ),
+    },
+    {
+        menuItem: {
+            content: 'Legal',
+            icon: 'legal',
+            iconPosition: 'left',
+            key: 'Legal',
+        },
+        render: () => (
+            <Tab.Pane>
+                <Legal />
+            </Tab.Pane>
+        ),
+    },
+];
 
-                    </List>
-                </div>
-            </div>
-        </div>
-    </Tab.Pane> },
-    { menuItem: { key: 'Notifications', icon: 'bell outline', iconPosition:'left', content: 'Notifications' }, render: () => <Tab.Pane>Tab 3 Content</Tab.Pane> },
-    { menuItem: { key: 'Support', icon: 'question circle outline', iconPosition:'left', content: 'Support' }, render: () => <Tab.Pane>Tab 4 Content</Tab.Pane> },
-    { menuItem: { key: 'Legal', icon: 'legal', iconPosition:'left', content: 'Legal' }, render: () => <Tab.Pane>Tab 5 Content</Tab.Pane> },
-    ]
-
+// eslint-disable-next-line react/prefer-stateless-function
 class UserSettings extends React.Component {
     render() {
         return (
             <div>
-                 <Responsive minWidth={768}>
+                <Responsive minWidth={768}>
                     <div className="settingsTab">
-                    <Tab grid={{paneWidth: 11, tabWidth: 5}} menu={{ fluid: true, vertical: true, tabular: true }} panes={panes1} />
+                        <Tab
+                            grid={{
+                                paneWidth: 11,
+                                tabWidth: 5,
+                            }}
+                            menu={{
+                                fluid: true,
+                                tabular: true,
+                                vertical: true,
+                            }}
+                            panes={panes1}
+                        />
                     </div>
                 </Responsive>
                 <Responsive maxWidth={768}>
                     <div className="charityTab n-border">
-                        <Tab menu={{ secondary: true, pointing: true }} panes={panes1} />
+                        <Tab
+                            menu={{
+                                pointing: true,
+                                secondary: true,
+                            }}
+                            panes={panes1}
+                        />
                     </div>
                 </Responsive>
             </div>

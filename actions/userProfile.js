@@ -2,6 +2,7 @@ import _ from 'lodash';
 import getConfig from 'next/config';
 
 import graphApi from '../services/graphApi';
+import searchApi from '../services/searchApi';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -25,8 +26,10 @@ export const actionTypes = {
     USER_PROFILE_CAUSES: 'USER_PROFILE_CAUSES',
     USER_PROFILE_CHARITABLE_INTERESTS: 'USER_PROFILE_CHARITABLE_INTERESTS',
     USER_PROFILE_FAVOURITES: 'USER_PROFILE_FAVOURITES',
+    USER_PROFILE_FIND_FRIENDS: 'USER_PROFILE_FIND_FRIENDS',
     USER_PROFILE_FOLLOWED_TAGS: 'USER_PROFILE_FOLLOWED_TAGS',
     USER_PROFILE_MEMBER_GROUP: 'USER_PROFILE_MEMBER_GROUP',
+    USER_PROFILE_MY_FRIENDS: 'USER_PROFILE_MY_FRIENDS',
     USER_PROFILE_RECOMMENDED_TAGS: 'USER_PROFILE_RECOMMENDED_TAGS',
 };
 
@@ -152,7 +155,7 @@ const getUserTagsFollowed = (dispatch, userId) => {
         },
         type: actionTypes.USER_PROFILE_FOLLOWED_TAGS,
     };
-    return graphApi.get(`/get/tags/user?id=${Number(userId)}&page[number]=1&page[size]=10&sort=asc`, BASIC_AUTH_HEADER).then(
+    return graphApi.get(`/get/tags/user?id=${Number(userId)}&page[number]=1&page[size]=10&sort=asc`).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -171,10 +174,53 @@ const getUserTagsRecommended = (dispatch, url, userId) => {
         },
         type: actionTypes.USER_PROFILE_RECOMMENDED_TAGS,
     };
-    return graphApi.get(`/get/tags/recommended?id=${Number(userId)}&page[number]=1&page[size]=10&sort=asc`, BASIC_AUTH_HEADER).then(
+    return graphApi.get(`/get/tags/recommended?id=${Number(userId)}&page[number]=1&page[size]=10&sort=asc`).then(
         (result) => {
             fsa.payload = {
                 count: result.meta.recordCount,
+                data: result.data,
+            };
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    });
+};
+
+const getMyFriendsList = (dispatch, email, pageNumber) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.USER_PROFILE_MY_FRIENDS,
+    };
+    return graphApi.get(`/user/myfriends?userid=${email}&page[number]=${pageNumber}&page[size]=10`).then(
+        (result) => {
+            fsa.payload = {
+                count: result.meta.recordCount,
+                data: result.data,
+            };
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    });
+};
+
+const getFriendsByText = (dispatch, userId, searchText, pageNumber) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.USER_PROFILE_FIND_FRIENDS,
+    };
+    const bodyData = {
+        "text": searchText,
+    };
+    return searchApi.post(`/users?page[number]=${pageNumber}&page[size]=10&user_id=${userId}`, { data: bodyData }).then(
+        (result) => {
+            fsa.payload = {
+                count: result.meta.record_count,
                 data: result.data,
             };
         },
@@ -194,4 +240,6 @@ export {
     getUserProfileCauses,
     getUserTagsRecommended,
     getUserTagsFollowed,
+    getMyFriendsList,
+    getFriendsByText,
 };

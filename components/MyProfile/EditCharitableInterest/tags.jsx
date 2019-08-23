@@ -149,7 +149,7 @@ class MyTags extends React.Component {
                         <p className="mb-2">Tags can refine the charities and Giving Groups discovered for you. </p>
                         {this.renderFollowedTags()}
                     </div>
-                    <div>
+                    <div className="pt-2">
                         <p className="mb-1-2"><strong>Recommended tags to follow</strong></p>
                         <p className="mb-2">Tags can refine the charities and Giving Groups discovered for you. </p>
                         {this.renderRecommendedTags()}
