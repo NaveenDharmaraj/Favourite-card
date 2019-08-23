@@ -30,6 +30,7 @@ export const actionTypes = {
     GET_GROUP_FROM_SLUG: 'GET_GROUP_FROM_SLUG',
     SAVE_FLOW_OBJECT: 'SAVE_FLOW_OBJECT',
     SAVE_SUCCESS_DATA: 'SAVE_SUCCESS_DATA',
+    TAX_RECEIPT_API_CALL_STATUS: 'TAX_RECEIPT_API_CALL_STATUS',
 };
 
 const setDonationData = (donation) => {
@@ -597,6 +598,12 @@ export const proceed = (
             type: (flowObject.type === 'donations') ? giveTo.type : giveFrom.type,
         };
         if (flowObject.taxReceiptProfileAction !== 'no_change' && stepIndex === 1) {
+            dispatch({
+                payload: {
+                    taxReceiptApiCall: true,
+                },
+                type: actionTypes.TAX_RECEIPT_API_CALL_STATUS,
+            });
             updateTaxReceiptProfile(
                 flowObject.selectedTaxReceiptProfile,
                 flowObject.taxReceiptProfileAction, dispatch,
@@ -610,6 +617,13 @@ export const proceed = (
             }).catch((err) => {
                 triggerUxCritialErrors(err.errors || err, dispatch);
                 console.log(err);
+            }).finally(() => {
+                dispatch({
+                    payload: {
+                        taxReceiptApiCall: false,
+                    },
+                    type: actionTypes.TAX_RECEIPT_API_CALL_STATUS,
+                });
             });
         } else if (creditCard.value === 0 && stepIndex === 0) {
             return createToken(flowObject.stripeCreditCard, flowObject.cardHolderName).then((token) => {

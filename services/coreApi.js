@@ -1,4 +1,5 @@
 import axios from 'axios';
+import _omit from 'lodash/omit';
 import _isEmpty from 'lodash/isEmpty';
 import getConfig from 'next/config';
 
@@ -25,13 +26,13 @@ instance.interceptors.request.use(function (config) {
         let token = '';
         if (!_isEmpty(auth0) && !_isEmpty(auth0.accessToken)) {
             token = auth0.accessToken;
+            config.headers.Authorization = `Bearer ${token}`;
         }
-        config.headers.Authorization = `Bearer ${token}`;
     }
     if(config.params) {
         config.uxCritical = (config.params.uxCritical);
         config.dispatch = (config.params.dispatch) ? config.params.dispatch : null;
-        config.params = _.omit(config.params, ['uxCritical', 'dispatch']);
+        config.params = _omit(config.params, ['uxCritical', 'dispatch']);
     }
     return config;
 }, function (error) {

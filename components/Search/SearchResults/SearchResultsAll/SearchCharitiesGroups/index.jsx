@@ -9,7 +9,7 @@ import {
 import _isEmpty from 'lodash/isEmpty';
 import _map from 'lodash/map';
 
-import PlaceholderGrid from '../../../../shared/placeHolder';
+import PlaceholderGrid from '../../../../shared/PlaceHolder';
 import { Link } from '../../../../../routes';
 
 class SearchCharitiesGroups extends React.Component {

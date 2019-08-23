@@ -32,9 +32,9 @@ const SearchResultsAll = (props) => {
                     <Header.Subheader>Manage your account settings and set email preferences</Header.Subheader>
                 </Header>
             </div>
-            {(charities && charities.data && charities.data.length > 0) && <SearchResultSingleCharityGroups CharityGroups={charities.data.slice(0, 1)} />}
+            {(charities && charities.data && charities.data.length > 0) && <SearchResultSingleCharityGroups charityGroups={charities.data.slice(0, 1)} />}
             <SearchResultCTA />
-            {(groups && groups.data && groups.data.length > 0) && <SearchResultSingleCharityGroups CharityGroups={groups.data.slice(0, 1)} />} */}
+            {(groups && groups.data && groups.data.length > 0) && <SearchResultSingleCharityGroups charityGroups={groups.data.slice(0, 1)} />} */}
         </div>
     );
 };

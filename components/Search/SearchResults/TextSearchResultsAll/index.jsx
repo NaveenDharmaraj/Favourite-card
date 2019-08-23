@@ -9,7 +9,7 @@ import {
 } from 'react-redux';
 import FilterComponent from '../../../shared/Filter';
 import SearchResultSingleCharityGroups from '../common/SearchResultSingleCharityGroups';
-import PlaceholderGrid from '../../../shared/placeHolder';
+import PlaceholderGrid from '../../../shared/PlaceHolder';
 // eslint-disable-next-line react/prefer-stateless-function
 class TextSearchResultsAll extends React.Component {
 
@@ -39,30 +39,27 @@ class TextSearchResultsAll extends React.Component {
         return (
 
             <div>
-                <Grid>
-                    {textSearchCharityGroupLoader ? <PlaceholderGrid row={2} column={1} /> : (
-                        <Fragment>
-                            {
-                                !_isEmpty(CharityGroups) && (
-                                    <Fragment>
-                                        <Grid.Row>
-                                            <Grid.Column style={{"display": "flex", "justifyContent": "flex-end"}}>
-                                                <FilterComponent
-                                                    dispatch={dispatch}
-                                                    FilterHeaders={(!_isEmpty(filterValuesShowed)) ? Object.keys(filterobj) : null}
-                                                    FilterValues={(!_isEmpty(filterValuesShowed)) ? Object.values(filterobj) : null}
-                                                />
-                                            </Grid.Column>
-                                        </Grid.Row>
-                                        <Grid.Row>
-                                            <SearchResultSingleCharityGroups CharityGroups={CharityGroups.data} />
-                                        </Grid.Row>
-                                    </Fragment>
-                                )}
-                            
-                        </Fragment>
-                    )}
-                </Grid>
+                {textSearchCharityGroupLoader ? <PlaceholderGrid row={2} column={1} /> : (
+                    <Fragment>
+                        {!_isEmpty(CharityGroups) && (
+                            <Fragment>
+                                <Grid>
+                                    <Grid.Row>
+                                        <Grid.Column style={{"display": "flex", "justifyContent": "flex-end"}}>
+                                            <FilterComponent
+                                                dispatch={dispatch}
+                                                FilterHeaders={(!_isEmpty(filterValuesShowed)) ? Object.keys(filterobj) : null}
+                                                FilterValues={(!_isEmpty(filterValuesShowed)) ? Object.values(filterobj) : null}
+                                            />
+                                        </Grid.Column>
+                                    </Grid.Row>
+                                </Grid>
+                                <SearchResultSingleCharityGroups charityGroups={CharityGroups.data} />
+                            </Fragment>
+                        )}
+                        
+                    </Fragment>
+                )}
             </div>
         );
     }

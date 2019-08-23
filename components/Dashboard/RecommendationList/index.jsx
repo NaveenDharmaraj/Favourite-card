@@ -35,7 +35,8 @@ class RecommendationList extends React.Component {
             currentUser,
             dispatch,
         } = this.props;
-        getRecommendationList(dispatch, currentUser.id);
+        const url = `/recommend/all?userid=${Number(currentUser.id)}&page[number]=1&page[size]=9`;
+        getRecommendationList(dispatch, url);
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -61,7 +62,8 @@ class RecommendationList extends React.Component {
         } = this.props;
         let recommendationList = 'No Data';
         if (recommendationData && recommendationData.data && _.size(recommendationData.data) > 0) {
-            recommendationList = recommendationData.data.map((data, index) => {
+            const showData = _.slice(recommendationData.data, 0, 9);
+            recommendationList = showData.map((data, index) => {
                 let charityName = '';
                 if (data.attributes.city != null) {
                     charityName = `${data.attributes.name}, ${data.attributes.city}, ${data.attributes.province}`;
@@ -153,16 +155,14 @@ class RecommendationList extends React.Component {
         let viewAllDiv = null;
         if (recommendationData && recommendationData.count > 7) {
             viewAllDiv = (
-                <div className="text-right">
+                <Link route={`/user/recommendations`}>
                     <a>
-                        View all
-                        (
-                        {recommendationData.count}
-                        )
+                        View all ({recommendationData.count})
                     </a>
-                </div>
+                </Link>
             );
         }
+        const count = 2;
         return (
             <div className="pt-2 pb-2">
                 <Container>

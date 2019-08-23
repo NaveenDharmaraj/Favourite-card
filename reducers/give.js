@@ -73,6 +73,12 @@ const give = (state = {}, action) => {
                 successData: action.payload.successData,
             };
             break;
+        case 'TAX_RECEIPT_API_CALL_STATUS':
+            newState = {
+                ...state,
+                taxReceiptEditApiCall: action.payload.taxReceiptApiCall,
+            };
+            break;
         default:
             break;
     }

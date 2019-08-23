@@ -12,7 +12,9 @@ import _isEmpty from 'lodash/isEmpty';
 import {
     Router
 } from '../../../../../routes';
-import PlaceholderGrid from '../../../../shared/placeHolder';
+import placeholderCharity from '../../../../../static/images/no-data-avatar-charity-profile.png';
+import placeholderGroup from '../../../../../static/images/no-data-avatar-giving-group-profile.png';
+import PlaceholderGrid from '../../../../shared/PlaceHolder';
 
 // eslint-disable-next-line react/prefer-stateless-function
 class SearchResultSingleCharityGroups extends React.Component {
@@ -35,27 +37,46 @@ class SearchResultSingleCharityGroups extends React.Component {
     renderCharityGroupComponent() {
         let charitiesGroupsComponent = [];
         const {
-            CharityGroups,
+            charityGroups,
         } = this.props;
-        if (!_isEmpty(CharityGroups) && CharityGroups.length > 0) {
-            charitiesGroupsComponent = _map(CharityGroups, (CharityGroup, i) => (
+        if (!_isEmpty(charityGroups) && charityGroups.length > 0) {
+            charitiesGroupsComponent = _map(charityGroups, (charityGroup, i) => {
+                const {
+                    attributes:{
+                        avatar,
+                        description,
+                        name,
+                        type,
+                        city,
+                        province,
+                        slug
+                    }
+                } = charityGroup;
+
+                let displayAvatar = placeholderCharity;
+                if(type === 'group'){
+                    displayAvatar = placeholderGroup;
+                }
+                displayAvatar = (!_.isEmpty(avatar)) ? avatar : displayAvatar;
+                return(
                 <div className="search-result-single charities">
                     <Grid stackable>
                         <Grid.Row stretched key={i}>
-                            <Grid.Column width={5}>
-                                <Image src={CharityGroup.attributes.avatar} className="search-left-img" />
+                            <Grid.Column mobile={16} tablet={5} computer={5}>
+                                {/* <Image src={displayAvatar} className="search-left-img" /> */}
+                                <div className="leftSideImage" style={{backgroundImage:`url(${displayAvatar})`}}></div>
                             </Grid.Column>
                             <Grid.Column mobile={16} tablet={7} computer={8} verticalAlign="top">
                                 <div className=" description">
                                     <Header as="h4">
-                                        {CharityGroup.attributes.name}
+                                        {name}
                                         <Header.Subheader>
-                                            {!_isEmpty(CharityGroup.attributes.description) ? CharityGroup.attributes.description.split(' ').slice(0, 20).join(' ') : null}
-                                            {(!_isEmpty(CharityGroup.attributes.description) && CharityGroup.attributes.description.split(' ').length > 20) && '...'}
+                                            {!_isEmpty(description) ? description.split(' ').slice(0, 20).join(' ') : null}
+                                            {(!_isEmpty(description) && description.split(' ').length > 20) && '...'}
                                             <br />
-                                            {(!_isEmpty(CharityGroup.attributes.city) || !_isEmpty(CharityGroup.attributes.province)) && 'Location:' }
-                                            {!_isEmpty(CharityGroup.attributes.city) ? CharityGroup.attributes.city : null}
-                                            {!_isEmpty(CharityGroup.attributes.province) ? CharityGroup.attributes.province : null}
+                                            {(!_isEmpty(city) || !_isEmpty(province)) && 'Location:' }
+                                            {!_isEmpty(city) ? city : null}
+                                            {!_isEmpty(province) ? province : null}
                                             <br />
                                         </Header.Subheader>
                                     </Header>
@@ -63,8 +84,8 @@ class SearchResultSingleCharityGroups extends React.Component {
                             </Grid.Column>
                             <Grid.Column mobile={16} tablet={4} computer={3} verticalAlign="middle" textAlign="center">
                                 <div className="btn-wraper">
-                                    <Button className="view-btn" onClick={()=>{this.handleRoute(CharityGroup.type,CharityGroup.attributes.slug);}}>
-                                        {(CharityGroup.type === 'groups') ? 'View Group' : 'View charity'}
+                                    <Button className="view-btn" onClick={()=>{this.handleRoute(type,slug);}}>
+                                        {(type === 'group') ? 'View Group' : 'View charity'}
                                     </Button>
                                 </div>
                             </Grid.Column>
@@ -72,7 +93,7 @@ class SearchResultSingleCharityGroups extends React.Component {
                     </Grid>
                 </div>
                 
-            ));
+            )});
             return charitiesGroupsComponent;
         }
         return 'No Data available';
@@ -96,7 +117,7 @@ class SearchResultSingleCharityGroups extends React.Component {
     }
 }
 SearchResultSingleCharityGroups.propTypes = {
-    CharityGroups: PropTypes.arrayOf(
+    charityGroups: PropTypes.arrayOf(
         PropTypes.shape({
             type: PropTypes.string,
         }),
@@ -105,7 +126,7 @@ SearchResultSingleCharityGroups.propTypes = {
 };
 
 SearchResultSingleCharityGroups.defaultProps = {
-    CharityGroups: null,
+    charityGroups: null,
     textSearchCharityGroupLoader: false,
 };
 export default SearchResultSingleCharityGroups;

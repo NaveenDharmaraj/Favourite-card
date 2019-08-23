@@ -9,4 +9,5 @@ module.exports = routes()
     .add('give-to-group-mid-pages', '/give/to/group/:slug/:step', 'groups')   
     .add('give-from-to-group', '/give/to/group/:step', 'groups')
     .add('friends', '/give/to/friend/:step')
-    .add('group-profile', '/groups/:slug', 'groupProfile');
+    .add('group-profile', '/groups/:slug', 'groupProfile')
+    .add('charity-profile', '/charities/:slug', 'charityProfile')

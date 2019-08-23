@@ -14,6 +14,9 @@ export const actionTypes = {
     TAX_RECEIPT_PROFILES:'TAX_RECEIPT_PROFILES',
     SET_USER_INFO: 'SET_USER_INFO',
     UPDATE_USER_FUND: 'UPDATE_USER_FUND',
+    GIVING_GROUPS_AND_CAMPAIGNS: 'GIVING_GROUPS_AND_CAMPAIGNS',
+    DISABLE_GROUP_SEE_MORE: 'DISABLE_GROUP_SEE_MORE',
+    LEAVE_GROUP_ERROR_MESSAGE: 'LEAVE_GROUP_ERROR_MESSAGE',
     USER_GIVING_GOAL_DETAILS: 'USER_GIVING_GOAL_DETAILS',
 }
 
@@ -294,7 +297,7 @@ export const updateTaxReceiptProfile = (taxReceiptProfile, action, dispatch) => 
             id: taxReceiptProfile.id,
             type: taxReceiptProfile.type,
         };
-        return coreApi.patch(`/taxReceiptProfilesf/${taxReceiptProfile.id}`, {
+        return coreApi.patch(`/taxReceiptProfiles/${taxReceiptProfile.id}`, {
             data,
         });
     } else {
@@ -340,6 +343,106 @@ export const savePaymentInstrument = (cardDetails) => {
     return result;
 };
 
+export const getGroupsAndCampaigns = (dispatch, url, type, appendData = true, previousData = []) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.GIVING_GROUPS_AND_CAMPAIGNS,
+    };
+    let dataArray = [];
+    if(appendData) {
+        dataArray = previousData;
+    }
+    coreApi.get(
+        url,
+        {
+            params: {
+                dispatch,
+                uxCritical: true,
+            },
+        },
+    ).then(
+        (result) => {
+            fsa.payload[type] = {
+                currentLink: url,
+                data: dataArray.concat(result.data),
+                nextLink: (result.links.next) ? result.links.next : null,
+                dataCount: result.meta.recordCount,
+            };
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        fsa.payload[type] = {
+            ...fsa.payload[type],
+            flag: true,
+        };
+        dispatch(fsa);
+    });
+};
+
+const checkForOnlyOneAdmin = (error) => {
+    if (!_.isEmpty(error) && error.length === 1) {
+        const checkForAdminError = error[0];
+        if (!_.isEmpty(checkForAdminError.meta)
+            && !_.isEmpty(checkForAdminError.meta.validationCode)
+            && (checkForAdminError.meta.validationCode === '1329'
+            || checkForAdminError.meta.validationCode === 1329)) {
+            return true;
+        }
+    }
+    return false;
+};
+
+export const leaveGroup = (dispatch, group, allData, type) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.GIVING_GROUPS_AND_CAMPAIGNS,
+    };
+    const dataArray = _.merge([], allData.data);
+    const currentpath = allData.currentLink;
+    console.log(group.attributes.slug);
+    coreApi.patch(`/groups/leave?slug=${group.attributes.slug}`, {
+    }).then(
+        async () => {
+            _.remove(dataArray, (e) => e.id === group.id);
+            const currentData = await coreApi.get(currentpath);
+            fsa.payload[type] = {
+                currentLink: currentpath,
+                data: _.uniqBy(_.concat(dataArray, currentData.data), 'id'),
+                nextLink: (currentData.links.next) ? currentData.links.next : null,
+                dataCount: currentData.meta.recordCount,
+            };
+
+            dispatch(fsa);
+        },
+    ).catch((error) => {
+        console.log(error);
+        const errorFsa = {
+            payload: {
+                type,
+                id: group.id,
+                message: error.errors[0].detail,
+                adminError:0,
+            },
+            type: actionTypes.LEAVE_GROUP_ERROR_MESSAGE,
+        }
+        if (checkForOnlyOneAdmin(error.errors)) {
+            errorFsa.payload.message = "You are the only admin in this Group. In order to leave, please appoint another Group member as admin.";
+            errorFsa.payload.adminError = 1;
+        }
+        console.log(errorFsa);
+        dispatch(errorFsa);
+    });
+};
+
+export const getInitalGivingGroupsAndCampaigns = (dispatch, userId) => {
+        getGroupsAndCampaigns(dispatch, `/users/${userId}/administeredGroups?page[size]=9&sort=-id`, 'administeredGroups', false);
+        getGroupsAndCampaigns(dispatch, `/users/${userId}/administeredCampaigns?page[size]=9&sort=-id`, 'administeredCampaigns', false);
+        getGroupsAndCampaigns(dispatch, `/users/${userId}/groupsWithOnlyMemberships?page[size]=9&sort=-id`, 'groupsWithMemberships', false);
+
+};
 export const getUserGivingGoal = (dispatch, userId) => {
     return coreApi.get(`users/${userId}/givingGoals`)
         .then((result) => {
