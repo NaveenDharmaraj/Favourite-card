@@ -180,54 +180,56 @@ class TaxReceipt extends React.Component {
 	}
 
 	handleSubmit() {
-		this.validateForm();
-		const {
-			flowObject,
-			selectedValue,
-		} = this.state;
-		const {
-			nextStep,
-			taxReceiptProfiles,
-		} = this.props;
-		const {
-			giveData: {
-				giveTo,
-				giveFrom,
-			},
-		} = flowObject;
-		flowObject.nextSteptoProceed = nextStep;
-		flowObject.taxReceiptProfileAction = 'no_change';
-		if (!_.isEmpty(selectedValue) && selectedValue !== 0) {
-			const selectedProfileFromList =
-				_.find(taxReceiptProfiles, {
-					id: selectedValue
-				});
-			if (!_.isEqual(
-					flowObject.selectedTaxReceiptProfile.attributes,
-					selectedProfileFromList.attributes,
-				)) {
-					flowObject.taxReceiptProfileAction = 'update';
-					flowObject.visitedTaxPage = true;
-			}
-		} else {
-			flowObject.selectedTaxReceiptProfile.relationships = {
-				accountHoldable: {
-					data: { 
-						id: (flowObject.type === 'donations') ? giveTo.id: giveFrom.id,
-						type: (flowObject.type === 'donations') ? giveTo.type: giveFrom.type,
-					},
+		const isValid = this.validateForm();
+		if (isValid) {
+			const {
+				flowObject,
+				selectedValue,
+			} = this.state;
+			const {
+				nextStep,
+				taxReceiptProfiles,
+			} = this.props;
+			const {
+				giveData: {
+					giveTo,
+					giveFrom,
 				},
-			};
-			flowObject.taxReceiptProfileAction = 'create';
-			flowObject.visitedTaxPage = true;
-		}
+			} = flowObject;
+			flowObject.nextSteptoProceed = nextStep;
+			flowObject.taxReceiptProfileAction = 'no_change';
+			if (!_.isEmpty(selectedValue) && selectedValue !== 0) {
+				const selectedProfileFromList =
+					_.find(taxReceiptProfiles, {
+						id: selectedValue
+					});
+				if (!_.isEqual(
+						flowObject.selectedTaxReceiptProfile.attributes,
+						selectedProfileFromList.attributes,
+					)) {
+						flowObject.taxReceiptProfileAction = 'update';
+						flowObject.visitedTaxPage = true;
+				}
+			} else {
+				flowObject.selectedTaxReceiptProfile.relationships = {
+					accountHoldable: {
+						data: { 
+							id: (flowObject.type === 'donations') ? giveTo.id: giveFrom.id,
+							type: (flowObject.type === 'donations') ? giveTo.type: giveFrom.type,
+						},
+					},
+				};
+				flowObject.taxReceiptProfileAction = 'create';
+				flowObject.visitedTaxPage = true;
+			}
 
-		const {
-			dispatch,
-			stepIndex,
-			flowSteps
-		} = this.props
-		dispatch(proceed(flowObject, flowSteps[stepIndex + 1], stepIndex ));
+			const {
+				dispatch,
+				stepIndex,
+				flowSteps
+			} = this.props
+			dispatch(proceed(flowObject, flowSteps[stepIndex + 1], stepIndex ));
+		}
 	}
 
 	populateOptions = (taxReceiptProfiles, selectedTaxReceiptProfile) => {
