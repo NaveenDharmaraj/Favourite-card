@@ -297,7 +297,7 @@ export const updateTaxReceiptProfile = (taxReceiptProfile, action, dispatch) => 
             id: taxReceiptProfile.id,
             type: taxReceiptProfile.type,
         };
-        return coreApi.patch(`/taxReceiptProfilesf/${taxReceiptProfile.id}`, {
+        return coreApi.patch(`/taxReceiptProfiles/${taxReceiptProfile.id}`, {
             data,
         });
     } else {

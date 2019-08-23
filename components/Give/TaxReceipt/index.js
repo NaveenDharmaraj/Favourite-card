@@ -180,9 +180,6 @@ class TaxReceipt extends React.Component {
 	}
 
 	handleSubmit() {
-		this.setState({
-			buttonClicked: true,
-		});
 		const isValid = this.validateForm();
 		if (isValid) {
 			const {
@@ -232,13 +229,7 @@ class TaxReceipt extends React.Component {
 				flowSteps
 			} = this.props
 			dispatch(proceed(flowObject, flowSteps[stepIndex + 1], stepIndex ));
-
-		} else {
-			this.setState({
-				buttonClicked: false,
-			});
 		}
-
 	}
 
 	populateOptions = (taxReceiptProfiles, selectedTaxReceiptProfile) => {
@@ -370,19 +361,6 @@ class TaxReceipt extends React.Component {
 			);
 	}
 
-	renderContinueButton() {
-		let button = (
-			<Button primary onClick={() => this.handleSubmit()} className="blue-btn-rounded">Continue</Button>
-		);
-		if(this.state.buttonClicked) {
-			button = (
-				<Button primary disabled onClick={() => this.handleSubmit()} className="blue-btn-rounded">Continue</Button>
-			); 
-		}
-		return (button);
-
-	}
-
 	render() {
 		const {
 			flowObject: {
@@ -393,6 +371,9 @@ class TaxReceipt extends React.Component {
 			validity
 		} = this.state;
 		const formatMessage = this.props.t;
+		const {
+			taxReceiptEditApiCall
+		} = this.props;
 		return (
 			<div>
 				<Form>
@@ -410,7 +391,15 @@ class TaxReceipt extends React.Component {
 						</Form.Field>
 				</Form>
 				<br />
-				{this.renderContinueButton()}
+				<Button
+					primary
+					disabled
+					onClick={() => this.handleSubmit()}
+					className="blue-btn-rounded"
+					disabled = {taxReceiptEditApiCall}
+				>
+					Continue
+				</Button>
 			</div>
 		);
 	}
@@ -423,12 +412,14 @@ const  mapStateToProps = (state, props) => {
 	if(type === 'user') {
 		return {
 			taxReceiptProfiles: state.user.taxReceiptProfiles,
-			taxReceiptGetApiStatus:state.user.taxReceiptGetApiStatus
+			taxReceiptGetApiStatus:state.user.taxReceiptGetApiStatus,
+			taxReceiptEditApiCall: state.give.taxReceiptEditApiCall,
 		}
 	}
 	return {
 		taxReceiptProfiles: state.give.companyData.taxReceiptProfiles,
-		taxReceiptGetApiStatus:state.give.companyData.taxReceiptGetApiStatus
+		taxReceiptGetApiStatus:state.give.companyData.taxReceiptGetApiStatus,
+		taxReceiptEditApiCall: state.give.taxReceiptEditApiCall,
 	}
 }
 export default withTranslation('taxReceipt')(connect(mapStateToProps)(TaxReceipt));
