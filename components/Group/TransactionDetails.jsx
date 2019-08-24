@@ -21,6 +21,7 @@ import {
 
 import { getTransactionDetails } from '../../actions/group';
 import PaginationComponent from '../shared/Pagination';
+import PlaceholderGrid from '../shared/PlaceHolder';
 
 class TransactionDetails extends React.Component {
     constructor(props) {
@@ -28,6 +29,7 @@ class TransactionDetails extends React.Component {
         this.onPageChange = this.onPageChange.bind(this);
         this.state = {
             activePage: 1,
+            tableListLoader: !props.groupTransactions.data.length > 0,
         };
     }
 
@@ -37,6 +39,25 @@ class TransactionDetails extends React.Component {
             id,
         } = this.props;
         getTransactionDetails(dispatch, id);
+    }
+
+    componentDidUpdate(prevProps) {
+        const {
+            groupTransactions: {
+                data: transactionData,
+            },
+        } = this.props;
+        let {
+            tableListLoader,
+        } = this.state;
+        if (!_.isEqual(this.props, prevProps)) {
+            if (!_.isEqual(transactionData, prevProps.groupTransactions.data)) {
+                tableListLoader = false;
+            }
+            this.setState({
+                tableListLoader,
+            });
+        }
     }
 
     onPageChange(event, data) {
@@ -62,6 +83,7 @@ class TransactionDetails extends React.Component {
         } = this.props;
         const {
             activePage,
+            tableListLoader,
         } = this.state;
         let transactionData = 'No Data';
         if (!_isEmpty(groupData)) {
@@ -127,9 +149,12 @@ class TransactionDetails extends React.Component {
         return (
             <div className="pt-2">
                 <Table basic="very" className="brdr-top-btm db-activity-tbl">
-                    <Table.Body>
-                        {transactionData}
-                    </Table.Body>
+                    {!tableListLoader ? (
+                        <Table.Body>
+                            {transactionData}
+                        </Table.Body>
+                    ) : (<PlaceholderGrid row={10} column={3} placeholderType="table" />)
+                    }
                 </Table>
                 <div className="db-pagination right-align pt-2">
                     <PaginationComponent

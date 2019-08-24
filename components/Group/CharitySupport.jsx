@@ -18,6 +18,7 @@ import {
 
 import { getGroupBeneficiaries } from '../../actions/group';
 import LeftImageCard from '../shared/LeftImageCard';
+import PlaceholderGrid from '../shared/PlaceHolder';
 
 class CharitySupport extends React.Component {
     static loadCards(data) {
@@ -29,11 +30,18 @@ class CharitySupport extends React.Component {
                         placeholder={card.attributes.avatar}
                         typeClass="chimp-lbl charity"
                         type={card.type}
-                        url={`/${card.type}/${card.attributes.slug}`}
+                        url={`/charities/${card.attributes.slug}`}
                     />
                 ))}
             </Grid.Row>
         );
+    }
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            charityLoader: !props.groupBeneficiaries.data.length > 0,
+        };
     }
 
     componentDidMount() {
@@ -46,6 +54,25 @@ class CharitySupport extends React.Component {
         } = this.props;
         if (_isEmpty(beneficiariesData)) {
             getGroupBeneficiaries(dispatch, groupId);
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        const {
+            groupBeneficiaries: {
+                data: charityData,
+            },
+        } = this.props;
+        let {
+            charityLoader,
+        } = this.state;
+        if (!_.isEqual(this.props, prevProps)) {
+            if (!_.isEqual(charityData, prevProps.groupBeneficiaries.data)) {
+                charityLoader = false;
+            }
+            this.setState({
+                charityLoader,
+            });
         }
     }
 
@@ -68,23 +95,30 @@ class CharitySupport extends React.Component {
                 nextLink: beneficiariesNextLink,
             },
         } = this.props;
+        const {
+            charityLoader,
+        } = this.state;
         return (
             <Fragment>
-                <Grid stackable doubling columns={3}>
-                    {!_isEmpty(beneficiariesData) && CharitySupport.loadCards(beneficiariesData)}
-                    {(beneficiariesNextLink)
-                    && (
-                        <div className="text-right">
-                            <Button
-                                onClick={() => this.loadMore()}
-                                basic
-                                color="blue"
-                                content="View more"
-                            />
-                        </div>
-                    )
-                    }
-                </Grid>
+                {!charityLoader ? (
+                    <Grid stackable doubling columns={3}>
+                        {!_isEmpty(beneficiariesData)
+                            && CharitySupport.loadCards(beneficiariesData)}
+                        {(beneficiariesNextLink)
+                        && (
+                            <div className="text-right">
+                                <Button
+                                    onClick={() => this.loadMore()}
+                                    basic
+                                    color="blue"
+                                    content="View more"
+                                />
+                            </div>
+                        )
+                        }
+                    </Grid>
+                ) : (<PlaceholderGrid row={1} column={3} placeholderType="card" />)
+                }
             </Fragment>
         );
     }

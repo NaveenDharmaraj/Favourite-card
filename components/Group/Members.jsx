@@ -18,6 +18,7 @@ import {
     func,
 } from 'prop-types';
 
+import PlaceholderGrid from '../shared/PlaceHolder';
 import {
     getGroupMemberDetails,
     getGroupAdminDetails,
@@ -27,15 +28,25 @@ import FriendCard from '../shared/FriendCard';
 class Members extends React.Component {
     static loadCards(data) {
         return (
-            <Grid.Row stretched>
-                {data.map((card) => (
-                    <FriendCard
-                        avatar={card.attributes.avatar}
-                        name={card.attributes.displayName}
-                    />
-                ))}
-            </Grid.Row>
+            <Grid stackable doubling columns={7}>
+                <Grid.Row stretched>
+                    {data.map((card) => (
+                        <FriendCard
+                            avatar={card.attributes.avatar}
+                            name={card.attributes.displayName}
+                        />
+                    ))}
+                </Grid.Row>
+            </Grid>
         );
+    }
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            adminsLoader: !props.groupAdminsDetails.data.length > 0,
+            membersLoader: !props.groupMembersDetails.data.length > 0,
+        };
     }
 
     componentDidMount() {
@@ -56,6 +67,36 @@ class Members extends React.Component {
         }
         if (_isEmpty(adminData)) {
             getGroupAdminDetails(dispatch, groupId);
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        const {
+            groupMembersDetails: {
+                data: memberData,
+            },
+            groupAdminsDetails: {
+                data: adminData,
+            },
+        } = this.props;
+        let {
+            membersLoader,
+            adminsLoader,
+        } = this.state;
+        if (!_.isEqual(this.props, prevProps)) {
+            if (!_.isEqual(memberData, prevProps.groupMembersDetails.data)) {
+                membersLoader = false;
+            }
+            this.setState({
+                membersLoader,
+            });
+
+            if (!_.isEqual(adminData, prevProps.groupAdminsDetails.data)) {
+                adminsLoader = false;
+            }
+            this.setState({
+                adminsLoader,
+            });
         }
     }
 
@@ -98,7 +139,10 @@ class Members extends React.Component {
                 nextLink: adminsNextLink,
             },
         } = this.props;
-
+        const {
+            membersLoader,
+            adminsLoader,
+        } = this.state;
         return (
             <Fragment>
                 <div className="give-friends-list pt-2">
@@ -110,9 +154,8 @@ class Members extends React.Component {
                         )
                     }
                     <Divider />
-                    <Grid stackable doubling columns={7}>
-                        {!_isEmpty(adminsData) && Members.loadCards(adminsData)}
-                    </Grid>
+                    {adminsLoader ? <PlaceholderGrid row={1} column={7} />
+                        : Members.loadCards(adminsData)}
                     {(adminsNextLink)
                     && (
                         <div className="text-center mt-1 mb-1">
@@ -135,9 +178,9 @@ class Members extends React.Component {
                     )
                     }
                     <Divider />
-                    <Grid stackable doubling columns={7}>
-                        {!_isEmpty(membersData) && Members.loadCards(membersData)}
-                    </Grid>
+                    {membersLoader ? <PlaceholderGrid row={1} column={7} />
+                        : Members.loadCards(membersData)}
+
                     {(membersNextLink)
                     && (
                         <div className="text-center mt-1 mb-1">
