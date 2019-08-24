@@ -64,6 +64,24 @@ const userProfile = (state = {}, action) => {
                 userFindFriendsList: Object.assign({}, action.payload),
             };
             break;
+        case 'USER_PROFILE_INVITATIONS':
+            newState = {
+                ...state,
+                userFriendsInvitationsList: Object.assign({}, action.payload),
+            };
+            break;
+        case 'USER_PROFILE_BLOCKED_FRIENDS':
+            newState = {
+                ...state,
+                userBlockedFriendsList: Object.assign({}, action.payload),
+            };
+            break;
+        case 'USER_PROFILE_CREDIT_CARDS':
+            newState = {
+                ...state,
+                userCreditCardList: Object.assign({}, action.payload),
+            };
+            break;
         default:
             break;
     }

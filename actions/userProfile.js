@@ -1,33 +1,21 @@
 import _ from 'lodash';
-import getConfig from 'next/config';
 
 import graphApi from '../services/graphApi';
 import searchApi from '../services/searchApi';
-
-const { publicRuntimeConfig } = getConfig();
-
-const {
-    BASIC_AUTH_KEY,
-} = publicRuntimeConfig;
-
-let BASIC_AUTH_HEADER = null;
-if (!_.isEmpty(BASIC_AUTH_KEY)) {
-    BASIC_AUTH_HEADER = {
-        headers: {
-            Authorization: `Basic ${BASIC_AUTH_KEY}`,
-        },
-    };
-}
+import coreApi from '../services/coreApi';
 
 // eslint-disable-next-line import/exports-last
 export const actionTypes = {
     USER_PROFILE_ADMIN_GROUP: 'USER_PROFILE_ADMIN_GROUP',
     USER_PROFILE_BASIC: 'USER_PROFILE_BASIC',
+    USER_PROFILE_BLOCKED_FRIENDS: 'USER_PROFILE_BLOCKED_FRIENDS',
     USER_PROFILE_CAUSES: 'USER_PROFILE_CAUSES',
     USER_PROFILE_CHARITABLE_INTERESTS: 'USER_PROFILE_CHARITABLE_INTERESTS',
+    USER_PROFILE_CREDIT_CARDS: 'USER_PROFILE_CREDIT_CARDS',
     USER_PROFILE_FAVOURITES: 'USER_PROFILE_FAVOURITES',
     USER_PROFILE_FIND_FRIENDS: 'USER_PROFILE_FIND_FRIENDS',
     USER_PROFILE_FOLLOWED_TAGS: 'USER_PROFILE_FOLLOWED_TAGS',
+    USER_PROFILE_INVITATIONS: 'USER_PROFILE_INVITATIONS',
     USER_PROFILE_MEMBER_GROUP: 'USER_PROFILE_MEMBER_GROUP',
     USER_PROFILE_MY_FRIENDS: 'USER_PROFILE_MY_FRIENDS',
     USER_PROFILE_RECOMMENDED_TAGS: 'USER_PROFILE_RECOMMENDED_TAGS',
@@ -140,7 +128,7 @@ const getUserProfileCauses = (dispatch, userId) => {
         },
         type: actionTypes.USER_PROFILE_CAUSES,
     };
-    return graphApi.get(`/user/causes?userid=${Number(userId)}`, BASIC_AUTH_HEADER).then((result) => {
+    return graphApi.get(`/user/causes?userid=${Number(userId)}`).then((result) => {
         fsa.payload.userCausesList = result.data;
     }).catch((error) => {
         fsa.error = error;
@@ -194,10 +182,49 @@ const getMyFriendsList = (dispatch, email, pageNumber) => {
         },
         type: actionTypes.USER_PROFILE_MY_FRIENDS,
     };
-    return graphApi.get(`/user/myfriends?userid=${email}&page[number]=${pageNumber}&page[size]=10`).then(
+    return graphApi.get(`/user/myfriends?userid=${email}&page[number]=${pageNumber}&page[size]=10&status=accepted`).then(
         (result) => {
             fsa.payload = {
                 count: result.meta.recordCount,
+                data: result.data,
+            };
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    });
+};
+
+const getFriendsInvitations = (dispatch, email, pageNumber) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.USER_PROFILE_INVITATIONS,
+    };
+    return graphApi.get(`/user/myfriends?userid=${email}&page[number]=${pageNumber}&page[size]=10&status=pending&direction=in`).then(
+        (result) => {
+            fsa.payload = {
+                count: result.meta.recordCount,
+                data: result.data,
+            };
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    });
+};
+
+const getBlockedFriends = (dispatch, userId) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.USER_PROFILE_BLOCKED_FRIENDS,
+    };
+    return graphApi.get(`/core/blockedUser/list?source_user_id=${userId}`).then(
+        (result) => {
+            fsa.payload = {
                 data: result.data,
             };
         },
@@ -217,10 +244,30 @@ const getFriendsByText = (dispatch, userId, searchText, pageNumber) => {
     const bodyData = {
         "text": searchText,
     };
-    return searchApi.post(`/users?page[number]=${pageNumber}&page[size]=10&user_id=${userId}`, { data: bodyData }).then(
+    return searchApi.post(`/users?page[number]=${pageNumber}&page[size]=10&user_id=${Number(userId)}`, bodyData).then(
         (result) => {
             fsa.payload = {
                 count: result.meta.record_count,
+                data: result.data,
+            };
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    });
+};
+
+const getMyCreditCards = (dispatch, userId) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.USER_PROFILE_CREDIT_CARDS,
+    };
+    return coreApi.get(`/users/${Number(userId)}/paymentInstruments?page[number]=1&page[size]=10`).then(
+        (result) => {
+            fsa.payload = {
+                count: result.meta.pageCount,
                 data: result.data,
             };
         },
@@ -242,4 +289,7 @@ export {
     getUserTagsFollowed,
     getMyFriendsList,
     getFriendsByText,
+    getFriendsInvitations,
+    getBlockedFriends,
+    getMyCreditCards,
 };

@@ -73,14 +73,11 @@ class ManagePassword extends React.Component {
                     <p>
                         <span className={(validity.doesPwdHaveCount) ? 'blueText' : ''}>
                             {pwdCharCount}
-                            /8 characters,
+                            / 8 Characters,
                         </span>
-                        <br />
-                        <span className={(validity.doesPwdhaveLowerCase) ? 'blueText' : ''}>lowercase letters (a-z)</span>
-                        <br />
-                        <span className={(validity.doesPwdhaveUpperCase) ? 'blueText' : ''}>uppercase letters (A-Z)</span>
-                        <br />
-                        <span className={(validity.doesPwdhaveSpecialChars) ? 'blueText' : ''}>special characters (e.g. !@#$%^&)</span>
+                        <span className={(validity.doesPwdhaveLowerCase) ? 'blueText' : ''}> Lowercase letters (a-z), </span>
+                        <span className={(validity.doesPwdhaveUpperCase) ? 'blueText' : ''}>Uppercase letters (A-Z), </span>
+                        <span className={(validity.doesPwdhaveSpecialChars) ? 'blueText' : ''}>Special characters (e.g. !@#$%^&)</span>
                     </p>
                     <div className="pt-2">
                         <Button className="blue-btn-rounded-def w-140" disabled={ !validity.isPasswordValid }>Save</Button>

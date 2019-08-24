@@ -49,7 +49,13 @@ const Profile = (props) => {
             </Popup.Header>
             <Popup.Content>
                 <List link>
-                    <List.Item active as="a" href="/user/edit">
+                    <List.Item active as="a" href="/user/profile">
+                        My Profile
+                    </List.Item>
+                    <List.Item as="a" href="/users/profile">
+                        Friend Profile
+                    </List.Item>
+                    <List.Item as="a" href="/user/edit">
                         {formatMessage('accountSettings')}
                     </List.Item>
                     <List.Item as="a">
