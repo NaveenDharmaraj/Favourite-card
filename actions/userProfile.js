@@ -8,6 +8,7 @@ import coreApi from '../services/coreApi';
 export const actionTypes = {
     USER_PROFILE_ADMIN_GROUP: 'USER_PROFILE_ADMIN_GROUP',
     USER_PROFILE_BASIC: 'USER_PROFILE_BASIC',
+    USER_PROFILE_BASIC_FRIEND: 'USER_PROFILE_BASIC_FRIEND',
     USER_PROFILE_BLOCKED_FRIENDS: 'USER_PROFILE_BLOCKED_FRIENDS',
     USER_PROFILE_CAUSES: 'USER_PROFILE_CAUSES',
     USER_PROFILE_CHARITABLE_INTERESTS: 'USER_PROFILE_CHARITABLE_INTERESTS',
@@ -21,14 +22,34 @@ export const actionTypes = {
     USER_PROFILE_RECOMMENDED_TAGS: 'USER_PROFILE_RECOMMENDED_TAGS',
 };
 
-const getUserProfileBasic = (dispatch, email, userId) => {
+const getUserProfileBasic = (dispatch, email, userId, loggedInUserId) => {
     const fsa = {
         payload: {
             email,
         },
         type: actionTypes.USER_PROFILE_BASIC,
     };
-    graphApi.get(`/recommendation/user?emailid=${email}&targetId=0&sourceId=${Number(userId)}`).then(
+    graphApi.get(`/recommendation/withProfileType/user?emailid=${email}&targetId=${Number(loggedInUserId)}&sourceId=${Number(userId)}&limit=&sort=`).then(
+        (result) => {
+            fsa.payload = {
+                data: result.data,
+            };
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    });
+};
+
+const getUserFriendProfile = (dispatch, email, userId, loggedInUserId) => {
+    const fsa = {
+        payload: {
+            email,
+        },
+        type: actionTypes.USER_PROFILE_BASIC_FRIEND,
+    };
+    graphApi.get(`/recommendation/withProfileType/user?emailid=${email}&targetId=${Number(userId)}&sourceId=${Number(loggedInUserId)}&limit=&sort=`).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -280,6 +301,7 @@ const getMyCreditCards = (dispatch, userId) => {
 
 export {
     getUserProfileBasic,
+    getUserFriendProfile,
     getUserCharitableInterests,
     getUserMemberGroup,
     getUserAdminGroup,

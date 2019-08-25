@@ -5,19 +5,24 @@ import {
     connect,
 } from 'react-redux';
 
-import Layout from '../../../components/shared/Layout';
+import Layout from '../components/shared/Layout';
 import {
     getUserFriendProfile,
-} from '../../../actions/userProfile';
-import FavouritesList from '../../../components/UserProfile/Favourites';
-import MemberGroupList from '../../../components/UserProfile/MemberGroups';
-import AdminGroupList from '../../../components/UserProfile/AdminGroups';
-import CharitableInterestsList from '../../../components/UserProfile/CharitableInterest';
-import GivingGoal from '../../../components/UserProfile/GivingGoal';
-import BasicProfile from '../../../components/UserProfile/BasicProfile';
+} from '../actions/userProfile';
+
+import FavouritesList from '../components/UserProfile/Favourites';
+import MemberGroupList from '../components/UserProfile/MemberGroups';
+import AdminGroupList from '../components/UserProfile/AdminGroups';
+import CharitableInterestsList from '../components/UserProfile/CharitableInterest';
+import GivingGoal from '../components/UserProfile/GivingGoal';
+import BasicProfile from '../components/UserProfile/BasicProfile';
 
 class FriendProfile extends React.Component {
-    
+    static async getInitialProps({ query }) {
+        return {            
+            friendChimpId: query.slug,
+        };
+    }
     componentDidMount() {
         const {
             currentUser: {
@@ -27,15 +32,12 @@ class FriendProfile extends React.Component {
                 },
             },
             dispatch,
+            friendChimpId,
         } = this.props;
-        const friendUserId = 999663;
-        getUserFriendProfile(dispatch, email, friendUserId, id);
+        getUserFriendProfile(dispatch, email, friendChimpId, id);
     }
 
-    render() {
-        const {
-            slug,
-        } = this.props;
+    render() {        
         const {
             userFriendProfileData,
         } = this.props;
@@ -47,7 +49,6 @@ class FriendProfile extends React.Component {
             givenAmount = Number(userData.giving_goal_met);
             percentage = (givenAmount * 100) / givingAmount;
         }
-        console.log(slug);
         return (
             <Layout authRequired>
                 <BasicProfile userData={userData} />

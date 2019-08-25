@@ -26,13 +26,11 @@ class FavouritesList extends React.Component {
     }
 
     componentDidMount() {
-        const {
-            currentUser: {
-                id
-            },
+        const {            
             dispatch,
+            friendUserId,
         } = this.props;
-        getUserFavourites(dispatch, id);
+        getUserFavourites(dispatch, friendUserId);
     }
 
     componentDidUpdate(prevProps, prevState) {

@@ -37,10 +37,10 @@ class UserBasciProfile extends React.Component {
                                             <Grid.Column mobile={16} tablet={5} computer={5}>
                                                 <div className="ProfileHeaderWraper">
                                                     <Header as="h3">
-                                                        <span className="font-s-10 type-profile">public profile</span>
+                                                        <span className="font-s-10 type-profile">{userData.profile_type}</span>
                                                         {userData.first_name} 
                                                         {' '}
-                                                        {userData.last_name},
+                                                        {userData.last_name}
                                                         <span className="small m-0">
                                                             &nbsp;
                                                             {userData.location}
@@ -48,36 +48,7 @@ class UserBasciProfile extends React.Component {
                                                         <Header.Subheader>
                                                             <Icon name="users" />
                                                             {userData.number_of_friends}
-                                                            &nbsp; friends
-                                                            <Popup
-                                                                trigger={<a className="font-s-10 d-in-block hoverable" style={{marginLeft:'.5rem'}}>Privacy settings > </a>}
-                                                                on="click"
-                                                                pinned
-                                                                position="bottom left"
-                                                                className="privacy-popup"
-                                                                basic
-                                                            >
-                                                                <Popup.Header>I want this to be visible to:</Popup.Header>
-                                                                <Popup.Content>
-                                                                    <List divided verticalAlign='middle' className="selectable-tick-list">
-                                                                        <List.Item className="active">
-                                                                            <List.Content>
-                                                                                <List.Header as='a'>Public <span className="tick-mark"><Icon name="check"/></span></List.Header>
-                                                                            </List.Content>
-                                                                        </List.Item>
-                                                                        <List.Item>
-                                                                            <List.Content>
-                                                                                <List.Header as='a'>Friends</List.Header>
-                                                                            </List.Content>
-                                                                        </List.Item>
-                                                                        <List.Item>
-                                                                            <List.Content>
-                                                                                <List.Header as='a'>Only me</List.Header>
-                                                                            </List.Content>
-                                                                        </List.Item>
-                                                                    </List>
-                                                                </Popup.Content>
-                                                            </Popup>
+                                                            &nbsp; friends                                                            
                                                         </Header.Subheader>
                                                     </Header>
                                                 </div>
@@ -89,20 +60,16 @@ class UserBasciProfile extends React.Component {
                         </Grid>
                     </Container>
                 </div>
-                {
-                    !isEdit && (
-                        <div className="pb-3">
-                            <Container>
-                                <Header as="h4" className="underline">
-                                    About
-                                </Header>
-                                <p className="font-s-14">
-                                    {userData.description}
-                                </p>
-                            </Container>
-                        </div>
-                    )
-                }
+                <div className="pb-3">
+                    <Container>
+                        <Header as="h4" className="underline">
+                            About
+                        </Header>
+                        <p className="font-s-14">
+                            {userData.description}
+                        </p>
+                    </Container>
+                </div>
             </div>
         );
     }

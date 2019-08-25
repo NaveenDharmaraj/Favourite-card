@@ -26,12 +26,10 @@ class UserMemberGroupList extends React.Component {
 
     componentDidMount() {
         const {
-            currentUser: {
-                id
-            },
             dispatch,
+            friendUserId,
         } = this.props;
-        getUserMemberGroup(dispatch, id);
+        getUserMemberGroup(dispatch, friendUserId);
     }
 
     componentDidUpdate(prevProps, prevState) {

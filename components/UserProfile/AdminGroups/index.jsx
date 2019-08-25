@@ -25,13 +25,11 @@ class UserAdminGroupList extends React.Component {
     }
 
     componentDidMount() {
-        const {
-            currentUser: {
-                id
-            },
+        const {            
             dispatch,
+            friendUserId,
         } = this.props;
-        getUserAdminGroup(dispatch, id);
+        getUserAdminGroup(dispatch, friendUserId);
     }
 
     componentDidUpdate(prevProps, prevState) {

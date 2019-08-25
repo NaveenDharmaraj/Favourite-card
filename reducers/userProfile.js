@@ -10,6 +10,12 @@ const userProfile = (state = {}, action) => {
                 userProfileBasicData: Object.assign({}, action.payload),
             };
             break;
+        case 'USER_PROFILE_BASIC_FRIEND':
+            newState = {
+                ...state,
+                userFriendProfileData: Object.assign({}, action.payload),
+            };
+            break;
         case 'USER_PROFILE_CHARITABLE_INTERESTS':
             newState = {
                 ...state,
