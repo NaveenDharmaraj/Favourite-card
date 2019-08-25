@@ -208,6 +208,7 @@ const getMyFriendsList = (dispatch, email, pageNumber) => {
             fsa.payload = {
                 count: result.meta.recordCount,
                 data: result.data,
+                pageCount: result.meta.pageCount,
             };
         },
     ).catch((error) => {
@@ -268,7 +269,7 @@ const getFriendsByText = (dispatch, userId, searchText, pageNumber) => {
     return searchApi.post(`/users?page[number]=${pageNumber}&page[size]=10&user_id=${Number(userId)}`, bodyData).then(
         (result) => {
             fsa.payload = {
-                count: result.meta.record_count,
+                count: result.meta.record_count,                
                 data: result.data,
             };
         },
@@ -279,17 +280,18 @@ const getFriendsByText = (dispatch, userId, searchText, pageNumber) => {
     });
 };
 
-const getMyCreditCards = (dispatch, userId) => {
+const getMyCreditCards = (dispatch, userId, pageNumber) => {
     const fsa = {
         payload: {
         },
         type: actionTypes.USER_PROFILE_CREDIT_CARDS,
     };
-    return coreApi.get(`/users/${Number(userId)}/paymentInstruments?page[number]=1&page[size]=10`).then(
+    return coreApi.get(`/users/${Number(userId)}/paymentInstruments?page[number]=${pageNumber}&page[size]=10`).then(
         (result) => {
             fsa.payload = {
                 count: result.meta.pageCount,
                 data: result.data,
+                pageCount: result.meta.pageCount,
             };
         },
     ).catch((error) => {

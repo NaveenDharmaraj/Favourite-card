@@ -8,13 +8,23 @@ import {
     List,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
+import Link from 'next/link';
 
 import {
     getMyFriendsList,
     getFriendsInvitations,
 } from '../../../actions/userProfile';
+import Pagination from '../../shared/Pagination';
 
 class MyFriends extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            currentMyFriendsActivePage: 1,
+        };
+        this.onMyFriendsPageChanged = this.onMyFriendsPageChanged.bind(this);
+    }
+
     componentDidMount() {
         const {
             currentUser,
@@ -22,6 +32,17 @@ class MyFriends extends React.Component {
         } = this.props;
         getMyFriendsList(dispatch, currentUser.attributes.email, 1);
         getFriendsInvitations(dispatch, currentUser.attributes.email, 1);
+    }
+
+    onMyFriendsPageChanged(e, data) {
+        const {
+            currentUser,
+            dispatch,
+        } = this.props;
+        getMyFriendsList(dispatch, currentUser.attributes.email, data.activePage);
+        this.setState({
+            currentMyFriendsActivePage: data.activePage,
+        });
     }
 
     renderFriendsInvitations() {
@@ -40,7 +61,11 @@ class MyFriends extends React.Component {
                         </List.Content>
                         <Image avatar src={avatar} />
                         <List.Content>
-                            <List.Header>{name}</List.Header>
+                            <List.Header>
+                                <Link className="lnkChange" href={`/users/profile/${friend.attributes.user_id}`}>
+                                    {name}
+                                </Link>
+                            </List.Header>
                             <List.Description>Vancouver, BC</List.Description>
                         </List.Content>
                     </List.Item>
@@ -70,7 +95,11 @@ class MyFriends extends React.Component {
                         </List.Content>
                         <Image avatar src={avatar} />
                         <List.Content>
-                            <List.Header>{name}</List.Header>
+                            <List.Header>
+                                <Link className="lnkChange" href={`/users/profile/${friend.attributes.user_id}`}>
+                                    {name}
+                                </Link>
+                            </List.Header>
                             <List.Description>Vancouver, BC</List.Description>
                         </List.Content>
                     </List.Item>
@@ -85,6 +114,12 @@ class MyFriends extends React.Component {
     }
 
     render() {
+        const {
+            userMyFriendsList,
+        } = this.props;
+        const {
+            currentMyFriendsActivePage,
+        } = this.state;
         return (
             <div className="remove-gutter">
                 <div className="userSettingsContainer">
@@ -93,6 +128,17 @@ class MyFriends extends React.Component {
                         {this.renderFriendsInvitations()}
                         <Header className="mb-1 mt-3" as="h4">Friends </Header>
                         {this.renderMyFriendsList()}
+                        <div className="db-pagination right-align pt-2">
+                        {
+                            !_.isEmpty(userMyFriendsList) && userMyFriendsList.pageCount > 1 && (
+                                <Pagination
+                                    activePage={currentMyFriendsActivePage}
+                                    totalPages={userMyFriendsList.pageCount}
+                                    onPageChanged={this.onMyFriendsPageChanged}
+                                />
+                            )
+                        }
+                        </div>
                     </div>
                 </div>
             </div>

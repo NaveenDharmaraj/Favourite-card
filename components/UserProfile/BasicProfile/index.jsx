@@ -10,13 +10,14 @@ import {
     List,
 } from 'semantic-ui-react';
 
+import UserPlaceholder from '../../../static/images/no-data-avatar-user-profile.png';
 // eslint-disable-next-line react/prefer-stateless-function
 class UserBasciProfile extends React.Component {
     render() {
         const {
             userData,
-            isEdit,
         } = this.props;
+        const avatar = (typeof userData.avatar === 'undefined') || (userData.avatar === null) ? UserPlaceholder : userData.avatar;
         return (
             <div>
                 <div className="profile-header-image user"></div>
@@ -27,7 +28,7 @@ class UserBasciProfile extends React.Component {
                                 <Grid.Column mobile={16} tablet={3} computer={2}>
                                     <div className="profile-img-rounded">
                                         <div className="pro-pic-wraper">
-                                            <Image src={userData.avatar} circular/>
+                                            <Image src={avatar} circular/>
                                         </div>
                                     </div>
                                 </Grid.Column>

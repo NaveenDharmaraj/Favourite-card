@@ -9,6 +9,7 @@ import {
     Checkbox,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
+import Link from 'next/link';
 
 import {
     getBlockedFriends,
@@ -43,7 +44,11 @@ class Privacy extends React.Component {
                         </List.Content>
                         <Image avatar src={avatar} />
                         <List.Content>
-                            <List.Header>{name}</List.Header>
+                            <List.Header>
+                                <Link className="lnkChange" href={`/users/profile/${data.attributes.user_id}`}>
+                                    {name}
+                                </Link>
+                            </List.Header>
                             <List.Description>{location}</List.Description>
                         </List.Content>
                     </List.Item>

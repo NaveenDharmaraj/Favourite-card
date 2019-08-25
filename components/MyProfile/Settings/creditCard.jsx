@@ -16,9 +16,17 @@ import { connect } from 'react-redux';
 import {
     getMyCreditCards,
 } from '../../../actions/userProfile';
-import noteicon from '../../../static/images/icons/icon-document.svg';
+import Pagination from '../../shared/Pagination';
 
 class CreditCard extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            currentActivePage: 1,
+        };
+        this.onPageChanged = this.onPageChanged.bind(this);
+    }
+
     componentDidMount() {
         const {
             currentUser: {
@@ -26,7 +34,20 @@ class CreditCard extends React.Component {
             },
             dispatch,
         } = this.props;
-        getMyCreditCards(dispatch, id);
+        getMyCreditCards(dispatch, id, 1);
+    }
+
+    onPageChanged(e, data) {
+        const {
+            currentUser: {
+                id,
+            },
+            dispatch,
+        } = this.props;
+        getMyCreditCards(dispatch, id, data.activePage);
+        this.setState({
+            currentActivePage: data.activePage,
+        });
     }
 
     renderMyCreditCards() {
@@ -101,6 +122,12 @@ class CreditCard extends React.Component {
     }
 
     render() {
+        const {
+            currentActivePage,
+        } = this.state;
+        const {
+            userCreditCardList,
+        } = this.props;
         return (
             <div>
                 <Grid verticalAlign="middle">
@@ -151,6 +178,17 @@ class CreditCard extends React.Component {
                 </Grid>
                 <div className="userCardList">
                     {this.renderMyCreditCards()}
+                    <div className="db-pagination right-align pt-2">
+                        {
+                            !_.isEmpty(userCreditCardList) && userCreditCardList.pageCount > 1 && (
+                                <Pagination
+                                    activePage={currentActivePage}
+                                    totalPages={userCreditCardList.pageCount}
+                                    onPageChanged={this.onPageChanged}
+                                />
+                            )
+                        }
+                    </div>
                 </div>
             </div>
         );

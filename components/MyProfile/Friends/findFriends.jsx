@@ -9,20 +9,40 @@ import {
     List,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
+import Link from 'next/link';
 
 import {
     getFriendsByText,
 } from '../../../actions/userProfile';
+import Pagination from '../../shared/Pagination';
 
 class FindFriends extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            activePage: 1,
+            currentActivePage: 1,
+            paginationCount: 1,
             searchWord: '',
         };
         this.handleFriendSearch = this.handleFriendSearch.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.onPageChanged = this.onPageChanged.bind(this);
+    }
+
+    componentDidUpdate(prevProps) {
+        const {
+            userFindFriendsList,
+        } = this.props;
+        const {
+            paginationCount,
+        } = this.state;
+        if (!_.isEqual(this.props, prevProps)) {
+            if (!_.isEqual(userFindFriendsList, prevProps.userFindFriendsList)) {
+                this.setState({
+                    paginationCount: Math.round(userFindFriendsList.count / 10)
+                });
+            }
+        }
     }
 
     handleInputChange(event) {
@@ -45,11 +65,26 @@ class FindFriends extends React.Component {
         } = this.props;
         const {
             searchWord,
-            activePage,
+            currentActivePage,
         } = this.state;
-        getFriendsByText(dispatch, id, searchWord, activePage);
+        getFriendsByText(dispatch, id, searchWord, currentActivePage);
     }
 
+    onPageChanged(e, data) {
+        const {
+            currentUser: {
+                id,
+            },
+            dispatch,
+        } = this.props;
+        const {
+            searchWord
+        } = this.state;
+        getFriendsByText(dispatch, id, searchWord, data.activePage);
+        this.setState({
+            currentActivePage: data.activePage,
+        });
+    }
 
     renderFriendList() {
         const {
@@ -80,7 +115,11 @@ class FindFriends extends React.Component {
                         </List.Content>
                         <Image avatar src={avatar} />
                         <List.Content>
-                            <List.Header>{name}</List.Header>
+                            <List.Header>
+                                <Link className="lnkChange" href={`/users/profile/${data.attributes.user_id}`}>
+                                    {name}
+                                </Link>
+                            </List.Header>
                             <List.Description>{location}</List.Description>
                         </List.Content>
                     </List.Item>
@@ -98,7 +137,17 @@ class FindFriends extends React.Component {
     render() {
         const {
             searchWord,
+            currentActivePage,
+            paginationCount,
         } = this.state;
+        const {
+            userFindFriendsList,
+        } = this.props;
+        // co
+        // if(!_.isEmpty(userFindFriendsList)) {
+        //     paginationCount = Math.round(userFindFriendsList.count / 10);
+        // }
+        // console.log(paginationCount);
         return (
             <div className="remove-gutter">
                 <div className="userSettingsContainer">
@@ -120,6 +169,17 @@ class FindFriends extends React.Component {
                             </a>
                         </div>
                         {this.renderFriendList()}
+                        <div className="db-pagination right-align pt-2">
+                        {
+                            !_.isEmpty(userFindFriendsList) && paginationCount > 1 && (
+                                <Pagination
+                                    activePage={currentActivePage}
+                                    totalPages={paginationCount}
+                                    onPageChanged={this.onPageChanged}
+                                />
+                            )
+                        }
+                    </div>
                     </div>
                 </div>
             </div>
