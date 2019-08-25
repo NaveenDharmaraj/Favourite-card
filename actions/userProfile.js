@@ -6,6 +6,7 @@ import coreApi from '../services/coreApi';
 
 // eslint-disable-next-line import/exports-last
 export const actionTypes = {
+    UPDATE_USER_BASIC_PROFILE: 'UPDATE_USER_BASIC_PROFILE',
     USER_PROFILE_ADMIN_GROUP: 'USER_PROFILE_ADMIN_GROUP',
     USER_PROFILE_BASIC: 'USER_PROFILE_BASIC',
     USER_PROFILE_BASIC_FRIEND: 'USER_PROFILE_BASIC_FRIEND',
@@ -301,6 +302,39 @@ const getMyCreditCards = (dispatch, userId, pageNumber) => {
     });
 };
 
+const saveUserBasicProfile = (dispatch, userData, userId) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.UPDATE_USER_BASIC_PROFILE,
+    };
+    const bodyData = {
+        "data": {
+            "giving_goal_amt": userData.givingGoal,
+            "description": userData.about,
+            "first_name": userData.firstName,
+            "last_name": userData.lastName,
+            "location": userData.location,
+        },
+        "filters": {
+            "user_id": Number(userId)
+        }
+    };
+    console.log(bodyData);
+    return graphApi.patch(`/core/update/user/property`, bodyData).then(
+        (result) => {
+            console.log(result);
+            fsa.payload = {
+                data: result.data,
+            };
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    }); 
+}
+
 export {
     getUserProfileBasic,
     getUserFriendProfile,
@@ -316,4 +350,5 @@ export {
     getFriendsInvitations,
     getBlockedFriends,
     getMyCreditCards,
+    saveUserBasicProfile,
 };

@@ -12,6 +12,11 @@ import {
     connect,
 } from 'react-redux';
 
+import {
+    saveUserBasicProfile,
+} from '../../../actions/userProfile';
+import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
+
 class EditBasicProfile extends React.Component {
     constructor(props) {
         super(props);
@@ -30,9 +35,14 @@ class EditBasicProfile extends React.Component {
                 publicLink,
                 showFriendsIcon,
                 showonlyMeIcon,
-                showPublicIcon,
+                showPublicIcon,                
             },
+            validity: this.intializeValidations(),
         };
+
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleInputOnBlur = this.handleInputOnBlur.bind(this);
     }
 
     componentDidUpdate(prevProps) {
@@ -63,7 +73,6 @@ class EditBasicProfile extends React.Component {
         }
     }
 
-    // eslint-disable-next-line class-methods-use-this
     getPrivacySettings(userData) {
         let publicLink = '';
         let friendsLink = '';
@@ -92,10 +101,17 @@ class EditBasicProfile extends React.Component {
     }
 
     handleAmount(amount) {
+        let {
+            validity,
+        } = this.state;
         this.setState({
             userBasicDetails: {
                 givingGoal: amount,
             },
+        });
+        validity = this.validateUserProfileBasicForm('givingGoal', amount, validity);
+        this.setState({
+            validity,
         });
     }
 
@@ -136,10 +152,132 @@ class EditBasicProfile extends React.Component {
         }
     }
 
+    intializeValidations() {
+        this.validity = {
+            isFirstNameNotNull: true,
+            isLastNameNotNull: true,
+            isDescriptionNotNull: true,
+            isGivingGoalNotNull: true,
+        };
+        return this.validity;
+    }
+
+    handleInputChange(event, data) {
+        const {
+            name,
+            options,
+            value,
+        } = data;
+        const {
+            userBasicDetails,
+        } = this.state;        
+        const newValue = (!_.isEmpty(options)) ? _.find(options, { value }) : value;
+        if (userBasicDetails[name] !== newValue) {
+            userBasicDetails[name] = newValue;
+        }        
+        this.setState({
+            userBasicDetails: {
+                ...this.state.userBasicDetails,
+                ...userBasicDetails,
+            },            
+        });
+    }
+
+    handleInputOnBlur(event, data) {
+        const {
+            name,
+            value,
+        } = !_.isEmpty(data) ? data : event.target;
+        let {
+            validity,
+        } = this.state;
+        const inputValue = value;
+        validity = this.validateUserProfileBasicForm(name, inputValue, validity);
+        this.setState({
+            validity,
+        });
+    }
+
+    validateUserProfileBasicForm(field, value, validity) {
+        switch (field) {
+            case 'firstName':
+                validity.isFirstNameNotNull = !(!value || value.length === 0);
+                break;
+            case 'lastName':
+                validity.isLastNameNotNull = !(!value || value.length === 0);
+                break;
+            case 'about':
+                validity.isDescriptionNotNull = !(!value || value.length === 0);
+                break;
+            case 'givingGoal':
+                validity.isGivingGoalNotNull = !(!value || value.length === 0);
+                break;
+            default:
+                break;
+        }
+        return validity;
+    };
+
+    validateForm() {
+        let {
+            validity,
+        } = this.state;
+        const {
+            userBasicDetails: {
+                firstName,
+                lastName,
+                about,
+                givingGoal,
+            },
+        } = this.state;
+       
+        validity = this.validateUserProfileBasicForm('firstName', firstName, validity);
+        console.log(validity);
+        validity = this.validateUserProfileBasicForm('lastName', lastName, validity);
+        validity = this.validateUserProfileBasicForm('about', about, validity);
+        validity = this.validateUserProfileBasicForm('givingGoal', givingGoal, validity);
+                
+        this.setState({
+            validity,
+        });
+
+        return _.every(validity);
+    }
+
+    handleSubmit() {
+        const isValid = this.validateForm();
+        if (isValid) {
+            const {
+                currentUser: {
+                    id,
+                },
+                dispatch,
+            } = this.props;
+            const {
+                userBasicDetails
+            } = this.state;
+            saveUserBasicProfile(dispatch, userBasicDetails, id);
+        } else {
+            console.log('Invalid Data');
+        }
+    }
 
     render() {
         const {
-            userBasicDetails,
+            userBasicDetails: {
+                firstName,
+                lastName,
+                about,
+                location,
+                givingGoal,
+                onlyMeLink,
+                publicLink,
+                showFriendsIcon,
+                showonlyMeIcon,
+                showPublicIcon,
+                friendsLink,
+            },
+            validity,
         } = this.state;
         return (
             <Grid>
@@ -147,29 +285,66 @@ class EditBasicProfile extends React.Component {
                     <Grid.Column mobile={16} tablet={12} computer={10}>
                         <Form>
                             <Form.Group widths="equal">
-                                <Form.Input
-                                    fluid
-                                    label="First name"
-                                    placeholder="First name"
-                                    value={userBasicDetails.firstName}
-                                />
-                                <Form.Input
-                                    fluid
-                                    label="Last name"
-                                    placeholder="Last name"
-                                    value={userBasicDetails.lastName}
-                                />
+                                <Form.Field>
+                                    <Form.Input
+                                        fluid
+                                        label="First name"
+                                        placeholder="First name"
+                                        id="firstName"
+                                        name="firstName"
+                                        onChange={this.handleInputChange}
+                                        onBlur={this.handleInputOnBlur}
+                                        error={!validity.isFirstNameNotNull}
+                                        value={firstName}
+                                    />
+                                    <FormValidationErrorMessage
+                                        condition={!validity.isFirstNameNotNull}
+                                        errorMessage="Please input your first name"
+                                    />
+                                </Form.Field>
+                                <Form.Field>
+                                    <Form.Input
+                                        fluid
+                                        label="Last name"
+                                        id="lastName"
+                                        name="lastName"
+                                        placeholder="Last name"
+                                        onChange={this.handleInputChange}
+                                        onBlur={this.handleInputOnBlur}
+                                        error={!validity.isLastNameNotNull}
+                                        value={lastName}
+                                    />
+                                    <FormValidationErrorMessage
+                                        condition={!validity.isLastNameNotNull}
+                                        errorMessage="Please input your Last name"
+                                    />
+                                </Form.Field>
                             </Form.Group>
-                            <Form.TextArea
-                                label="About"
-                                placeholder="Tell us a bit yourself..."
-                                value={userBasicDetails.about}
-                            />
+                            <Form.Field>
+                                <Form.TextArea
+                                    label="About"
+                                    placeholder="Tell us a bit yourself..."
+                                    id="about"
+                                    name="about"
+                                    onChange={this.handleInputChange}
+                                    onBlur={this.handleInputOnBlur}
+                                    error={!validity.isDescriptionNotNull}
+                                    value={about}
+                                />
+                                <FormValidationErrorMessage
+                                    condition={!validity.isDescriptionNotNull}
+                                    errorMessage="Please input about yourself"
+                                />
+                            </Form.Field>                            
                             <Form.Input
                                 fluid
                                 label="Location"
                                 placeholder="Location"
-                                value={userBasicDetails.location}
+                                id="location"
+                                name="location"
+                                onChange={this.handleInputChange}
+                                onBlur={this.handleInputOnBlur}
+                                value={location}
                             />
                             <Form.Field>
                                 <label>
@@ -185,30 +360,30 @@ class EditBasicProfile extends React.Component {
                                         <Popup.Header>I want this to be visible to:</Popup.Header>
                                         <Popup.Content>
                                             <List divided verticalAlign="middle" className="selectable-tick-list">
-                                                <List.Item className={userBasicDetails.publicLink}>
+                                                <List.Item className={publicLink}>
                                                     <List.Content>
                                                         <List.Header as="a" onClick={() => this.handlePrivacyClick('public')}>
                                                             Public
                                                             {' '}
-                                                            <span style={{ display: userBasicDetails.showPublicIcon ? 'inline' : 'none' }}><Icon name="check" /></span>
+                                                            <span style={{ display: showPublicIcon ? 'inline' : 'none' }}><Icon name="check" /></span>
                                                         </List.Header>
                                                     </List.Content>
                                                 </List.Item>
-                                                <List.Item className={userBasicDetails.friendsLink}>
+                                                <List.Item className={friendsLink}>
                                                     <List.Content>
                                                         <List.Header as="a" onClick={() => this.handlePrivacyClick('friends')}>
                                                             Friends
                                                             {' '}
-                                                            <span style={{ display: userBasicDetails.showFriendsIcon ? 'inline' : 'none' }}><Icon name="check" /></span>
+                                                            <span style={{ display: showFriendsIcon ? 'inline' : 'none' }}><Icon name="check" /></span>
                                                         </List.Header>
                                                     </List.Content>
                                                 </List.Item>
-                                                <List.Item className={userBasicDetails.onlyMeLink}>
+                                                <List.Item className={onlyMeLink}>
                                                     <List.Content>
                                                         <List.Header as="a" onClick={() => this.handlePrivacyClick('onlyme')}>
                                                             Only me
                                                             {' '}
-                                                            <span style={{ display: userBasicDetails.showonlyMeIcon ? 'inline' : 'none' }}><Icon name="check" /></span>
+                                                            <span style={{ display: showonlyMeIcon ? 'inline' : 'none' }}><Icon name="check" /></span>
                                                         </List.Header>
                                                     </List.Content>
                                                 </List.Item>
@@ -220,11 +395,22 @@ class EditBasicProfile extends React.Component {
                                         </div>
                                     </Popup>
                                 </label>
-                                <input
-                                    placeholder="Giving Goal"
-                                    id="givingGoal"
-                                    value={userBasicDetails.givingGoal}
-                                />
+                                <Form.Field>
+                                    <Form.Input
+                                        placeholder="Giving Goal"
+                                        id="givingGoal"
+                                        name="givingGoal"
+                                        onChange={this.handleInputChange}
+                                        onBlur={this.handleInputOnBlur}
+                                        value={givingGoal}
+                                        error={!validity.isGivingGoalNotNull}
+                                    />
+                                    <FormValidationErrorMessage
+                                        condition={!validity.isGivingGoalNotNull}
+                                        errorMessage="Please input your Giving Goal"
+                                    />
+                                </Form.Field>
+                                
                             </Form.Field>
                             <Form.Field>
                                 <Button basic size="tiny" onClick={() => this.handleAmount(500)}>$500</Button>
@@ -232,8 +418,7 @@ class EditBasicProfile extends React.Component {
                                 <Button basic size="tiny" onClick={() => this.handleAmount(1500)}>$1500</Button>
                             </Form.Field>
                             <div className="pt-2">
-                                <Button className="blue-btn-rounded-def w-140">Save</Button>
-                                <Button className="blue-bordr-btn-round-def w-140">Cancel</Button>
+                                <Button className="blue-btn-rounded-def w-140" onClick={this.handleSubmit}>Save</Button>
                             </div>
                         </Form>
                     </Grid.Column>

@@ -18,6 +18,7 @@ class UserBasciProfile extends React.Component {
             userData,
         } = this.props;
         const avatar = (typeof userData.avatar === 'undefined') || (userData.avatar === null) ? UserPlaceholder : userData.avatar;
+        const friendsVisibility = (typeof userData.friends_visibility === 'undefined') ? 0 : userData.friends_visibility;
         return (
             <div>
                 <div className="profile-header-image user"></div>
@@ -46,11 +47,15 @@ class UserBasciProfile extends React.Component {
                                                             &nbsp;
                                                             {userData.location}
                                                         </span>
-                                                        <Header.Subheader>
-                                                            <Icon name="users" />
-                                                            {userData.number_of_friends}
-                                                            &nbsp; friends                                                            
-                                                        </Header.Subheader>
+                                                        {
+                                                            friendsVisibility === 0 && (
+                                                                <Header.Subheader>
+                                                                    <Icon name="users" />
+                                                                    {userData.number_of_friends}
+                                                                    &nbsp; friends                                                            
+                                                                </Header.Subheader>
+                                                            )
+                                                        }
                                                     </Header>
                                                 </div>
                                             </Grid.Column>
