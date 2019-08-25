@@ -3,6 +3,7 @@ import _ from 'lodash';
 import graphApi from '../services/graphApi';
 import searchApi from '../services/searchApi';
 import coreApi from '../services/coreApi';
+import eventApi from '../services/eventApi';
 
 // eslint-disable-next-line import/exports-last
 export const actionTypes = {
@@ -17,10 +18,13 @@ export const actionTypes = {
     USER_PROFILE_FAVOURITES: 'USER_PROFILE_FAVOURITES',
     USER_PROFILE_FIND_FRIENDS: 'USER_PROFILE_FIND_FRIENDS',
     USER_PROFILE_FOLLOWED_TAGS: 'USER_PROFILE_FOLLOWED_TAGS',
+    USER_PROFILE_FRIEND_ACCEPT: 'USER_PROFILE_FRIEND_ACCEPT',
+    USER_PROFILE_FRIEND_REQUEST: 'USER_PROFILE_FRIEND_REQUEST',
     USER_PROFILE_INVITATIONS: 'USER_PROFILE_INVITATIONS',
     USER_PROFILE_MEMBER_GROUP: 'USER_PROFILE_MEMBER_GROUP',
     USER_PROFILE_MY_FRIENDS: 'USER_PROFILE_MY_FRIENDS',
     USER_PROFILE_RECOMMENDED_TAGS: 'USER_PROFILE_RECOMMENDED_TAGS',
+    USER_PROFILE_UNBLOCK_FRIEND: 'USER_PROFILE_UNBLOCK_FRIEND'
 };
 
 const getUserProfileBasic = (dispatch, email, userId, loggedInUserId) => {
@@ -335,6 +339,108 @@ const saveUserBasicProfile = (dispatch, userData, userId) => {
     }); 
 }
 
+const sendFriendRequest = (dispatch, sourceUserId, destinationEmailId) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.USER_PROFILE_FRIEND_REQUEST,
+    };
+    const emailHash = Buffer.from(destinationEmailId).toString('base64');
+    const bodyData = {
+            "data": {
+            "type": "event",
+            "attributes": {
+                "source": "socialapi",
+                "category": "social",
+                "subCategory": "friend",
+                "eventName": "friendRequest",
+                "payload": {
+                    "sourceUserId": sourceUserId,
+                    "destinationEmailId": emailHash,
+                    "message": "Friend Request",
+                    "deepLink": "https://testLink.com"
+                }
+            }
+        }
+    }
+    return eventApi.post(`/event`, bodyData).then(
+        (result) => {
+            console.log(result);
+            fsa.payload = {
+                data: result.data,
+            };
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    }); 
+}
+
+const acceptFriendRequest = (dispatch, sourceUserId, destinationEmailId) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.USER_PROFILE_FRIEND_ACCEPT,
+    };
+    const emailHash = Buffer.from(destinationEmailId).toString('base64');
+    const bodyData = {
+        "data": {
+            "type": "event",
+            "attributes": {
+                "source": "socialapi",
+                "category": "social",
+                "subCategory": "friend",
+                "eventName": "friendAccept",
+                "payload": {
+                    "sourceUserId": Number(sourceUserId),
+                    "destinationEmailId": emailHash,
+                    "message": "Hi, I would like to add you to my friend list",
+                    "deepLink": "https://testLink.com",
+                    "linkedEventId":"1563362089449:venkata-Latitude-5580:12091:jy75dh74:10000"
+                }
+            }
+        }
+    }
+    return eventApi.post(`/event`, bodyData).then(
+        (result) => {
+            console.log(result);
+            fsa.payload = {
+                data: result.data,
+            };
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    }); 
+}
+
+const unblockFriend = (dispatch, sourceUserId, destinationUserId) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.USER_PROFILE_UNBLOCK_FRIEND,
+    };
+    const bodyData = {
+        "source_user_id": Number(sourceUserId),
+        "unblock_user_ids": `[${destinationUserId}]`
+    };
+    return graphApi.post(`/core/unblockUser`, bodyData).then(
+        (result) => {
+            fsa.payload = {
+                data: result.data,
+            };
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    });
+};
+
+
+
 export {
     getUserProfileBasic,
     getUserFriendProfile,
@@ -351,4 +457,7 @@ export {
     getBlockedFriends,
     getMyCreditCards,
     saveUserBasicProfile,
+    sendFriendRequest,
+    acceptFriendRequest,
+    unblockFriend,
 };
