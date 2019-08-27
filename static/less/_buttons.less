@@ -13,11 +13,50 @@
     }
   }
 }
+.blue-btn-rounded-def{
+  color: @purple;
+  &.c-small{
+    .ui{
+      &.button{
+        padding: .5rem 1.5rem
+      }
+    }
+  }
+  button{
+    &.ui{
+      &.button{
+        color: #fff;
+        background-color: @link;
+        border-radius: 2rem;
+        border: 1px solid @link;
+        &:hover{
+          background-color: @link-hover;
+        }
+      }
+    }
+  }
+ }
 button{
   &.ui{
     &.button{
       &.sizeBig{
         padding: 18px;
+      }
+      &.badgeButton{
+        background-color: @badgeColor;
+        color: @grey-darken-5;
+        border-radius: 1rem;
+        padding: 3/@rem 1rem;
+        font-size: 12/@rem;
+        display: inline-block;
+        &.medium{
+          height: 31px;	min-width: 95px;
+          padding: 0.5rem 1rem;
+        }
+        &.active{
+          background-color: @purple;
+          color: #fff;
+        }
       }
       &.moreOption-btn{
         padding: 18px 9px;
@@ -36,6 +75,9 @@ button{
         background-color: @link;
         border-radius: 2rem;
         border: 1px solid @link;
+        +.button{
+          margin-left: 5px;
+        }
         &.c-small{
           padding: .5rem 1.5rem
         }
@@ -48,6 +90,9 @@ button{
         background-color: @success;
         border-radius: 2rem;
         border: 1px solid @success;
+        +.button{
+          margin-left: 5px;
+        }
         &.c-small{
           padding: .5rem 1.5rem
         }
@@ -55,11 +100,29 @@ button{
           background-color: @success-hover;
         }
       }
+      &.danger-btn-rounded-def{
+        color: #fff;
+        background-color: #EE4141;
+        border-radius: 2rem;
+        border: 1px solid #EE4141;
+        +.button{
+          margin-left: 5px;
+        }
+        &.c-small{
+          padding: .5rem 1.5rem
+        }
+        &:hover{
+          background-color: #EE4141;
+        }
+      }
       &.blue-bordr-btn-round-def{
         border: 1px solid @link;
         background: transparent;
         color: @link;
         border-radius: 2rem;
+        +.button{
+          margin-left: 5px;
+        }
         &.c-small{
           padding: .5rem 1.5rem
         }
