@@ -78,8 +78,8 @@ class MyCauses extends React.Component {
         this.setState({
             userCauses,
         });
+        this.props.getSelectedCauses(this.state.userCauses);
     }
-
 
     renderCauses() {
         const {
@@ -105,7 +105,8 @@ class MyCauses extends React.Component {
     render() {
         return (
             <div>
-                <p className="mb-1-2"><strong>Charitable interests</strong>
+                <p className="mb-1-2">
+                    <strong>Charitable interests</strong>
                     <Popup
                         trigger={<a className="font-s-10 d-in-block hoverable" style={{marginLeft:'.5rem'}}>Privacy settings > </a>}
                         on="click"

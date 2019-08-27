@@ -8,6 +8,8 @@ import eventApi from '../services/eventApi';
 // eslint-disable-next-line import/exports-last
 export const actionTypes = {
     UPDATE_USER_BASIC_PROFILE: 'UPDATE_USER_BASIC_PROFILE',
+    UPDATE_USER_CHARITY_CAUSES: 'UPDATE_USER_CHARITY_CAUSES',
+    UPDATE_USER_CHARITY_TAGS: 'UPDATE_USER_CHARITY_TAGS',
     USER_PROFILE_ADMIN_GROUP: 'USER_PROFILE_ADMIN_GROUP',
     USER_PROFILE_BASIC: 'USER_PROFILE_BASIC',
     USER_PROFILE_BASIC_FRIEND: 'USER_PROFILE_BASIC_FRIEND',
@@ -17,6 +19,7 @@ export const actionTypes = {
     USER_PROFILE_CREDIT_CARDS: 'USER_PROFILE_CREDIT_CARDS',
     USER_PROFILE_FAVOURITES: 'USER_PROFILE_FAVOURITES',
     USER_PROFILE_FIND_FRIENDS: 'USER_PROFILE_FIND_FRIENDS',
+    USER_PROFILE_FIND_TAGS: 'USER_PROFILE_FIND_TAGS',
     USER_PROFILE_FOLLOWED_TAGS: 'USER_PROFILE_FOLLOWED_TAGS',
     USER_PROFILE_FRIEND_ACCEPT: 'USER_PROFILE_FRIEND_ACCEPT',
     USER_PROFILE_FRIEND_REQUEST: 'USER_PROFILE_FRIEND_REQUEST',
@@ -182,17 +185,18 @@ const getUserTagsFollowed = (dispatch, userId) => {
     });
 };
 
-const getUserTagsRecommended = (dispatch, url, userId) => {
+const getUserTagsRecommended = (dispatch, userId, pageNumber) => {
     const fsa = {
         payload: {
         },
         type: actionTypes.USER_PROFILE_RECOMMENDED_TAGS,
     };
-    return graphApi.get(`/get/tags/recommended?id=${Number(userId)}&page[number]=1&page[size]=10&sort=asc`).then(
+    return graphApi.get(`/get/tags/recommended?id=${Number(userId)}&page[number]=${pageNumber}&page[size]=10&sort=asc`).then(
         (result) => {
             fsa.payload = {
                 count: result.meta.recordCount,
                 data: result.data,
+                pageCount: result.meta.pageCount,
             };
         },
     ).catch((error) => {
@@ -208,7 +212,7 @@ const getMyFriendsList = (dispatch, email, pageNumber) => {
         },
         type: actionTypes.USER_PROFILE_MY_FRIENDS,
     };
-    return graphApi.get(`/user/myfriends?userid=${email}&page[number]=${pageNumber}&page[size]=10&status=accepted`).then(
+    return graphApi.get(`/user/myfriends?userid=${email}&page[number]=${pageNumber}&page[size]=2&status=accepted`).then(
         (result) => {
             fsa.payload = {
                 count: result.meta.recordCount,
@@ -274,7 +278,26 @@ const getFriendsByText = (dispatch, userId, searchText, pageNumber) => {
     return searchApi.post(`/users?page[number]=${pageNumber}&page[size]=10&user_id=${Number(userId)}`, bodyData).then(
         (result) => {
             fsa.payload = {
-                count: result.meta.record_count,                
+                count: result.meta.record_count,
+                data: result.data,
+            };
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    });
+};
+
+const getTagsByText = (dispatch, userId, searchText) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.USER_PROFILE_FIND_TAGS,
+    };
+    return graphApi.get(`/recommend/searchtags?userid=${Number(userId)}&text=${searchText}&skip=&limit=10&sort=asc`).then(
+        (result) => {
+            fsa.payload = {
                 data: result.data,
             };
         },
@@ -336,8 +359,8 @@ const saveUserBasicProfile = (dispatch, userData, userId) => {
         fsa.error = error;
     }).finally(() => {
         dispatch(fsa);
-    }); 
-}
+    });
+};
 
 const sendFriendRequest = (dispatch, sourceUserId, destinationEmailId) => {
     const fsa = {
@@ -374,8 +397,8 @@ const sendFriendRequest = (dispatch, sourceUserId, destinationEmailId) => {
         fsa.error = error;
     }).finally(() => {
         dispatch(fsa);
-    }); 
-}
+    });
+};
 
 const acceptFriendRequest = (dispatch, sourceUserId, destinationEmailId) => {
     const fsa = {
@@ -413,8 +436,8 @@ const acceptFriendRequest = (dispatch, sourceUserId, destinationEmailId) => {
         fsa.error = error;
     }).finally(() => {
         dispatch(fsa);
-    }); 
-}
+    });
+};
 
 const unblockFriend = (dispatch, sourceUserId, destinationUserId) => {
     const fsa = {
@@ -439,7 +462,50 @@ const unblockFriend = (dispatch, sourceUserId, destinationUserId) => {
     });
 };
 
-
+const saveCharitableInterests = (dispatch, userId, userCauses, userTags) => {
+    const fsaCauses = {
+        payload: {
+        },
+        type: actionTypes.UPDATE_USER_CHARITY_CAUSES,
+    };
+    const fsaTags = {
+        payload: {
+        },
+        type: actionTypes.UPDATE_USER_CHARITY_TAGS,
+    };
+    const bodyDataCauses = {
+        causes: userCauses,
+        userid: Number(userId),
+    };
+    const bodyDataTags = {
+        tags: userTags,
+        userid: Number(userId),
+    };
+    graphApi.patch(`/user/updatecauses`, bodyDataCauses).then(
+        (result) => {
+            console.log(result);
+            fsaCauses.payload = {
+                data: result.data,
+            };
+        },
+    ).catch((error) => {
+        fsaCauses.error = error;
+    }).finally(() => {
+        dispatch(fsaCauses);
+    });
+    graphApi.patch(`/user/updatetags`, bodyDataTags).then(
+        (result) => {
+            console.log(result);
+            fsaTags.payload = {
+                data: result.data,
+            };
+        },
+    ).catch((error) => {
+        fsaTags.error = error;
+    }).finally(() => {
+        dispatch(fsaTags);
+    });
+};
 
 export {
     getUserProfileBasic,
@@ -456,7 +522,9 @@ export {
     getFriendsInvitations,
     getBlockedFriends,
     getMyCreditCards,
+    getTagsByText,
     saveUserBasicProfile,
+    saveCharitableInterests,
     sendFriendRequest,
     acceptFriendRequest,
     unblockFriend,

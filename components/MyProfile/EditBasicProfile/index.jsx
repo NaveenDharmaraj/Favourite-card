@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import _ from 'lodash';
 import {
@@ -35,7 +36,7 @@ class EditBasicProfile extends React.Component {
                 publicLink,
                 showFriendsIcon,
                 showonlyMeIcon,
-                showPublicIcon,                
+                showPublicIcon,
             },
             validity: this.intializeValidations(),
         };
@@ -73,6 +74,7 @@ class EditBasicProfile extends React.Component {
         }
     }
 
+    // eslint-disable-next-line class-methods-use-this
     getPrivacySettings(userData) {
         let publicLink = '';
         let friendsLink = '';
@@ -154,10 +156,10 @@ class EditBasicProfile extends React.Component {
 
     intializeValidations() {
         this.validity = {
-            isFirstNameNotNull: true,
-            isLastNameNotNull: true,
             isDescriptionNotNull: true,
+            isFirstNameNotNull: true,
             isGivingGoalNotNull: true,
+            isLastNameNotNull: true,
         };
         return this.validity;
     }
@@ -170,16 +172,16 @@ class EditBasicProfile extends React.Component {
         } = data;
         const {
             userBasicDetails,
-        } = this.state;        
+        } = this.state;
         const newValue = (!_.isEmpty(options)) ? _.find(options, { value }) : value;
         if (userBasicDetails[name] !== newValue) {
             userBasicDetails[name] = newValue;
-        }        
+        }
         this.setState({
             userBasicDetails: {
                 ...this.state.userBasicDetails,
                 ...userBasicDetails,
-            },            
+            },
         });
     }
 
@@ -198,6 +200,7 @@ class EditBasicProfile extends React.Component {
         });
     }
 
+    // eslint-disable-next-line class-methods-use-this
     validateUserProfileBasicForm(field, value, validity) {
         switch (field) {
             case 'firstName':
@@ -216,7 +219,7 @@ class EditBasicProfile extends React.Component {
                 break;
         }
         return validity;
-    };
+    }
 
     validateForm() {
         let {
@@ -230,13 +233,10 @@ class EditBasicProfile extends React.Component {
                 givingGoal,
             },
         } = this.state;
-       
         validity = this.validateUserProfileBasicForm('firstName', firstName, validity);
-        console.log(validity);
         validity = this.validateUserProfileBasicForm('lastName', lastName, validity);
         validity = this.validateUserProfileBasicForm('about', about, validity);
         validity = this.validateUserProfileBasicForm('givingGoal', givingGoal, validity);
-                
         this.setState({
             validity,
         });
@@ -254,7 +254,7 @@ class EditBasicProfile extends React.Component {
                 dispatch,
             } = this.props;
             const {
-                userBasicDetails
+                userBasicDetails,
             } = this.state;
             saveUserBasicProfile(dispatch, userBasicDetails, id);
         } else {
@@ -335,7 +335,7 @@ class EditBasicProfile extends React.Component {
                                     condition={!validity.isDescriptionNotNull}
                                     errorMessage="Please input about yourself"
                                 />
-                            </Form.Field>                            
+                            </Form.Field>
                             <Form.Input
                                 fluid
                                 label="Location"
@@ -410,7 +410,7 @@ class EditBasicProfile extends React.Component {
                                         errorMessage="Please input your Giving Goal"
                                     />
                                 </Form.Field>
-                                
+
                             </Form.Field>
                             <Form.Field>
                                 <Button basic size="tiny" onClick={() => this.handleAmount(500)}>$500</Button>

@@ -1,3 +1,4 @@
+import _ from 'lodash';
 
 const userProfile = (state = {}, action) => {
     let newState = {
@@ -54,7 +55,7 @@ const userProfile = (state = {}, action) => {
             break;
         case 'USER_PROFILE_RECOMMENDED_TAGS':
             newState = {
-                ...state,
+                ...state,                
                 userTagsRecommendedList: Object.assign({}, action.payload),
             };
             break;
@@ -68,6 +69,12 @@ const userProfile = (state = {}, action) => {
             newState = {
                 ...state,
                 userFindFriendsList: Object.assign({}, action.payload),
+            };
+            break;
+        case 'USER_PROFILE_FIND_TAGS':
+            newState = {
+                ...state,
+                userFindTagsList: Object.assign({}, action.payload),
             };
             break;
         case 'USER_PROFILE_INVITATIONS':
