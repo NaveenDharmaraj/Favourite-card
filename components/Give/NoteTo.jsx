@@ -52,7 +52,7 @@ const NoteTo = (props) => {
     return (
         <Fragment>
             <Form.Field>
-                <Header as="h3"> 
+                <Header as="h3" className="f-weight-n">
                     {formatMessage('noteTo:includeMessageLabel')}
                 </Header>
             </Form.Field>
@@ -86,11 +86,11 @@ const NoteTo = (props) => {
             </Form.Field>
             <FormValidationErrorMessage
                 condition={!validity.isNoteToCharityInLimit}
-                errorMessage={formatMessage('errorMessages.invalidLengthError')}
+                errorMessage={formatMessage('giveCommon:errorMessages.invalidLengthError')}
             />
             <FormValidationErrorMessage
                 condition={!validity.isValidNoteToCharityText}
-                errorMessage={formatMessage('errorMessages.invalidNoteTextError')}
+                errorMessage={formatMessage('giveCommon:errorMessages.invalidNoteTextError')}
             />
             <Form.Field>
                 <label htmlFor="noteToSelf" id="noteToSelfLabel">
@@ -122,11 +122,11 @@ const NoteTo = (props) => {
             </Form.Field>
             <FormValidationErrorMessage
                 condition={!validity.isNoteToSelfInLimit}
-                errorMessage={formatMessage('errorMessages.invalidLengthError')}
+                errorMessage={formatMessage('giveCommon:errorMessages.invalidLengthError')}
             />
             <FormValidationErrorMessage
                 condition={!validity.isValidNoteSelfText}
-                errorMessage={formatMessage('errorMessages.invalidNoteTextError')}
+                errorMessage={formatMessage('giveCommon:errorMessages.invalidNoteTextError')}
             />
         </Fragment>
     );

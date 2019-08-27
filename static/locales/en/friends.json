@@ -1,5 +1,5 @@
 {
-    "giveFromPopup": "We’re asking you to select an account because you administer more than one CHIMP Account.",
+    "giveFromPopup": "We’re asking you to select an account because you administer more than one CHARITABLE IMPACT Account.",
     "includeMessageLabel": "Include a message (optional) ",
     "invalidEmailError":  "Enter valid email addresses, separated by commas",
     "duplicateEmail": "Recipients cannot contain duplicates.",

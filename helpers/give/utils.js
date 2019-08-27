@@ -711,7 +711,7 @@ const populateInfoToShare = (taxReceiptProfile,
             infoToShareList = [
                 {
                     disabled: false,
-                    text: formatMessage('infoToShareAnonymous'),
+                    text: formatMessage('giveCommon:infoToShareAnonymous'),
                     value: 'anonymous',
                 },
                 {
@@ -745,7 +745,7 @@ const populateInfoToShare = (taxReceiptProfile,
             infoToShareList = [
                 {
                     disabled: false,
-                    text: formatMessage('infoToShareAnonymous' ),
+                    text: formatMessage('giveCommon:infoToShareAnonymous' ),
                     value: 'anonymous',
                 },
                 {
@@ -765,7 +765,7 @@ const populateInfoToShare = (taxReceiptProfile,
             infoToShareList = [
                 {
                     disabled: false,
-                    text: formatMessage('infoToShareAnonymous'),
+                    text: formatMessage('giveCommon:infoToShareAnonymous'),
                     value: 'anonymous',
                 },
                 {

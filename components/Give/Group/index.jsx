@@ -949,7 +949,7 @@ class Group extends React.Component {
                                 className='blue-btn-rounded' // {isMobile ? 'mobBtnPadding' : 'btnPadding'}
                                 content={(!this.state.buttonClicked) ?
                                     formatMessage('giveCommon:continueButton')
-                                    : formatMessage('giveCommon:submitingButton')}
+                                    : formatMessage('giveCommon:submittingButton')}
                                 // content= {formatMessage('continueButton')}
                                 disabled={(this.state.buttonClicked) }
                                 // fluid={isMobile}

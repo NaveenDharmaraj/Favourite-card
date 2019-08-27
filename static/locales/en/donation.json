@@ -1,6 +1,6 @@
 {
     "automaticDonationLabel": "Repeat monthly",
-    "automaticDonationPopup": "Automatically adding to your CHIMP Account each month is a great way to consistently build your potential impact. You'll also have charitable dollars on hand when you feel inspired to give.",
+    "automaticDonationPopup": "Automatically adding to your CHARITABLE IMPACT Account each month is a great way to consistently build your potential impact. You'll also have charitable dollars on hand when you feel inspired to give.",
     "recurringMontlyDonationLabel": "Automatically add this amount each month",
     "donationRecurringDateNote": "Your first monthly transaction will happen on {{recurringDate}}.",
     "recurringMonthlyFirstLabel": "Add money on the 1st of every month.",
