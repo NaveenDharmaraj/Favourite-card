@@ -418,7 +418,6 @@ class Group extends React.Component {
             isDonationAmountPositive: true,
             isNoteToCharityInLimit: true,
             isNoteToSelfInLimit: true,
-            isValidAddingToSource: true,
             isValidDecimalAmount: true,
             isValidDecimalDonationAmount: true,
             isValidDonationAmount: true,
@@ -917,7 +916,7 @@ class Group extends React.Component {
                         { (!this.props.currentUser.userAccountsFetched || !_isEmpty(giveFromList)) && (
                         <DropDownAccountOptions
                             type="group"
-                            validity={validity.isValidAddingToSource}
+                            validity={validity.isValidGiveFrom}
                             selectedValue={this.state.flowObject.giveData.giveFrom.value}
                             name="giveFrom"
                             formatMessage={formatMessage}
