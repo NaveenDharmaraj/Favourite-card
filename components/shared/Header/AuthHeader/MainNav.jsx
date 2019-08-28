@@ -15,7 +15,7 @@ const MainNav = () => (
         <Menu.Item as="a" href="/user/groups">
             Giving Groups & Campaign
         </Menu.Item>
-        <Menu.Item as="a" href="/user/followed-charities">
+        <Menu.Item as="a" href="/user/favorites">
             Favorites
         </Menu.Item>
         <Link route="/user/recurring-donations" >

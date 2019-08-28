@@ -4,7 +4,11 @@ import _ from 'lodash';
 
 import coreApi from '../services/coreApi';
 import authRorApi from '../services/authRorApi';
+import graphApi from '../services/graphApi';
 import { Router } from '../routes';
+import {
+    triggerUxCritialErrors,
+} from './error';
 
 export const actionTypes = {
     GET_MATCH_POLICIES_PAYMENTINSTRUMENTS: 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS',
@@ -18,6 +22,9 @@ export const actionTypes = {
     DISABLE_GROUP_SEE_MORE: 'DISABLE_GROUP_SEE_MORE',
     LEAVE_GROUP_ERROR_MESSAGE: 'LEAVE_GROUP_ERROR_MESSAGE',
     USER_GIVING_GOAL_DETAILS: 'USER_GIVING_GOAL_DETAILS',
+    USER_FAVORITES:'USER_FAVORITES',
+    UPDATE_FAVORITES: 'UPDATE_FAVORITES',
+    ENABLE_FAVORITES_BUTTON: 'ENABLE_FAVORITES_BUTTON',
 }
 
 const getAllPaginationData = async (url, params = null) => {
@@ -402,7 +409,6 @@ export const leaveGroup = (dispatch, group, allData, type) => {
     };
     const dataArray = _.merge([], allData.data);
     const currentpath = allData.currentLink;
-    console.log(group.attributes.slug);
     coreApi.patch(`/groups/leave?slug=${group.attributes.slug}`, {
     }).then(
         async () => {
@@ -418,7 +424,6 @@ export const leaveGroup = (dispatch, group, allData, type) => {
             dispatch(fsa);
         },
     ).catch((error) => {
-        console.log(error);
         const errorFsa = {
             payload: {
                 type,
@@ -432,7 +437,6 @@ export const leaveGroup = (dispatch, group, allData, type) => {
             errorFsa.payload.message = "You are the only admin in this Group. In order to leave, please appoint another Group member as admin.";
             errorFsa.payload.adminError = 1;
         }
-        console.log(errorFsa);
         dispatch(errorFsa);
     });
 };
@@ -473,7 +477,6 @@ export const setUserGivingGoal = (dispatch, goalAmount, userId) => {
 export const getUpcomingTransactions = (dispatch, url) => {
     dispatch({
         payload: {
-            apiCallStats: true,
         },
         type: actionTypes.MONTHLY_TRANSACTION_API_CALL,
     });
@@ -533,5 +536,107 @@ export const deleteUpcomingTransaction = (dispatch, id, transactionType, activeP
         },
     ).catch((error) => {
         console.log(error);
+    });
+};
+
+export const getFavoritesList = (dispatch, userId, pageNumber, pageSize) => {
+    const fsa = {
+        payload: {
+            favorites: {
+                data: [],
+            }
+        },
+        type: actionTypes.USER_FAVORITES,
+    };
+    const url = `user/favourites?userid=${Number(userId)}&page[number]=${pageNumber}&page[size]=${pageSize}`;
+    return graphApi.get(
+        url,
+        {
+            params: {
+                dispatch,
+                uxCritical: true,
+            },
+        },
+    ).then(
+        (result) => {
+            fsa.payload.favorites = {
+                data: result.data,
+                dataCount: result.meta.recordCount,
+                pageCount: result.meta.pageCount,
+                currentPageNumber: pageNumber,
+            };
+        },
+    ).catch((error) => {
+        console.log(error);
+    }).finally(() => {
+        dispatch(fsa);
+    });
+};
+
+export const removeFavorite = (dispatch, favId, userId, favorites, type, dataCount, pageSize, currentPageNumber, pageCount) => {
+
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.UPDATE_FAVORITES,
+    };
+    const dataArray = _.merge([], favorites);
+    const target = (type === 'charity') ? {
+        entity: 'charity',
+            filters: {
+                charity_id: Number(favId),
+            },
+        } : {
+            entity: 'group',
+            filters: {
+                group_id: Number(favId),
+            },
+        };
+    const params = {
+        relationship: 'FOLLOWS',
+        source: {
+            entity: 'user',
+            filters: {
+                user_id: Number(userId),
+            },
+        },
+        target,
+    };
+    graphApi.post(`/users/deleterelationship`, params).then(
+        async () => {
+            const removedItem = (type === 'charity') ? { attributes: { charity_id: favId } }
+                : { attributes: { group_id: favId } };
+            _.remove(dataArray, removedItem);
+            let pageNumber = currentPageNumber;
+
+            const url = `user/favourites?userid=${Number(userId)}&page[number]=${currentPageNumber}&page[size]=${pageSize}`;
+            const currentData = await graphApi.get(url);
+            if(currentData) {
+                if (_.size(currentData.data) === 0 && currentData.meta.pageCount < currentPageNumber) {
+                    pageNumber = (currentData.meta.pageCount === 0) ? 1 : 0;
+                }
+                fsa.payload.favorites = {
+                    currentPageNumber: pageNumber,
+                    data: _.uniqWith(_.concat(dataArray, currentData.data), _.isEqual),
+                    dataCount: currentData.meta.recordCount,
+                    pageCount: currentData.meta.pageCount,
+                }
+                dispatch(fsa);
+            }
+        },
+    ).catch((err) => {
+        triggerUxCritialErrors(err.errors || err, dispatch);
+        fsa.payload.favorites = {
+            currentPageNumber,
+            data: dataArray,
+            dataCount,
+            pageCount,
+        }
+        dispatch(fsa);
+        dispatch({
+            payload: {
+            },
+            type: actionTypes.ENABLE_FAVORITES_BUTTON,
+        });
     });
 };

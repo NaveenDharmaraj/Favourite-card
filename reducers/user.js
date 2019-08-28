@@ -112,6 +112,38 @@ const user = (state = {}, action) => {
                 monthlyTransactionApiCall: action.payload.apiCallStats,
             };
             break;
+        case 'USER_FAVORITES':
+            newState = {
+                ...state,
+                favorites: {
+                    data: (!_.isEmpty(state.favorites) && !_.isEmpty(state.favorites.data)) ?
+                    _.uniqWith(_.concat(state.favorites.data, action.payload.favorites.data), _.isEqual)
+                    : action.payload.favorites.data,
+                    pageCount: action.payload.favorites.pageCount,
+                    dataCount: action.payload.favorites.dataCount,
+                    currentPageNumber: action.payload.favorites.currentPageNumber,
+                },
+            };
+            break;
+        case 'UPDATE_FAVORITES':
+            newState = {
+                ...state,
+                favorites: action.payload.favorites,
+                disableFavorites: false,
+            }
+            break;
+        case 'DISABLE_FAVORITES_BUTTON':
+            newState = {
+                ...state,
+                disableFavorites: true,
+            };
+            break;
+        case 'ENABLE_FAVORITES_BUTTON':
+            newState = {
+                ...state,
+                disableFavorites: false,
+            };
+            break;
         default:
             break;
     }
