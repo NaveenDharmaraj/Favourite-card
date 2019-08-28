@@ -218,7 +218,6 @@ class Friend extends React.Component {
                     language,
                 }
             } = this.props;
-            console.log(this.props);
             const formatMessage = this.props.t;
             let paymentInstruments = null;
             let companyPaymentInstrumentChanged = false;

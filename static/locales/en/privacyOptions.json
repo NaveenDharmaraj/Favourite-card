@@ -15,7 +15,7 @@
     "shareGroupPrivacyGiftAmount": "Share my gift amount with Giving Group I’m giving to",
     "shareGroupPrivacyPostal": "Share my {{privacyData}} address with the Giving Group organizers",
     "shareCampaignPrivacyPostal": "Share my {{privacyData}} address with the Giving Campaign organizers",
-    "myCampaigns": "my Campaign",
-    "myGroups": "my Group",
-    "myCompanies": "my Company"
+    "mycampaigns": "my Campaign",
+    "mygroups": "my Group",
+    "mycompanies": "my Company"
 }

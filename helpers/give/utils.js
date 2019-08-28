@@ -1282,7 +1282,7 @@ const populateDonationReviewPage = (giveData, data, currency, formatMessage, lan
 
         const buildAccounts = (item) => {
             const val = item.amount;
-            if (val > 0) {
+            if (val >= 0) {
                 return {
                     ...item,
                     amount: formatCurrency(
@@ -1458,7 +1458,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
         }
         const buildAccounts = (item) => {
             const val = item.amount;
-            if (val > 0) {
+            if (val >= 0) {
                 return {
                     ...item,
                     amount: formatCurrency(
