@@ -142,7 +142,7 @@ const Success = (props) => {
     if (quaziSuccessStatus) {
         firstParagraph = type !== 'donations' ? formatMessage('quaziDonationMessageForAllocations', { name: donationDetails.name })
             : formatMessage('quaziDonationSuccessMessage', {
-                amount: formatCurrency(formatAmount(donationDetails.amount), language, currency),
+                amount: donationDetails.amount,
                 name: donationDetails.name,
             });
         secondParagraph = type !== 'donations' ? formatMessage('quaziDonationSuccessMessageTwo')
@@ -158,7 +158,7 @@ const Success = (props) => {
             dashboardLink = `/companies/${giveTo.slug}`;
             linkToDashboardText = formatMessage('goToCompanyDashboard', { companyName: giveTo.name });
             firstParagraph = formatMessage('companyAddMoney', {
-                amount: formatCurrency((donationDetails.amount), language, currency),
+                amount: donationDetails.amount,
                 companyName: giveTo.name,
                 name: donationDetails.name,
             });
@@ -267,7 +267,7 @@ const Success = (props) => {
         }
         if (donationMatch.value > 0 && !_.isEmpty(donationMatchedData)) {
             const donationMessage = formatMessage('nonrecurringDonationDetails', {
-                amount: donationMatchedData.amount,
+                amount: formatCurrency(formatAmount(donationMatchedData.amount),language, currency),
                 matchingParty: giveTo.name,
                 to: donationDetails.name,
             });
@@ -326,7 +326,7 @@ const Success = (props) => {
                     />
                 </Link>
             );
-        } else if (!_.isEmpty(creditCard) && creditCard.value > 0) {
+        } else if (!_.isEmpty(creditCard) && creditCard.value > 0 && giftType.value === 0) {
             taxProfileLink = (giveFrom.type !== 'user')
                 ? `/${giveFrom.type}/${giveFrom.slug}/tax-receipts` : taxProfileLink;
             fourthButton = (

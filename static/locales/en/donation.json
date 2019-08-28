@@ -17,7 +17,6 @@
     "donationMatchPolicyNote": "{{companyName}}’s policy is to match {{policyPercentage}} cents per dollar donated, up to {{policyMax}} per {{policyPeriod}}.",
     "creditCardLabel": "Credit card",
     "creditCardPlaceholder": "Select Credit Card ",
-    "doNotMatchLabel": "Do not match ",
     "forNoMatchingPolicy": "no matching policy"
 
 

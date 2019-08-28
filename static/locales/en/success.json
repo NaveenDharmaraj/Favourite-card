@@ -19,7 +19,7 @@
     "fromToSingleRecipient": "Nice work, {{name}}. You gave {{amount}} to {{emailAddress}}.",
     "nonrecurringCCAllocationDetails": "{{creditCard}} was used to complete this transaction, which will appear on the credit card statement as \"CHARITABLE IMPACT FDN * DONATION\".",
     "nonrecurringDonationDetails": "In addition, {{amount}} was matched by {{matchingParty}} and added to {{to}}'s CHARITABLE IMPACT Account.",
-    "timeForSendingCharity": "Your gift will be sent to the recipient at the beginning of {{month}}.",
+    "timeForSendingCharity": "Your gift will be sent to the recipient on {{month}}.",
     "userRecurringAllocation" : "Thank you, {{name}}. You scheduled a monthly gift of {{amount}} to go to {{to}}.",
     "nonUserRecurringAllocation": "Thank you, {{name}}. You scheduled a monthly gift of {{amount}} by {{fromName}} to {{to}}.",
     "recurringAllocationDetails": "This gift will be made from {{fromName}}'s CHARITABLE IMPACT Account on the {{dayOfMonth}} of each month, starting on {{startsOn}}.",

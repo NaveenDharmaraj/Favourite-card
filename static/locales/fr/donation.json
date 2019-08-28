@@ -17,7 +17,6 @@
     "donations.donationMatchPolicyNote": "La politique de {{companyName}} consiste à apparier {{policyPercentage}} par dollar donné, jusqu'à {{policyMax}} par {{policyPeriod}}.",
     "creditCardLabel": "Carte de crédit",
     "creditCardPlaceholder": "Sélectionnez la carte de crédit",
-    "doNotMatchLabel": "Ne pas apparier le don",
     "forNoMatchingPolicy": "aucune politique d'appariement"
 
 

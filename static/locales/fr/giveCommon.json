@@ -58,7 +58,9 @@
     "startsOn": "Date de début",
     "emptyMessage": "Aucun contenu disponible",
     "commonOr": "ou ",
-    "commonMakeChanges": "apporter des modifications"
+    "commonMakeChanges": "apporter des modifications",
+    "doNotMatchLabel": "Ne pas apparier le don"
+
 
 
 

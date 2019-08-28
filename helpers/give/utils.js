@@ -471,7 +471,7 @@ const populateDonationMatch = (donationMatchData, formatMessage, language) => {
     if (!_.isEmpty(donationMatchData)) {
         const noDonationMatch = {
             disabled: false,
-            text: formatMessage('doNotMatchLabel'),
+            text: formatMessage('giveCommon:doNotMatchLabel'),
             type: '',
             value: 0,
         };
@@ -972,13 +972,12 @@ const validateGiveForm = (field, value, validity, giveData, coverFeesAmount, sen
     const giveAmount = giveData.totalP2pGiveAmount
         ? giveData.totalP2pGiveAmount
         : giveData.giveAmount;
-
     switch (field) {
         case 'giveAmount':
             validity.doesAmountExist = !isInputBlank(value);
             validity.isAmountLessThanOneBillion = (giveData.giftType.value > 0)
                 ? isAmountLessThanOneBillion(value) : true;
-            validity.isAmountMoreThanOneDollor = (giveData.giveTo.type === 'beneficiaries')
+            validity.isAmountMoreThanOneDollor = (giveData.giveTo.type === 'beneficiaries') || giveData.giftType.value > 0
                 ? isAmountMoreThanOneDollor(value) : isAmountMoreOrEqualToOneDollor(value);
             validity.isValidPositiveNumber = isValidPositiveNumber(value);
             validity.isAmountCoverGive = (giveData.giveFrom.type === 'groups'

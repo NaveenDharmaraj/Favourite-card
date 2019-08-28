@@ -898,11 +898,12 @@ class Group extends React.Component {
                                 value={giveAmount}
                             />
                         </Form.Field>
+                        
                         <FormValidationErrorMessage
                             condition={!validity.doesAmountExist || !validity.isAmountMoreThanOneDollor
                             || !validity.isValidPositiveNumber}
                             errorMessage={formatMessage('amountLessOrInvalid', {
-                                minAmount: 1,
+                                minAmount:  giftType.value > 0 ? 5 : 1,
                             })}
                         />
                         <FormValidationErrorMessage
