@@ -15,33 +15,6 @@ import CharitySupport from './CharitySupport';
 import TransactionDetails from './TransactionDetails';
 
 const ProfileDetails = (props) => {
-    // constructor(props) {
-    //     super(props);
-    //     this.onTabChangeFunc = this.onTabChangeFunc.bind(this);
-    // }
-
-    // onTabChangeFunc(event, data) {
-    //     const {
-    //         dispatch,
-    //         groupDetails: {
-    //             id,
-    //         },
-    //     } = this.props;
-    //     switch (data.panes[data.activeIndex].id) {
-    //         case 'Members':
-    //             // getGroupMemberDetails(dispatch, id);
-    //             // getGroupAdminDetails(dispatch, id);
-    //             break;
-    //         case 'supports':
-    //             // getGroupBeneficiaries(dispatch, id);
-    //             break;
-    //         case 'Transactions':
-    //             // getTransactionDetails(dispatch, id);
-    //             break;
-    //         default:
-    //             break;
-    //     }
-    // }
     const {
         isAUthenticated,
         groupDetails: {
@@ -51,7 +24,7 @@ const ProfileDetails = (props) => {
             },
         },
     } = props;
-    const panes = [
+    let panes = [
         {
             id: 'About',
             menuItem: 'About',
@@ -61,59 +34,64 @@ const ProfileDetails = (props) => {
                 </Tab.Pane>
             ),
         },
-        {
-            id: 'Activity',
-            menuItem: 'Activity',
-            render: () => (
-                <Tab.Pane attached={false}>
-                    {(isAUthenticated)
-                    && (
-                        <Activity />
-                    )}
-                </Tab.Pane>
-            ),
-        },
-        {
-            id: 'Members',
-            menuItem: 'Members',
-            render: () => (
-                <Tab.Pane attached={false}>
-                    {(isAUthenticated)
-                    && (
-                        <Members />
-                    )}
-                </Tab.Pane>
-            ),
-        },
-        {
-            id: 'Transactions',
-            menuItem: 'Transactions',
-            render: () => (
-                <Tab.Pane attached={false}>
-                    {(isAUthenticated)
+    ];
+
+    if (isAUthenticated) {
+        panes = panes.concat(
+            {
+                id: 'Activity',
+                menuItem: 'Activity',
+                render: () => (
+                    <Tab.Pane attached={false}>
+                        <Activity
+                            id={id}
+                        />
+                    </Tab.Pane>
+                ),
+            },
+            {
+                id: 'Members',
+                menuItem: 'Members',
+                render: () => (
+                    <Tab.Pane attached={false}>
+                        {(isAUthenticated)
                         && (
-                            <TransactionDetails
+                            <Members />
+                        )}
+                    </Tab.Pane>
+                ),
+            },
+            {
+                id: 'Transactions',
+                menuItem: 'Transactions',
+                render: () => (
+                    <Tab.Pane attached={false}>
+                        {(isAUthenticated)
+                            && (
+                                <TransactionDetails
+                                    id={id}
+                                />
+                            )}
+                    </Tab.Pane>
+                ),
+            },
+            {
+                id: 'supports',
+                menuItem: 'Charities this group supports',
+                render: () => (
+                    <Tab.Pane attached={false}>
+                        {(isAUthenticated)
+                        && (
+                            <CharitySupport
                                 id={id}
                             />
                         )}
-                </Tab.Pane>
-            ),
-        },
-        {
-            id: 'supports',
-            menuItem: 'Charities this group supports',
-            render: () => (
-                <Tab.Pane attached={false}>
-                    {(isAUthenticated)
-                    && (
-                        <CharitySupport
-                            id={id}
-                        />
-                    )}
-                </Tab.Pane>
-            ),
-        },
-    ];
+                    </Tab.Pane>
+                ),
+            },
+        );
+    }
+
     return (
         <Container>
             <div className="charityTab">
@@ -123,7 +101,6 @@ const ProfileDetails = (props) => {
                         secondary: true,
                     }}
                     panes={panes}
-                    // onTabChange={(event, data) => this.onTabChangeFunc(event, data)}
                 />
             </div>
         </Container>

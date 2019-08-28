@@ -1,4 +1,11 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import _ from 'lodash';
+import {
+    string,
+    bool,
+    func,
+} from 'prop-types';
 
 import {
     getGroupFromSlug,
@@ -17,6 +24,17 @@ class GroupProfile extends React.Component {
         };
     }
 
+    componentDidMount() {
+        const {
+            dispatch,
+            isAUthenticated,
+            slug,
+        } = this.props;
+        (isAUthenticated
+            && getGroupFromSlug(dispatch, slug)
+        );
+    }
+
     render() {
         return (
             <Layout>
@@ -25,4 +43,22 @@ class GroupProfile extends React.Component {
         );
     }
 }
-export default GroupProfile;
+
+GroupProfile.defaultProps = {
+    dispatch: func,
+    isAUthenticated: false,
+    slug: '',
+};
+
+GroupProfile.propTypes = {
+    dispatch: _.noop,
+    isAUthenticated: bool,
+    slug: string,
+};
+
+function mapStateToProps(state) {
+    return {
+        isAUthenticated: state.auth.isAuthenticated,
+    };
+}
+export default connect(mapStateToProps)(GroupProfile);

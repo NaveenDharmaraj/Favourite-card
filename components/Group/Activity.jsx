@@ -5,168 +5,205 @@ import _ from 'lodash';
 import _isEmpty from 'lodash/isEmpty';
 import {
     Button,
-    Icon,
     Comment,
-    Form,
     Input,
-    Feed,
     Grid,
 } from 'semantic-ui-react';
 import {
     arrayOf,
     PropTypes,
     string,
+    number,
+    func,
 } from 'prop-types';
 import {
     connect,
 } from 'react-redux';
 
+import {
+    getGroupActivities,
+    postActivity,
+} from '../../actions/group';
+
+import ActivityDetails from './ActivityDetails';
+
 class Activity extends React.Component {
     constructor(props) {
-        super (props);
+        super(props);
+        this.getComments = this.getComments.bind(this);
+        this.loadMore = this.loadMore.bind(this);
+        this.updateInputValue = this.updateInputValue.bind(this);
+        this.postComment = this.postComment.bind(this);
+        this.state = {
+            commentText: '',
+        };
+    }
+
+    componentDidMount() {
+        const {
+            id,
+            dispatch,
+            groupActivities: {
+                data: activityData,
+            },
+        } = this.props;
+        if (_isEmpty(activityData)) {
+            getGroupActivities(dispatch, id);
+        }
+    }
+
+    getComments() {
+        const {
+            id: groupId,
+            groupActivities: {
+                data,
+            },
+            userInfo: {
+                id:userId,
+            }
+        } = this.props;
+        return (
+            data.map((activity) => (
+                <ActivityDetails
+                    groupId={groupId}
+                    id={activity.id}
+                    isLiked={activity.attributes.isLiked}
+                    likesCount={activity.attributes.likesCount}
+                    avatar={activity.attributes.imageUrl}
+                    // name={activity.attributes.source.name}
+                    description={activity.attributes.description}
+                    createdAt={activity.attributes.createdAt}
+                    commentsCount={activity.attributes.commentsCount}
+                    commentsLink={activity.relationships.comments.links.related}
+                    canReply
+                    type={activity.type}
+                    userId={userId}
+                />
+            ))
+        );
+    }
+
+    loadMore() {
+        const {
+            dispatch,
+            id,
+            groupActivities: {
+                nextLink: activitiesLink,
+            },
+        } = this.props;
+        const url = (activitiesLink) ? activitiesLink : '';
+        getGroupActivities(dispatch, id, url);
+    }
+
+    updateInputValue(event) {
+        this.setState({
+            commentText: event.target.value,
+        });
+    }
+
+    postComment() {
+        const {
+            dispatch,
+            id,
+        } = this.props;
+        const {
+            commentText: msg,
+        } = this.state;
+        postActivity(dispatch, id, msg);
+        this.setState({
+            commentText: '',
+        });
     }
 
     render() {
         const {
-            dispatch,
+            groupActivities: {
+                data,
+                nextLink: activitiesLink,
+            },
         } = this.props;
+        const {
+            commentText,
+        } = this.state;
         return (
-            <Grid centered>
-            <Grid.Row>
-                <Grid.Column mobile={16} tablet={14} computer={14}>
-                    <Grid>
-                        <Grid.Row>
-                            <Grid.Column mobile={16} tablet={14} computer={14}>
-                                <div className="two-icon-brdr-btm-input">
-                                    <Input type='text' placeholder='Write a post...' action fluid>
-                                        <input />
-                                        <Button icon><Icon name='at' /></Button>
-                                        <Button icon><Icon name='smile outline' /></Button>
-                                    </Input>
-                                </div>
-                            </Grid.Column>
-                            <Grid.Column mobile={16} tablet={2} computer={2}>
-                                <Button className="blue-bordr-btn-round-def c-small">Post</Button>
-                            </Grid.Column>
-                        </Grid.Row>
-                    </Grid>
-                    <div className="c-comment">
-                        <Comment.Group fluid>
-
-                            <Comment>
-                                <Feed.Meta className="cmntLike">
-                                    <Feed.Like>
-                                        <Icon name='heart' />
-                                        4
-                                    </Feed.Like>
-                                </Feed.Meta>
-                                <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/matt.jpg' />
-                                <Comment.Content>
-                                    <Comment.Author as='a'>Matt</Comment.Author>
-                                    
-                                    <Comment.Text>
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
-                                    </Comment.Text>
-                                    
-                                    
-                                    <Comment.Actions>
-                                        <Comment.Metadata>
-                                        <div>Today at 5:42PM</div>
-                                        </Comment.Metadata>
-                                        <Comment.Action>Reply</Comment.Action>
-                                    </Comment.Actions>
-                                </Comment.Content>
-                                
-                            </Comment>
-
-                            <Comment>
-                                <Feed.Meta className="cmntLike">
-                                    <Feed.Like>
-                                        <Icon name='heart outline' />
-                                        4
-                                    </Feed.Like>
-                                </Feed.Meta>
-                                <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/matt.jpg' />
-                                <Comment.Content>
-                                    <Comment.Author as='a'>Matt</Comment.Author>
-                                    
-                                    <Comment.Text>
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
-                                    </Comment.Text>
-                                    
-                                    
-                                    <Comment.Actions>
-                                        <Comment.Metadata>
-                                        <div>Today at 5:42PM</div>
-                                        </Comment.Metadata>
-                                        <Comment.Action>Reply</Comment.Action>
-                                    </Comment.Actions>
-                                </Comment.Content>
-                                <Comment.Group>
-                                    <Comment>
-                                        <Feed.Meta className="cmntLike">
-                                            <Feed.Like>
-                                                <Icon name='heart outline' />
-                                                4
-                                            </Feed.Like>
-                                        </Feed.Meta>
-                                        <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/matt.jpg' />
-                                        <Comment.Content>
-                                            <Comment.Author as='a'>Matt</Comment.Author>
-                                            
-                                            <Comment.Text>
-                                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
-                                            </Comment.Text>
-                                            
-                                            
-                                            <Comment.Actions>
-                                                <Comment.Metadata>
-                                                <div>Today at 5:42PM</div>
-                                                </Comment.Metadata>
-                                                <Comment.Action>Reply</Comment.Action>
-                                            </Comment.Actions>
-                                        </Comment.Content>
-                                    </Comment>
+            <Fragment>
+                <Grid centered>
+                    <Grid.Row>
+                        <Grid.Column mobile={16} tablet={14} computer={14}>
+                            <Grid>
+                                <Grid.Row>
+                                    <Grid.Column mobile={16} tablet={14} computer={14}>
+                                        <div className="two-icon-brdr-btm-input">
+                                            <Input
+                                                value={commentText}
+                                                onChange={this.updateInputValue}
+                                                type="text"
+                                                placeholder="Write a post..."
+                                                action
+                                                fluid
+                                            />
+                                        </div>
+                                    </Grid.Column>
+                                    <Grid.Column mobile={16} tablet={2} computer={2}>
+                                        <Button
+                                            onClick={this.postComment}
+                                            className="blue-bordr-btn-round-def c-small"
+                                        >
+                                        Post
+                                        </Button>
+                                    </Grid.Column>
+                                </Grid.Row>
+                            </Grid>
+                            <div className="c-comment">
+                                <Comment.Group fluid>
+                                    {!_isEmpty(data) && this.getComments()}
                                 </Comment.Group>
-                            </Comment>
-
-                            <Comment>
-                                
-                                <Feed.Meta className="cmntLike">
-                                    <Feed.Like>
-                                        <Icon name='heart outline' />
-                                        4
-                                    </Feed.Like>
-                                </Feed.Meta>
-                                <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/joe.jpg' />
-                                <Comment.Content>
-                                    <Comment.Author as='a'>Matt</Comment.Author>
-                                    
-                                    <Comment.Text>
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
-                                    </Comment.Text>
-                                    
-                                    
-                                    <Comment.Actions>
-                                        <Comment.Metadata>
-                                        <div>Today at 5:42PM</div>
-                                        </Comment.Metadata>
-                                        <Comment.Action>Reply</Comment.Action>
-                                    </Comment.Actions>
-                                </Comment.Content>
-                            </Comment>
-
-                            <Form reply>
-                            <Form.TextArea />
-                            <Button content='Add Reply' labelPosition='left' icon='edit' primary />
-                            </Form>
-                        </Comment.Group>
+                            </div>
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
+                {(activitiesLink)
+                && (
+                    <div className="text-center mt-1 mb-1">
+                        <Button
+                            onClick={this.loadMore}
+                            className="blue-bordr-btn-round-def w-180"
+                            content="View more"
+                        />
                     </div>
-                </Grid.Column>
-            </Grid.Row>
-        </Grid>
+                )
+                }
+            </Fragment>
         );
     }
 }
 
-export default Activity;
+Activity.defaultProps = {
+    dispatch: func,
+    groupActivities: {
+        data: [],
+        links: {
+            next: '',
+        },
+    },
+    id: null,
+};
+
+Activity.propTypes = {
+    dispatch: _.noop,
+    groupActivities: {
+        data: arrayOf(PropTypes.element),
+        links: PropTypes.shape({
+            next: string,
+        }),
+    },
+    id: number,
+};
+
+function mapStateToProps(state) {
+    return {
+        groupActivities: state.group.groupActivities,
+        userInfo: state.user.info,
+    };
+}
+export default connect(mapStateToProps)(Activity);
