@@ -4,7 +4,6 @@ import {
     Button,
     Header,
     Radio,
-    Image,
     Form,
     Modal,
     Grid,
@@ -12,19 +11,264 @@ import {
     Dropdown,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
+import dynamic from 'next/dynamic';
+import getConfig from 'next/config';
+import {
+    Elements,
+    StripeProvider
+} from 'react-stripe-elements';
 
+import { withTranslation } from '../../../i18n';
 import {
     getMyCreditCards,
+    editUserCreditCard,
+    deleteUserCreditCard,
+    saveNewCreditCard,
 } from '../../../actions/userProfile';
 import Pagination from '../../shared/Pagination';
 
-class CreditCard extends React.Component {
+const CreditCard = dynamic(() => import('../../shared/CreditCard'));
+
+const { publicRuntimeConfig } = getConfig();
+
+const {
+    STRIPE_KEY
+} = publicRuntimeConfig;
+
+class MyCreditCards extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             currentActivePage: 1,
+            isEditModalOpen: false,
+            isDeleteMessageOpen: false,
+            isDropdownOpen: false,
+            inValidCardNameValue: true,
+            inValidCardNumber: true,
+            inValidCvv: true,
+            inValidExpirationDate: true,
+            inValidNameOnCard: true,
+            deleteConfirmCard: '',
+            deletePaymentInstrumentId: '',
+            editDetails: {
+                editCardNumber: '',
+                editNameOnCard: '',
+                editPaymetInstrumentId: '',
+                editMonth: '',
+                editYear: '',
+                isValidMonth: '',
+                isValidYear: '',
+            },
+            creditCard: {
+                value: 0,
+            },
+            stripeCreditCard: '',
+            cardHolderName: '',
         };
         this.onPageChanged = this.onPageChanged.bind(this);
+        this.validateStripeCreditCardNo = this.validateStripeCreditCardNo.bind(this);
+        this.validateStripeExpirationDate = this.validateStripeExpirationDate.bind(this);
+        this.validateCreditCardCvv = this.validateCreditCardCvv.bind(this);
+        this.validateCreditCardName = this.validateCreditCardName.bind(this);
+        this.getStripeCreditCard = this.getStripeCreditCard.bind(this);
+        this.handleEditClick = this.handleEditClick.bind(this);
+        this.handleDeleteClick = this.handleDeleteClick.bind(this);
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleEditSave = this.handleEditSave.bind(this);
+        this.handleDeleteConfirmClick = this.handleDeleteConfirmClick.bind(this);
+        this.handleDeleteCancelClick = this.handleDeleteCancelClick.bind(this);
+        this.handleAddButtonClick = this.handleAddButtonClick.bind(this);
+    }
+
+    onOpen=()=>{
+        this.setState({isDropdownOpen:true});
+    }
+    onClose=()=>{
+        this.setState({isDropdownOpen:false});
+    }
+
+    isValidCC(
+        creditCard,
+        inValidCardNumber,
+        inValidExpirationDate,
+        inValidNameOnCard,
+        inValidCvv,
+        inValidCardNameValue,
+    ) {
+        let validCC = true;
+        if (creditCard.value === 0) {
+            this.CreditCard.handleOnLoad(
+                inValidCardNumber,
+                inValidExpirationDate,
+                inValidNameOnCard,
+                inValidCvv,
+                inValidCardNameValue,
+            );
+            validCC = (
+                !inValidCardNumber &&
+                !inValidExpirationDate &&
+                !inValidNameOnCard &&
+                !inValidCvv &&
+                !inValidCardNameValue
+            );
+        }
+
+        return validCC;
+    }   
+
+    handleAddButtonClick() {
+        const {
+            creditCard,
+            inValidCardNumber,
+            inValidExpirationDate,
+            inValidNameOnCard,
+            inValidCvv,
+            inValidCardNameValue,
+            stripeCreditCard,
+            cardHolderName,
+        } = this.state;
+        const validateCC = this.isValidCC(
+            creditCard,
+            inValidCardNumber,
+            inValidExpirationDate,
+            inValidNameOnCard,
+            inValidCvv,
+            inValidCardNameValue,
+        );
+        if(validateCC) {
+            const {
+                currentUser: {
+                    id,
+                },
+                dispatch,
+            } = this.props;
+            saveNewCreditCard(dispatch, stripeCreditCard, cardHolderName, id);
+        }
+    }
+
+    handleEditClick(paymentInstrument) {
+        const lastFour = `**** **** **** ${paymentInstrument.attributes.description.slice(-4)}`;
+        const cardName = paymentInstrument.attributes.description.slice(0, -17);
+        console.log(paymentInstrument);
+        this.setState({
+            isEditModalOpen: true,
+            isDropdownOpen: false,
+            editDetails: {
+                editCardNumber: lastFour,
+                editNameOnCard: cardName,
+                editPaymetInstrumentId: paymentInstrument.id,
+            }            
+        });
+    }
+
+    handleInputChange(event, data) {        
+        const {
+            name,
+            options,
+            value,
+        } = data;
+        const {
+            editDetails,
+        } = this.state;
+        const newValue = (!_.isEmpty(options)) ? _.find(options, { value }) : value;
+        if (editDetails[name] !== newValue) {
+            editDetails[name] = newValue;
+        }
+        this.setState({
+            editDetails: {
+                ...this.state.editDetails,
+                ...editDetails,
+            },
+        });
+    }
+
+    validateEditForm() {
+        const {
+            editDetails: {
+                editMonth,
+                editYear,
+                editPaymetInstrumentId,
+            }
+        } = this.state;
+        let {
+            editDetails: {
+                isValidMonth,
+                isValidYear
+            }
+        } = this.state;
+        isValidMonth = !(!editMonth || editMonth.length === 0);
+        isValidYear = !(!editYear || editYear.length === 0);
+        this.setState({
+            editDetails: {
+                isValidMonth,
+                isValidYear,
+            }
+        });
+        if(isValidMonth && isValidYear) {
+            return true;
+        }
+        return false;
+    }
+
+    handleEditSave() {
+        const isEditDataValid = this.validateEditForm();
+        if(isEditDataValid) {
+            const {
+                editDetails,
+            } = this.state;
+            const {
+                dispatch,
+            } = this.props;
+            editUserCreditCard(dispatch, editDetails);
+            this.setState({
+                editDetails: {
+                    editCardNumber: '',
+                    editNameOnCard: '',
+                    editPaymetInstrumentId: '',
+                    editMonth: '',
+                    editYear: '',
+                    isValidMonth: '',
+                    isValidYear: '',
+                },
+                isEditModalOpen: false,
+            })
+        } else {
+            console.log('Form Not Valid');
+        }
+    }
+
+    handleDeleteClick(cardData, deletePaymentInstrumentId) {
+        this.setState({
+            isDeleteMessageOpen: true,
+            isDropdownOpen:false,
+            deleteConfirmCard: cardData,
+            deletePaymentInstrumentId,
+        });
+    }
+
+    handleDeleteConfirmClick() {
+        const {
+            deletePaymentInstrumentId,
+            currentActivePage,            
+        } = this.state;
+        const {
+            dispatch,
+            currentUser: {
+                id,
+            },
+        } = this.props;
+        deleteUserCreditCard(dispatch, deletePaymentInstrumentId, id, currentActivePage);
+        this.setState({
+            isDeleteMessageOpen: false,
+        })
+        getMyCreditCards(dispatch, id, currentActivePage);
+    }
+
+    handleDeleteCancelClick() {
+        this.setState({
+            isDeleteMessageOpen: false,
+            deletePaymentInstrumentId: '',
+        })
     }
 
     componentDidMount() {
@@ -37,7 +281,8 @@ class CreditCard extends React.Component {
         getMyCreditCards(dispatch, id, 1);
     }
 
-    onPageChanged(e, data) {
+    onPageChanged(event, data) {
+        console.log(data);
         const {
             currentUser: {
                 id,
@@ -50,65 +295,102 @@ class CreditCard extends React.Component {
         });
     }
 
+    /**
+     * validateStripeElements
+     * @param {boolean} inValidCardNumber credit card number
+     * @return {void}
+     */
+    validateStripeCreditCardNo(inValidCardNumber) {
+        this.setState({ inValidCardNumber });
+    }
+
+    /**
+     * validateStripeElements
+     * @param {boolean} inValidExpirationDate credit card expiry date
+     * @return {void}
+     */
+    validateStripeExpirationDate(inValidExpirationDate) {
+        this.setState({ inValidExpirationDate });
+    }
+
+    /**
+     * validateStripeElements
+     * @param {boolean} inValidCvv credit card CVV
+     * @return {void}
+     */
+    validateCreditCardCvv(inValidCvv) {
+        this.setState({ inValidCvv });
+    }
+
+    /**     
+     * @param {boolean} inValidNameOnCard credit card Name
+     * @param {boolean} inValidCardNameValue credit card Name Value
+     * @param {string} cardHolderName credit card Name Data
+     * @return {void}
+     */
+    validateCreditCardName(inValidNameOnCard, inValidCardNameValue, cardHolderName) {
+        let cardNameValid = inValidNameOnCard;
+        if (cardHolderName.trim() === '' || cardHolderName.trim() === null) {
+            cardNameValid = true;
+        } else {
+            this.setState({
+                flowObject: {
+                    ...this.state.flowObject,
+                    cardHolderName,
+                },
+            });
+        }
+        this.setState({
+            inValidCardNameValue,
+            inValidNameOnCard: cardNameValid,
+        });
+    }
+
+    getStripeCreditCard(data, cardHolderName) {        
+        this.setState({            
+            cardHolderName,
+            stripeCreditCard: data,
+        });
+    }
+
     renderMyCreditCards() {
         const {
             userCreditCardList,
         } = this.props;
+        const {
+            isDropdownOpen
+        } = this.state;
         let cardList = 'No Data';
         if (!_.isEmpty(userCreditCardList)) {
-            cardList = userCreditCardList.data.map((data) => {                
+            cardList = userCreditCardList.data.map((data) => {
+                const lastFour = data.attributes.description.slice(-4);
+                const cardName = data.attributes.description.slice(0, -17);
                 return (
                     <List.Item>
                         <List.Content floated="right">
                             <Dropdown className="rightBottom" icon="ellipsis horizontal">
                                 <Dropdown.Menu>
-                                    <Modal size="tiny" dimmer="inverted" className="chimp-modal" closeIcon trigger={<Dropdown.Item text="Edit" />}>
-                                        <Modal.Header>Edit credit card</Modal.Header>
-                                        <Modal.Content>
-                                            <Modal.Description className="font-s-16">
-                                                <Form>
-                                                    <Form.Field>
-                                                        <label>Card number</label>
-                                                        <input placeholder="Card number" />
-                                                    </Form.Field>
-                                                    <Form.Field>
-                                                        <label>Name on card</label>
-                                                        <input placeholder="Name on card" />
-                                                    </Form.Field>
-                                                    <Form.Group widths="equal">
-                                                        <Form.Input fluid label="Expiry" placeholder="mm/yy" />
-                                                        <Form.Input fluid label="CVV" placeholder="CVV" />
-                                                    </Form.Group>
-                                                    <Form.Field>
-                                                        <Radio label="Set as primary card" />
-                                                    </Form.Field>
-                                                </Form>
-                                            </Modal.Description>
-                                            <div className="btn-wraper pt-3 text-right">
-                                                <Button className="blue-btn-rounded-def sizeBig w-180">Save</Button>
-                                            </div>
-                                        </Modal.Content>
-                                    </Modal>
-                                    <Modal size="tiny" dimmer="inverted" className="chimp-modal" closeIcon trigger={<Dropdown.Item text="Delete" />}>
-                                        <Modal.Header>Delete card?</Modal.Header>
-                                        <Modal.Content>
-                                            <Modal.Description className="font-s-16">
-                                                Your [card type: Visa/Mastercard/Amex]
-                                                ending in [last four digits] will be removed
-                                                from your account.
-                                            </Modal.Description>
-                                            <div className="btn-wraper pt-3 text-right">
-                                                <Button className="danger-btn-rounded-def c-small">Delete</Button>
-                                                <Button className="blue-bordr-btn-round-def c-small">Cancel</Button>
-                                            </div>
-                                        </Modal.Content>
-                                    </Modal>
+                                    <Dropdown.Item
+                                    text="Edit" 
+                                    open={isDropdownOpen}
+                                    onOpen={this.onOpen}
+                                    onClose={this.onClose}
+                                    onClick={() => {this.handleEditClick(data)}}
+                                    />
+                                    <Dropdown.Item
+                                    text="Delete" 
+                                    open={isDropdownOpen}
+                                    onOpen={this.onOpen}
+                                    onClose={this.onClose}
+                                    onClick={() => {this.handleDeleteClick(data.attributes.description, data.id)}}
+                                    />
                                 </Dropdown.Menu>
                             </Dropdown>
                         </List.Content>
                         <List.Icon name="credit card" size="large" verticalAlign="middle" />
                         <List.Content>
-                            <List.Header>{data.attributes.description}</List.Header>
+                            <List.Header>{cardName}<span className="primary"></span></List.Header>
+                        <div className="cardNo"><sup>**** **** **** </sup>{lastFour}</div>
                         </List.Content>
                     </List.Item>
                 );
@@ -124,10 +406,24 @@ class CreditCard extends React.Component {
     render() {
         const {
             currentActivePage,
+            inValidCardNumber,
+            inValidExpirationDate,
+            inValidNameOnCard,
+            inValidCvv,
+            inValidCardNameValue,
+            deleteConfirmCard,
+            editDetails: {
+                editCardNumber,
+                editNameOnCard,
+                editMonth,
+                editYear,
+            }
+            
         } = this.state;
         const {
             userCreditCardList,
         } = this.props;
+        const formatMessage = this.props.t;
         return (
             <div>
                 <Grid verticalAlign="middle">
@@ -150,25 +446,34 @@ class CreditCard extends React.Component {
                                     <Modal.Content>
                                         <Modal.Description className="font-s-16">
                                             <Form>
-                                                <Form.Field>
-                                                    <label>Card number</label>
-                                                    <input placeholder='Card number' />
-                                                </Form.Field>
-                                                <Form.Field>
-                                                    <label>Name on card</label>
-                                                    <input placeholder='Name on card' />
-                                                </Form.Field>
-                                                <Form.Group widths='equal'>
-                                                    <Form.Input fluid label='Expiry' placeholder='mm/yy'/>
-                                                    <Form.Input fluid label='CVV' placeholder='CVV' />
-                                                </Form.Group>
-                                                <Form.Field>
-                                                    <Radio label='Set as primary card' />
-                                                </Form.Field>
+                                            <StripeProvider apiKey={STRIPE_KEY}>
+                                                <Elements>
+                                                    <CreditCard
+                                                        creditCardElement={this.getStripeCreditCard}
+                                                        creditCardValidate={inValidCardNumber}
+                                                        creditCardExpiryValidate={inValidExpirationDate}
+                                                        creditCardNameValidte={inValidNameOnCard}
+                                                        creditCardNameValueValidate={inValidCardNameValue}
+                                                        creditCardCvvValidate={inValidCvv}
+                                                        validateCCNo={this.validateStripeCreditCardNo}
+                                                        validateExpiraton={this.validateStripeExpirationDate}
+                                                        validateCvv={this.validateCreditCardCvv}
+                                                        validateCardName={this.validateCreditCardName}
+                                                        formatMessage = {formatMessage}
+                                                        // eslint-disable-next-line no-return-assign
+                                                        onRef={(ref) => (this.CreditCard = ref)}
+                                                    />
+                                                </Elements>
+                                            </StripeProvider>
                                             </Form>
                                         </Modal.Description>
                                         <div className="btn-wraper pt-3 text-right">
-                                            <Button className="blue-btn-rounded-def sizeBig w-180">Add</Button>
+                                            <Button
+                                                className="blue-btn-rounded-def sizeBig w-180"
+                                                onClick={this.handleAddButtonClick}
+                                            >
+                                                Add
+                                            </Button>
                                         </div>
                                     </Modal.Content>
                                 </Modal>
@@ -176,6 +481,92 @@ class CreditCard extends React.Component {
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
+                <div>
+                    <Modal size="tiny" dimmer="inverted" className="chimp-modal" closeIcon open={this.state.isEditModalOpen} onClose={()=>{this.setState({isEditModalOpen: false})}}>
+                        <Modal.Header>Edit credit card</Modal.Header>
+                        <Modal.Content>
+                            <Modal.Description className="font-s-16">
+                                <Form>
+                                    <Form.Field>
+                                        <label>Card number</label>
+                                        <input
+                                            placeholder="Card number"
+                                            readOnly
+                                            value={editCardNumber}
+                                        />
+                                    </Form.Field>
+                                    <Form.Field>
+                                        <label>Name on card</label>
+                                        <input
+                                            placeholder="Name on card"
+                                            readOnly
+                                            value={editNameOnCard}
+                                        />
+                                    </Form.Field>
+                                    <Form.Group widths="equal">
+                                        <Form.Input
+                                            fluid
+                                            label="Expiry Month"
+                                            placeholder="MM"
+                                            id="editMonth"
+                                            name="editMonth"
+                                            maxLength="2"
+                                            type="number"
+                                            onChange={this.handleInputChange}
+                                            value={editMonth}
+                                        />
+                                        <Form.Input 
+                                            fluid
+                                            label="Expiry Month"
+                                            placeholder="YYYY"
+                                            id="editYear"
+                                            name="editYear"
+                                            maxLength="4"
+                                            type="number"
+                                            onChange={this.handleInputChange}
+                                            value={editYear}
+                                        />
+                                    </Form.Group>
+                                    <Form.Field>
+                                        <Radio label="Set as primary card" />
+                                    </Form.Field>
+                                </Form>
+                            </Modal.Description>
+                            <div className="btn-wraper pt-3 text-right">
+                                <Button
+                                    className="blue-btn-rounded-def sizeBig w-180"
+                                    onClick={this.handleEditSave}
+                                >
+                                    Save
+                                </Button>
+                            </div>
+                        </Modal.Content>
+                    </Modal>          
+                </div>
+                <div>
+                    <Modal size="tiny" dimmer="inverted" className="chimp-modal" closeIcon open={this.state.isDeleteMessageOpen} onClose={()=>{this.setState({isDeleteMessageOpen: false})}}>
+                        <Modal.Header>Delete card?</Modal.Header>
+                        <Modal.Content>
+                            <Modal.Description className="font-s-16">
+                                Your {deleteConfirmCard} will be removed from your account.
+                            </Modal.Description>
+                            <div className="btn-wraper pt-3 text-right">
+                            <Button
+                                className="danger-btn-rounded-def c-small"
+                                onClick={this.handleDeleteConfirmClick}
+                            >
+                                Delete
+                            </Button>
+                            <Button 
+                                className="blue-bordr-btn-round-def c-small"
+                                onClick={this.handleDeleteCancelClick}
+                            >
+                                Cancel
+                            </Button>
+                            </div>
+                        </Modal.Content>
+                    </Modal>
+                </div>
                 <div className="userCardList">
                     {this.renderMyCreditCards()}
                     <div className="db-pagination right-align pt-2">
@@ -202,4 +593,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default (connect(mapStateToProps)(CreditCard));
+export default withTranslation(['giveCommon'])(connect(mapStateToProps)(MyCreditCards))

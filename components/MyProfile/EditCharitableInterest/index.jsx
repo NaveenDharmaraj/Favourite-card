@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import {
     saveCharitableInterests,
 } from '../../../actions/userProfile';
+
 import MyCauses from './causes';
 import MyTags from './tags';
 

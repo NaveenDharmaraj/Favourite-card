@@ -8,6 +8,7 @@ import {
     Grid,
     Popup,
     List,
+    Button,
 } from 'semantic-ui-react';
 
 import UserPlaceholder from '../../../static/images/no-data-avatar-user-profile.png';
@@ -79,6 +80,10 @@ class UserBasciProfile extends React.Component {
                                                                         </List.Item>
                                                                     </List>
                                                                 </Popup.Content>
+                                                                <div className="popup-footer">
+                                                                    <Button size="tiny" className="blue-btn-rounded-def">Save</Button>
+                                                                    <Button size="tiny" className="blue-bordr-btn-round-def">Cancel</Button>
+                                                                </div>
                                                             </Popup>
                                                         </Header.Subheader>
                                                     </Header>

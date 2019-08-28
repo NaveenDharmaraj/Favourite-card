@@ -12,7 +12,9 @@ import { connect } from 'react-redux';
 import Link from 'next/link';
 
 import {
+    acceptFriendRequest,
     getFriendsByText,
+    sendFriendRequest,
 } from '../../../actions/userProfile';
 import Pagination from '../../shared/Pagination';
 
@@ -27,6 +29,7 @@ class FindFriends extends React.Component {
         this.handleFriendSearch = this.handleFriendSearch.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.onPageChanged = this.onPageChanged.bind(this);
+        this.handleAddFriendClick = this.handleAddFriendClick.bind(this);
     }
 
     componentDidUpdate(prevProps) {
@@ -39,10 +42,26 @@ class FindFriends extends React.Component {
         if (!_.isEqual(this.props, prevProps)) {
             if (!_.isEqual(userFindFriendsList, prevProps.userFindFriendsList)) {
                 this.setState({
-                    paginationCount: Math.round(userFindFriendsList.count / 10)
+                    paginationCount: Math.round(userFindFriendsList.count / 10),
                 });
             }
         }
+    }
+
+    onPageChanged(e, data) {
+        const {
+            currentUser: {
+                id,
+            },
+            dispatch,
+        } = this.props;
+        const {
+            searchWord,
+        } = this.state;
+        getFriendsByText(dispatch, id, searchWord, data.activePage);
+        this.setState({
+            currentActivePage: data.activePage,
+        });
     }
 
     handleInputChange(event) {
@@ -70,20 +89,20 @@ class FindFriends extends React.Component {
         getFriendsByText(dispatch, id, searchWord, currentActivePage);
     }
 
-    onPageChanged(e, data) {
+    handleAddFriendClick(userData, btnData) {
+        console.log(btnData);
+        console.log(userData.attributes.email_hash);
         const {
             currentUser: {
                 id,
             },
             dispatch,
         } = this.props;
-        const {
-            searchWord
-        } = this.state;
-        getFriendsByText(dispatch, id, searchWord, data.activePage);
-        this.setState({
-            currentActivePage: data.activePage,
-        });
+        if (btnData === 'addfriend') {
+            sendFriendRequest(dispatch, id, userData.attributes.email_hash);
+        } else if (btnData === 'accept') {
+            acceptFriendRequest(dispatch, id, userData.attributes.email_hash);
+        }
     }
 
     renderFriendList() {
@@ -95,7 +114,8 @@ class FindFriends extends React.Component {
             friendsList = userFindFriendsList.data.map((data) => {
                 const name = `${data.attributes.first_name} ${data.attributes.last_name}`;
                 const avatar = ((typeof data.attributes.avatar) === 'undefined' || data.attributes.avatar === null) ? 'https://react.semantic-ui.com/images/avatar/small/daniel.jpg' : data.attributes.avatar;
-                const location = `${data.attributes.city}, ${data.attributes.province}`;
+                const email = Buffer.from(data.attributes.email_hash, 'base64').toString('ascii');
+                const location = (typeof data.attributes.city === 'undefined' || data.attributes.province === '') ? email : `${data.attributes.city}, ${data.attributes.province}`;
                 let friendStatus = '';
                 let btnData = '';
                 if (data.attributes.friend_status === '') {
@@ -111,7 +131,12 @@ class FindFriends extends React.Component {
                 return (
                     <List.Item>
                         <List.Content floated="right">
-                            <Button className="blue-bordr-btn-round-def c-small">{friendStatus}</Button>
+                            <Button
+                                className="blue-bordr-btn-round-def c-small"
+                                onClick={() => this.handleAddFriendClick(data, btnData)}
+                            >
+                                {friendStatus}
+                            </Button>
                         </List.Content>
                         <Image avatar src={avatar} />
                         <List.Content>

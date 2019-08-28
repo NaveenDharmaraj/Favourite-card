@@ -10,13 +10,13 @@ import {
 
 import {
     getUserProfileBasic,
-} from '../../../actions/userProfile';
-import Layout from '../../../components/shared/Layout';
-import BasicProfile from '../../../components/MyProfile/BasicProfile';
-import EditProfileBasic from '../../../components/MyProfile/EditBasicProfile';
-import EditCharitableInterest from '../../../components/MyProfile/EditCharitableInterest';
-import Friends from '../../../components/MyProfile/Friends';
-import Settings from '../../../components/MyProfile/Settings';
+} from '../actions/userProfile';
+import Layout from '../components/shared/Layout';
+import BasicProfile from '../components/MyProfile/BasicProfile';
+import EditProfileBasic from '../components/MyProfile/EditBasicProfile';
+import EditCharitableInterest from '../components/MyProfile/EditCharitableInterest';
+import Friends from '../components/MyProfile/Friends';
+import Settings from '../components/MyProfile/Settings';
 
 class MyProfile extends React.Component {
     componentDidMount() {

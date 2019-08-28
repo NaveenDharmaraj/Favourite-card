@@ -11,6 +11,7 @@ import { connect } from 'react-redux';
 import Link from 'next/link';
 
 import {
+    acceptFriendRequest,
     getMyFriendsList,
     getFriendsInvitations,
 } from '../../../actions/userProfile';
@@ -23,6 +24,7 @@ class MyFriends extends React.Component {
             currentMyFriendsActivePage: 1,
         };
         this.onMyFriendsPageChanged = this.onMyFriendsPageChanged.bind(this);
+        this.handleFriendAcceptClick = this.handleFriendAcceptClick.bind(this);
     }
 
     componentDidMount() {
@@ -45,6 +47,19 @@ class MyFriends extends React.Component {
         });
     }
 
+    handleFriendAcceptClick(email) {
+        console.log(email);
+        if (email !== null) {
+            const {
+                currentUser: {
+                    id,
+                },
+                dispatch,
+            } = this.props;
+            acceptFriendRequest(dispatch, id, email);
+        }
+    }
+
     renderFriendsInvitations() {
         const {
             userFriendsInvitationsList,
@@ -54,10 +69,17 @@ class MyFriends extends React.Component {
             friendsList = userFriendsInvitationsList.data.map((friend) => {
                 const name = `${friend.attributes.first_name} ${friend.attributes.last_name}`;
                 const avatar = ((typeof friend.attributes.avatar) === 'undefined' || friend.attributes.avatar === null) ? 'https://react.semantic-ui.com/images/avatar/small/daniel.jpg' : friend.attributes.avatar;
+                const email = Buffer.from(friend.attributes.email_hash, 'base64').toString('ascii');
+                const location = (typeof friend.attributes.city === 'undefined' || friend.attributes.province === '') ? email : `${friend.attributes.city}, ${friend.attributes.province}`;
                 return (
                     <List.Item>
                         <List.Content floated="right">
-                            <Button className="blue-bordr-btn-round-def c-small">Accept</Button>
+                            <Button
+                                className="blue-bordr-btn-round-def c-small"
+                                onClick={() => this.handleFriendAcceptClick(friend.attributes.email_hash)}
+                            >
+                                Accept
+                            </Button>
                         </List.Content>
                         <Image avatar src={avatar} />
                         <List.Content>
@@ -66,7 +88,7 @@ class MyFriends extends React.Component {
                                     {name}
                                 </Link>
                             </List.Header>
-                            <List.Description>Vancouver, BC</List.Description>
+                            <List.Description>{location}</List.Description>
                         </List.Content>
                     </List.Item>
                 );

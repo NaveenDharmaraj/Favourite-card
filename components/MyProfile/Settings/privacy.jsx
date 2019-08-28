@@ -13,6 +13,7 @@ import Link from 'next/link';
 
 import {
     getBlockedFriends,
+    unblockFriend,
 } from '../../../actions/userProfile';
 
 class Privacy extends React.Component {
@@ -24,6 +25,19 @@ class Privacy extends React.Component {
             dispatch,
         } = this.props;
         getBlockedFriends(dispatch, id);
+    }
+
+    handleFriendUnblockClick(userId) {
+        console.log(userId);
+        if (userId !== null) {
+            const {
+                currentUser: {
+                    id,
+                },
+                dispatch,
+            } = this.props;
+            unblockFriend(dispatch, id, userId);
+        }
     }
 
     renderBlockedFriendsList() {
@@ -40,7 +54,12 @@ class Privacy extends React.Component {
                 return (
                     <List.Item>
                         <List.Content floated="right">
-                            <Button className="blue-bordr-btn-round-def c-small">Unblock</Button>
+                            <Button
+                                className="blue-bordr-btn-round-def c-small"
+                                onClick={() => this.handleFriendUnblockClick(data.attributes.user_id)}
+                            >
+                                Unblock
+                            </Button>
                         </List.Content>
                         <Image avatar src={avatar} />
                         <List.Content>

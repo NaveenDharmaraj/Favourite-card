@@ -5,11 +5,18 @@ import searchApi from '../services/searchApi';
 import coreApi from '../services/coreApi';
 import eventApi from '../services/eventApi';
 
+import {
+    savePaymentInstrument,
+} from './user';
+
 // eslint-disable-next-line import/exports-last
 export const actionTypes = {
+    ADD_USER_CREDIT_CARD: 'ADD_USER_CREDIT_CARD',
+    DELETE_USER_CREDIT_CARD: 'DELETE_USER_CREDIT_CARD',
     UPDATE_USER_BASIC_PROFILE: 'UPDATE_USER_BASIC_PROFILE',
     UPDATE_USER_CHARITY_CAUSES: 'UPDATE_USER_CHARITY_CAUSES',
     UPDATE_USER_CHARITY_TAGS: 'UPDATE_USER_CHARITY_TAGS',
+    UPDATE_USER_CREDIT_CARD: 'UPDATE_USER_CREDIT_CARD',
     USER_PROFILE_ADMIN_GROUP: 'USER_PROFILE_ADMIN_GROUP',
     USER_PROFILE_BASIC: 'USER_PROFILE_BASIC',
     USER_PROFILE_BASIC_FRIEND: 'USER_PROFILE_BASIC_FRIEND',
@@ -27,7 +34,7 @@ export const actionTypes = {
     USER_PROFILE_MEMBER_GROUP: 'USER_PROFILE_MEMBER_GROUP',
     USER_PROFILE_MY_FRIENDS: 'USER_PROFILE_MY_FRIENDS',
     USER_PROFILE_RECOMMENDED_TAGS: 'USER_PROFILE_RECOMMENDED_TAGS',
-    USER_PROFILE_UNBLOCK_FRIEND: 'USER_PROFILE_UNBLOCK_FRIEND'
+    USER_PROFILE_UNBLOCK_FRIEND: 'USER_PROFILE_UNBLOCK_FRIEND',
 };
 
 const getUserProfileBasic = (dispatch, email, userId, loggedInUserId) => {
@@ -212,7 +219,7 @@ const getMyFriendsList = (dispatch, email, pageNumber) => {
         },
         type: actionTypes.USER_PROFILE_MY_FRIENDS,
     };
-    return graphApi.get(`/user/myfriends?userid=${email}&page[number]=${pageNumber}&page[size]=2&status=accepted`).then(
+    return graphApi.get(`/user/myfriends?userid=${email}&page[number]=${pageNumber}&page[size]=10&status=accepted`).then(
         (result) => {
             fsa.payload = {
                 count: result.meta.recordCount,
@@ -344,8 +351,8 @@ const saveUserBasicProfile = (dispatch, userData, userId) => {
             "location": userData.location,
         },
         "filters": {
-            "user_id": Number(userId)
-        }
+            "user_id": Number(userId),
+        },
     };
     console.log(bodyData);
     return graphApi.patch(`/core/update/user/property`, bodyData).then(
@@ -368,24 +375,24 @@ const sendFriendRequest = (dispatch, sourceUserId, destinationEmailId) => {
         },
         type: actionTypes.USER_PROFILE_FRIEND_REQUEST,
     };
-    const emailHash = Buffer.from(destinationEmailId).toString('base64');
     const bodyData = {
-            "data": {
-            "type": "event",
-            "attributes": {
-                "source": "socialapi",
-                "category": "social",
-                "subCategory": "friend",
-                "eventName": "friendRequest",
-                "payload": {
-                    "sourceUserId": sourceUserId,
-                    "destinationEmailId": emailHash,
-                    "message": "Friend Request",
-                    "deepLink": "https://testLink.com"
-                }
-            }
-        }
-    }
+        data: {
+            attributes: {
+                category: 'social',
+                eventName: 'friendRequest',
+                payload: {
+                    deepLink: 'https://testLink.com',
+                    destinationEmailId,
+                    message: 'Friend Request',
+                    sourceUserId,
+                },
+                source: 'socialapi',
+                subCategory: 'friend',
+            },
+            type: 'event',
+        },
+    };
+    console.log(bodyData);
     return eventApi.post(`/event`, bodyData).then(
         (result) => {
             console.log(result);
@@ -406,28 +413,26 @@ const acceptFriendRequest = (dispatch, sourceUserId, destinationEmailId) => {
         },
         type: actionTypes.USER_PROFILE_FRIEND_ACCEPT,
     };
-    const emailHash = Buffer.from(destinationEmailId).toString('base64');
     const bodyData = {
-        "data": {
-            "type": "event",
-            "attributes": {
-                "source": "socialapi",
-                "category": "social",
-                "subCategory": "friend",
-                "eventName": "friendAccept",
-                "payload": {
-                    "sourceUserId": Number(sourceUserId),
-                    "destinationEmailId": emailHash,
-                    "message": "Hi, I would like to add you to my friend list",
-                    "deepLink": "https://testLink.com",
-                    "linkedEventId":"1563362089449:venkata-Latitude-5580:12091:jy75dh74:10000"
-                }
-            }
-        }
-    }
+        data: {
+            attributes: {
+                category: 'social',
+                eventName: 'friendAccept',
+                payload: {
+                    deepLink: 'https://testLink.com',
+                    destinationEmailId,
+                    linkedEventId: '1563362089449:venkata-Latitude-5580:12091:jy75dh74:10000',
+                    message: 'Hi, I would like to add you to my friend list',
+                    sourceUserId: Number(sourceUserId),
+                },
+                source: 'socialapi',
+                subCategory: 'friend',
+            },
+            type: 'event',
+        },
+    };
     return eventApi.post(`/event`, bodyData).then(
         (result) => {
-            console.log(result);
             fsa.payload = {
                 data: result.data,
             };
@@ -445,15 +450,18 @@ const unblockFriend = (dispatch, sourceUserId, destinationUserId) => {
         },
         type: actionTypes.USER_PROFILE_UNBLOCK_FRIEND,
     };
+    const blockUsers = [];
+    blockUsers.push(destinationUserId);
     const bodyData = {
-        "source_user_id": Number(sourceUserId),
-        "unblock_user_ids": `[${destinationUserId}]`
+        source_user_id: Number(sourceUserId),
+        unblock_user_ids: blockUsers,
     };
     return graphApi.post(`/core/unblockUser`, bodyData).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
             };
+            getBlockedFriends(dispatch, sourceUserId);
         },
     ).catch((error) => {
         fsa.error = error;
@@ -507,6 +515,104 @@ const saveCharitableInterests = (dispatch, userId, userCauses, userTags) => {
     });
 };
 
+const editUserCreditCard = (dispatch, instrumentDetails) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.UPDATE_USER_CREDIT_CARD,
+    };
+    const bodyData = {
+        data: {
+            attributes: {
+                expMonth: instrumentDetails.editMonth,
+                expYear: instrumentDetails.editYear,
+            },
+            id: instrumentDetails.editPaymetInstrumentId,
+            type: 'paymentInstruments',
+        },
+    };
+    return coreApi.patch(`/paymentInstruments/${Number(instrumentDetails.editPaymetInstrumentId)}`, bodyData).then(
+        (result) => {
+            console.log(result);
+            fsa.payload = {
+                data: result.data,
+            };
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    });
+};
+
+const deleteUserCreditCard = (dispatch, paymentInstrumentId, userId, pageNumber) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.DELETE_USER_CREDIT_CARD,
+    };
+    return coreApi.delete(`/paymentInstruments/${Number(paymentInstrumentId)}`).then(
+        (result) => {
+            console.log(result);
+            fsa.payload = {
+                data: result.data,
+            };
+            getMyCreditCards(dispatch, userId, pageNumber);
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    });
+};
+
+const createToken = (cardDetails, cardHolderName) => new Promise((resolve, reject) => {
+    cardDetails.createToken({ name: cardHolderName }).then((result) => {
+        if (result.error) {
+            return reject(result.error);
+        }
+        return resolve(result.token);
+    });
+});
+
+const saveNewCreditCard = async (dispatch, stripeCreditCard, cardHolderName, userId) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.ADD_USER_CREDIT_CARD,
+    };
+    const token = await createToken(stripeCreditCard, cardHolderName);
+    console.log(token);
+    const paymentInstrumentsData = {
+        data: {
+            attributes: {
+                stripeToken: token.id,
+            },
+            relationships: {
+                paymentable: {
+                    data: {
+                        id: userId,
+                        type: 'user',
+                    },
+                },
+            },
+            type: 'paymentInstruments',
+        },
+    };
+    return coreApi.post('/paymentInstruments', paymentInstrumentsData).then(
+        (result) => {
+            console.log(result);
+            fsa.payload = {
+                data: result.data,
+            };
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    });
+};
+
 export {
     getUserProfileBasic,
     getUserFriendProfile,
@@ -528,4 +634,7 @@ export {
     sendFriendRequest,
     acceptFriendRequest,
     unblockFriend,
+    editUserCreditCard,
+    deleteUserCreditCard,
+    saveNewCreditCard,
 };

@@ -95,6 +95,18 @@ const userProfile = (state = {}, action) => {
                 userCreditCardList: Object.assign({}, action.payload),
             };
             break;
+        case 'USER_PROFILE_FRIEND_REQUEST':
+            newState = {
+                ...state,
+                userAddFriendRequestData: Object.assign({}, action.payload),
+            };
+            break;
+        case 'USER_PROFILE_FRIEND_ACCEPT':
+            newState = {
+                ...state,
+                userAcceptFriendRequestData: Object.assign({}, action.payload),
+            };
+            break;
         default:
             break;
     }
