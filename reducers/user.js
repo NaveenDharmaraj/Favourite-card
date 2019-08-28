@@ -7,7 +7,7 @@ const user = (state = {}, action) => {
         case 'SET_USER_INFO':
             newState = {
                 ...state,
-                info: Object.assign({}, action.payload.userInfo),
+                ...action.payload,
             };
             break;
         case 'UPDATE_USER_FUND':
@@ -17,7 +17,7 @@ const user = (state = {}, action) => {
                     ...state.fund,
                     ...action.payload.fund,
                 },
-                info: Object.assign({}, action.payload.userInfo),
+                info: Object.assign({}, action.payload.info),
             };
             break;
         case 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS':

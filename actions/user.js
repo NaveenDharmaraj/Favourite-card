@@ -198,11 +198,33 @@ export const chimpLogin = (token = null) => {
     return authRorApi.post('/auth/login', null, params);
 };
 
-export const getUser = async (dispatch, userId, token = null) => {
-    const payload = {
-        isAuthenticated: false,
-        userInfo: null,
+const setDataToPayload = ({
+    avatar,
+    balance,
+    createdAt,
+    name,
+    slug,
+}, type) => {
+    const data = {
+        avatar,
+        balance: (balance) ? `$${balance}` : null,
+        created_at: createdAt,
+        name,
     };
+    if (type === 'groups' || type === 'campaigns') {
+        data.link = `/${type}/${slug}`;
+    } else {
+        data.slug = slug;
+    }
+    return data;
+};
+
+export const getUser = (dispatch, userId, token = null) => {
+    const fsa = {
+        payload: {},
+        type: actionTypes.SET_USER_INFO,
+    };
+    let isAuthenticated = false;
     let params = null;
     if (!_.isEmpty(token)) {
         params = {
@@ -211,26 +233,106 @@ export const getUser = async (dispatch, userId, token = null) => {
             },
         };
     }
-
-    await coreApi.get(`/users/${userId}?include=chimpAdminRole,donorRole`, params).then((result) => {
-        payload.isAuthenticated = true;
-        payload.userInfo = result.data;
-    }).catch((error) => {
+    const userDetails = coreApi.get(`/users/${userId}?include=chimpAdminRole,donorRole`, params);
+    const administeredCompanies = callApiAndGetData(`/users/${userId}/administeredCompanies?page[size]=50&sort=-id`, params);
+    const administeredBeneficiaries = callApiAndGetData(`/users/${userId}/administeredBeneficiaries?page[size]=50&sort=-id`, params);
+    const beneficiaryAdminRoles = callApiAndGetData(`/users/${userId}/beneficiaryAdminRoles?page[size]=50&sort=-id`, params);
+    const companyAdminRoles = callApiAndGetData(`/users/${userId}/companyAdminRoles?page[size]=50&sort=-id`, params);
+    return Promise.all([
+        userDetails,
+        administeredCompanies,
+        administeredBeneficiaries,
+        beneficiaryAdminRoles,
+        companyAdminRoles
+    ])
+    .then(
+        (allData) => {
+            isAuthenticated = true;
+            const userData = allData[0];
+            const { data } = userData;
+            const {
+                activeRoleId,
+            } = data.attributes;
+            let adminRoleId = null;
+            _.merge(fsa.payload, {
+                activeRoleId,
+                currentAccount: {},
+                isAdmin: false,
+                otherAccounts: [],
+                info: data,
+            });
+            if (!_.isEmpty(data.relationships.chimpAdminRole.data)) {
+                fsa.payload.isAdmin = true;
+                adminRoleId = data.relationships.chimpAdminRole.data.id;
+            }
+            const includedData = _.concat(
+                userData.included, allData[1], allData[2], allData[3], allData[4],
+            );
+            if (!_.isEmpty(includedData)) {
+                const accounts = [];
+                const contexts = [];
+                includedData.map((item) => {
+                    const {
+                        attributes,
+                        id,
+                        type,
+                    } = item;
+                    if (type === 'roles') {
+                        const { roleType } = attributes;
+                        const entityType = _.snakeCase(roleType).split('_')[0];
+                        if (entityType.slice(-1) === 'y') {
+                            contexts.push({
+                                accountType: (entityType === 'beneficiary') ? 'charity' : entityType,
+                                entityId: attributes[`${entityType}Id`],
+                                roleId: id,
+                            });
+                        } else if (entityType === 'donor') {
+                            const donor = {
+                                accountType: 'personal',
+                                avatar: data.attributes.avatar,
+                                balance: `$${data.attributes.balance}`,
+                                location: `/contexts/${id}`,
+                                name: data.attributes.displayName,
+                            };
+                            if (id == activeRoleId
+                        || adminRoleId == activeRoleId) {
+                                fsa.payload.currentAccount = donor;
+                            } else {
+                                fsa.payload.otherAccounts.unshift(donor);
+                            }
+                        }
+                    } else {
+                        accounts[id] = (setDataToPayload(attributes, type));
+                    }
+                });
+                // Loading all companies and charities to otherAccounts / currentAccount
+                // based on the activeRoleId.
+                _.map(contexts, (context) => {
+                    const { roleId } = context;
+                    const account = accounts[context.entityId];
+                    if (!_.isEmpty(account)) {
+                        account.location = `/contexts/${roleId}`;
+                        account.accountType = context.accountType;
+                        if (roleId == activeRoleId) {
+                            fsa.payload.currentAccount = account;
+                        } else {
+                            fsa.payload.otherAccounts.push(account);
+                        }
+                    }
+                });
+            }
+        },
+    ).catch((error) => {
         console.log(JSON.stringify(error));
+        isAuthenticated = false;
     }).finally(() => {
         dispatch({
             payload: {
-                isAuthenticated: payload.isAuthenticated,
+                isAuthenticated,
             },
             type: 'SET_AUTH',
         });
-        dispatch({
-            payload: {
-                userInfo: payload.userInfo,
-            },
-            type: actionTypes.SET_USER_INFO,
-        });
-        return null;
+        dispatch(fsa);
     });
 };
 
@@ -259,7 +361,7 @@ export const getUserFund = (dispatch, userId) => {
         return dispatch({
             payload: {
                 fund: payload.fund,
-                userInfo: payload.userInfo,
+                info: payload.userInfo,
             },
             type: actionTypes.UPDATE_USER_FUND,
         });

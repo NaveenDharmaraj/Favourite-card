@@ -1,6 +1,7 @@
 {
     "accountSettings": "Account Settings",
-    "displayName": "Hello {{ displayName }}!",
+    "companyAccountSettings": "Company Account Settings",
+    "name": "Hello {{ name }}!",
     "switchAccounts": "Switch Accounts",
     "logout": "Logout"
 }
