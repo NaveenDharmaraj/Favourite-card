@@ -16,6 +16,7 @@ import {
 } from 'prop-types';
 
 import { withTranslation } from '../../../../i18n';
+import { Link } from '../../../../routes';
 import IconIndividual from '../../../../static/images/chimp-icon-individual.png';
 
 const Profile = (props) => {
@@ -56,9 +57,11 @@ const Profile = (props) => {
                         {formatMessage('switchAccounts')}
                     </List.Item>
                     <Divider />
-                    <List.Item as="a" href="/users/logout">
-                        {formatMessage('logout')}
-                    </List.Item>
+                    <Link route="/users/logout" >
+                        <List.Item as="a">
+                            {formatMessage('logout')}
+                        </List.Item>
+                    </Link>
                 </List>
             </Popup.Content>
         </Popup>
