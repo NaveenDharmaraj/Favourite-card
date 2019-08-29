@@ -33,7 +33,7 @@
         "testCreditCardListMessage": "More information on test accounts can be found at Stripe.",
         "cardNumberLabel": "Credit card number",
         "nameOnCardLabel": "Name on Card",
-        "expiryDateLabel": "Expiry Year",
+        "expiryDateLabel": "Expiration date",
         "cvvLabel": "CVV"
     },
     "creditCardErrorMessages": {
@@ -51,14 +51,16 @@
     "forYear": "year",
     "forPer": "per",
     "continueButton": "Continue",
-    "submitingButton": "Submitting...",
+    "submittingButton": "Submitting...",
     "useNewCreditCardLabel": "Use a new credit card",
     "infoToShareAnonymous": "Give anonymously",
     "change":"Change ",
     "startsOn": "Starts On",
     "emptyMessage" : "No content ",
     "commonOr": "or ",
-    "commonMakeChanges" : "make changes "
+    "commonMakeChanges" : "make changes ",
+    "doNotMatchLabel": "Do not match "
+
 
 
 

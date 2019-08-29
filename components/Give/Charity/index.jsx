@@ -896,7 +896,7 @@ class Charity extends React.Component {
                     <Form.Field className="checkbox-display">
                         <Form.Field
                             checked={coverFees}
-                            className="ui checkbox checkbox-text"
+                            className="ui checkbox checkbox-text f-weight-n"
                             control={Checkbox}
                             id="coverFees"
                             label={coverNoteText}
@@ -1150,7 +1150,7 @@ class Charity extends React.Component {
                                         </label>
                                         <Form.Field
                                             control={Input}
-                                            //className="disabled-input"
+                                            className="disabled-input"
                                             disabled
                                             id="giveTo"
                                             name="giveTo"
@@ -1267,6 +1267,7 @@ class Charity extends React.Component {
                         <Divider hidden />
                         {/* { !stepsCompleted && */}
                         <Form.Button
+                            className="blue-btn-rounded-def"
                             content={(!this.state.buttonClicked) ? formatMessage('giveCommon:continueButton') : formatMessage('giveCommon:submittingButton')}
                             disabled={(this.state.buttonClicked) || !this.props.userAccountsFetched}
                             type="submit"

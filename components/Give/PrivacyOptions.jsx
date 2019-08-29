@@ -54,7 +54,7 @@ const PrivacyOptions = (props) => {
                 <Divider className="dividerMargin" />
             </Form.Field>
             <Form.Field>
-                <Header as="h3">{formatMessage('privacyOptions:privacyOptionsLabel')}</Header>
+                <Header as="h3" className="f-weight-n">{formatMessage('privacyOptions:privacyOptionsLabel')}</Header>
             </Form.Field>
             <Form.Field>
                 <label
@@ -66,7 +66,7 @@ const PrivacyOptions = (props) => {
                 <br />
                 <Form.Field
                     checked={privacyShareName}
-                    className="ui checkbox checkbox-text"
+                    className="ui checkbox checkbox-text f-weight-n"
                     control={Checkbox}
                     id="privacyShareName"
                     label={privacyShareNameLabel}
@@ -76,7 +76,7 @@ const PrivacyOptions = (props) => {
                 <br />
                 <Form.Field
                     checked={privacyShareAmount}
-                    className="ui checkbox checkbox-text"
+                    className="ui checkbox checkbox-text f-weight-n"
                     control={Checkbox}
                     id="privacyShareAmount"
                     label={privacyShareAmountLabel}
@@ -99,7 +99,7 @@ const PrivacyOptions = (props) => {
                         <br />
                         <Form.Field
                             checked={privacyShareEmail}
-                            className="ui checkbox checkbox-text"
+                            className="ui checkbox checkbox-text f-weight-n"
                             control={Checkbox}
                             id="privacyShareEmail"
                             label={privacyShareEmailLabel}
@@ -111,7 +111,7 @@ const PrivacyOptions = (props) => {
                         { !_.isEmpty(infoToShareList) && infoToShareList.length > 0 && (
                             <Form.Field
                                 checked={privacyShareAddress}
-                                className="ui checkbox checkbox-text"
+                                className="ui checkbox checkbox-text f-weight-n"
                                 control={Checkbox}
                                 id="privacyShareAddress"
                                 label={privacyShareAddressLabel}

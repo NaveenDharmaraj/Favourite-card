@@ -77,7 +77,7 @@ const Footer = () => (
                                         </div>
                                     </Grid.Column>
                                     <Grid.Column mobile={16} tablet={4} computer={4}>
-                                        <Header as="h4" content="CHIMP FOR" />
+                                        <Header as="h4" content="CHARITABLE IMPACT FOR" />
                                         <List link>
                                             <List.Item as="a">Advisors</List.Item>
                                             <List.Item as="a">Charities</List.Item>
