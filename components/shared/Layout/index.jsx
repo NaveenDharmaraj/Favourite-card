@@ -11,7 +11,6 @@ import Footer from '../Footer';
 import MobileHeader from '../Header/MobileHeader';
 import { Router } from '../../../routes';
 import ErrorBoundary from '../ErrorBoundary';
-import { dismissUxCritialErrors } from '../../../actions/error';
 import StatusMessage from '../StatusMessage';
 
 import '../../../static/less/header.less';
@@ -63,7 +62,8 @@ class Layout extends React.Component {
                                                 {_.map(appErrors, (err) => (
                                                     <StatusMessage
                                                         key={err.heading}
-                                                        handleDismiss={() => dismissUxCritialErrors(err, appErrors, dispatch)}
+                                                        error={err}
+                                                        dispatch={dispatch}
                                                         {...err}
                                                     />
                                                 ))}
@@ -83,7 +83,8 @@ class Layout extends React.Component {
                                         {_.map(appErrors, (err) => (
                                             <StatusMessage
                                                 key={err.heading}
-                                                handleDismiss={() => dismissUxCritialErrors(err, appErrors, dispatch)}
+                                                error={err}
+                                                dispatch={dispatch}
                                                 {...err}
                                             />
                                         ))}
