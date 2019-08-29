@@ -16,6 +16,7 @@ import {
     bool,
     string,
     number,
+    PropTypes,
 } from 'prop-types';
 
 import {
@@ -30,6 +31,10 @@ import {
     distanceOfTimeInWords,
 } from '../../helpers/utils';
 
+const actionTypes = {
+    DISABLE_LIKE_BUTTON: 'DISABLE_LIKE_BUTTON',
+};
+
 class ActivityDetails extends React.Component {
     constructor(props) {
         super(props);
@@ -40,9 +45,8 @@ class ActivityDetails extends React.Component {
         this.postReplyComment = this.postReplyComment.bind(this);
         this.handleLike = this.handleLike.bind(this);
         this.state = {
-            doReply: false,
             commentText: '',
-            inputValue: '',
+            doReply: false,
         };
     }
 
@@ -90,6 +94,12 @@ class ActivityDetails extends React.Component {
             type,
             commentId,
         } = this.props;
+        dispatch({
+            payload: {
+                id: eventId,
+            },
+            type: actionTypes.DISABLE_LIKE_BUTTON,
+        });
         // if (type === 'comments') {
         //     if (isLiked) {
         //         unlikeComment(dispatch, eventId, groupId, userId, commentId);
@@ -108,7 +118,7 @@ class ActivityDetails extends React.Component {
 
     renderComments() {
         const {
-            id:eventId,
+            id: eventId,
             groupComments,
             userId,
         } = this.props;
@@ -156,6 +166,7 @@ class ActivityDetails extends React.Component {
             updateInputValue,
             type,
             userId,
+            disableLike,
         } = this.props;
         const {
             doReply,
@@ -172,7 +183,7 @@ class ActivityDetails extends React.Component {
                             <Icon
                                 name={cls}
                                 onClick={this.handleLike}
-                                disabled={false} // TODO
+                                disabled={disableLike[id]}
                             />
                             {likesCount}
                         </Feed.Like>
@@ -247,39 +258,50 @@ class ActivityDetails extends React.Component {
 ActivityDetails.defaultProps = {
     avatar: '',
     canReply: false,
+    commentId: null,
     commentsCount: null,
     commentsLink: '',
     createdAt: '',
     description: '',
+    disableLike: {},
     dispatch: _.noop,
     groupComments: {
         loadComments: false,
     },
+    groupId: null,
     id: null,
     isLiked: false,
     likesCount: null,
     name: '',
+    type: '',
+    userId: null,
 };
 
 ActivityDetails.propTypes = {
     avatar: string,
     canReply: bool,
+    commentId: number,
     commentsCount: number,
     commentsLink: string,
     createdAt: string,
     description: string,
+    disableLike: PropTypes.shape({}),
     dispatch: func,
     groupComments: {
         loadComments: bool,
     },
+    groupId: number,
     id: number,
     isLiked: bool,
     likesCount: number,
     name: string,
+    type: string,
+    userId: number,
 };
 
 function mapStateToProps(state) {
     return {
+        disableLike: state.group.disableLike,
         groupComments: state.group.groupComments,
         userInfo: state.user.info,
     };

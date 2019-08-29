@@ -161,9 +161,23 @@ const group = (state = {}, action) => {
             }
             newState = {
                 ...state,
+                disableLike: {
+                    ...state.disableLike,
+                    [action.payload.eventId]: false,
+                },
                 groupActivities: {
                     ...state.groupActivities,
                     data: dataArray,
+                },
+            };
+            break;
+
+        case 'DISABLE_LIKE_BUTTON':
+            newState = {
+                ...state,
+                disableLike: {
+                    ...state.disableLike,
+                    [action.payload.id]: true,
                 },
             };
             break;
