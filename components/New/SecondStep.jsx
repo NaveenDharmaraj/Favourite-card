@@ -23,6 +23,7 @@ function SecondStep(props) {
         validity,
     } = props;
     let pwdCharCount = (password) ? password.length : 0;
+    let pwdEntered = (password && password.length > 0);
     return (
         <Grid.Row>
             <Grid.Column className="left-bg"></Grid.Column>
@@ -94,7 +95,7 @@ function SecondStep(props) {
                                 type='submit'
                                 primary
                                 content={(apiValidating === true) ? 'Validating..' : 'Continue'}
-                                disabled={!validity.isEmailIdValid || !validity.isPasswordValid || !!userExists || typeof userExists === 'undefined'}
+                                disabled={!validity.isEmailIdValid || !validity.isPasswordValid || !!userExists || typeof userExists === 'undefined' || !pwdEntered}
                                 onClick={handleSubmit}
                             />
                         </div>
