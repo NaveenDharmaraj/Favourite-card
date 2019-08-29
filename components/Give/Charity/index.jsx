@@ -383,6 +383,12 @@ class Charity extends React.Component {
                 const defaultGroupFrom = userGroups.find((userGroup) => userGroup.id === groupId);
                 if(!_isEmpty(defaultGroupFrom)){
                 giveData.giveFrom.value = defaultGroupFrom.attributes.fundId;
+                giveData.giveFrom.name = defaultGroupFrom.attributes.name;
+                giveData.giveFrom.avatar = defaultGroupFrom.attributes.avatar,
+                giveData.giveFrom.id = defaultGroupFrom.id;
+                giveData.giveFrom.type = defaultGroupFrom.type;
+                giveData.giveFrom.text = `${defaultGroupFrom.attributes.name} ($${defaultGroupFrom.attributes.balance})`;
+                giveData.giveFrom.balance = defaultGroupFrom.attributes.balance;
              }
             }
             else{
