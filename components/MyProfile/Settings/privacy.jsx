@@ -15,8 +15,16 @@ import {
     getBlockedFriends,
     unblockFriend,
 } from '../../../actions/userProfile';
+import PlaceHolderGrid from '../../shared/PlaceHolder';
 
 class Privacy extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            blockedUserListLoader: !props.userBlockedFriendsList,
+        };
+    }
+
     componentDidMount() {
         const {
             currentUser: {
@@ -27,8 +35,24 @@ class Privacy extends React.Component {
         getBlockedFriends(dispatch, id);
     }
 
+    componentDidUpdate(prevProps) {
+        const {
+            userBlockedFriendsList,
+        } = this.props;
+        let {
+            blockedUserListLoader,
+        } = this.state;
+        if (!_.isEqual(this.props, prevProps)) {
+            if (!_.isEqual(userBlockedFriendsList, prevProps.userBlockedFriendsList)) {
+                blockedUserListLoader = false;
+            }
+            this.setState({
+                blockedUserListLoader,
+            });
+        }
+    }
+
     handleFriendUnblockClick(userId) {
-        console.log(userId);
         if (userId !== null) {
             const {
                 currentUser: {
@@ -82,6 +106,9 @@ class Privacy extends React.Component {
     }
 
     render() {
+        const {
+            blockedUserListLoader,
+        } = this.state;
         return (
             <div className="remove-gutter">
                 <div className="userSettingsContainer">
@@ -102,7 +129,9 @@ class Privacy extends React.Component {
                     </div>
                     <div className="settingsDetailWraper">
                         <Header as="h4">Blocked users</Header>
-                        {this.renderBlockedFriendsList()}
+                        { blockedUserListLoader ? <PlaceHolderGrid row={2} column={2} placeholderType="table" /> : (
+                            this.renderBlockedFriendsList()
+                        )}
                     </div>
                 </div>
             </div>

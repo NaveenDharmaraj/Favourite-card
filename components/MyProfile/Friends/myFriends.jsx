@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { Fragment } from 'react';
 import _ from 'lodash';
 import {
     Button,
@@ -10,6 +10,7 @@ import {
 import { connect } from 'react-redux';
 import Link from 'next/link';
 
+import PlaceHolderGrid from '../../shared/PlaceHolder';
 import {
     acceptFriendRequest,
     getMyFriendsList,
@@ -22,6 +23,8 @@ class MyFriends extends React.Component {
         super(props);
         this.state = {
             currentMyFriendsActivePage: 1,
+            myFriendInvitationLoader: !props.userFriendsInvitationsList,
+            myFriendListLoader: !props.userMyFriendsList,
         };
         this.onMyFriendsPageChanged = this.onMyFriendsPageChanged.bind(this);
         this.handleFriendAcceptClick = this.handleFriendAcceptClick.bind(this);
@@ -36,6 +39,28 @@ class MyFriends extends React.Component {
         getFriendsInvitations(dispatch, currentUser.attributes.email, 1);
     }
 
+    componentDidUpdate(prevProps) {
+        const {
+            userMyFriendsList,
+        } = this.props;
+        let {
+            myFriendInvitationLoader,
+            myFriendListLoader,
+        } = this.state;
+        if (!_.isEqual(this.props, prevProps)) {
+            if (!_.isEqual(userMyFriendsList, prevProps.userMyFriendsList)) {
+                myFriendListLoader = false;
+            }
+            if (!_.isEqual(userMyFriendsList, prevProps.userMyFriendsList)) {
+                myFriendInvitationLoader = false;
+            }
+            this.setState({
+                myFriendInvitationLoader,
+                myFriendListLoader,
+            });
+        }
+    }
+
     onMyFriendsPageChanged(e, data) {
         const {
             currentUser,
@@ -48,7 +73,6 @@ class MyFriends extends React.Component {
     }
 
     handleFriendAcceptClick(email) {
-        console.log(email);
         if (email !== null) {
             const {
                 currentUser: {
@@ -105,6 +129,9 @@ class MyFriends extends React.Component {
         const {
             userMyFriendsList,
         } = this.props;
+        const {
+            currentMyFriendsActivePage,
+        } = this.state;
         let friendsList = 'No Data';
         if (!_.isEmpty(userMyFriendsList)) {
             friendsList = userMyFriendsList.data.map((friend) => {
@@ -129,38 +156,42 @@ class MyFriends extends React.Component {
             });
         }
         return (
-            <List divided verticalAlign="middle" className="userList pt-1">
-                {friendsList}
-            </List>
+            <Fragment>
+                <List divided verticalAlign="middle" className="userList pt-1">
+                    {friendsList}
+                </List>
+                <div className="db-pagination right-align pt-2">
+                    {
+                        !_.isEmpty(userMyFriendsList) && userMyFriendsList.pageCount > 1 && (
+                            <Pagination
+                                activePage={currentMyFriendsActivePage}
+                                totalPages={userMyFriendsList.pageCount}
+                                onPageChanged={this.onMyFriendsPageChanged}
+                            />
+                        )
+                    }
+                </div>
+            </Fragment>
         );
     }
 
     render() {
         const {
-            userMyFriendsList,
-        } = this.props;
-        const {
-            currentMyFriendsActivePage,
+            myFriendInvitationLoader,
+            myFriendListLoader,
         } = this.state;
         return (
             <div className="remove-gutter">
                 <div className="userSettingsContainer">
                     <div className="settingsDetailWraper">
                         <Header className="mb-1" as="h4">Invitations </Header>
-                        {this.renderFriendsInvitations()}
+                        { myFriendInvitationLoader ? <PlaceHolderGrid row={2} column={2} placeholderType="table" /> : (
+                            this.renderFriendsInvitations()
+                        )}
                         <Header className="mb-1 mt-3" as="h4">Friends </Header>
-                        {this.renderMyFriendsList()}
-                        <div className="db-pagination right-align pt-2">
-                        {
-                            !_.isEmpty(userMyFriendsList) && userMyFriendsList.pageCount > 1 && (
-                                <Pagination
-                                    activePage={currentMyFriendsActivePage}
-                                    totalPages={userMyFriendsList.pageCount}
-                                    onPageChanged={this.onMyFriendsPageChanged}
-                                />
-                            )
-                        }
-                        </div>
+                        { myFriendListLoader ? <PlaceHolderGrid row={2} column={2} placeholderType="table" /> : (
+                            this.renderMyFriendsList()
+                        )}
                     </div>
                 </div>
             </div>

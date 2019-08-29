@@ -250,13 +250,16 @@ class EditBasicProfile extends React.Component {
             const {
                 currentUser: {
                     id,
+                    attributes: {
+                        email,
+                    },
                 },
                 dispatch,
             } = this.props;
             const {
                 userBasicDetails,
             } = this.state;
-            saveUserBasicProfile(dispatch, userBasicDetails, id);
+            saveUserBasicProfile(dispatch, userBasicDetails, id, email);
         } else {
             console.log('Invalid Data');
         }

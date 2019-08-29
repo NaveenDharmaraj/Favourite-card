@@ -2,12 +2,9 @@ import _ from 'lodash';
 
 import graphApi from '../services/graphApi';
 import searchApi from '../services/searchApi';
+import securityApi from '../services/securityApi';
 import coreApi from '../services/coreApi';
 import eventApi from '../services/eventApi';
-
-import {
-    savePaymentInstrument,
-} from './user';
 
 // eslint-disable-next-line import/exports-last
 export const actionTypes = {
@@ -17,6 +14,8 @@ export const actionTypes = {
     UPDATE_USER_CHARITY_CAUSES: 'UPDATE_USER_CHARITY_CAUSES',
     UPDATE_USER_CHARITY_TAGS: 'UPDATE_USER_CHARITY_TAGS',
     UPDATE_USER_CREDIT_CARD: 'UPDATE_USER_CREDIT_CARD',
+    UPDATE_USER_DEFAULT_CARD: 'UPDATE_USER_DEFAULT_CARD',
+    UPDATE_USER_PASSWORD: 'UPDATE_USER_PASSWORD',
     USER_PROFILE_ADMIN_GROUP: 'USER_PROFILE_ADMIN_GROUP',
     USER_PROFILE_BASIC: 'USER_PROFILE_BASIC',
     USER_PROFILE_BASIC_FRIEND: 'USER_PROFILE_BASIC_FRIEND',
@@ -321,7 +320,7 @@ const getMyCreditCards = (dispatch, userId, pageNumber) => {
         },
         type: actionTypes.USER_PROFILE_CREDIT_CARDS,
     };
-    return coreApi.get(`/users/${Number(userId)}/paymentInstruments?page[number]=${pageNumber}&page[size]=10`).then(
+    return coreApi.get(`/users/${Number(userId)}/activePaymentInstruments?page[number]=${pageNumber}&page[size]=10`).then(
         (result) => {
             fsa.payload = {
                 count: result.meta.pageCount,
@@ -336,31 +335,30 @@ const getMyCreditCards = (dispatch, userId, pageNumber) => {
     });
 };
 
-const saveUserBasicProfile = (dispatch, userData, userId) => {
+const saveUserBasicProfile = (dispatch, userData, userId, email) => {
     const fsa = {
         payload: {
         },
         type: actionTypes.UPDATE_USER_BASIC_PROFILE,
     };
     const bodyData = {
-        "data": {
-            "giving_goal_amt": userData.givingGoal,
-            "description": userData.about,
-            "first_name": userData.firstName,
-            "last_name": userData.lastName,
-            "location": userData.location,
+        data: {
+            description: userData.about,
+            first_name: userData.firstName,
+            giving_goal_amt: userData.givingGoal,
+            last_name: userData.lastName,
+            location: userData.location,
         },
-        "filters": {
-            "user_id": Number(userId),
+        filters: {
+            user_id: Number(userId),
         },
     };
-    console.log(bodyData);
     return graphApi.patch(`/core/update/user/property`, bodyData).then(
         (result) => {
-            console.log(result);
             fsa.payload = {
                 data: result.data,
             };
+            getUserProfileBasic(dispatch, email, userId, userId);
         },
     ).catch((error) => {
         fsa.error = error;
@@ -392,10 +390,8 @@ const sendFriendRequest = (dispatch, sourceUserId, destinationEmailId) => {
             type: 'event',
         },
     };
-    console.log(bodyData);
     return eventApi.post(`/event`, bodyData).then(
         (result) => {
-            console.log(result);
             fsa.payload = {
                 data: result.data,
             };
@@ -491,7 +487,6 @@ const saveCharitableInterests = (dispatch, userId, userCauses, userTags) => {
     };
     graphApi.patch(`/user/updatecauses`, bodyDataCauses).then(
         (result) => {
-            console.log(result);
             fsaCauses.payload = {
                 data: result.data,
             };
@@ -503,7 +498,6 @@ const saveCharitableInterests = (dispatch, userId, userCauses, userTags) => {
     });
     graphApi.patch(`/user/updatetags`, bodyDataTags).then(
         (result) => {
-            console.log(result);
             fsaTags.payload = {
                 data: result.data,
             };
@@ -533,7 +527,6 @@ const editUserCreditCard = (dispatch, instrumentDetails) => {
     };
     return coreApi.patch(`/paymentInstruments/${Number(instrumentDetails.editPaymetInstrumentId)}`, bodyData).then(
         (result) => {
-            console.log(result);
             fsa.payload = {
                 data: result.data,
             };
@@ -553,7 +546,6 @@ const deleteUserCreditCard = (dispatch, paymentInstrumentId, userId, pageNumber)
     };
     return coreApi.delete(`/paymentInstruments/${Number(paymentInstrumentId)}`).then(
         (result) => {
-            console.log(result);
             fsa.payload = {
                 data: result.data,
             };
@@ -575,14 +567,33 @@ const createToken = (cardDetails, cardHolderName) => new Promise((resolve, rejec
     });
 });
 
-const saveNewCreditCard = async (dispatch, stripeCreditCard, cardHolderName, userId) => {
+const setUserDefaultCard = (dispatch, paymentInstrumentId, userId, pageNumber) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.UPDATE_USER_DEFAULT_CARD,
+    };
+    return coreApi.patch(`/paymentInstruments/${Number(paymentInstrumentId)}/set_as_default`).then(
+        (result) => {
+            fsa.payload = {
+                data: result.data,
+            };
+            getMyCreditCards(dispatch, userId, pageNumber);
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    });
+};
+
+const saveNewCreditCard = async (dispatch, stripeCreditCard, cardHolderName, userId, isDefaultCard) => {
     const fsa = {
         payload: {
         },
         type: actionTypes.ADD_USER_CREDIT_CARD,
     };
     const token = await createToken(stripeCreditCard, cardHolderName);
-    console.log(token);
     const paymentInstrumentsData = {
         data: {
             attributes: {
@@ -601,9 +612,36 @@ const saveNewCreditCard = async (dispatch, stripeCreditCard, cardHolderName, use
     };
     return coreApi.post('/paymentInstruments', paymentInstrumentsData).then(
         (result) => {
-            console.log(result);
             fsa.payload = {
                 data: result.data,
+            };
+            if (isDefaultCard) {
+                setUserDefaultCard(dispatch, Number(result.data.id), userId, 1);
+            }
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    });
+};
+
+const userResetPassword = (dispatch, userData) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.UPDATE_USER_PASSWORD,
+    };
+    const bodyData = {
+        auth_user_id: userData.authId,
+        password: userData.password,
+    };
+
+    return securityApi.post('/user/changepassword', bodyData).then(
+        (result) => {
+            console.log(result);
+            fsa.payload = {
+                data: result,
             };
         },
     ).catch((error) => {
@@ -637,4 +675,6 @@ export {
     editUserCreditCard,
     deleteUserCreditCard,
     saveNewCreditCard,
+    setUserDefaultCard,
+    userResetPassword,
 };

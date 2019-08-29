@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import jwt from 'jwt-decode';
 import _ from 'lodash';
@@ -9,12 +10,15 @@ import {
 
 import storage from '../../../helpers/storage';
 import validateUserRegistrationForm from '../../../helpers/users/utils';
+import {
+    userResetPassword,
+} from '../../../actions/userProfile';
 
 class ManagePassword extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            authId: this.getAuthId(),
+            authId: '',
             password: '',
             validity: {
                 isPasswordValid: false,
@@ -49,6 +53,26 @@ class ManagePassword extends React.Component {
         });
     }
 
+    handlePasswordChange() {
+        const {
+            authId,
+            password,
+            validity: {
+                isPasswordValid,
+            },
+        } = this.state;
+        if (isPasswordValid) {
+            const {
+                dispatch,
+            } = this.props;
+            const userData = {
+                authId,
+                password,
+            };
+            userResetPassword(dispatch, userData);
+        }
+    }
+
     render() {
         const {
             password,
@@ -80,7 +104,13 @@ class ManagePassword extends React.Component {
                         <span className={(validity.doesPwdhaveSpecialChars) ? 'blueText' : ''}>Special characters (e.g. !@#$%^&)</span>
                     </p>
                     <div className="pt-2">
-                        <Button className="blue-btn-rounded-def w-140" disabled={ !validity.isPasswordValid }>Save</Button>
+                        <Button
+                            className="blue-btn-rounded-def w-140"
+                            disabled={!validity.isPasswordValid}
+                            onClick={this.handlePasswordChange}
+                        >
+                            Save
+                        </Button>
                         <Button className="blue-bordr-btn-round-def w-140">Cancel</Button>
                     </div>
                 </Form>
