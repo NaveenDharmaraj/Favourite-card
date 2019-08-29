@@ -16,6 +16,7 @@ export const actionTypes = {
     GET_UPCOMING_TRANSACTIONS: 'GET_UPCOMING_TRANSACTIONS',
     MONTHLY_TRANSACTION_API_CALL: 'MONTHLY_TRANSACTION_API_CALL',
     TAX_RECEIPT_PROFILES:'TAX_RECEIPT_PROFILES',
+    SAVE_DEEP_LINK: 'SAVE_DEEP_LINK',
     SET_USER_INFO: 'SET_USER_INFO',
     UPDATE_USER_FUND: 'UPDATE_USER_FUND',
     GIVING_GROUPS_AND_CAMPAIGNS: 'GIVING_GROUPS_AND_CAMPAIGNS',
@@ -36,6 +37,19 @@ const getAllPaginationData = async (url, params = null) => {
         return dataArray.concat(await getAllPaginationData(result.links.next, params));
     }
     return dataArray;
+};
+
+const checkForOnlyOneAdmin = (error) => {
+    if (!_.isEmpty(error) && error.length === 1) {
+        const checkForAdminError = error[0];
+        if (!_.isEmpty(checkForAdminError.meta)
+            && !_.isEmpty(checkForAdminError.meta.validationCode)
+            && (checkForAdminError.meta.validationCode === '1329'
+            || checkForAdminError.meta.validationCode === 1329)) {
+            return true;
+        }
+    }
+    return false;
 };
 
 export const callApiAndGetData = (url, params) => getAllPaginationData(url, params).then(
@@ -490,18 +504,7 @@ export const getGroupsAndCampaigns = (dispatch, url, type, appendData = true, pr
     });
 };
 
-const checkForOnlyOneAdmin = (error) => {
-    if (!_.isEmpty(error) && error.length === 1) {
-        const checkForAdminError = error[0];
-        if (!_.isEmpty(checkForAdminError.meta)
-            && !_.isEmpty(checkForAdminError.meta.validationCode)
-            && (checkForAdminError.meta.validationCode === '1329'
-            || checkForAdminError.meta.validationCode === 1329)) {
-            return true;
-        }
-    }
-    return false;
-};
+
 
 export const leaveGroup = (dispatch, group, allData, type) => {
     const fsa = {

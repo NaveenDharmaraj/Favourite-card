@@ -8,6 +8,7 @@ import search from './search';
 import dashboard from './dashboard';
 import onBoarding from './onBoarding';
 import app from './app';
+import profile from './profile';
 
 const root = combineReducers({
     app,
@@ -16,6 +17,7 @@ const root = combineReducers({
     give,
     search,
     onBoarding,
+    profile,
     user,
     charity,
 });
