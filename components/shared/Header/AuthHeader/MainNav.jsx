@@ -89,7 +89,7 @@ const MainNav = (props) => {
     } else {
         menuLinks.push({
             location: '/user/groups',
-            name: 'Giving Groups & Campaign',
+            name: 'Giving Groups & Campaigns',
             isExternal: false,
         });
         menuLinks.push({
