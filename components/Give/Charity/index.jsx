@@ -132,7 +132,6 @@ class Charity extends React.Component {
             }
         this.state = {
             benificiaryIndex: 0,
-            buttonClicked: false,
             dropDownOptions: {
                 donationMatchList: populateDonationMatch(donationMatchData, formatMessage),
                 giftTypeList: populateGiftType(formatMessage),
@@ -315,7 +314,6 @@ class Charity extends React.Component {
                 );
             }
             this.setState({
-                buttonClicked: false,
                 dropDownOptions: {
                     ...dropDownOptions,
                     donationMatchList: donationMatchOptions,
@@ -383,6 +381,12 @@ class Charity extends React.Component {
                 const defaultGroupFrom = userGroups.find((userGroup) => userGroup.id === groupId);
                 if(!_isEmpty(defaultGroupFrom)){
                 giveData.giveFrom.value = defaultGroupFrom.attributes.fundId;
+                giveData.giveFrom.name = defaultGroupFrom.attributes.name;
+                giveData.giveFrom.avatar = defaultGroupFrom.attributes.avatar,
+                giveData.giveFrom.id = defaultGroupFrom.id;
+                giveData.giveFrom.type = defaultGroupFrom.type;
+                giveData.giveFrom.text = `${defaultGroupFrom.attributes.name} ($${defaultGroupFrom.attributes.balance})`;
+                giveData.giveFrom.balance = defaultGroupFrom.attributes.balance;
              }
             }
             else{
@@ -716,9 +720,6 @@ class Charity extends React.Component {
                 coverFees,
             },
         } = flowObject;
-        this.setState({
-            buttonClicked: true,
-        });
         const validateCC = this.isValidCC(
             creditCard,
             inValidCardNumber,
@@ -738,10 +739,6 @@ class Charity extends React.Component {
             flowObject.stepsCompleted = false;
             dismissAllUxCritialErrors(this.props.dispatch);
             dispatch(proceed(flowObject, flowSteps[stepIndex + 1], stepIndex));
-        } else {
-            this.setState({
-                buttonClicked: false,
-            });
         }
     }
 
@@ -1043,6 +1040,7 @@ class Charity extends React.Component {
     render() {
         const {
             coverFeesData,
+            creditCardApiCall,
         } = this.props;
         const {
             flowObject: {
@@ -1268,8 +1266,8 @@ class Charity extends React.Component {
                         {/* { !stepsCompleted && */}
                         <Form.Button
                             className="blue-btn-rounded-def"
-                            content={(!this.state.buttonClicked) ? formatMessage('giveCommon:continueButton') : formatMessage('giveCommon:submittingButton')}
-                            disabled={(this.state.buttonClicked) || !this.props.userAccountsFetched}
+                            content={(!creditCardApiCall) ? formatMessage('giveCommon:continueButton') : formatMessage('giveCommon:submittingButton')}
+                            disabled={(creditCardApiCall) || !this.props.userAccountsFetched}
                             type="submit"
                         />
                         {/* } */}
@@ -1298,6 +1296,7 @@ function mapStateToProps(state) {
         userAccountsFetched: state.user.userAccountsFetched,
         userCampaigns: state.user.userCampaigns,
         userGroups: state.user.userGroups,
+        creditCardApiCall: state.give.creditCardApiCall,
     };
 }
 export default withTranslation([

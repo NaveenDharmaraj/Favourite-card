@@ -13,7 +13,7 @@ import {
     Icon,
     Message,
 } from 'semantic-ui-react';
-
+import { dismissUxCritialErrors } from '../../actions/error';
 
 const iconMap = {
     error: 'exclamation',
@@ -26,22 +26,12 @@ const types = Object.keys(iconMap);
 class StatusMessage extends Component {
     constructor(props) {
         super(props);
-
-        const {
-            hidden,
-        } = props;
-
-        this.state = {
-            hidden,
-        };
-
-        const handleDismiss = (...args) => {
-            this.setState({ hidden: true });
-            props.handleDismiss(...args);
-        };
-
-        this.handleDismiss = handleDismiss.bind(this);
+        this.handleDismiss = this.handleDismiss.bind(this);
     }
+
+    handleDismiss() {
+        dismissUxCritialErrors(this.props.error, this.props.dispatch);
+    };
 
     render() {
         const {
@@ -51,9 +41,6 @@ class StatusMessage extends Component {
                 items,
                 message,
                 type,
-            },
-            state: {
-                hidden,
             },
         } = this;
         const hasList = !!items.length;
@@ -66,11 +53,9 @@ class StatusMessage extends Component {
         if (hasList) {
             props.className += ' left';
         }
-
         return (
             <div
                 className="status-message-container"
-                hidden={hidden}
             >
                 {/* force Message to sit on its own row */}
                 <Message
@@ -106,7 +91,6 @@ class StatusMessage extends Component {
 StatusMessage.defaultProps = {
     compact: true,
     handleDismiss: _noop,
-    hidden: false,
     items: [],
     type: 'info',
 };
