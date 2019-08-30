@@ -39,7 +39,7 @@
     "creditCardErrorMessages": {
         "errorCardNumber": "Please use a valid Visa, Mastercard, or Amex card number",
         "invalidNameOnCard": "Include the name on your card (use a minimum of 2 characters)",
-        "invalidCardNameError": "It looks like you've entered only numbers here, but we need the full name that appears on your card (use a minimum of 2 characters)",
+        "invalidCardNameError": "Please enter the name as it appears on your card",
         "invalidExpiryYear": "Include the expiry month and year for your card",
         "invalidCvv": "Include a valid CVV number for your card"
     },
