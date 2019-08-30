@@ -25,6 +25,7 @@ export const actionTypes = {
     CREATE_USER: 'CREATE_USER',
     GET_USER_CAUSES: 'GET_USER_CAUSES',
     USER_API_VALIDATING: 'USER_API_VALIDATING',
+    USER_EMAIL_RESEND: 'USER_EMAIL_RESEND',
     USER_EXISTS: 'USER_EXISTS',
 };
 
@@ -67,11 +68,26 @@ export const validateNewUser = (dispatch, emailId) => {
     });
 };
 
-export const resendVerificationEmail = (userId) => {
+export const resendVerificationEmail = (userId, dispatch) => {
     return securityApi.post(`/resend/verification`, {
         client_id: AUTH0_WEB_CLIENT_ID,
         user_id: userId,
-    }, BASIC_AUTH_HEADER);
+    }, BASIC_AUTH_HEADER).then(() => {
+        dispatch({
+            payload: {
+                apiResendEmail: true,
+            },
+            type: actionTypes.USER_EMAIL_RESEND,
+        });
+        setTimeout(() => {
+            dispatch({
+                payload: {
+                    apiResendEmail: false,
+                },
+                type: actionTypes.USER_EMAIL_RESEND,
+            });
+        }, 3000);
+    });
 };
 
 export const getUserCauses = (dispatch) => {
