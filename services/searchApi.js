@@ -1,5 +1,6 @@
 import axios from 'axios';
 import _isEmpty from 'lodash/isEmpty';
+import _omit from 'lodash/omit';
 import getConfig from 'next/config';
 
 import auth0 from '../services/auth';
@@ -31,7 +32,7 @@ instance.interceptors.request.use((config) => {
     if(config.params) {
         config.uxCritical = (config.params.uxCritical);
         config.dispatch = (config.params.dispatch) ? config.params.dispatch : null;
-        config.params = _.omit(config.params, ['uxCritical', 'dispatch']);
+        config.params = _omit(config.params, ['uxCritical', 'dispatch']);
     }
     return config;
 }, (error) => {
@@ -41,7 +42,7 @@ instance.interceptors.request.use((config) => {
 instance.interceptors.response.use((response) => {
     // Do something with response data
     return response.data;
-  }, function (error) {
+}, function (error) {
     const {
         config,
         data,
@@ -50,6 +51,6 @@ instance.interceptors.response.use((response) => {
         triggerUxCritialErrors(data.errors || data, config.dispatch);
     }
     return Promise.reject(error.response.data);
-  });
+});
 
 export default instance;
