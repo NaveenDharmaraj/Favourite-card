@@ -19,6 +19,9 @@ import {
 import {
     generateDeepLink,
 } from '../../actions/profile';
+import {
+    getBeneficiaryFromSlug,
+} from '../../actions/charity';
 import ShareDetails from '../shared/ShareSectionProfilePage';
 
 const createUserDetails = (valuesObject) => {
@@ -135,9 +138,13 @@ class UserDetails extends React.Component {
             charityDetails: {
                 charityDetails: {
                     id: charityId,
+                    attributes: {
+                        slug,
+                    },
                 },
             },
         } = this.props;
+        getBeneficiaryFromSlug(dispatch, slug);
         if (_isEmpty(deepLinkUrl)) {
             generateDeepLink(`deeplink?profileType=charityprofile&sourceId=${userId}&profileId=${charityId}`, dispatch);
         }
@@ -192,6 +199,7 @@ UserDetails.defaultProps = {
         charityDetails: {
             attributes: {
                 contactName: '',
+                slug: '',
             },
         },
     },
@@ -205,6 +213,7 @@ UserDetails.propTypes = {
         charityDetails: {
             attributes: PropTypes.shape({
                 contactName: string,
+                slug: string,
             }),
         },
     },
@@ -215,7 +224,7 @@ UserDetails.propTypes = {
 
 function mapStateToProps(state) {
     return {
-        charityDetails: state.give.charityDetails,
+        charityDetails: state.charity.charityDetails,
         deepLinkUrl: state.profile.deepLinkUrl,
         isAUthenticated: state.auth.isAuthenticated,
         userId: state.user.info.id,

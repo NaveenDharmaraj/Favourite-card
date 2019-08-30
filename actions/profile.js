@@ -10,7 +10,7 @@ const generatePayloadBodyForFollowAndUnfollow = (userId, id, type) => {
 
     let filterObj = {};
     switch (type) {
-        case 'beneficiary':
+        case 'beneficiaries':
             filterObj = {
                 entity: 'charity',
                 filters: {
