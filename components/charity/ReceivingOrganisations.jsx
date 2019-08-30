@@ -94,7 +94,7 @@ class ReceivingOrganisations extends React.Component {
                         && ReceivingOrganisations.showList(donationDetails.donationDetails._embedded.donee_list)
                         )}
                     </Table.Body>
-                ) : (<PlaceholderGrid row={3} column={3} placeholderType="table" />)
+                ) : (<PlaceholderGrid row={3} column={2} placeholderType="table" />)
                 }
                 <Table.Footer className="brdr-footer">
                     <Table.Row>

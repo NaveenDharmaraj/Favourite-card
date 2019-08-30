@@ -24,6 +24,7 @@ import {
     getGroupActivities,
     postActivity,
 } from '../../actions/group';
+import PlaceholderGrid from '../shared/PlaceHolder';
 
 import ActivityDetails from './ActivityDetails';
 
@@ -36,6 +37,7 @@ class Activity extends React.Component {
         this.postComment = this.postComment.bind(this);
         this.state = {
             commentText: '',
+            commentsLoader: !props.groupActivities.data.length > 0,
         };
     }
 
@@ -49,6 +51,25 @@ class Activity extends React.Component {
         } = this.props;
         if (_isEmpty(activityData)) {
             getGroupActivities(dispatch, id);
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        const {
+            groupActivities: {
+                data: activityData,
+            },
+        } = this.props;
+        let {
+            commentsLoader,
+        } = this.state;
+        if (!_.isEqual(this.props, prevProps)) {
+            if (!_.isEqual(activityData, prevProps.groupActivities.data)) {
+                commentsLoader = false;
+            }
+            this.setState({
+                commentsLoader,
+            });
         }
     }
 
@@ -124,6 +145,7 @@ class Activity extends React.Component {
         } = this.props;
         const {
             commentText,
+            commentsLoader,
         } = this.state;
         return (
             <Fragment>
@@ -156,7 +178,8 @@ class Activity extends React.Component {
                             </Grid>
                             <div className="c-comment">
                                 <Comment.Group fluid>
-                                    {!_isEmpty(data) && this.getComments()}
+                                    {commentsLoader ? <PlaceholderGrid row={1} column={1} />
+                                        : this.getComments()}
                                 </Comment.Group>
                             </div>
                         </Grid.Column>
