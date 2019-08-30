@@ -8,6 +8,8 @@ import search from './search';
 import dashboard from './dashboard';
 import onBoarding from './onBoarding';
 import app from './app';
+import taxreceipt from './taxreceipt';
+import profile from './profile';
 
 const root = combineReducers({
     app,
@@ -16,6 +18,8 @@ const root = combineReducers({
     give,
     search,
     onBoarding,
+    taxreceipt,
+    profile,
     user,
     charity,
 });

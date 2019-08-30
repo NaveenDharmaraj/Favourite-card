@@ -218,7 +218,6 @@ class Friend extends React.Component {
                     language,
                 }
             } = this.props;
-            console.log(this.props);
             const formatMessage = this.props.t;
             let paymentInstruments = null;
             let companyPaymentInstrumentChanged = false;
@@ -882,7 +881,7 @@ class Friend extends React.Component {
                         <Divider className="dividerMargin" />
                     </Form.Field>
                     <Form.Field>
-                        <Header as="h3">{formatMessage('friends:includeMessageLabel')}</Header>
+                        <Header as="h3" className="f-weight-n">{formatMessage('friends:includeMessageLabel')}</Header>
                     </Form.Field>
                     <Note
                         fieldName="noteToRecipients"
@@ -909,7 +908,7 @@ class Friend extends React.Component {
                         primary
                         className="blue-btn-rounded"// {isMobile ? 'mobBtnPadding' : 'btnPadding'}
                         content={(!this.state.buttonClicked) ? formatMessage('giveCommon:continueButton')
-                            : formatMessage('giveCommon:submitingButton')}
+                            : formatMessage('giveCommon:submittingButton')}
                         disabled={(this.state.buttonClicked) || !this.props.userAccountsFetched}
                         type="submit"
                     />

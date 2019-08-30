@@ -35,7 +35,7 @@ export const fetchInitialCharitiesGroups = (isAuthenticated, userId) => (dispatc
         let groupData = null;
 
         charityData = graphApi.get(`/recommend/charity?userid=${userId}&page[number]=1&page[size]=4`);
-        groupData = graphApi.get(`/recommend/group?userid=999664&page[number]=1&page[size]=4`);
+        groupData = graphApi.get(`/recommend/group?userid=${userId}&page[number]=1&page[size]=4`);
 
 
         const charitygroupData = Promise.all([

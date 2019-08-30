@@ -257,7 +257,7 @@ const AllocationListing = ({
                     className="blue-btn-rounded"
                     content={(!disableButton)
                         ? buttonText
-                        : formatMessage('giveCommon:submitingButton')}
+                        : formatMessage('giveCommon:submittingButton')}
                     disabled={(disableButton)}
                     onClick={handleSubmit}
                 />

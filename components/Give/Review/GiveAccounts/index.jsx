@@ -40,7 +40,7 @@ const cardProcessors = {
     discover: 'discover',
     mastercard: 'mastercard',
     stripe: 'stripe',
-    visa: 'visa',
+    visa: 'cc visa',
 };
 
 const accountTypes = [
@@ -230,10 +230,6 @@ GiveAccounts.propTypes = {
         avatar: string,
         displayName: string.isRequired,
         processor: string,
-        truncatedPaymentId: oneOfType([
-            number,
-            string,
-        ]),
         type: string.isRequired,
     })).isRequired,
     formatMessage: func.isRequired,

@@ -383,6 +383,12 @@ class Charity extends React.Component {
                 const defaultGroupFrom = userGroups.find((userGroup) => userGroup.id === groupId);
                 if(!_isEmpty(defaultGroupFrom)){
                 giveData.giveFrom.value = defaultGroupFrom.attributes.fundId;
+                giveData.giveFrom.name = defaultGroupFrom.attributes.name;
+                giveData.giveFrom.avatar = defaultGroupFrom.attributes.avatar,
+                giveData.giveFrom.id = defaultGroupFrom.id;
+                giveData.giveFrom.type = defaultGroupFrom.type;
+                giveData.giveFrom.text = `${defaultGroupFrom.attributes.name} ($${defaultGroupFrom.attributes.balance})`;
+                giveData.giveFrom.balance = defaultGroupFrom.attributes.balance;
              }
             }
             else{
@@ -896,7 +902,7 @@ class Charity extends React.Component {
                     <Form.Field className="checkbox-display">
                         <Form.Field
                             checked={coverFees}
-                            className="ui checkbox checkbox-text"
+                            className="ui checkbox checkbox-text f-weight-n"
                             control={Checkbox}
                             id="coverFees"
                             label={coverNoteText}
@@ -1150,7 +1156,7 @@ class Charity extends React.Component {
                                         </label>
                                         <Form.Field
                                             control={Input}
-                                            //className="disabled-input"
+                                            className="disabled-input"
                                             disabled
                                             id="giveTo"
                                             name="giveTo"
@@ -1267,6 +1273,7 @@ class Charity extends React.Component {
                         <Divider hidden />
                         {/* { !stepsCompleted && */}
                         <Form.Button
+                            className="blue-btn-rounded-def"
                             content={(!this.state.buttonClicked) ? formatMessage('giveCommon:continueButton') : formatMessage('giveCommon:submittingButton')}
                             disabled={(this.state.buttonClicked) || !this.props.userAccountsFetched}
                             type="submit"

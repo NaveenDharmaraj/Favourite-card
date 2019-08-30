@@ -1,6 +1,6 @@
 import querystring from 'querystring';
 
-import React from 'react';
+import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
 import { // eslint-disable-line import/order
     Container,
@@ -10,19 +10,23 @@ import { // eslint-disable-line import/order
 
 import auth0 from '../../services/auth';
 import Layout from '../../components/shared/Layout';
+import { Router } from '../../routes';
 
 class UserAuthView extends React.Component {
     componentDidMount() {
-        auth0.returnProps = querystring.parse(
-            window.location.search.slice(1), // must skip the '?' prefix
-        );
-
-        if (window.location.pathname === '/users/logout') {
-            return logout();
+        const {
+            isAuthenticated,
+        } = this.props;
+        if (isAuthenticated) {
+            Router.pushRoute('/dashboard');
+        } else {
+            auth0.returnProps = querystring.parse(
+                window.location.search.slice(1), // must skip the '?' prefix
+            );
+            auth0.lock.show({
+                initialScreen: auth0.initialScreen,
+            });
         }
-        auth0.lock.show({
-            initialScreen: auth0.initialScreen,
-        });
     }
 
     componentWillUnmount() {
@@ -34,40 +38,36 @@ class UserAuthView extends React.Component {
             isAuthenticated,
         } = this.props;
 
-        const segmentProps = {};
-
-        if (isAuthenticated) {
-            segmentProps.loading = true;
-        } else {
-            segmentProps.raised = true;
-        }
-
         return (
-            <Layout onBoarding={true} >
-                <div className="pageWraper">
-                    <Container>
-                        <div className="linebg" >
-                            <Grid columns={2} verticalAlign='middle'>
-                            <Grid.Row>
-                                    <Grid.Column className="left-bg"></Grid.Column>
-                                    <Grid.Column>
-                                        <div className="login-form-wraper">
-                                            <div className="reg-header">
-                                                <Header as="h3">Sign in to Charitable Impact</Header>
-                                                <Header as="h4">Enter your details below</Header>
-                                            </div>
-                                            <div id="auth0-lock-container">
+            <Fragment>
+                { !isAuthenticated && (
+                    <Layout onBoarding={true} >
+                        <div className="pageWraper">
+                            <Container>
+                                <div className="linebg" >
+                                    <Grid columns={2} verticalAlign='middle'>
+                                    <Grid.Row>
+                                            <Grid.Column className="left-bg"></Grid.Column>
+                                            <Grid.Column>
+                                                <div className="login-form-wraper">
+                                                    <div className="reg-header">
+                                                        <Header as="h3">Sign in to Charitable Impact</Header>
+                                                        <Header as="h4">Enter your details below</Header>
+                                                    </div>
+                                                    <div id="auth0-lock-container">
 
-                                            </div>
-                                        </div>
-                                    </Grid.Column>
-                                </Grid.Row>
+                                                    </div>
+                                                </div>
+                                            </Grid.Column>
+                                        </Grid.Row>
 
-                            </Grid>
+                                    </Grid>
+                                </div>
+                            </Container>
                         </div>
-                    </Container>
-                </div>
-            </Layout>
+                    </Layout>
+                )}
+            </Fragment>
         );
     }
 }

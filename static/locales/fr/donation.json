@@ -1,6 +1,6 @@
 {
     "automaticDonationLabel": "Répéter tous les mois",
-    "automaticDonationPopup": "Activer l’ajout automatique mensuel à son compte CHIMP est un excellent moyen de maintenir et agrandir son impact potentiel. Vous aurez également des dollars charitables sous la main lorsque vous ressentez l’inspiration à donner.",
+    "automaticDonationPopup": "Activer l’ajout automatique mensuel à son compte CHARITABLE IMPACT est un excellent moyen de maintenir et agrandir son impact potentiel. Vous aurez également des dollars charitables sous la main lorsque vous ressentez l’inspiration à donner.",
     "recurringMontlyDonationLabel": "Ajouter automatiquement ce montant chaque mois",
     "donationRecurringDateNote": "Votre première transaction mensuelle aura lieu le {{recurringDate}}.",
     "recurringMonthlyFirstLabel": "Ajouter de l'argent le 1er de chaque mois.",
@@ -17,7 +17,6 @@
     "donations.donationMatchPolicyNote": "La politique de {{companyName}} consiste à apparier {{policyPercentage}} par dollar donné, jusqu'à {{policyMax}} par {{policyPeriod}}.",
     "creditCardLabel": "Carte de crédit",
     "creditCardPlaceholder": "Sélectionnez la carte de crédit",
-    "doNotMatchLabel": "Ne pas apparier le don",
     "forNoMatchingPolicy": "aucune politique d'appariement"
 
 

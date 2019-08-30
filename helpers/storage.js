@@ -49,7 +49,7 @@ function set(name, value, type, expiry) {
 function unset(name, type) {
     if (type === 'cookie') {
         const expires = `expires=Thu, 01 Jan 1970 00:00:00;`;
-        document.cookie = `${name}=;${expires}`;
+        document.cookie = `${name}='';path=/;${expires}`;
     } else if (type === 'local') {
         localStorage.removeItem(name);
     }

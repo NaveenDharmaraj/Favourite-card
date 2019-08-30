@@ -7,7 +7,7 @@ const user = (state = {}, action) => {
         case 'SET_USER_INFO':
             newState = {
                 ...state,
-                info: Object.assign({}, action.payload.userInfo),
+                ...action.payload,
             };
             break;
         case 'UPDATE_USER_FUND':
@@ -17,7 +17,7 @@ const user = (state = {}, action) => {
                     ...state.fund,
                     ...action.payload.fund,
                 },
-                info: Object.assign({}, action.payload.userInfo),
+                info: Object.assign({}, action.payload.info),
             };
             break;
         case 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS':
@@ -75,6 +75,12 @@ const user = (state = {}, action) => {
                 },
             };
             break;
+        case 'SAVE_DEEP_LINK':
+            newState = {
+                ...state,
+                deepLink: action.payload.deepLink,
+            };
+            break;
         case 'GIVING_GROUPS_AND_CAMPAIGNS':
             const {
                 administeredGroups,
@@ -82,15 +88,15 @@ const user = (state = {}, action) => {
             } = action.payload;
             newState = {
                 ...state,
-                administeredGroups: Object.assign({}, state.administeredGroups, action.payload.administeredGroups),
                 administeredCampaigns: Object.assign({}, state.administeredCampaigns, action.payload.administeredCampaigns),
+                administeredGroups: Object.assign({}, state.administeredGroups, action.payload.administeredGroups),
                 groupsWithMemberships: Object.assign({}, state.groupsWithMemberships, action.payload.groupsWithMemberships),
             };
             break;
         case 'LEAVE_GROUP_ERROR_MESSAGE':
             newState = {
                 ...state,
-                leaveErrorMessage : action.payload,
+                leaveErrorMessage: action.payload,
             }
             break;
         case 'USER_GIVING_GOAL_DETAILS':
@@ -110,6 +116,38 @@ const user = (state = {}, action) => {
             newState = {
                 ...state,
                 monthlyTransactionApiCall: action.payload.apiCallStats,
+            };
+            break;
+        case 'USER_FAVORITES':
+            newState = {
+                ...state,
+                favorites: {
+                    data: (!_.isEmpty(state.favorites) && !_.isEmpty(state.favorites.data)) ?
+                    _.uniqWith(_.concat(state.favorites.data, action.payload.favorites.data), _.isEqual)
+                    : action.payload.favorites.data,
+                    pageCount: action.payload.favorites.pageCount,
+                    dataCount: action.payload.favorites.dataCount,
+                    currentPageNumber: action.payload.favorites.currentPageNumber,
+                },
+            };
+            break;
+        case 'UPDATE_FAVORITES':
+            newState = {
+                ...state,
+                favorites: action.payload.favorites,
+                disableFavorites: false,
+            }
+            break;
+        case 'DISABLE_FAVORITES_BUTTON':
+            newState = {
+                ...state,
+                disableFavorites: true,
+            };
+            break;
+        case 'ENABLE_FAVORITES_BUTTON':
+            newState = {
+                ...state,
+                disableFavorites: false,
             };
             break;
         default:
