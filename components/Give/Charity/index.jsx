@@ -30,8 +30,7 @@ import {
 import {
     connect,
 } from 'react-redux';
-
-//import { Link } from '../../../routes';
+import { Link } from '../../../routes';
 import { beneficiaryDefaultProps } from '../../../helpers/give/defaultProps';
 import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
 import {
@@ -219,6 +218,7 @@ class Charity extends React.Component {
         } else {
             Router.pushRoute('/dashboard');
         }
+        window.scrollTo(0, 0);
         dispatch(getDonationMatchAndPaymentInstruments(id));
     }
 
@@ -823,7 +823,8 @@ class Charity extends React.Component {
                 { !!showAnotherRecipient && (
                     <Form.Field className="lnk-FindAnother">
                         <List className="lstRecipient" verticalAlign="middle" horizontal>
-                            <List.Item className="lstitm" path="/give">
+                        <Link route = '/give'>
+                            <List.Item className="lstitm">
                                 <Image
                                     className="imgCls lst-img"
                                     src={IconCharity}
@@ -834,7 +835,9 @@ class Charity extends React.Component {
                                     {formatMessage('goToCharitySecondLabel')}
                                 </List.Content>
                             </List.Item>
-                            <List.Item className="lstitm" to={friendUrlEndpoint}>
+                        </Link>
+                        <Link route = {friendUrlEndpoint}>
+                            <List.Item className="lstitm">
                                 <Image
                                     className="imgCls"
                                     src={IconIndividual}
@@ -845,7 +848,9 @@ class Charity extends React.Component {
                                     {formatMessage('goToFriendsSecondLabel')}
                                 </List.Content>
                             </List.Item>
-                            <List.Item className="lstitm" to={groupUrlEndpoint}>
+                        </Link>
+                        <Link route ={groupUrlEndpoint}>
+                            <List.Item className="lstitm">
                                 <Image
                                     className="imgCls"
                                     src={IconGroup}
@@ -856,6 +861,7 @@ class Charity extends React.Component {
                                     {formatMessage('goToGroupSecondLabel')}
                                 </List.Content>
                             </List.Item>
+                        </Link>
                         </List>
                     </Form.Field>
                 )
