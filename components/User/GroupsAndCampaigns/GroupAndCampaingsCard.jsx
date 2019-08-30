@@ -16,17 +16,14 @@ class GroupsAndCampaignsCard extends React.Component {
         super(props);
         this.state = {
             open: false,
-            dropDownOpen: false,
         };
         this.openModal = this.openModal.bind(this);
         this.close = this.close.bind(this);
-        this.openDropDown = this.openDropDown.bind(this);
     }
     
     openModal() {
         this.setState({ 
             open: true,
-            dropDownOpen : false,
         });
       }
 
@@ -35,12 +32,6 @@ class GroupsAndCampaignsCard extends React.Component {
             open: false,
         });
       }
-
-    openDropDown(){  
-        this.setState({ 
-            dropDownOpen : true,
-        });
-    }
 
     render(){
         const {
@@ -96,8 +87,7 @@ class GroupsAndCampaignsCard extends React.Component {
                                                         <Dropdown 
                                                             className="rightBottom"
                                                             icon='ellipsis horizontal'
-                                                            open={dropDownOpen}
-                                                            onOpen={this.openDropDown}
+                                                            closeOnBlur
                                                         >
                                                             <Dropdown.Menu>
                                                                 {

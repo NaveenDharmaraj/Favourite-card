@@ -1,10 +1,19 @@
 import React, { Fragment } from 'react';
+import getConfig from 'next/config';
 import {
     Button,
     Header,
     Form,
     Grid,
 } from 'semantic-ui-react';
+
+const { publicRuntimeConfig } = getConfig();
+
+const {
+    APP_URL_ORIGIN,
+} = publicRuntimeConfig;
+
+
 function FinalStep(props) {
     const {
         handleSubmit,
@@ -18,12 +27,12 @@ function FinalStep(props) {
                     <div className="reg-header">
                         <Header as="h3">Create your Impact Account. </Header>
                         <Header as="h4">
-                            By clicking ‘Create your Impact Account’, you acknowlege that you have read the 
-                            <a> Privacy Policy</a>
-                            , and agree to the 
-                            <a> Terms & Conditions </a>
-                             and 
-                            <a> Account Agreement</a>
+                            By clicking ‘Create your Impact Account’, you acknowlege that you have read the
+                            <a href={`${APP_URL_ORIGIN}/privacy`}> Privacy Policy</a>
+                            , and agree to the
+                            <a href={`${APP_URL_ORIGIN}/terms`}> Terms & Conditions </a>
+                             and
+                            <a href={`${APP_URL_ORIGIN}/chimp-account-agreement`}> Account Agreement</a>
                             .
                         </Header>
                     </div>
