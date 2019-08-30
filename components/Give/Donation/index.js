@@ -514,20 +514,29 @@ class Donation extends React.Component {
   
     renderpaymentInstrumentOptions(formData, options, formatMessage){
           const creditCardField = (
-              <Form.Field>
-                  <label htmlFor="creditCard">
-                  {formatMessage('creditCardLabel')}
-                  </label>
-                  <Form.Field
-                      control={Select}
-                      id="creditCard"
-                      name="creditCard"
-                      onChange={this.handleInputChange}
-                      options={options}
-                      placeholder={formatMessage('creditCardPlaceholder')}
-                      value={formData.creditCard.value}
-                  />
-              </Form.Field>
+            <Fragment>
+                <Form.Field>
+                    <Divider className="dividerMargin" />
+                    <h3
+                        className='ui header'
+                    >Payment
+                    </h3>
+                </Form.Field>
+                <Form.Field>
+                    <label htmlFor="creditCard">
+                    {formatMessage('creditCardLabel')}
+                    </label>
+                    <Form.Field
+                        control={Select}
+                        id="creditCard"
+                        name="creditCard"
+                        onChange={this.handleInputChange}
+                        options={options}
+                        placeholder={formatMessage('creditCardPlaceholder')}
+                        value={formData.creditCard.value}
+                    />
+                </Form.Field>
+            </Fragment>
           );
   
           return creditCardField;
