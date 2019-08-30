@@ -35,6 +35,7 @@ const DonationDetails = (props) => {
         },
     } = props;
     const lastDonationDay = distanceOfTimeInWords(lastDonationAt);
+    const daysText = (fundraisingDaysRemaining && fundraisingDaysRemaining > 1) ? ' days left' : ' day left';
     return (
         <Container>
             <div className="profile-info-card giving">
@@ -47,7 +48,7 @@ const DonationDetails = (props) => {
                                     && (
                                         <span className="badge white right">
                                             {fundraisingDaysRemaining}
-                                            days left
+                                            {daysText}
                                         </span>
                                     )}
                                 <Header.Subheader className="small" style={{ marginTop: '.7rem' }}>
