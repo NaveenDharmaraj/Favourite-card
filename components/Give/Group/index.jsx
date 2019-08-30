@@ -418,7 +418,6 @@ class Group extends React.Component {
             isDonationAmountPositive: true,
             isNoteToCharityInLimit: true,
             isNoteToSelfInLimit: true,
-            isValidAddingToSource: true,
             isValidDecimalAmount: true,
             isValidDecimalDonationAmount: true,
             isValidDonationAmount: true,
@@ -899,11 +898,12 @@ class Group extends React.Component {
                                 value={giveAmount}
                             />
                         </Form.Field>
+                        
                         <FormValidationErrorMessage
                             condition={!validity.doesAmountExist || !validity.isAmountMoreThanOneDollor
                             || !validity.isValidPositiveNumber}
                             errorMessage={formatMessage('amountLessOrInvalid', {
-                                minAmount: 1,
+                                minAmount:  giftType.value > 0 ? 5 : 1,
                             })}
                         />
                         <FormValidationErrorMessage
@@ -917,7 +917,7 @@ class Group extends React.Component {
                         { (!this.props.currentUser.userAccountsFetched || !_isEmpty(giveFromList)) && (
                         <DropDownAccountOptions
                             type="group"
-                            validity={validity.isValidAddingToSource}
+                            validity={validity.isValidGiveFrom}
                             selectedValue={this.state.flowObject.giveData.giveFrom.value}
                             name="giveFrom"
                             formatMessage={formatMessage}
@@ -950,7 +950,7 @@ class Group extends React.Component {
                                 className='blue-btn-rounded' // {isMobile ? 'mobBtnPadding' : 'btnPadding'}
                                 content={(!this.state.buttonClicked) ?
                                     formatMessage('giveCommon:continueButton')
-                                    : formatMessage('giveCommon:submitingButton')}
+                                    : formatMessage('giveCommon:submittingButton')}
                                 // content= {formatMessage('continueButton')}
                                 disabled={(this.state.buttonClicked) }
                                 // fluid={isMobile}

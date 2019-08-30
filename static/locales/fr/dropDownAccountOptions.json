@@ -3,10 +3,10 @@
     "giveFromLabel": "Donner de la part de",
     "destinationaccountPlaceHolder": "Sélectionner un compte destinataire",
     "preloadedAccountPlaceHolder": "Votre liste de comptes est en cours de chargement. Cela peut prendre un instant.",
-    "allocationsGiveFromPopup": "Nous vous demandons de sélectionner un compte car vous gérez plusieurs Comptes CHIMP.",
+    "allocationsGiveFromPopup": "Nous vous demandons de sélectionner un compte car vous gérez plusieurs Comptes CHARITABLE IMPACT.",
     "accountPlaceHolder": "Sélectionnez un compte source",
     "personalAccountLabel": "Compte personnel",
     "companiesAccountLabel": "Entreprises",
     "groupHeader" : "Groupe",
-    "campaignHeader": "Manage Campaigns"
+    "campaignHeader": "Campagne"
 }

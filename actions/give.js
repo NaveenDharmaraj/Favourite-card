@@ -1,5 +1,6 @@
 /* eslint-disable import/exports-last */
 import _ from 'lodash';
+
 import { Router } from '../routes';
 import coreApi from '../services/coreApi';
 import {
@@ -16,12 +17,12 @@ import {
     savePaymentInstrument,
     getUserFund,
 } from './user';
-
 import {
     triggerUxCritialErrors,
 } from './error';
 
 export const actionTypes = {
+    ADD_NEW_CREDIT_CARD_STATUS: 'ADD_NEW_CREDIT_CARD_STATUS',
     COVER_FEES: 'COVER_FEES',
     GET_BENEFICIARY_FROM_SLUG: 'GET_BENEFICIARY_FROM_SLUG',
     GET_BENIFICIARY_FOR_GROUP: 'GET_BENIFICIARY_FOR_GROUP',
@@ -30,6 +31,7 @@ export const actionTypes = {
     GET_GROUP_FROM_SLUG: 'GET_GROUP_FROM_SLUG',
     SAVE_FLOW_OBJECT: 'SAVE_FLOW_OBJECT',
     SAVE_SUCCESS_DATA: 'SAVE_SUCCESS_DATA',
+    TAX_RECEIPT_API_CALL_STATUS: 'TAX_RECEIPT_API_CALL_STATUS',
 };
 
 const setDonationData = (donation) => {
@@ -597,6 +599,12 @@ export const proceed = (
             type: (flowObject.type === 'donations') ? giveTo.type : giveFrom.type,
         };
         if (flowObject.taxReceiptProfileAction !== 'no_change' && stepIndex === 1) {
+            dispatch({
+                payload: {
+                    taxReceiptApiCall: true,
+                },
+                type: actionTypes.TAX_RECEIPT_API_CALL_STATUS,
+            });
             updateTaxReceiptProfile(
                 flowObject.selectedTaxReceiptProfile,
                 flowObject.taxReceiptProfileAction, dispatch,
@@ -610,8 +618,21 @@ export const proceed = (
             }).catch((err) => {
                 triggerUxCritialErrors(err.errors || err, dispatch);
                 console.log(err);
+            }).finally(() => {
+                dispatch({
+                    payload: {
+                        taxReceiptApiCall: false,
+                    },
+                    type: actionTypes.TAX_RECEIPT_API_CALL_STATUS,
+                });
             });
         } else if (creditCard.value === 0 && stepIndex === 0) {
+            dispatch({
+                payload: {
+                    creditCardApiCall: true,
+                },
+                type: actionTypes.ADD_NEW_CREDIT_CARD_STATUS,
+            });
             return createToken(flowObject.stripeCreditCard, flowObject.cardHolderName).then((token) => {
                 const paymentInstrumentsData = {
                     attributes: {
@@ -647,7 +668,14 @@ export const proceed = (
                 });
                 callApiAndDispatchData(dispatch, accountDetails);
             }).catch((err) => {
-                console.log(err);
+                triggerUxCritialErrors(err.errors || err, dispatch);
+            }).finally(() => {
+                dispatch({
+                    payload: {
+                        creditCardApiCall: false,
+                    },
+                    type: actionTypes.ADD_NEW_CREDIT_CARD_STATUS,
+                });
             });
         } else {
             dispatch({
@@ -802,6 +830,7 @@ export const getCompanyTaxReceiptProfile = (dispatch, companyId) => {
         console.log(error);
     });
 };
+
 
 export const getGroupsFromSlug = (dispatch, slug) => {
     return coreApi.get(`groups/find_by_slug`, {
