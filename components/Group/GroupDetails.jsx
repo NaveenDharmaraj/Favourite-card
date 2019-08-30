@@ -8,6 +8,7 @@ import {
     bool,
     string,
     func,
+    number,
 } from 'prop-types';
 import {
     Button,
@@ -25,6 +26,10 @@ import { Link } from '../../routes';
 import {
     joinGroup,
 } from '../../actions/group';
+import {
+    generateDeepLink,
+} from '../../actions/profile';
+import ShareDetails from '../shared/ShareSectionProfilePage';
 
 const { publicRuntimeConfig } = getConfig();
 const {
@@ -39,6 +44,20 @@ class GroupDetails extends React.Component {
         };
         this.handleJoin = this.handleJoin.bind(this);
         this.handleUserJoin = this.handleUserJoin.bind(this);
+    }
+
+    componentDidMount() {
+        const {
+            dispatch,
+            deepLinkUrl,
+            userId,
+            groupDetails: {
+                id: groupId,
+            },
+        } = this.props;
+        if (_.isEmpty(deepLinkUrl)) {
+            generateDeepLink(`deeplink?profileType=charityprofile&sourceId=${userId}&profileId=${groupId}`, dispatch);
+        }
     }
 
     handleJoin() {
@@ -61,6 +80,7 @@ class GroupDetails extends React.Component {
 
     render() {
         const {
+            deepLinkUrl,
             groupDetails: {
                 attributes: {
                     avatar,
@@ -73,6 +93,7 @@ class GroupDetails extends React.Component {
                 },
             },
             isAuthenticated,
+            userId,
         } = this.props;
         const {
             joinClicked,
@@ -167,7 +188,6 @@ class GroupDetails extends React.Component {
                 </Grid.Column>
             );
         }
-        
         if (!isAuthenticated && joinClicked) {
             permissionButtons = (
                 <Fragment>
@@ -188,7 +208,6 @@ class GroupDetails extends React.Component {
                 </Fragment>
             );
         }
-
         return (
             <div className="profile-header">
                 <Container>
@@ -201,7 +220,7 @@ class GroupDetails extends React.Component {
                                     </div>
                                 </div>
                             </Grid.Column>
-                            <Grid.Column mobile={16} tablet={9} computer={10}>
+                            <Grid.Column mobile={16} tablet={9} computer={8}>
                                 <Grid stackable columns={3}>
                                     <Grid.Row>
                                         <Grid.Column>
@@ -225,33 +244,13 @@ class GroupDetails extends React.Component {
                                     {getCauses}
                                 </div>
                             </Grid.Column>
-                            {isAuthenticated && (
-                                <Grid.Column mobile={16} tablet={4} computer={4}>
-                                    <div className="profile-social-wraper">
-                                        <div className="profile-social-links">
-                                            <List horizontal>
-                                                <List.Item as="a">
-                                                    <Icon name="heart outline" />
-                                                </List.Item>
-                                                <List.Item as="a">
-                                                    <Icon name="twitter" />
-                                                </List.Item>
-                                                <List.Item as="a">
-                                                    <Icon name="facebook" />
-                                                </List.Item>
-                                            </List>
-                                        </div>
-                                        <div className="share-link">
-                                            <Form>
-                                                <Form.Field>
-                                                    <label>Or share link</label>
-                                                    <input value="https://charitableimpact.com/share-this-awe…" />
-                                                </Form.Field>
-                                                <Button className="transparent-btn-round small">Copy link</Button>
-                                            </Form>
-                                        </div>
-                                    </div>
-                                </Grid.Column>
+                            {isAuthenticated
+                            && (
+                                <ShareDetails
+                                    deepLinkUrl={deepLinkUrl}
+                                    profileDetails={this.props.groupDetails}
+                                    userId={userId}
+                                />
                             )}
                         </Grid.Row>
                     </Grid>
@@ -273,6 +272,7 @@ GroupDetails.defaultProps = {
         },
     },
     isAuthenticated: false,
+    userId: null,
 };
 
 GroupDetails.propTypes = {
@@ -287,12 +287,16 @@ GroupDetails.propTypes = {
         },
     },
     isAuthenticated: bool,
+    userId: number,
 };
 
 function mapStateToProps(state) {
     return {
+        deepLinkUrl: state.profile.deepLinkUrl,
+        disableFollow: state.profile.disableFollow,
         groupDetails: state.group.groupDetails,
         isAuthenticated: state.auth.isAuthenticated,
+        userId: state.user.info.id,
     };
 }
 

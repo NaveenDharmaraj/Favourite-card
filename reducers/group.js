@@ -192,6 +192,19 @@ const group = (state = {}, action) => {
             //     };
             //     break;
 
+        case 'SAVE_FOLLOW_STATUS_GROUP':
+            newState = {
+                ...state,
+                // disableFollow: false,
+                groupDetails: {
+                    ...state.groupDetails,
+                    attributes: {
+                        ...state.groupDetails.attributes,
+                        following: action.payload.followStatus,
+                    },
+                },
+            };
+            break;
         default:
             break;
     }

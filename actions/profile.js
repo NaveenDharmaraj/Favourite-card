@@ -46,10 +46,12 @@ const generatePayloadBodyForFollowAndUnfollow = (userId, id, type) => {
 
 export const actionTypes = {
     DEEP_LINK_URL: 'DEEP_LINK_URL',
+    DISABLE_FOLLOW_BUTTON: 'DISABLE_FOLLOW_BUTTON',
     GET_CAMPAIGN_FROM_SLUG: 'GET_CAMPAIGN_FROM_SLUG',
     GET_IMAGES_FOR_CAMPAIGN: 'GET_IMAGES_FOR_CAMPAIGN',
     GET_SUB_GROUPS_FOR_CAMPAIGN: 'GET_SUB_GROUPS_FOR_CAMPAIGN',
     SAVE_FOLLOW_STATUS_CAMPAIGN: 'SAVE_FOLLOW_STATUS_CAMPAIGN',
+    SAVE_FOLLOW_STATUS_GROUP: 'SAVE_FOLLOW_STATUS_GROUP',
     SEE_MORE_LOADER: 'SEE_MORE_LOADER',
     SUB_GROUP_LIST_LOADER: 'SUB_GROUP_LIST_LOADER',
 };
@@ -141,10 +143,19 @@ export const followProfile = (dispatch, userId, entityId, type) => {
             followStatus: false,
         },
     };
+    const iconStatusFsa = {
+        payload: {
+            disableFollow: false,
+        },
+        type: actionTypes.DISABLE_FOLLOW_BUTTON,
+    };
     // Must check types for other cases
     switch (type) {
         case 'campaigns':
             fsa.type = actionTypes.SAVE_FOLLOW_STATUS_CAMPAIGN;
+            break;
+        case 'groups':
+            fsa.type = actionTypes.SAVE_FOLLOW_STATUS_GROUP;
             break;
         default:
             break;
@@ -156,7 +167,11 @@ export const followProfile = (dispatch, userId, entityId, type) => {
         },
     ).catch((error) => {
         console.log(error);
-    }).finally(() => dispatch(fsa));
+    }).finally(() => {
+        dispatch(fsa);
+        dispatch(iconStatusFsa);
+        return null;
+    });
 };
 
 export const unfollowProfile = (dispatch, userId, entityId, type) => {
@@ -165,10 +180,19 @@ export const unfollowProfile = (dispatch, userId, entityId, type) => {
             followStatus: true,
         },
     };
+    const iconStatusFsa = {
+        payload: {
+            disableFollow: false,
+        },
+        type: actionTypes.DISABLE_FOLLOW_BUTTON,
+    };
     // Must check types for other cases
     switch (type) {
         case 'campaigns':
             fsa.type = actionTypes.SAVE_FOLLOW_STATUS_CAMPAIGN;
+            break;
+        case 'groups':
+            fsa.type = actionTypes.SAVE_FOLLOW_STATUS_GROUP;
             break;
         default:
             break;
@@ -180,7 +204,11 @@ export const unfollowProfile = (dispatch, userId, entityId, type) => {
         },
     ).catch((error) => {
         console.log(error);
-    }).finally(() => dispatch(fsa));
+    }).finally(() => {
+        dispatch(fsa);
+        dispatch(iconStatusFsa);
+        return null;
+    });
 };
 
 export const campaignSubGroupSeeMore = (url, dispatch) => {

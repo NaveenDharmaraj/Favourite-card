@@ -39,7 +39,7 @@ const profile = (state = {}, action) => {
         case 'DISABLE_FOLLOW_BUTTON':
             newState = {
                 ...state,
-                disableFollow: true,
+                disableFollow: action.payload.disableFollow,
             };
             break;
         case 'SEE_MORE_LOADER':
@@ -64,7 +64,7 @@ const profile = (state = {}, action) => {
                         following: action.payload.followStatus,
                     },
                 },
-                disableFollow: false,
+                // disableFollow: false,
             };
             break;
         default:
