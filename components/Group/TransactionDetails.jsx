@@ -153,7 +153,7 @@ class TransactionDetails extends React.Component {
                         <Table.Body>
                             {transactionData}
                         </Table.Body>
-                    ) : (<PlaceholderGrid row={10} column={3} placeholderType="table" />)
+                    ) : (<PlaceholderGrid row={3} column={3} placeholderType="table" />)
                     }
                 </Table>
                 <div className="db-pagination right-align pt-2">
