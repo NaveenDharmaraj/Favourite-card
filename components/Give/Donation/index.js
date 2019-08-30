@@ -75,7 +75,6 @@ class Donation extends React.Component {
             }  
         this.state = {
             flowObject: payload,
-            buttonClicked: false,
             disableButton: !props.userAccountsFetched,
             inValidCardNameValue: true,
             inValidCardNumber: true,
@@ -278,10 +277,7 @@ class Donation extends React.Component {
                 giveTo,
                 creditCard,
             },
-        } = flowObject;
-        this.setState({
-            buttonClicked: true,
-        });
+        } = flowObject;        
         const validateCC = this.isValidCC(
             creditCard,
             inValidCardNumber,
@@ -300,10 +296,6 @@ class Donation extends React.Component {
             dismissAllUxCritialErrors(this.props.dispatch);
             dispatch(proceed({
                 ...flowObject}, flowSteps[stepIndex+1], stepIndex));
-        } else {
-            this.setState({
-                buttonClicked: false,
-            });
         }
     }
 
@@ -723,6 +715,7 @@ class Donation extends React.Component {
             i18n:{
                 language,
             },
+            creditCardApiCall,
         } = this.props;
         const formatMessage = this.props.t;
         const donationMatchOptions = populateDonationMatch(donationMatchData, formatMessage, language);
@@ -791,9 +784,9 @@ class Donation extends React.Component {
                     primary
                     className="blue-btn-rounded"
                     // className={isMobile ? 'mobBtnPadding' : 'btnPadding'}
-                    content={(!this.state.buttonClicked) ? formatMessage('giveCommon:continueButton')
+                    content={(!creditCardApiCall) ? formatMessage('giveCommon:continueButton')
                         : formatMessage('giveCommon:submittingButton')}
-                    disabled={(this.state.buttonClicked) || this.state.disableButton}
+                    disabled={(creditCardApiCall) || this.state.disableButton}
                     // fluid={isMobile}
                     type="submit"
                 />
@@ -814,6 +807,7 @@ const  mapStateToProps = (state) => {
         companyDetails: state.give.companyData,
         userAccountsFetched: state.user.userAccountsFetched,
         currentUser: state.user.info,
+        creditCardApiCall: state.give.creditCardApiCall,
     };
 }
 export default withTranslation(['donation', 'giveCommon'])(connect(mapStateToProps)(Donation));
