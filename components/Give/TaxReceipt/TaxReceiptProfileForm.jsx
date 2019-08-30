@@ -232,7 +232,7 @@ function TaxReceiptProfileForm(props) {
                         <div className="taxprofilelink">
                             <Form.Field>
                                 {formatMessage('changeAddressText')}
-                                <Button secondary style={{ marginLeft: '1rem' }} onClick={props.handleDisplayForm}>
+                                <Button secondary style={{ marginLeft: '1rem' }} onClick={()=>{props.handleDisplayForm()}}>
                                     {formatMessage('makeChangesText')}
                                 </Button>
                                     

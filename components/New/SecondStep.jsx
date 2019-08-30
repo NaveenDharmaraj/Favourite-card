@@ -23,6 +23,7 @@ function SecondStep(props) {
         validity,
     } = props;
     let pwdCharCount = (password) ? password.length : 0;
+    let pwdEntered = (password && password.length > 0);
     return (
         <Grid.Row>
             <Grid.Column className="left-bg"></Grid.Column>
@@ -53,8 +54,12 @@ function SecondStep(props) {
                                 errorMessage="Please input a valid email id"
                             />
                             <FormValidationErrorMessage
-                                condition={!!userExists}
+                                condition={!!userExists && validity.isEmailValidFormat}
                                 errorMessage="This user already Exists!. Please Input a different Email Id"
+                            />
+                            <FormValidationErrorMessage
+                                condition={!validity.isEmailLengthInLimit && validity.isEmailIdNotNull}
+                                errorMessage="Email Id cannot have more than 150 characters"
                             />
                         </Form.Field>
                         <Form.Field>
@@ -94,7 +99,7 @@ function SecondStep(props) {
                                 type='submit'
                                 primary
                                 content={(apiValidating === true) ? 'Validating..' : 'Continue'}
-                                disabled={!validity.isEmailIdValid || !validity.isPasswordValid || !!userExists || typeof userExists === 'undefined'}
+                                disabled={!validity.isEmailIdValid || !validity.isPasswordValid || !!userExists || typeof userExists === 'undefined' || !pwdEntered}
                                 onClick={handleSubmit}
                             />
                         </div>

@@ -4,7 +4,7 @@
     "giveGroupToEqualGiveFrom": "The source and destination group cannot be the same",
     "amountLabel": "Amount",
     "giveFromLabel": "Give from",
-    "donorGiveFromPopup": "We’re asking you to select an account because you administer more than one CHIMP Account.  Note that Group accounts with a Matching Campaign are not listed because they can only give directly to a charity.",
+    "donorGiveFromPopup": "We’re asking you to select an account because you administer more than one CHARITABLE IMPACT Account.  Note that Group accounts with a Matching Campaign are not listed because they can only give directly to a charity.",
     "groupToGive":"Select a Group to Give",
     "amountPlaceHolder": "Enter amount",
     "preloadedAccountPlaceHolder": "Your list of accounts is loading. This may take a moment",

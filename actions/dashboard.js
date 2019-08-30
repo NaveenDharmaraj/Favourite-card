@@ -66,18 +66,18 @@ const getFriendsList = (dispatch, email) => {
     });
 };
 
-const getRecommendationList = (dispatch, userId) => {
+const getRecommendationList = (dispatch, url) => {
     const fsa = {
         payload: {
-            userId,
         },
         type: actionTypes.USER_RECOMMENDATIONS,
     };
 
-    graphApi.get(`/recommend/all?userid=${Number(userId)}&page[number]=1&page[size]=9`).then(
+    graphApi.get(url).then(
         (result) => {
             fsa.payload = {
                 count: result.meta.recordCount,
+                pageCount: result.meta.pageCount,
                 data: result.data,
             };
         },
@@ -88,14 +88,13 @@ const getRecommendationList = (dispatch, userId) => {
     });
 };
 
-const getStoriesList = (dispatch, userId) => {
+const getStoriesList = (dispatch, url) => {
     const fsa = {
         payload: {
-            userId,
         },
         type: actionTypes.USER_STORIES,
     };
-    utilityApi.get(`/blogs/newBlogs?size=7`).then(
+    utilityApi.get(url).then(
         (result) => {
             fsa.payload = {
                 count: result.totalCount,

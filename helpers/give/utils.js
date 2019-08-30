@@ -141,7 +141,23 @@ const fullMonthNames = (formatMessage) => {
     ];
     return fullMonths;
 };
-
+const monthNamesForGivingTools = () => {
+    const shortMonths = [
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec',
+    ];
+    return shortMonths;
+};
 const isValidGiftAmount = (validity) => {
     const giftAmountValidity = _.pick(validity, [
         'doesAmountExist',
@@ -455,7 +471,7 @@ const populateDonationMatch = (donationMatchData, formatMessage, language) => {
     if (!_.isEmpty(donationMatchData)) {
         const noDonationMatch = {
             disabled: false,
-            text: formatMessage('doNotMatchLabel'),
+            text: formatMessage('giveCommon:doNotMatchLabel'),
             type: '',
             value: 0,
         };
@@ -695,7 +711,7 @@ const populateInfoToShare = (taxReceiptProfile,
             infoToShareList = [
                 {
                     disabled: false,
-                    text: formatMessage('infoToShareAnonymous'),
+                    text: formatMessage('giveCommon:infoToShareAnonymous'),
                     value: 'anonymous',
                 },
                 {
@@ -729,7 +745,7 @@ const populateInfoToShare = (taxReceiptProfile,
             infoToShareList = [
                 {
                     disabled: false,
-                    text: formatMessage('infoToShareAnonymous' ),
+                    text: formatMessage('giveCommon:infoToShareAnonymous' ),
                     value: 'anonymous',
                 },
                 {
@@ -749,7 +765,7 @@ const populateInfoToShare = (taxReceiptProfile,
             infoToShareList = [
                 {
                     disabled: false,
-                    text: formatMessage('infoToShareAnonymous'),
+                    text: formatMessage('giveCommon:infoToShareAnonymous'),
                     value: 'anonymous',
                 },
                 {
@@ -956,13 +972,12 @@ const validateGiveForm = (field, value, validity, giveData, coverFeesAmount, sen
     const giveAmount = giveData.totalP2pGiveAmount
         ? giveData.totalP2pGiveAmount
         : giveData.giveAmount;
-
     switch (field) {
         case 'giveAmount':
             validity.doesAmountExist = !isInputBlank(value);
             validity.isAmountLessThanOneBillion = (giveData.giftType.value > 0)
                 ? isAmountLessThanOneBillion(value) : true;
-            validity.isAmountMoreThanOneDollor = (giveData.giveTo.type === 'beneficiaries')
+            validity.isAmountMoreThanOneDollor = (giveData.giveTo.type === 'beneficiaries') || giveData.giftType.value > 0
                 ? isAmountMoreThanOneDollor(value) : isAmountMoreOrEqualToOneDollor(value);
             validity.isValidPositiveNumber = isValidPositiveNumber(value);
             validity.isAmountCoverGive = (giveData.giveFrom.type === 'groups'
@@ -1152,6 +1167,17 @@ const setDateForRecurring = (date, formatMessage, lang = 'en') => {
     return (lang === 'fr') ? `${date}er ${month} ${year}` : `${month} ${date}, ${year}`;
 };
 
+const formatDateForGivingTools = (date) => {
+    let unformattedDate = new Date(date);
+    const monthNames = monthNamesForGivingTools();
+    // Need to use the original function, using this now as we need to integrate translaction for that
+    const day = unformattedDate.getDate();
+    const month = monthNames[unformattedDate.getMonth()];
+    const year = unformattedDate.getFullYear();
+    
+    return `${month} ${day}, ${year}`;
+};
+
 const getDonationMatchedData = (donationMatchId, donationAmount, donationMatchData) => {
     const donationMatchedData = _.find(
         donationMatchData, (item) => item.attributes.employeeRoleId == donationMatchId,
@@ -1255,7 +1281,7 @@ const populateDonationReviewPage = (giveData, data, currency, formatMessage, lan
 
         const buildAccounts = (item) => {
             const val = item.amount;
-            if (val > 0) {
+            if (val >= 0) {
                 return {
                     ...item,
                     amount: formatCurrency(
@@ -1431,7 +1457,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
         }
         const buildAccounts = (item) => {
             const val = item.amount;
-            if (val > 0) {
+            if (val >= 0) {
                 return {
                     ...item,
                     amount: formatCurrency(
@@ -1651,6 +1677,7 @@ export {
     populateGiveReviewPage,
     populateCardData,
     formatCurrency,
+    formatDateForGivingTools,
     resetP2pDataForOnInputChange,
     calculateP2pTotalGiveAmount,
 };

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import {
     Form,
     Icon,
@@ -14,6 +14,7 @@ import {
     CardNumberElement,
     injectStripe,
 } from 'react-stripe-elements';
+import getConfig from 'next/config';
 
 import '../style/styles.less';
 import cvvImg from '../../../static/images/ccv-diagram.png';
@@ -21,6 +22,11 @@ import { testCardList } from '../../../helpers/constants/index';
 import { hasMinTwoChars } from '../../../helpers/give/giving-form-validation';
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 
+const { publicRuntimeConfig } = getConfig();
+
+const {
+    NODE_ENV
+} = publicRuntimeConfig;
 const headerRow = [
     'Type',
     'Number',
@@ -172,9 +178,12 @@ class CreditCard extends React.Component {
 
         const cardName = value.replace(/ /g,'');
 
+        const format = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+        const specialCharacters = format.test(cardName);
+
         let inValidCardNameValue = false;
         const letterNumber = /^\d+$/;
-        if (!cardName.match(letterNumber)) {
+        if ((!cardName.match(letterNumber)) && !specialCharacters) {
             inValidCardNameValue = false;
         } else {
             inValidCardNameValue = true;
@@ -183,7 +192,7 @@ class CreditCard extends React.Component {
         let isError = false;
         if (!hasMinTwoChars(value)) {
             isError = true;
-        }       
+        }
         this.setState({
             inValidCardNameValue,
             inValidNameOnCard: isError,
@@ -234,23 +243,27 @@ class CreditCard extends React.Component {
         const { formatMessage } = this.props;
         return (
             <Form.Field>
-                <Form.Field>
-                    <a
-                        onClick={this.handleTestCreditCardList}
-                    >
-                        {showTestCardLabel}
-                    </a>
-                </Form.Field>
                 {
-                    !!showTestCards && (
-                        <Form.Field>
-                            <label htmlFor="showCreditCardList">
-                                {formatMessage('giveCommon:creditCard.testCreditCardListMessage')}
-                            </label>
+                    NODE_ENV !== 'production' && (
+                        <Fragment>
                             <Form.Field>
-                                {this.testCreditCardList()}
+                                <a onClick={this.handleTestCreditCardList}>
+                                    {showTestCardLabel}
+                                </a>
                             </Form.Field>
-                        </Form.Field>
+                            {
+                                !!showTestCards && (
+                                    <Form.Field>
+                                        <label htmlFor="showCreditCardList">
+                                            {formatMessage('giveCommon:creditCard.testCreditCardListMessage')}
+                                        </label>
+                                        <Form.Field>
+                                            {this.testCreditCardList()}
+                                        </Form.Field>
+                                    </Form.Field>
+                                )
+                            }
+                        </Fragment>
                     )
                 }
                 <Form.Field>

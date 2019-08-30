@@ -40,12 +40,20 @@ function FirstStep(props) {
                                 value={_.isEmpty(firstName) ? '' : firstName}
                                 onChange={parentInputChange}
                                 onBlur={handleInputOnBlur}
-                                error={!validity.isFirstNameNotNull}
+                                error={!validity.isFirstNameValid}
                                 placeholder="Your first name"
                             />
                             <FormValidationErrorMessage
                                 condition={!validity.isFirstNameNotNull}
                                 errorMessage="Please input your first name"
+                            />
+                            <FormValidationErrorMessage
+                                condition={!validity.doesFirstNameHave2 && validity.isFirstNameNotNull}
+                                errorMessage="First Name should have minimum 2 characters"
+                            />
+                            <FormValidationErrorMessage
+                                condition={!validity.isFirstnameLengthInLimit && validity.isFirstNameNotNull}
+                                errorMessage="First Name cannot have more than 150 characters"
                             />
                         </Form.Field>
                         <Form.Field>
@@ -59,12 +67,16 @@ function FirstStep(props) {
                                 value={_.isEmpty(lastName) ? '' : lastName}
                                 onChange={parentInputChange}
                                 onBlur={handleInputOnBlur}
-                                error={!validity.isLastNameNotNull}
+                                error={!validity.isLastNameValid}
                                 placeholder="Your last name"
                             />
                             <FormValidationErrorMessage
                                 condition={!validity.isLastNameNotNull}
                                 errorMessage="Please input your last name"
+                            />
+                            <FormValidationErrorMessage
+                                condition={!validity.isLastnameLengthInLimit && validity.isLastNameNotNull}
+                                errorMessage="Last Name cannot have more than 150 characters"
                             />
                         </Form.Field>
                         <div className="reg-btn-wraper">
