@@ -17,9 +17,6 @@ import { Router } from '../../routes';
 class EmailVerification extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            buttonClicked: false,
-        };
         let {
             newUserDetails,
         } = this.props;
@@ -27,7 +24,9 @@ class EmailVerification extends React.Component {
             let newUserDetailsLocal = storage.get('newUserDetails', 'local');
             newUserDetails = JSON.parse(newUserDetailsLocal);
         }
-        this.state.newUserDetails = newUserDetails;
+        this.state = {
+            newUserDetails,
+        };
         if (newUserDetails === undefined) {
             Router.pushRoute('/users/error');
         }
@@ -38,25 +37,21 @@ class EmailVerification extends React.Component {
     handleSubmit() {
         let {
             newUserDetails,
-            buttonClicked,
         } = this.state;
-        resendVerificationEmail(newUserDetails.user_id);
-        buttonClicked = true;
-        this.setState({
-            buttonClicked,
-        });
-        setTimeout(() => {
-            this.setState({ buttonClicked: false });
-        }, 3000);
+        const {
+            dispatch,
+        } = this.props;
+        const userId = `${newUserDetails.identities[0].provider}|${newUserDetails.identities[0].user_id}`;
+        resendVerificationEmail(userId, dispatch);
     }
 
     render() {
-        let {
+        const {
             newUserDetails,
-            buttonClicked,
         } = this.state;
-
-
+        const {
+            apiResendEmail,
+        } = this.props;
         return (
             <Layout>
                 <div className="pageWraper">
@@ -83,11 +78,12 @@ class EmailVerification extends React.Component {
                                                         type="submit"
                                                         onClick={this.handleSubmit}
                                                         primary
+                                                        // disabled={!!apiResendEmail}
                                                     >
                                                         Resend email
                                                     </Button>
                                                 </div>
-                                                {!!buttonClicked && <Message compact color='green'>Email Sent</Message>}
+                                                {!!apiResendEmail && <Message compact color='green'>Email Sent</Message>}
 
                                             </Form>
                                         </div>
@@ -104,6 +100,7 @@ class EmailVerification extends React.Component {
 }
 function mapStateToProps(state) {
     return {
+        apiResendEmail: state.onBoarding.apiResendEmail,
         newUserDetails: state.onBoarding.newUserDetails,
     };
 }

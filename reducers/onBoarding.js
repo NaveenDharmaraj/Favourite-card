@@ -28,6 +28,12 @@ const onBoarding = (state = {}, action) => {
                 causesList: action.payload.causesList,
             };
             break;
+        case 'USER_EMAIL_RESEND':
+            newState = {
+                ...state,
+                apiResendEmail: action.payload.apiResendEmail,
+            };
+            break;
         default:
             break;
     }

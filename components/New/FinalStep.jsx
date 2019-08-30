@@ -18,12 +18,12 @@ function FinalStep(props) {
                     <div className="reg-header">
                         <Header as="h3">Create your Impact Account. </Header>
                         <Header as="h4">
-                            By clicking ‘Create your Impact Account’, you acknowlege that you have read the 
-                            <a> Privacy Policy</a>
-                            , and agree to the 
-                            <a> Terms & Conditions </a>
+                            By clicking ‘Create your Impact Account’, you acknowlege that you have read the
+                            <a href="https://lab.24467.org/privacy"> Privacy Policy</a>
+                            , and agree to the
+                            <a href="https://lab.24467.org/terms"> Terms & Conditions </a>
                              and 
-                            <a> Account Agreement</a>
+                            <a href="https://lab.24467.org/chimp-account-agreement"> Account Agreement</a>
                             .
                         </Header>
                     </div>

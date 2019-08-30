@@ -51,9 +51,6 @@ class Login extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        let {
-            validity,
-        } = this.state;
         if (!_.isEqual(this.props, prevProps)) {
             if (!_.isEmpty(this.props.newUserDetails)) {
                 storage.set('newUserDetails', this.props.newUserDetails, 'local', null);
@@ -121,11 +118,18 @@ class Login extends React.Component {
 
     intializeValidations() {
         this.validity = {
+            doesFirstNameHave2: true,
             isEmailIdNotNull: true,
             isEmailIdValid: true,
+            isEmailLengthInLimit: true,
             isEmailValidFormat: true,
+            isFirstnameLengthInLimit: true,
             isFirstNameNotNull: true,
+            isFirstNameValid: true,
+            isLastnameLengthInLimit: true,
             isLastNameNotNull: true,
+            isLastNameValid: true,
+            isPasswordLengthInLimit: true,
             isPasswordValid: true,
             isValidCauses: true,
         };
@@ -191,7 +195,7 @@ class Login extends React.Component {
                     buttonClicked: true,
                 });
                 const userDetails = {};
-                userDetails.name = (firstName) ? firstName + lastName : '';
+                userDetails.name = (firstName) ? `${firstName} ${lastName}` : '';
                 userDetails.given_name = firstName;
                 userDetails.family_name = lastName;
                 userDetails.email = emailId;
