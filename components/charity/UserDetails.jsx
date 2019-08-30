@@ -4,7 +4,10 @@ import {
     bool,
     PropTypes,
     string,
+    func,
+    number,
 } from 'prop-types';
+import _ from 'lodash';
 import _isEmpty from 'lodash/isEmpty';
 import {
     Grid,
@@ -13,7 +16,10 @@ import {
     Container,
 } from 'semantic-ui-react';
 
-import ShareDetails from './ShareDetails';
+import {
+    generateDeepLink,
+} from '../../actions/profile';
+import ShareDetails from '../shared/ShareSectionProfilePage';
 
 const createUserDetails = (valuesObject) => {
     const data = [
@@ -120,41 +126,66 @@ const detailsView = (valuesObject) => {
     );
 };
 
-const UserDetails = (props) => {
-    const {
-        charityDetails,
-        isAUthenticated,
-    } = props;
+class UserDetails extends React.Component {
+    componentDidMount() {
+        const {
+            dispatch,
+            deepLinkUrl,
+            userId,
+            charityDetails: {
+                charityDetails: {
+                    id: charityId,
+                },
+            },
+        } = this.props;
+        if (_isEmpty(deepLinkUrl)) {
+            generateDeepLink(`deeplink?profileType=charityprofile&sourceId=${userId}&profileId=${charityId}`, dispatch);
+        }
+    }
 
-    return (
-        <div className="profile-info-wraper pb-3">
-            <Container>
-                <div className="profile-info-card charity">
-                    <Header as="h3">
-                        Charity information
-                    </Header>
-                    <Grid divided stackable>
-                        <Grid.Row>
-                            <Grid.Column mobile={16} tablet={10} computer={10}>
-                                <Grid columns={2}>
-                                    {((!_isEmpty(charityDetails.charityDetails.attributes))
-                                    && detailsView(charityDetails.charityDetails.attributes))}
-                                </Grid>
-                            </Grid.Column>
-                            {(isAUthenticated
-                            && <ShareDetails />)}
+    render() {
+        const {
+            charityDetails,
+            isAUthenticated,
+            deepLinkUrl,
+            userId,
+        } = this.props;
+        return (
+            <div className="profile-info-wraper pb-3">
+                <Container>
+                    <div className="profile-info-card charity">
+                        <Header as="h3">
+                            Charity information
+                        </Header>
+                        <Grid divided stackable>
+                            <Grid.Row>
+                                <Grid.Column mobile={16} tablet={10} computer={10}>
+                                    <Grid columns={2}>
+                                        {((!_isEmpty(charityDetails.charityDetails.attributes))
+                                        && detailsView(charityDetails.charityDetails.attributes))}
+                                    </Grid>
+                                </Grid.Column>
+                                {isAUthenticated
+                                && (
+                                    <ShareDetails
+                                        deepLinkUrl={deepLinkUrl}
+                                        profileDetails={this.props.charityDetails.charityDetails}
+                                        userId={userId}
+                                    />
+                                )}
 
-                        </Grid.Row>
-                    </Grid>
-                    <p className="mt-1">
-                    Is this your chariy? You can claim your free profile page on your platform
-                        <a href="#">by following these steps</a>
-                    </p>
-                </div>
-            </Container>
-        </div>
-    );
-};
+                            </Grid.Row>
+                        </Grid>
+                        <p className="mt-1">
+                        Is this your chariy? You can claim your free profile page on your platform
+                            <a href="#">by following these steps</a>
+                        </p>
+                    </div>
+                </Container>
+            </div>
+        );
+    }
+}
 
 UserDetails.defaultProps = {
     charityDetails: {
@@ -164,7 +195,9 @@ UserDetails.defaultProps = {
             },
         },
     },
+    dispatch: _.noop,
     isAUthenticated: false,
+    userId: null,
 };
 
 UserDetails.propTypes = {
@@ -175,13 +208,17 @@ UserDetails.propTypes = {
             }),
         },
     },
+    dispatch: func,
     isAUthenticated: bool,
+    userId: number,
 };
 
 function mapStateToProps(state) {
     return {
         charityDetails: state.give.charityDetails,
+        deepLinkUrl: state.profile.deepLinkUrl,
         isAUthenticated: state.auth.isAuthenticated,
+        userId: state.user.info.id,
     };
 }
 
