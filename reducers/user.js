@@ -75,6 +75,12 @@ const user = (state = {}, action) => {
                 },
             };
             break;
+        case 'SAVE_DEEP_LINK':
+            newState = {
+                ...state,
+                deepLink: action.payload.deepLink,
+            };
+            break;
         case 'GIVING_GROUPS_AND_CAMPAIGNS':
             const {
                 administeredGroups,
@@ -82,15 +88,15 @@ const user = (state = {}, action) => {
             } = action.payload;
             newState = {
                 ...state,
-                administeredGroups: Object.assign({}, state.administeredGroups, action.payload.administeredGroups),
                 administeredCampaigns: Object.assign({}, state.administeredCampaigns, action.payload.administeredCampaigns),
+                administeredGroups: Object.assign({}, state.administeredGroups, action.payload.administeredGroups),
                 groupsWithMemberships: Object.assign({}, state.groupsWithMemberships, action.payload.groupsWithMemberships),
             };
             break;
         case 'LEAVE_GROUP_ERROR_MESSAGE':
             newState = {
                 ...state,
-                leaveErrorMessage : action.payload,
+                leaveErrorMessage: action.payload,
             }
             break;
         case 'USER_GIVING_GOAL_DETAILS':
