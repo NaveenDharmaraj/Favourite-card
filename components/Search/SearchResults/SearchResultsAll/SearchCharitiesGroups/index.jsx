@@ -81,8 +81,10 @@ class SearchCharitiesGroups extends React.Component {
 
     render() {
         const {
+            charities,
             charityLoader,
             groupLoader,
+            groups,
             searchWord
         } = this.props;
         let searchQueryParam = '';
@@ -94,7 +96,10 @@ class SearchCharitiesGroups extends React.Component {
                 <div className="search-main-head charities">
                     <Header as="h2">
                         CHARITIES
-                        <Link route={`/search?${searchQueryParam}result_type=Beneficiary`} style={{ color: "#4183c4",textDecoration: "none" , fontSize: "1rem" }}>&nbsp;&nbsp;View all</Link>
+                        {
+                            (!_isEmpty(charities) && !_isEmpty(charities.meta) && charities.meta.recordCount > 4)
+                            && <Link route={`/search?${searchQueryParam}result_type=Beneficiary`} style={{ color: "#4183c4",textDecoration: "none" , fontSize: "1rem" }}>&nbsp;&nbsp;View all</Link>
+                        }
                         <Header.Subheader>Manage your account settings and set email preferences</Header.Subheader>
                     </Header>
                     <div className="search-result-all">
@@ -112,7 +117,10 @@ class SearchCharitiesGroups extends React.Component {
                 <div className="search-main-head charities">
                     <Header as="h2">
                     GIVING GROUPS
-                        <Link route={`/search?${searchQueryParam}result_type=Group`}>&nbsp;&nbsp;View all</Link>
+                        {
+                            (!_isEmpty(groups) && !_isEmpty(groups.meta) && groups.meta.recordCount > 4)
+                            && <Link route={`/search?${searchQueryParam}result_type=Group`}>&nbsp;&nbsp;View all</Link>
+                        }
                         <Header.Subheader>Manage your account settings and set email preferences</Header.Subheader>
                     </Header>
                     {groupLoader ? (
