@@ -74,7 +74,10 @@ const group = (state = {}, action) => {
                     ...state,
                     groupActivities: {
                         ...state.groupActivities,
-                        data: _.uniqWith(data, _.isEqual),
+                        data: _.uniqBy(data,
+                            (e) => {
+                                return e.id;
+                            }),
                         nextLink: action.payload.nextLink,
                     },
                     loadComments: false,
@@ -86,8 +89,10 @@ const group = (state = {}, action) => {
                         ...state,
                         groupActivities: {
                             ...state.groupActivities,
-                            data: _.uniqWith(data, _.isEqual),
-                            // nextLink: action.payload.nextLink,
+                            data: _.uniqBy(data,
+                                (e) => {
+                                    return e.id;
+                                }),
                         },
                         loadComments: false,
                     };
