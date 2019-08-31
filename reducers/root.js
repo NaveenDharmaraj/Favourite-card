@@ -10,6 +10,7 @@ import onBoarding from './onBoarding';
 import app from './app';
 import taxreceipt from './taxreceipt';
 import profile from './profile';
+import firebase from './firebase';
 
 const root = combineReducers({
     app,
@@ -21,6 +22,7 @@ const root = combineReducers({
     taxreceipt,
     profile,
     user,
+    firebase,
     charity,
 });
 
