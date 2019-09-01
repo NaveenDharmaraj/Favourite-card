@@ -62,18 +62,21 @@ export const getGroupMemberDetails = async (dispatch, id, url) => {
     } else {
         newUrl = `/groups/${id}/groupMembers?page[size]=7`;
     }
-    coreApi.get(newUrl)
-        .then((result) => {
-            if (result && !_.isEmpty(result.data)) {
-                const memberDetails = {
-                    data: result.data,
-                    nextLink: (result.links.next) ? result.links.next : null,
-                };
-                fsa.payload.groupMembersDetails = memberDetails;
-            }
-        }).catch().finally(() => {
-            dispatch(fsa);
-        });
+    coreApi.get(newUrl, {
+        params: {
+            uxCritical: true,
+        },
+    }).then((result) => {
+        if (result && !_.isEmpty(result.data)) {
+            const memberDetails = {
+                data: result.data,
+                nextLink: (result.links.next) ? result.links.next : null,
+            };
+            fsa.payload.groupMembersDetails = memberDetails;
+        }
+    }).catch().finally(() => {
+        dispatch(fsa);
+    });
 };
 
 export const getGroupAdminDetails = async (dispatch, id, url) => {
@@ -89,18 +92,21 @@ export const getGroupAdminDetails = async (dispatch, id, url) => {
     } else {
         newUrl = `/groups/${id}/groupAdmins?page[size]=7`;
     }
-    coreApi.get(newUrl)
-        .then((result) => {
-            if (result && !_.isEmpty(result.data)) {
-                const adminDetails = {
-                    data: result.data,
-                    nextLink: (result.links.next) ? result.links.next : null,
-                };
-                fsa.payload.groupAdminsDetails = adminDetails;
-            }
-        }).catch().finally(() => {
-            dispatch(fsa);
-        });
+    coreApi.get(newUrl, {
+        params: {
+            uxCritical: true,
+        },
+    }).then((result) => {
+        if (result && !_.isEmpty(result.data)) {
+            const adminDetails = {
+                data: result.data,
+                nextLink: (result.links.next) ? result.links.next : null,
+            };
+            fsa.payload.groupAdminsDetails = adminDetails;
+        }
+    }).catch().finally(() => {
+        dispatch(fsa);
+    });
 };
 
 export const getGroupBeneficiaries = async (dispatch, id, url) => {
@@ -116,18 +122,21 @@ export const getGroupBeneficiaries = async (dispatch, id, url) => {
     } else {
         newUrl = `groups/${id}/groupBeneficiaries?page[size]=3`;
     }
-    coreApi.get(newUrl)
-        .then((result) => {
-            if (result && !_.isEmpty(result.data)) {
-                const beneficiariesDetails = {
-                    data: result.data,
-                    nextLink: (result.links.next) ? result.links.next : null,
-                };
-                fsa.payload.groupBeneficiaries = beneficiariesDetails;
-            }
-        }).catch().finally(() => {
-            dispatch(fsa);
-        });
+    coreApi.get(newUrl, {
+        params: {
+            uxCritical: true,
+        },
+    }).then((result) => {
+        if (result && !_.isEmpty(result.data)) {
+            const beneficiariesDetails = {
+                data: result.data,
+                nextLink: (result.links.next) ? result.links.next : null,
+            };
+            fsa.payload.groupBeneficiaries = beneficiariesDetails;
+        }
+    }).catch().finally(() => {
+        dispatch(fsa);
+    });
 };
 
 export const getTransactionDetails = async (dispatch, id, url) => {
@@ -143,14 +152,17 @@ export const getTransactionDetails = async (dispatch, id, url) => {
     } else {
         newUrl = `groups/${id}/activities?filter[moneyItems]=all&page[size]=10`;
     }
-    await coreApi.get(newUrl)
-        .then((result) => {
-            if (result && !_.isEmpty(result.data)) {
-                fsa.payload.groupTransactions = result;
-            }
-        }).catch().finally(() => {
-            dispatch(fsa);
-        });
+    await coreApi.get(newUrl, {
+        params: {
+            uxCritical: true,
+        },
+    }).then((result) => {
+        if (result && !_.isEmpty(result.data)) {
+            fsa.payload.groupTransactions = result;
+        }
+    }).catch().finally(() => {
+        dispatch(fsa);
+    });
 };
 
 export const getGroupActivities = async (dispatch, id, url, isPostActivity) => {
@@ -168,18 +180,21 @@ export const getGroupActivities = async (dispatch, id, url, isPostActivity) => {
     }
 
 
-    coreApi.get(newUrl)
-        .then((result) => {
-            if (result && !_.isEmpty(result.data)) {
-                fsa.payload.groupActivities = result;
-                if (!isPostActivity) {
-                    fsa.payload.nextLink = (result.links.next) ? result.links.next : null;
-                }
-                fsa.payload.isPostActivity = isPostActivity ? isPostActivity : false;
+    coreApi.get(newUrl, {
+        params: {
+            uxCritical: true,
+        },
+    }).then((result) => {
+        if (result && !_.isEmpty(result.data)) {
+            fsa.payload.groupActivities = result;
+            if (!isPostActivity) {
+                fsa.payload.nextLink = (result.links.next) ? result.links.next : null;
             }
-        }).catch().finally(() => {
-            dispatch(fsa);
-        });
+            fsa.payload.isPostActivity = isPostActivity ? isPostActivity : false;
+        }
+    }).catch().finally(() => {
+        dispatch(fsa);
+    });
 };
 
 export const getCommentFromActivityId = async (dispatch, id, url, isReply) => {
@@ -190,16 +205,19 @@ export const getCommentFromActivityId = async (dispatch, id, url, isReply) => {
         type: actionTypes.GET_GROUP_COMMENTS,
     };
 
-    coreApi.get(url)
-        .then((result) => {
-            if (result && !_.isEmpty(result.data)) {
-                fsa.payload.groupComments = result.data;
-                fsa.payload.activityId = id;
-                fsa.payload.isReply = isReply ? isReply : false;
-            }
-        }).catch().finally(() => {
-            dispatch(fsa);
-        });
+    coreApi.get(url, {
+        params: {
+            uxCritical: true,
+        },
+    }).then((result) => {
+        if (result && !_.isEmpty(result.data)) {
+            fsa.payload.groupComments = result.data;
+            fsa.payload.activityId = id;
+            fsa.payload.isReply = isReply ? isReply : false;
+        }
+    }).catch().finally(() => {
+        dispatch(fsa);
+    });
 };
 
 export const postActivity = async (dispatch, id, msg) => {

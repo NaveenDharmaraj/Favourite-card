@@ -141,7 +141,7 @@ ReceivingOrganisations.propTypes = {
 
 function mapStateToProps(state) {
     return {
-        charityDetails: state.give.charityDetails,
+        charityDetails: state.charity.charityDetails,
         donationDetails: state.charity.donationDetails,
     };
 }
