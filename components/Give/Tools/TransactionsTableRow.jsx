@@ -57,9 +57,7 @@ class TransactionTableRow extends React.Component {
                         trigger={
                             <Button
                                 onClick={() => this.setState({ showModal: true })}
-                                basic
-                                color='blue'
-                                content='Blue' 
+                                className="blue-bordr-btn-round-def c-small"
                             >
                                 Delete
                             </Button>

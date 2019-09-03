@@ -63,8 +63,8 @@ function AllocationsTable(props) {
                         <Table.HeaderCell>Amount</Table.HeaderCell>
                         <Table.HeaderCell>Day of month</Table.HeaderCell>
                         <Table.HeaderCell>Credit Card</Table.HeaderCell>
-                        <Table.HeaderCell>Created</Table.HeaderCell>
-                        <Table.HeaderCell>Actions</Table.HeaderCell>
+                        <Table.HeaderCell className="w-120">Created</Table.HeaderCell>
+                        <Table.HeaderCell>Action</Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
                 {(monthlyTransactionApiCall === undefined || false) ? (<PlaceholderGrid row={2} column={6} placeholderType="table" />) : (
