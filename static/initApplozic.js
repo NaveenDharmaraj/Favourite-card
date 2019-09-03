@@ -37,7 +37,8 @@ var events = {
         console.log("New Message REcieved");
         if (resp.message.contentType !== 10 && resp.message.contentType !== 102) {
             window.totalUnreadCount++;
-            document.title = window.totalUnreadCount + " Unread Msgs";
+            window.dispatchEvent(new CustomEvent("onUnreadMessageCountUpdate", { detail: { count: window.totalUnreadCount } }));
+            // document.title = window.totalUnreadCount + " Unread Msgs";
             if (!window.hasFocus) {
                 Notification.requestPermission(function (permission) {
                     // If the user accepts, let's create a notification
@@ -117,7 +118,7 @@ window.onload = function () {
                 data.deviceKey = response.deviceKey;
                 data.websocketUrl = response.websocketUrl;
                 window.totalUnreadCount = response.totalUnreadCount;
-                document.title = window.totalUnreadCount + " Unread Msgs";
+                //document.title = window.totalUnreadCount + " Unread Msgs";
                 // localStorage.setItem("_deviceKey", data.deviceKey);
                 // localStorage.setItem("_applozicToken", data.token);
                 // localStorage.setItem("_applozicWebsocketUrl", data.websocketUrl);
@@ -127,7 +128,8 @@ window.onload = function () {
                 //Get your App ID from [Applozic Dashboard](https://console.applozic.com/settings/install)
                 window.Applozic.ALSocket.init(window.APPLOZIC_APP_KEY, data, events);
                 Notification.requestPermission();
-                Applozic.ALApiService.getMessages({
+                window.dispatchEvent(new CustomEvent("onUnreadMessageCountUpdate", { detail: { count: window.totalUnreadCount } }));
+                /*Applozic.ALApiService.getMessages({
                     data:
                     {
                         startIndex: 0,
@@ -139,7 +141,7 @@ window.onload = function () {
                         window.dispatchEvent(onMessagesListLoad);
                     },
                     error: function () { }
-                });
+                });*/
                 // This method initializes socket connection
             },
             error: function () {

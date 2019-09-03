@@ -40,14 +40,14 @@ class ChatWrapper extends React.Component {
     months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     constructor(props) {
         super(props)
-        const messageCount = props.messageCount;
+        // const messageCount = props.messageCount;
         //  const messages = props.messages;
         const userInfo = props.userInfo;
         const dispatch = props.dispatch;
         this.state = {
             msgId: props.msgId,
             groupAction: "",
-            messageCount: messageCount,
+            // messageCount: messageCount,
             messages: [],
             userDetails: {},
             groupFeeds: {},
@@ -263,14 +263,14 @@ class ChatWrapper extends React.Component {
         // params["_deviceKey"] = this.state.userInfo.applogicClientRegistration.deviceKey;
         applozicApi.post("/group/update", params).then(function (response) {
             self.setGroupAction(null);
-            self.loadConversations();
+            self.loadConversations(false, groupId);
         });
     }
 
     loadConversationMessages(selectedConversation, endTime, resetMessages) {
         self = this;
         if (selectedConversation && !self.loading) {
-            console.log("loadConversationMessages");
+            // console.log("loadConversationMessages");
             self.loading = true;
             let params = { endTime: endTime, pageSize: 10 }; //{ startIndex: startIndex, mainPageSize: 100, pageSize: 50 };
             if (selectedConversation.groupId) {
@@ -291,8 +291,8 @@ class ChatWrapper extends React.Component {
                     newState["editGroupName"] = grpInfo["name"];
                     newState["editGroupImageUrl"] = grpInfo["imageUrl"];
                 }
-                console.log("loadConversationMessages Done");
-                console.log(newState);
+                // console.log("loadConversationMessages Done");
+                // console.log(newState);
                 self.setState(newState);
                 if (resetMessages && self.scrollParentRef) {
                     self.scrollParentRef.scrollTop = self.scrollParentRef.scrollHeight;
@@ -348,7 +348,7 @@ class ChatWrapper extends React.Component {
         let self = this;
         applozicApi.get("/message/v2/list", { params: { startIndex: 0, mainPageSize: 100, pageSize: 50 } }).then(function (response) {
             // handle success
-            console.log(response);
+            // console.log(response);
             let userDetails = self.state.userDetails;
             _.forEach(response.response.userDetails, function (userDetail) {
                 userDetails[userDetail.userId] = userDetail;
@@ -376,7 +376,7 @@ class ChatWrapper extends React.Component {
                 self.refs.conversationSearchEl.inputRef.current.value = "";
             }
             if (!ignoreLoadingChatMsgs || (self.state.selectedConversation.contactIds == response.response.message[0]['contactIds'] && self.state.selectedConversation.groupId == response.response.message[0]['groupId'])) { //self.conversationHead(response.response.message[0])['info']['unreadCount'] > 0 &&
-                console.log("Loading Conv msgs");
+                // console.log("Loading Conv msgs");
                 let newState = { selectedConversation: selectedConversation };
                 if (selectedConversation.groupId) {
                     let groupInfo = groupFeeds[selectedConversation.groupId];
@@ -416,7 +416,7 @@ class ChatWrapper extends React.Component {
         // }
     }
     onMessageReceived = (e) => {
-        console.log(e);
+        // console.log(e);
         this.loadConversations(true, e.detail.message.to);
         // this.loadConversations();
     }
@@ -586,7 +586,7 @@ class ChatWrapper extends React.Component {
         let userInfo = {};
         _.forEach(groupUsers, function (user) {
             if (user.userId == userId) {
-                console.log(user);
+                // console.log(user);
                 userInfo = user;
             }
         });
@@ -678,7 +678,7 @@ class ChatWrapper extends React.Component {
                                                                                 <List.Content className="grpNameEdit">
                                                                                     {(() => {
                                                                                         if (self.state.editGroup) {
-                                                                                            return <Fragment><Input maxLength="25" placeholder='Group Title' ref="groupName" onKeyDown={(e) => { console.log(e); }} value={self.state.newGroupName} onChange={(e) => { self.setState({ newGroupName: e.target.value }) }} /><span className="charCount" ref="groupNameCharCount">{self.state.newGroupName.length}/25</span><Button className="EditGrpName" onClick={self.handleNewGroupEditDone.bind(this)}><Icon name="check circle" /></Button></Fragment>
+                                                                                            return <Fragment><Input maxLength="25" placeholder='Group Title' ref="groupName" onKeyDown={(e) => { }} value={self.state.newGroupName} onChange={(e) => { self.setState({ newGroupName: e.target.value }) }} /><span className="charCount" ref="groupNameCharCount">{self.state.newGroupName.length}/25</span><Button className="EditGrpName" onClick={self.handleNewGroupEditDone.bind(this)}><Icon name="check circle" /></Button></Fragment>
                                                                                         } else {
                                                                                             return <Fragment>{self.state.newGroupName}<Button className="EditGrpName" onClick={self.handleNewGroupEdit.bind(this)}><Icon name="pencil" /></Button></Fragment>;
                                                                                         }
@@ -746,7 +746,7 @@ class ChatWrapper extends React.Component {
                                                                                 {(() => {
                                                                                     // if (self.state.selectedConversation && self.state.selectedConversation.groupId) {
 
-                                                                                    console.log(currentUserInfo);
+                                                                                    // console.log(currentUserInfo);
                                                                                     // console.log(groupFeed);
                                                                                     {
                                                                                         return groupFeed.groupUsers.map(function (user) {
@@ -762,8 +762,8 @@ class ChatWrapper extends React.Component {
                                                                                                                     <Popup.Content>
                                                                                                                         <List>
                                                                                                                             {/* <List.Item as='a' onClick={() => self.setGroupAction('MEMBERS_LIST')}>Message</List.Item> */}
-                                                                                                                            <List.Item as='a' onClick={() => self.updateGroupDetails(groupFeed.clientGroupId, { userId: user.userId, role: 1 })}>Make as Admin</List.Item>
-                                                                                                                            <Divider />
+                                                                                                                            {user.role != "1" ? <List.Item as='a' onClick={() => self.updateGroupDetails(groupFeed.clientGroupId, { userId: user.userId, role: 1 })}>Make as Admin</List.Item> : ""}
+                                                                                                                            {user.role != "1" ? <Divider /> : ""}
                                                                                                                             <List.Item as='a' className="red" onClick={() => self.removeUserFromGroup(groupFeed.clientGroupId, user.userId)}>Remove</List.Item>
                                                                                                                         </List>
                                                                                                                     </Popup.Content>
@@ -1076,7 +1076,6 @@ class ChatWrapper extends React.Component {
 function mapStateToProps(state) {
     return {
         auth: state.user.auth,
-        messageCount: state.firebase.messages ? Object.keys(state.firebase.messages).length : 0,
         userInfo: state.user.info
     };
 }

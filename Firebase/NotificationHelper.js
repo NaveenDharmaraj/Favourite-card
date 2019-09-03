@@ -1,7 +1,7 @@
 import { Firebase } from "./init";
 import { firebaseMessageFetchCompleteAction } from "../actions/firebase";
 import _ from 'lodash';
-import socialApi from '../services/socialApi';
+import eventApi from '../services/eventApi';
 const ACCEPT_FREIND_PAYLOAD = {
     "type": "event",
     "attributes": {
@@ -81,7 +81,7 @@ class NotificationHelper {
         requestData.attributes.payload.message = "Accepted.";
         requestData.attributes.payload.deepLink = msgData.link;
         requestData.attributes.payload.linkedEventId = msgData.eventId;
-        await socialApi.post("/event", { data: requestData });
+        await eventApi.post("/event", { data: requestData });
         await NotificationHelper.getMessages(userInfo, dispatch);
     }
 

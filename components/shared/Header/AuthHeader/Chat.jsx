@@ -41,7 +41,7 @@ class Chat extends React.Component {
         console.log(e.detail);
         this.setState({ totalUnreadCount: e.detail.totalUnreadCount, messagesList: messagesList, userDetails: usersInfoById, groupFeeds: groupFeedsById });
     }
-*/ 
+*/
 
     onMessageReceived = (e) => {
         console.log("onMessageReceived");
@@ -159,7 +159,7 @@ class Chat extends React.Component {
                                                 <div style={{ cursor: "pointer", maxWidth: "300px", width: "300px", overflow: "break-word", display: 'inline-block' }}>{msg.message}</div> &nbsp;&nbsp;&nbsp;&nbsp;
                                             </List.Header>
                                             <List.Description>
-                                                {self.timeString(msg.createdAtTime)}
+                                                {self.timeString(msg.createdAtTime, true)}
                                             </List.Description>
                                         </List.Content>
                                     </List.Item>)
