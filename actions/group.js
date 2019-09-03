@@ -64,6 +64,7 @@ export const getGroupMemberDetails = async (dispatch, id, url) => {
     }
     coreApi.get(newUrl, {
         params: {
+            dispatch,
             uxCritical: true,
         },
     }).then((result) => {
@@ -94,6 +95,7 @@ export const getGroupAdminDetails = async (dispatch, id, url) => {
     }
     coreApi.get(newUrl, {
         params: {
+            dispatch,
             uxCritical: true,
         },
     }).then((result) => {
@@ -124,6 +126,7 @@ export const getGroupBeneficiaries = async (dispatch, id, url) => {
     }
     coreApi.get(newUrl, {
         params: {
+            dispatch,
             uxCritical: true,
         },
     }).then((result) => {
@@ -154,6 +157,7 @@ export const getTransactionDetails = async (dispatch, id, url) => {
     }
     await coreApi.get(newUrl, {
         params: {
+            dispatch,
             uxCritical: true,
         },
     }).then((result) => {
@@ -182,6 +186,7 @@ export const getGroupActivities = async (dispatch, id, url, isPostActivity) => {
 
     coreApi.get(newUrl, {
         params: {
+            dispatch,
             uxCritical: true,
         },
     }).then((result) => {
@@ -207,6 +212,7 @@ export const getCommentFromActivityId = async (dispatch, id, url, isReply) => {
 
     coreApi.get(url, {
         params: {
+            dispatch,
             uxCritical: true,
         },
     }).then((result) => {
