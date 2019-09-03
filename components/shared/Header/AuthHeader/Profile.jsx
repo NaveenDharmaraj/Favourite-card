@@ -76,6 +76,7 @@ class Profile extends React.Component {
                 position="bottom right"
                 open={this.state.popupOpen}
                 onOpen={()=>{this.setState({popupOpen: !this.state.popupOpen})}}
+                onClose={()=>{this.setState({popupOpen: !this.state.popupOpen})}}
                 trigger={(
                     <Menu.Item as="a" className="user-img">
                         <Image src={avatar} style={{ width: '35px' }} circular />

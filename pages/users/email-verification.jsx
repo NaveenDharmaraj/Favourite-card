@@ -24,13 +24,22 @@ class EmailVerification extends React.Component {
             let newUserDetailsLocal = storage.get('newUserDetails', 'local');
             newUserDetails = JSON.parse(newUserDetailsLocal);
         }
+<<<<<<< HEAD
         this.state = {
             newUserDetails,
         };
         if (newUserDetails === undefined) {
             Router.pushRoute('/users/error');
         }
+=======
+>>>>>>> integration/iteration_1_and_2
 
+        if (newUserDetails === null) {
+            Router.pushRoute('/users/login');
+        }
+        this.state = {
+            newUserDetails,
+        };
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
@@ -52,50 +61,53 @@ class EmailVerification extends React.Component {
         const {
             apiResendEmail,
         } = this.props;
-        return (
-            <Layout>
-                <div className="pageWraper">
-                    <Container>
-                        <div className="linebg">
-                            <Grid columns={2} verticalAlign="middle">
-                                <Grid.Row>
-                                    <Grid.Column className="left-bg"></Grid.Column>
-                                    <Grid.Column>
-                                        <div className="login-form-wraper">
-                                            <div className="reg-header">
-                                                <Header as="h3">Verify your email.</Header>
-                                                <Header as="h4">
-                                                    We’ve emailed a verification link to <a>{newUserDetails.email}</a>
-                                                    . Click the link in that email to finish creating your account.
-                                                </Header>
-                                                <Header as="h4">
-                                                    Don’t see an email from us?
-                                                </Header>
-                                            </div>
-                                            <Form>
-                                                <div className="create-btn-wraper">
-                                                    <Button
-                                                        type="submit"
-                                                        onClick={this.handleSubmit}
-                                                        primary
-                                                        // disabled={!!apiResendEmail}
-                                                    >
-                                                        Resend email
-                                                    </Button>
+        if (newUserDetails) {
+            return (
+                <Layout>
+                    <div className="pageWraper">
+                        <Container>
+                            <div className="linebg">
+                                <Grid columns={2} verticalAlign="middle">
+                                    <Grid.Row>
+                                        <Grid.Column className="left-bg"></Grid.Column>
+                                        <Grid.Column>
+                                            <div className="login-form-wraper">
+                                                <div className="reg-header">
+                                                    <Header as="h3">Verify your email.</Header>
+                                                    <Header as="h4">
+                                                        We’ve emailed a verification link to <a>{newUserDetails.email}</a>
+                                                        . Click the link in that email to finish creating your account.
+                                                    </Header>
+                                                    <Header as="h4">
+                                                        Don’t see an email from us?
+                                                    </Header>
                                                 </div>
-                                                {!!apiResendEmail && <Message compact color='green'>Email Sent</Message>}
-
-                                            </Form>
-                                        </div>
-                                    </Grid.Column>
-                                </Grid.Row>
-
-                            </Grid>
-                        </div>
-                    </Container>
-                </div>
-            </Layout>
-        );
+                                                <Form>
+                                                    <div className="create-btn-wraper">
+                                                        <Button
+                                                            type="submit"
+                                                            onClick={this.handleSubmit}
+                                                            primary
+                                                            // disabled={!!apiResendEmail}
+                                                        >
+                                                            Resend email
+                                                        </Button>
+                                                    </div>
+                                                    {!!apiResendEmail && <Message compact color='green'>Email Sent</Message>}
+    
+                                                </Form>
+                                            </div>
+                                        </Grid.Column>
+                                    </Grid.Row>
+    
+                                </Grid>
+                            </div>
+                        </Container>
+                    </div>
+                </Layout>
+            );
+        }
+        return null;
     }
 }
 function mapStateToProps(state) {
