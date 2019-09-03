@@ -922,6 +922,8 @@ class Group extends React.Component {
                             name="giveFrom"
                             formatMessage={formatMessage}
                             parentInputChange={this.handleInputChange}
+                            giveTo={giveTo}
+                            giveFromUrl={!groupFromUrl}
                             parentOnBlurChange={this.handleInputOnBlur}
                         />
                         )}
@@ -951,9 +953,7 @@ class Group extends React.Component {
                                 content={(!this.state.buttonClicked) ?
                                     formatMessage('giveCommon:continueButton')
                                     : formatMessage('giveCommon:submittingButton')}
-                                // content= {formatMessage('continueButton')}
                                 disabled={(this.state.buttonClicked) }
-                                // fluid={isMobile}
                                 type="submit"
                             />
                         {/* } */}
@@ -978,6 +978,7 @@ const  mapStateToProps = (state, props) => {
     userCampaigns: state.user.userCampaigns,
     userGroups: state.user.userGroups,
     userMembershipGroups:state.user.userMembershipGroups,
+    creditCardApiCall: state.give.creditCardApiCall,
   }
 }
 

@@ -27,6 +27,8 @@ class DropDownAccountOptions extends React.Component {
             companiesAccountsData,
             currentUser,
             fund,
+            giveTo,
+            giveFromUrl,
             userCampaigns,
             userGroups,
             userAccountsFetched,
@@ -55,16 +57,35 @@ class DropDownAccountOptions extends React.Component {
         const giveFromHeader = (type === 'donations') ? formatMessage('addingToLabel') : formatMessage('giveFromLabel');
         const giveFromPlaceHolder = (type === 'donations') ? formatMessage('destinationaccountPlaceHolder') : formatMessage('accountPlaceHolder');
         if (!_.isEmpty(companiesAccountsData) || !_.isEmpty(userCampaigns) || !_.isEmpty(userGroups)) {
-            dropDownData = populateAccountOptions({
-                avatar,
-                companiesAccountsData,
-                firstName,
-                fund,
-                id,
-                lastName,
-                userCampaigns,
-                userGroups,
-            },  {formatMessage, language });
+            if (giveTo && giveTo.value && giveFromUrl) {
+                dropDownData = populateAccountOptions({
+                    avatar,
+                    companiesAccountsData,
+                    firstName,
+                    fund,
+                    id,
+                    lastName,
+                    userCampaigns,
+                    userGroups,
+                }, {
+                    formatMessage,
+                    language,
+                }, giveTo.value);
+            } else {
+                dropDownData = populateAccountOptions({
+                    avatar,
+                    companiesAccountsData,
+                    firstName,
+                    fund,
+                    id,
+                    lastName,
+                    userCampaigns,
+                    userGroups,
+                }, {
+                    formatMessage,
+                    language,
+                });
+            }
         }
         dropDownData = !_.isEmpty(dropDownData) ? dropDownData : null;
         let fieldData = (

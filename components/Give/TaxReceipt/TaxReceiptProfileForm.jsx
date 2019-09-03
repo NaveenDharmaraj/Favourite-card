@@ -9,6 +9,7 @@ import {
     Popup,
     Select,
 } from 'semantic-ui-react';
+import _ from 'lodash';
 
 import {
     canadaProvinceOptions,
@@ -101,6 +102,7 @@ function TaxReceiptProfileForm(props) {
                                     error={!validity.isValidFullName}
                                     onBlur={handleInputOnBlur}
                                     onChange={handleInputChange}
+                                    placeholder={formatMessage('fullNamePlaceHolder')}
                                     value={fullName}
                                 />
                                 <FormValidationErrorMessage
@@ -120,6 +122,7 @@ function TaxReceiptProfileForm(props) {
                                     error={!validity.isValidAddress}
                                     onBlur={handleInputOnBlur}
                                     onChange={handleInputChange}
+                                    placeholder={formatMessage('addressPlaceHolder')}
                                     value={addressOne}
                                 />
                                 <FormValidationErrorMessage
@@ -139,6 +142,7 @@ function TaxReceiptProfileForm(props) {
                                     error={!validity.isValidSecondAddress}
                                     onBlur={handleInputOnBlur}
                                     onChange={handleInputChange}
+                                    placeholder={formatMessage('secondAddressPlaceHolder')}
                                     value={_.isEmpty(addressTwo) ? '' : addressTwo}
                                 />
                                 
@@ -155,6 +159,7 @@ function TaxReceiptProfileForm(props) {
                                     error={!validity.isValidCity}
                                     onBlur={handleInputOnBlur}
                                     onChange={handleInputChange}
+                                    placeholder={formatMessage('cityPlaceHolder')}
                                     value={city}
                                 />
                                 <FormValidationErrorMessage
@@ -189,6 +194,7 @@ function TaxReceiptProfileForm(props) {
                                     error={!validity.isValidPostalCode}
                                     onBlur={handleInputOnBlur}
                                     onChange={handleInputChange}
+                                    placeholder={formatMessage('postalCodePlaceHolder')}
                                     value={postalCode}
                                 />
                                 <FormValidationErrorMessage
@@ -208,8 +214,13 @@ function TaxReceiptProfileForm(props) {
                                     options={provinceOptions}
                                     onChange={handleInputChange}
                                     placeholder={formatMessage('provincePlaceHolder')}
+                                    error={!validity.isValidProvince}
 
                                     value={province}
+                                />
+                                <FormValidationErrorMessage
+                                    condition={!validity.isValidProvince}
+                                    errorMessage={formatMessage('invalidProvince')}
                                 />
                             </Form.Field>
                             { showUSNote &&
