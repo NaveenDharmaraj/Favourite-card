@@ -69,11 +69,11 @@ function DonationsTable(props) {
                         <Table.HeaderCell>Actions</Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
-                {!monthlyTransactionApiCall? (<Table.Body>
+                {(monthlyTransactionApiCall === undefined || false) ? (<PlaceholderGrid row={2} column={6} placeholderType="table" />) : (<Table.Body>
                     {
                         renderTableData()
                     }
-                </Table.Body>) : (<PlaceholderGrid row={2} column={6} placeholderType="table" />)
+                </Table.Body>) 
                 }
             </Table>
         </div>
