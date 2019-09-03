@@ -1,6 +1,6 @@
 import React, { cloneElement, Fragment } from 'react';
 //import dynamic from 'next/dynamic';
-import InfiniteScroll from 'react-infinite-scroller';
+// import InfiniteScroll from 'react-infinite-scroller';
 import { connect } from 'react-redux';
 import {
     Button,
@@ -25,11 +25,11 @@ import {
 } from 'semantic-ui-react'
 import _ from 'lodash';
 // import InboxPeople from './inboxPeople';
-import ChatNameHead from './ChatNameHead';
-import ChatNameHeadGroup from './ChatNameHeadGroup';
-import ChatHistory from './chatHistory';
+// import ChatNameHead from './ChatNameHead';
+// import ChatNameHeadGroup from './ChatNameHeadGroup';
+// import ChatHistory from './chatHistory';
 import moreIcon from '../../static/images/icons/icon-ellipsis-big.svg';
-import { NotificationHelper } from '../../Firebase/NotificationHelper';
+// import { NotificationHelper } from '../../Firebase/NotificationHelper';
 import applozicApi from "../../services/applozicApi"
 
 class ChatWrapper extends React.Component {
@@ -346,7 +346,7 @@ class ChatWrapper extends React.Component {
 
     loadConversations = (ignoreLoadingChatMsgs, groupId) => {
         let self = this;
-        applozicApi.get("/message/v2/list", { params: { startIndex: 0, mainPageSize: 100, pageSize: 50 }, data: { _userId: self.state.userInfo.id, _deviceKey: self.state.userInfo.applogicClientRegistration.deviceKey } }).then(function (response) {
+        applozicApi.get("/message/v2/list", { params: { startIndex: 0, mainPageSize: 100, pageSize: 50 } }).then(function (response) {
             // handle success
             console.log(response);
             let userDetails = self.state.userDetails;
@@ -555,10 +555,15 @@ class ChatWrapper extends React.Component {
         this.setState(newState);
         self.loadConversationMessages(newList.length > 0 ? newList[0] : null, new Date().getTime(), true);
     }
-    timeString(timestamp) {
+    timeString(timestamp, isForLeftConvList) {
         let d = new Date(timestamp);
         let dateStr = this.getDateString(timestamp);
-        return (dateStr == "Today" ? ((d.getHours() < 10 ? "0" : "") + d.getHours() + ":" + (d.getMinutes() < 10 ? "0" : "") + d.getMinutes()) : dateStr);
+        let timeStr = ((d.getHours() < 10 ? "0" : "") + d.getHours() + ":" + (d.getMinutes() < 10 ? "0" : "") + d.getMinutes());
+        if (!isForLeftConvList || dateStr == "Today") {
+            return timeStr;
+        } else {
+            return dateStr;
+        }
     }
     handleScroll(e) {
         // console.log(e.target.scrollTop);
@@ -629,7 +634,7 @@ class ChatWrapper extends React.Component {
                                                                 <List.Item as="a" active={self.state.selectedConversation && msg.key == self.state.selectedConversation.key} key={"head_" + msg.key} onClick={() => self.onConversationSelect(msg)}>
                                                                     <List.Content floated='right'>
                                                                         <div className="time">
-                                                                            {self.timeString(msg.createdAtTime)}
+                                                                            {self.timeString(msg.createdAtTime, true)}
                                                                         </div>
                                                                         <div className="iconWraper">
                                                                             {/* <Icon name="mute" /> */}

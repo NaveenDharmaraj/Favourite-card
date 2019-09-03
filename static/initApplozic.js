@@ -131,9 +131,10 @@ window.onload = function () {
                     data:
                     {
                         startIndex: 0,
-                        mainPageSize: 60
+                        mainPageSize: 5
                     },
                     success: function (response) {
+                        response.totalUnreadCount = window.totalUnreadCount;
                         var onMessagesListLoad = new CustomEvent("onMessagesListLoad", { detail: response });
                         window.dispatchEvent(onMessagesListLoad);
                     },
