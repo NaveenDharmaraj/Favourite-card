@@ -6,8 +6,16 @@ import securityApi from '../services/securityApi';
 import coreApi from '../services/coreApi';
 import eventApi from '../services/eventApi';
 
+import {
+    createToken,
+} from './give';
+import {
+    savePaymentInstrument,
+} from './user';
+
 // eslint-disable-next-line import/exports-last
 export const actionTypes = {
+    ADD_NEW_CREDIT_CARD_STATUS: 'ADD_NEW_CREDIT_CARD_STATUS',
     ADD_USER_CREDIT_CARD: 'ADD_USER_CREDIT_CARD',
     DELETE_USER_CREDIT_CARD: 'DELETE_USER_CREDIT_CARD',
     UPDATE_USER_BASIC_PROFILE: 'UPDATE_USER_BASIC_PROFILE',
@@ -244,6 +252,7 @@ const getFriendsInvitations = (dispatch, email, pageNumber) => {
             fsa.payload = {
                 count: result.meta.recordCount,
                 data: result.data,
+                pageCount: result.meta.pageCount,
             };
         },
     ).catch((error) => {
@@ -490,6 +499,7 @@ const saveCharitableInterests = (dispatch, userId, userCauses, userTags) => {
             fsaCauses.payload = {
                 data: result.data,
             };
+            getUserProfileCauses(dispatch, userId);
         },
     ).catch((error) => {
         fsaCauses.error = error;
@@ -501,6 +511,7 @@ const saveCharitableInterests = (dispatch, userId, userCauses, userTags) => {
             fsaTags.payload = {
                 data: result.data,
             };
+            getUserTagsFollowed(dispatch, userId);
         },
     ).catch((error) => {
         fsaTags.error = error;
@@ -558,15 +569,6 @@ const deleteUserCreditCard = (dispatch, paymentInstrumentId, userId, pageNumber)
     });
 };
 
-const createToken = (cardDetails, cardHolderName) => new Promise((resolve, reject) => {
-    cardDetails.createToken({ name: cardHolderName }).then((result) => {
-        if (result.error) {
-            return reject(result.error);
-        }
-        return resolve(result.token);
-    });
-});
-
 const setUserDefaultCard = (dispatch, paymentInstrumentId, userId, pageNumber) => {
     const fsa = {
         payload: {
@@ -587,41 +589,53 @@ const setUserDefaultCard = (dispatch, paymentInstrumentId, userId, pageNumber) =
     });
 };
 
-const saveNewCreditCard = async (dispatch, stripeCreditCard, cardHolderName, userId, isDefaultCard) => {
+const saveNewCreditCard = async (dispatch, stripeCreditCard, cardHolderName, userId, isDefaultCard, activePage) => {
     const fsa = {
         payload: {
         },
         type: actionTypes.ADD_USER_CREDIT_CARD,
     };
+    dispatch({
+        payload: {
+            newCreditCardApiCall: true,
+        },
+        type: actionTypes.ADD_NEW_CREDIT_CARD_STATUS,
+    });
     const token = await createToken(stripeCreditCard, cardHolderName);
     const paymentInstrumentsData = {
-        data: {
-            attributes: {
-                stripeToken: token.id,
-            },
-            relationships: {
-                paymentable: {
-                    data: {
-                        id: userId,
-                        type: 'user',
-                    },
+        attributes: {
+            stripeToken: token.id,
+        },
+        relationships: {
+            paymentable: {
+                data: {
+                    id: userId,
+                    type: 'user',
                 },
             },
-            type: 'paymentInstruments',
         },
+        type: 'paymentInstruments',
     };
-    return coreApi.post('/paymentInstruments', paymentInstrumentsData).then(
+    return savePaymentInstrument(paymentInstrumentsData).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
             };
             if (isDefaultCard) {
-                setUserDefaultCard(dispatch, Number(result.data.id), userId, 1);
+                setUserDefaultCard(dispatch, Number(result.data.id), userId, activePage);
+            } else {
+                getMyCreditCards(dispatch, userId, activePage);
             }
         },
     ).catch((error) => {
         fsa.error = error;
     }).finally(() => {
+        dispatch({
+            payload: {
+                newCreditCardApiCall: false,
+            },
+            type: actionTypes.ADD_NEW_CREDIT_CARD_STATUS,
+        });
         dispatch(fsa);
     });
 };

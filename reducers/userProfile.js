@@ -107,6 +107,12 @@ const userProfile = (state = {}, action) => {
                 userAcceptFriendRequestData: Object.assign({}, action.payload),
             };
             break;
+        case 'ADD_NEW_CREDIT_CARD_STATUS':
+            newState = {
+                ...state,
+                newCreditCardApiCall: action.payload.newCreditCardApiCall,
+            };
+            break;
         default:
             break;
     }

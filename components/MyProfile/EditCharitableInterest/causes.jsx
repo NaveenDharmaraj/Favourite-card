@@ -49,17 +49,13 @@ class MyCauses extends React.Component {
         const {
             userCauses,
         } = this.state;
-        if (!_.isEqual(this.props, prevProps)) {
-            if (!_.isEqual(userCausesList, prevProps.userCausesList)) {
-                if (!_.isEmpty(userCausesList)) {
-                    userCausesList.forEach((cause, i) => {
-                        if (typeof cause.attributes.status !== 'undefined') {
-                            userCauses.push(cause.attributes.name);
-                        }
-                    });
+        if (!_.isEqual(userCausesList, prevProps.userCausesList) && !_.isEmpty(userCausesList)) {
+            userCausesList.forEach((cause, i) => {
+                if (typeof cause.attributes.status !== 'undefined') {
+                    userCauses.push(cause.attributes.name);
                 }
-                this.setState({ userCauses });
-            }
+            });
+            this.setState({ userCauses });
         }
     }
 

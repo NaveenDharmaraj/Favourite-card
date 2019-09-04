@@ -53,24 +53,22 @@ class EditBasicProfile extends React.Component {
         const {
             friendsLink, onlyMeLink, publicLink, showFriendsIcon, showonlyMeIcon, showPublicIcon,
         } = this.getPrivacySettings(userData);
-        if (!_.isEqual(this.props, prevProps)) {
-            if (!_.isEqual(userData, prevProps.userData)) {
-                this.setState({
-                    userBasicDetails: {
-                        about: userData.description,
-                        firstName: userData.first_name,
-                        friendsLink,
-                        givingGoal: userData.giving_goal_amt,
-                        lastName: userData.last_name,
-                        location: userData.location,
-                        onlyMeLink,
-                        publicLink,
-                        showFriendsIcon,
-                        showonlyMeIcon,
-                        showPublicIcon,
-                    },
-                });
-            }
+        if (!_.isEqual(userData, prevProps.userData)) {
+            this.setState({
+                userBasicDetails: {
+                    about: userData.description,
+                    firstName: userData.first_name,
+                    friendsLink,
+                    givingGoal: userData.giving_goal_amt,
+                    lastName: userData.last_name,
+                    location: userData.location,
+                    onlyMeLink,
+                    publicLink,
+                    showFriendsIcon,
+                    showonlyMeIcon,
+                    showPublicIcon,
+                },
+            });
         }
     }
 

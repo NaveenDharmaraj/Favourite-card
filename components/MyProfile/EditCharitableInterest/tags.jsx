@@ -25,11 +25,11 @@ class MyTags extends React.Component {
             });
         }
         this.state = {
-            userTags,
-            searchWord: '',
             currentActivePage: 1,
-            showLoadMoreButton: true,
+            loader: false,
             recommendedTagsLists: [],
+            searchWord: '',
+            userTags,
         };
         this.handleTags = this.handleTags.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -45,7 +45,7 @@ class MyTags extends React.Component {
             dispatch,
         } = this.props;
         const {
-            currentActivePage
+            currentActivePage,
         } = this.state;
         getUserTagsRecommended(dispatch, id, currentActivePage);
         getUserTagsFollowed(dispatch, id);
@@ -54,24 +54,26 @@ class MyTags extends React.Component {
     componentDidUpdate(prevProps) {
         const {
             userTagsFollowedList,
-            userTagsRecommendedList
+            userTagsRecommendedList,
         } = this.props;
         let {
-            userTags,
             recommendedTagsLists,
         } = this.state;
-        if (!_.isEqual(this.props, prevProps)) {
-            if (!_.isEqual(userTagsFollowedList, prevProps.userTagsFollowedList)) {
-                if (!_.isEmpty(userTagsFollowedList)) {
-                    userTagsFollowedList.data.forEach((tag, i) => {
-                        userTags.push(tag.attributes.name);
-                    });
-                }
-            }
-            if (!_.isEqual(userTagsRecommendedList, prevProps.userTagsRecommendedList)) {
-                recommendedTagsLists = recommendedTagsLists.concat(userTagsRecommendedList.data);
-            }
-            this.setState({ recommendedTagsLists, userTags });
+        const {
+            userTags,
+        } = this.state;
+        if (!_.isEqual(userTagsFollowedList, prevProps.userTagsFollowedList) && !_.isEmpty(userTagsFollowedList)) {
+            userTagsFollowedList.data.forEach((tag, i) => {
+                userTags.push(tag.attributes.name);
+            });
+            this.setState({ userTags });
+        }
+        if (!_.isEqual(userTagsRecommendedList, prevProps.userTagsRecommendedList) && !_.isEmpty(userTagsRecommendedList)) {
+            recommendedTagsLists = recommendedTagsLists.concat(userTagsRecommendedList.data);
+            this.setState({
+                loader: false,
+                recommendedTagsLists,
+            });
         }
     }
 
@@ -129,61 +131,37 @@ class MyTags extends React.Component {
         } = this.props;
         let {
             currentActivePage,
-            showLoadMoreButton,
+            loader,
         } = this.state;
-        if (pageCount > 1) {
-            getUserTagsRecommended(dispatch, id, currentActivePage + 1);
+        if (currentActivePage === pageCount) {
+            loader = false;
         } else {
-            showLoadMoreButton = false;
-        }
-        if (pageCount === currentActivePage + 1) {
-            showLoadMoreButton = false;
+            getUserTagsRecommended(dispatch, id, currentActivePage + 1);
+            loader = true;
         }
         this.setState({
             currentActivePage: currentActivePage + 1,
-            showLoadMoreButton,
+            loader,
         });
     }
 
-    renderSearchedTags() {
+    checkForData() {
         const {
-            userFindTagsList,
+            userTagsRecommendedList,
         } = this.props;
-        const {
-            userTags,
-        } = this.state;
-        let tagsBlock = [];
-        if (!_.isEmpty(userFindTagsList)) {
-            tagsBlock = userFindTagsList.data.map((tag) => {
-                return (
-                    <Button
-                        className={`badgeButton font-s-12 medium ${_.includes(userTags, tag.attributes.name) ? 'active' : ''}`}
-                        id={tag.attributes.name}
-                        name={tag.attributes.name}
-                        onClick={this.handleTags}
-                    >
-                        {tag.attributes.name}
-                    </Button>
-                );
-            });
+        if (!_.isEmpty(userTagsRecommendedList) && userTagsRecommendedList.data && _.size(userTagsRecommendedList.data) > 0) {
+            return true;
         }
-        return (
-            <div className="badge-group">
-                {tagsBlock}
-            </div>
-        );
+        return false;
     }
 
-    renderFollowedTags() {
-        const {
-            userTagsFollowedList,
-        } = this.props;
+    renderTags(tagsList) {
         const {
             userTags,
         } = this.state;
         let tagsBlock = [];
-        if (!_.isEmpty(userTagsFollowedList)) {
-            tagsBlock = userTagsFollowedList.data.map((tag) => {
+        if (!_.isEmpty(tagsList)) {
+            tagsBlock = tagsList.data.map((tag) => {
                 return (
                     <Button
                         className={`badgeButton font-s-12 medium ${_.includes(userTags, tag.attributes.name) ? 'active' : ''}`}
@@ -228,10 +206,37 @@ class MyTags extends React.Component {
         );
     }
 
+    renderSeeMore() {
+        if (this.checkForData()) {
+            const {
+                loader,
+            } = this.state;
+            const {
+                userTagsRecommendedList,
+            } = this.props;
+            if (_.size(userTagsRecommendedList.data) < userTagsRecommendedList.pageCount) {
+                const content = (
+                    <div className="text-centre">
+                        <Button
+                            className="blue-bordr-btn-round-def"
+                            onClick={() => this.handleLoadMoreClick()}
+                            loading={!!loader}
+                            disabled={!!loader}
+                            content="Load more"
+                        />
+                    </div>
+                );
+                return content;
+            }
+        }
+        return null;
+    }
+
     render() {
         const {
-            showLoadMoreButton,
-        } = this.state;
+            userFindTagsList,
+            userTagsFollowedList,
+        } = this.props;
         return (
             <div>
                 <div className="pt-2">
@@ -258,30 +263,21 @@ class MyTags extends React.Component {
                         </Grid.Row>
                     </Grid>
                     <div className="pt-2">
-                        {this.renderSearchedTags()}
+                        {this.renderTags(userFindTagsList)}
                     </div>
                     <div className="pt-2">
                         <p className="mb-1-2"><strong>Tags you follow</strong></p>
                         <p className="mb-2">Tags can refine the charities and Giving Groups discovered for you. </p>
-                        {this.renderFollowedTags()}
+                        {this.renderTags(userTagsFollowedList)}
                     </div>
                     <div className="pt-2">
                         <p className="mb-1-2"><strong>Recommended tags to follow</strong></p>
                         <p className="mb-2">Tags can refine the charities and Giving Groups discovered for you. </p>
                         {this.renderRecommendedTags()}
                     </div>
-                    {
-                        showLoadMoreButton && (
-                            <div className="bigBtn pt-1">
-                                <Button
-                                    className="blue-bordr-btn-round-def"
-                                    onClick={this.handleLoadMoreClick}
-                                >
-                                    Load more
-                                </Button>
-                            </div>
-                        )
-                    }
+                    <div className="pt-1">
+                        {this.renderSeeMore()}
+                    </div>
                 </div>
             </div>
         );

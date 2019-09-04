@@ -104,7 +104,6 @@ class Donation extends React.Component {
             id,
         }
     } = this.props;
-        console.log(this.props);
         dispatch(getDonationMatchAndPaymentInstruments(id, 'donations'));
     }
 

@@ -824,3 +824,7 @@ export const getGroupsFromSlug = (dispatch, slug) => {
         Router.pushRoute('/give/error');
     });
 };
+
+export {
+    createToken,
+};

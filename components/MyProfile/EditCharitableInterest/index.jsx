@@ -50,25 +50,17 @@ class EditCharitableInterest extends React.Component {
             userCauses,
             userTags,
         } = this.state;
-        if (!_.isEqual(this.props, prevProps)) {
-            if (!_.isEqual(userCausesList, prevProps.userCausesList)) {
-                if (!_.isEmpty(userCausesList)) {
-                    userCausesList.forEach((cause) => {
-                        if (typeof cause.attributes.status !== 'undefined') {
-                            userCauses.push(cause.attributes.name);
-                        }
-                    });
+        if (!_.isEqual(userCausesList, prevProps.userCausesList) && !_.isEmpty(userCausesList)) {
+            userCausesList.forEach((cause) => {
+                if (typeof cause.attributes.status !== 'undefined') {
+                    userCauses.push(cause.attributes.name);
                 }
-            }
+            });
         }
-        if (!_.isEqual(this.props, prevProps)) {
-            if (!_.isEqual(userTagsFollowedList, prevProps.userTagsFollowedList)) {
-                if (!_.isEmpty(userTagsFollowedList)) {
-                    userTagsFollowedList.data.forEach((tag) => {
-                        userTags.push(tag.attributes.name);
-                    });
-                }
-            }
+        if (!_.isEqual(userTagsFollowedList, prevProps.userTagsFollowedList) && !_.isEmpty(userTagsFollowedList)) {
+            userTagsFollowedList.data.forEach((tag) => {
+                userTags.push(tag.attributes.name);
+            });
         }
         this.state = {
             userCauses,

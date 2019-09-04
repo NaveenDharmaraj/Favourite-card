@@ -23,10 +23,12 @@ class MyFriends extends React.Component {
         super(props);
         this.state = {
             currentMyFriendsActivePage: 1,
+            currentMyInvitaionsActivePage: 1,
             myFriendInvitationLoader: !props.userFriendsInvitationsList,
             myFriendListLoader: !props.userMyFriendsList,
         };
         this.onMyFriendsPageChanged = this.onMyFriendsPageChanged.bind(this);
+        this.onMyFriendsInvitaionsPageChanged = this.onMyFriendsInvitaionsPageChanged.bind(this);
         this.handleFriendAcceptClick = this.handleFriendAcceptClick.bind(this);
     }
 
@@ -72,6 +74,17 @@ class MyFriends extends React.Component {
         });
     }
 
+    onMyFriendsInvitaionsPageChanged(e, data) {
+        const {
+            currentUser,
+            dispatch,
+        } = this.props;
+        getFriendsInvitations(dispatch, currentUser.attributes.email, data.activePage);
+        this.setState({
+            currentMyInvitaionsActivePage: data.activePage,
+        });
+    }
+
     handleFriendAcceptClick(email) {
         if (email !== null) {
             const {
@@ -88,6 +101,9 @@ class MyFriends extends React.Component {
         const {
             userFriendsInvitationsList,
         } = this.props;
+        const {
+            currentMyInvitaionsActivePage,
+        } = this.state;
         let friendsList = 'No Data';
         if (!_.isEmpty(userFriendsInvitationsList)) {
             friendsList = userFriendsInvitationsList.data.map((friend) => {
@@ -119,9 +135,22 @@ class MyFriends extends React.Component {
             });
         }
         return (
-            <List divided verticalAlign="middle" className="userList pt-1">
-                {friendsList}
-            </List>
+            <Fragment>
+                <List divided verticalAlign="middle" className="userList pt-1">
+                    {friendsList}
+                </List>
+                <div className="db-pagination right-align pt-2">
+                    {
+                        !_.isEmpty(userFriendsInvitationsList) && userFriendsInvitationsList.pageCount > 1 && (
+                            <Pagination
+                                activePage={currentMyInvitaionsActivePage}
+                                totalPages={userFriendsInvitationsList.pageCount}
+                                onPageChanged={this.onMyFriendsInvitaionsPageChanged}
+                            />
+                        )
+                    }
+                </div>
+            </Fragment>
         );
     }
 
@@ -136,6 +165,8 @@ class MyFriends extends React.Component {
         if (!_.isEmpty(userMyFriendsList)) {
             friendsList = userMyFriendsList.data.map((friend) => {
                 const name = `${friend.attributes.first_name} ${friend.attributes.last_name}`;
+                const email = Buffer.from(friend.attributes.email_hash, 'base64').toString('ascii');
+                const location = (typeof friend.attributes.city !== 'undefined') ? `${friend.attributes.city}, ${friend.attributes.province}` : email;
                 const avatar = (typeof friend.attributes.avatar) !== 'undefined' ? friend.attributes.avatar : 'https://react.semantic-ui.com/images/avatar/small/daniel.jpg';
                 return (
                     <List.Item>
@@ -149,7 +180,7 @@ class MyFriends extends React.Component {
                                     {name}
                                 </Link>
                             </List.Header>
-                            <List.Description>Vancouver, BC</List.Description>
+                            <List.Description>{location}</List.Description>
                         </List.Content>
                     </List.Item>
                 );
@@ -188,10 +219,12 @@ class MyFriends extends React.Component {
                         { myFriendInvitationLoader ? <PlaceHolderGrid row={2} column={2} placeholderType="table" /> : (
                             this.renderFriendsInvitations()
                         )}
-                        <Header className="mb-1 mt-3" as="h4">Friends </Header>
-                        { myFriendListLoader ? <PlaceHolderGrid row={2} column={2} placeholderType="table" /> : (
-                            this.renderMyFriendsList()
-                        )}
+                        <div className="pt-2">
+                            <Header className="mb-1 mt-3" as="h4">Friends </Header>
+                            { myFriendListLoader ? <PlaceHolderGrid row={2} column={2} placeholderType="table" /> : (
+                                this.renderMyFriendsList()
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>

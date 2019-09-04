@@ -100,18 +100,26 @@ class MyCreditCards extends React.Component {
 
     componentDidUpdate(prevProps) {
         const {
+            newCreditCardApiCall,
             userCreditCardList,
         } = this.props;
         let {
             myCreditCardListLoader,
+            isAddModalOpen,
         } = this.state;
         if (!_.isEqual(this.props, prevProps)) {
             if (!_.isEqual(userCreditCardList, prevProps.userCreditCardList)) {
                 myCreditCardListLoader = false;
             }
             this.setState({
-                myCreditCardListLoader,
+                myCreditCardListLoader,                
             });
+            if(!_.isEqual(newCreditCardApiCall, prevProps.newCreditCardApiCall)) {
+                isAddModalOpen = newCreditCardApiCall;
+                this.setState({
+                    isAddModalOpen,
+                })
+            }
         }
     }
 
@@ -167,6 +175,7 @@ class MyCreditCards extends React.Component {
             isAddModalOpen,
             stripeCreditCard,
             cardHolderName,
+            currentActivePage,
         } = this.state;
         const validateCC = this.isValidCC(
             creditCard,
@@ -184,7 +193,7 @@ class MyCreditCards extends React.Component {
                 dispatch,
             } = this.props;
             console.log(stripeCreditCard);
-            saveNewCreditCard(dispatch, stripeCreditCard, cardHolderName, id, isDefaultCard);            
+            saveNewCreditCard(dispatch, stripeCreditCard, cardHolderName, id, isDefaultCard, currentActivePage);            
             this.setState({ isDefaultCard: false });
         }
     }
@@ -487,6 +496,9 @@ class MyCreditCards extends React.Component {
             },
             myCreditCardListLoader,
         } = this.state;
+        const {
+            newCreditCardApiCall,
+        } = this.props;
         const formatMessage = this.props.t;
         return (
             <div>
@@ -510,7 +522,7 @@ class MyCreditCards extends React.Component {
                                     dimmer="inverted"
                                     className="chimp-modal"
                                     closeIcon
-                                    open={this.state.isAddModalOpen}
+                                    open={newCreditCardApiCall}
                                     onClose={()=>{this.setState({isAddModalOpen: false})}}
                                     trigger={<Button
                                         className="success-btn-rounded-def"
@@ -672,6 +684,7 @@ function mapStateToProps(state) {
     return {
         currentUser: state.user.info,
         userCreditCardList: state.userProfile.userCreditCardList,
+        newCreditCardApiCall: state.userProfile.newCreditCardApiCall,
     };
 }
 

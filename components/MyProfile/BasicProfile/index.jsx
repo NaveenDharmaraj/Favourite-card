@@ -40,7 +40,7 @@ class UserBasciProfile extends React.Component {
                                             <Grid.Column mobile={16} tablet={5} computer={5}>
                                                 <div className="ProfileHeaderWraper">
                                                     <Header as="h3">
-                                                        <span className="font-s-10 type-profile">public profile</span>
+                                                        <span className="font-s-10 type-profile">{userData.profile_type}</span>
                                                         {userData.first_name} 
                                                         {' '}
                                                         {userData.last_name},
