@@ -1882,11 +1882,6 @@ h4{
   align-items: stretch;
   padding: 0;
 }
-.loadingSegment{
-  min-height: 100vh;
-  border: 0px solid transparent;
-  box-shadow: none;
-}
 .ui{
   &.list{
     &.celled{
@@ -3552,6 +3547,17 @@ h4{
     }
   }
 }
+.mdlMessage{
+  &.message{
+    &.ui{
+      &.negative,&.positive{
+        border: 0px solid transparent;
+        box-shadow: none;
+        border-radius: 0px;
+      }
+    }
+  }
+}
 .modalWarning{
   &.ui{
     &.list{
@@ -3999,3 +4005,79 @@ h4{
     }
   }
 }
+.achPointer{
+  color: @link;
+  cursor: pointer;
+  &:hover{
+    color: @link-hover;
+  }
+ }
+ .lstRecipient{
+  margin: 100px;
+  &.ui{
+    &.list{
+      font-size: 1em!important;
+      width: 100%;
+      &.horizontal{
+        margin-bottom: 1rem;
+        .item{
+          &.lstitm{
+            &:first-child{
+              padding: 1.25em!important;
+            }
+          }
+        }
+      }
+      .item{
+        &.lstitm{
+          font-size: 1em!important;
+          background-color: #f5f5f5;
+          width: 31%;
+          padding: 1.25em!important;
+          border-radius: .25em;
+          cursor: pointer;
+          border: 1px solid transparent;
+          &:hover{
+            border: 1px solid @grey-lighten-2;
+          }
+          .image{
+            max-width: 100%;
+            width: 35px;
+          }
+          .content{
+            &.lst-cnt{
+            }
+          }
+        }
+      }
+    }
+  }
+ }
+ .cp_chkbx{
+   &.field{
+     .ui{
+       &.checkbox{
+         input{
+           &:checked{
+             ~label{
+               &::after{
+                content: '';
+                top: 4px;
+                left: 4px;
+                width: 9px;
+                height: 9px;
+                background-color: @link;
+                border-radius: 2px;
+               }
+             }
+           }
+         }
+         label{
+           &::before{
+
+           }
+         }
+       }
+     }
+   }
+ }
