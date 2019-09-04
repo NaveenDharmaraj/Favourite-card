@@ -36,6 +36,7 @@ class CharityProfileWrapper extends React.Component {
             campaignDetails: {
                 attributes,
             },
+            deepLink,
         } = this.props;
         if (attributes.name) {
             pathDetails.push(attributes.name);
@@ -43,8 +44,15 @@ class CharityProfileWrapper extends React.Component {
         this.setState({
             pathDetails,
         });
-        if (_.isEmpty(this.props.deepLink)) {
-            generateDeepLink(`deeplink?profileType=groupprofile&sourceId=${this.props.userId}&profileId=${this.props.campaignDetails.id}`, this.props.dispatch);
+        if (_.isEmpty(deepLink)) {
+            const {
+                currentUser,
+                campaignDetails,
+                dispatch,
+            } = this.props;
+            if (currentUser && currentUser.id) {
+                generateDeepLink(`deeplink?profileType=groupprofile&sourceId=${currentUser.id}&profileId=${campaignDetails.id}`, dispatch);
+            }
         }
     }
 

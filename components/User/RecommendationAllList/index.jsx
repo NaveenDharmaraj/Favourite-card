@@ -71,8 +71,8 @@ class RecommendationAllList extends React.Component {
         const url = `/recommend/all?userid=${Number(id)}&page[number]=${data.activePage}&page[size]=10`;
         getRecommendationList(dispatch, url);
         this.setState({
-            recommendationListLoader: true,
             currentActivePage: data.activePage,
+            recommendationListLoader: true,
         });
     }
 
@@ -92,7 +92,7 @@ class RecommendationAllList extends React.Component {
                         <Grid verticalAlign="middle">
                             <Grid.Row>
                                 <Grid.Column mobile={11} tablet={12} computer={12}>
-                                    <Header as='h3' className="t-transform-normal mb-0">
+                                    <Header as="h3" className="t-transform-normal mb-0">
                                         <Header.Content>
                                         Recommended for you
                                             <span className="num-result font-s-20">
@@ -104,18 +104,21 @@ class RecommendationAllList extends React.Component {
                             </Grid.Row>
                         </Grid>
                     </div>
-                        <SearchResultSingleCharityGroups
-                            textSearchCharityGroupLoader={recommendationListLoader}
-                            charityGroups={(!_.isEmpty(recommendationData)) ? recommendationData.data : []}/>
+                    <SearchResultSingleCharityGroups
+                        textSearchCharityGroupLoader={recommendationListLoader}
+                        charityGroups={(!_.isEmpty(recommendationData)) ? recommendationData.data : []}
+                    />
                     {
                         !_.isEmpty(recommendationData) && (
-                            // <div className="db-pagination right-align">
-                                <Pagination
-                                    activePage={currentActivePage}
-                                    totalPages={recommendationData.pageCount}
-                                    onPageChanged={this.onPageChanged}
-                                />
-                            // </div>
+                            <div className="paginationWraper">
+                                <div className="db-pagination right-align">
+                                    <Pagination
+                                        activePage={currentActivePage}
+                                        totalPages={recommendationData.pageCount}
+                                        onPageChanged={this.onPageChanged}
+                                    />
+                                </div>
+                            </div>
 
                         )
                     }
@@ -130,7 +133,6 @@ RecommendationAllList.defaultProps = {
         id: null,
     },
     dispatch: _.noop,
-    recommendationListLoader: true,
 };
 
 RecommendationAllList.propTypes = {
@@ -152,7 +154,6 @@ RecommendationAllList.propTypes = {
             string,
         ]),
     }),
-    recommendationListLoader: bool,
 };
 
 function mapStateToProps(state) {

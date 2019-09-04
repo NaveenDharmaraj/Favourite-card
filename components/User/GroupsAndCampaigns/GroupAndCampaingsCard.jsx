@@ -1,11 +1,11 @@
 import React from 'react';
 import {
-  Image,
-  Header,
-  Grid,
-  Button,
-  Card,
-  Dropdown
+    Image,
+    Header,
+    Grid,
+    Button,
+    Card,
+    Dropdown
 } from 'semantic-ui-react'
 import { Link } from '../../../routes';
 import placeholder from '../../../static/images/no-data-avatar-giving-group-profile.png';
@@ -20,20 +20,20 @@ class GroupsAndCampaignsCard extends React.Component {
         this.openModal = this.openModal.bind(this);
         this.close = this.close.bind(this);
     }
-    
+
     openModal() {
-        this.setState({ 
+        this.setState({
             open: true,
         });
-      }
+    }
 
     close() {
-        this.setState({ 
+        this.setState({
             open: false,
         });
-      }
+    }
 
-    render(){
+    render() {
         const {
             listingType,
             data,
@@ -55,9 +55,9 @@ class GroupsAndCampaignsCard extends React.Component {
         const editLink = (listingType === 'administeredCampaigns') ? `/campaigns/${slug}/manage-basics` : `/groups/${slug}/edit`;
         let showError = false;
         let showMangeGroups = false;
-        if(!_.isEmpty(errorMessage) && errorMessage.id === id) {
+        if (!_.isEmpty(errorMessage) && errorMessage.id === id) {
             showError = true;
-            if(errorMessage.adminError) {
+            if (errorMessage.adminError) {
                 showMangeGroups = true;
             }
         }
@@ -68,54 +68,55 @@ class GroupsAndCampaignsCard extends React.Component {
                     <Card.Header>
                         <Grid verticalAlign="middle">
                             <Grid.Column width={6}>
-                            <Image src={displayAvatar} />
+                                <Image src={displayAvatar} />
                             </Grid.Column>
                             <Grid.Column width={10}>
                                 <Grid columns="2">
                                     <Grid.Row style={{padding:'0.5rem 0rem'}}>
                                         <Grid.Column>
-                                            <Header as='h4'>
+                                            <Header as="h4">
                                                 <Header.Content>
-                                                <Header.Subheader className="chimp-lbl group">giving group</Header.Subheader>
+                                                    <Header.Subheader className="chimp-lbl group">giving group</Header.Subheader>
                                                 </Header.Content>
                                             </Header>
                                         </Grid.Column>
                                         <Grid.Column textAlign="right">
-                                            <Header as='h4'>
+                                            <Header as="h4">
                                                 <Header.Content>
                                                     <Header.Subheader>
-                                                        <Dropdown 
+                                                        <Dropdown
                                                             className="rightBottom"
-                                                            icon='ellipsis horizontal'
+                                                            icon="ellipsis horizontal"
                                                             closeOnBlur
                                                         >
                                                             <Dropdown.Menu>
                                                                 {
-                                                                    (listingType !== 'groupsWithMemberships') &&
-                                                                    <Link route={editLink}>
-                                                                        <Dropdown.Item text='Edit Group'/>
-
-                                                                    </Link>
+                                                                    (listingType !== 'groupsWithMemberships')
+                                                                    && (
+                                                                        <Link route={editLink}>
+                                                                            <Dropdown.Item text="Edit Group"/>
+                                                                        </Link>
+                                                                    )
                                                                 }
                                                                 {
                                                                     (listingType !== 'administeredCampaigns') &&
-                                                                    <Dropdown.Item text='Leave Group' onClick={()=>{this.openModal()}}/>
+                                                                    <Dropdown.Item text="Leave Group" onClick={()=>{this.openModal()}}/>
                                                                 }
                                                             </Dropdown.Menu>
                                                         </Dropdown>
                                                         {
                                                             this.state.open && (
-                                                            <LeaveModal
-                                                                showError={showError}
-                                                                showMangeGroups={showMangeGroups}
-                                                                slug={slug}
-                                                                name={name}
-                                                                id={id}
-                                                                callLeaveGroup={this.props.parentLeaveGroup}
-                                                                close={this.close}
-                                                                open={this.state.open}
-                                                                errorMessage={errorMessage}
-                                                            />
+                                                                <LeaveModal
+                                                                    showError={showError}
+                                                                    showMangeGroups={showMangeGroups}
+                                                                    slug={slug}
+                                                                    name={name}
+                                                                    id={id}
+                                                                    callLeaveGroup={this.props.parentLeaveGroup}
+                                                                    close={this.close}
+                                                                    open={this.state.open}
+                                                                    errorMessage={errorMessage}
+                                                                />
                                                             )
                                                         }
                                                     </Header.Subheader>
@@ -124,10 +125,10 @@ class GroupsAndCampaignsCard extends React.Component {
                                         </Grid.Column>
                                     </Grid.Row>
                                 </Grid>
-                                <Header as='h4' style={{margin:'0rem 0rem .5rem'}}>
+                                <Header as="h4" style={{margin:'0rem 0rem .5rem'}}>
                                     <Header.Content>
                                         {name}
-                                        <br/>
+                                        <br />
                                         {location}
                                     </Header.Content>
                                 </Header>
@@ -137,9 +138,9 @@ class GroupsAndCampaignsCard extends React.Component {
                             </Grid.Column>
                         </Grid>
                     </Card.Header>
-                </Card>    
+                </Card>
             </Grid.Column>
-        )
+        );
     }
 }
 
