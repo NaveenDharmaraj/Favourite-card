@@ -24,15 +24,6 @@ class EmailVerification extends React.Component {
             let newUserDetailsLocal = storage.get('newUserDetails', 'local');
             newUserDetails = JSON.parse(newUserDetailsLocal);
         }
-<<<<<<< HEAD
-        this.state = {
-            newUserDetails,
-        };
-        if (newUserDetails === undefined) {
-            Router.pushRoute('/users/error');
-        }
-=======
->>>>>>> integration/iteration_1_and_2
 
         if (newUserDetails === null) {
             Router.pushRoute('/users/login');
