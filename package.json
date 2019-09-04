@@ -24,7 +24,7 @@
     "jwt-decode": "^2.2.0",
     "less": "^3.9.0",
     "lodash": "^4.17.11",
-    "next": "^9.0.2",
+    "next": "^8.1.0",
     "next-compose-plugins": "^2.2.0",
     "next-i18next": "^0.44.0",
     "next-images": "^1.1.2",
