@@ -55,6 +55,12 @@ export const actionTypes = {
 };
 
 export const getCampaignFromSlug = async (dispatch, slug) => {
+    dispatch({
+        payload: {
+            slugApiErrorStats: false,
+        },
+        type: actionTypes.SLUG_API_ERROR_STATUS,
+    });
     // return coreApi.get(`campaign/find_by_slug`, {
     await coreApi.get(`campaigns/find_by_slug`, {
         params: {
