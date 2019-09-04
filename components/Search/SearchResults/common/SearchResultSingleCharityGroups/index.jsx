@@ -11,11 +11,14 @@ import _isEmpty from 'lodash/isEmpty';
 import {
     Router,
 } from '../../../../../routes';
+import {
+    isFalsy,
+} from '../../../../../helpers/utils';
 import placeholderCharity from '../../../../../static/images/no-data-avatar-charity-profile.png';
 import placeholderGroup from '../../../../../static/images/no-data-avatar-giving-group-profile.png';
 import PlaceholderGrid from '../../../../shared/PlaceHolder';
 
-// eslint-disable-next-line react/prefer-stateless-function
+
 class SearchResultSingleCharityGroups extends React.Component {
     constructor(props) {
         super(props);
@@ -27,7 +30,7 @@ class SearchResultSingleCharityGroups extends React.Component {
         let route = null;
         if (type === 'group' && campaign) {
             route = `/campaigns/${slug}`;
-        } else if (type === 'group' && campaign === false) {
+        } else if (type === 'group' && isFalsy(campaign)) {
             route = `/groups/${slug}`;
         } else {
             route = `/charities/${slug}`;
@@ -40,10 +43,11 @@ class SearchResultSingleCharityGroups extends React.Component {
         if (type === 'group' && campaign) {
             return 'View Campaign';
         // eslint-disable-next-line no-else-return
-        } else if (type === 'group' && campaign === false) {
+        } else if (type === 'group' && isFalsy(campaign)) {
             return 'View Group';
+        } else {
+            return 'View Charity';
         }
-        return 'View Charity';
     }
 
     renderCharityGroupComponent() {
@@ -107,7 +111,7 @@ class SearchResultSingleCharityGroups extends React.Component {
                     </div>
 
                 );
-});
+            });
             return charitiesGroupsComponent;
         }
         return 'No Data available';

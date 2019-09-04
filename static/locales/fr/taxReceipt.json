@@ -17,5 +17,10 @@
     "invalidAddress": "Include your street address (use a minimum of 2 characters)",
     "invalidCity": "Include the name of your city (use a minimum of 2 characters)",
     "invalidPostalCode": "Include a valid postal code",
-    "usCountryNote": "Note: The tax receipt will only be valuable to people who earn Canadian income. Why? The receipts are issued by the CHARITABLE IMPACT: Charitable Impact Foundation which is a Canadian charity."
+    "usCountryNote": "Note: The tax receipt will only be valuable to people who earn Canadian income. Why? The receipts are issued by the CHARITABLE IMPACT: Charitable Impact Foundation which is a Canadian charity.",
+    "invalidProvince": "Sélectionnez votre province ou état",
+    "addressPlaceHolder": "123 rue Chemin",
+    "secondAddressPlaceHolder": "Numéro d'appartement ou de bureau",
+    "postalCodePlaceHolder": "Z1Z 1Z1"
+
 }

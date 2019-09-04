@@ -2,8 +2,9 @@ import React from 'react';
 import {
     Grid,
     Input,
-    Icon
+    Icon,
 } from 'semantic-ui-react';
+import _isEmpty from 'lodash/isEmpty';
 
 import {
     Router, Link,
@@ -12,8 +13,12 @@ import {
 class SearchBanner extends React.Component {
     constructor(props) {
         super(props);
+        const {
+            searchWordProps,
+        } = props;
+
         this.state = {
-            searchWord: props.searchWordProps ? props.searchWordProps : '',
+            searchWord: searchWordProps ? decodeURI(searchWordProps) : '',
         };
         this.handleOnChange = this.handleOnChange.bind(this);
         this.handleKeyEnter = this.handleKeyEnter.bind(this);
@@ -42,7 +47,12 @@ class SearchBanner extends React.Component {
         const {
             searchType,
         } = this.props;
-        const route = `/search?search=${searchWord}&result_type=${searchType}`;
+        let route = `/search?result_type=${searchType}`;
+        if (!_isEmpty(searchWord)) {
+            const content = encodeURI(searchWord);
+            route = `/search?search=${content}&result_type=${searchType}`;
+        }
+
         return (
             <div className="search-banner">
                 <div className="searchbox">
