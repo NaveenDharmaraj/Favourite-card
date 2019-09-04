@@ -67,6 +67,12 @@ const profile = (state = {}, action) => {
                 disableFollow: false,
             };
             break;
+        case 'SLUG_API_ERROR_STATUS':
+            newState = {
+                ...state,
+                slugApiErrorStats: action.payload.slugApiErrorStats,
+            };
+            break;
         default:
             break;
     }

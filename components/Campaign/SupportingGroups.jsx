@@ -1,11 +1,7 @@
 
 import React, { Fragment } from 'react';
 import {
-    Card,
     Grid,
-    Header,
-    Icon,
-    Image,
     Input,
     Button,
 } from 'semantic-ui-react';
@@ -31,7 +27,7 @@ function SupportingGroups(props) {
                     entityName={subGroup.attributes.name}
                     placeholder={placeholder}
                     typeClass="chimp-lbl group"
-                    type={subGroup.type}
+                    type="Giving Groups"
                     url={`/${subGroup.type}/${subGroup.attributes.slug}`}
                 />);
             });

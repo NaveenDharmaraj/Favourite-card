@@ -1,7 +1,6 @@
 /* eslint-disable no-else-return */
 import _ from 'lodash';
 
-import { Router } from '../routes';
 import coreApi from '../services/coreApi';
 import utilityApi from '../services/utilityApi';
 import graphApi from '../services/graphApi';
@@ -51,10 +50,17 @@ export const actionTypes = {
     GET_SUB_GROUPS_FOR_CAMPAIGN: 'GET_SUB_GROUPS_FOR_CAMPAIGN',
     SAVE_FOLLOW_STATUS_CAMPAIGN: 'SAVE_FOLLOW_STATUS_CAMPAIGN',
     SEE_MORE_LOADER: 'SEE_MORE_LOADER',
+    SLUG_API_ERROR_STATUS: 'SLUG_API_ERROR_STATUS',
     SUB_GROUP_LIST_LOADER: 'SUB_GROUP_LIST_LOADER',
 };
 
 export const getCampaignFromSlug = async (dispatch, slug) => {
+    dispatch({
+        payload: {
+            slugApiErrorStats: false,
+        },
+        type: actionTypes.SLUG_API_ERROR_STATUS,
+    });
     // return coreApi.get(`campaign/find_by_slug`, {
     await coreApi.get(`campaigns/find_by_slug`, {
         params: {
@@ -115,7 +121,13 @@ export const getCampaignFromSlug = async (dispatch, slug) => {
         },
     ).catch((error) => {
         console.log(error);
-        Router.pushRoute('/give/error');
+        dispatch({
+            payload: {
+                slugApiErrorStats: true,
+            },
+            type: actionTypes.SLUG_API_ERROR_STATUS,
+        });
+        // Router.pushRoute('/give/error');
     });
 };
 
