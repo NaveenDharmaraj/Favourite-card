@@ -56,12 +56,7 @@ export const getGroupMemberDetails = async (dispatch, id, url) => {
         },
         type: actionTypes.GET_GROUP_MEMBERS_DETAILS,
     };
-    let newUrl = null;
-    if (url) {
-        newUrl = url;
-    } else {
-        newUrl = `/groups/${id}/groupMembers?page[size]=7`;
-    }
+    const newUrl = !_.isEmpty(url) ? url : `/groups/${id}/groupMembers?page[size]=7`;
     coreApi.get(newUrl, {
         params: {
             dispatch,
@@ -87,12 +82,7 @@ export const getGroupAdminDetails = async (dispatch, id, url) => {
         },
         type: actionTypes.GET_GROUP_ADMIN_DETAILS,
     };
-    let newUrl = null;
-    if (url) {
-        newUrl = url;
-    } else {
-        newUrl = `/groups/${id}/groupAdmins?page[size]=7`;
-    }
+    const newUrl = !_.isEmpty(url) ? url : `/groups/${id}/groupAdmins?page[size]=7`;
     coreApi.get(newUrl, {
         params: {
             dispatch,
@@ -118,12 +108,7 @@ export const getGroupBeneficiaries = async (dispatch, id, url) => {
         },
         type: actionTypes.GET_GROUP_BENEFICIARIES,
     };
-    let newUrl = null;
-    if (url) {
-        newUrl = url;
-    } else {
-        newUrl = `groups/${id}/groupBeneficiaries?page[size]=3`;
-    }
+    const newUrl = !_.isEmpty(url) ? url : `groups/${id}/groupBeneficiaries?page[size]=3`;
     coreApi.get(newUrl, {
         params: {
             dispatch,
@@ -149,12 +134,7 @@ export const getTransactionDetails = async (dispatch, id, url) => {
         },
         type: actionTypes.GET_GROUP_TRANSACTION_DETAILS,
     };
-    let newUrl = null;
-    if (url) {
-        newUrl = url;
-    } else {
-        newUrl = `groups/${id}/activities?filter[moneyItems]=all&page[size]=10`;
-    }
+    const newUrl = !_.isEmpty(url) ? url : `groups/${id}/activities?filter[moneyItems]=all&page[size]=10`;
     await coreApi.get(newUrl, {
         params: {
             dispatch,
@@ -176,14 +156,7 @@ export const getGroupActivities = async (dispatch, id, url, isPostActivity) => {
         },
         type: actionTypes.GET_GROUP_ACTIVITY_DETAILS,
     };
-    let newUrl = null;
-    if (url) {
-        newUrl = url;
-    } else {
-        newUrl = `groups/${id}/activities?page[size]=10`;
-    }
-
-
+    const newUrl = !_.isEmpty(url) ? url : `groups/${id}/activities?page[size]=10`;
     coreApi.get(newUrl, {
         params: {
             dispatch,
