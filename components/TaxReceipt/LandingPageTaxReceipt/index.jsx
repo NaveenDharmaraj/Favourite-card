@@ -144,7 +144,6 @@ class LandingPageTaxReceipt extends React.Component {
                                                             dispatch={dispatch}
                                                             taxReceipt={intializeFormData}
                                                             handleModalOpen={this.handleModalOpen}
-                                                            id="undefined"
                                                             action="add"
                                                         />
                                                     )
