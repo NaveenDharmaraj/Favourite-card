@@ -2,7 +2,9 @@ import _isEmpty from 'lodash/isEmpty';
 
 import searchApi from '../services/searchApi';
 import graphApi from '../services/graphApi';
-
+import {
+    triggerUxCritialErrors,
+} from './error';
 export const actionTypes = {
     GET_API_DATA_FECHED_FLAG: 'GET_API_DATA_FECHED_FLAG',
     GET_DEFAULT_CHARITIES: 'GET_DEFAULT_CHARITIES',
@@ -34,10 +36,20 @@ export const fetchInitialCharitiesGroups = (isAuthenticated, userId) => (dispatc
         let charityData = null;
         let groupData = null;
 
-        charityData = graphApi.get(`/recommend/charity?userid=${userId}&page[number]=1&page[size]=4`);
-        groupData = graphApi.get(`/recommend/group?userid=${userId}&page[number]=1&page[size]=4`);
-
-
+        charityData = graphApi.get(`/recommend/charity?userid=${userId}&page[number]=1&page[size]=4`,
+            {
+                params: {
+                    dispatch,
+                    uxCritical: true,
+                },
+            });
+        groupData = graphApi.get(`/recommend/group?userid=${userId}&page[number]=1&page[size]=4`,
+            {
+                params: {
+                    dispatch,
+                    uxCritical: true,
+                },
+            });
         const charitygroupData = Promise.all([
             charityData,
             groupData,
@@ -79,8 +91,13 @@ export const fetchInitialCharities = (pageNumber, isAuthenticated, userId) => (d
         });
         let charityData = null;
 
-        charityData = graphApi.get(`/recommend/charity?userid=${userId}&page[number]=${pageNumber}&page[size]=10`);
- 
+        charityData = graphApi.get(`/recommend/charity?userid=${userId}&page[number]=${pageNumber}&page[size]=10`,
+            {
+                params: {
+                    dispatch,
+                    uxCritical: true,
+                },
+            });
         charityData.then((result) => {
             fsa.payload.defaultAllCharities = result;
             fsa.payload.pageCount = result.meta.pageCount;
@@ -115,7 +132,13 @@ export const fetchInitialGroups = (pageNumber, isAuthenticated, userId) => (disp
         });
         let groupData = null;
 
-        groupData = graphApi.get(`/recommend/group?userid=${userId}&page[number]=${pageNumber}&page[size]=10`);
+        groupData = graphApi.get(`/recommend/group?userid=${userId}&page[number]=${pageNumber}&page[size]=10`,
+            {
+                params: {
+                    dispatch,
+                    uxCritical: true,
+                },
+            });
         groupData.then((result) => {
             fsa.payload.defaultAllGroups = result;
             fsa.payload.pageCount = result.meta.pageCount;
@@ -167,7 +190,7 @@ export const fetchTextSearchCharitiesGroups = (searchWord, pageNumber, filterDat
         fsa.payload.pageCount = result.meta.page_count;
         fsa.payload.charityFlag = true;
     }).catch((err) => {
-        console.log(err);
+        triggerUxCritialErrors(err.errors || err, dispatch);
     }).finally(() => {
         return dispatch(fsa);
     });
@@ -203,7 +226,7 @@ export const fetchTextSearchCharities = (searchWord, pageNumber, filterData) => 
         fsa.payload.TextSearchedCharities = result;
         fsa.payload.pageCount = result.meta.page_count;
     }).catch((err) => {
-        console.log(err);
+        triggerUxCritialErrors(err.errors || err, dispatch);
     }).finally(() => {
         return dispatch(fsa);
     });
@@ -239,7 +262,7 @@ export const fetchTextSearchGroups = (searchWord, pageNumber, filterData) => (di
         fsa.payload.TextSearchedGroups = result;
         fsa.payload.pageCount = result.meta.page_count;
     }).catch((err) => {
-        console.log(err);
+        triggerUxCritialErrors(err.errors || err, dispatch);
     }).finally(() => {
         return dispatch(fsa);
     });

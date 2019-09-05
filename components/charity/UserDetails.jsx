@@ -181,18 +181,17 @@ class UserDetails extends React.Component {
                                     />
                                 )}
 
-                            </Grid.Row>
-                        </Grid>
-                        <p className="mt-1">
-                        Is this your chariy? You can claim your free profile page on your platform
-                            <a href="#">by following these steps</a>
-                        </p>
-                    </div>
-                </Container>
-            </div>
-        );
-    }
-}
+                        </Grid.Row>
+                    </Grid>
+                    <p className="mt-1">
+                    *Is this your chariy? You can claim your free profile page on your platform
+                        <a href="https://help.chimp.net/article/83-claiming-and-accessing-your-chimp-charity-account"> by following these steps</a>
+                    </p>
+                </div>
+            </Container>
+        </div>
+    );
+};
 
 UserDetails.defaultProps = {
     charityDetails: {

@@ -8,6 +8,7 @@ import graphApi from '../services/graphApi';
 const generatePayloadBodyForFollowAndUnfollow = (userId, id, type) => {
 
     let filterObj = {};
+    let relationship;
     switch (type) {
         case 'beneficiaries':
             filterObj = {
@@ -16,6 +17,7 @@ const generatePayloadBodyForFollowAndUnfollow = (userId, id, type) => {
                     charity_id: Number(id),
                 },
             };
+            relationship = 'FOLLOWS';
             break;
         case 'campaigns':
         case 'groups':
@@ -25,13 +27,14 @@ const generatePayloadBodyForFollowAndUnfollow = (userId, id, type) => {
                     group_id: Number(id),
                 },
             };
+            relationship = 'LIKES';
             break;
         
         default:
             break;
     }
     const payloadObj = {
-        relationship: 'FOLLOWS',
+        relationship,
         source: {
             entity: 'user',
             filters: {

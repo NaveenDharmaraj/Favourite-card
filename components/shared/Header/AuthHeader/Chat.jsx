@@ -127,53 +127,52 @@ class Chat extends React.Component {
         let self = this;
         return (
             <Popup
-                position="bottom center"
-                pinned
-                className="notification-popup"
-                trigger={
-                    (
-                        <Menu.Item as="a">
-                            {/* {userInfo.applogicClientRegistration ? (userInfo.applogicClientRegistration.totalUnreadCount > 0 ? <Label color="red" floating circular>4</Label> : '') : ''} */}
-                            {this.state.totalUnreadCount > 0 ? <Label color="red" floating circular className="chat-launcher-icon">{this.state.totalUnreadCount}</Label> : ""}
-                            <Icon name="chat" />
-                        </Menu.Item>
-                    )
-                }
-                flowing
-                hoverable>
-                <Popup.Header>
-                    {self.state.messagesList && self.state.messagesList.length > 0 ? "Recent Messages" : "No Recent Messages"} <a style={{ float: 'right', display: 'none' }}><Icon name="setting" /></a>
-                </Popup.Header>
-                <Popup.Content>
-                    <List relaxed="very">
-                        {(() => {
+                position="bottom right"
+                basic
+                on='click'
+                className="chat-popup"
+                    trigger={
+                        (
+                            <Menu.Item as="a" className="chatNav">
+                                {/* {userInfo.applogicClientRegistration ? (userInfo.applogicClientRegistration.totalUnreadCount > 0 ? <Label color="red" floating circular>4</Label> : '') : ''} */}
+                                {this.state.totalUnreadCount > 0 ? <Label color="red" floating circular className="chat-launcher-icon">{this.state.totalUnreadCount}</Label> : ""}
+                                <Icon name="chat new" />
+                            </Menu.Item>
+                        )
+                    }
+                    flowing>
+                    <Popup.Header>
+                        {self.state.messagesList && self.state.messagesList.length > 0 ? "Recent Messages" : "No Recent Messages"} <a className="newChatIcon"><Icon name="chatIcon" /></a>
+                    </Popup.Header>
+                    <Popup.Content>
+                        <List relaxed="very" verticalAlign='middle'>
+                            {(() => {
 
-                            if (self.state.messagesList && self.state.messagesList.length > 0) {
-                                return self.state.messagesList.map(function (msg) {
-                                    let conversationHead = self.conversationHead(msg);
-                                    return (<List.Item key={"chat_head_" + msg.key} style={{ backgroundColor: "none" }}>
+                                if (self.state.messagesList && self.state.messagesList.length > 0) {
+                                    return self.state.messagesList.map(function (msg) {
+                                        let conversationHead = self.conversationHead(msg);
+                                        return (<List.Item key={"chat_head_" + msg.key} className="new">
                                         <Image avatar src={conversationHead.image} />
                                         <List.Content>
-                                            <List.Header style={{ width: "100%", maxWidth: '500px' }}>
-                                                <a className="header">{conversationHead.title}</a>
-                                                <div style={{ cursor: "pointer", maxWidth: "300px", width: "300px", overflow: "break-word", display: 'inline-block' }}>{msg.message}</div> &nbsp;&nbsp;&nbsp;&nbsp;
+                                            <List.Header>
+                                                <a className="header"><span className="name">{conversationHead.title}</span> <span className="time">{self.timeString(msg.createdAtTime, true)}</span></a>
                                             </List.Header>
                                             <List.Description>
-                                                {self.timeString(msg.createdAtTime, true)}
+                                            {msg.message}
                                             </List.Description>
                                         </List.Content>
                                     </List.Item>)
-                                });
-                            }
-                        })()}
+                                    });
+                                }
+                            })()}
 
 
-                    </List>
-                </Popup.Content>
-                <div className="popup-footer text-center">
-                    <a href="/chats/all">{self.state.messagesList && self.state.messagesList.length > 0 ? "See All Conversations" : "Start Conversation"}</a>
-                </div>
-            </Popup>
+                        </List>
+                    </Popup.Content>
+                    <div className="popup-footer text-center">
+                        <a href="/chats/all">{self.state.messagesList && self.state.messagesList.length > 0 ? "See All Conversations" : "Start Conversation"}</a>
+                    </div>
+                </Popup>
         );
     }
 
