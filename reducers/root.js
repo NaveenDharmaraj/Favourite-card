@@ -11,6 +11,8 @@ import app from './app';
 import group from './group';
 import taxreceipt from './taxreceipt';
 import profile from './profile';
+import firebase from './firebase';
+import chat from './chat';
 
 const root = combineReducers({
     app,
@@ -23,6 +25,8 @@ const root = combineReducers({
     taxreceipt,
     profile,
     user,
+    firebase,
+    chat,
     charity,
 });
 

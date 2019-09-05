@@ -65,15 +65,15 @@ function DonationsTable(props) {
                         <Table.HeaderCell>Amount</Table.HeaderCell>
                         <Table.HeaderCell>Day of month</Table.HeaderCell>
                         <Table.HeaderCell>Matched By</Table.HeaderCell>
-                        <Table.HeaderCell>Created</Table.HeaderCell>
-                        <Table.HeaderCell>Actions</Table.HeaderCell>
+                        <Table.HeaderCell className="w-120">Created</Table.HeaderCell>
+                        <Table.HeaderCell>Action</Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
-                {!monthlyTransactionApiCall? (<Table.Body>
+                {(monthlyTransactionApiCall === undefined || false) ? (<PlaceholderGrid row={2} column={6} placeholderType="table" />) : (<Table.Body>
                     {
                         renderTableData()
                     }
-                </Table.Body>) : (<PlaceholderGrid row={2} column={6} placeholderType="table" />)
+                </Table.Body>) 
                 }
             </Table>
         </div>

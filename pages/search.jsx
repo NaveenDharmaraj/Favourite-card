@@ -4,6 +4,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _isEqual from 'lodash/isEqual';
 import _isEmpty from 'lodash/isEmpty';
+import _isArray from 'lodash/isArray';
 import {
     connect,
 } from 'react-redux';
@@ -36,9 +37,15 @@ class Search extends React.Component {
     }
 
     static async getInitialProps({ query }) {
+        let searchTypeValue;
+        if (query.result_type) {
+            searchTypeValue = _isArray(query.result_type) ? query.result_type[0] : query.result_type;
+        } else {
+            searchTypeValue = 'All';
+        }
         return {
-            searchType: query.result_type ? query.result_type : 'All',
-            searchWord: query.search,
+            searchType: searchTypeValue,
+            searchWord: !_isEmpty(query.search) && encodeURI(query.search),
         };
     }
 
@@ -124,7 +131,7 @@ class Search extends React.Component {
                     type: 'DISPATCH_FILTER_VALUE_SHOWED',
                 });
             }
-
+            
             if (!_isEqual(searchType, prevProps.searchType) || !_isEqual(searchWord, prevProps.searchWord)
                 || !_isEqual(currentPageClicked, prevState.currentPageClicked) || !_isEqual(filterData, prevProps.filterData)) {
                 switch (searchType) {

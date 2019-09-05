@@ -208,16 +208,18 @@ class DashboradList extends React.Component {
                     <div className="pt-2">
                         {this.listItem()}
                     </div>
-                    <div className="db-pagination right-align pt-2">
-                        {
-                            !_.isEmpty(dataList) && (
-                                <Pagination
-                                    activePage={currentActivePage}
-                                    totalPages={dataList.count}
-                                    onPageChanged={this.onPageChanged}
-                                />
-                            )
-                        }
+                    <div className="paginationWraper">
+                        <div className="db-pagination right-align pt-2">
+                            {
+                                !_.isEmpty(dataList) && (
+                                    <Pagination
+                                        activePage={currentActivePage}
+                                        totalPages={dataList.count}
+                                        onPageChanged={this.onPageChanged}
+                                    />
+                                )
+                            }
+                        </div>
                     </div>
                 </Container>
             </div>

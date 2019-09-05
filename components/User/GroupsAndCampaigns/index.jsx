@@ -1,20 +1,23 @@
 import React from 'react';
 import {
-  Container,
-  Header,
-  Button,
-  Input,
-  Divider,
-} from 'semantic-ui-react'
+    Container,
+    Header,
+    Button,
+    Input,
+    Divider,
+} from 'semantic-ui-react';
 import {
     connect,
 } from 'react-redux';
+
 import {
     getInitalGivingGroupsAndCampaigns,
 } from '../../../actions/user';
-import PlaceholderGrid from '../../shared/PlaceHolder';
-import GroupsAndCampaignsList from './GroupsAndCampaignsList';
 import { Link } from '../../../routes';
+import PlaceholderGrid from '../../shared/PlaceHolder';
+
+import GroupsAndCampaignsList from './GroupsAndCampaignsList';
+
 class GroupsAndCampaigns extends React.Component {
 
     constructor(props) {
@@ -103,7 +106,7 @@ class GroupsAndCampaigns extends React.Component {
                     <div className="grpcampBanner">
                         <div className="grpcampBannerContainer">
                             <div className="grpcampBannerTxt">
-                                <Header as='h3' icon>
+                                <Header as="h3" icon>
                                     Giving Groups & Campaigns
                                     <Header.Subheader>
                                     You can give more as a part of group, and you can raise more when it’s easy to manage.
@@ -135,14 +138,14 @@ class GroupsAndCampaigns extends React.Component {
                         />
                     )} */}
                 </div>
-                <Divider/>
+                <Divider />
                 <div className="pt-2 pb-2">
                     <p className="bold font-s-16">Giving Groups you have joined</p>
                 </div>
                 <div className="pt-1 pb-3">
                     {this.renderList(showloaderForMemberGroups, 'groupsWithMemberships', groupsWithMemberships)}
                 </div>
-                <Divider/>
+                <Divider />
                 <div className="pt-2 pb-2">
                     <p className="bold font-s-16">Campaigns you manage</p>
                 </div>
@@ -156,11 +159,11 @@ class GroupsAndCampaigns extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        currentUser: state.user.info,
         administeredCampaigns: state.user.administeredCampaigns,
         administeredGroups: state.user.administeredGroups,
-        groupsWithMemberships: state.user.groupsWithMemberships,
+        currentUser: state.user.info,
         displayError: state.user.leaveErrorMessage,
+        groupsWithMemberships: state.user.groupsWithMemberships,
     };
 }
 

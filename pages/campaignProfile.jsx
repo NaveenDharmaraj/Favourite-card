@@ -5,8 +5,8 @@ import {
     PropTypes,
     string,
 } from 'prop-types';
-import _ from 'lodash';
 
+import { Router } from '../routes';
 import {
     getCampaignFromSlug,
 } from '../actions/profile';
@@ -28,16 +28,28 @@ class CampaignProfile extends React.Component {
         const {
             dispatch,
             slug,
+            slugApiErrorStats,
         } = this.props;
-        getCampaignFromSlug(dispatch, slug);
+        if (slugApiErrorStats) {
+            Router.pushRoute('/dashboard');
+        } else {
+            getCampaignFromSlug(dispatch, slug);
+        }
     }
 
     render() {
-        return (
-            <Layout>
-                <CampaignProfileWrapper {...this.props} />
-            </Layout>
-        );
+        const {
+            slugApiErrorStats,
+        } = this.props;
+
+        if (!slugApiErrorStats) {
+            return (
+                <Layout>
+                    <CampaignProfileWrapper {...this.props} />
+                </Layout>
+            );
+        }
+        return null;
     }
 }
 
@@ -60,6 +72,7 @@ function mapStateToProps(state) {
         disableFollow: state.profile.disableFollow,
         isAuthenticated: state.auth.isAuthenticated,
         seeMoreLoaderStatus: state.profile.seeMoreLoaderStatus,
+        slugApiErrorStats: state.profile.slugApiErrorStats,
         subGroupListLoader: state.profile.subGroupListLoader,
     };
 }

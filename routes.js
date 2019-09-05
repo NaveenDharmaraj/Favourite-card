@@ -10,6 +10,8 @@ module.exports = routes()
     .add('give-from-to-group', '/give/to/group/:step', 'groups')
     .add('friends', '/give/to/friend/:step')
     .add('group-profile', '/groups/:slug', 'groupProfile')
+    .add('notification', '/notifications/:msgId')
+    .add('chat', '/chats/:msgId')
     .add('campaign-profile', '/campaigns/:slug', 'campaignProfile')
     .add('charity-profile', '/charities/:slug', 'charityProfile')
     .add('IssuedTaxReceipientDonationsList', '/user/tax-receipts/:slug', 'taxReceipientDonationsList');

@@ -1,3 +1,14 @@
+const isFalsy = (val) => {
+    const falsyArray = [
+        undefined,
+        null,
+        NaN,
+        0,
+        '',
+        false,
+    ];
+    return falsyArray.includes(val);
+};
 const distanceOfTimeInWords = (from) => {
     const parsedFrom = new Date(from);
     const to = new Date();
@@ -19,5 +30,6 @@ const distanceOfTimeInWords = (from) => {
 };
 
 export {
+    isFalsy,
     distanceOfTimeInWords,
 };

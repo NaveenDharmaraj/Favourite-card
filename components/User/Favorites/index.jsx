@@ -1,23 +1,20 @@
 import React from 'react';
 import _ from 'lodash';
 import {
-  Header,
-  Container,
-  Grid,
-  Card,
-  Image,
-  Button,
-  Icon,
-} from 'semantic-ui-react'
+    Header,
+    Container,
+    Grid,
+    Card,
+    Image,
+    Button,
+    Icon,
+} from 'semantic-ui-react';
 import {
     connect,
 } from 'react-redux';
 import {
-    arrayOf,
     bool,
-    element,
     func,
-    oneOf,
     oneOfType,
     number,
     PropTypes,
@@ -58,9 +55,6 @@ class Favorites extends React.Component {
         const {
             favorites,
         } = this.props;
-        const {
-            currentActivePage,
-        } = this.state;
         if (!_.isEqual(this.props, prevProps)) {
             if (!_.isEqual(favorites, prevProps.favorites)) {
                 this.setState({
@@ -73,9 +67,9 @@ class Favorites extends React.Component {
 
     checkForData() {
         const {
-            favorites
+            favorites,
         } = this.props;
-        if(!_.isEmpty(favorites) && favorites.data && _.size(favorites.data) > 0) {
+        if (!_.isEmpty(favorites) && favorites.data && _.size(favorites.data) > 0) {
             return true;
         }
         return false;
@@ -87,7 +81,7 @@ class Favorites extends React.Component {
                 data,
                 currentPageNumber,
                 dataCount,
-                pageCount
+                pageCount,
             },
             dispatch,
             currentUser,
@@ -120,7 +114,7 @@ class Favorites extends React.Component {
                 } = data.attributes;
                 let displayAvatar = groupImg;
                 let route = 'groups';
-                if(type === 'charity'){
+                if (type === 'charity') {
                     displayAvatar = charityImg;
                     route = 'charities';
                 }
@@ -132,15 +126,18 @@ class Favorites extends React.Component {
                             <Card.Header>
                                 <Grid verticalAlign="middle">
                                     <Grid.Column width={6}>
-                                    <Image src={displayAvatar} />
+                                        <Image src={displayAvatar} />
                                     </Grid.Column>
                                     <Grid.Column width={10}>
                                         <div className="">
-                                            <Header as='h4'>
+                                            <Header as="h4">
                                                 <Header.Content>
-                                                <Header.Subheader className="chimp-lbl group">giving group<span className="more-icon">
-                                                    <Icon name="heart" disabled={this.props.disableFavorites} onClick={() => this.callRemoveFav(entityId, type)}/></span>
-                                                </Header.Subheader>
+                                                    <Header.Subheader className="chimp-lbl group">
+                                                        giving group
+                                                        <span className="more-icon">
+                                                            <Icon name="heart" disabled={this.props.disableFavorites} onClick={() => this.callRemoveFav(entityId, type)} />
+                                                        </span>
+                                                    </Header.Subheader>
                                                     {name}
                                                 </Header.Content>
                                             </Header>
@@ -151,7 +148,7 @@ class Favorites extends React.Component {
                                     </Grid.Column>
                                 </Grid>
                             </Card.Header>
-                        </Card>    
+                        </Card>
                     </Grid.Column>
                 );
             });
@@ -170,21 +167,19 @@ class Favorites extends React.Component {
             currentUser,
             dispatch,
             favorites,
-        } = this.props
+        } = this.props;
         const {
             pageSize,
         } = this.state;
-        if( favorites.currentPageNumber <  favorites.pageCount) {
-            getFavoritesList(dispatch, currentUser.id, favorites.currentPageNumber + 1 , this.state.pageSize);
+        if (favorites.currentPageNumber <  favorites.pageCount) {
+            getFavoritesList(dispatch, currentUser.id, favorites.currentPageNumber + 1, pageSize);
             dismissAllUxCritialErrors(dispatch);
             this.setState({
                 loader: true,
             });
-
         }
-        
     }
-    
+
     renderSeeMore() {
         if (this.checkForData()) {
             const {
@@ -193,40 +188,38 @@ class Favorites extends React.Component {
             const {
                 favorites,
             } = this.props;
-            if(_.size(favorites.data) < favorites.dataCount){
-                const content = loader ? (
-                    <Icon loading color="black" name="spinner" />
-                ) : (
-                    <Button 
-                        className="blue-bordr-btn-round-def"
-                        onClick={()=>this.handleSeeMore()}
-                    >
-                        See more
-                    </Button>
+            if (_.size(favorites.data) < favorites.dataCount) {
+                const content = (
+                    <div className="text-centre">
+                        <Button
+                            className="blue-bordr-btn-round-def"
+                            onClick={() => this.handleSeeMore()}
+                            loading={!!loader}
+                            disabled={!!loader}
+                            content="See more"
+                        />
+                    </div>
                 );
                 return content;
-
             }
         }
         return null;
     }
 
     renderCount() {
-        if(this.checkForData()) {
+        if (this.checkForData()) {
             const {
                 favorites,
             } = this.props;
             const countText = `Showing ${_.size(favorites.data)} of ${favorites.dataCount}`;
             return (
                 <div className="result">{countText}</div>
-            )
+            );
         }
+        return null;
     }
 
     render() {
-        const {
-            favorites,
-        } = this.props;
         const {
             favoritesLoader,
         } = this.state;
@@ -279,7 +272,6 @@ Favorites.propTypes = {
             string,
         ]),
     }),
-    favoritesLoader: bool,
     disableFavorites: bool,
 };
 
@@ -287,8 +279,8 @@ Favorites.propTypes = {
 function mapStateToProps(state) {
     return {
         currentUser: state.user.info,
-        favorites: state.user.favorites,
         disableFavorites: state.user.disableFavorites,
+        favorites: state.user.favorites,
     };
 }
 
