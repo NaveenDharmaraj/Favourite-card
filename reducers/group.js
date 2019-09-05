@@ -16,14 +16,18 @@ const group = (state = {}, action) => {
                     ...state,
                     groupMembersDetails: {
                         ...state.groupMembersDetails,
-                        data: state.groupMembersDetails.data.concat(action.payload.groupMembersDetails.data),
-                        nextLink: action.payload.groupMembersDetails.nextLink,
+                        data: state.groupMembersDetails.data.concat(action.payload.data),
+                        nextLink: action.payload.nextLink,
                     },
                 };
             } else {
                 newState = {
                     ...state,
-                    groupMembersDetails: Object.assign({}, state.groupMembersDetails, action.payload.groupMembersDetails),
+                    groupMembersDetails: {
+                        ...state.groupMembersDetails,
+                        data: action.payload.data,
+                        nextLink: action.payload.nextLink,
+                    },
                 };
             }
             break;
@@ -33,14 +37,18 @@ const group = (state = {}, action) => {
                     ...state,
                     groupAdminsDetails: {
                         ...state.groupAdminsDetails,
-                        data: state.groupAdminsDetails.data.concat(action.payload.groupAdminsDetails.data),
-                        nextLink: action.payload.groupAdminsDetails.nextLink,
+                        data: state.groupAdminsDetails.data.concat(action.payload.data),
+                        nextLink: action.payload.nextLink,
                     },
                 };
             } else {
                 newState = {
                     ...state,
-                    groupAdminsDetails: Object.assign({}, state.groupAdminsDetails, action.payload.groupAdminsDetails),
+                    groupAdminsDetails: {
+                        ...state.groupAdminsDetails,
+                        data: action.payload.data,
+                        nextLink: action.payload.nextLink,
+                    },
                 };
             }
             break;
@@ -50,14 +58,18 @@ const group = (state = {}, action) => {
                     ...state,
                     groupBeneficiaries: {
                         ...state.groupBeneficiaries,
-                        data: state.groupBeneficiaries.data.concat(action.payload.groupBeneficiaries.data),
-                        nextLink: action.payload.groupBeneficiaries.nextLink,
+                        data: state.groupBeneficiaries.data.concat(action.payload.data),
+                        nextLink: action.payload.nextLink,
                     },
                 };
             } else {
                 newState = {
                     ...state,
-                    groupBeneficiaries: Object.assign([], state.groupBeneficiaries, action.payload.groupBeneficiaries),
+                    groupBeneficiaries: {
+                        ...state.groupBeneficiaries,
+                        data: action.payload.data,
+                        nextLink: action.payload.nextLink,
+                    },
                 };
             }
             break;

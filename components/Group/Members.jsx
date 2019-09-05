@@ -20,8 +20,7 @@ import {
 
 import PlaceholderGrid from '../shared/PlaceHolder';
 import {
-    getGroupMemberDetails,
-    getGroupAdminDetails,
+    getDetails,
 } from '../../actions/group';
 import FriendCard from '../shared/FriendCard';
 
@@ -63,10 +62,10 @@ class Members extends React.Component {
             },
         } = this.props;
         if (_isEmpty(membersData)) {
-            getGroupMemberDetails(dispatch, groupId);
+            getDetails(dispatch, groupId, 'members');
         }
         if (_isEmpty(adminData)) {
-            getGroupAdminDetails(dispatch, groupId);
+            getDetails(dispatch, groupId, 'admins');
         }
     }
 
@@ -117,11 +116,11 @@ class Members extends React.Component {
         switch (type) {
             case 'Admins':
                 replacedUrl = (adminsNextLink) ? adminsNextLink : '';
-                getGroupAdminDetails(dispatch, id, replacedUrl);
+                getDetails(dispatch, id, 'admins', replacedUrl);
                 break;
             case 'Members':
                 replacedUrl = (membersNextLink) ? membersNextLink : '';
-                getGroupMemberDetails(dispatch, id, replacedUrl);
+                getDetails(dispatch, id, 'members', replacedUrl);
                 break;
             default:
                 break;

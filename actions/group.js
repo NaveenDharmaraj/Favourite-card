@@ -29,9 +29,7 @@ export const getGroupFromSlug = async (dispatch, slug) => {
         await coreApi.get(`/groups/find_by_slug?load_full_profile=true`, {
             params: {
                 dispatch,
-                slug: [
-                    slug,
-                ],
+                slug,
                 uxCritical: true,
             },
         }).then(
@@ -54,14 +52,27 @@ export const getGroupFromSlug = async (dispatch, slug) => {
     }
 };
 
-export const getGroupMemberDetails = async (dispatch, id, url) => {
+export const getDetails = async (dispatch, id, type, url) => {
     const fsa = {
-        payload: {
-            groupMembersDetails: {},
-        },
-        type: actionTypes.GET_GROUP_MEMBERS_DETAILS,
+        payload: {},
     };
-    const newUrl = !_.isEmpty(url) ? url : `/groups/${id}/groupMembers?page[size]=7`;
+    let newUrl = '';
+    switch (type) {
+        case 'members':
+            fsa.type = actionTypes.GET_GROUP_MEMBERS_DETAILS;
+            newUrl = !_.isEmpty(url) ? url : `/groups/${id}/groupMembers?page[size]=7`;
+            break;
+        case 'admins':
+            fsa.type = actionTypes.GET_GROUP_ADMIN_DETAILS;
+            newUrl = !_.isEmpty(url) ? url : `/groups/${id}/groupAdmins?page[size]=7`;
+            break;
+        case 'charitySupport':
+            fsa.type = actionTypes.GET_GROUP_BENEFICIARIES;
+            newUrl = !_.isEmpty(url) ? url : `groups/${id}/groupBeneficiaries?page[size]=3`;
+            break;
+        default:
+            break;
+    }
     coreApi.get(newUrl, {
         params: {
             dispatch,
@@ -69,63 +80,8 @@ export const getGroupMemberDetails = async (dispatch, id, url) => {
         },
     }).then((result) => {
         if (result && !_.isEmpty(result.data)) {
-            const memberDetails = {
-                data: result.data,
-                nextLink: (result.links.next) ? result.links.next : null,
-            };
-            fsa.payload.groupMembersDetails = memberDetails;
-        }
-    }).catch().finally(() => {
-        dispatch(fsa);
-    });
-};
-
-export const getGroupAdminDetails = async (dispatch, id, url) => {
-    const fsa = {
-        payload: {
-            groupAdminsDetails: {},
-        },
-        type: actionTypes.GET_GROUP_ADMIN_DETAILS,
-    };
-    const newUrl = !_.isEmpty(url) ? url : `/groups/${id}/groupAdmins?page[size]=7`;
-    coreApi.get(newUrl, {
-        params: {
-            dispatch,
-            uxCritical: true,
-        },
-    }).then((result) => {
-        if (result && !_.isEmpty(result.data)) {
-            const adminDetails = {
-                data: result.data,
-                nextLink: (result.links.next) ? result.links.next : null,
-            };
-            fsa.payload.groupAdminsDetails = adminDetails;
-        }
-    }).catch().finally(() => {
-        dispatch(fsa);
-    });
-};
-
-export const getGroupBeneficiaries = async (dispatch, id, url) => {
-    const fsa = {
-        payload: {
-            groupBeneficiaries: {},
-        },
-        type: actionTypes.GET_GROUP_BENEFICIARIES,
-    };
-    const newUrl = !_.isEmpty(url) ? url : `groups/${id}/groupBeneficiaries?page[size]=3`;
-    coreApi.get(newUrl, {
-        params: {
-            dispatch,
-            uxCritical: true,
-        },
-    }).then((result) => {
-        if (result && !_.isEmpty(result.data)) {
-            const beneficiariesDetails = {
-                data: result.data,
-                nextLink: (result.links.next) ? result.links.next : null,
-            };
-            fsa.payload.groupBeneficiaries = beneficiariesDetails;
+            fsa.payload.data = result.data;
+            fsa.payload.nextLink = (result.links.next) ? result.links.next : null;
         }
     }).catch().finally(() => {
         dispatch(fsa);
@@ -209,11 +165,11 @@ export const postActivity = async (dispatch, id, msg) => {
     coreApi.post(`/comments`,
         {
             data: {
-                type: 'comments',
                 attributes: {
                     comment: msg,
                     groupId: id,
                 },
+                type: 'comments',
             },
         }).then((result) => {
         if (result && !_.isEmpty(result.data)) {
@@ -227,12 +183,12 @@ export const postComment = async (dispatch, groupId, eventId, msg) => {
     coreApi.post(`/comments`,
         {
             data: {
-                type: 'comments',
                 attributes: {
                     comment: msg,
-                    groupId: Number(groupId),
                     eventId: Number(eventId),
+                    groupId: Number(groupId),
                 },
+                type: 'comments',
             },
         }).then((result) => {
         if (result && !_.isEmpty(result.data)) {

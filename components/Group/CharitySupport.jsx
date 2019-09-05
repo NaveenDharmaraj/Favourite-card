@@ -16,7 +16,7 @@ import {
     func,
 } from 'prop-types';
 
-import { getGroupBeneficiaries } from '../../actions/group';
+import { getDetails } from '../../actions/group';
 import LeftImageCard from '../shared/LeftImageCard';
 import PlaceholderGrid from '../shared/PlaceHolder';
 
@@ -53,7 +53,7 @@ class CharitySupport extends React.Component {
             id: groupId,
         } = this.props;
         if (_isEmpty(beneficiariesData)) {
-            getGroupBeneficiaries(dispatch, groupId);
+            getDetails(dispatch, groupId, 'charitySupport');
         }
     }
 
@@ -85,7 +85,7 @@ class CharitySupport extends React.Component {
             id: groupId,
         } = this.props;
         const url = (beneficiariesNextLink) ? beneficiariesNextLink : null;
-        getGroupBeneficiaries(dispatch, groupId, url);
+        getDetails(dispatch, groupId, 'charitySupport', url);
     }
 
     render() {
@@ -128,9 +128,7 @@ CharitySupport.defaultProps = {
     dispatch: _.noop,
     groupBeneficiaries: {
         data: [],
-        links: {
-            next: '',
-        },
+        nextLink: '',
     },
     id: null,
 };
@@ -139,9 +137,7 @@ CharitySupport.propTypes = {
     dispatch: func,
     groupBeneficiaries: {
         data: arrayOf(PropTypes.element),
-        links: PropTypes.shape({
-            next: string,
-        }),
+        nextLink: string,
     },
     id: number,
 };
