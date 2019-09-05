@@ -17,7 +17,7 @@ const Give = () => (
         position="bottom right"
         trigger={(
             <Menu.Item className="user-img give-btn">
-                <Button primary>Give</Button>
+                <Button className="blue-btn-rounded-def w-120">Give</Button>
             </Menu.Item>
         )}
     >

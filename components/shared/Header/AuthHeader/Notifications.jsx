@@ -1,121 +1,119 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { Icon, Image, Label, List, Menu, Popup } from 'semantic-ui-react';
-import { NotificationHelper } from '../../../../Firebase/NotificationHelper';
+import {
+    Icon,
+    Image,
+    Menu,
+    Label,
+    Popup,
+    List,
+    Dropdown,
+    Button
+} from 'semantic-ui-react';
 
-function timeDifference(current, previous) {
-
-    var msPerMinute = 60 * 1000;
-    var msPerHour = msPerMinute * 60;
-    var msPerDay = msPerHour * 24;
-    var msPerMonth = msPerDay * 30;
-    var msPerYear = msPerDay * 365;
-
-    var elapsed = current - previous;
-
-    if (elapsed < msPerMinute) {
-        return Math.round(elapsed / 1000) + ' seconds ago';
-    } else if (elapsed < msPerHour) {
-        return Math.round(elapsed / msPerMinute) + ' minutes ago';
-    } else if (elapsed < msPerDay) {
-        return Math.round(elapsed / msPerHour) + ' hours ago';
-    } else if (elapsed < msPerMonth) {
-        return Math.round(elapsed / msPerDay) + ' days ago';
-    } else if (elapsed < msPerYear) {
-        return Math.round(elapsed / msPerMonth) + ' months ago';
-    } else {
-        return Math.round(elapsed / msPerYear) + ' years ago';
-    }
-}
-const noOfMessagesToShow = 8;
-
-const Notifications = (props) => {
-    let {
-        messageCount,
-        messages,
-        userInfo,
-        dispatch
-    } = props;
-    if (!messages) {
-        messages = [];
-    }
-    const fetchMessages = async () => {
-        await NotificationHelper.getMessages(userInfo, dispatch);
-    };
-    const onMessageClick = async (msgKey, msg) => {
-        await NotificationHelper.markAsRead(userInfo, dispatch, msgKey, msg);
-    };
-
-    const acceptFriendRequestAsync = async (msg) => {
-        await NotificationHelper.acceptFriendRequest(userInfo, dispatch, msg);
-    };
-
-    const listItems = messages.slice(0, noOfMessagesToShow).map((msg) => (
-        <List.Item key={msg._key} style={{ backgroundColor: (msg.read ? "none" : "none") }}>
-            <Image avatar src="https://react.semantic-ui.com/images/avatar/small/daniel.jpg" />
-            <List.Content>
-                <List.Header style={{ width: "100%", maxWidth: '500px' }}>
-                    <div onClick={() => onMessageClick(msg._key, msg)} style={{ cursor: "pointer", maxWidth: "300px",width:"300px", overflow: "break-word", display: 'inline-block' }}>{msg.message}</div> &nbsp;&nbsp;&nbsp;&nbsp;
-                    {(() => {
-                        if (msg.type == "friendRequest" && msg.sourceUserId != userInfo.id) {
-                            return <div style={{ width: "100px", textAlign: 'center', float: 'right', display: 'inline-block' }}>
-                                {/* <button style={{ float: "right" }} className="ui button">Reject</button> */}
-                                <button style={{ float: "right", marginRight: "10px" }} className="ui primary button" onClick={() => acceptFriendRequestAsync(msg)}>Accept</button>
-                            </div>;
-                        }
-                    })()}
-                </List.Header>
-
-                <List.Description>
-                    {timeDifference(new Date().getTime(), msg.createdTs)}
-                </List.Description>
-            </List.Content>
-        </List.Item>
-    ));
-    return (<Popup
-        position="bottom center"
-        pinned
+const Notifications = () => (
+    <Popup
+        position="bottom right"
+        basic
+        on="click"
         className="notification-popup"
         trigger={
             (
-                <Menu.Item as="a">
-                    {(() => {
-                        if (messageCount > 0) {
-                            return <Label color="red" floating circular onClick={fetchMessages}>
-                                {messageCount}
-                            </Label>;
-                        }
-                    })()}
-
-                    <Icon name="bell outline" />
+                <Menu.Item as="a" className="notifyNav">
+                    <Icon name="bell outline new" />
                 </Menu.Item>
             )
         }
-        flowing
-        hoverable
     >
         <Popup.Header>
-            Notification <a style={{ float: 'right', display: 'none' }}><Icon name="setting" /></a>
+            Notification
+            <a className="settingsIcon">
+                <Icon name="setting" />
+            </a>
         </Popup.Header>
         <Popup.Content>
-            <List relaxed="very">
-                {listItems}
+            <List divided verticalAlign="top">
+                <List.Item className="new">
+                    <List.Content>
+                        This notification is now removed. <a>Undo</a>
+                    </List.Content>
+                </List.Item>
+                <List.Item className="new">
+                    <Image avatar src="https://react.semantic-ui.com/images/avatar/small/lena.png" />
+                    <List.Content>
+                        <b>Sophia Yakisoba</b>
+                        is waiting for you to accept their invitation.
+                        <div className="time">4 hours ago</div>
+                        <span className="more-btn">
+                            <Dropdown className="rightBottom" icon="ellipsis horizontal">
+                                <Dropdown.Menu>
+                                    <Dropdown.Item text="Delete this notification" />
+                                    <Dropdown.Item text="Stop recieving notifications like this" />
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        </span>
+                        <Button className="blue-btn-rounded-def c-small">Accept</Button>
+                    </List.Content>
+                </List.Item>
+                <List.Item className="new">
+                    <Image avatar src="https://react.semantic-ui.com/images/avatar/small/lena.png" />
+                    <List.Content>
+                        <b>Pablo Jorge</b>
+                        just met his Giving Goal!
+                        <div className="time">4 hours ago</div>
+                        <span className="more-btn">
+                            <Dropdown className="rightBottom" icon="ellipsis horizontal">
+                                <Dropdown.Menu>
+                                    <Dropdown.Item text="Delete this notification" />
+                                    <Dropdown.Item text="Stop recieving notifications like this" />
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        </span>
+                        <Button className="blue-bordr-btn-round-def c-small">View profile</Button>
+                    </List.Content>
+                </List.Item>
+                <List.Item className="new">
+                    <Image avatar src="https://react.semantic-ui.com/images/avatar/small/lena.png" />
+                    <List.Content>
+                        <b>Kholde Brew </b>
+                        and you are now friends.
+
+                        <div className="time">Sunday</div>
+                        <span className="more-btn">
+                            <Dropdown className="rightBottom" icon="ellipsis horizontal">
+                                <Dropdown.Menu>
+                                    <Dropdown.Item text="Delete this notification" />
+                                    <Dropdown.Item text="Stop recieving notifications like this" />
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        </span>
+                        <Button className="blue-btn-rounded-def c-small">Accept</Button>
+                    </List.Content>
+                </List.Item>
+                <List.Item>
+                    <Image avatar src="https://react.semantic-ui.com/images/avatar/small/lena.png" />
+                    <List.Content>
+                        <b>CHIMP </b>
+                        just introduced a new way of giving to maximize your donation.
+                        <div className="time">Jan 13</div>
+                        <span className="more-btn">
+                            <Dropdown className="rightBottom" icon="ellipsis horizontal">
+                                <Dropdown.Menu>
+                                    <Dropdown.Item text="Delete this notification" />
+                                    <Dropdown.Item text="Stop recieving notifications like this" />
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        </span>
+                        <Button className="blue-btn-rounded-def c-small">Accept</Button>
+                    </List.Content>
+                </List.Item>
             </List>
         </Popup.Content>
         <div className="popup-footer text-center">
-            <a href="/notifications/all">{messageCount <= noOfMessagesToShow ? "See All Activity" : "See all activity"}</a>
+            <a href="">
+                See all activity
+            </a>
         </div>
     </Popup>
-    );
-};
+);
 
-function mapStateToProps(state) {
-    console.log(state);
-    return {
-        messages: state.firebase.messages,
-        messageCount: state.firebase.messages ? Object.keys(state.firebase.messages).length : 0,
-        userInfo: state.user.info
-    };
-}
-
-export default connect(mapStateToProps)(Notifications);
+export default Notifications;
