@@ -107,19 +107,13 @@ class MyCreditCards extends React.Component {
             myCreditCardListLoader,
             isAddModalOpen,
         } = this.state;
-        if (!_.isEqual(this.props, prevProps)) {
-            if (!_.isEqual(userCreditCardList, prevProps.userCreditCardList)) {
-                myCreditCardListLoader = false;
-            }
-            this.setState({
-                myCreditCardListLoader,                
-            });
-            if(!_.isEqual(newCreditCardApiCall, prevProps.newCreditCardApiCall)) {
-                isAddModalOpen = newCreditCardApiCall;
-                this.setState({
-                    isAddModalOpen,
-                })
-            }
+        if (!_.isEqual(userCreditCardList, prevProps.userCreditCardList)) {
+            myCreditCardListLoader = false;
+            this.setState({ myCreditCardListLoader });
+        }
+        if(!_.isEqual(newCreditCardApiCall, prevProps.newCreditCardApiCall)) {
+            isAddModalOpen = newCreditCardApiCall;
+            this.setState({ isAddModalOpen });
         }
     }
 
@@ -192,7 +186,6 @@ class MyCreditCards extends React.Component {
                 },
                 dispatch,
             } = this.props;
-            console.log(stripeCreditCard);
             saveNewCreditCard(dispatch, stripeCreditCard, cardHolderName, id, isDefaultCard, currentActivePage);            
             this.setState({ isDefaultCard: false });
         }
@@ -332,7 +325,6 @@ class MyCreditCards extends React.Component {
         this.setState({
             isDeleteMessageOpen: false,
         })
-        getMyCreditCards(dispatch, id, currentActivePage);
     }
 
     handleDeleteCancelClick() {

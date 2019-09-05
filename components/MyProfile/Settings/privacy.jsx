@@ -42,13 +42,9 @@ class Privacy extends React.Component {
         let {
             blockedUserListLoader,
         } = this.state;
-        if (!_.isEqual(this.props, prevProps)) {
-            if (!_.isEqual(userBlockedFriendsList, prevProps.userBlockedFriendsList)) {
-                blockedUserListLoader = false;
-            }
-            this.setState({
-                blockedUserListLoader,
-            });
+        if (!_.isEqual(userBlockedFriendsList, prevProps.userBlockedFriendsList)) {
+            blockedUserListLoader = false;
+            this.setState({ blockedUserListLoader });
         }
     }
 

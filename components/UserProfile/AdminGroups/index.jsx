@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import _ from 'lodash';
 import {
@@ -32,17 +33,15 @@ class UserAdminGroupList extends React.Component {
         getUserAdminGroup(dispatch, friendUserId);
     }
 
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         const {
             userProfileAdminGroupData,
         } = this.props;
         let {
             userAdminGroupListLoader,
         } = this.state;
-        if (!_.isEqual(this.props, prevProps)) {
-            if (!_.isEqual(userProfileAdminGroupData, prevProps.userProfileAdminGroupData)) {
-                userAdminGroupListLoader = false;
-            }
+        if (!_.isEqual(userProfileAdminGroupData, prevProps.userProfileAdminGroupData)) {
+            userAdminGroupListLoader = false;
             this.setState({ userAdminGroupListLoader });
         }
     }

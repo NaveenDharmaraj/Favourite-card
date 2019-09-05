@@ -512,6 +512,7 @@ const saveCharitableInterests = (dispatch, userId, userCauses, userTags) => {
                 data: result.data,
             };
             getUserTagsFollowed(dispatch, userId);
+            getUserTagsRecommended(dispatch, userId, 1);
         },
     ).catch((error) => {
         fsaTags.error = error;
