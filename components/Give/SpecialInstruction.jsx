@@ -46,7 +46,7 @@ const SpecialInstruction = (props) => {
                 <Divider className="dividerMargin" />
             </Form.Field>
             <Form.Field>
-                <Header as="h3">{formatMessage('specialInstruction:specialInstructionLabel')}</Header>
+                <Header as="h3" className="f-weight-n">{formatMessage('specialInstruction:specialInstructionLabel')}</Header>
             </Form.Field>
             {repeatGift}
             <Form.Field>

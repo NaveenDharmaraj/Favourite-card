@@ -6,6 +6,7 @@ import React from 'react';
 
 
 const types = _keyBy([
+    'DISMISS_ALL_UX_CRITICAL_ERROR',
     'DISMISS_UX_CRITICAL_ERROR',
     'TRIGGER_UX_CRITICAL_ERROR',
 ]);
@@ -33,15 +34,10 @@ const triggerUxCritialErrors = (errors = [], dispatch) => {
     });
 };
 
-const dismissUxCritialErrors = (err, allErrors, dispatch) => {
-    const errors = _without(
-        allErrors,
-        err,
-    );
-
+const dismissUxCritialErrors = (err, dispatch) => {
     dispatch({
         payload: {
-            errors,
+            error: err,
         },
         type: types.DISMISS_UX_CRITICAL_ERROR,
     });
@@ -54,7 +50,7 @@ const dismissAllUxCritialErrors = (dispatch) => {
         payload: {
             errors,
         },
-        type: types.DISMISS_UX_CRITICAL_ERROR,
+        type: types.DISMISS_ALL_UX_CRITICAL_ERROR,
     });
 };
 

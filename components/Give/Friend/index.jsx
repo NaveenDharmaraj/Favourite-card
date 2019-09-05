@@ -104,7 +104,6 @@ class Friend extends React.Component {
             payload = _merge({}, props.flowObject);
         }
         this.state = {
-            buttonClicked: false,
             dropDownOptions: {
                 donationMatchList: populateDonationMatch(donationMatchData, formatMessage, language),
                 // giveFromList: accountOptions,
@@ -218,7 +217,6 @@ class Friend extends React.Component {
                     language,
                 }
             } = this.props;
-            console.log(this.props);
             const formatMessage = this.props.t;
             let paymentInstruments = null;
             let companyPaymentInstrumentChanged = false;
@@ -522,9 +520,6 @@ class Friend extends React.Component {
                 creditCard,
             },
         } = flowObject;
-        this.setState({
-            buttonClicked: true,
-        });
         const validateCC = this.isValidCC(
             creditCard,
             inValidCardNumber,
@@ -545,10 +540,6 @@ class Friend extends React.Component {
             );
             dismissAllUxCritialErrors(this.props.dispatch);
             dispatch(proceed(flowObject, flowSteps[stepIndex + 1], stepIndex));
-        } else {
-            this.setState({
-                buttonClicked: false,
-            });
         }
     }
 
@@ -705,6 +696,7 @@ class Friend extends React.Component {
 
     render() {
         const {
+            creditCardApiCall,
             i18n:{
                 language,
             },
@@ -882,7 +874,7 @@ class Friend extends React.Component {
                         <Divider className="dividerMargin" />
                     </Form.Field>
                     <Form.Field>
-                        <Header as="h3">{formatMessage('friends:includeMessageLabel')}</Header>
+                        <Header as="h3" className="f-weight-n">{formatMessage('friends:includeMessageLabel')}</Header>
                     </Form.Field>
                     <Note
                         fieldName="noteToRecipients"
@@ -908,9 +900,9 @@ class Friend extends React.Component {
                     <Form.Button
                         primary
                         className="blue-btn-rounded"// {isMobile ? 'mobBtnPadding' : 'btnPadding'}
-                        content={(!this.state.buttonClicked) ? formatMessage('giveCommon:continueButton')
-                            : formatMessage('giveCommon:submitingButton')}
-                        disabled={(this.state.buttonClicked) || !this.props.userAccountsFetched}
+                        content={(!creditCardApiCall) ? formatMessage('giveCommon:continueButton')
+                            : formatMessage('giveCommon:submittingButton')}
+                        disabled={(creditCardApiCall) || !this.props.userAccountsFetched}
                         type="submit"
                     />
                 </Fragment>
@@ -932,6 +924,7 @@ function mapStateToProps(state) {
         userAccountsFetched: state.user.userAccountsFetched,
         userCampaigns: state.user.userCampaigns,
         userGroups: state.user.userGroups,
+        creditCardApiCall: state.give.creditCardApiCall,
     };
 }
 

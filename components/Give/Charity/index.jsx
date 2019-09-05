@@ -30,8 +30,7 @@ import {
 import {
     connect,
 } from 'react-redux';
-
-//import { Link } from '../../../routes';
+import { Link } from '../../../routes';
 import { beneficiaryDefaultProps } from '../../../helpers/give/defaultProps';
 import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
 import {
@@ -132,7 +131,6 @@ class Charity extends React.Component {
             }
         this.state = {
             benificiaryIndex: 0,
-            buttonClicked: false,
             dropDownOptions: {
                 donationMatchList: populateDonationMatch(donationMatchData, formatMessage),
                 giftTypeList: populateGiftType(formatMessage),
@@ -220,6 +218,7 @@ class Charity extends React.Component {
         } else {
             Router.pushRoute('/dashboard');
         }
+        window.scrollTo(0, 0);
         dispatch(getDonationMatchAndPaymentInstruments(id));
     }
 
@@ -304,7 +303,6 @@ class Charity extends React.Component {
                 };
             } else if( !_isEqual(giveGroupBenificairyDetails, prevProps.giveGroupBenificairyDetails)){   
                 if(_isEmpty(giveGroupBenificairyDetails))
-                debugger
                 Router.pushRoute('/dashboard');
             }
             if (!_isEmpty(fund)) {
@@ -316,7 +314,6 @@ class Charity extends React.Component {
                 );
             }
             this.setState({
-                buttonClicked: false,
                 dropDownOptions: {
                     ...dropDownOptions,
                     donationMatchList: donationMatchOptions,
@@ -384,6 +381,12 @@ class Charity extends React.Component {
                 const defaultGroupFrom = userGroups.find((userGroup) => userGroup.id === groupId);
                 if(!_isEmpty(defaultGroupFrom)){
                 giveData.giveFrom.value = defaultGroupFrom.attributes.fundId;
+                giveData.giveFrom.name = defaultGroupFrom.attributes.name;
+                giveData.giveFrom.avatar = defaultGroupFrom.attributes.avatar,
+                giveData.giveFrom.id = defaultGroupFrom.id;
+                giveData.giveFrom.type = defaultGroupFrom.type;
+                giveData.giveFrom.text = `${defaultGroupFrom.attributes.name} ($${defaultGroupFrom.attributes.balance})`;
+                giveData.giveFrom.balance = defaultGroupFrom.attributes.balance;
              }
             }
             else{
@@ -717,9 +720,6 @@ class Charity extends React.Component {
                 coverFees,
             },
         } = flowObject;
-        this.setState({
-            buttonClicked: true,
-        });
         const validateCC = this.isValidCC(
             creditCard,
             inValidCardNumber,
@@ -739,10 +739,6 @@ class Charity extends React.Component {
             flowObject.stepsCompleted = false;
             dismissAllUxCritialErrors(this.props.dispatch);
             dispatch(proceed(flowObject, flowSteps[stepIndex + 1], stepIndex));
-        } else {
-            this.setState({
-                buttonClicked: false,
-            });
         }
     }
 
@@ -827,7 +823,8 @@ class Charity extends React.Component {
                 { !!showAnotherRecipient && (
                     <Form.Field className="lnk-FindAnother">
                         <List className="lstRecipient" verticalAlign="middle" horizontal>
-                            <List.Item className="lstitm" path="/give">
+                        <Link route = '/give'>
+                            <List.Item className="lstitm">
                                 <Image
                                     className="imgCls lst-img"
                                     src={IconCharity}
@@ -838,7 +835,9 @@ class Charity extends React.Component {
                                     {formatMessage('goToCharitySecondLabel')}
                                 </List.Content>
                             </List.Item>
-                            <List.Item className="lstitm" to={friendUrlEndpoint}>
+                        </Link>
+                        <Link route = {friendUrlEndpoint}>
+                            <List.Item className="lstitm">
                                 <Image
                                     className="imgCls"
                                     src={IconIndividual}
@@ -849,7 +848,9 @@ class Charity extends React.Component {
                                     {formatMessage('goToFriendsSecondLabel')}
                                 </List.Content>
                             </List.Item>
-                            <List.Item className="lstitm" to={groupUrlEndpoint}>
+                        </Link>
+                        <Link route ={groupUrlEndpoint}>
+                            <List.Item className="lstitm">
                                 <Image
                                     className="imgCls"
                                     src={IconGroup}
@@ -860,6 +861,7 @@ class Charity extends React.Component {
                                     {formatMessage('goToGroupSecondLabel')}
                                 </List.Content>
                             </List.Item>
+                        </Link>
                         </List>
                     </Form.Field>
                 )
@@ -897,7 +899,7 @@ class Charity extends React.Component {
                     <Form.Field className="checkbox-display">
                         <Form.Field
                             checked={coverFees}
-                            className="ui checkbox checkbox-text"
+                            className="ui checkbox checkbox-text f-weight-n"
                             control={Checkbox}
                             id="coverFees"
                             label={coverNoteText}
@@ -1044,6 +1046,7 @@ class Charity extends React.Component {
     render() {
         const {
             coverFeesData,
+            creditCardApiCall,
         } = this.props;
         const {
             flowObject: {
@@ -1151,7 +1154,7 @@ class Charity extends React.Component {
                                         </label>
                                         <Form.Field
                                             control={Input}
-                                            //className="disabled-input"
+                                            className="disabled-input"
                                             disabled
                                             id="giveTo"
                                             name="giveTo"
@@ -1268,8 +1271,9 @@ class Charity extends React.Component {
                         <Divider hidden />
                         {/* { !stepsCompleted && */}
                         <Form.Button
-                            content={(!this.state.buttonClicked) ? formatMessage('giveCommon:continueButton') : formatMessage('giveCommon:submittingButton')}
-                            disabled={(this.state.buttonClicked) || !this.props.userAccountsFetched}
+                            className="blue-btn-rounded-def"
+                            content={(!creditCardApiCall) ? formatMessage('giveCommon:continueButton') : formatMessage('giveCommon:submittingButton')}
+                            disabled={(creditCardApiCall) || !this.props.userAccountsFetched}
                             type="submit"
                         />
                         {/* } */}
@@ -1298,6 +1302,7 @@ function mapStateToProps(state) {
         userAccountsFetched: state.user.userAccountsFetched,
         userCampaigns: state.user.userCampaigns,
         userGroups: state.user.userGroups,
+        creditCardApiCall: state.give.creditCardApiCall,
     };
 }
 export default withTranslation([

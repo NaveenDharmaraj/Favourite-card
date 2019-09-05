@@ -17,9 +17,6 @@ import { Router } from '../../routes';
 class EmailVerification extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            buttonClicked: false,
-        };
         let {
             newUserDetails,
         } = this.props;
@@ -27,82 +24,86 @@ class EmailVerification extends React.Component {
             let newUserDetailsLocal = storage.get('newUserDetails', 'local');
             newUserDetails = JSON.parse(newUserDetailsLocal);
         }
-        this.state.newUserDetails = newUserDetails;
-        if (newUserDetails === undefined) {
-            Router.pushRoute('/users/error');
-        }
 
+        if (newUserDetails === null) {
+            Router.pushRoute('/users/login');
+        }
+        this.state = {
+            newUserDetails,
+        };
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     handleSubmit() {
         let {
             newUserDetails,
-            buttonClicked,
         } = this.state;
-        resendVerificationEmail(newUserDetails.user_id);
-        buttonClicked = true;
-        this.setState({
-            buttonClicked,
-        });
-        setTimeout(() => {
-            this.setState({ buttonClicked: false });
-        }, 3000);
+        const {
+            dispatch,
+        } = this.props;
+        const userId = `${newUserDetails.identities[0].provider}|${newUserDetails.identities[0].user_id}`;
+        resendVerificationEmail(userId, dispatch);
     }
 
     render() {
-        let {
+        const {
             newUserDetails,
-            buttonClicked,
         } = this.state;
-
-
-        return (
-            <Layout>
-                <div className="pageWraper">
-                    <Container>
-                        <div className="linebg" >
-                            <Grid columns={2} verticalAlign='middle'>
-                                <Grid.Row>
-                                    <Grid.Column className="left-bg"></Grid.Column>
-                                    <Grid.Column>
-                                        <div className="login-form-wraper">
-                                            <div className="reg-header">
-                                                <Header as="h3">Verify your email.</Header>
-                                                <Header as="h4">
-                                                    We’ve emailed a verification link to 
-                                                    <a>{newUserDetails.email}</a>
-                                                    .Click the link in that email to finish creating your account.
-                                                </Header>
-                                                <Header as="h4">
-                                                    Don’t see an email from us?
-                                                </Header>
-                                            </div>
-                                            <Form>
-                                                <div className="create-btn-wraper">
-                                                    <Button  type="submit" 
-                                                        onClick={this.handleSubmit}
-                                                        primary>
-                                                        Resend email
-                                                    </Button>
+        const {
+            apiResendEmail,
+        } = this.props;
+        if (newUserDetails) {
+            return (
+                <Layout>
+                    <div className="pageWraper">
+                        <Container>
+                            <div className="linebg">
+                                <Grid columns={2} verticalAlign="middle">
+                                    <Grid.Row>
+                                        <Grid.Column className="left-bg"></Grid.Column>
+                                        <Grid.Column>
+                                            <div className="login-form-wraper">
+                                                <div className="reg-header">
+                                                    <Header as="h3">Verify your email.</Header>
+                                                    <Header as="h4">
+                                                        We’ve emailed a verification link to <a>{newUserDetails.email}</a>
+                                                        . Click the link in that email to finish creating your account.
+                                                    </Header>
+                                                    <Header as="h4">
+                                                        Don’t see an email from us?
+                                                    </Header>
                                                 </div>
-                                                {!!buttonClicked && <Message compact color='green'>Email Sent</Message>}
-
-                                            </Form>
-                                        </div>
-                                    </Grid.Column>
-                                </Grid.Row>
-
-                            </Grid>
-                        </div>
-                    </Container>
-                </div>
-            </Layout>
-        );
+                                                <Form>
+                                                    <div className="create-btn-wraper">
+                                                        <Button
+                                                            type="submit"
+                                                            onClick={this.handleSubmit}
+                                                            primary
+                                                            // disabled={!!apiResendEmail}
+                                                        >
+                                                            Resend email
+                                                        </Button>
+                                                    </div>
+                                                    {!!apiResendEmail && <Message compact color='green'>Email Sent</Message>}
+    
+                                                </Form>
+                                            </div>
+                                        </Grid.Column>
+                                    </Grid.Row>
+    
+                                </Grid>
+                            </div>
+                        </Container>
+                    </div>
+                </Layout>
+            );
+        }
+        return null;
     }
 }
 function mapStateToProps(state) {
     return {
+        apiResendEmail: state.onBoarding.apiResendEmail,
         newUserDetails: state.onBoarding.newUserDetails,
     };
 }

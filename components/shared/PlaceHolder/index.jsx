@@ -32,8 +32,10 @@ const columnComponent = (column, placeholderType) => {
                             <Placeholder.Paragraph>
                                 <Placeholder.Line />
                                 <Placeholder.Line />
+
                             </Placeholder.Paragraph>
                         </Placeholder>
+
                     </Segment>
                 </Grid.Column>,
             );
@@ -81,9 +83,11 @@ PlaceholderGrid.propTypes = {
     placeholderType: PropTypes.string,
     row: PropTypes.number,
 };
+
 PlaceholderGrid.defaultProps = {
     column: 1,
     placeholderType: 'block',
     row: 1,
 };
+
 export default PlaceholderGrid;

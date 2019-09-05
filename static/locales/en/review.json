@@ -20,7 +20,7 @@
     "giveAccounts_withoutAmountCard": "{{displayName}}'s {{processor}} ending with {{truncatedPaymentId}}",
     "givingAllocationSingleCoverFeesText": "Cover {{amount}} in third-party processing fees so the recipient receives 100% of your gift",
     "givingAllocationRecurringingCoverFeesText": "You've chosen to cover third-party processing fees on behalf of the recipient. The third-party fees will be calculated at the time the gift is made to ensure the recipient receives 100% of your intended gift. If the entire gift comes from your credit card, {amount} in third-party fees will be covered and charged to your card.",
-    "donationStartsOnMessage": "Your credit card will be charged each month starting on this date. Each time, a tax receipt will automatically be posted to your CHIMP Account and the transaction will appear as \"CHIMP FDN * DONATION\".",
+    "donationStartsOnMessage": "Your credit card will be charged each month starting on this date. Each time, a tax receipt will automatically be posted to your CHARITABLE IMPACT Account and the transaction will appear as \"CHARITABLE IMPACT FDN * DONATION\".",
     "noteToSelfLabel" : "Note to self",
     "donationsAddMoney": "Add money",
     "donationsScheduleMonthlyTransaction": "Schedule monthly transaction",

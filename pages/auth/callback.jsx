@@ -1,8 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import {
+    Dimmer,
+    Loader,
+} from 'semantic-ui-react';
 
 import auth0 from '../../services/auth';
-import Layout from '../../components/shared/Layout';
+import AuthLayout from '../../components/shared/Layout/AuthLayout';
 
 class AuthCallback extends Component {
     componentDidMount() {
@@ -24,9 +28,11 @@ class AuthCallback extends Component {
 
     render() {
         return (
-            <Layout>
-         Loading
-            </Layout>
+            <AuthLayout>
+                <Dimmer active inverted>
+                    <Loader size='large' />
+                </Dimmer>
+            </AuthLayout>
         );
     }
 }

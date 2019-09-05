@@ -131,7 +131,7 @@ const AccountTopUp = (props) => {
                 <Divider className="dividerMargin" />
             </Form.Field>
             <Form.Field>
-                <Header as="h3"> 
+                <Header as="h3" className="f-weight-n">
                     {formatMessage('accountTopUp:accountTopUpHeaderLabel')}
                 </Header>
             </Form.Field>

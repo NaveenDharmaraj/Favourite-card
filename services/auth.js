@@ -129,6 +129,19 @@ const auth0 = {
     },
 
     /**
+     * Erase Auth0 data from local
+     * @method empty
+     * @return {null} - null since "empty"
+     */
+    empty() {
+        this.accessToken = null;
+        this.userEmail = null;
+        this.userId = null;
+
+        return null;
+    },
+
+    /**
      * IEEE Std 1003.1: "Seconds Since the Epoch"
      * @typedef {integer} NumericDate
      * @see http://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16
