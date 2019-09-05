@@ -12,6 +12,7 @@ import {
 } from '../actions/group';
 import Layout from '../components/shared/Layout';
 import GroupProfileWrapper from '../components/Group';
+import { Router } from '../routes';
 
 class GroupProfile extends React.Component {
     static async getInitialProps({
@@ -36,9 +37,14 @@ class GroupProfile extends React.Component {
     }
 
     render() {
+        const {
+            redirectToDashboard,
+        } = this.props;
         return (
             <Layout>
-                <GroupProfileWrapper {...this.props} />
+                {!redirectToDashboard
+                    ? <GroupProfileWrapper {...this.props} />
+                    : Router.push('/dashboard')}
             </Layout>
         );
     }
@@ -47,18 +53,21 @@ class GroupProfile extends React.Component {
 GroupProfile.defaultProps = {
     dispatch: func,
     isAUthenticated: false,
+    redirectToDashboard: false,
     slug: '',
 };
 
 GroupProfile.propTypes = {
     dispatch: _.noop,
     isAUthenticated: bool,
+    redirectToDashboard: bool,
     slug: string,
 };
 
 function mapStateToProps(state) {
     return {
         isAUthenticated: state.auth.isAuthenticated,
+        redirectToDashboard: state.group.redirectToDashboard,
     };
 }
 export default connect(mapStateToProps)(GroupProfile);

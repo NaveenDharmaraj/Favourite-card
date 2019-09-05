@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import coreApi from '../services/coreApi';
 import graphApi from '../services/graphApi';
-import { async } from 'regenerator-runtime';
+
 
 export const actionTypes = {
     ACTIVITY_LIKE_STATUS: 'ACTIVITY_LIKE_STATUS',
@@ -14,6 +14,7 @@ export const actionTypes = {
     GET_GROUP_MEMBERS_DETAILS: 'GET_GROUP_MEMBERS_DETAILS',
     GET_GROUP_TRANSACTION_DETAILS: 'GET_GROUP_TRANSACTION_DETAILS',
     POST_NEW_ACTIVITY: 'POST_NEW_ACTIVITY',
+    REDIRECT_TO_DASHBOARD: 'REDIRECT_TO_DASHBOARD',
     // COMMENT_LIKE_STATUS: 'COMMENT_LIKE_STATUS',
 };
 
@@ -40,7 +41,11 @@ export const getGroupFromSlug = async (dispatch, slug) => {
                 }
             },
         ).catch(() => {
-            // redirect('/give/error');
+            dispatch({
+                payload: {},
+                type: actionTypes.REDIRECT_TO_DASHBOARD,
+            });
+            return null;
         }).finally(() => {
             dispatch(fsa);
         });

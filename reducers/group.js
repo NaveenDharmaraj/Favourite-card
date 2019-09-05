@@ -210,6 +210,12 @@ const group = (state = {}, action) => {
                 },
             };
             break;
+        case 'REDIRECT_TO_DASHBOARD':
+            newState = {
+                ...state,
+                redirectToDashboard: true,
+            };
+            break;
         default:
             break;
     }
