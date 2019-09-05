@@ -35,7 +35,7 @@ function DonationsTab(props) {
                         </Header>
                     </Grid.Column>
                     <Grid.Column mobile={16} tablet={6} computer={5} textAlign="right">
-                        <Link route="/donations/new"><a href="" className="ui button blue-btn-rounded-def" fluid>Create new monthly donation</a></Link>
+                        <Link route="/donations/new?donation_details[recurring]=1"><a href="" className="ui button blue-btn-rounded-def" fluid>Create new monthly donation</a></Link>
                     </Grid.Column>
                 </Grid.Row>
             </Grid>

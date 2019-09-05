@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import {
     Button,
     Checkbox,
@@ -30,17 +30,21 @@ class ModalComponent extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            buttonClicked: true,
             errorMessage: null,
             isDefaultChecked: (!_isEmpty(props.taxReceipt) && !_isEmpty(props.taxReceipt.attributes))? props.taxReceipt.attributes.isDefault : false,
             selectedTaxReceiptProfile: _merge({}, props.taxReceipt),
             showFormData: true,
+            showPopUp: false,
             statusMessage: false,
             validity: this.intializeValidations(),
         };
         this.handleDisplayForm = this.handleDisplayForm.bind(this);
         this.handleChildInputChange = this.handleChildInputChange.bind(this);
         this.handleChildOnBlurChange = this.handleChildOnBlurChange.bind(this);
+        this.handlePopUpCancel = this.handlePopUpCancel.bind(this);
         this.renderCheckBox = this.renderCheckBox.bind(this);
+        this.renderPopUp = this.renderPopUp.bind(this);
     }
 
     intializeValidations() {
@@ -86,6 +90,7 @@ class ModalComponent extends React.Component {
         }
         attributes[name] = value;
         this.setState({
+            buttonClicked: false,
             selectedTaxReceiptProfile: {
                 ...selectedTaxReceiptProfile,
                 attributes: {
@@ -144,10 +149,7 @@ class ModalComponent extends React.Component {
             handleModalOpen,
         } = this.props;
         const {
-            buttonClicked,
-            errorMessage,
             isDefaultChecked,
-            statusMessage,
         } = this.state;
         const isValid = this.validateForm();
         if (isValid) {
@@ -155,13 +157,19 @@ class ModalComponent extends React.Component {
                 selectedTaxReceiptProfile,
             } = this.state;
 
-            updateTaxReceiptProfile(selectedTaxReceiptProfile, action).then(() => {
+            updateTaxReceiptProfile(selectedTaxReceiptProfile, action).then((result) => {
+                const {
+                    id,
+                } = result.data;
                 if (isDefaultChecked) {
-                    getTaxReceiptProfileMakeDefault(selectedTaxReceiptProfile.id).then(() => {
-                        selectedTaxReceiptProfile.attributes.isDefault = isDefaultChecked;
+                    getTaxReceiptProfileMakeDefault(id).then((response) => {
+                        const {
+                            attributes,
+                        } = response.data;
+                        attributes.isDefault = isDefaultChecked;
                         dispatch({
                             payload: {
-                                editedTaxProfile: selectedTaxReceiptProfile,
+                                editedTaxProfile: response.data,
                             },
                             type: 'UPDATE_TAX_RECEIPT_PROFILE',
                         });
@@ -177,7 +185,7 @@ class ModalComponent extends React.Component {
                 }
                 handleModalOpen(true);
                 this.setState({
-                    buttonClicked: false,
+                    buttonClicked: true,
                     errorMessage: null,
                     statusMessage: true,
                 });
@@ -185,7 +193,7 @@ class ModalComponent extends React.Component {
             }).catch((err) => {
                 handleModalOpen(true);
                 this.setState({
-                    buttonClicked: false,
+                    buttonClicked: true,
                     errorMessage: 'Error in saving the profile.',
                     statusMessage: true,
                 })
@@ -197,6 +205,18 @@ class ModalComponent extends React.Component {
         }
     }
 
+    handlePopUpCancel(type){
+        const {
+            handleModalOpen,
+        } = this.props;
+        type === 'discard' ? handleModalOpen(false) :  handleModalOpen(true);
+        this.setState(()=>{
+            return{
+                showPopUp: false,
+            }
+        });
+    }
+
     renderContinueButton() {
         const {
             buttonClicked,
@@ -205,7 +225,7 @@ class ModalComponent extends React.Component {
             action,
         } = this.props;
         return (
-            <Button primary disabled={buttonClicked} onClick={() => this.handleSubmit()} className="blue-btn-rounded">{action === 'update' ? 'Update' : 'Add'}</Button>
+            <Button primary disabled={buttonClicked} onClick={() => this.handleSubmit()} className="blue-btn-rounded">{action === 'update' ? 'Done' : 'Add'}</Button>
         );
     }
 
@@ -216,10 +236,10 @@ class ModalComponent extends React.Component {
         if (!_isEmpty(selectedTaxReceiptProfile) && !_isEmpty(selectedTaxReceiptProfile.attributes) && selectedTaxReceiptProfile.attributes.isDefault) {
             return (
                 <Checkbox
+                    className="cp_chkbx"
                     checked
                     type="checkbox"
                     id="checkbox"
-                    onClick={() => { this.setState({ isDefaultChecked: !isDefaultChecked }); }}
                     label="Set as default tax receipt recipient"
                 />
             );
@@ -229,31 +249,52 @@ class ModalComponent extends React.Component {
                 <Checkbox
                     type="checkbox"
                     id="checkbox"
-                    onClick={() => { this.setState({ isDefaultChecked: !isDefaultChecked }); }}
+                    onClick={() => { this.setState({ buttonClicked: false, isDefaultChecked: !isDefaultChecked }); }}
                     label="Set as default tax receipt recipient"
                 />
             );
         }
     }
+    renderPopUp(){
+        const {
+            buttonClicked,
+        } = this.state;
+        const {
+            handleModalOpen
+        } = this.props;
+        if(!buttonClicked){
+            this.setState((prevState)=>{
+                return{
+                    showPopUp: true,
+                }
+            });
+        } else {
+            handleModalOpen(false);
+        }
+        
+    }
+
+
 
     render() {
         const {
             errorMessage,
             selectedTaxReceiptProfile,
             showFormData,
+            showPopUp,
             statusMessage,
             validity,
         } = this.state;
         const {
             action,
-            handleModalOpen,
             isSelectPhotoModalOpen,
             name,
             t,
         } = this.props;
         const formatMessage = t;
         return (
-            <Modal size="tiny" dimmer="inverted" className="chimp-modal" closeIcon open={isSelectPhotoModalOpen} onClose={() => { handleModalOpen(false); }}>
+            <Fragment>
+            <Modal size="tiny" dimmer="inverted" className="chimp-modal" closeIcon open={isSelectPhotoModalOpen} onClose={() => { this.renderPopUp(); }}>
                 <Modal.Header>{name}</Modal.Header>
                 {action === 'update' && (
                     <div className="ModalWarning">
@@ -291,6 +332,19 @@ class ModalComponent extends React.Component {
                     </div>
                 </Modal.Content>
             </Modal>
+            {showPopUp
+                && <Modal size="tiny" dimmer="inverted" className="chimp-modal" closeIcon open={showPopUp} centered={false} onClose={() => { this.handlePopUpCancel('cancel') }}>
+                <Modal.Header>Discard edits?</Modal.Header>
+                <Modal.Content>
+                    <Modal.Description className="font-s-14">if you discard, you will lose your edits.</Modal.Description>
+                    <div className="btn-wraper pt-3 text-right">
+                    <Button className="blue-btn-rounded-def " onClick={()=>{ this.handlePopUpCancel('discard') }}>Discard</Button>
+                    <Button className="blue-bordr-btn-round-def" onClick={()=>{ this.handlePopUpCancel('cancel') }}>Cancel</Button>
+                    </div>
+                </Modal.Content>
+            </Modal>
+            } 
+            </Fragment>
         );
     }
 }

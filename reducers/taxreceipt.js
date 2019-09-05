@@ -66,6 +66,7 @@ const taxreceipt = (state = {}, action) => {
         case 'DOWNLOAD_TAX_RECEIPT_DONATION_DETAIL':
             newState = {
                 ...state,
+                downloadloader: action.payload.downloadloader,
                 url: action.payload.url,
                 urlChange: action.payload.urlChange,
                 year: action.payload.year,

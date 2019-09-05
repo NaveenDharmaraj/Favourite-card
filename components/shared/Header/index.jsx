@@ -9,7 +9,7 @@ import {
     Segment,
 } from 'semantic-ui-react';
 
-import logo from '../../../static/images/CharitableImpact.png';
+import logo from '../../../static/images/CharitableImpact.svg';
 import { Link } from '../../../routes';
 
 import AuthHeader from './AuthHeader';
@@ -51,9 +51,9 @@ const Header = (props) => {
         >
             <Container>
                 <Menu secondary>
-                    <Menu.Item>
+                    <Menu.Item className="chimpLogo">
                         <Link className="lnkChange" route={`/dashboard`}>
-                            <Image style={{ width: '131px' }} src={logo} />
+                            <Image src={logo} />
                         </Link>
                     </Menu.Item>
                     {renderHeader(onBoarding, isAuthenticated)}

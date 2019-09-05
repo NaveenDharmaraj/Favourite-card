@@ -80,7 +80,7 @@ class SearchResultGroups extends React.Component {
                                                 <span className="num-result font-s-20">
                                                     {this.renderResultCount()}
 
-                                    results
+                                    &nbsp;results
                                                 </span>
                                             </Header.Content>
                                         </Header>
