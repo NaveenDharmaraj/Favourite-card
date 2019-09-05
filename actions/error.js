@@ -1,7 +1,6 @@
 import _keyBy from 'lodash/keyBy';
-import _map from 'lodash/map';
-import _without from 'lodash/without';
-import React from 'react';
+import _isEmpty from 'lodash/isEmpty';
+import _isString from 'lodash/isString';
 // import GeminiLink from 'client/common/components/GeminiLink';
 
 
@@ -17,18 +16,25 @@ const triggerUxCritialErrors = (errors = [], dispatch) => {
         message: 'Please try again',
         type: 'error',
     };
-
+    const details = [];
     if (errors.length) {
         if (errors.length > 1) {
-            statusMessageProps.items = _map(errors, 'detail');
-        } else if (errors[0].detail) {
+            errors.map((err) => {
+                if (!_isEmpty(err.detail) && _isString(err.detail)) {
+                    details.push(err.detail);
+                }
+            });
+            statusMessageProps.items = details;
+        } else if (!_isEmpty(errors[0].detail) && _isString(errors[0].detail)) {
             statusMessageProps.message = errors[0].detail;
         }
     }
 
     return dispatch({
         payload: {
-            errors: [ statusMessageProps ],
+            errors: [
+                statusMessageProps,
+            ],
         },
         type: types.TRIGGER_UX_CRITICAL_ERROR,
     });
