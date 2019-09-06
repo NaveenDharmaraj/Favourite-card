@@ -52,7 +52,7 @@ const getFriendsList = (dispatch, email) => {
         type: actionTypes.USER_FRIENDS,
     };
 
-    graphApi.get(`/user/myfriends?userid=${email}&page[number]=1&page[size]=6`).then(
+    graphApi.get(`/user/myfriends?userid=${email}&page[number]=1&page[size]=6&status=accepted`).then(
         (result) => {
             fsa.payload = {
                 count: result.meta.recordCount,

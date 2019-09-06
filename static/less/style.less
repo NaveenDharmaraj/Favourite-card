@@ -1,13 +1,15 @@
 @import "_mixins.less";
+//@import "../fonts/proximanova/font.css";
 
 html body{
     height: 100%;
-    font-family: "Avenir Next", "Avenir Next W01", "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+    font-family: 'ProximaNova-Regular';
+    //font-family: "Avenir Next", "Avenir Next W01", "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
     font-synthesis: none;
     -moz-font-feature-settings: 'kern';
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    letter-spacing: -.022em;
+    //letter-spacing: -.022em;
     font-size: 100%;
     line-height: 22/@em;
     color: @font-color;
@@ -56,6 +58,14 @@ h2{
 }
 .pointer{
   cursor: pointer !important;
+}
+.spanLink{
+  cursor: pointer !important;
+  color: @link;
+  transition: all 0.3s ease-out;
+  &:hover{
+    color: @link-hover;
+  }
 }
 h3{
   &.ui{
@@ -640,6 +650,9 @@ h4{
 .mr-1{
   margin-right: 1rem !important;
 }
+.ml-1{
+  margin-left: 1rem !important;
+}
 .mt-3{
   margin-top: 3rem !important;
 }
@@ -1000,7 +1013,7 @@ h4{
 }
 .reviewWraper{
   background-color: @grey-lighten-4;
-  padding: 1rem;
+  padding: 2rem;
   margin-bottom: 30px;
   .ui{
     &.header{
@@ -1475,12 +1488,12 @@ h4{
                 &.active{
                   color: #000;
                   background-color: #f5f5f5;
-                  border-left: 2px solid #f00;
+                  border-left: 2px solid @purple;
                 }
                 &:hover{
                   color: #333;
                   background-color: #f5f5f5;
-                  border-left: 2px solid #f00;
+                  border-left: 2px solid @purple;
                 }
                 +.divider{
                   margin: 0px;
@@ -1714,6 +1727,7 @@ h4{
   .leftSideImage{
     background-size: cover;
     background-repeat: no-repeat;
+    background-position: center;
     min-height: 170px;
   }
   .description{
@@ -2193,6 +2207,11 @@ h4{
       display: table;
       clear: both;
   }
+}
+.paginationWraper{
+  display: table;
+  width: 100%;
+  clear: both;
 }
 .db-pagination{
   &.right-align{
@@ -3293,6 +3312,8 @@ h4{
                 padding: 15px 24px;
                 background-color: #F3F3F7;
                 max-width: 80%;
+                width: 100%;
+                min-width: 100%;
                 p{
                   margin-bottom: 3px;
                 }
@@ -3305,6 +3326,7 @@ h4{
             .sent_msg{
               float: right;
               max-width: 70%;
+              width: auto;
               padding: 15px 24px;
               border:1px solid @grey-lighten-2;
               border-radius: 10px;
@@ -4052,6 +4074,12 @@ h4{
       }
     }
   }
+ }
+ .filterLink{
+  display:inline-block;
+  padding: 5px 0px;
+  margin-bottom:5px;
+  cursor: pointer;
  }
  .cp_chkbx{
    &.field{
