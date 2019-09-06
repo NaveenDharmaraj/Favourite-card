@@ -38,6 +38,12 @@ const charity = (state = {}, action) => {
                 // disableFollow: false,
             };
             break;
+        case 'REDIRECT_TO_DASHBOARD':
+            newState = {
+                ...state,
+                redirectToDashboard: action.payload.redirectToDashboard,
+            };
+            break;
         default:
             break;
     }

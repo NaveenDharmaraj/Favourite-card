@@ -1,8 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import {
-    func,
-    PropTypes,
+    bool,
     string,
 } from 'prop-types';
 
@@ -11,6 +10,7 @@ import {
 } from '../actions/charity';
 import Layout from '../components/shared/Layout';
 import CharityProfileWrapper from '../components/charity';
+import { Router } from '../routes';
 
 class CharityProfile extends React.Component {
     static async getInitialProps({
@@ -24,25 +24,34 @@ class CharityProfile extends React.Component {
     }
 
     render() {
+        const {
+            redirectToDashboard,
+        } = this.props;
         return (
             <Layout>
-                <CharityProfileWrapper {...this.props} />
+                {!redirectToDashboard
+                    ? <CharityProfileWrapper {...this.props} />
+                    : Router.push('/dashboard')
+                }
             </Layout>
         );
     }
 }
 
 CharityProfile.defaultProps = {
+    redirectToDashboard: false,
     slug: '',
 };
 
 CharityProfile.propTypes = {
+    redirectToDashboard: bool,
     slug: string,
 };
 
 function mapStateToProps(state) {
     return {
-        charityDetails: state.give.charityDetails,
+        charityDetails: state.charity.charityDetails,
+        redirectToDashboard: state.charity.redirectToDashboard,
     };
 }
 
