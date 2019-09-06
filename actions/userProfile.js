@@ -690,7 +690,6 @@ const savePrivacySetting = (dispatch, userId, email, columnName, columnValue) =>
     };
     return graphApi.patch(`/core/update/user/property`, bodyData).then(
         (result) => {
-            console.log(result);
             fsa.payload = {
                 data: result.data,
             };

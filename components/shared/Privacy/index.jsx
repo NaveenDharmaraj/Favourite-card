@@ -170,31 +170,24 @@ class PrivacySetting extends React.Component {
             friendsLink,
             isPopUpOpen,
             onlyMeLink,
-            savePrivacyName,
-            savePrivacyValue,
             showFriendsIcon,
             showonlyMeIcon,
             showPublicIcon,
         } = this.state;
         return (
             <Popup
-                trigger={<a className="font-s-10 d-in-block hoverable" style={{marginLeft:'.5rem'}} onClick={()=>{this.setState({isPopUpOpen: true})}}>Privacy settings > </a>}
+                trigger={<a className="font-s-10 d-in-block hoverable" style={{marginLeft:'.5rem'}} onClick={() => { this.setState({ isPopUpOpen: true }); }}>Privacy settings > </a>}
                 on="click"
                 pinned
                 position="bottom left"
                 className="privacy-popup"
                 basic
                 open={isPopUpOpen}
-                onClose={()=>{this.setState({isPopUpOpen: false})}}
+                onClose={() => { this.setState({ isPopUpOpen: false }); }}
             >
-                <Popup.Header>I want this to be visible to: {savePrivacyValue}</Popup.Header>
+                <Popup.Header>I want this to be visible to:</Popup.Header>
                 <Popup.Content>
                     <List divided verticalAlign="middle" className="selectable-tick-list">
-                        <List.Item>
-                            <List.Content>
-                                {savePrivacyName}
-                            </List.Content>
-                        </List.Item>
                         <List.Item className={publicLink}>
                             <List.Content>
                                 <List.Header as="a" onClick={() => this.handlePrivacyClick('public')}>
