@@ -29,7 +29,7 @@ class CharitySupport extends React.Component {
                         entityName={card.attributes.name}
                         placeholder={card.attributes.avatar}
                         typeClass="chimp-lbl charity"
-                        type={card.type}
+                        type="charity"
                         url={`/charities/${card.attributes.slug}`}
                     />
                 ))}
