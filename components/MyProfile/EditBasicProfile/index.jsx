@@ -4,10 +4,7 @@ import _ from 'lodash';
 import {
     Button,
     Form,
-    Icon,
-    Popup,
     Grid,
-    List,
 } from 'semantic-ui-react';
 import {
     connect,
@@ -17,26 +14,18 @@ import {
     saveUserBasicProfile,
 } from '../../../actions/userProfile';
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
+import PrivacySetting from '../../shared/Privacy';
 
 class EditBasicProfile extends React.Component {
     constructor(props) {
         super(props);
-        const {
-            friendsLink, onlyMeLink, publicLink, showFriendsIcon, showonlyMeIcon, showPublicIcon,
-        } = this.getPrivacySettings(props.userData);
         this.state = {
             userBasicDetails: {
                 about: (!_.isEmpty(props.userData)) ? props.userData.description : '',
                 firstName: (!_.isEmpty(props.userData)) ? props.userData.first_name : '',
-                friendsLink,
                 givingGoal: (!_.isEmpty(props.userData)) ? props.userData.giving_goal_amt : '',
                 lastName: (!_.isEmpty(props.userData)) ? props.userData.last_name : '',
                 location: (!_.isEmpty(props.userData)) ? props.userData.location : '',
-                onlyMeLink,
-                publicLink,
-                showFriendsIcon,
-                showonlyMeIcon,
-                showPublicIcon,
             },
             validity: this.intializeValidations(),
         };
@@ -44,60 +33,6 @@ class EditBasicProfile extends React.Component {
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleInputOnBlur = this.handleInputOnBlur.bind(this);
-    }
-
-    componentDidUpdate(prevProps) {
-        const {
-            userData,
-        } = this.props;
-        const {
-            friendsLink, onlyMeLink, publicLink, showFriendsIcon, showonlyMeIcon, showPublicIcon,
-        } = this.getPrivacySettings(userData);
-        if (!_.isEqual(userData, prevProps.userData)) {
-            this.setState({
-                userBasicDetails: {
-                    about: userData.description,
-                    firstName: userData.first_name,
-                    friendsLink,
-                    givingGoal: userData.giving_goal_amt,
-                    lastName: userData.last_name,
-                    location: userData.location,
-                    onlyMeLink,
-                    publicLink,
-                    showFriendsIcon,
-                    showonlyMeIcon,
-                    showPublicIcon,
-                },
-            });
-        }
-    }
-
-    // eslint-disable-next-line class-methods-use-this
-    getPrivacySettings(userData) {
-        let publicLink = '';
-        let friendsLink = '';
-        let onlyMeLink = '';
-        let showFriendsIcon = false;
-        let showonlyMeIcon = false;
-        let showPublicIcon = false;
-        if (userData.giving_goal_visibility === 0) {
-            publicLink = 'active';
-            showPublicIcon = true;
-        } else if (userData.giving_goal_visibility === 1) {
-            friendsLink = 'active';
-            showFriendsIcon = true;
-        } else if (userData.giving_goal_visibility === 3) {
-            onlyMeLink = 'active';
-            showonlyMeIcon = true;
-        }
-        return {
-            friendsLink,
-            onlyMeLink,
-            publicLink,
-            showFriendsIcon,
-            showonlyMeIcon,
-            showPublicIcon,
-        };
     }
 
     handleAmount(amount) {
@@ -115,43 +50,6 @@ class EditBasicProfile extends React.Component {
         });
     }
 
-    handlePrivacyClick(type) {
-        if (type === 'public') {
-            this.setState({
-                userBasicDetails: {
-                    friendsLink: '',
-                    onlyMeLink: '',
-                    publicLink: 'active',
-                    showFriendsIcon: false,
-                    showonlyMeIcon: false,
-                    showPublicIcon: true,
-                },
-            });
-        } else if (type === 'friends') {
-            this.setState({
-                userBasicDetails: {
-                    friendsLink: 'active',
-                    onlyMeLink: '',
-                    publicLink: '',
-                    showFriendsIcon: true,
-                    showonlyMeIcon: false,
-                    showPublicIcon: false,
-                },
-            });
-        } else if (type === 'onlyme') {
-            this.setState({
-                userBasicDetails: {
-                    friendsLink: '',
-                    onlyMeLink: 'active',
-                    publicLink: '',
-                    showFriendsIcon: false,
-                    showonlyMeIcon: true,
-                    showPublicIcon: false,
-                },
-            });
-        }
-    }
-
     intializeValidations() {
         this.validity = {
             isDescriptionNotNull: true,
@@ -162,7 +60,7 @@ class EditBasicProfile extends React.Component {
         return this.validity;
     }
 
-    handleInputChange(event, data) {
+    handleInputChange(data) {
         const {
             name,
             options,
@@ -271,15 +169,13 @@ class EditBasicProfile extends React.Component {
                 about,
                 location,
                 givingGoal,
-                onlyMeLink,
-                publicLink,
-                showFriendsIcon,
-                showonlyMeIcon,
-                showPublicIcon,
-                friendsLink,
             },
             validity,
         } = this.state;
+        const {
+            userData,
+        } = this.props;
+        const privacyColumn = 'giving_goal_visibility';
         return (
             <Grid>
                 <Grid.Row>
@@ -350,51 +246,10 @@ class EditBasicProfile extends React.Component {
                             <Form.Field>
                                 <label>
                                     Set Giving Goal
-                                    <Popup
-                                        trigger={<a className="font-s-10 d-in-block hoverable" style={{marginLeft:'.5rem'}}>Privacy settings > </a>}
-                                        on="click"
-                                        pinned
-                                        position="bottom left"
-                                        className="privacy-popup"
-                                        basic
-                                    >
-                                        <Popup.Header>I want this to be visible to:</Popup.Header>
-                                        <Popup.Content>
-                                            <List divided verticalAlign="middle" className="selectable-tick-list">
-                                                <List.Item className={publicLink}>
-                                                    <List.Content>
-                                                        <List.Header as="a" onClick={() => this.handlePrivacyClick('public')}>
-                                                            Public
-                                                            {' '}
-                                                            <span style={{ display: showPublicIcon ? 'inline' : 'none' }}><Icon name="check" /></span>
-                                                        </List.Header>
-                                                    </List.Content>
-                                                </List.Item>
-                                                <List.Item className={friendsLink}>
-                                                    <List.Content>
-                                                        <List.Header as="a" onClick={() => this.handlePrivacyClick('friends')}>
-                                                            Friends
-                                                            {' '}
-                                                            <span style={{ display: showFriendsIcon ? 'inline' : 'none' }}><Icon name="check" /></span>
-                                                        </List.Header>
-                                                    </List.Content>
-                                                </List.Item>
-                                                <List.Item className={onlyMeLink}>
-                                                    <List.Content>
-                                                        <List.Header as="a" onClick={() => this.handlePrivacyClick('onlyme')}>
-                                                            Only me
-                                                            {' '}
-                                                            <span style={{ display: showonlyMeIcon ? 'inline' : 'none' }}><Icon name="check" /></span>
-                                                        </List.Header>
-                                                    </List.Content>
-                                                </List.Item>
-                                            </List>
-                                        </Popup.Content>
-                                        <div className="popup-footer">
-                                            <Button size="tiny" className="blue-btn-rounded-def">Save</Button>
-                                            <Button size="tiny" className="blue-bordr-btn-round-def">Cancel</Button>
-                                        </div>
-                                    </Popup>
+                                    <PrivacySetting
+                                        columnName={privacyColumn}
+                                        columnValue={userData.giving_goal_visibility}
+                                    />
                                 </label>
                                 <Form.Field>
                                     <Form.Input

@@ -2,11 +2,7 @@
 import React from 'react';
 import _ from 'lodash';
 import {
-    Button,
-    Icon,
-    Popup,
     Grid,
-    List,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 
@@ -14,13 +10,14 @@ import {
     getUserProfileCauses,
 } from '../../../actions/userProfile';
 import SingleCause from '../../New/SingleCause';
+import PrivacySetting from '../../shared/Privacy';
 
 class MyCauses extends React.Component {
     constructor(props) {
         super(props);
         const userCauses = [];
         if (!_.isEmpty(props.userCausesList)) {
-            props.userCausesList.forEach((cause, i) => {
+            props.userCausesList.forEach((cause) => {
                 if (typeof cause.attributes.status !== 'undefined') {
                     userCauses.push(cause.attributes.name);
                 }
@@ -50,7 +47,7 @@ class MyCauses extends React.Component {
             userCauses,
         } = this.state;
         if (!_.isEqual(userCausesList, prevProps.userCausesList) && !_.isEmpty(userCausesList)) {
-            userCausesList.forEach((cause, i) => {
+            userCausesList.forEach((cause) => {
                 if (typeof cause.attributes.status !== 'undefined') {
                     userCauses.push(cause.attributes.name);
                 }
@@ -59,7 +56,7 @@ class MyCauses extends React.Component {
         }
     }
 
-    handleCauses(event, data) {
+    handleCauses(data) {
         const {
             name,
         } = data;
@@ -99,43 +96,22 @@ class MyCauses extends React.Component {
     }
 
     render() {
+        const {
+            userProfileBasicData,
+        } = this.props;
+        let causesVisible = 0;
+        if (!_.isEmpty(userProfileBasicData)) {
+            causesVisible = userProfileBasicData.data[0].attributes.causes_visibility;
+        }
+        const privacyColumn = 'causes_visibility';
         return (
             <div>
                 <p className="mb-1-2">
                     <strong>Charitable interests</strong>
-                    <Popup
-                        trigger={<a className="font-s-10 d-in-block hoverable" style={{marginLeft:'.5rem'}}>Privacy settings > </a>}
-                        on="click"
-                        pinned
-                        position="bottom left"
-                        className="privacy-popup"
-                        basic
-                    >
-                        <Popup.Header>I want this to be visible to:</Popup.Header>
-                        <Popup.Content>
-                            <List divided verticalAlign="middle" className="selectable-tick-list">
-                                <List.Item className="active">
-                                    <List.Content>
-                                        <List.Header as="a">Public <span className="tick-mark"><Icon name="check"/></span></List.Header>
-                                    </List.Content>
-                                </List.Item>
-                                <List.Item>
-                                    <List.Content>
-                                        <List.Header as="a">Friends</List.Header>
-                                    </List.Content>
-                                </List.Item>
-                                <List.Item>
-                                    <List.Content>
-                                        <List.Header as="a">Only me</List.Header>
-                                    </List.Content>
-                                </List.Item>
-                            </List>
-                        </Popup.Content>
-                        <div className="popup-footer">
-                            <Button size="tiny" className="blue-btn-rounded-def">Save</Button>
-                            <Button size="tiny" className="blue-bordr-btn-round-def">Cancel</Button>
-                        </div>
-                    </Popup>
+                    <PrivacySetting
+                        columnName={privacyColumn}
+                        columnValue={causesVisible}
+                    />
                 </p>
                 <p>
                     Select causes to discover charities and
@@ -163,6 +139,7 @@ function mapStateToProps(state) {
     return {
         currentUser: state.user.info,
         userCausesList: state.userProfile.userCausesList,
+        userProfileBasicData: state.userProfile.userProfileBasicData,
     };
 }
 

@@ -6,18 +6,17 @@ import {
     Image,
     Icon,
     Grid,
-    Popup,
-    List,
-    Button,
 } from 'semantic-ui-react';
 
 import UserPlaceholder from '../../../static/images/no-data-avatar-user-profile.png';
+import PrivacySetting from '../../shared/Privacy';
 
 const UserBasciProfile = (props) => {
     const {
         userData,
     } = props;
     const avatar = (typeof userData.avatar === 'undefined') || (userData.avatar === null) ? UserPlaceholder : userData.avatar;
+    const privacyColumn = 'friends_visibility';
     return (
         <div>
             <div className="profile-header-image user" />
@@ -51,39 +50,7 @@ const UserBasciProfile = (props) => {
                                                         &nbsp;
                                                         {userData.number_of_friends}
                                                         &nbsp; friends
-                                                        <Popup
-                                                            trigger={<a className="font-s-10 d-in-block hoverable" style={{marginLeft:'.5rem'}}>Privacy settings > </a>}
-                                                            on="click"
-                                                            pinned
-                                                            position="bottom left"
-                                                            className="privacy-popup"
-                                                            basic
-                                                        >
-                                                            <Popup.Header>I want this to be visible to:</Popup.Header>
-                                                            <Popup.Content>
-                                                                <List divided verticalAlign="middle" className="selectable-tick-list">
-                                                                    <List.Item className="active">
-                                                                        <List.Content>
-                                                                            <List.Header as="a">Public <span className="tick-mark"><Icon name="check"/></span></List.Header>
-                                                                        </List.Content>
-                                                                    </List.Item>
-                                                                    <List.Item>
-                                                                        <List.Content>
-                                                                            <List.Header as="a">Friends</List.Header>
-                                                                        </List.Content>
-                                                                    </List.Item>
-                                                                    <List.Item>
-                                                                        <List.Content>
-                                                                            <List.Header as="a">Only me</List.Header>
-                                                                        </List.Content>
-                                                                    </List.Item>
-                                                                </List>
-                                                            </Popup.Content>
-                                                            <div className="popup-footer">
-                                                                <Button size="tiny" className="blue-btn-rounded-def">Save</Button>
-                                                                <Button size="tiny" className="blue-bordr-btn-round-def">Cancel</Button>
-                                                            </div>
-                                                        </Popup>
+                                                        <PrivacySetting columnName={privacyColumn} columnValue={userData.friends_visibility} />
                                                     </Header.Subheader>
                                                 </Header>
                                             </div>

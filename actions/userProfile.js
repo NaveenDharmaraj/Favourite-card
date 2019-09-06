@@ -24,6 +24,7 @@ export const actionTypes = {
     UPDATE_USER_CREDIT_CARD: 'UPDATE_USER_CREDIT_CARD',
     UPDATE_USER_DEFAULT_CARD: 'UPDATE_USER_DEFAULT_CARD',
     UPDATE_USER_PASSWORD: 'UPDATE_USER_PASSWORD',
+    UPDATE_USER_PRIVACY_SETTING: 'UPDATE_USER_PRIVACY_SETTING',
     USER_PROFILE_ADMIN_GROUP: 'USER_PROFILE_ADMIN_GROUP',
     USER_PROFILE_BASIC: 'USER_PROFILE_BASIC',
     USER_PROFILE_BASIC_FRIEND: 'USER_PROFILE_BASIC_FRIEND',
@@ -673,6 +674,35 @@ const userResetPassword = (dispatch, userData) => {
     });
 };
 
+const savePrivacySetting = (dispatch, userId, email, columnName, columnValue) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.UPDATE_USER_PRIVACY_SETTING,
+    };
+    const dataName = {};
+    dataName[columnName] = columnValue;
+    const bodyData = {
+        data: dataName,
+        filters: {
+            user_id: Number(userId),
+        },
+    };
+    return graphApi.patch(`/core/update/user/property`, bodyData).then(
+        (result) => {
+            console.log(result);
+            fsa.payload = {
+                data: result.data,
+            };
+            getUserProfileBasic(dispatch, email, userId, userId);
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    });
+};
+
 export {
     getUserProfileBasic,
     getUserFriendProfile,
@@ -699,4 +729,5 @@ export {
     saveNewCreditCard,
     setUserDefaultCard,
     userResetPassword,
+    savePrivacySetting,
 };
