@@ -163,7 +163,7 @@ class PrivacySetting extends React.Component {
             showPublicIcon,
         });
     }
-    
+
     render() {
         const {
             publicLink,
@@ -176,7 +176,7 @@ class PrivacySetting extends React.Component {
         } = this.state;
         return (
             <Popup
-                trigger={<a className="font-s-10 d-in-block hoverable" style={{marginLeft:'.5rem'}} onClick={() => { this.setState({ isPopUpOpen: true }); }}>Privacy settings > </a>}
+                trigger={<a className="font-s-10 d-in-block hoverable" style={{ marginLeft: '.5rem' }} onClick={() => { this.setState({ isPopUpOpen: true }); }}>Privacy settings > </a>}
                 on="click"
                 pinned
                 position="bottom left"
