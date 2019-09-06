@@ -35,6 +35,23 @@ class EditBasicProfile extends React.Component {
         this.handleInputOnBlur = this.handleInputOnBlur.bind(this);
     }
 
+    componentDidUpdate(prevProps) {
+        const {
+            userData,
+        } = this.props;        
+        if (!_.isEqual(userData, prevProps.userData)) {
+            this.setState({
+                userBasicDetails: {
+                    about: userData.description,
+                    firstName: userData.first_name,
+                    givingGoal: userData.giving_goal_amt,
+                    lastName: userData.last_name,
+                    location: userData.location,
+                },
+            });
+        }
+    }
+
     handleAmount(amount) {
         let {
             validity,
