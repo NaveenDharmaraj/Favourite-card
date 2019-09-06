@@ -3,13 +3,13 @@ import React, { Fragment } from 'react';
 import {
     Button,
     Header,
-    Radio,
     Form,
     Modal,
     Grid,
     List,
     Dropdown,
     Checkbox,
+    Table,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import dynamic from 'next/dynamic';
@@ -663,9 +663,15 @@ class MyCreditCards extends React.Component {
                     </Modal>
                 </div>
                 <div className="userCardList">
-                    { myCreditCardListLoader ? <PlaceHolderGrid row={2} column={2} placeholderType="table" /> : (
-                        this.renderMyCreditCards()
-                    )}                    
+                    { myCreditCardListLoader
+                        ? (
+                            <Table padded unstackable className="no-border-table">
+                                <PlaceHolderGrid row={2} column={2} placeholderType="table" />
+                            </Table>
+                        )
+                        : (
+                            this.renderMyCreditCards()
+                        )}         
                 </div>
             </div>
         );

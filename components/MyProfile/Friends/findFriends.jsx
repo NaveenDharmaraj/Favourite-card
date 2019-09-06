@@ -17,6 +17,7 @@ import {
     sendFriendRequest,
 } from '../../../actions/userProfile';
 import Pagination from '../../shared/Pagination';
+import NoFriendAvatar from '../../../static/images/no-data-avatar-user-profile.png';
 
 class FindFriends extends React.Component {
     constructor(props) {
@@ -90,18 +91,21 @@ class FindFriends extends React.Component {
     }
 
     handleAddFriendClick(userData, btnData) {
-        console.log(btnData);
-        console.log(userData.attributes.email_hash);
         const {
             currentUser: {
                 id,
+                attributes,
             },
             dispatch,
         } = this.props;
+        const {
+            currentActivePage,
+            searchWord,
+        } = this.state;
         if (btnData === 'addfriend') {
-            sendFriendRequest(dispatch, id, userData.attributes.email_hash);
+            sendFriendRequest(dispatch, id, userData.attributes.email_hash, searchWord, currentActivePage);
         } else if (btnData === 'accept') {
-            acceptFriendRequest(dispatch, id, userData.attributes.email_hash);
+            acceptFriendRequest(dispatch, id, userData.attributes.email_hash, currentActivePage, attributes.email, 'FINDFRIENDS', searchWord);
         }
     }
 
@@ -113,9 +117,10 @@ class FindFriends extends React.Component {
         if (!_.isEmpty(userFindFriendsList)) {
             friendsList = userFindFriendsList.data.map((data) => {
                 const name = `${data.attributes.first_name} ${data.attributes.last_name}`;
-                const avatar = ((typeof data.attributes.avatar) === 'undefined' || data.attributes.avatar === null) ? 'https://react.semantic-ui.com/images/avatar/small/daniel.jpg' : data.attributes.avatar;
+                const avatar = ((typeof data.attributes.avatar) === 'undefined' || data.attributes.avatar === null) ? NoFriendAvatar : data.attributes.avatar;
                 const email = Buffer.from(data.attributes.email_hash, 'base64').toString('ascii');
                 const location = (typeof data.attributes.city === 'undefined' || data.attributes.province === '') ? email : `${data.attributes.city}, ${data.attributes.province}`;
+                let btnClass = 'blue-bordr-btn-round-def c-small';
                 let friendStatus = '';
                 let btnData = '';
                 if (data.attributes.friend_status === '') {
@@ -124,15 +129,17 @@ class FindFriends extends React.Component {
                 } else if (data.attributes.friend_status.toLowerCase() === 'accepted') {
                     friendStatus = 'Message';
                     btnData = 'message';
+                    btnClass = 'blue-btn-rounded-def c-small';
                 } else {
                     friendStatus = 'Accept';
                     btnData = 'accept';
                 }
+                console.log(data.attributes.first_name + data.attributes.friend_status);
                 return (
                     <List.Item>
                         <List.Content floated="right">
                             <Button
-                                className="blue-bordr-btn-round-def c-small"
+                                className={btnClass}
                                 onClick={() => this.handleAddFriendClick(data, btnData)}
                             >
                                 {friendStatus}

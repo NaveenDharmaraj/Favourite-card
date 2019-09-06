@@ -376,7 +376,7 @@ const saveUserBasicProfile = (dispatch, userData, userId, email) => {
     });
 };
 
-const sendFriendRequest = (dispatch, sourceUserId, destinationEmailId) => {
+const sendFriendRequest = (dispatch, sourceUserId, destinationEmailId, searchWord, pageNumber) => {
     const fsa = {
         payload: {
         },
@@ -401,9 +401,11 @@ const sendFriendRequest = (dispatch, sourceUserId, destinationEmailId) => {
     };
     return eventApi.post(`/event`, bodyData).then(
         (result) => {
+            console.log(result);
             fsa.payload = {
                 data: result.data,
             };
+            getFriendsByText(dispatch, sourceUserId, searchWord, pageNumber);
         },
     ).catch((error) => {
         fsa.error = error;
@@ -412,7 +414,7 @@ const sendFriendRequest = (dispatch, sourceUserId, destinationEmailId) => {
     });
 };
 
-const acceptFriendRequest = (dispatch, sourceUserId, destinationEmailId) => {
+const acceptFriendRequest = (dispatch, sourceUserId, destinationEmailId, pageNumber, sourceEmailId, pageName, searchWord) => {
     const fsa = {
         payload: {
         },
@@ -441,6 +443,11 @@ const acceptFriendRequest = (dispatch, sourceUserId, destinationEmailId) => {
             fsa.payload = {
                 data: result.data,
             };
+            if (pageName === 'MYFRIENDS') {
+                getFriendsInvitations(dispatch, sourceEmailId, pageNumber);
+            } else {
+                getFriendsByText(dispatch, sourceUserId, searchWord, pageNumber);
+            }
         },
     ).catch((error) => {
         fsa.error = error;

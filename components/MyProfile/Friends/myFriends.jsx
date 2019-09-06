@@ -6,6 +6,7 @@ import {
     Header,
     Image,
     List,
+    Table,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import Link from 'next/link';
@@ -17,6 +18,7 @@ import {
     getFriendsInvitations,
 } from '../../../actions/userProfile';
 import Pagination from '../../shared/Pagination';
+import NoFriendAvatar from '../../../static/images/no-data-avatar-user-profile.png';
 
 class MyFriends extends React.Component {
     constructor(props) {
@@ -90,10 +92,14 @@ class MyFriends extends React.Component {
             const {
                 currentUser: {
                     id,
+                    attributes,
                 },
                 dispatch,
             } = this.props;
-            acceptFriendRequest(dispatch, id, email);
+            const {
+                currentMyInvitaionsActivePage,
+            } = this.state;
+            acceptFriendRequest(dispatch, id, email, currentMyInvitaionsActivePage, attributes.email, 'MYFRIENDS', null);
         }
     }
 
@@ -108,7 +114,7 @@ class MyFriends extends React.Component {
         if (!_.isEmpty(userFriendsInvitationsList)) {
             friendsList = userFriendsInvitationsList.data.map((friend) => {
                 const name = `${friend.attributes.first_name} ${friend.attributes.last_name}`;
-                const avatar = ((typeof friend.attributes.avatar) === 'undefined' || friend.attributes.avatar === null) ? 'https://react.semantic-ui.com/images/avatar/small/daniel.jpg' : friend.attributes.avatar;
+                const avatar = ((typeof friend.attributes.avatar) === 'undefined' || friend.attributes.avatar === null) ? NoFriendAvatar : friend.attributes.avatar;
                 const email = Buffer.from(friend.attributes.email_hash, 'base64').toString('ascii');
                 const location = (typeof friend.attributes.city === 'undefined' || friend.attributes.province === '') ? email : `${friend.attributes.city}, ${friend.attributes.province}`;
                 return (
@@ -167,11 +173,13 @@ class MyFriends extends React.Component {
                 const name = `${friend.attributes.first_name} ${friend.attributes.last_name}`;
                 const email = Buffer.from(friend.attributes.email_hash, 'base64').toString('ascii');
                 const location = (typeof friend.attributes.city !== 'undefined') ? `${friend.attributes.city}, ${friend.attributes.province}` : email;
-                const avatar = (typeof friend.attributes.avatar) !== 'undefined' ? friend.attributes.avatar : 'https://react.semantic-ui.com/images/avatar/small/daniel.jpg';
+                const avatar = (typeof friend.attributes.avatar) !== 'undefined' ? friend.attributes.avatar : NoFriendAvatar;
                 return (
                     <List.Item>
                         <List.Content floated="right">
-                            <Button className="blue-btn-rounded-def c-small">Message</Button>
+                            <Link href="/chats/all">
+                                <Button className="blue-btn-rounded-def c-small">Message</Button>
+                            </Link>
                         </List.Content>
                         <Image avatar src={avatar} />
                         <List.Content>
@@ -216,14 +224,26 @@ class MyFriends extends React.Component {
                 <div className="userSettingsContainer">
                     <div className="settingsDetailWraper">
                         <Header className="mb-1" as="h4">Invitations </Header>
-                        { myFriendInvitationLoader ? <PlaceHolderGrid row={2} column={2} placeholderType="table" /> : (
-                            this.renderFriendsInvitations()
-                        )}
+                        { myFriendInvitationLoader
+                            ? (
+                                <Table padded unstackable className="no-border-table">
+                                    <PlaceHolderGrid row={2} column={2} placeholderType="table" />
+                                </Table>
+                            )
+                            : (
+                                this.renderFriendsInvitations()
+                            )}
                         <div className="pt-2">
                             <Header className="mb-1 mt-3" as="h4">Friends </Header>
-                            { myFriendListLoader ? <PlaceHolderGrid row={2} column={2} placeholderType="table" /> : (
-                                this.renderMyFriendsList()
-                            )}
+                            { myFriendListLoader
+                                ? (
+                                    <Table padded unstackable className="no-border-table">
+                                        <PlaceHolderGrid row={2} column={2} placeholderType="table" />
+                                    </Table>
+                                )
+                                : (
+                                    this.renderMyFriendsList()
+                                )}
                         </div>
                     </div>
                 </div>

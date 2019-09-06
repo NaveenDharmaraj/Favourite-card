@@ -9,7 +9,7 @@ import {
 } from 'semantic-ui-react';
 
 import storage from '../../../helpers/storage';
-import validateUserRegistrationForm from '../../../helpers/users/utils';
+import { validateUserRegistrationForm } from '../../../helpers/users/utils';
 import {
     userResetPassword,
 } from '../../../actions/userProfile';

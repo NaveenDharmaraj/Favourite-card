@@ -7,6 +7,7 @@ import {
     Image,
     List,
     Checkbox,
+    Table,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import Link from 'next/link';
@@ -125,9 +126,15 @@ class Privacy extends React.Component {
                     </div>
                     <div className="settingsDetailWraper">
                         <Header as="h4">Blocked users</Header>
-                        { blockedUserListLoader ? <PlaceHolderGrid row={2} column={2} placeholderType="table" /> : (
-                            this.renderBlockedFriendsList()
-                        )}
+                        { blockedUserListLoader
+                            ? (
+                                <Table padded unstackable className="no-border-table">
+                                    <PlaceHolderGrid row={2} column={2} placeholderType="table" />
+                                </Table>
+                            )
+                            : (
+                                this.renderBlockedFriendsList()
+                            )}
                     </div>
                 </div>
             </div>
