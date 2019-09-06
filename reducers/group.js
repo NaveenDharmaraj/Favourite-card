@@ -225,7 +225,7 @@ const group = (state = {}, action) => {
         case 'REDIRECT_TO_DASHBOARD':
             newState = {
                 ...state,
-                redirectToDashboard: true,
+                redirectToDashboard: action.payload.redirectToDashboard,
             };
             break;
         default:

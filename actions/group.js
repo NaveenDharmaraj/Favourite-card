@@ -26,6 +26,12 @@ export const getGroupFromSlug = async (dispatch, slug) => {
             },
             type: actionTypes.GET_GROUP_DETAILS_FROM_SLUG,
         };
+        dispatch({
+            payload: {
+                redirectToDashboard: false,
+            },
+            type: actionTypes.REDIRECT_TO_DASHBOARD,
+        });
         await coreApi.get(`/groups/find_by_slug?load_full_profile=true`, {
             params: {
                 dispatch,
@@ -40,7 +46,9 @@ export const getGroupFromSlug = async (dispatch, slug) => {
             },
         ).catch(() => {
             dispatch({
-                payload: {},
+                payload: {
+                    redirectToDashboard: true,
+                },
                 type: actionTypes.REDIRECT_TO_DASHBOARD,
             });
             return null;
