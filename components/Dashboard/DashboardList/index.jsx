@@ -124,7 +124,7 @@ class DashboradList extends React.Component {
                 }
 
                 return (
-                    <Table.Row className={rowClass}>
+                    <Table.Row className={rowClass} key={index}>
                         <Table.Cell className="date">{date}</Table.Cell>
                         <Table.Cell>
                             <List verticalAlign="middle">

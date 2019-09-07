@@ -24,6 +24,7 @@ import {
 import {
     getStoriesList,
 } from '../../../actions/dashboard';
+import { dismissAllUxCritialErrors } from '../../../actions/error';
 import Pagination from '../../shared/Pagination';
 import allImg from '../../../static/images/all.png';
 import PlaceholderGrid from '../../shared/PlaceHolder';
@@ -43,6 +44,7 @@ class StoriesAllList extends React.Component {
         const {
             dispatch,
         } = this.props;
+        dismissAllUxCritialErrors(dispatch);
         const url = `/blogs/newBlogs?size=10`;
         getStoriesList(dispatch, url);
     }
@@ -64,6 +66,7 @@ class StoriesAllList extends React.Component {
         const {
             dispatch,
         } = this.props;
+        dismissAllUxCritialErrors(dispatch);
         const url = `/blogs/newBlogs?size=10&page=${data.activePage}`;
         getStoriesList(dispatch, url);
         this.setState({
