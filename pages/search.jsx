@@ -242,7 +242,7 @@ class Search extends React.Component {
                         dispatch={dispatch}
                     />
                     {
-                        !_isEmpty(pageCount) && this.renderPaginationComponent(pageCount, searchType, searchWord, currentPageClicked, !charityFlag, !groupFlag)
+                        pageCount > 0 && this.renderPaginationComponent(pageCount, searchType, searchWord, currentPageClicked, !charityFlag, !groupFlag)
                     }
                 </Container>
             </Layout>
