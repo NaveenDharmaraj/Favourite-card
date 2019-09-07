@@ -3,11 +3,11 @@ import _ from 'lodash';
 import utilityApi from '../services/utilityApi';
 import graphApi from '../services/graphApi';
 import coreApi from '../services/coreApi';
-import { async } from 'regenerator-runtime';
 
 export const actionTypes = {
     GET_BENEFICIARY_DONEE_LIST: 'GET_BENEFICIARY_DONEE_LIST',
     GET_BENEFICIARY_FROM_SLUG: 'GET_BENEFICIARY_FROM_SLUG',
+    REDIRECT_TO_DASHBOARD: 'REDIRECT_TO_DASHBOARD',
     SAVE_DEEP_LINK: 'SAVE_DEEP_LINK',
     SAVE_FOLLOW_STATUS: 'SAVE_FOLLOW_STATUS',
 };
@@ -118,12 +118,16 @@ export const getBeneficiaryFromSlug = async (dispatch, slug) => {
             },
             type: actionTypes.GET_BENEFICIARY_FROM_SLUG,
         };
+        dispatch({
+            payload: {
+                redirectToDashboard: false,
+            },
+            type: actionTypes.REDIRECT_TO_DASHBOARD,
+        });
         await coreApi.get(`/beneficiaries/find_by_slug?load_full_profile=true`, {
             params: {
                 dispatch,
-                slug: [
-                    slug,
-                ],
+                slug,
                 uxCritical: true,
             },
         }).then(
@@ -132,9 +136,14 @@ export const getBeneficiaryFromSlug = async (dispatch, slug) => {
                     fsa.payload.charityDetails = result.data;
                 }
             },
-        ).catch((e) => {
-            //redirect('/give/error');
-            // console.log('redirect to error-->', e);
+        ).catch(() => {
+            dispatch({
+                payload: {
+                    redirectToDashboard: true,
+                },
+                type: actionTypes.REDIRECT_TO_DASHBOARD,
+            });
+            return null;
         }).finally(() => {
             dispatch(fsa);
         });
