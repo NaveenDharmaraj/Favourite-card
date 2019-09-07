@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 
 import user from './user';
+import userProfile from './userProfile';
 import give from './give';
 import auth from './auth';
 import charity from './charity';
@@ -16,16 +17,17 @@ import chat from './chat';
 const root = combineReducers({
     app,
     auth,
-    dashboard,
-    give,
-    search,
-    onBoarding,
-    taxreceipt,
-    profile,
-    user,
-    firebase,
-    chat,
     charity,
+    chat,
+    dashboard,
+    firebase,
+    give,
+    onBoarding,
+    profile,
+    search,
+    taxreceipt,
+    user,
+    userProfile,
 });
 
 export default root;

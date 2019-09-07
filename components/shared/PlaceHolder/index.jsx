@@ -3,7 +3,6 @@ import {
     Grid, Placeholder, Segment, Table,
 } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
-
 const columnComponent = (column, placeholderType) => {
     const columnComponents = [];
     for (let i = 0; i < column; i++) {
