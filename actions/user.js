@@ -9,6 +9,9 @@ import { Router } from '../routes';
 import {
     triggerUxCritialErrors,
 } from './error';
+import {
+    generatePayloadBodyForFollowAndUnfollow,
+} from './profile';
 
 export const actionTypes = {
     GET_MATCH_POLICIES_PAYMENTINSTRUMENTS: 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS',
@@ -686,34 +689,13 @@ export const removeFavorite = (dispatch, favId, userId, favorites, type, dataCou
         type: actionTypes.UPDATE_FAVORITES,
     };
     const dataArray = _.merge([], favorites);
-    const target = (type === 'charity') ? {
-        entity: 'charity',
-        filters: {
-            charity_id: Number(favId),
-        },
-    } : {
-        entity: 'group',
-        filters: {
-            group_id: Number(favId),
-        },
-    };
-    const params = {
-        relationship: 'FOLLOWS',
-        source: {
-            entity: 'user',
-            filters: {
-                user_id: Number(userId),
-            },
-        },
-        target,
-    };
+    const params = generatePayloadBodyForFollowAndUnfollow(userId, favId, type);
     graphApi.post(`/users/deleterelationship`, params).then(
         async () => {
             const removedItem = (type === 'charity') ? { attributes: { charity_id: favId } }
                 : { attributes: { group_id: favId } };
             _.remove(dataArray, removedItem);
             let pageNumber = currentPageNumber;
-
             const url = `user/favourites?userid=${Number(userId)}&page[number]=${currentPageNumber}&page[size]=${pageSize}`;
             const currentData = await graphApi.get(url);
             if (currentData) {
