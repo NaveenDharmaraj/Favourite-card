@@ -23,5 +23,7 @@
     "secondAddressPlaceHolder": "Numéro d'appartement ou de bureau",
     "postalCodePlaceHolder": "Z1Z 1Z1",
     "invalidInputFormat": "Veuillez ne pas utiliser de crochets ou de barres obliques: ",
-    "invalidFieldLength": "Il semble que le {fieldName} que vous avez entré soit trop long (veuillez utiliser un maximum de {length} caractères)."
+    "invalidFieldLength": "Il semble que le {fieldName} que vous avez entré soit trop long (veuillez utiliser un maximum de {length} caractères).",
+    "state": "État"
+    
 }
