@@ -134,7 +134,10 @@ class UserDetails extends React.Component {
         const {
             dispatch,
             deepLinkUrl,
-            userId,
+            isAUthenticated,
+            currentUser: {
+                id: userId,
+            },
             charityDetails: {
                 charityDetails: {
                     id: charityId,
@@ -145,7 +148,7 @@ class UserDetails extends React.Component {
             },
         } = this.props;
         getBeneficiaryFromSlug(dispatch, slug);
-        if (_isEmpty(deepLinkUrl)) {
+        if (isAUthenticated && _isEmpty(deepLinkUrl)) {
             generateDeepLink(`deeplink?profileType=charityprofile&sourceId=${userId}&profileId=${charityId}`, dispatch);
         }
     }
@@ -155,7 +158,9 @@ class UserDetails extends React.Component {
             charityDetails,
             isAUthenticated,
             deepLinkUrl,
-            userId,
+            currentUser: {
+                id: userId,
+            },
         } = this.props;
         return (
             <div className="profile-info-wraper pb-3">
@@ -192,7 +197,7 @@ class UserDetails extends React.Component {
             </div>
         );
     }
-};
+}
 
 UserDetails.defaultProps = {
     charityDetails: {
@@ -203,9 +208,11 @@ UserDetails.defaultProps = {
             },
         },
     },
+    currentUser: {
+        id: null,
+    },
     dispatch: _.noop,
     isAUthenticated: false,
-    userId: null,
 };
 
 UserDetails.propTypes = {
@@ -217,17 +224,19 @@ UserDetails.propTypes = {
             }),
         },
     },
+    currentUser: {
+        id: number,
+    },
     dispatch: func,
     isAUthenticated: bool,
-    userId: number,
 };
 
 function mapStateToProps(state) {
     return {
         charityDetails: state.charity.charityDetails,
+        currentUser: state.user.info,
         deepLinkUrl: state.profile.deepLinkUrl,
         isAUthenticated: state.auth.isAuthenticated,
-        userId: state.user.info.id,
     };
 }
 
