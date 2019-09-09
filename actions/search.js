@@ -60,6 +60,8 @@ export const fetchInitialCharitiesGroups = (isAuthenticated, userId) => (dispatc
             fsa.payload.defaultAllCharities = result[0];
             fsa.payload.defaultAllGroups = result[1];
         }).catch((err) => {
+            fsa.payload.charityFlag = true;
+            fsa.payload.groupFlag = true;
             console.log(err);
         }).finally(() => {
             return dispatch(fsa);
@@ -104,6 +106,7 @@ export const fetchInitialCharities = (pageNumber, isAuthenticated, userId) => (d
             fsa.payload.charityFlag = true;
         }).catch((err) => {
             console.log(err);
+            fsa.payload.charityFlag = true;
         }).finally(() => {
             return dispatch(fsa);
         });
@@ -144,6 +147,7 @@ export const fetchInitialGroups = (pageNumber, isAuthenticated, userId) => (disp
             fsa.payload.pageCount = result.meta.pageCount;
             fsa.payload.groupFlag = true;
         }).catch((err) => {
+            fsa.payload.groupFlag = true;
             console.log(err);
         }).finally(() => {
             return dispatch(fsa);
@@ -190,6 +194,7 @@ export const fetchTextSearchCharitiesGroups = (searchWord, pageNumber, filterDat
         fsa.payload.pageCount = result.meta.page_count;
         fsa.payload.charityFlag = true;
     }).catch((err) => {
+        fsa.payload.charityFlag = true;
         triggerUxCritialErrors(err.errors || err, dispatch);
     }).finally(() => {
         return dispatch(fsa);
@@ -226,6 +231,7 @@ export const fetchTextSearchCharities = (searchWord, pageNumber, filterData) => 
         fsa.payload.TextSearchedCharities = result;
         fsa.payload.pageCount = result.meta.page_count;
     }).catch((err) => {
+        fsa.payload.charityFlag = true;
         triggerUxCritialErrors(err.errors || err, dispatch);
     }).finally(() => {
         return dispatch(fsa);
@@ -262,6 +268,7 @@ export const fetchTextSearchGroups = (searchWord, pageNumber, filterData) => (di
         fsa.payload.TextSearchedGroups = result;
         fsa.payload.pageCount = result.meta.page_count;
     }).catch((err) => {
+        fsa.payload.groupFlag = true;
         triggerUxCritialErrors(err.errors || err, dispatch);
     }).finally(() => {
         return dispatch(fsa);
