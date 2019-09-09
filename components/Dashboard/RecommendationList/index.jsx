@@ -75,18 +75,18 @@ class RecommendationList extends React.Component {
                 const placeholder = data.attributes.type === 'group' ? placeholderGroup : placeholderCharity;
                 const urlEntity = data.attributes.type === 'group' ? 'groups' : 'charities';
                 return (
-                    <Grid.Column>
+                    <Grid.Column key={index}>
                         <Card className="left-img-card" fluid>
                             <Card.Header>
                                 <Grid verticalAlign="middle">
                                     <Grid.Column width={6}>
                                         <Image src={placeholder} />
                                     </Grid.Column>
-                                    <Grid.Column width={10} >
+                                    <Grid.Column width={10}>
                                         <Grid columns="2">
-                                            <Grid.Row style={{padding:'0.5rem 0rem'}}>
+                                            <Grid.Row style={{ padding: '0.5rem 0rem' }}>
                                                 <Grid.Column>
-                                                    <Header as='h4'>
+                                                    <Header as="h4">
                                                         <Header.Content>
                                                             <Header.Subheader className={typeClass}>{type}</Header.Subheader>
                                                         </Header.Content>
@@ -117,7 +117,7 @@ class RecommendationList extends React.Component {
                                                 </Grid.Column>
                                             </Grid.Row>
                                         </Grid>
-                                        <Header as="h4" style={{margin:'0rem 0rem .5rem'}}>
+                                        <Header as="h4" style={{ margin: '0rem 0rem .5rem' }}>
                                             <Header.Content>
                                                 {charityName}
                                             </Header.Content>

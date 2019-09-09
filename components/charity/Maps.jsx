@@ -7,6 +7,11 @@ import {
     Marker,
 } from 'google-maps-react';
 import Geocode from 'react-geocode';
+import _isEmpty from 'lodash/isEmpty';
+import {
+    PropTypes,
+    string,
+} from 'prop-types';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -43,8 +48,23 @@ class Maps extends React.Component {
 
     render() {
         const {
-            charityDetails,
+            charityDetails: {
+                charityDetails: {
+                    attributes: {
+                        countries,
+                        headQuarterAddress,
+                    },
+                },
+            },
+            google,
         } = this.props;
+        let centerLocation = {
+            lat: null,
+            lng: null,
+        };
+        if (headQuarterAddress) {
+            centerLocation = Maps.getGeoCoding(headQuarterAddress);
+        }
         return (
             <div style={{
                 position: 'relative',
@@ -52,24 +72,18 @@ class Maps extends React.Component {
             }}
             >
                 <Map
-                    google={this.props.google}
-                    zoom={8}
+                    google={google}
+                    zoom={2}
                     style={mapStyles}
-                    initialCenter={
-                        Maps.getGeoCoding((charityDetails.charityDetails
-                            && charityDetails.charityDetails.attributes)
-                            && charityDetails.charityDetails.attributes.countries[0].name)
-                    }
+                    initialCenter={centerLocation}
                 >
-                    {(charityDetails.charityDetails && charityDetails.charityDetails.attributes)
-                    && charityDetails.charityDetails.attributes.countries.map((country) => {
-                        const location = Maps.getGeoCoding(country.name);
+                    {headQuarterAddress
+                    && <Marker position={centerLocation} />}
+
+                    {!_isEmpty(countries) && countries.map((country) => {
+                        const markerLocation = Maps.getGeoCoding(country.name);
                         return (
-                            <Marker position={{
-                                lat: location.lat,
-                                lng: location.lng,
-                            }}
-                            />
+                            <Marker position={markerLocation} />
                         );
                     })}
                 </Map>
@@ -77,6 +91,29 @@ class Maps extends React.Component {
         );
     }
 }
+
+Maps.defaultProps = {
+    charityDetails: {
+        charityDetails: {
+            attributes: {
+                countries: [],
+                headQuarterAddress: null,
+            },
+        },
+    },
+};
+
+Maps.propTypes = {
+    charityDetails: {
+        charityDetails: {
+            attributes: PropTypes.shape({
+                countries: PropTypes.arrayOf(),
+                headQuarterAddress: string,
+            }),
+        },
+    },
+};
+
 
 function mapStateToProps(state) {
     return {

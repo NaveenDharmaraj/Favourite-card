@@ -241,7 +241,7 @@ class FilterComponent extends React.Component {
                             onOpen={this.handleOpen}
                             pinned
                             position="bottom right"
-                            trigger={<div className="text-right pointer" ><a>Filter</a></div>}
+                            trigger={<div className="paginationWraper"><div className="text-right" ><a className="filterLink">Filter</a></div></div>}
                         >
                             <div className="filterPanel">
                                 <div className="filterPanelContent">

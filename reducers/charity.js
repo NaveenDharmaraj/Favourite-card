@@ -21,7 +21,7 @@ const charity = (state = {}, action) => {
                 charityDetails: Object.assign({}, state.charityDetails, action.payload),
             };
             break;
-        case 'SAVE_FOLLOW_STATUS':
+        case 'SAVE_FOLLOW_STATUS_CHARITY':
             newState = {
                 ...state,
                 charityDetails: {
@@ -35,13 +35,13 @@ const charity = (state = {}, action) => {
                         },
                     },
                 },
-                disableFollow: false,
+                // disableFollow: false,
             };
             break;
-        case 'DISABLE_FOLLOW_BUTTON':
+        case 'REDIRECT_TO_DASHBOARD':
             newState = {
                 ...state,
-                disableFollow: true,
+                redirectToDashboard: action.payload.redirectToDashboard,
             };
             break;
         default:

@@ -9,6 +9,7 @@ import search from './search';
 import dashboard from './dashboard';
 import onBoarding from './onBoarding';
 import app from './app';
+import group from './group';
 import taxreceipt from './taxreceipt';
 import profile from './profile';
 import firebase from './firebase';
@@ -22,6 +23,7 @@ const root = combineReducers({
     dashboard,
     firebase,
     give,
+    group,
     onBoarding,
     profile,
     search,

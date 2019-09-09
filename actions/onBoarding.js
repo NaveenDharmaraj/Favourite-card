@@ -33,7 +33,6 @@ export const saveUser = (dispatch, userDetails) => {
     return securityApi.post('/create/user', {
         ...userDetails,
     }, BASIC_AUTH_HEADER).then((result) => {
-        console.log(result);
         return dispatch({
             payload: {
                 newUserDetails: result,

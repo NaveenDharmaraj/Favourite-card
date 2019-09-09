@@ -26,7 +26,7 @@ function DonationsTab(props) {
         <Segment>
             <Grid verticalAlign="middle">
                 <Grid.Row>
-                    <Grid.Column mobile={16} tablet={11} computer={11}>
+                    <Grid.Column mobile={16} tablet={10} computer={11}>
                         <Header as="h3" className="mb-1">
                             Add money monthly
                             <Header.Subheader className="mt-1">
@@ -34,8 +34,8 @@ function DonationsTab(props) {
                             </Header.Subheader>
                         </Header>
                     </Grid.Column>
-                    <Grid.Column mobile={16} tablet={5} computer={5} textAlign="right">
-                        <Link route="/donations/new"><a href="" className="ui button primary blue-btn-rounded" fluid>Create new monthly donation</a></Link>
+                    <Grid.Column mobile={16} tablet={6} computer={5} textAlign="right">
+                        <Link route="/donations/new?donation_details[recurring]=1"><a href="" className="ui button blue-btn-rounded-def" fluid>Create new monthly donation</a></Link>
                     </Grid.Column>
                 </Grid.Row>
             </Grid>

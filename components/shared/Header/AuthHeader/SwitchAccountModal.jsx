@@ -1,51 +1,54 @@
 import React from 'react';
 import _ from 'lodash';
 import {
-  List,
-  Button,
-  Modal,
-  Input,
-  Image,
-} from 'semantic-ui-react'
+    List,
+    Button,
+    Modal,
+    Input,
+    Image,
+} from 'semantic-ui-react';
+
 import { Link } from '../../../../routes';
 
 class SwitchAccountModal extends React.Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
             searchFilteredArray: props.accounts,
         };
         this.searchAccount = this.searchAccount.bind(this);
     }
-    searchAccount(e){
+
+    searchAccount(e) {
         const searchValue = e.target.value;
-        let temp = [];
+        const temp = [];
         const {
-            accounts
+            accounts,
         } = this.props;
         const {
-            searchFilteredArray,
+            searchFilteredArray, 
         } = this.state;
-        if(!_.isEmpty(accounts)){
-             _.filter(accounts, (item) => {
-                if(_.lowerCase(item.name).includes(_.lowerCase(searchValue)) ){
+        if (!_.isEmpty(accounts)) {
+            _.filter(accounts, (item) => {
+                if (_.lowerCase(item.name).includes(_.lowerCase(searchValue))) {
                     temp.push(item);
                 }
             });
         }
-        this.setState({searchFilteredArray: temp});
+        this.setState({ searchFilteredArray: temp });
     }
 
-    render(){
+    render() {
         const {
             close,
             open,
         } = this.props;
         const {
-            searchFilteredArray
+            searchFilteredArray,
         } = this.state;
-        return(
-            <Modal 
+
+        return (
+            <Modal
                 size="tiny"
                 dimmer="inverted"
                 className="chimp-modal small-close"
@@ -57,26 +60,26 @@ class SwitchAccountModal extends React.Component {
                 <Modal.Content>
                     <Modal.Description className="font-s-16">
                         <div className="messageSearch">
-                            <Input fluid iconPosition='left' icon='search' placeholder='Search...' onChange={(event)=>this.searchAccount(event)} />
+                            <Input fluid iconPosition="left" icon="search" placeholder="Search..." onChange={(event)=>this.searchAccount(event)} />
                         </div>
                         <div className="membersList swichAccounts">
-                            <List divided verticalAlign='middle'>
+                            <List divided verticalAlign="middle">
                                 {
                                     searchFilteredArray.map((item) => (
-                                    <List.Item>
-                                        <List.Content floated='right' className="font-s-14">
-                                            <Link href={item.location}>
-                                                <Button className="blue-btn-rounded-def c-small">Select</Button>
-                                            </Link>
-                                        </List.Content>
-                                        <Image avatar src={item.avatar} />
-                                        <List.Content>
-                                            <List.Header className="font-s-14">{item.name}</List.Header>
-                                            <List.Description className="charity font-s-14">
-                                            {_.capitalize(item.accountType)}
-                                            </List.Description>
-                                        </List.Content>
-                                    </List.Item>
+                                        <List.Item>
+                                            <List.Content floated="right" className="font-s-14">
+                                                <a href={item.location}>
+                                                    <Button className="blue-btn-rounded-def c-small">Select</Button>
+                                                </a>
+                                            </List.Content>
+                                            <Image avatar src={item.avatar} />
+                                            <List.Content>
+                                                <List.Header className="font-s-14">{item.name}</List.Header>
+                                                <List.Description className="charity font-s-14">
+                                                    {_.capitalize(item.accountType)}
+                                                </List.Description>
+                                            </List.Content>
+                                        </List.Item>
                                     ))
                                 }
                             </List>
@@ -86,6 +89,5 @@ class SwitchAccountModal extends React.Component {
             </Modal>
         );
     }
-
 }
 export default SwitchAccountModal;

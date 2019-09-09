@@ -13,13 +13,24 @@ import {
 } from 'react-redux';
 import _isEqual from 'lodash/isEqual';
 import _uniqBy from 'lodash/uniqBy';
+
 import angleDown from '../../../static/images/icons/icon-arrow-down.svg';
 import downloadIcon from '../../../static/images/icons/icon-download.svg';
 import {
     downloadTaxreceiptDonationsDetail,
     getIssuedTaxreceiptDonationsDetail,
 } from '../../../actions/taxreceipt';
+
+import {
+    monthNamesForGivingTools,
+} from '../../../helpers/give/utils';
 import PlaceholderGrid from '../../shared/PlaceHolder';
+
+const formatDateTaxReceipt = (date) => {
+    const dateArray = date.split('-');
+    const month = monthNamesForGivingTools(dateArray[1]);
+    return `${month}${dateArray[2]}, ${dateArray[0]}`;
+};
 
 class IndividualTaxDonationContent extends React.Component {
     constructor(props) {
@@ -27,22 +38,23 @@ class IndividualTaxDonationContent extends React.Component {
         this.state = {
             activeIndex: null,
             contentLoader: false,
-            downloadloader: false,
             issuedTaxReceiptDonationsDetailState: [],
             loadMoreIncrementor: 1,
             loadMoreLoader: false,
         };
         this.handleClick = this.handleClick.bind(this);
         this.onPageChanged = this.onPageChanged.bind(this);
+        this.displayDownloadedFileName = this.displayDownloadedFileName.bind(this);
     }
 
     componentDidUpdate(prevProps) {
         const {
             issuedTaxReceiptDonationsDetail,
+            url,
+            urlChange,
         } = this.props;
         let {
             contentLoader,
-            downloadloader,
             loadMoreLoader,
             issuedTaxReceiptDonationsDetailState,
         } = this.state;
@@ -53,15 +65,26 @@ class IndividualTaxDonationContent extends React.Component {
                 contentLoader = false;
                 loadMoreLoader = false;
             }
-
+            if (!_isEqual(urlChange, prevProps.urlChange) && !_isEmpty(url)) {
+                const fileName = this.displayDownloadedFileName();
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', fileName);
+                // Append to html page
+                document.body.appendChild(link);
+                // Force download
+                link.click();
+                // Clean up and remove the link
+                link.parentNode.removeChild(link);
+            }
             this.setState({
                 contentLoader,
-                downloadloader,
                 issuedTaxReceiptDonationsDetailState,
                 loadMoreLoader,
             });
         }
     }
+
 
     onPageChanged(year) {
         const {
@@ -103,6 +126,24 @@ class IndividualTaxDonationContent extends React.Component {
         });
     }
 
+    displayDownloadedFileName() {
+        const {
+            name,
+            year,
+        } = this.props;
+        const firstName = `tax-receipt-for-${name}`;
+        const today = new Date();
+        const date = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
+        date.toString();
+        if (year === today.getFullYear().toString()) {
+            if (`${today.getMonth() + 1}-${today.getDate()}` === '1-1') {
+                return `${firstName}-for-${date}.`;
+            }
+            return `${firstName}-from-${year}-01-01-to-${date}.`;
+        }
+        return `${firstName}-from-${year}-01-01-to-${year}-12-31.`;
+    }
+
     downloadTaxReceipt(event, year) {
         event.stopPropagation();
         const {
@@ -110,22 +151,19 @@ class IndividualTaxDonationContent extends React.Component {
             dispatch,
         } = this.props;
         downloadTaxreceiptDonationsDetail(dispatch, id, year);
-        this.setState({
-            downloadloader: true,
-        });
     }
 
     render() {
         const {
             activeIndex,
             contentLoader,
-            downloadloader,
             issuedTaxReceiptDonationsDetailState,
             loadMoreIncrementor,
             loadMoreLoader,
         } = this.state;
         const {
             donationDetail,
+            downloadloader,
             index,
             issuedTaxReceiptYearlyDetailPageCount,
         } = this.props;
@@ -164,7 +202,7 @@ class IndividualTaxDonationContent extends React.Component {
                                                                     $
                                             {yearlydetails.amount}
                                         </List.Content>
-                                        <List.Content>{yearlydetails.transfer_date}</List.Content>
+                                        <List.Content>{formatDateTaxReceipt(yearlydetails.transfer_date)}</List.Content>
                                     </List.Item>
                                 </List>
                             ))
@@ -192,8 +230,11 @@ class IndividualTaxDonationContent extends React.Component {
     }
 }
 const mapStateToProps = (state) => ({
+    downloadloader: state.taxreceipt.downloadloader,
     issuedTaxReceiptDonationsDetail: state.taxreceipt.issuedTaxReceiptDonationsDetail,
     issuedTaxReceiptYearlyDetailPageCount: state.taxreceipt.issuedTaxReceiptYearlyDetailPageCount,
+    url: state.taxreceipt.url,
+    urlChange: state.taxreceipt.urlChange,
 });
 
 export default connect(mapStateToProps)(IndividualTaxDonationContent);

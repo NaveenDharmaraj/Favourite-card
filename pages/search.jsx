@@ -4,6 +4,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import _isEqual from 'lodash/isEqual';
 import _isEmpty from 'lodash/isEmpty';
+import _isArray from 'lodash/isArray';
 import {
     connect,
 } from 'react-redux';
@@ -36,9 +37,15 @@ class Search extends React.Component {
     }
 
     static async getInitialProps({ query }) {
+        let searchTypeValue;
+        if (query.result_type) {
+            searchTypeValue = _isArray(query.result_type) ? query.result_type[0] : query.result_type;
+        } else {
+            searchTypeValue = 'All';
+        }
         return {
-            searchType: query.result_type ? query.result_type : 'All',
-            searchWord: query.search,
+            searchType: searchTypeValue,
+            searchWord: !_isEmpty(query.search) && encodeURI(query.search),
         };
     }
 
@@ -89,7 +96,7 @@ class Search extends React.Component {
             textSearchedGroups,
         } = this.props;
         if (!_isEqual(this.props, prevProps) || !_isEqual(this.state, prevState)) {
-            //Change in search word initialize the filter values
+            // Change in search word initialize the filter values
             if (!_isEqual(searchWord, prevProps.searchWord)) {
                 dispatch({
                     payload: {
@@ -124,7 +131,7 @@ class Search extends React.Component {
                     type: 'DISPATCH_FILTER_VALUE_SHOWED',
                 });
             }
-
+            
             if (!_isEqual(searchType, prevProps.searchType) || !_isEqual(searchWord, prevProps.searchWord)
                 || !_isEqual(currentPageClicked, prevState.currentPageClicked) || !_isEqual(filterData, prevProps.filterData)) {
                 switch (searchType) {
@@ -151,7 +158,7 @@ class Search extends React.Component {
                         break;
                     default: break;
                 }
-                //Changing the state to intial everytime there is a change in result type
+                // Changing the state to intial everytime there is a change in result type
                 if (!_isEqual(searchType, prevProps.searchType) || !_isEqual(searchWord, prevProps.searchWord)) {
                     currentPageClicked = 1;
                 }
@@ -173,7 +180,7 @@ class Search extends React.Component {
 
     renderPaginationComponent(pageCount, searchType, searchWord, currentPageClicked, charityFlag, groupFlag) {
         let showPagination = false;
-        if ((searchType === 'Beneficiary' || searchType === 'All' ) && !charityFlag) {
+        if ((searchType === 'Beneficiary' || searchType === 'All') && !charityFlag) {
             showPagination = true;
         } else if (searchType === 'Group' && !groupFlag) {
             showPagination = true;
@@ -188,6 +195,7 @@ class Search extends React.Component {
                 );
             }
         }
+        return null;
     }
 
 
@@ -214,7 +222,12 @@ class Search extends React.Component {
             <Layout>
                 <Container>
                     <SearchBanner searchType={searchType} searchWordProps={searchWord} />
-                    <SearchButtonWrapper currentTab={searchType} dispatch={dispatch} isAuthenticated={isAuthenticated} searchWord={searchWord} />
+                    <SearchButtonWrapper
+                        currentTab={searchType}
+                        dispatch={dispatch}
+                        isAuthenticated={isAuthenticated}
+                        searchWord={searchWord}
+                    />
                     <SearchResults
                         currentTab={currentTab}
                         charityLoader={!charityFlag}
@@ -229,10 +242,9 @@ class Search extends React.Component {
                         dispatch={dispatch}
                     />
                     {
-                        pageCount && this.renderPaginationComponent(pageCount, searchType, searchWord, currentPageClicked, !charityFlag, !groupFlag)
+                        pageCount > 0 && this.renderPaginationComponent(pageCount, searchType, searchWord, currentPageClicked, !charityFlag, !groupFlag)
                     }
                 </Container>
-                
             </Layout>
         );
     }
@@ -293,13 +305,13 @@ Search.defaultProps = {
     charities: null,
     charityFlag: false,
     currentUser: {
-        id : null,
+        id: null,
     },
     dispatch: null,
     groupFlag: false,
     groups: null,
     isAuthenticated: false,
-    pageCount: null,
+    pageCount: 0,
     searchType: null,
     searchWord: null,
     textSearchedCharities: null,

@@ -10,6 +10,6 @@ Verify your app works in a Docker container:
 
 2. `docker-compose up`
 
-3. Navigate to `http://localhost:6310/` and test your app.
+3. Navigate to `http://localhost:6310/` and test your app..
 
 

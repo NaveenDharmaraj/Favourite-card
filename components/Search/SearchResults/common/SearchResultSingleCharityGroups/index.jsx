@@ -11,11 +11,14 @@ import _isEmpty from 'lodash/isEmpty';
 import {
     Router,
 } from '../../../../../routes';
+import {
+    isFalsy,
+} from '../../../../../helpers/utils';
 import placeholderCharity from '../../../../../static/images/no-data-avatar-charity-profile.png';
 import placeholderGroup from '../../../../../static/images/no-data-avatar-giving-group-profile.png';
 import PlaceholderGrid from '../../../../shared/PlaceHolder';
 
-// eslint-disable-next-line react/prefer-stateless-function
+
 class SearchResultSingleCharityGroups extends React.Component {
     constructor(props) {
         super(props);
@@ -25,23 +28,28 @@ class SearchResultSingleCharityGroups extends React.Component {
     // eslint-disable-next-line class-methods-use-this
     handleRoute(type, slug, campaign) {
         let route = null;
-        if (type === 'group' && campaign) {
-            route = `/campaigns/${slug}`;
-        } else if (type === 'group' && campaign === false) {
-            route = `/groups/${slug}`;
-        } else {
-            route = `/charities/${slug}`;
+        if (!_isEmpty(type)) {
+            if (type.toLowerCase() === 'group' && campaign) {
+                route = `/campaigns/${slug}`;
+            } else if (type.toLowerCase() === 'group' && isFalsy(campaign)) {
+                route = `/groups/${slug}`;
+            } else {
+                route = `/charities/${slug}`;
+            }
         }
+     
         Router.pushRoute(route);
     }
 
     // eslint-disable-next-line class-methods-use-this
     renderButton(type, campaign) {
-        if (type === 'group' && campaign) {
-            return 'View Campaign';
-        // eslint-disable-next-line no-else-return
-        } else if (type === 'group' && campaign === false) {
-            return 'View Group';
+        if (!_isEmpty(type)) {
+            if (type.toLowerCase() === 'group' && campaign) {
+                return 'View Campaign';
+            // eslint-disable-next-line no-else-return
+            } else if (type.toLowerCase() === 'group' && isFalsy(campaign)) {
+                return 'View Group';
+            }
         }
         return 'View Charity';
     }
@@ -67,7 +75,7 @@ class SearchResultSingleCharityGroups extends React.Component {
                 } = charityGroup;
 
                 let displayAvatar = placeholderCharity;
-                if (type.toLowerCase() === 'group') {
+                if (!_isEmpty(type) && type.toLowerCase() === 'group') {
                     displayAvatar = placeholderGroup;
                 }
                 displayAvatar = (!_isEmpty(avatar)) ? avatar : displayAvatar;
@@ -97,8 +105,8 @@ class SearchResultSingleCharityGroups extends React.Component {
                                 </Grid.Column>
                                 <Grid.Column mobile={16} tablet={4} computer={3} verticalAlign="middle" textAlign="center">
                                     <div className="btn-wraper">
-                                        <Button className="view-btn" onClick={() => { this.handleRoute(type.toLowerCase(), slug, is_campaign); }}>
-                                            {this.renderButton(type.toLowerCase(), is_campaign)}
+                                        <Button className="view-btn" onClick={() => { this.handleRoute(type, slug, is_campaign); }}>
+                                            {this.renderButton(type, is_campaign)}
                                         </Button>
                                     </div>
                                 </Grid.Column>
@@ -107,7 +115,7 @@ class SearchResultSingleCharityGroups extends React.Component {
                     </div>
 
                 );
-});
+            });
             return charitiesGroupsComponent;
         }
         return 'No Data available';
