@@ -130,6 +130,7 @@ class Login extends React.Component {
             isLastNameNotNull: true,
             isLastNameValid: true,
             isPasswordLengthInLimit: true,
+            isPasswordNull: true,
             isPasswordValid: true,
             isValidCauses: true,
         };

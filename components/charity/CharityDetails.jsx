@@ -122,7 +122,7 @@ CharityDetails.propTypes = {
 
 function mapStateToProps(state) {
     return {
-        charityDetails: state.give.charityDetails,
+        charityDetails: state.charity.charityDetails,
         isAUthenticated: state.auth.isAuthenticated,
     };
 }

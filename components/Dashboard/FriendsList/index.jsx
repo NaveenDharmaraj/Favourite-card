@@ -12,7 +12,7 @@ import {
     connect,
 } from 'react-redux';
 
-import { 
+import {
     getFriendsList,
     storeEmailIdToGive,
 } from '../../../actions/dashboard';
@@ -76,7 +76,7 @@ class FriendsList extends React.Component {
                     data.attributes.avatar = placeholderUser;
                 }
                 return (
-                    <Grid.Column>
+                    <Grid.Column key={index}>
                         <Card>
                             <Image src={data.attributes.avatar} circular />
                             <Card.Content>
@@ -117,7 +117,7 @@ class FriendsList extends React.Component {
 
     render() {
         const {
-            friendListLoader
+            friendListLoader,
         } = this.state;
         const {
             friendsData,
