@@ -115,9 +115,11 @@ class Favorites extends React.Component {
                 } = data.attributes;
                 let displayAvatar = groupImg;
                 let route = 'groups';
+                let heading = 'giving group';
                 if (type === 'charity') {
                     displayAvatar = charityImg;
                     route = 'charities';
+                    heading = 'charity';
                 }
                 displayAvatar = (!_.isEmpty(avatar)) ? avatar : displayAvatar;
                 const entityId = (type === 'charity') ? data.attributes.charity_id : data.attributes.group_id;
@@ -134,7 +136,7 @@ class Favorites extends React.Component {
                                             <Header as="h4">
                                                 <Header.Content>
                                                     <Header.Subheader className="chimp-lbl group">
-                                                        giving group
+                                                        {heading}
                                                         <span className="more-icon">
                                                             <Icon name="heart" disabled={this.props.disableFavorites} onClick={() => this.callRemoveFav(entityId, type)} />
                                                         </span>
