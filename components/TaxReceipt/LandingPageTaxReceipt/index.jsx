@@ -10,7 +10,6 @@ import {
 import {
     connect,
 } from 'react-redux';
-import _isEqual from 'lodash/isEqual';
 import _isEmpty from 'lodash/isEmpty';
 import _map from 'lodash/map';
 
@@ -31,7 +30,6 @@ class LandingPageTaxReceipt extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            loader: !props.issuedTaxReceiptList,
             donationDetailhide: true,
             isSelectPhotoModalOpen: false,
         };
@@ -45,26 +43,13 @@ class LandingPageTaxReceipt extends React.Component {
     componentDidMount() {
         const {
             dispatch,
-        } = this.props;
-        getIssuedTaxreceipts(dispatch);
-    }
-
-    componentDidUpdate(prevProps) {
-        const {
             issuedTaxReceiptList,
         } = this.props;
-        let {
-            loader,
-        } = this.state;
-        if (!_.isEqual(this.props, prevProps)) {
-            if (!_isEqual(issuedTaxReceiptList, prevProps.issuedTaxReceiptList)) {
-                loader = false;
-            }
-            this.setState({
-                loader,
-            });
+        if (_isEmpty(issuedTaxReceiptList)) {
+            getIssuedTaxreceipts(dispatch);
         }
     }
+
 
     onEdit() {
         this.setState({ isSelectPhotoModalOpen: true });
@@ -88,13 +73,13 @@ class LandingPageTaxReceipt extends React.Component {
         const {
             issuedTaxReceiptList,
             dispatch,
+            loader,
         } = this.props;
         const {
             donationDetailhide,
             id,
             isSelectPhotoModalOpen,
             currentIssuedTaxReceipt,
-            loader,
         } = this.state;
         const intializeFormData = {
             attributes: {
@@ -193,6 +178,7 @@ class LandingPageTaxReceipt extends React.Component {
 const mapStateToProps = (state) => ({
     currentUser: state.user.info,
     issuedTaxReceiptList: state.taxreceipt.issuedTaxReceiptList,
+    loader: state.taxreceipt.loader,
 });
 
 export default connect(mapStateToProps)(LandingPageTaxReceipt);
