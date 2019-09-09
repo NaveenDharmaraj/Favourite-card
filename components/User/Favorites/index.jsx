@@ -48,6 +48,7 @@ class Favorites extends React.Component {
             currentUser,
             dispatch,
         } = this.props;
+        dismissAllUxCritialErrors(dispatch);
         getFavoritesList(dispatch, currentUser.id, 1, this.state.pageSize);
     }
 

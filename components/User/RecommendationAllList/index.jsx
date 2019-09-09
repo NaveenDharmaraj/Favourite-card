@@ -12,10 +12,7 @@ import {
 } from 'react-redux';
 import {
     arrayOf,
-    bool,
-    element,
     func,
-    oneOf,
     oneOfType,
     number,
     PropTypes,
@@ -25,8 +22,10 @@ import {
 import {
     getRecommendationList,
 } from '../../../actions/dashboard';
+import { dismissAllUxCritialErrors } from '../../../actions/error';
 import Pagination from '../../shared/Pagination';
 import SearchResultSingleCharityGroups from '../../Search/SearchResults/common/SearchResultSingleCharityGroups';
+
 
 class RecommendationAllList extends React.Component {
     constructor(props) {
@@ -44,6 +43,7 @@ class RecommendationAllList extends React.Component {
             currentUser,
             dispatch,
         } = this.props;
+        dismissAllUxCritialErrors(dispatch);
         const url = `/recommend/all?userid=${Number(currentUser.id)}&page[number]=1&page[size]=10`;
         getRecommendationList(dispatch, url);
     }
@@ -68,6 +68,7 @@ class RecommendationAllList extends React.Component {
             },
             dispatch,
         } = this.props;
+        dismissAllUxCritialErrors(dispatch);
         const url = `/recommend/all?userid=${Number(id)}&page[number]=${data.activePage}&page[size]=10`;
         getRecommendationList(dispatch, url);
         this.setState({
@@ -148,7 +149,9 @@ RecommendationAllList.propTypes = {
             number,
             string,
         ]),
-        data: arrayOf(element),
+        data: arrayOf(PropTypes.shape({
+            type: PropTypes.string,
+        })),
         pageCount: oneOfType([
             number,
             string,

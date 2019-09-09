@@ -58,7 +58,7 @@ class StoriesList extends React.Component {
             const showData = _.slice(storiesData.data, 0, 7);
             storiesList = showData.map((data, index) => {
                 return (
-                    <Grid.Column>
+                    <Grid.Column key={index}>
                         <Card as="a" href={data.blog_URL} target="_blank" className="tips-card" style={{ backgroundImage: `url(${data.blog_image_URL})` }}>
                             <Card.Content>
                                 <Card.Header>{data.blog_title}</Card.Header>

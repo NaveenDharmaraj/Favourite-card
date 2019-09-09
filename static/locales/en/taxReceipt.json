@@ -9,10 +9,10 @@
     "postalCode": "Postal Code",
     "province": "Province",
     "provincePlaceHolder":"Select a province/state",
-    "taxReceiptRecipientLabel": "Tax Receipt recipient",
+    "taxReceiptRecipientLabel": "Tax receipt recipient",
     "changeAddressText": "Want to change this address? ",
     "makeChangesText": "Make changes here",
-    "fullNamePopup": "This must be the name of the person who pays the credit card bill. Please include your first name, middle initial, and last name.",
+    "fullNamePopup": "This must be the name of the person who pays the credit card bill. Please include your first name, middle name, and last name.",
     "invalidFullName": "Include your full name (use a minimum of 2 characters)",
     "invalidAddress": "Include your street address (use a minimum of 2 characters)",
     "invalidCity": "Include the name of your city (use a minimum of 2 characters)",
@@ -21,5 +21,7 @@
     "invalidProvince": "Select your province or state",
     "addressPlaceHolder": "123 Street Road",
     "secondAddressPlaceHolder": "Apartment or suite number",
-    "postalCodePlaceHolder": "Z1Z 1Z1"
+    "postalCodePlaceHolder": "Z1Z 1Z1",
+    "invalidInputFormat": "Please don't use brackets or slashes: ",
+    "invalidFieldLength": "It looks like the {{fieldName}} you entered is too long (please use a maximum of {{length}} characters)."        
 }

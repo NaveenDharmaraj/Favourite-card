@@ -20,7 +20,6 @@ const instance = axios.create({
     },
 });
 instance.interceptors.request.use(function (config) {
-    console.log(config);
     if (_isEmpty(config.headers.Authorization)) {
         let token = '';
         if (!_isEmpty(auth0) && !_isEmpty(auth0.accessToken)) {

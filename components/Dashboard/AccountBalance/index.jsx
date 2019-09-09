@@ -94,7 +94,7 @@ class AccountBalance extends React.Component {
     }
 }
 
-AccountBalance.PropTypes = {
+AccountBalance.propTypes = {
     currentUser: PropTypes.object,
 };
 
