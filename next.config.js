@@ -2,6 +2,7 @@ const withLess = require('@zeit/next-less');
 const withPlugins = require('next-compose-plugins');
 const withImages = require('next-images');
 
+
 const configVars = {
     publicRuntimeConfig: {
         APP_URL_ORIGIN: process.env.APP_URL_ORIGIN,
@@ -15,6 +16,9 @@ const configVars = {
         EVENT_API_BASE: process.env.EVENT_API_BASE,
         GOOGLE_MAP_API_KEY: process.env.GOOGLE_MAP_API_KEY,
         GRAPH_API_BASE: process.env.GRAPH_API_BASE,
+        GTM_AUTH: process.env.GTM_AUTH,
+        GTM_ENV_NUMBER: process.env.GTM_ENV_NUMBER,
+        GTM_ID: process.env.GTM_ID,
         NODE_ENV: process.env.NODE_ENV,
         RAILS_APP_URL_ORIGIN: process.env.RAILS_APP_URL_ORIGIN,
         ROR_AUTH_API_BASE: process.env.ROR_AUTH_API_BASE,

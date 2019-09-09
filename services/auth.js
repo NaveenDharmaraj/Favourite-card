@@ -9,11 +9,13 @@ import chimpLogo from '../static/images/chimp-logo-new.png';
 import {
     validateAuth0Failure,
 } from '../actions/auth';
+
 import {
     chimpLogin,
     getUser,
-} from '../actions/user'
+} from '../actions/user';
 import isUndefinedOrEmpty from '../helpers/object';
+import { addToDataLayer } from '../helpers/users/googleTagManager';
 
 import coreApi from './coreApi';
 
@@ -401,6 +403,13 @@ const _handleLockSuccess = async ({
         const dispatch = auth0.storeDispatch;
         await (getUser(dispatch, userId));
         const returnTo = '/dashboard';
+        const tagManagerArgs = {
+            dataLayer: {
+                userId,
+            },
+            dataLayerName: 'dataLayer',
+        };
+        addToDataLayer(tagManagerArgs);
         Router.pushRoute(returnTo);
         // window.location.href = 
     }).catch(() => {

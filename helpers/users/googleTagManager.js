@@ -26,7 +26,6 @@ const addToDataLayer = (tagManagerArgs) => {
      * ```
      */
 const removeFromDataLayer = (predicate) => {
-    debugger
     if (typeof window !== 'undefined' && window.dataLayer && window.dataLayer.length) {
         this.dataLayer = window.dataLayer;
     }
