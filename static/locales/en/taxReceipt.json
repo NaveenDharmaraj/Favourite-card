@@ -23,5 +23,6 @@
     "secondAddressPlaceHolder": "Apartment or suite number",
     "postalCodePlaceHolder": "Z1Z 1Z1",
     "invalidInputFormat": "Please don't use brackets or slashes: ",
-    "invalidFieldLength": "It looks like the {{fieldName}} you entered is too long (please use a maximum of {{length}} characters)."        
+    "invalidFieldLength": "It looks like the {{fieldName}} you entered is too long (please use a maximum of {{length}} characters)." ,
+    "state": "State" 
 }
