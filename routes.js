@@ -14,4 +14,6 @@ module.exports = routes()
     .add('chat', '/chats/:msgId')
     .add('campaign-profile', '/campaigns/:slug', 'campaignProfile')
     .add('charity-profile', '/charities/:slug', 'charityProfile')
-    .add('IssuedTaxReceipientDonationsList', '/user/tax-receipts/:slug', 'taxReceipientDonationsList');
+    .add('IssuedTaxReceipientDonationsList', '/user/tax-receipts/:slug', 'taxReceipientDonationsList')
+    .add('friendsProfile', '/users/profile/:slug')
+    .add('myProfile', '/user/profile');
