@@ -1,17 +1,15 @@
 /* eslint-disable react/prop-types */
 import React, { Fragment } from 'react';
-import {
-    Grid,
-    Input,
-} from 'semantic-ui-react';
 import _isEmpty from 'lodash/isEmpty';
 
 
 import TextSearchResultsAll from '../SearchResults/TextSearchResultsAll';
+import PlaceholderGrid from '../../shared/PlaceHolder';
 
 import SearchResultsAll from './SearchResultsAll';
 import SearchResultsCharities from './SearchResultsCharities';
 import SearchResultGroups from './SearchResultGroups';
+
 
 class SearchResults extends React.Component {
     constructor(props) {
@@ -48,7 +46,15 @@ class SearchResults extends React.Component {
                 // eslint-disable-next-line no-else-return
                 } else if (!_isEmpty(searchWord)) {
                     return (
-                        <TextSearchResultsAll dispatch={dispatch} textSearchCharityGroupLoader={charityLoader} CharityGroups={textSearchedCharitiesGroups} />
+                        charityLoader
+                            ? <PlaceholderGrid row={2} column={1} />
+                            : (
+                                <TextSearchResultsAll
+                                    dispatch={dispatch}
+                                    textSearchCharityGroupLoader={charityLoader}
+                                    CharityGroups={textSearchedCharitiesGroups}
+                                />
+                            )
                     );
                 }
                 break;
@@ -59,7 +65,18 @@ class SearchResults extends React.Component {
                 } else {
                     CharitiesArray = textSearchedCharities;
                 }
-                return <SearchResultsCharities dispatch={dispatch} isAuthenticated={isAuthenticated} searchWord={searchWord} charities={CharitiesArray} charityLoader={charityLoader} />;
+                return (
+                    charityLoader
+                        ? <PlaceholderGrid row={2} column={1} />
+                        : (
+                            <SearchResultsCharities
+                                dispatch={dispatch}
+                                isAuthenticated={isAuthenticated}
+                                searchWord={searchWord}
+                                charities={CharitiesArray}
+                                charityLoader={charityLoader}
+                            />
+                        ));
             case 'Group':
                 let GroupsArray = [];
                 if (_isEmpty(searchWord)) {
@@ -67,7 +84,18 @@ class SearchResults extends React.Component {
                 } else {
                     GroupsArray = textSearchedGroups;
                 }
-                return <SearchResultGroups dispatch={dispatch} isAuthenticated={isAuthenticated} searchWord={searchWord} groups={GroupsArray} groupLoader={groupLoader} />;
+                return (
+                    groupLoader
+                        ? <PlaceholderGrid row={2} column={1} />
+                        : (
+                            <SearchResultGroups
+                                dispatch={dispatch}
+                                isAuthenticated={isAuthenticated}
+                                searchWord={searchWord}
+                                groups={GroupsArray}
+                                groupLoader={groupLoader}
+                            />
+                        ));
             default: break;
         }
         return null;

@@ -50,12 +50,15 @@ class GroupDetails extends React.Component {
         const {
             dispatch,
             deepLinkUrl,
-            userId,
+            isAuthenticated,
+            currentUser: {
+                id: userId,
+            },
             groupDetails: {
                 id: groupId,
             },
         } = this.props;
-        if (_.isEmpty(deepLinkUrl)) {
+        if (isAuthenticated && _.isEmpty(deepLinkUrl)) {
             generateDeepLink(`deeplink?profileType=charityprofile&sourceId=${userId}&profileId=${groupId}`, dispatch);
         }
     }
@@ -93,7 +96,9 @@ class GroupDetails extends React.Component {
                 },
             },
             isAuthenticated,
-            userId,
+            currentUser: {
+                id: userId,
+            },
         } = this.props;
         const {
             joinClicked,
@@ -261,6 +266,9 @@ class GroupDetails extends React.Component {
 }
 
 GroupDetails.defaultProps = {
+    currentUser: {
+        id: null,
+    },
     dispatch: _.noop,
     groupDetails: {
         attributes: {
@@ -272,10 +280,12 @@ GroupDetails.defaultProps = {
         },
     },
     isAuthenticated: false,
-    userId: null,
 };
 
 GroupDetails.propTypes = {
+    currentUser: {
+        id: string,
+    },
     dispatch: func,
     groupDetails: {
         attributes: {
@@ -287,16 +297,15 @@ GroupDetails.propTypes = {
         },
     },
     isAuthenticated: bool,
-    userId: number,
 };
 
 function mapStateToProps(state) {
     return {
+        currentUser: state.user.info,
         deepLinkUrl: state.profile.deepLinkUrl,
         disableFollow: state.profile.disableFollow,
         groupDetails: state.group.groupDetails,
         isAuthenticated: state.auth.isAuthenticated,
-        userId: state.user.info.id,
     };
 }
 

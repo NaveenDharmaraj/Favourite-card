@@ -72,43 +72,42 @@ class SearchResultsCharities extends React.Component {
         return (
 
             <Fragment>
-                {charityLoader ? <PlaceholderGrid row={2} column={1} /> : (
-                    <Fragment>
-                        <Grid>
-                            <Grid.Row style={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                            }}
-                            >
-                                {(_isEmpty(searchWord) && !isAuthenticated) ? null : (
-                                    <Grid.Column mobile={11} tablet={12} computer={12}>
-                                        <Header as="h2">
-                                            <Header.Content>
+                <Grid>
+                    <Grid.Row style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                    }}
+                    >
+                        {(_isEmpty(searchWord) && !isAuthenticated) ? null : (
+                            <Grid.Column mobile={11} tablet={12} computer={12}>
+                                <Header as="h2">
+                                    <Header.Content>
                                         CHARITIES
-                                                <span className="num-result font-s-20">
-                                                    {this.renderTotalCount()}
+                                        <span className="num-result font-s-20">
+                                            {this.renderTotalCount()}
                                             &nbsp;results
-                                                </span>
-                                            </Header.Content>
-                                        </Header>
-                                    </Grid.Column>
-                                )
-                                }
-                                <Grid.Column>
-                                    {
-                                        (!_isEmpty(charities) && !_isEmpty(charities.meta) && !_isEmpty(charities.meta.aggregations)) && (
-                                            <FilterComponent
-                                                dispatch={dispatch}
-                                                FilterHeaders={(!_isEmpty(filterValuesShowed)) ? Object.keys(filterobj) : null}
-                                                FilterValues={(!_isEmpty(filterValuesShowed)) ? Object.values(filterobj) : null}
-                                            />
-                                        )}
-                                </Grid.Column>
-                            </Grid.Row>
-                        </Grid>
-                        {(charities && charities.data) && <SearchResultSingleCharityGroups charityGroups={charities.data} /> }
-                    </Fragment>
-                )}
+                                        </span>
+                                    </Header.Content>
+                                </Header>
+                            </Grid.Column>
+                        )
+                        }
+                        <Grid.Column>
+                            {
+                                (!_isEmpty(charities) && !_isEmpty(charities.meta) && !_isEmpty(charities.meta.aggregations)) && (
+                                    <FilterComponent
+                                        dispatch={dispatch}
+                                        FilterHeaders={(!_isEmpty(filterValuesShowed)) ? Object.keys(filterobj) : null}
+                                        FilterValues={(!_isEmpty(filterValuesShowed)) ? Object.values(filterobj) : null}
+                                    />
+                                )}
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
+                {(charities && charities.data && charities.data.length > 0)
+                    ? <SearchResultSingleCharityGroups charityGroups={charities.data} />
+                    : 'No Charities Available'
+                }
             </Fragment>
 
         );

@@ -18,12 +18,12 @@ import {
     getTaxReceiptProfilePaginated,
 } from '../../../actions/taxreceipt';
 import PlaceholderGrid from '../../shared/PlaceHolder';
+import NoTaxReceipts from '../../TaxReceipt/NoTaxReceipts';
 
 class TaxReceipientsList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            loader: !props.taxReceiptProfileList,
             loadMoreIncrementor: 1,
             loadMoreLoader: false,
         };
@@ -49,16 +49,13 @@ class TaxReceipientsList extends React.Component {
             taxReceiptProfileList,
         } = this.props;
         let {
-            loader,
             loadMoreLoader,
         } = this.state;
         if (!_.isEqual(this.props, prevProps)) {
             if (!_isEqual(taxReceiptProfileList, prevProps.taxReceiptProfileList)) {
-                loader = false;
                 loadMoreLoader = false;
             }
             this.setState({
-                loader,
                 loadMoreLoader,
             });
         }
@@ -92,11 +89,11 @@ class TaxReceipientsList extends React.Component {
                 id,
             },
             dispatch,
+            loader,
             taxReceiptProfileList,
             taxReceiptProfilePageCount,
         } = this.props;
         const {
-            loader,
             loadMoreIncrementor,
             loadMoreLoader,
         } = this.state;
@@ -105,19 +102,26 @@ class TaxReceipientsList extends React.Component {
                 {loader ? <PlaceholderGrid row={2} column={2} /> : (
                     <Fragment>
                         {(!_isEmpty(taxReceiptProfileList) && taxReceiptProfileList.length > 0)
-                         && (
-                             <Grid verticalAlign="middle" stackable>
-                                 <Grid.Row>
-                                     {_map(taxReceiptProfileList.slice(0, 4), (taxReceipt) => (
-                                         <Grid.Column mobile={16} tablet={8} computer={8}>
-                                             <TaxReceipientCard taxReceipt={taxReceipt} id={id} dispatch={dispatch} />
-                                         </Grid.Column>
-                                     ))
-                                     }
-                                 </Grid.Row>
-                             </Grid>
+                            ? (
+                                <Grid verticalAlign="middle" stackable>
+                                    <Grid.Row>
+                                        {_map(taxReceiptProfileList.slice(0, 4), (taxReceipt) => (
+                                            <Grid.Column mobile={16} tablet={8} computer={8}>
+                                                <TaxReceipientCard taxReceipt={taxReceipt} id={id} dispatch={dispatch} />
+                                            </Grid.Column>
+                                        ))
+                                        }
+                                    </Grid.Row>
+                                </Grid>
 
-                         )
+                            )
+                            : (
+                                <Fragment>
+                                    <NoTaxReceipts />
+                                    <br />
+
+                                </Fragment>
+                            )
                         }
 
                         {(!_isEmpty(taxReceiptProfileList) && taxReceiptProfileList.length > 4)
@@ -155,6 +159,7 @@ class TaxReceipientsList extends React.Component {
 
 const mapStateToProps = (state) => ({
     currentUser: state.user.info,
+    loader: state.taxreceipt.loader,
     taxReceiptProfileList: state.taxreceipt.taxReceiptProfileList,
     taxReceiptProfilePageCount: state.taxreceipt.taxReceiptProfilePageCount,
 });
