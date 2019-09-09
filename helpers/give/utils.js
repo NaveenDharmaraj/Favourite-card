@@ -141,7 +141,7 @@ const fullMonthNames = (formatMessage) => {
     ];
     return fullMonths;
 };
-const monthNamesForGivingTools = () => {
+const monthNamesForGivingTools = (monthValue) => {
     const shortMonths = [
         'Jan',
         'Feb',
@@ -156,7 +156,7 @@ const monthNamesForGivingTools = () => {
         'Nov',
         'Dec',
     ];
-    return shortMonths;
+    return shortMonths[monthValue - 1];
 };
 const isValidGiftAmount = (validity) => {
     const giftAmountValidity = _.pick(validity, [
@@ -1169,10 +1169,9 @@ const setDateForRecurring = (date, formatMessage, lang = 'en') => {
 
 const formatDateForGivingTools = (date) => {
     let unformattedDate = new Date(date);
-    const monthNames = monthNamesForGivingTools();
     // Need to use the original function, using this now as we need to integrate translaction for that
     const day = unformattedDate.getDate();
-    const month = monthNames[unformattedDate.getMonth()];
+    const month = monthNamesForGivingTools(unformattedDate.getMonth());
     const year = unformattedDate.getFullYear();
     
     return `${month} ${day}, ${year}`;
@@ -1651,6 +1650,7 @@ const resetP2pDataForOnInputChange = (giveData, dropDownOptions) => {
 export {
     percentage,
     fullMonthNames,
+    monthNamesForGivingTools,
     validateTaxReceiptProfileForm,
     onWhatDayList,
     isValidGiftAmount,

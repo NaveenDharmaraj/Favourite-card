@@ -54,7 +54,6 @@ function AllocationsTable(props) {
         }
         return tableBody;
     };
-
     return (
         <div className="responsiveTable">
             <Table padded unstackable className="no-border-table">
@@ -64,15 +63,16 @@ function AllocationsTable(props) {
                         <Table.HeaderCell>Amount</Table.HeaderCell>
                         <Table.HeaderCell>Day of month</Table.HeaderCell>
                         <Table.HeaderCell>Credit Card</Table.HeaderCell>
-                        <Table.HeaderCell>Created</Table.HeaderCell>
-                        <Table.HeaderCell>Actions</Table.HeaderCell>
+                        <Table.HeaderCell className="w-120">Created</Table.HeaderCell>
+                        <Table.HeaderCell>Action</Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
-                {!monthlyTransactionApiCall ? (<Table.Body>
-                    {
-                        renderTableData()
-                    }
-                </Table.Body>) : (<PlaceholderGrid row={2} column={6} placeholderType="table" />)
+                {(monthlyTransactionApiCall === undefined || false) ? (<PlaceholderGrid row={2} column={6} placeholderType="table" />) : (
+                    <Table.Body>
+                        {
+                            renderTableData()
+                        }
+                    </Table.Body>)
                 }
             </Table>
         </div>

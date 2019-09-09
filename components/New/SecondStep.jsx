@@ -47,15 +47,15 @@ function SecondStep(props) {
                             />
                             <FormValidationErrorMessage
                                 condition={!validity.isEmailIdNotNull}
-                                errorMessage="Please input an email id"
+                                errorMessage="Please enter an email id"
                             />
                             <FormValidationErrorMessage
                                 condition={!validity.isEmailValidFormat}
-                                errorMessage="Please input a valid email id"
+                                errorMessage="Please enter a valid email id"
                             />
                             <FormValidationErrorMessage
                                 condition={!!userExists && validity.isEmailValidFormat}
-                                errorMessage="This user already Exists!. Please Input a different Email Id"
+                                errorMessage="This user already Exists!. Please enter a different Email Id"
                             />
                             <FormValidationErrorMessage
                                 condition={!validity.isEmailLengthInLimit && validity.isEmailIdNotNull}
@@ -72,20 +72,20 @@ function SecondStep(props) {
                                 value={_.isEmpty(password) ? '' : password}
                                 onChange={parentInputChange}
                                 onBlur={handleInputOnBlur}
-                                // error={!validity.isPasswordValid}
+                                error={!validity.isPasswordNull}
                                 placeholder="Password"
                             />
-                            {/* <FormValidationErrorMessage
-                                condition={!validity.isPasswordValid}
-                                errorMessage="Please input your account password"
-                            /> */}
+                            <FormValidationErrorMessage
+                                condition={!validity.isPasswordNull}
+                                errorMessage="Please enter your account password"
+                            />
                         </Form.Field>
                         <p>
                             <span className={(validity.doesPwdHaveCount) ? 'blueText' : ''}>
                                 {pwdCharCount}/8 characters,
                             </span>
                             <span className={(validity.doesPwdhaveLowerCase) ? 'blueText' : ''}>lowercase letters (a-z),</span>
-                            <span className={(validity.doesPwdhaveUpperCase) ? 'blueText' : ''}>>uppercase letters (A-Z),</span>
+                            <span className={(validity.doesPwdhaveUpperCase) ? 'blueText' : ''}>uppercase letters (A-Z),</span>
                             <span className={(validity.doesPwdhaveSpecialChars) ? 'blueText' : ''}>special characters (e.g. !@#$%^&*)</span>
                         </p>
                         <div className="reg-btn-wraper">

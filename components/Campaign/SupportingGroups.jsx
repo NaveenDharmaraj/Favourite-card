@@ -1,11 +1,7 @@
 
 import React, { Fragment } from 'react';
 import {
-    Card,
     Grid,
-    Header,
-    Icon,
-    Image,
     Input,
     Button,
 } from 'semantic-ui-react';
@@ -31,7 +27,7 @@ function SupportingGroups(props) {
                     entityName={subGroup.attributes.name}
                     placeholder={placeholder}
                     typeClass="chimp-lbl group"
-                    type={subGroup.type}
+                    type="Giving Groups"
                     url={`/${subGroup.type}/${subGroup.attributes.slug}`}
                 />);
             });
@@ -40,16 +36,6 @@ function SupportingGroups(props) {
     };
     return (
         <Fragment>
-            <div className="search-wraper pb-2">
-                <Grid>
-                    <Grid.Row>
-                        <Grid.Column mobile={16} tablet={12} computer={11}>
-                            <Input icon="search" placeholder='Search Giving Groups supporting this campaign' className="rounded-input" fluid size="big" />
-                        </Grid.Column>
-                    </Grid.Row>
-                </Grid>
-                
-            </div>
             { subGroupListLoader ? <PlaceholderGrid row={2} column={3} /> : (
                 <Grid stackable doubling columns={3}>
                     <Grid.Row>

@@ -108,13 +108,13 @@ class TaxReceipientCard extends React.Component {
                         {!_isEmpty(city) && `${city},`}
                         {!_isEmpty(province) && `${province},`}
                         {!_isEmpty(country) && `${country},`}
-                        {!_isEmpty(postalCode) && `${postalCode},`}
+                        {!_isEmpty(postalCode) && `${postalCode}`}
                     </p>
                 </div>
                 {
                     isSelectPhotoModalOpen && (
                         <ModalComponent
-                            name='Edit tax recipt recipient' 
+                            name='Edit tax receipt recipient' 
                             isSelectPhotoModalOpen={isSelectPhotoModalOpen}
                             taxReceipt={taxReceipt}
                             handleModalOpen={this.handleModalOpen}

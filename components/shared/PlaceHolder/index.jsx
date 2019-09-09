@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    Grid, Placeholder, Segment, Table,
+    Grid, Placeholder, Segment, Table, Card,
 } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 const columnComponent = (column, placeholderType) => {
@@ -13,6 +13,29 @@ const columnComponent = (column, placeholderType) => {
                         <Placeholder.Line length="full" />
                     </Placeholder>
                 </Table.Cell>,
+            );
+        } else if (placeholderType === 'card') {
+            columnComponents.push(
+                <Card.Header>
+                    <Grid verticalAlign="middle">
+                        <Grid.Column width={6}>
+                            <Placeholder>
+                                <Placeholder.Image square />
+                            </Placeholder>
+                        </Grid.Column>
+                        <Grid.Column width={10}>
+                            <Placeholder>
+                                <Placeholder.Header>
+                                    <Placeholder.Line length="very short" />
+                                    <Placeholder.Line length="very long" />
+                                </Placeholder.Header>
+                                <Placeholder.Paragraph>
+                                    <Placeholder.Line length="long" />
+                                </Placeholder.Paragraph>
+                            </Placeholder>
+                        </Grid.Column>
+                    </Grid>
+                </Card.Header>,
             );
         } else {
             columnComponents.push(

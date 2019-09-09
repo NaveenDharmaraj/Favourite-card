@@ -19,6 +19,9 @@ import {
 import {
 	validateTaxReceiptProfileForm
 } from '../../../helpers/give/utils'
+import {
+    countryOptions,
+} from '../../../helpers/constants';
 import { withTranslation } from '../../../i18n';
 
 const messageList = {
@@ -39,7 +42,7 @@ const intializeFormData = {
 		addressOne: '',
 		addressTwo: '',
 		city: '',
-		country: '',
+		country: countryOptions[0].value,
 		fullName: '',
 		postalCode: '',
 		province: '',

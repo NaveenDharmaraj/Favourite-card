@@ -17,6 +17,9 @@ import _map from 'lodash/map';
 import {
     getIssuedTaxreceipts,
 } from '../../../actions/taxreceipt';
+import {
+    countryOptions,
+} from '../../../helpers/constants';
 import PlaceholderGrid from '../../shared/PlaceHolder';
 import IssuedTaxReceiptCard from '../IssuedTaxReceiptCard';
 import NoTaxReceipts from '../../TaxReceipt/NoTaxReceipts';
@@ -98,7 +101,7 @@ class LandingPageTaxReceipt extends React.Component {
                 addressOne: '',
                 addressTwo: '',
                 city: '',
-                country: '',
+                country: countryOptions[0].value,
                 fullName: '',
                 postalCode: '',
                 province: '',
@@ -144,7 +147,6 @@ class LandingPageTaxReceipt extends React.Component {
                                                             dispatch={dispatch}
                                                             taxReceipt={intializeFormData}
                                                             handleModalOpen={this.handleModalOpen}
-                                                            id="undefined"
                                                             action="add"
                                                         />
                                                     )

@@ -5,9 +5,13 @@ import {
     Menu,
     Sidebar,
     Button,
+    Responsive,
 } from "semantic-ui-react";
 
 import logo from '../../../../static/images/CharitableImpact.png';
+import searchIcon from '../../../../static/images/icons/icon-search.svg';
+import notificationIcon from '../../../../static/images/icons/icon-notification.svg';
+import messageIcon from '../../../../static/images/icons/icon-message.svg';
 
 const NavBarMobile = ({
   children,
@@ -43,25 +47,32 @@ const NavBarMobile = ({
     <Sidebar.Pusher
       dimmed={visible}
       onClick={onPusherClick}
-      style={{ minHeight: "100vh" }}
     >
       <Menu secondary>
         <Menu.Item>
-          <Image size="mini" src={logo} />
+          <Button className="blue-btn-rounded-def c-small">Give</Button>
         </Menu.Item>
-        <Menu.Item onClick={onToggle}>
-          <Icon name="sidebar" />
+        <Menu.Item>
+          <Image size="small" src={logo} />
         </Menu.Item>
 
         <Menu.Menu position="right">
-          <Menu.Item as="a" to="https://github.com">
-            Blog
+          <Menu.Item>
+            <Image src={notificationIcon}/>
           </Menu.Item>
-          <Menu.Item as="a" to="https://github.com">
-            Blog
+          <Menu.Item>
+            <Image src={messageIcon}/>
           </Menu.Item>
-          <Menu.Item as="a" to="https://github.com">
-            Blog
+          <Menu.Item>
+            <Image src={searchIcon}/>
+          </Menu.Item>
+          <Menu.Item onClick={onToggle}>
+              <div class="nav-icon3">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              </div>
           </Menu.Item>
         </Menu.Menu>
       </Menu>
@@ -88,11 +99,11 @@ class MobileHeader extends Component {
     const { visible } = this.state;
 
     return (
-      
         <NavBarMobile
         onPusherClick={this.handlePusher}
         onToggle={this.handleToggle}
         visible={visible}
+
         >
             {children}
         </NavBarMobile>

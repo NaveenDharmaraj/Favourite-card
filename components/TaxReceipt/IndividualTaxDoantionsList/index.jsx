@@ -29,7 +29,6 @@ class IndividualTaxDoantionsList extends React.Component {
         this.state = {
             loader: !(!_isEmpty(props.issuedTaxReceiptYearlyDetail)),
         };
-        this.displayDownloadedFileName = this.displayDownloadedFileName.bind(this);
     }
 
 
@@ -45,8 +44,6 @@ class IndividualTaxDoantionsList extends React.Component {
     componentDidUpdate(prevProps) {
         const {
             issuedTaxReceiptYearlyDetail,
-            url,
-            urlChange,
         } = this.props;
         let {
             loader,
@@ -54,19 +51,6 @@ class IndividualTaxDoantionsList extends React.Component {
         if (!_isEqual(this.props, prevProps)) {
             if (!_isEqual(issuedTaxReceiptYearlyDetail, prevProps.issuedTaxReceiptYearlyDetail)) {
                 loader = false;
-            }
-            if (!_isEqual(urlChange, prevProps.urlChange) && !_isEmpty(url)) {
-                const fileName = this.displayDownloadedFileName();
-                const link = document.createElement('a');
-                link.href = url;
-                link.issuedTaxReceiptDonationsDetailStatesetAttribute('download', fileName);
-                // Append to html page
-                document.body.appendChild(link);
-                // Force download
-                link.click();
-                // Clean up and remove the link
-                link.parentNode.removeChild(link);
-                downloadloader = false;
             }
             this.setState({
                 loader,
@@ -92,42 +76,26 @@ class IndividualTaxDoantionsList extends React.Component {
         });
     }
 
-    displayDownloadedFileName() {
-        const {
-            name,
-            year,
-        } = this.props;
-        const firstName = `tax-receipt-for-${name}`;
-        const today = new Date();
-        const date = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`;
-        date.toString();
-        if (year === today.getFullYear().toString()) {
-            if (`${today.getMonth() + 1}-${today.getDate()}` === '1-1') {
-                return `${firstName}-for-${date}.`;
-            }
-            return `${firstName}-from-${year}-01-01-to-${date}.`;
-        }
-        return `${firstName}-from-${year}-01-01-to-${year}-12-31.`;
-    }
-
     render() {
         const {
             loader,
         } = this.state;
         const {
             currentIssuedTaxReceipt: {
-                addressOne,
-                addressTwo,
+                address_one,
+                address_two,
                 city,
                 province,
                 country,
-                postalCode,
+                postal_code,
                 full_name,
                 isDefault,
             },
             id,
             issuedTaxReceiptYearlyDetail,
+            name,
             renderdonationDetailShow,
+            year,
         } = this.props;
         return (
             <Fragment>
@@ -156,12 +124,12 @@ class IndividualTaxDoantionsList extends React.Component {
                                             {isDefault && <span className="default">default</span>}
                                         </List.Header>
                                         <p className="font-s-14">
-                                            {!_isEmpty(addressOne) && `${addressOne},`}
-                                            {!_isEmpty(addressTwo) && `${addressTwo},`}
+                                            {!_isEmpty(address_one) && `${address_one},`}
+                                            {!_isEmpty(address_two) && `${address_two},`}
                                             {!_isEmpty(city) && `${city},`}
                                             {!_isEmpty(province) && `${province},`}
                                             {!_isEmpty(country) && `${country},`}
-                                            {!_isEmpty(postalCode) && `${postalCode},`}
+                                            {!_isEmpty(postal_code) && `${postal_code}`}
                                         </p>
                                     </List.Content>
                                 </List.Item>
@@ -180,6 +148,8 @@ class IndividualTaxDoantionsList extends React.Component {
                                                 donationDetail={donationDetail}
                                                 index={index}
                                                 id={id}
+                                                name={name}
+                                                year={year}
                                             />
                                         ))
 
@@ -199,8 +169,6 @@ const mapStateToProps = (state) => ({
     issuedTaxReceiptDonationsDetail: state.taxreceipt.issuedTaxReceiptDonationsDetail,
     issuedTaxReceiptYearlyDetail: state.taxreceipt.issuedTaxReceiptYearlyDetail,
     issuedTaxReceiptYearlyDetailPageCount: state.taxreceipt.issuedTaxReceiptYearlyDetailPageCount,
-    url: state.taxreceipt.url,
-    urlChange: state.taxreceipt.urlChange,
     year: state.taxreceipt.year,
 });
 IndividualTaxDoantionsList.propTypes = {

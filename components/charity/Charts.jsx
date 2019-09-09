@@ -10,6 +10,7 @@ import {
     Grid,
     Divider,
 } from 'semantic-ui-react';
+
 import { formatCurrency } from '../../helpers/give/utils';
 
 class Charts extends React.Component {
@@ -23,76 +24,108 @@ class Charts extends React.Component {
         let totalAmount = null;
         let labelsData = [];
         let bgColor = [];
+        // To show label in next line we pass single label into array.
         switch (type) {
             case 'revenue':
                 labelsData = [
-                    'Tax Receipted Cash Gifts',
-                    'Tax Receipted Non-cash Gifts',
-                    'Gifts from Other Charities',
-                    'Non-tax Receipted Gifts',
-                    'Revenue from Government',
+                    [
+                        'Tax Receipted',
+                        'Cash Gifts',
+                    ],
+                    [
+                        'Tax Receipted',
+                        'Non-cash Gifts',
+                    ],
+                    [
+                        'Gifts from',
+                        'Other Charities',
+                    ],
+                    [
+                        'Non-tax',
+                        'Receipted Gifts',
+                    ],
+                    [
+                        'Revenue',
+                        'from Government',
+                    ],
                     'Other',
-                ],
-                percentageData = [graphValues.revenue_tax_receipted_cash,
+                ];
+                percentageData = [
+                    graphValues.revenue_tax_receipted_cash,
                     graphValues.revenue_tax_receipted_non_cash,
                     graphValues.revenue_other_charities,
                     graphValues.revenue_non_tax_receipted,
                     graphValues.revenue_government,
                     otherGraphValues.revenue_other,
                 ];
-                    totalAmount = graphValues.revenue_total;
+                totalAmount = graphValues.revenue_total;
                 break;
             case 'expenditure':
                 labelsData = [
                     'Programs',
                     'Fundraising',
-                    'Management and Admin',
-                    'Gifts to Qualified Donees',
+                    [
+                        'Management',
+                        'and Admin',
+                    ],
+                    [
+                        'Gifts to',
+                        'Qualified Donees',
+                    ],
                     'Other',
-                ],
-                percentageData = [graphValues.expenditure_programs,
+                ];
+                percentageData = [
+                    graphValues.expenditure_programs,
                     graphValues.expenditure_fundraising,
                     graphValues.expenditure_mgmt_admin,
                     graphValues.expenditure_qualified_donees,
                     otherGraphValues.expenditure_other,
                 ];
-                    totalAmount = graphValues.expenditure_total;
+                totalAmount = graphValues.expenditure_total;
                 break;
             case 'assets':
                 labelsData = [
                     'Cash',
                     'Receivables',
                     'Investments',
-                    ['Land, Buildings, and Capital',' Assets'],
-                    'Other',
+                    [
+                        'Land, Buildings',
+                        'and Capital,Assets',
                     ],
-                percentageData = [graphValues.assets_cash,
+                    'Other',
+                ];
+                percentageData = [
+                    graphValues.assets_cash,
                     graphValues.assets_receivable,
                     graphValues.assets_invested,
                     graphValues.assets_land_buildings_capital,
                     otherGraphValues.assets_other,
                 ];
-                    totalAmount = graphValues.assets_total;
+                totalAmount = graphValues.assets_total;
                 break;
             case 'liabilities':
                 labelsData = [
-                    'Short term, arm’s length',
+                    [
+                        'Short term,',
+                        'arm’s length',
+                    ],
                     'Non-arm’s length',
                     'Other',
-                    ],
-                percentageData = [graphValues.liabilities_short_term_arms_length,
+                ];
+                percentageData = [
+                    graphValues.liabilities_short_term_arms_length,
                     graphValues.liabilities_non_arms_length,
                     otherGraphValues.liabilities_other,
-                ],
-                    totalAmount = graphValues.liabilities_total;
+                ];
+                totalAmount = graphValues.liabilities_total;
                 break;
             case 'breakdown_of_Programs':
                 bgColor = [
                     '#009585',
                     '#00bba7',
-                    '#32c8b8'
-                    ],
-                    values.charityPrograms.map((program)=>{
+                    '#32c8b8',
+                ];
+                values.charityPrograms.map((program) => {
                     labelsData.push(program.name);
                     actualData.push(program.percentage);
                 });
@@ -236,7 +269,7 @@ class Charts extends React.Component {
                                 },
                                 title: {
                                     display: true,
-                                    text: `2019 Assets: $${(values) && formatCurrency(values.graphValues.assets_total, language, currency)}`,
+                                    text: `2019 Assets: ${(values) && formatCurrency(values.graphValues.assets_total, language, currency)}`,
                                 },
                                 tooltips: false,
                             }}
@@ -271,7 +304,7 @@ class Charts extends React.Component {
                                 },
                                 title: {
                                     display: true,
-                                    text: `2019 Liabilities: $${(values) && formatCurrency(values.graphValues.liabilities_total, language, currency)}`,
+                                    text: `2019 Liabilities: ${(values) && formatCurrency(values.graphValues.liabilities_total, language, currency)}`,
                                 },
                                 tooltips: false,
                             }}

@@ -183,6 +183,7 @@ class ToolTabs extends React.Component {
                                                 size="tiny"
                                                 dimmer="inverted"
                                                 closeIcon
+                                                className="chimp-modal"
                                                 onClose={this.closeModal}
                                                 open={this.state.showModal}
                                                 trigger={

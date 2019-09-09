@@ -11,12 +11,12 @@ import {
 import {
     connect,
 } from 'react-redux';
-import Link from 'next/link';
 
-import { 
+import {
     getFriendsList,
     storeEmailIdToGive,
 } from '../../../actions/dashboard';
+import { Link } from '../../../routes';
 import placeholderUser from '../../../static/images/no-data-avatar-user-profile.png';
 import PlaceholderGrid from '../../shared/PlaceHolder';
 
@@ -76,13 +76,13 @@ class FriendsList extends React.Component {
                     data.attributes.avatar = placeholderUser;
                 }
                 return (
-                    <Grid.Column>
+                    <Grid.Column key={index}>
                         <Card>
                             <Image src={data.attributes.avatar} circular />
                             <Card.Content>
                                 <Card.Header>{name}</Card.Header>
                                 <Card.Description>
-                                    <Link className="lnkChange" href="/give/to/friend/new">
+                                    <Link className="lnkChange" route="/give/to/friend/new">
                                         <Button className="give-frnds-btn" onClick={() => this.giveButtonClick(email)}>Give</Button>
                                     </Link>
                                 </Card.Description>
@@ -101,7 +101,7 @@ class FriendsList extends React.Component {
                                 <Card.Content>
                                     <Card.Header>Find friends to give to </Card.Header>
                                     <Card.Description>
-                                        <Link className="lnkChange" href="/give/to/friend/new">
+                                        <Link className="lnkChange" route="/give/to/friend/new">
                                             <Button className="give-frnds-btn">Create gift</Button>
                                         </Link>
                                     </Card.Description>
@@ -117,7 +117,7 @@ class FriendsList extends React.Component {
 
     render() {
         const {
-            friendListLoader
+            friendListLoader,
         } = this.state;
         const {
             friendsData,

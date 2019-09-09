@@ -174,7 +174,7 @@ const Success = (props) => {
             fourthButton = (
                 <Link route={taxProfileLink}>              
                     <Button
-                        color="blue"
+                        className="blue-btn-rounded-def"
                         content={formatMessage('seeYourTaxReceipt')}
                         id="taxReceiptsLink"
                     />
@@ -187,7 +187,7 @@ const Success = (props) => {
             fourthButton = (
                 <Link route={taxProfileLink}>
                     <Button
-                        color="blue"
+                        className="blue-btn-rounded-def"
                         content={formatMessage('seeYourTaxReceipt')}
                         id="taxReceiptsLink"
                         path={taxProfileLink}
@@ -332,7 +332,7 @@ const Success = (props) => {
             fourthButton = (
                 <Link route={taxProfileLink}>
                     <Button
-                        color="blue"
+                        className="blue-btn-rounded-def"
                         content={formatMessage('seeYourTaxReceipt')}
                         id="taxReceiptsLink"
                         path={taxProfileLink}
@@ -343,7 +343,7 @@ const Success = (props) => {
     }
 
     return (
-        <Container className="v-donations">
+        <div className="v-donations">
             <Grid className="margin-btm-lg" columns={2}>
                 <Grid.Column mobile={16} computer={16}>
                     <Grid className="grd-rt-lt-lg">
@@ -404,14 +404,16 @@ const Success = (props) => {
                             </Grid>
                         )
                         }
-                        <Grid.Row textAlign="center" className="lnk-margin-btm">
-                            <Grid.Column>
+                        <Grid.Row className="lnk-margin-btm">
+                            <Grid.Column textAlign="center">
                                 {(!!fourthButton && (
                                     <Fragment>
-                                      or &nbsp;
-                                        <Link className="paragraph-third" route={dashboardLink}>
-                                            {linkToDashboardText}
-                                        </Link>
+                                        <span>
+                                            or &nbsp;
+                                            <Link className="paragraph-third" route={dashboardLink}>
+                                                {linkToDashboardText}
+                                            </Link>
+                                        </span>
                                     </Fragment>
                                 ))}
                                 {(!fourthButton
@@ -433,7 +435,7 @@ const Success = (props) => {
                     </Grid>
                 </Grid.Column>
             </Grid>
-        </Container>
+        </div>
     );
 };
 

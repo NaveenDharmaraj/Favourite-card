@@ -69,6 +69,7 @@ const validateUserRegistrationForm = (field, value, validity) => {
         case 'password':
             // validity.isPasswordNotNull = !(!value || value.length === 0);
             validity.doesPwdHaveCount = !_.isEmpty(value) ? (value.length >= 8) : false;
+            validity.isPasswordNull = !_.isEmpty(value);
             validity.doesPwdhaveLowerCase = !_.isEmpty(value) ? hasLowerCase(value) : false;
             validity.doesPwdhaveUpperCase = !_.isEmpty(value) ? hasUpperCase(value) : false;
             validity.doesPwdhaveSpecialChars = !_.isEmpty(value) ? hasSpecialChar(value) : false;
