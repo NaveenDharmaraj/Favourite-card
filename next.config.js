@@ -16,6 +16,7 @@ const configVars = {
         EVENT_API_BASE: process.env.EVENT_API_BASE,
         GOOGLE_MAP_API_KEY: process.env.GOOGLE_MAP_API_KEY,
         GRAPH_API_BASE: process.env.GRAPH_API_BASE,
+        HELP_SCOUT_KEY: process.env.HELP_SCOUT_KEY,
         LOG_LEVEL: process.env.LOG_LEVEL,
         LOGDNA_PUBLIC_INGESTION_KEY: process.env.LOGDNA_PUBLIC_INGESTION_KEY,
         LOGDNA_APP_NAME: process.env.LOGDNA_APP_NAME,
