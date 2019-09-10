@@ -15,6 +15,7 @@ import ManiFestFile from '../../../static/Manifest.json';
 import { NotificationHelper } from "../../../Firebase/NotificationHelper";
 import ErrorBoundary from '../ErrorBoundary';
 import StatusMessage from '../StatusMessage';
+import getConfig from 'next/config';
 
 import '../../../static/less/header.less';
 import '../../../static/less/style.less';
@@ -30,13 +31,18 @@ const getWidth = () => {
     const isSSR = typeof window === 'undefined';
     return isSSR ? Responsive.onlyTablet.minWidth : window.innerWidth
 };
+const { publicRuntimeConfig } = getConfig();
 
-// const Layout = (props) => {
+const {
+    HELP_SCOUT_KEY,
+} = publicRuntimeConfig;
+
 class Layout extends React.Component {
     async componentDidMount() {
         const {
             dispatch,
             authRequired,
+            currentUser,
             isAuthenticated,
             userInfo
         } = this.props;
@@ -44,6 +50,18 @@ class Layout extends React.Component {
             Router.pushRoute('/users/login');
         } else {
             await NotificationHelper.getMessages(userInfo, dispatch);
+        }
+        !function(e,t,n){function a(){var e=t.getElementsByTagName("script")[0],n=t.createElement("script");n.type="text/javascript",n.async=!0,n.src="https://beacon-v2.helpscout.net",e.parentNode.insertBefore(n,e)}if(e.Beacon=n=function(t,n,a){e.Beacon.readyQueue.push({method:t,options:n,data:a})},n.readyQueue=[],"complete"===t.readyState)return a();e.attachEvent?e.attachEvent("onload",a):e.addEventListener("load",a,!1)}(window,document,window.Beacon||function(){});
+
+        if(window && window.Beacon) {
+            window.Beacon('init', HELP_SCOUT_KEY);
+            debugger
+            if(currentUser){
+                Beacon("identify", {
+                    name: currentUser.attributes.displayName,
+                    email: currentUser.attributes.email,
+                  });
+            }               
         }
     };
 
@@ -145,6 +163,7 @@ function mapStateToProps(state) {
         isAuthenticated: state.auth.isAuthenticated,
         userInfo: state.user.info,
         appErrors: state.app.errors,
+        currentUser: state.user.info,
     };
 }
 
