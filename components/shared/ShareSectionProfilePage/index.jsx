@@ -40,6 +40,7 @@ class ShareDetails extends React.Component {
         } = this.props;
         dispatch({
             payload: {
+                disableFollow: true,
             },
             type: actionTypes.DISABLE_FOLLOW_BUTTON,
         });

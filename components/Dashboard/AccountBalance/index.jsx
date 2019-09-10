@@ -7,7 +7,8 @@ import {
     Card,
 } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
-import Link from 'next/link';
+
+import { Link } from '../../../routes';
 
 // eslint-disable-next-line react/prefer-stateless-function
 class AccountBalance extends React.Component {
@@ -49,7 +50,7 @@ class AccountBalance extends React.Component {
                                                         </Header>
                                                     </Grid.Column>
                                                     <Grid.Column mobile={6} tablet={6} computer={5}>
-                                                        <Link className="lnkChange" href="/donations/new">
+                                                        <Link className="lnkChange" route="/donations/new">
                                                             <Button className="btn-small-white">Add funds</Button>
                                                         </Link>
                                                     </Grid.Column>
@@ -75,7 +76,7 @@ class AccountBalance extends React.Component {
                                                         </Header>
                                                     </Grid.Column>
                                                     <Grid.Column mobile={6} tablet={5} computer={5}>
-                                                        <Link className="lnkChange" href="/give/to/friend/new">
+                                                        <Link className="lnkChange" route="/give/to/friend/new">
                                                             <Button className="btn-small-white">Create gift</Button>
                                                         </Link>
                                                     </Grid.Column>
@@ -93,7 +94,7 @@ class AccountBalance extends React.Component {
     }
 }
 
-AccountBalance.PropTypes = {
+AccountBalance.propTypes = {
     currentUser: PropTypes.object,
 };
 

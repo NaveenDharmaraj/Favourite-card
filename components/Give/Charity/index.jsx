@@ -30,8 +30,7 @@ import {
 import {
     connect,
 } from 'react-redux';
-
-//import { Link } from '../../../routes';
+import { Link } from '../../../routes';
 import { beneficiaryDefaultProps } from '../../../helpers/give/defaultProps';
 import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
 import {
@@ -132,7 +131,6 @@ class Charity extends React.Component {
             }
         this.state = {
             benificiaryIndex: 0,
-            buttonClicked: false,
             dropDownOptions: {
                 donationMatchList: populateDonationMatch(donationMatchData, formatMessage),
                 giftTypeList: populateGiftType(formatMessage),
@@ -220,6 +218,7 @@ class Charity extends React.Component {
         } else {
             Router.pushRoute('/dashboard');
         }
+        window.scrollTo(0, 0);
         dispatch(getDonationMatchAndPaymentInstruments(id));
     }
 
@@ -315,7 +314,6 @@ class Charity extends React.Component {
                 );
             }
             this.setState({
-                buttonClicked: false,
                 dropDownOptions: {
                     ...dropDownOptions,
                     donationMatchList: donationMatchOptions,
@@ -722,9 +720,6 @@ class Charity extends React.Component {
                 coverFees,
             },
         } = flowObject;
-        this.setState({
-            buttonClicked: true,
-        });
         const validateCC = this.isValidCC(
             creditCard,
             inValidCardNumber,
@@ -744,10 +739,6 @@ class Charity extends React.Component {
             flowObject.stepsCompleted = false;
             dismissAllUxCritialErrors(this.props.dispatch);
             dispatch(proceed(flowObject, flowSteps[stepIndex + 1], stepIndex));
-        } else {
-            this.setState({
-                buttonClicked: false,
-            });
         }
     }
 
@@ -832,7 +823,8 @@ class Charity extends React.Component {
                 { !!showAnotherRecipient && (
                     <Form.Field className="lnk-FindAnother">
                         <List className="lstRecipient" verticalAlign="middle" horizontal>
-                            <List.Item className="lstitm" path="/give">
+                        <Link route = '/give'>
+                            <List.Item className="lstitm">
                                 <Image
                                     className="imgCls lst-img"
                                     src={IconCharity}
@@ -843,7 +835,9 @@ class Charity extends React.Component {
                                     {formatMessage('goToCharitySecondLabel')}
                                 </List.Content>
                             </List.Item>
-                            <List.Item className="lstitm" to={friendUrlEndpoint}>
+                        </Link>
+                        <Link route = {friendUrlEndpoint}>
+                            <List.Item className="lstitm">
                                 <Image
                                     className="imgCls"
                                     src={IconIndividual}
@@ -854,7 +848,9 @@ class Charity extends React.Component {
                                     {formatMessage('goToFriendsSecondLabel')}
                                 </List.Content>
                             </List.Item>
-                            <List.Item className="lstitm" to={groupUrlEndpoint}>
+                        </Link>
+                        <Link route ={groupUrlEndpoint}>
+                            <List.Item className="lstitm">
                                 <Image
                                     className="imgCls"
                                     src={IconGroup}
@@ -865,6 +861,7 @@ class Charity extends React.Component {
                                     {formatMessage('goToGroupSecondLabel')}
                                 </List.Content>
                             </List.Item>
+                        </Link>
                         </List>
                     </Form.Field>
                 )
@@ -1049,6 +1046,7 @@ class Charity extends React.Component {
     render() {
         const {
             coverFeesData,
+            creditCardApiCall,
         } = this.props;
         const {
             flowObject: {
@@ -1274,8 +1272,8 @@ class Charity extends React.Component {
                         {/* { !stepsCompleted && */}
                         <Form.Button
                             className="blue-btn-rounded-def"
-                            content={(!this.state.buttonClicked) ? formatMessage('giveCommon:continueButton') : formatMessage('giveCommon:submittingButton')}
-                            disabled={(this.state.buttonClicked) || !this.props.userAccountsFetched}
+                            content={(!creditCardApiCall) ? formatMessage('giveCommon:continueButton') : formatMessage('giveCommon:submittingButton')}
+                            disabled={(creditCardApiCall) || !this.props.userAccountsFetched}
                             type="submit"
                         />
                         {/* } */}
@@ -1304,6 +1302,7 @@ function mapStateToProps(state) {
         userAccountsFetched: state.user.userAccountsFetched,
         userCampaigns: state.user.userCampaigns,
         userGroups: state.user.userGroups,
+        creditCardApiCall: state.give.creditCardApiCall,
     };
 }
 export default withTranslation([

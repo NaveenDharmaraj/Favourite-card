@@ -9,6 +9,7 @@ import {
     Popup,
     Select,
 } from 'semantic-ui-react';
+import _ from 'lodash';
 
 import {
     canadaProvinceOptions,
@@ -72,6 +73,7 @@ function TaxReceiptProfileForm(props) {
             provinceMessage = 'state';
             showUSNote = true;
         }
+        const invalidCharsErrorMsg = `${formatMessage('invalidInputFormat')} "\\/<>"`;
         if (props.data.attributes) {
             return (
                 <React.Fragment>
@@ -101,11 +103,16 @@ function TaxReceiptProfileForm(props) {
                                     error={!validity.isValidFullName}
                                     onBlur={handleInputOnBlur}
                                     onChange={handleInputChange}
+                                    placeholder={formatMessage('fullNamePlaceHolder')}
                                     value={fullName}
                                 />
                                 <FormValidationErrorMessage
-                                    condition={!validity.isValidFullName}
+                                    condition={!validity.isFullNameHas2}
                                     errorMessage={formatMessage('invalidFullName')}
+                                />
+                                <FormValidationErrorMessage
+                                    condition={!validity.isValidFullNameFormat}
+                                    errorMessage={invalidCharsErrorMsg}
                                 />
                             </Form.Field>
                             <Form.Field>
@@ -120,11 +127,23 @@ function TaxReceiptProfileForm(props) {
                                     error={!validity.isValidAddress}
                                     onBlur={handleInputOnBlur}
                                     onChange={handleInputChange}
+                                    placeholder={formatMessage('addressPlaceHolder')}
                                     value={addressOne}
                                 />
                                 <FormValidationErrorMessage
-                                    condition={!validity.isValidAddress}
+                                    condition={!validity.isAddressHas2}
                                     errorMessage={formatMessage('invalidAddress')}
+                                />
+                                <FormValidationErrorMessage
+                                    condition={!validity.isAddressLessThan128}
+                                    errorMessage={formatMessage('invalidFieldLength', {
+                                        fieldName: 'address',
+                                        length: 128,
+                                    })}
+                                />
+                                <FormValidationErrorMessage
+                                    condition={!validity.isValidAddressFormat}
+                                    errorMessage={invalidCharsErrorMsg}
                                 />
                             </Form.Field>
                             <Form.Field>
@@ -139,9 +158,13 @@ function TaxReceiptProfileForm(props) {
                                     error={!validity.isValidSecondAddress}
                                     onBlur={handleInputOnBlur}
                                     onChange={handleInputChange}
+                                    placeholder={formatMessage('secondAddressPlaceHolder')}
                                     value={_.isEmpty(addressTwo) ? '' : addressTwo}
                                 />
-                                
+                                <FormValidationErrorMessage
+                                    condition={!validity.isValidSecondAddress}
+                                    errorMessage={invalidCharsErrorMsg}
+                                />
                             </Form.Field>
                             <Form.Field>
                                 <label htmlFor="city">
@@ -155,11 +178,23 @@ function TaxReceiptProfileForm(props) {
                                     error={!validity.isValidCity}
                                     onBlur={handleInputOnBlur}
                                     onChange={handleInputChange}
+                                    placeholder={formatMessage('cityPlaceHolder')}
                                     value={city}
                                 />
                                 <FormValidationErrorMessage
-                                    condition={!validity.isValidCity}
+                                    condition={!validity.isCityHas2Chars}
                                     errorMessage={formatMessage('invalidCity')}
+                                />
+                                <FormValidationErrorMessage
+                                    condition={!validity.isCityLessThan64}
+                                    errorMessage={formatMessage('invalidFieldLength', {
+                                        fieldName: 'city name',
+                                        length: 64,
+                                    })}
+                                />
+                                <FormValidationErrorMessage
+                                    condition={!validity.isValidCityFormat}
+                                    errorMessage={invalidCharsErrorMsg}
                                 />
                             </Form.Field>
                             <Form.Field>
@@ -189,11 +224,23 @@ function TaxReceiptProfileForm(props) {
                                     error={!validity.isValidPostalCode}
                                     onBlur={handleInputOnBlur}
                                     onChange={handleInputChange}
+                                    placeholder={formatMessage('postalCodePlaceHolder')}
                                     value={postalCode}
                                 />
                                 <FormValidationErrorMessage
-                                    condition={!validity.isValidAddress}
+                                    condition={!validity.isPostalCodehas5Chars}
                                     errorMessage={formatMessage('invalidPostalCode')}
+                                />
+                                <FormValidationErrorMessage
+                                    condition={!validity.isPostalCodeLessThan16}
+                                    errorMessage={formatMessage('invalidFieldLength', {
+                                        fieldName: 'postal code',
+                                        length: 16,
+                                    })}
+                                />
+                                <FormValidationErrorMessage
+                                    condition={!validity.isValidPostalCodeFormat}
+                                    errorMessage={invalidCharsErrorMsg}
                                 />
                             </Form.Field>
                             <Form.Field>
@@ -201,6 +248,7 @@ function TaxReceiptProfileForm(props) {
                                     {formatMessage(provinceMessage)}
                                 </label>
                                 <Form.Field
+                                    closeOnBlur={false}
                                     control={Select}
                                     id="province"
                                     name="province"
@@ -208,8 +256,12 @@ function TaxReceiptProfileForm(props) {
                                     options={provinceOptions}
                                     onChange={handleInputChange}
                                     placeholder={formatMessage('provincePlaceHolder')}
-
+                                    error={!validity.isValidProvince}
                                     value={province}
+                                />
+                                <FormValidationErrorMessage
+                                    condition={!validity.isValidProvince}
+                                    errorMessage={formatMessage('invalidProvince')}
                                 />
                             </Form.Field>
                             { showUSNote &&
@@ -232,9 +284,11 @@ function TaxReceiptProfileForm(props) {
                         <div className="taxprofilelink">
                             <Form.Field>
                                 {formatMessage('changeAddressText')}
-                                <Button secondary style={{ marginLeft: '1rem' }} onClick={()=>{props.handleDisplayForm()}}>
+                                <span
+                                    className="spanLink"
+                                    onClick={()=>{props.handleDisplayForm()}}>
                                     {formatMessage('makeChangesText')}
-                                </Button>
+                                </span>
                                     
                             </Form.Field>
                         </div>

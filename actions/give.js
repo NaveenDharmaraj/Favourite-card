@@ -22,6 +22,7 @@ import {
 } from './error';
 
 export const actionTypes = {
+    ADD_NEW_CREDIT_CARD_STATUS: 'ADD_NEW_CREDIT_CARD_STATUS',
     COVER_FEES: 'COVER_FEES',
     GET_BENEFICIARY_FROM_SLUG: 'GET_BENEFICIARY_FROM_SLUG',
     GET_BENIFICIARY_FOR_GROUP: 'GET_BENIFICIARY_FOR_GROUP',
@@ -626,6 +627,12 @@ export const proceed = (
                 });
             });
         } else if (creditCard.value === 0 && stepIndex === 0) {
+            dispatch({
+                payload: {
+                    creditCardApiCall: true,
+                },
+                type: actionTypes.ADD_NEW_CREDIT_CARD_STATUS,
+            });
             return createToken(flowObject.stripeCreditCard, flowObject.cardHolderName).then((token) => {
                 const paymentInstrumentsData = {
                     attributes: {
@@ -661,7 +668,14 @@ export const proceed = (
                 });
                 callApiAndDispatchData(dispatch, accountDetails);
             }).catch((err) => {
-                console.log(err);
+                triggerUxCritialErrors(err.errors || err, dispatch);
+            }).finally(() => {
+                dispatch({
+                    payload: {
+                        creditCardApiCall: false,
+                    },
+                    type: actionTypes.ADD_NEW_CREDIT_CARD_STATUS,
+                });
             });
         } else {
             dispatch({

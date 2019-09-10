@@ -9,6 +9,9 @@ import { Router } from '../routes';
 import {
     triggerUxCritialErrors,
 } from './error';
+import {
+    generatePayloadBodyForFollowAndUnfollow,
+} from './profile';
 
 export const actionTypes = {
     GET_MATCH_POLICIES_PAYMENTINSTRUMENTS: 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS',
@@ -26,7 +29,7 @@ export const actionTypes = {
     USER_FAVORITES:'USER_FAVORITES',
     UPDATE_FAVORITES: 'UPDATE_FAVORITES',
     ENABLE_FAVORITES_BUTTON: 'ENABLE_FAVORITES_BUTTON',
-}
+};
 
 const getAllPaginationData = async (url, params = null) => {
     // Right now taking the only relative url from the absolute url.
@@ -257,97 +260,97 @@ export const getUser = (dispatch, userId, token = null) => {
         administeredCompanies,
         administeredBeneficiaries,
         beneficiaryAdminRoles,
-        companyAdminRoles
+        companyAdminRoles,
     ])
-    .then(
-        (allData) => {
-            isAuthenticated = true;
-            const userData = allData[0];
-            const { data } = userData;
-            const {
-                activeRoleId,
-            } = data.attributes;
-            let adminRoleId = null;
-            _.merge(fsa.payload, {
-                activeRoleId,
-                currentAccount: {},
-                isAdmin: false,
-                otherAccounts: [],
-                info: data,
-            });
-            if (!_.isEmpty(data.relationships.chimpAdminRole.data)) {
-                fsa.payload.isAdmin = true;
-                adminRoleId = data.relationships.chimpAdminRole.data.id;
-            }
-            const includedData = _.concat(
-                userData.included, allData[1], allData[2], allData[3], allData[4],
-            );
-            if (!_.isEmpty(includedData)) {
-                const accounts = [];
-                const contexts = [];
-                includedData.map((item) => {
-                    const {
-                        attributes,
-                        id,
-                        type,
-                    } = item;
-                    if (type === 'roles') {
-                        const { roleType } = attributes;
-                        const entityType = _.snakeCase(roleType).split('_')[0];
-                        if (entityType.slice(-1) === 'y') {
-                            contexts.push({
-                                accountType: (entityType === 'beneficiary') ? 'charity' : entityType,
-                                entityId: attributes[`${entityType}Id`],
-                                roleId: id,
-                            });
-                        } else if (entityType === 'donor') {
-                            const donor = {
-                                accountType: 'personal',
-                                avatar: data.attributes.avatar,
-                                balance: `$${data.attributes.balance}`,
-                                location: `/contexts/${id}`,
-                                name: data.attributes.displayName,
-                            };
-                            if (id == activeRoleId
+        .then(
+            (allData) => {
+                isAuthenticated = true;
+                const userData = allData[0];
+                const { data } = userData;
+                const {
+                    activeRoleId,
+                } = data.attributes;
+                let adminRoleId = null;
+                _.merge(fsa.payload, {
+                    activeRoleId,
+                    currentAccount: {},
+                    isAdmin: false,
+                    otherAccounts: [],
+                    info: data,
+                });
+                if (!_.isEmpty(data.relationships.chimpAdminRole.data)) {
+                    fsa.payload.isAdmin = true;
+                    adminRoleId = data.relationships.chimpAdminRole.data.id;
+                }
+                const includedData = _.concat(
+                    userData.included, allData[1], allData[2], allData[3], allData[4],
+                );
+                if (!_.isEmpty(includedData)) {
+                    const accounts = [];
+                    const contexts = [];
+                    includedData.map((item) => {
+                        const {
+                            attributes,
+                            id,
+                            type,
+                        } = item;
+                        if (type === 'roles') {
+                            const { roleType } = attributes;
+                            const entityType = _.snakeCase(roleType).split('_')[0];
+                            if (entityType.slice(-1) === 'y') {
+                                contexts.push({
+                                    accountType: (entityType === 'beneficiary') ? 'charity' : entityType,
+                                    entityId: attributes[`${entityType}Id`],
+                                    roleId: id,
+                                });
+                            } else if (entityType === 'donor') {
+                                const donor = {
+                                    accountType: 'personal',
+                                    avatar: data.attributes.avatar,
+                                    balance: `$${data.attributes.balance}`,
+                                    location: `/contexts/${id}`,
+                                    name: data.attributes.displayName,
+                                };
+                                if (id == activeRoleId
                         || adminRoleId == activeRoleId) {
-                                fsa.payload.currentAccount = donor;
+                                    fsa.payload.currentAccount = donor;
+                                } else {
+                                    fsa.payload.otherAccounts.unshift(donor);
+                                }
+                            }
+                        } else {
+                            accounts[id] = (setDataToPayload(attributes, type));
+                        }
+                    });
+                    // Loading all companies and charities to otherAccounts / currentAccount
+                    // based on the activeRoleId.
+                    _.map(contexts, (context) => {
+                        const { roleId } = context;
+                        const account = accounts[context.entityId];
+                        if (!_.isEmpty(account)) {
+                            account.location = `/contexts/${roleId}`;
+                            account.accountType = context.accountType;
+                            if (roleId == activeRoleId) {
+                                fsa.payload.currentAccount = account;
                             } else {
-                                fsa.payload.otherAccounts.unshift(donor);
+                                fsa.payload.otherAccounts.push(account);
                             }
                         }
-                    } else {
-                        accounts[id] = (setDataToPayload(attributes, type));
-                    }
-                });
-                // Loading all companies and charities to otherAccounts / currentAccount
-                // based on the activeRoleId.
-                _.map(contexts, (context) => {
-                    const { roleId } = context;
-                    const account = accounts[context.entityId];
-                    if (!_.isEmpty(account)) {
-                        account.location = `/contexts/${roleId}`;
-                        account.accountType = context.accountType;
-                        if (roleId == activeRoleId) {
-                            fsa.payload.currentAccount = account;
-                        } else {
-                            fsa.payload.otherAccounts.push(account);
-                        }
-                    }
-                });
-            }
-        },
-    ).catch((error) => {
-        console.log(JSON.stringify(error));
-        isAuthenticated = false;
-    }).finally(() => {
-        dispatch({
-            payload: {
-                isAuthenticated,
+                    });
+                }
             },
-            type: 'SET_AUTH',
+        ).catch((error) => {
+            console.log(JSON.stringify(error));
+            isAuthenticated = false;
+        }).finally(() => {
+            dispatch({
+                payload: {
+                    isAuthenticated,
+                },
+                type: 'SET_AUTH',
+            });
+            dispatch(fsa);
         });
-        dispatch(fsa);
-    });
 };
 
 export const getUserFund = (dispatch, userId) => {
@@ -473,7 +476,7 @@ export const getGroupsAndCampaigns = (dispatch, url, type, appendData = true, pr
         type: actionTypes.GIVING_GROUPS_AND_CAMPAIGNS,
     };
     let dataArray = [];
-    if(appendData) {
+    if (appendData) {
         dataArray = previousData;
     }
     coreApi.get(
@@ -537,9 +540,9 @@ export const leaveGroup = (dispatch, group, allData, type) => {
                 adminError:0,
             },
             type: actionTypes.LEAVE_GROUP_ERROR_MESSAGE,
-        }
+        };
         if (checkForOnlyOneAdmin(error.errors)) {
-            errorFsa.payload.message = "You are the only admin in this Group. In order to leave, please appoint another Group member as admin.";
+            errorFsa.payload.message = 'You are the only admin in this Group. In order to leave, please appoint another Group member as admin.';
             errorFsa.payload.adminError = 1;
         }
         dispatch(errorFsa);
@@ -547,11 +550,11 @@ export const leaveGroup = (dispatch, group, allData, type) => {
 };
 
 export const getInitalGivingGroupsAndCampaigns = (dispatch, userId) => {
-        getGroupsAndCampaigns(dispatch, `/users/${userId}/administeredGroups?page[size]=9&sort=-id`, 'administeredGroups', false);
-        getGroupsAndCampaigns(dispatch, `/users/${userId}/administeredCampaigns?page[size]=9&sort=-id`, 'administeredCampaigns', false);
-        getGroupsAndCampaigns(dispatch, `/users/${userId}/groupsWithOnlyMemberships?page[size]=9&sort=-id`, 'groupsWithMemberships', false);
-
+    getGroupsAndCampaigns(dispatch, `/users/${userId}/administeredGroups?page[size]=9&sort=-id`, 'administeredGroups', false);
+    getGroupsAndCampaigns(dispatch, `/users/${userId}/administeredCampaigns?page[size]=9&sort=-id`, 'administeredCampaigns', false);
+    getGroupsAndCampaigns(dispatch, `/users/${userId}/groupsWithOnlyMemberships?page[size]=9&sort=-id`, 'groupsWithMemberships', false);
 };
+
 export const getUserGivingGoal = (dispatch, userId) => {
     return coreApi.get(`users/${userId}/givingGoals`)
         .then((result) => {
@@ -563,7 +566,7 @@ export const getUserGivingGoal = (dispatch, userId) => {
             });
         }).catch((error) => {
             console.log(error);
-        })
+        });
 };
 export const setUserGivingGoal = (dispatch, goalAmount, userId) => {
     const payload = {
@@ -649,7 +652,7 @@ export const getFavoritesList = (dispatch, userId, pageNumber, pageSize) => {
         payload: {
             favorites: {
                 data: [],
-            }
+            },
         },
         type: actionTypes.USER_FAVORITES,
     };
@@ -686,37 +689,16 @@ export const removeFavorite = (dispatch, favId, userId, favorites, type, dataCou
         type: actionTypes.UPDATE_FAVORITES,
     };
     const dataArray = _.merge([], favorites);
-    const target = (type === 'charity') ? {
-        entity: 'charity',
-            filters: {
-                charity_id: Number(favId),
-            },
-        } : {
-            entity: 'group',
-            filters: {
-                group_id: Number(favId),
-            },
-        };
-    const params = {
-        relationship: 'FOLLOWS',
-        source: {
-            entity: 'user',
-            filters: {
-                user_id: Number(userId),
-            },
-        },
-        target,
-    };
+    const params = generatePayloadBodyForFollowAndUnfollow(userId, favId, type);
     graphApi.post(`/users/deleterelationship`, params).then(
         async () => {
             const removedItem = (type === 'charity') ? { attributes: { charity_id: favId } }
                 : { attributes: { group_id: favId } };
             _.remove(dataArray, removedItem);
             let pageNumber = currentPageNumber;
-
             const url = `user/favourites?userid=${Number(userId)}&page[number]=${currentPageNumber}&page[size]=${pageSize}`;
             const currentData = await graphApi.get(url);
-            if(currentData) {
+            if (currentData) {
                 if (_.size(currentData.data) === 0 && currentData.meta.pageCount < currentPageNumber) {
                     pageNumber = (currentData.meta.pageCount === 0) ? 1 : 0;
                 }
@@ -725,7 +707,7 @@ export const removeFavorite = (dispatch, favId, userId, favorites, type, dataCou
                     data: _.uniqWith(_.concat(dataArray, currentData.data), _.isEqual),
                     dataCount: currentData.meta.recordCount,
                     pageCount: currentData.meta.pageCount,
-                }
+                };
                 dispatch(fsa);
             }
         },
@@ -736,7 +718,7 @@ export const removeFavorite = (dispatch, favId, userId, favorites, type, dataCou
             data: dataArray,
             dataCount,
             pageCount,
-        }
+        };
         dispatch(fsa);
         dispatch({
             payload: {

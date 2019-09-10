@@ -8,19 +8,25 @@ import search from './search';
 import dashboard from './dashboard';
 import onBoarding from './onBoarding';
 import app from './app';
+import group from './group';
 import taxreceipt from './taxreceipt';
 import profile from './profile';
+import firebase from './firebase';
+import chat from './chat';
 
 const root = combineReducers({
     app,
     auth,
     dashboard,
     give,
+    group,
     search,
     onBoarding,
     taxreceipt,
     profile,
     user,
+    firebase,
+    chat,
     charity,
 });
 

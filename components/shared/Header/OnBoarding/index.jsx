@@ -12,7 +12,7 @@ const OnBoardingHeader = () => (
             Already have an account?
         </Menu.Item>
         <Menu.Item>
-            <Link route="/users/new">
+            <Link route="/users/login">
                 <Button basic className="outline-btn">Sign in</Button>
             </Link>
         </Menu.Item>

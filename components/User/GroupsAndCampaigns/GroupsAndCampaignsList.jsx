@@ -1,14 +1,17 @@
 import React from 'react';
+import _ from 'lodash';
 import {
     Grid,
     Icon,
     Button,
-} from 'semantic-ui-react'
+} from 'semantic-ui-react';
+
 import {
     getGroupsAndCampaigns,
     leaveGroup,
 } from '../../../actions/user';
 import { dismissAllUxCritialErrors } from '../../../actions/error';
+
 import GroupsAndCampaignsCard from './GroupAndCampaingsCard';
 
 class GroupsAndCampaignsList extends React.Component {
@@ -46,7 +49,7 @@ class GroupsAndCampaignsList extends React.Component {
         const {
             dispatch,
             displayData,
-        } = this.props
+        } = this.props;
         dismissAllUxCritialErrors(dispatch);
         this.setState({
             loader: true,
@@ -58,15 +61,14 @@ class GroupsAndCampaignsList extends React.Component {
         const {
             loader,
         } = this.state;
-        const content = loader ? (
-            <Icon loading color="black" name="spinner" />
-        ) : (
+        const content = (
             <div className="text-centre">
                 <Button
-                    onClick={()=>this.handleSeeMore(type)}
-                    basic
-                    color="blue"
-                    content="See more"
+                    className="blue-bordr-btn-round-def"
+                    onClick={() => this.handleSeeMore(type)}
+                    loading={!!loader}
+                    disabled={!!loader}
+                    content="View More"
                 />
             </div>
         );
@@ -79,33 +81,29 @@ class GroupsAndCampaignsList extends React.Component {
             displayData,
             errorMessage,
         } = this.props;
-        const{
-            showModal
-        } = this.state;
         let groupsAndCampaignsList = 'No Data';
         if (displayData && displayData.data && _.size(displayData.data) > 0) {
             groupsAndCampaignsList = displayData.data.map((group, index) => {
                 return (
                     <GroupsAndCampaignsCard
-                        listingType = {listingType}
-                        data = {group}
-                        errorMessage = {errorMessage}
-                        parentLeaveGroup = {this.callLeaveGroup}
+                        listingType={listingType}
+                        data={group}
+                        errorMessage={errorMessage}
+                        parentLeaveGroup={this.callLeaveGroup}
                     />
-                )
-
+                );
             });
         }
         return (
             <div className="pb-1">
-                <Grid  columns='equal' stackable doubling columns={3}>
+                <Grid stackable doubling columns={3}>
                     <Grid.Row>
                         {groupsAndCampaignsList}
                     </Grid.Row>
                 </Grid>
                 {
-                    (!_.isEmpty(displayData) && !_.isEmpty(displayData.nextLink)) ?
-                        this.renderSeeMore(listingType, displayData.nextLink) : null
+                    (!_.isEmpty(displayData) && !_.isEmpty(displayData.nextLink))
+                        ? this.renderSeeMore(listingType, displayData.nextLink) : null
                 }
             </div>
 

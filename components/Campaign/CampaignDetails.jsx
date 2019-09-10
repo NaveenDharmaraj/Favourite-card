@@ -16,7 +16,7 @@ const detailsView = (valuesObject) => {
                 <Grid.Row>
                     <Grid.Column>
                         <Header as='h2'>
-                            {valuesObject.amountRaised}
+                            {`$${valuesObject.amountRaised}`}
                             <Header.Subheader className="small">All time total raised</Header.Subheader>
                         </Header>
                     </Grid.Column>

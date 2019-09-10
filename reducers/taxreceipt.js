@@ -14,6 +14,7 @@ const taxreceipt = (state = {}, action) => {
             ] : action.payload.taxReceiptProfileList;
             newState = {
                 ...state,
+                loader: action.payload.loader,
                 taxReceiptProfileList: _uniqBy(taxReceiptProfileListUnique, 'id'),
                 taxReceiptProfilePageCount: action.payload.taxReceiptProfilePageCount,
             };
@@ -48,12 +49,14 @@ const taxreceipt = (state = {}, action) => {
             newState = {
                 ...state,
                 issuedTaxReceiptList: action.payload.issuedTaxReceiptList,
+                loader: action.payload.loader,
             };
             break;
         case 'ISSUED_TAX_RECEIPIENT_YEARLY_DETAIL':
             newState = {
                 ...state,
                 issuedTaxReceiptYearlyDetail: action.payload.issuedTaxReceiptYearlyDetail,
+                yearLoader: action.payload.yearLoader,
             };
             break;
         case 'ISSUED_TAX_RECEIPIENT_DONATIONS_DETAIL':
@@ -66,6 +69,7 @@ const taxreceipt = (state = {}, action) => {
         case 'DOWNLOAD_TAX_RECEIPT_DONATION_DETAIL':
             newState = {
                 ...state,
+                downloadloader: action.payload.downloadloader,
                 url: action.payload.url,
                 urlChange: action.payload.urlChange,
                 year: action.payload.year,

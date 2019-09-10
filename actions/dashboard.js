@@ -21,7 +21,12 @@ const getPaginatedData = (url, type, dispatch) => {
         type: actionTypes.USER_DASHBOARD,
     };
 
-    coreApi.get(url).then(
+    coreApi.get(url, {
+        params: {
+            dispatch,
+            uxCritical: true,
+        },
+    }).then(
         (result) => {
             fsa.payload = {
                 count: result.meta.pageCount,
@@ -53,7 +58,10 @@ const getFriendsList = (dispatch, email) => {
         type: actionTypes.USER_FRIENDS,
     };
 
-    graphApi.get(`/user/myfriends?userid=${email}&page[number]=1&page[size]=6`).then(
+    graphApi.get(`/user/myfriends?userid=${email}&page[number]=1&page[size]=6&status=accepted`, { params: {
+        dispatch,
+        uxCritical: true,
+    } }).then(
         (result) => {
             fsa.payload = {
                 count: result.meta.recordCount,
@@ -76,12 +84,17 @@ const getRecommendationList = (dispatch, url) => {
         type: actionTypes.USER_RECOMMENDATIONS,
     };
 
-    graphApi.get(url).then(
+    graphApi.get(url, {
+        params: {
+            dispatch,
+            uxCritical: true,
+        },
+    }).then(
         (result) => {
             fsa.payload = {
                 count: result.meta.recordCount,
-                pageCount: result.meta.pageCount,
                 data: result.data,
+                pageCount: result.meta.pageCount,
             };
         },
     ).catch((error) => {
@@ -99,7 +112,10 @@ const getStoriesList = (dispatch, url) => {
         },
         type: actionTypes.USER_STORIES,
     };
-    utilityApi.get(url).then(
+    utilityApi.get(url, { params: {
+        dispatch,
+        uxCritical: true,
+    } }).then(
         (result) => {
             fsa.payload = {
                 count: result.totalCount,

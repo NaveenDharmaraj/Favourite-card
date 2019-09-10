@@ -124,7 +124,7 @@ class DashboradList extends React.Component {
                 }
 
                 return (
-                    <Table.Row className={rowClass}>
+                    <Table.Row className={rowClass} key={index}>
                         <Table.Cell className="date">{date}</Table.Cell>
                         <Table.Cell>
                             <List verticalAlign="middle">
@@ -208,16 +208,18 @@ class DashboradList extends React.Component {
                     <div className="pt-2">
                         {this.listItem()}
                     </div>
-                    <div className="db-pagination right-align pt-2">
-                        {
-                            !_.isEmpty(dataList) && (
-                                <Pagination
-                                    activePage={currentActivePage}
-                                    totalPages={dataList.count}
-                                    onPageChanged={this.onPageChanged}
-                                />
-                            )
-                        }
+                    <div className="paginationWraper">
+                        <div className="db-pagination right-align pt-2">
+                            {
+                                !_.isEmpty(dataList) && (
+                                    <Pagination
+                                        activePage={currentActivePage}
+                                        totalPages={dataList.count}
+                                        onPageChanged={this.onPageChanged}
+                                    />
+                                )
+                            }
+                        </div>
                     </div>
                 </Container>
             </div>
