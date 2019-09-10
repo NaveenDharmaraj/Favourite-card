@@ -11,6 +11,8 @@ import _map from 'lodash/map';
 
 import PlaceholderGrid from '../../../../shared/PlaceHolder';
 import { Link } from '../../../../../routes';
+import charityImg from '../../../../../static/images/no-data-avatar-charity-profile.png';
+import groupImg from '../../../../../static/images/no-data-avatar-giving-group-profile.png';
 
 class SearchCharitiesGroups extends React.Component {
     constructor(props) {
@@ -26,23 +28,26 @@ class SearchCharitiesGroups extends React.Component {
         } = this.props;
         if (!_isEmpty(charities) && charities.data && charities.data.length > 0) {
             charitiesComponent = _map(charities.data, (charity, i) => (
-                <Grid.Column mobile={16} tablet={8} computer={4}>
-                    <Card as="a" key={i}>
-                        <Image src={charity.attributes.avatar} wrapped ui={false} />
-                        <Card.Content>
-                            <Card.Header>{charity.attributes.name}</Card.Header>
-                            <Card.Description>
-                                {charity.attributes.description && charity.attributes.description.split(' ').slice(0, 20).join(' ')}
-                                {(charity.attributes.description && charity.attributes.description.split(' ').length > 80) && '...'}
-                            </Card.Description>
-                            <Card.Meta>
-                                {(!_isEmpty(charity.attributes.city) || !_isEmpty(charity.attributes.province)) && 'Location:' }
-                                {!_isEmpty(charity.attributes.city) ? charity.attributes.city : null}
-                                {!_isEmpty(charity.attributes.province) ? charity.attributes.province : null}
-                            </Card.Meta>
-                        </Card.Content>
-                    </Card>
-                </Grid.Column>
+                <Link route={`/charities/${charity.attributes.slug}`}>
+                    <Grid.Column mobile={16} tablet={8} computer={4}>
+                        <Card as="a" key={i}>
+                            <Image src={!_isEmpty(charity.attributes.avatar) ? charity.attributes.avatar : charityImg} wrapped ui={false} />
+                            <Card.Content>
+                                <Card.Header>{charity.attributes.name}</Card.Header>
+                                <Card.Description>
+                                    {charity.attributes.description && charity.attributes.description.split(' ').slice(0, 20).join(' ')}
+                                    {(charity.attributes.description && charity.attributes.description.split(' ').length > 80) && '...'}
+                                </Card.Description>
+                                <Card.Meta>
+                                    {(!_isEmpty(charity.attributes.city) || !_isEmpty(charity.attributes.province)) && 'Location:' }
+                                    {!_isEmpty(charity.attributes.city) ? charity.attributes.city : null}
+                                    {!_isEmpty(charity.attributes.province) ? charity.attributes.province : null}
+                                </Card.Meta>
+                            </Card.Content>
+                        </Card>
+                    </Grid.Column>
+                </Link>
+
             ));
             return charitiesComponent;
         }
@@ -56,23 +61,25 @@ class SearchCharitiesGroups extends React.Component {
         } = this.props;
         if (!_isEmpty(groups) && groups.data && groups.data.length > 0) {
             groupsComponent = _map(groups.data, (group, i) => (
-                <Grid.Column mobile={16} tablet={8} computer={4}>
-                    <Card as="a" key={i}>
-                        <Image src={group.attributes.avatar} wrapped ui={false} />
-                        <Card.Content>
-                            <Card.Header>{group.attributes.name}</Card.Header>
-                            <Card.Description>
-                                {group.attributes.description && group.attributes.description.split(' ').slice(0, 20).join(' ')}
-                                {(group.attributes.description && group.attributes.description.split(' ').length > 80) && '...'}
-                            </Card.Description>
-                            <Card.Meta>
-                                {(!_isEmpty(group.attributes.city) || !_isEmpty(group.attributes.province)) && 'Location:' }
-                                {!_isEmpty(group.attributes.city) ? group.attributes.city : null}
-                                {!_isEmpty(group.attributes.province) ? group.attributes.province : null}
-                            </Card.Meta>
-                        </Card.Content>
-                    </Card>
-                </Grid.Column>
+                <Link route={`/groups/${group.attributes.slug}`}>
+                    <Grid.Column mobile={16} tablet={8} computer={4}>
+                        <Card as="a" key={i}>
+                            <Image src={!_isEmpty(group.attributes.avatar) ? group.attributes.avatar : groupImg} wrapped ui={false} />
+                            <Card.Content>
+                                <Card.Header>{group.attributes.name}</Card.Header>
+                                <Card.Description>
+                                    {group.attributes.description && group.attributes.description.split(' ').slice(0, 20).join(' ')}
+                                    {(group.attributes.description && group.attributes.description.split(' ').length > 80) && '...'}
+                                </Card.Description>
+                                <Card.Meta>
+                                    {(!_isEmpty(group.attributes.city) || !_isEmpty(group.attributes.province)) && 'Location:' }
+                                    {!_isEmpty(group.attributes.city) ? group.attributes.city : null}
+                                    {!_isEmpty(group.attributes.province) ? group.attributes.province : null}
+                                </Card.Meta>
+                            </Card.Content>
+                        </Card>
+                    </Grid.Column>
+                </Link>
             ));
             return groupsComponent;
         }

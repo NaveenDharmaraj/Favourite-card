@@ -5,12 +5,13 @@ import coreApi from '../services/coreApi';
 import utilityApi from '../services/utilityApi';
 import graphApi from '../services/graphApi';
 
-const generatePayloadBodyForFollowAndUnfollow = (userId, id, type) => {
+export const generatePayloadBodyForFollowAndUnfollow = (userId, id, type) => {
 
     let filterObj = {};
     let relationship;
     switch (type) {
         case 'beneficiaries':
+        case 'charity':
             filterObj = {
                 entity: 'charity',
                 filters: {
@@ -21,6 +22,7 @@ const generatePayloadBodyForFollowAndUnfollow = (userId, id, type) => {
             break;
         case 'campaigns':
         case 'groups':
+        case 'group':
             filterObj = {
                 entity: 'group',
                 filters: {

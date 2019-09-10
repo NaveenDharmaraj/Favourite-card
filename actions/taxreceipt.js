@@ -19,11 +19,19 @@ export const getTaxReceiptProfilePaginated = (dispatch, userId, pageNumber) => {
         },
         type: actionTypes.GET_PAGINATED_TAX_RECEIPT_PROFILE,
     };
+    dispatch({
+        payload: {
+            loader: true,
+        },
+        type: actionTypes.GET_PAGINATED_TAX_RECEIPT_PROFILE,
+    });
     coreApi.get(`/users/${userId}/taxReceiptProfiles?page[number]=${pageNumber}&page[size]=10`).then((result) => {
+        fsa.payload.loader = false;
         fsa.payload.taxReceiptProfileList = result.data;
         fsa.payload.taxReceiptProfilePageCount = result.meta.pageCount;
     }).catch((error) => {
         console.log(error);
+        fsa.payload.loader = false;
     }).finally(() => {
         dispatch(fsa);
     });
@@ -38,6 +46,12 @@ export const getIssuedTaxreceipts = (dispatch) => {
         },
         type: actionTypes.ISSUED_TAX_RECEIPTS_LIST,
     };
+    dispatch({
+        payload: {
+            loader: true,
+        },
+        type: actionTypes.ISSUED_TAX_RECEIPTS_LIST,
+    });
     coreApi.get('/taxReceipts',
         {
             params: {
@@ -46,8 +60,10 @@ export const getIssuedTaxreceipts = (dispatch) => {
             },
         }).then((result) => {
         fsa.payload.issuedTaxReceiptList = result.data;
+        fsa.payload.loader = false;
     }).catch((err) => {
         console.error(err);
+        fsa.payload.loader = false;
     }).finally(() => {
         dispatch(fsa);
     });
@@ -59,6 +75,12 @@ export const getIssuedTaxreceiptYearlyDetail = (dispatch, id,) => {
         },
         type: actionTypes.ISSUED_TAX_RECEIPIENT_YEARLY_DETAIL,
     };
+    dispatch({
+        payload: {
+            yearLoader: true,
+        },
+        type: actionTypes.ISSUED_TAX_RECEIPIENT_YEARLY_DETAIL,
+    });
     coreApi.get(`/taxReceipts/${id}`,
         {
             params: {
@@ -67,8 +89,10 @@ export const getIssuedTaxreceiptYearlyDetail = (dispatch, id,) => {
             },
         }).then((result) => {
         fsa.payload.issuedTaxReceiptYearlyDetail = result.data;
+        fsa.payload.yearLoader = false;
     }).catch((err) => {
         console.error(err);
+        fsa.payload.yearLoader = false;
     }).finally(() => {
         dispatch(fsa);
     });
