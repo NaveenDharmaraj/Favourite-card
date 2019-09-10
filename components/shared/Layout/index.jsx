@@ -15,7 +15,6 @@ import ManiFestFile from '../../../static/Manifest.json';
 import { NotificationHelper } from "../../../Firebase/NotificationHelper";
 import ErrorBoundary from '../ErrorBoundary';
 import StatusMessage from '../StatusMessage';
-import getConfig from 'next/config';
 
 import '../../../static/less/header.less';
 import '../../../static/less/style.less';
@@ -24,18 +23,15 @@ const { publicRuntimeConfig } = getConfig();
 
 const {
     APPLOZIC_WS_URL,
-    APPLOZIC_APP_KEY
+    APPLOZIC_APP_KEY,
+    HELP_SCOUT_KEY
 } = publicRuntimeConfig;
 
 const getWidth = () => {
     const isSSR = typeof window === 'undefined';
     return isSSR ? Responsive.onlyTablet.minWidth : window.innerWidth
 };
-const { publicRuntimeConfig } = getConfig();
 
-const {
-    HELP_SCOUT_KEY,
-} = publicRuntimeConfig;
 
 class Layout extends React.Component {
     async componentDidMount() {
@@ -55,7 +51,6 @@ class Layout extends React.Component {
 
         if(window && window.Beacon) {
             window.Beacon('init', HELP_SCOUT_KEY);
-            debugger
             if(currentUser){
                 Beacon("identify", {
                     name: currentUser.attributes.displayName,
