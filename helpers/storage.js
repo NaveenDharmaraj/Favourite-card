@@ -1,5 +1,7 @@
 import _isEmpty from 'lodash/isEmpty';
 
+import logger from '../helpers/logger';
+
 function getLocalStorage(name) {
     if (typeof Storage !== 'undefined') {
         return localStorage.getItem(name);
@@ -23,7 +25,17 @@ function getCookies(name, serverCookies = null) {
 }
 function writeCookies(name, value, expiry) {
     const expires = `expires=${expiry};`;
-    document.cookie = `${name}=${value};${expires}path=/`;
+    try{
+        let cookieString = `${name}=${value};${expires}path=/`;
+        if (location && location.protocol === 'https:') {
+            cookieString += ';secure';
+        }
+        document.cookie = cookieString;
+    } catch(error) {
+        logger.debug(`writeCookies failed ${name}`);
+        logger.error(JSON.stringify(error));
+    }
+    
 }
 function get(name, type, serverCookies = null) {
     switch (type) {

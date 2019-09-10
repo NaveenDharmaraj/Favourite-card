@@ -3,6 +3,7 @@ import _ from 'lodash';
 import coreApi from '../services/coreApi';
 import graphApi from '../services/graphApi';
 import utilityApi from '../services/utilityApi';
+import logger from '../helpers/logger';
 
 export const actionTypes = {
     USER_DASHBOARD: 'USER_DASHBOARD',
@@ -61,7 +62,9 @@ const getFriendsList = (dispatch, email) => {
         },
     ).catch((error) => {
         fsa.error = error;
+        logger.error(' ->>>> getFriendsList API failed');
     }).finally(() => {
+        logger.debug('[Debug] -> getFriendsList API finally block and dispatching');
         dispatch(fsa);
     });
 };
@@ -83,7 +86,9 @@ const getRecommendationList = (dispatch, url) => {
         },
     ).catch((error) => {
         fsa.error = error;
+        logger.error('->>>> getRecommendationList API failed');
     }).finally(() => {
+        logger.debug('[Debug] -> getRecommendationList API finally block and dispatching');
         dispatch(fsa);
     });
 };
@@ -103,7 +108,9 @@ const getStoriesList = (dispatch, url) => {
         },
     ).catch((error) => {
         fsa.error = error;
+        logger.error(' ->>>> getStoriesList API failed');
     }).finally(() => {
+        logger.debug('[Debug] -> getStoriesList API finally block and dispatching');
         dispatch(fsa);
     });
 };
