@@ -9,6 +9,7 @@ const { publicRuntimeConfig } = getConfig();
 const {
     ENABLE_CONSOLE_LOGGING,
     LOGDNA_PUBLIC_INGESTION_KEY,
+    LOGDNA_APP_NAME,
     LOG_LEVEL,
     NODE_ENV,
 } = publicRuntimeConfig;
@@ -20,7 +21,7 @@ const level = Object.prototype.hasOwnProperty.call(jsLogger, LOG_LEVEL)
 const logDnaOptions = {
     app: `Web client [browser]`,
     env: NODE_ENV,
-    hostname: 'Next-Web-Dev',
+    hostname: LOGDNA_APP_NAME,
 };
 
 const logDnaLoggerDefaultLogger = !_isEmpty(LOGDNA_PUBLIC_INGESTION_KEY)
