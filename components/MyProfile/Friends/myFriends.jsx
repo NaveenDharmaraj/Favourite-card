@@ -9,9 +9,9 @@ import {
     Table,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
-import Link from 'next/link';
 
 import PlaceHolderGrid from '../../shared/PlaceHolder';
+import { Link } from '../../../routes';
 import {
     acceptFriendRequest,
     getMyFriendsList,
@@ -111,7 +111,7 @@ class MyFriends extends React.Component {
             currentMyInvitaionsActivePage,
         } = this.state;
         let friendsList = 'No Data';
-        if (!_.isEmpty(userFriendsInvitationsList)) {
+        if (!_.isEmpty(userFriendsInvitationsList) && _.size(userFriendsInvitationsList.data) > 0) {
             friendsList = userFriendsInvitationsList.data.map((friend) => {
                 const name = `${friend.attributes.first_name} ${friend.attributes.last_name}`;
                 const avatar = ((typeof friend.attributes.avatar) === 'undefined' || friend.attributes.avatar === null) ? NoFriendAvatar : friend.attributes.avatar;
@@ -130,7 +130,7 @@ class MyFriends extends React.Component {
                         <Image avatar src={avatar} />
                         <List.Content>
                             <List.Header>
-                                <Link className="lnkChange" href={`/users/profile/${friend.attributes.user_id}`}>
+                                <Link className="lnkChange" route={`/users/profile/${friend.attributes.user_id}`}>
                                     {name}
                                 </Link>
                             </List.Header>
@@ -168,7 +168,7 @@ class MyFriends extends React.Component {
             currentMyFriendsActivePage,
         } = this.state;
         let friendsList = 'No Data';
-        if (!_.isEmpty(userMyFriendsList)) {
+        if (!_.isEmpty(userMyFriendsList) && _.size(userMyFriendsList.data) > 0) {
             friendsList = userMyFriendsList.data.map((friend) => {
                 const name = `${friend.attributes.first_name} ${friend.attributes.last_name}`;
                 const email = Buffer.from(friend.attributes.email_hash, 'base64').toString('ascii');
@@ -177,14 +177,14 @@ class MyFriends extends React.Component {
                 return (
                     <List.Item>
                         <List.Content floated="right">
-                            <Link href="/chats/all">
+                            <Link route="/chats/all">
                                 <Button className="blue-btn-rounded-def c-small">Message</Button>
                             </Link>
                         </List.Content>
                         <Image avatar src={avatar} />
                         <List.Content>
                             <List.Header>
-                                <Link className="lnkChange" href={`/users/profile/${friend.attributes.user_id}`}>
+                                <Link className="lnkChange" route={`/users/profile/${friend.attributes.user_id}`}>
                                     {name}
                                 </Link>
                             </List.Header>

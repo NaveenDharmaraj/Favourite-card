@@ -15,6 +15,7 @@ import Link from 'next/link';
 import {
     getBlockedFriends,
     unblockFriend,
+    updateUserPreferences,
 } from '../../../actions/userProfile';
 import PlaceHolderGrid from '../../shared/PlaceHolder';
 
@@ -23,7 +24,9 @@ class Privacy extends React.Component {
         super(props);
         this.state = {
             blockedUserListLoader: !props.userBlockedFriendsList,
+            discoverability: (!_.isEmpty(props.currentUser)) ? props.currentUser.attributes.preferences.discoverability : false,
         };
+        this.handleUserPreferenceChange = this.handleUserPreferenceChange.bind(this);
     }
 
     componentDidMount() {
@@ -61,12 +64,26 @@ class Privacy extends React.Component {
         }
     }
 
+    handleUserPreferenceChange(event, data) {
+        const {
+            checked,
+            name,
+        } = data;
+        const {
+            currentUser,
+            dispatch,
+        } = this.props;
+        this.setState({ [name]: checked });
+        const columnName = 'discoverability';
+        updateUserPreferences(dispatch, currentUser.id, columnName, checked);
+    }
+
     renderBlockedFriendsList() {
         const {
             userBlockedFriendsList,
         } = this.props;
         let friendsBlockedList = 'No Data';
-        if (!_.isEmpty(userBlockedFriendsList)) {
+        if (!_.isEmpty(userBlockedFriendsList) && _.size(userBlockedFriendsList.data) > 0) {
             friendsBlockedList = userBlockedFriendsList.data.map((data) => {
                 const name = `${data.attributes.first_name} ${data.attributes.last_name}`;
                 const avatar = ((typeof data.attributes.avatar) === 'undefined' || data.attributes.avatar === null) ? 'https://react.semantic-ui.com/images/avatar/small/daniel.jpg' : data.attributes.avatar;
@@ -105,6 +122,7 @@ class Privacy extends React.Component {
     render() {
         const {
             blockedUserListLoader,
+            discoverability,
         } = this.state;
         return (
             <div className="remove-gutter">
@@ -114,8 +132,11 @@ class Privacy extends React.Component {
                             Discoverability
                             <Checkbox
                                 toggle
-                                defaultChecked
                                 className="c-chkBox right"
+                                id="discoverability"
+                                name="discoverability"
+                                checked={discoverability}
+                                onChange={this.handleUserPreferenceChange}
                             />
                         </Header>
                         <p>

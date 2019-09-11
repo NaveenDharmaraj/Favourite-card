@@ -108,7 +108,6 @@ class StoriesList extends React.Component {
                                 <Header as="h3">
                                     <Header.Content>
                                     Stories and tips
-                                        <span className="small">Copy here. </span>
                                     </Header.Content>
                                 </Header>
                             </Grid.Column>
