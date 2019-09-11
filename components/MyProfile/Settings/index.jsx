@@ -6,6 +6,7 @@ import {
 
 
 import ManagePassword from './managePassword';
+import ManageGiving from './manageGiving';
 import Privacy from './privacy';
 import CreditCard from './creditCard';
 import Notifications from './notifications';
@@ -27,6 +28,19 @@ const panes1 = [
                 </Tab.Pane>
             );
         },
+    },
+    {
+        menuItem: {
+            content: 'Manage Giving',
+            icon: 'group',
+            iconPosition: 'left',
+            key: 'Manage Giving',
+        },
+        render: () => (
+            <Tab.Pane>
+                <ManageGiving />
+            </Tab.Pane>
+        ),
     },
     {
         menuItem: {

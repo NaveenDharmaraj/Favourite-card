@@ -53,12 +53,17 @@ class EditBasicProfile extends React.Component {
     }
 
     handleAmount(amount) {
+        const {
+            userBasicDetails,
+        } = this.state;
         let {
             validity,
         } = this.state;
+        userBasicDetails.givingGoal = amount;
         this.setState({
             userBasicDetails: {
-                givingGoal: amount,
+                ...this.state.userBasicDetails,
+                ...userBasicDetails,
             },
         });
         validity = this.validateUserProfileBasicForm('givingGoal', amount, validity);
@@ -77,7 +82,7 @@ class EditBasicProfile extends React.Component {
         return this.validity;
     }
 
-    handleInputChange(data) {
+    handleInputChange(event, data) {
         const {
             name,
             options,

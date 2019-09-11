@@ -70,6 +70,17 @@ class MyTags extends React.Component {
         }
         if (!_.isEqual(userTagsRecommendedList, prevProps.userTagsRecommendedList) && !_.isEmpty(userTagsRecommendedList)) {
             recommendedTagsLists = recommendedTagsLists.concat(userTagsRecommendedList.data);
+            const matchedIndex = [];
+            recommendedTagsLists.filter((recommendedTagsList, i) => {
+                userTags.find((userTag) => {
+                    if (recommendedTagsList.attributes.name === userTag) {
+                        matchedIndex.push(i);
+                    }
+                });
+            });
+            for (let i = matchedIndex.length - 1; i >= 0; i--) {
+                recommendedTagsLists.splice(matchedIndex[i], 1);
+            }
             this.setState({
                 loader: false,
                 recommendedTagsLists,
@@ -214,7 +225,7 @@ class MyTags extends React.Component {
             const {
                 userTagsRecommendedList,
             } = this.props;
-            if (_.size(userTagsRecommendedList.data) < userTagsRecommendedList.pageCount) {
+            if (_.size(userTagsRecommendedList.data) < userTagsRecommendedList.count) {
                 const content = (
                     <div className="text-centre">
                         <Button
@@ -249,6 +260,7 @@ class MyTags extends React.Component {
                                         placeholder="Search..."
                                         onChange={this.handleInputChange}
                                         fluid
+                                        onKeyPress={(event) => { (event.keyCode || event.which) === 13 ? this.handleTagsSearch() : null; }}
                                     />
                                     <a
                                         className="search-btn"

@@ -92,10 +92,13 @@ class Profile extends React.Component {
                                     {formatMessage('name', {
                                         name,
                                     })}
-                                    <br />
-                                    <List.Item as="a" href={accountUrl}>
-                                        {accountSettingsText}
-                                    </List.Item>
+                                    <List link>
+                                        <Link route={accountUrl}>
+                                            <List.Item as="a">
+                                                {accountSettingsText}
+                                            </List.Item>
+                                        </Link>
+                                    </List>
                                 </Table.Cell>
                             </Table.Row>
                         </Table>

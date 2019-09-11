@@ -9,13 +9,13 @@ import {
     List,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
-import Link from 'next/link';
 
 import {
     acceptFriendRequest,
     getFriendsByText,
     sendFriendRequest,
 } from '../../../actions/userProfile';
+import { Link } from '../../../routes';
 import Pagination from '../../shared/Pagination';
 import NoFriendAvatar from '../../../static/images/no-data-avatar-user-profile.png';
 
@@ -47,6 +47,17 @@ class FindFriends extends React.Component {
                 });
             }
         }
+    }
+
+    componentWillUnmount() {
+        const {
+            dispatch,
+        } = this.props;
+        dispatch({
+            payload: {
+            },
+            type: 'USER_PROFILE_FIND_FRIENDS',
+        });
     }
 
     onPageChanged(e, data) {
@@ -87,6 +98,7 @@ class FindFriends extends React.Component {
             searchWord,
             currentActivePage,
         } = this.state;
+        this.setState({ currentActivePage: 1 });
         getFriendsByText(dispatch, id, searchWord, currentActivePage);
     }
 
@@ -134,7 +146,6 @@ class FindFriends extends React.Component {
                     friendStatus = 'Accept';
                     btnData = 'accept';
                 }
-                console.log(data.attributes.first_name + data.attributes.friend_status);
                 return (
                     <List.Item>
                         <List.Content floated="right">
@@ -148,7 +159,7 @@ class FindFriends extends React.Component {
                         <Image avatar src={avatar} />
                         <List.Content>
                             <List.Header>
-                                <Link className="lnkChange" href={`/users/profile/${data.attributes.user_id}`}>
+                                <Link className="lnkChange" route={`/users/profile/${data.attributes.user_id}`}>
                                     {name}
                                 </Link>
                             </List.Header>
@@ -175,11 +186,6 @@ class FindFriends extends React.Component {
         const {
             userFindFriendsList,
         } = this.props;
-        // co
-        // if(!_.isEmpty(userFindFriendsList)) {
-        //     paginationCount = Math.round(userFindFriendsList.count / 10);
-        // }
-        // console.log(paginationCount);
         return (
             <div className="remove-gutter">
                 <div className="userSettingsContainer">
@@ -190,6 +196,7 @@ class FindFriends extends React.Component {
                                 placeholder="Find friends on Charitable Impact..."
                                 onChange={this.handleInputChange}
                                 value={searchWord}
+                                onKeyPress={(event) => { (event.keyCode || event.which) === 13 ? this.handleFriendSearch() : null; }}
                             />
                             <a
                                 className="search-btn"
@@ -202,16 +209,16 @@ class FindFriends extends React.Component {
                         </div>
                         {this.renderFriendList()}
                         <div className="db-pagination right-align pt-2">
-                        {
-                            !_.isEmpty(userFindFriendsList) && paginationCount > 1 && (
-                                <Pagination
-                                    activePage={currentActivePage}
-                                    totalPages={paginationCount}
-                                    onPageChanged={this.onPageChanged}
-                                />
-                            )
-                        }
-                    </div>
+                            {
+                                !_.isEmpty(userFindFriendsList) && paginationCount > 1 && (
+                                    <Pagination
+                                        activePage={currentActivePage}
+                                        totalPages={paginationCount}
+                                        onPageChanged={this.onPageChanged}
+                                    />
+                                )
+                            }
+                        </div>
                     </div>
                 </div>
             </div>

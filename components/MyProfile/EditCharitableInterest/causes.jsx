@@ -56,7 +56,7 @@ class MyCauses extends React.Component {
         }
     }
 
-    handleCauses(data) {
+    handleCauses(event, data) {
         const {
             name,
         } = data;

@@ -10,8 +10,12 @@ import {
     createToken,
 } from './give';
 import {
+    getUser,
     savePaymentInstrument,
 } from './user';
+import {
+    logout,
+} from './auth';
 
 // eslint-disable-next-line import/exports-last
 export const actionTypes = {
@@ -24,6 +28,7 @@ export const actionTypes = {
     UPDATE_USER_CREDIT_CARD: 'UPDATE_USER_CREDIT_CARD',
     UPDATE_USER_DEFAULT_CARD: 'UPDATE_USER_DEFAULT_CARD',
     UPDATE_USER_PASSWORD: 'UPDATE_USER_PASSWORD',
+    UPDATE_USER_PREFERENCES: 'UPDATE_USER_PREFERENCES',
     UPDATE_USER_PRIVACY_SETTING: 'UPDATE_USER_PRIVACY_SETTING',
     USER_PROFILE_ADMIN_GROUP: 'USER_PROFILE_ADMIN_GROUP',
     USER_PROFILE_BASIC: 'USER_PROFILE_BASIC',
@@ -289,7 +294,7 @@ const getFriendsByText = (dispatch, userId, searchText, pageNumber) => {
         type: actionTypes.USER_PROFILE_FIND_FRIENDS,
     };
     const bodyData = {
-        "text": searchText,
+        text: searchText,
     };
     return searchApi.post(`/users?page[number]=${pageNumber}&page[size]=10&user_id=${Number(userId)}`, bodyData).then(
         (result) => {
@@ -383,6 +388,7 @@ const sendFriendRequest = (dispatch, sourceUserId, destinationEmailId, searchWor
         },
         type: actionTypes.USER_PROFILE_FRIEND_REQUEST,
     };
+    sourceUserId = Number(sourceUserId);
     const bodyData = {
         data: {
             attributes: {
@@ -446,6 +452,7 @@ const acceptFriendRequest = (dispatch, sourceUserId, destinationEmailId, pageNum
             };
             if (pageName === 'MYFRIENDS') {
                 getFriendsInvitations(dispatch, sourceEmailId, pageNumber);
+                getMyFriendsList(dispatch, sourceEmailId, 1);
             } else {
                 getFriendsByText(dispatch, sourceUserId, searchWord, pageNumber);
             }
@@ -659,18 +666,21 @@ const userResetPassword = (dispatch, userData) => {
         auth_user_id: userData.authId,
         password: userData.password,
     };
-
+    let isPasswordChanged = true;
     return securityApi.post('/user/changepassword', bodyData).then(
         (result) => {
-            console.log(result);
             fsa.payload = {
                 data: result,
             };
         },
     ).catch((error) => {
+        isPasswordChanged = false;
         fsa.error = error;
     }).finally(() => {
         dispatch(fsa);
+        if(isPasswordChanged) {
+            logout();
+        }
     });
 };
 
@@ -694,6 +704,37 @@ const savePrivacySetting = (dispatch, userId, email, columnName, columnValue) =>
                 data: result.data,
             };
             getUserProfileBasic(dispatch, email, userId, userId);
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    });
+};
+
+const updateUserPreferences = (dispatch, userId, preferenceColumn, preferenceValue) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.UPDATE_USER_PREFERENCES,
+    };
+    const dataName = {};
+    dataName[preferenceColumn] = preferenceValue;
+    const bodyData = {
+        data: {
+            attributes: {
+                preferences: dataName,
+            },
+            id: userId,
+            type: 'users',
+        },
+    };
+    return coreApi.patch(`/users/${userId}`, bodyData).then(
+        (result) => {
+            fsa.payload = {
+                data: result.data,
+            };
+            getUser(dispatch, userId, null);
         },
     ).catch((error) => {
         fsa.error = error;
@@ -729,4 +770,5 @@ export {
     setUserDefaultCard,
     userResetPassword,
     savePrivacySetting,
+    updateUserPreferences,
 };
