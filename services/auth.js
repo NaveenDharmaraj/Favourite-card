@@ -125,7 +125,7 @@ const auth0 = {
      */
 
     set accessToken(token) {
-        return token ? storage.set('auth0AccessToken', token, 'cookie', this.getRemainingSessionTime(token)) : storage.unset('auth0AccessToken', 'cookie');
+        return token ? storage.set('auth0AccessToken', token, 'cookie', this.getRemainingSessionTime(token) / 1000) : storage.unset('auth0AccessToken', 'cookie');
     },
 
     /**
@@ -181,10 +181,9 @@ const auth0 = {
 
         const expiry = new Date(exp * 1000); // seconds --> milliseconds
         const now = new Date();
-        if (expiry > now) {
-            return new Date(expiry).toString();
-        }
-        return null;
+        return (expiry > now)
+            ? (expiry - now)
+            : 0;
     },
     /**
      * By default, this property will base its value on `pathname`.
