@@ -106,7 +106,7 @@ class FilterComponent extends React.Component {
     }
 
     handleCancel() {
-        this.setState({ filterObj: [], isOpen: false });
+        this.setState({ filterObj: {}, isOpen: false });
     }
 
     SizeForm(FilterValues, filterHeader) {

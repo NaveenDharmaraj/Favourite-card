@@ -73,7 +73,7 @@ class LandingPageTaxReceipt extends React.Component {
         const {
             issuedTaxReceiptList,
             dispatch,
-            loader,
+            issuedTaxLloader,
         } = this.props;
         const {
             donationDetailhide,
@@ -146,7 +146,7 @@ class LandingPageTaxReceipt extends React.Component {
                                     <p className="font-s-16 bold mb-1-2">Issued tax receipts</p>
                                     <p className="font-s-13">Tax receipts are organizied by recipient.</p>
                                 </div>
-                                {loader ? <PlaceholderGrid row={2} column={2} /> : (
+                                {issuedTaxLloader ? <PlaceholderGrid row={2} column={2} /> : (
                                     <Fragment>
                                         {(!_isEmpty(issuedTaxReceiptList) && issuedTaxReceiptList.length > 0)
                                             ? (
@@ -177,8 +177,8 @@ class LandingPageTaxReceipt extends React.Component {
 
 const mapStateToProps = (state) => ({
     currentUser: state.user.info,
+    issuedTaxLloader: state.taxreceipt.issuedTaxLloader,
     issuedTaxReceiptList: state.taxreceipt.issuedTaxReceiptList,
-    loader: state.taxreceipt.loader,
 });
 
 export default connect(mapStateToProps)(LandingPageTaxReceipt);

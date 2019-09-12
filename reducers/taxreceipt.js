@@ -48,8 +48,8 @@ const taxreceipt = (state = {}, action) => {
         case 'ISSUED_TAX_RECEIPTS_LIST':
             newState = {
                 ...state,
+                issuedTaxLloader: action.payload.issuedTaxLloader,
                 issuedTaxReceiptList: action.payload.issuedTaxReceiptList,
-                loader: action.payload.loader,
             };
             break;
         case 'ISSUED_TAX_RECEIPIENT_YEARLY_DETAIL':
