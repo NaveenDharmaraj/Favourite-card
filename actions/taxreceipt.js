@@ -48,7 +48,7 @@ export const getIssuedTaxreceipts = (dispatch) => {
     };
     dispatch({
         payload: {
-            loader: true,
+            issuedTaxLloader: true,
         },
         type: actionTypes.ISSUED_TAX_RECEIPTS_LIST,
     });
@@ -60,10 +60,10 @@ export const getIssuedTaxreceipts = (dispatch) => {
             },
         }).then((result) => {
         fsa.payload.issuedTaxReceiptList = result.data;
-        fsa.payload.loader = false;
+        fsa.payload.issuedTaxLloader = false;
     }).catch((err) => {
         console.error(err);
-        fsa.payload.loader = false;
+        fsa.payload.issuedTaxLloader = false;
     }).finally(() => {
         dispatch(fsa);
     });
