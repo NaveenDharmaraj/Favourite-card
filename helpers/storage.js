@@ -23,20 +23,37 @@ function getCookies(name, serverCookies = null) {
     }
     return null;
 }
-function writeCookies(name, value, expiry) {
-    const expires = `expires=${expiry};`;
-    try{
-        let cookieString = `${name}=${value};${expires}path=/`;
-        if (location && location.protocol === 'https:') {
-            cookieString += ';secure';
-        }
-        document.cookie = cookieString;
-    } catch(error) {
-        logger.debug(`writeCookies failed ${name}`);
-        logger.error(JSON.stringify(error));
+
+function writeCookies(
+    key,
+    val,
+    expiry,
+) {
+    let cookie = `${key}=${val};path=/`;
+    switch (typeof expiry) {
+        case 'boolean':
+            cookie += expiry
+                ? ';expires=Sat, 01 Jan 2050 00:00:00 GMT'
+                : ';expires=Thu, 01 Jan 1970 00:00:00 GMT';
+            break;
+        case 'number':
+            cookie += `;max-age=${expiry}`;
+            break;
+        case 'string':
+            cookie += `;expires=${expiry}`;
+            break;
+        default:
+            break;
     }
-    
+    if (location && location.protocol === 'https:') {
+        cookie += ';secure';
+    }
+
+    document.cookie = cookie;
+
+    return cookie;
 }
+
 function get(name, type, serverCookies = null) {
     switch (type) {
         case 'cookie': return getCookies(name, serverCookies);
