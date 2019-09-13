@@ -27,6 +27,7 @@ class ManagePassword extends React.Component {
         };
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
+        this.handleCancelButton = this.handleCancelButton.bind(this);
     }
 
     // eslint-disable-next-line class-methods-use-this
@@ -75,6 +76,22 @@ class ManagePassword extends React.Component {
         }
     }
 
+    handleCancelButton() {
+        let {
+            password,
+            validity,
+        } = this.state;
+        password = '';
+        validity = validateUserRegistrationForm('password', '', validity);
+        this.setState({
+            password,
+            validity: {
+                ...this.state.validity,
+                validity,
+            },
+        });
+    }
+
     render() {
         const {
             password,
@@ -119,7 +136,12 @@ class ManagePassword extends React.Component {
                                 >
                                     Save
                                 </Button>
-                                <Button className="blue-bordr-btn-round-def w-140">Cancel</Button>
+                                <Button
+                                    onClick={this.handleCancelButton}
+                                    className="blue-bordr-btn-round-def w-140"
+                                >
+                                    Cancel
+                                </Button>
                             </div>
                         </Form>
                     </div>

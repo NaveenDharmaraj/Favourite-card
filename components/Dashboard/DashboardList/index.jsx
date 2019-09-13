@@ -60,14 +60,14 @@ class DashboradList extends React.Component {
             },
             dataList,
         } = this.props;
-        let accordianHead = 'No Data';
+        let accordianHead = 'No transactions yet.';
         let compareDate = '';
         if (dataList && dataList.data && _.size(dataList.data) > 0) {
             accordianHead = dataList.data.map((data, index) => {
                 let date = new Date(data.attributes.createdAt);
                 const dd = date.getDate();
                 const mm = date.getMonth();
-                const month = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ];
+                const month = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ];
                 const yyyy = date.getFullYear();
                 date = `${month[mm]} ${dd} ,${yyyy}`;
                 if (date !== compareDate) {
@@ -123,7 +123,7 @@ class DashboradList extends React.Component {
                     entity = data.attributes.recipientEmail;
                     transactionSign = '-';
                 }
-
+                const amount = parseFloat(data.attributes.amount).toFixed(2);
                 return (
                     <Table.Row className={rowClass} key={index}>
                         <Table.Cell className="date">{date}</Table.Cell>
@@ -149,7 +149,7 @@ class DashboradList extends React.Component {
                         <Table.Cell className="amount">
                             {transactionSign}
                             $
-                            {data.attributes.amount}
+                            {amount}
                         </Table.Cell>
                     </Table.Row>
                 );

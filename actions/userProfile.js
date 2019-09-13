@@ -678,7 +678,7 @@ const userResetPassword = (dispatch, userData) => {
         fsa.error = error;
     }).finally(() => {
         dispatch(fsa);
-        if(isPasswordChanged) {
+        if (isPasswordChanged) {
             logout();
         }
     });
@@ -719,7 +719,25 @@ const updateUserPreferences = (dispatch, userId, preferenceColumn, preferenceVal
         type: actionTypes.UPDATE_USER_PREFERENCES,
     };
     const dataName = {};
-    dataName[preferenceColumn] = preferenceValue;
+    if (preferenceColumn === 'charities_share_my_name') {
+        dataName.charities_share_my_name_address = false;
+        dataName.charities_share_my_name_email = false;
+        dataName[preferenceColumn] = preferenceValue;
+    } else if (preferenceColumn === 'charities_share_my_name_address') {
+        dataName.charities_share_my_name = false;
+        dataName.charities_share_my_name_email = false;
+        dataName[preferenceColumn] = preferenceValue;
+    } else if (preferenceColumn === 'charities_share_my_name_email') {
+        dataName.charities_share_my_name_address = false;
+        dataName.charities_share_my_name = false;
+        dataName[preferenceColumn] = preferenceValue;
+    } else if (preferenceColumn === 'charities_dont_share' && preferenceValue === false) {
+        dataName.charities_share_my_name_address = false;
+        dataName.charities_share_my_name = false;
+        dataName[preferenceColumn] = false;
+    } else {
+        dataName[preferenceColumn] = preferenceValue;
+    }
     const bodyData = {
         data: {
             attributes: {
@@ -729,8 +747,10 @@ const updateUserPreferences = (dispatch, userId, preferenceColumn, preferenceVal
             type: 'users',
         },
     };
+    console.log(bodyData);
     return coreApi.patch(`/users/${userId}`, bodyData).then(
         (result) => {
+            console.log(result);
             fsa.payload = {
                 data: result.data,
             };

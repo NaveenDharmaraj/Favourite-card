@@ -5,6 +5,8 @@ import {
     Header,
     Checkbox,
     List,
+    Form,
+    Radio,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 
@@ -14,10 +16,14 @@ import {
 
 const givingColumnName = {
     charitiesGiveAnonymously: 'charities_give_anonymously',
+    charitiesShareMyName: 'charities_share_my_name',
+    charitiesShareMyNameAddress: 'charities_share_my_name_address',
+    charitiesShareMyNameEmail: 'charities_share_my_name_email',
     givingGroupAdminsShareMyNameEmail: 'giving_group_admins_share_my_name_e_mail',
     givingGroupMembersGiveAnonymously: 'giving_group_members_give_anonymously',
     givingGroupMembersShareMyGiftamount: 'giving_group_members_share_my_giftamount',
     givingGroupMembersShareMyName: 'giving_group_members_share_my_name',
+    isCharityShareInfo: 'charities_dont_share',
 };
 
 class ManageGiving extends React.Component {
@@ -33,11 +39,30 @@ class ManageGiving extends React.Component {
             givingGroupMembersShareMyGiftamount: (!_.isEmpty(props.currentUser)) ? props.currentUser.attributes.preferences.giving_group_members_share_my_giftamount : false,
             givingGroupMembersShareMyName: (!_.isEmpty(props.currentUser)) ? props.currentUser.attributes.preferences.giving_group_members_share_my_name : false,
             userName: (!_.isEmpty(props.currentUser)) ? `${props.currentUser.attributes.firstName} ${props.currentUser.attributes.lastName}` : '',
+            userNameEmail: (!_.isEmpty(props.currentUser)) ? props.currentUser.attributes.email : '',
+            userNameAddress: '', //(!_.isEmpty(props.currentUser)) && typeof props.currentUser.preferences.address !== 'undefined' ? props.currentUser.preferences.address : '',
         };
         this.handleUserPreferenceChange = this.handleUserPreferenceChange.bind(this);
+        this.handleCharityInfoShare = this.handleCharityInfoShare.bind(this);
     }
 
     handleUserPreferenceChange(event, data) {
+        const {
+            checked,
+            id,
+        } = data;
+        const {
+            currentUser,
+            dispatch,
+        } = this.props;
+        this.setState({ [id]: checked });
+        const columnName = givingColumnName[id];
+        if (columnName !== null) {
+            updateUserPreferences(dispatch, currentUser.id, columnName, checked);
+        }
+    }
+
+    handleCharityInfoShare(event, data) {
         const {
             checked,
             name,
@@ -48,7 +73,7 @@ class ManageGiving extends React.Component {
         } = this.props;
         this.setState({ [name]: checked });
         const columnName = givingColumnName[name];
-        if (columnName !== null) {
+        if (columnName === 'charities_dont_share' && checked === false) {
             updateUserPreferences(dispatch, currentUser.id, columnName, checked);
         }
     }
@@ -64,7 +89,12 @@ class ManageGiving extends React.Component {
             charitiesShareMyNameAddress,
             charitiesShareMyNameEmail,
             userName,
+            userNameEmail,
+            userNameAddress,
         } = this.state;
+        const isCharityShareInfo = (charitiesShareMyName || charitiesShareMyNameAddress || charitiesShareMyNameEmail) ? true : false;
+        const userInfoEmail = `${userName}, ${userNameEmail}`;
+        const userInfoAddress = `${userName}, ${userNameAddress}`;
         return (
             <div className="remove-gutter">
                 <div className="userSettingsContainer">
@@ -169,9 +199,10 @@ class ManageGiving extends React.Component {
                                     <Checkbox
                                         toggle
                                         className="c-chkBox"
-                                        id="charitiesShareMyName"
-                                        name="charitiesShareMyName"
-                                        checked={charitiesShareMyName}
+                                        id="isCharityShareInfo"
+                                        name="isCharityShareInfo"
+                                        checked={isCharityShareInfo}
+                                        onChange={this.handleCharityInfoShare}
                                     />
                                 </List.Content>
                                 <List.Content>
@@ -179,6 +210,42 @@ class ManageGiving extends React.Component {
                                 </List.Content>
                             </List.Item>
                         </List>
+                        {
+                            isCharityShareInfo && (
+                                <div className="label-f-normal shareInfoRadio">
+                                    <Form.Field>
+                                        <Radio
+                                            label={userName}
+                                            checked={charitiesShareMyName}
+                                            name="radioGroup"
+                                            id="charitiesShareMyName"
+                                            onChange={this.handleUserPreferenceChange}
+                                            className="grnRadio"
+                                        />
+                                    </Form.Field>
+                                    <Form.Field>
+                                        <Radio
+                                            label={userInfoEmail}
+                                            checked={charitiesShareMyNameEmail}
+                                            name="radioGroup"
+                                            id="charitiesShareMyNameEmail"
+                                            onChange={this.handleUserPreferenceChange}
+                                            className="grnRadio"
+                                        />
+                                    </Form.Field>
+                                    <Form.Field>
+                                        <Radio
+                                            label={userInfoAddress}
+                                            checked={charitiesShareMyNameAddress}
+                                            name="radioGroup"
+                                            id="charitiesShareMyNameAddress"
+                                            onChange={this.handleUserPreferenceChange}
+                                            className="grnRadio"
+                                        />
+                                    </Form.Field>
+                                </div>
+                            )
+                        }
                     </div>
                 </div>
             </div>

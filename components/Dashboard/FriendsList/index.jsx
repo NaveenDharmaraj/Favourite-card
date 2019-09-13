@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import _ from 'lodash';
 import {
@@ -39,9 +40,9 @@ class FriendsList extends React.Component {
         getFriendsList(dispatch, currentUser.attributes.email)
     }
 
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         const {
-            friendsData
+            friendsData,
         } = this.props;
         let {
             friendListLoader,
@@ -58,7 +59,7 @@ class FriendsList extends React.Component {
 
     giveButtonClick(email) {
         const {
-            dispatch
+            dispatch,
         } = this.props;
         storeEmailIdToGive(dispatch, email);
     }
@@ -102,7 +103,7 @@ class FriendsList extends React.Component {
                                     <Card.Header>Find friends to give to </Card.Header>
                                     <Card.Description>
                                         <Link className="lnkChange" route="/give/to/friend/new">
-                                            <Button className="give-frnds-btn">Create gift</Button>
+                                            <Button className="give-frnds-btn">Find friends</Button>
                                         </Link>
                                     </Card.Description>
                                 </Card.Content>
@@ -143,7 +144,7 @@ class FriendsList extends React.Component {
                             <Grid.Column mobile={11} tablet={12} computer={12}>
                                 <Header as="h3">
                                     <Header.Content>
-                                        Give to your friends
+                                        Find friends and give together
                                         <span className="small">Send charitable dollars for friends to give away.</span>
                                     </Header.Content>
                                 </Header>
