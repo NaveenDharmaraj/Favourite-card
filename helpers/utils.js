@@ -1,3 +1,5 @@
+import _isEmpty from 'lodash/isEmpty';
+
 const isFalsy = (val) => {
     const falsyArray = [
         undefined,
@@ -29,7 +31,29 @@ const distanceOfTimeInWords = (from) => {
     return `over ${Math.floor(distanceInMinutes / 525960)} years`;
 };
 
+/**
+   * Return a String getting trimmed based on Count
+   *
+   * @param {string} wordGroup String for getting trimmed.
+   * @param {number} wordCount Count.
+   * @return {string} String after getting trimmed.
+   */
+const renderText = (wordGroup, wordCount = 20) => {
+    let str;
+    if (!_isEmpty(wordGroup)) {
+        str = wordGroup.split(' ');
+        if (!_isEmpty(str) && str.length > 0) {
+            if (str.length > wordCount) {
+                return `${str.slice(0, wordCount).join(' ')}...`;
+            }
+            return wordGroup;
+        }
+    }
+    return null;
+};
+
 export {
     isFalsy,
     distanceOfTimeInWords,
+    renderText,
 };
