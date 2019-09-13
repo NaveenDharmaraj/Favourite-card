@@ -13,6 +13,7 @@ export const actionTypes = {
     GET_GROUP_DETAILS_FROM_SLUG: 'GET_GROUP_DETAILS_FROM_SLUG',
     GET_GROUP_MEMBERS_DETAILS: 'GET_GROUP_MEMBERS_DETAILS',
     GET_GROUP_TRANSACTION_DETAILS: 'GET_GROUP_TRANSACTION_DETAILS',
+    PLACEHOLDER_STATUS: 'PLACEHOLDER_STATUS',
     POST_NEW_ACTIVITY: 'POST_NEW_ACTIVITY',
     REDIRECT_TO_DASHBOARD: 'REDIRECT_TO_DASHBOARD',
     // COMMENT_LIKE_STATUS: 'COMMENT_LIKE_STATUS',
@@ -90,10 +91,9 @@ export const getDetails = async (dispatch, id, type, url) => {
         if (result && !_.isEmpty(result.data)) {
             fsa.payload.data = result.data;
             fsa.payload.nextLink = (result.links.next) ? result.links.next : null;
+            dispatch(fsa);
         }
-    }).catch().finally(() => {
-        dispatch(fsa);
-    });
+    }).catch().finally();
 };
 
 export const getTransactionDetails = async (dispatch, id, url) => {
@@ -103,6 +103,12 @@ export const getTransactionDetails = async (dispatch, id, url) => {
         },
         type: actionTypes.GET_GROUP_TRANSACTION_DETAILS,
     };
+    dispatch({
+        payload: {
+            showPlaceholder: true,
+        },
+        type: actionTypes.PLACEHOLDER_STATUS,
+    });
     const newUrl = !_.isEmpty(url) ? url : `groups/${id}/activities?filter[moneyItems]=all&page[size]=10`;
     await coreApi.get(newUrl, {
         params: {
@@ -112,9 +118,15 @@ export const getTransactionDetails = async (dispatch, id, url) => {
     }).then((result) => {
         if (result && !_.isEmpty(result.data)) {
             fsa.payload.groupTransactions = result;
+            dispatch(fsa);
         }
     }).catch().finally(() => {
-        dispatch(fsa);
+        dispatch({
+            payload: {
+                showPlaceholder: false,
+            },
+            type: actionTypes.PLACEHOLDER_STATUS,
+        });
     });
 };
 
@@ -138,9 +150,15 @@ export const getGroupActivities = async (dispatch, id, url, isPostActivity) => {
                 fsa.payload.nextLink = (result.links.next) ? result.links.next : null;
             }
             fsa.payload.isPostActivity = isPostActivity ? isPostActivity : false;
+            dispatch(fsa);
         }
     }).catch().finally(() => {
-        dispatch(fsa);
+        dispatch({
+            payload: {
+                showPlaceholder: false,
+            },
+            type: actionTypes.PLACEHOLDER_STATUS,
+        });
     });
 };
 

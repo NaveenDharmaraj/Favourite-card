@@ -1,7 +1,9 @@
+import querystring from 'querystring';
 import Auth0Lock from 'auth0-lock';
 import _ from 'lodash';
 import jwt from 'jwt-decode';
 import getConfig from 'next/config';
+import _isEmpty from 'lodash/isEmpty';
 
 import { Router } from '../routes';
 import storage from '../helpers/storage';
@@ -249,7 +251,9 @@ const auth0 = {
      */
     get returnProps() {
         let returnProps = storage.get('auth0ReturnProps', 'local');
-
+        if (typeof returnProps !== 'object') {
+            returnProps = JSON.parse(returnProps);
+        }
         if (isUndefinedOrEmpty(returnProps)) {
             returnProps = {
                 returnTo: '/dashboard',
@@ -391,23 +395,28 @@ const _handleLockSuccess = async ({
     accessToken,
     idToken,
 } = {}) => {
+    let { returnProps } = auth0;
+    const {
+        returnTo,
+    } = returnProps;
     if (!accessToken || !idToken) { return null(); }
     // Sets access token and expiry time in cookies
     chimpLogin(accessToken).then(async ({ currentUser }) => {
         const userId = parseInt(currentUser, 10);
+        await (auth0.returnProps = null);
         await (auth0.accessToken = accessToken);
         await (storage.set('chimpUserId', userId, 'cookie'));
         const dispatch = auth0.storeDispatch;
         await (getUser(dispatch, userId));
-        const returnTo = '/dashboard';
         Router.pushRoute(returnTo);
-        // window.location.href = 
     }).catch(() => {
-        Router.pushRoute('/users/login');
+        let route = '/users/login';
+        if (!_isEmpty(returnTo)) {
+            route += `?returnTo=${returnTo}`;
+        }
+        Router.pushRoute(route);
     });
-    
     // After successfull login redirecting to home
-    
     return null;
 };
 

@@ -7,6 +7,7 @@ import coreApi from '../services/coreApi';
 export const actionTypes = {
     GET_BENEFICIARY_DONEE_LIST: 'GET_BENEFICIARY_DONEE_LIST',
     GET_BENEFICIARY_FROM_SLUG: 'GET_BENEFICIARY_FROM_SLUG',
+    PLACEHOLDER_STATUS: 'PLACEHOLDER_STATUS',
     REDIRECT_TO_DASHBOARD: 'REDIRECT_TO_DASHBOARD',
     SAVE_DEEP_LINK: 'SAVE_DEEP_LINK',
     SAVE_FOLLOW_STATUS: 'SAVE_FOLLOW_STATUS',
@@ -19,17 +20,31 @@ export const getBeneficiaryDoneeList = (dispatch, charityId) => {
         },
         type: actionTypes.GET_BENEFICIARY_DONEE_LIST,
     };
-    utilityApi.get(`/beneficiaryDoneeList/${charityId}?locale=en_ca&tenant_name=chimp&page=1&size=10`).then(
-        (result) => {
-            if (result) {
-                fsa.payload.donationDetails = result;
-            }
-            return dispatch(fsa);
+    dispatch({
+        payload: {
+            showPlaceholder: true,
         },
-    ).catch((error) => {
-        // console.log(error);
-    }).finally(() => {
-        return dispatch(fsa);
+        type: actionTypes.PLACEHOLDER_STATUS,
+    });
+    utilityApi.get(`/beneficiaryDoneeList/${charityId}?locale=en_ca&tenant_name=chimp&page=1&size=20`, {
+        params: {
+            dispatch,
+            uxCritical: true,
+        },
+    }).then(
+        (result) => {
+            if (result && result._embedded && result._embedded.donee_list && !_.isEmpty(result._embedded.donee_list)) {
+                fsa.payload.donationDetails = result;
+                dispatch(fsa);
+            }
+        },
+    ).catch().finally(() => {
+        dispatch({
+            payload: {
+                showPlaceholder: false,
+            },
+            type: actionTypes.PLACEHOLDER_STATUS,
+        });
     });
 };
 

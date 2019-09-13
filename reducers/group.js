@@ -228,6 +228,12 @@ const group = (state = {}, action) => {
                 redirectToDashboard: action.payload.redirectToDashboard,
             };
             break;
+        case 'PLACEHOLDER_STATUS':
+            newState = {
+                ...state,
+                showPlaceholder: action.payload.showPlaceholder,
+            };
+            break;
         default:
             break;
     }

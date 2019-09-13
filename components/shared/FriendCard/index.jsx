@@ -5,32 +5,31 @@ import {
     Grid,
     Card,
 } from 'semantic-ui-react';
-import Link from 'next/link';
 import {
     string,
     bool,
 } from 'prop-types';
 
+import {
+    Link,
+} from '../../../routes';
+
 const FriendCard = (props) => {
     const {
         avatar,
         name,
-        button,
+        id: userId,
     } = props;
     return (
         <Grid.Column>
-            <Card>
-                <Image src={avatar} circular />
-                <Card.Content>
-                    <Card.Header>{name}</Card.Header>
-                    {button
-                        && (
-                            <Link className="lnkChange">
-                                <Button className="give-frnds-btn">Give</Button>
-                            </Link>
-                        )}
-                </Card.Content>
-            </Card>
+            <Link route={(`/users/profile/${userId}`)}>
+                <Card>
+                    <Image src={avatar} circular />
+                    <Card.Content>
+                        <Card.Header>{name}</Card.Header>
+                    </Card.Content>
+                </Card>
+            </Link>
         </Grid.Column>
     );
 };

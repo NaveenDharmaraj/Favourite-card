@@ -43,7 +43,15 @@ class Layout extends React.Component {
             userInfo
         } = this.props;
         if (authRequired && !isAuthenticated) {
-            Router.pushRoute('/users/login');
+            let nextPathname;
+            let searchQuery;
+            if(typeof window !== 'undefined'){
+                 nextPathname = window.location.pathname;
+                 searchQuery = window.location.search;
+            }
+            let pathname = (nextPathname) ?
+            `/users/login?returnTo=${nextPathname}${searchQuery}` : '/users/login';
+            Router.pushRoute(pathname);
         } else {
             await NotificationHelper.getMessages(userInfo, dispatch);
         }
