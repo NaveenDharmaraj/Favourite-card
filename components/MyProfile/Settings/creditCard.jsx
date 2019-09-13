@@ -414,7 +414,7 @@ class MyCreditCards extends React.Component {
             currentActivePage,
             isDropdownOpen,
         } = this.state;
-        let cardList = 'No Data';
+        let cardList = 'No credit card added yet';
         if (!_.isEmpty(userCreditCardList) && _.size(userCreditCardList.data) > 0) {
             cardList = userCreditCardList.data.map((data) => {
                 const lastFour = data.attributes.description.slice(-4);

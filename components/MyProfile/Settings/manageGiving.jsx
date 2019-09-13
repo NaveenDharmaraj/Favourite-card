@@ -19,7 +19,7 @@ const givingColumnName = {
     charitiesShareMyName: 'charities_share_my_name',
     charitiesShareMyNameAddress: 'charities_share_my_name_address',
     charitiesShareMyNameEmail: 'charities_share_my_name_email',
-    givingGroupAdminsShareMyNameEmail: 'giving_group_admins_share_my_name_e_mail',
+    givingGroupAdminsShareMyNameEmail: 'giving_group_admins_share_my_name_email',
     givingGroupMembersGiveAnonymously: 'giving_group_members_give_anonymously',
     givingGroupMembersShareMyGiftamount: 'giving_group_members_share_my_giftamount',
     givingGroupMembersShareMyName: 'giving_group_members_share_my_name',
@@ -34,7 +34,7 @@ class ManageGiving extends React.Component {
             charitiesShareMyName: (!_.isEmpty(props.currentUser)) ? props.currentUser.attributes.preferences.charities_share_my_name : false,
             charitiesShareMyNameAddress: (!_.isEmpty(props.currentUser)) ? props.currentUser.attributes.preferences.charities_share_my_name_address : false,
             charitiesShareMyNameEmail: (!_.isEmpty(props.currentUser)) ? props.currentUser.attributes.preferences.charities_share_my_name_email : false,
-            givingGroupAdminsShareMyNameEmail: (!_.isEmpty(props.currentUser)) ? props.currentUser.attributes.preferences.giving_group_admins_share_my_name_e_mail : false,
+            givingGroupAdminsShareMyNameEmail: (!_.isEmpty(props.currentUser)) ? props.currentUser.attributes.preferences.giving_group_admins_share_my_name_email : false,
             givingGroupMembersGiveAnonymously: (!_.isEmpty(props.currentUser)) ? props.currentUser.attributes.preferences.giving_group_members_give_anonymously : false,
             givingGroupMembersShareMyGiftamount: (!_.isEmpty(props.currentUser)) ? props.currentUser.attributes.preferences.giving_group_members_share_my_giftamount : false,
             givingGroupMembersShareMyName: (!_.isEmpty(props.currentUser)) ? props.currentUser.attributes.preferences.giving_group_members_share_my_name : false,
@@ -173,7 +173,12 @@ class ManageGiving extends React.Component {
                                     />
                                 </List.Content>
                                 <List.Content>
-                                    <List.Description>Give anonymously</List.Description>
+                                    <List.Description>
+                                        Share my name
+                                        (
+                                        {userInfoEmail}
+                                        )
+                                    </List.Description>
                                 </List.Content>
                             </List.Item>
                         </List>

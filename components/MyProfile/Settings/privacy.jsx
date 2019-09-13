@@ -82,7 +82,7 @@ class Privacy extends React.Component {
         const {
             userBlockedFriendsList,
         } = this.props;
-        let friendsBlockedList = 'No Data';
+        let friendsBlockedList = 'No user blocked yet';
         if (!_.isEmpty(userBlockedFriendsList) && _.size(userBlockedFriendsList.data) > 0) {
             friendsBlockedList = userBlockedFriendsList.data.map((data) => {
                 const name = `${data.attributes.first_name} ${data.attributes.last_name}`;
