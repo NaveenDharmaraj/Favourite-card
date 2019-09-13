@@ -36,7 +36,7 @@ class SearchCharitiesGroups extends React.Component {
                             <Card.Content>
                                 <Card.Header>{charity.attributes.name}</Card.Header>
                                 <Card.Description>
-                                    {charity.attributes.description && renderText(charity.attributes.description, 2000)}
+                                    {charity.attributes.description && renderText(charity.attributes.description, 20)}
                                 </Card.Description>
                                 <Card.Meta>
                                     {(!_isEmpty(charity.attributes.city) || !_isEmpty(charity.attributes.province)) && 'Location:' }
