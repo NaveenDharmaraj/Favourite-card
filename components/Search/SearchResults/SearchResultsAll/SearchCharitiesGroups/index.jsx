@@ -13,6 +13,7 @@ import PlaceholderGrid from '../../../../shared/PlaceHolder';
 import { Link } from '../../../../../routes';
 import charityImg from '../../../../../static/images/no-data-avatar-charity-profile.png';
 import groupImg from '../../../../../static/images/no-data-avatar-giving-group-profile.png';
+import { renderText } from '../../../../../helpers/utils';
 
 class SearchCharitiesGroups extends React.Component {
     constructor(props) {
@@ -35,8 +36,7 @@ class SearchCharitiesGroups extends React.Component {
                             <Card.Content>
                                 <Card.Header>{charity.attributes.name}</Card.Header>
                                 <Card.Description>
-                                    {charity.attributes.description && charity.attributes.description.split(' ').slice(0, 20).join(' ')}
-                                    {(charity.attributes.description && charity.attributes.description.split(' ').length > 80) && '...'}
+                                    {charity.attributes.description && renderText(charity.attributes.description, 20)}
                                 </Card.Description>
                                 <Card.Meta>
                                     {(!_isEmpty(charity.attributes.city) || !_isEmpty(charity.attributes.province)) && 'Location:' }
@@ -54,6 +54,7 @@ class SearchCharitiesGroups extends React.Component {
         return 'No charities available';
     }
 
+
     renderGroupComponent() {
         let groupsComponent = [];
         const {
@@ -70,8 +71,7 @@ class SearchCharitiesGroups extends React.Component {
                                 <Card.Content>
                                     <Card.Header>{group.attributes.name}</Card.Header>
                                     <Card.Description>
-                                        {group.attributes.description && group.attributes.description.split(' ').slice(0, 20).join(' ')}
-                                        {(group.attributes.description && group.attributes.description.split(' ').length > 80) && '...'}
+                                        {group.attributes.description && renderText(group.attributes.description, 20)}
                                     </Card.Description>
                                     <Card.Meta>
                                         {(!_isEmpty(group.attributes.city) || !_isEmpty(group.attributes.province)) && 'Location:' }
