@@ -58,7 +58,7 @@ export const validateNewUser = (dispatch, emailId) => {
         });
         return dispatch({
             payload: {
-                userExists: result.email_exists,
+                userExists: result.data[0].attributes.email_exists,
             },
             type: actionTypes.USER_EXISTS,
         });
