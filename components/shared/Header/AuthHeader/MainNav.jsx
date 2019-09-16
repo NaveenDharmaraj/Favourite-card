@@ -12,9 +12,16 @@ import {
     string,
     func,
 } from 'prop-types';
+import getConfig from 'next/config';
 
 import { Link } from '../../../../routes';
 import { withTranslation } from '../../../../i18n';
+
+const { publicRuntimeConfig } = getConfig();
+
+const {
+    RAILS_APP_URL_ORIGIN,
+} = publicRuntimeConfig;
 
 const MainNavItem = (props) => {
     const {
@@ -24,7 +31,7 @@ const MainNavItem = (props) => {
     } = props;
     if(isExternal) {
         return (
-            <Link href={location}>
+            <Link href={`${RAILS_APP_URL_ORIGIN}${location}`}>
                 <Menu.Item as="a">
                     {name}
                 </Menu.Item>

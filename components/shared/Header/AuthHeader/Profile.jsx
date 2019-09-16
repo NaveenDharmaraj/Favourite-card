@@ -19,12 +19,18 @@ import {
     func,
     bool,
 } from 'prop-types';
+import getConfig from 'next/config';
 
 import { withTranslation } from '../../../../i18n';
 import { Link } from '../../../../routes';
 import IconIndividual from '../../../../static/images/chimp-icon-individual.png';
 import SwitchAccountModal from './SwitchAccountModal';
 
+const { publicRuntimeConfig } = getConfig();
+
+const {
+    RAILS_APP_URL_ORIGIN,
+} = publicRuntimeConfig;
 
 class Profile extends React.Component {
     constructor(props) {
@@ -65,9 +71,9 @@ class Profile extends React.Component {
         let accountUrl = `/user/edit`;
         if (accountType === 'company') {
             accountSettingsText = formatMessage('companyAccountSettings');
-            accountUrl = `companies/${slug}/edit`;
+            accountUrl = `${RAILS_APP_URL_ORIGIN}/companies/${slug}/edit`;
         } else if (accountType === 'charity') {
-            accountUrl = `/beneficiaries/${slug}/info`;
+            accountUrl = `${RAILS_APP_URL_ORIGIN}/beneficiaries/${slug}/info`;
         }
         return (
             <Fragment>
@@ -119,7 +125,7 @@ class Profile extends React.Component {
                             {
                                 (isAdmin) && (
                                     <Fragment>
-                                        <Link href="/chimp-admin/users">
+                                        <Link href={`${RAILS_APP_URL_ORIGIN}/chimp-admin/users`}>
                                             <List.Item as="a">
                                                 {formatMessage('chimpAdmin')}
                                             </List.Item>
