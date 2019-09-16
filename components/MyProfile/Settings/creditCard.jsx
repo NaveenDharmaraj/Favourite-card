@@ -426,19 +426,24 @@ class MyCreditCards extends React.Component {
                             <Dropdown className="rightBottom" icon="ellipsis horizontal">
                                 <Dropdown.Menu>
                                     <Dropdown.Item
-                                    text="Edit" 
-                                    open={isDropdownOpen}
-                                    onOpen={this.onOpen}
-                                    onClose={this.onClose}
-                                    onClick={() => {this.handleEditClick(data)}}
+                                        text="Edit" 
+                                        open={isDropdownOpen}
+                                        onOpen={this.onOpen}
+                                        onClose={this.onClose}
+                                        onClick={() => {this.handleEditClick(data)}}
                                     />
-                                    <Dropdown.Item
-                                    text="Delete" 
-                                    open={isDropdownOpen}
-                                    onOpen={this.onOpen}
-                                    onClose={this.onClose}
-                                    onClick={() => {this.handleDeleteClick(data.attributes.description, data.id)}}
-                                    />
+                                    {
+                                        !data.attributes.default && (
+                                            <Dropdown.Item
+                                                text="Delete" 
+                                                open={isDropdownOpen}
+                                                onOpen={this.onOpen}
+                                                onClose={this.onClose}
+                                                onClick={() => {this.handleDeleteClick(data.attributes.description, data.id)}}
+                                            />
+                                        )
+                                    }
+                                    
                                 </Dropdown.Menu>
                             </Dropdown>
                         </List.Content>

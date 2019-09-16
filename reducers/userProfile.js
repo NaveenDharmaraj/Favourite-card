@@ -113,6 +113,12 @@ const userProfile = (state = {}, action) => {
                 newCreditCardApiCall: action.payload.newCreditCardApiCall,
             };
             break;
+        case 'UPDATE_USER_BASIC_PROFILE_STATUS':
+            newState = {
+                ...state,
+                updateBasicUserProfileCall: action.payload.updateBasicUserProfileCall,
+            };
+            break;
         default:
             break;
     }

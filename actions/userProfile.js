@@ -30,6 +30,7 @@ export const actionTypes = {
     UPDATE_USER_PASSWORD: 'UPDATE_USER_PASSWORD',
     UPDATE_USER_PREFERENCES: 'UPDATE_USER_PREFERENCES',
     UPDATE_USER_PRIVACY_SETTING: 'UPDATE_USER_PRIVACY_SETTING',
+    UPDATE_USER_BASIC_PROFILE_STATUS: 'UPDATE_USER_BASIC_PROFILE_STATUS',
     USER_PROFILE_ADMIN_GROUP: 'USER_PROFILE_ADMIN_GROUP',
     USER_PROFILE_BASIC: 'USER_PROFILE_BASIC',
     USER_PROFILE_BASIC_FRIEND: 'USER_PROFILE_BASIC_FRIEND',
@@ -356,6 +357,12 @@ const saveUserBasicProfile = (dispatch, userData, userId, email) => {
         },
         type: actionTypes.UPDATE_USER_BASIC_PROFILE,
     };
+    dispatch({
+        payload: {
+            updateBasicUserProfileCall: true,
+        },
+        type: actionTypes.UPDATE_USER_BASIC_PROFILE_STATUS,
+    });
     const bodyData = {
         data: {
             description: userData.about,
@@ -378,6 +385,12 @@ const saveUserBasicProfile = (dispatch, userData, userId, email) => {
     ).catch((error) => {
         fsa.error = error;
     }).finally(() => {
+        dispatch({
+            payload: {
+                updateBasicUserProfileCall: false,
+            },
+            type: actionTypes.UPDATE_USER_BASIC_PROFILE_STATUS,
+        });
         dispatch(fsa);
     });
 };

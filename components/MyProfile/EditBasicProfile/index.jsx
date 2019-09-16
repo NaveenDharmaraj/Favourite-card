@@ -11,7 +11,7 @@ import {
 } from 'react-redux';
 
 import {
-    saveUserBasicProfile,
+    saveUserBasicProfile, updateUserPreferences,
 } from '../../../actions/userProfile';
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 import PrivacySetting from '../../shared/Privacy';
@@ -20,6 +20,7 @@ class EditBasicProfile extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            showSuccessMessage: false,
             userBasicDetails: {
                 about: (!_.isEmpty(props.userData)) ? props.userData.description : '',
                 firstName: (!_.isEmpty(props.userData)) ? props.userData.first_name : '',
@@ -41,6 +42,7 @@ class EditBasicProfile extends React.Component {
         } = this.props;        
         if (!_.isEqual(userData, prevProps.userData)) {
             this.setState({
+                showSuccessMessage: true,
                 userBasicDetails: {
                     about: userData.description,
                     firstName: userData.first_name,
@@ -96,6 +98,7 @@ class EditBasicProfile extends React.Component {
             userBasicDetails[name] = newValue;
         }
         this.setState({
+            showSuccessMessage: false,
             userBasicDetails: {
                 ...this.state.userBasicDetails,
                 ...userBasicDetails,
@@ -185,6 +188,7 @@ class EditBasicProfile extends React.Component {
 
     render() {
         const {
+            showSuccessMessage,
             userBasicDetails: {
                 firstName,
                 lastName,
@@ -196,6 +200,7 @@ class EditBasicProfile extends React.Component {
         } = this.state;
         const {
             userData,
+            updateBasicUserProfileCall,
         } = this.props;
         const privacyColumn = 'giving_goal_visibility';
         return (
@@ -211,6 +216,7 @@ class EditBasicProfile extends React.Component {
                                         placeholder="First name"
                                         id="firstName"
                                         name="firstName"
+                                        maxLength="50"
                                         onChange={this.handleInputChange}
                                         onBlur={this.handleInputOnBlur}
                                         error={!validity.isFirstNameNotNull}
@@ -228,6 +234,7 @@ class EditBasicProfile extends React.Component {
                                         id="lastName"
                                         name="lastName"
                                         placeholder="Last name"
+                                        maxLength="50"
                                         onChange={this.handleInputChange}
                                         onBlur={this.handleInputOnBlur}
                                         error={!validity.isLastNameNotNull}
@@ -242,9 +249,10 @@ class EditBasicProfile extends React.Component {
                             <Form.Field>
                                 <Form.TextArea
                                     label="About"
-                                    placeholder="Tell us a bit yourself..."
+                                    placeholder="Tell us a bit about yourself..."
                                     id="about"
                                     name="about"
+                                    maxLength="1000"
                                     onChange={this.handleInputChange}
                                     onBlur={this.handleInputOnBlur}
                                     error={!validity.isDescriptionNotNull}
@@ -261,6 +269,7 @@ class EditBasicProfile extends React.Component {
                                 placeholder="Location"
                                 id="location"
                                 name="location"
+                                maxLength="150"
                                 onChange={this.handleInputChange}
                                 onBlur={this.handleInputOnBlur}
                                 value={location}
@@ -278,6 +287,7 @@ class EditBasicProfile extends React.Component {
                                         placeholder="Giving Goal"
                                         id="givingGoal"
                                         name="givingGoal"
+                                        maxLength="8"
                                         onChange={this.handleInputChange}
                                         onBlur={this.handleInputOnBlur}
                                         value={givingGoal}
@@ -295,8 +305,21 @@ class EditBasicProfile extends React.Component {
                                 <Button basic size="tiny" onClick={() => this.handleAmount(1000)}>$1000</Button>
                                 <Button basic size="tiny" onClick={() => this.handleAmount(1500)}>$1500</Button>
                             </Form.Field>
+                            {
+                                showSuccessMessage && (
+                                    <p>
+                                        User Profile Basic details updated Successfully.
+                                    </p>
+                                )
+                            }
                             <div className="pt-2">
-                                <Button className="blue-btn-rounded-def w-140" onClick={this.handleSubmit}>Save</Button>
+                                <Button
+                                    className="blue-btn-rounded-def w-140"
+                                    onClick={this.handleSubmit}
+                                    disabled={updateBasicUserProfileCall}
+                                >
+                                    Save
+                                </Button>
                             </div>
                         </Form>
                     </Grid.Column>
@@ -309,6 +332,7 @@ class EditBasicProfile extends React.Component {
 function mapStateToProps(state) {
     return {
         currentUser: state.user.info,
+        updateBasicUserProfileCall: state.userProfile.updateBasicUserProfileCall,
         userProfileBasicData: state.userProfile.userProfileBasicData,
     };
 }
