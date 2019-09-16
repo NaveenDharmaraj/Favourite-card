@@ -112,9 +112,9 @@ class GroupsAndCampaigns extends React.Component {
                                     You can give more as a part of group, and you can raise more when it’s easy to manage.
                                     </Header.Subheader>
                                 </Header>
-                                <Link route='/groups/new'>
+                                <a href='/groups/new'>
                                     <Button fluid className="success-btn-rounded-def">Create a new Group</Button>
-                                </Link>
+                                </a>
                             </div>
                         </div>
                     </div>
