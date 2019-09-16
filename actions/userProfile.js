@@ -734,7 +734,11 @@ const updateUserPreferences = (dispatch, userId, preferenceColumn, preferenceVal
     } else if (preferenceColumn === 'charities_dont_share' && preferenceValue === false) {
         dataName.charities_share_my_name_address = false;
         dataName.charities_share_my_name = false;
-        dataName[preferenceColumn] = false;
+        dataName.charities_share_my_name_email = false;
+    } else if (preferenceColumn === 'charities_dont_share' && preferenceValue === true) {
+        dataName.charities_share_my_name_address = false;
+        dataName.charities_share_my_name = true;
+        dataName.charities_share_my_name_email = false;
     } else {
         dataName[preferenceColumn] = preferenceValue;
     }
@@ -747,7 +751,6 @@ const updateUserPreferences = (dispatch, userId, preferenceColumn, preferenceVal
             type: 'users',
         },
     };
-    console.log(bodyData);
     return coreApi.patch(`/users/${userId}`, bodyData).then(
         (result) => {
             console.log(result);

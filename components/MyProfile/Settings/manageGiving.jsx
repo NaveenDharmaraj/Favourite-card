@@ -41,6 +41,7 @@ class ManageGiving extends React.Component {
             userName: (!_.isEmpty(props.currentUser)) ? `${props.currentUser.attributes.firstName} ${props.currentUser.attributes.lastName}` : '',
             userNameEmail: (!_.isEmpty(props.currentUser)) ? props.currentUser.attributes.email : '',
             userNameAddress: '', //(!_.isEmpty(props.currentUser)) && typeof props.currentUser.preferences.address !== 'undefined' ? props.currentUser.preferences.address : '',
+            isCharityShareInfo: (props.currentUser.attributes.preferences.charities_share_my_name || props.currentUser.attributes.preferences.charities_share_my_name_address || props.currentUser.attributes.preferences.charities_share_my_name_email) ? true : false,
         };
         this.handleUserPreferenceChange = this.handleUserPreferenceChange.bind(this);
         this.handleCharityInfoShare = this.handleCharityInfoShare.bind(this);
@@ -65,16 +66,31 @@ class ManageGiving extends React.Component {
     handleCharityInfoShare(event, data) {
         const {
             checked,
-            name,
+            id,
         } = data;
         const {
             currentUser,
             dispatch,
         } = this.props;
-        this.setState({ [name]: checked });
-        const columnName = givingColumnName[name];
+        let {
+            charitiesShareMyName,
+            charitiesShareMyNameAddress,
+            charitiesShareMyNameEmail,
+        } = this.state;
+        this.setState({ [id]: checked });
+        const columnName = givingColumnName[id];
         if (columnName === 'charities_dont_share' && checked === false) {
             updateUserPreferences(dispatch, currentUser.id, columnName, checked);
+        } else {
+            charitiesShareMyName = true;
+            charitiesShareMyNameAddress = false;
+            charitiesShareMyNameEmail = false;
+            this.setState({ 
+                charitiesShareMyName,
+                charitiesShareMyNameAddress,
+                charitiesShareMyNameEmail,
+            });
+            updateUserPreferences(dispatch, currentUser.id, columnName, true);
         }
     }
 
@@ -91,8 +107,8 @@ class ManageGiving extends React.Component {
             userName,
             userNameEmail,
             userNameAddress,
+            isCharityShareInfo,
         } = this.state;
-        const isCharityShareInfo = (charitiesShareMyName || charitiesShareMyNameAddress || charitiesShareMyNameEmail) ? true : false;
         const userInfoEmail = `${userName}, ${userNameEmail}`;
         const userInfoAddress = `${userName}, ${userNameAddress}`;
         return (
