@@ -135,7 +135,7 @@ export const downloadTaxreceiptDonationsDetail = (dispatch, id, year) => {
         },
         type: actionTypes.DOWNLOAD_TAX_RECEIPT_DONATION_DETAIL,
     });
-    coreApi.get(`/taxReceipt/${id}?format=pdf&year=${year}`,
+    coreApi.get(`/taxReceipts/${id}?format=pdf&year=${year}`,
         {
             params: {
                 dispatch,
