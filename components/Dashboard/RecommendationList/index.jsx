@@ -157,7 +157,8 @@ class RecommendationList extends React.Component {
             viewAllDiv = (
                 <Link route={`/user/recommendations`}>
                     <a>
-                        View all ({recommendationData.count})
+                        View all
+                        {/* ({recommendationData.count}) */}
                     </a>
                 </Link>
             );
