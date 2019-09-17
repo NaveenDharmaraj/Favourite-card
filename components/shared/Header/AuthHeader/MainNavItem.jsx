@@ -2,8 +2,15 @@ import React from 'react';
 import {
     Menu,
 } from "semantic-ui-react";
+import getConfig from 'next/config';
 
 import { Link } from '../../../../routes';
+
+const { publicRuntimeConfig } = getConfig();
+
+const {
+    RAILS_APP_URL_ORIGIN,
+} = publicRuntimeConfig;
 
 const MainNavItem = (props) => {
     const {
@@ -13,7 +20,7 @@ const MainNavItem = (props) => {
     } = props;
     if(isExternal) {
         return (
-            <Link href={location}>
+            <Link href={`${RAILS_APP_URL_ORIGIN}${location}`}>
                 <Menu.Item as="a">
                     {name}
                 </Menu.Item>
