@@ -659,7 +659,7 @@ class MyCreditCards extends React.Component {
                                         />
                                         <Form.Input 
                                             fluid
-                                            label="Expiry Month"
+                                            label="Expiry Year"
                                             placeholder="YYYY"
                                             id="editYear"
                                             name="editYear"

@@ -2,6 +2,7 @@ import React from 'react';
 import {
     Header,
 } from 'semantic-ui-react';
+
 import { Link } from '../../../routes';
 
 // eslint-disable-next-line react/prefer-stateless-function
@@ -17,7 +18,7 @@ class Legal extends React.Component {
                         <p className="bold">Terms and Conditions of use</p>
                         <p>
                             Check out the
-                            <Link route='/terms' >
+                            <Link route="/terms">
                                 <span className="link border"> Terms and Conditions of use.</span>
                             </Link>
                         </p>

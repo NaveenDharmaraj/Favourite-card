@@ -17,7 +17,7 @@ const panes1 = [
     {
         menuItem: {
             content: 'Manage password',
-            icon: 'privacy',
+            icon: 'edit',
             iconPosition: 'left',
             key: 'Manage password',
         },
@@ -58,7 +58,7 @@ const panes1 = [
     {
         menuItem: {
             content: 'Credit Cards',
-            icon: 'credit card outline',
+            icon: 'credit',
             iconPosition: 'left',
             key: 'Credit Cards',
         },
@@ -71,7 +71,7 @@ const panes1 = [
     {
         menuItem: {
             content: 'Notifications',
-            icon: 'bell outline',
+            icon: 'bell',
             iconPosition: 'left',
             key: 'Notifications',
         },
@@ -84,7 +84,7 @@ const panes1 = [
     {
         menuItem: {
             content: 'Support',
-            icon: 'question circle outline',
+            icon: 'support',
             iconPosition: 'left',
             key: 'Support',
         },
