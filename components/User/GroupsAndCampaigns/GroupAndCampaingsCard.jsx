@@ -64,17 +64,17 @@ class GroupsAndCampaignsCard extends React.Component {
             }
         }
         const displayAvatar = (!_.isEmpty(avatar)) ? avatar : placeholder;
-        return(
+        return (
             <Grid.Column>
                 <Card className="left-img-card" fluid>
                     <Card.Header>
-                        <Grid verticalAlign="middle">
+                        <Grid>
                             <Grid.Column width={6}>
                                 <Image src={displayAvatar} />
                             </Grid.Column>
-                            <Grid.Column width={10}>
+                            <Grid.Column width={10} verticalAlign="top">
                                 <Grid columns="2">
-                                    <Grid.Row style={{padding:'0.5rem 0rem'}}>
+                                    <Grid.Row style={{padding:'1.7rem 0rem 0.2rem'}}>
                                         <Grid.Column>
                                             <Header as="h4">
                                                 <Header.Content>
@@ -102,7 +102,7 @@ class GroupsAndCampaignsCard extends React.Component {
                                                                 }
                                                                 {
                                                                     (listingType !== 'administeredCampaigns') &&
-                                                                    <Dropdown.Item text="Leave Group" onClick={()=>{this.openModal()}}/>
+                                                                    <Dropdown.Item text="Leave Group" onClick={() => { this.openModal(); }} />
                                                                 }
                                                             </Dropdown.Menu>
                                                         </Dropdown>

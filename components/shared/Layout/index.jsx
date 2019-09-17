@@ -133,7 +133,9 @@ class Layout extends React.Component {
                                         ))}
                                     </Container>
                                 }
+                                <div style={{minHeight:'60vh'}}>
                                 {children}
+                                </div>
                         </Responsive>
                         <Footer />
                     </ErrorBoundary>

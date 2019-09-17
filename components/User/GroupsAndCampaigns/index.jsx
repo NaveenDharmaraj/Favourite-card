@@ -1,11 +1,13 @@
 import React from 'react';
 import {
     Container,
+    Grid,
     Header,
+    Image,
     Button,
-    Input,
     Divider,
 } from 'semantic-ui-react';
+import _ from 'lodash';
 import {
     connect,
 } from 'react-redux';
@@ -16,6 +18,9 @@ import {
 } from '../../../actions/user';
 import { Link } from '../../../routes';
 import PlaceholderGrid from '../../shared/PlaceHolder';
+import noDataImgCampain from '../../../static/images/campaignprofile_nodata_illustration.png';
+import noDataggManage from '../../../static/images/givinggroupsyoumanage_nodata_illustration.png';
+import noDataggJoin from '../../../static/images/givinggroupsyoujoined_nodata_illustration.png';
 
 import GroupsAndCampaignsList from './GroupsAndCampaignsList';
 
@@ -66,8 +71,8 @@ class GroupsAndCampaigns extends React.Component {
                 showloaderForMemberGroups = false;
             }
             this.setState({
-                showloaderForCampaigns,
                 showloaderForAdministeredGroups,
+                showloaderForCampaigns,
                 showloaderForMemberGroups,
             });
         }
@@ -82,18 +87,109 @@ class GroupsAndCampaigns extends React.Component {
             return (
                 <PlaceholderGrid row={2} column={3} />
             );
-        } else if (!_.isEmpty(typeData) && !_.isEmpty(typeData.data)
+        } if (!_.isEmpty(typeData) && !_.isEmpty(typeData.data)
                     && typeData.data.length > 0) {
-            return (<GroupsAndCampaignsList
-                listingType={type}
-                displayData={typeData}
-                dispatch={dispatch}
-                errorMessage={displayError}
-            />);
-        } else if(!_.isEmpty(typeData) && _.isEmpty(typeData.data)){
-            return "No data";
+            return (
+                <GroupsAndCampaignsList
+                    listingType={type}
+                    displayData={typeData}
+                    dispatch={dispatch}
+                    errorMessage={displayError}
+                />
+            );
+        } if (!_.isEmpty(typeData) && _.isEmpty(typeData.data)) {
+            let data = '';
+            switch (type) {
+                case 'administeredGroups':
+                    data = (
+                        <div className="ggManage noData mt-1 mb-2">
+                            <Grid verticalAlign="middle">
+                                <Grid.Row>
+                                    <Grid.Column mobile={16} tablet={8} computer={8}>
+                                        <Image src={noDataggManage} className="noDataLeftImg"/>
+                                    </Grid.Column>
+                                    <Grid.Column mobile={16} tablet={8} computer={8}>
+                                        <div className="givingGroupNoDataContent">
+                                            <Header as="h4">
+                                                <Header.Content>
+                                                Groups you manage will appear here
+                                                </Header.Content>
+                                            </Header>
+                                            <div>
+                                                <a href={`${RAILS_APP_URL_ORIGIN}/groups/new`}>
+                                                    <Button className="success-btn-rounded-def">Create a Giving Group</Button>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </Grid.Column>
+                                </Grid.Row>
+                            </Grid>
+                        </div>
+                    );
+                    break;
+                case 'groupsWithMemberships':
+                    data = (
+                        <div className="ggJoin noData mt-1 mb-2">
+                            <Grid verticalAlign="middle">
+                                <Grid.Row>
+                                    <Grid.Column mobile={16} tablet={8} computer={8}>
+                                        <Image src={noDataggJoin} className="noDataLeftImg" />
+                                    </Grid.Column>
+                                    <Grid.Column mobile={16} tablet={8} computer={8}>
+                                        <div className="givingGroupNoDataContent">
+                                            <Header as="h4">
+                                                <Header.Content>
+                                                Groups you've joined will appear here
+                                                </Header.Content>
+                                            </Header>
+                                            <div>
+                                                <Link route="/search">
+                                                    <Button className="white-btn-rounded-def">Find a Giving Group</Button>
+                                                </Link>
+                                            </div>
+                                        </div>
+                                    </Grid.Column>
+                                </Grid.Row>
+                            </Grid>
+                        </div>
+                    );
+                    break;
+                case 'administeredCampaigns':
+                    data = (
+                        <div className="givingGroup noData mt-1 mb-2">
+                            <Grid verticalAlign="middle">
+                                <Grid.Row>
+                                    <Grid.Column mobile={16} tablet={8} computer={8}>
+                                        <Image src={noDataImgCampain} className="noDataLeftImg" />
+                                    </Grid.Column>
+                                    <Grid.Column mobile={16} tablet={8} computer={8}>
+                                        <div className="givingGroupNoDataContent">
+                                            <Header as="h4">
+                                                <Header.Content>
+                                                    Support this Campaign by creating a Giving Group
+                                                    <Header.Subheader>
+                                                    A Giving Group is like a fundraising page where multiple people can combine forces, pool or raise money, and support causes together.
+                                                    </Header.Subheader>
+                                                </Header.Content>
+                                            </Header>
+                                            <div>
+                                                <a href={`${RAILS_APP_URL_ORIGIN}/groups/new`}>
+                                                    <Button className="success-btn-rounded-def">Create a Giving Group</Button>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </Grid.Column>
+                                </Grid.Row>
+                            </Grid>
+                        </div>
+                    );
+                    break;
+                default:
+                    break;
+            }
+            return data;
         }
-
+        return null;
     }
 
     render() {
@@ -136,14 +232,6 @@ class GroupsAndCampaigns extends React.Component {
                 </div>
                 <div className="pt-1 pb-3">
                     {this.renderList(showloaderForAdministeredGroups, 'administeredGroups', administeredGroups)}
-                    {/* { (showloaderForAdministeredGroups) ? <PlaceholderGrid row={2} column={3} /> : (
-                        <GroupsAndCampaignsList
-                            listingType='administeredGroups'
-                            displayData={administeredGroups}
-                            dispatch={dispatch}
-                            errorMessage={displayError}
-                        />
-                    )} */}
                 </div>
                 <Divider />
                 <div className="pt-2 pb-2">
