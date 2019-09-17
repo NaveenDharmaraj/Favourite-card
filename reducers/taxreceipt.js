@@ -47,7 +47,7 @@ const taxreceipt = (state = {}, action) => {
             };
             break;
         case 'ADD_TAX_RECEIPT_PROFILE':
-            const AddTaxProfile = Object.assign({}, action.payload.editedTaxProfile);
+            const AddTaxProfile = _cloneDeep(action.payload.editedTaxProfile);
             if (!_isEmpty(AddTaxProfile) && !_isEmpty(AddTaxProfile.attributes) && AddTaxProfile.attributes.isDefault) {
                 if (!_isEmpty(state.defaultTaxId)) {
                     state.taxReceiptProfileList.find((taxReceiptProfile) => {
