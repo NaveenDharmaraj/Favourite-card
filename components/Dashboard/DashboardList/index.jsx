@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import _ from 'lodash';
 import {
@@ -211,7 +212,7 @@ class DashboradList extends React.Component {
                     <div className="paginationWraper">
                         <div className="db-pagination right-align pt-2">
                             {
-                                !_.isEmpty(dataList) && (
+                                !_.isEmpty(dataList) && dataList.count > 1 && (
                                     <Pagination
                                         activePage={currentActivePage}
                                         totalPages={dataList.count}
