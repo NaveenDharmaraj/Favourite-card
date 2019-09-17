@@ -274,9 +274,9 @@ export const getUser = (dispatch, userId, token = null) => {
                 _.merge(fsa.payload, {
                     activeRoleId,
                     currentAccount: {},
+                    info: data,
                     isAdmin: false,
                     otherAccounts: [],
-                    info: data,
                 });
                 if (!_.isEmpty(data.relationships.chimpAdminRole.data)) {
                     fsa.payload.isAdmin = true;
