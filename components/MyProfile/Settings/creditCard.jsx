@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { Fragment } from 'react';
+import _ from 'lodash';
 import {
     Button,
     Header,
@@ -30,6 +31,7 @@ import {
 import Pagination from '../../shared/Pagination';
 import PlaceHolderGrid from '../../shared/PlaceHolder';
 
+const ModalStatusMessage = dynamic(() => import('../../shared/ModalStatusMessage'));
 const CreditCard = dynamic(() => import('../../shared/CreditCard'));
 
 const { publicRuntimeConfig } = getConfig();
@@ -42,6 +44,10 @@ class MyCreditCards extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            buttonClicked: false,
+            deleteButtonClicked: false,
+            editButtonClicked: false,
+            errorMessage: null,
             currentActivePage: 1,
             isAddModalOpen: false,
             isEditModalOpen: false,
@@ -68,7 +74,9 @@ class MyCreditCards extends React.Component {
             creditCard: {
                 value: 0,
             },
+            statusMessage: false,
             stripeCreditCard: '',
+            successMessage: '',
             cardHolderName: '',
             myCreditCardListLoader: !props.userCreditCardList,
         };
@@ -197,6 +205,9 @@ class MyCreditCards extends React.Component {
     }
 
     handleAddButtonClick() {
+        this.setState({
+            buttonClicked: true,
+        });
         const {
             creditCard,
             inValidCardNumber,
@@ -225,8 +236,20 @@ class MyCreditCards extends React.Component {
                 },
                 dispatch,
             } = this.props;
-            saveNewCreditCard(dispatch, stripeCreditCard, cardHolderName, id, isDefaultCard, currentActivePage);            
-            this.setState({ isDefaultCard: false });
+            saveNewCreditCard(dispatch, stripeCreditCard, cardHolderName, id, isDefaultCard, currentActivePage).then(() => {
+                this.setState({
+                    buttonClicked: true,
+                    errorMessage: null,
+                    successMessage: 'Your Credit Card Saved Successfully.',
+                    statusMessage: true,
+                });
+            }).catch((err) => {
+                this.setState({
+                    buttonClicked: true,
+                    errorMessage: 'Error in saving the Credit Card.',
+                    statusMessage: true,
+                });
+            });
         }
     }
 
@@ -312,6 +335,9 @@ class MyCreditCards extends React.Component {
     }
 
     handleEditSave() {
+        this.setState({
+            editButtonClicked: true,
+        });
         const isEditDataValid = this.validateEditForm();
         if(isEditDataValid) {
             const {
@@ -325,25 +351,40 @@ class MyCreditCards extends React.Component {
                 },
                 dispatch,
             } = this.props;
-            editUserCreditCard(dispatch, editDetails);
+            editUserCreditCard(dispatch, editDetails).then(() => {
+                this.setState({
+                    editButtonClicked: true,
+                    errorMessage: null,
+                    successMessage: 'Your Credit Card updated Successfully.',
+                    statusMessage: true,
+                });
+                this.setState({
+                    editDetails: {
+                        editCardNumber: '',
+                        editNameOnCard: '',
+                        editPaymetInstrumentId: '',
+                        editMonth: '',
+                        editYear: '',
+                        isValidMonth: '',
+                        isValidYear: '',
+                    },
+                    isDefaultCard: false,
+                    isEditModalOpen: false,
+                })
+            }).catch((err) => {
+                this.setState({
+                    editButtonClicked: true,
+                    errorMessage: 'Error in updating Credit Card.',
+                    statusMessage: true,
+                });
+            });;
             if (isDefaultCard) {
                 setUserDefaultCard(dispatch, editDetails.editPaymetInstrumentId, id, currentActivePage);
-            }
-            this.setState({
-                editDetails: {
-                    editCardNumber: '',
-                    editNameOnCard: '',
-                    editPaymetInstrumentId: '',
-                    editMonth: '',
-                    editYear: '',
-                    isValidMonth: '',
-                    isValidYear: '',
-                },
-                isDefaultCard: false,
-                isEditModalOpen: false,
-            })
+            }            
         } else {
-            console.log('Form Not Valid');
+            this.setState({
+                editButtonClicked: false,
+            });
         }
     }
 
@@ -367,10 +408,34 @@ class MyCreditCards extends React.Component {
                 id,
             },
         } = this.props;
-        deleteUserCreditCard(dispatch, deletePaymentInstrumentId, id, currentActivePage);
         this.setState({
-            isDeleteMessageOpen: false,
-        })
+            deleteButtonClicked: true,
+        });
+        if(deletePaymentInstrumentId != null) {
+            deleteUserCreditCard(dispatch, deletePaymentInstrumentId, id, currentActivePage).then(() => {
+                this.setState({
+                    deleteButtonClicked: true,
+                    errorMessage: null,
+                    successMessage: 'Your Credit Card deleted Successfully.',
+                    statusMessage: true,
+                });
+                this.setState({
+                    isDeleteMessageOpen: false,
+                });
+            }).catch((err) => {
+                this.setState({
+                    deleteButtonClicked: true,
+                    errorMessage: 'Error in deleting your Credit Card.',
+                    statusMessage: true,
+                });
+            });
+        } else {
+            this.setState({
+                deleteButtonClicked: false,
+            });
+        }
+        
+        
     }
 
     handleDeleteCancelClick() {
@@ -524,6 +589,10 @@ class MyCreditCards extends React.Component {
 
     render() {
         const {
+            buttonClicked,
+            deleteButtonClicked,
+            editButtonClicked,
+            errorMessage,
             inValidCardNumber,
             inValidExpirationDate,
             inValidNameOnCard,
@@ -539,8 +608,11 @@ class MyCreditCards extends React.Component {
                 editYear,
             },
             myCreditCardListLoader,
+            statusMessage,
+            successMessage,
         } = this.state;
         const {
+            editCreditCardApiCall,
             newCreditCardApiCall,
         } = this.props;
         const formatMessage = this.props.t;
@@ -613,6 +685,7 @@ class MyCreditCards extends React.Component {
                                             <Button
                                                 className="blue-btn-rounded-def sizeBig w-180"
                                                 onClick={this.handleAddButtonClick}
+                                                disabled={buttonClicked}
                                             >
                                                 Add
                                             </Button>
@@ -621,6 +694,16 @@ class MyCreditCards extends React.Component {
                                 </Modal>
                             </div>
                         </Grid.Column>
+                    </Grid.Row>
+                    <Grid.Row>
+                    {
+                        statusMessage && (
+                            <ModalStatusMessage 
+                                message = {!_.isEmpty(successMessage) ? successMessage : null}
+                                error = {!_.isEmpty(errorMessage) ? errorMessage : null}
+                            />
+                        )
+                    }
                     </Grid.Row>
                 </Grid>
                 <div>
@@ -685,6 +768,7 @@ class MyCreditCards extends React.Component {
                                 <Button
                                     className="blue-btn-rounded-def sizeBig w-180"
                                     onClick={this.handleEditSave}
+                                    disabled={editButtonClicked}
                                 >
                                     Save
                                 </Button>
@@ -703,12 +787,14 @@ class MyCreditCards extends React.Component {
                             <Button
                                 className="danger-btn-rounded-def c-small"
                                 onClick={this.handleDeleteConfirmClick}
+                                disabled={deleteButtonClicked}
                             >
                                 Delete
                             </Button>
                             <Button 
                                 className="blue-bordr-btn-round-def c-small"
                                 onClick={this.handleDeleteCancelClick}
+                                disabled={deleteButtonClicked}
                             >
                                 Cancel
                             </Button>

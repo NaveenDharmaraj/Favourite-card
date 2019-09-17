@@ -9,18 +9,23 @@ import {
 import {
     connect,
 } from 'react-redux';
+import dynamic from 'next/dynamic';
 
 import {
-    saveUserBasicProfile, updateUserPreferences,
+    saveUserBasicProfile,
 } from '../../../actions/userProfile';
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 import PrivacySetting from '../../shared/Privacy';
+const ModalStatusMessage = dynamic(() => import('../../shared/ModalStatusMessage'));
 
 class EditBasicProfile extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            showSuccessMessage: false,
+            buttonClicked: false,
+            errorMessage: null,
+            statusMessage: false,
+            successMessage: '',
             userBasicDetails: {
                 about: (!_.isEmpty(props.userData)) ? props.userData.description : '',
                 firstName: (!_.isEmpty(props.userData)) ? props.userData.first_name : '',
@@ -42,7 +47,6 @@ class EditBasicProfile extends React.Component {
         } = this.props;        
         if (!_.isEqual(userData, prevProps.userData)) {
             this.setState({
-                showSuccessMessage: true,
                 userBasicDetails: {
                     about: userData.description,
                     firstName: userData.first_name,
@@ -98,7 +102,7 @@ class EditBasicProfile extends React.Component {
             userBasicDetails[name] = newValue;
         }
         this.setState({
-            showSuccessMessage: false,
+            statusMessage: false,
             userBasicDetails: {
                 ...this.state.userBasicDetails,
                 ...userBasicDetails,
@@ -166,6 +170,9 @@ class EditBasicProfile extends React.Component {
     }
 
     handleSubmit() {
+        this.setState({
+            buttonClicked: true,
+        });
         const isValid = this.validateForm();
         if (isValid) {
             const {
@@ -180,15 +187,34 @@ class EditBasicProfile extends React.Component {
             const {
                 userBasicDetails,
             } = this.state;
-            saveUserBasicProfile(dispatch, userBasicDetails, id, email);
+            saveUserBasicProfile(dispatch, userBasicDetails, id, email).then(() => {
+                this.setState({
+                    buttonClicked: true,
+                    errorMessage: null,
+                    successMessage: 'User Profile basic details saved Successfully.',
+                    statusMessage: true,
+                    buttonClicked: false,
+                });
+            }).catch((err) => {
+                this.setState({
+                    buttonClicked: true,
+                    errorMessage: 'Error in saving the Credit Card.',
+                    statusMessage: true,
+                });
+            });
         } else {
-            console.log('Invalid Data');
+            this.setState({
+                buttonClicked: false,
+            });
         }
     }
 
     render() {
         const {
-            showSuccessMessage,
+            buttonClicked,
+            errorMessage,
+            statusMessage,
+            successMessage,
             userBasicDetails: {
                 firstName,
                 lastName,
@@ -200,11 +226,20 @@ class EditBasicProfile extends React.Component {
         } = this.state;
         const {
             userData,
-            updateBasicUserProfileCall,
         } = this.props;
         const privacyColumn = 'giving_goal_visibility';
         return (
             <Grid>
+                {
+                    statusMessage && (
+                        <Grid.Row>
+                            <ModalStatusMessage 
+                                message = {!_.isEmpty(successMessage) ? successMessage : null}
+                                error = {!_.isEmpty(errorMessage) ? errorMessage : null}
+                            />
+                        </Grid.Row>
+                    )
+                }
                 <Grid.Row>
                     <Grid.Column mobile={16} tablet={12} computer={10}>
                         <Form>
@@ -304,19 +339,12 @@ class EditBasicProfile extends React.Component {
                                 <Button basic size="tiny" onClick={() => this.handleAmount(500)}>$500</Button>
                                 <Button basic size="tiny" onClick={() => this.handleAmount(1000)}>$1000</Button>
                                 <Button basic size="tiny" onClick={() => this.handleAmount(1500)}>$1500</Button>
-                            </Form.Field>
-                            {
-                                showSuccessMessage && (
-                                    <p>
-                                        User Profile Basic details updated Successfully.
-                                    </p>
-                                )
-                            }
+                            </Form.Field>                            
                             <div className="pt-2">
                                 <Button
                                     className="blue-btn-rounded-def w-140"
                                     onClick={this.handleSubmit}
-                                    disabled={updateBasicUserProfileCall}
+                                    disabled={buttonClicked}
                                 >
                                     Save
                                 </Button>
@@ -332,7 +360,6 @@ class EditBasicProfile extends React.Component {
 function mapStateToProps(state) {
     return {
         currentUser: state.user.info,
-        updateBasicUserProfileCall: state.userProfile.updateBasicUserProfileCall,
         userProfileBasicData: state.userProfile.userProfileBasicData,
     };
 }
