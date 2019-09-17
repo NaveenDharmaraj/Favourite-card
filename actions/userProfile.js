@@ -339,7 +339,7 @@ const getMyCreditCards = (dispatch, userId, pageNumber) => {
     return coreApi.get(`/users/${Number(userId)}/activePaymentInstruments?page[number]=${pageNumber}&page[size]=10`).then(
         (result) => {
             fsa.payload = {
-                count: result.meta.pageCount,
+                count: result.meta.recordCount,
                 data: result.data,
                 pageCount: result.meta.pageCount,
             };

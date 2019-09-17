@@ -52,6 +52,7 @@ class MyCreditCards extends React.Component {
             inValidCvv: true,
             inValidExpirationDate: true,
             inValidNameOnCard: true,
+            isDefaultCardReadOnly: false,
             isDefaultCard: false,
             deleteConfirmCard: '',
             deletePaymentInstrumentId: '',
@@ -86,6 +87,7 @@ class MyCreditCards extends React.Component {
         this.handleAddButtonClick = this.handleAddButtonClick.bind(this);
         this.handleAddCardClick = this.handleAddCardClick.bind(this);
         this.handleSetPrimaryClick = this.handleSetPrimaryClick.bind(this);
+        this.handleCCAddClose = this.handleCCAddClose.bind(this);
     }
 
     componentDidMount() {
@@ -154,7 +156,44 @@ class MyCreditCards extends React.Component {
     }   
 
     handleAddCardClick() {
-        this.setState({ isAddModalOpen: true });
+        const {
+            dispatch,
+            userCreditCardList,
+        } = this.props;
+        let {
+            isDefaultCard,
+            isDefaultCardReadOnly,
+        } = this.state;
+        dispatch({
+            payload: {
+                newCreditCardApiCall: true,
+            },
+            type: 'ADD_NEW_CREDIT_CARD_STATUS',
+        });
+        if (userCreditCardList.count === 0) {
+            isDefaultCard = true;
+            isDefaultCardReadOnly = true;
+        } else {
+            isDefaultCardReadOnly = false;
+        }
+        this.setState({
+            isAddModalOpen: true,
+            isDefaultCard,
+            isDefaultCardReadOnly,
+        });
+    }
+
+    handleCCAddClose() {
+        const {
+            dispatch
+        } = this.props;
+        dispatch({
+            payload: {
+                newCreditCardApiCall: false,
+            },
+            type: 'ADD_NEW_CREDIT_CARD_STATUS',
+        });
+        this.setState({ isAddModalOpen: false });
     }
 
     handleAddButtonClick() {
@@ -202,15 +241,22 @@ class MyCreditCards extends React.Component {
     handleEditClick(paymentInstrument) {
         const lastFour = `**** **** **** ${paymentInstrument.attributes.description.slice(-4)}`;
         const cardName = paymentInstrument.attributes.description.slice(0, -17);
+        const cardNameOnly = cardName.substr(0, cardName.indexOf("'"));
         const defaultCard = paymentInstrument.attributes.default ? true : false;
-        console.log(paymentInstrument);
+        let isDefaultCardReadOnly = false; 
+        if (defaultCard) {
+            isDefaultCardReadOnly = true;
+        } else {
+            isDefaultCardReadOnly = false;
+        }
         this.setState({
             isEditModalOpen: true,
             isDropdownOpen: false,
+            isDefaultCardReadOnly,
             isDefaultCard: defaultCard,
             editDetails: {
                 editCardNumber: lastFour,
-                editNameOnCard: cardName,
+                editNameOnCard: cardNameOnly,
                 editPaymetInstrumentId: paymentInstrument.id,
             }            
         });
@@ -484,6 +530,7 @@ class MyCreditCards extends React.Component {
             inValidCvv,
             inValidCardNameValue,
             isDefaultCard,
+            isDefaultCardReadOnly,
             deleteConfirmCard,
             editDetails: {
                 editCardNumber,
@@ -520,7 +567,7 @@ class MyCreditCards extends React.Component {
                                     className="chimp-modal"
                                     closeIcon
                                     open={newCreditCardApiCall}
-                                    onClose={()=>{this.setState({isAddModalOpen: false})}}
+                                    onClose={this.handleCCAddClose}
                                     trigger={<Button
                                         className="success-btn-rounded-def"
                                         onClick={this.handleAddCardClick}
@@ -558,6 +605,7 @@ class MyCreditCards extends React.Component {
                                                     label="Set as primary card"
                                                     name="isDefaultCard"
                                                     onChange={this.handleSetPrimaryClick}
+                                                    readOnly={isDefaultCardReadOnly}
                                                 />
                                             </Form>
                                         </Modal.Description>
@@ -629,6 +677,7 @@ class MyCreditCards extends React.Component {
                                         label="Set as primary card"
                                         name="isDefaultCard"
                                         onChange={this.handleSetPrimaryClick}
+                                        readOnly={isDefaultCardReadOnly}
                                     />
                                 </Form>
                             </Modal.Description>
