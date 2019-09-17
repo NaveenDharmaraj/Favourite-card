@@ -79,13 +79,13 @@ class RecommendationList extends React.Component {
                     <Grid.Column key={index}>
                         <Card className="left-img-card" fluid>
                             <Card.Header>
-                                <Grid verticalAlign="middle">
+                                <Grid>
                                     <Grid.Column width={6}>
                                         <Image src={placeholder} />
                                     </Grid.Column>
-                                    <Grid.Column width={10}>
+                                    <Grid.Column width={10} verticalAlign="top">
                                         <Grid columns="2">
-                                            <Grid.Row style={{ padding: '0.5rem 0rem' }}>
+                                            <Grid.Row style={{ padding: '1.7rem 0rem 0.2rem' }}>
                                                 <Grid.Column>
                                                     <Header as="h4">
                                                         <Header.Content>
@@ -136,7 +136,7 @@ class RecommendationList extends React.Component {
         }
         return (
             <div className="pt-2">
-                <Grid  columns="equal" stackable doubling columns={3}>
+                <Grid columns="equal" stackable doubling columns={3}>
                     <Grid.Row>
                         {recommendationList}
                     </Grid.Row>
@@ -163,7 +163,6 @@ class RecommendationList extends React.Component {
                 </Link>
             );
         }
-        const count = 2;
         return (
             <div className="pt-2 pb-2">
                 <Container>
@@ -172,7 +171,8 @@ class RecommendationList extends React.Component {
                             <Grid.Column mobile={11} tablet={12} computer={12}>
                                 <Header as="h3">
                                     <Header.Content>
-                                    Discovered for you <span className="small">We’ve made suggestions based on your interests. </span>
+                                    Discovered for you
+                                        <span className="small">We’ve made suggestions based on your interests. </span>
                                     </Header.Content>
                                 </Header>
                             </Grid.Column>

@@ -2,14 +2,13 @@
 import React from 'react';
 import _ from 'lodash';
 import {
+    Card,
     Container,
     Table,
     Image,
     List,
     Grid,
-    Icon,
     Header,
-    Popup,
 } from 'semantic-ui-react';
 import {
     connect,
@@ -19,7 +18,7 @@ import {
     getDashBoardData,
 } from '../../../actions/dashboard';
 import Pagination from '../../shared/Pagination';
-
+import noDataImg from '../../../static/images/noresults.png';
 
 class DashboradList extends React.Component {
     constructor(props) {
@@ -40,7 +39,7 @@ class DashboradList extends React.Component {
         getDashBoardData(dispatch, 'all', id, 1);
     }
 
-    onPageChanged(e, data) {
+    onPageChanged(data) {
         const {
             currentUser: {
                 id,
@@ -53,6 +52,27 @@ class DashboradList extends React.Component {
         });
     }
 
+    // eslint-disable-next-line class-methods-use-this
+    nodataCard() {
+        return (
+            <Card fluid className="noDataCard rightImg">
+                <Card.Content>
+                    <Image
+                        floated="right"
+                        src={noDataImg}
+                    />
+                    <Card.Header className="font-s-14">
+                        <Header as="h4">
+                            <Header.Content>
+                                No transactions yet.
+                            </Header.Content>
+                        </Header>
+                    </Card.Header>
+                </Card.Content>
+            </Card>
+        );
+    }
+
     listItem() {
         const {
             currentUser: {
@@ -60,7 +80,7 @@ class DashboradList extends React.Component {
             },
             dataList,
         } = this.props;
-        let accordianHead = 'No transactions yet.';
+        let accordianHead = this.nodataCard();
         let compareDate = '';
         if (dataList && dataList.data && _.size(dataList.data) > 0) {
             accordianHead = dataList.data.map((data, index) => {
@@ -69,7 +89,7 @@ class DashboradList extends React.Component {
                 const mm = date.getMonth();
                 const month = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ];
                 const yyyy = date.getFullYear();
-                date = `${month[mm]} ${dd} ,${yyyy}`;
+                date = `${month[mm]} ${dd}, ${yyyy}`;
                 if (date !== compareDate) {
                     compareDate = date;
                 } else {
