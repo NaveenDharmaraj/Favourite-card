@@ -98,27 +98,23 @@ class Layout extends React.Component {
                 </Head>
                 <div>
                     <ErrorBoundary>
-                        <Responsive {...Responsive.onlyMobile}>
+                        <Responsive minWidth={320} maxWidth={991}>
                             <MobileHeader isAuthenticated={isAuthenticated} onBoarding={onBoarding} >
-                                <Container>
-                                    <div className="pageWraper">
-                                        {!_.isEmpty(appErrors) &&
-                                            <Container
-                                                className="app-status-messages"
-                                            >
-                                                {_.map(appErrors, (err) => (
-                                                    <StatusMessage
-                                                        key={err.heading}
-                                                        error={err}
-                                                        dispatch={dispatch}
-                                                        {...err}
-                                                    />
-                                                ))}
-                                            </Container>
-                                        }
-                                        {children}
-                                    </div>
-                                </Container>
+                                {!_.isEmpty(appErrors) &&
+                                    <Container
+                                        className="app-status-messages"
+                                    >
+                                        {_.map(appErrors, (err) => (
+                                            <StatusMessage
+                                                key={err.heading}
+                                                error={err}
+                                                dispatch={dispatch}
+                                                {...err}
+                                            />
+                                        ))}
+                                    </Container>
+                                }
+                                {children}
                             </MobileHeader>
                         </Responsive>
                         <Responsive minWidth={Responsive.onlyTablet.minWidth}>
