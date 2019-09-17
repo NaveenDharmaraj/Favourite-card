@@ -1,6 +1,7 @@
 import _isEmpty from 'lodash/isEmpty';
 import _findIndex from 'lodash/findIndex';
 import _uniqBy from 'lodash/uniqBy';
+import _cloneDeep from 'lodash/cloneDeep';
 
 const taxreceipt = (state = {}, action) => {
     let newState = {
@@ -19,9 +20,15 @@ const taxreceipt = (state = {}, action) => {
                 taxReceiptProfilePageCount: action.payload.taxReceiptProfilePageCount,
             };
             break;
+        case 'GET_PAGINATED_TAX_RECEIPT_PROFILE_LOADER':
+            newState = {
+                ...state,
+                loader: action.payload.loader,
+            };
+            break;
         case 'UPDATE_TAX_RECEIPT_PROFILE':
             const { taxReceiptProfileList } = state;
-            const editTaxProfile = action.payload.editedTaxProfile;
+            const editTaxProfile = _cloneDeep(action.payload.editedTaxProfile);
             const index = _findIndex(taxReceiptProfileList, (taxReceiptProfile) => taxReceiptProfile.id === editTaxProfile.id);
             if (!_isEmpty(editTaxProfile) && !_isEmpty(editTaxProfile.attributes) && editTaxProfile.attributes.isDefault) {
                 if (!_isEmpty(state.defaultTaxId)) {

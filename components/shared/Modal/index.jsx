@@ -11,6 +11,7 @@ import _every from 'lodash/every';
 import _merge from 'lodash/merge';
 import _isEmpty from 'lodash/isEmpty';
 import dynamic from 'next/dynamic';
+import _cloneDeep from 'lodash/cloneDeep';
 
 import {
     validateTaxReceiptProfileForm,
@@ -33,7 +34,7 @@ class ModalComponent extends React.Component {
             buttonClicked: true,
             errorMessage: null,
             isDefaultChecked: (!_isEmpty(props.taxReceipt) && !_isEmpty(props.taxReceipt.attributes))? props.taxReceipt.attributes.isDefault : false,
-            selectedTaxReceiptProfile: _merge({}, props.taxReceipt),
+            selectedTaxReceiptProfile: _cloneDeep(props.taxReceipt),
             showFormData: true,
             showPopUp: false,
             statusMessage: false,
@@ -177,7 +178,7 @@ class ModalComponent extends React.Component {
                 } else {
                     dispatch({
                         payload: {
-                            editedTaxProfile: selectedTaxReceiptProfile,
+                            editedTaxProfile: {...selectedTaxReceiptProfile, id},
                         },
                         type: 'UPDATE_TAX_RECEIPT_PROFILE',
                     });
@@ -225,7 +226,7 @@ class ModalComponent extends React.Component {
             action,
         } = this.props;
         return (
-            <Button primary disabled={buttonClicked} onClick={() => this.handleSubmit()} className="blue-btn-rounded">{action === 'update' ? 'Done' : 'Add'}</Button>
+            <Button primary disabled={buttonClicked} onClick={() => this.handleSubmit()} className="blue-btn-rounded w-120">{action === 'update' ? 'Done' : 'Add'}</Button>
         );
     }
 
@@ -236,7 +237,7 @@ class ModalComponent extends React.Component {
         if (!_isEmpty(selectedTaxReceiptProfile) && !_isEmpty(selectedTaxReceiptProfile.attributes) && selectedTaxReceiptProfile.attributes.isDefault) {
             return (
                 <Checkbox
-                    className="cp_chkbx"
+                    className="cp_chkbx f-weight-n"
                     checked
                     type="checkbox"
                     id="checkbox"
@@ -247,6 +248,7 @@ class ModalComponent extends React.Component {
         } else {
             return (
                 <Checkbox
+                className="cp_chkbx f-weight-n"
                     type="checkbox"
                     id="checkbox"
                     onClick={() => { this.setState({ buttonClicked: false, isDefaultChecked: !isDefaultChecked }); }}
