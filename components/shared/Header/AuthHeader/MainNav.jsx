@@ -13,7 +13,7 @@ import {
     func,
 } from 'prop-types';
 
-import { Link } from '../../../../routes';
+import Link from '../../Link';
 import { withTranslation } from '../../../../i18n';
 import { getMainNavItems } from '../../../../helpers/utils';
 
@@ -32,7 +32,7 @@ const MainNav = (props) => {
 
     return (
         <Menu.Menu position="right">
-            <Link route='/search'>
+            <Link route='/search' activeClassName="active">
                 <Menu.Item as="a">
                     Explore
                 </Menu.Item>

@@ -4,7 +4,7 @@ import {
 } from "semantic-ui-react";
 import getConfig from 'next/config';
 
-import { Link } from '../../../../routes';
+import Link from '../../Link';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -18,9 +18,9 @@ const MainNavItem = (props) => {
         location,
         name,
     } = props;
-    if(isExternal) {
+    if (isExternal) {
         return (
-            <Link href={`${RAILS_APP_URL_ORIGIN}${location}`}>
+            <Link href={`${RAILS_APP_URL_ORIGIN}${location}`} activeClassName="active">
                 <Menu.Item as="a">
                     {name}
                 </Menu.Item>
@@ -28,7 +28,7 @@ const MainNavItem = (props) => {
         );
     }
     return (
-        <Link route={location}>
+        <Link route={location} activeClassName="active">
             <Menu.Item as="a">
                 {name}
             </Menu.Item>
