@@ -228,22 +228,28 @@ class Search extends React.Component {
                         isAuthenticated={isAuthenticated}
                         searchWord={searchWord}
                     />
-                    <SearchResults
-                        currentTab={currentTab}
-                        charityLoader={!charityFlag}
-                        groupLoader={!groupFlag}
-                        charities={charities}
-                        isAuthenticated={isAuthenticated}
-                        groups={groups}
-                        searchWord={searchWord}
-                        textSearchedCharitiesGroups={textSearchedCharitiesGroups}
-                        textSearchedCharities={textSearchedCharities}
-                        textSearchedGroups={textSearchedGroups}
-                        dispatch={dispatch}
-                    />
-                    {
-                        pageCount > 0 && this.renderPaginationComponent(pageCount, searchType, searchWord, currentPageClicked, !charityFlag, !groupFlag)
-                    }
+                    <div className="pb-2">
+                        <SearchResults
+                            currentTab={currentTab}
+                            charityLoader={!charityFlag}
+                            groupLoader={!groupFlag}
+                            charities={charities}
+                            isAuthenticated={isAuthenticated}
+                            groups={groups}
+                            searchWord={searchWord}
+                            textSearchedCharitiesGroups={textSearchedCharitiesGroups}
+                            textSearchedCharities={textSearchedCharities}
+                            textSearchedGroups={textSearchedGroups}
+                            dispatch={dispatch}
+                        />
+                        <div className="paginationWraper pt-1">
+                            <div className="db-pagination right-align">
+                                {
+                                    pageCount > 0 && this.renderPaginationComponent(pageCount, searchType, searchWord, currentPageClicked, !charityFlag, !groupFlag)
+                                }
+                            </div>
+                        </div>
+                    </div>
                 </Container>
             </Layout>
         );
