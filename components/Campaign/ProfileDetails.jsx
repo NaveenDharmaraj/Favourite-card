@@ -70,7 +70,7 @@ function ProfileDetails(props) {
     ];
     if (props.isAuthenticated) {
         panes.push({
-            menuItem: 'Givign Groups supporting this Campaign',
+            menuItem: 'Giving Groups supporting this Campaign',
             render: () => {
                 const {
                     campaignSubGroupDetails,
