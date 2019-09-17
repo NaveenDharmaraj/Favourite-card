@@ -172,15 +172,15 @@ class ModalComponent extends React.Component {
                             payload: {
                                 editedTaxProfile: response.data,
                             },
-                            type: 'UPDATE_TAX_RECEIPT_PROFILE',
+                            type: action === 'update' ? 'UPDATE_TAX_RECEIPT_PROFILE' : 'ADD_TAX_RECEIPT_PROFILE',
                         });
                     })
                 } else {
                     dispatch({
                         payload: {
-                            editedTaxProfile: {...selectedTaxReceiptProfile, id},
+                            editedTaxProfile: result.data,
                         },
-                        type: 'UPDATE_TAX_RECEIPT_PROFILE',
+                        type: action === 'update' ? 'UPDATE_TAX_RECEIPT_PROFILE' : 'ADD_TAX_RECEIPT_PROFILE',
                     });
                     
                 }

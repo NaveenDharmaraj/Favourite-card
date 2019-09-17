@@ -46,6 +46,23 @@ const taxreceipt = (state = {}, action) => {
                 taxReceiptProfileList: Object.assign([], taxReceiptProfileList),
             };
             break;
+        case 'ADD_TAX_RECEIPT_PROFILE':
+            const AddTaxProfile = Object.assign({}, action.payload.editedTaxProfile);
+            if (!_isEmpty(AddTaxProfile) && !_isEmpty(AddTaxProfile.attributes) && AddTaxProfile.attributes.isDefault) {
+                if (!_isEmpty(state.defaultTaxId)) {
+                    state.taxReceiptProfileList.find((taxReceiptProfile) => {
+                        if (taxReceiptProfile.id === state.defaultTaxId) {
+                            taxReceiptProfile.attributes.isDefault = false;
+                            return taxReceiptProfile;
+                        }
+                    });
+                }
+            }
+            newState = {
+                ...state,
+                taxReceiptProfileList: Object.assign([], state.taxReceiptProfileList, { [state.taxReceiptProfileList.length]: AddTaxProfile }),
+            };
+            break;
         case 'DEFAULT_TAX_RECEIPT_PROFILE_ID':
             newState = {
                 ...state,
