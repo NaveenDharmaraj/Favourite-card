@@ -15,6 +15,7 @@ import {
 import {
   connect,
 } from 'react-redux';
+import getConfig from 'next/config';
 
 import { withTranslation } from '../../../../i18n';
 import logo from '../../../../static/images/CharitableImpact.svg';
@@ -26,6 +27,12 @@ import settingsIcon from '../../../../static/images/icons/icon-account_settings.
 import MainNavItem from './MainNavItem';
 import { getMainNavItems } from '../../../../helpers/utils';
 import { Link } from '../../../../routes';
+
+const { publicRuntimeConfig } = getConfig();
+
+const {
+    RAILS_APP_URL_ORIGIN,
+} = publicRuntimeConfig;
 
 const NavBarMobile = ({
   children,
@@ -49,10 +56,10 @@ const NavBarMobile = ({
     let isExternal = false;
     if (accountType === 'company') {
         accountSettingsText = formatMessage('companyAccountSettings');
-        accountUrl = `companies/${slug}/edit`;
+        accountUrl = `${RAILS_APP_URL_ORIGIN}/companies/${slug}/edit`;
         isExternal = true;
     } else if (accountType === 'charity') {
-        accountUrl = `/beneficiaries/${slug}/info`;
+        accountUrl = `${RAILS_APP_URL_ORIGIN}/beneficiaries/${slug}/info`;
         isExternal = true;
     }
     console.log('isExternam ->>>>', isExternal);
