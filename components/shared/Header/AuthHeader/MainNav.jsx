@@ -15,8 +15,10 @@ import {
 
 import { Link } from '../../../../routes';
 import { withTranslation } from '../../../../i18n';
-import MainNavItem from './MainNavItem';
 import { getMainNavItems } from '../../../../helpers/utils';
+
+import MainNavItem from './MainNavItem';
+
 
 const MainNav = (props) => {
     const {

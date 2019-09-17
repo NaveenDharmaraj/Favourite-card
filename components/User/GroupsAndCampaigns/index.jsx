@@ -9,6 +9,7 @@ import {
 import {
     connect,
 } from 'react-redux';
+import getConfig from 'next/config';
 
 import {
     getInitalGivingGroupsAndCampaigns,
@@ -17,6 +18,12 @@ import { Link } from '../../../routes';
 import PlaceholderGrid from '../../shared/PlaceHolder';
 
 import GroupsAndCampaignsList from './GroupsAndCampaignsList';
+
+const { publicRuntimeConfig } = getConfig();
+
+const {
+    RAILS_APP_URL_ORIGIN,
+} = publicRuntimeConfig;
 
 class GroupsAndCampaigns extends React.Component {
 
@@ -112,7 +119,7 @@ class GroupsAndCampaigns extends React.Component {
                                     You can give more as a part of group, and you can raise more when it’s easy to manage.
                                     </Header.Subheader>
                                 </Header>
-                                <a href='/groups/new'>
+                                <a href={`${RAILS_APP_URL_ORIGIN}/groups/new`}>
                                     <Button fluid className="success-btn-rounded-def">Create a new Group</Button>
                                 </a>
                             </div>
