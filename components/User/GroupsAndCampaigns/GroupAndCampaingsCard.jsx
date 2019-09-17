@@ -10,6 +10,7 @@ import {
 import { Link } from '../../../routes';
 import placeholder from '../../../static/images/no-data-avatar-giving-group-profile.png';
 import LeaveModal from './LeaveModal';
+import { renderText } from '../../../helpers/utils';
 
 class GroupsAndCampaignsCard extends React.Component {
     constructor(props) {
@@ -51,6 +52,7 @@ class GroupsAndCampaignsCard extends React.Component {
             },
             id,
         } = data;
+        const shortName = renderText(name, 6);
         const urlType = (listingType === 'administeredCampaigns') ? 'campaigns' : 'groups';
         const editLink = (listingType === 'administeredCampaigns') ? `/campaigns/${slug}/manage-basics` : `/groups/${slug}/edit`;
         let showError = false;
@@ -62,17 +64,17 @@ class GroupsAndCampaignsCard extends React.Component {
             }
         }
         const displayAvatar = (!_.isEmpty(avatar)) ? avatar : placeholder;
-        return(
+        return (
             <Grid.Column>
                 <Card className="left-img-card" fluid>
                     <Card.Header>
-                        <Grid verticalAlign="middle">
+                        <Grid>
                             <Grid.Column width={6}>
                                 <Image src={displayAvatar} />
                             </Grid.Column>
-                            <Grid.Column width={10}>
+                            <Grid.Column width={10} verticalAlign="top">
                                 <Grid columns="2">
-                                    <Grid.Row style={{padding:'0.5rem 0rem'}}>
+                                    <Grid.Row style={{padding:'1.7rem 0rem 0.2rem'}}>
                                         <Grid.Column>
                                             <Header as="h4">
                                                 <Header.Content>
@@ -100,7 +102,7 @@ class GroupsAndCampaignsCard extends React.Component {
                                                                 }
                                                                 {
                                                                     (listingType !== 'administeredCampaigns') &&
-                                                                    <Dropdown.Item text="Leave Group" onClick={()=>{this.openModal()}}/>
+                                                                    <Dropdown.Item text="Leave Group" onClick={() => { this.openModal(); }} />
                                                                 }
                                                             </Dropdown.Menu>
                                                         </Dropdown>
@@ -127,7 +129,7 @@ class GroupsAndCampaignsCard extends React.Component {
                                 </Grid>
                                 <Header as="h4" style={{margin:'0rem 0rem .5rem'}}>
                                     <Header.Content>
-                                        {name}
+                                        {shortName}
                                         <br />
                                         {location}
                                     </Header.Content>

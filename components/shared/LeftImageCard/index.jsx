@@ -9,6 +9,7 @@ import {
 import PropTypes from 'prop-types';
 
 import { Link } from '../../../routes';
+import { renderText } from '../../../helpers/utils';
 
 const LeftImageCard = (props) => {
     const {
@@ -18,6 +19,7 @@ const LeftImageCard = (props) => {
         type,
         url,
     } = props;
+    const entityShortName = renderText(entityName, 6);
     return (
         <Grid.Column>
             <Card className="left-img-card" fluid>
@@ -34,7 +36,7 @@ const LeftImageCard = (props) => {
                                     >
                                         {type}
                                     </Header.Subheader>
-                                    {entityName}
+                                    {entityShortName}
                                 </Header.Content>
                             </Header>
                             <Link className="lnkChange" route={url}>

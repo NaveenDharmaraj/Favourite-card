@@ -75,7 +75,7 @@ class TaxReceipientsList extends React.Component {
         } = this.state;
         if (loadMoreIncrementor < taxReceiptProfilePageCount) {
             loadMoreIncrementor += 1;
-            getTaxReceiptProfilePaginated(dispatch, id, loadMoreIncrementor);
+            getTaxReceiptProfilePaginated(dispatch, id, loadMoreIncrementor, true);
             this.setState({
                 loadMoreIncrementor,
                 loadMoreLoader: true,
