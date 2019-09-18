@@ -13,6 +13,7 @@ import PlaceholderGrid from '../../../../shared/PlaceHolder';
 import { Link } from '../../../../../routes';
 import charityImg from '../../../../../static/images/no-data-avatar-charity-profile.png';
 import groupImg from '../../../../../static/images/no-data-avatar-giving-group-profile.png';
+import { renderText } from '../../../../../helpers/utils';
 
 class SearchCharitiesGroups extends React.Component {
     constructor(props) {
@@ -35,8 +36,7 @@ class SearchCharitiesGroups extends React.Component {
                             <Card.Content>
                                 <Card.Header>{charity.attributes.name}</Card.Header>
                                 <Card.Description>
-                                    {charity.attributes.description && charity.attributes.description.split(' ').slice(0, 20).join(' ')}
-                                    {(charity.attributes.description && charity.attributes.description.split(' ').length > 80) && '...'}
+                                    {charity.attributes.description && renderText(charity.attributes.description, 20)}
                                 </Card.Description>
                                 <Card.Meta>
                                     {(!_isEmpty(charity.attributes.city) || !_isEmpty(charity.attributes.province)) && 'Location:' }
@@ -54,33 +54,36 @@ class SearchCharitiesGroups extends React.Component {
         return 'No charities available';
     }
 
+
     renderGroupComponent() {
         let groupsComponent = [];
         const {
             groups,
         } = this.props;
         if (!_isEmpty(groups) && groups.data && groups.data.length > 0) {
-            groupsComponent = _map(groups.data, (group, i) => (
-                <Link route={`/groups/${group.attributes.slug}`}>
-                    <Grid.Column mobile={16} tablet={8} computer={4}>
-                        <Card as="a" key={i}>
-                            <Image src={!_isEmpty(group.attributes.avatar) ? group.attributes.avatar : groupImg} wrapped ui={false} />
-                            <Card.Content>
-                                <Card.Header>{group.attributes.name}</Card.Header>
-                                <Card.Description>
-                                    {group.attributes.description && group.attributes.description.split(' ').slice(0, 20).join(' ')}
-                                    {(group.attributes.description && group.attributes.description.split(' ').length > 80) && '...'}
-                                </Card.Description>
-                                <Card.Meta>
-                                    {(!_isEmpty(group.attributes.city) || !_isEmpty(group.attributes.province)) && 'Location:' }
-                                    {!_isEmpty(group.attributes.city) ? group.attributes.city : null}
-                                    {!_isEmpty(group.attributes.province) ? group.attributes.province : null}
-                                </Card.Meta>
-                            </Card.Content>
-                        </Card>
-                    </Grid.Column>
-                </Link>
-            ));
+            groupsComponent = _map(groups.data, (group, i) => {
+                const route = (!_isEmpty(group.attributes) && group.attributes.is_campaign === 1) ? `/campaigns/${group.attributes.slug}` : `/groups/${group.attributes.slug}`;
+                return (
+                    <Link route={route}>
+                        <Grid.Column mobile={16} tablet={8} computer={4}>
+                            <Card as="a" key={i}>
+                                <Image src={!_isEmpty(group.attributes.avatar) ? group.attributes.avatar : groupImg} wrapped ui={false} />
+                                <Card.Content>
+                                    <Card.Header>{group.attributes.name}</Card.Header>
+                                    <Card.Description>
+                                        {group.attributes.description && renderText(group.attributes.description, 20)}
+                                    </Card.Description>
+                                    <Card.Meta>
+                                        {(!_isEmpty(group.attributes.city) || !_isEmpty(group.attributes.province)) && 'Location:' }
+                                        {!_isEmpty(group.attributes.city) ? group.attributes.city : null}
+                                        {!_isEmpty(group.attributes.province) ? group.attributes.province : null}
+                                    </Card.Meta>
+                                </Card.Content>
+                            </Card>
+                        </Grid.Column>
+                    </Link>
+                );
+            });
             return groupsComponent;
         }
         return 'No Groups available';

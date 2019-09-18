@@ -22,6 +22,7 @@ import placeholderCharity from '../../../static/images/no-data-avatar-charity-pr
 import placeholderGroup from '../../../static/images/no-data-avatar-giving-group-profile.png';
 import { Link } from '../../../routes';
 import PlaceholderGrid from '../../shared/PlaceHolder';
+import { renderText } from '../../../helpers/utils';
 
 class RecommendationList extends React.Component {
     constructor(props) {
@@ -66,10 +67,11 @@ class RecommendationList extends React.Component {
             const showData = _.slice(recommendationData.data, 0, 9);
             recommendationList = showData.map((data, index) => {
                 let charityName = '';
+                const charityShortName = renderText(data.attributes.name, 6);
                 if (data.attributes.city != null) {
-                    charityName = `${data.attributes.name}, ${data.attributes.city}, ${data.attributes.province}`;
+                    charityName = `${charityShortName}, ${data.attributes.city}, ${data.attributes.province}`;
                 } else {
-                    charityName = data.attributes.name;
+                    charityName = charityShortName;
                 }
                 const type = data.attributes.type === 'group' ? 'giving group' : 'charity';
                 const typeClass = data.attributes.type === 'group' ? 'chimp-lbl group' : 'chimp-lbl charity';
@@ -158,7 +160,8 @@ class RecommendationList extends React.Component {
             viewAllDiv = (
                 <Link route={`/user/recommendations`}>
                     <a>
-                        View all ({recommendationData.count})
+                        View all
+                        {/* ({recommendationData.count}) */}
                     </a>
                 </Link>
             );

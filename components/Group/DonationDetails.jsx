@@ -53,7 +53,8 @@ const DonationDetails = (props) => {
                                     )}
                                 <Header.Subheader className="small" style={{ marginTop: '.7rem' }}>
                                     {`raised of 
-                                    ${formatCurrency(goal, language, currency)}`}
+                                    ${formatCurrency(goal, language, currency)}
+                                    goal`}
                                 </Header.Subheader>
                                 
                             </Header>

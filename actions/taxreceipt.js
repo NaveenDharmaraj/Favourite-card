@@ -7,12 +7,13 @@ import coreApi from '../services/coreApi';
 export const actionTypes = {
     DOWNLOAD_TAX_RECEIPT_DONATION_DETAIL: 'DOWNLOAD_TAX_RECEIPT_DONATION_DETAIL',
     GET_PAGINATED_TAX_RECEIPT_PROFILE: 'GET_PAGINATED_TAX_RECEIPT_PROFILE',
+    GET_PAGINATED_TAX_RECEIPT_PROFILE_LOADER: 'GET_PAGINATED_TAX_RECEIPT_PROFILE_LOADER',
     ISSUED_TAX_RECEIPIENT_DONATIONS_DETAIL: 'ISSUED_TAX_RECEIPIENT_DONATIONS_DETAIL',
     ISSUED_TAX_RECEIPIENT_YEARLY_DETAIL: 'ISSUED_TAX_RECEIPIENT_YEARLY_DETAIL',
     ISSUED_TAX_RECEIPTS_LIST: 'ISSUED_TAX_RECEIPTS_LIST',
 };
 
-export const getTaxReceiptProfilePaginated = (dispatch, userId, pageNumber) => {
+export const getTaxReceiptProfilePaginated = (dispatch, userId, pageNumber, loadMore) => {
     const fsa = {
         payload: {
             taxReceiptProfileList: null,
@@ -21,19 +22,23 @@ export const getTaxReceiptProfilePaginated = (dispatch, userId, pageNumber) => {
     };
     dispatch({
         payload: {
-            loader: true,
+            loader: !loadMore,
         },
-        type: actionTypes.GET_PAGINATED_TAX_RECEIPT_PROFILE,
+        type: actionTypes.GET_PAGINATED_TAX_RECEIPT_PROFILE_LOADER,
     });
     coreApi.get(`/users/${userId}/taxReceiptProfiles?page[number]=${pageNumber}&page[size]=10`).then((result) => {
-        fsa.payload.loader = false;
         fsa.payload.taxReceiptProfileList = result.data;
         fsa.payload.taxReceiptProfilePageCount = result.meta.pageCount;
     }).catch((error) => {
         console.log(error);
-        fsa.payload.loader = false;
     }).finally(() => {
         dispatch(fsa);
+        dispatch({
+            payload: {
+                loader: false,
+            },
+            type: actionTypes.GET_PAGINATED_TAX_RECEIPT_PROFILE_LOADER,
+        });
     });
 };
 export const getTaxReceiptProfileMakeDefault = (taxRecptProfileId) => {
@@ -48,7 +53,7 @@ export const getIssuedTaxreceipts = (dispatch) => {
     };
     dispatch({
         payload: {
-            loader: true,
+            issuedTaxLloader: true,
         },
         type: actionTypes.ISSUED_TAX_RECEIPTS_LIST,
     });
@@ -60,10 +65,10 @@ export const getIssuedTaxreceipts = (dispatch) => {
             },
         }).then((result) => {
         fsa.payload.issuedTaxReceiptList = result.data;
-        fsa.payload.loader = false;
+        fsa.payload.issuedTaxLloader = false;
     }).catch((err) => {
         console.error(err);
-        fsa.payload.loader = false;
+        fsa.payload.issuedTaxLloader = false;
     }).finally(() => {
         dispatch(fsa);
     });
@@ -135,7 +140,7 @@ export const downloadTaxreceiptDonationsDetail = (dispatch, id, year) => {
         },
         type: actionTypes.DOWNLOAD_TAX_RECEIPT_DONATION_DETAIL,
     });
-    coreApi.get(`/taxReceipt/${id}?format=pdf&year=${year}`,
+    coreApi.get(`/taxReceipts/${id}?format=pdf&year=${year}`,
         {
             params: {
                 dispatch,

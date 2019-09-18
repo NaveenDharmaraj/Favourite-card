@@ -163,9 +163,9 @@ class FriendsList extends React.Component {
                 <div className="text-right">
                     <a>
                         View all
-                        (
+                        {/* (
                         {friendsData.count}
-                        )
+                        ) */}
                     </a>
                 </div>
             );

@@ -3,5 +3,6 @@
     "companyAccountSettings": "Company Account Settings",
     "name": "Hello {{ name }}!",
     "switchAccounts": "Switch Account",
-    "logout": "Signout"
+    "logout": "Signout",
+    "chimpAdmin": "CHARITABLE IMPACT Admin"
 }

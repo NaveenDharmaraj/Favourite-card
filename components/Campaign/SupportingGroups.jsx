@@ -23,9 +23,10 @@ function SupportingGroups(props) {
         const groupCards = [];
         if (typeof campaignSubGroupDetails === 'object') {
             campaignSubGroupDetails.map((subGroup) => {
+                const groupImg = subGroup.attributes.avatar;
                 groupCards.push(<LeftImageCard
                     entityName={subGroup.attributes.name}
-                    placeholder={placeholder}
+                    placeholder={(groupImg) || placeholder}
                     typeClass="chimp-lbl group"
                     type="Giving Groups"
                     url={`/${subGroup.type}/${subGroup.attributes.slug}`}
