@@ -15,7 +15,7 @@ import ManiFestFile from '../../../static/Manifest.json';
 import { NotificationHelper } from "../../../Firebase/NotificationHelper";
 import ErrorBoundary from '../ErrorBoundary';
 import StatusMessage from '../StatusMessage';
-
+import _ from 'lodash';
 import '../../../static/less/header.less';
 import '../../../static/less/style.less';
 

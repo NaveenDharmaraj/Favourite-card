@@ -3,6 +3,7 @@ import {
     Header,
     Grid,
     Button,
+    Icon,
 } from 'semantic-ui-react';
 import _map from 'lodash/map';
 import PropTypes from 'prop-types';
@@ -22,11 +23,14 @@ import PlaceholderGrid from '../../../../shared/PlaceHolder';
 class SearchResultSingleCharityGroups extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            loader: false,
+        };
         this.renderCharityGroupComponent = this.renderCharityGroupComponent.bind(this);
     }
 
     // eslint-disable-next-line class-methods-use-this
-    handleRoute(type, slug, campaign) {
+    handleRoute(type, slug, campaign, i) {
         let route = null;
         if (!_isEmpty(type)) {
             if (type.toLowerCase() === 'group' && campaign) {
@@ -37,7 +41,9 @@ class SearchResultSingleCharityGroups extends React.Component {
                 route = `/charities/${slug}`;
             }
         }
-     
+        this.setState({
+            [`loader${i}`]: true,
+        });
         Router.pushRoute(route);
     }
 
@@ -73,7 +79,6 @@ class SearchResultSingleCharityGroups extends React.Component {
                         slug,
                     },
                 } = charityGroup;
-
                 let displayAvatar = placeholderCharity;
                 if (!_isEmpty(type) && type.toLowerCase() === 'group') {
                     displayAvatar = placeholderGroup;
@@ -105,9 +110,14 @@ class SearchResultSingleCharityGroups extends React.Component {
                                 </Grid.Column>
                                 <Grid.Column mobile={16} tablet={4} computer={3} verticalAlign="middle" textAlign="center">
                                     <div className="btn-wraper">
-                                        <Button className="view-btn" onClick={() => { this.handleRoute(type, slug, is_campaign); }}>
-                                            {this.renderButton(type, is_campaign)}
-                                        </Button>
+
+                                        { this.state[`loader${i}`] ? <Icon name="spinner" loading />
+                                            : (
+                                                <Button className="view-btn" onClick={() => { this.handleRoute(type, slug, is_campaign, i); }}>
+                                                    {this.renderButton(type, is_campaign)}
+                                                </Button>
+                                            )
+                                        }
                                     </div>
                                 </Grid.Column>
                             </Grid.Row>
