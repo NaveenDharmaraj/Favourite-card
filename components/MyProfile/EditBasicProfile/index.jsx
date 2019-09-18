@@ -17,6 +17,16 @@ import {
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 import PrivacySetting from '../../shared/Privacy';
 const ModalStatusMessage = dynamic(() => import('../../shared/ModalStatusMessage'));
+import {
+    formatAmount,
+    isValidGiftAmount,
+} from '../../../helpers/give/utils';
+import {
+    isInputBlank,
+    isAmountLessThanOneBillionDollars,
+    isAmountMoreThanOneDollor,
+    isValidPositiveNumber,
+} from '../../../helpers/give/giving-form-validation';
 
 class EditBasicProfile extends React.Component {
     constructor(props) {
@@ -65,8 +75,9 @@ class EditBasicProfile extends React.Component {
         let {
             validity,
         } = this.state;
-        userBasicDetails.givingGoal = amount;
+        userBasicDetails.givingGoal = formatAmount(amount);
         this.setState({
+            statusMessage: false,
             userBasicDetails: {
                 ...this.state.userBasicDetails,
                 ...userBasicDetails,
@@ -80,10 +91,13 @@ class EditBasicProfile extends React.Component {
 
     intializeValidations() {
         this.validity = {
+            doesAmountExist: true,
+            isAmountLessThanOneBillion: true,
+            isAmountMoreThanOneDollor: true,
             isDescriptionNotNull: true,
             isFirstNameNotNull: true,
-            isGivingGoalNotNull: true,
             isLastNameNotNull: true,
+            isValidPositiveNumber: true,
         };
         return this.validity;
     }
@@ -116,11 +130,21 @@ class EditBasicProfile extends React.Component {
             value,
         } = !_.isEmpty(data) ? data : event.target;
         let {
+            userBasicDetails,
             validity,
         } = this.state;
-        const inputValue = value;
+        let inputValue = value;
+        const isNumber = /^\d+(\.\d*)?$/;
+        if ((name === 'givingGoal') && !_.isEmpty(value) && value.match(isNumber)) {
+            userBasicDetails[name] = formatAmount(value);
+            inputValue = formatAmount(value);
+        }
         validity = this.validateUserProfileBasicForm(name, inputValue, validity);
         this.setState({
+            userBasicDetails: {
+                ...this.state.userBasicDetails,
+                ...userBasicDetails,
+            },
             validity,
         });
     }
@@ -138,7 +162,10 @@ class EditBasicProfile extends React.Component {
                 validity.isDescriptionNotNull = !(!value || value.length === 0);
                 break;
             case 'givingGoal':
-                validity.isGivingGoalNotNull = !(!value || value.length === 0);
+                validity.doesAmountExist = !isInputBlank(value);
+                validity.isAmountLessThanOneBillion = isAmountLessThanOneBillionDollars(value);
+                validity.isAmountMoreThanOneDollor = isAmountMoreThanOneDollor(value);
+                validity.isValidPositiveNumber = isValidPositiveNumber(value);
                 break;
             default:
                 break;
@@ -228,6 +255,7 @@ class EditBasicProfile extends React.Component {
             userData,
         } = this.props;
         const privacyColumn = 'giving_goal_visibility';
+        let aboutCharCount = (!_.isEmpty(about)) ? Math.max(0, (1000 - Number(about.length))) : 1000;
         return (
             <Grid>
                 {
@@ -293,6 +321,7 @@ class EditBasicProfile extends React.Component {
                                     error={!validity.isDescriptionNotNull}
                                     value={about}
                                 />
+                                <div className="field-info text-right">{aboutCharCount} of 1000 characters left</div>
                                 <FormValidationErrorMessage
                                     condition={!validity.isDescriptionNotNull}
                                     errorMessage="Please input about yourself"
@@ -322,15 +351,20 @@ class EditBasicProfile extends React.Component {
                                         placeholder="Giving Goal"
                                         id="givingGoal"
                                         name="givingGoal"
-                                        maxLength="8"
+                                        maxLength="11"
                                         onChange={this.handleInputChange}
                                         onBlur={this.handleInputOnBlur}
                                         value={givingGoal}
-                                        error={!validity.isGivingGoalNotNull}
+                                        error={!isValidGiftAmount(validity)}
                                     />
                                     <FormValidationErrorMessage
-                                        condition={!validity.isGivingGoalNotNull}
-                                        errorMessage="Please input your Giving Goal"
+                                        condition={!validity.doesAmountExist || !validity.isAmountMoreThanOneDollor
+                                        || !validity.isValidPositiveNumber}
+                                        errorMessage="Please choose an amount of 5 or more"
+                                    />
+                                    <FormValidationErrorMessage
+                                        condition={!validity.isAmountLessThanOneBillion}
+                                        errorMessage="Please choose an amount less than one billion dollars"
                                     />
                                 </Form.Field>
 
