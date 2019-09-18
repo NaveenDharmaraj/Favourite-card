@@ -68,29 +68,31 @@ class FriendsList extends React.Component {
     // eslint-disable-next-line class-methods-use-this
     noDataFriendsList() {
         return (
-            <div className="friendsNoData noData mt-1 mb-2">
-                <Grid verticalAlign="middle">
-                    <Grid.Row>
-                        <Grid.Column mobile={16} tablet={8} computer={8}>
-                            <Image src={noDataFriends} className="noDataLeftImg" />
-                        </Grid.Column>
-                        <Grid.Column mobile={16} tablet={8} computer={8}>
-                            <div className="givingGroupNoDataContent">
-                                <Header as="h4">
-                                    <Header.Content>
-                                    Connect with people you know on Charitable Impact.
-                                    </Header.Content>
-                                </Header>
-                                <div>
-                                    <Link className="lnkChange" route="/user/profile">
-                                        <Button className="success-btn-rounded-def">Find Friends</Button>
-                                    </Link>
+            <Grid.Column width={16}>
+                <div className="friendsNoData noData mt-1 mb-2">
+                    <Grid verticalAlign="middle">
+                        <Grid.Row>
+                            <Grid.Column mobile={16} tablet={8} computer={8}>
+                                <Image src={noDataFriends} className="noDataLeftImg" />
+                            </Grid.Column>
+                            <Grid.Column mobile={16} tablet={8} computer={8}>
+                                <div className="givingGroupNoDataContent">
+                                    <Header as="h4">
+                                        <Header.Content>
+                                        Connect with people you know on Charitable Impact.
+                                        </Header.Content>
+                                    </Header>
+                                    <div>
+                                        <Link className="lnkChange" route="/user/profile/friends">
+                                            <Button className="success-btn-rounded-def">Find Friends</Button>
+                                        </Link>
+                                    </div>
                                 </div>
-                            </div>
-                        </Grid.Column>
-                    </Grid.Row>
-                </Grid>
-            </div>
+                            </Grid.Column>
+                        </Grid.Row>
+                    </Grid>
+                </div>
+            </Grid.Column>
         );
     }
 

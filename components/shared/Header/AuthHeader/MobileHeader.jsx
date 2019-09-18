@@ -52,7 +52,7 @@ const NavBarMobile = ({
     } = currentAccount;
     const menuLinks = getMainNavItems(accountType, slug);
     let accountSettingsText = formatMessage('accountSettings');
-    let accountUrl = `/user/profile`;
+    let accountUrl = `/user/profile/basic`;
     let isExternal = false;
     if (accountType === 'company') {
         accountSettingsText = formatMessage('companyAccountSettings');
