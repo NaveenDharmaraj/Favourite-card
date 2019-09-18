@@ -33,6 +33,7 @@ class Members extends React.Component {
                         <FriendCard
                             avatar={card.attributes.avatar}
                             name={card.attributes.displayName}
+                            id={card.id}
                         />
                     ))}
                 </Grid.Row>

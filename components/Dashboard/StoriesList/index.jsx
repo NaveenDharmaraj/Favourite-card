@@ -92,9 +92,9 @@ class StoriesList extends React.Component {
                 <Link route={`/user/stories`}>
                     <a>
                         View all
-                        (
+                        {/* (
                         {storiesData.count}
-                        )
+                        ) */}
                     </a>
                 </Link>
             );

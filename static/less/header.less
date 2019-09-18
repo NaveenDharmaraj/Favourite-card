@@ -170,6 +170,7 @@ button,a{
   padding-right: 10px;
 }
 .logoImg{
+  padding-left: 0px !important;
   .ui{
     &.image{
       height: 25px;	width: 122px;
@@ -179,6 +180,20 @@ button,a{
 .w-120{
   min-width: 120px;
 }
+.ui.secondary.menu .item{
+  &.chimpLogo{
+    padding-left: 0px;
+    margin-left: 0px;
+    img{
+      &.ui{
+        &.image{
+          width: 122px;
+          height: 25px;
+        }
+      }
+    }
+  }
+ }
 .c-login-header{
   &.ui{
     &.segment{
@@ -342,7 +357,7 @@ button,a{
       max-width: 330px;
       box-shadow: 0 0 4px 0 rgba(0,0,0,0.29);
       border-radius: 2px;
-      margin-top: 12px !important;
+      margin-top: 0px !important;
       >.header{
         padding: .833em 1em;
         border-bottom:1px solid @grey-lighten-2; 
@@ -461,7 +476,7 @@ button,a{
       max-width: 330px;
       box-shadow: 0 0 4px 0 rgba(0,0,0,0.29);
       border-radius: 2px;
-      margin-top: 12px !important;
+      margin-top: 0px !important;
       >.header{
         padding: .833em 1em;
         border-bottom:1px solid @grey-lighten-2; 
@@ -1357,8 +1372,8 @@ button,a{
           &.brand{
             padding: 21px 16px 18px 16px;
             img{
-              height: 40px;	
-              width: 153px;
+              //height: 40px;	
+              width: 122px;
             }
           }
           &:hover{
@@ -1448,6 +1463,11 @@ button,a{
 }
 @media only screen and (max-width:767px){
   .xs-d-none{
+    display: none !important;
+  }
+}
+@media only screen and (min-width:767px) and (max-width:991px){
+  .smo-d-none{
     display: none !important;
   }
 }

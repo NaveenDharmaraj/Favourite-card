@@ -10,6 +10,8 @@ import {
     PropTypes,
     number,
     func,
+    string,
+    bool,
 } from 'prop-types';
 
 import { formatCurrency } from '../../helpers/give/utils';
@@ -19,31 +21,6 @@ import {
 import PlaceholderGrid from '../shared/PlaceHolder';
 
 class ReceivingOrganisations extends React.Component {
-    static showList(list) {
-        const currency = 'USD';
-        const language = 'en';
-        // TODO 'language' from withTranslation
-        return (
-            list.map((donee) => (
-                <Table.Row>
-                    <Table.Cell>{donee.donee_name}</Table.Cell>
-                    <Table.Cell className="bold">
-                        {formatCurrency(donee.gifts_total, language, currency)}
-                    </Table.Cell>
-                </Table.Row>
-            )));
-    }
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            transactionsLoader: !(props.donationDetails && props.donationDetails.donationDetails
-                                    && props.donationDetails.donationDetails._embedded
-                                    && props.donationDetails.donationDetails._embedded.donee_list.length > 0
-            ),
-        };
-    }
-
     componentDidMount() {
         const {
             dispatch,
@@ -56,71 +33,122 @@ class ReceivingOrganisations extends React.Component {
         getBeneficiaryDoneeList(dispatch, charityId);
     }
 
-    componentDidUpdate(prevProps) {
+    showList() {
+        const {
+            currency,
+            donationDetails: {
+                donationDetails: {
+                    _embedded: {
+                        donee_list: list,
+                    },
+                },
+            },
+            language,
+        } = this.props;
+        // TODO 'language' from withTranslation
+        return (
+            list.map((donee) => (
+                <Table.Row>
+                    <Table.Cell>{donee.donee_name}</Table.Cell>
+                    <Table.Cell className="bold">
+                        {formatCurrency(donee.gifts_total, language, currency)}
+                    </Table.Cell>
+                </Table.Row>
+            )));
+    }
+
+    render() {
         const {
             donationDetails: {
                 donationDetails: {
+                    page: {
+                        size,
+                        totalElements,
+                    },
+                    totalAmount: {
+                        remainingAmount,
+                        totalAmount,
+                    },
                     _embedded: {
                         donee_list: doneeList,
                     },
                 },
             },
-        } = this.props;
-        let {
+            currency,
+            language,
             transactionsLoader,
-        } = this.state;
-        if (!_.isEqual(this.props, prevProps)) {
-            if (!_isEmpty(doneeList)) {
-                transactionsLoader = false;
-            }
-            this.setState({
-                transactionsLoader,
-            });
+        } = this.props;
+        let remainingOrganisation = null;
+        if (totalElements && size) {
+            remainingOrganisation = totalElements - size;
         }
-    }
-
-    render() {
-        const {
-            donationDetails,
-        } = this.props;
-        const {
-            transactionsLoader,
-        } = this.state;
-        return (
-            <Table basic="very" className="no-border-table">
-                {!transactionsLoader ? (
-                    <Table.Body>
-                        {(donationDetails && donationDetails.donationDetails && donationDetails.donationDetails._embedded
-                        && ReceivingOrganisations.showList(donationDetails.donationDetails._embedded.donee_list)
-                        )}
-                    </Table.Body>
-                ) : (<PlaceholderGrid row={3} column={2} placeholderType="table" />)
-                }
+        let listData = 'NO DATA';
+        let totalData = '';
+        if (!_isEmpty(doneeList)) {
+            listData = (
+                <Table.Body>
+                    {this.showList()}
+                    <Table.Row>
+                        <Table.Cell>{`${remainingOrganisation} other organizations`}</Table.Cell>
+                        <Table.Cell className="bold">
+                            {formatCurrency(remainingAmount, language, currency)}
+                        </Table.Cell>
+                    </Table.Row>
+                </Table.Body>
+            );
+            totalData = (
                 <Table.Footer className="brdr-footer">
                     <Table.Row>
-                        {/* <Table.Cell>118 gifts to qualified organizations totalled</Table.Cell>
-                        <Table.Cell className="bold">$14,234,189.0</Table.Cell> */}
+                        <Table.Cell>
+                            {`${totalElements} gifts to qualified organizations totalled`}
+                        </Table.Cell>
+                        <Table.Cell className="bold">
+                            {formatCurrency(totalAmount, language, currency)}
+                        </Table.Cell>
                     </Table.Row>
                 </Table.Footer>
+            );
+        }
+        return (
+            <Table basic="very" className="no-border-table">
+                {!transactionsLoader
+                    ? listData
+                    : (<PlaceholderGrid row={3} column={2} placeholderType="table" />)
+                }
+                {(!transactionsLoader)
+                    ? totalData
+                    : (<PlaceholderGrid row={1} column={2} placeholderType="table" />)
+                }
             </Table>
         );
     }
 }
 
 ReceivingOrganisations.defaultProps = {
-    charityDetails: PropTypes.shape({
-        charityDetails: PropTypes.shape({
+    charityDetails: {
+        charityDetails: {
             id: null,
-        }),
-    }),
+        },
+    },
+    currency: 'USD',
     dispatch: func,
-    donationDetails: PropTypes.shape({
-        donationDetails: PropTypes.shape({
-            _embedded: PropTypes.shape({
+    donationDetails: {
+        donationDetails: {
+            _embedded: {
                 donee_list: [],
-            }),
-        }),
-    }),
+            },
+            page: {
+                size: null,
+                totalElements: null,
+            },
+            totalAmount: {
+                remainingAmount: null,
+                totalAmount: null,
+            },
+        },
+    },
+    language: 'en',
+    transactionsLoader: true,
 };
 
 ReceivingOrganisations.propTypes = {
@@ -129,20 +157,32 @@ ReceivingOrganisations.propTypes = {
             id: number,
         }),
     }),
+    currency: string,
     dispatch: _.noop,
     donationDetails: PropTypes.shape({
         donationDetails: PropTypes.shape({
             _embedded: PropTypes.shape({
                 donee_list: arrayOf(PropTypes.element),
             }),
+            page: PropTypes.shape({
+                size: number,
+                totalElements: number,
+            }),
+            totalAmount: PropTypes.shape({
+                remainingAmount: number,
+                totalAmount: number,
+            }),
         }),
     }),
+    language: string,
+    transactionsLoader: bool,
 };
 
 function mapStateToProps(state) {
     return {
         charityDetails: state.charity.charityDetails,
         donationDetails: state.charity.donationDetails,
+        transactionsLoader: state.charity.showPlaceholder,
     };
 }
 

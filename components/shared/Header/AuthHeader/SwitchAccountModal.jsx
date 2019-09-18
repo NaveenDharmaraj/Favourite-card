@@ -7,8 +7,14 @@ import {
     Input,
     Image,
 } from 'semantic-ui-react';
+import getConfig from 'next/config';
 
 import { Link } from '../../../../routes';
+const { publicRuntimeConfig } = getConfig();
+
+const {
+    RAILS_APP_URL_ORIGIN,
+} = publicRuntimeConfig;
 
 class SwitchAccountModal extends React.Component {
     constructor(props) {
@@ -68,7 +74,7 @@ class SwitchAccountModal extends React.Component {
                                     searchFilteredArray.map((item) => (
                                         <List.Item>
                                             <List.Content floated="right" className="font-s-14">
-                                                <a href={item.location}>
+                                                <a href={`${RAILS_APP_URL_ORIGIN}${item.location}`}>
                                                     <Button className="blue-btn-rounded-def c-small">Select</Button>
                                                 </a>
                                             </List.Content>

@@ -62,10 +62,9 @@ class TaxReceipientCard extends React.Component {
                 country,
                 postalCode,
                 fullName,
-                isDefault,
             },
         } = taxReceipt;
-        if (isDefault) {
+        if (!_isEmpty(taxReceipt.attributes) && taxReceipt.attributes.isDefault) {
             dispatch({
                 payload: {
                     defaultTaxId: taxReceipt.id,
@@ -100,7 +99,7 @@ class TaxReceipientCard extends React.Component {
 
                     <p className="font-s-15 bold mb-1-2">
                         {fullName}
-                        {isDefault && <span className="default">default</span>}
+                        {taxReceipt.attributes.isDefault && <span className="default">default</span>}
                     </p>
                     <p className="font-s-14">
                         {!_isEmpty(addressOne) && `${addressOne},`}

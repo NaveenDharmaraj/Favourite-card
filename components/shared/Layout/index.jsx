@@ -23,7 +23,8 @@ const { publicRuntimeConfig } = getConfig();
 
 const {
     APPLOZIC_WS_URL,
-    APPLOZIC_APP_KEY
+    APPLOZIC_APP_KEY,
+    HELP_SCOUT_KEY
 } = publicRuntimeConfig;
 
 const getWidth = () => {
@@ -31,19 +32,39 @@ const getWidth = () => {
     return isSSR ? Responsive.onlyTablet.minWidth : window.innerWidth
 };
 
-// const Layout = (props) => {
+
 class Layout extends React.Component {
     async componentDidMount() {
         const {
             dispatch,
             authRequired,
+            currentUser,
             isAuthenticated,
             userInfo
         } = this.props;
         if (authRequired && !isAuthenticated) {
-            Router.pushRoute('/users/login');
+            let nextPathname;
+            let searchQuery;
+            if(typeof window !== 'undefined'){
+                 nextPathname = window.location.pathname;
+                 searchQuery = window.location.search;
+            }
+            let pathname = (nextPathname) ?
+            `/users/login?returnTo=${nextPathname}${searchQuery}` : '/users/login';
+            Router.pushRoute(pathname);
         } else {
             await NotificationHelper.getMessages(userInfo, dispatch);
+        }
+        !function(e,t,n){function a(){var e=t.getElementsByTagName("script")[0],n=t.createElement("script");n.type="text/javascript",n.async=!0,n.src="https://beacon-v2.helpscout.net",e.parentNode.insertBefore(n,e)}if(e.Beacon=n=function(t,n,a){e.Beacon.readyQueue.push({method:t,options:n,data:a})},n.readyQueue=[],"complete"===t.readyState)return a();e.attachEvent?e.attachEvent("onload",a):e.addEventListener("load",a,!1)}(window,document,window.Beacon||function(){});
+
+        if(window && window.Beacon) {
+            window.Beacon('init', HELP_SCOUT_KEY);
+            if(currentUser){
+                Beacon("identify", {
+                    name: currentUser.attributes.displayName,
+                    email: currentUser.attributes.email,
+                  });
+            }               
         }
     };
 
@@ -77,27 +98,23 @@ class Layout extends React.Component {
                 </Head>
                 <div>
                     <ErrorBoundary>
-                        <Responsive {...Responsive.onlyMobile}>
+                        <Responsive minWidth={320} maxWidth={991}>
                             <MobileHeader isAuthenticated={isAuthenticated} onBoarding={onBoarding} >
-                                <Container>
-                                    <div className="pageWraper">
-                                        {!_.isEmpty(appErrors) &&
-                                            <Container
-                                                className="app-status-messages"
-                                            >
-                                                {_.map(appErrors, (err) => (
-                                                    <StatusMessage
-                                                        key={err.heading}
-                                                        error={err}
-                                                        dispatch={dispatch}
-                                                        {...err}
-                                                    />
-                                                ))}
-                                            </Container>
-                                        }
-                                        {children}
-                                    </div>
-                                </Container>
+                                {!_.isEmpty(appErrors) &&
+                                    <Container
+                                        className="app-status-messages"
+                                    >
+                                        {_.map(appErrors, (err) => (
+                                            <StatusMessage
+                                                key={err.heading}
+                                                error={err}
+                                                dispatch={dispatch}
+                                                {...err}
+                                            />
+                                        ))}
+                                    </Container>
+                                }
+                                {children}
                             </MobileHeader>
                         </Responsive>
                         <Responsive minWidth={Responsive.onlyTablet.minWidth}>
@@ -116,7 +133,9 @@ class Layout extends React.Component {
                                         ))}
                                     </Container>
                                 }
+                                <div style={{minHeight:'60vh'}}>
                                 {children}
+                                </div>
                         </Responsive>
                         <Footer />
                     </ErrorBoundary>
@@ -145,6 +164,7 @@ function mapStateToProps(state) {
         isAuthenticated: state.auth.isAuthenticated,
         userInfo: state.user.info,
         appErrors: state.app.errors,
+        currentUser: state.user.info,
     };
 }
 
