@@ -556,7 +556,8 @@ class Donation extends React.Component {
           giveData.creditCard = getDefaultCreditCard(populatePaymentInstrument(this.props.companyDetails.companyPaymentInstrumentsData, formatMessage));
           doSetState = true;
       }
-      if(!_.isEqual(this.props.companiesAccountsData, oldProps.companiesAccountsData) && giveData.giveTo.value === null){
+      if((!_.isEqual(this.props.companiesAccountsData, oldProps.companiesAccountsData)
+        || _.isEmpty(this.props.companiesAccountsData)) && giveData.giveTo.value === null){
           if(_.isEmpty(this.props.companiesAccountsData) && !_.isEmpty(this.props.fund)){
               const {
                   fund,

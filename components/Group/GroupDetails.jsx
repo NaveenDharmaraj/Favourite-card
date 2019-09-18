@@ -41,6 +41,7 @@ class GroupDetails extends React.Component {
         super(props);
         this.state = {
             joinClicked: false,
+            userJoinClicked: false,
         };
         this.handleJoin = this.handleJoin.bind(this);
         this.handleUserJoin = this.handleUserJoin.bind(this);
@@ -79,6 +80,9 @@ class GroupDetails extends React.Component {
             },
         } = this.props;
         joinGroup(dispatch, slug);
+        this.setState({
+            userJoinClicked: true,
+        });
     }
 
     render() {
@@ -102,6 +106,7 @@ class GroupDetails extends React.Component {
         } = this.props;
         const {
             joinClicked,
+            userJoinClicked,
         } = this.state;
         let getCauses = null;
         let giveButton = null;
@@ -150,6 +155,7 @@ class GroupDetails extends React.Component {
                                 onClick={this.handleUserJoin}
                                 fluid
                                 className="blue-bordr-btn-round"
+                                disabled={userJoinClicked}
                             >
                             Join
                             </Button>

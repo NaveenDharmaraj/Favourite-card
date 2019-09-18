@@ -14,6 +14,7 @@ import {
     string,
     number,
     func,
+    bool,
 } from 'prop-types';
 import {
     connect,
@@ -29,7 +30,6 @@ class TransactionDetails extends React.Component {
         this.onPageChange = this.onPageChange.bind(this);
         this.state = {
             activePage: 1,
-            tableListLoader: !props.groupTransactions.data.length > 0,
         };
     }
 
@@ -39,25 +39,6 @@ class TransactionDetails extends React.Component {
             id,
         } = this.props;
         getTransactionDetails(dispatch, id);
-    }
-
-    componentDidUpdate(prevProps) {
-        const {
-            groupTransactions: {
-                data: transactionData,
-            },
-        } = this.props;
-        let {
-            tableListLoader,
-        } = this.state;
-        if (!_.isEqual(this.props, prevProps)) {
-            if (!_.isEqual(transactionData, prevProps.groupTransactions.data)) {
-                tableListLoader = false;
-            }
-            this.setState({
-                tableListLoader,
-            });
-        }
     }
 
     onPageChange(event, data) {
@@ -80,10 +61,10 @@ class TransactionDetails extends React.Component {
                     pageCount,
                 },
             },
+            tableListLoader,
         } = this.props;
         const {
             activePage,
-            tableListLoader,
         } = this.state;
         let transactionData = 'No Data';
         if (!_isEmpty(groupData)) {
@@ -184,6 +165,7 @@ TransactionDetails.defaultProps = {
         },
     },
     id: null,
+    tableListLoader: true,
 };
 
 TransactionDetails.propTypes = {
@@ -198,6 +180,7 @@ TransactionDetails.propTypes = {
         }),
     },
     id: number,
+    tableListLoader: bool,
 };
 
 
@@ -205,6 +188,7 @@ function mapStateToProps(state) {
     return {
         currentUser: state.user.info,
         groupTransactions: state.group.groupTransactions,
+        tableListLoader: state.group.showPlaceholder,
     };
 }
 

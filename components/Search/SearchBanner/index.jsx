@@ -5,6 +5,7 @@ import {
     Icon,
 } from 'semantic-ui-react';
 import _isEmpty from 'lodash/isEmpty';
+import _isEqual from 'lodash/isEqual';
 
 import {
     Router, Link,
@@ -22,6 +23,15 @@ class SearchBanner extends React.Component {
         };
         this.handleOnChange = this.handleOnChange.bind(this);
         this.handleKeyEnter = this.handleKeyEnter.bind(this);
+    }
+
+    componentDidUpdate(prevProps) {
+        const {
+            searchWordProps
+        } = this.props;
+        if (!_isEqual(searchWordProps, prevProps.searchWordProps) && _isEmpty(searchWordProps)) {
+            this.setState({searchWord : ''})
+        }
     }
 
     handleOnChange(event) {
@@ -61,7 +71,7 @@ class SearchBanner extends React.Component {
                             <Grid.Column mobile={12} tablet={8} computer={6}>
                                 <Input
                                     fluid
-                                    placeholder="Search Charitable Impact"
+                                    placeholder="Search Charitable Impact..."
                                     onChange={this.handleOnChange}
                                     value={searchWord}
                                     onKeyPress={(event) => { (event.keyCode || event.which) === 13 ? this.handleKeyEnter(route) : null; }}

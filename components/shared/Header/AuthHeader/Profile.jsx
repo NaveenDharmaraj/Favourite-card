@@ -17,13 +17,20 @@ import _isEmpty from 'lodash/isEmpty';
 import {
     string,
     func,
+    bool,
 } from 'prop-types';
+import getConfig from 'next/config';
 
 import { withTranslation } from '../../../../i18n';
 import { Link } from '../../../../routes';
 import IconIndividual from '../../../../static/images/chimp-icon-individual.png';
 import SwitchAccountModal from './SwitchAccountModal';
 
+const { publicRuntimeConfig } = getConfig();
+
+const {
+    RAILS_APP_URL_ORIGIN,
+} = publicRuntimeConfig;
 
 class Profile extends React.Component {
     constructor(props) {
@@ -57,15 +64,16 @@ class Profile extends React.Component {
                 name,
                 slug,
             },
+            isAdmin,
         } = this.props;
         const formatMessage = this.props.t;
         let accountSettingsText = formatMessage('accountSettings');
         let accountUrl = `/user/profile`;
         if (accountType === 'company') {
             accountSettingsText = formatMessage('companyAccountSettings');
-            accountUrl = `companies/${slug}/edit`;
+            accountUrl = `${RAILS_APP_URL_ORIGIN}/companies/${slug}/edit`;
         } else if (accountType === 'charity') {
-            accountUrl = `/beneficiaries/${slug}/info`;
+            accountUrl = `${RAILS_APP_URL_ORIGIN}/beneficiaries/${slug}/info`;
         }
         return (
             <Fragment>
@@ -117,6 +125,19 @@ class Profile extends React.Component {
 
                                 )
                             }
+                            {
+                                (isAdmin) && (
+                                    <Fragment>
+                                        <Link href={`${RAILS_APP_URL_ORIGIN}/chimp-admin/users`}>
+                                            <List.Item as="a">
+                                                {formatMessage('chimpAdmin')}
+                                            </List.Item>
+                                        </Link>
+                                        <Divider />
+                                    </Fragment>
+                                )
+                            }
+
                             <Link route="/users/logout">
                                 <List.Item as="a">
                                     {formatMessage('logout')}
@@ -145,6 +166,7 @@ Profile.defaultProps = {
         avatar: IconIndividual,
         name: '',
     },
+    isAdmin: false,
     t: _noop,
 };
 
@@ -153,11 +175,13 @@ Profile.propTypes = {
         avatar: string,
         name: string,
     },
+    isAdmin: bool,
     t: func,
 };
 
 const mapStateToProps = (state) => ({
     currentAccount: state.user.currentAccount,
+    isAdmin: state.user.isAdmin,
     otherAccounts: state.user.otherAccounts,
 });
 

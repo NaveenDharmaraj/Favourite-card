@@ -1,3 +1,5 @@
+import _isEmpty from 'lodash/isEmpty';
+
 const isFalsy = (val) => {
     const falsyArray = [
         undefined,
@@ -29,7 +31,94 @@ const distanceOfTimeInWords = (from) => {
     return `over ${Math.floor(distanceInMinutes / 525960)} years`;
 };
 
+/**
+   * Return a String getting trimmed based on Count
+   *
+   * @param {string} wordGroup String for getting trimmed.
+   * @param {number} wordCount Count.
+   * @return {string} String after getting trimmed.
+   */
+const renderText = (wordGroup, wordCount = 20) => {
+    let str;
+    if (!_isEmpty(wordGroup)) {
+        str = wordGroup.split(' ');
+        if (!_isEmpty(str) && str.length > 0) {
+            if (str.length > wordCount) {
+                return `${str.slice(0, wordCount).join(' ')}...`;
+            }
+            return wordGroup;
+        }
+    }
+    return null;
+};
+
+const getMainNavItems = (accountType, slug) => {
+    const menuLinks = [];
+    if (accountType === 'company') {
+        menuLinks.push({
+            location: `/companies/${slug}`,
+            name: 'Dashboard',
+            isExternal: true,
+        });
+        menuLinks.push({
+            location: `/companies/${slug}/match-requests/new`,
+            name: 'Match Requests',
+            isExternal: true,
+        });
+        menuLinks.push({
+            location: `/companies/${slug}/employees`,
+            name: 'Manage Employees',
+            isExternal: true,
+        });
+    } else if (accountType === 'charity') {
+        menuLinks.push({
+            location: `/admin/beneficiaries/${slug}`,
+            name: 'Dashboard',
+            isExternal: true,
+        });
+        menuLinks.push({
+            location: `/admin/beneficiaries/${slug}/eft`,
+            name: 'Direct Deposit',
+            isExternal: true,
+        });
+        menuLinks.push({
+            location: `/admin/beneficiaries/${slug}/tool`,
+            name: 'Take Donations Online',
+            isExternal: true,
+        });
+        menuLinks.push({
+            location: `/admin/beneficiaries/${slug}/members`,
+            name: 'Manage Admins',
+            isExternal: true,
+        });
+    } else {
+        menuLinks.push({
+            location: '/user/groups',
+            name: 'Giving Groups & Campaigns',
+            isExternal: false,
+        });
+        menuLinks.push({
+            location: '/user/favorites',
+            name: 'Favorites',
+            isExternal: false,
+        });
+        menuLinks.push({
+            location: '/user/recurring-donations',
+            name: 'Tools',
+            isExternal: false,
+        });
+        menuLinks.push({
+            location: '/user/tax-receipts',
+            name: 'Tax receipts',
+            isExternal: false,
+        });
+    }
+    return menuLinks;
+}
+
 export {
+    getMainNavItems,
     isFalsy,
     distanceOfTimeInWords,
+    renderText,
 };
