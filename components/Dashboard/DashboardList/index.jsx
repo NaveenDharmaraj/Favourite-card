@@ -19,12 +19,14 @@ import {
 } from '../../../actions/dashboard';
 import Pagination from '../../shared/Pagination';
 import noDataImg from '../../../static/images/noresults.png';
+import PlaceHolderGrid from '../../shared/PlaceHolder';
 
 class DashboradList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             currentActivePage: 1,
+            dashboardListLoader: !props.dataList,
         };
         this.onPageChanged = this.onPageChanged.bind(this);
     }
@@ -39,7 +41,24 @@ class DashboradList extends React.Component {
         getDashBoardData(dispatch, 'all', id, 1);
     }
 
-    onPageChanged(data) {
+    componentDidUpdate(prevProps) {
+        const {
+            dataList,
+        } = this.props;
+        let {
+            dashboardListLoader,
+        } = this.state;
+        if (!_.isEqual(this.props, prevProps)) {
+            if (!_.isEqual(dataList, prevProps.dataList)) {
+                dashboardListLoader = false;
+            }
+            this.setState({
+                dashboardListLoader,
+            });
+        }
+    }
+
+    onPageChanged(event, data) {
         const {
             currentUser: {
                 id,
@@ -190,6 +209,7 @@ class DashboradList extends React.Component {
         } = this.props;
         const {
             currentActivePage,
+            dashboardListLoader,
         } = this.state;
         return (
             <div className="pt-2 pb-2">
@@ -203,31 +223,12 @@ class DashboradList extends React.Component {
                                     </Header.Content>
                                 </Header>
                             </Grid.Column>
-                            {/* <Grid.Column mobile={16} tablet={4} computer={4}>
-                                <div className="text-right">
-                                    <Popup
-                                        basic
-                                        className="filterPopup"
-                                        on="click"
-                                        pinned
-                                        position="bottom right"
-                                        trigger={<a><Icon name="filter" />Filter</a>}>
-                                        <div className="filterPanel">
-                                            <div className="filterPanelContent">
-                                                <div className="filterPanelItem">
-                                                    <div className="filter-header font-18 font-bold">All</div>
-                                                    <div className="filter-header font-18 font-bold">Money In</div>
-                                                    <div className="filter-header font-18 font-bold">Money Out</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </Popup>
-                                </div>
-                            </Grid.Column> */}
                         </Grid.Row>
                     </Grid>
                     <div className="pt-2">
-                        {this.listItem()}
+                        { dashboardListLoader ? <PlaceHolderGrid row={2} column={2} placeholderType="table" /> : (
+                            this.listItem()
+                        )}
                     </div>
                     <div className="paginationWraper">
                         <div className="db-pagination right-align pt-2">
