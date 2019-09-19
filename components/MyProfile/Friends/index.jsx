@@ -82,11 +82,11 @@ class Friends extends React.Component {
                                                         <Grid.Row>
                                                             <Grid.Column mobile={16} tablet={12} computer={13}>
                                                                 <Form.Field>
-                                                                    <input placeholder="First Name" />
+                                                                    <input placeholder="Email Address" />
                                                                 </Form.Field>
                                                             </Grid.Column>
                                                             <Grid.Column mobile={16} tablet={4} computer={3}>
-                                                                <Button className="blue-btn-rounded-def c-small">Add friend</Button>
+                                                                <Button className="blue-btn-rounded-def c-small">Invite</Button>
                                                             </Grid.Column>
                                                         </Grid.Row>
                                                     </Grid>

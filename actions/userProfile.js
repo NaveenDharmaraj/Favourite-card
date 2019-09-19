@@ -13,9 +13,6 @@ import {
     getUser,
     savePaymentInstrument,
 } from './user';
-import {
-    logout,
-} from './auth';
 
 // eslint-disable-next-line import/exports-last
 export const actionTypes = {
@@ -37,6 +34,7 @@ export const actionTypes = {
     USER_PROFILE_CAUSES: 'USER_PROFILE_CAUSES',
     USER_PROFILE_CHARITABLE_INTERESTS: 'USER_PROFILE_CHARITABLE_INTERESTS',
     USER_PROFILE_CREDIT_CARDS: 'USER_PROFILE_CREDIT_CARDS',
+    USER_PROFILE_DEFAULT_TAX_RECEIPT: 'USER_PROFILE_DEFAULT_TAX_RECEIPT',
     USER_PROFILE_FAVOURITES: 'USER_PROFILE_FAVOURITES',
     USER_PROFILE_FIND_FRIENDS: 'USER_PROFILE_FIND_FRIENDS',
     USER_PROFILE_FIND_TAGS: 'USER_PROFILE_FIND_TAGS',
@@ -47,6 +45,7 @@ export const actionTypes = {
     USER_PROFILE_MEMBER_GROUP: 'USER_PROFILE_MEMBER_GROUP',
     USER_PROFILE_MY_FRIENDS: 'USER_PROFILE_MY_FRIENDS',
     USER_PROFILE_RECOMMENDED_TAGS: 'USER_PROFILE_RECOMMENDED_TAGS',
+    USER_PROFILE_TAX_RECEIPTS: 'USER_PROFILE_TAX_RECEIPTS',
     USER_PROFILE_UNBLOCK_FRIEND: 'USER_PROFILE_UNBLOCK_FRIEND',
 };
 
@@ -408,7 +407,6 @@ const sendFriendRequest = (dispatch, sourceUserId, destinationEmailId, searchWor
     };
     return eventApi.post(`/event`, bodyData).then(
         (result) => {
-            console.log(result);
             fsa.payload = {
                 data: result.data,
             };
@@ -513,7 +511,6 @@ const saveCharitableCauses = (dispatch, userId, userCauses) => {
         dispatch(fsaCauses);
     });
 };
-
 
 const saveCharitableTags = (dispatch, userId, userTags) => {
     const fsaTags = {
@@ -670,7 +667,6 @@ const userResetPassword = (dispatch, userData) => {
         auth_user_id: userData.authId,
         password: userData.password,
     };
-    let isPasswordChanged = true;
     return securityApi.post('/user/changepassword', bodyData).then(
         (result) => {
             fsa.payload = {
@@ -678,13 +674,9 @@ const userResetPassword = (dispatch, userData) => {
             };
         },
     ).catch((error) => {
-        isPasswordChanged = false;
         fsa.error = error;
     }).finally(() => {
         dispatch(fsa);
-        if (isPasswordChanged) {
-            logout();
-        }
     });
 };
 
@@ -757,11 +749,29 @@ const updateUserPreferences = (dispatch, userId, preferenceColumn, preferenceVal
     };
     return coreApi.patch(`/users/${userId}`, bodyData).then(
         (result) => {
-            console.log(result);
             fsa.payload = {
                 data: result.data,
             };
             getUser(dispatch, userId, null);
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    });
+};
+
+const getUserDefaultTaxReceipt = (dispatch, userid) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.USER_PROFILE_DEFAULT_TAX_RECEIPT,
+    };
+    return coreApi.get(`/users/${Number(userid)}/defaultTaxReceiptProfile`).then(
+        (result) => {
+            fsa.payload = {
+                data: result.data,
+            };
         },
     ).catch((error) => {
         fsa.error = error;
@@ -799,4 +809,5 @@ export {
     userResetPassword,
     savePrivacySetting,
     updateUserPreferences,
+    getUserDefaultTaxReceipt,
 };

@@ -12,6 +12,7 @@ import { connect } from 'react-redux';
 
 import {
     updateUserPreferences,
+    getUserDefaultTaxReceipt,
 } from '../../../actions/userProfile';
 
 const givingColumnName = {
@@ -38,13 +39,34 @@ class ManageGiving extends React.Component {
             givingGroupMembersGiveAnonymously: (!_.isEmpty(props.currentUser)) ? props.currentUser.attributes.preferences.giving_group_members_give_anonymously : false,
             givingGroupMembersShareMyGiftamount: (!_.isEmpty(props.currentUser)) ? props.currentUser.attributes.preferences.giving_group_members_share_my_giftamount : false,
             givingGroupMembersShareMyName: (!_.isEmpty(props.currentUser)) ? props.currentUser.attributes.preferences.giving_group_members_share_my_name : false,
-            userName: (!_.isEmpty(props.currentUser)) ? `${props.currentUser.attributes.firstName} ${props.currentUser.attributes.lastName}` : '',
-            userNameEmail: (!_.isEmpty(props.currentUser)) ? props.currentUser.attributes.email : '',
-            userNameAddress: '', //(!_.isEmpty(props.currentUser)) && typeof props.currentUser.preferences.address !== 'undefined' ? props.currentUser.preferences.address : '',
             isCharityShareInfo: (props.currentUser.attributes.preferences.charities_share_my_name || props.currentUser.attributes.preferences.charities_share_my_name_address || props.currentUser.attributes.preferences.charities_share_my_name_email) ? true : false,
+            selectedTaxReceipt: '',
+            userName: (!_.isEmpty(props.currentUser)) ? `${props.currentUser.attributes.firstName} ${props.currentUser.attributes.lastName}` : '',
+            userNameAddress: '',
+            userNameEmail: (!_.isEmpty(props.currentUser)) ? props.currentUser.attributes.email : '',
         };
         this.handleUserPreferenceChange = this.handleUserPreferenceChange.bind(this);
         this.handleCharityInfoShare = this.handleCharityInfoShare.bind(this);
+    }
+
+    componentDidMount() {
+        const {
+            currentUser,
+            dispatch,
+        } = this.props;
+        getUserDefaultTaxReceipt(dispatch, currentUser.id);
+    }
+
+    componentDidUpdate(prevProps) {
+        const {
+            userDefaultTaxReceipt,
+        } = this.props;
+        if (!_.isEqual(userDefaultTaxReceipt, prevProps.userDefaultTaxReceipt)) {
+            this.setState({
+                userNameAddress: `${userDefaultTaxReceipt.data.attributes.fullName}, ${userDefaultTaxReceipt.data.attributes.addressOne}, ${userDefaultTaxReceipt.data.attributes.addressTwo}`,
+                selectedTaxReceipt: userDefaultTaxReceipt.data.id,
+            });
+        }
     }
 
     handleUserPreferenceChange(event, data) {
@@ -82,10 +104,11 @@ class ManageGiving extends React.Component {
         if (columnName === 'charities_dont_share' && checked === false) {
             updateUserPreferences(dispatch, currentUser.id, columnName, checked);
         } else {
+            getUserDefaultTaxReceipt(dispatch, currentUser.id);
             charitiesShareMyName = true;
             charitiesShareMyNameAddress = false;
             charitiesShareMyNameEmail = false;
-            this.setState({ 
+            this.setState({
                 charitiesShareMyName,
                 charitiesShareMyNameAddress,
                 charitiesShareMyNameEmail,
@@ -110,7 +133,7 @@ class ManageGiving extends React.Component {
             isCharityShareInfo,
         } = this.state;
         const userInfoEmail = `${userName}, ${userNameEmail}`;
-        const userInfoAddress = `${userName}, ${userNameAddress}`;
+        const userInfoAddress = `${userNameAddress}`;
         return (
             <div className="remove-gutter">
                 <div className="userSettingsContainer">
@@ -277,6 +300,7 @@ class ManageGiving extends React.Component {
 function mapStateToProps(state) {
     return {
         currentUser: state.user.info,
+        userDefaultTaxReceipt: state.userProfile.userDefaultTaxReceipt,
     };
 }
 
