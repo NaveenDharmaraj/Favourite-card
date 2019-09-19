@@ -127,9 +127,6 @@ class ManagePassword extends React.Component {
     }
 
     handleRedirectOkClick() {
-        this.setState({
-            confirmPasswordModal: false,
-        });
         logout();
     }
 
