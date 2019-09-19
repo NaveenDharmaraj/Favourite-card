@@ -43,7 +43,7 @@ class FriendProfile extends React.Component {
         } = this.props;
         let userData = '';
         let givingAmount = 0; let givenAmount = 0; let percentage = 0; let profileType = '';
-        if (!_.isEmpty(userFriendProfileData)) {
+        if (!_.isEmpty(userFriendProfileData) && _.size(userFriendProfileData.data > 0)) {
             userData = userFriendProfileData.data[0].attributes;
             givingAmount = (typeof userData.giving_goal_amt !== 'undefined') ? Number(userData.giving_goal_amt) : 0;
             givenAmount = (typeof userData.giving_goal_amt !== 'undefined') ? Number(userData.giving_goal_met) : 0;

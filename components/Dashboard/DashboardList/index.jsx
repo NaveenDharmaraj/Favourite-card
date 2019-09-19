@@ -226,7 +226,11 @@ class DashboradList extends React.Component {
                         </Grid.Row>
                     </Grid>
                     <div className="pt-2">
-                        { dashboardListLoader ? <PlaceHolderGrid row={2} column={2} placeholderType="table" /> : (
+                        { dashboardListLoader ? (
+                            <Table padded unstackable className="no-border-table">
+                                <PlaceHolderGrid row={4} column={4} placeholderType="table" />
+                            </Table>
+                        ) : (
                             this.listItem()
                         )}
                     </div>
