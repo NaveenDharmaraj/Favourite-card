@@ -120,9 +120,14 @@ class NotificationHelper {
                             t["_key"] = key;
                             if (t.message[localeCode]) {
                                 t.message = t.message[localeCode];
+                            }
+                            if (t.messageActions && t.messageActions[localeCode]) {
                                 t.messageActions = t.messageActions[localeCode];
+                            }
+                            if (t.callToActions && t.callToActions[localeCode]) {
                                 t.callToActions = t.callToActions[localeCode];
                             }
+                            // }
                             firebaseMessagesRead.push(t);
                         }
                     });
