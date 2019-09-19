@@ -216,7 +216,6 @@ class EditBasicProfile extends React.Component {
             } = this.state;
             saveUserBasicProfile(dispatch, userBasicDetails, id, email).then(() => {
                 this.setState({
-                    buttonClicked: true,
                     errorMessage: null,
                     successMessage: 'User Profile basic details saved Successfully.',
                     statusMessage: true,
