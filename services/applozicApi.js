@@ -11,7 +11,7 @@ const {
     APPLOZIC_WS_URL,
     APPLOZIC_APP_KEY
 } = publicRuntimeConfig;
-console.log(publicRuntimeConfig);
+// console.log(publicRuntimeConfig);
 const instance = axios.create({
     baseURL: `${APPLOZIC_WS_URL}`,
     headers: {
@@ -29,8 +29,8 @@ instance.interceptors.request.use(function (config) {
         }
         config.headers.Authorization = `Bearer ${token}`;
     }
-    console.log("Reuqetsadds Confug");
-    console.log(config);
+    // console.log("Reuqetsadds Confug");
+    // console.log(config);
     //config.headers.Authorization = "Basic " + base64.encode(config.data._userId + ":" + config.data._deviceKey);
     // console.log("_deviceKey == " + storage.get("_deviceKey", 'cookie'));
     config.headers.Authorization = "Basic " + base64.encode(storage.get('chimpUserId', 'cookie') + ":" + storage.get("_deviceKey", 'cookie'));

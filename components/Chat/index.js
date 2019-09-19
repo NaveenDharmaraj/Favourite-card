@@ -257,6 +257,7 @@ class ChatWrapper extends React.Component {
             params["imageUrl"] = self.state.editGroupImageUrl; //"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMus31dApHDyvHuFOx1CM6bS6-RhuzlAb5oL0aaf37Di54iIUf" 
         }
         if (usersInfo) {
+            params = { clientGroupId: groupId };
             params["users"] = usersInfo;
         }
         // params['_userId'] = this.state.userInfo.id;
@@ -594,7 +595,6 @@ class ChatWrapper extends React.Component {
     }
     render() {
         let self = this;
-        // console.log(self.state);
         return (
             <Fragment>
                 <div className="messageMainWraper">
@@ -762,7 +762,7 @@ class ChatWrapper extends React.Component {
                                                                                                                     <Popup.Content>
                                                                                                                         <List>
                                                                                                                             {/* <List.Item as='a' onClick={() => self.setGroupAction('MEMBERS_LIST')}>Message</List.Item> */}
-                                                                                                                            {user.role != "1" ? <List.Item as='a' onClick={() => self.updateGroupDetails(groupFeed.clientGroupId, { userId: user.userId, role: 1 })}>Make as Admin</List.Item> : ""}
+                                                                                                                            {user.role != "1" ? <List.Item as='a' onClick={() => self.updateGroupDetails(groupFeed.clientGroupId, { "userId": user.userId, "role": "1" })}>Make as Admin</List.Item> : ""}
                                                                                                                             {user.role != "1" ? <Divider /> : ""}
                                                                                                                             <List.Item as='a' className="red" onClick={() => self.removeUserFromGroup(groupFeed.clientGroupId, user.userId)}>Remove</List.Item>
                                                                                                                         </List>
@@ -925,7 +925,7 @@ class ChatWrapper extends React.Component {
                                                                             </Popup.Content>
                                                                         </Popup>
 
-                                                                        <List.Content>
+                                                                        <List.Content className="grpNameEdit">
                                                                             {(() => {
                                                                                 if (self.state.editGroup) {
                                                                                     return <Fragment>

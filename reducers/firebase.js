@@ -3,17 +3,20 @@ const firebase = (state = {}, action) => {
         ...state,
     };
     switch (action.type) {
-        case 'FIREBASE_MESSAGE_FETCH_COMPLETE':
-            console.log("FIREBASE_MESSAGE_FETCH_COMPLETE");
-            console.error(action.payload.messages);
+        case 'FIREBASE_MESSAGE_FETCH_COMPLETE': {
+            // console.log("FIREBASE_MESSAGE_FETCH_COMPLETE");
+            // console.error(action.payload.messages);
             newState = {
                 ...state,
                 messages: action.payload.messages,
+                lastSyncTime: action.payload.lastSyncTime,
+                page: action.payload.page
             };
+        }
             break;
         default:
-            console.log(action.type);
-            console.log(action.payload);
+            // console.log(action.type);
+            // console.log(action.payload);
             break;
     }
     return newState;
