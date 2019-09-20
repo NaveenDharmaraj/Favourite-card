@@ -23,7 +23,7 @@ class ErrorBoundary extends Component {
     }
 
     static getDerivedStateFromError() {
-        return { hasError: true };
+        this.setState({ hasError: true });
     }
 
     render() {
