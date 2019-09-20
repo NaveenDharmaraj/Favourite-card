@@ -138,7 +138,7 @@ const group = (state = {}, action) => {
                 if (state.groupComments && state.groupComments[action.payload.activityId]) {
                     newState = {
                         ...state,
-                        groupComments : {
+                        groupComments: {
                             ...state.groupComments,
                             [action.payload.activityId]: action.payload.groupComments.concat(state.groupComments[action.payload.activityId]),
                             loadComments: true,

@@ -39,7 +39,7 @@ const ProfileDetails = (props) => {
         },
         {
             menuItem: 'Receiving organizations',
-            render: () => <Tab.Pane attached={false}><ReceivingOrganisations /></Tab.Pane>,
+            render: () => <Tab.Pane className="no-border-bottom" attached={false}><ReceivingOrganisations /></Tab.Pane>,
         },
     ];
     return (

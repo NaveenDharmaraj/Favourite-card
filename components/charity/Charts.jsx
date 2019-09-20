@@ -160,6 +160,7 @@ class Charts extends React.Component {
         } = this.props;
         const currency = 'USD';
         const language = 'en';
+        const yearData = (values && values.year) ? values.year : '';
         // TODO 'language' from withTranslation
         return (
             <Grid stackable columns="2">
@@ -193,7 +194,7 @@ class Charts extends React.Component {
                                 },
                                 title: {
                                     display: true,
-                                    text: `2019 Revenues: ${(values) && formatCurrency(values.graphValues.revenue_total, language, currency)}`,
+                                    text: `${yearData} Revenues: ${(values) && formatCurrency(values.graphValues.revenue_total, language, currency)}`,
                                 },
                                 tooltips: false,
                             }}
@@ -228,7 +229,7 @@ class Charts extends React.Component {
                                 },
                                 title: {
                                     display: true,
-                                    text: `2019 Expenditures: ${(values) && formatCurrency(values.graphValues.expenditure_total, language, currency)}`,
+                                    text: `${yearData} Expenditures: ${(values) && formatCurrency(values.graphValues.expenditure_total, language, currency)}`,
                                 },
                                 tooltips: false,
                             }}
@@ -269,7 +270,7 @@ class Charts extends React.Component {
                                 },
                                 title: {
                                     display: true,
-                                    text: `2019 Assets: ${(values) && formatCurrency(values.graphValues.assets_total, language, currency)}`,
+                                    text: `${yearData} Assets: ${(values) && formatCurrency(values.graphValues.assets_total, language, currency)}`,
                                 },
                                 tooltips: false,
                             }}
@@ -304,7 +305,7 @@ class Charts extends React.Component {
                                 },
                                 title: {
                                     display: true,
-                                    text: `2019 Liabilities: ${(values) && formatCurrency(values.graphValues.liabilities_total, language, currency)}`,
+                                    text: `${yearData} Liabilities: ${(values) && formatCurrency(values.graphValues.liabilities_total, language, currency)}`,
                                 },
                                 tooltips: false,
                             }}
