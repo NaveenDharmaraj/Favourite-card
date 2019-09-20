@@ -119,6 +119,13 @@ const user = (state = {}, action) => {
                 monthlyTransactionApiCall: action.payload.apiCallStats,
             };
             break;
+        case 'USER_INITIAL_FAVORITES':
+            newState = {
+                ...state,
+                //favorites: _.merge({}, action.payload.favorites),
+                favorites: action.payload.favorites,
+            };
+            break;
         case 'USER_FAVORITES':
             newState = {
                 ...state,
