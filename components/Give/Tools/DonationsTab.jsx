@@ -1,7 +1,7 @@
  
  /* eslint-disable react/jsx-wrap-multilines */
 /* eslint-disable react/jsx-closing-bracket-location */
-import React from 'react';
+import React, { Fragment } from 'react';
 import {
     Grid,
     Header,
@@ -23,28 +23,31 @@ function DonationsTab(props) {
         monthlyTransactionApiCall,
     } = props;
     return (
-        <Segment>
-            <Grid verticalAlign="middle">
-                <Grid.Row>
-                    <Grid.Column mobile={16} tablet={10} computer={11}>
-                        <Header as="h3" className="mb-1">
-                            Add money monthly
-                            <Header.Subheader className="mt-1">
-                            Set up a monthly recurring donation, and you can regularly add money to your Impact Account without having to think about it. When you're inspired to give some away, it'll be ready and waiting for you.
-                            </Header.Subheader>
-                        </Header>
-                    </Grid.Column>
-                    <Grid.Column mobile={16} tablet={6} computer={5} textAlign="right">
-                        <Link route="/donations/new?donation_details[recurring]=1"><a href="" className="ui button blue-btn-rounded-def" fluid>Create new monthly donation</a></Link>
-                    </Grid.Column>
-                </Grid.Row>
-            </Grid>
+        <Fragment>
+            <Segment>
+                <Grid verticalAlign="middle">
+                    <Grid.Row>
+                        <Grid.Column mobile={16} tablet={10} computer={11}>
+                            <Header as="h3" className="mb-1">
+                                Add money monthly
+                                <Header.Subheader className="mt-1">
+                                Set up a monthly recurring donation, and you can regularly add money to your Impact Account without having to think about it. When you're inspired to give some away, it'll be ready and waiting for you.
+                                </Header.Subheader>
+                            </Header>
+                        </Grid.Column>
+                        <Grid.Column mobile={16} tablet={6} computer={5} textAlign="right">
+                            <Link route="/donations/new?donation_details[recurring]=1"><a href="" className="ui button blue-btn-rounded-def" fluid>Create new monthly donation</a></Link>
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
+                
+            </Segment>
             <DonationsTable
                 upcomingTransactions={upcomingTransactions}
                 deleteTransaction={deleteTransaction}
                 monthlyTransactionApiCall={monthlyTransactionApiCall}
             />
-            <Grid.Column textAlign="right">
+            <div className="mb-2">
                 <div className="db-pagination right-align pt-2">
                     {!monthlyTransactionApiCall && (totalPages > 1) && 
                         <PaginationComponent
@@ -58,8 +61,8 @@ function DonationsTab(props) {
                         />
                     }
                 </div>
-            </Grid.Column>
-        </Segment>
+            </div>
+        </Fragment>
     );
 }
 export default DonationsTab;

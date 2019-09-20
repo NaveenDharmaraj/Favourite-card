@@ -217,18 +217,15 @@ class ToolTabs extends React.Component {
                                                     </Button>
                                                 </Modal.Actions>
                                             </Modal>
-                            
-                                        </Grid.Column>
-                                    </Grid.Row>
-                                    <Grid.Row>
-                                        <Grid.Column width="16">
-                                            <GivingGoalsTable
-                                                userGivingGoalDetails={userGivingGoalDetails}
-                                            />
                                         </Grid.Column>
                                     </Grid.Row>
                                 </Grid>
-                               </Segment>
+                                </Segment>
+                                <div className="goalsTable">
+                                    <GivingGoalsTable
+                                        userGivingGoalDetails={userGivingGoalDetails}
+                                    />
+                               </div>
                         </div>
                     </Tab.Pane>
                 )
