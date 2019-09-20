@@ -43,7 +43,7 @@ function SecondStep(props) {
                                 onChange={parentInputChange}
                                 onBlur={handleInputOnBlur}
                                 error={!validity.isEmailIdValid || userExists}
-                                placeholder="Your email Id"
+                                placeholder="Enter your email"
                             />
                             <FormValidationErrorMessage
                                 condition={!validity.isEmailIdNotNull}
@@ -73,7 +73,7 @@ function SecondStep(props) {
                                 onChange={parentInputChange}
                                 onBlur={handleInputOnBlur}
                                 error={!validity.isPasswordNull}
-                                placeholder="Password"
+                                placeholder="Choose your password"
                             />
                             <FormValidationErrorMessage
                                 condition={!validity.isPasswordNull}

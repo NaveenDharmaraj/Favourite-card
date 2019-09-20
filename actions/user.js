@@ -27,6 +27,7 @@ export const actionTypes = {
     DISABLE_GROUP_SEE_MORE: 'DISABLE_GROUP_SEE_MORE',
     LEAVE_GROUP_ERROR_MESSAGE: 'LEAVE_GROUP_ERROR_MESSAGE',
     USER_GIVING_GOAL_DETAILS: 'USER_GIVING_GOAL_DETAILS',
+    USER_INITIAL_FAVORITES: 'USER_INITIAL_FAVORITES',
     USER_FAVORITES:'USER_FAVORITES',
     UPDATE_FAVORITES: 'UPDATE_FAVORITES',
     ENABLE_FAVORITES_BUTTON: 'ENABLE_FAVORITES_BUTTON',
@@ -670,6 +671,9 @@ export const getFavoritesList = (dispatch, userId, pageNumber, pageSize) => {
         },
         type: actionTypes.USER_FAVORITES,
     };
+    if(pageNumber === 1) {
+        fsa.type = actionTypes.USER_INITIAL_FAVORITES;
+    }
     const url = `user/favourites?userid=${Number(userId)}&page[number]=${pageNumber}&page[size]=${pageSize}`;
     return graphApi.get(
         url,
