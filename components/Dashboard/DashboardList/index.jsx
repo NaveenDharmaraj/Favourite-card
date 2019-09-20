@@ -266,4 +266,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default withTranslation()(connect(mapStateToProps)(DashboradList));
+export default withTranslation(['giveCommon'])(connect(mapStateToProps)(DashboradList));

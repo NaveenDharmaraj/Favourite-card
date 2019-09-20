@@ -106,4 +106,4 @@ AccountBalance.propTypes = {
     currentUser: PropTypes.object,
 };
 
-export default withTranslation()(AccountBalance);
+export default withTranslation(['giveCommon'])(AccountBalance);
