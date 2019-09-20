@@ -41,7 +41,10 @@ class ToolTabs extends React.Component {
         
     }
     closeModal = () => {
-        this.setState({ showModal: false });
+        this.setState({ 
+            showModal: false,
+            validity: this.intializeValidations(),
+        });
     }
     closeModalAndSave = () =>{
         const {
