@@ -236,7 +236,70 @@ const setDataToPayload = ({
     return data;
 };
 
-export const getUser = (dispatch, userId, token = null) => {
+export const getUser = async (dispatch, userId, token = null) => {
+    const fsa = {
+        payload: {},
+        type: actionTypes.SET_USER_INFO,
+    };
+    let isAuthenticated = false;
+    let params = null;
+    if (!_.isEmpty(token)) {
+        params = {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        };
+    }
+    await coreApi.get(`/users/${userId}?include=activeRole`, params).then((result) => {
+    isAuthenticated = true;
+        const { data } = result;
+        const dataMap = {
+            BeneficiaryAdminRole: 'charity',
+            CompanyAdminRole: 'company',
+            DonorRole: 'personal',
+            ChimpAdminRole: 'personal',
+        };
+        const {
+            activeRoleId,
+        } = data.attributes;
+        _.merge(fsa.payload, {
+            activeRoleId,
+            info: data,
+            isAdmin: false,
+        });
+        if (!_.isEmpty(data.relationships.chimpAdminRole.data)) {
+            fsa.payload.isAdmin = true;
+        }
+        const {
+            attributes: {
+                roleType,
+                roleDetails,
+            },
+            id,
+        } = result.included[0];
+        fsa.payload.currentAccount = {
+            accountType: dataMap[roleType],
+            avatar: roleDetails.avatar,
+            balance: `$${roleDetails.balance}`,
+            location: `/contexts/${id}`,
+            name: roleDetails.name,
+            slug: !_.isEmpty(roleDetails.slug) ? roleDetails.slug : null,
+        };
+    }).catch((error) => {
+        console.log(JSON.stringify(error));
+        isAuthenticated = false;
+    }).finally(() => {
+        dispatch({
+            payload: {
+                isAuthenticated,
+            },
+            type: 'SET_AUTH',
+        });
+        dispatch(fsa);
+    });
+};
+
+export const getUser1 = (dispatch, userId, token = null) => {
     const fsa = {
         payload: {},
         type: actionTypes.SET_USER_INFO,

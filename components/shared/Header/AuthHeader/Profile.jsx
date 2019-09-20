@@ -23,7 +23,7 @@ import getConfig from 'next/config';
 
 import { withTranslation } from '../../../../i18n';
 import { Link } from '../../../../routes';
-import IconIndividual from '../../../../static/images/chimp-icon-individual.png';
+import IconIndividual from '../../../../static/images/no-data-avatar-user-profile.png';
 import SwitchAccountModal from './SwitchAccountModal';
 
 const { publicRuntimeConfig } = getConfig();
@@ -88,14 +88,14 @@ class Profile extends React.Component {
                     onClose={() => { this.setState({popupOpen: !this.state.popupOpen}); }}
                     trigger={(
                         <Menu.Item as="a" className="user-img">
-                            <Image src={avatar} style={{ width: '35px' }} circular />
+                            <Image src={(avatar) ? avatar : IconIndividual } style={{ width: '35px' }} circular />
                         </Menu.Item>
                     )}
                 >
                     <Popup.Header>
                         <Table>
                             <Table.Row>
-                                <Table.Cell><Image src={avatar} style={{ width: '80px' }} circular /></Table.Cell>
+                                <Table.Cell><Image src={(avatar) ? avatar : IconIndividual} style={{ width: '80px' }} circular /></Table.Cell>
                                 <Table.Cell>
                                     {formatMessage('name', {
                                         name,
@@ -183,6 +183,7 @@ const mapStateToProps = (state) => ({
     currentAccount: state.user.currentAccount,
     isAdmin: state.user.isAdmin,
     otherAccounts: state.user.otherAccounts,
+    userInfo: state.user,
 });
 
 export default withTranslation('authHeader')(connect(mapStateToProps)(Profile));

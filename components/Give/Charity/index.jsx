@@ -57,7 +57,7 @@ import {
 } from '../../../actions/give';
 import IconCharity from '../../../static/images/chimp-icon-charity.png';
 import IconGroup from '../../../static/images/chimp-icon-giving-group.png';
-import IconIndividual from '../../../static/images/chimp-icon-individual.png';
+import IconIndividual from '../../../static/images/no-data-avatar-user-profile.png';
 import { withTranslation } from '../../../i18n';
 import '../../shared/style/styles.less';
 import { dismissAllUxCritialErrors } from '../../../actions/error';
