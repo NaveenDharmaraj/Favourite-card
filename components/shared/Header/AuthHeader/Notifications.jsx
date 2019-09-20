@@ -5,7 +5,7 @@ import { NotificationHelper } from '../../../../Firebase/NotificationHelper';
 import { Link, Router } from '../../../../routes';
 import { withTranslation } from '../../../../i18n';
 import placeholderUser from '../../../../static/images/no-data-avatar-user-profile.png';
-import {distanceOfTimeInWords} from '../../../../helpers/utils';
+import { distanceOfTimeInWords } from '../../../../helpers/utils';
 
 const noOfMessagesToShow = 6;
 
@@ -14,6 +14,7 @@ const Notifications = (props) => {
         messageCount,
         messages,
         userInfo,
+        localeCode,
         dispatch,
         t
     } = props;
@@ -35,54 +36,65 @@ const Notifications = (props) => {
         await NotificationHelper.updateDeleteFlag(userInfo, dispatch, msgKey, msg, flag);
     }
 
-    const onNotificationCTA = async (cta, msg) => {
+    const onNotificationMsgAction = async (cta, msg) => {
+        switch (cta) {
+            case "delete": {
+                updateDeleteFlag(msg._key, msg, true);
+                break;
+            }
+        }
+    }
+
+    const onNotificationCTA = async (ctaKey, ctaOptions, msg) => {
         console.log(JSON.stringify(msg) + JSON.stringify(cta));
-        let ctaActionId = cta.actionId;
+        let ctaActionId = ctaKey;//cta.actionId;
         switch (ctaActionId) {
-            case "Set_New_Giving_Goal": {
+            case "setNewGivingGoal": {
                 Router.pushRoute('/user/giving-goals');
                 break;
             }
-            case "Send_a_Thank_you": {
-                Router.pushRoute("/chats/{userId}");
+            case "sendThankYou": {
+                let thankyouNote = ctaOptions.msg[this.state.localeCode];
+                console.log(thankyouNote);
+                Router.pushRoute("/chats/" + ctaOptions.sender_user_id);
                 break;
             }
-            case "Send_a_Gift": {
+            case "sendGift": {
                 Router.pushRoute("/give/to/friend/new");
                 break;
             }
-            case "View_Message": {
-                Router.pushRoute("/chats/{userId}");
+            case "viewMessage": {
+                Router.pushRoute("/chats/" + cta.user_id);
                 break;
             }
-            case "Update_payment": {
+            case "updatePayment": {
                 Router.pushRoute("/user/profile");
                 break;
             }
-            case "See_upcoming_gifts": {
+            case "seeUpcomingGifts": {
                 Router.pushRoute("/dashboard");
                 break;
             }
-            case "Go_to_Giving_Group": {
+            case "goToGivingGroup": {
                 Router.pushRoute("/");
                 break;
             }
-            case "Say_Congrats": {
+            case "sayCongrats": {
                 Router.pushRoute("/chats/{userId}");
                 break;
             }
-            case "Accept": {
+            case "accept": {
                 this.acceptFriendRequestAsync(msg);
                 break;
             }
-            case "view_profile": {
+            case "viewProfile": {
                 Router.pushRoute("/users/profile/{userId}");
                 break;
             }
         }
     }
     const listItems = messages.slice(0, noOfMessagesToShow).map(function (msg) {
-        let messagePart = NotificationHelper.getMessagePart(msg, userInfo);
+        let messagePart = NotificationHelper.getMessagePart(msg, userInfo, 'en_CA');
         if (msg.deleted) {
             return <List.Item key={"notification_msg_" + msg._key} className="new">
                 <div className="blankImage"></div>
@@ -97,20 +109,40 @@ const Notifications = (props) => {
                 <List.Content>
                     {/* <b dangerouslySetInnerHTML={{ __html: messagePart.sourceDisplayName }}></b> {messagePart.message} */}
                     <span dangerouslySetInnerHTML={{ __html: messagePart.message }}></span>
-                    <div className="time">{distanceOfTimeInWords( msg.createdTs)}</div>
+                    <div className="time">{distanceOfTimeInWords(msg.createdTs)}</div>
                     <span className="more-btn">
                         <Dropdown className="rightBottom" icon='ellipsis horizontal'>
                             <Dropdown.Menu>
-                                {/* <Dropdown.Item text={messagePart.read ? t("markAsUnread") : t("markAsRead")} onClick={() => updateReadFlag(msg._key, msg, !messagePart.read)} /> */}
+                                {(() => {
+                                    if (msg.msgActions && msg.msgActions.length > 0) {
+                                        // msg.callToActions = msg.callToActions.concat(msg.callToActions);
+                                        return msg.msgActions.map(function (cta) {
+                                            return <Dropdown.Item text={t(cta)} onClick={() => onNotificationMsgAction(cta, msg)} />
+                                        });
+                                    }
+                                    /*if (msg.type == "friendRequest" && msg.sourceUserId != userInfo.id) {
+                                        return <Button className="blue-btn-rounded-def c-small" onClick={() => self.acceptFriendRequestAsync(msg)}>{self.t("action_accept")}</Button>
+                                    }*/
+                                })()}
+                                {/* <Dropdown.Item text={messagePart.read ? t("markAsUnread") : t("markAsRead")} onClick={() => updateReadFlag(msg._key, msg, !messagePart.read)} />
                                 <Dropdown.Item text={t("delete")} onClick={() => updateDeleteFlag(msg._key, msg, true)} />
-                                <Dropdown.Item text={t("stop")} />
+                                <Dropdown.Item text={t("stop")} /> */}
                             </Dropdown.Menu>
                         </Dropdown>
                     </span>
                     {(() => {
+                        if (msg.cta) {
+                            // msg.callToActions = msg.callToActions.concat(msg.callToActions);
+                            return Object.keys(msg.cta).map(function (ctaKey) {
+                                let cta = msg.cta[ctaKey];
+                                if (cta.isWeb) {
+                                    return <Button className="blue-btn-rounded-def c-small" onClick={() => onNotificationCTA(ctaKey, cta, msg)}>{cta.title[localeCode]}</Button>
+                                }
+                            });
+                        }
                         if (msg.callToActions && msg.callToActions.length > 0) {
                             // msg.callToActions = msg.callToActions.concat(msg.callToActions);
-                            return msg.callToActions.map(function (cta) {
+                            return msg.cta.map(function (cta) {
                                 return <Button className="blue-btn-rounded-def c-small" onClick={() => onNotificationCTA(cta, msg)}>{cta.actionTitle}</Button>
                             });
                         }
@@ -186,10 +218,11 @@ const Notifications = (props) => {
 };
 
 function mapStateToProps(state) {
-    // console.log(state);
+    let localeCodes = { "en": "en_CA", "fr": "fr_CA" };
     return {
         messages: state.firebase.messages,
         lastSyncTime: state.firebase.lastSyncTime,
+        localeCode: localeCodes[state.user.info.attributes.language ? state.user.info.attributes.language : 'en'],
         messageCount: state.firebase.messages ? Object.keys(state.firebase.messages.filter(function (m) { return m.createdTs > state.firebase.lastSyncTime;/*!m.read;*/ })).length : 0,
         userInfo: state.user.info
     };
