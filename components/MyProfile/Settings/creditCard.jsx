@@ -716,7 +716,7 @@ class MyCreditCards extends React.Component {
                                         <label>Card number</label>
                                         <input
                                             placeholder="Card number"
-                                            readOnly
+                                            disabled
                                             value={editCardNumber}
                                         />
                                     </Form.Field>
@@ -724,7 +724,7 @@ class MyCreditCards extends React.Component {
                                         <label>Name on card</label>
                                         <input
                                             placeholder="Name on card"
-                                            readOnly
+                                            disabled
                                             value={editNameOnCard}
                                         />
                                     </Form.Field>

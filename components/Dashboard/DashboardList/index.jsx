@@ -20,6 +20,10 @@ import {
 import Pagination from '../../shared/Pagination';
 import noDataImg from '../../../static/images/noresults.png';
 import PlaceHolderGrid from '../../shared/PlaceHolder';
+import { withTranslation } from '../../../i18n';
+import {
+    formatCurrency,
+} from '../../../helpers/give/utils';
 
 class DashboradList extends React.Component {
     constructor(props) {
@@ -98,6 +102,9 @@ class DashboradList extends React.Component {
                 id,
             },
             dataList,
+            i18n: {
+                language,
+            },
         } = this.props;
         let accordianHead = this.nodataCard();
         let compareDate = '';
@@ -162,7 +169,7 @@ class DashboradList extends React.Component {
                     entity = data.attributes.recipientEmail;
                     transactionSign = '-';
                 }
-                const amount = parseFloat(data.attributes.amount).toFixed(2);
+                const amount = formatCurrency(data.attributes.amount, language, 'USD');
                 return (
                     <Table.Row className={rowClass} key={index}>
                         <Table.Cell className="date">{date}</Table.Cell>
@@ -187,7 +194,6 @@ class DashboradList extends React.Component {
                         <Table.Cell className="reason">{data.attributes.transactionType}</Table.Cell>
                         <Table.Cell className="amount">
                             {transactionSign}
-                            $
                             {amount}
                         </Table.Cell>
                     </Table.Row>
@@ -260,4 +266,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default (connect(mapStateToProps)(DashboradList));
+export default withTranslation()(connect(mapStateToProps)(DashboradList));

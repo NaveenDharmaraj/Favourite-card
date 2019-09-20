@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import {
     Button,
@@ -9,13 +10,21 @@ import {
 import PropTypes from 'prop-types';
 
 import { Link } from '../../../routes';
+import { withTranslation } from '../../../i18n';
+import {
+    formatCurrency,
+} from '../../../helpers/give/utils';
 
 // eslint-disable-next-line react/prefer-stateless-function
 class AccountBalance extends React.Component {
     render() {
         const {
             currentUser,
+            i18n: {
+                language,
+            },
         } = this.props;
+        const amount = formatCurrency(currentUser.attributes.balance, language, 'USD');
         return (
             <div>
                 <div className="c-db-header">
@@ -44,8 +53,7 @@ class AccountBalance extends React.Component {
                                                                 <Header.Subheader>
                                                                         Impact Account Balance
                                                                 </Header.Subheader>
-                                                                $
-                                                                {currentUser.attributes.balance}
+                                                                {amount}
                                                             </Header.Content>
                                                         </Header>
                                                     </Grid.Column>
@@ -98,4 +106,4 @@ AccountBalance.propTypes = {
     currentUser: PropTypes.object,
 };
 
-export default AccountBalance;
+export default withTranslation()(AccountBalance);
