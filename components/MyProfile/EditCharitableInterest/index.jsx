@@ -134,11 +134,13 @@ class EditCharitableInterest extends React.Component {
                     errorMessage: null,
                     successMessage: 'User Profile Causes saved Successfully.',
                     statusMessage: true,
+                    buttonClicked: false,
                 });
             }).catch(() => {
                 this.setState({
                     errorMessage: 'Error in saving the Causes.',
                     statusMessage: true,
+                    buttonClicked: false,
                 });
             });
             saveCharitableTags(dispatch, id, userTags).then(() => {
@@ -146,15 +148,14 @@ class EditCharitableInterest extends React.Component {
                     errorMessageTag: null,
                     successMessageTag: 'User Profile Tags saved Successfully.',
                     statusMessageTags: true,
+                    buttonClicked: false,
                 });
             }).catch(() => {
                 this.setState({
                     errorMessageTag: 'Error in saving the Tags.',
                     statusMessageTags: true,
+                    buttonClicked: false,
                 });
-            });
-            this.setState({
-                buttonClicked: false,
             });
         } else {
             this.setState({

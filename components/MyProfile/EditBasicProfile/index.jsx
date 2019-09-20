@@ -221,16 +221,15 @@ class EditBasicProfile extends React.Component {
                     errorMessage: null,
                     successMessage: 'User Profile basic details saved Successfully.',
                     statusMessage: true,
+                    buttonClicked: false,
                 });
             }).catch((err) => {
                 this.setState({
                     errorMessage: 'Error in saving the Credit Card.',
                     statusMessage: true,
+                    buttonClicked: false,
                 });
             });
-            this.setState({
-                buttonClicked: false,
-            })
         } else {
             this.setState({
                 buttonClicked: false,
