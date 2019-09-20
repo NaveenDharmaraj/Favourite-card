@@ -45,7 +45,8 @@ const createUserDetails = (valuesObject) => {
             name: 'linkify',
         },
         {
-            Content: valuesObject.staffCount,
+            Content: (valuesObject.staffCount && valuesObject.staffCount > 0)
+                ? valuesObject.staffCount : null,
             name: 'users',
         },
         {
