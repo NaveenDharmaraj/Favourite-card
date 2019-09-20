@@ -868,10 +868,13 @@ h4{
   }
 }
 .userSettingsContainer{
-  padding: 1rem 0rem;
+  padding: 0rem 0rem 1rem;
   .settingsDetailWraper{
     padding: 2rem 0rem 2rem; 
     border-bottom: 1px solid @grey-lighten-2;
+    &:first-child{
+      padding-top: 0px;
+    }
     &:last-child{
       border-bottom: 0px solid transparent;
     }
@@ -1134,6 +1137,13 @@ h4{
   display: inline-block !important;
   width: 190px !important;
  }
+ .auth0-lock.auth0-lock .auth0-lock-submit .auth0-label-submit{
+  >span{
+    >svg{
+      display: none;
+    }
+  }
+ }
 .link-as-button-fluid{
   a{
     cursor: pointer;
@@ -1179,15 +1189,32 @@ h4{
   }
  }
 .left-bg{
-  background-image: url('../images/signup.png');
-  background-size: contain;
-  height: 100%;
-  background-position: center;
-  background-repeat: no-repeat
+  >div{
+    position: absolute;
+    left: -75px;
+    right: 100px;
+    top: 0;
+    background-image: url('../images/signup.png');
+    background-size: contain;
+    height: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+}
+@media only screen and (max-width:991px) {
+  .left-bg{
+    display: none !important;
+    >div{
+      display: none;
+    }
+  }
 }
 @media only screen and (max-width:767px) {
   .left-bg{
     display: none !important;
+    >div{
+      display: none;
+    }
   }
 }
 .prefered-wraper{
@@ -1232,7 +1259,7 @@ h4{
     background-size: contain;
   }
   p{
-    margin-top: 16/@rem;
+    margin-top: 74/@rem;
   }
   .select-btn-wraper{
     margin-top: 16/@rem;
@@ -2676,8 +2703,13 @@ h4{
     border-radius: 100%;
     box-shadow: 2px 2px 7px 0 rgba(105,146,203,0.3);
     overflow: hidden;
+    width: 140px;
+    height: 140px;  
     .image{
       position: relative;
+      &.ui{
+        width: 100%;
+      }
       +.change-profile-pic{
         position: absolute;
         background-color: rgba(0,0,0,0.5);
@@ -3995,38 +4027,77 @@ h4{
             border-radius: 0px !important;
             padding: 1.25rem 1rem 1.25rem 10px;
             position: relative;
-            &::after{
-              content: "\F107";
-              display: inline-block;
-              font-family: Icons;
-              position: absolute;
-              font-size: 20px;
-              font-weight: 600;
-              right: 1rem;
-              transform: rotate(-90deg);
-              line-height: 15px;
-              color: @mAllocation;
+            border-right: 2px solid transparent;
+            margin-right: -1px;
+            >i{
+              &.icon{
+                float: left;
+                margin-left: 0px;
+                margin-right: 30px;
+                margin-top: -4px;
+                &.edit{
+                  &::before{
+                    content: url(../images/icons/edit.svg);
+                  }
+                }
+                &.group{
+                  &::before{
+                    content: url(../images/icons/give-hand.svg);
+                  }
+                }
+                &.privacy{
+                  &::before{
+                    content: url(../images/icons/privacy.svg);
+                  }
+                }
+                &.credit{
+                  &::before{
+                    content: url(../images/icons/transaction.svg);
+                  }
+                }
+                &.bell{
+                  &::before{
+                    content: url(../images/icons/icon-notification.svg);
+                  }
+                }
+                &.support{
+                  &::before{
+                    content: url(../images/icons/support.svg);
+                  }
+                }
+                &.legal{
+                  &::before{
+                    content: url(../images/icons/legal.svg);
+                  }
+                }
+              }
             }
+            .icon{
+              
+            }
+            
             &:first-child{
               border-top: 1px solid transparent;
             }
             &.active{
               border-top: 1px solid transparent;
               border-radius: 0px !important;
-              border-left: 0px solid transparent;
-              border-right: 2px solid #663387;
-              color: #663387;
+              border-left: 1px solid transparent;
+              border-right: 2px solid @purple;
+              color: @purple;
+              font-weight: 400;
               &::after{
                 color: @mAllocation;
               }
-            }
-            >i{
-              &.icon{
-                float: left;
-                margin-left: 0px;
-                margin-right: 5px;
+              >i{
+                &.icon{
+                  &::before{
+                    .imgColorPurple();
+                  }
+                }
               }
             }
+            
           }
         }
         
