@@ -45,9 +45,9 @@ class UserAuthView extends React.Component {
                         <div className="pageWraper">
                             <Container>
                                 <div className="linebg">
-                                    <Grid columns={2} verticalAlign="middle">
+                                    <Grid columns={2} stackable>
                                         <Grid.Row>
-                                            <Grid.Column className="left-bg"></Grid.Column>
+                                            <Grid.Column className="left-bg"><div></div></Grid.Column>
                                             <Grid.Column>
                                                 <div className="login-form-wraper">
                                                     <div className="reg-header">
