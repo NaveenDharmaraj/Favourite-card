@@ -6,6 +6,10 @@ import {
 
 // eslint-disable-next-line react/prefer-stateless-function
 class Support extends React.Component {
+    handleStartChatClick() {
+        Beacon("open");
+    }
+
     render() {
         return (
             <div className="remove-gutter">
@@ -22,6 +26,7 @@ class Support extends React.Component {
                         </p>
                         <Button
                             className="success-btn-rounded-def"
+                            onClick={this.handleStartChatClick}
                         >
                             Start chat
                         </Button>
