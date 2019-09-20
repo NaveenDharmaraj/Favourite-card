@@ -74,11 +74,21 @@ class ActivityDetails extends React.Component {
             groupId,
             dispatch,
             id: eventId,
+            userInfo: {
+                attributes: {
+                    avatar,
+                    displayName,
+                },
+            },
         } = this.props;
         const {
             commentText: msg,
         } = this.state;
-        postComment(dispatch, groupId, eventId, msg);
+        const userDetails = {
+            avatar,
+            displayName,
+        };
+        postComment(dispatch, groupId, eventId, msg, userDetails);
         this.setState({
             commentText: '',
         });
@@ -275,6 +285,12 @@ ActivityDetails.defaultProps = {
     name: '',
     type: '',
     userId: null,
+    userInfo: {
+        attributes: {
+            avatar: '',
+            displayName: '',
+        },
+    },
 };
 
 ActivityDetails.propTypes = {
@@ -297,6 +313,12 @@ ActivityDetails.propTypes = {
     name: string,
     type: string,
     userId: number,
+    userInfo: {
+        attributes: {
+            avatar: string,
+            displayName: string,
+        },
+    },
 };
 
 function mapStateToProps(state) {
