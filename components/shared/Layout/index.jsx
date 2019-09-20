@@ -117,7 +117,7 @@ class Layout extends React.Component {
                                 {children}
                             </MobileHeader>
                         </Responsive>
-                        <Responsive minWidth={Responsive.onlyTablet.minWidth}>
+                        <Responsive minWidth={992}>
                             <Header isAuthenticated={isAuthenticated} onBoarding={onBoarding} />
                                 {!_.isEmpty(appErrors) &&
                                     <Container
