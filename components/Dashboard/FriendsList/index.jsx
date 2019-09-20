@@ -83,7 +83,7 @@ class FriendsList extends React.Component {
                                         </Header.Content>
                                     </Header>
                                     <div>
-                                        <Link className="lnkChange" route="/user/profile/friends">
+                                        <Link className="lnkChange" route="/user/profile/friends/findfriends">
                                             <Button className="success-btn-rounded-def">Find Friends</Button>
                                         </Link>
                                     </div>
@@ -163,12 +163,14 @@ class FriendsList extends React.Component {
         if (friendsData && friendsData.count > 6) {
             viewAllDiv = (
                 <div className="text-right">
-                    <a>
-                        View all
-                        {/* (
-                        {friendsData.count}
-                        ) */}
-                    </a>
+                    <Link className="lnkChange" route="/user/profile/friends/myfriends">
+                        <a>
+                            View all
+                            {/* (
+                            {friendsData.count}
+                            ) */}
+                        </a>
+                    </Link>
                 </div>
             );
         }

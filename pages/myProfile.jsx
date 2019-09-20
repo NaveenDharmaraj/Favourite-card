@@ -124,7 +124,7 @@ class MyProfile extends React.Component {
             menuItem: 'Friends',
             render: () => (
                 <Tab.Pane attached={false} className="user-messaging">
-                    <Friends />
+                    <Friends settingName={this.props.settingName} />
                 </Tab.Pane>
             ),
         },
@@ -132,7 +132,7 @@ class MyProfile extends React.Component {
             menuItem: 'Settings',
             render: () => (
                 <Tab.Pane attached className="user-messaging">
-                    <Settings settingName={this.props.settingName}/>
+                    <Settings settingName={this.props.settingName} />
                 </Tab.Pane>
             ),
         },
