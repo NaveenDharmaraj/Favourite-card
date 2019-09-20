@@ -1216,6 +1216,46 @@ h4{
       display: none;
     }
   }
+  .causesLeftImg{
+    display: none;
+  }
+}
+.causesLeftImg{
+  position: relative;
+  >div{
+    position: absolute;
+    right: 32px;
+    top: 14px;
+    background-image: url(../images/causes.png);
+    background-size: contain;
+    background-position: top;
+    background-repeat: no-repeat;
+    height: 292px;
+    width: 402px;
+  }
+}
+@media only screen and (max-width:1199px) and (min-width:991px) {
+  .causesLeftImg{
+    >div{
+      position: absolute;
+      right: 32px;
+      top: 14px;
+      background-image: url(../images/causes.png);
+      background-size: contain;
+      background-position: top;
+      background-repeat: no-repeat;
+      height: 100%;
+      width: 302px;
+    }
+  }
+}
+@media only screen and (max-width:991px) and (min-width:767px) {
+  .causesLeftImg{
+    >div{
+      height: 100%;
+      width: 302px;
+    }
+  }
 }
 .prefered-wraper{
   position: relative;
@@ -1247,16 +1287,6 @@ h4{
         }
       }
     }
-  }
-  &:before{
-    content: '';
-    position: absolute;
-    left: -165px;
-    top: -50px;
-    background-image: url(../images/pref.png);
-    height: 118px;
-    width: 150px;
-    background-size: contain;
   }
   p{
     margin-top: 74/@rem;
@@ -1437,6 +1467,13 @@ h4{
     }
   }
 }
+.no-border-bottom{
+  &.segment{
+    &.tab{
+      border-bottom: 0px solid transparent !important;
+    }
+  }
+}
 @media only screen and (max-width:767px) {
   .login-form-wraper{
     max-width: 320px;
@@ -1452,6 +1489,7 @@ h4{
         padding: 16/@rem 72/@rem;
         border-radius: 26.5/@rem;
         font-size: 16/@rem;	font-weight: 600;	line-height: 22/@rem;	text-align: center;
+        background-color: #055ce5;
       }
     }
   }
@@ -3002,16 +3040,16 @@ h4{
           &.header{
             color: @font-color !important;
             &:hover{
-              color: @chimpGreen-hover !important;
+              color: @purple-hover !important;
             }
           }
         }
         &.active{
-          color: @chimpGreen !important;
+          color: @purple !important;
           a{
-            color: @chimpGreen !important;
+            color: @purple !important;
             &:hover{
-              color: @chimpGreen-hover !important;
+              color: @purple-hover !important;
             }
           }
           .tick-mark{
