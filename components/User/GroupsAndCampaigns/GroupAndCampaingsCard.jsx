@@ -52,7 +52,7 @@ class GroupsAndCampaignsCard extends React.Component {
             },
             id,
         } = data;
-        const shortName = renderText(name, 6);
+        const shortName = renderText(name, 3);
         const urlType = (listingType === 'administeredCampaigns') ? 'campaigns' : 'groups';
         const editLink = (listingType === 'administeredCampaigns') ? `/campaigns/${slug}/manage-basics` : `/groups/${slug}/edit`;
         let showError = false;
