@@ -20,7 +20,6 @@ const ACCEPT_FREIND_PAYLOAD = {
     }
 };
 const { publicRuntimeConfig } = getConfig();
-const localeCodes = { "en": "en_CA", "fr": "fr_CA" };
 const {
     FIREBASE_PUBLIC_API_KEY
 } = publicRuntimeConfig;
@@ -93,74 +92,54 @@ class NotificationHelper {
         await NotificationHelper.getMessages(userInfo, dispatch, NotificationHelper.currentPage);
     }
 
-    static async getMessages(userInfo, dispatch, page) {
+    static async getMessages(userInfo, dispatch, page, lastMsg, lastMsgKey) {
         try {
-            let localeCode = localeCodes[userInfo.attributes.language];
-            NotificationHelper.currentPage = page;
-            let limit = 2;
+            // NotificationHelper.currentPage = page;
+            let limit = 10;
             NotificationHelper.get(userInfo);
-            //999988
-            // userInfo.id = 999000;
             let lastSyncTime = null;
             let userRef = Firebase.database().ref("/organisation/chimp/users/" + userInfo.id);
             userRef.once("value").then(function (snapshot) {
                 let temp = snapshot;
                 lastSyncTime = temp.child("last_sync_time").val();
             });
-            let messageRef = userRef.child("/messages").orderByChild("createdTs");//.startAt((page - 1) * limit).limitToLast(limit);//.orderByChild("read").equalTo(true);
-            let firebaseMessagesRead = [];
+            let messageRef = null;
+
+            if (lastMsgKey) {
+                console.log(lastMsgKey);
+                messageRef = userRef.child("/messages").orderByChild("createdTs").endAt(lastMsg.createdTs).limitToLast(limit);
+            } else {
+                messageRef = userRef.child("/messages").orderByChild("createdTs").limitToLast(limit);//.startAt((page - 1) * limit).limitToLast(limit);//.orderByChild("read").equalTo(true);I
+            }
+            let firebaseMessages = [];
             await messageRef.once('value').then(function (snapshot) {
                 let temp = snapshot.val();
                 if (!temp) {
-                    firebaseMessagesRead = [];
+                    firebaseMessages = [];
                 } else {
                     Object.keys(temp).forEach(function (key) {
                         let t = temp[key];
                         if (t.sourceUserId != userInfo.id || true) {
                             t["_key"] = key;
-                            if (t.message[localeCode]) {
-                                t.message = t.message[localeCode];
-                            }
-                            if (t.messageActions && t.messageActions[localeCode]) {
-                                t.messageActions = t.messageActions[localeCode];
-                            }
-                            if (t.callToActions && t.callToActions[localeCode]) {
-                                t.callToActions = t.callToActions[localeCode];
-                            }
+                            // if (t.msg && t.msg[localeCode]) {
+                            //     t.msg = t.msg[localeCode];
                             // }
-                            firebaseMessagesRead.push(t);
+                            /*if (t.messageActions && t.messageActions[localeCode]) {
+                                t.messageActions = t.messageActions[localeCode];
+                            }*/
+                            // if (t.cta && t.cta[localeCode]) {
+                            //     t.cta = t.callToActions[localeCode];
+                            // }
+                            firebaseMessages.push(t);
                         }
                     });
                 }
-                firebaseMessagesRead.sort(function (a, b) {
+                firebaseMessages.sort(function (a, b) {
                     return a.createdTs > b.createdTs ? -1 : 1;
                 });
-                // console.log(Object.keys(firebaseMessagesRead).length + " Messages Received.");
-                console.info(firebaseMessagesRead);
+                console.info(firebaseMessages);
             });
-            /*
-                        let refUnread = Firebase.database().ref("/organisation/chimp/users/" + userInfo.id + "/messages").orderByChild("read").equalTo(false);
-                        let firebaseMessagesUnread = [];
-                        await refUnread.once('value').then(function (snapshot) {
-                            let temp = snapshot.val();
-                            if (!temp) {
-                                firebaseMessagesUnread = [];
-                            } else {
-                                Object.keys(temp).forEach(function (key) {
-                                    let t = temp[key];
-                                    if (t.sourceUserId != userInfo.id || true) {
-                                        t["_key"] = key;
-                                        firebaseMessagesUnread.push(t);
-                                    }
-                                });
-                            }
-                            firebaseMessagesUnread.sort(function (a, b) {
-                                return a.createdTs > b.createdTs ? -1 : 1;
-                            });
-                            console.log(Object.keys(firebaseMessagesUnread).length + " Messages Received.");
-                            console.info(firebaseMessagesUnread);
-                        });*/
-            await firebaseMessageFetchCompleteAction(dispatch, firebaseMessagesRead, lastSyncTime, page);
+            await firebaseMessageFetchCompleteAction(dispatch, firebaseMessages, lastSyncTime, page);
 
         } catch (e) {
             console.log(e);
@@ -187,26 +166,29 @@ class NotificationHelper {
     }
 
     static async updateDeleteFlag(userInfo, dispatch, msgId, msgData, deleted) {
-        msgData["deleted"] = deleted;
+        /*msgData["deleted"] = deleted;
         let userRef = Firebase.database().ref("/organisation/chimp/users/" + userInfo.id + "/messages");
         userRef.child(msgId).set(msgData).then(async function () {
-            // console.log("Marked Msg " + msgId + " REad" + msgData["read"]);
-            await NotificationHelper.getMessages(userInfo, dispatch, NotificationHelper.currentPage);
-            setTimeout(function () {
-                userRef.child(msgId).once('value').then(function (snapshot) {
-                    let temp = snapshot.val();
-                    if (temp && typeof temp != "undefined" && temp.deleted) {
-                        userRef.child(msgId).remove().then(async function () {
-                            await NotificationHelper.getMessages(userInfo, dispatch, NotificationHelper.currentPage);
-                        }).catch(function (e) {
-                            console.error(e);
-                        });
-                    }
-                });
-            }, 10000);
-        }).catch(function (e) {
+            // console.log("Marked Msg " + msgId + " REad" + msgData["read"]);*/
+        await NotificationHelper.getMessages(userInfo, dispatch, NotificationHelper.currentPage);
+        setTimeout(function () {
+            eventApi.post("/notification/delete", { "user_id": userInfo.id, "id": msgData.id }).then(async function (response) {
+                await NotificationHelper.getMessages(userInfo, dispatch, NotificationHelper.currentPage);
+            });
+            /*userRef.child(msgId).once('value').then(function (snapshot) {
+                let temp = snapshot.val();
+                if (temp && typeof temp != "undefined" && temp.deleted) {
+                    userRef.child(msgId).remove().then(async function () {
+                        await NotificationHelper.getMessages(userInfo, dispatch, NotificationHelper.currentPage);
+                    }).catch(function (e) {
+                        console.error(e);
+                    });
+                }
+            });*/
+        }, 10000);
+        /*}).catch(function (e) {
             console.log(e);
-        });
+        });*/
     }
 
     static timeDifference(current, previous, t) {
@@ -234,11 +216,14 @@ class NotificationHelper {
         }
     }
 
-    static getMessagePart(msg, userInfo) {
-        let msgText = msg.message;
-        if (msg.highlightedWords && msg.highlightedWords.length > 0) {
-            msg.highlightedWords.forEach(function (w) {
-                msgText = msgText.replace("{{ " + w + " }}", "<b>" + w + "</b>");
+    static getMessagePart(msg, userInfo, localeCode) {
+        let msgText = msg["msg"][localeCode];
+        // console.log(msg["msg"]);
+        // console.log(localeCode + "||" + msgText);
+        if (msg.highlighted && msg.highlighted.length > 0) {
+            msg.highlighted.forEach(function (w) {
+                let regEx = new RegExp("{{ " + w + " }}", "g");
+                msgText = msgText.replace(regEx, "<b>" + w + "</b>");
             });
         }
         let d = { "sourceDisplayName": msg.sourceDisplayName, "message": msgText, read: msg.read };
