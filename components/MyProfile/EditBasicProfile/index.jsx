@@ -16,7 +16,9 @@ import {
 } from '../../../actions/userProfile';
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 import PrivacySetting from '../../shared/Privacy';
-const ModalStatusMessage = dynamic(() => import('../../shared/ModalStatusMessage'));
+const ModalStatusMessage = dynamic(() => import('../../shared/ModalStatusMessage'), {
+    ssr: false
+});
 import {
     formatAmount,
     isValidGiftAmount,

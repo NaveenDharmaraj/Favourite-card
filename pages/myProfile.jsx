@@ -24,6 +24,9 @@ class MyProfile extends React.Component {
         return {
             pageName: query.slug,
             settingName: query.step,
+            namespacesRequired: [
+                'giveCommon',
+            ],
         };
     }
 

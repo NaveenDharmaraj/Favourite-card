@@ -14,7 +14,9 @@ import {
 
 import MyCauses from './causes';
 import MyTags from './tags';
-const ModalStatusMessage = dynamic(() => import('../../shared/ModalStatusMessage'));
+const ModalStatusMessage = dynamic(() => import('../../shared/ModalStatusMessage'), {
+    ssr: false
+});
 
 // eslint-disable-next-line react/prefer-stateless-function
 class EditCharitableInterest extends React.Component {
