@@ -1,0 +1,19 @@
+{
+    "notificationHeader": "Notifications",
+    "earlier": "Earlier",
+    "recent": "Recent",
+    "viewAll": "View all",
+    "markAsUnread": "Mark as Unread",
+    "markAsRead": "Mark as Read",
+    "delete": "Delete this notification",
+    "stop": "Stop recieving notifications like this",
+    "removed": "This notification is now removed.",
+    "undo": "Undo",
+    "secondsAgo": "seconds ago",
+    "minutesAgo": "minutes ago",
+    "hoursAgo": "hours ago",
+    "daysAgo": "days ago",
+    "monthsAgo": "months ago",
+    "yearsAgo": "years ago",
+    "action_accept": "Accept"
+}
