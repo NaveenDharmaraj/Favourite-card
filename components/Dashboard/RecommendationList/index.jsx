@@ -66,7 +66,7 @@ class RecommendationList extends React.Component {
             const showData = _.slice(recommendationData.data, 0, 9);
             recommendationList = showData.map((data, index) => {
                 let charityName = '';
-                const charityShortName = renderText(data.attributes.name, 6);
+                const charityShortName = renderText(data.attributes.name, 3);
                 if (data.attributes.city != null) {
                     charityName = `${charityShortName}, ${data.attributes.city}, ${data.attributes.province}`;
                 } else {

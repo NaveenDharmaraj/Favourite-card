@@ -74,7 +74,7 @@ class SearchResultGroups extends React.Component {
                             <Grid.Column mobile={11} tablet={12} computer={12}>
                                 <Header as='h2'>
                                     <Header.Content>
-                                    GROUPS
+                                    GIVING GROUPS
                                         <span className="num-result font-s-20">
                                             {this.renderResultCount()}
 

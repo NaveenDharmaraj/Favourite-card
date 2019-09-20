@@ -217,7 +217,7 @@ const group = (state = {}, action) => {
                     ...state.groupDetails,
                     attributes: {
                         ...state.groupDetails.attributes,
-                        following: action.payload.followStatus,
+                        liked: action.payload.followStatus,
                     },
                 },
             };

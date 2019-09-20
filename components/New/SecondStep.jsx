@@ -26,7 +26,7 @@ function SecondStep(props) {
     let pwdEntered = (password && password.length > 0);
     return (
         <Grid.Row>
-            <Grid.Column className="left-bg"></Grid.Column>
+            <Grid.Column className="left-bg"><div></div></Grid.Column>
             <Grid.Column>
                 <div className="login-form-wraper">
                     <div className="reg-header">

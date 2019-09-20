@@ -21,6 +21,7 @@ export const actionTypes = {
     TAX_RECEIPT_PROFILES:'TAX_RECEIPT_PROFILES',
     SAVE_DEEP_LINK: 'SAVE_DEEP_LINK',
     SET_USER_INFO: 'SET_USER_INFO',
+    SET_USER_ACCOUNT_FETCHED: 'SET_USER_ACCOUNT_FETCHED',
     UPDATE_USER_FUND: 'UPDATE_USER_FUND',
     GIVING_GROUPS_AND_CAMPAIGNS: 'GIVING_GROUPS_AND_CAMPAIGNS',
     DISABLE_GROUP_SEE_MORE: 'DISABLE_GROUP_SEE_MORE',
@@ -76,6 +77,7 @@ export const callApiAndGetData = (url, params) => getAllPaginationData(url, para
     },
 );
 
+// eslint-disable-next-line import/exports-last
 export const getDonationMatchAndPaymentInstruments = (userId, flowType) => {
 
     return async (dispatch) => {
@@ -93,6 +95,12 @@ export const getDonationMatchAndPaymentInstruments = (userId, flowType) => {
             },
             type: actionTypes.GET_MATCH_POLICIES_PAYMENTINSTRUMENTS,
         };
+        dispatch({
+            payload: {
+                userAccountsFetched: false,
+            },
+            type: actionTypes.SET_USER_ACCOUNT_FETCHED,
+        });
         const fetchData = coreApi.get(
             `/users/${userId}?include=donationMatchPolicies,activePaymentInstruments,defaultTaxReceiptProfile,taxReceiptProfiles,fund`,
             {
@@ -199,6 +207,12 @@ export const getDonationMatchAndPaymentInstruments = (userId, flowType) => {
                 fsa.payload.userAccountsFetched = true;
             }).finally(() => {
                 dispatch(fsa);
+                dispatch({
+                    payload: {
+                        userAccountsFetched: fsa.payload.userAccountsFetched,
+                    },
+                    type: actionTypes.SET_USER_ACCOUNT_FETCHED,
+                });
             });
     };
 };
