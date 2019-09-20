@@ -33,7 +33,15 @@ const configVars = {
         STRIPE_URL: process.env.STRIPE_URL,
         UTILITY_API_BASE: process.env.UTILITY_API_BASE,
         APPLOZIC_WS_URL:process.env.APPLOZIC_WS_URL,
-        APPLOZIC_APP_KEY:process.env.APPLOZIC_APP_KEY
+        APPLOZIC_APP_KEY: process.env.APPLOZIC_APP_KEY,
+        FIREBASE_PUBLIC_API_KEY: process.env.FIREBASE_PUBLIC_API_KEY,
+        FIREBASE_API_KEY: process.env.FIREBASE_API_KEY,
+        FIREBASE_AUTH_DOMAIN: process.env.FIREBASE_AUTH_DOMAIN,
+        FIREBASE_DATABASE_URL: process.env.FIREBASE_DATABASE_URL,
+        FIREBASE_PROJECT_ID: process.env.FIREBASE_PROJECT_ID,
+        FIREBASE_STORAGE_BUCKET: process.env.FIREBASE_STORAGE_BUCKET,
+        FIREBASE_MSG_SENDER_ID: process.env.FIREBASE_MSG_SENDER_ID,
+        FIREBASE_APP_ID: process.env.FIREBASE_APP_ID
     },
 };
 
