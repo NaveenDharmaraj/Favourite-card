@@ -156,7 +156,7 @@ class Favorites extends React.Component {
                     <Grid.Column key={index}>
                         <Card className="left-img-card" fluid>
                             <Card.Header>
-                                <Grid verticalAlign="middle">
+                                <Grid>
                                     <Grid.Column width={6}>
                                         <Image src={displayAvatar} />
                                     </Grid.Column>
@@ -164,7 +164,7 @@ class Favorites extends React.Component {
                                         <div className="">
                                             <Header as="h4">
                                                 <Header.Content>
-                                                    <Header.Subheader className="chimp-lbl group">
+                                                    <Header.Subheader className={`chimp-lbl ${type}`}>
                                                         {heading}
                                                         <span className="more-icon">
                                                             <Icon name="heart" disabled={this.props.disableFavorites} onClick={() => this.callRemoveFav(entityId, type)} />
