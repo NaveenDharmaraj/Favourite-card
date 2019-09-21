@@ -145,13 +145,11 @@ h4{
 .ui{
   &.modals{
     &.dimmer{
-      
       &.visible{
         //background-color: rgba(0,0,0,0) !important;
       }
       &.top{
         &.aligned{
-          
         }
       }
       .chimp-modal{
@@ -211,8 +209,6 @@ h4{
             }
             >.close{
               &.icon{
-                
-
               }
             }
             >.header{
@@ -223,7 +219,7 @@ h4{
               padding: 2.7rem 45/@rem;
             }
             >.content{
-              padding: 45/@rem;
+              padding: 30px 35px 15px;
               &.scrollContent{
                 max-height: 70vh;
                 overflow-y: scroll;
@@ -242,7 +238,7 @@ h4{
       }
     }
   }
-}
+ }
 .form{
   &.ui{
     .disabled-input{
@@ -893,6 +889,23 @@ h4{
   padding: 3rem 0rem 2rem;
   .ui{
     &.header{
+      .settings{
+        &.icon{
+          height: 96.33px;	width: 79px;
+          position: relative;
+          &::before{
+            position: absolute;
+            content: '';
+            background-image: url(../images/illustration-find-friends.png) !important;
+            background-size: cover !important;
+            background-repeat: no-repeat !important;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+          }
+        }
+      }
       .sub{
         &.header{
           margin-top: 1rem;
@@ -1460,10 +1473,18 @@ h4{
           }
         }
         input{
-          height: 48px;border: 1px solid #E0E1E2;	border-radius: 4px;	background-color: #FFFFFF
+          height: 48px;border: 1px solid #E0E1E2;	border-radius: 4px;	background-color: #FFFFFF;
         }
       }
-      
+      .eye{
+        &.link{
+          &.icon{
+            &::before{
+              content: url(../images/icons/password-unhide.svg);
+            }
+          }
+        }
+      }
     }
   }
 }
@@ -1473,6 +1494,9 @@ h4{
       border-bottom: 0px solid transparent !important;
     }
   }
+}
+.loadingSegment{
+  min-height: 100vh;
 }
 @media only screen and (max-width:767px) {
   .login-form-wraper{
@@ -1752,13 +1776,41 @@ h4{
     }
   }
 }
+.exploreHeader{
+  &.charities{
+    .ui{
+      &.header{
+        .content{
+          color: @gift;
+          margin-bottom: 10px;
+          .span{
+            color: #bbb;
+          }
+        }
+      }
+    }
+  }
+  &.groups{
+    .ui{
+      &.header{
+        .content{
+          color: @group;
+          margin-bottom: 10px;
+          .span{
+            color: #bbb;
+          }
+        }
+      }
+    }
+  }
+}
 .charities{
-  color: #db0063;
-  .color-change(#db0063);
+  color: @gift;
+  .color-change(@gift);
 }
 .groups{
-  color: #673387;
-  .color-change(#673387);
+  color: @group;
+  .color-change(@group);
 }
 .friends{
   color: #009fa2;
@@ -1778,7 +1830,8 @@ h4{
       .sub{
         &.header{
           text-transform: initial;
-          color: rgba(0, 0, 0, 0.6);
+          font-size: 14px;
+          color: #7F7F7F;
         }
       }
     }
@@ -1796,6 +1849,16 @@ h4{
   .search-result-single{
     .search-left-img,.leftSideImage{
       border-radius: 4px 0px 0px 4px;
+    }
+  }
+}
+.searchResultTabHeader{
+  &.ui{
+    &.header{
+      .content{
+        font-size: 20px;
+        //margin-bottom: 20px;
+      }
     }
   }
 }
@@ -1819,7 +1882,8 @@ h4{
         }
         .sub{
           &.header{
-            font-size: 1rem;
+            font-size: 14px;
+            color: @greyNew;
             line-height: 22px;
           }
         }
@@ -1827,6 +1891,7 @@ h4{
     }
   }
   .btn-wraper{
+    margin-bottom: 0px;
     .ui{
       &.button{
         border-radius: 20px;
@@ -1855,7 +1920,6 @@ h4{
   margin-bottom: 80px;
   .search-main-head{
     margin-top: 60px;
-    
     .ui{
       &.header{
         &.capitalize{
@@ -1867,6 +1931,7 @@ h4{
         text-transform: uppercase;
         font-weight: 400;
         margin-bottom: 2rem;
+        font-size: 20px;
         a{
           text-transform: initial;
           font-size: 1rem;
@@ -1874,6 +1939,8 @@ h4{
         .sub{
           &.header{
             text-transform: initial;
+            font-size: 14px;
+            margin-top: 5px;
           }
         }
       }
@@ -1883,6 +1950,16 @@ h4{
     .ui{
       &.card{
         margin-bottom: 2rem;
+        .content{
+          .header{
+            font-size: 14px;
+            color: #263238;
+            font-weight: 600;
+            +.description{
+              margin-top: 6px;
+            }
+          }
+        }
         .header{
           font-size: 1rem;
           +.description{
@@ -1894,6 +1971,8 @@ h4{
         }
         .meta{
           font-size: 12px;
+          color: #7F7F7F;
+          margin-top: 6px;
         }
       }
     }
@@ -2417,8 +2496,20 @@ h4{
         .header{
           .grid{
             >.column{
+              position: relative;
+              .ui{
+                &.header{
+                  .content {
+                    padding-top:10px;
+                  }
+                }
+              }
               &:last-child{
                 padding-left: 0px;
+                .btn-small-white-border{
+                  position: absolute;
+                  bottom: 30px;
+                }
                 .chimp-lbl{
                   margin-bottom: 5px;
                   .more-icon{
@@ -2433,7 +2524,6 @@ h4{
                         }
                       }
                     }
-                    
                   }
                 }
               }
@@ -2443,7 +2533,7 @@ h4{
       }
     }
   }
-}
+ }
 .left-img-card{
   &.ui{
     &.card{
@@ -2451,8 +2541,30 @@ h4{
       border: 1px solid #dedede;
       margin-bottom: 2rem !important;
       .header{
+        .icon{
+          position: relative;
+          height: 10px;	width: 20.63px;
+          margin-right: 5px; 
+          &.ellipsis{
+            &.horizontal{
+              &::before{
+                content: '';
+                position: absolute;
+                background-image: url('../images/icons/ellipsis.svg') !important;
+                height: 3.44px;	width: 20.63px;
+                background-size: contain !important;
+                background-repeat: no-repeat !important;
+                background-position: center !important;
+                margin-right: 5px;
+                right: 0;
+              }
+            }
+          }
+        }
         .grid{
-          >.column{
+          >.row{
+            >.column{
+            position: relative;
             &:first-child{
               //padding-right: 0px;
               .ui{
@@ -2465,6 +2577,47 @@ h4{
             }
             &:last-child{
               padding-left: 0px;
+              .btn-small-white-border{
+                position: absolute;
+                bottom: 15px;
+              }
+              .chimp-lbl{
+                margin-bottom: 5px;
+                .more-icon{
+                  display: inline-block;
+                  float: right;
+                  color: @grey-darken-1;
+                  font-weight: bold;
+                  font-size: 14px;
+                  cursor: pointer;
+                }
+              }
+            }
+            .ui{
+              &.header{
+                margin-bottom: 10px;
+              }
+            }
+          }
+          }
+          >.column{
+            position: relative;
+            &:first-child{
+              //padding-right: 0px;
+              .ui{
+                &.image{
+                  margin-left: 0px;
+                  width: 100%;
+                  border-radius: .28571429rem;
+                }
+              }
+            }
+            &:last-child{
+              padding-left: 0px;
+              .btn-small-white-border{
+                position: absolute;
+                bottom: 15px;
+              }
               .chimp-lbl{
                 margin-bottom: 5px;
                 .more-icon{
@@ -2490,7 +2643,7 @@ h4{
       }
     }
   }
-}
+ }
 @media only screen and (min-width:991px) and (max-width:1199px) {
   .left-img-card{
     &.ui{
@@ -3773,6 +3926,8 @@ h4{
 
 .grpcampHeader{
   padding-top: 47px;
+  padding-bottom: 50px;
+  border-bottom: 1px solid #E7E7F0;
   .grpcampBanner{
     position: relative;
     max-height: 268px;
@@ -4540,4 +4695,10 @@ h4{
       }
     }
   }
+}
+.searchCardTopImg {
+  min-height: 142px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
 }

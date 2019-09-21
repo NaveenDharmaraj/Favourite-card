@@ -98,8 +98,8 @@ const getMainNavItems = (accountType, slug) => {
             isExternal: false,
         });
         menuLinks.push({
-            location: '/user/favorites',
-            name: 'Favorites',
+            location: '/user/favourites',
+            name: 'Favourites',
             isExternal: false,
         });
         menuLinks.push({

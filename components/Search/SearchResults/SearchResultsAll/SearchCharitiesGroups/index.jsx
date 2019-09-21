@@ -32,7 +32,8 @@ class SearchCharitiesGroups extends React.Component {
                 <Link route={`/charities/${charity.attributes.slug}`}>
                     <Grid.Column mobile={16} tablet={8} computer={4}>
                         <Card as="a" key={i}>
-                            <Image src={!_isEmpty(charity.attributes.avatar) ? charity.attributes.avatar : charityImg} wrapped ui={false} />
+                            <div className="searchCardTopImg" style={{backgroundImage:`url(${!_isEmpty(charity.attributes.avatar) ? charity.attributes.avatar : charityImg})`}}>
+                            </div>
                             <Card.Content>
                                 <Card.Header>{charity.attributes.name}</Card.Header>
                                 <Card.Description>
@@ -66,7 +67,8 @@ class SearchCharitiesGroups extends React.Component {
                     <Link route={route}>
                         <Grid.Column mobile={16} tablet={8} computer={4}>
                             <Card as="a" key={i}>
-                                <Image src={!_isEmpty(group.attributes.avatar) ? group.attributes.avatar : groupImg} wrapped ui={false} />
+                                <div className="searchCardTopImg" style={{backgroundImage:`url(${!_isEmpty(group.attributes.avatar) ? group.attributes.avatar : groupImg})`}}>
+                                </div>
                                 <Card.Content>
                                     <Card.Header>{group.attributes.name}</Card.Header>
                                     <Card.Description>
@@ -104,11 +106,13 @@ class SearchCharitiesGroups extends React.Component {
                 <div className="search-main-head charities">
                     <Header as="h2">
                         CHARITIES
-                        {
-                            (!_isEmpty(charities) && !_isEmpty(charities.meta) && charities.meta.recordCount > 4)
-                            && <Link route={`/search?${searchQueryParam}result_type=Beneficiary`} style={{ color: "#4183c4",textDecoration: "none" , fontSize: "1rem" }}>&nbsp;&nbsp;View all</Link>
-                        }
-                        <Header.Subheader>Manage your account settings and set email preferences</Header.Subheader>
+                        <Header.Subheader>
+                            Manage your account settings and set email preferences
+                            {
+                                (!_isEmpty(charities) && !_isEmpty(charities.meta) && charities.meta.recordCount > 4)
+                                && <div className="right-align"><Link route={`/search?${searchQueryParam}result_type=Beneficiary`}>&nbsp;&nbsp;View all</Link></div>
+                            }
+                        </Header.Subheader>
                     </Header>
                     <div className="search-result-all">
                         {charityLoader ? (
@@ -122,14 +126,17 @@ class SearchCharitiesGroups extends React.Component {
                         )}
                     </div>
                 </div>
-                <div className="search-main-head charities">
+                <div className="search-main-head groups">
                     <Header as="h2">
                     GIVING GROUPS
-                        {
-                            (!_isEmpty(groups) && !_isEmpty(groups.meta) && groups.meta.recordCount > 4)
-                            && <Link route={`/search?${searchQueryParam}result_type=Group`}>&nbsp;&nbsp;View all</Link>
-                        }
-                        <Header.Subheader>Manage your account settings and set email preferences</Header.Subheader>
+                        <Header.Subheader>
+                            Manage your account settings and set email preferences
+                            {
+                                (!_isEmpty(groups) && !_isEmpty(groups.meta) && groups.meta.recordCount > 4)
+                                && <div className="right-align"><Link route={`/search?${searchQueryParam}result_type=Group`}>&nbsp;&nbsp;View all</Link></div>
+                            }
+                        </Header.Subheader>
+                        
                     </Header>
                     {groupLoader ? (
                         <PlaceholderGrid column={4} row={1} />
