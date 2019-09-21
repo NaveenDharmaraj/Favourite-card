@@ -5,19 +5,26 @@ import {
     Header,
     Checkbox,
     List,
+    Form,
+    Radio,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 
 import {
     updateUserPreferences,
+    getUserDefaultTaxReceipt,
 } from '../../../actions/userProfile';
 
 const givingColumnName = {
     charitiesGiveAnonymously: 'charities_give_anonymously',
-    givingGroupAdminsShareMyNameEmail: 'giving_group_admins_share_my_name_e_mail',
+    charitiesShareMyName: 'charities_share_my_name',
+    charitiesShareMyNameAddress: 'charities_share_my_name_address',
+    charitiesShareMyNameEmail: 'charities_share_my_name_email',
+    givingGroupAdminsShareMyNameEmail: 'giving_group_admins_share_my_name_email',
     givingGroupMembersGiveAnonymously: 'giving_group_members_give_anonymously',
     givingGroupMembersShareMyGiftamount: 'giving_group_members_share_my_giftamount',
     givingGroupMembersShareMyName: 'giving_group_members_share_my_name',
+    isCharityShareInfo: 'charities_dont_share',
 };
 
 class ManageGiving extends React.Component {
@@ -28,28 +35,85 @@ class ManageGiving extends React.Component {
             charitiesShareMyName: (!_.isEmpty(props.currentUser)) ? props.currentUser.attributes.preferences.charities_share_my_name : false,
             charitiesShareMyNameAddress: (!_.isEmpty(props.currentUser)) ? props.currentUser.attributes.preferences.charities_share_my_name_address : false,
             charitiesShareMyNameEmail: (!_.isEmpty(props.currentUser)) ? props.currentUser.attributes.preferences.charities_share_my_name_email : false,
-            givingGroupAdminsShareMyNameEmail: (!_.isEmpty(props.currentUser)) ? props.currentUser.attributes.preferences.giving_group_admins_share_my_name_e_mail : false,
+            givingGroupAdminsShareMyNameEmail: (!_.isEmpty(props.currentUser)) ? props.currentUser.attributes.preferences.giving_group_admins_share_my_name_email : false,
             givingGroupMembersGiveAnonymously: (!_.isEmpty(props.currentUser)) ? props.currentUser.attributes.preferences.giving_group_members_give_anonymously : false,
             givingGroupMembersShareMyGiftamount: (!_.isEmpty(props.currentUser)) ? props.currentUser.attributes.preferences.giving_group_members_share_my_giftamount : false,
             givingGroupMembersShareMyName: (!_.isEmpty(props.currentUser)) ? props.currentUser.attributes.preferences.giving_group_members_share_my_name : false,
+            isCharityShareInfo: (props.currentUser.attributes.preferences.charities_share_my_name || props.currentUser.attributes.preferences.charities_share_my_name_address || props.currentUser.attributes.preferences.charities_share_my_name_email) ? true : false,
+            selectedTaxReceipt: '',
             userName: (!_.isEmpty(props.currentUser)) ? `${props.currentUser.attributes.firstName} ${props.currentUser.attributes.lastName}` : '',
+            userNameAddress: '',
+            userNameEmail: (!_.isEmpty(props.currentUser)) ? props.currentUser.attributes.email : '',
         };
         this.handleUserPreferenceChange = this.handleUserPreferenceChange.bind(this);
+        this.handleCharityInfoShare = this.handleCharityInfoShare.bind(this);
+    }
+
+    componentDidMount() {
+        const {
+            currentUser,
+            dispatch,
+        } = this.props;
+        getUserDefaultTaxReceipt(dispatch, currentUser.id);
+    }
+
+    componentDidUpdate(prevProps) {
+        const {
+            userDefaultTaxReceipt,
+        } = this.props;
+        if (!_.isEqual(userDefaultTaxReceipt, prevProps.userDefaultTaxReceipt)) {
+            this.setState({
+                userNameAddress: `${userDefaultTaxReceipt.data.attributes.fullName}, ${userDefaultTaxReceipt.data.attributes.addressOne}, ${userDefaultTaxReceipt.data.attributes.addressTwo}`,
+                selectedTaxReceipt: userDefaultTaxReceipt.data.id,
+            });
+        }
     }
 
     handleUserPreferenceChange(event, data) {
         const {
             checked,
-            name,
+            id,
         } = data;
         const {
             currentUser,
             dispatch,
         } = this.props;
-        this.setState({ [name]: checked });
-        const columnName = givingColumnName[name];
+        this.setState({ [id]: checked });
+        const columnName = givingColumnName[id];
         if (columnName !== null) {
             updateUserPreferences(dispatch, currentUser.id, columnName, checked);
+        }
+    }
+
+    handleCharityInfoShare(event, data) {
+        const {
+            checked,
+            id,
+        } = data;
+        const {
+            currentUser,
+            dispatch,
+        } = this.props;
+        let {
+            charitiesShareMyName,
+            charitiesShareMyNameAddress,
+            charitiesShareMyNameEmail,
+        } = this.state;
+        this.setState({ [id]: checked });
+        const columnName = givingColumnName[id];
+        if (columnName === 'charities_dont_share' && checked === false) {
+            updateUserPreferences(dispatch, currentUser.id, columnName, checked);
+        } else {
+            getUserDefaultTaxReceipt(dispatch, currentUser.id);
+            charitiesShareMyName = true;
+            charitiesShareMyNameAddress = false;
+            charitiesShareMyNameEmail = false;
+            this.setState({
+                charitiesShareMyName,
+                charitiesShareMyNameAddress,
+                charitiesShareMyNameEmail,
+            });
+            updateUserPreferences(dispatch, currentUser.id, columnName, true);
         }
     }
 
@@ -64,7 +128,12 @@ class ManageGiving extends React.Component {
             charitiesShareMyNameAddress,
             charitiesShareMyNameEmail,
             userName,
+            userNameEmail,
+            userNameAddress,
+            isCharityShareInfo,
         } = this.state;
+        const userInfoEmail = `${userName}, ${userNameEmail}`;
+        const userInfoAddress = `${userNameAddress}`;
         return (
             <div className="remove-gutter">
                 <div className="userSettingsContainer">
@@ -143,7 +212,12 @@ class ManageGiving extends React.Component {
                                     />
                                 </List.Content>
                                 <List.Content>
-                                    <List.Description>Give anonymously</List.Description>
+                                    <List.Description>
+                                        Share my name
+                                        (
+                                        {userInfoEmail}
+                                        )
+                                    </List.Description>
                                 </List.Content>
                             </List.Item>
                         </List>
@@ -169,9 +243,10 @@ class ManageGiving extends React.Component {
                                     <Checkbox
                                         toggle
                                         className="c-chkBox"
-                                        id="charitiesShareMyName"
-                                        name="charitiesShareMyName"
-                                        checked={charitiesShareMyName}
+                                        id="isCharityShareInfo"
+                                        name="isCharityShareInfo"
+                                        checked={isCharityShareInfo}
+                                        onChange={this.handleCharityInfoShare}
                                     />
                                 </List.Content>
                                 <List.Content>
@@ -179,6 +254,42 @@ class ManageGiving extends React.Component {
                                 </List.Content>
                             </List.Item>
                         </List>
+                        {
+                            isCharityShareInfo && (
+                                <div className="label-f-normal shareInfoRadio">
+                                    <Form.Field>
+                                        <Radio
+                                            label={userName}
+                                            checked={charitiesShareMyName}
+                                            name="radioGroup"
+                                            id="charitiesShareMyName"
+                                            onChange={this.handleUserPreferenceChange}
+                                            className="grnRadio"
+                                        />
+                                    </Form.Field>
+                                    <Form.Field>
+                                        <Radio
+                                            label={userInfoEmail}
+                                            checked={charitiesShareMyNameEmail}
+                                            name="radioGroup"
+                                            id="charitiesShareMyNameEmail"
+                                            onChange={this.handleUserPreferenceChange}
+                                            className="grnRadio"
+                                        />
+                                    </Form.Field>
+                                    <Form.Field>
+                                        <Radio
+                                            label={userInfoAddress}
+                                            checked={charitiesShareMyNameAddress}
+                                            name="radioGroup"
+                                            id="charitiesShareMyNameAddress"
+                                            onChange={this.handleUserPreferenceChange}
+                                            className="grnRadio"
+                                        />
+                                    </Form.Field>
+                                </div>
+                            )
+                        }
                     </div>
                 </div>
             </div>
@@ -189,6 +300,7 @@ class ManageGiving extends React.Component {
 function mapStateToProps(state) {
     return {
         currentUser: state.user.info,
+        userDefaultTaxReceipt: state.userProfile.userDefaultTaxReceipt,
     };
 }
 

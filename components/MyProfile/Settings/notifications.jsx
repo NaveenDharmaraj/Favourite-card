@@ -70,7 +70,7 @@ class Notifications extends React.Component {
                     <div className="settingsDetailWraper no-border heading">
                         <Header as="h4">Notifications </Header>
                         <p>
-                            We’ll send you notifications about your CHIMP Giving Account
+                            We’ll send you notifications about your Charitable Impact Giving Account
                             and updates from your CHIMP network,
                             so you can make the most of your CHIMP account.
                         </p>

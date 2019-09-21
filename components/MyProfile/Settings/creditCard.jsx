@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { Fragment } from 'react';
+import _ from 'lodash';
 import {
     Button,
     Header,
@@ -30,6 +31,7 @@ import {
 import Pagination from '../../shared/Pagination';
 import PlaceHolderGrid from '../../shared/PlaceHolder';
 
+const ModalStatusMessage = dynamic(() => import('../../shared/ModalStatusMessage'));
 const CreditCard = dynamic(() => import('../../shared/CreditCard'));
 
 const { publicRuntimeConfig } = getConfig();
@@ -42,6 +44,10 @@ class MyCreditCards extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            buttonClicked: false,
+            deleteButtonClicked: false,
+            editButtonClicked: false,
+            errorMessage: null,
             currentActivePage: 1,
             isAddModalOpen: false,
             isEditModalOpen: false,
@@ -52,6 +58,7 @@ class MyCreditCards extends React.Component {
             inValidCvv: true,
             inValidExpirationDate: true,
             inValidNameOnCard: true,
+            isDefaultCardReadOnly: false,
             isDefaultCard: false,
             deleteConfirmCard: '',
             deletePaymentInstrumentId: '',
@@ -67,7 +74,9 @@ class MyCreditCards extends React.Component {
             creditCard: {
                 value: 0,
             },
+            statusMessage: false,
             stripeCreditCard: '',
+            successMessage: '',
             cardHolderName: '',
             myCreditCardListLoader: !props.userCreditCardList,
         };
@@ -86,6 +95,7 @@ class MyCreditCards extends React.Component {
         this.handleAddButtonClick = this.handleAddButtonClick.bind(this);
         this.handleAddCardClick = this.handleAddCardClick.bind(this);
         this.handleSetPrimaryClick = this.handleSetPrimaryClick.bind(this);
+        this.handleCCAddClose = this.handleCCAddClose.bind(this);
     }
 
     componentDidMount() {
@@ -154,10 +164,50 @@ class MyCreditCards extends React.Component {
     }   
 
     handleAddCardClick() {
-        this.setState({ isAddModalOpen: true });
+        const {
+            dispatch,
+            userCreditCardList,
+        } = this.props;
+        let {
+            isDefaultCard,
+            isDefaultCardReadOnly,
+        } = this.state;
+        dispatch({
+            payload: {
+                newCreditCardApiCall: true,
+            },
+            type: 'ADD_NEW_CREDIT_CARD_STATUS',
+        });
+        if (userCreditCardList.count === 0) {
+            isDefaultCard = true;
+            isDefaultCardReadOnly = true;
+        } else {
+            isDefaultCardReadOnly = false;
+        }
+        this.setState({
+            isAddModalOpen: true,
+            isDefaultCard,
+            isDefaultCardReadOnly,
+        });
+    }
+
+    handleCCAddClose() {
+        const {
+            dispatch
+        } = this.props;
+        dispatch({
+            payload: {
+                newCreditCardApiCall: false,
+            },
+            type: 'ADD_NEW_CREDIT_CARD_STATUS',
+        });
+        this.setState({ isAddModalOpen: false });
     }
 
     handleAddButtonClick() {
+        this.setState({
+            buttonClicked: true,
+        });
         const {
             creditCard,
             inValidCardNumber,
@@ -186,8 +236,20 @@ class MyCreditCards extends React.Component {
                 },
                 dispatch,
             } = this.props;
-            saveNewCreditCard(dispatch, stripeCreditCard, cardHolderName, id, isDefaultCard, currentActivePage);            
-            this.setState({ isDefaultCard: false });
+            saveNewCreditCard(dispatch, stripeCreditCard, cardHolderName, id, isDefaultCard, currentActivePage).then(() => {
+                this.setState({
+                    buttonClicked: false,
+                    errorMessage: null,
+                    successMessage: 'Your Credit Card Saved Successfully.',
+                    statusMessage: true,
+                });
+            }).catch((err) => {
+                this.setState({
+                    buttonClicked: false,
+                    errorMessage: 'Error in saving the Credit Card.',
+                    statusMessage: true,
+                });
+            });
         }
     }
 
@@ -202,15 +264,22 @@ class MyCreditCards extends React.Component {
     handleEditClick(paymentInstrument) {
         const lastFour = `**** **** **** ${paymentInstrument.attributes.description.slice(-4)}`;
         const cardName = paymentInstrument.attributes.description.slice(0, -17);
+        const cardNameOnly = cardName.substr(0, cardName.indexOf("'"));
         const defaultCard = paymentInstrument.attributes.default ? true : false;
-        console.log(paymentInstrument);
+        let isDefaultCardReadOnly = false; 
+        if (defaultCard) {
+            isDefaultCardReadOnly = true;
+        } else {
+            isDefaultCardReadOnly = false;
+        }
         this.setState({
             isEditModalOpen: true,
             isDropdownOpen: false,
+            isDefaultCardReadOnly,
             isDefaultCard: defaultCard,
             editDetails: {
                 editCardNumber: lastFour,
-                editNameOnCard: cardName,
+                editNameOnCard: cardNameOnly,
                 editPaymetInstrumentId: paymentInstrument.id,
             }            
         });
@@ -266,6 +335,9 @@ class MyCreditCards extends React.Component {
     }
 
     handleEditSave() {
+        this.setState({
+            editButtonClicked: true,
+        });
         const isEditDataValid = this.validateEditForm();
         if(isEditDataValid) {
             const {
@@ -279,25 +351,40 @@ class MyCreditCards extends React.Component {
                 },
                 dispatch,
             } = this.props;
-            editUserCreditCard(dispatch, editDetails);
+            editUserCreditCard(dispatch, editDetails).then(() => {
+                this.setState({
+                    editButtonClicked: true,
+                    errorMessage: null,
+                    successMessage: 'Your Credit Card updated Successfully.',
+                    statusMessage: true,
+                });
+                this.setState({
+                    editDetails: {
+                        editCardNumber: '',
+                        editNameOnCard: '',
+                        editPaymetInstrumentId: '',
+                        editMonth: '',
+                        editYear: '',
+                        isValidMonth: '',
+                        isValidYear: '',
+                    },
+                    isDefaultCard: false,
+                    isEditModalOpen: false,
+                })
+            }).catch((err) => {
+                this.setState({
+                    editButtonClicked: true,
+                    errorMessage: 'Error in updating Credit Card.',
+                    statusMessage: true,
+                });
+            });;
             if (isDefaultCard) {
                 setUserDefaultCard(dispatch, editDetails.editPaymetInstrumentId, id, currentActivePage);
-            }
-            this.setState({
-                editDetails: {
-                    editCardNumber: '',
-                    editNameOnCard: '',
-                    editPaymetInstrumentId: '',
-                    editMonth: '',
-                    editYear: '',
-                    isValidMonth: '',
-                    isValidYear: '',
-                },
-                isDefaultCard: false,
-                isEditModalOpen: false,
-            })
+            }            
         } else {
-            console.log('Form Not Valid');
+            this.setState({
+                editButtonClicked: false,
+            });
         }
     }
 
@@ -321,10 +408,33 @@ class MyCreditCards extends React.Component {
                 id,
             },
         } = this.props;
-        deleteUserCreditCard(dispatch, deletePaymentInstrumentId, id, currentActivePage);
         this.setState({
-            isDeleteMessageOpen: false,
-        })
+            deleteButtonClicked: true,
+        });
+        if(deletePaymentInstrumentId != null) {
+            deleteUserCreditCard(dispatch, deletePaymentInstrumentId, id, currentActivePage).then(() => {
+                this.setState({
+                    deleteButtonClicked: false,
+                    errorMessage: null,
+                    successMessage: 'Your Credit Card deleted Successfully.',
+                    statusMessage: true,
+                    isDeleteMessageOpen: false,
+                });
+            }).catch((err) => {
+                this.setState({
+                    deleteButtonClicked: false,
+                    errorMessage: 'Error in deleting your Credit Card.',
+                    statusMessage: true,
+                    isDeleteMessageOpen: false,
+                });
+            });
+        } else {
+            this.setState({
+                deleteButtonClicked: false,
+            });
+        }
+        
+        
     }
 
     handleDeleteCancelClick() {
@@ -414,7 +524,7 @@ class MyCreditCards extends React.Component {
             currentActivePage,
             isDropdownOpen,
         } = this.state;
-        let cardList = 'No Data';
+        let cardList = 'No credit card added yet';
         if (!_.isEmpty(userCreditCardList) && _.size(userCreditCardList.data) > 0) {
             cardList = userCreditCardList.data.map((data) => {
                 const lastFour = data.attributes.description.slice(-4);
@@ -426,19 +536,24 @@ class MyCreditCards extends React.Component {
                             <Dropdown className="rightBottom" icon="ellipsis horizontal">
                                 <Dropdown.Menu>
                                     <Dropdown.Item
-                                    text="Edit" 
-                                    open={isDropdownOpen}
-                                    onOpen={this.onOpen}
-                                    onClose={this.onClose}
-                                    onClick={() => {this.handleEditClick(data)}}
+                                        text="Edit" 
+                                        open={isDropdownOpen}
+                                        onOpen={this.onOpen}
+                                        onClose={this.onClose}
+                                        onClick={() => {this.handleEditClick(data)}}
                                     />
-                                    <Dropdown.Item
-                                    text="Delete" 
-                                    open={isDropdownOpen}
-                                    onOpen={this.onOpen}
-                                    onClose={this.onClose}
-                                    onClick={() => {this.handleDeleteClick(data.attributes.description, data.id)}}
-                                    />
+                                    {
+                                        !data.attributes.default && (
+                                            <Dropdown.Item
+                                                text="Delete" 
+                                                open={isDropdownOpen}
+                                                onOpen={this.onOpen}
+                                                onClose={this.onClose}
+                                                onClick={() => {this.handleDeleteClick(data.attributes.description, data.id)}}
+                                            />
+                                        )
+                                    }
+                                    
                                 </Dropdown.Menu>
                             </Dropdown>
                         </List.Content>
@@ -473,12 +588,17 @@ class MyCreditCards extends React.Component {
 
     render() {
         const {
+            buttonClicked,
+            deleteButtonClicked,
+            editButtonClicked,
+            errorMessage,
             inValidCardNumber,
             inValidExpirationDate,
             inValidNameOnCard,
             inValidCvv,
             inValidCardNameValue,
             isDefaultCard,
+            isDefaultCardReadOnly,
             deleteConfirmCard,
             editDetails: {
                 editCardNumber,
@@ -487,8 +607,11 @@ class MyCreditCards extends React.Component {
                 editYear,
             },
             myCreditCardListLoader,
+            statusMessage,
+            successMessage,
         } = this.state;
         const {
+            editCreditCardApiCall,
             newCreditCardApiCall,
         } = this.props;
         const formatMessage = this.props.t;
@@ -515,7 +638,7 @@ class MyCreditCards extends React.Component {
                                     className="chimp-modal"
                                     closeIcon
                                     open={newCreditCardApiCall}
-                                    onClose={()=>{this.setState({isAddModalOpen: false})}}
+                                    onClose={this.handleCCAddClose}
                                     trigger={<Button
                                         className="success-btn-rounded-def"
                                         onClick={this.handleAddCardClick}
@@ -553,6 +676,7 @@ class MyCreditCards extends React.Component {
                                                     label="Set as primary card"
                                                     name="isDefaultCard"
                                                     onChange={this.handleSetPrimaryClick}
+                                                    readOnly={isDefaultCardReadOnly}
                                                 />
                                             </Form>
                                         </Modal.Description>
@@ -560,6 +684,7 @@ class MyCreditCards extends React.Component {
                                             <Button
                                                 className="blue-btn-rounded-def sizeBig w-180"
                                                 onClick={this.handleAddButtonClick}
+                                                disabled={buttonClicked}
                                             >
                                                 Add
                                             </Button>
@@ -568,6 +693,16 @@ class MyCreditCards extends React.Component {
                                 </Modal>
                             </div>
                         </Grid.Column>
+                    </Grid.Row>
+                    <Grid.Row>
+                    {
+                        statusMessage && (
+                            <ModalStatusMessage 
+                                message = {!_.isEmpty(successMessage) ? successMessage : null}
+                                error = {!_.isEmpty(errorMessage) ? errorMessage : null}
+                            />
+                        )
+                    }
                     </Grid.Row>
                 </Grid>
                 <div>
@@ -580,7 +715,7 @@ class MyCreditCards extends React.Component {
                                         <label>Card number</label>
                                         <input
                                             placeholder="Card number"
-                                            readOnly
+                                            disabled
                                             value={editCardNumber}
                                         />
                                     </Form.Field>
@@ -588,7 +723,7 @@ class MyCreditCards extends React.Component {
                                         <label>Name on card</label>
                                         <input
                                             placeholder="Name on card"
-                                            readOnly
+                                            disabled
                                             value={editNameOnCard}
                                         />
                                     </Form.Field>
@@ -606,7 +741,7 @@ class MyCreditCards extends React.Component {
                                         />
                                         <Form.Input 
                                             fluid
-                                            label="Expiry Month"
+                                            label="Expiry Year"
                                             placeholder="YYYY"
                                             id="editYear"
                                             name="editYear"
@@ -624,6 +759,7 @@ class MyCreditCards extends React.Component {
                                         label="Set as primary card"
                                         name="isDefaultCard"
                                         onChange={this.handleSetPrimaryClick}
+                                        readOnly={isDefaultCardReadOnly}
                                     />
                                 </Form>
                             </Modal.Description>
@@ -631,6 +767,7 @@ class MyCreditCards extends React.Component {
                                 <Button
                                     className="blue-btn-rounded-def sizeBig w-180"
                                     onClick={this.handleEditSave}
+                                    disabled={editButtonClicked}
                                 >
                                     Save
                                 </Button>
@@ -649,12 +786,14 @@ class MyCreditCards extends React.Component {
                             <Button
                                 className="danger-btn-rounded-def c-small"
                                 onClick={this.handleDeleteConfirmClick}
+                                disabled={deleteButtonClicked}
                             >
                                 Delete
                             </Button>
                             <Button 
                                 className="blue-bordr-btn-round-def c-small"
                                 onClick={this.handleDeleteCancelClick}
+                                disabled={deleteButtonClicked}
                             >
                                 Cancel
                             </Button>
