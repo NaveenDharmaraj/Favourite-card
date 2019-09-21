@@ -334,7 +334,7 @@ const getMyCreditCards = (dispatch, userId, pageNumber) => {
         },
         type: actionTypes.USER_PROFILE_CREDIT_CARDS,
     };
-    return coreApi.get(`/users/${Number(userId)}/activePaymentInstruments?page[number]=${pageNumber}&page[size]=10`).then(
+    return coreApi.get(`/users/${Number(userId)}/activePaymentInstruments?page[number]=${pageNumber}&page[size]=10&sort=-default`).then(
         (result) => {
             fsa.payload = {
                 count: result.meta.recordCount,

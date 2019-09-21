@@ -98,7 +98,7 @@ class ManagePassword extends React.Component {
                 });
             }).catch((err) => {
                 this.setState({
-                    buttonClicked: true,
+                    buttonClicked: false,
                     errorMessage: 'Error in changing the Password. Please try after sometime.',
                     statusMessage: true,
                 });

@@ -238,14 +238,14 @@ class MyCreditCards extends React.Component {
             } = this.props;
             saveNewCreditCard(dispatch, stripeCreditCard, cardHolderName, id, isDefaultCard, currentActivePage).then(() => {
                 this.setState({
-                    buttonClicked: true,
+                    buttonClicked: false,
                     errorMessage: null,
                     successMessage: 'Your Credit Card Saved Successfully.',
                     statusMessage: true,
                 });
             }).catch((err) => {
                 this.setState({
-                    buttonClicked: true,
+                    buttonClicked: false,
                     errorMessage: 'Error in saving the Credit Card.',
                     statusMessage: true,
                 });
@@ -414,19 +414,18 @@ class MyCreditCards extends React.Component {
         if(deletePaymentInstrumentId != null) {
             deleteUserCreditCard(dispatch, deletePaymentInstrumentId, id, currentActivePage).then(() => {
                 this.setState({
-                    deleteButtonClicked: true,
+                    deleteButtonClicked: false,
                     errorMessage: null,
                     successMessage: 'Your Credit Card deleted Successfully.',
                     statusMessage: true,
-                });
-                this.setState({
                     isDeleteMessageOpen: false,
                 });
             }).catch((err) => {
                 this.setState({
-                    deleteButtonClicked: true,
+                    deleteButtonClicked: false,
                     errorMessage: 'Error in deleting your Credit Card.',
                     statusMessage: true,
+                    isDeleteMessageOpen: false,
                 });
             });
         } else {
