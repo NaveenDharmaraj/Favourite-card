@@ -279,7 +279,7 @@ class Login extends React.Component {
                 <div className="pageWraper">
                     <Container>
                         <div className="linebg">
-                            <Grid columns={2} verticalAlign="middle">
+                            <Grid columns={2} doubling>
                                 {
                                     (stepIndex === 0) && (
                                         <FirstStep

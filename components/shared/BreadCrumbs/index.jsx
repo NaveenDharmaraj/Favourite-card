@@ -17,7 +17,7 @@ const BreadcrumbDetails = (props) => {
         if (pathDetails && typeof pathDetails === 'object') {
             pathDetails.forEach((path, i) => {
                 breadcrumbBlock.push(
-                    <Breadcrumb.Section link>{path}</Breadcrumb.Section>,
+                    <Breadcrumb.Section>{path}</Breadcrumb.Section>,
                 );
                 if (i !== pathDetails.length - 1) {
                     breadcrumbBlock.push(
