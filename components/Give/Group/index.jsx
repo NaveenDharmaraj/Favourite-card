@@ -912,7 +912,7 @@ class Group extends React.Component {
                         />
                         <FormValidationErrorMessage
                             condition={!validity.isAmountCoverGive}
-                            errorMessage={formatMessage('giveAmountGreaterThanBalance')}
+                            errorMessage={formatMessage('giveCommon:errorMessages.giveAmountGreaterThanBalance')}
                         />
                         { (!this.props.currentUser.userAccountsFetched || !_isEmpty(giveFromList)) && (
                         <DropDownAccountOptions

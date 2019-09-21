@@ -3,6 +3,7 @@ import {
     Header,
     Grid,
     Button,
+    Icon,
 } from 'semantic-ui-react';
 import _map from 'lodash/map';
 import PropTypes from 'prop-types';
@@ -22,11 +23,14 @@ import PlaceholderGrid from '../../../../shared/PlaceHolder';
 class SearchResultSingleCharityGroups extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            loader: false,
+        };
         this.renderCharityGroupComponent = this.renderCharityGroupComponent.bind(this);
     }
 
     // eslint-disable-next-line class-methods-use-this
-    handleRoute(type, slug, campaign) {
+    handleRoute(type, slug, campaign, i) {
         let route = null;
         if (!_isEmpty(type)) {
             if (type.toLowerCase() === 'group' && campaign) {
@@ -37,7 +41,9 @@ class SearchResultSingleCharityGroups extends React.Component {
                 route = `/charities/${slug}`;
             }
         }
-     
+        this.setState({
+            [`loader${i}`]: true,
+        });
         Router.pushRoute(route);
     }
 
@@ -73,21 +79,21 @@ class SearchResultSingleCharityGroups extends React.Component {
                         slug,
                     },
                 } = charityGroup;
-
                 let displayAvatar = placeholderCharity;
                 if (!_isEmpty(type) && type.toLowerCase() === 'group') {
                     displayAvatar = placeholderGroup;
                 }
                 displayAvatar = (!_isEmpty(avatar)) ? avatar : displayAvatar;
+                const headingClass = (type.toLowerCase() === 'group') ? 'search-result-single groups' : 'search-result-single charities';
                 return (
-                    <div className="search-result-single charities">
+                    <div className={headingClass}>
                         <Grid stackable>
                             <Grid.Row stretched key={i}>
                                 <Grid.Column mobile={16} tablet={5} computer={5}>
                                     {/* <Image src={displayAvatar} className="search-left-img" /> */}
                                     <div className="leftSideImage" style={{backgroundImage:`url(${displayAvatar})`}}></div>
                                 </Grid.Column>
-                                <Grid.Column mobile={16} tablet={7} computer={8} verticalAlign="top">
+                                <Grid.Column mobile={16} tablet={7} computer={8} verticalAlign="middle">
                                     <div className=" description">
                                         <Header as="h4">
                                             {name}
@@ -105,9 +111,14 @@ class SearchResultSingleCharityGroups extends React.Component {
                                 </Grid.Column>
                                 <Grid.Column mobile={16} tablet={4} computer={3} verticalAlign="middle" textAlign="center">
                                     <div className="btn-wraper">
-                                        <Button className="view-btn" onClick={() => { this.handleRoute(type, slug, is_campaign); }}>
-                                            {this.renderButton(type, is_campaign)}
-                                        </Button>
+
+                                        { this.state[`loader${i}`] ? <Icon name="spinner" loading />
+                                            : (
+                                                <Button className="view-btn" onClick={() => { this.handleRoute(type, slug, is_campaign, i); }}>
+                                                    {this.renderButton(type, is_campaign)}
+                                                </Button>
+                                            )
+                                        }
                                     </div>
                                 </Grid.Column>
                             </Grid.Row>

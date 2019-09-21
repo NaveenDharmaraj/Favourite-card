@@ -227,16 +227,14 @@ button,a{
                 margin-left: .92857143em;
                 margin-right: .92857143em;
                 &:hover{
-                  text-shadow: 0 0 .3px @purple-dark, 0 0 .3px @purple-dark;
                   background: none;
-                  border-bottom: 2px solid @purple-dark;
-                  color: @purple-dark;
+                  color: @purple;
                 }
                 &.active{
-                  text-shadow: 0 0 .3px @purple-dark, 0 0 .3px @purple-dark;
+                  text-shadow: 0 0 .3px @purple, 0 0 .3px @purple;
                   background: none;
-                  border-bottom: 2px solid @purple-dark;
-                  color: @purple-dark;
+                  border-bottom: 2px solid @purple;
+                  color: @purple;
                 }
               }
               .user-img{
@@ -278,19 +276,22 @@ button,a{
                     content: '';
                     position: absolute;
                     height: 8px;	width: 8px;	background-color: #DB0163;
-                    top: 0;
-                    right: 5px;
+                    top: 1px;
+                    right: 2px;
                     border-radius: 100%;
                   }
                 }
               }
             }
             .chatNav{
+              padding-bottom: 22px !important;
               .icon{
                 position: relative;
                 &.chat{
                   &::before{
-                    content: url(../images/icons/icon-message.svg);
+                    
+                    position: relative;
+                    content: url(../images/icons/chatIcon.svg);
                   }
                 }
                 &.new{
@@ -299,7 +300,7 @@ button,a{
                     position: absolute;
                     height: 8px;	width: 8px;	background-color: #DB0163;
                     top: 0;
-                    right: 5px;
+                    right: 1px;
                     border-radius: 100%;
                   }
                 }
@@ -329,11 +330,19 @@ button,a{
         &.secondary{
           &.menu{
             .right{
+              .basic{
+                &.button{
+                  height: 44px;	
+                  width: 120px;	
+                  border: 1px solid @link;	
+                  color: #fff !important;
+                  background-color: @link !important;
+                  border-radius: 22px;
+                  box-shadow: none;
+                }
+              }
               .outline-btn{
-                height: 44px;	
-                width: 120px;	
-                border: 1px solid #9B9B9B;	
-                border-radius: 22px;
+                
               }
               .item{
                 &:hover{
@@ -734,8 +743,12 @@ button,a{
                   padding-left: 5px;
                   a{
                     color: @purple-dark;
+                    font-size: 14px;
+                    font-weight: 600;
+                    font-family: 'ProximaNova-Regular';
                     &:hover{
                       color: @purple-dark;
+                      
                     }
                   }
                 }
@@ -913,6 +926,9 @@ button,a{
                       font-weight: bold;
                     }
                     &.signup{
+                      &:hover{
+                        background-color: transparent;
+                      }
                       .ui{
                         &.button{
                           &.primary{

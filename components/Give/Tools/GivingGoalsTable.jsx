@@ -30,21 +30,23 @@ function GivingGoalsTable(props) {
         }
         return tableBody;
     };
-    return (
-        <Table padded unstackable className="no-border-table">
-            <Table.Header>
-                <Table.Row>
-                    <Table.HeaderCell>Year</Table.HeaderCell>
-                    <Table.HeaderCell>Goal Amount</Table.HeaderCell>
-                </Table.Row>
-            </Table.Header>
+    return ((_.isEmpty(userGivingGoalDetails)) ? null
+        : (
+            <Table padded unstackable className="no-border-table">
+                <Table.Header>
+                    <Table.Row>
+                        <Table.HeaderCell>Year</Table.HeaderCell>
+                        <Table.HeaderCell>Goal Amount</Table.HeaderCell>
+                    </Table.Row>
+                </Table.Header>
 
-            <Table.Body>
-                {
-                    renderTableData()
-                }                    
-            </Table.Body>
-        </Table>
+                <Table.Body>
+                    {
+                        renderTableData()
+                    }                    
+                </Table.Body>
+            </Table>
+        )
     );
 }
 export default GivingGoalsTable;

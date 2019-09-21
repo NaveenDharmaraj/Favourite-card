@@ -70,9 +70,14 @@ class Activity extends React.Component {
             groupActivities: {
                 data,
             },
+            groupDetails: {
+                attributes: {
+                    isMember,
+                },
+            },
             userInfo: {
                 id: userId,
-            }
+            },
         } = this.props;
         return (
             data.map((activity) => (
@@ -87,7 +92,7 @@ class Activity extends React.Component {
                     createdAt={activity.attributes.createdAt}
                     commentsCount={activity.attributes.commentsCount}
                     commentsLink={activity.relationships.comments.links.related}
-                    canReply
+                    canReply={isMember}
                     type={activity.type}
                     userId={userId}
                 />
@@ -134,6 +139,11 @@ class Activity extends React.Component {
                 data,
                 nextLink: activitiesLink,
             },
+            groupDetails: {
+                attributes: {
+                    isMember,
+                },
+            },
         } = this.props;
         const {
             commentText,
@@ -145,30 +155,34 @@ class Activity extends React.Component {
                 <Grid centered>
                     <Grid.Row>
                         <Grid.Column mobile={16} tablet={14} computer={14}>
-                            <Grid>
-                                <Grid.Row>
-                                    <Grid.Column mobile={16} tablet={14} computer={14}>
-                                        <div className="two-icon-brdr-btm-input">
-                                            <Input
-                                                value={commentText}
-                                                onChange={this.updateInputValue}
-                                                type="text"
-                                                placeholder="Write a post..."
-                                                action
-                                                fluid
-                                            />
-                                        </div>
-                                    </Grid.Column>
-                                    <Grid.Column mobile={16} tablet={2} computer={2}>
-                                        <Button
-                                            onClick={this.postComment}
-                                            className="blue-bordr-btn-round-def c-small"
-                                        >
-                                        Post
-                                        </Button>
-                                    </Grid.Column>
-                                </Grid.Row>
-                            </Grid>
+                            {isMember
+                            && (
+                                <Grid>
+                                    <Grid.Row>
+                                        <Grid.Column mobile={16} tablet={14} computer={14}>
+                                            <div className="two-icon-brdr-btm-input">
+                                                <Input
+                                                    value={commentText}
+                                                    onChange={this.updateInputValue}
+                                                    type="text"
+                                                    placeholder="Write a post..."
+                                                    action
+                                                    fluid
+                                                />
+                                            </div>
+                                        </Grid.Column>
+                                        <Grid.Column mobile={16} tablet={2} computer={2}>
+                                            <Button
+                                                onClick={this.postComment}
+                                                className="blue-bordr-btn-round-def c-small"
+                                            >
+                                            Post
+                                            </Button>
+                                        </Grid.Column>
+                                    </Grid.Row>
+                                </Grid>
+                            )
+                            }
                             <div className="c-comment">
                                 <Comment.Group fluid>
                                     {this.getComments()}
@@ -230,6 +244,7 @@ function mapStateToProps(state) {
     return {
         commentsLoader: state.group.showPlaceholder,
         groupActivities: state.group.groupActivities,
+        groupDetails: state.group.groupDetails,
         userInfo: state.user.info,
     };
 }

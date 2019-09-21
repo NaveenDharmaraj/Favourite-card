@@ -54,28 +54,31 @@ function AllocationsTable(props) {
         }
         return tableBody;
     };
-    return (
-        <div className="responsiveTable">
-            <Table padded unstackable className="no-border-table">
-                <Table.Header>
-                    <Table.Row>
-                        <Table.HeaderCell>Recipient </Table.HeaderCell>
-                        <Table.HeaderCell>Amount</Table.HeaderCell>
-                        <Table.HeaderCell>Day of month</Table.HeaderCell>
-                        <Table.HeaderCell>Credit Card</Table.HeaderCell>
-                        <Table.HeaderCell className="w-120">Created</Table.HeaderCell>
-                        <Table.HeaderCell>Action</Table.HeaderCell>
-                    </Table.Row>
-                </Table.Header>
-                {(monthlyTransactionApiCall === undefined || false) ? (<PlaceholderGrid row={2} column={6} placeholderType="table" />) : (
-                    <Table.Body>
-                        {
-                            renderTableData()
-                        }
-                    </Table.Body>)
-                }
-            </Table>
-        </div>
+    return ((_.isEmpty(upcomingTransactions)) ? null
+        : (
+            <div className="responsiveTable">
+                <Table padded unstackable className="no-border-table">
+                    <Table.Header>
+                        <Table.Row>
+                            <Table.HeaderCell>Recipient </Table.HeaderCell>
+                            <Table.HeaderCell>Amount</Table.HeaderCell>
+                            <Table.HeaderCell>Day of month</Table.HeaderCell>
+                            <Table.HeaderCell>Credit Card</Table.HeaderCell>
+                            <Table.HeaderCell className="w-120">Created</Table.HeaderCell>
+                            <Table.HeaderCell>Action</Table.HeaderCell>
+                        </Table.Row>
+                    </Table.Header>
+                    {(monthlyTransactionApiCall === undefined || false) ? (<PlaceholderGrid row={2} column={6} placeholderType="table" />) : (
+                        <Table.Body>
+                            {
+                                renderTableData()
+                            }
+                        </Table.Body>)
+                    }
+                </Table>
+            </div>
+        )
+
     );
 }
 export default withTranslation()(AllocationsTable);

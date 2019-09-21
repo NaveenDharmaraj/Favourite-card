@@ -61,7 +61,7 @@ class LeaveModal extends React.Component {
                         </Link>
                         : (
                             <Button 
-                                className="blue-btn-rounded-def c-small" 
+                                className="danger-btn-rounded-def c-small" 
                                 onClick={() => callLeaveGroup(id)} >
                                 Leave Group
                             </Button>

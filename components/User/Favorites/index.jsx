@@ -30,6 +30,7 @@ import groupImg from '../../../static/images/no-data-avatar-giving-group-profile
 import PlaceholderGrid from '../../shared/PlaceHolder';
 import { Link } from '../../../routes';
 import { dismissAllUxCritialErrors } from '../../../actions/error';
+import { renderText } from '../../../helpers/utils';
 import noDataggFavourites from '../../../static/images/favourites_nodata_illustration.png';
 
 class Favorites extends React.Component {
@@ -141,6 +142,7 @@ class Favorites extends React.Component {
                     slug,
                 } = data.attributes;
                 let displayAvatar = groupImg;
+                const shortName = renderText(name, 3);
                 let route = 'groups';
                 let heading = 'giving group';
                 if (type === 'charity') {
@@ -154,7 +156,7 @@ class Favorites extends React.Component {
                     <Grid.Column key={index}>
                         <Card className="left-img-card" fluid>
                             <Card.Header>
-                                <Grid verticalAlign="middle">
+                                <Grid>
                                     <Grid.Column width={6}>
                                         <Image src={displayAvatar} />
                                     </Grid.Column>
@@ -162,13 +164,13 @@ class Favorites extends React.Component {
                                         <div className="">
                                             <Header as="h4">
                                                 <Header.Content>
-                                                    <Header.Subheader className="chimp-lbl group">
+                                                    <Header.Subheader className={`chimp-lbl ${type}`}>
                                                         {heading}
                                                         <span className="more-icon">
                                                             <Icon name="heart" disabled={this.props.disableFavorites} onClick={() => this.callRemoveFav(entityId, type)} />
                                                         </span>
                                                     </Header.Subheader>
-                                                    {name}
+                                                    {shortName}
                                                 </Header.Content>
                                             </Header>
                                             <Link className="lnkChange" route={`/${route}/${slug}`}>

@@ -35,7 +35,16 @@ const DonationDetails = (props) => {
         },
     } = props;
     const lastDonationDay = distanceOfTimeInWords(lastDonationAt);
+    let fundRaisingDuration = '';
     const daysText = (fundraisingDaysRemaining && fundraisingDaysRemaining > 1) ? ' days left' : ' day left';
+    if (fundraisingDaysRemaining !== null) {
+        fundRaisingDuration = (
+            <span className="badge white right">
+                {fundraisingDaysRemaining}
+                {daysText}
+            </span>
+        );
+    }
     return (
         <Container>
             <div className="profile-info-card giving">
@@ -44,13 +53,7 @@ const DonationDetails = (props) => {
                         <Grid.Column mobile={16} tablet={6} computer={6}>
                             <Header as="h2">
                                 {formatCurrency(totalMoneyRaised, language, currency)}
-                                {fundraisingDaysRemaining
-                                    && (
-                                        <span className="badge white right">
-                                            {fundraisingDaysRemaining}
-                                            {daysText}
-                                        </span>
-                                    )}
+                                {fundRaisingDuration}
                                 <Header.Subheader className="small" style={{ marginTop: '.7rem' }}>
                                     {`raised of 
                                     ${formatCurrency(goal, language, currency)}

@@ -62,7 +62,6 @@ const NavBarMobile = ({
         accountUrl = `${RAILS_APP_URL_ORIGIN}/beneficiaries/${slug}/info`;
         isExternal = true;
     }
-    console.log('isExternam ->>>>', isExternal);
     return (
         <Sidebar.Pushable className="c-m-login-header">
             <Sidebar
@@ -78,9 +77,7 @@ const NavBarMobile = ({
                             <Image avatar src={avatar}/>
                             <List.Content>
                                 <div className="name">
-                                    {formatMessage('name', {
-                                                name,
-                                    })}
+                                    {name}
                                 </div>
                                 <div className="iconWraper smo-d-none">
                                     <a href="#" className="new"><Image src={notificationIcon}/></a>
