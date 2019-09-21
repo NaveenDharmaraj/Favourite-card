@@ -127,7 +127,7 @@ class LandingPageTaxReceipt extends React.Component {
                                                 {
                                                     isSelectPhotoModalOpen && (
                                                         <ModalComponent
-                                                            name='Add new tax recipt recipient'
+                                                            name='Add new tax receipt recipient'
                                                             isSelectPhotoModalOpen={isSelectPhotoModalOpen}
                                                             dispatch={dispatch}
                                                             taxReceipt={intializeFormData}
