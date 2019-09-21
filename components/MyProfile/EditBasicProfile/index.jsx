@@ -5,6 +5,8 @@ import {
     Button,
     Form,
     Grid,
+    Popup,
+    Icon,
 } from 'semantic-ui-react';
 import {
     connect,
@@ -340,15 +342,14 @@ class EditBasicProfile extends React.Component {
                                 value={location}
                             />
                             <Form.Field>
-                                <label>
+                            <label>
                                     Set Giving Goal
                                     <PrivacySetting
                                         columnName={privacyColumn}
                                         columnValue={userData.giving_goal_visibility}
                                     />
                                 </label>
-                                <Form.Field>
-                                    <Popup
+                            <Popup
                                         content="Set a personal goal for the dollars you want to commit for giving. Reach your goal by adding money to your account."
                                         position="top center"
                                         trigger={
@@ -359,6 +360,9 @@ class EditBasicProfile extends React.Component {
                                             />
                                         }
                                     />
+                                
+                                <Form.Field>
+                                    
                                     <Form.Input
                                         placeholder="Giving Goal"
                                         id="givingGoal"
