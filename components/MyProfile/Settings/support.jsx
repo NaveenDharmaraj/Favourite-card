@@ -18,32 +18,36 @@ class Support extends React.Component {
                         <Header as="h4">Support </Header>
                     </div>
                     <div className="settingsDetailWraper brdr-btm pb-2">
-                        <p className="bold">Chat with us </p>
+                        <p className="bold">Live chat</p>
                         <p>
                             Chat live with a client success team member.
-                            Our team is available from Monday to Friday,
-                            9:00am to 5:00pm (Pacific Time)
+                            Our team is available from Monday to Friday, 9am to 5pm (Pacific Time)
                         </p>
                         <Button
                             className="success-btn-rounded-def"
                             onClick={this.handleStartChatClick}
                         >
-                            Start chat
+                            Message
                         </Button>
                     </div>
                     <div className="settingsDetailWraper brdr-btm pb-2">
                         <p className="bold">Help Centre</p>
                         <p>
-                            We have more than 90 articles in our
-                            <span className="link border">Help Centre</span>
-                            to help you to find answers.
+                            Our 
+                            {' '}
+                            <a href="https://help.chimp.net/" target="_blank">Help Centre</a>
+                            {' '}
+                            has answers to common questions.
                         </p>
                     </div>
                     <div className="settingsDetailWraper brdr-btm pb-2">
                         <p className="bold">Contact Us</p>
                         <p>
-                            <span className="link border">Check out</span>
-                            our available services.
+                            <p>
+                            Phone: 1-877-531-0580
+                                <br />
+                            Monday to Friday, 9am to 5pm (Pacific Time)
+                            </p>
                         </p>
                     </div>
                 </div>

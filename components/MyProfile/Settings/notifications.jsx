@@ -71,8 +71,8 @@ class Notifications extends React.Component {
                         <Header as="h4">Notifications </Header>
                         <p>
                             We’ll send you notifications about your Charitable Impact Giving Account
-                            and updates from your CHIMP network,
-                            so you can make the most of your CHIMP account.
+                            and updates from your Charitable Impact network,
+                            so you can make the most of your Charitable Impact account.
                         </p>
                     </div>
                     <div className="settingsDetailWraper">

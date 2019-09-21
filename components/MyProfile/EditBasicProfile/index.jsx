@@ -342,14 +342,9 @@ class EditBasicProfile extends React.Component {
                                 value={location}
                             />
                             <Form.Field>
-                            <label>
-                                    Set Giving Goal
-                                    <PrivacySetting
-                                        columnName={privacyColumn}
-                                        columnValue={userData.giving_goal_visibility}
-                                    />
-                                </label>
-                            <Popup
+                                <label>
+                                    Set Giving Goal{' '}
+                                    <Popup
                                         content="Set a personal goal for the dollars you want to commit for giving. Reach your goal by adding money to your account."
                                         position="top center"
                                         trigger={
@@ -360,6 +355,11 @@ class EditBasicProfile extends React.Component {
                                             />
                                         }
                                     />
+                                    <PrivacySetting
+                                        columnName={privacyColumn}
+                                        columnValue={userData.giving_goal_visibility}
+                                    />
+                                </label>
                                 
                                 <Form.Field>
                                     
@@ -386,9 +386,9 @@ class EditBasicProfile extends React.Component {
 
                             </Form.Field>
                             <Form.Field>
+                                <Button basic size="tiny" onClick={() => this.handleAmount(100)}>$100</Button>
                                 <Button basic size="tiny" onClick={() => this.handleAmount(500)}>$500</Button>
-                                <Button basic size="tiny" onClick={() => this.handleAmount(1000)}>$1000</Button>
-                                <Button basic size="tiny" onClick={() => this.handleAmount(1500)}>$1500</Button>
+                                <Button basic size="tiny" onClick={() => this.handleAmount(1000)}>$1,000</Button>
                             </Form.Field>                            
                             <div className="pt-2">
                                 <Button

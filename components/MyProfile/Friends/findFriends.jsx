@@ -125,7 +125,7 @@ class FindFriends extends React.Component {
         const {
             userFindFriendsList,
         } = this.props;
-        let friendsList = 'No Data';
+        let friendsList = '';
         if (!_.isEmpty(userFindFriendsList)) {
             friendsList = userFindFriendsList.data.map((data) => {
                 const name = `${data.attributes.first_name} ${data.attributes.last_name}`;

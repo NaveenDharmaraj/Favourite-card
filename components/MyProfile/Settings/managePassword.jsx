@@ -146,7 +146,7 @@ class ManagePassword extends React.Component {
             <div className="remove-gutter">
                 <div className="userSettingsContainer">
                     <div className="settingsDetailWraper heading brdr-btm pb-1">
-                        <Header as="h4">Manage Password </Header>
+                        <Header as="h4">Change password </Header>
                     </div>
                     <div className="mt-2">
                         <div>

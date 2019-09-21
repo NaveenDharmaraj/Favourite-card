@@ -19,10 +19,10 @@ import Legal from './legal';
 const panes1 = [
     {
         menuItem: {
-            content: 'Change Password',
+            content: 'Change password',
             icon: 'edit',
             iconPosition: 'left',
-            key: 'Change Password',
+            key: 'Change password',
         },
         render: () => {
             return (
@@ -47,10 +47,10 @@ const panes1 = [
     },
     {
         menuItem: {
-            content: 'Privacy & Security',
+            content: 'Privacy and security',
             icon: 'privacy',
             iconPosition: 'left',
-            key: 'Privacy & Security',
+            key: 'Privacy and security',
         },
         render: () => (
             <Tab.Pane>
@@ -60,10 +60,10 @@ const panes1 = [
     },
     {
         menuItem: {
-            content: 'Payment Methods',
+            content: 'Payment methods',
             icon: 'credit',
             iconPosition: 'left',
-            key: 'Payment Methods',
+            key: 'Payment methods',
         },
         render: () => (
             <Tab.Pane>
