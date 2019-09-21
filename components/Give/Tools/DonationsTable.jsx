@@ -56,27 +56,29 @@ function DonationsTable(props) {
         }
         return tableBody;
     };
-    return (
-        <div className="responsiveTable">
-            <Table padded unstackable className="no-border-table">
-                <Table.Header>
-                    <Table.Row>
-                        <Table.HeaderCell>Credit Card </Table.HeaderCell>
-                        <Table.HeaderCell>Amount</Table.HeaderCell>
-                        <Table.HeaderCell>Day of month</Table.HeaderCell>
-                        <Table.HeaderCell>Matched By</Table.HeaderCell>
-                        <Table.HeaderCell className="w-120">Created</Table.HeaderCell>
-                        <Table.HeaderCell>Action</Table.HeaderCell>
-                    </Table.Row>
-                </Table.Header>
-                {(monthlyTransactionApiCall === undefined || false) ? (<PlaceholderGrid row={2} column={6} placeholderType="table" />) : (<Table.Body>
-                    {
-                        renderTableData()
+    return ((_.isEmpty(upcomingTransactions)) ? null
+        : (
+            <div className="responsiveTable">
+                <Table padded unstackable className="no-border-table">
+                    <Table.Header>
+                        <Table.Row>
+                            <Table.HeaderCell>Credit Card </Table.HeaderCell>
+                            <Table.HeaderCell>Amount</Table.HeaderCell>
+                            <Table.HeaderCell>Day of month</Table.HeaderCell>
+                            <Table.HeaderCell>Matched By</Table.HeaderCell>
+                            <Table.HeaderCell className="w-120">Created</Table.HeaderCell>
+                            <Table.HeaderCell>Action</Table.HeaderCell>
+                        </Table.Row>
+                    </Table.Header>
+                    {(monthlyTransactionApiCall === undefined || false) ? (<PlaceholderGrid row={2} column={6} placeholderType="table" />) : (<Table.Body>
+                        {
+                            renderTableData()
+                        }
+                    </Table.Body>) 
                     }
-                </Table.Body>) 
-                }
-            </Table>
-        </div>
+                </Table>
+            </div>
+        )
     );
 }
 export default withTranslation()(DonationsTable);

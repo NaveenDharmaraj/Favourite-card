@@ -21,7 +21,7 @@ function FinalStep(props) {
     } = props;
     return (
         <Fragment>
-            <Grid.Column className="left-bg"></Grid.Column>
+            <Grid.Column className="left-bg"><div></div></Grid.Column>
             <Grid.Column>
                 <div className="login-form-wraper">
                     <div className="reg-header">

@@ -22,8 +22,10 @@ function FirstStep(props) {
     } = props;
 
     return (
-        <Grid.Row>
-            <Grid.Column className="left-bg"></Grid.Column>
+        <Grid.Row stretched>
+            <Grid.Column className="left-bg">
+                <div></div>
+            </Grid.Column>
             <Grid.Column>
                 <div className="login-form-wraper">
                     <div className="reg-header">

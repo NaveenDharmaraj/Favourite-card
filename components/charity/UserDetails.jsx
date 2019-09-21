@@ -45,7 +45,8 @@ const createUserDetails = (valuesObject) => {
             name: 'linkify',
         },
         {
-            Content: valuesObject.staffCount,
+            Content: (valuesObject.staffCount && valuesObject.staffCount > 0)
+                ? valuesObject.staffCount : null,
             name: 'users',
         },
         {
@@ -189,7 +190,7 @@ class UserDetails extends React.Component {
                             </Grid.Row>
                         </Grid>
                         <p className="mt-1">
-                        *Is this your chariy? You can claim your free profile page on your platform
+                        *Is this your charity? You can claim your free profile page on your platform
                             <a href="https://help.chimp.net/article/83-claiming-and-accessing-your-chimp-charity-account"> by following these steps</a>
                         </p>
                     </div>

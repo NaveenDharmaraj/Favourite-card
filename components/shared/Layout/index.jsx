@@ -15,7 +15,7 @@ import ManiFestFile from '../../../static/Manifest.json';
 import { NotificationHelper } from "../../../Firebase/NotificationHelper";
 import ErrorBoundary from '../ErrorBoundary';
 import StatusMessage from '../StatusMessage';
-
+import _ from 'lodash';
 import '../../../static/less/header.less';
 import '../../../static/less/style.less';
 
@@ -117,7 +117,7 @@ class Layout extends React.Component {
                                 {children}
                             </MobileHeader>
                         </Responsive>
-                        <Responsive minWidth={Responsive.onlyTablet.minWidth}>
+                        <Responsive minWidth={992}>
                             <Header isAuthenticated={isAuthenticated} onBoarding={onBoarding} />
                                 {!_.isEmpty(appErrors) &&
                                     <Container
