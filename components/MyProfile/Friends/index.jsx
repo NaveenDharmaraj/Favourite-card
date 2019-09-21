@@ -104,11 +104,9 @@ class Friends extends React.Component {
                                     <Icon name="settings" />
                                         Find friends and give together
                                     <Header.Subheader className="mb-1">
-                                        Give the gift of charitable dollars!
-                                        From birthday gifts to children’s allowances…
-                                        to gifts sent ‘just because.’
-                                        Rally friends and family to give with you
-                                        and create change together.
+                                        Send your friends charitable dollars that they can give away,
+                                        give together in Giving Groups and share messages and
+                                        encouragement that inspires them to give.
                                     </Header.Subheader>
                                     <Modal
                                         className="chimp-modal"

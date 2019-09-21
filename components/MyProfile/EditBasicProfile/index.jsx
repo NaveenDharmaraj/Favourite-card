@@ -312,7 +312,7 @@ class EditBasicProfile extends React.Component {
                             </Form.Group>
                             <Form.Field>
                                 <Form.TextArea
-                                    label="About"
+                                    label="Bio"
                                     placeholder="Tell us a bit about yourself..."
                                     id="about"
                                     name="about"
@@ -348,6 +348,17 @@ class EditBasicProfile extends React.Component {
                                     />
                                 </label>
                                 <Form.Field>
+                                    <Popup
+                                        content="Set a personal goal for the dollars you want to commit for giving. Reach your goal by adding money to your account."
+                                        position="top center"
+                                        trigger={
+                                            <Icon
+                                                color="blue"
+                                                name="question circle"
+                                                size="large"
+                                            />
+                                        }
+                                    />
                                     <Form.Input
                                         placeholder="Giving Goal"
                                         id="givingGoal"

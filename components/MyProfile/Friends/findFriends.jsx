@@ -196,7 +196,7 @@ class FindFriends extends React.Component {
                         <div className="searchbox no-padd">
                             <Input
                                 fluid
-                                placeholder="Find friends on Charitable Impact..."
+                                placeholder="Find friends already on Charitable Impact"
                                 onChange={this.handleInputChange}
                                 value={searchWord}
                                 onKeyPress={(event) => { (event.keyCode || event.which) === 13 ? this.handleFriendSearch() : null; }}

@@ -147,7 +147,6 @@ class ManagePassword extends React.Component {
                 <div className="userSettingsContainer">
                     <div className="settingsDetailWraper heading brdr-btm pb-1">
                         <Header as="h4">Manage Password </Header>
-                        <p>Set your new Charitable Impact account password</p>
                     </div>
                     <div className="mt-2">
                         <div>

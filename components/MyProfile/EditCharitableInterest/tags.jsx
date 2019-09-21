@@ -272,7 +272,7 @@ class MyTags extends React.Component {
                                 <div className="pb-3 searchbox no-padd">
                                     <Input
                                         className="searchInput"
-                                        placeholder="Search..."
+                                        placeholder="Search related tags"
                                         onChange={this.handleInputChange}
                                         fluid
                                         onKeyPress={(event) => { (event.keyCode || event.which) === 13 ? this.handleTagsSearch() : null; }}
@@ -298,7 +298,7 @@ class MyTags extends React.Component {
                         {this.renderTags(userTagsFollowedList)}
                     </div>
                     <div className="pt-2">
-                        <p className="mb-1-2"><strong>Recommended tags to follow</strong></p>
+                        <p className="mb-1-2"><strong>Related tags to follow</strong></p>
                         <p className="mb-2">Tags can refine the charities and Giving Groups discovered for you. </p>
                         {this.renderRecommendedTags()}
                     </div>
