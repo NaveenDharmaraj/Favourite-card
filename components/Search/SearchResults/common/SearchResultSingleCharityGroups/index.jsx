@@ -84,15 +84,16 @@ class SearchResultSingleCharityGroups extends React.Component {
                     displayAvatar = placeholderGroup;
                 }
                 displayAvatar = (!_isEmpty(avatar)) ? avatar : displayAvatar;
+                const headingClass = (type.toLowerCase() === 'group') ? 'search-result-single groups' : 'search-result-single charities';
                 return (
-                    <div className="search-result-single charities">
+                    <div className={headingClass}>
                         <Grid stackable>
                             <Grid.Row stretched key={i}>
                                 <Grid.Column mobile={16} tablet={5} computer={5}>
                                     {/* <Image src={displayAvatar} className="search-left-img" /> */}
                                     <div className="leftSideImage" style={{backgroundImage:`url(${displayAvatar})`}}></div>
                                 </Grid.Column>
-                                <Grid.Column mobile={16} tablet={7} computer={8} verticalAlign="top">
+                                <Grid.Column mobile={16} tablet={7} computer={8} verticalAlign="middle">
                                     <div className=" description">
                                         <Header as="h4">
                                             {name}

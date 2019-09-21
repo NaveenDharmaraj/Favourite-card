@@ -71,8 +71,8 @@ class SearchResultGroups extends React.Component {
                     }}
                     >
                         {(_isEmpty(searchWord) && !isAuthenticated) ? null : (
-                            <Grid.Column mobile={11} tablet={12} computer={12}>
-                                <Header as='h2'>
+                            <Grid.Column mobile={11} tablet={12} computer={12} className="groups exploreHeader">
+                                <Header as='h2' className="searchResultTabHeader">
                                     <Header.Content>
                                     GIVING GROUPS
                                         <span className="num-result font-s-20">
