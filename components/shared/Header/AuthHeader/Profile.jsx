@@ -68,7 +68,7 @@ class Profile extends React.Component {
         } = this.props;
         const formatMessage = this.props.t;
         let accountSettingsText = formatMessage('accountSettings');
-        let accountUrl = `/user/profile`;
+        let accountUrl = `/user/profile/basic`;
         if (accountType === 'company') {
             accountSettingsText = formatMessage('companyAccountSettings');
             accountUrl = `${RAILS_APP_URL_ORIGIN}/companies/${slug}/edit`;

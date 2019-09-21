@@ -13,9 +13,6 @@ import {
     getUser,
     savePaymentInstrument,
 } from './user';
-import {
-    logout,
-} from './auth';
 
 // eslint-disable-next-line import/exports-last
 export const actionTypes = {
@@ -37,6 +34,7 @@ export const actionTypes = {
     USER_PROFILE_CAUSES: 'USER_PROFILE_CAUSES',
     USER_PROFILE_CHARITABLE_INTERESTS: 'USER_PROFILE_CHARITABLE_INTERESTS',
     USER_PROFILE_CREDIT_CARDS: 'USER_PROFILE_CREDIT_CARDS',
+    USER_PROFILE_DEFAULT_TAX_RECEIPT: 'USER_PROFILE_DEFAULT_TAX_RECEIPT',
     USER_PROFILE_FAVOURITES: 'USER_PROFILE_FAVOURITES',
     USER_PROFILE_FIND_FRIENDS: 'USER_PROFILE_FIND_FRIENDS',
     USER_PROFILE_FIND_TAGS: 'USER_PROFILE_FIND_TAGS',
@@ -47,6 +45,7 @@ export const actionTypes = {
     USER_PROFILE_MEMBER_GROUP: 'USER_PROFILE_MEMBER_GROUP',
     USER_PROFILE_MY_FRIENDS: 'USER_PROFILE_MY_FRIENDS',
     USER_PROFILE_RECOMMENDED_TAGS: 'USER_PROFILE_RECOMMENDED_TAGS',
+    USER_PROFILE_TAX_RECEIPTS: 'USER_PROFILE_TAX_RECEIPTS',
     USER_PROFILE_UNBLOCK_FRIEND: 'USER_PROFILE_UNBLOCK_FRIEND',
 };
 
@@ -335,10 +334,10 @@ const getMyCreditCards = (dispatch, userId, pageNumber) => {
         },
         type: actionTypes.USER_PROFILE_CREDIT_CARDS,
     };
-    return coreApi.get(`/users/${Number(userId)}/activePaymentInstruments?page[number]=${pageNumber}&page[size]=10`).then(
+    return coreApi.get(`/users/${Number(userId)}/activePaymentInstruments?page[number]=${pageNumber}&page[size]=10&sort=-default`).then(
         (result) => {
             fsa.payload = {
-                count: result.meta.pageCount,
+                count: result.meta.recordCount,
                 data: result.data,
                 pageCount: result.meta.pageCount,
             };
@@ -408,7 +407,6 @@ const sendFriendRequest = (dispatch, sourceUserId, destinationEmailId, searchWor
     };
     return eventApi.post(`/event`, bodyData).then(
         (result) => {
-            console.log(result);
             fsa.payload = {
                 data: result.data,
             };
@@ -490,26 +488,17 @@ const unblockFriend = (dispatch, sourceUserId, destinationUserId) => {
     });
 };
 
-const saveCharitableInterests = (dispatch, userId, userCauses, userTags) => {
+const saveCharitableCauses = (dispatch, userId, userCauses) => {
     const fsaCauses = {
         payload: {
         },
         type: actionTypes.UPDATE_USER_CHARITY_CAUSES,
     };
-    const fsaTags = {
-        payload: {
-        },
-        type: actionTypes.UPDATE_USER_CHARITY_TAGS,
-    };
     const bodyDataCauses = {
         causes: userCauses,
         userid: Number(userId),
     };
-    const bodyDataTags = {
-        tags: userTags,
-        userid: Number(userId),
-    };
-    graphApi.patch(`/user/updatecauses`, bodyDataCauses).then(
+    return graphApi.patch(`/user/updatecauses`, bodyDataCauses).then(
         (result) => {
             fsaCauses.payload = {
                 data: result.data,
@@ -521,7 +510,19 @@ const saveCharitableInterests = (dispatch, userId, userCauses, userTags) => {
     }).finally(() => {
         dispatch(fsaCauses);
     });
-    graphApi.patch(`/user/updatetags`, bodyDataTags).then(
+};
+
+const saveCharitableTags = (dispatch, userId, userTags) => {
+    const fsaTags = {
+        payload: {
+        },
+        type: actionTypes.UPDATE_USER_CHARITY_TAGS,
+    };
+    const bodyDataTags = {
+        tags: userTags,
+        userid: Number(userId),
+    };
+    return graphApi.patch(`/user/updatetags`, bodyDataTags).then(
         (result) => {
             fsaTags.payload = {
                 data: result.data,
@@ -666,7 +667,6 @@ const userResetPassword = (dispatch, userData) => {
         auth_user_id: userData.authId,
         password: userData.password,
     };
-    let isPasswordChanged = true;
     return securityApi.post('/user/changepassword', bodyData).then(
         (result) => {
             fsa.payload = {
@@ -674,13 +674,9 @@ const userResetPassword = (dispatch, userData) => {
             };
         },
     ).catch((error) => {
-        isPasswordChanged = false;
         fsa.error = error;
     }).finally(() => {
         dispatch(fsa);
-        if(isPasswordChanged) {
-            logout();
-        }
     });
 };
 
@@ -719,7 +715,29 @@ const updateUserPreferences = (dispatch, userId, preferenceColumn, preferenceVal
         type: actionTypes.UPDATE_USER_PREFERENCES,
     };
     const dataName = {};
-    dataName[preferenceColumn] = preferenceValue;
+    if (preferenceColumn === 'charities_share_my_name') {
+        dataName.charities_share_my_name_address = false;
+        dataName.charities_share_my_name_email = false;
+        dataName[preferenceColumn] = preferenceValue;
+    } else if (preferenceColumn === 'charities_share_my_name_address') {
+        dataName.charities_share_my_name = false;
+        dataName.charities_share_my_name_email = false;
+        dataName[preferenceColumn] = preferenceValue;
+    } else if (preferenceColumn === 'charities_share_my_name_email') {
+        dataName.charities_share_my_name_address = false;
+        dataName.charities_share_my_name = false;
+        dataName[preferenceColumn] = preferenceValue;
+    } else if (preferenceColumn === 'charities_dont_share' && preferenceValue === false) {
+        dataName.charities_share_my_name_address = false;
+        dataName.charities_share_my_name = false;
+        dataName.charities_share_my_name_email = false;
+    } else if (preferenceColumn === 'charities_dont_share' && preferenceValue === true) {
+        dataName.charities_share_my_name_address = false;
+        dataName.charities_share_my_name = true;
+        dataName.charities_share_my_name_email = false;
+    } else {
+        dataName[preferenceColumn] = preferenceValue;
+    }
     const bodyData = {
         data: {
             attributes: {
@@ -735,6 +753,25 @@ const updateUserPreferences = (dispatch, userId, preferenceColumn, preferenceVal
                 data: result.data,
             };
             getUser(dispatch, userId, null);
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    });
+};
+
+const getUserDefaultTaxReceipt = (dispatch, userid) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.USER_PROFILE_DEFAULT_TAX_RECEIPT,
+    };
+    return coreApi.get(`/users/${Number(userid)}/defaultTaxReceiptProfile`).then(
+        (result) => {
+            fsa.payload = {
+                data: result.data,
+            };
         },
     ).catch((error) => {
         fsa.error = error;
@@ -760,7 +797,8 @@ export {
     getMyCreditCards,
     getTagsByText,
     saveUserBasicProfile,
-    saveCharitableInterests,
+    saveCharitableCauses,
+    saveCharitableTags,
     sendFriendRequest,
     acceptFriendRequest,
     unblockFriend,
@@ -771,4 +809,5 @@ export {
     userResetPassword,
     savePrivacySetting,
     updateUserPreferences,
+    getUserDefaultTaxReceipt,
 };

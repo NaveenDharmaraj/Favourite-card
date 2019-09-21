@@ -142,6 +142,9 @@ class FindFriends extends React.Component {
                     friendStatus = 'Message';
                     btnData = 'message';
                     btnClass = 'blue-btn-rounded-def c-small';
+                } else if (data.attributes.friend_status.toLowerCase() === 'pending_out') {
+                    friendStatus = 'Pending';
+                    btnData = 'pendingout';
                 } else {
                     friendStatus = 'Accept';
                     btnData = 'accept';
