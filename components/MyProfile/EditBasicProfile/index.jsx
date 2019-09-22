@@ -315,7 +315,7 @@ class EditBasicProfile extends React.Component {
                             <Form.Field>
                                 <Form.TextArea
                                     label="Bio"
-                                    placeholder="Tell us a bit about yourself..."
+                                    placeholder="Tell us about yourself"
                                     id="about"
                                     name="about"
                                     maxLength="1000"
