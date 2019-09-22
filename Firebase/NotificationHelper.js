@@ -83,11 +83,11 @@ class NotificationHelper {
 
     static async acceptFriendRequest(userInfo, dispatch, msgData) {
         let requestData = ACCEPT_FREIND_PAYLOAD;
-        requestData.attributes.payload.sourceUserId = userInfo.id;
+        requestData.attributes.payload.sourceUserId = Number(userInfo.id);
         requestData.attributes.payload.destinationEmailId = msgData.sourceEmailId;
         requestData.attributes.payload.message = "Accepted.";
         requestData.attributes.payload.deepLink = msgData.link;
-        requestData.attributes.payload.linkedEventId = msgData.eventId;
+        requestData.attributes.payload.linkedEventId = msgData.id;
         await eventApi.post("/event", { data: requestData });
         await NotificationHelper.getMessages(userInfo, dispatch, NotificationHelper.currentPage);
     }

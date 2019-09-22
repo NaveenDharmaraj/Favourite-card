@@ -187,7 +187,9 @@ class NotificationWrapper extends React.Component {
                 break;
             }
             case "goToGivingGroup": {
-                Router.pushRoute("/");
+                let givingGroupSlug = ctaOptions['giving_group_slug'];
+                // Router.pushRoute("/give/to/group/" + givingGroupSlug);
+                Router.pushRoute("/groups/" + givingGroupSlug);
                 break;
             }
             case "sayCongrats": {
@@ -199,7 +201,8 @@ class NotificationWrapper extends React.Component {
                 break;
             }
             case "viewProfile": {
-                Router.pushRoute("/users/profile/{userId}");
+                let recipientUserId = ctaOptions['recipient_user_id'];
+                Router.pushRoute("/users/profile/" + recipientUserId);
                 break;
             }
         }
