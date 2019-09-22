@@ -138,7 +138,7 @@ class ManageGiving extends React.Component {
             <div className="remove-gutter">
                 <div className="userSettingsContainer">
                     <div className="settingsDetailWraper">
-                        <Header as="h4">Manage Giving </Header>
+                        <Header as="h4">Information to share </Header>
                         <p>
                             Choose the default options for information
                             you’d like to share when you send gifts.
@@ -213,10 +213,7 @@ class ManageGiving extends React.Component {
                                 </List.Content>
                                 <List.Content>
                                     <List.Description>
-                                        Share my name
-                                        (
                                         {userInfoEmail}
-                                        )
                                     </List.Description>
                                 </List.Content>
                             </List.Item>

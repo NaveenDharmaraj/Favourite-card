@@ -107,7 +107,7 @@ class MyCauses extends React.Component {
         return (
             <div>
                 <p className="mb-1-2">
-                    <strong>Charitable interests</strong>
+                    <strong>Causes you care about</strong>
                     <PrivacySetting
                         columnName={privacyColumn}
                         columnValue={causesVisible}

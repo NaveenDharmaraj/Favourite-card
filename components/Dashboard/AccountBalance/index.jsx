@@ -51,7 +51,7 @@ class AccountBalance extends React.Component {
                                                         <Header as="h2" className="txt-white">
                                                             <Header.Content>
                                                                 <Header.Subheader>
-                                                                        Impact Account Balance
+                                                                    Impact Account balance
                                                                 </Header.Subheader>
                                                                 {amount}
                                                             </Header.Content>
