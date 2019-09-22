@@ -69,11 +69,6 @@ class Notifications extends React.Component {
                 <div className="userSettingsContainer">
                     <div className="settingsDetailWraper no-border heading">
                         <Header as="h4">Notifications </Header>
-                        <p>
-                            We’ll send you notifications about your Charitable Impact Giving Account
-                            and updates from your Charitable Impact network,
-                            so you can make the most of your Charitable Impact account.
-                        </p>
                     </div>
                     <div className="settingsDetailWraper">
                         <p className="bold">On Charitable Impact</p>

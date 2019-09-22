@@ -190,7 +190,7 @@ class ManagePassword extends React.Component {
                                 )
                             }
                             <Form.Field>
-                                <label htmlFor="password">New Password</label>
+                                <label htmlFor="password">New password</label>
                                 <Form.Field
                                     control={Input}
                                     id="password"
@@ -198,7 +198,7 @@ class ManagePassword extends React.Component {
                                     type="password"
                                     value={_.isEmpty(password) ? '' : password}
                                     onChange={this.handleInputChange}
-                                    placeholder="New Password"
+                                    placeholder="New password"
                                 />
                             </Form.Field>
                             <p>
