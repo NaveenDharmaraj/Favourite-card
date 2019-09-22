@@ -389,10 +389,13 @@ class MyCreditCards extends React.Component {
     }
 
     handleDeleteClick(cardData, deletePaymentInstrumentId) {
+        var res = cardData.substr(0, cardData.indexOf("'")).length;
+        var result = cardData.slice(res + 2);
+        result = result.replace('with', 'in');
         this.setState({
             isDeleteMessageOpen: true,
             isDropdownOpen:false,
-            deleteConfirmCard: cardData,
+            deleteConfirmCard: result,
             deletePaymentInstrumentId,
         });
     }
@@ -622,11 +625,7 @@ class MyCreditCards extends React.Component {
                         <Grid.Column mobile={16} tablet={11} computer={11}>
                             <div className="userSettingsContainer">
                                 <div className="settingsDetailWraper">
-                                    <Header as="h4">Credit card </Header>
-                                    <p>
-                                        Add a new credit card to your account,
-                                        remove an old one or change details if necessary.
-                                    </p>
+                                    <Header as="h4">Payment methods </Header>
                                 </div>
                             </div>
                         </Grid.Column>
@@ -645,7 +644,7 @@ class MyCreditCards extends React.Component {
                                         >
                                             Add new card
                                         </Button>}>
-                                    <Modal.Header>Add a new credit card</Modal.Header>
+                                    <Modal.Header>Add new card</Modal.Header>
                                     <Modal.Content>
                                         <Modal.Description className="font-s-16">
                                             <Form>

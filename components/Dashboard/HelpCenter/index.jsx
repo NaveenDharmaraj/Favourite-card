@@ -18,13 +18,12 @@ class HelpCenter extends React.Component {
                             </Grid.Column>
                             <Grid.Column mobile={6} tablet={6} computer={6}>
                                 <Header as='h2' className="f-normal">
-                                    <span className="bold">Having problems?</span>
-                                        We can help.
-                                    <Header.Subheader>Visit our Help Centre. </Header.Subheader>
+                                    <span className="bold">Find answers to common questions.</span>
+                                    <Header.Subheader>Visit the Help Centre. </Header.Subheader>
                                 </Header>
                             </Grid.Column>
                             <Grid.Column mobile={6} tablet={4} computer={4}>
-                                <Button className="white-btn-round">Help Center</Button>
+                                <Button className="white-btn-round">Help Centre</Button>
                             </Grid.Column>
                         </Grid.Row>
                     </Grid>
