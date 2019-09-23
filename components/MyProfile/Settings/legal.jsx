@@ -2,6 +2,7 @@ import React from 'react';
 import {
     Header,
 } from 'semantic-ui-react';
+
 import { Link } from '../../../routes';
 
 // eslint-disable-next-line react/prefer-stateless-function
@@ -14,21 +15,39 @@ class Legal extends React.Component {
                         <Header as="h4">Legal </Header>
                     </div>
                     <div className="settingsDetailWraper brdr-btm pb-2">
-                        <p className="bold">Terms and Conditions of use</p>
+                        <p className="bold">Terms and conditions</p>
                         <p>
-                            Check out the
-                            <Link route='/terms' >
-                                <span className="link border"> Terms and Conditions of use.</span>
-                            </Link>
+                        See our
+                            <span className="link border">
+                                <a href="https://chimp.net/terms" target="_blank">
+                                    {' '}
+                                Terms and Conditions.
+                                </a>
+                            </span>
                         </p>
                     </div>
                     <div className="settingsDetailWraper brdr-btm pb-2">
                         <p className="bold">Privacy policy</p>
                         <p>
-                            Check out the
-                            <Link route='/privacy' >
-                                <span className="link border"> Privacy Policy.</span>
-                            </Link>
+                        See our
+                            <span className="link border">
+                                <a href="https://chimp.net/privacy" target="_blank">
+                                    {' '}
+                                    Privacy Policy.
+                                </a>
+                            </span>
+                        </p>
+                    </div>
+                    <div className="settingsDetailWraper brdr-btm pb-2">
+                        <p className="bold">Account Agreement</p>
+                        <p>
+                        See our
+                            <span className="link border">
+                                <a href="https://chimp.net/chimp-account-agreement" target="_blank">
+                                    {' '}
+                                    Account Agreement.
+                                </a>
+                            </span>
                         </p>
                     </div>
                 </div>

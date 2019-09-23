@@ -125,7 +125,7 @@ class FindFriends extends React.Component {
         const {
             userFindFriendsList,
         } = this.props;
-        let friendsList = 'No Data';
+        let friendsList = '';
         if (!_.isEmpty(userFindFriendsList)) {
             friendsList = userFindFriendsList.data.map((data) => {
                 const name = `${data.attributes.first_name} ${data.attributes.last_name}`;
@@ -142,6 +142,9 @@ class FindFriends extends React.Component {
                     friendStatus = 'Message';
                     btnData = 'message';
                     btnClass = 'blue-btn-rounded-def c-small';
+                } else if (data.attributes.friend_status.toLowerCase() === 'pending_out') {
+                    friendStatus = 'Pending';
+                    btnData = 'pendingout';
                 } else {
                     friendStatus = 'Accept';
                     btnData = 'accept';
@@ -193,7 +196,7 @@ class FindFriends extends React.Component {
                         <div className="searchbox no-padd">
                             <Input
                                 fluid
-                                placeholder="Find friends on Charitable Impact..."
+                                placeholder="Find friends already on Charitable Impact"
                                 onChange={this.handleInputChange}
                                 value={searchWord}
                                 onKeyPress={(event) => { (event.keyCode || event.which) === 13 ? this.handleFriendSearch() : null; }}

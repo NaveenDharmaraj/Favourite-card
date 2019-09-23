@@ -113,6 +113,12 @@ const userProfile = (state = {}, action) => {
                 newCreditCardApiCall: action.payload.newCreditCardApiCall,
             };
             break;
+        case 'USER_PROFILE_DEFAULT_TAX_RECEIPT':
+            newState = {
+                ...state,
+                userDefaultTaxReceipt: Object.assign({}, action.payload),
+            };
+            break;
         default:
             break;
     }

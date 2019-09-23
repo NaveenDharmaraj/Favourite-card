@@ -67,13 +67,8 @@ class Notifications extends React.Component {
         return (
             <div className="remove-gutter">
                 <div className="userSettingsContainer">
-                    <div className="settingsDetailWraper no-border heading">
-                        <Header as="h4">Notifications </Header>
-                        <p>
-                            We’ll send you notifications about your CHIMP Giving Account
-                            and updates from your CHIMP network,
-                            so you can make the most of your CHIMP account.
-                        </p>
+                    <div className="settingsDetailWraper heading">
+                        <Header as="h4" className="mb-0">Notifications </Header>
                     </div>
                     <div className="settingsDetailWraper">
                         <p className="bold">On Charitable Impact</p>

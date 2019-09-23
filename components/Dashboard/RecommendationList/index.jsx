@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import _ from 'lodash';
 import {
@@ -139,7 +140,7 @@ class RecommendationList extends React.Component {
         }
         return (
             <div className="pt-2">
-                <Grid  columns="equal" stackable doubling columns={3}>
+                <Grid columns="equal" stackable doubling columns={3}>
                     <Grid.Row>
                         {recommendationList}
                     </Grid.Row>
@@ -167,7 +168,6 @@ class RecommendationList extends React.Component {
                 </Link>
             );
         }
-        const count = 2;
         return (
             <div className="pt-2 pb-2">
                 <Container>
@@ -176,7 +176,8 @@ class RecommendationList extends React.Component {
                             <Grid.Column mobile={11} tablet={12} computer={12}>
                                 <Header as="h3">
                                     <Header.Content>
-                                    Discovered for you <span className="small">Suggestions based on your interests. </span>
+                                        Discovered for you
+                                        <span className="small">Suggestions based on your interests. </span>
                                     </Header.Content>
                                 </Header>
                             </Grid.Column>

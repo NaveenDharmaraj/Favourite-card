@@ -217,7 +217,7 @@ class PrivacySetting extends React.Component {
                         </List.Item>
                     </List>
                 </Popup.Content>
-                <div className="popup-footer">
+                <div className="popup-footer text-center">
                     <Button
                         size="tiny"
                         className="blue-btn-rounded-def"
