@@ -4,18 +4,20 @@ import { firebaseMessageFetchCompleteAction } from "../actions/firebase";
 import _ from 'lodash';
 import eventApi from '../services/eventApi';
 const ACCEPT_FREIND_PAYLOAD = {
-    "type": "event",
+    "type": "Event",
     "attributes": {
-        "source": "socialapi",
-        "category": "social",
-        "subCategory": "friend",
-        "eventName": "friendAccept",
+        "source": "web",
+        "category": "Social",
+        "subCategory": "FRIEND_MANAGEMENT",
+        "eventName": "FRIEND_REQUEST_ACCEPTED",
         "payload": {
-            "sourceUserId": 0,
-            "destinationEmailId": "",
-            "message": "",
-            "deepLink": "",
-            "linkedEventId": ""
+            "acceptor_email_id": "",
+            "acceptor_user_id": 0,
+            "acceptor_avatar_link": "",
+            "acceptor_first_name": "",
+            "requester_user_id": 0,
+            "requester_email_id": "",
+            "friend_request_event_id": "",
         }
     }
 };
@@ -82,12 +84,24 @@ class NotificationHelper {
     }
 
     static async acceptFriendRequest(userInfo, dispatch, msgData) {
+        console.log(msgData);
+        const {
+            cta: {
+                accept: {
+                    user_id,
+                    user_email_id,
+                },
+            },
+        } = msgData;
         let requestData = ACCEPT_FREIND_PAYLOAD;
-        requestData.attributes.payload.sourceUserId = Number(userInfo.id);
-        requestData.attributes.payload.destinationEmailId = msgData.sourceEmailId;
-        requestData.attributes.payload.message = "Accepted.";
-        requestData.attributes.payload.deepLink = msgData.link;
-        requestData.attributes.payload.linkedEventId = msgData.id;
+        requestData.attributes.payload.acceptor_email_id = userInfo.attributes.email,
+        requestData.attributes.payload.acceptor_user_id = Number(userInfo.id);
+        requestData.attributes.payload.acceptor_avatar_link = userInfo.attributes.avatar,
+        requestData.attributes.payload.acceptor_first_name = userInfo.attributes.firstName;
+
+        requestData.attributes.payload.requester_user_id = user_id;
+        requestData.attributes.payload.requester_email_id = user_email_id;
+        requestData.attributes.payload.friend_request_event_id = msgData.id;
         await eventApi.post("/event", { data: requestData });
         await NotificationHelper.getMessages(userInfo, dispatch, NotificationHelper.currentPage);
     }

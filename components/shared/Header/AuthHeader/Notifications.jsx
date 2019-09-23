@@ -46,7 +46,6 @@ const Notifications = (props) => {
     }
 
     const onNotificationCTA = async (ctaKey, ctaOptions, msg) => {
-        console.log(JSON.stringify(msg) + JSON.stringify(cta));
         let ctaActionId = ctaKey;//cta.actionId;
         switch (ctaActionId) {
             case "setNewGivingGoal": {
@@ -55,8 +54,8 @@ const Notifications = (props) => {
             }
             case "sendThankYou": {
                 let thankyouNote = ctaOptions.msg[this.state.localeCode];
-                console.log(thankyouNote);
-                Router.pushRoute("/chats/" + ctaOptions.sender_user_id);
+                let userId = ctaOptions['user_id'];
+                Router.pushRoute(`/chats/${userId}`);
                 break;
             }
             case "sendGift": {
@@ -64,7 +63,7 @@ const Notifications = (props) => {
                 break;
             }
             case "viewMessage": {
-                Router.pushRoute("/chats/" + cta.user_id);
+                // Router.pushRoute("/chats/" + cta.user_id);
                 break;
             }
             case "updatePayment": {
@@ -76,11 +75,13 @@ const Notifications = (props) => {
                 break;
             }
             case "goToGivingGroup": {
-                Router.pushRoute("/");
+                let givingGroupSlug = ctaOptions['group_slug'];
+                Router.pushRoute(`/groups/${givingGroupSlug}`);
                 break;
             }
             case "sayCongrats": {
-                Router.pushRoute("/chats/{userId}");
+                let userId = ctaOptions['user_id'];
+                Router.pushRoute(`/chats/${userId}`);
                 break;
             }
             case "accept": {
@@ -88,7 +89,8 @@ const Notifications = (props) => {
                 break;
             }
             case "viewProfile": {
-                Router.pushRoute("/users/profile/{userId}");
+                let userId = ctaOptions['user_id'];
+                Router.pushRoute(`/users/profile/${userId}`);
                 break;
             }
         }

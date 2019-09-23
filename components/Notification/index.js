@@ -123,7 +123,6 @@ class NotificationWrapper extends React.Component {
         await NotificationHelper.getMessages(userInfo, dispatch, 1);
     }
     async onLoadMoreClick(userInfo, dispatch, currentPage) {
-        console.log("onLoadMore");
         let lastMsg = this.state.messages[0];//
         lastMsg = this.state.messages[this.state.messages.length - 1];
         await NotificationHelper.getMessages(userInfo, dispatch, currentPage + 1, lastMsg, lastMsg["_key"]);
@@ -157,7 +156,6 @@ class NotificationWrapper extends React.Component {
     }
 
     async onNotificationCTA(ctaKey, ctaOptions, msg) {
-        console.log(JSON.stringify(msg) + JSON.stringify(ctaKey));
         let ctaActionId = ctaKey;//cta.actionId;
         switch (ctaActionId) {
             case "setNewGivingGoal": {
@@ -166,8 +164,8 @@ class NotificationWrapper extends React.Component {
             }
             case "sendThankYou": {
                 let thankyouNote = ctaOptions.msg[this.state.localeCode];
-                console.log(thankyouNote);
-                Router.pushRoute("/chats/" + ctaOptions.sender_user_id);
+                let userId = ctaOptions['user_id'];
+                Router.pushRoute(`/chats/${userId}`);
                 break;
             }
             case "sendGift": {
@@ -187,13 +185,13 @@ class NotificationWrapper extends React.Component {
                 break;
             }
             case "goToGivingGroup": {
-                let givingGroupSlug = ctaOptions['giving_group_slug'];
-                // Router.pushRoute("/give/to/group/" + givingGroupSlug);
-                Router.pushRoute("/groups/" + givingGroupSlug);
+                let givingGroupSlug = ctaOptions['group_slug'];
+                Router.pushRoute(`/groups/${givingGroupSlug}`);
                 break;
             }
             case "sayCongrats": {
-                Router.pushRoute("/chats/{userId}");
+                let userId = ctaOptions['user_id'];
+                Router.pushRoute(`/chats/${userId}`);
                 break;
             }
             case "accept": {
@@ -201,8 +199,8 @@ class NotificationWrapper extends React.Component {
                 break;
             }
             case "viewProfile": {
-                let recipientUserId = ctaOptions['recipient_user_id'];
-                Router.pushRoute("/users/profile/" + recipientUserId);
+                let userId = ctaOptions['user_id'];
+                Router.pushRoute(`/users/profile/${userId}`);
                 break;
             }
         }
@@ -339,7 +337,6 @@ class NotificationWrapper extends React.Component {
             dispatch: dispatch
         };
         let self = this;
-        console.log(self.state);
         let itemByType = self.splitNotifications(self.state.messages, lastSyncTime);
         let recentItems = itemByType.recent;
         let earlierItems = itemByType.earlier;
