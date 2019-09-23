@@ -84,7 +84,6 @@ class NotificationHelper {
     }
 
     static async acceptFriendRequest(userInfo, dispatch, msgData) {
-        console.log(msgData);
         const {
             cta: {
                 accept: {
