@@ -102,11 +102,11 @@ class TaxReceipientCard extends React.Component {
                         {taxReceipt.attributes.isDefault && <span className="default">default</span>}
                     </p>
                     <p className="font-s-14">
-                        {!_isEmpty(addressOne) && `${addressOne},`}
-                        {!_isEmpty(addressTwo) && `${addressTwo},`}
-                        {!_isEmpty(city) && `${city},`}
-                        {!_isEmpty(province) && `${province},`}
-                        {!_isEmpty(country) && `${country},`}
+                        {!_isEmpty(addressOne) && `${addressOne}, `}
+                        {!_isEmpty(addressTwo) && `${addressTwo}, `}
+                        {!_isEmpty(city) && `${city}, `}
+                        {!_isEmpty(province) && `${province}, `}
+                        {!_isEmpty(country) && `${country}, `}
                         {!_isEmpty(postalCode) && `${postalCode}`}
                     </p>
                 </div>
