@@ -43,7 +43,9 @@ const user = (state = {}, action) => {
                     ...state.fund,
                     ...fund,
                 },
-                paymentInstrumentsData: Object.assign([], state.paymentInstrumentsData, paymentInstrumentsData),
+                // For ticket CPP-3387
+                //paymentInstrumentsData: Object.assign([], state.paymentInstrumentsData, paymentInstrumentsData),
+                paymentInstrumentsData,
                 taxReceiptProfiles: Object.assign([], state.taxReceiptProfiles, taxReceiptProfiles),
                 userCampaigns: Object.assign([], state.userCampaigns, userCampaigns),
                 userGroups: Object.assign([], state.userGroups, userGroups),
