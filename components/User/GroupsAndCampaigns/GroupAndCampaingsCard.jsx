@@ -128,7 +128,7 @@ class GroupsAndCampaignsCard extends React.Component {
                                             </Grid.Column>
                                         </Grid.Row>
                                     </Grid>
-                                    <Header as="h4" style={{margin:'0rem 0rem .5rem'}}>
+                                    <Header as="h4" style={{margin:'0rem 0.5rem .5rem 0rem'}}>
                                         <Header.Content>
                                             {shortName}
                                             <br />

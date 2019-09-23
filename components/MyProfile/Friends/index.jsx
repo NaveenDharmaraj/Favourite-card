@@ -112,7 +112,8 @@ class Friends extends React.Component {
                                         className="chimp-modal"
                                         closeIcon
                                         trigger={<Button className="blue-bordr-btn-round-def">Invite friends</Button>}
-                                        centered={false}
+                                        centered={true}
+                                        dimmer="inverted"
                                     >
                                         <Modal.Header>
                                             Share Charitable Impact with friends and family

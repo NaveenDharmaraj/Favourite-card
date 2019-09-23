@@ -51,10 +51,10 @@ const DonationDetails = (props) => {
                 <Grid stackable>
                     <Grid.Row>
                         <Grid.Column mobile={16} tablet={6} computer={6}>
-                            <Header as="h2">
+                            <Header as="h2" className="font-s-34">
                                 {formatCurrency(totalMoneyRaised, language, currency)}
                                 {fundRaisingDuration}
-                                <Header.Subheader className="small" style={{ marginTop: '.7rem' }}>
+                                <Header.Subheader className="small font-s-14" style={{ marginTop: '.7rem' }}>
                                     {`raised of 
                                     ${formatCurrency(goal, language, currency)}
                                     goal`}
@@ -77,19 +77,19 @@ const DonationDetails = (props) => {
                                         <Grid.Column>
                                             <Header as="h2">
                                                 {formatCurrency(totalMoneyRaised, language, currency)}
-                                                <Header.Subheader className="small">All time total raised</Header.Subheader>
+                                                <Header.Subheader className="small font-s-14">All time total raised</Header.Subheader>
                                             </Header>
                                         </Grid.Column>
                                         <Grid.Column>
                                             <Header as="h2">
                                                 {formatCurrency(totalMoneyGiven, language, currency)}
-                                                <Header.Subheader className="small">All time total given</Header.Subheader>
+                                                <Header.Subheader className="small font-s-14">All time total given</Header.Subheader>
                                             </Header>
                                         </Grid.Column>
                                         <Grid.Column>
                                             <Header as="h2">
                                                 {formatCurrency(balance, language, currency)}
-                                                <Header.Subheader className="small">Current balance</Header.Subheader>
+                                                <Header.Subheader className="small font-s-14">Current balance</Header.Subheader>
                                             </Header>
                                         </Grid.Column>
                                     </Grid.Row>
