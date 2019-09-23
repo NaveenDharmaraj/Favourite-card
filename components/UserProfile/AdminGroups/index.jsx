@@ -87,17 +87,13 @@ class UserAdminGroupList extends React.Component {
             userAdminGroupListLoader,
         } = this.state;
         const {
-            currentUser: {
-                attributes: {
-                    firstName,
-                }
-            },
+            friendFirstName,
         } = this.props;
         return (
             <div className="pb-3">
                 <Container>
                     <Header as="h4" className="underline">
-                    {firstName}'s Giving Groups
+                    {friendFirstName}'s Giving Groups
                     </Header>
                     { userAdminGroupListLoader ? <PlaceholderGrid row={1} column={3} /> : (
                         this.userAdminGroupList()
