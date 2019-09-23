@@ -207,6 +207,7 @@ class MyCreditCards extends React.Component {
     handleAddButtonClick() {
         this.setState({
             buttonClicked: true,
+            statusMessage: false,
         });
         const {
             creditCard,
@@ -337,6 +338,7 @@ class MyCreditCards extends React.Component {
     handleEditSave() {
         this.setState({
             editButtonClicked: true,
+            statusMessage: false,
         });
         const isEditDataValid = this.validateEditForm();
         if(isEditDataValid) {
@@ -353,7 +355,7 @@ class MyCreditCards extends React.Component {
             } = this.props;
             editUserCreditCard(dispatch, editDetails).then(() => {
                 this.setState({
-                    editButtonClicked: true,
+                    editButtonClicked: false,
                     errorMessage: null,
                     successMessage: 'Your Credit Card updated Successfully.',
                     statusMessage: true,
@@ -373,7 +375,7 @@ class MyCreditCards extends React.Component {
                 })
             }).catch((err) => {
                 this.setState({
-                    editButtonClicked: true,
+                    editButtonClicked: false,
                     errorMessage: 'Error in updating Credit Card.',
                     statusMessage: true,
                 });
@@ -403,7 +405,7 @@ class MyCreditCards extends React.Component {
     handleDeleteConfirmClick() {
         const {
             deletePaymentInstrumentId,
-            currentActivePage,            
+            currentActivePage,                       
         } = this.state;
         const {
             dispatch,
@@ -413,6 +415,7 @@ class MyCreditCards extends React.Component {
         } = this.props;
         this.setState({
             deleteButtonClicked: true,
+            statusMessage: false,
         });
         if(deletePaymentInstrumentId != null) {
             deleteUserCreditCard(dispatch, deletePaymentInstrumentId, id, currentActivePage).then(() => {
@@ -531,7 +534,22 @@ class MyCreditCards extends React.Component {
         if (!_.isEmpty(userCreditCardList) && _.size(userCreditCardList.data) > 0) {
             cardList = userCreditCardList.data.map((data) => {
                 const lastFour = data.attributes.description.slice(-4);
-                const cardName = data.attributes.description.slice(0, -17);
+                const cardName = data.attributes.description.slice(0, -17);                
+                let processor = ''; let cardClass = '';
+                const isEnglishCard = data.attributes.description.indexOf(' ending ');
+                const selectedCardName = _.split(data.attributes.description, ' ');
+                if (isEnglishCard !== -1) {
+                    processor = selectedCardName[selectedCardName.indexOf('ending') - 1].toLowerCase().trim();
+                } else {
+                    processor = selectedCardName[0].toLowerCase().trim();
+                }                
+                if (processor.toLowerCase() === 'visa') {
+                    cardClass = 'card visa';
+                } else if(processor.toLowerCase() == 'mastercard') {
+                    cardClass = 'card master';
+                } else {
+                    cardClass = 'card american';
+                }
                 const primary = data.attributes.default ? 'Primary' : '';
                 return (
                     <List.Item>
@@ -556,11 +574,10 @@ class MyCreditCards extends React.Component {
                                             />
                                         )
                                     }
-                                    
                                 </Dropdown.Menu>
                             </Dropdown>
                         </List.Content>
-                        <List.Icon name="credit card" size="large" verticalAlign="middle" />
+                        <List.Icon name={cardClass} size="large" verticalAlign="middle" />
                         <List.Content>
                             <List.Header>{cardName}<span className="primary">{primary}</span></List.Header>
                         <div className="cardNo"><sup>**** **** **** </sup>{lastFour}</div>
@@ -620,90 +637,101 @@ class MyCreditCards extends React.Component {
         const formatMessage = this.props.t;
         return (
             <div>
-                <Grid verticalAlign="middle">
-                    <Grid.Row>
-                        <Grid.Column mobile={16} tablet={11} computer={11}>
-                            <div className="userSettingsContainer">
-                                <div className="settingsDetailWraper">
-                                    <Header as="h4">Payment methods </Header>
-                                </div>
-                            </div>
-                        </Grid.Column>
-                        <Grid.Column mobile={16} tablet={5} computer={5}>
-                            <div className="right-align">
-                                <Modal
-                                    size="tiny"
-                                    dimmer="inverted"
-                                    className="chimp-modal"
-                                    closeIcon
-                                    open={newCreditCardApiCall}
-                                    onClose={this.handleCCAddClose}
-                                    trigger={<Button
-                                        className="success-btn-rounded-def"
-                                        onClick={this.handleAddCardClick}
-                                        >
-                                            Add new card
-                                        </Button>}>
-                                    <Modal.Header>Add new card</Modal.Header>
-                                    <Modal.Content>
-                                        <Modal.Description className="font-s-16">
-                                            <Form>
-                                                <StripeProvider apiKey={STRIPE_KEY}>
-                                                    <Elements>
-                                                        <CreditCard
-                                                            creditCardElement={this.getStripeCreditCard}
-                                                            creditCardValidate={inValidCardNumber}
-                                                            creditCardExpiryValidate={inValidExpirationDate}
-                                                            creditCardNameValidte={inValidNameOnCard}
-                                                            creditCardNameValueValidate={inValidCardNameValue}
-                                                            creditCardCvvValidate={inValidCvv}
-                                                            validateCCNo={this.validateStripeCreditCardNo}
-                                                            validateExpiraton={this.validateStripeExpirationDate}
-                                                            validateCvv={this.validateCreditCardCvv}
-                                                            validateCardName={this.validateCreditCardName}
-                                                            formatMessage = {formatMessage}
-                                                            // eslint-disable-next-line no-return-assign
-                                                            onRef={(ref) => (this.CreditCard = ref)}
+                <div className="userSettingsContainer">
+                    <div className="settingsDetailWraper heading brdr-btm pb-1 pt-2">
+                        <Grid verticalAlign="middle">
+                            <Grid.Row>
+                                <Grid.Column mobile={16} tablet={11} computer={11}>
+                                    <Header as="h4" className="mb-0">Payment methods </Header>
+                                </Grid.Column>
+                                <Grid.Column mobile={16} tablet={5} computer={5}>
+                                    <div className="right-align">
+                                        <Modal
+                                            size="tiny"
+                                            dimmer="inverted"
+                                            className="chimp-modal"
+                                            closeIcon
+                                            open={newCreditCardApiCall}
+                                            onClose={this.handleCCAddClose}
+                                            trigger={<Button
+                                                className="success-btn-rounded-def"
+                                                onClick={this.handleAddCardClick}
+                                                >
+                                                    Add new card
+                                                </Button>}>
+                                            <Modal.Header>Add new card</Modal.Header>
+                                            <Modal.Content>
+                                                <Modal.Description className="font-s-16">
+                                                    <Form>
+                                                        <StripeProvider apiKey={STRIPE_KEY}>
+                                                            <Elements>
+                                                                <CreditCard
+                                                                    creditCardElement={this.getStripeCreditCard}
+                                                                    creditCardValidate={inValidCardNumber}
+                                                                    creditCardExpiryValidate={inValidExpirationDate}
+                                                                    creditCardNameValidte={inValidNameOnCard}
+                                                                    creditCardNameValueValidate={inValidCardNameValue}
+                                                                    creditCardCvvValidate={inValidCvv}
+                                                                    validateCCNo={this.validateStripeCreditCardNo}
+                                                                    validateExpiraton={this.validateStripeExpirationDate}
+                                                                    validateCvv={this.validateCreditCardCvv}
+                                                                    validateCardName={this.validateCreditCardName}
+                                                                    formatMessage = {formatMessage}
+                                                                    // eslint-disable-next-line no-return-assign
+                                                                    onRef={(ref) => (this.CreditCard = ref)}
+                                                                />
+                                                            </Elements>
+                                                        </StripeProvider>
+                                                        <Form.Field
+                                                            checked={isDefaultCard}
+                                                            control={Checkbox}
+                                                            className="ui checkbox chkMarginBtm"
+                                                            id="isDefaultCard"
+                                                            label="Set as primary card"
+                                                            name="isDefaultCard"
+                                                            onChange={this.handleSetPrimaryClick}
+                                                            readOnly={isDefaultCardReadOnly}
                                                         />
-                                                    </Elements>
-                                                </StripeProvider>
-                                                <Form.Field
-                                                    checked={isDefaultCard}
-                                                    control={Checkbox}
-                                                    className="ui checkbox chkMarginBtm"
-                                                    id="isDefaultCard"
-                                                    label="Set as primary card"
-                                                    name="isDefaultCard"
-                                                    onChange={this.handleSetPrimaryClick}
-                                                    readOnly={isDefaultCardReadOnly}
-                                                />
-                                            </Form>
-                                        </Modal.Description>
-                                        <div className="btn-wraper pt-3 text-right">
-                                            <Button
-                                                className="blue-btn-rounded-def sizeBig w-180"
-                                                onClick={this.handleAddButtonClick}
-                                                disabled={buttonClicked}
-                                            >
-                                                Add
-                                            </Button>
-                                        </div>
-                                    </Modal.Content>
-                                </Modal>
-                            </div>
-                        </Grid.Column>
-                    </Grid.Row>
-                    <Grid.Row>
-                    {
-                        statusMessage && (
-                            <ModalStatusMessage 
-                                message = {!_.isEmpty(successMessage) ? successMessage : null}
-                                error = {!_.isEmpty(errorMessage) ? errorMessage : null}
-                            />
-                        )
-                    }
-                    </Grid.Row>
-                </Grid>
+                                                    </Form>
+                                                </Modal.Description>
+                                                <div className="btn-wraper pt-3 text-right">
+                                                    <Button
+                                                        className="blue-btn-rounded-def sizeBig w-180"
+                                                        onClick={this.handleAddButtonClick}
+                                                        disabled={buttonClicked}
+                                                    >
+                                                        Add
+                                                    </Button>
+                                                </div>
+                                            </Modal.Content>
+                                        </Modal>
+                                    </div>
+                                </Grid.Column>
+                            </Grid.Row>
+                        </Grid>
+                    </div>
+                    <div className="settingsDetailWraper">
+                        {
+                            statusMessage && (
+                                <ModalStatusMessage 
+                                    message = {!_.isEmpty(successMessage) ? successMessage : null}
+                                    error = {!_.isEmpty(errorMessage) ? errorMessage : null}
+                                />
+                            )
+                        }
+                        <div className="userCardList border-top-0">
+                            { myCreditCardListLoader
+                                ? (
+                                    <Table padded unstackable className="no-border-table">
+                                        <PlaceHolderGrid row={2} column={2} placeholderType="table" />
+                                    </Table>
+                                )
+                                : (
+                                    this.renderMyCreditCards()
+                                )}         
+                        </div>
+                    </div>
+                </div>                
                 <div>
                     <Modal size="tiny" dimmer="inverted" className="chimp-modal" closeIcon open={this.state.isEditModalOpen} onClose={()=>{this.setState({isEditModalOpen: false})}}>
                         <Modal.Header>Edit credit card</Modal.Header>
@@ -799,17 +827,6 @@ class MyCreditCards extends React.Component {
                             </div>
                         </Modal.Content>
                     </Modal>
-                </div>
-                <div className="userCardList">
-                    { myCreditCardListLoader
-                        ? (
-                            <Table padded unstackable className="no-border-table">
-                                <PlaceHolderGrid row={2} column={2} placeholderType="table" />
-                            </Table>
-                        )
-                        : (
-                            this.renderMyCreditCards()
-                        )}         
                 </div>
             </div>
         );

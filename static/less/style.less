@@ -18,13 +18,15 @@ html body{
 p {
   font-size: 16/@em; 
 }
-a{
-  color: @primary-color;
-  font-size: inherit;
-  &:hover,&:focus{
-    color: @primary-dark;
-    text-decoration: none;
-    transition: all 0.3s ease-out;
+body{
+  a{
+    color: @blueButton;
+    font-size: inherit;
+    &:hover,&:focus{
+      color: @blueButton-hover;
+      text-decoration: none;
+      transition: all 0.3s ease-out;
+    }
   }
 }
 .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6{
@@ -54,6 +56,12 @@ h2{
         }
       }
     }
+  }
+}
+.font-w-normal{
+  font-weight: 400; 
+  >div,>span,>a{
+    font-weight: 400;
   }
 }
 .pointer{
@@ -645,6 +653,9 @@ h4{
 }
 .blueText{
   color: @link;
+}
+.mt--1{
+  margin-top: -1rem;
 }
 .mr-1{
   margin-right: 1rem !important;
@@ -1846,6 +1857,9 @@ h4{
   }
 }
 @media only screen and (min-width:767px) {
+  .text-md-right{
+    text-align: right !important;
+  }
   .search-result-single{
     .search-left-img,.leftSideImage{
       border-radius: 4px 0px 0px 4px;
@@ -1858,6 +1872,19 @@ h4{
       .content{
         font-size: 20px;
         //margin-bottom: 20px;
+      }
+    }
+  }
+}
+.border-top-0{
+  .ui{
+    &.celled{
+      &.list{
+        .item{
+          &:first-child{
+            border-top: 0px solid transparent;
+          }
+        }
       }
     }
   }
@@ -2744,9 +2771,48 @@ h4{
     }
   }
 }
+@media only screen and (max-width:1199px) and (min-width:991px) {
+  body{
+    .footer-help .helpImg > div{
+      top: -88px;
+      height: 175px;
+    }
+  }
+}
+@media only screen and (max-width:991px) and (min-width:767px) {
+  body{
+    .footer-help .helpImg > div{
+      top: -88px;
+      height: 175px;
+    }
+  }
+}
+@media only screen and (max-width:767px) {
+  body{
+    .footer-help .helpImg > div{
+      display: none;
+    }
+  }
+}
 .footer-help{
   background-color: #82ADF2;
   padding: 45px 0px;
+  .helpImg{
+    position: relative;
+    >div{
+      background-image: url(../images/helpcentre_banner.png);
+      position: absolute;
+      top: -73px;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: 312px;
+      background-size: cover;
+      height: 145px;
+      background-repeat: no-repeat;
+    }
+
+  }
   h2{
     &.ui{
       &.header{
@@ -2793,7 +2859,13 @@ h4{
   }
 }
 .profile-header{
-  padding: 2rem 0rem;
+  padding: 20px 0rem;
+  .ProfileHeaderWraper{
+    padding-left: 15px;
+    .type-profile{
+      color: #263238;
+    }
+  }
   .buttonWraper{
 
   }
@@ -3179,6 +3251,15 @@ h4{
         .popup-footer{
           border-top: 1px solid rgba(34,36,38,.15);
           padding: 1rem;
+          button{
+            &.ui{
+              &.tiny{
+                &.button{
+                  min-width: 80px; 
+                }
+              }
+            }
+          }
         }
       }
     }
@@ -3192,6 +3273,7 @@ h4{
         a{
           &.header{
             color: @font-color !important;
+            font-family: 'ProximaNova-Light';
             &:hover{
               color: @purple-hover !important;
             }
@@ -4263,6 +4345,16 @@ h4{
                     content: url(../images/icons/legal.svg);
                   }
                 }
+                &.friends{
+                  &::before{
+                    content: url(../images/icons/group.svg);
+                  }
+                }
+                &.find_friends{
+                  &::before{
+                    content: url(../images/icons/group.svg);
+                  }
+                }
               }
             }
             .icon{
@@ -4316,7 +4408,71 @@ h4{
       &.celled{
         .item{
           padding: 2rem 0rem; 
+          .icon{
+            &.card{
+              min-width: 40px;
+              min-height: 35px;
+              position: relative;
+              &.visa{
+                &::before{
+                  content: '';
+                  background-image: url(../images/icons/icon-cc-visa-colour.png) !important;
+                  background-size: contain !important;
+                  background-position: center !important;
+                  background-repeat: no-repeat !important;
+                  position: absolute;
+                  left: 0;
+                  right: 0;
+                  top: 0;
+                  bottom: 0;
+                }
+              }
+              &.master{
+                &::before{
+                  content: '';
+                  background-image: url(../images/icons/icon-cc-mastercard-colour.png) !important;
+                  background-size: contain !important;
+                  background-position: center !important;
+                  background-repeat: no-repeat !important;
+                  position: absolute;
+                  left: 0;
+                  right: 0;
+                  top: 0;
+                  bottom: 0;
+                }
+              }
+              &.american{
+                &::before{
+                  content: '';
+                  background-image: url(../images/icons/icon-cc-american-express-colour.png) !important;
+                  background-size: contain !important;
+                  background-position: center !important;
+                  background-repeat: no-repeat !important;
+                  position: absolute;
+                  left: 0;
+                  right: 0;
+                  top: 0;
+                  bottom: 0;
+                }
+              }
+              &.apple{
+                &::before{
+                  content: '';
+                  background-image: url(../images/icons/icon-cc-apple-pay-colour.png) !important;
+                  background-size: contain !important;
+                  background-position: center !important;
+                  background-repeat: no-repeat !important;
+                  position: absolute;
+                  left: 0;
+                  right: 0;
+                  top: 0;
+                  bottom: 0;
+                }
+              }
+            }
+          }
           .content{
+            padding-left: 30px;
             &.right{
               &.floated{
                 .ui{
@@ -4488,7 +4644,11 @@ h4{
   cursor: pointer !important;
   color: @link;
  }
+
 .noDataCard{
+  >.content{
+    padding: 0px;
+  }
   &.ui{
     &.card{
       border: 1px solid #E6E5E5;	
@@ -4499,6 +4659,7 @@ h4{
       //box-shadow: 0 1px 7px 0 rgba(0,0,0,0.17);
       &.rightImg{
         .content{
+          padding: 0px;
           .image{
             &.ui{
               height: 107px;	width: 126px;
@@ -4599,6 +4760,8 @@ h4{
   }
   &.friendsNoData{
     background-color: #E3E8F0;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
     .noDataLeftImg{
       &.ui{
         &.image{
