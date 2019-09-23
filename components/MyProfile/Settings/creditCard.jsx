@@ -534,13 +534,18 @@ class MyCreditCards extends React.Component {
         if (!_.isEmpty(userCreditCardList) && _.size(userCreditCardList.data) > 0) {
             cardList = userCreditCardList.data.map((data) => {
                 const lastFour = data.attributes.description.slice(-4);
-                const cardName = data.attributes.description.slice(0, -17);
-                const res = cardName.substr(0, cardName.indexOf("'")).length;
-                const result = cardName.slice(res + 2).trim();
-                let cardClass = '';
-                if (result.toLowerCase() === 'visa') {
+                const cardName = data.attributes.description.slice(0, -17);                
+                let processor = ''; let cardClass = '';
+                const isEnglishCard = data.attributes.description.indexOf(' ending ');
+                const selectedCardName = _.split(data.attributes.description, ' ');
+                if (isEnglishCard !== -1) {
+                    processor = selectedCardName[selectedCardName.indexOf('ending') - 1].toLowerCase().trim();
+                } else {
+                    processor = selectedCardName[0].toLowerCase().trim();
+                }                
+                if (processor.toLowerCase() === 'visa') {
                     cardClass = 'card visa';
-                } else if(result.toLowerCase() == 'mastercard') {
+                } else if(processor.toLowerCase() == 'mastercard') {
                     cardClass = 'card master';
                 } else {
                     cardClass = 'card american';
