@@ -47,7 +47,7 @@ function CausesSelection(props) {
                         <Header as="h3">What causes are important to you? </Header>
                         <Header as="h4">Your answers help us personalize your experience. </Header>
                     </div>
-                    <p>Choose 3 or more</p>
+                    <p>Choose 3 or more:</p>
                     <Grid className="select-btn-wraper">
                         <Grid.Row>
                             {renderCauses()}
