@@ -338,7 +338,7 @@ class ModalComponent extends React.Component {
                 && <Modal size="tiny" dimmer="inverted" className="chimp-modal" closeIcon open={showPopUp} centered={false} onClose={() => { this.handlePopUpCancel('cancel') }}>
                 <Modal.Header>Discard edits?</Modal.Header>
                 <Modal.Content>
-                    <Modal.Description className="font-s-14">if you discard, you will lose your edits.</Modal.Description>
+                    <Modal.Description className="font-s-14">If you discard, you will lose your edits.</Modal.Description>
                     <div className="btn-wraper pt-3 text-right">
                     <Button className="blue-btn-rounded-def " onClick={()=>{ this.handlePopUpCancel('discard') }}>Discard</Button>
                     <Button className="blue-bordr-btn-round-def" onClick={()=>{ this.handlePopUpCancel('cancel') }}>Cancel</Button>

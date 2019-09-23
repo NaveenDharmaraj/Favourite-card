@@ -98,11 +98,11 @@ class IndividualTaxDoantionsList extends React.Component {
                                             {isDefault && <span className="default">default</span>}
                                         </List.Header>
                                         <p className="font-s-14">
-                                            {!_isEmpty(address_one) && `${address_one},`}
-                                            {!_isEmpty(address_two) && `${address_two},`}
-                                            {!_isEmpty(city) && `${city},`}
-                                            {!_isEmpty(province) && `${province},`}
-                                            {!_isEmpty(country) && `${country},`}
+                                            {!_isEmpty(address_one) && `${address_one}, `}
+                                            {!_isEmpty(address_two) && `${address_two}, `}
+                                            {!_isEmpty(city) && `${city}, `}
+                                            {!_isEmpty(province) && `${province}, `}
+                                            {!_isEmpty(country) && `${country}, `}
                                             {!_isEmpty(postal_code) && `${postal_code}`}
                                         </p>
                                     </List.Content>
