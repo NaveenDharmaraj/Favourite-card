@@ -166,7 +166,6 @@ class Activity extends React.Component {
                                                     onChange={this.updateInputValue}
                                                     type="text"
                                                     placeholder="Write a post..."
-                                                    action
                                                     fluid
                                                 />
                                             </div>

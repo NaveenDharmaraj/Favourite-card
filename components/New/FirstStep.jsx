@@ -29,12 +29,12 @@ function FirstStep(props) {
             <Grid.Column>
                 <div className="login-form-wraper">
                     <div className="reg-header">
-                        <Header as="h3">Create the change you want to see in the world.</Header>
+                        <Header as="h3">Create the change you want to see in the world</Header>
                         <Header as="h4"> Tell us about yourself. </Header>
                     </div>
                     <Form>
                         <Form.Field>
-                            <label>First Name</label>
+                            <label>First name</label>
                             <Form.Field
                                 control={Input}
                                 id="firstName"
@@ -47,7 +47,7 @@ function FirstStep(props) {
                             />
                             <FormValidationErrorMessage
                                 condition={!validity.isFirstNameNotNull}
-                                errorMessage="Please input your first name"
+                                errorMessage="Please enter your first name"
                             />
                             <FormValidationErrorMessage
                                 condition={!validity.doesFirstNameHave2 && validity.isFirstNameNotNull}
@@ -60,7 +60,7 @@ function FirstStep(props) {
                         </Form.Field>
                         <Form.Field>
                             <label>
-                                Last Name
+                                Last name
                             </label>
                             <Form.Field
                                 control={Input}
@@ -74,7 +74,7 @@ function FirstStep(props) {
                             />
                             <FormValidationErrorMessage
                                 condition={!validity.isLastNameNotNull}
-                                errorMessage="Please input your last name"
+                                errorMessage="Please enter your last name"
                             />
                             <FormValidationErrorMessage
                                 condition={!validity.isLastnameLengthInLimit && validity.isLastNameNotNull}

@@ -30,7 +30,7 @@ function SecondStep(props) {
             <Grid.Column>
                 <div className="login-form-wraper">
                     <div className="reg-header">
-                        <Header as="h3">Create your Impact account.</Header>
+                        <Header as="h3">Create your Impact Account</Header>
                     </div>
                     <Form>
                         <Form.Field>

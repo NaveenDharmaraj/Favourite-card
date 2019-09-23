@@ -81,7 +81,7 @@ class SwitchAccountModal extends React.Component {
                                             <Image avatar src={item.avatar} />
                                             <List.Content>
                                                 <List.Header className="font-s-14">{item.name}</List.Header>
-                                                <List.Description className="charity font-s-14">
+                                                <List.Description className={`${item.accountType} font-s-14`}>
                                                     {_.capitalize(item.accountType)}
                                                 </List.Description>
                                             </List.Content>
