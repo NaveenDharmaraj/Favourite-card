@@ -79,7 +79,7 @@ class AccountBalance extends React.Component {
                                                     >
                                                         <Header as="h3" className="txt-white">
                                                             <Header.Content>
-                                                            Send a gift to someone
+                                                            Give to charities and others
                                                             </Header.Content>
                                                         </Header>
                                                     </Grid.Column>

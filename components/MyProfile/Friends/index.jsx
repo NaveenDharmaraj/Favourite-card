@@ -23,7 +23,7 @@ const panes2 = [
     {
         menuItem: {
             content: 'Find friends',
-            icon: 'privacy',
+            icon: 'find_friends',
             iconPosition: 'left',
             key: 'Find friends',
         },
@@ -36,7 +36,7 @@ const panes2 = [
     {
         menuItem: {
             content: 'Your friends',
-            icon: 'privacy',
+            icon: 'friends',
             iconPosition: 'left',
             key: 'Your friends',
         },

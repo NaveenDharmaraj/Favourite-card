@@ -324,7 +324,7 @@ class EditBasicProfile extends React.Component {
                                     error={!validity.isDescriptionNotNull}
                                     value={about}
                                 />
-                                <div className="field-info text-right">{aboutCharCount} of 1000 characters left</div>
+                                <div className="field-info mt--1 text-right">{aboutCharCount} of 1000 characters left</div>
                                 <FormValidationErrorMessage
                                     condition={!validity.isDescriptionNotNull}
                                     errorMessage="Please input about yourself"
@@ -355,10 +355,12 @@ class EditBasicProfile extends React.Component {
                                             />
                                         }
                                     />
-                                    <PrivacySetting
-                                        columnName={privacyColumn}
-                                        columnValue={userData.giving_goal_visibility}
-                                    />
+                                    <span className="font-w-normal">
+                                        <PrivacySetting
+                                            columnName={privacyColumn}
+                                            columnValue={userData.giving_goal_visibility}
+                                        />
+                                    </span>
                                 </label>
                                 
                                 <Form.Field>

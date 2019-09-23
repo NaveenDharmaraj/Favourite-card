@@ -86,9 +86,11 @@ class DashboradList extends React.Component {
                     />
                     <Card.Header className="font-s-14">
                         <Header as="h4">
-                            <Header.Content>
-                                No transactions yet.
-                            </Header.Content>
+                            <Header.Subheader>
+                                <Header.Content>
+                                    No transactions yet.
+                                </Header.Content>
+                            </Header.Subheader>
                         </Header>
                     </Card.Header>
                 </Card.Content>

@@ -14,15 +14,16 @@ class HelpCenter extends React.Component {
                 <Container>
                     <Grid verticalAlign="middle">
                         <Grid.Row>
-                            <Grid.Column mobile={12} tablet={6} computer={6}>
+                            <Grid.Column mobile={12} tablet={6} computer={6} className="helpImg">
+                                <div />
                             </Grid.Column>
                             <Grid.Column mobile={6} tablet={6} computer={6}>
-                                <Header as='h2' className="f-normal">
+                                <Header as="h2" className="f-normal">
                                     <span className="bold">Find answers to common questions.</span>
                                     <Header.Subheader>Visit the Help Centre. </Header.Subheader>
                                 </Header>
                             </Grid.Column>
-                            <Grid.Column mobile={6} tablet={4} computer={4}>
+                            <Grid.Column mobile={6} tablet={4} computer={4} className="text-md-right">
                                 <Button className="white-btn-round">Help Centre</Button>
                             </Grid.Column>
                         </Grid.Row>
