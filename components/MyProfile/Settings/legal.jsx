@@ -14,40 +14,61 @@ class Legal extends React.Component {
                     <div className="settingsDetailWraper heading brdr-btm pb-1">
                         <Header as="h4">Legal </Header>
                     </div>
-                    <div className="settingsDetailWraper brdr-btm pb-2">
+                    {/* <div className="settingsDetailWraper brdr-btm pb-2">
                         <p className="bold">Terms and conditions</p>
                         <p>
                         See our
-                            <span className="link border">
-                                <a href="https://chimp.net/terms" target="_blank">
+                                <Link route="/terms">
                                     {' '}
                                 Terms and Conditions.
-                                </a>
-                            </span>
+                                </Link>
                         </p>
                     </div>
                     <div className="settingsDetailWraper brdr-btm pb-2">
                         <p className="bold">Privacy policy</p>
                         <p>
                         See our
-                            <span className="link border">
-                                <a href="https://chimp.net/privacy" target="_blank">
+                                <Link route="/privacy">
                                     {' '}
                                     Privacy Policy.
-                                </a>
-                            </span>
+                                </Link>
                         </p>
                     </div>
                     <div className="settingsDetailWraper brdr-btm pb-2">
                         <p className="bold">Account Agreement</p>
                         <p>
                         See our
-                            <span className="link border">
-                                <a href="https://chimp.net/chimp-account-agreement" target="_blank">
+                                <Link route='/chimpaccountagreement'>
                                     {' '}
                                     Account Agreement.
-                                </a>
-                            </span>
+                                </Link>
+                        </p>
+                    </div> */}
+                    <div className="settingsDetailWraper brdr-btm pb-2">
+                        <p className="bold">Terms and conditions</p>
+                        <p>
+                        See our
+                            <Link route="/terms">
+                                <span className="link border"> Terms and Conditions.</span>
+                            </Link>
+                        </p>
+                    </div>
+                    <div className="settingsDetailWraper brdr-btm pb-2">
+                        <p className="bold">Privacy policy</p>
+                        <p>
+                        See our
+                            <Link route="/privacy">
+                                <span className="link border"> Privacy Policy.</span>
+                            </Link>
+                        </p>
+                    </div>
+                    <div className="settingsDetailWraper brdr-btm pb-2">
+                        <p className="bold">Privacy policy</p>
+                        <p>
+                        See our
+                            <Link route="/chimp-account-agreement">
+                                <span className="link border"> Account Agreement.</span>
+                            </Link>
                         </p>
                     </div>
                 </div>

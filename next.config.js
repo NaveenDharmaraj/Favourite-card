@@ -33,7 +33,8 @@ const configVars = {
         STRIPE_URL: process.env.STRIPE_URL,
         UTILITY_API_BASE: process.env.UTILITY_API_BASE,
         APPLOZIC_WS_URL:process.env.APPLOZIC_WS_URL,
-        APPLOZIC_APP_KEY:process.env.APPLOZIC_APP_KEY
+        APPLOZIC_APP_KEY:process.env.APPLOZIC_APP_KEY,
+        HELP_CENTRE_URL: process.env.HELP_CENTRE_URL,
     },
 };
 
