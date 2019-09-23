@@ -14,36 +14,6 @@ class Legal extends React.Component {
                     <div className="settingsDetailWraper heading brdr-btm pb-1">
                         <Header as="h4">Legal </Header>
                     </div>
-                    {/* <div className="settingsDetailWraper brdr-btm pb-2">
-                        <p className="bold">Terms and conditions</p>
-                        <p>
-                        See our
-                                <Link route="/terms">
-                                    {' '}
-                                Terms and Conditions.
-                                </Link>
-                        </p>
-                    </div>
-                    <div className="settingsDetailWraper brdr-btm pb-2">
-                        <p className="bold">Privacy policy</p>
-                        <p>
-                        See our
-                                <Link route="/privacy">
-                                    {' '}
-                                    Privacy Policy.
-                                </Link>
-                        </p>
-                    </div>
-                    <div className="settingsDetailWraper brdr-btm pb-2">
-                        <p className="bold">Account Agreement</p>
-                        <p>
-                        See our
-                                <Link route='/chimpaccountagreement'>
-                                    {' '}
-                                    Account Agreement.
-                                </Link>
-                        </p>
-                    </div> */}
                     <div className="settingsDetailWraper brdr-btm pb-2">
                         <p className="bold">Terms and conditions</p>
                         <p>
