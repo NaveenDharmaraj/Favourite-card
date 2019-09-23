@@ -86,7 +86,7 @@ class IndividualTaxDoantionsList extends React.Component {
                 </div>
                 <div className="search-result">
                     <Container>
-                        <p className="bold font-s-16 mt-2">Issue tax receipts</p>
+                        <p className="bold font-s-16 mt-2">Issued tax receipts</p>
                         <Divider />
                         <div className="info-panel more-btn">
                             <List verticalAlign="middle" className="receiptList pd-0">

@@ -16,7 +16,7 @@ const IssuedTaxReceiptCard = (props) => {
     return (
         <List.Item>
             <List.Content floated="right">
-                <Button className="blue-bordr-btn-round-def c-small" onClick={() => { props.renderdonationDetailShow(issuedTaxReceipt.id, issuedTaxReceipt, false); }}>See issued receipts</Button>
+                <Button className="blue-bordr-btn-round-def c-small" onClick={() => { props.renderdonationDetailShow(issuedTaxReceipt.id, issuedTaxReceipt, false); }}> See tax receipts</Button>
             </List.Content>
             <Image className="greyIcon" src={docIcon} />
             <List.Content>
