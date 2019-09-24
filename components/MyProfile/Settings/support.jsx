@@ -3,6 +3,13 @@ import {
     Header,
     Button,
 } from 'semantic-ui-react';
+import getConfig from 'next/config';
+
+const { publicRuntimeConfig } = getConfig();
+
+const {
+    HELP_CENTRE_URL,
+} = publicRuntimeConfig;
 
 // eslint-disable-next-line react/prefer-stateless-function
 class Support extends React.Component {
@@ -33,9 +40,9 @@ class Support extends React.Component {
                     <div className="settingsDetailWraper brdr-btm pb-2">
                         <p className="bold">Help Centre</p>
                         <p>
-                            Our 
+                            Our
                             {' '}
-                            <a href="https://help.chimp.net/" target="_blank">Help Centre</a>
+                            <a href={HELP_CENTRE_URL} target="_blank"> Help Centre</a>
                             {' '}
                             has answers to common questions.
                         </p>

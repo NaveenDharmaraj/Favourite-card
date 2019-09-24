@@ -17,5 +17,4 @@ module.exports = routes()
     .add('IssuedTaxReceipientDonationsList', '/user/tax-receipts/:slug', 'taxReceipientDonationsList')
     .add('friendsProfile', '/users/profile/:slug')
     .add('myProfileSettings', '/user/profile/:slug/:step', 'myProfile')
-    .add('myProfile', '/user/profile/:slug', 'myProfile')
-    .add('chimpaccountagreement', 'chimp-account-agreement');
+    .add('myProfile', '/user/profile/:slug', 'myProfile');
