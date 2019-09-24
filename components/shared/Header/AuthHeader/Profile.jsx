@@ -68,7 +68,7 @@ class Profile extends React.Component {
         } = this.props;
         const formatMessage = this.props.t;
         let accountSettingsText = formatMessage('accountSettings');
-        let accountUrl = `/user/profile`;
+        let accountUrl = `/user/profile/basic`;
         if (accountType === 'company') {
             accountSettingsText = formatMessage('companyAccountSettings');
             accountUrl = `${RAILS_APP_URL_ORIGIN}/companies/${slug}/edit`;
@@ -97,9 +97,7 @@ class Profile extends React.Component {
                             <Table.Row>
                                 <Table.Cell><Image src={avatar} style={{ width: '80px' }} circular /></Table.Cell>
                                 <Table.Cell>
-                                    {formatMessage('name', {
-                                        name,
-                                    })}
+                                    {name}
                                     <List link>
                                         <Link route={accountUrl}>
                                             <List.Item as="a">

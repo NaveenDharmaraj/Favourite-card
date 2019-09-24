@@ -52,7 +52,7 @@ class GroupsAndCampaignsCard extends React.Component {
             },
             id,
         } = data;
-        const shortName = renderText(name, 6);
+        const shortName = renderText(name, 3);
         const urlType = (listingType === 'administeredCampaigns') ? 'campaigns' : 'groups';
         const editLink = (listingType === 'administeredCampaigns') ? `/campaigns/${slug}/manage-basics` : `/groups/${slug}/edit`;
         let showError = false;
@@ -69,75 +69,77 @@ class GroupsAndCampaignsCard extends React.Component {
                 <Card className="left-img-card" fluid>
                     <Card.Header>
                         <Grid>
-                            <Grid.Column width={6}>
-                                <Image src={displayAvatar} />
-                            </Grid.Column>
-                            <Grid.Column width={10} verticalAlign="top">
-                                <Grid columns="2">
-                                    <Grid.Row style={{padding:'1.7rem 0rem 0.2rem'}}>
-                                        <Grid.Column>
-                                            <Header as="h4">
-                                                <Header.Content>
-                                                    <Header.Subheader className="chimp-lbl group">giving group</Header.Subheader>
-                                                </Header.Content>
-                                            </Header>
-                                        </Grid.Column>
-                                        <Grid.Column textAlign="right">
-                                            <Header as="h4">
-                                                <Header.Content>
-                                                    <Header.Subheader>
-                                                        <Dropdown
-                                                            className="rightBottom"
-                                                            icon="ellipsis horizontal"
-                                                            closeOnBlur
-                                                        >
-                                                            <Dropdown.Menu>
-                                                                {
-                                                                    (listingType !== 'groupsWithMemberships')
-                                                                    && (
-                                                                        <Link route={editLink}>
-                                                                            <Dropdown.Item text="Edit Group"/>
-                                                                        </Link>
-                                                                    )
-                                                                }
-                                                                {
-                                                                    (listingType !== 'administeredCampaigns') &&
-                                                                    <Dropdown.Item text="Leave Group" onClick={() => { this.openModal(); }} />
-                                                                }
-                                                            </Dropdown.Menu>
-                                                        </Dropdown>
-                                                        {
-                                                            this.state.open && (
-                                                                <LeaveModal
-                                                                    showError={showError}
-                                                                    showMangeGroups={showMangeGroups}
-                                                                    slug={slug}
-                                                                    name={name}
-                                                                    id={id}
-                                                                    callLeaveGroup={this.props.parentLeaveGroup}
-                                                                    close={this.close}
-                                                                    open={this.state.open}
-                                                                    errorMessage={errorMessage}
-                                                                />
-                                                            )
-                                                        }
-                                                    </Header.Subheader>
-                                                </Header.Content>
-                                            </Header>
-                                        </Grid.Column>
-                                    </Grid.Row>
-                                </Grid>
-                                <Header as="h4" style={{margin:'0rem 0rem .5rem'}}>
-                                    <Header.Content>
-                                        {shortName}
-                                        <br />
-                                        {location}
-                                    </Header.Content>
-                                </Header>
-                                <Link className="lnkChange" route={`/${urlType}/${slug}`}>
-                                    <Button className="btn-small-white-border">View</Button>
-                                </Link>
-                            </Grid.Column>
+                            <Grid.Row>
+                                <Grid.Column width={6}>
+                                    <Image src={displayAvatar} />
+                                </Grid.Column>
+                                <Grid.Column width={10} className="ml-0">
+                                    <Grid columns="2">
+                                        <Grid.Row style={{padding:'1.7rem 0rem 0.2rem'}}>
+                                            <Grid.Column>
+                                                <Header as="h4">
+                                                    <Header.Content>
+                                                        <Header.Subheader className="chimp-lbl group">giving group</Header.Subheader>
+                                                    </Header.Content>
+                                                </Header>
+                                            </Grid.Column>
+                                            <Grid.Column textAlign="right">
+                                                <Header as="h4">
+                                                    <Header.Content>
+                                                        <Header.Subheader>
+                                                            <Dropdown
+                                                                className="rightBottom"
+                                                                icon="ellipsis horizontal"
+                                                                closeOnBlur
+                                                            >
+                                                                <Dropdown.Menu>
+                                                                    {
+                                                                        (listingType !== 'groupsWithMemberships')
+                                                                        && (
+                                                                            <Link route={editLink}>
+                                                                                <Dropdown.Item text="Edit Group"/>
+                                                                            </Link>
+                                                                        )
+                                                                    }
+                                                                    {
+                                                                        (listingType !== 'administeredCampaigns') &&
+                                                                        <Dropdown.Item text="Leave Group" onClick={() => { this.openModal(); }} />
+                                                                    }
+                                                                </Dropdown.Menu>
+                                                            </Dropdown>
+                                                            {
+                                                                this.state.open && (
+                                                                    <LeaveModal
+                                                                        showError={showError}
+                                                                        showMangeGroups={showMangeGroups}
+                                                                        slug={slug}
+                                                                        name={name}
+                                                                        id={id}
+                                                                        callLeaveGroup={this.props.parentLeaveGroup}
+                                                                        close={this.close}
+                                                                        open={this.state.open}
+                                                                        errorMessage={errorMessage}
+                                                                    />
+                                                                )
+                                                            }
+                                                        </Header.Subheader>
+                                                    </Header.Content>
+                                                </Header>
+                                            </Grid.Column>
+                                        </Grid.Row>
+                                    </Grid>
+                                    <Header as="h4" style={{margin:'0rem 0rem .5rem'}}>
+                                        <Header.Content>
+                                            {shortName}
+                                            <br />
+                                            {location}
+                                        </Header.Content>
+                                    </Header>
+                                    <Link className="lnkChange" route={`/${urlType}/${slug}`}>
+                                        <Button className="btn-small-white-border">View</Button>
+                                    </Link>
+                                </Grid.Column>
+                            </Grid.Row>
                         </Grid>
                     </Card.Header>
                 </Card>

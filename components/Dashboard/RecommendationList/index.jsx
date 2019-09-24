@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import _ from 'lodash';
 import {
@@ -66,7 +67,7 @@ class RecommendationList extends React.Component {
             const showData = _.slice(recommendationData.data, 0, 9);
             recommendationList = showData.map((data, index) => {
                 let charityName = '';
-                const charityShortName = renderText(data.attributes.name, 6);
+                const charityShortName = renderText(data.attributes.name, 3);
                 if (data.attributes.city != null) {
                     charityName = `${charityShortName}, ${data.attributes.city}, ${data.attributes.province}`;
                 } else {
@@ -80,54 +81,56 @@ class RecommendationList extends React.Component {
                     <Grid.Column key={index}>
                         <Card className="left-img-card" fluid>
                             <Card.Header>
-                                <Grid verticalAlign="middle">
-                                    <Grid.Column width={6}>
-                                        <Image src={placeholder} />
-                                    </Grid.Column>
-                                    <Grid.Column width={10}>
-                                        <Grid columns="2">
-                                            <Grid.Row style={{ padding: '0.5rem 0rem' }}>
-                                                <Grid.Column>
-                                                    <Header as="h4">
-                                                        <Header.Content>
-                                                            <Header.Subheader className={typeClass}>{type}</Header.Subheader>
-                                                        </Header.Content>
-                                                    </Header>
-                                                </Grid.Column>
-                                                <Grid.Column textAlign="right">
-                                                    <Header as="h4">
-                                                        <Header.Content>
-                                                            <Header.Subheader>
-                                                                <Popup
-                                                                    basic
-                                                                    className="filterPopup"
-                                                                    on="click"
-                                                                    pinned
-                                                                    position="bottom right"
-                                                                    trigger={<a><span className="more-icon"><Icon name="ellipsis horizontal" /></span></a>}>
-                                                                    <div className="filterPanel">
-                                                                        <div className="filterPanelContent">
-                                                                            <div className="filterPanelItem">
-                                                                                <div className="filter-header font-18 font-bold">Hide</div>
+                                <Grid>
+                                    <Grid.Row>
+                                        <Grid.Column width={6}>
+                                            <Image src={placeholder} />
+                                        </Grid.Column>
+                                        <Grid.Column width={10}>
+                                            <Grid columns="2">
+                                                <Grid.Row style={{ padding: '1.7rem 0rem 0.2rem' }}>
+                                                    <Grid.Column>
+                                                        <Header as="h4">
+                                                            <Header.Content>
+                                                                <Header.Subheader className={typeClass}>{type}</Header.Subheader>
+                                                            </Header.Content>
+                                                        </Header>
+                                                    </Grid.Column>
+                                                    <Grid.Column textAlign="right">
+                                                        <Header as="h4">
+                                                            <Header.Content>
+                                                                <Header.Subheader>
+                                                                    <Popup
+                                                                        basic
+                                                                        className="filterPopup"
+                                                                        on="click"
+                                                                        pinned
+                                                                        position="bottom right"
+                                                                        trigger={<a><span className="more-icon"><Icon name="ellipsis horizontal" /></span></a>}>
+                                                                        <div className="filterPanel">
+                                                                            <div className="filterPanelContent">
+                                                                                <div className="filterPanelItem">
+                                                                                    <div className="filter-header font-18 font-bold">Hide</div>
+                                                                                </div>
                                                                             </div>
                                                                         </div>
-                                                                    </div>
-                                                                </Popup>
-                                                            </Header.Subheader>
-                                                        </Header.Content>
-                                                    </Header>
-                                                </Grid.Column>
-                                            </Grid.Row>
-                                        </Grid>
-                                        <Header as="h4" style={{ margin: '0rem 0rem .5rem' }}>
-                                            <Header.Content>
-                                                {charityName}
-                                            </Header.Content>
-                                        </Header>
-                                        <Link className="lnkChange" route={`/${urlEntity}/${data.attributes.slug}`}>
-                                            <Button className="btn-small-white-border">View</Button>
-                                        </Link>
-                                    </Grid.Column>
+                                                                    </Popup>
+                                                                </Header.Subheader>
+                                                            </Header.Content>
+                                                        </Header>
+                                                    </Grid.Column>
+                                                </Grid.Row>
+                                            </Grid>
+                                            <Header as="h4" style={{ margin: '0rem 0rem .5rem' }}>
+                                                <Header.Content>
+                                                    {charityName}
+                                                </Header.Content>
+                                            </Header>
+                                            <Link className="lnkChange" route={`/${urlEntity}/${data.attributes.slug}`}>
+                                                <Button className="btn-small-white-border">View</Button>
+                                            </Link>
+                                        </Grid.Column>
+                                    </Grid.Row>
                                 </Grid>
                             </Card.Header>
                         </Card>
@@ -137,7 +140,7 @@ class RecommendationList extends React.Component {
         }
         return (
             <div className="pt-2">
-                <Grid  columns="equal" stackable doubling columns={3}>
+                <Grid columns="equal" stackable doubling columns={3}>
                     <Grid.Row>
                         {recommendationList}
                     </Grid.Row>
@@ -165,7 +168,6 @@ class RecommendationList extends React.Component {
                 </Link>
             );
         }
-        const count = 2;
         return (
             <div className="pt-2 pb-2">
                 <Container>
@@ -174,7 +176,8 @@ class RecommendationList extends React.Component {
                             <Grid.Column mobile={11} tablet={12} computer={12}>
                                 <Header as="h3">
                                     <Header.Content>
-                                    Recommended for you <span className="small">We’ve made suggestions based on your interests. </span>
+                                        Discovered for you
+                                        <span className="small">Suggestions based on your interests. </span>
                                     </Header.Content>
                                 </Header>
                             </Grid.Column>

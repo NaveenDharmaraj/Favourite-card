@@ -61,7 +61,7 @@ const profile = (state = {}, action) => {
                     ...state.campaignDetails,
                     attributes: {
                         ...state.campaignDetails.attributes,
-                        following: action.payload.followStatus,
+                        liked: action.payload.followStatus,
                     },
                 },
                 // disableFollow: false,

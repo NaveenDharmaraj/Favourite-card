@@ -204,8 +204,14 @@ export const postActivity = async (dispatch, id, msg) => {
     }).catch().finally();
 };
 
-export const postComment = async (dispatch, groupId, eventId, msg) => {
+export const postComment = async (dispatch, groupId, eventId, msg, user) => {
     const url = `events/${eventId}/comments?page[size]=1`;
+    const fsa = {
+        payload: {
+            groupComments: [],
+        },
+        type: actionTypes.GET_GROUP_COMMENTS,
+    };
     coreApi.post(`/comments`,
         {
             data: {
@@ -218,7 +224,24 @@ export const postComment = async (dispatch, groupId, eventId, msg) => {
             },
         }).then((result) => {
         if (result && !_.isEmpty(result.data)) {
-            getCommentFromActivityId(dispatch, eventId, url, true);
+            fsa.payload.groupComments = [
+                {
+                    attributes: {
+                        avatar: user.avatar,
+                        comment: result.data.body,
+                        createdAt: result.data.created_at,
+                        creator: user.displayName,
+                        groupId,
+                        isLiked: false,
+                        likesCount: 0,
+                    },
+                    id: result.data.id,
+                    type: 'comments',
+                },
+            ];
+            fsa.payload.activityId = eventId;
+            fsa.payload.isReply = true;
+            dispatch(fsa);
         }
     }).catch().finally();
 };

@@ -1,5 +1,7 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable react/prefer-stateless-function */
 import React from 'react';
+import _ from 'lodash';
 import {
     Button,
     Header,
@@ -11,6 +13,8 @@ import {
     Tab,
 } from 'semantic-ui-react';
 
+import { Router } from '../../../routes';
+
 import FindFriends from './findFriends';
 import MyFriends from './myFriends';
 
@@ -19,7 +23,7 @@ const panes2 = [
     {
         menuItem: {
             content: 'Find friends',
-            icon: 'privacy',
+            icon: 'find_friends',
             iconPosition: 'left',
             key: 'Find friends',
         },
@@ -32,7 +36,7 @@ const panes2 = [
     {
         menuItem: {
             content: 'Your friends',
-            icon: 'privacy',
+            icon: 'friends',
             iconPosition: 'left',
             key: 'Your friends',
         },
@@ -45,7 +49,51 @@ const panes2 = [
 ];
 
 class Friends extends React.Component {
+    constructor(props) {
+        super(props);
+        const {
+            settingName,
+        } = props;
+        const activeTabIndex = _.isEmpty(settingName) ? 0 : this.getPageIndexByName(settingName);
+        this.state = {
+            activeTabIndex,
+        };
+        this.handleTab = this.handleTab.bind(this);
+    }
+
+    // eslint-disable-next-line react/sort-comp
+    handleTab(event, data) {
+        switch (data.activeIndex) {
+            case 0:
+                Router.pushRoute('/user/profile/friends/findfriends');
+                break;
+            case 1:
+                Router.pushRoute('/user/profile/friends/myfriends');
+                break;
+            default:
+                break;
+        }
+        this.setState({
+            activeTabIndex: data.activeIndex,
+        });
+    }
+
+    // eslint-disable-next-line class-methods-use-this
+    getPageIndexByName(pageName) {
+        switch (pageName) {
+            case 'findfriends':
+                return 0;
+            case 'myfriends':
+                return 1;
+            default:
+                break;
+        }
+    }
+
     render() {
+        const {
+            activeTabIndex,
+        } = this.state;
         return (
             <div>
                 <div className="inviteSettings">
@@ -56,11 +104,9 @@ class Friends extends React.Component {
                                     <Icon name="settings" />
                                         Find friends and give together
                                     <Header.Subheader className="mb-1">
-                                        Give the gift of charitable dollars!
-                                        From birthday gifts to children’s allowances…
-                                        to gifts sent ‘just because.’
-                                        Rally friends and family to give with you
-                                        and create change together.
+                                        Send your friends charitable dollars that they can give away,
+                                        give together in Giving Groups and share messages and
+                                        encouragement that inspires them to give.
                                     </Header.Subheader>
                                     <Modal
                                         className="chimp-modal"
@@ -82,11 +128,11 @@ class Friends extends React.Component {
                                                         <Grid.Row>
                                                             <Grid.Column mobile={16} tablet={12} computer={13}>
                                                                 <Form.Field>
-                                                                    <input placeholder="First Name" />
+                                                                    <input placeholder="Email Address" />
                                                                 </Form.Field>
                                                             </Grid.Column>
                                                             <Grid.Column mobile={16} tablet={4} computer={3}>
-                                                                <Button className="blue-btn-rounded-def c-small">Add friend</Button>
+                                                                <Button className="blue-btn-rounded-def c-small">Invite</Button>
                                                             </Grid.Column>
                                                         </Grid.Row>
                                                     </Grid>
@@ -128,6 +174,8 @@ class Friends extends React.Component {
                                     vertical: true,
                                 }}
                                 panes={panes2}
+                                activeIndex={activeTabIndex}
+                                onTabChange={this.handleTab}
                             />
                         </div>
                     </Responsive>
@@ -139,6 +187,8 @@ class Friends extends React.Component {
                                     secondary: true,
                                 }}
                                 panes={panes2}
+                                activeIndex={activeTabIndex}
+                                onTabChange={this.handleTab}
                             />
                         </div>
                     </Responsive>

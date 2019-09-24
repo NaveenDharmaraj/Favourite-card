@@ -538,6 +538,7 @@ class Friend extends React.Component {
             flowObject.giveData.recipients = parseEmails(
                 flowObject.giveData.recipients,
             );
+            flowObject.stepsCompleted = false;
             dismissAllUxCritialErrors(this.props.dispatch);
             dispatch(proceed(flowObject, flowSteps[stepIndex + 1], stepIndex));
         }

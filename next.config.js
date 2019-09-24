@@ -41,7 +41,8 @@ const configVars = {
         FIREBASE_PROJECT_ID: process.env.FIREBASE_PROJECT_ID,
         FIREBASE_STORAGE_BUCKET: process.env.FIREBASE_STORAGE_BUCKET,
         FIREBASE_MSG_SENDER_ID: process.env.FIREBASE_MSG_SENDER_ID,
-        FIREBASE_APP_ID: process.env.FIREBASE_APP_ID
+        FIREBASE_APP_ID: process.env.FIREBASE_APP_ID,
+        HELP_CENTRE_URL: process.env.HELP_CENTRE_URL,
     },
 };
 

@@ -28,7 +28,6 @@ const user = (state = {}, action) => {
                 defaultTaxReceiptProfile,
                 fund,
                 taxReceiptProfiles,
-                userAccountsFetched,
                 userCampaigns,
                 userGroups,
             } = action.payload;
@@ -46,12 +45,14 @@ const user = (state = {}, action) => {
                 },
                 paymentInstrumentsData: Object.assign([], state.paymentInstrumentsData, paymentInstrumentsData),
                 taxReceiptProfiles: Object.assign([], state.taxReceiptProfiles, taxReceiptProfiles),
-                userAccountsFetched: {
-                    ...state.userAccountsFetched,
-                    ...userAccountsFetched,
-                },
                 userCampaigns: Object.assign([], state.userCampaigns, userCampaigns),
                 userGroups: Object.assign([], state.userGroups, userGroups),
+            };
+            break;
+        case 'SET_USER_ACCOUNT_FETCHED':
+            newState = {
+                ...state,
+                userAccountsFetched: action.payload.userAccountsFetched,
             };
             break;
         case 'TAX_RECEIPT_PROFILES':
@@ -116,6 +117,13 @@ const user = (state = {}, action) => {
             newState = {
                 ...state,
                 monthlyTransactionApiCall: action.payload.apiCallStats,
+            };
+            break;
+        case 'USER_INITIAL_FAVORITES':
+            newState = {
+                ...state,
+                //favorites: _.merge({}, action.payload.favorites),
+                favorites: action.payload.favorites,
             };
             break;
         case 'USER_FAVORITES':

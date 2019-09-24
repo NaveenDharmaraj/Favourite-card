@@ -20,16 +20,18 @@ import {
     downloadTaxreceiptDonationsDetail,
     getIssuedTaxreceiptDonationsDetail,
 } from '../../../actions/taxreceipt';
-
 import {
+    formatCurrency,
+    formatAmount,
     monthNamesForGivingTools,
 } from '../../../helpers/give/utils';
+import { withTranslation } from '../../../i18n';
 import PlaceholderGrid from '../../shared/PlaceHolder';
 
 const formatDateTaxReceipt = (date) => {
     const dateArray = date.split('-');
     const month = monthNamesForGivingTools(dateArray[1]);
-    return `${month}${dateArray[2]}, ${dateArray[0]}`;
+    return `${month} ${dateArray[2]}, ${dateArray[0]}`;
 };
 
 class IndividualTaxDonationContent extends React.Component {
@@ -165,6 +167,9 @@ class IndividualTaxDonationContent extends React.Component {
             donationDetail,
             downloadloader,
             index,
+            i18n: {
+                language,
+            },
             issuedTaxReceiptYearlyDetailPageCount,
         } = this.props;
         return (
@@ -178,8 +183,7 @@ class IndividualTaxDonationContent extends React.Component {
                         <div>{donationDetail.total} tax-receiptable donations</div>
                     </div>
                     <div className="rightContent">
-                                                        $
-                        {donationDetail.total_amount}
+                        {formatCurrency(formatAmount(donationDetail.total_amount), language, 'USD')}
                         {downloadloader ? <Icon name="spinner" loading /> : (
                             <div className="downloadIcon" onClick={(event)=>{this.downloadTaxReceipt(event, donationDetail.year);}}>
                                 <Image src={downloadIcon} />
@@ -199,8 +203,7 @@ class IndividualTaxDonationContent extends React.Component {
                                 <List divided verticalAlign="middle">
                                     <List.Item className="pt-1 pb-1">
                                         <List.Content floated="right" className="bold">
-                                                                    $
-                                            {yearlydetails.amount}
+                                            {formatCurrency(formatAmount(yearlydetails.amount), language, 'USD')}
                                         </List.Content>
                                         <List.Content>{formatDateTaxReceipt(yearlydetails.transfer_date)}</List.Content>
                                     </List.Item>
@@ -237,4 +240,4 @@ const mapStateToProps = (state) => ({
     urlChange: state.taxreceipt.urlChange,
 });
 
-export default connect(mapStateToProps)(IndividualTaxDonationContent);
+export default withTranslation('giveCommon')(connect(mapStateToProps)(IndividualTaxDonationContent));

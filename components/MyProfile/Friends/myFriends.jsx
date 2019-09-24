@@ -110,7 +110,7 @@ class MyFriends extends React.Component {
         const {
             currentMyInvitaionsActivePage,
         } = this.state;
-        let friendsList = 'No Data';
+        let friendsList = 'No invitations yet ';
         if (!_.isEmpty(userFriendsInvitationsList) && _.size(userFriendsInvitationsList.data) > 0) {
             friendsList = userFriendsInvitationsList.data.map((friend) => {
                 const name = `${friend.attributes.first_name} ${friend.attributes.last_name}`;
@@ -167,7 +167,7 @@ class MyFriends extends React.Component {
         const {
             currentMyFriendsActivePage,
         } = this.state;
-        let friendsList = 'No Data';
+        let friendsList = 'No friends yet';
         if (!_.isEmpty(userMyFriendsList) && _.size(userMyFriendsList.data) > 0) {
             friendsList = userMyFriendsList.data.map((friend) => {
                 const name = `${friend.attributes.first_name} ${friend.attributes.last_name}`;

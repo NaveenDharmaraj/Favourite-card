@@ -31,9 +31,9 @@
     },
     "creditCard": {
         "testCreditCardListMessage": "More information on test accounts can be found at Stripe.",
-        "cardNumberLabel": "Credit card number",
-        "nameOnCardLabel": "Name on Card",
-        "expiryDateLabel": "Expiration date",
+        "cardNumberLabel": "Card number",
+        "nameOnCardLabel": "Name on card",
+        "expiryDateLabel": "Expiry",
         "cvvLabel": "CVV"
     },
     "creditCardErrorMessages": {
