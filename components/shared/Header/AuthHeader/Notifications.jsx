@@ -53,7 +53,7 @@ const Notifications = (props) => {
                 break;
             }
             case "sendThankYou": {
-                let thankyouNote = ctaOptions.msg[this.state.localeCode];
+                // let thankyouNote = ctaOptions.msg[this.state.localeCode];
                 let userId = ctaOptions['user_id'];
                 Router.pushRoute(`/chats/${userId}`);
                 break;
