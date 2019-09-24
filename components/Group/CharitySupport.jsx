@@ -14,6 +14,7 @@ import {
     string,
     number,
     func,
+    bool,
 } from 'prop-types';
 
 import { getDetails } from '../../actions/group';
@@ -37,13 +38,6 @@ class CharitySupport extends React.Component {
         );
     }
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            charityLoader: !props.groupBeneficiaries.data.length > 0,
-        };
-    }
-
     componentDidMount() {
         const {
             dispatch,
@@ -54,25 +48,6 @@ class CharitySupport extends React.Component {
         } = this.props;
         if (_isEmpty(beneficiariesData)) {
             getDetails(dispatch, groupId, 'charitySupport');
-        }
-    }
-
-    componentDidUpdate(prevProps) {
-        const {
-            groupBeneficiaries: {
-                data: charityData,
-            },
-        } = this.props;
-        let {
-            charityLoader,
-        } = this.state;
-        if (!_.isEqual(this.props, prevProps)) {
-            if (!_.isEqual(charityData, prevProps.groupBeneficiaries.data)) {
-                charityLoader = false;
-            }
-            this.setState({
-                charityLoader,
-            });
         }
     }
 
@@ -90,20 +65,21 @@ class CharitySupport extends React.Component {
 
     render() {
         const {
+            charityLoader,
             groupBeneficiaries: {
                 data: beneficiariesData,
                 nextLink: beneficiariesNextLink,
             },
         } = this.props;
-        const {
-            charityLoader,
-        } = this.state;
+        let viewData = 'NO DATA';
+        if (!_isEmpty(beneficiariesData)) {
+            viewData = CharitySupport.loadCards(beneficiariesData);
+        }
         return (
             <Fragment>
                 {!charityLoader ? (
                     <Grid stackable doubling columns={3}>
-                        {!_isEmpty(beneficiariesData)
-                            && CharitySupport.loadCards(beneficiariesData)}
+                        {viewData}
                         {(beneficiariesNextLink)
                         && (
                             <div className="text-right">
@@ -125,6 +101,7 @@ class CharitySupport extends React.Component {
 }
 
 CharitySupport.defaultProps = {
+    charityLoader: true,
     dispatch: _.noop,
     groupBeneficiaries: {
         data: [],
@@ -134,6 +111,7 @@ CharitySupport.defaultProps = {
 };
 
 CharitySupport.propTypes = {
+    charityLoader: bool,
     dispatch: func,
     groupBeneficiaries: {
         data: arrayOf(PropTypes.element),
@@ -144,6 +122,7 @@ CharitySupport.propTypes = {
 
 function mapStateToProps(state) {
     return {
+        charityLoader: state.group.showPlaceholder,
         groupBeneficiaries: state.group.groupBeneficiaries,
     };
 }

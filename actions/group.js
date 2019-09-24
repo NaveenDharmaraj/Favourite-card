@@ -6,6 +6,7 @@ import graphApi from '../services/graphApi';
 
 export const actionTypes = {
     ACTIVITY_LIKE_STATUS: 'ACTIVITY_LIKE_STATUS',
+    ADMIN_PLACEHOLDER_STATUS: 'ADMIN_PLACEHOLDER_STATUS',
     GET_GROUP_ACTIVITY_DETAILS: 'GET_GROUP_ACTIVITY_DETAILS',
     GET_GROUP_ADMIN_DETAILS: 'GET_GROUP_ADMIN_DETAILS',
     GET_GROUP_BENEFICIARIES: 'GET_GROUP_BENEFICIARIES',
@@ -13,6 +14,7 @@ export const actionTypes = {
     GET_GROUP_DETAILS_FROM_SLUG: 'GET_GROUP_DETAILS_FROM_SLUG',
     GET_GROUP_MEMBERS_DETAILS: 'GET_GROUP_MEMBERS_DETAILS',
     GET_GROUP_TRANSACTION_DETAILS: 'GET_GROUP_TRANSACTION_DETAILS',
+    MEMBER_PLACEHOLDER_STATUS: 'MEMBER_PLACEHOLDER_STATUS',
     PLACEHOLDER_STATUS: 'PLACEHOLDER_STATUS',
     POST_NEW_ACTIVITY: 'POST_NEW_ACTIVITY',
     REDIRECT_TO_DASHBOARD: 'REDIRECT_TO_DASHBOARD',
@@ -66,22 +68,32 @@ export const getDetails = async (dispatch, id, type, url) => {
         payload: {},
     };
     let newUrl = '';
+    const placeholderfsa = {
+        payload: {},
+    };
     switch (type) {
         case 'members':
             fsa.type = actionTypes.GET_GROUP_MEMBERS_DETAILS;
             newUrl = !_.isEmpty(url) ? url : `/groups/${id}/groupMembers?page[size]=7`;
+            placeholderfsa.payload.memberPlaceholder = true;
+            placeholderfsa.type = actionTypes.MEMBER_PLACEHOLDER_STATUS;
             break;
         case 'admins':
             fsa.type = actionTypes.GET_GROUP_ADMIN_DETAILS;
             newUrl = !_.isEmpty(url) ? url : `/groups/${id}/groupAdmins?page[size]=7`;
+            placeholderfsa.payload.adminPlaceholder = true;
+            placeholderfsa.type = actionTypes.ADMIN_PLACEHOLDER_STATUS;
             break;
         case 'charitySupport':
             fsa.type = actionTypes.GET_GROUP_BENEFICIARIES;
             newUrl = !_.isEmpty(url) ? url : `groups/${id}/groupBeneficiaries?page[size]=3`;
+            placeholderfsa.payload.showPlaceholder = true;
+            placeholderfsa.type = actionTypes.PLACEHOLDER_STATUS;
             break;
         default:
             break;
     }
+    dispatch(placeholderfsa);
     coreApi.get(newUrl, {
         params: {
             dispatch,
@@ -93,7 +105,25 @@ export const getDetails = async (dispatch, id, type, url) => {
             fsa.payload.nextLink = (result.links.next) ? result.links.next : null;
             dispatch(fsa);
         }
-    }).catch().finally();
+    }).catch().finally(() => {
+        switch (type) {
+            case 'members':
+                placeholderfsa.payload.memberPlaceholder = false;
+                placeholderfsa.type = actionTypes.MEMBER_PLACEHOLDER_STATUS;
+                break;
+            case 'admins':
+                placeholderfsa.payload.adminPlaceholder = false;
+                placeholderfsa.type = actionTypes.ADMIN_PLACEHOLDER_STATUS;
+                break;
+            case 'charitySupport':
+                placeholderfsa.payload.showPlaceholder = false;
+                placeholderfsa.type = actionTypes.PLACEHOLDER_STATUS;
+                break;
+            default:
+                break;
+        }
+        dispatch(placeholderfsa);
+    });
 };
 
 export const getTransactionDetails = async (dispatch, id, url) => {

@@ -6,12 +6,18 @@ import {
     GoogleApiWrapper,
     Marker,
 } from 'google-maps-react';
-import Geocode from 'react-geocode';
+import _ from 'lodash';
 import _isEmpty from 'lodash/isEmpty';
 import {
     PropTypes,
     string,
+    arrayOf,
+    func,
 } from 'prop-types';
+
+import {
+    getGeoCoding,
+} from '../../actions/charity';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -19,78 +25,69 @@ const {
     GOOGLE_MAP_API_KEY,
 } = publicRuntimeConfig;
 
-Geocode.setApiKey(`${GOOGLE_MAP_API_KEY}`);
 const mapStyles = {
-    width: '100%',
     height: '100%',
+    width: '100%',
 };
 
-class Maps extends React.Component {
-    static async getGeoCoding(name) {
-        const values = {};
-        await Geocode.fromAddress(name).then(
-            (response) => {
-                const {
-                    lat,
-                    lng,
-                } = response.results[0].geometry.location;
-                // console.log(lat, lng);
-                values.lat = lat;
-                values.lng = lng;
-                return values;
-            },
-            (error) => {
-                console.error(error);
-            },
-        );
-        return values;
-    }
-
-    render() {
-        const {
+const Maps = (props) => {
+    const {
+        charityDetails: {
             charityDetails: {
-                charityDetails: {
-                    attributes: {
-                        countries,
-                        headQuarterAddress,
-                    },
+                attributes: {
+                    countries,
+                    headQuarterAddress,
                 },
             },
-            google,
-        } = this.props;
-        let centerLocation = {
-            lat: null,
-            lng: null,
-        };
-        if (headQuarterAddress) {
-            centerLocation = Maps.getGeoCoding(headQuarterAddress);
-        }
-        return (
-            <div style={{
-                position: 'relative',
-                height: '500px',
-            }}
-            >
-                <Map
-                    google={google}
-                    zoom={2}
-                    style={mapStyles}
-                    initialCenter={centerLocation}
-                >
-                    {headQuarterAddress
-                    && <Marker position={centerLocation} />}
-
-                    {!_isEmpty(countries) && countries.map((country) => {
-                        const markerLocation = Maps.getGeoCoding(country.name);
-                        return (
-                            <Marker position={markerLocation} />
-                        );
-                    })}
-                </Map>
-            </div>
-        );
+        },
+        countriesGeocode,
+        dispatch,
+        google,
+        headQuarterGeocode,
+    } = props;
+    let centerLocation = {
+        lat: null,
+        lng: null,
+    };
+    const cityData = [];
+    const headQuarterData = [];
+    if (!_isEmpty(countries) && _isEmpty(countriesGeocode)) {
+        countries.map((country) => {
+            cityData.push(country.name);
+        });
+        getGeoCoding(dispatch, cityData, false);
     }
-}
+    if (headQuarterAddress && _isEmpty(headQuarterGeocode)) {
+        headQuarterData.push(headQuarterAddress);
+        getGeoCoding(dispatch, headQuarterData, true);
+    }
+    if (!_isEmpty(headQuarterGeocode)) {
+        centerLocation = headQuarterGeocode[0].attributes.lat_long;
+    }
+    return (
+        <div style={{
+            height: '500px',
+            position: 'relative',
+        }}
+        >
+            <Map
+                google={google}
+                zoom={2}
+                style={mapStyles}
+                initialCenter={centerLocation}
+            >
+                {!_isEmpty(headQuarterGeocode)
+                && <Marker position={centerLocation} />}
+
+                {!_isEmpty(countriesGeocode) && countriesGeocode.map((country) => {
+                    return (
+                        <Marker position={country.attributes.lat_long} />
+                    );
+                })}
+            </Map>
+        </div>
+    );
+};
 
 Maps.defaultProps = {
     charityDetails: {
@@ -101,23 +98,31 @@ Maps.defaultProps = {
             },
         },
     },
+    countriesGeocode: [],
+    dispatch: func,
+    headQuarterGeocode: [],
 };
 
 Maps.propTypes = {
     charityDetails: {
         charityDetails: {
             attributes: PropTypes.shape({
-                countries: PropTypes.arrayOf(),
+                countries: arrayOf(PropTypes.element),
                 headQuarterAddress: string,
             }),
         },
     },
+    countriesGeocode: arrayOf(PropTypes.element),
+    dispatch: _.noop,
+    headQuarterGeocode: arrayOf(PropTypes.element),
 };
 
 
 function mapStateToProps(state) {
     return {
-        charityDetails: state.give.charityDetails,
+        charityDetails: state.charity.charityDetails,
+        countriesGeocode: state.charity.countriesData,
+        headQuarterGeocode: state.charity.headQuarterData,
     };
 }
 

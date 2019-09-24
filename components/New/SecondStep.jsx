@@ -81,7 +81,7 @@ function SecondStep(props) {
                                 errorMessage="Please enter your account password"
                             />
                         </Form.Field>
-                        <p>
+                        <p className="font-s-12">
                             <span className={(validity.doesPwdHaveCount) ? 'blueText' : ''}>
                                 {pwdCharCount}/8 characters,
                             </span>

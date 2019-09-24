@@ -61,10 +61,12 @@ function ProfilePageHead(props) {
                     <Grid.Row>
                         <Grid.Column mobile={16} tablet={3} computer={2}>
                             <div className="profile-img-rounded">
-                                <Image
-                                    circular
-                                    src={pageDetails.attributes.avatar}
-                                />
+                                <div className="pro-pic-wraper">
+                                    <Image
+                                        circular
+                                        src={pageDetails.attributes.avatar}
+                                    />
+                                </div>
                             </div>
                         </Grid.Column>
                         <Grid.Column mobile={16} tablet={10} computer={11}>

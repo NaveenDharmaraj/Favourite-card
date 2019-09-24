@@ -50,6 +50,18 @@ const charity = (state = {}, action) => {
                 showPlaceholder: action.payload.showPlaceholder,
             };
             break;
+        case 'SET_HEADQUARTER_GEOCODE':
+            newState = {
+                ...state,
+                headQuarterData: action.payload.city,
+            };
+            break;
+        case 'SET_COUNTRIES_GEOCODE':
+            newState = {
+                ...state,
+                countriesData: action.payload.city,
+            };
+            break;
         default:
             break;
     }

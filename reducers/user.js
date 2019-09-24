@@ -96,6 +96,13 @@ const user = (state = {}, action) => {
                 groupsWithMemberships: Object.assign({}, state.groupsWithMemberships, action.payload.groupsWithMemberships),
             };
             break;
+        case 'GIVING_GROUPS_lEAVE_MODAL':
+            newState = {
+                ...state,
+                closeLeaveModal: action.payload.closeModal,
+                leaveButtonLoader: action.payload.buttonLoading,
+            };
+            break;
         case 'LEAVE_GROUP_ERROR_MESSAGE':
             newState = {
                 ...state,
