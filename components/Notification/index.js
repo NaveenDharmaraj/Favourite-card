@@ -5,7 +5,6 @@ import { Link, Router } from '../../routes';
 import placeholderUser from '../../static/images/no-data-avatar-user-profile.png';
 import { distanceOfTimeInWords } from '../../helpers/utils';
 import eventApi from '../../services/eventApi';
-// import { Icon, Image, Label, List, Menu, Popup } from 'semantic-ui-react';
 import {
     Button,
     Container,
@@ -158,6 +157,8 @@ class NotificationWrapper extends React.Component {
                 updateUserPreferences(this.state.dispatch, this.state.userInfo.id, "in_app_giving_group_activity", false);
                 break;
             }
+            default:
+                break;
         }
     }
 

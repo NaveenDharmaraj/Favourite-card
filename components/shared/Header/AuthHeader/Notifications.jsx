@@ -1,27 +1,33 @@
 import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
 import { Button, Dropdown, Icon, Image, Label, List, Menu, Popup } from 'semantic-ui-react';
+
 import { NotificationHelper } from '../../../../Firebase/NotificationHelper';
 import { Link, Router } from '../../../../routes';
 import { withTranslation } from '../../../../i18n';
 import placeholderUser from '../../../../static/images/no-data-avatar-user-profile.png';
 import { distanceOfTimeInWords } from '../../../../helpers/utils';
+import {
+    updateUserPreferences,
+} from '../../../../actions/userProfile';
 
 const noOfMessagesToShow = 6;
 
 const Notifications = (props) => {
-    let {
+    const {
         messageCount,
-        messages,
         userInfo,
         localeCode,
         dispatch,
-        t
+        t,
+    } = props;
+    let {
+        messages,
     } = props;
     if (!messages) {
         messages = [];
     }
-    setInterval(async function () {
+    setInterval(async () => {
         await NotificationHelper.getMessages(userInfo, dispatch, 1);
     }, 10000);
     const fetchMessages = async () => {
@@ -43,6 +49,10 @@ const Notifications = (props) => {
         switch (cta) {
             case 'delete': {
                 updateDeleteFlag(msg._key, msg, true);
+                break;
+            }
+            case 'turnOff': {
+                updateUserPreferences(dispatch, userInfo.id, 'in_app_giving_group_activity', false);
                 break;
             }
             default:
@@ -114,7 +124,7 @@ const Notifications = (props) => {
                     </List.Content>
                 </List.Item>
             );
-        } 
+        }
         // className={msg.read ? "" : "new"} onClick={() => updateReadFlag(msg._key, msg, true)}
         return (
             <List.Item key={`notification_head_${msg._key}`}>

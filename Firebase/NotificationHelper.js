@@ -9,18 +9,13 @@ const ACCEPT_FREIND_PAYLOAD = {
     "type": "Event",
     "attributes": {
         "source": "web",
-        "category": "Social",
-        "subCategory": "FRIEND_MANAGEMENT",
-        "eventName": "FRIEND_REQUEST_ACCEPTED",
-        "payload": {
-            "acceptor_email_id": "",
-            "acceptor_user_id": 0,
-            "acceptor_avatar_link": "",
-            "acceptor_first_name": "",
-            "requester_user_id": 0,
-            "requester_email_id": "",
-            "friend_request_event_id": "",
-        }
+        "acceptor_email_id": "",
+        "acceptor_user_id": 0,
+        "acceptor_avatar_link": "",
+        "acceptor_first_name": "",
+        "requester_user_id": 0,
+        "requester_email_id": "",
+        "friend_request_event_id": "",
     }
 };
 const { publicRuntimeConfig } = getConfig();
@@ -61,10 +56,8 @@ class NotificationHelper {
                         fbHelper.messaging.useServiceWorker(registration);
                         fbHelper.messaging.requestPermission().then(function () {
                             let token = fbHelper.messaging.getToken();
-                            console.log(token);
                             return token;
                         }).then(function (token) {
-                            console.log(token);
                         }).catch(function (err) {
                             console.log('Permission denied', err);
                         });
@@ -102,15 +95,15 @@ class NotificationHelper {
             },
         } = msgData;
         let requestData = ACCEPT_FREIND_PAYLOAD;
-        requestData.attributes.payload.acceptor_email_id = userInfo.attributes.email,
-        requestData.attributes.payload.acceptor_user_id = Number(userInfo.id);
-        requestData.attributes.payload.acceptor_avatar_link = userInfo.attributes.avatar,
-        requestData.attributes.payload.acceptor_first_name = userInfo.attributes.firstName;
+        requestData.attributes.acceptor_email_id = userInfo.attributes.email,
+        requestData.attributes.acceptor_user_id = Number(userInfo.id);
+        requestData.attributes.acceptor_avatar_link = userInfo.attributes.avatar,
+        requestData.attributes.acceptor_first_name = userInfo.attributes.firstName;
 
-        requestData.attributes.payload.requester_user_id = user_id;
-        requestData.attributes.payload.requester_email_id = user_email_id;
-        requestData.attributes.payload.friend_request_event_id = msgData.id;
-        await eventApi.post("/event", { data: requestData });
+        requestData.attributes.requester_user_id = user_id;
+        requestData.attributes.requester_email_id = user_email_id;
+        requestData.attributes.friend_request_event_id = msgData.id;
+        await eventApi.post("/friend/accept", { data: requestData });
         await NotificationHelper.getMessages(userInfo, dispatch, NotificationHelper.currentPage);
     }
 
@@ -178,7 +171,6 @@ class NotificationHelper {
         msgData["read"] = readFlag;// !msgData["read"];//false;
         let userRef = Firebase.database().ref("/organisation/chimp/users/" + userInfo.id + "/messages");
         userRef.child(msgId).set(msgData).then(async function () {
-            // console.log("Marked Msg " + msgId + " REad" + msgData["read"]);
             await NotificationHelper.getMessages(userInfo, dispatch, NotificationHelper.currentPage);
         }).catch(function (e) {
             console.log(e);
