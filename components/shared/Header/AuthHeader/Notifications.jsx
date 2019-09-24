@@ -21,6 +21,9 @@ const Notifications = (props) => {
     if (!messages) {
         messages = [];
     }
+    setInterval(async function () {
+        await NotificationHelper.getMessages(userInfo, dispatch, 1);
+    }, 10000);
     const fetchMessages = async () => {
         await NotificationHelper.getMessages(userInfo, dispatch, 1);
     };
