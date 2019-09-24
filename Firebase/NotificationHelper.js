@@ -1,4 +1,6 @@
-import { Firebase } from "./init";
+// import { Firebase } from "./init";
+import Firebase from "firebase";
+import firebaseConfig from "./config";
 import getConfig from 'next/config';
 import { firebaseMessageFetchCompleteAction } from "../actions/firebase";
 import _ from 'lodash';
@@ -33,6 +35,13 @@ class NotificationHelper {
     userInfo = null;
     constructor(userInfo) {
         let fbHelper = this;
+        try { Firebase.getInstance() } catch (err) {
+            try {
+                Firebase.initializeApp(firebaseConfig);
+            } catch (e) {
+                console.error(e);
+            }
+        }
         fbHelper.messaging = Firebase.messaging();
         fbHelper.userInfo = userInfo;
         // if (!NotificationHelper.messageConfigDone) {
@@ -119,7 +128,6 @@ class NotificationHelper {
             let messageRef = null;
 
             if (lastMsgKey) {
-                console.log(lastMsgKey);
                 messageRef = userRef.child("/messages").orderByChild("createdTs").endAt(lastMsg.createdTs).limitToLast(limit);
             } else {
                 messageRef = userRef.child("/messages").orderByChild("createdTs").limitToLast(limit);//.startAt((page - 1) * limit).limitToLast(limit);//.orderByChild("read").equalTo(true);I
@@ -150,7 +158,6 @@ class NotificationHelper {
                 firebaseMessages.sort(function (a, b) {
                     return a.createdTs > b.createdTs ? -1 : 1;
                 });
-                console.info(firebaseMessages);
             });
             await firebaseMessageFetchCompleteAction(dispatch, firebaseMessages, lastSyncTime, page);
 

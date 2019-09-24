@@ -7,7 +7,7 @@
     "markAsUnread": "Mark as Unread",
     "markAsRead": "Mark as Read",
     "delete": "Delete this notification",
-    "turnoff": "Stop receiving notifications like this",
+    "turnOff": "Stop receiving notifications like this",
     "removed": "This notification is now removed.",
     "undo": "Undo",
     "secondsAgo": "seconds ago",

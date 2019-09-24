@@ -38,6 +38,7 @@ class NotificationWrapper extends React.Component {
     loading = false;
     deletedItems = [];
     deleteTimeouts = {};
+    intervalId = -1;
     constructor(props) {
         super(props)
         /* const messageCount = props.messageCount;
@@ -108,6 +109,7 @@ class NotificationWrapper extends React.Component {
         } = this.state;
         await NotificationHelper.updateLastSyncTime(userInfo, dispatch, new Date().getTime());
         window.removeEventListener("scroll", this.handleScroll);
+        clearInterval(this.intervalId);
         // await NotificationHelper.updateLastSyncTime();
     }
 
@@ -117,6 +119,9 @@ class NotificationWrapper extends React.Component {
             dispatch
         } = this.state;
         window.addEventListener("scroll", this.handleScroll);
+        this.intervalId = setInterval(async function () {
+            await NotificationHelper.getMessages(userInfo, dispatch, 1);
+        }, 10000);
         await NotificationHelper.getMessages(userInfo, dispatch, 1);
     }
     async onClick(userInfo, dispatch) {
@@ -149,7 +154,7 @@ class NotificationWrapper extends React.Component {
                 this.updateDeleteFlag(msg._key, msg, true);
                 break;
             }
-            case "turnoff": {
+            case "turnOff": {
                 updateUserPreferences(this.state.dispatch, this.state.userInfo.id, "in_app_giving_group_activity", false);
                 break;
             }
