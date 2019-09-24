@@ -78,7 +78,7 @@ class DashboradList extends React.Component {
     // eslint-disable-next-line class-methods-use-this
     nodataCard() {
         return (
-            <Card fluid className="noDataCard rightImg">
+            <Card fluid className="noDataCard rightImg noHeader">
                 <Card.Content>
                     <Image
                         floated="right"

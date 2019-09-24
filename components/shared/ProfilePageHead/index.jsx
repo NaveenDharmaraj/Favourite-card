@@ -69,7 +69,7 @@ function ProfilePageHead(props) {
                                 </div>
                             </div>
                         </Grid.Column>
-                        <Grid.Column mobile={16} tablet={10} computer={11}>
+                        <Grid.Column mobile={16} tablet={10} computer={12}>
                             <div className="ProfileHeaderWraper">
                                 <Header as="h3">
                                     {pageDetails.attributes.name}
@@ -82,7 +82,7 @@ function ProfilePageHead(props) {
                                 </div>
                             </div>
                         </Grid.Column>
-                        <Grid.Column mobile={16} tablet={3} computer={3}>
+                        <Grid.Column mobile={16} tablet={3} computer={2}>
                             <div className="buttonWraper">
                                 {buttonLink}
                             </div>

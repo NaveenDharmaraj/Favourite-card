@@ -53,7 +53,7 @@ const CampaignDetails = (props) => {
                     <Header as="h3">
                         Campaign information
                     </Header>
-                    <Grid divided stackable>
+                    <Grid stackable>
                         <Grid.Row>
                             <Grid.Column mobile={16} tablet={10} computer={10}>
                                 {((!_isEmpty(campaignDetails.attributes))

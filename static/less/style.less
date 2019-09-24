@@ -22,6 +22,11 @@ body{
   a{
     color: @blueButton;
     font-size: inherit;
+    &.viewAll{
+      color: @blueButton;
+      font-size: 14px;
+      font-weight: 600;
+    }
     &:hover,&:focus{
       color: @blueButton-hover;
       text-decoration: none;
@@ -326,6 +331,9 @@ h4{
 .font-s-10{
   font-size: 12/@rem !important;
 }
+.font-s-12{
+  font-size: 12px !important;
+}
 .font-s-13{
   font-size: 13px !important;
 }
@@ -426,6 +434,10 @@ h4{
     }
   }
 }
+.w-120{
+  max-width: 120px;
+  text-align: center;
+}
 .w-140{
   width: 140/@rem;
   text-align: center;
@@ -497,6 +509,9 @@ h4{
   color: @link;
   transition: all 0.3s ease-out;
   cursor: pointer;
+  &.border{
+    text-decoration: underline;
+  }
   &:hover{
     color: @link-hover;
   }
@@ -876,6 +891,11 @@ h4{
   .settingsDetailWraper{
     padding: 2rem 0rem 2rem; 
     border-bottom: 1px solid @grey-lighten-2;
+    p{
+      >a{
+        text-decoration: underline;
+      }
+    }
     &:first-child{
       padding-top: 0px;
     }
@@ -946,7 +966,10 @@ h4{
   &.ui{
     &.list{
       >.item{
-        padding: 1rem 0rem;
+        padding: 15px 0rem 9px;
+        &:first-child{
+          padding: 15px 0rem 9px;
+        }
         .ui{
           &.avatar{
             &.image{
@@ -1249,7 +1272,7 @@ h4{
       left: -75px;
       right: 100px;
       top: 0;
-      background-image: url('../images/Login.png');
+      background-image: url('../images/login.png');
       background-size: contain;
       height: 100%;
       background-position: center;
@@ -1258,6 +1281,20 @@ h4{
    }
  }
 .left-bg{
+  &.verifyImg{
+    min-height: 334px;
+    >div{
+      position: absolute;
+      left: 0px;
+      right: 100px;
+      top: 0;
+      background-image: url('../images/verifyemail.png');
+      background-size: contain;
+      height: 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+  }
   >div{
     position: absolute;
     left: -75px;
@@ -2087,7 +2124,7 @@ h4{
   h3.ui.header{
     font-size: 24px !important;
     margin-bottom: 0px;
-    color: @grey-darken-3;
+    color: #263238;
   }
   h4.ui.header{
     font-size: 17px;
@@ -2334,6 +2371,13 @@ h4{
     &.card{
       box-shadow: 0 13px 40px 0 rgba(0,0,0,0.13);
       padding: 35px;
+      button{
+        &.btn-small-white{
+          &.button{
+            height: 40px;
+          }
+        }
+      }
       h2{
         &.ui{
           &.header{
@@ -2342,7 +2386,7 @@ h4{
               font-size: 32px;
               line-height: 39px;
               font-weight: 600;
-              font-family: 'ProximaNova-Bold';
+              font-family: 'ProximaNova-Regular';
               .sub{
                 &.header{
                   font-size: 14px;
@@ -2386,6 +2430,18 @@ h4{
 .db-activity-tbl{
   &.ui{
     &.basic{
+      >tbody{
+        >tr{
+          td{
+            &:nth-child(2){
+              img{
+                border-radius: 100%;
+              }
+            }
+          }
+        }
+      }
+      
       tr{
         td{
           padding: 19px 15px 17px;
@@ -2396,7 +2452,7 @@ h4{
           .item{
             >.image{
               height: 30px;	width: 30px;
-              border-radius: 5/@rem;
+              border-radius: 100%;
               &.avatar{
                 border-radius: 100%;
               }
@@ -2756,7 +2812,8 @@ h4{
           }
         }
         .content{
-          display: block;
+          display: block; 
+          font-size: 14px;
         }
       }
     }
@@ -2852,9 +2909,9 @@ h4{
           z-index: 2;
           .header{
             color: #fff;
-            font-size: 1rem;	
-            font-weight: bold;	
-            line-height: 18/@rem;	
+            font-size: 16px;	 
+            font-weight: 600;	
+            line-height: 18px;	
             text-shadow: 0 1px 2px rgba(0,0,0);
           }
         }
@@ -3097,6 +3154,58 @@ h4{
     &.giving{
       background-image: url(../images/giving_info_card_bg.png);
     }
+    i{
+      &.icon{
+        position: relative;
+        min-width: 16px;
+        min-height: 16px;
+        &::before{
+          content: '';
+          position: absolute;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          top: 0;
+          background-size: contain !important;
+          background-repeat: no-repeat !important;
+        }
+        &.user{
+          &::before{
+            background-image:url(../images/icons/user.svg) !important;
+          }
+        }
+        &.phone{
+          &::before{
+            background-image:url(../images/icons/phone.svg) !important;
+          }
+        }
+        &.mail{
+          &::before{
+            background-image:url(../images/icons/mail.svg) !important;
+          }
+        }
+        &.linkify{
+          &::before{
+            background-image:url(../images/icons/website.svg) !important;
+          }
+        }
+        &.users{
+          &::before{
+            background-image:url(../images/icons/group.svg) !important;
+          }
+        }
+        &.map{
+          &::before{
+            background-image:url(../images/icons/location.svg) !important;
+          }
+        }
+        &.briefcase{
+          &::before{
+            background-image:url(../images/icons/business.svg) !important;
+          }
+        }
+      }
+    }
     h3{
       &.header{
         &.ui{
@@ -3180,7 +3289,21 @@ h4{
   }
 }
 .campaign-amount{
-
+  h2{
+    &.ui{
+      &.header{
+        .sub{
+          &.header{
+            &.small{
+              font-family: 'ProximaNova-Regular';
+              font-size: 14px;
+              font-weight: 600;
+            }
+          }
+        }
+      }
+    }
+  }
 }
 @media only screen and (max-width:767px) {
   .profile-info-wraper{
@@ -3883,7 +4006,7 @@ h4{
             border-radius: 100%;
             &.ellipsis{
               &::before{
-                content: url(../images/icons/ellipsis.svg)
+                content: url(../images/icons/ellipsis.svg);
               }
             }
           }
@@ -4454,7 +4577,7 @@ h4{
           .item{
             border-bottom: 1px solid @grey-lighten-2;
             border-radius: 0px !important;
-            padding: 1.25rem 1rem 1.25rem 10px;
+            padding: 1.5rem 1rem 1.5rem 10px;
             position: relative;
             border-right: 2px solid transparent;
             margin-right: -1px;
@@ -4562,6 +4685,16 @@ h4{
       &.celled{
         .item{
           padding: 2rem 0rem; 
+          .ellipsis{
+            &.horizontal{
+              &.icon{
+                width: 30px;
+                &::before{
+                  content: url(../images/icons/ellipsis.svg);
+                }
+              }
+            }
+          }
           .icon{
             &.card{
               min-width: 40px;
@@ -4827,6 +4960,32 @@ h4{
   >.content{
     padding: 0px;
   }
+  &.noHeader{
+    &.ui{
+      &.card{
+        &.rightImg{
+          >.content{
+            >.header{
+              margin: 40px 0px !important;
+              .ui{
+                &.header{
+                  margin: 0px 0px !important;
+                  .content{
+                    .sub{
+                      &.header{
+                        margin-top: 10px;
+                        margin-bottom: 0px;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
   &.ui{
     &.card{
       border: 1px solid #E6E5E5;	
@@ -4882,6 +5041,9 @@ h4{
   }
   &.givingGroup{
     background-color: #DDE8FA;
+    background-image: url(../images/campaignprofile_nodata_illustration_BG.svg);
+    background-size: cover;
+    background-repeat: no-repeat;
     .noDataLeftImg{
       &.ui{
         &.image{
@@ -4898,6 +5060,9 @@ h4{
   }
   &.ggManage{
     background-color: #DDE8FA;
+    background-image: url(../images/campaignprofile_nodata_illustration_BG.svg);
+    background-size: cover;
+    background-repeat: no-repeat;
     .noDataLeftImg{
       &.ui{
         &.image{

@@ -90,7 +90,7 @@ class StoriesList extends React.Component {
         if (storiesData && storiesData.count > 7) {
             viewAllDiv = (
                 <Link route={`/user/stories`}>
-                    <a>
+                    <a className="viewAll">
                         View all
                         {/* (
                         {storiesData.count}
