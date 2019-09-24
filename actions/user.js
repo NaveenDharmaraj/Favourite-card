@@ -17,6 +17,7 @@ export const actionTypes = {
     GET_MATCH_POLICIES_PAYMENTINSTRUMENTS: 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS',
     GET_USERS_GROUPS: 'GET_USERS_GROUPS',
     GET_UPCOMING_TRANSACTIONS: 'GET_UPCOMING_TRANSACTIONS',
+    GIVING_GROUPS_lEAVE_MODAL: 'GIVING_GROUPS_lEAVE_MODAL',
     MONTHLY_TRANSACTION_API_CALL: 'MONTHLY_TRANSACTION_API_CALL',
     TAX_RECEIPT_PROFILES:'TAX_RECEIPT_PROFILES',
     SAVE_DEEP_LINK: 'SAVE_DEEP_LINK',
@@ -532,6 +533,10 @@ export const leaveGroup = (dispatch, group, allData, type) => {
     };
     const dataArray = _.merge([], allData.data);
     const currentpath = allData.currentLink;
+    dispatch({
+        payload: { buttonLoading: true },
+        type: actionTypes.GIVING_GROUPS_lEAVE_MODAL,
+    });
     coreApi.patch(`/groups/leave?slug=${group.attributes.slug}`, {
     }).then(
         async () => {
@@ -543,10 +548,21 @@ export const leaveGroup = (dispatch, group, allData, type) => {
                 nextLink: (currentData.links.next) ? currentData.links.next : null,
                 dataCount: currentData.meta.recordCount,
             };
-
+            
             dispatch(fsa);
+            dispatch({
+                payload: {
+                    buttonLoading: false,
+                    closeModal: true,
+                },
+                type: actionTypes.GIVING_GROUPS_lEAVE_MODAL,
+            });
         },
     ).catch((error) => {
+        dispatch({
+            payload: { buttonLoading: false },
+            type: actionTypes.GIVING_GROUPS_lEAVE_MODAL,
+        });
         const errorFsa = {
             payload: {
                 type,

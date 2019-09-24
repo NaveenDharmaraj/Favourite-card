@@ -82,6 +82,8 @@ class GroupsAndCampaigns extends React.Component {
         const {
             dispatch,
             displayError,
+            leaveButtonLoader,
+            closeLeaveModal,
         } = this.props;
         if (showLoader) {
             return (
@@ -95,6 +97,8 @@ class GroupsAndCampaigns extends React.Component {
                     displayData={typeData}
                     dispatch={dispatch}
                     errorMessage={displayError}
+                    closeLeaveModal={closeLeaveModal}
+                    leaveButtonLoader={leaveButtonLoader}
                 />
             );
         } if (!_.isEmpty(typeData) && _.isEmpty(typeData.data)) {
@@ -256,9 +260,11 @@ function mapStateToProps(state) {
     return {
         administeredCampaigns: state.user.administeredCampaigns,
         administeredGroups: state.user.administeredGroups,
+        closeLeaveModal: state.user.closeLeaveModal,
         currentUser: state.user.info,
         displayError: state.user.leaveErrorMessage,
         groupsWithMemberships: state.user.groupsWithMemberships,
+        leaveButtonLoader: state.user.leaveButtonLoader,
     };
 }
 
