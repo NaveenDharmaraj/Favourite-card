@@ -170,7 +170,7 @@ class UserDetails extends React.Component {
                         <Header as="h3">
                             Charity information
                         </Header>
-                        <Grid divided stackable>
+                        <Grid stackable>
                             <Grid.Row>
                                 <Grid.Column mobile={16} tablet={10} computer={10}>
                                     <Grid columns={2}>
