@@ -234,6 +234,18 @@ const group = (state = {}, action) => {
                 showPlaceholder: action.payload.showPlaceholder,
             };
             break;
+        case 'ADMIN_PLACEHOLDER_STATUS':
+            newState = {
+                ...state,
+                adminsLoader: action.payload.adminPlaceholder,
+            };
+            break;
+        case 'MEMBER_PLACEHOLDER_STATUS':
+            newState = {
+                ...state,
+                membersLoader: action.payload.memberPlaceholder,
+            };
+            break;
         default:
             break;
     }

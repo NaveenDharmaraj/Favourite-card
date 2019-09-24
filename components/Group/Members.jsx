@@ -16,6 +16,7 @@ import {
     string,
     number,
     func,
+    bool,
 } from 'prop-types';
 
 import PlaceholderGrid from '../shared/PlaceHolder';
@@ -41,14 +42,6 @@ class Members extends React.Component {
         );
     }
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            adminsLoader: !props.groupAdminsDetails.data.length > 0,
-            membersLoader: !props.groupMembersDetails.data.length > 0,
-        };
-    }
-
     componentDidMount() {
         const {
             dispatch,
@@ -67,36 +60,6 @@ class Members extends React.Component {
         }
         if (_isEmpty(adminData)) {
             getDetails(dispatch, groupId, 'admins');
-        }
-    }
-
-    componentDidUpdate(prevProps) {
-        const {
-            groupMembersDetails: {
-                data: memberData,
-            },
-            groupAdminsDetails: {
-                data: adminData,
-            },
-        } = this.props;
-        let {
-            membersLoader,
-            adminsLoader,
-        } = this.state;
-        if (!_.isEqual(this.props, prevProps)) {
-            if (!_.isEqual(memberData, prevProps.groupMembersDetails.data)) {
-                membersLoader = false;
-            }
-            this.setState({
-                membersLoader,
-            });
-
-            if (!_.isEqual(adminData, prevProps.groupAdminsDetails.data)) {
-                adminsLoader = false;
-            }
-            this.setState({
-                adminsLoader,
-            });
         }
     }
 
@@ -130,6 +93,7 @@ class Members extends React.Component {
 
     render() {
         const {
+            adminsLoader,
             groupMembersDetails: {
                 data: membersData,
                 nextLink: membersNextLink,
@@ -138,11 +102,9 @@ class Members extends React.Component {
                 data: adminsData,
                 nextLink: adminsNextLink,
             },
-        } = this.props;
-        const {
             membersLoader,
-            adminsLoader,
-        } = this.state;
+        } = this.props;
+
         return (
             <Fragment>
                 <div className="give-friends-list pt-2">
@@ -199,6 +161,7 @@ class Members extends React.Component {
 }
 
 Members.defaultProps = {
+    adminsLoader: true,
     dispatch: func,
     groupAdminsDetails: {
         data: [],
@@ -215,9 +178,11 @@ Members.defaultProps = {
             next: '',
         },
     },
+    membersLoader: true,
 };
 
 Members.propTypes = {
+    adminsLoader: bool,
     dispatch: _.noop,
     groupAdminsDetails: {
         data: arrayOf(PropTypes.element),
@@ -234,13 +199,16 @@ Members.propTypes = {
             next: string,
         }),
     },
+    membersLoader: bool,
 };
 
 function mapStateToProps(state) {
     return {
+        adminsLoader: state.group.adminsLoader,
         groupAdminsDetails: state.group.groupAdminsDetails,
         groupDetails: state.group.groupDetails,
         groupMembersDetails: state.group.groupMembersDetails,
+        membersLoader: state.group.membersLoader,
     };
 }
 
