@@ -151,6 +151,7 @@ class NotificationWrapper extends React.Component {
             }
             case "turnoff": {
                 updateUserPreferences(this.state.dispatch, this.state.userInfo.id, "in_app_giving_group_activity", false);
+                break;
             }
         }
     }
@@ -163,8 +164,8 @@ class NotificationWrapper extends React.Component {
                 break;
             }
             case "sendThankYou": {
-                let thankyouNote = ctaOptions.msg[this.state.localeCode];
-                let userId = ctaOptions['user_id'];
+                // let thankyouNote = ctaOptions.msg[this.state.localeCode];
+                const userId = ctaOptions['user_id'];
                 Router.pushRoute(`/chats/${userId}`);
                 break;
             }
@@ -177,7 +178,7 @@ class NotificationWrapper extends React.Component {
                 break;
             }
             case "updatePayment": {
-                Router.pushRoute("/user/profile");
+                Router.pushRoute("/user/profile/settings/creditcard");
                 break;
             }
             case "seeUpcomingGifts": {
@@ -185,12 +186,12 @@ class NotificationWrapper extends React.Component {
                 break;
             }
             case "goToGivingGroup": {
-                let givingGroupSlug = ctaOptions['group_slug'];
+                const givingGroupSlug = ctaOptions['group_slug'];
                 Router.pushRoute(`/groups/${givingGroupSlug}`);
                 break;
             }
             case "sayCongrats": {
-                let userId = ctaOptions['user_id'];
+                const userId = ctaOptions['user_id'];
                 Router.pushRoute(`/chats/${userId}`);
                 break;
             }
@@ -199,7 +200,7 @@ class NotificationWrapper extends React.Component {
                 break;
             }
             case "viewProfile": {
-                let userId = ctaOptions['user_id'];
+                const userId = ctaOptions['user_id'];
                 Router.pushRoute(`/users/profile/${userId}`);
                 break;
             }
@@ -347,7 +348,9 @@ class NotificationWrapper extends React.Component {
                         <List divided verticalAlign='middle'>
                             <List.Item>
                                 <List.Content floated='right'>
-                                    <a className="settingsIcon"><Icon name="setting" /></a>
+                                    <Link route="/user/profile/settings/notifications">
+                                        <a className="settingsIcon"><Icon name="setting" /></a>
+                                    </Link>
                                 </List.Content>
                                 <List.Content>
                                     <Header as="h3">
@@ -381,9 +384,6 @@ class NotificationWrapper extends React.Component {
                             </div>
                         }
                     })()}
-                    {/* <div className="popup-footer text-center">
-                        <a onClick={() => { self.onLoadMoreClick(userInfo, dispatch, currentPage) }}>{self.t("loadMore")}</a>
-                    </div> */}
                 </div>
             </Container>
         );
@@ -391,7 +391,7 @@ class NotificationWrapper extends React.Component {
 }
 
 function mapStateToProps(state) {
-    let localeCodes = { "en": "en_CA", "fr": "fr_CA" };
+    const localeCodes = { "en": "en_CA", "fr": "fr_CA" };
     return {
         auth: state.user.auth,
         messages: state.firebase.messages,

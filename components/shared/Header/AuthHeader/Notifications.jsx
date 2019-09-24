@@ -34,97 +34,105 @@ const Notifications = (props) => {
 
     const updateDeleteFlag = async (msgKey, msg, flag) => {
         await NotificationHelper.updateDeleteFlag(userInfo, dispatch, msgKey, msg, flag);
-    }
+    };
 
     const onNotificationMsgAction = async (cta, msg) => {
         switch (cta) {
-            case "delete": {
+            case 'delete': {
                 updateDeleteFlag(msg._key, msg, true);
                 break;
             }
+            default:
+                break;
         }
-    }
+    };
 
     const onNotificationCTA = async (ctaKey, ctaOptions, msg) => {
-        let ctaActionId = ctaKey;//cta.actionId;
+        const ctaActionId = ctaKey; // cta.actionId;
         switch (ctaActionId) {
-            case "setNewGivingGoal": {
+            case 'setNewGivingGoal': {
                 Router.pushRoute('/user/giving-goals');
                 break;
             }
-            case "sendThankYou": {
+            case 'sendThankYou': {
                 // let thankyouNote = ctaOptions.msg[this.state.localeCode];
-                let userId = ctaOptions['user_id'];
+                const userId = ctaOptions['user_id'];
                 Router.pushRoute(`/chats/${userId}`);
                 break;
             }
-            case "sendGift": {
-                Router.pushRoute("/give/to/friend/new");
+            case 'sendGift': {
+                Router.pushRoute('/give/to/friend/new');
                 break;
             }
-            case "viewMessage": {
+            case 'viewMessage': {
                 // Router.pushRoute("/chats/" + cta.user_id);
                 break;
             }
-            case "updatePayment": {
-                Router.pushRoute("/user/profile");
+            case 'updatePayment': {
+                Router.pushRoute('/user/profile/settings/creditcard');
                 break;
             }
-            case "seeUpcomingGifts": {
-                Router.pushRoute("/dashboard");
+            case 'seeUpcomingGifts': {
+                Router.pushRoute('/dashboard');
                 break;
             }
-            case "goToGivingGroup": {
-                let givingGroupSlug = ctaOptions['group_slug'];
+            case 'goToGivingGroup': {
+                const givingGroupSlug = ctaOptions['group_slug'];
                 Router.pushRoute(`/groups/${givingGroupSlug}`);
                 break;
             }
-            case "sayCongrats": {
-                let userId = ctaOptions['user_id'];
+            case 'sayCongrats': {
+                const userId = ctaOptions['user_id'];
                 Router.pushRoute(`/chats/${userId}`);
                 break;
             }
-            case "accept": {
-                this.acceptFriendRequestAsync(msg);
+            case 'accept': {
+                acceptFriendRequestAsync(msg);
                 break;
             }
-            case "viewProfile": {
-                let userId = ctaOptions['user_id'];
+            case 'viewProfile': {
+                const userId = ctaOptions['user_id'];
                 Router.pushRoute(`/users/profile/${userId}`);
                 break;
             }
+            default:
+                break;
         }
-    }
-    const listItems = messages.slice(0, noOfMessagesToShow).map(function (msg) {
-        let messagePart = NotificationHelper.getMessagePart(msg, userInfo, 'en_CA');
+    };
+
+    const listItems = messages.slice(0, noOfMessagesToShow).map((msg) => {
+        const messagePart = NotificationHelper.getMessagePart(msg, userInfo, 'en_CA');
         if (msg.deleted) {
-            return <List.Item key={"notification_msg_" + msg._key} className="new">
-                <div className="blankImage"></div>
-                <List.Content>
-                    {t("removed")} <a onClick={() => updateDeleteFlag(msg._key, msg, false)} >{t("undo")}</a>
-                </List.Content>
-            </List.Item>
-        } else {
-            //className={msg.read ? "" : "new"} onClick={() => updateReadFlag(msg._key, msg, true)}
-            return (<List.Item key={"notification_head_" + msg._key} >
+            return (
+                <List.Item key={`notification_msg_${msg._key}`} className="new">
+                    <div className="blankImage" />
+                    <List.Content>
+                        {t('removed')} <a onClick={() => updateDeleteFlag(msg._key, msg, false)} >{t('undo')}</a>
+                    </List.Content>
+                </List.Item>
+            );
+        } 
+        // className={msg.read ? "" : "new"} onClick={() => updateReadFlag(msg._key, msg, true)}
+        return (
+            <List.Item key={`notification_head_${msg._key}`}>
                 <Image avatar src={messagePart.sourceImageLink ? messagePart.sourceImageLink : placeholderUser} />
                 <List.Content>
                     {/* <b dangerouslySetInnerHTML={{ __html: messagePart.sourceDisplayName }}></b> {messagePart.message} */}
-                    <span dangerouslySetInnerHTML={{ __html: messagePart.message }}></span>
+                    <span dangerouslySetInnerHTML={{ __html: messagePart.message }} />
                     <div className="time">{distanceOfTimeInWords(msg.createdTs)}</div>
                     <span className="more-btn">
                         <Dropdown className="rightBottom" icon='ellipsis horizontal'>
                             <Dropdown.Menu>
                                 {(() => {
                                     if (msg.msgActions && msg.msgActions.length > 0) {
-                                        // msg.callToActions = msg.callToActions.concat(msg.callToActions);
-                                        return msg.msgActions.map(function (cta) {
-                                            return <Dropdown.Item text={t(cta)} onClick={() => onNotificationMsgAction(cta, msg)} />
+                                    // msg.callToActions = msg.callToActions.concat(msg.callToActions);
+                                        return msg.msgActions.map((cta) => {
+                                            return <Dropdown.Item text={t(cta)} onClick={() => onNotificationMsgAction(cta, msg)} />;
                                         });
                                     }
-                                    /*if (msg.type == "friendRequest" && msg.sourceUserId != userInfo.id) {
+                                /* if (msg.type == "friendRequest" && msg.sourceUserId != userInfo.id) {
                                         return <Button className="blue-btn-rounded-def c-small" onClick={() => self.acceptFriendRequestAsync(msg)}>{self.t("action_accept")}</Button>
-                                    }*/
+                                    } */
                                 })()}
                                 {/* <Dropdown.Item text={messagePart.read ? t("markAsUnread") : t("markAsRead")} onClick={() => updateReadFlag(msg._key, msg, !messagePart.read)} />
                                 <Dropdown.Item text={t("delete")} onClick={() => updateDeleteFlag(msg._key, msg, true)} />
@@ -134,23 +142,23 @@ const Notifications = (props) => {
                     </span>
                     {(() => {
                         if (msg.cta) {
-                            // msg.callToActions = msg.callToActions.concat(msg.callToActions);
-                            return Object.keys(msg.cta).map(function (ctaKey) {
-                                let cta = msg.cta[ctaKey];
+                        // msg.callToActions = msg.callToActions.concat(msg.callToActions);
+                            return Object.keys(msg.cta).map((ctaKey) => {
+                                const cta = msg.cta[ctaKey];
                                 if (cta.isWeb) {
-                                    return <Button className="blue-btn-rounded-def c-small" onClick={() => onNotificationCTA(ctaKey, cta, msg)}>{cta.title[localeCode]}</Button>
+                                    return <Button className="blue-btn-rounded-def c-small" onClick={() => onNotificationCTA(ctaKey, cta, msg)}>{cta.title[localeCode]}</Button>;
                                 }
                             });
                         }
                         if (msg.callToActions && msg.callToActions.length > 0) {
-                            // msg.callToActions = msg.callToActions.concat(msg.callToActions);
-                            return msg.cta.map(function (cta) {
-                                return <Button className="blue-btn-rounded-def c-small" onClick={() => onNotificationCTA(cta, msg)}>{cta.actionTitle}</Button>
+                        // msg.callToActions = msg.callToActions.concat(msg.callToActions);
+                            return msg.cta.map((cta) => {
+                                return <Button className="blue-btn-rounded-def c-small" onClick={() => onNotificationCTA(cta, msg)}>{cta.actionTitle}</Button>;
                             });
                         }
-                        // if (msg.type == "friendRequest" && msg.sourceUserId != userInfo.id) {
-                        //     return <Button className="blue-btn-rounded-def c-small" onClick={() => acceptFriendRequestAsync(msg)}>{t("action_accept")}</Button>
-                        // }
+                    // if (msg.type == "friendRequest" && msg.sourceUserId != userInfo.id) {
+                    //     return <Button className="blue-btn-rounded-def c-small" onClick={() => acceptFriendRequestAsync(msg)}>{t("action_accept")}</Button>
+                    // }
                     })()}
                 </List.Content>
                 {/* <List.Content floated='right'>
@@ -175,58 +183,65 @@ const Notifications = (props) => {
                             </Dropdown.Menu>
                         </Dropdown>
                     </span>
-                </List.Content>*/}
+                </List.Content> */}
 
-            </List.Item>)
-        }
+            </List.Item>
+        );
     });
-    return (<Popup
-        position="bottom right"
-        basic
-        on="click"
-        className="notification-popup"
-        trigger={
-            (
-                <Menu.Item as="a" className="notifyNav">
-                    {(() => {
-                        if (messageCount > 0 && false) {
-                            return <Label color="red" floating circular onClick={fetchMessages}>
-                                {messageCount}
-                            </Label>;
-                        }
-                    })()}
+    return (
+        <Popup
+            position="bottom right"
+            basic
+            on="click"
+            className="notification-popup"
+            trigger={
+                (
+                    <Menu.Item as="a" className="notifyNav">
+                        {(() => {
+                            if (messageCount > 0 && false) {
+                                return (
+                                    <Label color="red" floating circular onClick={fetchMessages}>
+                                        {messageCount}
+                                    </Label>
+                                );
+                            }
+                        })()}
 
-                    <Icon name={"bell outline" + (messageCount > 0 ? " new" : "")} />
-                </Menu.Item>
-            )
-        }>
-        <Popup.Header>
-            {t("notificationHeader")} <a className="settingsIcon" style={{ display: 'none' }}><Icon name="setting" /></a>
-        </Popup.Header>
-        <Popup.Content>
-            {/* <div className="viewAllNotifications"> */}
-            {/*<div className="allNotification mb-3">*/}
-            <List divided verticalAlign="top">
-                {listItems}
-            </List>
-            {/*            </div>*/}
-            {/* </div> */}
-        </Popup.Content>
-        <div className="popup-footer text-center">
-            <Link route={`/notifications/all`}><a>{t("viewAll")}</a></Link>
-        </div>
-    </Popup>
+                        <Icon name={`bell outline${messageCount > 0 ? ' new' : ''}`} />
+                    </Menu.Item>
+                )
+            }
+        >
+            <Popup.Header>
+                {t('notificationHeader')} <a className="settingsIcon" style={{ display: 'none' }}><Icon name="setting" /></a>
+            </Popup.Header>
+            <Popup.Content>
+                {/* <div className="viewAllNotifications"> */}
+                {/* <div className="allNotification mb-3"> */}
+                <List divided verticalAlign="top">
+                    {listItems}
+                </List>
+                {/*            </div> */}
+                {/* </div> */}
+            </Popup.Content>
+            <div className="popup-footer text-center">
+                <Link route={`/notifications/all`}><a>{t('viewAll')}</a></Link>
+            </div>
+        </Popup>
     );
 };
 
 function mapStateToProps(state) {
-    let localeCodes = { "en": "en_CA", "fr": "fr_CA" };
+    const localeCodes = {
+        en: 'en_CA',
+        fr: 'fr_CA',
+    };
     return {
         messages: state.firebase.messages,
         lastSyncTime: state.firebase.lastSyncTime,
         localeCode: localeCodes[state.user.info.attributes.language ? state.user.info.attributes.language : 'en'],
-        messageCount: state.firebase.messages ? Object.keys(state.firebase.messages.filter(function (m) { return m.createdTs > state.firebase.lastSyncTime;/*!m.read;*/ })).length : 0,
-        userInfo: state.user.info
+        messageCount: state.firebase.messages ? Object.keys(state.firebase.messages.filter(function (m) { return m.createdTs > state.firebase.lastSyncTime;/*! m.read;*/ })).length : 0,
+        userInfo: state.user.info,
     };
 }
 
