@@ -17,6 +17,7 @@ function CausesSelection(props) {
     const {
         causesList,
         handleSubmit,
+        handleBack,
         parentHandleCauses,
         userCauses,
         validity,
@@ -58,6 +59,11 @@ function CausesSelection(props) {
                         errorMessage="Please select 3 or more causes"
                     />
                     <div className="reg-btn-wraper">
+                        <Button
+                            className="blue-bordr-btn-round-def"
+                            content="Back"
+                            onClick={handleBack}
+                        />
                         <Button
                             type="submit"
                             disabled={!(userCauses.length>=3)}

@@ -15,6 +15,7 @@ function SecondStep(props) {
     let {
         apiValidating,
         handleSubmit,
+        handleBack,
         emailId,
         parentInputChange,
         handleInputOnBlur,
@@ -95,6 +96,12 @@ function SecondStep(props) {
                             {(emailId && password)
                             && <Button type='submit' primary onClick={handleSubmit}>Continue</Button>
                             } */}
+                            <Button
+                                className="blue-bordr-btn-round-def"
+                                content="Back"
+                                onClick={handleBack}
+                            />
+                            
                             <Button
                                 type='submit'
                                 primary
