@@ -75,7 +75,7 @@ class Privacy extends React.Component {
         } = this.props;
         this.setState({ [name]: checked });
         const columnName = 'discoverability';
-        updateUserPreferences(dispatch, currentUser.id, columnName, checked);
+        updateUserPreferences(dispatch, currentUser.id, columnName, checked, null);
     }
 
     renderBlockedFriendsList() {
