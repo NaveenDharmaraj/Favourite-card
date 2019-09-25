@@ -43,6 +43,7 @@ const configVars = {
         FIREBASE_MSG_SENDER_ID: process.env.FIREBASE_MSG_SENDER_ID,
         FIREBASE_APP_ID: process.env.FIREBASE_APP_ID,
         HELP_CENTRE_URL: process.env.HELP_CENTRE_URL,
+        CLAIM_CHARITY_URL: process.env.CLAIM_CHARITY_URL,
     },
 };
 

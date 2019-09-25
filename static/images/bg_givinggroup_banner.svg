@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1109px" height="269px" viewBox="0 0 1109 269" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: sketchtool 57.1 (101010) - https://sketch.com -->
+    <title>C8811CF4-7B78-4315-AAFD-A3A148C70810</title>
+    <desc>Created with sketchtool.</desc>
+    <defs>
+        <rect id="path-1" x="0" y="1" width="1110" height="268" rx="5"></rect>
+    </defs>
+    <g id="UI-Kit" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="illustrations" transform="translate(-97.000000, -1553.000000)">
+            <g id="giving-groups" transform="translate(41.000000, 994.000000)">
+                <g id="bg_givinggroup_banner" transform="translate(55.000000, 559.000000)">
+                    <rect id="Rectangle" fill="#F8EBFB" x="1" y="0" width="1109" height="268" rx="8"></rect>
+                    <mask id="mask-2" fill="white">
+                        <use xlink:href="#path-1"></use>
+                    </mask>
+                    <g id="Mask-Copy-2" opacity="0.699102493"></g>
+                    <path d="M73.6738976,135.910673 C154.510752,102.940322 222.816913,143.475518 377.932387,195.748511 C533.04786,248.021504 826.462914,186.957223 949.992907,182.176759 C1032.34624,178.989784 1110.90657,198.067483 1185.6739,239.409856 L1185.6739,298.288964 C1185.6739,299.328991 1185.26882,300.328126 1184.54456,301.074517 L1007.61499,483.409913 C1006.70518,484.347532 1005.39481,484.78174 1004.10512,484.57296 C386.218104,384.546793 69.3049582,328.656541 53.365677,316.902205 C29.4302245,299.251135 -7.16295732,168.881025 73.6738976,135.910673 Z" id="Path-10" fill-opacity="0.1" fill="#B620E0" style="mix-blend-mode: multiply;" mask="url(#mask-2)" transform="translate(604.836949, 304.453054) rotate(-4.000000) translate(-604.836949, -304.453054) "></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

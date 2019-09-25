@@ -54,7 +54,7 @@ class SearchResultSingleCharityGroups extends React.Component {
                 return 'View Campaign';
             // eslint-disable-next-line no-else-return
             } else if (type.toLowerCase() === 'group' && isFalsy(campaign)) {
-                return 'View Group';
+                return 'View Giving Group';
             }
         }
         return 'View Charity';

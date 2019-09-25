@@ -246,6 +246,12 @@ const group = (state = {}, action) => {
                 membersLoader: action.payload.memberPlaceholder,
             };
             break;
+        case 'GET_GROUP_GALLERY_IMAGES':
+            newState = {
+                ...state,
+                galleryImageData: action.payload.galleryImages,
+            };
+            break;
         default:
             break;
     }

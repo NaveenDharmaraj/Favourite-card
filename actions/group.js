@@ -12,6 +12,7 @@ export const actionTypes = {
     GET_GROUP_BENEFICIARIES: 'GET_GROUP_BENEFICIARIES',
     GET_GROUP_COMMENTS: 'GET_GROUP_COMMENTS',
     GET_GROUP_DETAILS_FROM_SLUG: 'GET_GROUP_DETAILS_FROM_SLUG',
+    GET_GROUP_GALLERY_IMAGES: 'GET_GROUP_GALLERY_IMAGES',
     GET_GROUP_MEMBERS_DETAILS: 'GET_GROUP_MEMBERS_DETAILS',
     GET_GROUP_TRANSACTION_DETAILS: 'GET_GROUP_TRANSACTION_DETAILS',
     MEMBER_PLACEHOLDER_STATUS: 'MEMBER_PLACEHOLDER_STATUS',
@@ -29,6 +30,12 @@ export const getGroupFromSlug = async (dispatch, slug) => {
             },
             type: actionTypes.GET_GROUP_DETAILS_FROM_SLUG,
         };
+        const galleryfsa = {
+            payload: {
+                galleryImages: [],
+            },
+            type: actionTypes.GET_GROUP_GALLERY_IMAGES,
+        };
         dispatch({
             payload: {
                 redirectToDashboard: false,
@@ -45,6 +52,15 @@ export const getGroupFromSlug = async (dispatch, slug) => {
             (result) => {
                 if (result && !_.isEmpty(result.data)) {
                     fsa.payload.groupDetails = result.data;
+                    if (result.data.relationships && result.data.relationships.galleryImages) {
+                        coreApi.get(result.data.relationships.galleryImages.links.related)
+                            .then((galleryResult) => {
+                                if (galleryResult && !_.isEmpty(galleryResult.data)) {
+                                    galleryfsa.payload.galleryImages = galleryResult.data;
+                                    dispatch(galleryfsa);
+                                }
+                            }).catch().finally();
+                    }
                 }
             },
         ).catch(() => {

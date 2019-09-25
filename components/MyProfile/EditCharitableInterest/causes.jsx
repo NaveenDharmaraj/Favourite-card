@@ -117,7 +117,7 @@ class MyCauses extends React.Component {
                     Select causes to discover charities and
                     Giving Groups that match your interests.
                 </p>
-                <div className="prefered-wraper noImg">
+                <div className="prefered-wraper noImg pb-2">
                     <Grid>
                         <Grid.Row>
                             <Grid.Column width="14">

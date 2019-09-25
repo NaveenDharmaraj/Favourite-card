@@ -38,10 +38,10 @@ function CausesSelection(props) {
     };
     return (
         <Fragment>
-            <Grid.Column mobile={16} tablet={2} computer={2} largeScreen={4} className="causesLeftImg">
+            <Grid.Column mobile={16} tablet={16} computer={2} largeScreen={4} className="causesLeftImg">
                <div/>
             </Grid.Column>
-            <Grid.Column mobile={16} tablet={14} computer={14} largeScreen={12}>
+            <Grid.Column mobile={16} tablet={16} computer={14} largeScreen={12}>
                 <div className="prefered-wraper">
                     <div className="prefered-img" />
                     <div className="reg-header">

@@ -180,7 +180,7 @@ class Friends extends React.Component {
                             />
                         </div>
                     </Responsive>
-                    <Responsive maxWidth={768}>
+                    <Responsive maxWidth={767}>
                         <div className="charityTab n-border margin-0">
                             <Tab
                                 menu={{

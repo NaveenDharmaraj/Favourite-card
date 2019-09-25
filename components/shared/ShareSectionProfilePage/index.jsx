@@ -155,12 +155,12 @@ class ShareDetails extends React.Component {
                                     ref={(textarea) => this.textArea = textarea}
                                 />
                             </Form.Field>
-                            <Button
+                            {/* <Button
                                 className="transparent-btn-round small"
                                 onClick={this.handleCopyLink}
                             >
                                 Copy link
-                            </Button>
+                            </Button> */}
                         </Form>
                     </div>
                 </div>
