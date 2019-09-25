@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Icon, Image, Label, List, Menu, Popup } from 'semantic-ui-react';
 import _ from 'lodash';
 import applozicApi from "./../../../../services/applozicApi"
+import { Link } from '../../../../routes';
 
 class Chat extends React.Component {
     months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -17,6 +18,7 @@ class Chat extends React.Component {
             groupFeeds: {}
         }
         // this.onMessagesListLoad.bind(this);
+        this.onUnreadMessageCountUpdate.bind(this);
         this.onMessageReceived.bind(this);
         this.conversationHead.bind(this);
         this.getDateString.bind(this);
@@ -42,18 +44,21 @@ class Chat extends React.Component {
         this.setState({ totalUnreadCount: e.detail.totalUnreadCount, messagesList: messagesList, userDetails: usersInfoById, groupFeeds: groupFeedsById });
     }
 */
+    onUnreadMessageCountUpdate = (e) => {
+        this.setState({ totalUnreadCount: e.detail.count });
+    }
 
     onMessageReceived = (e) => {
-        console.log("onMessageReceived");
-        this.setState({ totalUnreadCount: this.state.totalUnreadCount + 1 });
-        console.log(e);
+        // console.log("onMessageReceived");
+        // this.setState({ totalUnreadCount: this.state.totalUnreadCount + 1 });
+        // console.log(e);
     }
 
     async loadRecentMessages() {
         let self = this;
         applozicApi.get("/message/v2/list", { params: { startIndex: 0, mainPageSize: 5, pageSize: 5 } }).then(function (response) {
             // handle success
-            console.log(response);
+            // console.log(response);
             let userDetails = self.state.userDetails;
             _.forEach(response.response.userDetails, function (userDetail) {
                 userDetails[userDetail.userId] = userDetail;
@@ -79,12 +84,14 @@ class Chat extends React.Component {
     async componentDidMount() {
         // window.addEventListener('onMessagesListLoad', this.onMessagesListLoad, false);
         window.addEventListener('onMessageReceived', this.onMessageReceived, false);
+        window.addEventListener('onUnreadMessageCountUpdate', this.onUnreadMessageCountUpdate, false);
         await this.loadRecentMessages();
     }
 
     componentWillUnmount() {
         // window.removeEventListener('onMessagesListLoad', this.onMessagesListLoad, false);
         window.removeEventListener('onMessageReceived', this.onMessageReceived, false);
+        window.removeEventListener('onUnreadMessageCountUpdate', this.onUnreadMessageCountUpdate, false);
     }
     getDateString(timeInMs, todayStr) {
         let self = this;
@@ -131,48 +138,48 @@ class Chat extends React.Component {
                 basic
                 on='click'
                 className="chat-popup"
-                    trigger={
-                        (
-                            <Menu.Item as="a" className="chatNav">
-                                {/* {userInfo.applogicClientRegistration ? (userInfo.applogicClientRegistration.totalUnreadCount > 0 ? <Label color="red" floating circular>4</Label> : '') : ''} */}
-                                {this.state.totalUnreadCount > 0 ? <Label color="red" floating circular className="chat-launcher-icon">{this.state.totalUnreadCount}</Label> : ""}
-                                <Icon name="chat new" />
-                            </Menu.Item>
-                        )
-                    }
-                    flowing>
-                    <Popup.Header>
-                        {self.state.messagesList && self.state.messagesList.length > 0 ? "Recent Messages" : "No Recent Messages"} <a className="newChatIcon"><Icon name="chatIcon" /></a>
-                    </Popup.Header>
-                    <Popup.Content>
-                        <List relaxed="very" verticalAlign='middle'>
-                            {(() => {
+                trigger={
+                    (
+                        <Menu.Item as="a" className="chatNav">
+                            {/* {userInfo.applogicClientRegistration ? (userInfo.applogicClientRegistration.totalUnreadCount > 0 ? <Label color="red" floating circular>4</Label> : '') : ''} */}
+                            {this.state.totalUnreadCount > 0 ? <Label color="red" floating circular className="chat-launcher-icon">{this.state.totalUnreadCount}</Label> : ""}
+                            <Icon name="chat new" />
+                        </Menu.Item>
+                    )
+                }
+                flowing>
+                <Popup.Header>
+                    {self.state.messagesList && self.state.messagesList.length > 0 ? "Recent Messages" : "No Recent Messages"} <a className="newChatIcon"><Icon name="chatIcon" /></a>
+                </Popup.Header>
+                <Popup.Content>
+                    <List relaxed="very" verticalAlign='middle'>
+                        {(() => {
 
-                                if (self.state.messagesList && self.state.messagesList.length > 0) {
-                                    return self.state.messagesList.map(function (msg) {
-                                        let conversationHead = self.conversationHead(msg);
-                                        return (<List.Item key={"chat_head_" + msg.key} className="new">
+                            if (self.state.messagesList && self.state.messagesList.length > 0) {
+                                return self.state.messagesList.map(function (msg) {
+                                    let conversationHead = self.conversationHead(msg);
+                                    return (<List.Item key={"chat_head_" + msg.key} className="new">
                                         <Image avatar src={conversationHead.image} />
                                         <List.Content>
                                             <List.Header>
                                                 <a className="header"><span className="name">{conversationHead.title}</span> <span className="time">{self.timeString(msg.createdAtTime, true)}</span></a>
                                             </List.Header>
                                             <List.Description>
-                                            {msg.message}
+                                                {msg.message}
                                             </List.Description>
                                         </List.Content>
                                     </List.Item>)
-                                    });
-                                }
-                            })()}
+                                });
+                            }
+                        })()}
 
 
-                        </List>
-                    </Popup.Content>
-                    <div className="popup-footer text-center">
-                        <a href="/chats/all">{self.state.messagesList && self.state.messagesList.length > 0 ? "See All Conversations" : "Start Conversation"}</a>
-                    </div>
-                </Popup>
+                    </List>
+                </Popup.Content>
+                <div className="popup-footer text-center">
+                    <Link route={`/chats/all`}><a>{"See All Conversations"}</a></Link>
+                </div>
+            </Popup>
         );
     }
 
@@ -183,6 +190,7 @@ function mapStateToProps(state) {
     return {
         userInfo: state.user.info,
         messageList: state.chat.messages,
+        totalUnreadCount: window.totalUnreadCount
     };
 }
 export default connect(mapStateToProps)(Chat);

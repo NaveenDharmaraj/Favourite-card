@@ -5,7 +5,6 @@ import Layout from '../components/shared/Layout';
 
 class Notifications extends React.Component {
     static async getInitialProps({ query }) {
-        console.log(query);
         return {
             namespacesRequired: [
                 'notification',
@@ -18,12 +17,9 @@ class Notifications extends React.Component {
     }
 
     render() {
-        console.log("RENDERRERRER ");
-        console.log(this);
         return (
             <Layout authRequired={true} >
                 {/* Move below to Wrapper before git commit */}
-                <h1>Notifications Title</h1>
                 <NotificationWrapper {...this.props} baseUrl='/notifications'></NotificationWrapper>
             </Layout>
         );

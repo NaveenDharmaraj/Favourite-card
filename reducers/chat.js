@@ -12,8 +12,8 @@ const firebase = (state = {}, action) => {
             };
             break;
         default:
-            console.log(action.type);
-            console.log(action.payload);
+            // console.log(action.type);
+            // console.log(action.payload);
             break;
     }
     return newState;
