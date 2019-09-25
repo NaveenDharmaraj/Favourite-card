@@ -75,7 +75,7 @@ const detailsView = (valuesObject) => {
     return (
         <Grid.Row>
             <Grid.Column>
-                <List>
+                <List className="charityDetailsList">
                     {values.map((value, index) => (
                         (value.Content && index <= 3
                         && (
@@ -101,7 +101,7 @@ const detailsView = (valuesObject) => {
                 </List>
             </Grid.Column>
             <Grid.Column>
-                <List>
+                <List className="charityDetailsList">
                     {values.map((value, index) => (
                         (value.Content && index >= 4
                             && (
