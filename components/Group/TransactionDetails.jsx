@@ -137,17 +137,21 @@ class TransactionDetails extends React.Component {
                     ) : (<PlaceholderGrid row={3} column={3} placeholderType="table" />)
                     }
                 </Table>
-                <div className="db-pagination right-align pt-2">
-                    <PaginationComponent
-                        activePage={activePage}
-                        onPageChanged={this.onPageChange}
-                        totalPages={pageCount}
-                        firstItem={(activePage === 1) ? null : undefined}
-                        lastItem={(activePage === pageCount) ? null : undefined}
-                        prevItem={(activePage === 1) ? null : undefined}
-                        nextItem={(activePage === pageCount) ? null : undefined}
-                    />
-                </div>
+                {!_isEmpty(groupData)
+                    && (
+                        <div className="db-pagination right-align pt-2">
+                            <PaginationComponent
+                                activePage={activePage}
+                                onPageChanged={this.onPageChange}
+                                totalPages={pageCount}
+                                firstItem={(activePage === 1) ? null : undefined}
+                                lastItem={(activePage === pageCount) ? null : undefined}
+                                prevItem={(activePage === 1) ? null : undefined}
+                                nextItem={(activePage === pageCount) ? null : undefined}
+                            />
+                        </div>
+                    )
+                }
             </div>
         );
     }

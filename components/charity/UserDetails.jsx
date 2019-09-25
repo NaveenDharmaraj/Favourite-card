@@ -14,7 +14,9 @@ import {
     List,
     Header,
     Container,
+    Button,
 } from 'semantic-ui-react';
+import getConfig from 'next/config';
 
 import {
     generateDeepLink,
@@ -23,6 +25,11 @@ import {
     getBeneficiaryFromSlug,
 } from '../../actions/charity';
 import ShareDetails from '../shared/ShareSectionProfilePage';
+
+const { publicRuntimeConfig } = getConfig();
+const {
+    CLAIM_CHARITY_URL,
+} = publicRuntimeConfig;
 
 const createUserDetails = (valuesObject) => {
     const data = [
@@ -191,7 +198,9 @@ class UserDetails extends React.Component {
                         </Grid>
                         <p className="mt-1">
                         *Is this your charity? You can claim your free profile page on your platform
-                            <a href="https://help.chimp.net/article/83-claiming-and-accessing-your-chimp-charity-account"> by following these steps</a>
+                            <a href={CLAIM_CHARITY_URL}>
+                                <Button className="ml-1 blue-bordr-btn-round-def c-small">Claim Charity</Button>
+                            </a>
                         </p>
                     </div>
                 </Container>
