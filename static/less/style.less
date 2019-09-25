@@ -222,9 +222,10 @@ h4{
               }
             }
             >.header{
-              background-image: url('../images/dashboard_bg.png');
-              background-size: cover;
+              background-image: url('../images/header.svg');
+              background-size: contain;
               background-repeat: no-repeat;
+              background-position: center right;
               font-size: 16px;
               padding: 2.7rem 45/@rem;
             }
@@ -440,6 +441,10 @@ h4{
 }
 .w-140{
   width: 140/@rem;
+  text-align: center;
+}
+.w-160{
+  width: 160px;
   text-align: center;
 }
 .w-180{
@@ -768,12 +773,22 @@ h4{
   }
 }
 .charityTab{
+  margin-bottom: 40px;
   &.n-border{
     .ui{
       &.segment{
         &.tab{
           border: none;
+          padding-top: 25px;
         }
+      }
+    }
+  }
+  .ui{
+    &.segment{
+      &.tab{
+        border: none;
+        padding-top: 25px;
       }
     }
   }
@@ -1309,19 +1324,59 @@ h4{
 }
 @media only screen and (max-width:991px) {
   .left-bg{
-    display: none !important;
+    display: block !important;
     >div{
-      display: none;
+      display: block;
     }
+  }
+  .causesLeftImg > div{
+    display: none;
+  }
+}
+@media only screen and (max-width:480px) {
+  .auth0-lock.auth0-lock .auth0-lock-content-wrapper{
+    max-height: 155px;
+  }
+  .auth0-lock.auth0-lock .auth0-lock-cred-pane-internal-wrapper{
+    height: auto;
   }
 }
 @media only screen and (max-width:767px) {
-  .left-bg{
-    display: none !important;
-    >div{
-      display: none;
+  body{
+    .reg-btn-wraper .ui.button.blue-bordr-btn-round-def{
+      padding: 0.8rem 2rem;
+    }
+    .reg-btn-wraper .ui.button.primary{
+      padding: 0.8rem 2rem;
     }
   }
+  .left-bg{
+    display: block !important;
+    min-height: 220px;
+    >div{
+      min-height: 300px;
+      display: block;
+      position: absolute;
+      left: -63px;
+      right: 0px;
+      top: 0;
+    }
+  }
+  .loginPageBg{
+    .left-bg{
+      display: block !important;
+      min-height: 220px;
+      >div{
+        min-height: 300px;
+        display: block;
+        position: absolute;
+        left: -63px;
+        right: 0px;
+        top: 0;
+      }
+    }
+  }
+  
   .causesLeftImg{
     display: none;
   }
@@ -2270,6 +2325,7 @@ h4{
 }
 @media only screen and (max-width:767px) {
   .charityTab{
+    margin-bottom: 0px;
     .ui{
       &.pointing{
         &.secondary{
@@ -2489,34 +2545,34 @@ h4{
       }
       .allocation{
         .reason{
-          color: @purple;
+          color: #263238;
         }
         .amount{
-          color: @purple;
+          color: #263238;
         }
       }
       .m-allocation{
         .reason{
-          color: @mAllocation;
+          color: #263238;
         }
         .amount{
-          color: @mAllocation;
+          color: #263238;
         }
       }
       .gift{
         .reason{
-          color: @gift;
+          color: #263238;
         }
         .amount{
-          color: @gift;
+          color: #263238;
         }
       }
       .donation{
         .reason{
-          color: @group;
+          color: #263238;
         }
         .amount{
-          color: @group;
+          color: #263238;
         }
       }
       .reason{
@@ -2593,6 +2649,23 @@ h4{
       &.createGift{
         background-color: #E3E8F0;	
         box-shadow: 2px 2px 7px 0 rgba(135,135,135,0.3);
+        background-image: url(../images/findfriends_bg.png);
+        background-size: contain;
+        position: relative;
+        &::before{
+          content: '';
+          position: absolute;
+          background-image: url(../images/findfriends_box.png);
+          background-size: contain;
+          background-repeat: no-repeat;
+          background-position: 0px -5px;
+          width: 88px;
+          height: 70px;
+          left: 0;
+          top: 0px;
+          right: 0;
+          margin: auto;
+        }
         >.content{
           padding-top: 58px;
           .header{
@@ -2640,6 +2713,18 @@ h4{
   }
 }
 .checkboxToRadio{
+  .ui.checkbox input:checked~.box:before, .ui.checkbox input:checked~label:before{
+    background: @link;
+  }
+  .ui.checkbox input:checked:focus~.box:before, .ui.checkbox input:checked:focus~label:before, .ui.checkbox input:not([type=radio]):indeterminate:focus~.box:before, .ui.checkbox input:not([type=radio]):indeterminate:focus~label:before{
+    background: @link;
+  }
+  .ui.checkbox input:checked~.box:after, .ui.checkbox input:checked~label:after{
+
+  }
+  .ui.checkbox input:checked~.box:after, .ui.checkbox input:checked~label:after{
+    color: #fff !important;
+  }
   .ui{
     &.checkbox{
       input{
@@ -2652,7 +2737,9 @@ h4{
         }
       }
       &.checked{
+        label{
 
+        }
       }
     }
   }
@@ -2886,7 +2973,11 @@ h4{
         background-repeat: no-repeat;
         background-position: center;
         position: relative;
+        border: 0px solid transparent;
+        box-shadow: none;
         &:hover{
+          -webkit-box-shadow: 0 1px 3px 0 #d4d4d5, 0 0 0 1px #d4d4d5;
+          box-shadow: 0 1px 3px 0 #d4d4d5, 0 0 0 1px #d4d4d5;
           &::before{
             opacity: 1;
           }
@@ -2899,8 +2990,7 @@ h4{
           right: 0;
           bottom: 0;
           left: 0;
-          background: rgba(0,0,0,0.2);
-          opacity: 0;
+          background: rgba(0,0,0,0.4);
           transition: all 0.3s ease-out;
         }
         .content{
@@ -2912,7 +3002,7 @@ h4{
             font-size: 16px;	 
             font-weight: 600;	
             line-height: 18px;	
-            text-shadow: 0 1px 2px rgba(0,0,0);
+            text-shadow: 0 2px 8px 0 rgba(0,0,0,0.5);
           }
         }
       }
@@ -3145,6 +3235,13 @@ h4{
     background-size: cover;
     background-position: 0px 1/@rem;
     color:@grey-darken-3;
+    h3{
+      &.ui{
+        &.header{
+          font-size: 17px !important;
+        }
+      }
+    }
     &.charity{
       background-image: url(../images/charity_info_card_bg.png);
     }
@@ -3154,58 +3251,61 @@ h4{
     &.giving{
       background-image: url(../images/giving_info_card_bg.png);
     }
-    i{
-      &.icon{
-        position: relative;
-        min-width: 16px;
-        min-height: 16px;
-        &::before{
-          content: '';
-          position: absolute;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          top: 0;
-          background-size: contain !important;
-          background-repeat: no-repeat !important;
-        }
-        &.user{
+    .charityDetailsList{
+      i{
+        &.icon{
+          position: relative;
+          min-width: 16px;
+          min-height: 16px;
           &::before{
-            background-image:url(../images/icons/user.svg) !important;
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            top: 0;
+            background-size: contain !important;
+            background-repeat: no-repeat !important;
           }
-        }
-        &.phone{
-          &::before{
-            background-image:url(../images/icons/phone.svg) !important;
+          &.user{
+            &::before{
+              background-image:url(../images/icons/user.svg) !important;
+            }
           }
-        }
-        &.mail{
-          &::before{
-            background-image:url(../images/icons/mail.svg) !important;
+          &.phone{
+            &::before{
+              background-image:url(../images/icons/phone.svg) !important;
+            }
           }
-        }
-        &.linkify{
-          &::before{
-            background-image:url(../images/icons/website.svg) !important;
+          &.mail{
+            &::before{
+              background-image:url(../images/icons/mail.svg) !important;
+            }
           }
-        }
-        &.users{
-          &::before{
-            background-image:url(../images/icons/group.svg) !important;
+          &.linkify{
+            &::before{
+              background-image:url(../images/icons/website.svg) !important;
+            }
           }
-        }
-        &.map{
-          &::before{
-            background-image:url(../images/icons/location.svg) !important;
+          &.users{
+            &::before{
+              background-image:url(../images/icons/group.svg) !important;
+            }
           }
-        }
-        &.briefcase{
-          &::before{
-            background-image:url(../images/icons/business.svg) !important;
+          &.map{
+            &::before{
+              background-image:url(../images/icons/location.svg) !important;
+            }
+          }
+          &.briefcase{
+            &::before{
+              background-image:url(../images/icons/business.svg) !important;
+            }
           }
         }
       }
     }
+    
     h3{
       &.header{
         &.ui{
@@ -4203,13 +4303,75 @@ h4{
     }
   }
 }
+.imgGalleryJustify{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+ }
+ .clear-fix{
+  &::after{
+    content:'';
+    display: table;
+    clear: both;
+  }
+ }
 .mdlMessage{
   &.message{
     &.ui{
       &.negative,&.positive{
-        border: 0px solid transparent;
-        box-shadow: none;
-        border-radius: 0px;
+        max-width: 335px;	
+        width: 100%;
+        border-radius: 10px;	
+        background-color: #FFFFFF;	
+        box-shadow: 0 2px 7px 0 rgba(135,135,135,0.3);
+        margin-left: auto;
+        margin-right: auto;
+        &.center{
+          margin-left: auto;
+          margin-right: auto;
+        }
+        &.left{
+          margin-left: 0px;
+          margin-right: auto;
+        }
+        &.right{
+          margin-left: auto;
+          margin-right: 0px;
+        }
+        >.content{
+          >.header{
+            color: #263238;	font-size: 14px;	letter-spacing: -0.1px;	line-height: 17px;
+            font-weight: 400;
+          }
+        }
+      }
+      &.positive{
+        i{
+          &.icon{
+            &.check{
+              height: 17px;	
+              width: 17px;
+              border-radius: 100%;
+              background-color: #0CC965 !important;
+              position: relative;
+              &::before{
+                content: '';
+                background-image: url(../images/icons/check.svg) !important;
+                background-size: contain !important;
+                background-position: center !important;
+                background-repeat: no-repeat !important;
+                position: absolute;
+                left: 2px;
+                right: 2px;
+                top: 2px;
+                bottom: 2px;
+                margin: auto;
+                filter: brightness(0) invert(1);
+                -webkit-filter:brightness(0) invert(1);
+              }
+            }
+          }
+        }
       }
     }
   }
@@ -4278,7 +4440,9 @@ h4{
     min-height: 268px;
     border-radius: 5px;	
     box-shadow: 0 13px 40px 0 rgba(0,0,0,0.13);
-    background-color: #ddd3df;
+    background-image: url(../images/bg_givinggroup_banner.svg);
+    background-size: cover;
+    background-repeat: no-repeat;
     height: 100%;
     padding: 0;
     margin: 0;
@@ -4967,14 +5131,17 @@ h4{
           >.content{
             >.header{
               margin: 40px 0px !important;
+              font-size: 14px;
               .ui{
                 &.header{
                   margin: 0px 0px !important;
                   .content{
+                    font-size: 14px;
                     .sub{
                       &.header{
                         margin-top: 10px;
                         margin-bottom: 0px;
+                        font-size: 14px;
                       }
                     }
                   }
@@ -4992,19 +5159,33 @@ h4{
       border-radius: 5px;	
       background-color: #FFFFFF;
       box-shadow:none;	
-      padding: 1rem;
+      padding: 15px 15px 15px 36px;
       //box-shadow: 0 1px 7px 0 rgba(0,0,0,0.17);
       &.rightImg{
+        >.content{
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          >.header{
+            width: calc(100% - 150px);
+            margin: 30px 0px;
+            font-size: 14px;
+          }
+        }
         .content{
           padding: 0px;
+          font-size: 14px;
           .image{
             &.ui{
               height: 107px;	width: 126px;
               margin-bottom: 0px;
+              margin-right: auto;
+              order: 2;
             }
           }
+          
           .header{
-            margin: 30px 0px;
+            
             .ui{
               &.header{
                 .content{.sub{
@@ -5055,7 +5236,7 @@ h4{
       }
     }
     .givingGroupNoDataContent{
-      max-width: 415px;
+      max-width: 417px;
     }
   }
   &.ggManage{
