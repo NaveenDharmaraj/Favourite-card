@@ -381,31 +381,26 @@ const saveUserBasicProfile = (dispatch, userData, userId, email) => {
     });
 };
 
-const sendFriendRequest = (dispatch, sourceUserId, destinationEmailId, searchWord, pageNumber) => {
+const sendFriendRequest = (dispatch, sourceUserId, sourceEmail, avatar, firstName, userData, searchWord, pageNumber) => {
     const fsa = {
         payload: {
         },
         type: actionTypes.USER_PROFILE_FRIEND_REQUEST,
     };
-    sourceUserId = Number(sourceUserId);
     const bodyData = {
         data: {
             attributes: {
-                category: 'social',
-                eventName: 'friendRequest',
-                payload: {
-                    deepLink: 'https://testLink.com',
-                    destinationEmailId,
-                    message: 'Friend Request',
-                    sourceUserId,
-                },
-                source: 'socialapi',
-                subCategory: 'friend',
+                recipient_email_id: Buffer.from(userData.attributes.email_hash, 'base64').toString('ascii'),
+                recipient_user_id: Number(userData.attributes.user_id),
+                requester_avatar_link: avatar,
+                requester_email_id: sourceEmail,
+                requester_first_name: firstName,
+                requester_user_id: Number(sourceUserId),
+                source: 'web',
             },
-            type: 'event',
         },
     };
-    return eventApi.post(`/event`, bodyData).then(
+    return eventApi.post(`/friend/request`, bodyData).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -418,8 +413,7 @@ const sendFriendRequest = (dispatch, sourceUserId, destinationEmailId, searchWor
         dispatch(fsa);
     });
 };
-
-const acceptFriendRequest = (dispatch, sourceUserId, destinationEmailId, pageNumber, sourceEmailId, pageName, searchWord) => {
+const acceptFriendRequest = (dispatch, sourceUserId, sourceEmailId, sourceAvatar, sourceFirstName, destinationEmailId, destinationUserId, pageNumber, pageName, searchWord) => {
     const fsa = {
         payload: {
         },
@@ -428,22 +422,17 @@ const acceptFriendRequest = (dispatch, sourceUserId, destinationEmailId, pageNum
     const bodyData = {
         data: {
             attributes: {
-                category: 'social',
-                eventName: 'friendAccept',
-                payload: {
-                    deepLink: 'https://testLink.com',
-                    destinationEmailId,
-                    linkedEventId: '1563362089449:venkata-Latitude-5580:12091:jy75dh74:10000',
-                    message: 'Hi, I would like to add you to my friend list',
-                    sourceUserId: Number(sourceUserId),
-                },
-                source: 'socialapi',
-                subCategory: 'friend',
+                acceptor_avatar_link: sourceAvatar,
+                acceptor_email_id: sourceEmailId,
+                acceptor_first_name: sourceFirstName,
+                acceptor_user_id: Number(sourceUserId),
+                requester_email_id: Buffer.from(destinationEmailId, 'base64').toString('ascii'),
+                requester_user_id: Number(destinationUserId),
+                source: 'web',
             },
-            type: 'event',
         },
     };
-    return eventApi.post(`/event`, bodyData).then(
+    return eventApi.post(`/friend/accept`, bodyData).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -543,11 +532,12 @@ const editUserCreditCard = (dispatch, instrumentDetails) => {
         },
         type: actionTypes.UPDATE_USER_CREDIT_CARD,
     };
+    const expiryDate = instrumentDetails.expiry.split('/');
     const bodyData = {
         data: {
             attributes: {
-                expMonth: instrumentDetails.editMonth,
-                expYear: instrumentDetails.editYear,
+                expMonth: expiryDate[0],
+                expYear: expiryDate[1],
             },
             id: instrumentDetails.editPaymetInstrumentId,
             type: 'paymentInstruments',
@@ -708,7 +698,7 @@ const savePrivacySetting = (dispatch, userId, email, columnName, columnValue) =>
     });
 };
 
-const updateUserPreferences = (dispatch, userId, preferenceColumn, preferenceValue) => {
+const updateUserPreferences = (dispatch, userId, preferenceColumn, preferenceValue, selectedTaxReceipt) => {
     const fsa = {
         payload: {
         },
@@ -723,6 +713,7 @@ const updateUserPreferences = (dispatch, userId, preferenceColumn, preferenceVal
         dataName.charities_share_my_name = false;
         dataName.charities_share_my_name_email = false;
         dataName[preferenceColumn] = preferenceValue;
+        dataName.address = Number(selectedTaxReceipt);
     } else if (preferenceColumn === 'charities_share_my_name_email') {
         dataName.charities_share_my_name_address = false;
         dataName.charities_share_my_name = false;

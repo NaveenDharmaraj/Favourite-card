@@ -127,10 +127,10 @@ class FriendsList extends React.Component {
         }
         return (
             <div className="give-friends-list pt-2">
-                <Grid columns="equal" stackable doubling columns={7}>
-                    <Grid.Row stretched>
-                        {
-                            friendsData && friendsData.data && _.size(friendsData.data) > 0 && (
+                {
+                    friendsData && friendsData.data && _.size(friendsData.data) > 0 && (
+                        <Grid columns="equal" stackable doubling columns={7}>
+                            <Grid.Row stretched>
                                 <Grid.Column>
                                     <Card className="createGift" verticalAlign="middle">
                                         <Card.Content>
@@ -143,11 +143,18 @@ class FriendsList extends React.Component {
                                         </Card.Content>
                                     </Card>
                                 </Grid.Column>
-                            )
-                        }
-                        {friendsList}
-                    </Grid.Row>
-                </Grid>
+                                {friendsList}
+                            </Grid.Row>
+                        </Grid>
+                    )
+                }
+                {
+                    _.size(friendsData.data) === 0 && (
+                        <div>
+                            {friendsList}
+                        </div>
+                    )
+                }
             </div>
         );
     }

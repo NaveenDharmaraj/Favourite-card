@@ -36,7 +36,7 @@ class EditBasicProfile extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            buttonClicked: false,
+            buttonClicked: true,
             errorMessage: null,
             statusMessage: false,
             successMessage: '',
@@ -81,6 +81,7 @@ class EditBasicProfile extends React.Component {
         } = this.state;
         userBasicDetails.givingGoal = formatAmount(amount);
         this.setState({
+            buttonClicked: false,
             statusMessage: false,
             userBasicDetails: {
                 ...this.state.userBasicDetails,
@@ -120,6 +121,7 @@ class EditBasicProfile extends React.Component {
             userBasicDetails[name] = newValue;
         }
         this.setState({
+            buttonClicked: false,
             statusMessage: false,
             userBasicDetails: {
                 ...this.state.userBasicDetails,
@@ -203,6 +205,7 @@ class EditBasicProfile extends React.Component {
     handleSubmit() {
         this.setState({
             buttonClicked: true,
+            statusMessage: false,
         });
         const isValid = this.validateForm();
         if (isValid) {
@@ -221,15 +224,15 @@ class EditBasicProfile extends React.Component {
             saveUserBasicProfile(dispatch, userBasicDetails, id, email).then(() => {
                 this.setState({
                     errorMessage: null,
-                    successMessage: 'User Profile basic details saved Successfully.',
+                    successMessage: 'Changes saved.',
                     statusMessage: true,
-                    buttonClicked: false,
+                    buttonClicked: true,
                 });
             }).catch((err) => {
                 this.setState({
                     errorMessage: 'Error in saving the Credit Card.',
                     statusMessage: true,
-                    buttonClicked: false,
+                    buttonClicked: true,
                 });
             });
         } else {
@@ -343,7 +346,7 @@ class EditBasicProfile extends React.Component {
                             />
                             <Form.Field>
                                 <label>
-                                    Set Giving Goal{' '}
+                                    Giving Goal{' '}
                                     <Popup
                                         content="Set a personal goal for the dollars you want to commit for giving. Reach your goal by adding money to your account."
                                         position="top center"
@@ -362,9 +365,7 @@ class EditBasicProfile extends React.Component {
                                         />
                                     </span>
                                 </label>
-                                
                                 <Form.Field>
-                                    
                                     <Form.Input
                                         placeholder="Giving Goal"
                                         id="givingGoal"

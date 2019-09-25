@@ -30,6 +30,7 @@ import {
 } from '../../../actions/userProfile';
 import Pagination from '../../shared/Pagination';
 import PlaceHolderGrid from '../../shared/PlaceHolder';
+import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 
 const ModalStatusMessage = dynamic(() => import('../../shared/ModalStatusMessage'));
 const CreditCard = dynamic(() => import('../../shared/CreditCard'));
@@ -66,10 +67,8 @@ class MyCreditCards extends React.Component {
                 editCardNumber: '',
                 editNameOnCard: '',
                 editPaymetInstrumentId: '',
-                editMonth: '',
-                editYear: '',
-                isValidMonth: '',
-                isValidYear: '',
+                expiry: '',
+                isValidExpiry: true,
             },
             creditCard: {
                 value: 0,
@@ -96,6 +95,7 @@ class MyCreditCards extends React.Component {
         this.handleAddCardClick = this.handleAddCardClick.bind(this);
         this.handleSetPrimaryClick = this.handleSetPrimaryClick.bind(this);
         this.handleCCAddClose = this.handleCCAddClose.bind(this);
+        this.handleEditExpiryBlur = this.handleEditExpiryBlur.bind(this);
     }
 
     componentDidMount() {
@@ -282,6 +282,7 @@ class MyCreditCards extends React.Component {
                 editCardNumber: lastFour,
                 editNameOnCard: cardNameOnly,
                 editPaymetInstrumentId: paymentInstrument.id,
+                isValidExpiry: true,
             }            
         });
     }
@@ -307,29 +308,44 @@ class MyCreditCards extends React.Component {
         });
     }
 
+    handleEditExpiryBlur(event, data) {
+        const {
+            value,
+        } = !_.isEmpty(data) ? data : event.target;
+        const {
+            editDetails,
+        } = this.state;
+
+        const expiryRegex = new RegExp(/^((0[1-9])|(1[0-2]))\/((2019)|(20[1-3][0-9]))$/);
+        editDetails.isValidExpiry = expiryRegex.test(value);
+        this.setState({
+            editButtonClicked: !expiryRegex.test(value),
+            editDetails: {
+                ...this.state.editDetails,
+                ...editDetails,
+            },
+        });
+    }
+
     validateEditForm() {
         const {
             editDetails: {
-                editMonth,
-                editYear,
-                editPaymetInstrumentId,
+                expiry,
             }
         } = this.state;
         let {
             editDetails: {
-                isValidMonth,
-                isValidYear
+                isValidExpiry,
             }
         } = this.state;
-        isValidMonth = !(!editMonth || editMonth.length === 0);
-        isValidYear = !(!editYear || editYear.length === 0);
+        const expiryRegex = new RegExp(/^((0[1-9])|(1[0-2]))\/((2019)|(20[1-3][0-9]))$/);
+        isValidExpiry = expiryRegex.test(expiry);
         this.setState({
             editDetails: {
-                isValidMonth,
-                isValidYear,
+                isValidExpiry,
             }
         });
-        if(isValidMonth && isValidYear) {
+        if(isValidExpiry) {
             return true;
         }
         return false;
@@ -341,7 +357,7 @@ class MyCreditCards extends React.Component {
             statusMessage: false,
         });
         const isEditDataValid = this.validateEditForm();
-        if(isEditDataValid) {
+        if (isEditDataValid) {
             const {
                 editDetails,
                 isDefaultCard,
@@ -365,10 +381,8 @@ class MyCreditCards extends React.Component {
                         editCardNumber: '',
                         editNameOnCard: '',
                         editPaymetInstrumentId: '',
-                        editMonth: '',
-                        editYear: '',
-                        isValidMonth: '',
-                        isValidYear: '',
+                        expiry: '',
+                        isValidExpiry: true,
                     },
                     isDefaultCard: false,
                     isEditModalOpen: false,
@@ -623,15 +637,14 @@ class MyCreditCards extends React.Component {
             editDetails: {
                 editCardNumber,
                 editNameOnCard,
-                editMonth,
-                editYear,
+                expiry,
+                isValidExpiry,
             },
             myCreditCardListLoader,
             statusMessage,
             successMessage,
         } = this.state;
         const {
-            editCreditCardApiCall,
             newCreditCardApiCall,
         } = this.props;
         const formatMessage = this.props.t;
@@ -755,28 +768,26 @@ class MyCreditCards extends React.Component {
                                         />
                                     </Form.Field>
                                     <Form.Group widths="equal">
-                                        <Form.Input
-                                            fluid
-                                            label="Expiry Month"
-                                            placeholder="MM"
-                                            id="editMonth"
-                                            name="editMonth"
-                                            maxLength="2"
-                                            type="number"
-                                            onChange={this.handleInputChange}
-                                            value={editMonth}
-                                        />
-                                        <Form.Input 
-                                            fluid
-                                            label="Expiry Year"
-                                            placeholder="YYYY"
-                                            id="editYear"
-                                            name="editYear"
-                                            maxLength="4"
-                                            type="number"
-                                            onChange={this.handleInputChange}
-                                            value={editYear}
-                                        />
+                                        <Form.Field>
+                                            <Form.Input
+                                                    fluid
+                                                    label="Expiry"
+                                                    placeholder="MM/YYYY"
+                                                    id="expiry"
+                                                    name="expiry"
+                                                    maxLength="7"
+                                                    error={!isValidExpiry}
+                                                    onBlur={this.handleEditExpiryBlur}
+                                                    onChange={this.handleInputChange}
+                                                    value={expiry}
+                                            />
+                                            <FormValidationErrorMessage
+                                                condition={!isValidExpiry}
+                                                errorMessage="Please enter a valid expiry."
+                                            />
+                                        </Form.Field>
+                                        <Form.Field>
+                                        </Form.Field>
                                     </Form.Group>
                                     <Form.Field
                                         checked={isDefaultCard}
