@@ -141,7 +141,7 @@ class DashboradList extends React.Component {
                         descriptionType = 'Given to ';
                         entity = data.attributes.destination.name;
                         transactionSign = '-';
-                    } else if (data.attributes.transactionType.toLowerCase() === 'fundallocation' && data.attributes.destination.id !== Number(id)) {
+                    } else if ((data.attributes.transactionType.toLowerCase() === 'fundallocation' || data.attributes.transactionType.toLowerCase() === 'gift') && data.attributes.destination.id !== Number(id)) {
                         givingType = '';
                         rowClass = 'gift';
                         data.attributes.transactionType = 'Gift';
@@ -163,7 +163,7 @@ class DashboradList extends React.Component {
                         entity = data.attributes.source.name;
                         transactionSign = '+';
                     }
-                } else if (data.attributes.transactionType.toLowerCase() === 'fundallocation') {
+                } else if (data.attributes.transactionType.toLowerCase() === 'fundallocation' || data.attributes.transactionType.toLowerCase() === 'gift') {
                     givingType = '';
                     rowClass = 'gift';
                     data.attributes.transactionType = 'Gift';

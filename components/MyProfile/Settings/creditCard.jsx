@@ -577,17 +577,13 @@ class MyCreditCards extends React.Component {
                                         onClose={this.onClose}
                                         onClick={() => {this.handleEditClick(data)}}
                                     />
-                                    {
-                                        !data.attributes.default && (
-                                            <Dropdown.Item
-                                                text="Delete" 
-                                                open={isDropdownOpen}
-                                                onOpen={this.onOpen}
-                                                onClose={this.onClose}
-                                                onClick={() => {this.handleDeleteClick(data.attributes.description, data.id)}}
-                                            />
-                                        )
-                                    }
+                                    <Dropdown.Item
+                                        text="Delete" 
+                                        open={isDropdownOpen}
+                                        onOpen={this.onOpen}
+                                        onClose={this.onClose}
+                                        onClick={() => {this.handleDeleteClick(data.attributes.description, data.id)}}
+                                    /> 
                                 </Dropdown.Menu>
                             </Dropdown>
                         </List.Content>
