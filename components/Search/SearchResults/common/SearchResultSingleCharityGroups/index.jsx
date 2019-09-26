@@ -101,9 +101,8 @@ class SearchResultSingleCharityGroups extends React.Component {
                                                 {!_isEmpty(description) ? description.split(' ').slice(0, 20).join(' ') : null}
                                                 {(!_isEmpty(description) && description.split(' ').length > 20) && '...'}
                                                 <br />
-                                                {(!_isEmpty(city) || !_isEmpty(province)) && 'Location:' }
                                                 {!_isEmpty(city) ? city : null}
-                                                {!_isEmpty(province) ? province : null}
+                                                {!_isEmpty(province) ? ` ,${province}` : null}
                                                 <br />
                                             </Header.Subheader>
                                         </Header>
