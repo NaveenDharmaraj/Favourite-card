@@ -906,10 +906,73 @@ class Charity extends React.Component {
         return validCC;
     }
 
+    renderPaymentTaxErrorMsg(paymentInstrumentList, defaultTaxReceiptProfile, giveFrom, companyDetails, giftType){
+        const{
+            companyAccountsFetched,
+            slug,
+            userAccountsFetched
+        } = this.props;
+        if(giftType > 0){
+            if(userAccountsFetched && giveFrom.type === 'user' || companyAccountsFetched && giveFrom.type === 'companies'){
+                let taxProfile = (giveFrom.type === 'companies' && companyDetails && companyDetails.companyDefaultTaxReceiptProfile) ?
+                companyDetails.companyDefaultTaxReceiptProfile :
+                defaultTaxReceiptProfile;
+                    if(_isEmpty(paymentInstrumentList) && _isEmpty(taxProfile)){
+                        return(
+                            <div>
+                               To send a monthly gift, first add a &nbsp;
+                               {
+                                   giveFrom.type === 'companies' 
+                                   ?  <a href={`/companies/${slug}/payment-profiles`}>payment method </a>
+                                   : <Link route = '/user/profile/settings/creditcard'>payment method</Link>
+                               }
+                              &nbsp; and&nbsp;
+                               {
+                                   giveFrom.type === 'companies' 
+                                   ?  <a href={`/companies/${slug}/tax-receipt-profiles`}>tax receipt recipient</a>
+                                   : <Link route = '/user/tax-receipts'>tax receipt recipient</Link>
+                               }
+                              &nbsp; to your account details.We won't charge your card without your permission.
+                            </div>
+                        ) 
+                    }
+                    else if(_isEmpty(paymentInstrumentList)){
+                        return(
+                            <div>
+                                 To send a monthly gift, first add a &nbsp;
+                                 {
+                                   giveFrom.type === 'companies' 
+                                   ?  <a href={`/companies/${slug}/payment-profiles`}>payment method </a>
+                                   : <Link route = '/user/profile/settings/creditcard'>payment method</Link>
+                               }
+                              &nbsp;   to your account details.We won't charge your card without your permission.
+                            </div>
+                        ) 
+                    }
+                    else if( _isEmpty(taxProfile)){
+                        return(
+                            <div>
+                            To send a monthly gift, first add a &nbsp;
+                            {
+                                   giveFrom.type === 'companies' 
+                                   ?  <a href={`/companies/${slug}/tax-receipt-profiles`}>tax receipt recipient</a>
+                                   : <Link route = '/user/tax-receipts'>tax receipt recipient</Link>
+                               }
+                           &nbsp; to your account details.
+                            </div>
+                        ) 
+                    }
+                 }
+            }
+            return null; 
+    }
+
     render() {
         const {
+            companyDetails,
             coverFeesData,
             creditCardApiCall,
+            defaultTaxReceiptProfile,
         } = this.props;
         const {
             flowObject: {
@@ -957,8 +1020,8 @@ class Charity extends React.Component {
             ? Number(giveAmount) + Number(coverFeesData.giveAmountFees)
             : Number(giveAmount);
         if ((giveFrom.type === 'user' || giveFrom.type === 'companies')
-    && (giftType.value > 0 || (giftType.value === 0
-        && giveAmountWithCoverFees > Number(giveFrom.balance)))
+    && (giftType.value === 0
+        && giveAmountWithCoverFees > Number(giveFrom.balance))
         ) {
             const topupAmount = formatAmount((formatAmount(giveAmountWithCoverFees)
             - formatAmount(giveFrom.balance)));
@@ -1113,11 +1176,9 @@ class Charity extends React.Component {
                             giveFrom,
                             giftType, giftTypeList, infoToShare, infoToShareList, formatMessage,
                         )}
-                        {accountTopUpComponent}
-                        {stripeCardComponent}
-                        <Form.Field>
-                            <Divider className="dividerMargin" />
-                        </Form.Field>
+                        { 
+                            this.renderPaymentTaxErrorMsg(paymentInstrumentList, defaultTaxReceiptProfile, giveFrom,companyDetails, giftType.value)
+                        }
                         <NoteTo
                             allocationType={type}
                             formatMessage={formatMessage}
@@ -1128,6 +1189,8 @@ class Charity extends React.Component {
                             noteToSelf={noteToSelf}
                             validity={validity}
                         />
+                        {accountTopUpComponent}
+                        {stripeCardComponent}
                         <Divider hidden />
                         {/* { !stepsCompleted && */}
                         <Form.Button
@@ -1154,6 +1217,7 @@ function mapStateToProps(state) {
     return {
         companiesAccountsData: state.user.companiesAccountsData,
         companyDetails: state.give.companyData,
+        companyAccountsFetched: state.give.companyAccountsFetched,
         coverFeesData: state.give.coverFeesData,
         currentUser: state.user.info,
         giveCharityDetails: state.give.charityDetails,

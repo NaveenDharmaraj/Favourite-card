@@ -27,6 +27,7 @@ import {
   Popup,
   Select,
 } from 'semantic-ui-react';
+import { Link } from '../../../routes';
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 import NoteTo from '../NoteTo';
 import AccountTopUp from '../AccountTopUp';
@@ -704,6 +705,68 @@ class Group extends React.Component {
         return validCC;
     }
 
+
+    renderPaymentTaxErrorMsg(paymentInstrumentList, defaultTaxReceiptProfile, giveFrom, companyDetails, giftType){
+        const{
+            companyAccountsFetched,
+            slug,
+            userAccountsFetched
+        } = this.props;
+        if(giftType > 0){
+            if(userAccountsFetched && giveFrom.type === 'user' || companyAccountsFetched && giveFrom.type === 'companies'){
+                let taxProfile = (giveFrom.type === 'companies' && companyDetails && companyDetails.companyDefaultTaxReceiptProfile) ?
+                companyDetails.companyDefaultTaxReceiptProfile :
+                defaultTaxReceiptProfile;
+                    if(_isEmpty(paymentInstrumentList) && _isEmpty(taxProfile)){
+                        return(
+                            <div>
+                               To send a monthly gift, first add a &nbsp;
+                               {
+                                   giveFrom.type === 'companies' 
+                                   ?  <a href={`/companies/${slug}/payment-profiles`}>payment method </a>
+                                   : <Link route = '/user/profile/settings/creditcard'>payment method</Link>
+                               }&nbsp;
+                               and &nbsp;
+                               {
+                                   giveFrom.type === 'companies' 
+                                   ?  <a href={`/companies/${slug}/tax-receipt-profiles`}>tax receipt recipient</a>
+                                   : <Link route = '/user/tax-receipts'>tax receipt recipient</Link>
+                               }&nbsp;
+                               to your account details.We won't charge your card without your permission.
+                            </div>
+                        ) 
+                    }
+                    else if(_isEmpty(paymentInstrumentList)){
+                        return(
+                            <div>
+                                 To send a monthly gift, first add a &nbsp;
+                                 {
+                                   giveFrom.type === 'companies' 
+                                   ?  <a href={`/companies/${slug}/payment-profiles`}>payment method </a>
+                                   : <Link route = '/user/profile/settings/creditcard'>payment method</Link>
+                               }
+                             &nbsp; to your account details.We won't charge your card without your permission.
+                            </div>
+                        ) 
+                    }
+                    else if( _isEmpty(taxProfile)){
+                        return(
+                            <div>
+                            To send a monthly gift, first add a &nbsp;
+                            {
+                                   giveFrom.type === 'companies' 
+                                   ?  <a href={`/companies/${slug}/tax-receipt-profiles`}>tax receipt recipient</a>
+                                   : <Link route = '/user/tax-receipts'>tax receipt recipient</Link>
+                               }
+                          &nbsp; to your account details.
+                            </div>
+                        ) 
+                    }
+                 }
+            }
+        return null;
+    }
+
     render() {
         let {
             flowObject: {
@@ -739,6 +802,10 @@ class Group extends React.Component {
                 infoToShareList
             },
         } = this.state;
+        const {
+            companyDetails,
+            defaultTaxReceiptProfile,
+        } = this.props;
         const formatMessage = this.props.t;
         const giveToType = (giveTo.isCampaign) ? 'Campaign' : 'Group';
         let accountTopUpComponent = null;
@@ -928,8 +995,9 @@ class Group extends React.Component {
                         />
                         )}
                         {repeatGift}
-                        {accountTopUpComponent}
-                        {stripeCardComponent}
+                        { 
+                            this.renderPaymentTaxErrorMsg(paymentInstrumentList, defaultTaxReceiptProfile, giveFrom,companyDetails, giftType.value)
+                        }
                         <Form.Field>
                             <Divider className="dividerMargin" />
                         </Form.Field>
@@ -945,6 +1013,8 @@ class Group extends React.Component {
                             validity={validity}
                         />
                         {privacyOptionComponent}
+                        {accountTopUpComponent}
+                        {stripeCardComponent}
                         <Divider hidden />
                         {/* { !stepsCompleted && */}
                             <Form.Button
@@ -971,6 +1041,7 @@ const  mapStateToProps = (state, props) => {
     giveGroupDetails: state.give.groupSlugDetails,
     companiesAccountsData: state.user.companiesAccountsData,
     companyDetails: state.give.companyData,
+    companyAccountsFetched: state.give.companyAccountsFetched,
     currentUser: state.user.info,
     giveGroupBenificairyDetails: state.give.benificiaryForGroupDetails,
     taxReceiptProfiles: state.user.taxReceiptProfiles,

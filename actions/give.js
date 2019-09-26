@@ -31,6 +31,7 @@ export const actionTypes = {
     GET_GROUP_FROM_SLUG: 'GET_GROUP_FROM_SLUG',
     SAVE_FLOW_OBJECT: 'SAVE_FLOW_OBJECT',
     SAVE_SUCCESS_DATA: 'SAVE_SUCCESS_DATA',
+    SET_COMPANY_ACCOUNT_FETCHED: 'SET_COMPANY_ACCOUNT_FETCHED',
     TAX_RECEIPT_API_CALL_STATUS: 'TAX_RECEIPT_API_CALL_STATUS',
 };
 
@@ -269,8 +270,8 @@ const postP2pAllocations = async (allocations) => {
                 relationships: {
                     parentAllocation: {
                         data: {
-                          type: 'fundAllocations',
-                          id: parentAllocationId ,
+                            type: 'fundAllocations',
+                            id: parentAllocationId ,
                         },
                     },
                 },
@@ -286,7 +287,7 @@ const postP2pAllocations = async (allocations) => {
         const result = await coreApi.post(`/${allocationData.type}`, {
             data : {
                 ...data,
-            }
+            },
         });
         if  (result && result.data) {
             parentAllocationId = result.data.id;
@@ -427,36 +428,50 @@ export const getCompanyPaymentAndTax = (dispatch, companyId) => {
         },
         type: actionTypes.GET_COMPANY_PAYMENT_AND_TAXRECEIPT,
     };
-
-    return coreApi.get(
-        `/companies/${companyId}?include=defaultTaxReceiptProfile,activePaymentInstruments,taxReceiptProfiles`,
+    dispatch({
+        payload: {
+            companyAccountsFetched: false,
+        },
+        type: actionTypes.SET_COMPANY_ACCOUNT_FETCHED,
+    });
+    const fetchData = coreApi.get(
+        `/companies/${companyId}?include=defaultTaxReceiptProfile,taxReceiptProfiles`,
         {
             params: {
                 dispatch,
                 uxCritical: true,
             },
         },
-    ).then((result) => {
-        const { data } = result;
+    );
+    const paymentInstruments = coreApi.get(
+        `/companies/${companyId}/activePaymentInstruments?&sort=-default`,
+        {
+            params: {
+                dispatch,
+                uxCritical: true,
+            },
+        },
+    );
+    
+    Promise.all([
+        fetchData,
+        paymentInstruments,
+    ]).then((result) => {
+        const { data } = result[0];
         let defaultTaxReceiptId = null;
         if (!_.isEmpty(data.relationships.defaultTaxReceiptProfile.data)) {
             defaultTaxReceiptId = data.relationships.defaultTaxReceiptProfile.data.id;
         }
-        if (!_.isEmpty(result.included)) {
-            const { included } = result;
+        if (!_.isEmpty(result[0].included)) {
+            const { included } = result[0];
             included.map((item) => {
                 const {
                     attributes,
                     id,
                     type,
                 } = item;
-                if (type === 'paymentInstruments') {
-                    fsa.payload.companyPaymentInstrumentsData.push({
-                        attributes,
-                        id,
-                        type,
-                    });
-                } else if (type === 'taxReceiptProfiles') {
+
+                if (type === 'taxReceiptProfiles') {
                     if (id === defaultTaxReceiptId) {
                         fsa.payload.companyDefaultTaxReceiptProfile = {
                             attributes,
@@ -470,8 +485,17 @@ export const getCompanyPaymentAndTax = (dispatch, companyId) => {
                         type,
                     });
                 }
+                fsa.payload.companyPaymentInstrumentsData = [
+                    ...result[1].data,
+                ];
             });
         }
+        dispatch({
+            payload: {
+                companyAccountsFetched: true,
+            },
+            type: actionTypes.SET_COMPANY_ACCOUNT_FETCHED,
+        });
         return dispatch(fsa);
     }).catch((error) => {
         console.log(error);

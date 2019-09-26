@@ -868,9 +868,6 @@ class Friend extends React.Component {
                             formatCurrency,
                         )
                     }
-
-                    {accountTopUpComponent}
-                    {stripeCardComponent}
                     <Form.Field>
                         <Divider className="dividerMargin" />
                     </Form.Field>
@@ -897,6 +894,8 @@ class Friend extends React.Component {
                         placeholderText={formatMessage('friends:noteToSelfPlaceholderText')}
                         text={noteToSelf}
                     />
+                    {accountTopUpComponent}
+                    {stripeCardComponent}
                     <Divider hidden />
                     <Form.Button
                         primary
