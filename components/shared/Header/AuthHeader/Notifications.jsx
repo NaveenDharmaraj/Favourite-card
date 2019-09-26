@@ -114,7 +114,13 @@ const Notifications = (props) => {
     };
 
     const listItems = messages.slice(0, noOfMessagesToShow).map((msg) => {
-        const messagePart = NotificationHelper.getMessagePart(msg, userInfo, 'en_CA');
+        // const messagePart = NotificationHelper.getMessagePart(msg, userInfo, 'en_CA');
+        let messagePart;
+        if (msg.msg) {
+            messagePart = NotificationHelper.getMessagePart(msg, userInfo, 'en_CA');
+        } else {
+            return null;
+        }
         if (msg.deleted) {
             return (
                 <List.Item key={`notification_msg_${msg._key}`} className="new">

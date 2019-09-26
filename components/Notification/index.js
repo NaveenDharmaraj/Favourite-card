@@ -224,7 +224,13 @@ class NotificationWrapper extends React.Component {
             dispatch
         } = this.state;
         return messages.map(function (msg) {
-            let messagePart = NotificationHelper.getMessagePart(msg, userInfo, localeCode);
+            // let messagePart = NotificationHelper.getMessagePart(msg, userInfo, localeCode);
+            let messagePart;
+            if (msg.msg) {
+                messagePart = NotificationHelper.getMessagePart(msg, userInfo, 'en_CA');
+            } else {
+                return null;
+            }
             if (self.deletedItems.indexOf(msg["id"]) >= 0) {
                 return <List.Item key={"notification_msg_" + msg._key} className="new">
                     <div className="blankImage"></div>
