@@ -169,7 +169,7 @@ h4{
         &.small-close{
           &.ui{
             &.modal{
-              i{
+              >i{ 
                 &.icon{
                   &.close{
                     top: 12px;
@@ -177,9 +177,11 @@ h4{
                     color: @grey-darken-3;
                     width: 15px;
                     height: 15px;
-                    overflow: hidden;
                     &:before{
-                      content: url(../images/icons/close.svg);
+                      content: '';
+                      background-image: url(../images/icons/close.svg) !important;
+                      background-size: contain !important;
+                      background-repeat: no-repeat;
                       display: inline-block;
                       border-radius: 100%;
                       position: absolute;
@@ -188,6 +190,8 @@ h4{
                       bottom: 0;
                       left: -5px;
                       right: 0;
+                      width: 16px;
+                      height: 16px;
                     }
                   }
                 }
@@ -197,7 +201,7 @@ h4{
         }
         &.ui{
           &.modal{
-            i{
+            >i{
               &.icon{
                 &.close{
                   top: 12px;
@@ -772,6 +776,59 @@ h4{
     }
   }
 }
+@media only screen and (max-width:767px) {
+  .charityTab{
+    margin-bottom: 40px;
+    .ui{
+      &.pointing{
+        &.secondary{
+          &.menu{
+            padding:0px;
+            border-bottom: 2px solid rgba(34,36,38,.15) !important;
+            margin-bottom: 13px;
+            box-shadow: none;
+            overflow-x: scroll;
+          }
+        }
+      }
+    }
+    .ui{
+      &.segment{
+        &.tab{
+          &.user-messaging{
+            margin-top: 0px !important;
+          }
+        }
+      }
+    }
+  }
+}
+@media only screen and (max-width:991px) and (min-width:767px) {
+  .charityTab{
+    margin-bottom: 40px;
+    .ui{
+      &.pointing{
+        &.secondary{
+          &.menu{
+            padding:0px;
+            border-bottom: 2px solid rgba(34,36,38,.15) !important;
+            margin-bottom: 13px;
+            box-shadow: none;
+          }
+        }
+      }
+    }
+    .ui{
+      &.segment{
+        &.tab{
+          &.user-messaging{
+            margin-top: 0px !important;
+          }
+        }
+      }
+    }
+  }
+}
 .charityTab{
   margin-bottom: 40px;
   &.n-border{
@@ -788,7 +845,8 @@ h4{
     &.segment{
       &.tab{
         border: none;
-        padding-top: 25px;
+        padding-top: 40px;
+        margin-top: 0px;
       }
     }
   }
@@ -1325,6 +1383,7 @@ h4{
 @media only screen and (max-width:991px) {
   .left-bg{
     display: block !important;
+    min-height: 300px;
     >div{
       display: block;
     }
@@ -2652,6 +2711,7 @@ h4{
         background-image: url(../images/findfriends_bg.png);
         background-size: contain;
         position: relative;
+        height: 100%;
         &::before{
           content: '';
           position: absolute;
@@ -3027,8 +3087,20 @@ h4{
 }
 @media only screen and (max-width:767px) {
   body{
-    .footer-help .helpImg > div{
-      display: none;
+    .c-db-header{
+      padding-top: 2.5rem;
+      padding-bottom: 2.5rem;
+    }
+    .footer-help{
+      text-align: center;
+      .helpImg > div{
+        display: none;
+      }
+      .ui{
+        &.header{
+          margin-bottom: 15px;
+        }
+      }
     }
   }
 }
@@ -3239,6 +3311,7 @@ h4{
       &.ui{
         &.header{
           font-size: 17px !important;
+          margin-bottom: 30px;
         }
       }
     }
@@ -3252,6 +3325,7 @@ h4{
       background-image: url(../images/giving_info_card_bg.png);
     }
     .charityDetailsList{
+      margin-bottom: 34px !important;
       i{
         &.icon{
           position: relative;
@@ -3293,6 +3367,13 @@ h4{
             }
           }
           &.map{
+            &.marker{
+              &.alternate{
+                &::before{
+                  content: '';
+                }
+              }
+            }
             &::before{
               background-image:url(../images/icons/location.svg) !important;
             }
@@ -4348,15 +4429,10 @@ h4{
       &.positive{
         i{
           &.icon{
-            &.check{
-              height: 17px;	
-              width: 17px;
-              border-radius: 100%;
-              background-color: #0CC965 !important;
-              position: relative;
+            &.close{
               &::before{
                 content: '';
-                background-image: url(../images/icons/check.svg) !important;
+                background-image: url(../images/icons/close.svg) !important;
                 background-size: contain !important;
                 background-position: center !important;
                 background-repeat: no-repeat !important;
@@ -4366,8 +4442,26 @@ h4{
                 top: 2px;
                 bottom: 2px;
                 margin: auto;
-                filter: brightness(0) invert(1);
-                -webkit-filter:brightness(0) invert(1);
+              }
+            }
+            &.check{
+              height: 20px;
+              width: 20px;
+              border-radius: 100%;  
+              //background-color: #0CC965 !important;
+              position: relative;
+              &::before{
+                content: '';
+                background-image: url(../images/icons/green.svg) !important;
+                background-size: contain !important;
+                background-position: center !important;
+                background-repeat: no-repeat !important;
+                position: absolute;
+                left: 0px;
+                right: 0px;
+                top: 0px;
+                bottom: 0px;
+                margin: auto;
               }
             }
           }
@@ -5062,7 +5156,124 @@ h4{
   padding: 5px 0px;
   margin-bottom:5px;
   cursor: pointer;
+  position: relative;
+  &::before{
+    content: '';
+    position: absolute;
+    left: -25px;
+    height: 19px;	width: 19px;
+    background-image: url(../images/icons/icon-refine-search.svg);
+    background-size: contain;
+    .imgColorBlue();
+  }
  }
+ @media only screen and (max-width:1199px) {
+  body{
+    .userProfileRightBtn{
+      text-align: right;
+      button{
+        &.ui{
+          &.button{
+            margin-right: 0px;
+            font-size: 13px;
+            padding: 5px 5px !important;
+            height: auto;
+            min-height: auto;
+            min-width: 100px;
+            +.button{
+              margin-left: 8px;
+            }
+          }
+        }
+      }
+    }
+  }
+ }
+ @media only screen and (max-width:767px) {
+  body{
+    .userProfileRightBtn{
+      text-align: center;
+      button{
+        &.ui{
+          &.button{
+            margin-bottom: 10px;
+          }
+        }
+      }
+    }
+  }
+ }
+ @media only screen and (min-width:767px) {
+  .userProfileRightBtn{
+    text-align: right;
+    button{
+      &.ui{
+        &.button{
+          +.button{
+            margin-left: 15px;
+          }
+        }
+      }
+    }
+  }
+ }
+ .userProfileRightBtn{
+   button{
+    &.ui{
+      &.button{
+        font-size: 14px;	font-weight: 600;	line-height: 20px;	text-align: center;
+        min-width: 126px;
+        //height: 40px;
+        padding: 8px 15px;
+        
+      }
+    }
+   }
+ }
+ 
+ .inputInline{
+  &.ui{
+    &.input{
+      input{
+        display: inline-block;
+        width: auto !important;
+      }
+    }
+  }
+}
+.cp_chkbx{
+  &.round{
+   &.ui{
+     &.checkbox{
+       &.font-w-n{
+         label{
+           font-weight: normal;
+         }
+       }
+       input{
+         &:checked{
+           ~label{
+             &::after{
+              content: '';
+              top: 4px;
+              left: 4px;
+              width: 9px;
+              height: 9px;
+              background-color: @link;
+              border-radius: 100% !important;
+             }
+           }
+         }
+       }
+       label{
+         &::before{
+           border-radius: 100%;
+         }
+       }
+     }
+   }
+  }
+}
  .cp_chkbx{
    &.field{
      .ui{
@@ -5389,3 +5600,18 @@ h4{
   background-repeat: no-repeat;
   background-position: center;
 }
+body{
+  .grid{
+    &.column{
+      &.doubling{
+        >.row{
+          >.column{
+            &.c-w-100{
+              width: 100% !important;
+            }
+          }
+        }
+      }
+    }
+  }
+ }
