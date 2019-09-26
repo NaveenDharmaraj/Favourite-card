@@ -97,7 +97,7 @@ class Layout extends React.Component {
                     {/* <script type="text/javascript" src="https://www.gstatic.com/firebasejs/5.9.4/firebase-app.js"></script> */}
                 </Head>
                 <div>
-                    <ErrorBoundary>
+                    {/* <ErrorBoundary> */}
                         <Responsive minWidth={320} maxWidth={991}>
                             <MobileHeader isAuthenticated={isAuthenticated} onBoarding={onBoarding} >
                                 {!_.isEmpty(appErrors) &&
@@ -138,7 +138,7 @@ class Layout extends React.Component {
                                 </div>
                         </Responsive>
                         <Footer />
-                    </ErrorBoundary>
+                    {/* </ErrorBoundary> */}
                 </div>
             </Responsive>
         );
