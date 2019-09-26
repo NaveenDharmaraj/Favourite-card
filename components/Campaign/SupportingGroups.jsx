@@ -23,7 +23,7 @@ function SupportingGroups(props) {
     } = props;
     const noDataSupportingGroups = () => {
         return (
-            <Grid.Column width={16}>
+            <Grid.Column width={16} className="c-w-100">
                 <div className="givingGroup noData mt-1 mb-2">
                     <Grid verticalAlign="middle">
                         <Grid.Row>

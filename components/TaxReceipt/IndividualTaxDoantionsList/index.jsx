@@ -88,7 +88,7 @@ class IndividualTaxDoantionsList extends React.Component {
                     <Container>
                         <p className="bold font-s-16 mt-2">Issued tax receipts</p>
                         <Divider />
-                        <div className="info-panel more-btn">
+                        <div className="info-panel more-btn mb-3">
                             <List verticalAlign="middle" className="receiptList pd-0">
                                 <List.Item>
                                     <Image className="greyIcon mr-1" src={docIcon} />
