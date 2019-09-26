@@ -66,7 +66,7 @@ const { publicRuntimeConfig } = getConfig();
 const {
     STRIPE_KEY
 } = publicRuntimeConfig;
-
+const DedicateType = dynamic(() => import('../DedicateGift'), { ssr: false });
 const CreditCard = dynamic(() => import('../../shared/CreditCard'), {
     ssr: false
 });
@@ -347,6 +347,7 @@ class Group extends React.Component {
         validity = validateGiveForm('giveFrom', giveData.giveFrom.value, validity, giveData, 0);
         validity = validateGiveForm('noteToSelf', giveData.noteToSelf, validity, giveData, 0);
         validity = validateGiveForm('noteToCharity', giveData.noteToCharity, validity, giveData, 0);
+        validity = validateGiveForm('dedicateType', null, validity, giveData);
         if (giveData.giveTo.value === giveData.giveFrom.value) {
             validity.isValidGiveTo = false;
         } else {
@@ -395,6 +396,10 @@ class Group extends React.Component {
                 validity = validateGiveForm('giveAmount', giveData.giveAmount, validity, giveData, 0);
                 validity = validateGiveForm('donationAmount', giveData.donationAmount, validity, giveData, 0);
                 break;
+            case 'inHonorOf':
+            case 'inMemoryOf':
+                validity = validateGiveForm('dedicateType', null, validity, giveData);
+            break;
             default: break;
         }
         this.setState({
@@ -412,6 +417,7 @@ class Group extends React.Component {
             isAmountCoverGive: true,
             isAmountLessThanOneBillion: true,
             isAmountMoreThanOneDollor: true,
+            isDedicateGiftEmpty: true,
             isDonationAmountBlank: true,
             isDonationAmountCoverGive: true,
             isDonationAmountLessThan1Billion: true,
@@ -491,6 +497,7 @@ class Group extends React.Component {
             name,
             options,
             value,
+            newIndex
         } = data;
         let {
             flowObject: {
@@ -522,7 +529,29 @@ class Group extends React.Component {
             } = event;
             newValue = target.checked;
         }
-        if (giveData[name] !== newValue) {
+        if(name === 'inHonorOf' || name ==='inMemoryOf'){
+            if(newIndex === -1){
+                giveData.dedicateGift.dedicateType = '';
+                giveData.dedicateGift.dedicateValue = '';
+            }
+            else{
+                giveData.dedicateGift.dedicateType = name;
+                giveData.dedicateGift.dedicateValue = value;
+            }
+            validity.isDedicateGiftEmpty = true;
+            this.setState({
+       
+                flowObject: {
+                    ...this.state.flowObject,
+                    giveData,
+                },
+                validity: {
+                    ...this.state.validity,
+                    validity,
+                },
+            });
+        }
+        if (name !== 'inHonorOf' && name !=='inMemoryOf' !== newValue) {
             giveData[name] = newValue;
             giveData.userInteracted = true;
             switch (name) {
@@ -772,6 +801,10 @@ class Group extends React.Component {
             flowObject: {
                 giveData:{
                     creditCard,
+                    dedicateGift: {
+                        dedicateType,
+                        dedicateValue, 
+                    },
                     donationAmount,
                     donationMatch,
                     giftType,
@@ -1001,6 +1034,13 @@ class Group extends React.Component {
                         <Form.Field>
                             <Divider className="dividerMargin" />
                         </Form.Field>
+                        <DedicateType 
+                            handleInputChange={this.handleInputChange}
+                            handleInputOnBlur={this.handleInputOnBlur}
+                            dedicateType={dedicateType}
+                            dedicateValue={dedicateValue}
+                            validity={validity}
+                        />
                         <NoteTo
                             allocationType=""// {type}
                             formatMessage={formatMessage}

@@ -107,6 +107,7 @@ const AllocationListing = ({
     } = data;
 
     const {
+        dedicateGift,
         giveTo: {
             isCampaign,
         },
@@ -208,6 +209,14 @@ const AllocationListing = ({
                     label={formatMessage('commonTo')}
                     displayData={toList || emptyMessage}
                 />
+                {
+                    !_.isEmpty(dedicateGift) && (
+                        <RenderList
+                            label={dedicateGift.dedicateType === 'inHonorOf' ? 'In honour of' : 'In memory of'}
+                            displayData={dedicateGift.dedicateValue}
+                        />
+                    )
+                }
                 {
                     !!noteToCharity && (
                         <RenderList

@@ -64,6 +64,7 @@ import { Router } from '../../../routes';
 const CreditCard = dynamic(() => import('../../shared/CreditCard'));
 const FormValidationErrorMessage = dynamic(() => import('../../shared/FormValidationErrorMessage'));
 const NoteTo = dynamic(() => import('../NoteTo'));
+const DedicateType = dynamic(() => import('../DedicateGift'), { ssr: false });
 const SpecialInstruction = dynamic(() => import('../SpecialInstruction'));
 const AccountTopUp = dynamic(() => import('../AccountTopUp'));
 const DropDownAccountOptions = dynamic(() => import('../../shared/DropDownAccountOptions'));
@@ -419,6 +420,7 @@ class Charity extends React.Component {
             isAmountCoverGive: true,
             isAmountLessThanOneBillion: true,
             isAmountMoreThanOneDollor: true,
+            isDedicateGiftEmpty: true,
             isDonationAmountBlank: true,
             isDonationAmountCoverGive: true,
             isDonationAmountLessThan1Billion: true,
@@ -468,6 +470,7 @@ class Charity extends React.Component {
         validity = validateGiveForm('giveFrom', giveData.giveFrom.value, validity, giveData, coverFeesAmount);
         validity = validateGiveForm('noteToSelf', giveData.noteToSelf, validity, giveData, coverFeesAmount);
         validity = validateGiveForm('noteToCharity', giveData.noteToCharity, validity, giveData, coverFeesAmount);
+        validity = validateGiveForm('dedicateType', null, validity, giveData);
         this.setState({ validity });
         let validateCC = true;
         if (giveData.creditCard.value === 0) {
@@ -522,8 +525,13 @@ class Charity extends React.Component {
                 validity = validateGiveForm('giveAmount', giveData.giveAmount, validity, giveData, coverFeesAmount);
                 validity = validateGiveForm('donationAmount', giveData.donationAmount, validity, giveData, coverFeesAmount);
                 break;
+            case 'inHonorOf':
+            case 'inMemoryOf':
+                validity = validateGiveForm('dedicateType', null, validity, giveData);
+            break;
             default: break;
         }
+        
         this.setState({
             flowObject: {
                 ...this.state.flowObject,
@@ -544,6 +552,7 @@ class Charity extends React.Component {
     handleInputChange(event, data) {
         const {
             name,
+            newIndex,
             options,
             value,
         } = data;
@@ -565,7 +574,35 @@ class Charity extends React.Component {
             dispatch,
         } = this.props;
         let newValue = (!_isEmpty(options)) ? _find(options, { value }) : value;
-        if (giveData[name] !== newValue) {
+        if (name === 'coverFees') {
+            const {
+                target,
+            } = event;
+            newValue = target.checked;
+        }
+        if(name === 'inHonorOf' || name ==='inMemoryOf'){
+            if(newIndex === -1){
+                giveData.dedicateGift.dedicateType = '';
+                giveData.dedicateGift.dedicateValue = '';
+            }
+            else{
+                giveData.dedicateGift.dedicateType = name;
+                giveData.dedicateGift.dedicateValue = value;
+            }
+            validity.isDedicateGiftEmpty = true;
+            this.setState({
+       
+                flowObject: {
+                    ...this.state.flowObject,
+                    giveData,
+                },
+                validity: {
+                    ...this.state.validity,
+                    validity,
+                },
+            });
+        }
+        if (name !== 'inHonorOf' && name !=='inMemoryOf' !== newValue) {
             giveData[name] = newValue;
             giveData.userInteracted = true;
             switch (name) {
@@ -610,7 +647,7 @@ class Charity extends React.Component {
                     validity,
                 },
             });
-        }
+        } 
     }
 
     handleSubmit() {
@@ -979,6 +1016,10 @@ class Charity extends React.Component {
                 giveData: {
                     coverFees,
                     creditCard,
+                    dedicateGift: {
+                        dedicateType,
+                        dedicateValue,
+                    },
                     donationAmount,
                     donationMatch,
                     giftType,
@@ -1179,6 +1220,17 @@ class Charity extends React.Component {
                         { 
                             this.renderPaymentTaxErrorMsg(paymentInstrumentList, defaultTaxReceiptProfile, giveFrom,companyDetails, giftType.value)
                         }
+                        <Form.Field>
+                            <Divider className="dividerMargin" />
+                        </Form.Field>
+                        <DedicateType 
+                            handleInputChange={this.handleInputChange}
+                            handleInputOnBlur={this.handleInputOnBlur}
+                            dedicateType={dedicateType}
+                            dedicateValue={dedicateValue}
+                            validity={validity}
+                        />
+                         <Divider hidden />
                         <NoteTo
                             allocationType={type}
                             formatMessage={formatMessage}

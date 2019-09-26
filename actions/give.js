@@ -211,16 +211,15 @@ const saveCharityAllocation = (allocation) => {
     const {
         giveData,
     } = allocation;
-
     const {
         coverFees,
+        dedicateGift,
         giveAmount,
         infoToShare,
         noteToCharity,
         noteToSelf,
     } = giveData;
-
-    const attributes = {
+    let attributes = {
         amount: giveAmount,
         coverFees,
         noteToCharity,
@@ -228,8 +227,14 @@ const saveCharityAllocation = (allocation) => {
         privacyData: (infoToShare.id) ? infoToShare.id : null,
         privacySetting: _.split(infoToShare.value, '|')[0],
     };
+    if (!_.isEmpty(dedicateGift.dedicateType)) {
+        attributes = {
+            ...attributes,
+            [dedicateGift.dedicateType]: dedicateGift.dedicateValue,
+        };
+    }
     return initializeAndCallAllocation(allocation, attributes, 'charity');
-}
+};
 
 const saveGroupAllocation = (allocation) => {
     const {
@@ -237,6 +242,7 @@ const saveGroupAllocation = (allocation) => {
     } = allocation;
 
     const {
+        dedicateGift,
         giveAmount,
         infoToShare,
         noteToCharity,
@@ -247,7 +253,7 @@ const saveGroupAllocation = (allocation) => {
         privacyShareName,
     } = giveData;
 
-    const attributes = {
+    let attributes = {
         amount: giveAmount,
         noteToGroup: noteToCharity,
         noteToSelf,
@@ -257,6 +263,12 @@ const saveGroupAllocation = (allocation) => {
         privacyShareName,
         privacyTrpId: privacyShareAddress ? infoToShare.id : null,
     };
+    if (!_.isEmpty(dedicateGift.dedicateType)) {
+        attributes = {
+            ...attributes,
+            [dedicateGift.dedicateType]: dedicateGift.dedicateValue,
+        };
+    }
     return initializeAndCallAllocation(allocation, attributes, 'group');
 };
 
@@ -275,8 +287,8 @@ const postP2pAllocations = async (allocations) => {
                         },
                     },
                 },
-            }
-            data = _.merge({}, allocationData, parent)
+            };
+            data = _.merge({}, allocationData, parent);
         } else {
             data = allocationData;
         }

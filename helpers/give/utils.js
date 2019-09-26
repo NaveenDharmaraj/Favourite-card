@@ -24,7 +24,7 @@ import {
     beneficiaryDefaultProps,
     donationDefaultProps,
     groupDefaultProps,
-   // p2pDefaultProps,
+    // p2pDefaultProps,
 } from '../../helpers/give/defaultProps';
 
 /**
@@ -1004,6 +1004,13 @@ const validateGiveForm = (field, value, validity, giveData, coverFeesAmount, sen
             validity.isValidGiveFrom = !isInputBlank(value);
             validity.isValidGiveTo = !((value.type === giveData.giveTo.type)
                     && (giveData.giveTo.value === value.value));
+            break;
+        case 'dedicateType':
+            if (giveData.dedicateGift && !_.isEmpty(giveData.dedicateGift.dedicateType)) {
+                if (_.isEmpty(giveData.dedicateGift.dedicateValue)) {
+                    validity.isDedicateGiftEmpty = false;
+                }
+            }
             break;
         case 'noteToSelf':
             validity.isNoteToSelfInLimit = isInputLengthLessThanOneThousand(value);
