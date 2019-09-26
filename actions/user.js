@@ -104,7 +104,7 @@ export const getDonationMatchAndPaymentInstruments = (userId, flowType) => {
             type: actionTypes.SET_USER_ACCOUNT_FETCHED,
         });
         const fetchData = coreApi.get(
-            `/users/${userId}?include=donationMatchPolicies,activePaymentInstruments,defaultTaxReceiptProfile,taxReceiptProfiles,fund`,
+            `/users/${userId}?include=donationMatchPolicies,defaultTaxReceiptProfile,taxReceiptProfiles,fund`,
             {
                 params: {
                     dispatch,
@@ -134,6 +134,15 @@ export const getDonationMatchAndPaymentInstruments = (userId, flowType) => {
                 },
             );
         }
+        const paymentInstruments = coreApi.get(
+            `/users/${userId}/activePaymentInstruments?sort=-default`,
+            {
+                params: {
+                    dispatch,
+                    uxCritical: true,
+                },
+            },
+        );
         const companiesData = callApiAndGetData(
             `/users/${userId}/administeredCompanies?page[size]=50&sort=-id`,
             {
@@ -148,6 +157,7 @@ export const getDonationMatchAndPaymentInstruments = (userId, flowType) => {
             groupData,
             campaignsData,
             companiesData,
+            paymentInstruments,
         ])
             .then(
                 (data) => {
@@ -159,7 +169,6 @@ export const getDonationMatchAndPaymentInstruments = (userId, flowType) => {
                             companies: 'companiesAccountsData',
                             donationMatches: 'donationMatchData',
                             groups: 'userGroups',
-                            paymentInstruments: 'paymentInstrumentsData',
                         };
                         let defaultTaxReceiptId = null;
                         if (!_.isEmpty(userData.data.relationships.defaultTaxReceiptProfile.data)) {
@@ -202,19 +211,26 @@ export const getDonationMatchAndPaymentInstruments = (userId, flowType) => {
                     fsa.payload.userGroups = data[1];
                     fsa.payload.userCampaigns = data[2];
                     fsa.payload.companiesAccountsData = data[3];
-                    fsa.payload.userAccountsFetched = true;
+                    fsa.payload.paymentInstrumentsData = [
+                        ...data[4].data,
+                    ];
+                    dispatch({
+                        payload: {
+                            userAccountsFetched: true,
+                        },
+                        type: actionTypes.SET_USER_ACCOUNT_FETCHED,
+                    });
                 },
             ).catch((error) => {
                 fsa.error = error;
-                fsa.payload.userAccountsFetched = true;
-            }).finally(() => {
-                dispatch(fsa);
                 dispatch({
                     payload: {
-                        userAccountsFetched: fsa.payload.userAccountsFetched,
+                        userAccountsFetched: true,
                     },
                     type: actionTypes.SET_USER_ACCOUNT_FETCHED,
                 });
+            }).finally(() => {
+                dispatch(fsa);
             });
     };
 };
@@ -608,7 +624,7 @@ export const setUserGivingGoal = (dispatch, goalAmount, userId) => {
     };
     return coreApi.post('givingGoals', {
         data: payload,
-    }).then((result)=> {
+    }).then((result) => {
         getUserGivingGoal(dispatch, userId);
     });
 };

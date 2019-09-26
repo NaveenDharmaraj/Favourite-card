@@ -120,7 +120,7 @@ class MyCauses extends React.Component {
                 <div className="prefered-wraper noImg pb-2">
                     <Grid>
                         <Grid.Row>
-                            <Grid.Column width="14">
+                            <Grid.Column mobile={16} tablet={14} computer={14}>
                                 <Grid className="select-btn-wraper" stretched columns="6" doubling stackable>
                                     <Grid.Row>
                                         {this.renderCauses()}

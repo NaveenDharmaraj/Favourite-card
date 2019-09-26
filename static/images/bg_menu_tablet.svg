@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="414px" height="266px" viewBox="0 0 414 266" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 57.1 (83088) - https://sketch.com -->
+    <title>bg_menu-tablet</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="path-1" x="0.604982206" y="0" width="520" height="266"></rect>
+    </defs>
+    <g id="Navigation" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="S---Navigation:-Open-" transform="translate(-354.000000, -80.000000)">
+            <g id="bg_menu-tablet" transform="translate(247.000000, 80.000000)">
+                <g id="header-image-BG" transform="translate(0.395018, 0.000000)">
+                    <g id="Fill-1">
+                        <mask id="mask-2" fill="white">
+                            <use xlink:href="#path-1"></use>
+                        </mask>
+                        <g id="Mask"></g>
+                        <path d="M603.149675,-56 C674.734197,-0.941059437 708.43743,30.0634088 704.259373,37.0134048 C700.081317,43.9634008 661.924614,102.028824 589.789264,211.209675 C545.301703,281.602955 459.816201,297.024533 398.831319,245.675653 L40.6049822,-56 L603.149675,-56 Z" fill="#F5F8FC" mask="url(#mask-2)"></path>
+                        <rect id="Rectangle" fill="#DB0163" mask="url(#mask-2)" x="505.604982" y="38" width="47" height="7.96812749"></rect>
+                    </g>
+                    <rect id="Rectangle" fill="#84ABEA" x="443.604982" y="261" width="35" height="5"></rect>
+                    <rect id="Rectangle" fill="#F7BC5F" transform="translate(474.104982, 136.000000) rotate(-180.000000) translate(-474.104982, -136.000000) " x="468.604982" y="132" width="11" height="8"></rect>
+                    <rect id="Rectangle" fill="#F7BC5F" transform="translate(482.104982, 136.000000) rotate(-180.000000) translate(-482.104982, -136.000000) " x="476.604982" y="132" width="11" height="8"></rect>
+                    <rect id="Rectangle-Copy" fill="#C799D1" transform="translate(278.104982, 43.000000) rotate(-180.000000) translate(-278.104982, -43.000000) " x="267.604982" y="40" width="21" height="6"></rect>
+                    <rect id="Rectangle" fill="#93EBB2" transform="translate(344.604982, 100.500000) rotate(-180.000000) translate(-344.604982, -100.500000) " x="340.604982" y="97" width="8" height="7"></rect>
+                    <rect id="Rectangle" fill="#ED803B" transform="translate(372.604982, 179.952191) rotate(-180.000000) translate(-372.604982, -179.952191) " x="357.604982" y="168" width="30" height="23.9043825"></rect>
+                    <rect id="Rectangle" fill="#F7BC5F" transform="translate(396.104982, 179.952191) rotate(-180.000000) translate(-396.104982, -179.952191) " x="392.604982" y="168" width="7" height="23.9043825"></rect>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

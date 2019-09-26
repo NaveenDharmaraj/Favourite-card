@@ -68,7 +68,7 @@ class SwitchAccountModal extends React.Component {
                         <div className="messageSearch">
                             <Input fluid iconPosition="left" icon="search" placeholder="Search..." onChange={(event)=>this.searchAccount(event)} />
                         </div>
-                        <div className="membersList swichAccounts">
+                        <div className="membersList swichAccounts mt-2">
                             <List divided verticalAlign="middle">
                                 {
                                     searchFilteredArray.map((item) => (

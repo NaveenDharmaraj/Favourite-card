@@ -168,6 +168,7 @@ button,a{
   display: inline-block;
   vertical-align: middle;
   padding-right: 10px;
+  margin: -6px 0px;
 }
 .logoImg{
   padding-left: 0px !important;
@@ -993,6 +994,14 @@ button,a{
 }
 @media only screen and (max-width:991px) and (min-width:767px){
   body{
+    .text-center{
+      .result{
+        margin-top: 2rem;
+      }
+    }
+    .left-img-card.ui.card{
+      margin-bottom: 0rem !important;
+    }
     .c-m-login-header .ui.sidebar.menu .item.userPrifileHeader .list.ui .item{
       .avatar.ui.image{
         display: block;
@@ -1046,6 +1055,7 @@ button,a{
         margin-top: 81px !important;
         width: 100vw;
         padding: 16.5px 0px;
+        height: calc(100% - 81px) !important;
         .ui{
           &.vertical{
             &.accordion{
@@ -1158,9 +1168,10 @@ button,a{
           }
           &.userPrifileHeader{
             padding: 15px 20px 15px 20px;
-            background-image: url('../images/dashboard_bg.png');
+            background-image: url('../images/bg_menu_tablet.svg');
             background-size: cover;
             background-repeat: no-repeat;
+            background-position: right top;
             .list{
               &.ui{
                 .item{
@@ -1186,6 +1197,9 @@ button,a{
                         display: inline-block;
                         vertical-align: middle;
                         padding: 5px 5px;
+                        +a{
+                          margin-left: 1rem;
+                        }
                         &.new{
                           position: relative;
                           &::before{

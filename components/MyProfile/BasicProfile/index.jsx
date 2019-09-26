@@ -31,10 +31,10 @@ const UserBasciProfile = (props) => {
                                     </div>
                                 </div>
                             </Grid.Column>
-                            <Grid.Column mobile={16} tablet={16} computer={12}>
+                            <Grid.Column mobile={16} tablet={13} computer={12}>
                                 <Grid stackable>
                                     <Grid.Row>
-                                        <Grid.Column mobile={16} tablet={5} computer={5}>
+                                        <Grid.Column mobile={16} tablet={16} computer={5}>
                                             <div className="ProfileHeaderWraper">
                                                 <Header as="h3">
                                                     <span className="font-s-10 type-profile">{userData.profile_type}</span>

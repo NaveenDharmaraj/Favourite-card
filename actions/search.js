@@ -191,7 +191,7 @@ export const fetchTextSearchCharitiesGroups = (searchWord, pageNumber, filterDat
     }
     textSearchCharitiesGroups.then((result) => {
         fsa.payload.TextSearchedCharitiesGroups = result;
-        fsa.payload.pageCount = result.meta.page_count;
+        fsa.payload.pageCount = result.meta.pageCount;
         fsa.payload.charityFlag = true;
     }).catch((err) => {
         fsa.payload.charityFlag = true;
@@ -229,7 +229,7 @@ export const fetchTextSearchCharities = (searchWord, pageNumber, filterData) => 
     textSearchCharities.then((result) => {
         fsa.payload.charityFlag = true;
         fsa.payload.TextSearchedCharities = result;
-        fsa.payload.pageCount = result.meta.page_count;
+        fsa.payload.pageCount = result.meta.pageCount;
     }).catch((err) => {
         fsa.payload.charityFlag = true;
         triggerUxCritialErrors(err.errors || err, dispatch);
@@ -266,7 +266,7 @@ export const fetchTextSearchGroups = (searchWord, pageNumber, filterData) => (di
     textSearchGroups.then((result) => {
         fsa.payload.groupFlag = true;
         fsa.payload.TextSearchedGroups = result;
-        fsa.payload.pageCount = result.meta.page_count;
+        fsa.payload.pageCount = result.meta.pageCount;
     }).catch((err) => {
         fsa.payload.groupFlag = true;
         triggerUxCritialErrors(err.errors || err, dispatch);

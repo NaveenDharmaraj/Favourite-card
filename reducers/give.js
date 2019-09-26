@@ -27,7 +27,12 @@ const give = (state = {}, action) => {
                 companyData: Object.assign({}, state.companyData, action.payload),
             };
             break;
-
+        case 'SET_COMPANY_ACCOUNT_FETCHED':
+            newState = {
+                ...state,
+                companyAccountsFetched: action.payload.companyAccountsFetched,
+            };
+            break;
         case 'GET_BENIFICIARY_FOR_GROUP':
             newState = {
                 ...state,

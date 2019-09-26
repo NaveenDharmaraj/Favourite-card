@@ -40,6 +40,10 @@ export const beneficiaryDefaultProps = {
             creditCard: {
                 value: null,
             },
+            dedicateGift: {
+                dedicateType: '',
+                dedicateValue: '',
+            },
             donationAmount: '',
             donationMatch: {
                 value: null,
@@ -79,6 +83,10 @@ export const groupDefaultProps = {
         giveData: {
             creditCard: {
                 value: null,
+            },
+            dedicateGift: {
+                dedicateType: '',
+                dedicateValue: '',
             },
             donationAmount: '',
             donationMatch: {
