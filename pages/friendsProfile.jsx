@@ -43,10 +43,10 @@ class FriendProfile extends React.Component {
         } = this.props;
         let userData = '';
         let givingAmount = 0; let givenAmount = 0; let percentage = 0; let profileType = '';
-        if (!_.isEmpty(userFriendProfileData) && _.size(userFriendProfileData.data > 0)) {
+        if (!_.isEmpty(userFriendProfileData) && _.size(userFriendProfileData.data) > 0) {
             userData = userFriendProfileData.data[0].attributes;
             givingAmount = (typeof userData.giving_goal_amt !== 'undefined') ? Number(userData.giving_goal_amt) : 0;
-            givenAmount = (typeof userData.giving_goal_amt !== 'undefined') ? Number(userData.giving_goal_met) : 0;
+            givenAmount = (typeof userData.giving_goal_met !== 'undefined') ? Number(userData.giving_goal_met) : 0;
             percentage = (givenAmount * 100) / givingAmount;
             profileType = userData.profile_type.toUpperCase();
         }
@@ -55,7 +55,7 @@ class FriendProfile extends React.Component {
                 <BasicProfile userData={userData} />
                 {
                     (userData.causes_visibility === 0 || (profileType === 'FRIENDS_PROFILE' && userData.causes_visibility === 1)) && (
-                        <CharitableInterestsList />
+                        <CharitableInterestsList friendUserId={userData.user_id} />
                     )
                 }
                 {

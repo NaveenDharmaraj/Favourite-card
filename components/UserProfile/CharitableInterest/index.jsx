@@ -1,9 +1,9 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import _ from 'lodash';
 import {
     Container,
     Header,
-    Grid,
 } from 'semantic-ui-react';
 import {
     connect,
@@ -12,20 +12,14 @@ import {
 import {
     getUserCharitableInterests,
 } from '../../../actions/userProfile';
-import placeholderCharity from '../../../static/images/no-data-avatar-charity-profile.png';
-import placeholderGroup from '../../../static/images/no-data-avatar-giving-group-profile.png';
-import PlaceholderGrid from '../../shared/PlaceHolder';
-import LeftImageCard from '../../shared/LeftImageCard';
 
 class CharitableInterestsList extends React.Component {
     componentDidMount() {
         const {
-            currentUser: {
-                id
-            },
+            friendUserId,
             dispatch,
         } = this.props;
-        getUserCharitableInterests(dispatch, id);
+        getUserCharitableInterests(dispatch, friendUserId);
     }
 
     charitableInterestsList() {
@@ -55,7 +49,7 @@ class CharitableInterestsList extends React.Component {
             <div className="pb-3">
                 <Container>
                     <Header as="h4" className="underline">
-                        Charitable interests 
+                        Charitable interests
                     </Header>
                     {this.charitableInterestsList()}
                 </Container>
