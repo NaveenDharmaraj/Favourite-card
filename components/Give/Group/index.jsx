@@ -551,7 +551,7 @@ class Group extends React.Component {
                 },
             });
         }
-        if (name !== 'inHonorOf' && name !=='inMemoryOf' !== newValue) {
+        if (name !== 'inHonorOf' && name !=='inMemoryOf') {
             giveData[name] = newValue;
             giveData.userInteracted = true;
             switch (name) {
