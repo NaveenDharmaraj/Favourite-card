@@ -132,7 +132,7 @@ class Friends extends React.Component {
                                                                     <input placeholder="Email Address" />
                                                                 </Form.Field>
                                                             </Grid.Column>
-                                                            <Grid.Column mobile={16} tablet={4} computer={3}>
+                                                            <Grid.Column mobile={16} tablet={4} computer={3} className="text-right">
                                                                 <Button className="blue-btn-rounded-def c-small">Invite</Button>
                                                             </Grid.Column>
                                                         </Grid.Row>
@@ -147,7 +147,7 @@ class Friends extends React.Component {
                                                                     <input value="https://charitableimpact.com/share-this-awesome-link" />
                                                                 </Form.Field>
                                                             </Grid.Column>
-                                                            <Grid.Column mobile={16} tablet={4} computer={3}>
+                                                            <Grid.Column mobile={16} tablet={4} computer={3} className="text-right">
                                                                 <Button className="blue-bordr-btn-round-def c-small">Copy link</Button>
                                                             </Grid.Column>
                                                         </Grid.Row>
