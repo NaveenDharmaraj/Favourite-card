@@ -155,6 +155,29 @@ h4{
     }
   }
 }
+@media only screen and (max-width: 767px){
+  .ui{
+    &.modals{
+      &.dimmer{
+        &.visible{
+        }
+        &.top{
+          &.aligned{
+          }
+        }
+        .chimp-modal{
+          &.ui{
+            &.modal{
+              >.header{
+                padding: 2.7rem 45/@rem;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+ }
 .ui{
   &.modals{
     &.dimmer{
@@ -321,7 +344,7 @@ h4{
           border:0px solid transparent;
           border-radius: 0;
           height: 40px;
-          margin-bottom: 10px;
+          margin-bottom: 0px;
         }
       }
     }
@@ -788,6 +811,19 @@ h4{
             margin-bottom: 13px;
             box-shadow: none;
             overflow-x: scroll;
+            &::-webkit-scrollbar {
+              width: 3px;
+              height: 5px;
+            }
+            &::-webkit-scrollbar-track {
+                //-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0);
+                background-color: transparent;
+            }
+            &::-webkit-scrollbar-thumb {
+              background-color: @link;
+              //outline: 1px solid slategrey;
+              border-radius:0px;
+            }
           }
         }
       }
@@ -1353,6 +1389,38 @@ h4{
      }
    }
  }
+ @media only screen and (max-width: 767px){
+  body{
+    .search-banner{
+      padding: 40px 0px 23.5px;
+    }
+    .reg-btn-wraper{
+      margin-top: 30px;
+    }
+    .pageWraper {
+      padding-top: 30px;
+      padding-bottom: 50px;
+    }
+    .login-form-wraper{
+      padding: 30/@rem 0 ;
+    }
+    .left-bg{
+      .causesLeftImg{
+        display: none;
+      }
+      &.verifyImg{
+        min-height: 200px;
+        height: 200px;
+        >div{
+          min-height: 200px;
+          height: 200px;
+          left: 0;
+          right: 0;
+        }
+      }
+    }
+  }
+ }
 .left-bg{
   &.verifyImg{
     min-height: 334px;
@@ -1413,12 +1481,13 @@ h4{
     display: block !important;
     min-height: 220px;
     >div{
-      min-height: 300px;
+      min-height: auto;
       display: block;
       position: absolute;
-      left: -63px;
+      left: 0;
       right: 0px;
       top: 0;
+      margin: auto;
     }
   }
   .loginPageBg{
@@ -1455,6 +1524,21 @@ h4{
   }
 }
 @media only screen and (max-width:1199px) and (min-width:991px) {
+  body{
+    .give-friends-list .ui.card.createGift > .content .description{
+      button{
+        &.ui{
+          &.button{
+            padding: 8px 10px;
+            font-size: 12px;
+          }
+        }
+      }
+    }
+    .give-friends-list .ui.card > .image + .content .description .give-frnds-btn{
+      padding: 8px 15px;
+    }
+  }
   .causesLeftImg{
     >div{
       position: absolute;
@@ -2390,7 +2474,7 @@ h4{
         &.secondary{
           &.menu{
             .item{
-              flex: 1;
+              flex: none;
               text-align: center;
               &.active{
                 &:hover{
@@ -2872,7 +2956,7 @@ h4{
                 content: '';
                 position: absolute;
                 background-image: url('../images/icons/ellipsis.svg') !important;
-                height: 3.44px;	width: 20.63px;
+                height: 3.44px;	width: 18.63px;
                 background-size: contain !important;
                 background-repeat: no-repeat !important;
                 background-position: center !important;
@@ -2996,6 +3080,14 @@ h4{
   }
 }
 @media only screen and (max-width:767px) {
+  body{
+    .db-activity-tbl.ui.basic .reason{
+      text-align: left;
+    }
+    .db-activity-tbl.ui.basic .amount{
+      text-align: left;
+    }
+  }
   .left-img-card{
     &.ui{
       &.card{
@@ -3326,6 +3418,17 @@ h4{
     }
     .charityDetailsList{
       margin-bottom: 34px !important;
+      .item{
+        &:last-child{
+          padding: .21428571em 0;
+        }
+      }
+      @media only screen and (max-width:767px){
+        margin-bottom: 0px !important;
+        &.mobMarginBtm-2{
+          margin-bottom: 34px !important;
+        }
+      }
       i{
         &.icon{
           position: relative;
@@ -3486,12 +3589,31 @@ h4{
     }
   }
 }
+@media only screen and (max-width:425px) {
+  .profile-info-wraper{
+    .profile-info-card{
+      background-position: 0px 3/@rem;
+      .profile-social-wraper{
+        padding-left: 0rem;
+        border-left: 0px solid transparent;
+      }
+    }
+  }
+}
 @media only screen and (max-width:767px) {
   .profile-info-wraper{
     .profile-info-card{
       background-position: 0px 3/@rem;
       .profile-social-wraper{
         padding-left: 0rem;
+        border-left: 0px solid transparent;
+      }
+      >p{
+        text-align: center;
+        .button{
+          display: block;
+          margin: 1rem auto 0rem !important;
+        }
       }
     }
   }
@@ -4396,6 +4518,103 @@ h4{
     clear: both;
   }
  }
+
+ .message{
+   &.ui{
+     &.error{
+       &.icon{
+         &.noShadow{
+           box-shadow: none;
+           &.icon{
+            .icon{
+              &.exclamation{
+                &.status-icon{
+                  &.circle{
+                    margin-bottom: auto;
+                  }
+                }
+              }
+            }
+          }
+         }
+         &.redText{
+          >.content{
+            color: #ff0000;
+            >.header{
+              color: #ff0000;	
+            }
+          }
+         }
+        max-width: 335px;	
+        width: 100%;
+        border-radius: 10px;	
+        background-color: #FFFFFF;	
+        box-shadow: 0 2px 7px 0 rgba(135,135,135,0.3);
+        margin-left: auto;
+        margin-right: auto;
+        &.left{
+          margin-left: 0px;
+          margin-right: auto;
+        }
+        &.right{
+          margin-left: auto;
+          margin-right: 0px;
+        }
+        >.content{
+          color: #263238;	font-size: 14px;	letter-spacing: -0.1px;	line-height: 17px;
+          font-weight: 400;
+          >.header{
+            color: #263238;	font-size: 14px;	letter-spacing: -0.1px;	line-height: 17px;
+            font-weight: 400;
+          }
+        }
+        >.icon{
+          &.close{
+            &::before{
+              content: '';
+              background-image: url(../images/icons/close.svg) !important;
+              background-size: contain !important;
+              background-position: center !important;
+              background-repeat: no-repeat !important;
+              position: absolute;
+              left: 2px;
+              right: 2px;
+              top: 2px;
+              bottom: 2px;
+              margin: auto;
+            }
+          }
+          &.icon{
+            &.exclamation{
+              &.status-icon{
+                &.circle{
+                  height: 20px;
+                  width: 20px;
+                  border-radius: 100%;  
+                  //background-color: #0CC965 !important;
+                  position: relative;
+                  &::before{
+                    content: '';
+                    background-image: url(../images/icons/red.svg) !important;
+                    background-size: contain !important;
+                    background-position: center !important;
+                    background-repeat: no-repeat !important;
+                    position: absolute;
+                    left: 0px;
+                    right: 0px;
+                    top: 0px;
+                    bottom: 0px;
+                    margin: auto;
+                  }
+                }
+              }
+            }
+          }
+        }
+       }
+     }
+   }
+ }
 .mdlMessage{
   &.message{
     &.ui{
@@ -4617,12 +4836,25 @@ h4{
     padding-bottom: 10px;
     border-bottom: 1px solid @grey-lighten-2;
     .settingsIcon{
-      padding: 5px 0px;
+      padding: 0px 0px;
       display: inline-block;
       color: rgba(0,0,0,0.25);
       .icon{
         &.setting {
-          content: url(../images/icons/icon-account_settings.svg);
+          position: relative;
+          width: 24px;
+          height: 24px;
+          &::before{
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background-image: url(../images/icons/icon-account_settings.svg) !important;
+            background-size: contain !important;
+            background-position: center;
+          }
         }
       }
       
@@ -4887,7 +5119,7 @@ h4{
                 }
                 &.find_friends{
                   &::before{
-                    content: url(../images/icons/group.svg);
+                    content: url(../images/icons/find-user.svg);
                   }
                 }
               }
@@ -5191,6 +5423,31 @@ h4{
  }
  @media only screen and (max-width:767px) {
   body{
+    .info-panel{
+      &.more-btn{
+        .receiptList{
+          &.ui{
+            &.list{
+              display: table;
+              width: 100%;
+              .item{
+                display: table-row;
+                >.image{
+                  &.ui{
+                    &.greyIcon{
+                      display: table-cell;
+                    }
+                  }
+                }
+                .content{
+                  display: table-cell;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
     .userProfileRightBtn{
       text-align: center;
       button{
