@@ -207,7 +207,7 @@ class Friends extends React.Component {
         return (
             <div>
                 <div className="inviteSettings">
-                    <Grid centered columns={2}>
+                    <Grid doubling centered columns={2}>
                         <Grid.Row>
                             <Grid.Column>
                                 <Header as="h3" icon>
@@ -249,7 +249,7 @@ class Friends extends React.Component {
                                                             )
                                                         }
                                                         <Grid.Row>
-                                                            <Grid.Column mobile={16} tablet={12} computer={13}>
+                                                            <Grid.Column mobile={11} tablet={12} computer={13}>
                                                                 <Form.Field>
                                                                     <input
                                                                         placeholder="Email Address"
@@ -260,7 +260,7 @@ class Friends extends React.Component {
                                                                     />
                                                                 </Form.Field>
                                                             </Grid.Column>
-                                                            <Grid.Column mobile={16} tablet={4} computer={3} className="text-right">
+                                                            <Grid.Column mobile={5} tablet={4} computer={3} className="text-right">
                                                                 <Button
                                                                     className="blue-btn-rounded-def c-small"
                                                                     onClick={this.handleInviteFriendsClick}
@@ -278,14 +278,14 @@ class Friends extends React.Component {
                                                     </label>
                                                     <Grid verticalAlign="middle">
                                                         <Grid.Row>
-                                                            <Grid.Column mobile={16} tablet={12} computer={13}>
+                                                            <Grid.Column mobile={11} tablet={12} computer={13}>
                                                                 <Form.Field>
                                                                     <input
                                                                     ref={(textarea) => this.textArea = textarea}
                                                                     value={signUpDeeplink} />
                                                                 </Form.Field>
                                                             </Grid.Column>
-                                                            <Grid.Column mobile={16} tablet={4} computer={3} className="text-right">
+                                                            <Grid.Column mobile={5} tablet={4} computer={3} className="text-right">
                                                                 <Button
                                                                     className="blue-bordr-btn-round-def c-small"
                                                                     onClick={this.handleCopyLink}

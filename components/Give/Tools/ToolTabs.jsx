@@ -213,7 +213,7 @@ class ToolTabs extends React.Component {
                                                         className="ui button primary blue-btn-rounded"
                                                         onClick={this.closeModalAndSave}
                                                     >
-                                                        SaveChanges
+                                                        Save Changes
                                                     </Button>
                                                 </Modal.Actions>
                                             </Modal>

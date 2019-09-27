@@ -61,7 +61,7 @@ const taxreceipt = (state = {}, action) => {
             state.taxReceiptProfileList.push(AddTaxProfile);
             newState = {
                 ...state,
-                taxReceiptProfileList: state.taxReceiptProfileList,
+                taxReceiptProfileList: Object.assign([], state.taxReceiptProfileList),
             };
             break;
         case 'DEFAULT_TAX_RECEIPT_PROFILE_ID':
