@@ -6,7 +6,7 @@
     "secondAddress": "Address 2",
     "address": "Address",
     "country": "Country",
-    "postalCode": "Postal Code",
+    "postalCode": "Postal code",
     "province": "Province",
     "provincePlaceHolder":"Select a province/state",
     "taxReceiptRecipientLabel": "Tax receipt recipient",
