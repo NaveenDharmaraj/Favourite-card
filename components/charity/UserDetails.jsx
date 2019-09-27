@@ -14,7 +14,9 @@ import {
     List,
     Header,
     Container,
+    Button,
 } from 'semantic-ui-react';
+import getConfig from 'next/config';
 
 import {
     generateDeepLink,
@@ -23,6 +25,11 @@ import {
     getBeneficiaryFromSlug,
 } from '../../actions/charity';
 import ShareDetails from '../shared/ShareSectionProfilePage';
+
+const { publicRuntimeConfig } = getConfig();
+const {
+    CLAIM_CHARITY_URL,
+} = publicRuntimeConfig;
 
 const createUserDetails = (valuesObject) => {
     const data = [
@@ -75,7 +82,7 @@ const detailsView = (valuesObject) => {
     return (
         <Grid.Row>
             <Grid.Column>
-                <List>
+                <List className="charityDetailsList">
                     {values.map((value, index) => (
                         (value.Content && index <= 3
                         && (
@@ -101,7 +108,7 @@ const detailsView = (valuesObject) => {
                 </List>
             </Grid.Column>
             <Grid.Column>
-                <List>
+                <List className="charityDetailsList">
                     {values.map((value, index) => (
                         (value.Content && index >= 4
                             && (
@@ -170,7 +177,7 @@ class UserDetails extends React.Component {
                         <Header as="h3">
                             Charity information
                         </Header>
-                        <Grid divided stackable>
+                        <Grid stackable>
                             <Grid.Row>
                                 <Grid.Column mobile={16} tablet={10} computer={10}>
                                     <Grid columns={2}>
@@ -191,7 +198,9 @@ class UserDetails extends React.Component {
                         </Grid>
                         <p className="mt-1">
                         *Is this your charity? You can claim your free profile page on your platform
-                            <a href="https://help.chimp.net/article/83-claiming-and-accessing-your-chimp-charity-account"> by following these steps</a>
+                            <a href={CLAIM_CHARITY_URL}>
+                                <Button className="ml-1 blue-bordr-btn-round-def c-small">Claim Charity</Button>
+                            </a>
                         </p>
                     </div>
                 </Container>

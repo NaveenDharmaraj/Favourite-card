@@ -17,6 +17,7 @@ export const actionTypes = {
     GET_MATCH_POLICIES_PAYMENTINSTRUMENTS: 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS',
     GET_USERS_GROUPS: 'GET_USERS_GROUPS',
     GET_UPCOMING_TRANSACTIONS: 'GET_UPCOMING_TRANSACTIONS',
+    GIVING_GROUPS_lEAVE_MODAL: 'GIVING_GROUPS_lEAVE_MODAL',
     MONTHLY_TRANSACTION_API_CALL: 'MONTHLY_TRANSACTION_API_CALL',
     TAX_RECEIPT_PROFILES:'TAX_RECEIPT_PROFILES',
     SAVE_DEEP_LINK: 'SAVE_DEEP_LINK',
@@ -103,7 +104,7 @@ export const getDonationMatchAndPaymentInstruments = (userId, flowType) => {
             type: actionTypes.SET_USER_ACCOUNT_FETCHED,
         });
         const fetchData = coreApi.get(
-            `/users/${userId}?include=donationMatchPolicies,activePaymentInstruments,defaultTaxReceiptProfile,taxReceiptProfiles,fund`,
+            `/users/${userId}?include=donationMatchPolicies,defaultTaxReceiptProfile,taxReceiptProfiles,fund`,
             {
                 params: {
                     dispatch,
@@ -133,6 +134,15 @@ export const getDonationMatchAndPaymentInstruments = (userId, flowType) => {
                 },
             );
         }
+        const paymentInstruments = coreApi.get(
+            `/users/${userId}/activePaymentInstruments?sort=-default`,
+            {
+                params: {
+                    dispatch,
+                    uxCritical: true,
+                },
+            },
+        );
         const companiesData = callApiAndGetData(
             `/users/${userId}/administeredCompanies?page[size]=50&sort=-id`,
             {
@@ -147,6 +157,7 @@ export const getDonationMatchAndPaymentInstruments = (userId, flowType) => {
             groupData,
             campaignsData,
             companiesData,
+            paymentInstruments,
         ])
             .then(
                 (data) => {
@@ -158,7 +169,6 @@ export const getDonationMatchAndPaymentInstruments = (userId, flowType) => {
                             companies: 'companiesAccountsData',
                             donationMatches: 'donationMatchData',
                             groups: 'userGroups',
-                            paymentInstruments: 'paymentInstrumentsData',
                         };
                         let defaultTaxReceiptId = null;
                         if (!_.isEmpty(userData.data.relationships.defaultTaxReceiptProfile.data)) {
@@ -201,19 +211,26 @@ export const getDonationMatchAndPaymentInstruments = (userId, flowType) => {
                     fsa.payload.userGroups = data[1];
                     fsa.payload.userCampaigns = data[2];
                     fsa.payload.companiesAccountsData = data[3];
-                    fsa.payload.userAccountsFetched = true;
+                    fsa.payload.paymentInstrumentsData = [
+                        ...data[4].data,
+                    ];
+                    dispatch({
+                        payload: {
+                            userAccountsFetched: true,
+                        },
+                        type: actionTypes.SET_USER_ACCOUNT_FETCHED,
+                    });
                 },
             ).catch((error) => {
                 fsa.error = error;
-                fsa.payload.userAccountsFetched = true;
-            }).finally(() => {
-                dispatch(fsa);
                 dispatch({
                     payload: {
-                        userAccountsFetched: fsa.payload.userAccountsFetched,
+                        userAccountsFetched: true,
                     },
                     type: actionTypes.SET_USER_ACCOUNT_FETCHED,
                 });
+            }).finally(() => {
+                dispatch(fsa);
             });
     };
 };
@@ -532,6 +549,10 @@ export const leaveGroup = (dispatch, group, allData, type) => {
     };
     const dataArray = _.merge([], allData.data);
     const currentpath = allData.currentLink;
+    dispatch({
+        payload: { buttonLoading: true },
+        type: actionTypes.GIVING_GROUPS_lEAVE_MODAL,
+    });
     coreApi.patch(`/groups/leave?slug=${group.attributes.slug}`, {
     }).then(
         async () => {
@@ -543,10 +564,21 @@ export const leaveGroup = (dispatch, group, allData, type) => {
                 nextLink: (currentData.links.next) ? currentData.links.next : null,
                 dataCount: currentData.meta.recordCount,
             };
-
+            
             dispatch(fsa);
+            dispatch({
+                payload: {
+                    buttonLoading: false,
+                    closeModal: true,
+                },
+                type: actionTypes.GIVING_GROUPS_lEAVE_MODAL,
+            });
         },
     ).catch((error) => {
+        dispatch({
+            payload: { buttonLoading: false },
+            type: actionTypes.GIVING_GROUPS_lEAVE_MODAL,
+        });
         const errorFsa = {
             payload: {
                 type,
@@ -592,7 +624,7 @@ export const setUserGivingGoal = (dispatch, goalAmount, userId) => {
     };
     return coreApi.post('givingGoals', {
         data: payload,
-    }).then((result)=> {
+    }).then((result) => {
         getUserGivingGoal(dispatch, userId);
     });
 };

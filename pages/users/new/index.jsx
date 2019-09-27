@@ -218,6 +218,15 @@ class Login extends React.Component {
         }
     }
 
+    handleBack = () => {
+        let {
+            stepIndex
+        } = this.state;
+        this.setState({
+            stepIndex:stepIndex-1,
+        });
+    }
+
     handleCauses(event, data) {
         const {
             name,
@@ -299,6 +308,7 @@ class Login extends React.Component {
                                             apiValidating={apiValidating}
                                             parentInputChange={this.handleInputChange}
                                             handleSubmit={this.handleSubmit}
+                                            handleBack={this.handleBack}
                                             emailId={emailId}
                                             handleInputOnBlur={this.handleInputOnBlur}
                                             userExists={userExists}
@@ -315,6 +325,7 @@ class Login extends React.Component {
                                             parentInputChange={this.handleInputChange}
                                             parentHandleCauses={this.handleCauses}
                                             handleSubmit={this.handleSubmit}
+                                            handleBack={this.handleBack}
                                             userCauses={userCauses}
                                             causesList={causesList}
                                             validity={validity}

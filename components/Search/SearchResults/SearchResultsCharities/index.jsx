@@ -27,9 +27,9 @@ class SearchResultsCharities extends React.Component {
         } = this.props;
         if (!_isEmpty(charities) && !_isEmpty(charities.meta)) {
             if (charities.meta.record_count) {
-                return charities.meta.record_count;
+                return charities.meta.record_count.toLocaleString('en-CA');
             } else if (charities.meta.recordCount) {
-                return charities.meta.recordCount;
+                return charities.meta.recordCount.toLocaleString('en-CA');
             } else {
                 return null;
             }

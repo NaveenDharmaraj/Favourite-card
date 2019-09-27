@@ -168,6 +168,7 @@ button,a{
   display: inline-block;
   vertical-align: middle;
   padding-right: 10px;
+  margin: -6px 0px;
 }
 .logoImg{
   padding-left: 0px !important;
@@ -263,9 +264,28 @@ button,a{
               }
             }
             .notifyNav{
+              position: relative;
+              margin-top: 15px !important;
+              &:hover{
+                &::after{
+                opacity: 1;
+                }
+              }
+              &::after{
+                content: '';
+                position: absolute;
+                left: -5px;
+                right: -5px;
+                top: 2px;
+                bottom: 15px;
+                background-color: #eee;
+                border-radius: 100%;
+                opacity: 0;
+              }
               .icon{
                 position: relative;
                 //margin: 0px;
+                z-index: 1;
                 &.bell{
                   &::before{
                     content: url(../images/icons/icon-notification.svg);
@@ -285,8 +305,27 @@ button,a{
             }
             .chatNav{
               padding-bottom: 22px !important;
+              position: relative;
+              margin-top: 15px !important;
+              &:hover{
+                &::after{
+                opacity: 1;
+                }
+              }
+              &::after{
+                content: '';
+                position: absolute;
+                left: -5px;
+                right: -5px;
+                top: -1px;
+                bottom: 10px;
+                background-color: #eee;
+                border-radius: 100%;
+                opacity: 0;
+              }
               .icon{
                 position: relative;
+                z-index: 9;
                 &.chat{
                   &::before{
                     
@@ -316,7 +355,9 @@ button,a{
   .ui{
     &.secondary{
       &.menu{
-        box-shadow: 0 1px 4px 0 rgba(209,209,209,0.5);
+        //box-shadow: 0 1px 4px 0 rgba(209,209,209,0.5);
+        
+        padding: 16.5px 0px;
       }
     }
   }
@@ -740,7 +781,7 @@ button,a{
               td{
                 padding: 0px;
                 +td{
-                  padding-left: 5px;
+                  padding-left: 15px;
                   a{
                     color: @purple-dark;
                     font-size: 14px;
@@ -951,15 +992,70 @@ button,a{
     }
   }
 }
+@media only screen and (max-width:991px) and (min-width:767px){
+  body{
+    .text-center{
+      .result{
+        margin-top: 2rem;
+      }
+    }
+    .left-img-card.ui.card{
+      margin-bottom: 0rem !important;
+    }
+    .c-m-login-header .ui.sidebar.menu .item.userPrifileHeader .list.ui .item{
+      .avatar.ui.image{
+        display: block;
+        margin: 0px auto 20px;
+      }
+      .content{
+        display: block;
+        margin: auto;
+        padding-left: 0px;
+        text-align: center;
+      }
+    }
+    .c-m-login-header{
+      &.pushable{
+        
+      }
+      .ui.visible.right.overlay.sidebar{
+  
+      }
+      .ui{
+        &.sidebar{
+          &.menu{
+            .item{
+              padding: 15px 15px 15px 50px;
+              &.userPrifileHeader{
+                padding: 15px 20px 15px 20px;
+                .item{
+                  padding: 15px 20px 15px 20px;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
 .c-m-login-header{
   &.pushable{
     
   }
+  .ui.visible.right.overlay.sidebar{
+    -webkit-box-shadow:none;
+    box-shadow: none;
+    border-top: 0px solid transparent;
+    padding-top: 0px;
+  }
   .ui{
     &.sidebar{
       &.menu{
-        margin-top: 48px !important;
+        margin-top: 81px !important;
         width: 100vw;
+        padding: 16.5px 0px;
+        height: calc(100% - 81px) !important;
         .ui{
           &.vertical{
             &.accordion{
@@ -1043,16 +1139,39 @@ button,a{
           }
         }
         .item{
-          &.active{
-            background-color: @purple;
-            color: #fff;
+          padding: 15px 20px 15px 20px;
+          &:not(:first-child){
+            &:hover{
+              background-color: @purple;
+              color: #fff;
+              .image{
+                filter: brightness(0) invert(1);
+                -webkit-filter:brightness(0) invert(1);
+              }
+            }
+            &:focus{
+              background-color: @purple;
+              color: #fff;
+              .image{
+                filter: brightness(0) invert(1);
+                -webkit-filter:brightness(0) invert(1);
+              }
+            }
+            &.active{
+              background-color: @purple;
+              color: #fff;
+              .image{
+                filter: brightness(0) invert(1);
+                -webkit-filter:brightness(0) invert(1);
+              }
+            }
           }
-          
           &.userPrifileHeader{
-            padding: 15px 20px;
-            background-image: url('../images/dashboard_bg.png');
+            padding: 15px 20px 15px 20px;
+            background-image: url('../images/bg_menu_tablet.svg');
             background-size: cover;
             background-repeat: no-repeat;
+            background-position: right top;
             .list{
               &.ui{
                 .item{
@@ -1078,6 +1197,9 @@ button,a{
                         display: inline-block;
                         vertical-align: middle;
                         padding: 5px 5px;
+                        +a{
+                          margin-left: 1rem;
+                        }
                         &.new{
                           position: relative;
                           &::before{

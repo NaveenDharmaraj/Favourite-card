@@ -99,6 +99,8 @@ class GroupsAndCampaignsList extends React.Component {
             listingType,
             displayData,
             errorMessage,
+            leaveButtonLoader,
+            closeLeaveModal,
         } = this.props;
         let groupsAndCampaignsList = 'No Data';
         if (displayData && displayData.data && _.size(displayData.data) > 0) {
@@ -108,6 +110,8 @@ class GroupsAndCampaignsList extends React.Component {
                         listingType={listingType}
                         data={group}
                         errorMessage={errorMessage}
+                        leaveButtonLoader={leaveButtonLoader}
+                        closeLeaveModal={closeLeaveModal}
                         parentLeaveGroup={this.callLeaveGroup}
                     />
                 );

@@ -15,6 +15,7 @@ function SecondStep(props) {
     let {
         apiValidating,
         handleSubmit,
+        handleBack,
         emailId,
         parentInputChange,
         handleInputOnBlur,
@@ -30,7 +31,7 @@ function SecondStep(props) {
             <Grid.Column>
                 <div className="login-form-wraper">
                     <div className="reg-header">
-                        <Header as="h3">Create your Impact account.</Header>
+                        <Header as="h3">Create your Impact Account</Header>
                     </div>
                     <Form>
                         <Form.Field>
@@ -80,7 +81,7 @@ function SecondStep(props) {
                                 errorMessage="Please enter your account password"
                             />
                         </Form.Field>
-                        <p>
+                        <p className="font-s-12">
                             <span className={(validity.doesPwdHaveCount) ? 'blueText' : ''}>
                                 {pwdCharCount}/8 characters,
                             </span>
@@ -95,6 +96,12 @@ function SecondStep(props) {
                             {(emailId && password)
                             && <Button type='submit' primary onClick={handleSubmit}>Continue</Button>
                             } */}
+                            <Button
+                                className="blue-bordr-btn-round-def"
+                                content="Back"
+                                onClick={handleBack}
+                            />
+                            
                             <Button
                                 type='submit'
                                 primary

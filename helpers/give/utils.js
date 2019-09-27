@@ -24,7 +24,7 @@ import {
     beneficiaryDefaultProps,
     donationDefaultProps,
     groupDefaultProps,
-   // p2pDefaultProps,
+    // p2pDefaultProps,
 } from '../../helpers/give/defaultProps';
 
 /**
@@ -1005,6 +1005,13 @@ const validateGiveForm = (field, value, validity, giveData, coverFeesAmount, sen
             validity.isValidGiveTo = !((value.type === giveData.giveTo.type)
                     && (giveData.giveTo.value === value.value));
             break;
+        case 'dedicateType':
+            if (giveData.dedicateGift && !_.isEmpty(giveData.dedicateGift.dedicateType)) {
+                if (_.isEmpty(giveData.dedicateGift.dedicateValue)) {
+                    validity.isDedicateGiftEmpty = false;
+                }
+            }
+            break;
         case 'noteToSelf':
             validity.isNoteToSelfInLimit = isInputLengthLessThanOneThousand(value);
             validity.isValidNoteSelfText = isValidNoteData(value);
@@ -1405,7 +1412,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
                 `${fromData.displayName}${displayAmount}`,
             );
         }
-        if (creditCard.value > 0) {
+        if (creditCard.value > 0 && (giftType.value === 0 || giftType.value === null)) {
             const creditCardData = _.find(data[paymentMap[giveFrom.type]],
                 { id: creditCard.id });
             if (!_.isEmpty(creditCardData)) {
@@ -1423,7 +1430,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
                 );
             }
         }
-        if (donationMatch.value > 0) {
+        if (donationMatch.value > 0 && (giftType.value === 0 || giftType.value === null)) {
             const matchedData = getDonationMatchedData(donationMatch.id, donationAmount, donationMatchData);
             if (!_.isEmpty(matchedData)) {
                 sources.push(matchedData);
@@ -1456,7 +1463,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
         }
         const buildAccounts = (item) => {
             const val = item.amount;
-            if (val >= 0) {
+            if (val > 0 && val !== null) {
                 return {
                     ...item,
                     amount: formatCurrency(

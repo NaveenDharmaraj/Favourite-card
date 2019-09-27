@@ -147,58 +147,60 @@ class Activity extends React.Component {
         } = this.props;
         const {
             commentText,
-
         } = this.state;
         let viewData = 'NO DATA';
         if (!_isEmpty(data)) {
             viewData = (
-                <Grid centered>
-                    <Grid.Row>
-                        <Grid.Column mobile={16} tablet={14} computer={14}>
-                            {isMember
-                            && (
-                                <Grid>
-                                    <Grid.Row>
-                                        <Grid.Column mobile={16} tablet={14} computer={14}>
-                                            <div className="two-icon-brdr-btm-input">
-                                                <Input
-                                                    value={commentText}
-                                                    onChange={this.updateInputValue}
-                                                    type="text"
-                                                    placeholder="Write a post..."
-                                                    action
-                                                    fluid
-                                                />
-                                            </div>
-                                        </Grid.Column>
-                                        <Grid.Column mobile={16} tablet={2} computer={2}>
-                                            <Button
-                                                onClick={this.postComment}
-                                                className="blue-bordr-btn-round-def c-small"
-                                            >
-                                            Post
-                                            </Button>
-                                        </Grid.Column>
-                                    </Grid.Row>
-                                </Grid>
-                            )
-                            }
-                            <div className="c-comment">
-                                <Comment.Group fluid>
-                                    {this.getComments()}
-                                </Comment.Group>
-                            </div>
-                        </Grid.Column>
-                    </Grid.Row>
-                </Grid>
+                <div className="c-comment">
+                    <Comment.Group fluid>
+                        {this.getComments()}
+                    </Comment.Group>
+                </div>
             );
         }
+        const actionData = (
+            <Grid centered>
+                <Grid.Row>
+                    <Grid.Column mobile={16} tablet={14} computer={14}>
+                        {isMember
+                        && (
+                            <Grid>
+                                <Grid.Row>
+                                    <Grid.Column mobile={16} tablet={14} computer={14}>
+                                        <div className="two-icon-brdr-btm-input">
+                                            <Input
+                                                value={commentText}
+                                                onChange={this.updateInputValue}
+                                                type="text"
+                                                placeholder="Write a post..."
+                                                action
+                                                fluid
+                                            />
+                                        </div>
+                                    </Grid.Column>
+                                    <Grid.Column mobile={16} tablet={2} computer={2}>
+                                        <Button
+                                            onClick={this.postComment}
+                                            className="blue-bordr-btn-round-def c-small"
+                                        >
+                                        Post
+                                        </Button>
+                                    </Grid.Column>
+                                </Grid.Row>
+                            </Grid>
+                        )
+                        }
+                        {viewData}
+                    </Grid.Column>
+                </Grid.Row>
+            </Grid>
+        );
 
         return (
             <Fragment>
                 {commentsLoader
                     ? <PlaceholderGrid row={1} column={1} />
-                    : viewData
+                    : actionData
                 }
                 {(activitiesLink)
                 && (

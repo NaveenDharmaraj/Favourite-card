@@ -1,8 +1,22 @@
 import _ from 'lodash';
+import getConfig from 'next/config';
 
 import utilityApi from '../services/utilityApi';
 import graphApi from '../services/graphApi';
 import coreApi from '../services/coreApi';
+
+const { publicRuntimeConfig } = getConfig();
+const {
+    BASIC_AUTH_KEY,
+} = publicRuntimeConfig;
+let BASIC_AUTH_HEADER = null;
+if (!_.isEmpty(BASIC_AUTH_KEY)) {
+    BASIC_AUTH_HEADER = {
+        headers: {
+            Authorization: `Basic ${BASIC_AUTH_KEY}`,
+        },
+    };
+}
 
 export const actionTypes = {
     GET_BENEFICIARY_DONEE_LIST: 'GET_BENEFICIARY_DONEE_LIST',
@@ -11,6 +25,8 @@ export const actionTypes = {
     REDIRECT_TO_DASHBOARD: 'REDIRECT_TO_DASHBOARD',
     SAVE_DEEP_LINK: 'SAVE_DEEP_LINK',
     SAVE_FOLLOW_STATUS: 'SAVE_FOLLOW_STATUS',
+    SET_COUNTRIES_GEOCODE: 'SET_COUNTRIES_GEOCODE',
+    SET_HEADQUARTER_GEOCODE: 'SET_HEADQUARTER_GEOCODE',
 };
 
 export const getBeneficiaryDoneeList = (dispatch, charityId) => {
@@ -165,4 +181,25 @@ export const getBeneficiaryFromSlug = async (dispatch, slug) => {
     } else {
         //redirect('/dashboard');
     }
+};
+
+export const getGeoCoding = async (dispatch, city, isHeadQuarter) => {
+    const fsa = {
+        payload: {
+            city: [],
+        },
+    };
+    await utilityApi.post('/getZipcode', {
+        address: city,
+    }, BASIC_AUTH_HEADER).then((result) => {
+        if (result && !_.isEmpty(result.data)) {
+            fsa.payload.city = result.data;
+            if (isHeadQuarter) {
+                fsa.type = actionTypes.SET_HEADQUARTER_GEOCODE;
+            } else {
+                fsa.type = actionTypes.SET_COUNTRIES_GEOCODE;
+            }
+            dispatch(fsa);
+        }
+    }).catch().finally();
 };

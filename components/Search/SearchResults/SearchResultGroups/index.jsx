@@ -26,9 +26,9 @@ class SearchResultGroups extends React.Component {
         } = this.props
         if (!_isEmpty(groups) && !_isEmpty(groups.meta)) {
             if (groups.meta.record_count) {
-                return groups.meta.record_count;
+                return groups.meta.record_count.toLocaleString('en-CA');
             } else if (groups.meta.recordCount) {
-                return groups.meta.recordCount;
+                return groups.meta.recordCount.toLocaleString('en-CA');
             }
         }
     }

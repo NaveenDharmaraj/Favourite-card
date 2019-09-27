@@ -76,8 +76,12 @@ const _auth0lockConfig = {
                 user_exists: 'An account with that email already exists.',
             },
         },
+        forgotPasswordAction: 'Forgot your password?',
+        forgotPasswordSubmitLabel: 'Reset password',
+        loginSubmitLabel: 'Sign in',
+        passwordInputPlaceholder: 'Your password',
         success: {
-            forgotPassword: 'Check your email—we’ve sent instructions for changing your password.',
+            forgotPassword: 'Check your inbox—we’ve sent instructions to reset your password.',
         },
         title: '',
     },

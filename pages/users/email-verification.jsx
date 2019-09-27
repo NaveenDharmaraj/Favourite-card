@@ -86,7 +86,7 @@ class EmailVerification extends React.Component {
                                                         </p>
                                                         
                                                     </div>
-                                                    {!!apiResendEmail && <Message compact color='green'>Email Sent</Message>}
+                                                    {!!apiResendEmail && <Message compact color='green'>Email sent</Message>}
     
                                                 </Form>
                                             </div>

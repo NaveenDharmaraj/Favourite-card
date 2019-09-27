@@ -161,7 +161,7 @@ class RecommendationList extends React.Component {
         if (recommendationData && recommendationData.count > 7) {
             viewAllDiv = (
                 <Link route={`/user/recommendations`}>
-                    <a>
+                    <a className="viewAll">
                         View all
                         {/* ({recommendationData.count}) */}
                     </a>

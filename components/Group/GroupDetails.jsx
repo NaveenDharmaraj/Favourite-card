@@ -169,7 +169,7 @@ class GroupDetails extends React.Component {
                     <Grid.Column>
                         <div className="buttonWraper">
                             <a href={(`${RAILS_APP_URL_ORIGIN}/groups/${slug}/edit`)}>
-                                <Button primary fluid className="blue-btn-rounded">Manage</Button>
+                                <Button fluid className="blue-bordr-btn-round">Manage</Button>
                             </a>
                         </div>
                     </Grid.Column>

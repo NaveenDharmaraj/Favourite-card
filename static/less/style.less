@@ -22,6 +22,11 @@ body{
   a{
     color: @blueButton;
     font-size: inherit;
+    &.viewAll{
+      color: @blueButton;
+      font-size: 14px;
+      font-weight: 600;
+    }
     &:hover,&:focus{
       color: @blueButton-hover;
       text-decoration: none;
@@ -164,7 +169,7 @@ h4{
         &.small-close{
           &.ui{
             &.modal{
-              i{
+              >i{ 
                 &.icon{
                   &.close{
                     top: 12px;
@@ -172,9 +177,11 @@ h4{
                     color: @grey-darken-3;
                     width: 15px;
                     height: 15px;
-                    overflow: hidden;
                     &:before{
-                      content: url(../images/icons/icon-close.svg);
+                      content: '';
+                      background-image: url(../images/icons/close.svg) !important;
+                      background-size: contain !important;
+                      background-repeat: no-repeat;
                       display: inline-block;
                       border-radius: 100%;
                       position: absolute;
@@ -183,6 +190,8 @@ h4{
                       bottom: 0;
                       left: -5px;
                       right: 0;
+                      width: 16px;
+                      height: 16px;
                     }
                   }
                 }
@@ -192,19 +201,16 @@ h4{
         }
         &.ui{
           &.modal{
-            i{
+            >i{
               &.icon{
                 &.close{
                   top: 12px;
-                  right: 12px;
+                  right: 0px;
                   color: @grey-darken-3;
-                  width: 20px;
-                  height: 20px;
-                  overflow: hidden;
                   &:before{
-                    content: url(../images/icons/icon-close.svg);
+                    content: url(../images/icons/close.svg);
                     display: inline-block;
-                    border-radius: 100%;
+                    //border-radius: 100%;
                     position: absolute;
                     margin: auto;
                     top: -3px;
@@ -220,9 +226,10 @@ h4{
               }
             }
             >.header{
-              background-image: url('../images/dashboard_bg.png');
-              background-size: cover;
+              background-image: url('../images/header.svg');
+              background-size: contain;
               background-repeat: no-repeat;
+              background-position: center right;
               font-size: 16px;
               padding: 2.7rem 45/@rem;
             }
@@ -329,6 +336,9 @@ h4{
 .font-s-10{
   font-size: 12/@rem !important;
 }
+.font-s-12{
+  font-size: 12px !important;
+}
 .font-s-13{
   font-size: 13px !important;
 }
@@ -429,8 +439,16 @@ h4{
     }
   }
 }
+.w-120{
+  max-width: 120px;
+  text-align: center;
+}
 .w-140{
   width: 140/@rem;
+  text-align: center;
+}
+.w-160{
+  width: 160px;
   text-align: center;
 }
 .w-180{
@@ -500,6 +518,9 @@ h4{
   color: @link;
   transition: all 0.3s ease-out;
   cursor: pointer;
+  &.border{
+    text-decoration: underline;
+  }
   &:hover{
     color: @link-hover;
   }
@@ -755,13 +776,77 @@ h4{
     }
   }
 }
+@media only screen and (max-width:767px) {
+  .charityTab{
+    margin-bottom: 40px;
+    .ui{
+      &.pointing{
+        &.secondary{
+          &.menu{
+            padding:0px;
+            border-bottom: 2px solid rgba(34,36,38,.15) !important;
+            margin-bottom: 13px;
+            box-shadow: none;
+            overflow-x: scroll;
+          }
+        }
+      }
+    }
+    .ui{
+      &.segment{
+        &.tab{
+          &.user-messaging{
+            margin-top: 0px !important;
+          }
+        }
+      }
+    }
+  }
+}
+@media only screen and (max-width:991px) and (min-width:767px) {
+  .charityTab{
+    margin-bottom: 40px;
+    .ui{
+      &.pointing{
+        &.secondary{
+          &.menu{
+            padding:0px;
+            border-bottom: 2px solid rgba(34,36,38,.15) !important;
+            margin-bottom: 13px;
+            box-shadow: none;
+          }
+        }
+      }
+    }
+    .ui{
+      &.segment{
+        &.tab{
+          &.user-messaging{
+            margin-top: 0px !important;
+          }
+        }
+      }
+    }
+  }
+}
 .charityTab{
+  margin-bottom: 40px;
   &.n-border{
     .ui{
       &.segment{
         &.tab{
           border: none;
+          padding-top: 25px;
         }
+      }
+    }
+  }
+  .ui{
+    &.segment{
+      &.tab{
+        border: none;
+        padding-top: 40px;
+        margin-top: 0px;
       }
     }
   }
@@ -788,7 +873,7 @@ h4{
         box-shadow: none;
         border-radius: 0rem;
         padding-bottom: 2rem;
-        border-bottom: 1/@rem solid @grey-darken-1;
+        //border-bottom: 1/@rem solid @grey-darken-1;
         .border-top{
           .ui.grid >.row{
             border-top: 1px solid @grey-lighten-2;
@@ -879,11 +964,30 @@ h4{
   .settingsDetailWraper{
     padding: 2rem 0rem 2rem; 
     border-bottom: 1px solid @grey-lighten-2;
+    p{
+      >a{
+        text-decoration: underline;
+      }
+    }
     &:first-child{
       padding-top: 0px;
     }
     &:last-child{
       border-bottom: 0px solid transparent;
+    }
+    .ui{
+      &.divided{
+        &.list{
+          &.userList{
+            .item{
+              &:last-child{
+                border-bottom: 1px solid rgba(34,36,38,.15);
+                padding: 1rem 0rem;
+              }
+            }
+          }
+        }
+      }
     }
     .ui{
       &.header{
@@ -935,7 +1039,10 @@ h4{
   &.ui{
     &.list{
       >.item{
-        padding: 1rem 0rem;
+        padding: 15px 0rem 9px;
+        &:first-child{
+          padding: 15px 0rem 9px;
+        }
         .ui{
           &.avatar{
             &.image{
@@ -1025,6 +1132,21 @@ h4{
       border-radius: 0rem;
       box-shadow: none;
       padding: 2rem;
+      h3{
+        &.ui{
+          &.header{
+            font-size: 17px !important;
+          }
+        }
+      }
+      
+    }
+  }
+  .ui{
+    &.table{
+      th{
+        font-size: 12px !important;
+      }
     }
   }
 }
@@ -1212,7 +1334,40 @@ h4{
     }
   }
  }
+ .loginPageBg{
+   background-image: url(../images/login_bg.png);
+   background-repeat: no-repeat;
+   background-size: contain;
+   background-position: top left;
+   .left-bg{
+     >div{
+      position: absolute;
+      left: -75px;
+      right: 100px;
+      top: 0;
+      background-image: url('../images/Login.png');
+      background-size: contain;
+      height: 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+     }
+   }
+ }
 .left-bg{
+  &.verifyImg{
+    min-height: 334px;
+    >div{
+      position: absolute;
+      left: 0px;
+      right: 100px;
+      top: 0;
+      background-image: url('../images/verifyemail.png');
+      background-size: contain;
+      height: 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+  }
   >div{
     position: absolute;
     left: -75px;
@@ -1227,19 +1382,60 @@ h4{
 }
 @media only screen and (max-width:991px) {
   .left-bg{
-    display: none !important;
+    display: block !important;
+    min-height: 300px;
     >div{
-      display: none;
+      display: block;
     }
+  }
+  .causesLeftImg > div{
+    display: none;
+  }
+}
+@media only screen and (max-width:480px) {
+  .auth0-lock.auth0-lock .auth0-lock-content-wrapper{
+    max-height: 155px;
+  }
+  .auth0-lock.auth0-lock .auth0-lock-cred-pane-internal-wrapper{
+    height: auto;
   }
 }
 @media only screen and (max-width:767px) {
-  .left-bg{
-    display: none !important;
-    >div{
-      display: none;
+  body{
+    .reg-btn-wraper .ui.button.blue-bordr-btn-round-def{
+      padding: 0.8rem 2rem;
+    }
+    .reg-btn-wraper .ui.button.primary{
+      padding: 0.8rem 2rem;
     }
   }
+  .left-bg{
+    display: block !important;
+    min-height: 220px;
+    >div{
+      min-height: 300px;
+      display: block;
+      position: absolute;
+      left: -63px;
+      right: 0px;
+      top: 0;
+    }
+  }
+  .loginPageBg{
+    .left-bg{
+      display: block !important;
+      min-height: 220px;
+      >div{
+        min-height: 300px;
+        display: block;
+        position: absolute;
+        left: -63px;
+        right: 0px;
+        top: 0;
+      }
+    }
+  }
+  
   .causesLeftImg{
     display: none;
   }
@@ -1520,11 +1716,19 @@ h4{
   margin-top: 74px;
   .ui{
     &.button{
+      +.button{
+        margin-left: 1rem;
+      }
       &.primary{
         padding: 16/@rem 72/@rem;
         border-radius: 26.5/@rem;
         font-size: 16/@rem;	font-weight: 600;	line-height: 22/@rem;	text-align: center;
         background-color: #055ce5;
+      }
+      &.blue-bordr-btn-round-def{
+        padding: 16/@rem 72/@rem;
+        border-radius: 26.5/@rem;
+        font-size: 16/@rem;	font-weight: 600;	line-height: 22/@rem;	text-align: center;
       }
     }
   }
@@ -2034,7 +2238,7 @@ h4{
   h3.ui.header{
     font-size: 24px !important;
     margin-bottom: 0px;
-    color: @grey-darken-3;
+    color: #263238;
   }
   h4.ui.header{
     font-size: 17px;
@@ -2180,6 +2384,7 @@ h4{
 }
 @media only screen and (max-width:767px) {
   .charityTab{
+    margin-bottom: 0px;
     .ui{
       &.pointing{
         &.secondary{
@@ -2236,7 +2441,7 @@ h4{
 .c-db-header{
   padding-top: 63/@rem;
   padding-bottom: 66/@rem;
-  background-image: url(../images/dashboard_bg.png);
+  background-image: url(../images/dashboard_bg.png);   
   background-size: cover;
   background-repeat: no-repeat;
 }
@@ -2259,6 +2464,20 @@ h4{
       background-repeat: no-repeat;
       background-size: 156px;
       background-position: 8px 50%;
+      position: relative;
+      &::before{
+        content: '';
+        position: absolute;
+        bottom: 0;
+        top: 0;
+        right: 0;
+        width: 100%;
+        max-width: 228px;
+        background-image: url(../images/gift_bg.png);
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: bottom right;
+      }
     }
   }
 }
@@ -2267,6 +2486,13 @@ h4{
     &.card{
       box-shadow: 0 13px 40px 0 rgba(0,0,0,0.13);
       padding: 35px;
+      button{
+        &.btn-small-white{
+          &.button{
+            height: 40px;
+          }
+        }
+      }
       h2{
         &.ui{
           &.header{
@@ -2275,7 +2501,7 @@ h4{
               font-size: 32px;
               line-height: 39px;
               font-weight: 600;
-              font-family: 'ProximaNova-Bold';
+              font-family: 'ProximaNova-Regular';
               .sub{
                 &.header{
                   font-size: 14px;
@@ -2319,6 +2545,18 @@ h4{
 .db-activity-tbl{
   &.ui{
     &.basic{
+      >tbody{
+        >tr{
+          td{
+            &:nth-child(2){
+              img{
+                border-radius: 100%;
+              }
+            }
+          }
+        }
+      }
+      
       tr{
         td{
           padding: 19px 15px 17px;
@@ -2329,7 +2567,7 @@ h4{
           .item{
             >.image{
               height: 30px;	width: 30px;
-              border-radius: 5/@rem;
+              border-radius: 100%;
               &.avatar{
                 border-radius: 100%;
               }
@@ -2366,34 +2604,34 @@ h4{
       }
       .allocation{
         .reason{
-          color: @purple;
+          color: #263238;
         }
         .amount{
-          color: @purple;
+          color: #263238;
         }
       }
       .m-allocation{
         .reason{
-          color: @mAllocation;
+          color: #263238;
         }
         .amount{
-          color: @mAllocation;
+          color: #263238;
         }
       }
       .gift{
         .reason{
-          color: @gift;
+          color: #263238;
         }
         .amount{
-          color: @gift;
+          color: #263238;
         }
       }
       .donation{
         .reason{
-          color: @group;
+          color: #263238;
         }
         .amount{
-          color: @group;
+          color: #263238;
         }
       }
       .reason{
@@ -2470,6 +2708,24 @@ h4{
       &.createGift{
         background-color: #E3E8F0;	
         box-shadow: 2px 2px 7px 0 rgba(135,135,135,0.3);
+        background-image: url(../images/findfriends_bg.png);
+        background-size: contain;
+        position: relative;
+        height: 100%;
+        &::before{
+          content: '';
+          position: absolute;
+          background-image: url(../images/findfriends_box.png);
+          background-size: contain;
+          background-repeat: no-repeat;
+          background-position: 0px -5px;
+          width: 88px;
+          height: 70px;
+          left: 0;
+          top: 0px;
+          right: 0;
+          margin: auto;
+        }
         >.content{
           padding-top: 58px;
           .header{
@@ -2516,6 +2772,38 @@ h4{
     }
   }
 }
+.checkboxToRadio{
+  .ui.checkbox input:checked~.box:before, .ui.checkbox input:checked~label:before{
+    background: @link;
+  }
+  .ui.checkbox input:checked:focus~.box:before, .ui.checkbox input:checked:focus~label:before, .ui.checkbox input:not([type=radio]):indeterminate:focus~.box:before, .ui.checkbox input:not([type=radio]):indeterminate:focus~label:before{
+    background: @link;
+  }
+  .ui.checkbox input:checked~.box:after, .ui.checkbox input:checked~label:after{
+
+  }
+  .ui.checkbox input:checked~.box:after, .ui.checkbox input:checked~label:after{
+    color: #fff !important;
+  }
+  .ui{
+    &.checkbox{
+      input{
+        &.hidden{
+          +label{
+            &::before{
+              border-radius: 100%;
+            }
+          }
+        }
+      }
+      &.checked{
+        label{
+
+        }
+      }
+    }
+  }
+}
 .favourite{
   .left-img-card{
     &.ui{
@@ -2528,6 +2816,12 @@ h4{
                 &.header{
                   .content {
                     padding-top:10px;
+                    font-size: 14px;
+                    .sub{
+                      &.header{
+                        
+                      }
+                    }
                   }
                 }
               }
@@ -2665,7 +2959,8 @@ h4{
           }
         }
         .content{
-          display: block;
+          display: block; 
+          font-size: 14px;
         }
       }
     }
@@ -2738,7 +3033,11 @@ h4{
         background-repeat: no-repeat;
         background-position: center;
         position: relative;
+        border: 0px solid transparent;
+        box-shadow: none;
         &:hover{
+          -webkit-box-shadow: 0 1px 3px 0 #d4d4d5, 0 0 0 1px #d4d4d5;
+          box-shadow: 0 1px 3px 0 #d4d4d5, 0 0 0 1px #d4d4d5;
           &::before{
             opacity: 1;
           }
@@ -2751,8 +3050,7 @@ h4{
           right: 0;
           bottom: 0;
           left: 0;
-          background: rgba(0,0,0,0.2);
-          opacity: 0;
+          background: rgba(0,0,0,0.4);
           transition: all 0.3s ease-out;
         }
         .content{
@@ -2761,10 +3059,10 @@ h4{
           z-index: 2;
           .header{
             color: #fff;
-            font-size: 1rem;	
-            font-weight: bold;	
-            line-height: 18/@rem;	
-            text-shadow: 0 1px 2px rgba(0,0,0);
+            font-size: 16px;	 
+            font-weight: 600;	
+            line-height: 18px;	
+            text-shadow: 0 2px 8px 0 rgba(0,0,0,0.5);
           }
         }
       }
@@ -2789,8 +3087,20 @@ h4{
 }
 @media only screen and (max-width:767px) {
   body{
-    .footer-help .helpImg > div{
-      display: none;
+    .c-db-header{
+      padding-top: 2.5rem;
+      padding-bottom: 2.5rem;
+    }
+    .footer-help{
+      text-align: center;
+      .helpImg > div{
+        display: none;
+      }
+      .ui{
+        &.header{
+          margin-bottom: 15px;
+        }
+      }
     }
   }
 }
@@ -2997,6 +3307,14 @@ h4{
     background-size: cover;
     background-position: 0px 1/@rem;
     color:@grey-darken-3;
+    h3{
+      &.ui{
+        &.header{
+          font-size: 17px !important;
+          margin-bottom: 30px;
+        }
+      }
+    }
     &.charity{
       background-image: url(../images/charity_info_card_bg.png);
     }
@@ -3006,6 +3324,69 @@ h4{
     &.giving{
       background-image: url(../images/giving_info_card_bg.png);
     }
+    .charityDetailsList{
+      margin-bottom: 34px !important;
+      i{
+        &.icon{
+          position: relative;
+          min-width: 16px;
+          min-height: 16px;
+          &::before{
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            top: 0;
+            background-size: contain !important;
+            background-repeat: no-repeat !important;
+          }
+          &.user{
+            &::before{
+              background-image:url(../images/icons/user.svg) !important;
+            }
+          }
+          &.phone{
+            &::before{
+              background-image:url(../images/icons/phone.svg) !important;
+            }
+          }
+          &.mail{
+            &::before{
+              background-image:url(../images/icons/mail.svg) !important;
+            }
+          }
+          &.linkify{
+            &::before{
+              background-image:url(../images/icons/website.svg) !important;
+            }
+          }
+          &.users{
+            &::before{
+              background-image:url(../images/icons/group.svg) !important;
+            }
+          }
+          &.map{
+            &.marker{
+              &.alternate{
+                &::before{
+                  content: '';
+                }
+              }
+            }
+            &::before{
+              background-image:url(../images/icons/location.svg) !important;
+            }
+          }
+          &.briefcase{
+            &::before{
+              background-image:url(../images/icons/business.svg) !important;
+            }
+          }
+        }
+      }
+    }
+    
     h3{
       &.header{
         &.ui{
@@ -3028,6 +3409,7 @@ h4{
 }
 .profile-social-wraper{
   padding-left: 2rem;
+  border-left: 1px solid #D8D8D8;
   &.pl-0{
     padding-left: 0;
   }
@@ -3088,7 +3470,21 @@ h4{
   }
 }
 .campaign-amount{
-
+  h2{
+    &.ui{
+      &.header{
+        .sub{
+          &.header{
+            &.small{
+              font-family: 'ProximaNova-Regular';
+              font-size: 14px;
+              font-weight: 600;
+            }
+          }
+        }
+      }
+    }
+  }
 }
 @media only screen and (max-width:767px) {
   .profile-info-wraper{
@@ -3165,7 +3561,33 @@ h4{
   .filter-header{
     padding: 1.5rem;
   }
- }
+  .ui{
+    &.vertical{
+      &.accordion{
+        &.menu{
+          .item{
+            .title{
+              .dropdown{
+                &.icon{
+                  -webkit-transform: rotate(0deg);
+                  transform: rotate(0deg);
+                }
+              }
+              &.active{
+                .dropdown{
+                  &.icon{
+                    -webkit-transform: rotate(90deg);
+                    transform: rotate(90deg);
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
 .user-Ggroup-card{
   &.ui{
     &.card{
@@ -3233,6 +3655,7 @@ h4{
         padding: 0rem;
         >.header{
           padding: 1rem 1rem .7rem;
+          font-size: 14px;
         }
         .content{
           .ui{
@@ -3274,6 +3697,7 @@ h4{
           &.header{
             color: @font-color !important;
             font-family: 'ProximaNova-Light';
+            font-size: 12px;
             &:hover{
               color: @purple-hover !important;
             }
@@ -3345,16 +3769,17 @@ h4{
           padding-top: 1rem;
           padding-bottom: 1rem;
           border-bottom: 1px solid @grey-lighten-2;
+          padding-right: 1rem;
           .content{
             &.right{
   
             }
           }
           .charity{
-            color: @purple;
+            color: @gift;
           }
           .company{
-            color: @chimpGreen;
+            color: @purple;
           }
         }
       }
@@ -3741,7 +4166,8 @@ h4{
   }
 }
 .greyIcon{
-  .imgColorGrey();
+  -webkit-filter:invert(26%) sepia(16%) saturate(5%) hue-rotate(353deg) brightness(105%) contrast(91%);
+  filter: invert(26%) sepia(16%) saturate(5%) hue-rotate(353deg) brightness(105%) contrast(91%);
 }
 .info-panel{
   background-color:lighten(desaturate(spin(@blueButton, -1.6964), 10.0122), 51.3725);
@@ -3754,11 +4180,16 @@ h4{
         &.button{
           position: absolute;
           top: 0;
-          right: 0;
+          right: 10px;
           padding: 10px !important;
           >.icon{
             left:-10px;
             border-radius: 100%;
+            &.ellipsis{
+              &::before{
+                content: url(../images/icons/ellipsis.svg);
+              }
+            }
           }
           &.transparent{
             background-color: transparent;
@@ -3811,6 +4242,7 @@ h4{
             &.ui{
               &.image{
                 padding-right: 15px;
+                opacity: 0.5;
               }
             }
           }
@@ -3912,7 +4344,18 @@ h4{
         }
       }
       >.content{
-        padding-left: 41px !important;
+        .ui{
+          &.divided{
+            &.list{
+              margin-top: 0px !important;
+              margin-bottom: 0px;
+              .item{
+                padding-left: 41px !important;
+                border-bottom: 0.7px solid #ddd;
+              }
+            }
+          }
+        }
       }
     }
   }
@@ -3941,13 +4384,88 @@ h4{
     }
   }
 }
+.imgGalleryJustify{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+ }
+ .clear-fix{
+  &::after{
+    content:'';
+    display: table;
+    clear: both;
+  }
+ }
 .mdlMessage{
   &.message{
     &.ui{
       &.negative,&.positive{
-        border: 0px solid transparent;
-        box-shadow: none;
-        border-radius: 0px;
+        max-width: 335px;	
+        width: 100%;
+        border-radius: 10px;	
+        background-color: #FFFFFF;	
+        box-shadow: 0 2px 7px 0 rgba(135,135,135,0.3);
+        margin-left: auto;
+        margin-right: auto;
+        &.center{
+          margin-left: auto;
+          margin-right: auto;
+        }
+        &.left{
+          margin-left: 0px;
+          margin-right: auto;
+        }
+        &.right{
+          margin-left: auto;
+          margin-right: 0px;
+        }
+        >.content{
+          >.header{
+            color: #263238;	font-size: 14px;	letter-spacing: -0.1px;	line-height: 17px;
+            font-weight: 400;
+          }
+        }
+      }
+      &.positive{
+        i{
+          &.icon{
+            &.close{
+              &::before{
+                content: '';
+                background-image: url(../images/icons/close.svg) !important;
+                background-size: contain !important;
+                background-position: center !important;
+                background-repeat: no-repeat !important;
+                position: absolute;
+                left: 2px;
+                right: 2px;
+                top: 2px;
+                bottom: 2px;
+                margin: auto;
+              }
+            }
+            &.check{
+              height: 20px;
+              width: 20px;
+              border-radius: 100%;  
+              //background-color: #0CC965 !important;
+              position: relative;
+              &::before{
+                content: '';
+                background-image: url(../images/icons/green.svg) !important;
+                background-size: contain !important;
+                background-position: center !important;
+                background-repeat: no-repeat !important;
+                position: absolute;
+                left: 0px;
+                right: 0px;
+                top: 0px;
+                bottom: 0px;
+                margin: auto;
+              }
+            }
+          }
+        }
       }
     }
   }
@@ -4016,7 +4534,9 @@ h4{
     min-height: 268px;
     border-radius: 5px;	
     box-shadow: 0 13px 40px 0 rgba(0,0,0,0.13);
-    background-color: #ddd3df;
+    background-image: url(../images/bg_givinggroup_banner.svg);
+    background-size: cover;
+    background-repeat: no-repeat;
     height: 100%;
     padding: 0;
     margin: 0;
@@ -4165,6 +4685,7 @@ h4{
     }
   }
 }
+
 .c-comment{
   >.ui{
     &.comments{
@@ -4176,6 +4697,11 @@ h4{
           }
           &:before{
             top: 43px;
+          }
+        }
+        &:last-child{
+          &:before{
+            display: none;
           }
         }
         &:before{
@@ -4237,10 +4763,19 @@ h4{
         }
         .actions{
           padding-bottom: 5px;
+          >.ui{
+            &.grid{
+              margin-top: 0px;
+            }
+          }
           .metadata{
             margin-left: 0em;
             margin-right: .8em;
             font-size: 12px;
+          }
+          >a{
+            color: @link;
+            font-weight: bold;
           }
         }
       }
@@ -4300,7 +4835,7 @@ h4{
           .item{
             border-bottom: 1px solid @grey-lighten-2;
             border-radius: 0px !important;
-            padding: 1.25rem 1rem 1.25rem 10px;
+            padding: 1.5rem 1rem 1.5rem 10px;
             position: relative;
             border-right: 2px solid transparent;
             margin-right: -1px;
@@ -4408,6 +4943,16 @@ h4{
       &.celled{
         .item{
           padding: 2rem 0rem; 
+          .ellipsis{
+            &.horizontal{
+              &.icon{
+                width: 30px;
+                &::before{
+                  content: url(../images/icons/ellipsis.svg);
+                }
+              }
+            }
+          }
           .icon{
             &.card{
               min-width: 40px;
@@ -4611,7 +5156,124 @@ h4{
   padding: 5px 0px;
   margin-bottom:5px;
   cursor: pointer;
+  position: relative;
+  &::before{
+    content: '';
+    position: absolute;
+    left: -25px;
+    height: 19px;	width: 19px;
+    background-image: url(../images/icons/icon-refine-search.svg);
+    background-size: contain;
+    .imgColorBlue();
+  }
  }
+ @media only screen and (max-width:1199px) {
+  body{
+    .userProfileRightBtn{
+      text-align: right;
+      button{
+        &.ui{
+          &.button{
+            margin-right: 0px;
+            font-size: 13px;
+            padding: 5px 5px !important;
+            height: auto;
+            min-height: auto;
+            min-width: 100px;
+            +.button{
+              margin-left: 8px;
+            }
+          }
+        }
+      }
+    }
+  }
+ }
+ @media only screen and (max-width:767px) {
+  body{
+    .userProfileRightBtn{
+      text-align: center;
+      button{
+        &.ui{
+          &.button{
+            margin-bottom: 10px;
+          }
+        }
+      }
+    }
+  }
+ }
+ @media only screen and (min-width:767px) {
+  .userProfileRightBtn{
+    text-align: right;
+    button{
+      &.ui{
+        &.button{
+          +.button{
+            margin-left: 15px;
+          }
+        }
+      }
+    }
+  }
+ }
+ .userProfileRightBtn{
+   button{
+    &.ui{
+      &.button{
+        font-size: 14px;	font-weight: 600;	line-height: 20px;	text-align: center;
+        min-width: 126px;
+        //height: 40px;
+        padding: 8px 15px;
+        
+      }
+    }
+   }
+ }
+ 
+ .inputInline{
+  &.ui{
+    &.input{
+      input{
+        display: inline-block;
+        width: auto !important;
+      }
+    }
+  }
+}
+.cp_chkbx{
+  &.round{
+   &.ui{
+     &.checkbox{
+       &.font-w-n{
+         label{
+           font-weight: normal;
+         }
+       }
+       input{
+         &:checked{
+           ~label{
+             &::after{
+              content: '';
+              top: 4px;
+              left: 4px;
+              width: 9px;
+              height: 9px;
+              background-color: @link;
+              border-radius: 100% !important;
+             }
+           }
+         }
+       }
+       label{
+         &::before{
+           border-radius: 100%;
+         }
+       }
+     }
+   }
+  }
+}
  .cp_chkbx{
    &.field{
      .ui{
@@ -4639,6 +5301,30 @@ h4{
        }
      }
    }
+   &.ui{
+    &.checkbox{
+      input{
+        &:checked{
+          ~label{
+            &::after{
+             content: '';
+             top: 4px;
+             left: 4px;
+             width: 9px;
+             height: 9px;
+             background-color: @link;
+             border-radius: 2px;
+            }
+          }
+        }
+      }
+      label{
+        &::before{
+
+        }
+      }
+    }
+  }
  }
  .spanLink{
   cursor: pointer !important;
@@ -4649,25 +5335,68 @@ h4{
   >.content{
     padding: 0px;
   }
+  &.noHeader{
+    &.ui{
+      &.card{
+        &.rightImg{
+          >.content{
+            >.header{
+              margin: 40px 0px !important;
+              font-size: 14px;
+              .ui{
+                &.header{
+                  margin: 0px 0px !important;
+                  .content{
+                    font-size: 14px;
+                    .sub{
+                      &.header{
+                        margin-top: 10px;
+                        margin-bottom: 0px;
+                        font-size: 14px;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
   &.ui{
     &.card{
       border: 1px solid #E6E5E5;	
       border-radius: 5px;	
       background-color: #FFFFFF;
       box-shadow:none;	
-      padding: 1rem;
+      padding: 15px 15px 15px 36px;
       //box-shadow: 0 1px 7px 0 rgba(0,0,0,0.17);
       &.rightImg{
+        >.content{
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          >.header{
+            width: calc(100% - 150px);
+            margin: 30px 0px;
+            font-size: 14px;
+          }
+        }
         .content{
           padding: 0px;
+          font-size: 14px;
           .image{
             &.ui{
               height: 107px;	width: 126px;
               margin-bottom: 0px;
+              margin-right: auto;
+              order: 2;
             }
           }
+          
           .header{
-            margin: 30px 0px;
+            
             .ui{
               &.header{
                 .content{.sub{
@@ -4704,6 +5433,9 @@ h4{
   }
   &.givingGroup{
     background-color: #DDE8FA;
+    background-image: url(../images/campaignprofile_nodata_illustration_BG.svg);
+    background-size: cover;
+    background-repeat: no-repeat;
     .noDataLeftImg{
       &.ui{
         &.image{
@@ -4715,11 +5447,14 @@ h4{
       }
     }
     .givingGroupNoDataContent{
-      max-width: 415px;
+      max-width: 417px;
     }
   }
   &.ggManage{
     background-color: #DDE8FA;
+    background-image: url(../images/campaignprofile_nodata_illustration_BG.svg);
+    background-size: cover;
+    background-repeat: no-repeat;
     .noDataLeftImg{
       &.ui{
         &.image{
@@ -4865,3 +5600,18 @@ h4{
   background-repeat: no-repeat;
   background-position: center;
 }
+body{
+  .grid{
+    &.column{
+      &.doubling{
+        >.row{
+          >.column{
+            &.c-w-100{
+              width: 100% !important;
+            }
+          }
+        }
+      }
+    }
+  }
+ }

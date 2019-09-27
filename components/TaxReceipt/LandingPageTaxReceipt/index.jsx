@@ -142,7 +142,7 @@ class LandingPageTaxReceipt extends React.Component {
                                 </div>
                                 <Divider />
                                 <TaxReceipientsList />
-                                <div className="mb-2">
+                                <div className="mb-2 mt-3">
                                     <p className="font-s-16 bold mb-1-2">Issued tax receipts</p>
                                     <p className="font-s-13">Tax receipts are organizied by recipient.</p>
                                 </div>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import {
     Container,
     Grid,
@@ -82,6 +82,8 @@ class GroupsAndCampaigns extends React.Component {
         const {
             dispatch,
             displayError,
+            leaveButtonLoader,
+            closeLeaveModal,
         } = this.props;
         if (showLoader) {
             return (
@@ -95,6 +97,8 @@ class GroupsAndCampaigns extends React.Component {
                     displayData={typeData}
                     dispatch={dispatch}
                     errorMessage={displayError}
+                    closeLeaveModal={closeLeaveModal}
+                    leaveButtonLoader={leaveButtonLoader}
                 />
             );
         } if (!_.isEmpty(typeData) && _.isEmpty(typeData.data)) {
@@ -241,12 +245,18 @@ class GroupsAndCampaigns extends React.Component {
                     {this.renderList(showloaderForMemberGroups, 'groupsWithMemberships', groupsWithMemberships)}
                 </div>
                 <Divider />
-                <div className="pt-2 pb-2">
-                    <p className="bold font-s-16">Campaigns you manage</p>
-                </div>
-                <div className="pt-1 pb-3">
-                    {this.renderList(showloaderForCampaigns, 'administeredCampaigns', administeredCampaigns)}
-                </div>
+                {(administeredCampaigns && administeredCampaigns.dataCount && administeredCampaigns.dataCount > 0) ? (
+                    <Fragment>
+                        <div className="pt-2 pb-2">
+                            <p className="bold font-s-16">Campaigns you manage</p>
+                        </div>
+                        <div className="pt-1 pb-3">
+                            {this.renderList(showloaderForCampaigns, 'administeredCampaigns', administeredCampaigns)}
+                        </div>
+                    </Fragment>
+                ) : null
+
+                }
             </Container>
         );
     }
@@ -256,9 +266,11 @@ function mapStateToProps(state) {
     return {
         administeredCampaigns: state.user.administeredCampaigns,
         administeredGroups: state.user.administeredGroups,
+        closeLeaveModal: state.user.closeLeaveModal,
         currentUser: state.user.info,
         displayError: state.user.leaveErrorMessage,
         groupsWithMemberships: state.user.groupsWithMemberships,
+        leaveButtonLoader: state.user.leaveButtonLoader,
     };
 }
 

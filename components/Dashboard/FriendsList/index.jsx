@@ -171,7 +171,7 @@ class FriendsList extends React.Component {
             viewAllDiv = (
                 <div className="text-right">
                     <Link className="lnkChange" route="/user/profile/friends/myfriends">
-                        <a>
+                        <a className="viewAll">
                             View all
                             {/* (
                             {friendsData.count}

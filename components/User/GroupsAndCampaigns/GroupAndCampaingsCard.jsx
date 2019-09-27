@@ -6,9 +6,12 @@ import {
     Button,
     Card,
     Dropdown
-} from 'semantic-ui-react'
+} from 'semantic-ui-react';
+import _ from 'lodash';
+
 import { Link } from '../../../routes';
 import placeholder from '../../../static/images/no-data-avatar-giving-group-profile.png';
+
 import LeaveModal from './LeaveModal';
 import { renderText } from '../../../helpers/utils';
 
@@ -20,6 +23,16 @@ class GroupsAndCampaignsCard extends React.Component {
         };
         this.openModal = this.openModal.bind(this);
         this.close = this.close.bind(this);
+    }
+
+    componentDidUpdate(prevProps) {
+        if (!_.isEqual(this.props, prevProps)) {
+            if (this.props.closeLeaveModal === true) {
+                this.setState({
+                    open: false,
+                });
+            }
+        }
     }
 
     openModal() {
@@ -39,6 +52,8 @@ class GroupsAndCampaignsCard extends React.Component {
             listingType,
             data,
             errorMessage,
+            leaveButtonLoader,
+            closeLeaveModal,
         } = this.props;
         const {
             dropDownOpen,
@@ -119,6 +134,7 @@ class GroupsAndCampaignsCard extends React.Component {
                                                                         close={this.close}
                                                                         open={this.state.open}
                                                                         errorMessage={errorMessage}
+                                                                        leaveButtonLoader={leaveButtonLoader}
                                                                     />
                                                                 )
                                                             }
@@ -128,7 +144,7 @@ class GroupsAndCampaignsCard extends React.Component {
                                             </Grid.Column>
                                         </Grid.Row>
                                     </Grid>
-                                    <Header as="h4" style={{margin:'0rem 0rem .5rem'}}>
+                                    <Header as="h4" style={{margin:'0rem 0.5rem .5rem 0rem'}}>
                                         <Header.Content>
                                             {shortName}
                                             <br />

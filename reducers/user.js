@@ -43,7 +43,9 @@ const user = (state = {}, action) => {
                     ...state.fund,
                     ...fund,
                 },
-                paymentInstrumentsData: Object.assign([], state.paymentInstrumentsData, paymentInstrumentsData),
+                // For ticket CPP-3387
+                //paymentInstrumentsData: Object.assign([], state.paymentInstrumentsData, paymentInstrumentsData),
+                paymentInstrumentsData,
                 taxReceiptProfiles: Object.assign([], state.taxReceiptProfiles, taxReceiptProfiles),
                 userCampaigns: Object.assign([], state.userCampaigns, userCampaigns),
                 userGroups: Object.assign([], state.userGroups, userGroups),
@@ -92,6 +94,13 @@ const user = (state = {}, action) => {
                 administeredCampaigns: Object.assign({}, state.administeredCampaigns, action.payload.administeredCampaigns),
                 administeredGroups: Object.assign({}, state.administeredGroups, action.payload.administeredGroups),
                 groupsWithMemberships: Object.assign({}, state.groupsWithMemberships, action.payload.groupsWithMemberships),
+            };
+            break;
+        case 'GIVING_GROUPS_lEAVE_MODAL':
+            newState = {
+                ...state,
+                closeLeaveModal: action.payload.closeModal,
+                leaveButtonLoader: action.payload.buttonLoading,
             };
             break;
         case 'LEAVE_GROUP_ERROR_MESSAGE':

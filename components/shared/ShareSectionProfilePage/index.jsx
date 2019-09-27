@@ -115,7 +115,7 @@ class ShareDetails extends React.Component {
                                 {(profileDetails.type ==='beneficiaries') ? (
                                 <Icon
                                     id="follow"
-                                    color={(profileDetails && profileDetails && profileDetails.attributes.following) ? "red" : "blue"}
+                                    color={(profileDetails && profileDetails && profileDetails.attributes.following) ? "red" : "outline"}
                                     name={(profileDetails && profileDetails && profileDetails.attributes.following) ? "heart" : "heart"}
                                     onClick={this.handleFollow}
                                     disabled={this.props.disableFollow}
@@ -123,7 +123,7 @@ class ShareDetails extends React.Component {
                                 ) : (
                                     <Icon
                                     id="follow"
-                                    color={(profileDetails && profileDetails && profileDetails.attributes.liked) ? "red" : "blue"}
+                                    color={(profileDetails && profileDetails && profileDetails.attributes.liked) ? "red" : "outline"}
                                     name={(profileDetails && profileDetails && profileDetails.attributes.liked) ? "heart" : "heart"}
                                     onClick={this.handleFollow}
                                     disabled={this.props.disableFollow}
@@ -155,12 +155,12 @@ class ShareDetails extends React.Component {
                                     ref={(textarea) => this.textArea = textarea}
                                 />
                             </Form.Field>
-                            <Button
+                            {/* <Button
                                 className="transparent-btn-round small"
                                 onClick={this.handleCopyLink}
                             >
                                 Copy link
-                            </Button>
+                            </Button> */}
                         </Form>
                     </div>
                 </div>
