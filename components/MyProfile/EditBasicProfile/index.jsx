@@ -267,10 +267,12 @@ class EditBasicProfile extends React.Component {
                 {
                     statusMessage && (
                         <Grid.Row>
-                            <ModalStatusMessage 
-                                message = {!_.isEmpty(successMessage) ? successMessage : null}
-                                error = {!_.isEmpty(errorMessage) ? errorMessage : null}
-                            />
+                            <Grid.Column width={16}>
+                                <ModalStatusMessage 
+                                    message = {!_.isEmpty(successMessage) ? successMessage : null}
+                                    error = {!_.isEmpty(errorMessage) ? errorMessage : null}
+                                />
+                            </Grid.Column>
                         </Grid.Row>
                     )
                 }

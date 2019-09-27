@@ -41,9 +41,9 @@ class RecommendationList extends React.Component {
         getRecommendationList(dispatch, url);
     }
 
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         const {
-            recommendationData
+            recommendationData,
         } = this.props;
         let {
             recommendationListLoader,
@@ -110,7 +110,9 @@ class RecommendationList extends React.Component {
                                                                         <div className="filterPanel">
                                                                             <div className="filterPanelContent">
                                                                                 <div className="filterPanelItem">
-                                                                                    <div className="filter-header font-18 font-bold">Hide</div>
+                                                                                    <div className="filter-header font-18 font-bold">
+                                                                                        Hide
+                                                                                    </div>
                                                                                 </div>
                                                                             </div>
                                                                         </div>

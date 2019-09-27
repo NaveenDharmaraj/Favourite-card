@@ -150,7 +150,7 @@ class MyFriends extends React.Component {
                 const name = `${friend.attributes.first_name} ${friend.attributes.last_name}`;
                 const avatar = ((typeof friend.attributes.avatar) === 'undefined' || friend.attributes.avatar === null) ? NoFriendAvatar : friend.attributes.avatar;
                 const email = Buffer.from(friend.attributes.email_hash, 'base64').toString('ascii');
-                const location = (typeof friend.attributes.city === 'undefined' || friend.attributes.province === '') ? email : `${friend.attributes.city}, ${friend.attributes.province}`;
+                const location = (typeof friend.attributes.city === 'undefined' || friend.attributes.province === '') ? '' : `${friend.attributes.city}, ${friend.attributes.province}`;
                 return (
                     <List.Item>
                         <List.Content floated="right">
@@ -207,7 +207,7 @@ class MyFriends extends React.Component {
             friendsList = userMyFriendsList.data.map((friend) => {
                 const name = `${friend.attributes.first_name} ${friend.attributes.last_name}`;
                 const email = Buffer.from(friend.attributes.email_hash, 'base64').toString('ascii');
-                const location = (typeof friend.attributes.city !== 'undefined') ? `${friend.attributes.city}, ${friend.attributes.province}` : email;
+                const location = (typeof friend.attributes.city !== 'undefined') ? `${friend.attributes.city}, ${friend.attributes.province}` : '';
                 const avatar = (typeof friend.attributes.avatar) !== 'undefined' ? friend.attributes.avatar : NoFriendAvatar;
                 return (
                     <List.Item>
