@@ -5,6 +5,7 @@ import searchApi from '../services/searchApi';
 import securityApi from '../services/securityApi';
 import coreApi from '../services/coreApi';
 import eventApi from '../services/eventApi';
+import utilityApi from '../services/utilityApi';
 
 import {
     createToken,
@@ -44,9 +45,11 @@ export const actionTypes = {
     USER_PROFILE_FRIEND_ACCEPT: 'USER_PROFILE_FRIEND_ACCEPT',
     USER_PROFILE_FRIEND_REQUEST: 'USER_PROFILE_FRIEND_REQUEST',
     USER_PROFILE_INVITATIONS: 'USER_PROFILE_INVITATIONS',
+    USER_PROFILE_INVITE_FRIENDS: 'USER_PROFILE_INVITE_FRIENDS',
     USER_PROFILE_MEMBER_GROUP: 'USER_PROFILE_MEMBER_GROUP',
     USER_PROFILE_MY_FRIENDS: 'USER_PROFILE_MY_FRIENDS',
     USER_PROFILE_RECOMMENDED_TAGS: 'USER_PROFILE_RECOMMENDED_TAGS',
+    USER_PROFILE_SIGNUP_DEEPLINK: 'USER_PROFILE_SIGNUP_DEEPLINK',
     USER_PROFILE_TAX_RECEIPTS: 'USER_PROFILE_TAX_RECEIPTS',
     USER_PROFILE_UNBLOCK_FRIEND: 'USER_PROFILE_UNBLOCK_FRIEND',
 };
@@ -833,6 +836,54 @@ const addToFriend = (dispatch, sourceUserId, sourceEmail, sourceAvatar, sourceFi
     });
 };
 
+const inviteFriends = (dispatch, inviteEmailIds) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.USER_PROFILE_INVITE_FRIENDS,
+    };
+    const bodyData = {
+        data: {
+            attributes: {
+                email: inviteEmailIds,
+                notification_type: 'inviteFriends',
+            },
+            type: 'users',
+        },
+    };
+    return coreApi.post(`/users/friend_mail_notifications`, bodyData).then(
+        (result) => {
+            fsa.payload = {
+                data: result.data,
+            };
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    });
+};
+
+const generateDeeplinkSignup = (dispatch, profileId) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.USER_PROFILE_SIGNUP_DEEPLINK,
+    };
+    return utilityApi.get(`/deeplink?profileType=userprofile&sourceId=${Number(profileId)}&profileId=${Number(profileId)}`).then(
+        (result) => {
+            fsa.payload = {
+                data: result.data,
+            };
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    });
+};
+
+
 export {
     getUserProfileBasic,
     getUserFriendProfile,
@@ -865,4 +916,6 @@ export {
     updateUserPreferences,
     getUserDefaultTaxReceipt,
     addToFriend,
+    inviteFriends,
+    generateDeeplinkSignup,
 };

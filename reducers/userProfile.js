@@ -119,6 +119,12 @@ const userProfile = (state = {}, action) => {
                 userDefaultTaxReceipt: Object.assign({}, action.payload),
             };
             break;
+        case 'USER_PROFILE_SIGNUP_DEEPLINK':
+            newState = {
+                ...state,
+                userProfileSignUpDeeplink: Object.assign({}, action.payload),
+            };
+            break;
         default:
             break;
     }

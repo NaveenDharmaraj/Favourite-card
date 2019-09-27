@@ -28,7 +28,7 @@ class ModalStatusMessage extends React.Component {
                     visible && (
                         <Fragment>
                             {!_isEmpty(error) ? (
-                                <Message negative icon className="mdlMessage" onDismiss={() => { this.setState({ visible: false }); }}>
+                                <Message negative icon className="mdlMessage left" onDismiss={() => { this.setState({ visible: false }); }}>
                                     <Icon name="warning sign" />
                                     <Message.Content>
                                         <Message.Header>{error}</Message.Header>
@@ -36,7 +36,7 @@ class ModalStatusMessage extends React.Component {
                                 </Message>
 
                             ) : (
-                                <Message positive icon className="mdlMessage" onDismiss={() => { this.setState({ visible: false }); }}>
+                                <Message positive icon className="mdlMessage left" onDismiss={() => { this.setState({ visible: false }); }}>
                                     <Icon name="check" />
                                     <Message.Content>
                                         <Message.Header>{message}</Message.Header>

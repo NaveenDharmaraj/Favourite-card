@@ -171,12 +171,13 @@ class FindFriends extends React.Component {
             buttonClicked,
         } = this.state;
         let friendsList = '';
+        let isButtonDisabled = false;
         if (!_.isEmpty(userFindFriendsList)) {
             friendsList = userFindFriendsList.data.map((data) => {
                 const name = `${data.attributes.first_name} ${data.attributes.last_name}`;
                 const avatar = ((typeof data.attributes.avatar) === 'undefined' || data.attributes.avatar === null) ? NoFriendAvatar : data.attributes.avatar;
                 const email = Buffer.from(data.attributes.email_hash, 'base64').toString('ascii');
-                const location = (typeof data.attributes.city === 'undefined' || data.attributes.province === '') ? email : `${data.attributes.city}, ${data.attributes.province}`;
+                const location = (typeof data.attributes.city === 'undefined' || data.attributes.province === '') ? '' : `${data.attributes.city}, ${data.attributes.province}`;
                 let btnClass = 'blue-bordr-btn-round-def c-small';
                 let friendStatus = '';
                 let btnData = '';
@@ -190,6 +191,7 @@ class FindFriends extends React.Component {
                 } else if (data.attributes.friend_status.toLowerCase() === 'pending_out') {
                     friendStatus = 'Pending';
                     btnData = 'pendingout';
+                    isButtonDisabled = true;
                 } else {
                     friendStatus = 'Accept';
                     btnData = 'accept';
@@ -200,7 +202,7 @@ class FindFriends extends React.Component {
                             <Button
                                 className={btnClass}
                                 onClick={() => this.handleAddFriendClick(data, btnData)}
-                                disabled={buttonClicked}
+                                disabled={buttonClicked || isButtonDisabled}
                             >
                                 {friendStatus}
                             </Button>
@@ -261,7 +263,7 @@ class FindFriends extends React.Component {
                         </div>
                         {
                             statusMessage && (
-                                <div>
+                                <div className="mt-1">
                                     <ModalStatusMessage 
                                         message = {!_.isEmpty(successMessage) ? successMessage : null}
                                         error = {!_.isEmpty(errorMessage) ? errorMessage : null}

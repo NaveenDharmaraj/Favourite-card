@@ -116,7 +116,7 @@ class Privacy extends React.Component {
                 const name = `${data.attributes.first_name} ${data.attributes.last_name}`;
                 const avatar = ((typeof data.attributes.avatar) === 'undefined' || data.attributes.avatar === null) ? 'https://react.semantic-ui.com/images/avatar/small/daniel.jpg' : data.attributes.avatar;
                 const email = Buffer.from(data.attributes.email_hash, 'base64').toString('ascii');
-                const location = (typeof data.attributes.city !== 'undefined') ? `${data.attributes.city}, ${data.attributes.province}` : email;
+                const location = (typeof data.attributes.city !== 'undefined') ? `${data.attributes.city}, ${data.attributes.province}` : '';
                 return (
                     <List.Item>
                         <List.Content floated="right">

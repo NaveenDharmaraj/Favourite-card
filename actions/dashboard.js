@@ -1,3 +1,4 @@
+/* eslint-disable import/exports-last */
 import _ from 'lodash';
 
 import coreApi from '../services/coreApi';
@@ -7,10 +8,11 @@ import logger from '../helpers/logger';
 
 export const actionTypes = {
     USER_DASHBOARD: 'USER_DASHBOARD',
+    USER_FRIEND_EMAIL: 'USER_FRIEND_EMAIL',
     USER_FRIENDS: 'USER_FRIENDS',
+    USER_HIDE_RECOMMENDATION: 'USER_HIDE_RECOMMENDATION',
     USER_RECOMMENDATIONS: 'USER_RECOMMENDATIONS',
     USER_STORIES: 'USER_STORIES',
-    USER_FRIEND_EMAIL: 'USER_FRIEND_EMAIL',
 };
 
 const getPaginatedData = (url, type, dispatch) => {
@@ -141,6 +143,33 @@ const storeEmailIdToGive = (dispatch, email) => {
     dispatch(fsa);
 };
 
+const hideRecommendations = (dispatch, sourceUserId, hideEntityId, type) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.USER_HIDE_RECOMMENDATION,
+    };
+    const hideEntities = [];
+    hideEntities.push(hideEntityId);
+    const bodyData = {
+        hide_entity_ids: hideEntities,
+        user_id: Number(sourceUserId),
+    };
+    return coreApi.post(`/core/updateUser/hide/${type}`, bodyData).then(
+        (result) => {
+            fsa.payload = {
+                data: result.data,
+            };
+            const url = `/recommend/all?userid=${Number(sourceUserId)}&page[number]=1&page[size]=9`;
+            getRecommendationList(dispatch, url);
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    });
+};
+
 export {
     getDashBoardData,
     getPaginatedData,
@@ -148,4 +177,5 @@ export {
     getRecommendationList,
     getStoriesList,
     storeEmailIdToGive,
+    hideRecommendations,
 };
