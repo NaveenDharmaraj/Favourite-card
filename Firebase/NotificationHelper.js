@@ -6,7 +6,6 @@ import { firebaseMessageFetchCompleteAction } from "../actions/firebase";
 import _ from 'lodash';
 import eventApi from '../services/eventApi';
 const ACCEPT_FREIND_PAYLOAD = {
-    "type": "Event",
     "attributes": {
         "source": "web",
         "acceptor_email_id": "",
