@@ -52,7 +52,6 @@ class MobileHeader extends React.Component {
                     vertical
                     visible={visible}
                     direction="right"
-                    style={{width:'100vw',marginTop:'80px'}}
                 >
                     <Menu.Item>
                         <Button as="a" color="blue" fluid style={{ marginBottom: '5px' }}>Sign up</Button>

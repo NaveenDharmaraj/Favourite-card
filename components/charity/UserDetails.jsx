@@ -81,7 +81,7 @@ const detailsView = (valuesObject) => {
     const values = createUserDetails(valuesObject);
     return (
         <Grid.Row>
-            <Grid.Column>
+            <Grid.Column mobile={16} tablet={8} computer={8}>
                 <List className="charityDetailsList">
                     {values.map((value, index) => (
                         (value.Content && index <= 3
@@ -107,8 +107,8 @@ const detailsView = (valuesObject) => {
                     ))}
                 </List>
             </Grid.Column>
-            <Grid.Column>
-                <List className="charityDetailsList">
+            <Grid.Column mobile={16} tablet={8} computer={8}>
+                <List className="charityDetailsList mobMarginBtm-2">
                     {values.map((value, index) => (
                         (value.Content && index >= 4
                             && (
@@ -180,7 +180,7 @@ class UserDetails extends React.Component {
                         <Grid stackable>
                             <Grid.Row>
                                 <Grid.Column mobile={16} tablet={10} computer={10}>
-                                    <Grid columns={2}>
+                                    <Grid>
                                         {((!_isEmpty(charityDetails.charityDetails.attributes))
                                         && detailsView(charityDetails.charityDetails.attributes))}
                                     </Grid>
