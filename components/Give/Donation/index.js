@@ -60,14 +60,14 @@ class Donation extends React.Component {
     let payload = null;
             //Initialize the flowObject to default value when got switched from other flows
             if (props.flowObject.type !== flowType) {
-                const defaultPropsData = _.cloneDeep(donationDefaultProps);
+                const defaultPropsData = _.merge({}, donationDefaultProps);
                 payload = {
                     ...defaultPropsData.flowObject,
                     nextStep: props.step,
                 };
             }
             else{
-                const defaultPropsData = _.cloneDeep(props.flowObject);
+                const defaultPropsData = _merge({}, props.flowObject);
                 payload = {
                     ...defaultPropsData,
                     nextStep: props.step,
