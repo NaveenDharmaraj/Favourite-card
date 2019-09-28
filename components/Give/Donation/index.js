@@ -60,7 +60,7 @@ class Donation extends React.Component {
     let payload = null;
             //Initialize the flowObject to default value when got switched from other flows
             if (props.flowObject.type !== flowType) {
-                const defaultPropsData = _.merge({}, donationDefaultProps);
+                const defaultPropsData =  _merge({}, donationDefaultProps);
                 payload = {
                     ...defaultPropsData.flowObject,
                     nextStep: props.step,
@@ -72,9 +72,9 @@ class Donation extends React.Component {
                     ...defaultPropsData,
                     nextStep: props.step,
                 }
-            }  
+            }
         this.state = {
-            flowObject: payload,
+            flowObject: _.cloneDeep(payload),
             disableButton: !props.userAccountsFetched,
             inValidCardNameValue: true,
             inValidCardNumber: true,
@@ -549,6 +549,7 @@ class Donation extends React.Component {
       } = this.props;
       const formatMessage = this.props.t;
       let doSetState = false;
+
       if(this.props.userAccountsFetched !== oldProps.userAccountsFetched){
             doSetState = true;
       }

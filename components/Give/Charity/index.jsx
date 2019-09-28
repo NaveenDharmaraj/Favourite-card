@@ -127,7 +127,7 @@ class Charity extends React.Component {
             };
         }
         else{
-                payload =  _merge({}, props.flowObject)
+                payload =  _merge({}, props.flowObject);
             }
         this.state = {
             benificiaryIndex: 0,
@@ -138,7 +138,7 @@ class Charity extends React.Component {
                 infoToShareList: populateInfoToShare(
                     taxReceiptProfiles,
                     companyDetails,
-                    props.flowObject.giveData.giveFrom,
+                    payload.giveData.giveFrom,
                     {
                         displayName,
                         email,
@@ -148,7 +148,7 @@ class Charity extends React.Component {
                 paymentInstrumentList: populatePaymentInstrument(paymentInstruments, formatMessage),
             },
             findAnotherRecipientLabel: 'Find another recipient',
-            flowObject: payload,
+            flowObject: _.cloneDeep(payload),
             inValidCardNameValue: true,
             inValidCardNumber: true,
             inValidCvv: true,

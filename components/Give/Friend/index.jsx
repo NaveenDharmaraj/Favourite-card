@@ -111,7 +111,7 @@ class Friend extends React.Component {
                 // giveFromList: accountOptions,
                 paymentInstrumentList: populatePaymentInstrument(paymentInstruments, formatMessage),
             },
-            flowObject: payload,
+            flowObject: _.payload,
             // forceContinue: props.forceContinue,
             inValidCardNameValue: true,
             inValidCardNumber: true,
