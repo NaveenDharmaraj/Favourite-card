@@ -60,14 +60,14 @@ class Donation extends React.Component {
     let payload = null;
             //Initialize the flowObject to default value when got switched from other flows
             if (props.flowObject.type !== flowType) {
-                const defaultPropsData = _.merge({}, donationDefaultProps);
+                const defaultPropsData = _.cloneDeep(donationDefaultProps);
                 payload = {
                     ...defaultPropsData.flowObject,
                     nextStep: props.step,
                 };
             }
             else{
-                const defaultPropsData =  _merge({}, props.flowObject);
+                const defaultPropsData = _.cloneDeep(props.flowObject);
                 payload = {
                     ...defaultPropsData,
                     nextStep: props.step,
@@ -277,7 +277,7 @@ class Donation extends React.Component {
                 giveTo,
                 creditCard,
             },
-        } = flowObject;        
+        } = flowObject;
         const validateCC = this.isValidCC(
             creditCard,
             inValidCardNumber,
@@ -556,6 +556,10 @@ class Donation extends React.Component {
           giveData.creditCard = getDefaultCreditCard(populatePaymentInstrument(this.props.companyDetails.companyPaymentInstrumentsData, formatMessage));
           doSetState = true;
       }
+      if(giveData.giveTo.type === 'user' && !_.isEqual(this.props.paymentInstrumentsData, oldProps.paymentInstrumentsData)) {
+            giveData.creditCard = getDefaultCreditCard(populatePaymentInstrument(this.props.paymentInstrumentsData, formatMessage));
+            doSetState = true;
+        }
       if((!_.isEqual(this.props.companiesAccountsData, oldProps.companiesAccountsData)
         || _.isEmpty(this.props.companiesAccountsData)) && giveData.giveTo.value === null){
           if(_.isEmpty(this.props.companiesAccountsData) && !_.isEmpty(this.props.fund)){
