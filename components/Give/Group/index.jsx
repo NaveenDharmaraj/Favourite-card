@@ -101,7 +101,7 @@ class Group extends React.Component {
                 payload =  _merge({}, props.flowObject)
             }
         this.state = {
-            flowObject:payload,
+            flowObject:_.cloneDeep(payload),
             benificiaryIndex: 0,
             buttonClicked: false,
             dropDownOptions: {
@@ -110,7 +110,7 @@ class Group extends React.Component {
                 infoToShareList: populateInfoToShare(
                     taxReceiptProfiles,
                     companyDetails,
-                    props.flowObject.giveData.giveFrom,
+                    payload.giveData.giveFrom,
                     {
                         displayName,
                         email,
