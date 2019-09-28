@@ -52,6 +52,7 @@ export const actionTypes = {
     USER_PROFILE_SIGNUP_DEEPLINK: 'USER_PROFILE_SIGNUP_DEEPLINK',
     USER_PROFILE_TAX_RECEIPTS: 'USER_PROFILE_TAX_RECEIPTS',
     USER_PROFILE_UNBLOCK_FRIEND: 'USER_PROFILE_UNBLOCK_FRIEND',
+    USER_PROFILE_UPLOAD_IMAGE: 'USER_PROFILE_UPLOAD_IMAGE',
 };
 
 const getUserProfileBasic = (dispatch, email, userId, loggedInUserId) => {
@@ -883,6 +884,34 @@ const generateDeeplinkSignup = (dispatch, profileId) => {
     });
 };
 
+const uploadUserImage = (dispatch, sourceUserId, imageData) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.USER_PROFILE_UPLOAD_IMAGE,
+    };
+    const bodyData = {
+        data: {
+            attributes: {
+                logo: imageData,
+            },
+            id: sourceUserId,
+            type: 'users',
+        },
+    };
+    return coreApi.patch(`/core/v2/users/${Number(sourceUserId)}`, bodyData).then(
+        (result) => {
+            fsa.payload = {
+                data: result.data,
+            };
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    });
+};
+
 
 export {
     getUserProfileBasic,
@@ -918,4 +947,5 @@ export {
     addToFriend,
     inviteFriends,
     generateDeeplinkSignup,
+    uploadUserImage,
 };
