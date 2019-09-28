@@ -226,7 +226,7 @@ class Friends extends React.Component {
                                         dimmer="inverted"
                                     >
                                         <Modal.Header>
-                                            Share Charitable Impact with friends and family
+                                            Invite friends to join Charitable Impact
                                         </Modal.Header>
                                         <Modal.Content>
                                             <Modal.Description>

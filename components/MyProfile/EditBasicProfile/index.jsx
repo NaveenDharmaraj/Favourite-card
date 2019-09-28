@@ -15,6 +15,7 @@ import dynamic from 'next/dynamic';
 
 import {
     saveUserBasicProfile,
+    uploadUserImage,
 } from '../../../actions/userProfile';
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 import PrivacySetting from '../../shared/Privacy';
@@ -38,6 +39,7 @@ class EditBasicProfile extends React.Component {
         this.state = {
             buttonClicked: true,
             errorMessage: null,
+            uploadImage: '',
             statusMessage: false,
             successMessage: '',
             userBasicDetails: {
@@ -53,6 +55,7 @@ class EditBasicProfile extends React.Component {
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleInputOnBlur = this.handleInputOnBlur.bind(this);
+        this.handleUpload = this.handleUpload.bind(this);
     }
 
     componentDidUpdate(prevProps) {
@@ -241,6 +244,19 @@ class EditBasicProfile extends React.Component {
             });
         }
     }
+    
+    handleUpload(event) {
+        this.setState({
+            uploadImage: event.target.files[0]
+        });
+        const {
+            currentUser: {
+                id,
+            },
+            dispatch,
+        } = this.props;
+        uploadUserImage(dispatch, id, '');
+    }
 
     render() {
         const {
@@ -279,6 +295,10 @@ class EditBasicProfile extends React.Component {
                 <Grid.Row>
                     <Grid.Column mobile={16} tablet={12} computer={10}>
                         <Form>
+                            <Form.Field>
+                            <input id="myInput" accept="images/*" type="file" ref={(ref) => this.upload = ref} style={{ display: 'none' }} onChange={(e) => this.handleUpload(event)} />
+                            <Button as='a' onClick={(e) => this.upload.click()}>Upload photo</Button>
+                            </Form.Field>
                             <Form.Group widths="equal">
                                 <Form.Field>
                                     <Form.Input
