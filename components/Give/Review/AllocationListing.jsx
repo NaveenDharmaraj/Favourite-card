@@ -210,7 +210,7 @@ const AllocationListing = ({
                     displayData={toList || emptyMessage}
                 />
                 {
-                    !_.isEmpty(dedicateGift) && (
+                    (!_.isEmpty(dedicateGift) && !_.isEmpty(dedicateGift.dedicateType)) && (
                         <RenderList
                             label={dedicateGift.dedicateType === 'inHonorOf' ? 'In honour of' : 'In memory of'}
                             displayData={dedicateGift.dedicateValue}

@@ -66,6 +66,7 @@ class Layout extends React.Component {
                   });
             }               
         }
+        window.scrollTo(0, 0);
     };
 
     renderLayout = (authRequired, children, isAuthenticated, onBoarding, dispatch, appErrors) => {

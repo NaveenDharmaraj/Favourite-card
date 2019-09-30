@@ -529,6 +529,10 @@ class Charity extends React.Component {
             case 'inMemoryOf':
                 validity = validateGiveForm('dedicateType', null, validity, giveData);
             break;
+            case 'noteToCharity':
+            case 'noteToSelf':
+                giveData[name] = inputValue.trim();
+                break;
             default: break;
         }
         
