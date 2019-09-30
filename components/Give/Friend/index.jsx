@@ -23,6 +23,7 @@ import _isEqual from 'lodash/isEqual';
 import _isEmpty from 'lodash/isEmpty';
 import _merge from 'lodash/merge';
 import _replace from 'lodash/replace';
+import _cloneDeep from 'lodash/cloneDeep';
 
 import {
     formatCurrency,
@@ -111,7 +112,7 @@ class Friend extends React.Component {
                 // giveFromList: accountOptions,
                 paymentInstrumentList: populatePaymentInstrument(paymentInstruments, formatMessage),
             },
-            flowObject: _.payload,
+            flowObject: _cloneDeep(payload),
             // forceContinue: props.forceContinue,
             inValidCardNameValue: true,
             inValidCardNumber: true,
