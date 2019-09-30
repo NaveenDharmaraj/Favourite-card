@@ -154,6 +154,7 @@ class ChatWrapper extends React.Component {
                     }
                 });
                 self.setState({ userDetails: userDetails });
+                self.loadConversations(false, self.state.msgId, self.state.msgId);
             },
         );
 
@@ -438,7 +439,6 @@ class ChatWrapper extends React.Component {
     componentDidMount() {
         let self = this;
         self.loadFriendsList();
-        self.loadConversations(false, self.state.msgId, self.state.msgId);
         window.addEventListener('applozicAppInitialized', this.applozicAppInitialized, false);
         window.addEventListener('onMessageEvent', this.onMessageEvent, false);
         window.addEventListener('onMessageReceived', this.onMessageReceived, false);
@@ -1093,7 +1093,7 @@ class ChatWrapper extends React.Component {
                                                         </div>
                                                     </Fragment>
                                                 } else if (!self.state.compose) {
-                                                    return <div>No Messages Click Compose to Start Messaging</div>
+                                                    return <div>{self.loading ? "Loading..." : "No Messages Click Compose to Start Messaging"}</div>
                                                 }
                                             })()}
                                         </div>
