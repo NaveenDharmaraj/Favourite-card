@@ -29,7 +29,7 @@ const Notifications = (props) => {
     }
     setInterval(async () => {
         await NotificationHelper.getMessages(userInfo, dispatch, 1);
-    }, 10000);
+    }, 1000 * 60 * 5);
     const fetchMessages = async () => {
         await NotificationHelper.getMessages(userInfo, dispatch, 1);
     };
@@ -42,7 +42,7 @@ const Notifications = (props) => {
     };
 
     const updateDeleteFlag = async (msgKey, msg, flag) => {
-        await NotificationHelper.updateDeleteFlag(userInfo, dispatch, msgKey, msg, flag);
+        // await NotificationHelper.updateDeleteFlag(userInfo, dispatch, msgKey, msg, flag);
     };
 
     const onNotificationMsgAction = async (cta, msg) => {
@@ -144,14 +144,14 @@ const Notifications = (props) => {
                             <Dropdown.Menu>
                                 {(() => {
                                     if (msg.msgActions && msg.msgActions.length > 0) {
-                                    // msg.callToActions = msg.callToActions.concat(msg.callToActions);
+                                        // msg.callToActions = msg.callToActions.concat(msg.callToActions);
                                         return msg.msgActions.map((cta) => {
-                                            return <Dropdown.Item text={t(cta)} onClick={() => onNotificationMsgAction(cta, msg)} />;
+                                            return <Dropdown.Item key={cta} text={t(cta)} onClick={() => onNotificationMsgAction(cta, msg)} />;
                                         });
                                     }
-                                /* if (msg.type == "friendRequest" && msg.sourceUserId != userInfo.id) {
-                                        return <Button className="blue-btn-rounded-def c-small" onClick={() => self.acceptFriendRequestAsync(msg)}>{self.t("action_accept")}</Button>
-                                    } */
+                                    /* if (msg.type == "friendRequest" && msg.sourceUserId != userInfo.id) {
+                                            return <Button className="blue-btn-rounded-def c-small" onClick={() => self.acceptFriendRequestAsync(msg)}>{self.t("action_accept")}</Button>
+                                        } */
                                 })()}
                                 {/* <Dropdown.Item text={messagePart.read ? t("markAsUnread") : t("markAsRead")} onClick={() => updateReadFlag(msg._key, msg, !messagePart.read)} />
                                 <Dropdown.Item text={t("delete")} onClick={() => updateDeleteFlag(msg._key, msg, true)} />
@@ -161,23 +161,23 @@ const Notifications = (props) => {
                     </span>
                     {(() => {
                         if (msg.cta) {
-                        // msg.callToActions = msg.callToActions.concat(msg.callToActions);
+                            // msg.callToActions = msg.callToActions.concat(msg.callToActions);
                             return Object.keys(msg.cta).map((ctaKey) => {
                                 const cta = msg.cta[ctaKey];
                                 if (cta.isWeb) {
-                                    return <Button className="blue-btn-rounded-def c-small" onClick={() => onNotificationCTA(ctaKey, cta, msg)}>{cta.title[localeCode]}</Button>;
+                                    return <Button key={ctaKey} className="blue-btn-rounded-def c-small" onClick={() => onNotificationCTA(ctaKey, cta, msg)}>{cta.title[localeCode]}</Button>;
                                 }
                             });
                         }
                         if (msg.callToActions && msg.callToActions.length > 0) {
-                        // msg.callToActions = msg.callToActions.concat(msg.callToActions);
+                            // msg.callToActions = msg.callToActions.concat(msg.callToActions);
                             return msg.cta.map((cta) => {
-                                return <Button className="blue-btn-rounded-def c-small" onClick={() => onNotificationCTA(cta, msg)}>{cta.actionTitle}</Button>;
+                                return <Button key={cta.actionTitle} className="blue-btn-rounded-def c-small" onClick={() => onNotificationCTA(cta, msg)}>{cta.actionTitle}</Button>;
                             });
                         }
-                    // if (msg.type == "friendRequest" && msg.sourceUserId != userInfo.id) {
-                    //     return <Button className="blue-btn-rounded-def c-small" onClick={() => acceptFriendRequestAsync(msg)}>{t("action_accept")}</Button>
-                    // }
+                        // if (msg.type == "friendRequest" && msg.sourceUserId != userInfo.id) {
+                        //     return <Button className="blue-btn-rounded-def c-small" onClick={() => acceptFriendRequestAsync(msg)}>{t("action_accept")}</Button>
+                        // }
                     })()}
                 </List.Content>
                 {/* <List.Content floated='right'>

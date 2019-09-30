@@ -1,4 +1,4 @@
-const firebase = (state = {}, action) => {
+const chat = (state = {}, action) => {
     let newState = {
         ...state,
     };
@@ -19,4 +19,4 @@ const firebase = (state = {}, action) => {
     return newState;
 };
 
-export default firebase;
+export default chat;

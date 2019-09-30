@@ -70,7 +70,6 @@ class NotificationWrapper extends React.Component {
             localeCode: localeCode,
             dispatch: dispatch
         };*/
-        // console.log(props);
         this.listItems.bind(this);
         this.splitNotifications.bind(this);
         this.updateReadFlag.bind(this);
@@ -87,10 +86,10 @@ class NotificationWrapper extends React.Component {
             userInfo,
             dispatch
         } = this.state;
-        // console.log("Call Load More" + (window.innerHeight - window.pageYOffset));
         // Do something generic, if you have to
-        let scrollGap = window.innerHeight - window.pageYOffset;
-        if (this.state.messages && this.state.messages.length > 0 && scrollGap <= 200 && !this.loading) {
+        let reachedBottom = document.scrollingElement.scrollHeight == document.scrollingElement.scrollTop + window.innerHeight;
+        this.loading = false;
+        if (this.state.messages && this.state.messages.length > 0 && reachedBottom && !this.loading) {
             this.loading = true;
             let lastMsg = this.state.messages[this.state.messages.length - 1];
             NotificationHelper.getMessages(userInfo, dispatch, 1, lastMsg, lastMsg["_key"]);
@@ -119,7 +118,7 @@ class NotificationWrapper extends React.Component {
         } = this.state;
         window.addEventListener("scroll", this.handleScroll);
         this.intervalId = setInterval(async function () {
-            await NotificationHelper.getMessages(userInfo, dispatch, 1);
+            // await NotificationHelper.getMessages(userInfo, dispatch, 1);
         }, 10000);
         await NotificationHelper.getMessages(userInfo, dispatch, 1);
     }
@@ -131,13 +130,13 @@ class NotificationWrapper extends React.Component {
         lastMsg = this.state.messages[this.state.messages.length - 1];
         await NotificationHelper.getMessages(userInfo, dispatch, currentPage + 1, lastMsg, lastMsg["_key"]);
     }
-    async onMessageClick(msgKey, msg) {
-        const {
-            userInfo,
-            dispatch
-        } = this.state;
-        await NotificationHelper.markAsRead(userInfo, dispatch, msgKey, msg);
-    };
+    // async onMessageClick(msgKey, msg) {
+    //     const {
+    //         userInfo,
+    //         dispatch
+    //     } = this.state;
+    //     // await NotificationHelper.markAsRead(userInfo, dispatch, msgKey, msg);
+    // };
 
     async acceptFriendRequestAsync(msg) {
         const {
@@ -313,7 +312,7 @@ class NotificationWrapper extends React.Component {
         if (flag) {
             this.deletedItems.push(msg.id);
             this.deleteTimeouts[msg.id] = setTimeout(function () {
-                eventApi.post("/notification/delete", { "user_id": self.state.userInfo.id, "id_prevent": msg.id }).then(async function (response) {
+                eventApi.post("/notification/delete", { "user_id": self.state.userInfo.id, "id": msg.id }).then(async function (response) {
                     await NotificationHelper.getMessages(self.state.userInfo, self.state.dispatch, 1);
                 });
             });
@@ -321,12 +320,7 @@ class NotificationWrapper extends React.Component {
             this.deletedItems.splice(this.deletedItems.indexOf(msg.id), 1);
             clearTimeout(this.deleteTimeouts[msg.id]);
         }
-        await NotificationHelper.updateDeleteFlag(this.state.userInfo, this.state.dispatch, msgKey, msg, flag);
     }
-
-    async acceptFriendRequestAsync(msg) {
-        await NotificationHelper.acceptFriendRequest(this.state.userInfo, this.state.dispatch, msg);
-    };
 
     render() {
         this.t = this.props.t;
