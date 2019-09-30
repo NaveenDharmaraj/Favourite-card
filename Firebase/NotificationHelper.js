@@ -104,7 +104,7 @@ class NotificationHelper {
         requestData.attributes.friend_request_event_id = msgData.id;
         await eventApi.post("/friend/accept", { data: requestData }).then(function(resp){
 
-            await NotificationHelper.getMessages(userInfo, dispatch, NotificationHelper.currentPage);
+            NotificationHelper.getMessages(userInfo, dispatch, NotificationHelper.currentPage);
         });
     }
 
