@@ -474,7 +474,7 @@ class ChatWrapper extends React.Component {
 
     onConversationSelect(msg) {
         // console.log(msg);
-        if (!this.loading && this.state.selectedConversation.key != msg.key) {
+        if (!this.loading && (!this.state.selectedConversation || this.state.selectedConversation.key != msg.key)) {
             let newState = { selectedConversation: msg, selectedConversationMessages: [], compose: false };
             if (msg.groupId) {
                 newState["editGroupName"] = this.state.groupFeeds[msg.groupId]["name"];
