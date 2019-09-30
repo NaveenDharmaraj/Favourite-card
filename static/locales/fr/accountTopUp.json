@@ -1,0 +1,12 @@
+{
+    "amountLabel": "Montant",
+    "amountPlaceHolder": "Inscrivez le montant",
+    "amountLessOrInvalid": "Veuillez choisir un montant de {{minAmount}} $ ou plus",
+    "invalidMaxAmountError": "9 999 $ est le maximum que nous pouvons traiter ici. Pour des montants plus importants, veuillez nous contacter: hello@chimp.net ou 1-877-531-0580.",
+    "donationAmountIsLess": "Augmentez le solde de votre compte de {{topupAmount}} $ ou plus pour envoyer ce cadeau.",
+    "donationMatchLabel": "Don apparié",
+    "donationsMatchPopup": "S'il y a une occasion d’appariement de dons, elle apparaîtra ici. Une demande sera envoyée à la partie correspondante, comme votre employeur, par exemple, qui pourra ensuite choisir d'apparier votre don selon sa politique mise en place.",
+    "creditCardLabel": "Carte de crédit",
+    "creditCardPlaceholder": "Sélectionnez la carte de crédit",
+    "accountTopUpHeaderLabel": "Augmentez le solde de votre compte pour envoyer ce don"
+}

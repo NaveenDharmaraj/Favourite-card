@@ -1,0 +1,365 @@
+/* eslint-disable react/prefer-stateless-function */
+import React from 'react';
+import {
+    Container,
+    Grid,
+} from 'semantic-ui-react';
+import _ from 'lodash';
+import { connect } from 'react-redux';
+
+import {
+    getUserCauses,
+    saveUser,
+    validateNewUser,
+} from '../../../actions/onBoarding';
+import storage from '../../../helpers/storage';
+import { Router } from '../../../routes';
+import Layout from '../../../components/shared/Layout';
+import { validateUserRegistrationForm } from '../../../helpers/users/utils';
+import FirstStep from '../../../components/New/FirstStep';
+import SecondStep from '../../../components/New/SecondStep';
+import CausesSelection from '../../../components/New/CausesSelection';
+import FinalStep from '../../../components/New/FinalStep';
+
+class Login extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            attributes: {
+                userCauses: [],
+            },
+            stepIndex: 0,
+            buttonClicked: false,
+            validity: this.intializeValidations(),
+        };
+        const {
+            dispatch,
+        } = props;
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.validateForm = this.validateForm.bind(this);
+        this.handleCauses = this.handleCauses.bind(this);
+        this.handleInputOnBlur = this.handleInputOnBlur.bind(this);
+        this.isButtonDisabled = this.isButtonDisabled.bind(this);
+    }
+
+    componentDidMount() {
+        const {
+            dispatch,
+        } = this.props;
+        getUserCauses(dispatch);
+    }
+
+    componentDidUpdate(prevProps) {
+        if (!_.isEqual(this.props, prevProps)) {
+            if (!_.isEmpty(this.props.newUserDetails)) {
+                storage.set('newUserDetails', this.props.newUserDetails, 'local', null);
+                Router.pushRoute('/users/email-verification');
+            }
+        }
+    }
+
+    handleInputChange(event, data) {
+        const {
+            name,
+            options,
+            value,
+        } = data;
+        const {
+            attributes,
+        } = this.state;
+        let {
+            // eslint-disable-next-line no-unused-vars
+            validity,
+        } = this.state;
+        const newValue = (!_.isEmpty(options)) ? _.find(options, { value }) : value;
+        if (attributes[name] !== newValue) {
+            attributes[name] = newValue;
+        }
+        switch (name) {
+            case 'password':
+                validity = validateUserRegistrationForm('password', newValue, validity);
+                break;
+            default:
+                break;
+        }
+        this.setState({
+            attributes: {
+                ...this.state.attributes,
+                ...attributes,
+            },
+            validity: {
+                ...this.state.validity,
+                validity,
+            },
+        });
+    }
+
+    handleInputOnBlur(event, data) {
+        const {
+            name,
+            value,
+        } = !_.isEmpty(data) ? data : event.target;
+        let {
+            validity,
+        } = this.state;
+        const inputValue = value;
+        const {
+            dispatch,
+        } = this.props;
+        validity = validateUserRegistrationForm(name, inputValue, validity)
+        if (name === 'emailId' && validity.isEmailIdValid) {
+            validateNewUser(dispatch, inputValue);
+        }
+        this.setState({
+            validity,
+        });
+    }
+
+    intializeValidations() {
+        this.validity = {
+            doesFirstNameHave2: true,
+            isEmailIdNotNull: true,
+            isEmailIdValid: true,
+            isEmailLengthInLimit: true,
+            isEmailValidFormat: true,
+            isFirstnameLengthInLimit: true,
+            isFirstNameNotNull: true,
+            isFirstNameValid: true,
+            isLastnameLengthInLimit: true,
+            isLastNameNotNull: true,
+            isLastNameValid: true,
+            isPasswordLengthInLimit: true,
+            isPasswordNull: true,
+            isPasswordValid: true,
+            isValidCauses: true,
+        };
+        return this.validity;
+    }
+
+    validateForm() {
+        let {
+            validity,
+        } = this.state;
+        const {
+            attributes: {
+                firstName,
+                lastName,
+                emailId,
+                password,
+                userCauses,
+            },
+            stepIndex,
+        } = this.state;
+        switch (stepIndex) {
+            case 0:
+                validity = validateUserRegistrationForm('firstName', firstName, validity);
+                validity = validateUserRegistrationForm('lastName', lastName, validity);
+                break;
+            case 1:
+                validity = validateUserRegistrationForm('emailId', emailId, validity);
+                validity = validateUserRegistrationForm('password', password, validity);
+                break;
+            case 2:
+                validity.isValidCauses = (userCauses.length >= 3);
+                break;
+            default:
+                break;
+        }
+
+        this.setState({
+            validity,
+        });
+
+        return _.every(validity);
+    }
+
+    handleSubmit() {
+        const isValid = this.validateForm();
+        if (isValid) {
+            let {
+                stepIndex,
+                attributes: {
+                    firstName,
+                    lastName,
+                    emailId,
+                    password,
+                    userCauses,
+                },
+                validity,
+            } = this.state;
+            const {
+                dispatch,
+            } = this.props;
+            if (stepIndex === 3) {
+                this.setState({
+                    buttonClicked: true,
+                });
+                const userDetails = {};
+                userDetails.name = (firstName) ? `${firstName} ${lastName}` : '';
+                userDetails.given_name = firstName;
+                userDetails.family_name = lastName;
+                userDetails.email = emailId;
+                userDetails.password = password;
+                userDetails.signupSource = null;
+                userDetails.longitude = null;
+                userDetails.latitude = null;
+                userDetails.causes = userCauses;
+                saveUser(dispatch, userDetails);
+            }
+            if (stepIndex !== 3) {
+                stepIndex += 1;
+                this.setState({
+                    stepIndex,
+                });
+            }
+        } else {
+            console.log('invalid');
+        }
+    }
+
+    handleBack = () => {
+        let {
+            stepIndex
+        } = this.state;
+        this.setState({
+            stepIndex:stepIndex-1,
+        });
+    }
+
+    handleCauses(event, data) {
+        const {
+            name,
+            options,
+            value,
+        } = data;
+        let {
+            attributes: {
+                userCauses,
+            },
+        } = this.state;
+        if (_.includes(userCauses, name)) {
+            _.pull(userCauses, name);
+        } else {
+            userCauses.push(name);
+        }
+        this.setState({
+            attributes: {
+                ...this.state.attributes,
+                userCauses,
+            },
+        });
+    }
+
+    isButtonDisabled(params) {
+        const {
+            attributes,
+            // validity,
+        } = { ...this.state };
+
+        let validity = {};
+        params.forEach((param) => {
+            validity = validateUserRegistrationForm(param, attributes[param], validity);
+        });
+        return (_.every(validity));
+    }
+
+    render() {
+        let {
+            stepIndex,
+            attributes: {
+                firstName,
+                lastName,
+                emailId,
+                password,
+                userCauses,
+            },
+            buttonClicked,
+            validity,
+        } = this.state;
+        // console.log(validity)
+        const {
+            causesList,
+            userExists,
+            apiValidating,
+        } = this.props;
+        return (
+            <Layout onBoarding={true}>
+                <div className="pageWraper">
+                    <Container>
+                        <div className="linebg">
+                            <Grid columns={2} doubling>
+                                {
+                                    (stepIndex === 0) && (
+                                        <FirstStep
+                                            parentInputChange={this.handleInputChange}
+                                            handleSubmit={this.handleSubmit}
+                                            firstName={firstName}
+                                            handleInputOnBlur={this.handleInputOnBlur}
+                                            isButtonDisabled={this.isButtonDisabled}
+                                            lastName={lastName}
+                                            validity={validity}
+                                        />
+                                    )
+                                }
+                                {
+                                    (stepIndex === 1) && (
+                                        <SecondStep
+                                            apiValidating={apiValidating}
+                                            parentInputChange={this.handleInputChange}
+                                            handleSubmit={this.handleSubmit}
+                                            handleBack={this.handleBack}
+                                            emailId={emailId}
+                                            handleInputOnBlur={this.handleInputOnBlur}
+                                            userExists={userExists}
+                                            password={password}
+                                            validity={validity}
+                                        />
+                                    )
+                                }
+                            </Grid>
+                            {
+                                (stepIndex === 2) && (
+                                    <Grid centered>
+                                        <CausesSelection
+                                            parentInputChange={this.handleInputChange}
+                                            parentHandleCauses={this.handleCauses}
+                                            handleSubmit={this.handleSubmit}
+                                            handleBack={this.handleBack}
+                                            userCauses={userCauses}
+                                            causesList={causesList}
+                                            validity={validity}
+                                        />
+                                    </Grid>
+                                )
+                            }
+                            {
+                                (stepIndex === 3) && (
+                                    <Grid columns={2} centered>
+                                        <Grid.Row>
+                                            <FinalStep
+                                                handleSubmit={this.handleSubmit}
+                                                buttonClicked={buttonClicked}
+                                            />
+                                        </Grid.Row>
+                                    </Grid>
+                                )
+                            }
+
+                        </div>
+                    </Container>
+                </div>
+
+            </Layout>
+        );
+    }
+}
+function mapStateToProps(state) {
+    return {
+        apiValidating: state.onBoarding.apiValidating,
+        causesList: state.onBoarding.causesList,
+        newUserDetails: state.onBoarding.newUserDetails,
+        userExists: state.onBoarding.userExists,
+    };
+}
+export default (connect(mapStateToProps)(Login));

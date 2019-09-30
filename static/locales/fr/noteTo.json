@@ -1,0 +1,13 @@
+{
+    "fortheCharityLabel": "Pour le destinataire",
+    "includeMessageLabel": "Inclure un message (facultatif)",
+    "allocationsForthCharityPopup": "Vous pouvez laisser savoir, au destinataire, la motivation derrière votre don, leur donner des suggestions sur la manière dont vous aimeriez que cette somme soit utilisée, leur faire savoir si vous donnez en l'honneur de quelqu'un ou simplement leur dire de continuer à faire un bon travail.",
+    "generalInputPlaceHolder": "Qu'aimeriez-vous dire au destinataire?",
+    "invalidLengthError": "est trop long (maximum de 1000 caractères)",
+    "invalidNoteTextError":  "Seuls les lettres et les chiffres standard sont autorisés ici",
+    "givingNoteToSelfPopup": "Laissez-vous une note personnelle pour plus tard, par exemple, un rappel des raisons qui vous ont motivé à faire ce don de charité. Ce message ne sera visible que sur votre Tableau de bord.",
+    "noteToSelfPlaceHolder": "Laissez-vous une note personnelle pour plus tard",
+    "noteToSelfLabelReview" : "Note à votre intention",
+    "noteToCompanyLabel": "Note pour l'entreprise",
+    "noteToGroupLabel": "Note pour le groupe"
+}
