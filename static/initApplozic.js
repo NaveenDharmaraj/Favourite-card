@@ -152,6 +152,9 @@ function registerAppLozic() {
     );
 }
 (function () { registerAppLozic() })();
+window.onload = function () {
+    registerAppLozic();
+};
 // };
 /*
 (function (d, m) {
