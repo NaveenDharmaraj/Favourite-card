@@ -312,7 +312,7 @@ class NotificationWrapper extends React.Component {
         if (flag) {
             this.deletedItems.push(msg.id);
             this.deleteTimeouts[msg.id] = setTimeout(function () {
-                eventApi.post("/notification/delete", { "user_id": self.state.userInfo.id, "id_prevent": msg.id }).then(async function (response) {
+                eventApi.post("/notification/delete", { "user_id": self.state.userInfo.id, "id": msg.id }).then(async function (response) {
                     await NotificationHelper.getMessages(self.state.userInfo, self.state.dispatch, 1);
                 });
             });
@@ -320,7 +320,6 @@ class NotificationWrapper extends React.Component {
             this.deletedItems.splice(this.deletedItems.indexOf(msg.id), 1);
             clearTimeout(this.deleteTimeouts[msg.id]);
         }
-        await NotificationHelper.updateDeleteFlag(this.state.userInfo, this.state.dispatch, msgKey, msg, flag);
     }
 
     async acceptFriendRequestAsync(msg) {
