@@ -43,11 +43,8 @@ class LandingPageTaxReceipt extends React.Component {
     componentDidMount() {
         const {
             dispatch,
-            issuedTaxReceiptList,
         } = this.props;
-        if (_isEmpty(issuedTaxReceiptList)) {
-            getIssuedTaxreceipts(dispatch);
-        }
+        getIssuedTaxreceipts(dispatch);
     }
 
 
