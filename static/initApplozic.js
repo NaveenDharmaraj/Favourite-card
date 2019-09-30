@@ -106,7 +106,7 @@ function registerAppLozic() {
                     userId: getCookie("chimpUserId"),
                     // password: '',//Enter password here for the userId passed above, read this if you want to add additional security by verifying password from your server https://www.applozic.com/docs/configuration.html#access-token-url
                     imageLink: window.userAvatar, //User's profile picture url
-                    email: '', //optional
+                    email: window.userEmail, //optional
                     // contactNumber: '', //optional, pass with internationl code eg: +13109097458
                     appVersionCode: 108,
                     applicationId: window.APPLOZIC_APP_KEY, //Get your App ID from [Applozic Dashboard](https://console.applozic.com/settings/install)
