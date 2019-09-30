@@ -9,6 +9,10 @@ import _isEmpty from 'lodash/isEmpty';
 
 import ModalComponent from '../../shared/Modal';
 
+const countryOptions = {
+    CA: 'Canada',
+    US: 'United States',
+};
 
 class TaxReceipientCard extends React.Component {
     constructor(props) {
@@ -106,7 +110,7 @@ class TaxReceipientCard extends React.Component {
                         {!_isEmpty(addressTwo) && `${addressTwo}, `}
                         {!_isEmpty(city) && `${city}, `}
                         {!_isEmpty(province) && `${province}, `}
-                        {!_isEmpty(country) && `${country}, `}
+                        {!_isEmpty(country) && `${countryOptions[country]}, `}
                         {!_isEmpty(postalCode) && `${postalCode}`}
                     </p>
                 </div>
