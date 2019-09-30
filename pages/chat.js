@@ -5,7 +5,6 @@ import Layout from '../components/shared/Layout';
 
 class Chats extends React.Component {
     static async getInitialProps({ query }) {
-        console.log(query);
         return {
             namespacesRequired: [
                 'notification',

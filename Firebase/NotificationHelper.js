@@ -46,7 +46,7 @@ class NotificationHelper {
                 // Project Settings => Cloud Messaging => Web Push certificates
                 FIREBASE_PUBLIC_API_KEY
             );
-
+                /*
             // Check for browser support of service worker
             if ('serviceWorker' in navigator) {
                 navigator.serviceWorker
@@ -71,7 +71,7 @@ class NotificationHelper {
                     .catch(function (err) {
                         console.log("Service worker registration failed, error:", err);
                     });
-            }
+            }*/
         } catch (err) {
             console.log(err);
         }
@@ -166,40 +166,13 @@ class NotificationHelper {
         });
     }
 
-    static async updateReadFlag(userInfo, dispatch, msgId, msgData, readFlag) {
-        msgData["read"] = readFlag;// !msgData["read"];//false;
-        let userRef = Firebase.database().ref("/organisation/chimp/users/" + userInfo.id + "/messages");
-        userRef.child(msgId).set(msgData).then(async function () {
-            await NotificationHelper.getMessages(userInfo, dispatch, NotificationHelper.currentPage);
-        }).catch(function (e) {
-            console.log(e);
-        });
-    }
 
     static async updateDeleteFlag(userInfo, dispatch, msgId, msgData, deleted) {
-        /*msgData["deleted"] = deleted;
-        let userRef = Firebase.database().ref("/organisation/chimp/users/" + userInfo.id + "/messages");
-        userRef.child(msgId).set(msgData).then(async function () {
-            // console.log("Marked Msg " + msgId + " REad" + msgData["read"]);*/
-        await NotificationHelper.getMessages(userInfo, dispatch, NotificationHelper.currentPage);
         setTimeout(function () {
             eventApi.post("/notification/delete", { "user_id": userInfo.id, "id": msgData.id }).then(async function (response) {
                 await NotificationHelper.getMessages(userInfo, dispatch, NotificationHelper.currentPage);
             });
-            /*userRef.child(msgId).once('value').then(function (snapshot) {
-                let temp = snapshot.val();
-                if (temp && typeof temp != "undefined" && temp.deleted) {
-                    userRef.child(msgId).remove().then(async function () {
-                        await NotificationHelper.getMessages(userInfo, dispatch, NotificationHelper.currentPage);
-                    }).catch(function (e) {
-                        console.error(e);
-                    });
-                }
-            });*/
         }, 10000);
-        /*}).catch(function (e) {
-            console.log(e);
-        });*/
     }
 
     static timeDifference(current, previous, t) {

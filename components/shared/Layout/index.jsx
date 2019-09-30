@@ -72,6 +72,9 @@ class Layout extends React.Component {
         if (authRequired && !isAuthenticated) {
             return null;
         }
+        const userEmail = this.props.userInfo ? this.props.userInfo.attributes.email : "";
+        const userAvatar = this.props.userInfo ? this.props.userInfo.attributes.avatar : "";
+        const userDisplayName = this.props.userInfo ? this.props.userInfo.attributes.displayName : "";
         return (
             <Responsive getWidth={getWidth}>
                 <Head>
@@ -92,6 +95,9 @@ class Layout extends React.Component {
                     <script type="text/javascript">
                         window.APPLOZIC_WS_URL= "{APPLOZIC_WS_URL}";
                         window.APPLOZIC_APP_KEY="{APPLOZIC_APP_KEY}";
+                        window.userEmail = "{userEmail}";
+                        window.userAvatar = "{userAvatar}";
+                        window.userDisplayName = "{userDisplayName}";
                     </script>
                     {isAuthenticated ? <script type="text/javascript" src="/static/initApplozic.js"></script> : ""}
                     {/* <script type="text/javascript" src="https://www.gstatic.com/firebasejs/5.9.4/firebase-app.js"></script> */}
