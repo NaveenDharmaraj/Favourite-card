@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="19px" height="25px" viewBox="0 0 19 25" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 56.3 (81716) - https://sketch.com -->
+    <title>icon-document</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="Icons" transform="translate(-299.000000, -744.000000)" stroke="#263238" stroke-width="1.5">
+            <g id="icon-document" transform="translate(300.000000, 745.000000)">
+                <path d="M17,6 L17,22 C17,22.552 16.552,23 16,23 L1,23 C0.448,23 0,22.552 0,22 L0,1 C0,0.448 0.448,0 1,0 L11,0 L11,5 C11,5.552 11.448,6 12,6 L17,6 Z" id="Stroke-2974"></path>
+                <path d="M11,0 L17,6" id="Stroke-2975"></path>
+                <path d="M4,9 L13,9" id="Stroke-2976"></path>
+                <path d="M4,13 L13,13" id="Stroke-2977"></path>
+                <path d="M4,17 L13,17" id="Stroke-2978"></path>
+            </g>
+        </g>
+    </g>
+</svg>

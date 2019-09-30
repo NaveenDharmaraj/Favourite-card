@@ -1,18 +1,56 @@
 import axios from 'axios';
+import _omit from 'lodash/omit';
+import _isEmpty from 'lodash/isEmpty';
+import getConfig from 'next/config';
 
-const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6IlJUVTJOVUk1TTBNMk9VRTJOME13T1RBNFFVTTBSVVU1TWtReFF6UkdSakpDTWtFek5EVTJOUSJ9.eyJpc3MiOiJodHRwczovL2NoaW1wdGVjaC1kZXYuYXV0aDAuY29tLyIsInN1YiI6ImF1dGgwfDg4ODAwMCIsImF1ZCI6WyJodHRwczovL2xhYi4yNDQ2Ny5vcmcvYXBpL3YyLyIsImh0dHBzOi8vY2hpbXB0ZWNoLWRldi5hdXRoMC5jb20vdXNlcmluZm8iXSwiaWF0IjoxNTYwODQzNTExLCJleHAiOjE1NjA4NDUzMTEsImF6cCI6Im5mbEpEUHRxRUNnWmZlQ1NhaHc4NnRnREFPVmhCUTc0Iiwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCJ9.a9QsrCwU7bWW4EHHgYsrKqNBsQy7lt-pKHgtYZC40hjUSm-pLECVHbXLHnhn4zsl2D0gryUopJ-yIPWqn9oSyGcQmdhdA7GKjQ8J5OA2L_GOTy-DC_JCW529EELxlGJ2FcWkKHvkL18zC-iKyDnD3TGKpKDir85uE1HqRa4kPwZeDvZYPvDjw-4ov3xryl4WW4TkkT4DsBL1XTQiBloOHBvq7eD0BEpcLE7UEh4QqqURQjsxfFZNZOBe0Oh-ceVJefnQh0e2-50KLk0aHcXhOyYNreq99IKBJeSJrlrwcDK4kLKecq3LpTOpZwLBv9fWzRRN4q-rgerQlAQTRPBQzQ';
+import auth0 from '../services/auth';
+import { triggerUxCritialErrors } from '../actions/error';
+
+const { publicRuntimeConfig } = getConfig();
+
+const {
+    CORE_API_BASE,
+    CORE_API_DOMAIN,
+    CORE_API_VERSION,
+} = publicRuntimeConfig;
+
 const instance = axios.create({
-    baseURL: 'https://api.dev.chimp.net/core/v2',
+    baseURL: `${CORE_API_DOMAIN}/${CORE_API_BASE}/${CORE_API_VERSION}`,
     headers: {
         'Accept': 'application/vnd.api+json',
         'Content-Type': 'application/vnd.api+json',
     },
 });
 instance.interceptors.request.use(function (config) {
-    config.headers.Authorization = `Bearer ${token}`;
+    if (_isEmpty(config.headers.Authorization)) {
+        let token = '';
+        if (!_isEmpty(auth0) && !_isEmpty(auth0.accessToken)) {
+            token = auth0.accessToken;
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+    }
+    if(config.params) {
+        config.uxCritical = (config.params.uxCritical);
+        config.dispatch = (config.params.dispatch) ? config.params.dispatch : null;
+        config.params = _omit(config.params, ['uxCritical', 'dispatch']);
+    }
     return config;
 }, function (error) {
     return Promise.reject(error);
 });
+
+instance.interceptors.response.use(function (response) {
+    // Do something with response data
+    return response.data;
+  }, function (error) {
+        const {
+            config,
+            data,
+        } = error.response;
+        if(config.uxCritical && config.dispatch) {
+            triggerUxCritialErrors(data.errors || data, config.dispatch);
+        }
+        return Promise.reject(error.response.data);
+  });
 
 export default instance;

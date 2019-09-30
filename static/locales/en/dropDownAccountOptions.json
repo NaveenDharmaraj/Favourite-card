@@ -1,0 +1,12 @@
+{
+    "addingToLabel": "Add To",
+    "accountPlaceHolder": "Select a source account",
+    "giveFromLabel": "Give from",
+    "destinationaccountPlaceHolder": "Select a destination account ",
+    "preloadedAccountPlaceHolder": "Your list of accounts is loading. This may take a moment",
+    "allocationsGiveFromPopup": "We’re asking you to select an account because you administer more than one CHARITABLE IMPACT Account.",
+    "personalAccountLabel": "Personal Account",
+    "companiesAccountLabel": "Companies",
+    "groupHeader" : "Group",
+    "campaignHeader": "Campaign"
+}

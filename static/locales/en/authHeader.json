@@ -1,0 +1,8 @@
+{
+    "accountSettings": "Account Settings",
+    "companyAccountSettings": "Company Account Settings",
+    "name": "Hello {{ name }}!",
+    "switchAccounts": "Switch account",
+    "logout": "Sign out",
+    "chimpAdmin": "CHARITABLE IMPACT Admin"
+}

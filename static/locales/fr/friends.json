@@ -1,0 +1,20 @@
+{
+    "giveFromPopup": "Nous vous demandons de sélectionner un Compte CHARITABLE IMPACT car vous en gérez plusieurs.",
+    "includeMessageLabel": "Inclure un message (facultatif)",
+    "invalidEmailError": "Entrez des adresses courriels valides, séparées par des virgules",
+    "duplicateEmail": "Les destinataires ne peuvent pas contenir de doublon.",
+    "haveSenderEmail": "Les destinataires ne peuvent pas contenir l’adresse courriel de l’utilisateur en cours.",
+    "maxEmail": "Le nombre de destinataires ne peut dépasser 25.",
+    "recipientsLabel": "Donner à",
+    "recipientsPopup": "Vous pouvez envoyer un don à plusieurs destinataires en même temps en séparant les adresses courriel avec des virgules.",
+    "recipientsPlaceholderText": "Entrez une ou plusieurs adresses courriel, séparées par des virgules",
+    "noteToRecipientsLabel": "Pour le(s) destinataire(s)",
+    "noteToRecipientsPopup": "Dites au(x) destinataire(s) pourquoi vous lui/leur envoyez ce don. Les gens sont plus susceptibles d'accepter des contribution s'ils lisent un message personnel de votre part.",
+    "noteToRecipientsPlaceholderText": "Que voudriez-vous dire au(x) destinataire(s)?",
+    "noteToSelfLabel": "Note personnelle",
+    "noteToSelfPopup": "Laissez-vous une note personnelle pour plus tard, par exemple, un rappel des raisons qui vous ont motivé à faire ce don de charité. Ce message ne sera visible que sur votre Tableau de bord.",
+    "noteToSelfPlaceholderText": "Pourquoi faites-vous un don aujourd'hui?",
+    "totalAmountLabel": "Montant total",
+    "totalAmount": "{{totalP2pGiveAmount}} ({{giveAmount}} X {{numberOfRecipients}} destinataires)",
+    "giveAmount": "{{giveAmount}}"    
+}

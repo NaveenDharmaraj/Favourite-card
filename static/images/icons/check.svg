@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="22px" viewBox="0 0 32 22" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: sketchtool 57.1 (101010) - https://sketch.com -->
+    <title>B2FF0817-1B23-414E-88C9-85265806B2DF</title>
+    <desc>Created with sketchtool.</desc>
+    <g id="UI-Kit" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Icons" transform="translate(-768.000000, -436.000000)" fill="#4E4E4E">
+            <g id="icon/gray/check" transform="translate(768.000000, 431.000000)">
+                <path d="M11.774549,24.6589441 L1.29534674,13.5596509 C1.01098764,13.2584653 0.536309857,13.2448247 0.235124239,13.5291838 C-0.0660613793,13.8135429 -0.0797019663,14.2882207 0.204657135,14.5894063 L11.2278495,26.2648793 C11.5233263,26.5778405 12.0210057,26.5784585 12.3172588,26.266232 L31.2940665,6.266232 C31.5791726,5.96575347 31.5667109,5.49104327 31.2662323,5.20593711 C30.9657538,4.92083094 30.4910436,4.9332927 30.2059374,5.23377124 L11.774549,24.6589441 Z" id="icon-check"></path>
+            </g>
+        </g>
+    </g>
+</svg>

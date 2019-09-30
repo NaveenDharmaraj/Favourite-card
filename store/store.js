@@ -6,5 +6,5 @@ import rootReducer from '../reducers/root';
 
 
 export function initializeStore (initialState = {}) {
-  return createStore(rootReducer(), initialState, applyMiddleware(thunkMiddleware))
+  return createStore(rootReducer, initialState, applyMiddleware(thunkMiddleware))
 }
