@@ -22,6 +22,7 @@ import {
 import _ from 'lodash';
 
 import { Link } from '../../../routes';
+import noteIcon from '../../../static/images/note.svg';
 
 const RenderList = ({
     displayData,
@@ -136,7 +137,7 @@ const AllocationListing = ({
                                 <Grid>
                                     <Grid.Row>
                                         <Grid.Column mobile={16} tablet={8} computer={8} className="grdTaxDisplay">
-                                            <Image verticalAlign="middle" src="../../../../static/images/note.svg" className="imgTax" />
+                                            <Image verticalAlign="middle" src={noteIcon} className="imgTax" />
                                             <List.Header>{formatMessage('taxReceiptRecipientLabel')}</List.Header>
                                         </Grid.Column>
                                         <Grid.Column mobile={16} tablet={8} computer={8}>
