@@ -322,10 +322,6 @@ class NotificationWrapper extends React.Component {
         }
     }
 
-    async acceptFriendRequestAsync(msg) {
-        await NotificationHelper.acceptFriendRequest(this.state.userInfo, this.state.dispatch, msg);
-    };
-
     render() {
         this.t = this.props.t;
         this.loading = false;

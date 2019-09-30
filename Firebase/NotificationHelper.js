@@ -102,8 +102,10 @@ class NotificationHelper {
         requestData.attributes.requester_user_id = user_id;
         requestData.attributes.requester_email_id = user_email_id;
         requestData.attributes.friend_request_event_id = msgData.id;
-        await eventApi.post("/friend/accept", { data: requestData });
-        await NotificationHelper.getMessages(userInfo, dispatch, NotificationHelper.currentPage);
+        await eventApi.post("/friend/accept", { data: requestData }).then(function(resp){
+
+            await NotificationHelper.getMessages(userInfo, dispatch, NotificationHelper.currentPage);
+        });
     }
 
     static async getMessages(userInfo, dispatch, page, lastMsg, lastMsgKey) {
