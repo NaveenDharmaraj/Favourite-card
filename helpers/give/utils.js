@@ -1178,7 +1178,7 @@ const formatDateForGivingTools = (date) => {
     let unformattedDate = new Date(date);
     // Need to use the original function, using this now as we need to integrate translaction for that
     const day = unformattedDate.getDate();
-    const month = monthNamesForGivingTools(unformattedDate.getMonth());
+    const month = monthNamesForGivingTools(unformattedDate.getMonth() + 1);
     const year = unformattedDate.getFullYear();
     
     return `${month} ${day}, ${year}`;

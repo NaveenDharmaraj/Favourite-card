@@ -274,7 +274,7 @@ class Friends extends React.Component {
                                                 </Form>
                                                 <Form className="inviteForm">
                                                     <label>
-                                                        Or share link
+                                                        Or Share link
                                                     </label>
                                                     <Grid verticalAlign="middle">
                                                         <Grid.Row>

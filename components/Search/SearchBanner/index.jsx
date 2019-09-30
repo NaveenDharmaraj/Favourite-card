@@ -71,7 +71,7 @@ class SearchBanner extends React.Component {
                             <Grid.Column mobile={12} tablet={8} computer={6}>
                                 <Input
                                     fluid
-                                    placeholder="Search Charitable Impact..."
+                                    placeholder="Find charities, groups, and causes"
                                     onChange={this.handleOnChange}
                                     value={searchWord}
                                     onKeyPress={(event) => { (event.keyCode || event.which) === 13 ? this.handleKeyEnter(route) : null; }}

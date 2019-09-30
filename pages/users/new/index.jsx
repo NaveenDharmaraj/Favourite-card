@@ -335,7 +335,7 @@ class Login extends React.Component {
                             }
                             {
                                 (stepIndex === 3) && (
-                                    <Grid columns={2} centered>
+                                    <Grid columns={2} centered doubling>
                                         <Grid.Row>
                                             <FinalStep
                                                 handleSubmit={this.handleSubmit}
