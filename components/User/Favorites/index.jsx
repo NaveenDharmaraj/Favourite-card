@@ -140,15 +140,16 @@ class Favorites extends React.Component {
                     name,
                     type,
                     slug,
+                    is_campaign,
                 } = data.attributes;
-                let displayAvatar = groupImg;
+                let displayAvatar = charityImg;
                 const shortName = renderText(name, 3);
-                let route = 'groups';
-                let heading = 'giving group';
-                if (type === 'charity') {
-                    displayAvatar = charityImg;
-                    route = 'charities';
-                    heading = 'charity';
+                let route = 'charities';
+                let heading = 'charity';
+                if (type === 'group') {
+                    displayAvatar = groupImg;
+                    route = (is_campaign) ? 'campaigns' : 'groups';
+                    heading = 'giving group';
                 }
                 displayAvatar = (!_.isEmpty(avatar)) ? avatar : displayAvatar;
                 const entityId = (type === 'charity') ? data.attributes.charity_id : data.attributes.group_id;

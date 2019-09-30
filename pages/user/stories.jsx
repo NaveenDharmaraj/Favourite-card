@@ -1,12 +1,27 @@
+import React from 'react';
 import {
     Breadcrumb,
     Container,
 } from 'semantic-ui-react';
+import {
+    connect,
+} from 'react-redux';
+import getConfig from 'next/config';
 
 import Layout from '../../components/shared/Layout';
 import StoriesAllList from '../../components/User/StoriesAllList';
+import { redirectIfNotUSer } from '../../helpers/utils';
 
-function Stories() {
+const { publicRuntimeConfig } = getConfig();
+const {
+    RAILS_APP_URL_ORIGIN,
+} = publicRuntimeConfig;
+
+const Stories = (props) => {
+    const {
+        currentAccount,
+    } = props;
+    redirectIfNotUSer(currentAccount, RAILS_APP_URL_ORIGIN);
     return (
         <Layout authRequired>
             <div className="charityTab n-border">
@@ -23,6 +38,10 @@ function Stories() {
             </div>
         </Layout>
     );
-}
+};
 
-export default Stories;
+const mapStateToProps = (state) => ({
+    currentAccount: state.user.currentAccount,
+});
+
+export default (connect(mapStateToProps)(Stories));
