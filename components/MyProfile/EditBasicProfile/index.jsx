@@ -7,6 +7,7 @@ import {
     Grid,
     Popup,
     Icon,
+    Image
 } from 'semantic-ui-react';
 import {
     connect,
@@ -32,6 +33,7 @@ import {
     isAmountMoreThanOneDollor,
     isValidPositiveNumber,
 } from '../../../helpers/give/giving-form-validation';
+import UserPlaceholder from '../../../static/images/no-data-avatar-user-profile.png';
 
 class EditBasicProfile extends React.Component {
     constructor(props) {
@@ -39,7 +41,9 @@ class EditBasicProfile extends React.Component {
         this.state = {
             buttonClicked: true,
             errorMessage: null,
+            isImageChanged: false,
             uploadImage: '',
+            uploadImagePreview: '',
             statusMessage: false,
             successMessage: '',
             userBasicDetails: {
@@ -56,6 +60,7 @@ class EditBasicProfile extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleInputOnBlur = this.handleInputOnBlur.bind(this);
         this.handleUpload = this.handleUpload.bind(this);
+        this.handleRemovePreview = this.handleRemovePreview.bind(this);
     }
 
     componentDidUpdate(prevProps) {
@@ -222,6 +227,7 @@ class EditBasicProfile extends React.Component {
                 dispatch,
             } = this.props;
             const {
+                isImageChanged,
                 userBasicDetails,
             } = this.state;
             saveUserBasicProfile(dispatch, userBasicDetails, id, email).then(() => {
@@ -238,24 +244,64 @@ class EditBasicProfile extends React.Component {
                     buttonClicked: true,
                 });
             });
+            if (isImageChanged) {
+                const {
+                    currentUser: {
+                        id,
+                    },
+                    dispatch,
+                } = this.props;
+                const {
+                    uploadImage,
+                } = this.state;
+                uploadUserImage(dispatch, id, uploadImage).then(() => {
+                    this.setState({                       
+                        buttonClicked: true,
+                        uploadImagePreview: '',
+                    });
+                }).catch((err) => {
+                    this.setState({                        
+                        buttonClicked: true,
+                        uploadImagePreview: '',
+                    });
+                });
+            }
         } else {
             this.setState({
                 buttonClicked: false,
             });
         }
     }
+
+    getBase64(file, cb) {
+        let reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function () {
+            cb(reader.result)
+        };
+        reader.onerror = function (error) {
+            console.log('Error: ', error);
+        };
+    }
     
     handleUpload(event) {
         this.setState({
-            uploadImage: event.target.files[0]
+            uploadImagePreview: '',
+        })
+        this.getBase64(event.target.files[0], (result) => {
+            this.setState({
+                isImageChanged: true,
+                uploadImage: result,
+                buttonClicked: false,
+                uploadImagePreview: result,
+            });
         });
-        const {
-            currentUser: {
-                id,
-            },
-            dispatch,
-        } = this.props;
-        uploadUserImage(dispatch, id, '');
+    }
+
+    handleRemovePreview() {
+        this.setState({
+            uploadImagePreview: '',
+        })
     }
 
     render() {
@@ -271,13 +317,22 @@ class EditBasicProfile extends React.Component {
                 location,
                 givingGoal,
             },
+            uploadImagePreview,
             validity,
         } = this.state;
         const {
             userData,
+            currentUser: {
+                attributes: {
+                    avatar,
+                },
+            }
         } = this.props;
         const privacyColumn = 'giving_goal_visibility';
         let aboutCharCount = (!_.isEmpty(about)) ? Math.max(0, (1000 - Number(about.length))) : 1000;
+        const userAvatar = (avatar === '') || (avatar === null) ? UserPlaceholder : avatar;
+        const imageView = uploadImagePreview !== '' ? uploadImagePreview : userAvatar;
+        const isPreview = uploadImagePreview !== '' ? true : false;
         return (
             <Grid>
                 {
@@ -296,8 +351,40 @@ class EditBasicProfile extends React.Component {
                     <Grid.Column mobile={16} tablet={12} computer={10}>
                         <Form>
                             <Form.Field>
-                            <input id="myInput" accept="images/*" type="file" ref={(ref) => this.upload = ref} style={{ display: 'none' }} onChange={(e) => this.handleUpload(event)} />
-                            <Button as='a' onClick={(e) => this.upload.click()}>Upload photo</Button>
+                                <input
+                                    id="myInput"
+                                    accept="image/png, image/jpeg, image/jpg"
+                                    type="file"
+                                    ref={(ref) => this.upload = ref}
+                                    style={{ display: 'none' }}
+                                    onChange={(e) => this.handleUpload(event)}
+                                />
+                            </Form.Field>
+                            <Form.Field>
+                                <div className="changeImageWraper removable">
+                                <div className="subHead">Profile photo</div>
+                                <div className="proPicWraper">
+                                    <Image src={imageView} height="125px" width="125px"/>
+                                    {
+                                        isPreview && (
+                                            <a
+                                                href="#"
+                                                className="removeBtn"
+                                                onClick={this.handleRemovePreview}
+                                            />
+                                        )
+                                    }
+                                </div>
+                                <div className="rightBtnWraper">
+                                    <Button
+                                    as="a"
+                                        className="success-btn-rounded-def medium"
+                                        onClick={(e) => this.upload.click()}
+                                    >
+                                        Change profile photo
+                                    </Button>
+                                </div>
+                                </div>
                             </Form.Field>
                             <Form.Group widths="equal">
                                 <Form.Field>

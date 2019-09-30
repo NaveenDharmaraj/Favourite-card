@@ -865,13 +865,13 @@ const inviteFriends = (dispatch, inviteEmailIds) => {
     });
 };
 
-const generateDeeplinkSignup = (dispatch, profileId) => {
+const generateDeeplinkSignup = (dispatch, profileType) => {
     const fsa = {
         payload: {
         },
         type: actionTypes.USER_PROFILE_SIGNUP_DEEPLINK,
     };
-    return utilityApi.get(`/deeplink?profileType=userprofile&sourceId=${Number(profileId)}&profileId=${Number(profileId)}`).then(
+    return utilityApi.get(`/deeplink?profileType=${profileType}&webLink=true`).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -899,11 +899,12 @@ const uploadUserImage = (dispatch, sourceUserId, imageData) => {
             type: 'users',
         },
     };
-    return coreApi.patch(`/core/v2/users/${Number(sourceUserId)}`, bodyData).then(
+    return coreApi.patch(`/users/${Number(sourceUserId)}`, bodyData).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
             };
+            getUser(dispatch, sourceUserId, null);
         },
     ).catch((error) => {
         fsa.error = error;

@@ -99,12 +99,14 @@ class UserBasciProfile extends React.Component {
         let isFriendPending = false;
         let isFriend = false;
         let email = '';
+        let profileType = '';
         if (!_.isEmpty(userData)) {
             const profile = userData.profile_type;
             isBlocked = profile.substring(0, 7) === 'blocked' ? true : false;
             isFriendPending = profile.substring(0, 7) === 'pending' ? true : false;
             isFriend = profile === 'friends_profile' ? true : false;
             email = Buffer.from(userData.email_hash, 'base64').toString('ascii');
+            profileType = profile.substring(0, 7);
         }
         return (
             <div>
@@ -126,7 +128,7 @@ class UserBasciProfile extends React.Component {
                                             <Grid.Column mobile={16} tablet={16} computer={16}>
                                                 <div className="ProfileHeaderWraper">
                                                     <Header as="h3">
-                                                        <span className="font-s-10 type-profile">{userData.profile_type}</span>
+                                                        <span className="font-s-10 type-profile">{profileType}</span>
                                                         {userData.first_name}
                                                         {' '}
                                                         {userData.last_name}

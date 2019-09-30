@@ -83,12 +83,9 @@ class Friends extends React.Component {
 
     componentDidMount() {
         const {
-            currentUser: {
-                id,
-            },
             dispatch,
         } = this.props;
-        generateDeeplinkSignup(dispatch, id);
+        generateDeeplinkSignup(dispatch, 'signup');
     }
 
     componentDidUpdate(prevProps) {
@@ -156,12 +153,14 @@ class Friends extends React.Component {
                     successMessage: 'Invite sent.',
                     statusMessage: true,
                     inviteButtonClicked: false,
+                    userEmailIds: '',
                 });
             }).catch((err) => {
                 this.setState({
                     errorMessage: 'Error in sending invite.',
                     statusMessage: true,
                     inviteButtonClicked: false,
+                    userEmailIds: '',
                 });
             });
         } else {
