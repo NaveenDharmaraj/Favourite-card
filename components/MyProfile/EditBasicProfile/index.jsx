@@ -394,7 +394,7 @@ class EditBasicProfile extends React.Component {
                                         placeholder="First name"
                                         id="firstName"
                                         name="firstName"
-                                        maxLength="50"
+                                        maxLength="30"
                                         onChange={this.handleInputChange}
                                         onBlur={this.handleInputOnBlur}
                                         error={!validity.isFirstNameNotNull}
@@ -412,7 +412,7 @@ class EditBasicProfile extends React.Component {
                                         id="lastName"
                                         name="lastName"
                                         placeholder="Last name"
-                                        maxLength="50"
+                                        maxLength="30"
                                         onChange={this.handleInputChange}
                                         onBlur={this.handleInputOnBlur}
                                         error={!validity.isLastNameNotNull}

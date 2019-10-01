@@ -125,6 +125,12 @@ const userProfile = (state = {}, action) => {
                 userProfileSignUpDeeplink: Object.assign({}, action.payload),
             };
             break;
+        case 'USER_PROFILE_USERPROFILE_DEEPLINK':
+            newState = {
+                ...state,
+                userProfileProfilelink: Object.assign({}, action.payload),
+            };
+            break;
         default:
             break;
     }

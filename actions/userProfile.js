@@ -29,6 +29,7 @@ export const actionTypes = {
     UPDATE_USER_PREFERENCES: 'UPDATE_USER_PREFERENCES',
     UPDATE_USER_PRIVACY_SETTING: 'UPDATE_USER_PRIVACY_SETTING',
     USER_PROFILE_ADD_FRIEND: 'USER_PROFILE_ADD_FRIEND',
+    USER_PROFILE_ACCEPT_FRIEND: 'USER_PROFILE_ACCEPT_FRIEND',
     USER_PROFILE_ADMIN_GROUP: 'USER_PROFILE_ADMIN_GROUP',
     USER_PROFILE_BASIC: 'USER_PROFILE_BASIC',
     USER_PROFILE_BASIC_FRIEND: 'USER_PROFILE_BASIC_FRIEND',
@@ -49,10 +50,12 @@ export const actionTypes = {
     USER_PROFILE_MEMBER_GROUP: 'USER_PROFILE_MEMBER_GROUP',
     USER_PROFILE_MY_FRIENDS: 'USER_PROFILE_MY_FRIENDS',
     USER_PROFILE_RECOMMENDED_TAGS: 'USER_PROFILE_RECOMMENDED_TAGS',
+    USER_PROFILE_REMOVE_FRIEND: 'USER_PROFILE_REMOVE_FRIEND',
     USER_PROFILE_SIGNUP_DEEPLINK: 'USER_PROFILE_SIGNUP_DEEPLINK',
     USER_PROFILE_TAX_RECEIPTS: 'USER_PROFILE_TAX_RECEIPTS',
     USER_PROFILE_UNBLOCK_FRIEND: 'USER_PROFILE_UNBLOCK_FRIEND',
     USER_PROFILE_UPLOAD_IMAGE: 'USER_PROFILE_UPLOAD_IMAGE',
+    USER_PROFILE_USERPROFILE_DEEPLINK: 'USER_PROFILE_USERPROFILE_DEEPLINK',
 };
 
 const getUserProfileBasic = (dispatch, email, userId, loggedInUserId) => {
@@ -837,6 +840,39 @@ const addToFriend = (dispatch, sourceUserId, sourceEmail, sourceAvatar, sourceFi
     });
 };
 
+const acceptFriend = (dispatch, sourceUserId, sourceEmail, sourceAvatar, sourceFirstName, destinationUserId, destinationEmailId) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.USER_PROFILE_ACCEPT_FRIEND,
+    };
+    const bodyData = {
+        data: {
+            attributes: {
+                requester_email_id: destinationEmailId,
+                requester_user_id: Number(destinationUserId),
+                acceptor_avatar_link: sourceAvatar,
+                acceptor_email_id: sourceEmail,
+                acceptor_first_name: sourceFirstName,
+                acceptor_user_id: Number(sourceUserId),
+                source: 'web',
+            },
+        },
+    };
+    return eventApi.post(`/friend/accept`, bodyData).then(
+        (result) => {
+            fsa.payload = {
+                data: result.data,
+            };
+            getUserFriendProfile(dispatch, sourceEmail, destinationUserId, sourceUserId);
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    });
+};
+
 const inviteFriends = (dispatch, inviteEmailIds) => {
     const fsa = {
         payload: {
@@ -913,6 +949,54 @@ const uploadUserImage = (dispatch, sourceUserId, imageData) => {
     });
 };
 
+const removeFriend = (dispatch, sourceUserId, sourceEmail, destinationUserId) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.USER_PROFILE_REMOVE_FRIEND,
+    };
+    const bodyData = {
+        data: {
+            attributes: {
+                recipient_user_id: Number(destinationUserId),
+                requester_user_id: Number(sourceUserId),
+                source: 'web',
+            },
+        },
+    };
+    return eventApi.post(`/friend/remove`, bodyData).then(
+        (result) => {
+            fsa.payload = {
+                data: result.data,
+            };
+            getUserFriendProfile(dispatch, sourceEmail, destinationUserId, sourceUserId);
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    });
+};
+
+const generateDeeplinkUserProfile = (dispatch, sourceUserId, destinationUserId) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.USER_PROFILE_USERPROFILE_DEEPLINK,
+    };
+    return utilityApi.get(`/deeplink?profileType=userprofile&sourceId=${Number(sourceUserId)}&profileId=${Number(destinationUserId)}&webLink=true`).then(
+        (result) => {
+            fsa.payload = {
+                data: result.data,
+            };
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    });
+};
+
 
 export {
     getUserProfileBasic,
@@ -946,7 +1030,10 @@ export {
     updateUserPreferences,
     getUserDefaultTaxReceipt,
     addToFriend,
+    acceptFriend,
     inviteFriends,
     generateDeeplinkSignup,
     uploadUserImage,
+    removeFriend,
+    generateDeeplinkUserProfile,
 };

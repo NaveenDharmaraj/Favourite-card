@@ -671,7 +671,7 @@ class MyCreditCards extends React.Component {
         return (
             <div>
                 <div className="userSettingsContainer">
-                    <div className="settingsDetailWraper heading brdr-btm pb-1 pt-2">
+                    <div className="settingsDetailWraper heading brdr-btm pb-1 pt-2 pMethodHead">
                         <Grid verticalAlign="middle">
                             <Grid.Row>
                                 <Grid.Column mobile={16} tablet={11} computer={11}>
@@ -718,7 +718,7 @@ class MyCreditCards extends React.Component {
                                                         <Form.Field
                                                             checked={isDefaultCard}
                                                             control={Checkbox}
-                                                            className="ui checkbox chkMarginBtm"
+                                                            className="ui checkbox chkMarginBtm checkboxToRadio"
                                                             id="isDefaultCard"
                                                             label="Set as primary card"
                                                             name="isDefaultCard"
@@ -813,7 +813,7 @@ class MyCreditCards extends React.Component {
                                     <Form.Field
                                         checked={isDefaultCard}
                                         control={Checkbox}
-                                        className="ui checkbox chkMarginBtm"
+                                        className="ui checkbox chkMarginBtm checkboxToRadio"
                                         id="isDefaultCard"
                                         label="Set as primary card"
                                         name="isDefaultCard"

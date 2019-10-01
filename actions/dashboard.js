@@ -155,7 +155,7 @@ const hideRecommendations = (dispatch, sourceUserId, hideEntityId, type) => {
         hide_entity_ids: hideEntities,
         user_id: Number(sourceUserId),
     };
-    return coreApi.post(`/core/updateUser/hide/${type}`, bodyData).then(
+    return graphApi.post(`/core/updateUser/hide/${type}`, bodyData).then(
         (result) => {
             fsa.payload = {
                 data: result.data,

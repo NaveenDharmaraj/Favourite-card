@@ -22,6 +22,7 @@ import NoFriendAvatar from '../../../static/images/no-data-avatar-user-profile.p
 const ModalStatusMessage = dynamic(() => import('../../shared/ModalStatusMessage'), {
     ssr: false
 });
+import { Router } from '../../../routes';
 
 class FindFriends extends React.Component {
     constructor(props) {
@@ -160,6 +161,8 @@ class FindFriends extends React.Component {
                     buttonClicked: false,
                 });
             });
+        } else if(btnData === 'message') {
+            Router.pushRoute(`/chats/${userData.attributes.user_id}`);
         }
     }
 
@@ -171,7 +174,6 @@ class FindFriends extends React.Component {
             buttonClicked,
         } = this.state;
         let friendsList = '';
-        let isButtonDisabled = false;
         if (!_.isEmpty(userFindFriendsList)) {
             friendsList = userFindFriendsList.data.map((data) => {
                 const name = `${data.attributes.first_name} ${data.attributes.last_name}`;
@@ -181,6 +183,7 @@ class FindFriends extends React.Component {
                 let btnClass = 'blue-bordr-btn-round-def c-small';
                 let friendStatus = '';
                 let btnData = '';
+                let isButtonDisabled = false;
                 if (data.attributes.friend_status === '') {
                     friendStatus = 'Add Friend';
                     btnData = 'addfriend';

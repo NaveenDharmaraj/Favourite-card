@@ -136,7 +136,7 @@ class EditCharitableInterest extends React.Component {
             saveCharitableCauses(dispatch, id, userCauses).then(() => {
                 this.setState({
                     errorMessage: null,
-                    successMessage: 'Causes - Changes saved.',
+                    successMessage: 'Changes saved.',
                     statusMessage: true,
                     buttonClicked: true,
                 });
@@ -149,9 +149,9 @@ class EditCharitableInterest extends React.Component {
             });
             saveCharitableTags(dispatch, id, userTags).then(() => {
                 this.setState({
-                    errorMessageTag: null,
-                    successMessageTag: 'Tags - Changes saved.',
-                    statusMessageTags: true,
+                    errorMessage: null,
+                    successMessage: 'Changes saved.',
+                    statusMessage: true,
                     buttonClicked: true,
                 });
             }).catch(() => {

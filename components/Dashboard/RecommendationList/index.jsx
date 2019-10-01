@@ -5,11 +5,10 @@ import {
     Button,
     Container,
     Header,
-    Icon,
     Image,
     Grid,
     Card,
-    Popup,
+    Dropdown,
 } from 'semantic-ui-react';
 import {
     connect,
@@ -17,6 +16,7 @@ import {
 
 import {
     getRecommendationList,
+    hideRecommendations,
 } from '../../../actions/dashboard';
 import placeholderCharity from '../../../static/images/no-data-avatar-charity-profile.png';
 import placeholderGroup from '../../../static/images/no-data-avatar-giving-group-profile.png';
@@ -30,6 +30,7 @@ class RecommendationList extends React.Component {
         this.state = {
             recommendationListLoader: !props.recommendationData,
         };
+        this.handleHideClick = this.handleHideClick.bind(this);
     }
 
     componentDidMount() {
@@ -56,6 +57,22 @@ class RecommendationList extends React.Component {
                 recommendationListLoader,
             });
         }
+    }
+
+    handleHideClick(data) {
+        const {
+            currentUser: {
+                id,
+            },
+            dispatch,
+        } = this.props;
+        let hideEntityId = 0;
+        if (data.attributes.type === 'charity') {
+            hideEntityId = data.attributes.charity_id;
+        } else if (data.attributes.type === 'group') {
+            hideEntityId = data.attributes.group_id;
+        }
+        hideRecommendations(dispatch, id, hideEntityId, data.attributes.type);
     }
 
     recommendationList() {
@@ -100,23 +117,15 @@ class RecommendationList extends React.Component {
                                                         <Header as="h4">
                                                             <Header.Content>
                                                                 <Header.Subheader>
-                                                                    <Popup
-                                                                        basic
-                                                                        className="filterPopup"
-                                                                        on="click"
-                                                                        pinned
-                                                                        position="bottom right"
-                                                                        trigger={<a><span className="more-icon"><Icon name="ellipsis horizontal" /></span></a>}>
-                                                                        <div className="filterPanel">
-                                                                            <div className="filterPanelContent">
-                                                                                <div className="filterPanelItem">
-                                                                                    <div className="filter-header font-18 font-bold">
-                                                                                        Hide
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </Popup>
+                                                                    <Dropdown
+                                                                        className="rightBottom"
+                                                                        icon="ellipsis horizontal"
+                                                                        closeOnBlur
+                                                                    >
+                                                                        <Dropdown.Menu>
+                                                                            <Dropdown.Item text="Hide" onClick={() => this.handleHideClick(data)} />
+                                                                        </Dropdown.Menu>
+                                                                    </Dropdown>
                                                                 </Header.Subheader>
                                                             </Header.Content>
                                                         </Header>
