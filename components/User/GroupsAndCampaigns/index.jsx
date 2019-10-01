@@ -245,18 +245,12 @@ class GroupsAndCampaigns extends React.Component {
                     {this.renderList(showloaderForMemberGroups, 'groupsWithMemberships', groupsWithMemberships)}
                 </div>
                 <Divider />
-                {(administeredCampaigns && administeredCampaigns.dataCount && administeredCampaigns.dataCount > 0) ? (
-                    <Fragment>
-                        <div className="pt-2 pb-2">
-                            <p className="bold font-s-16">Campaigns you manage</p>
-                        </div>
-                        <div className="pt-1 pb-3">
-                            {this.renderList(showloaderForCampaigns, 'administeredCampaigns', administeredCampaigns)}
-                        </div>
-                    </Fragment>
-                ) : null
-
-                }
+                <div className="pt-2 pb-2">
+                    <p className="bold font-s-16">Campaigns you manage</p>
+                </div>
+                <div className="pt-1 pb-3">
+                    {this.renderList(showloaderForCampaigns, 'administeredCampaigns', administeredCampaigns)}
+                </div>
             </Container>
         );
     }

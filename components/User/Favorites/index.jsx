@@ -185,14 +185,16 @@ class Favorites extends React.Component {
                     </Grid.Column>
                 );
             });
+            return (
+                <Grid stackable doubling columns={3}>
+                    <Grid.Row>
+                        {favoritesList}
+                    </Grid.Row>
+                </Grid>
+            );
         }
-        return (
-            <Grid stackable doubling columns={3}>
-                <Grid.Row>
-                    {favoritesList}
-                </Grid.Row>
-            </Grid>
-        );
+
+        return favoritesList;
     }
 
     handleSeeMore() {
@@ -263,7 +265,7 @@ class Favorites extends React.Component {
                         { (favoritesLoader) ? <PlaceholderGrid row={2} column={3} /> : (
                             this.showFavorites()
                         )}
-                        <div className="seeMore bigBtn">
+                        <div className="seeMore bigBtn mt-2-sm">
                             {this.renderSeeMore()}
                             {this.renderCount()}
                         </div>

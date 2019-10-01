@@ -41,6 +41,7 @@ const NavBarMobile = ({
   visible,
   currentAccount,
   formatMessage,
+  messageCount,
   handleClick,
   activeIndex,
 }) => {
@@ -53,13 +54,16 @@ const NavBarMobile = ({
     const menuLinks = getMainNavItems(accountType, slug);
     let accountSettingsText = formatMessage('accountSettings');
     let accountUrl = `/user/profile/basic`;
+    let logoUrl = `/dashboard`;
     let isExternal = false;
     if (accountType === 'company') {
         accountSettingsText = formatMessage('companyAccountSettings');
         accountUrl = `${RAILS_APP_URL_ORIGIN}/companies/${slug}/edit`;
+        logoUrl = `${RAILS_APP_URL_ORIGIN}/companies/${slug}`;
         isExternal = true;
     } else if (accountType === 'charity') {
         accountUrl = `${RAILS_APP_URL_ORIGIN}/beneficiaries/${slug}/info`;
+        logoUrl = `${RAILS_APP_URL_ORIGIN}/admin/beneficiaries/${slug}`;
         isExternal = true;
     }
     return (
@@ -80,8 +84,16 @@ const NavBarMobile = ({
                                     {name}
                                 </div>
                                 <div className="iconWraper smo-d-none">
-                                    <Link route='/notifications/all'><Image src={notificationIcon}/></Link>
-                                    <Link route='/chats/all'><Image src={messageIcon}/></Link>
+                                    <Link route='/notifications/all'>
+                                        <a className={`${messageCount > 0 ? ' new' : ''}`}>
+                                            <Image src={notificationIcon}/>
+                                        </a>
+                                    </Link>
+                                    <Link route='/chats/all'>
+                                        <a>
+                                            <Image src={messageIcon}/>
+                                        </a>
+                                    </Link>
                                 </div>
                             </List.Content>
                         </List.Item>
@@ -117,7 +129,9 @@ const NavBarMobile = ({
                         <Button className="blue-btn-rounded-def c-small">Give</Button>
                     </Menu.Item>
                     <Menu.Item className="logoImg">
-                        <Image src={logo} />
+                        <Link route={logoUrl}>
+                            <Image src={logo} />
+                        </Link>
                     </Menu.Item>
 
                     <Menu.Menu position="right">
@@ -263,6 +277,7 @@ class MobileHeader extends Component {
     const {
         children,
         currentAccount,
+        messageCount,
     } = this.props;
     const formatMessage = this.props.t;
     const { visible } = this.state;
@@ -276,6 +291,7 @@ class MobileHeader extends Component {
         currentAccount={currentAccount}
         formatMessage={formatMessage}
         activeIndex={activeIndex}
+        messageCount={messageCount}
         >
             {children}
         </NavBarMobile>
@@ -285,6 +301,7 @@ class MobileHeader extends Component {
 
 const mapStateToProps = (state) => ({
     currentAccount: state.user.currentAccount,
+    messageCount: state.firebase.messages ? Object.keys(state.firebase.messages.filter(function (m) { return m.createdTs > state.firebase.lastSyncTime;})).length : 0,
 });
 
 export default withTranslation('authHeader')(connect(mapStateToProps)(MobileHeader));
