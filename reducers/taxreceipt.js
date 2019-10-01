@@ -8,6 +8,14 @@ const taxreceipt = (state = {}, action) => {
         ...state,
     };
     switch (action.type) {
+        case 'GET_INITIAL_TAX_RECEIPT_PROFILE':
+            newState = {
+                ...state,
+                loader: action.payload.loader,
+                taxReceiptProfileList: action.payload.taxReceiptProfileList,
+                taxReceiptProfilePageCount: action.payload.taxReceiptProfilePageCount,
+            };
+            break;
         case 'GET_PAGINATED_TAX_RECEIPT_PROFILE':
             const taxReceiptProfileListUnique = !_isEmpty(state.taxReceiptProfileList) ? [
                 ...state.taxReceiptProfileList,

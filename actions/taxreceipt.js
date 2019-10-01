@@ -6,6 +6,7 @@ import coreApi from '../services/coreApi';
 
 export const actionTypes = {
     DOWNLOAD_TAX_RECEIPT_DONATION_DETAIL: 'DOWNLOAD_TAX_RECEIPT_DONATION_DETAIL',
+    GET_INITIAL_TAX_RECEIPT_PROFILE: 'GET_INITIAL_TAX_RECEIPT_PROFILE',
     GET_PAGINATED_TAX_RECEIPT_PROFILE: 'GET_PAGINATED_TAX_RECEIPT_PROFILE',
     GET_PAGINATED_TAX_RECEIPT_PROFILE_LOADER: 'GET_PAGINATED_TAX_RECEIPT_PROFILE_LOADER',
     ISSUED_TAX_RECEIPIENT_DONATIONS_DETAIL: 'ISSUED_TAX_RECEIPIENT_DONATIONS_DETAIL',
@@ -32,6 +33,8 @@ export const getTaxReceiptProfilePaginated = (dispatch, userId, pageNumber, load
     }).catch((error) => {
         console.log(error);
     }).finally(() => {
+        const type = pageNumber === 1 ? actionTypes.GET_INITIAL_TAX_RECEIPT_PROFILE : actionTypes.GET_PAGINATED_TAX_RECEIPT_PROFILE;
+        fsa.type = type;
         dispatch(fsa);
         dispatch({
             payload: {
