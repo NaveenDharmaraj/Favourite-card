@@ -5,6 +5,7 @@ import _ from 'lodash';
 import coreApi from '../services/coreApi';
 import authRorApi from '../services/authRorApi';
 import graphApi from '../services/graphApi';
+import wpApi from '../services/wpApi';
 import { Router } from '../routes';
 import {
     triggerUxCritialErrors,
@@ -233,6 +234,18 @@ export const getDonationMatchAndPaymentInstruments = (userId, flowType) => {
                 dispatch(fsa);
             });
     };
+};
+
+export const wpLogin = (token = null) => {
+    let params = null;
+    if (!_.isEmpty(token)) {
+        params = {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        };
+    }
+    return wpApi.post('/login', null, params);
 };
 
 export const chimpLogin = (token = null) => {

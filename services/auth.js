@@ -14,7 +14,8 @@ import {
 import {
     chimpLogin,
     getUser,
-} from '../actions/user'
+    wpLogin,
+} from '../actions/user';
 import isUndefinedOrEmpty from '../helpers/object';
 
 import coreApi from './coreApi';
@@ -26,6 +27,9 @@ const {
     AUTH0_DOMAIN,
     AUTH0_WEB_CLIENT_ID,
     AUTH0_WEB_AUDIENCE,
+    WP_DOMAIN,
+    WP_DOMAIN_BASE,
+    WP_API_VERSION,
 } = publicRuntimeConfig;
 
 /**
@@ -406,6 +410,9 @@ const _handleLockSuccess = async ({
     if (!accessToken || !idToken) { return null(); }
     // Sets access token and expiry time in cookies
     chimpLogin(accessToken).then(async ({ currentUser }) => {
+        if (WP_DOMAIN && WP_DOMAIN_BASE && WP_API_VERSION) {
+            await wpLogin(accessToken);
+        }
         const userId = parseInt(currentUser, 10);
         await (auth0.returnProps = null);
         await (auth0.accessToken = accessToken);

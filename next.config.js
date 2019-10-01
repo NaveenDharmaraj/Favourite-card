@@ -44,6 +44,9 @@ const configVars = {
         FIREBASE_APP_ID: process.env.FIREBASE_APP_ID,
         HELP_CENTRE_URL: process.env.HELP_CENTRE_URL,
         CLAIM_CHARITY_URL: process.env.CLAIM_CHARITY_URL,
+        WP_API_VERSION: process.env.WP_API_VERSION,
+        WP_DOMAIN: process.env.WP_DOMAIN,
+        WP_DOMAIN_BASE: process.env.WP_DOMAIN,
     },
 };
 
