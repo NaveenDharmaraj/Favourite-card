@@ -401,9 +401,13 @@ class Group extends React.Component {
                 validity = validateGiveForm('dedicateType', null, validity, giveData);
             break;
             case 'noteToCharity':
+                giveData[name] = inputValue.trim();
+                validity = validateGiveForm('noteToCharity', giveData.noteToCharity, validity, giveData, coverFeesAmount);
+            break;
             case 'noteToSelf':
                 giveData[name] = inputValue.trim();
-                break;
+                validity = validateGiveForm('noteToSelf', giveData.noteToSelf, validity, giveData, coverFeesAmount);
+            break;
             default: break;
         }
         this.setState({
