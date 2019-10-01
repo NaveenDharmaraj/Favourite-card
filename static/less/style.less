@@ -156,6 +156,24 @@ h4{
   }
 }
 @media only screen and (max-width: 767px){
+  body{
+    .info-panel.more-btn{
+      &.mb-2{
+        margin-bottom: 0px !important;
+      }
+    }
+    .profile-header{
+      .buttonWraper{
+        .ui{
+          &.fluid{
+            &.button{
+              width: 100%;
+            }
+          }
+        }
+      }
+    }
+  }
   .ui{
     &.modals{
       &.dimmer{
@@ -1000,6 +1018,9 @@ h4{
   .settingsDetailWraper{
     padding: 2rem 0rem 2rem; 
     border-bottom: 1px solid @grey-lighten-2;
+    &.pMethodHead{
+      padding-top: 5px !important;
+    }
     p{
       >a{
         text-decoration: underline;
@@ -1011,10 +1032,14 @@ h4{
     &:last-child{
       border-bottom: 0px solid transparent;
     }
+    .success-btn-rounded-def{
+      min-width: 166px;
+    }
     .ui{
       &.divided{
         &.list{
           &.userList{
+            padding-bottom: 20px;
             .item{
               &:last-child{
                 border-bottom: 1px solid rgba(34,36,38,.15);
@@ -1523,8 +1548,18 @@ h4{
     width: 402px;
   }
 }
-@media only screen and (max-width:1199px) and (min-width:991px) {
+@media only screen and (max-width:991px) {
   body{
+    .search-result{
+      .search-result-all{
+        .ui{
+          &.card{
+            margin-left: auto;
+            margin-right: auto;
+          }
+        }
+      }
+    }
     .give-friends-list .ui.card.createGift > .content .description{
       button{
         &.ui{
@@ -2962,7 +2997,7 @@ h4{
                 background-size: contain !important;
                 background-repeat: no-repeat !important;
                 background-position: center !important;
-                margin-right: 5px;
+                margin-right: 0px;
                 right: 0;
               }
             }
@@ -3188,6 +3223,13 @@ h4{
 }
 @media only screen and (max-width:991px){
   body{
+    .ui.secondary.menu{
+      .item{
+        &.logoImg{
+          margin-left: auto;
+        }
+      }
+    }
     .gpRightButtons{
       text-align: right;
       >div{
@@ -3442,6 +3484,9 @@ h4{
 }
 @media only screen and (max-width:991px) and (min-width:767px) {
   body{
+    .mt-2-sm{
+      margin-top: 2rem !important;
+    }
     .footer-help .helpImg > div{
       top: -88px;
       height: 175px;
@@ -3549,6 +3594,24 @@ h4{
         .sub{
           &.header{
             color: @grey-darken-3;
+          }
+        }
+      }
+    }
+  }
+}
+@media only screen and (min-width:1199px){
+  .profile-header{
+    padding: 20px 0rem;
+    h3{
+      &.ui{
+        &.header{
+          color:@grey-darken-3;
+          font-size: 24px !important;
+          .sub{
+            &.header{
+              color: @grey-darken-3;
+            }
           }
         }
       }
@@ -4148,6 +4211,19 @@ h4{
         border-radius: 1.2rem;
         border: 1px solid #E3E8F0;
         height: 35px;
+      }
+      i{
+        &.icon{
+          &.search{
+            background-image: url(../images/icons/icon-search.svg);
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 47%;
+            &::before{
+              content: '';
+            }
+          }
+        }
       }
     }
   } 
@@ -4976,9 +5052,9 @@ h4{
   &.ui{
     &.list{
       .item{
-        color: #DB0163;
+        color: #E02020;
         .warningIcon{
-          height: 24px;	width: 24px;	background-color: #DB0163;
+          height: 24px;	width: 24px;	background-color: #E02020;
           border-radius: 100%;
           color: #fff;
           text-align: center;
@@ -4988,7 +5064,7 @@ h4{
         }
         .content{
           .header{
-            color: #DB0163;
+            color: #E02020;
             font-weight: 400;
             font-size: 13px;
           }
@@ -6008,6 +6084,9 @@ h4{
   }
   &.ggJoin{
     background-color: #85E4B2;
+    background-image: url(../images/bg_givinggroupsyoujoined_nodata_illustration.svg);
+    background-size: cover;
+    background-repeat: no-repeat;
     .noDataLeftImg{
       text-align: center; 
       &.ui{
@@ -6022,6 +6101,9 @@ h4{
   }
   &.favouritesNoData{
     background-color: #A1C4FF;
+    background-image: url(../images/bg_favourites_nodata_illustration.svg);
+    background-size: cover;
+    background-repeat: no-repeat;
     .noDataLeftImg{
       &.ui{
         &.image{
@@ -6164,8 +6246,8 @@ body{
           &::before{
             content: '';
             position: absolute;
-            top: 4px;
-            bottom: 0;
+            top: 2px;
+            bottom: 3px;
             right: 0;
             left: 0;
             background-image: url(../images/icons/tooltip.svg) !important;

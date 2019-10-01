@@ -449,7 +449,9 @@ button,a{
                         content: '';
                         position: absolute;
                         right: -12px;
-                        top: 2px;
+                        top: 0px;
+                        bottom: 0;
+                        margin: auto;
                         width: 7px;
                         height: 7px;
                         border-radius: 100%;
@@ -803,13 +805,12 @@ body{
                 +td{
                   padding-left: 15px;
                   a{
-                    color: @purple-dark;
+                    color: @purple;
                     font-size: 14px;
                     font-weight: 600;
                     font-family: 'ProximaNova-Regular';
                     &:hover{
-                      color: @purple-dark;
-                      
+                      color: @purple; 
                     }
                   }
                 }
@@ -1189,7 +1190,7 @@ body{
           &.userPrifileHeader{
             padding: 15px 20px 15px 20px;
             background-image: url('../images/bg_menu_tablet.svg');
-            background-size: cover;
+            background-size: 60%;
             background-repeat: no-repeat;
             background-position: right top;
             .list{
@@ -1205,6 +1206,7 @@ body{
                   }
                   .content{
                     padding-left: 2rem;
+                    width: calc(100% - 100px);
                     .name{
                       font-size: 18px;
                       padding: 5px 0px;
@@ -1213,6 +1215,9 @@ body{
                     .iconWraper{
                       vertical-align: middle;
                       padding: 5px 0px;
+                      img{
+
+                      }
                       a{
                         display: inline-block;
                         vertical-align: middle;
