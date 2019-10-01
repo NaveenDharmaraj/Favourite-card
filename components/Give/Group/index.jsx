@@ -192,7 +192,7 @@ class Group extends React.Component {
                 giveGroupDetails,
                 userMembershipGroups
             } = this.props;
-            let paymentInstruments = null;
+            let paymentInstruments = paymentInstrumentsData;
             let companyPaymentInstrumentChanged = false;
             const formatMessage = this.props.t;
             if (giveData.giveFrom.type === 'companies' && !_isEmpty(companyDetails)) {

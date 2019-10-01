@@ -215,7 +215,7 @@ class Friend extends React.Component {
                 },
             } = this.props;
             const formatMessage = this.props.t;
-            let paymentInstruments = null;
+            let paymentInstruments = paymentInstrumentsData;
             let companyPaymentInstrumentChanged = false;
             if (giveData.giveFrom.type === 'companies' && !_isEmpty(companyDetails)) {
                 if (_isEmpty(prevProps.companyDetails)
