@@ -24,13 +24,6 @@ import PlaceholderGrid from '../../shared/PlaceHolder';
 import IndividualTaxDonationContent from '../IndividualTaxDonationContent';
 
 class IndividualTaxDoantionsList extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            loader: !(!_isEmpty(props.issuedTaxReceiptYearlyDetail)),
-        };
-    }
-
 
     componentDidMount() {
         const {
@@ -39,23 +32,6 @@ class IndividualTaxDoantionsList extends React.Component {
         } = this.props;
         getIssuedTaxreceiptYearlyDetail(dispatch, id);
         window.scrollTo(0, 0);
-    }
-
-    componentDidUpdate(prevProps) {
-        const {
-            issuedTaxReceiptYearlyDetail,
-        } = this.props;
-        let {
-            loader,
-        } = this.state;
-        if (!_isEqual(this.props, prevProps)) {
-            if (!_isEqual(issuedTaxReceiptYearlyDetail, prevProps.issuedTaxReceiptYearlyDetail)) {
-                loader = false;
-            }
-            this.setState({
-                loader,
-            });
-        }
     }
 
     componentWillUnmount() {
@@ -78,9 +54,6 @@ class IndividualTaxDoantionsList extends React.Component {
 
     render() {
         const {
-            loader,
-        } = this.state;
-        const {
             currentIssuedTaxReceipt: {
                 address_one,
                 address_two,
@@ -96,6 +69,7 @@ class IndividualTaxDoantionsList extends React.Component {
             name,
             renderdonationDetailShow,
             year,
+            yearLoader,
         } = this.props;
         return (
             <Fragment>
@@ -112,9 +86,9 @@ class IndividualTaxDoantionsList extends React.Component {
                 </div>
                 <div className="search-result">
                     <Container>
-                        <p className="bold font-s-16 mt-2">Issue tax receipts</p>
+                        <p className="bold font-s-16 mt-2">Issued tax receipts</p>
                         <Divider />
-                        <div className="info-panel more-btn">
+                        <div className="info-panel more-btn mb-3">
                             <List verticalAlign="middle" className="receiptList pd-0">
                                 <List.Item>
                                     <Image className="greyIcon mr-1" src={docIcon} />
@@ -124,25 +98,25 @@ class IndividualTaxDoantionsList extends React.Component {
                                             {isDefault && <span className="default">default</span>}
                                         </List.Header>
                                         <p className="font-s-14">
-                                            {!_isEmpty(address_one) && `${address_one},`}
-                                            {!_isEmpty(address_two) && `${address_two},`}
-                                            {!_isEmpty(city) && `${city},`}
-                                            {!_isEmpty(province) && `${province},`}
-                                            {!_isEmpty(country) && `${country},`}
+                                            {!_isEmpty(address_one) && `${address_one}, `}
+                                            {!_isEmpty(address_two) && `${address_two}, `}
+                                            {!_isEmpty(city) && `${city}, `}
+                                            {!_isEmpty(province) && `${province}, `}
+                                            {!_isEmpty(country) && `${country}, `}
                                             {!_isEmpty(postal_code) && `${postal_code}`}
                                         </p>
                                     </List.Content>
                                 </List.Item>
                             </List>
                         </div>
-                        {loader ? (
+                        {yearLoader ? (
                             <Table padded unstackable className="no-border-table">
                                 <PlaceholderGrid row={2} column={2} placeholderType="table" />
                             </Table>
                         ) : (
                             <div className="mt-1 mb-1">
                                 <Accordion className="taxAccordion">
-                                    {(!_isEmpty(issuedTaxReceiptYearlyDetail) && issuedTaxReceiptYearlyDetail.length > 0) && (
+                                    {(!_isEmpty(issuedTaxReceiptYearlyDetail) && issuedTaxReceiptYearlyDetail.length > 0) ? (
                                         issuedTaxReceiptYearlyDetail.map((donationDetail, index) => (
                                             <IndividualTaxDonationContent
                                                 donationDetail={donationDetail}
@@ -153,7 +127,8 @@ class IndividualTaxDoantionsList extends React.Component {
                                             />
                                         ))
 
-                                    )}
+                                    )
+                                        : 'No Yearly Transaction Available'}
                                 </Accordion>
 
                             </div>
@@ -170,7 +145,9 @@ const mapStateToProps = (state) => ({
     issuedTaxReceiptYearlyDetail: state.taxreceipt.issuedTaxReceiptYearlyDetail,
     issuedTaxReceiptYearlyDetailPageCount: state.taxreceipt.issuedTaxReceiptYearlyDetailPageCount,
     year: state.taxreceipt.year,
+    yearLoader: state.taxreceipt.yearLoader,
 });
+
 IndividualTaxDoantionsList.propTypes = {
     dispatch: PropTypes.func,
     issuedTaxReceiptYearlyDetail: PropTypes.arrayOf(PropTypes.shape({

@@ -10,7 +10,6 @@ import {
 import {
     connect,
 } from 'react-redux';
-import _isEqual from 'lodash/isEqual';
 import _isEmpty from 'lodash/isEmpty';
 import _map from 'lodash/map';
 
@@ -31,7 +30,6 @@ class LandingPageTaxReceipt extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            loader: !props.issuedTaxReceiptList,
             donationDetailhide: true,
             isSelectPhotoModalOpen: false,
         };
@@ -45,26 +43,13 @@ class LandingPageTaxReceipt extends React.Component {
     componentDidMount() {
         const {
             dispatch,
-        } = this.props;
-        getIssuedTaxreceipts(dispatch);
-    }
-
-    componentDidUpdate(prevProps) {
-        const {
             issuedTaxReceiptList,
         } = this.props;
-        let {
-            loader,
-        } = this.state;
-        if (!_.isEqual(this.props, prevProps)) {
-            if (!_isEqual(issuedTaxReceiptList, prevProps.issuedTaxReceiptList)) {
-                loader = false;
-            }
-            this.setState({
-                loader,
-            });
+        if (_isEmpty(issuedTaxReceiptList)) {
+            getIssuedTaxreceipts(dispatch);
         }
     }
+
 
     onEdit() {
         this.setState({ isSelectPhotoModalOpen: true });
@@ -88,13 +73,13 @@ class LandingPageTaxReceipt extends React.Component {
         const {
             issuedTaxReceiptList,
             dispatch,
+            issuedTaxLloader,
         } = this.props;
         const {
             donationDetailhide,
             id,
             isSelectPhotoModalOpen,
             currentIssuedTaxReceipt,
-            loader,
         } = this.state;
         const intializeFormData = {
             attributes: {
@@ -142,7 +127,7 @@ class LandingPageTaxReceipt extends React.Component {
                                                 {
                                                     isSelectPhotoModalOpen && (
                                                         <ModalComponent
-                                                            name='Add new tax recipt recipient'
+                                                            name='Add new tax receipt recipient'
                                                             isSelectPhotoModalOpen={isSelectPhotoModalOpen}
                                                             dispatch={dispatch}
                                                             taxReceipt={intializeFormData}
@@ -157,11 +142,11 @@ class LandingPageTaxReceipt extends React.Component {
                                 </div>
                                 <Divider />
                                 <TaxReceipientsList />
-                                <div className="mb-2">
+                                <div className="mb-2 mt-3">
                                     <p className="font-s-16 bold mb-1-2">Issued tax receipts</p>
                                     <p className="font-s-13">Tax receipts are organizied by recipient.</p>
                                 </div>
-                                {loader ? <PlaceholderGrid row={2} column={2} /> : (
+                                {issuedTaxLloader ? <PlaceholderGrid row={2} column={2} /> : (
                                     <Fragment>
                                         {(!_isEmpty(issuedTaxReceiptList) && issuedTaxReceiptList.length > 0)
                                             ? (
@@ -192,6 +177,7 @@ class LandingPageTaxReceipt extends React.Component {
 
 const mapStateToProps = (state) => ({
     currentUser: state.user.info,
+    issuedTaxLloader: state.taxreceipt.issuedTaxLloader,
     issuedTaxReceiptList: state.taxreceipt.issuedTaxReceiptList,
 });
 

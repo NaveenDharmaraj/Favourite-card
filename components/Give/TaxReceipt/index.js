@@ -26,7 +26,7 @@ import { withTranslation } from '../../../i18n';
 
 const messageList = {
 	taxReceiptDefault: {
-		defaultMessage: 'Add a new tax receipt',
+		defaultMessage: 'Add a new tax receipt recipient',
 		description: 'Message for adding new tax receipt',
 		id: 'taxReceiptProfile.taxReceiptDefault',
 	},

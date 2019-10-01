@@ -41,7 +41,10 @@ class ToolTabs extends React.Component {
         
     }
     closeModal = () => {
-        this.setState({ showModal: false });
+        this.setState({ 
+            showModal: false,
+            validity: this.intializeValidations(),
+        });
     }
     closeModalAndSave = () =>{
         const {
@@ -210,22 +213,19 @@ class ToolTabs extends React.Component {
                                                         className="ui button primary blue-btn-rounded"
                                                         onClick={this.closeModalAndSave}
                                                     >
-                                                        SaveChanges
+                                                        Save Changes
                                                     </Button>
                                                 </Modal.Actions>
                                             </Modal>
-                            
-                                        </Grid.Column>
-                                    </Grid.Row>
-                                    <Grid.Row>
-                                        <Grid.Column width="16">
-                                            <GivingGoalsTable
-                                                userGivingGoalDetails={userGivingGoalDetails}
-                                            />
                                         </Grid.Column>
                                     </Grid.Row>
                                 </Grid>
-                               </Segment>
+                                </Segment>
+                                <div className="goalsTable">
+                                    <GivingGoalsTable
+                                        userGivingGoalDetails={userGivingGoalDetails}
+                                    />
+                               </div>
                         </div>
                     </Tab.Pane>
                 )

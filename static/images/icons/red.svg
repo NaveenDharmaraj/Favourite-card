@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="17px" height="17px" viewBox="0 0 17 17" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: sketchtool 57.1 (101010) - https://sketch.com -->
+    <title>E716656B-F725-4397-A17F-9136E06FF14C</title>
+    <desc>Created with sketchtool.</desc>
+    <g id="UI-Kit" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Icons" transform="translate(-229.000000, -998.000000)">
+            <g id="icon/status/error-icon/status/error/red" transform="translate(229.000000, 998.000000)">
+                <g id="Group-2-Copy">
+                    <path d="M8.5,0 C13.1942667,0 17,3.80573333 17,8.5 C17,13.1942667 13.1942667,17 8.5,17 C3.80573333,17 0,13.1942667 0,8.5 C0,3.80573333 3.80573333,0 8.5,0 Z" id="Stroke-5" fill="#EE4141"></path>
+                    <g id="Group" transform="translate(8.000000, 4.000000)" stroke="#FFFFFF" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5">
+                        <path d="M0.369565217,8.31521739 C0.216565217,8.31521739 0.0923913043,8.4393913 0.0923913043,8.5923913 C0.0923913043,8.7453913 0.216565217,8.86956522 0.369565217,8.86956522 C0.522565217,8.86956522 0.64673913,8.7453913 0.64673913,8.5923913 C0.64673913,8.4393913 0.522565217,8.31521739 0.369565217,8.31521739" id="Stroke-1"></path>
+                        <path d="M0.369565217,6.09782609 L0.369565217,-1.02140518e-14" id="Stroke-3"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

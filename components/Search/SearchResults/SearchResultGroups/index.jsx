@@ -26,9 +26,9 @@ class SearchResultGroups extends React.Component {
         } = this.props
         if (!_isEmpty(groups) && !_isEmpty(groups.meta)) {
             if (groups.meta.record_count) {
-                return groups.meta.record_count;
+                return groups.meta.record_count.toLocaleString('en-CA');
             } else if (groups.meta.recordCount) {
-                return groups.meta.recordCount;
+                return groups.meta.recordCount.toLocaleString('en-CA');
             }
         }
     }
@@ -64,43 +64,42 @@ class SearchResultGroups extends React.Component {
         return (
 
             <div>
-                {groupLoader ? <PlaceholderGrid row={2} column={1} /> : (
-                    <Fragment>
-                        <Grid>
-                            <Grid.Row style={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                            }}
-                            >
-                                {(_isEmpty(searchWord) && !isAuthenticated) ? null : (
-                                    <Grid.Column mobile={11} tablet={12} computer={12}>
-                                        <Header as='h2'>
-                                            <Header.Content>
-                                    GROUPS
-                                                <span className="num-result font-s-20">
-                                                    {this.renderResultCount()}
+                <Grid>
+                    <Grid.Row style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                    }}
+                    >
+                        {(_isEmpty(searchWord) && !isAuthenticated) ? null : (
+                            <Grid.Column mobile={11} tablet={12} computer={12} className="groups exploreHeader">
+                                <Header as='h2' className="searchResultTabHeader">
+                                    <Header.Content>
+                                    GIVING GROUPS
+                                        <span className="num-result font-s-20">
+                                            {this.renderResultCount()}
 
                                     &nbsp;results
-                                                </span>
-                                            </Header.Content>
-                                        </Header>
-                                    </Grid.Column>
+                                        </span>
+                                    </Header.Content>
+                                </Header>
+                            </Grid.Column>
+                        )}
+                        <Grid.Column>
+                            {
+                                (!_isEmpty(groups) && !_isEmpty(groups.meta) && !_isEmpty(groups.meta.aggregations)) && (
+                                    <FilterComponent
+                                        dispatch={dispatch}
+                                        FilterHeaders={(!_isEmpty(filterValuesShowed)) ? Object.keys(filterobj) : null}
+                                        FilterValues={(!_isEmpty(filterValuesShowed)) ? Object.values(filterobj) : null}
+                                    />
                                 )}
-                                <Grid.Column>
-                                    {
-                                        (!_isEmpty(groups) && !_isEmpty(groups.meta) && !_isEmpty(groups.meta.aggregations)) && (
-                                            <FilterComponent
-                                                dispatch={dispatch}
-                                                FilterHeaders={(!_isEmpty(filterValuesShowed)) ? Object.keys(filterobj) : null}
-                                                FilterValues={(!_isEmpty(filterValuesShowed)) ? Object.values(filterobj) : null}
-                                            />
-                                        )}
-                                </Grid.Column>
-                            </Grid.Row>
-                        </Grid>
-                        {(groups && groups.data) && <SearchResultSingleCharityGroups charityGroups={groups.data} />}
-                    </Fragment>
-                )}
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
+                {(groups && groups.data && groups.data.length > 0)
+                    ? <SearchResultSingleCharityGroups charityGroups={groups.data} />
+                    : 'No Groups Available'
+                }
             </div>
         );
     }

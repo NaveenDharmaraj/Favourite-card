@@ -41,22 +41,20 @@ class UserAuthView extends React.Component {
         return (
             <Fragment>
                 { !isAuthenticated && (
-                    <Layout onBoarding={true} >
+                    <Layout onBoarding>
                         <div className="pageWraper">
                             <Container>
-                                <div className="linebg" >
-                                    <Grid columns={2} verticalAlign='middle'>
-                                    <Grid.Row>
-                                            <Grid.Column className="left-bg"></Grid.Column>
+                                <div className="linebg">
+                                    <Grid columns={2} stackable>
+                                        <Grid.Row>
+                                            <Grid.Column className="left-bg"><div></div></Grid.Column>
                                             <Grid.Column>
                                                 <div className="login-form-wraper">
                                                     <div className="reg-header">
                                                         <Header as="h3">Sign in to Charitable Impact</Header>
                                                         <Header as="h4">Enter your details below</Header>
                                                     </div>
-                                                    <div id="auth0-lock-container">
-
-                                                    </div>
+                                                    <div id="auth0-lock-container" />
                                                 </div>
                                             </Grid.Column>
                                         </Grid.Row>

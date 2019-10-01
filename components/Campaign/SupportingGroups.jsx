@@ -2,13 +2,15 @@
 import React, { Fragment } from 'react';
 import {
     Grid,
-    Input,
+    Header,
+    Image,
     Button,
 } from 'semantic-ui-react';
 
 import PlaceholderGrid from '../shared/PlaceHolder';
 import placeholder from '../../static/images/no-data-avatar-giving-group-profile.png';
 import LeftImageCard from '../shared/LeftImageCard';
+import noDataImgCampain from '../../static/images/campaignprofile_nodata_illustration.png';
 
 
 function SupportingGroups(props) {
@@ -19,18 +21,52 @@ function SupportingGroups(props) {
         subGroupListLoader,
         viewMoreFn,
     } = props;
+    const noDataSupportingGroups = () => {
+        return (
+            <Grid.Column width={16} className="c-w-100">
+                <div className="givingGroup noData mt-1 mb-2">
+                    <Grid verticalAlign="middle">
+                        <Grid.Row>
+                            <Grid.Column mobile={16} tablet={8} computer={8}>
+                                <Image src={noDataImgCampain} className="noDataLeftImg" />
+                            </Grid.Column>
+                            <Grid.Column mobile={16} tablet={8} computer={8}>
+                                <div className="givingGroupNoDataContent">
+                                    <Header as="h4">
+                                        <Header.Content>
+                                        Support this Campaign by creating a Giving Group
+                                            <Header.Subheader>
+                                        A Giving Group is like a fundraising page where multiple people can combine forces, pool or raise money, and support causes together.
+                                            </Header.Subheader>
+                                        </Header.Content>
+                                    </Header>
+                                    <div>
+                                        <Button className="success-btn-rounded-def">Create a Giving Group</Button>
+                                    </div>
+                                </div>
+                            </Grid.Column>
+                        </Grid.Row>
+                    </Grid>
+                </div>
+            </Grid.Column>
+        );
+    };
+
     const renderGroups = () => {
-        const groupCards = [];
-        if (typeof campaignSubGroupDetails === 'object') {
+        let groupCards = [];
+        if ((typeof campaignSubGroupDetails === 'object') && (campaignSubGroupDetails.length > 0)) {
             campaignSubGroupDetails.map((subGroup) => {
+                const groupImg = subGroup.attributes.avatar;
                 groupCards.push(<LeftImageCard
                     entityName={subGroup.attributes.name}
-                    placeholder={placeholder}
+                    placeholder={(groupImg) || placeholder}
                     typeClass="chimp-lbl group"
                     type="Giving Groups"
                     url={`/${subGroup.type}/${subGroup.attributes.slug}`}
                 />);
             });
+        } else {
+            groupCards = noDataSupportingGroups();
         }
         return groupCards;
     };

@@ -6,13 +6,17 @@ import graphApi from '../services/graphApi';
 
 export const actionTypes = {
     ACTIVITY_LIKE_STATUS: 'ACTIVITY_LIKE_STATUS',
+    ADMIN_PLACEHOLDER_STATUS: 'ADMIN_PLACEHOLDER_STATUS',
     GET_GROUP_ACTIVITY_DETAILS: 'GET_GROUP_ACTIVITY_DETAILS',
     GET_GROUP_ADMIN_DETAILS: 'GET_GROUP_ADMIN_DETAILS',
     GET_GROUP_BENEFICIARIES: 'GET_GROUP_BENEFICIARIES',
     GET_GROUP_COMMENTS: 'GET_GROUP_COMMENTS',
     GET_GROUP_DETAILS_FROM_SLUG: 'GET_GROUP_DETAILS_FROM_SLUG',
+    GET_GROUP_GALLERY_IMAGES: 'GET_GROUP_GALLERY_IMAGES',
     GET_GROUP_MEMBERS_DETAILS: 'GET_GROUP_MEMBERS_DETAILS',
     GET_GROUP_TRANSACTION_DETAILS: 'GET_GROUP_TRANSACTION_DETAILS',
+    MEMBER_PLACEHOLDER_STATUS: 'MEMBER_PLACEHOLDER_STATUS',
+    PLACEHOLDER_STATUS: 'PLACEHOLDER_STATUS',
     POST_NEW_ACTIVITY: 'POST_NEW_ACTIVITY',
     REDIRECT_TO_DASHBOARD: 'REDIRECT_TO_DASHBOARD',
     // COMMENT_LIKE_STATUS: 'COMMENT_LIKE_STATUS',
@@ -25,6 +29,12 @@ export const getGroupFromSlug = async (dispatch, slug) => {
                 groupDetails: {},
             },
             type: actionTypes.GET_GROUP_DETAILS_FROM_SLUG,
+        };
+        const galleryfsa = {
+            payload: {
+                galleryImages: [],
+            },
+            type: actionTypes.GET_GROUP_GALLERY_IMAGES,
         };
         dispatch({
             payload: {
@@ -42,6 +52,15 @@ export const getGroupFromSlug = async (dispatch, slug) => {
             (result) => {
                 if (result && !_.isEmpty(result.data)) {
                     fsa.payload.groupDetails = result.data;
+                    if (result.data.relationships && result.data.relationships.galleryImages) {
+                        coreApi.get(result.data.relationships.galleryImages.links.related)
+                            .then((galleryResult) => {
+                                if (galleryResult && !_.isEmpty(galleryResult.data)) {
+                                    galleryfsa.payload.galleryImages = galleryResult.data;
+                                    dispatch(galleryfsa);
+                                }
+                            }).catch().finally();
+                    }
                 }
             },
         ).catch(() => {
@@ -65,22 +84,32 @@ export const getDetails = async (dispatch, id, type, url) => {
         payload: {},
     };
     let newUrl = '';
+    const placeholderfsa = {
+        payload: {},
+    };
     switch (type) {
         case 'members':
             fsa.type = actionTypes.GET_GROUP_MEMBERS_DETAILS;
             newUrl = !_.isEmpty(url) ? url : `/groups/${id}/groupMembers?page[size]=7`;
+            placeholderfsa.payload.memberPlaceholder = true;
+            placeholderfsa.type = actionTypes.MEMBER_PLACEHOLDER_STATUS;
             break;
         case 'admins':
             fsa.type = actionTypes.GET_GROUP_ADMIN_DETAILS;
             newUrl = !_.isEmpty(url) ? url : `/groups/${id}/groupAdmins?page[size]=7`;
+            placeholderfsa.payload.adminPlaceholder = true;
+            placeholderfsa.type = actionTypes.ADMIN_PLACEHOLDER_STATUS;
             break;
         case 'charitySupport':
             fsa.type = actionTypes.GET_GROUP_BENEFICIARIES;
             newUrl = !_.isEmpty(url) ? url : `groups/${id}/groupBeneficiaries?page[size]=3`;
+            placeholderfsa.payload.showPlaceholder = true;
+            placeholderfsa.type = actionTypes.PLACEHOLDER_STATUS;
             break;
         default:
             break;
     }
+    dispatch(placeholderfsa);
     coreApi.get(newUrl, {
         params: {
             dispatch,
@@ -90,9 +119,26 @@ export const getDetails = async (dispatch, id, type, url) => {
         if (result && !_.isEmpty(result.data)) {
             fsa.payload.data = result.data;
             fsa.payload.nextLink = (result.links.next) ? result.links.next : null;
+            dispatch(fsa);
         }
     }).catch().finally(() => {
-        dispatch(fsa);
+        switch (type) {
+            case 'members':
+                placeholderfsa.payload.memberPlaceholder = false;
+                placeholderfsa.type = actionTypes.MEMBER_PLACEHOLDER_STATUS;
+                break;
+            case 'admins':
+                placeholderfsa.payload.adminPlaceholder = false;
+                placeholderfsa.type = actionTypes.ADMIN_PLACEHOLDER_STATUS;
+                break;
+            case 'charitySupport':
+                placeholderfsa.payload.showPlaceholder = false;
+                placeholderfsa.type = actionTypes.PLACEHOLDER_STATUS;
+                break;
+            default:
+                break;
+        }
+        dispatch(placeholderfsa);
     });
 };
 
@@ -103,6 +149,12 @@ export const getTransactionDetails = async (dispatch, id, url) => {
         },
         type: actionTypes.GET_GROUP_TRANSACTION_DETAILS,
     };
+    dispatch({
+        payload: {
+            showPlaceholder: true,
+        },
+        type: actionTypes.PLACEHOLDER_STATUS,
+    });
     const newUrl = !_.isEmpty(url) ? url : `groups/${id}/activities?filter[moneyItems]=all&page[size]=10`;
     await coreApi.get(newUrl, {
         params: {
@@ -112,9 +164,15 @@ export const getTransactionDetails = async (dispatch, id, url) => {
     }).then((result) => {
         if (result && !_.isEmpty(result.data)) {
             fsa.payload.groupTransactions = result;
+            dispatch(fsa);
         }
     }).catch().finally(() => {
-        dispatch(fsa);
+        dispatch({
+            payload: {
+                showPlaceholder: false,
+            },
+            type: actionTypes.PLACEHOLDER_STATUS,
+        });
     });
 };
 
@@ -138,9 +196,15 @@ export const getGroupActivities = async (dispatch, id, url, isPostActivity) => {
                 fsa.payload.nextLink = (result.links.next) ? result.links.next : null;
             }
             fsa.payload.isPostActivity = isPostActivity ? isPostActivity : false;
+            dispatch(fsa);
         }
     }).catch().finally(() => {
-        dispatch(fsa);
+        dispatch({
+            payload: {
+                showPlaceholder: false,
+            },
+            type: actionTypes.PLACEHOLDER_STATUS,
+        });
     });
 };
 
@@ -186,8 +250,14 @@ export const postActivity = async (dispatch, id, msg) => {
     }).catch().finally();
 };
 
-export const postComment = async (dispatch, groupId, eventId, msg) => {
+export const postComment = async (dispatch, groupId, eventId, msg, user) => {
     const url = `events/${eventId}/comments?page[size]=1`;
+    const fsa = {
+        payload: {
+            groupComments: [],
+        },
+        type: actionTypes.GET_GROUP_COMMENTS,
+    };
     coreApi.post(`/comments`,
         {
             data: {
@@ -200,7 +270,24 @@ export const postComment = async (dispatch, groupId, eventId, msg) => {
             },
         }).then((result) => {
         if (result && !_.isEmpty(result.data)) {
-            getCommentFromActivityId(dispatch, eventId, url, true);
+            fsa.payload.groupComments = [
+                {
+                    attributes: {
+                        avatar: user.avatar,
+                        comment: result.data.body,
+                        createdAt: result.data.created_at,
+                        creator: user.displayName,
+                        groupId,
+                        isLiked: false,
+                        likesCount: 0,
+                    },
+                    id: result.data.id,
+                    type: 'comments',
+                },
+            ];
+            fsa.payload.activityId = eventId;
+            fsa.payload.isReply = true;
+            dispatch(fsa);
         }
     }).catch().finally();
 };

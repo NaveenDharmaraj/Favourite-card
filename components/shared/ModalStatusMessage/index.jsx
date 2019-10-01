@@ -19,6 +19,7 @@ class ModalStatusMessage extends React.Component {
             visible,
         } = this.state;
         const {
+            message,
             error,
         } = this.props;
         return (
@@ -38,7 +39,7 @@ class ModalStatusMessage extends React.Component {
                                 <Message positive icon className="mdlMessage" onDismiss={() => { this.setState({ visible: false }); }}>
                                     <Icon name="check" />
                                     <Message.Content>
-                                        <Message.Header>Your profile have been saved successfully.</Message.Header>
+                                        <Message.Header>{message}</Message.Header>
                                     </Message.Content>
                                 </Message>
                             )}
@@ -52,10 +53,12 @@ class ModalStatusMessage extends React.Component {
 
 ModalStatusMessage.propTypes = {
     error: PropTypes.string,
+    message: PropTypes.string,
 };
 
 ModalStatusMessage.defaultProps = {
     error: '',
+    message: 'Your profile have been saved successfully.',
 };
 
 export default ModalStatusMessage;

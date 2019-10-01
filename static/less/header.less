@@ -168,8 +168,10 @@ button,a{
   display: inline-block;
   vertical-align: middle;
   padding-right: 10px;
+  margin: -6px 0px;
 }
 .logoImg{
+  padding-left: 0px !important;
   .ui{
     &.image{
       height: 25px;	width: 122px;
@@ -179,6 +181,20 @@ button,a{
 .w-120{
   min-width: 120px;
 }
+.ui.secondary.menu .item{
+  &.chimpLogo{
+    padding-left: 0px;
+    margin-left: 0px;
+    img{
+      &.ui{
+        &.image{
+          width: 122px;
+          height: 25px;
+        }
+      }
+    }
+  }
+ }
 .c-login-header{
   &.ui{
     &.segment{
@@ -212,16 +228,14 @@ button,a{
                 margin-left: .92857143em;
                 margin-right: .92857143em;
                 &:hover{
-                  text-shadow: 0 0 .3px @purple-dark, 0 0 .3px @purple-dark;
                   background: none;
-                  border-bottom: 2px solid @purple-dark;
-                  color: @purple-dark;
+                  color: @purple;
                 }
                 &.active{
-                  text-shadow: 0 0 .3px @purple-dark, 0 0 .3px @purple-dark;
+                  text-shadow: 0 0 .3px @purple, 0 0 .3px @purple;
                   background: none;
-                  border-bottom: 2px solid @purple-dark;
-                  color: @purple-dark;
+                  border-bottom: 2px solid @purple;
+                  color: @purple;
                 }
               }
               .user-img{
@@ -250,9 +264,28 @@ button,a{
               }
             }
             .notifyNav{
+              position: relative;
+              margin-top: 15px !important;
+              &:hover{
+                &::after{
+                opacity: 1;
+                }
+              }
+              &::after{
+                content: '';
+                position: absolute;
+                left: -5px;
+                right: -5px;
+                top: 2px;
+                bottom: 15px;
+                background-color: #eee;
+                border-radius: 100%;
+                opacity: 0;
+              }
               .icon{
                 position: relative;
                 //margin: 0px;
+                z-index: 1;
                 &.bell{
                   &::before{
                     content: url(../images/icons/icon-notification.svg);
@@ -263,19 +296,41 @@ button,a{
                     content: '';
                     position: absolute;
                     height: 8px;	width: 8px;	background-color: #DB0163;
-                    top: 0;
-                    right: 5px;
+                    top: 1px;
+                    right: 2px;
                     border-radius: 100%;
                   }
                 }
               }
             }
             .chatNav{
+              padding-bottom: 22px !important;
+              position: relative;
+              margin-top: 15px !important;
+              &:hover{
+                &::after{
+                opacity: 1;
+                }
+              }
+              &::after{
+                content: '';
+                position: absolute;
+                left: -5px;
+                right: -5px;
+                top: -1px;
+                bottom: 10px;
+                background-color: #eee;
+                border-radius: 100%;
+                opacity: 0;
+              }
               .icon{
                 position: relative;
+                z-index: 9;
                 &.chat{
                   &::before{
-                    content: url(../images/icons/icon-message.svg);
+                    
+                    position: relative;
+                    content: url(../images/icons/chatIcon.svg);
                   }
                 }
                 &.new{
@@ -284,7 +339,7 @@ button,a{
                     position: absolute;
                     height: 8px;	width: 8px;	background-color: #DB0163;
                     top: 0;
-                    right: 5px;
+                    right: 1px;
                     border-radius: 100%;
                   }
                 }
@@ -300,7 +355,9 @@ button,a{
   .ui{
     &.secondary{
       &.menu{
-        box-shadow: 0 1px 4px 0 rgba(209,209,209,0.5);
+        //box-shadow: 0 1px 4px 0 rgba(209,209,209,0.5);
+        
+        padding: 16.5px 0px;
       }
     }
   }
@@ -314,11 +371,19 @@ button,a{
         &.secondary{
           &.menu{
             .right{
+              .basic{
+                &.button{
+                  height: 44px;	
+                  width: 120px;	
+                  border: 1px solid @link;	
+                  color: #fff !important;
+                  background-color: @link !important;
+                  border-radius: 22px;
+                  box-shadow: none;
+                }
+              }
               .outline-btn{
-                height: 44px;	
-                width: 120px;	
-                border: 1px solid #9B9B9B;	
-                border-radius: 22px;
+                
               }
               .item{
                 &:hover{
@@ -342,7 +407,7 @@ button,a{
       max-width: 330px;
       box-shadow: 0 0 4px 0 rgba(0,0,0,0.29);
       border-radius: 2px;
-      margin-top: 12px !important;
+      margin-top: 0px !important;
       >.header{
         padding: .833em 1em;
         border-bottom:1px solid @grey-lighten-2; 
@@ -461,7 +526,7 @@ button,a{
       max-width: 330px;
       box-shadow: 0 0 4px 0 rgba(0,0,0,0.29);
       border-radius: 2px;
-      margin-top: 12px !important;
+      margin-top: 0px !important;
       >.header{
         padding: .833em 1em;
         border-bottom:1px solid @grey-lighten-2; 
@@ -716,11 +781,15 @@ button,a{
               td{
                 padding: 0px;
                 +td{
-                  padding-left: 5px;
+                  padding-left: 15px;
                   a{
                     color: @purple-dark;
+                    font-size: 14px;
+                    font-weight: 600;
+                    font-family: 'ProximaNova-Regular';
                     &:hover{
                       color: @purple-dark;
+                      
                     }
                   }
                 }
@@ -898,6 +967,9 @@ button,a{
                       font-weight: bold;
                     }
                     &.signup{
+                      &:hover{
+                        background-color: transparent;
+                      }
                       .ui{
                         &.button{
                           &.primary{
@@ -920,15 +992,70 @@ button,a{
     }
   }
 }
+@media only screen and (max-width:991px) and (min-width:767px){
+  body{
+    .text-center{
+      .result{
+        margin-top: 2rem;
+      }
+    }
+    .left-img-card.ui.card{
+      margin-bottom: 0rem !important;
+    }
+    .c-m-login-header .ui.sidebar.menu .item.userPrifileHeader .list.ui .item{
+      .avatar.ui.image{
+        display: block;
+        margin: 0px auto 20px;
+      }
+      .content{
+        display: block;
+        margin: auto;
+        padding-left: 0px;
+        text-align: center;
+      }
+    }
+    .c-m-login-header{
+      &.pushable{
+        
+      }
+      .ui.visible.right.overlay.sidebar{
+  
+      }
+      .ui{
+        &.sidebar{
+          &.menu{
+            .item{
+              padding: 15px 15px 15px 50px;
+              &.userPrifileHeader{
+                padding: 15px 20px 15px 20px;
+                .item{
+                  padding: 15px 20px 15px 20px;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
 .c-m-login-header{
   &.pushable{
     
   }
+  .ui.visible.right.overlay.sidebar{
+    -webkit-box-shadow:none;
+    box-shadow: none;
+    border-top: 0px solid transparent;
+    padding-top: 0px;
+  }
   .ui{
     &.sidebar{
       &.menu{
-        margin-top: 48px !important;
+        margin-top: 81px !important;
         width: 100vw;
+        padding: 16.5px 0px;
+        height: calc(100% - 81px) !important;
         .ui{
           &.vertical{
             &.accordion{
@@ -1012,16 +1139,39 @@ button,a{
           }
         }
         .item{
-          &.active{
-            background-color: @purple;
-            color: #fff;
+          padding: 15px 20px 15px 20px;
+          &:not(:first-child){
+            &:hover{
+              background-color: @purple;
+              color: #fff;
+              .image{
+                filter: brightness(0) invert(1);
+                -webkit-filter:brightness(0) invert(1);
+              }
+            }
+            &:focus{
+              background-color: @purple;
+              color: #fff;
+              .image{
+                filter: brightness(0) invert(1);
+                -webkit-filter:brightness(0) invert(1);
+              }
+            }
+            &.active{
+              background-color: @purple;
+              color: #fff;
+              .image{
+                filter: brightness(0) invert(1);
+                -webkit-filter:brightness(0) invert(1);
+              }
+            }
           }
-          
           &.userPrifileHeader{
-            padding: 15px 20px;
-            background-image: url('../images/dashboard_bg.png');
+            padding: 15px 20px 15px 20px;
+            background-image: url('../images/bg_menu_tablet.svg');
             background-size: cover;
             background-repeat: no-repeat;
+            background-position: right top;
             .list{
               &.ui{
                 .item{
@@ -1047,6 +1197,9 @@ button,a{
                         display: inline-block;
                         vertical-align: middle;
                         padding: 5px 5px;
+                        +a{
+                          margin-left: 1rem;
+                        }
                         &.new{
                           position: relative;
                           &::before{
@@ -1357,8 +1510,8 @@ button,a{
           &.brand{
             padding: 21px 16px 18px 16px;
             img{
-              height: 40px;	
-              width: 153px;
+              //height: 40px;	
+              width: 122px;
             }
           }
           &:hover{
@@ -1448,6 +1601,11 @@ button,a{
 }
 @media only screen and (max-width:767px){
   .xs-d-none{
+    display: none !important;
+  }
+}
+@media only screen and (min-width:767px) and (max-width:991px){
+  .smo-d-none{
     display: none !important;
   }
 }

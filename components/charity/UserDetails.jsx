@@ -14,7 +14,9 @@ import {
     List,
     Header,
     Container,
+    Button,
 } from 'semantic-ui-react';
+import getConfig from 'next/config';
 
 import {
     generateDeepLink,
@@ -23,6 +25,11 @@ import {
     getBeneficiaryFromSlug,
 } from '../../actions/charity';
 import ShareDetails from '../shared/ShareSectionProfilePage';
+
+const { publicRuntimeConfig } = getConfig();
+const {
+    CLAIM_CHARITY_URL,
+} = publicRuntimeConfig;
 
 const createUserDetails = (valuesObject) => {
     const data = [
@@ -45,7 +52,8 @@ const createUserDetails = (valuesObject) => {
             name: 'linkify',
         },
         {
-            Content: valuesObject.staffCount,
+            Content: (valuesObject.staffCount && valuesObject.staffCount > 0)
+                ? valuesObject.staffCount : null,
             name: 'users',
         },
         {
@@ -73,8 +81,8 @@ const detailsView = (valuesObject) => {
     const values = createUserDetails(valuesObject);
     return (
         <Grid.Row>
-            <Grid.Column>
-                <List>
+            <Grid.Column mobile={16} tablet={8} computer={8}>
+                <List className="charityDetailsList">
                     {values.map((value, index) => (
                         (value.Content && index <= 3
                         && (
@@ -99,8 +107,8 @@ const detailsView = (valuesObject) => {
                     ))}
                 </List>
             </Grid.Column>
-            <Grid.Column>
-                <List>
+            <Grid.Column mobile={16} tablet={8} computer={8}>
+                <List className="charityDetailsList mobMarginBtm-2">
                     {values.map((value, index) => (
                         (value.Content && index >= 4
                             && (
@@ -134,7 +142,10 @@ class UserDetails extends React.Component {
         const {
             dispatch,
             deepLinkUrl,
-            userId,
+            isAUthenticated,
+            currentUser: {
+                id: userId,
+            },
             charityDetails: {
                 charityDetails: {
                     id: charityId,
@@ -145,7 +156,7 @@ class UserDetails extends React.Component {
             },
         } = this.props;
         getBeneficiaryFromSlug(dispatch, slug);
-        if (_isEmpty(deepLinkUrl)) {
+        if (isAUthenticated && _isEmpty(deepLinkUrl)) {
             generateDeepLink(`deeplink?profileType=charityprofile&sourceId=${userId}&profileId=${charityId}`, dispatch);
         }
     }
@@ -155,7 +166,9 @@ class UserDetails extends React.Component {
             charityDetails,
             isAUthenticated,
             deepLinkUrl,
-            userId,
+            currentUser: {
+                id: userId,
+            },
         } = this.props;
         return (
             <div className="profile-info-wraper pb-3">
@@ -164,10 +177,10 @@ class UserDetails extends React.Component {
                         <Header as="h3">
                             Charity information
                         </Header>
-                        <Grid divided stackable>
+                        <Grid stackable>
                             <Grid.Row>
                                 <Grid.Column mobile={16} tablet={10} computer={10}>
-                                    <Grid columns={2}>
+                                    <Grid>
                                         {((!_isEmpty(charityDetails.charityDetails.attributes))
                                         && detailsView(charityDetails.charityDetails.attributes))}
                                     </Grid>
@@ -184,15 +197,17 @@ class UserDetails extends React.Component {
                             </Grid.Row>
                         </Grid>
                         <p className="mt-1">
-                        *Is this your chariy? You can claim your free profile page on your platform
-                            <a href="https://help.chimp.net/article/83-claiming-and-accessing-your-chimp-charity-account"> by following these steps</a>
+                        *Is this your charity? You can claim your free profile page on your platform
+                            <a href={CLAIM_CHARITY_URL}>
+                                <Button className="ml-1 blue-bordr-btn-round-def c-small">Claim Charity</Button>
+                            </a>
                         </p>
                     </div>
                 </Container>
             </div>
         );
     }
-};
+}
 
 UserDetails.defaultProps = {
     charityDetails: {
@@ -203,9 +218,11 @@ UserDetails.defaultProps = {
             },
         },
     },
+    currentUser: {
+        id: null,
+    },
     dispatch: _.noop,
     isAUthenticated: false,
-    userId: null,
 };
 
 UserDetails.propTypes = {
@@ -217,17 +234,19 @@ UserDetails.propTypes = {
             }),
         },
     },
+    currentUser: {
+        id: number,
+    },
     dispatch: func,
     isAUthenticated: bool,
-    userId: number,
 };
 
 function mapStateToProps(state) {
     return {
         charityDetails: state.charity.charityDetails,
+        currentUser: state.user.info,
         deepLinkUrl: state.profile.deepLinkUrl,
         isAUthenticated: state.auth.isAuthenticated,
-        userId: state.user.info.id,
     };
 }
 

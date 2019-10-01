@@ -30,6 +30,8 @@ import groupImg from '../../../static/images/no-data-avatar-giving-group-profile
 import PlaceholderGrid from '../../shared/PlaceHolder';
 import { Link } from '../../../routes';
 import { dismissAllUxCritialErrors } from '../../../actions/error';
+import { renderText } from '../../../helpers/utils';
+import noDataggFavourites from '../../../static/images/favourites_nodata_illustration.png';
 
 class Favorites extends React.Component {
     constructor(props) {
@@ -104,7 +106,33 @@ class Favorites extends React.Component {
         const {
             favorites,
         } = this.props;
-        let favoritesList = 'No Data';
+        let favoritesList = (
+            <Grid.Column width={16}>
+                <div className="favouritesNoData noData mt-1 mb-2">
+                    <Grid verticalAlign="middle">
+                        <Grid.Row>
+                            <Grid.Column mobile={16} tablet={8} computer={8}>
+                                <Image src={noDataggFavourites} className="noDataLeftImg" />
+                            </Grid.Column>
+                            <Grid.Column mobile={16} tablet={8} computer={8}>
+                                <div className="givingGroupNoDataContent">
+                                    <Header as="h4">
+                                        <Header.Content>
+                                        Charities or Giving Groups you favourite will appear here
+                                        </Header.Content>
+                                    </Header>
+                                    <div>
+                                        <Link route="/search">
+                                            <Button className="white-btn-rounded-def">Find charities, groups, and causes</Button>
+                                        </Link>
+                                    </div>
+                                </div>
+                            </Grid.Column>
+                        </Grid.Row>
+                    </Grid>
+                </div>
+            </Grid.Column>
+        );
         if (this.checkForData()) {
             favoritesList = favorites.data.map((data, index) => {
                 const {
@@ -114,6 +142,7 @@ class Favorites extends React.Component {
                     slug,
                 } = data.attributes;
                 let displayAvatar = groupImg;
+                const shortName = renderText(name, 3);
                 let route = 'groups';
                 let heading = 'giving group';
                 if (type === 'charity') {
@@ -127,7 +156,7 @@ class Favorites extends React.Component {
                     <Grid.Column key={index}>
                         <Card className="left-img-card" fluid>
                             <Card.Header>
-                                <Grid verticalAlign="middle">
+                                <Grid>
                                     <Grid.Column width={6}>
                                         <Image src={displayAvatar} />
                                     </Grid.Column>
@@ -135,13 +164,13 @@ class Favorites extends React.Component {
                                         <div className="">
                                             <Header as="h4">
                                                 <Header.Content>
-                                                    <Header.Subheader className="chimp-lbl group">
+                                                    <Header.Subheader className={`chimp-lbl ${type}`}>
                                                         {heading}
                                                         <span className="more-icon">
                                                             <Icon name="heart" disabled={this.props.disableFavorites} onClick={() => this.callRemoveFav(entityId, type)} />
                                                         </span>
                                                     </Header.Subheader>
-                                                    {name}
+                                                    {shortName}
                                                 </Header.Content>
                                             </Header>
                                             <Link className="lnkChange" route={`/${route}/${slug}`}>
@@ -157,7 +186,7 @@ class Favorites extends React.Component {
             });
         }
         return (
-            <Grid  columns='equal' stackable doubling columns={3}>
+            <Grid stackable doubling columns={3}>
                 <Grid.Row>
                     {favoritesList}
                 </Grid.Row>
@@ -174,7 +203,7 @@ class Favorites extends React.Component {
         const {
             pageSize,
         } = this.state;
-        if (favorites.currentPageNumber <  favorites.pageCount) {
+        if (favorites.currentPageNumber < favorites.pageCount) {
             getFavoritesList(dispatch, currentUser.id, favorites.currentPageNumber + 1, pageSize);
             dismissAllUxCritialErrors(dispatch);
             this.setState({

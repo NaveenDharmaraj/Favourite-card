@@ -39,27 +39,24 @@ class TextSearchResultsAll extends React.Component {
         return (
 
             <div>
-                {textSearchCharityGroupLoader ? <PlaceholderGrid row={2} column={1} /> : (
+                {(!_isEmpty(CharityGroups) && CharityGroups.data.length > 0) ? (
                     <Fragment>
-                        {!_isEmpty(CharityGroups) && (
-                            <Fragment>
-                                <Grid>
-                                    <Grid.Row>
-                                        <Grid.Column style={{"display": "flex", "justifyContent": "flex-end"}}>
-                                            <FilterComponent
-                                                dispatch={dispatch}
-                                                FilterHeaders={(!_isEmpty(filterValuesShowed)) ? Object.keys(filterobj) : null}
-                                                FilterValues={(!_isEmpty(filterValuesShowed)) ? Object.values(filterobj) : null}
-                                            />
-                                        </Grid.Column>
-                                    </Grid.Row>
-                                </Grid>
-                                <SearchResultSingleCharityGroups charityGroups={CharityGroups.data} />
-                            </Fragment>
-                        )}
-                        
+                        <Grid>
+                            <Grid.Row>
+                                <Grid.Column style={{"display": "flex", "justifyContent": "flex-end"}}>
+                                    <FilterComponent
+                                        dispatch={dispatch}
+                                        FilterHeaders={(!_isEmpty(filterValuesShowed)) ? Object.keys(filterobj) : null}
+                                        FilterValues={(!_isEmpty(filterValuesShowed)) ? Object.values(filterobj) : null}
+                                    />
+                                </Grid.Column>
+                            </Grid.Row>
+                        </Grid>
+                        <SearchResultSingleCharityGroups charityGroups={CharityGroups.data} />
                     </Fragment>
-                )}
+                )
+                    : 'No Charities-Groups Available'
+                }
             </div>
         );
     }

@@ -138,7 +138,7 @@ const group = (state = {}, action) => {
                 if (state.groupComments && state.groupComments[action.payload.activityId]) {
                     newState = {
                         ...state,
-                        groupComments : {
+                        groupComments: {
                             ...state.groupComments,
                             [action.payload.activityId]: action.payload.groupComments.concat(state.groupComments[action.payload.activityId]),
                             loadComments: true,
@@ -217,7 +217,7 @@ const group = (state = {}, action) => {
                     ...state.groupDetails,
                     attributes: {
                         ...state.groupDetails.attributes,
-                        following: action.payload.followStatus,
+                        liked: action.payload.followStatus,
                     },
                 },
             };
@@ -226,6 +226,30 @@ const group = (state = {}, action) => {
             newState = {
                 ...state,
                 redirectToDashboard: action.payload.redirectToDashboard,
+            };
+            break;
+        case 'PLACEHOLDER_STATUS':
+            newState = {
+                ...state,
+                showPlaceholder: action.payload.showPlaceholder,
+            };
+            break;
+        case 'ADMIN_PLACEHOLDER_STATUS':
+            newState = {
+                ...state,
+                adminsLoader: action.payload.adminPlaceholder,
+            };
+            break;
+        case 'MEMBER_PLACEHOLDER_STATUS':
+            newState = {
+                ...state,
+                membersLoader: action.payload.memberPlaceholder,
+            };
+            break;
+        case 'GET_GROUP_GALLERY_IMAGES':
+            newState = {
+                ...state,
+                galleryImageData: action.payload.galleryImages,
             };
             break;
         default:

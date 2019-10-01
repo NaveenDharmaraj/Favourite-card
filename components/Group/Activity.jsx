@@ -15,6 +15,7 @@ import {
     string,
     number,
     func,
+    bool,
 } from 'prop-types';
 import {
     connect,
@@ -28,6 +29,10 @@ import PlaceholderGrid from '../shared/PlaceHolder';
 
 import ActivityDetails from './ActivityDetails';
 
+const actionTypes = {
+    PLACEHOLDER_STATUS: 'PLACEHOLDER_STATUS',
+};
+
 class Activity extends React.Component {
     constructor(props) {
         super(props);
@@ -37,7 +42,6 @@ class Activity extends React.Component {
         this.postComment = this.postComment.bind(this);
         this.state = {
             commentText: '',
-            commentsLoader: !props.groupActivities.data.length > 0,
         };
     }
 
@@ -50,26 +54,13 @@ class Activity extends React.Component {
             },
         } = this.props;
         if (_isEmpty(activityData)) {
-            getGroupActivities(dispatch, id);
-        }
-    }
-
-    componentDidUpdate(prevProps) {
-        const {
-            groupActivities: {
-                data: activityData,
-            },
-        } = this.props;
-        let {
-            commentsLoader,
-        } = this.state;
-        if (!_.isEqual(this.props, prevProps)) {
-            if (!_.isEqual(activityData, prevProps.groupActivities.data)) {
-                commentsLoader = false;
-            }
-            this.setState({
-                commentsLoader,
+            dispatch({
+                payload: {
+                    showPlaceholder: true,
+                },
+                type: actionTypes.PLACEHOLDER_STATUS,
             });
+            getGroupActivities(dispatch, id);
         }
     }
 
@@ -79,9 +70,14 @@ class Activity extends React.Component {
             groupActivities: {
                 data,
             },
+            groupDetails: {
+                attributes: {
+                    isMember,
+                },
+            },
             userInfo: {
-                id:userId,
-            }
+                id: userId,
+            },
         } = this.props;
         return (
             data.map((activity) => (
@@ -96,7 +92,7 @@ class Activity extends React.Component {
                     createdAt={activity.attributes.createdAt}
                     commentsCount={activity.attributes.commentsCount}
                     commentsLink={activity.relationships.comments.links.related}
-                    canReply
+                    canReply={isMember}
                     type={activity.type}
                     userId={userId}
                 />
@@ -138,20 +134,36 @@ class Activity extends React.Component {
 
     render() {
         const {
+            commentsLoader,
             groupActivities: {
                 data,
                 nextLink: activitiesLink,
             },
+            groupDetails: {
+                attributes: {
+                    isMember,
+                },
+            },
         } = this.props;
         const {
             commentText,
-            commentsLoader,
         } = this.state;
-        return (
-            <Fragment>
-                <Grid centered>
-                    <Grid.Row>
-                        <Grid.Column mobile={16} tablet={14} computer={14}>
+        let viewData = 'NO DATA';
+        if (!_isEmpty(data)) {
+            viewData = (
+                <div className="c-comment">
+                    <Comment.Group fluid>
+                        {this.getComments()}
+                    </Comment.Group>
+                </div>
+            );
+        }
+        const actionData = (
+            <Grid centered>
+                <Grid.Row>
+                    <Grid.Column mobile={16} tablet={14} computer={14}>
+                        {isMember
+                        && (
                             <Grid>
                                 <Grid.Row>
                                     <Grid.Column mobile={16} tablet={14} computer={14}>
@@ -176,15 +188,20 @@ class Activity extends React.Component {
                                     </Grid.Column>
                                 </Grid.Row>
                             </Grid>
-                            <div className="c-comment">
-                                <Comment.Group fluid>
-                                    {commentsLoader ? <PlaceholderGrid row={1} column={1} />
-                                        : this.getComments()}
-                                </Comment.Group>
-                            </div>
-                        </Grid.Column>
-                    </Grid.Row>
-                </Grid>
+                        )
+                        }
+                        {viewData}
+                    </Grid.Column>
+                </Grid.Row>
+            </Grid>
+        );
+
+        return (
+            <Fragment>
+                {commentsLoader
+                    ? <PlaceholderGrid row={1} column={1} />
+                    : actionData
+                }
                 {(activitiesLink)
                 && (
                     <div className="text-center mt-1 mb-1">
@@ -202,6 +219,7 @@ class Activity extends React.Component {
 }
 
 Activity.defaultProps = {
+    commentsLoader: true,
     dispatch: func,
     groupActivities: {
         data: [],
@@ -213,6 +231,7 @@ Activity.defaultProps = {
 };
 
 Activity.propTypes = {
+    commentsLoader: bool,
     dispatch: _.noop,
     groupActivities: {
         data: arrayOf(PropTypes.element),
@@ -225,7 +244,9 @@ Activity.propTypes = {
 
 function mapStateToProps(state) {
     return {
+        commentsLoader: state.group.showPlaceholder,
         groupActivities: state.group.groupActivities,
+        groupDetails: state.group.groupDetails,
         userInfo: state.user.info,
     };
 }

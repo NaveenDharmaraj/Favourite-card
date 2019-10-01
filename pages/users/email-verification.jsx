@@ -58,10 +58,10 @@ class EmailVerification extends React.Component {
                     <div className="pageWraper">
                         <Container>
                             <div className="linebg">
-                                <Grid columns={2} verticalAlign="middle">
+                                <Grid columns={2}>
                                     <Grid.Row>
-                                        <Grid.Column className="left-bg"></Grid.Column>
-                                        <Grid.Column>
+                                        <Grid.Column mobile={16} tablet={6} computer={7} className="left-bg verifyImg"><div></div></Grid.Column>
+                                        <Grid.Column  mobile={16} tablet={8} computer={7}>
                                             <div className="login-form-wraper">
                                                 <div className="reg-header">
                                                     <Header as="h3">Verify your email.</Header>
@@ -69,22 +69,24 @@ class EmailVerification extends React.Component {
                                                         We’ve emailed a verification link to <a>{newUserDetails.email}</a>
                                                         . Click the link in that email to finish creating your account.
                                                     </Header>
-                                                    <Header as="h4">
-                                                        Don’t see an email from us?
-                                                    </Header>
+                                                    
                                                 </div>
                                                 <Form>
                                                     <div className="create-btn-wraper">
-                                                        <Button
-                                                            type="submit"
-                                                            onClick={this.handleSubmit}
-                                                            primary
-                                                            // disabled={!!apiResendEmail}
-                                                        >
+                                                        <p className="font-s-14">
+                                                            <span>Don’t see an email from us?</span>
+                                                            <Button
+                                                                type="submit"
+                                                                onClick={this.handleSubmit}
+                                                                className="blue-btn-rounded-def ml-1"
+                                                                // disabled={!!apiResendEmail}
+                                                            >
                                                             Resend email
-                                                        </Button>
+                                                            </Button>
+                                                        </p>
+                                                        
                                                     </div>
-                                                    {!!apiResendEmail && <Message compact color='green'>Email Sent</Message>}
+                                                    {!!apiResendEmail && <Message compact color='green'>Email sent</Message>}
     
                                                 </Form>
                                             </div>

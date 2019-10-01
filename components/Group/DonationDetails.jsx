@@ -35,25 +35,29 @@ const DonationDetails = (props) => {
         },
     } = props;
     const lastDonationDay = distanceOfTimeInWords(lastDonationAt);
+    let fundRaisingDuration = '';
     const daysText = (fundraisingDaysRemaining && fundraisingDaysRemaining > 1) ? ' days left' : ' day left';
+    if (fundraisingDaysRemaining !== null) {
+        fundRaisingDuration = (
+            <span className="badge white right">
+                {fundraisingDaysRemaining}
+                {daysText}
+            </span>
+        );
+    }
     return (
         <Container>
             <div className="profile-info-card giving">
                 <Grid stackable>
                     <Grid.Row>
                         <Grid.Column mobile={16} tablet={6} computer={6}>
-                            <Header as="h2">
+                            <Header as="h2" className="font-s-34">
                                 {formatCurrency(totalMoneyRaised, language, currency)}
-                                {fundraisingDaysRemaining
-                                    && (
-                                        <span className="badge white right">
-                                            {fundraisingDaysRemaining}
-                                            {daysText}
-                                        </span>
-                                    )}
-                                <Header.Subheader className="small" style={{ marginTop: '.7rem' }}>
+                                {fundRaisingDuration}
+                                <Header.Subheader className="small font-s-14" style={{ marginTop: '.7rem' }}>
                                     {`raised of 
-                                    ${formatCurrency(goal, language, currency)}`}
+                                    ${formatCurrency(goal, language, currency)}
+                                    goal`}
                                 </Header.Subheader>
                                 
                             </Header>
@@ -73,19 +77,19 @@ const DonationDetails = (props) => {
                                         <Grid.Column>
                                             <Header as="h2">
                                                 {formatCurrency(totalMoneyRaised, language, currency)}
-                                                <Header.Subheader className="small">All time total raised</Header.Subheader>
+                                                <Header.Subheader className="small font-s-14">All time total raised</Header.Subheader>
                                             </Header>
                                         </Grid.Column>
                                         <Grid.Column>
                                             <Header as="h2">
                                                 {formatCurrency(totalMoneyGiven, language, currency)}
-                                                <Header.Subheader className="small">All time total given</Header.Subheader>
+                                                <Header.Subheader className="small font-s-14">All time total given</Header.Subheader>
                                             </Header>
                                         </Grid.Column>
                                         <Grid.Column>
                                             <Header as="h2">
                                                 {formatCurrency(balance, language, currency)}
-                                                <Header.Subheader className="small">Current balance</Header.Subheader>
+                                                <Header.Subheader className="small font-s-14">Current balance</Header.Subheader>
                                             </Header>
                                         </Grid.Column>
                                     </Grid.Row>

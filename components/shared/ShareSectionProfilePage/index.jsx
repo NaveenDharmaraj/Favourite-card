@@ -50,11 +50,10 @@ class ShareDetails extends React.Component {
         } else {
             targetId = profileDetails.id
         }
-        if (profileDetails.attributes.following) {
-            unfollowProfile(dispatch, userId, targetId, profileDetails.type);
-        } else {
-            followProfile(dispatch, userId, targetId, profileDetails.type);
-        }
+        const likeFlag = (profileDetails.type === 'beneficiaries') ? profileDetails.attributes.following : profileDetails.attributes.liked;
+
+        (likeFlag) ? unfollowProfile(dispatch, userId, targetId, profileDetails.type) : followProfile(dispatch, userId, targetId, profileDetails.type);
+
     }
 
     handleOnClick(event, data) {
@@ -105,20 +104,31 @@ class ShareDetails extends React.Component {
             profileDetails,
             deepLinkUrl,
         } = this.props;
-        const inputValue = (!_.isEmpty(deepLinkUrl)) ? deepLinkUrl.attributes["short-link"] : '';
+        const inputValue = (!_.isEmpty(deepLinkUrl)) ? deepLinkUrl.attributes["short-link"] : '';0.
+
         return (
             <Grid.Column mobile={16} tablet={6} computer={6}>
                 <div className="profile-social-wraper">
                     <div className="profile-social-links">
                         <List horizontal>
                             <List.Item as="a">
+                                {(profileDetails.type ==='beneficiaries') ? (
                                 <Icon
                                     id="follow"
-                                    color={(profileDetails && profileDetails && profileDetails.attributes.following) ? "red" : "blue"}
-                                    name={(profileDetails && profileDetails && profileDetails.attributes.following) ? "heart outline" : "heart"}
+                                    color={(profileDetails && profileDetails && profileDetails.attributes.following) ? "red" : "outline"}
+                                    name={(profileDetails && profileDetails && profileDetails.attributes.following) ? "heart" : "heart"}
                                     onClick={this.handleFollow}
                                     disabled={this.props.disableFollow}
                                 />
+                                ) : (
+                                    <Icon
+                                    id="follow"
+                                    color={(profileDetails && profileDetails && profileDetails.attributes.liked) ? "red" : "outline"}
+                                    name={(profileDetails && profileDetails && profileDetails.attributes.liked) ? "heart" : "heart"}
+                                    onClick={this.handleFollow}
+                                    disabled={this.props.disableFollow}
+                                />
+                                )}
                             </List.Item>
                             <List.Item as="a">
                                 <Icon
@@ -145,12 +155,12 @@ class ShareDetails extends React.Component {
                                     ref={(textarea) => this.textArea = textarea}
                                 />
                             </Form.Field>
-                            <Button
+                            {/* <Button
                                 className="transparent-btn-round small"
                                 onClick={this.handleCopyLink}
                             >
                                 Copy link
-                            </Button>
+                            </Button> */}
                         </Form>
                     </div>
                 </div>

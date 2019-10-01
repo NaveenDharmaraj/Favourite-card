@@ -50,7 +50,6 @@ import {
 import {
     actionTypes,
     getCompanyPaymentAndTax,
-    getCoverFees,
     getBeneficiariesForGroup,
     getBeneficiaryFromSlug,
     proceed,
@@ -65,6 +64,7 @@ import { Router } from '../../../routes';
 const CreditCard = dynamic(() => import('../../shared/CreditCard'));
 const FormValidationErrorMessage = dynamic(() => import('../../shared/FormValidationErrorMessage'));
 const NoteTo = dynamic(() => import('../NoteTo'));
+const DedicateType = dynamic(() => import('../DedicateGift'), { ssr: false });
 const SpecialInstruction = dynamic(() => import('../SpecialInstruction'));
 const AccountTopUp = dynamic(() => import('../AccountTopUp'));
 const DropDownAccountOptions = dynamic(() => import('../../shared/DropDownAccountOptions'));
@@ -192,7 +192,6 @@ class Charity extends React.Component {
         this.handleInputOnBlur = this.handleInputOnBlur.bind(this);
         this.validateForm = this.validateForm.bind(this);
         this.getStripeCreditCard = this.getStripeCreditCard.bind(this);
-        this.handleCoverFees = this.handleCoverFees.bind(this);
 
         this.validateStripeCreditCardNo = this.validateStripeCreditCardNo.bind(this);
         this.validateStripeExpirationDate = this.validateStripeExpirationDate.bind(this);
@@ -412,48 +411,6 @@ class Charity extends React.Component {
     }
 
     /**
-     * Reset data for coverfees field change.
-     * @param {object} giveData full form data.
-     * @param {boolean} newValue changing value of coverfees.
-     * @param {object} coverFeesData coverfees data from API.
-     * @param {object} dropDownOptions full dropdown options in the page.
-     * @return {object} full form data.
-     */
-    static resetDataForCoverFeesChange(giveData, newValue, coverFeesData, dropDownOptions) {
-        if (newValue) {
-            if (giveData.giveFrom.type === 'user' || giveData.giveFrom.type === 'companies') {
-                giveData.donationAmount = setDonationAmount(giveData, coverFeesData);
-                if (Number(giveData.donationAmount) > 0) {
-                    giveData.creditCard = getDefaultCreditCard(
-                        dropDownOptions.paymentInstrumentList,
-                    );
-                    if (giveData.giveFrom.type === 'user'
-                        && !_isEmpty(dropDownOptions.donationMatchList)
-                        && (_isEmpty(giveData.donationMatch)
-                            || giveData.donationMatch.value === null)
-                    ) {
-                        const [
-                            defaultMatch,
-                        ] = dropDownOptions.donationMatchList;
-                        giveData.donationMatch = defaultMatch;
-                    }
-                }
-            }
-        } else if (Number(giveData.giveAmount) <= Number(giveData.giveFrom.balance)) {
-            giveData.donationAmount = '';
-            if (giveData.giftType.value === 0) {
-                giveData.donationMatch = {
-                    value: null,
-                };
-                giveData.creditCard = {
-                    value: null,
-                };
-            }
-        }
-        return giveData;
-    }
-
-    /**
      * intializeValidations set validity status to true
      * @return {void}
      */
@@ -463,6 +420,7 @@ class Charity extends React.Component {
             isAmountCoverGive: true,
             isAmountLessThanOneBillion: true,
             isAmountMoreThanOneDollor: true,
+            isDedicateGiftEmpty: true,
             isDonationAmountBlank: true,
             isDonationAmountCoverGive: true,
             isDonationAmountLessThan1Billion: true,
@@ -512,6 +470,7 @@ class Charity extends React.Component {
         validity = validateGiveForm('giveFrom', giveData.giveFrom.value, validity, giveData, coverFeesAmount);
         validity = validateGiveForm('noteToSelf', giveData.noteToSelf, validity, giveData, coverFeesAmount);
         validity = validateGiveForm('noteToCharity', giveData.noteToCharity, validity, giveData, coverFeesAmount);
+        validity = validateGiveForm('dedicateType', null, validity, giveData);
         this.setState({ validity });
         let validateCC = true;
         if (giveData.creditCard.value === 0) {
@@ -555,25 +514,24 @@ class Charity extends React.Component {
             inputValue = formatAmount(value);
         }
         const coverFeesAmount = Charity.getCoverFeesAmount(giveData, coverFeesData);
-        if (name !== 'coverFees' && name !== 'giftType' && name !== 'giveFrom') {
+        if (name !== 'giftType' && name !== 'giveFrom') {
             validity = validateGiveForm(name, inputValue, validity, giveData, coverFeesAmount);
         }
         switch (name) {
             case 'giveAmount':
-                this.handleCoverFees();
                 validity = validateGiveForm('donationAmount', giveData.donationAmount, validity, giveData, coverFeesAmount);
                 break;
             case 'giveFrom':
-                this.handleCoverFees();
                 validity = validateGiveForm('giveAmount', giveData.giveAmount, validity, giveData, coverFeesAmount);
                 validity = validateGiveForm('donationAmount', giveData.donationAmount, validity, giveData, coverFeesAmount);
                 break;
-            case 'coverFees':
-                validity = validateGiveForm('giveAmount', giveData.giveAmount, validity, giveData, coverFeesAmount);
-                validity = validateGiveForm('donationAmount', giveData.donationAmount, validity, giveData, coverFeesAmount);
-                break;
+            case 'inHonorOf':
+            case 'inMemoryOf':
+                validity = validateGiveForm('dedicateType', null, validity, giveData);
+            break;
             default: break;
         }
+        
         this.setState({
             flowObject: {
                 ...this.state.flowObject,
@@ -583,29 +541,7 @@ class Charity extends React.Component {
         });
     }
 
-    /**
-     * handleCoverFees calls action for fetching the fees
-     * @return {void}
-     */
-    handleCoverFees() {
-        const {
-            flowObject: {
-                giveData: {
-                    giveAmount,
-                    giveFrom,
-                },
-            },
-        } = this.state;
-        const {
-            coverFeesData,
-            dispatch,
-        } = this.props;
-        if (Number(giveFrom.value) > 0) {
-            // GIVEB-1912 with recent updates given we don't need 2 versions of text
-            // hence no need to calculate fees for balance
-            getCoverFees(coverFeesData, giveFrom.value, giveAmount, dispatch);
-        }
-    }
+
 
     /**
      * Synchronise form data with React state
@@ -616,6 +552,7 @@ class Charity extends React.Component {
     handleInputChange(event, data) {
         const {
             name,
+            newIndex,
             options,
             value,
         } = data;
@@ -643,7 +580,29 @@ class Charity extends React.Component {
             } = event;
             newValue = target.checked;
         }
-        if (giveData[name] !== newValue) {
+        if(name === 'inHonorOf' || name ==='inMemoryOf'){
+            if(newIndex === -1){
+                giveData.dedicateGift.dedicateType = '';
+                giveData.dedicateGift.dedicateValue = '';
+            }
+            else{
+                giveData.dedicateGift.dedicateType = name;
+                giveData.dedicateGift.dedicateValue = value;
+            }
+            validity.isDedicateGiftEmpty = true;
+            this.setState({
+       
+                flowObject: {
+                    ...this.state.flowObject,
+                    giveData,
+                },
+                validity: {
+                    ...this.state.validity,
+                    validity,
+                },
+            });
+        }
+        if (name !== 'inHonorOf' && name !=='inMemoryOf' !== newValue) {
             giveData[name] = newValue;
             giveData.userInteracted = true;
             switch (name) {
@@ -672,11 +631,6 @@ class Charity extends React.Component {
                         giveData, dropDownOptions, coverFeesData,
                     );
                     break;
-                case 'coverFees':
-                    giveData = Charity.resetDataForCoverFeesChange(
-                        giveData, newValue, coverFeesData, dropDownOptions,
-                    );
-                    break;
                 default: break;
             }
             this.setState({
@@ -693,7 +647,7 @@ class Charity extends React.Component {
                     validity,
                 },
             });
-        }
+        } 
     }
 
     handleSubmit() {
@@ -871,60 +825,6 @@ class Charity extends React.Component {
     }
 
     /**
-     * Render the cover fees fields.
-     * @param {object} giveFrom give from field data.
-     * @param {object} giveAmount give amount entered by user.
-     * @param {object} coverFeesData cover fees API response.
-     * @param {function} formatMessage I18 formatting.
-     * @param {boolean} coverFees cover fees checkbox value.
-     * @return {JSX} JSX representing payment fields.
-     */
-    renderCoverFees(giveFrom, giveAmount, coverFeesData, coverFees, formatMessage) {
-        if (Number(giveFrom.value) > 0 && Number(giveAmount) > 0 &&
-            !_isEmpty(coverFeesData)
-        ) {
-            let coverNoteText = null;
-            // GIVEB-1912 with recent updates given we don't need 2 versions of text
-            if (Number(coverFeesData.giveAmountFees) > 0) {
-                const feeAmount = formatAmount(coverFeesData.giveAmountFees);
-                const totalAmount = formatAmount(Number(giveAmount) +
-                Number(coverFeesData.giveAmountFees));
-                coverNoteText = formatMessage('feeAmountCoverageNote', {
-                    feeAmount,
-                    totalAmount,
-                });
-            }
-            if (!_isEmpty(coverNoteText)) {
-                return (
-                    <Form.Field className="checkbox-display">
-                        <Form.Field
-                            checked={coverFees}
-                            className="ui checkbox checkbox-text f-weight-n"
-                            control={Checkbox}
-                            id="coverFees"
-                            label={coverNoteText}
-                            name="coverFees"
-                            onChange={this.handleInputChange}
-                        />
-                        <Popup
-                            content={formatMessage('feeAmountCoveragePopup')}
-                            position="top center"
-                            trigger={(
-                                <Icon
-                                    color="blue"
-                                    name="question circle"
-                                    size="large"
-                                />
-                            )}
-                        />
-                    </Form.Field>
-                );
-            }
-        }
-        return null;
-    }
-
-    /**
      * Render the SpecialInstruction component.
      * @param {object} giveFrom give from field data.
      * @param {function} formatMessage I18 formatting.
@@ -1043,16 +943,83 @@ class Charity extends React.Component {
         return validCC;
     }
 
+    renderPaymentTaxErrorMsg(paymentInstrumentList, defaultTaxReceiptProfile, giveFrom, companyDetails, giftType){
+        const{
+            companyAccountsFetched,
+            slug,
+            userAccountsFetched
+        } = this.props;
+        if(giftType > 0){
+            if(userAccountsFetched && giveFrom.type === 'user' || companyAccountsFetched && giveFrom.type === 'companies'){
+                let taxProfile = (giveFrom.type === 'companies' && companyDetails && companyDetails.companyDefaultTaxReceiptProfile) ?
+                companyDetails.companyDefaultTaxReceiptProfile :
+                defaultTaxReceiptProfile;
+                    if(_isEmpty(paymentInstrumentList) && _isEmpty(taxProfile)){
+                        return(
+                            <div>
+                               To send a monthly gift, first add a &nbsp;
+                               {
+                                   giveFrom.type === 'companies' 
+                                   ?  <a href={`/companies/${slug}/payment-profiles`}>payment method </a>
+                                   : <Link route = '/user/profile/settings/creditcard'>payment method</Link>
+                               }
+                              &nbsp; and&nbsp;
+                               {
+                                   giveFrom.type === 'companies' 
+                                   ?  <a href={`/companies/${slug}/tax-receipt-profiles`}>tax receipt recipient</a>
+                                   : <Link route = '/user/tax-receipts'>tax receipt recipient</Link>
+                               }
+                              &nbsp; to your account details.We won't charge your card without your permission.
+                            </div>
+                        ) 
+                    }
+                    else if(_isEmpty(paymentInstrumentList)){
+                        return(
+                            <div>
+                                 To send a monthly gift, first add a &nbsp;
+                                 {
+                                   giveFrom.type === 'companies' 
+                                   ?  <a href={`/companies/${slug}/payment-profiles`}>payment method </a>
+                                   : <Link route = '/user/profile/settings/creditcard'>payment method</Link>
+                               }
+                              &nbsp;   to your account details.We won't charge your card without your permission.
+                            </div>
+                        ) 
+                    }
+                    else if( _isEmpty(taxProfile)){
+                        return(
+                            <div>
+                            To send a monthly gift, first add a &nbsp;
+                            {
+                                   giveFrom.type === 'companies' 
+                                   ?  <a href={`/companies/${slug}/tax-receipt-profiles`}>tax receipt recipient</a>
+                                   : <Link route = '/user/tax-receipts'>tax receipt recipient</Link>
+                               }
+                           &nbsp; to your account details.
+                            </div>
+                        ) 
+                    }
+                 }
+            }
+            return null; 
+    }
+
     render() {
         const {
+            companyDetails,
             coverFeesData,
             creditCardApiCall,
+            defaultTaxReceiptProfile,
         } = this.props;
         const {
             flowObject: {
                 giveData: {
                     coverFees,
                     creditCard,
+                    dedicateGift: {
+                        dedicateType,
+                        dedicateValue,
+                    },
                     donationAmount,
                     donationMatch,
                     giftType,
@@ -1094,8 +1061,8 @@ class Charity extends React.Component {
             ? Number(giveAmount) + Number(coverFeesData.giveAmountFees)
             : Number(giveAmount);
         if ((giveFrom.type === 'user' || giveFrom.type === 'companies')
-    && (giftType.value > 0 || (giftType.value === 0
-        && giveAmountWithCoverFees > Number(giveFrom.balance)))
+    && (giftType.value === 0
+        && giveAmountWithCoverFees > Number(giveFrom.balance))
         ) {
             const topupAmount = formatAmount((formatAmount(giveAmountWithCoverFees)
             - formatAmount(giveFrom.balance)));
@@ -1246,18 +1213,24 @@ class Charity extends React.Component {
                             parentOnBlurChange={this.handleInputOnBlur}
                             formatMessage={formatMessage}
                         />
-                        {this.renderCoverFees(
-                            giveFrom, giveAmount, coverFeesData, coverFees, formatMessage,
-                        )}
                         {this.renderSpecialInstructionComponent(
                             giveFrom,
                             giftType, giftTypeList, infoToShare, infoToShareList, formatMessage,
                         )}
-                        {accountTopUpComponent}
-                        {stripeCardComponent}
+                        { 
+                            this.renderPaymentTaxErrorMsg(paymentInstrumentList, defaultTaxReceiptProfile, giveFrom,companyDetails, giftType.value)
+                        }
                         <Form.Field>
                             <Divider className="dividerMargin" />
                         </Form.Field>
+                        <DedicateType 
+                            handleInputChange={this.handleInputChange}
+                            handleInputOnBlur={this.handleInputOnBlur}
+                            dedicateType={dedicateType}
+                            dedicateValue={dedicateValue}
+                            validity={validity}
+                        />
+                         <Divider hidden />
                         <NoteTo
                             allocationType={type}
                             formatMessage={formatMessage}
@@ -1268,6 +1241,8 @@ class Charity extends React.Component {
                             noteToSelf={noteToSelf}
                             validity={validity}
                         />
+                        {accountTopUpComponent}
+                        {stripeCardComponent}
                         <Divider hidden />
                         {/* { !stepsCompleted && */}
                         <Form.Button
@@ -1294,6 +1269,7 @@ function mapStateToProps(state) {
     return {
         companiesAccountsData: state.user.companiesAccountsData,
         companyDetails: state.give.companyData,
+        companyAccountsFetched: state.give.companyAccountsFetched,
         coverFeesData: state.give.coverFeesData,
         currentUser: state.user.info,
         giveCharityDetails: state.give.charityDetails,

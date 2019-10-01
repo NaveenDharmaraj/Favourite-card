@@ -17,15 +17,18 @@ export const actionTypes = {
     GET_MATCH_POLICIES_PAYMENTINSTRUMENTS: 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS',
     GET_USERS_GROUPS: 'GET_USERS_GROUPS',
     GET_UPCOMING_TRANSACTIONS: 'GET_UPCOMING_TRANSACTIONS',
+    GIVING_GROUPS_lEAVE_MODAL: 'GIVING_GROUPS_lEAVE_MODAL',
     MONTHLY_TRANSACTION_API_CALL: 'MONTHLY_TRANSACTION_API_CALL',
     TAX_RECEIPT_PROFILES:'TAX_RECEIPT_PROFILES',
     SAVE_DEEP_LINK: 'SAVE_DEEP_LINK',
     SET_USER_INFO: 'SET_USER_INFO',
+    SET_USER_ACCOUNT_FETCHED: 'SET_USER_ACCOUNT_FETCHED',
     UPDATE_USER_FUND: 'UPDATE_USER_FUND',
     GIVING_GROUPS_AND_CAMPAIGNS: 'GIVING_GROUPS_AND_CAMPAIGNS',
     DISABLE_GROUP_SEE_MORE: 'DISABLE_GROUP_SEE_MORE',
     LEAVE_GROUP_ERROR_MESSAGE: 'LEAVE_GROUP_ERROR_MESSAGE',
     USER_GIVING_GOAL_DETAILS: 'USER_GIVING_GOAL_DETAILS',
+    USER_INITIAL_FAVORITES: 'USER_INITIAL_FAVORITES',
     USER_FAVORITES:'USER_FAVORITES',
     UPDATE_FAVORITES: 'UPDATE_FAVORITES',
     ENABLE_FAVORITES_BUTTON: 'ENABLE_FAVORITES_BUTTON',
@@ -76,6 +79,7 @@ export const callApiAndGetData = (url, params) => getAllPaginationData(url, para
     },
 );
 
+// eslint-disable-next-line import/exports-last
 export const getDonationMatchAndPaymentInstruments = (userId, flowType) => {
 
     return async (dispatch) => {
@@ -93,8 +97,14 @@ export const getDonationMatchAndPaymentInstruments = (userId, flowType) => {
             },
             type: actionTypes.GET_MATCH_POLICIES_PAYMENTINSTRUMENTS,
         };
+        dispatch({
+            payload: {
+                userAccountsFetched: false,
+            },
+            type: actionTypes.SET_USER_ACCOUNT_FETCHED,
+        });
         const fetchData = coreApi.get(
-            `/users/${userId}?include=donationMatchPolicies,activePaymentInstruments,defaultTaxReceiptProfile,taxReceiptProfiles,fund`,
+            `/users/${userId}?include=donationMatchPolicies,defaultTaxReceiptProfile,taxReceiptProfiles,fund`,
             {
                 params: {
                     dispatch,
@@ -124,6 +134,15 @@ export const getDonationMatchAndPaymentInstruments = (userId, flowType) => {
                 },
             );
         }
+        const paymentInstruments = coreApi.get(
+            `/users/${userId}/activePaymentInstruments?sort=-default`,
+            {
+                params: {
+                    dispatch,
+                    uxCritical: true,
+                },
+            },
+        );
         const companiesData = callApiAndGetData(
             `/users/${userId}/administeredCompanies?page[size]=50&sort=-id`,
             {
@@ -138,6 +157,7 @@ export const getDonationMatchAndPaymentInstruments = (userId, flowType) => {
             groupData,
             campaignsData,
             companiesData,
+            paymentInstruments,
         ])
             .then(
                 (data) => {
@@ -149,7 +169,6 @@ export const getDonationMatchAndPaymentInstruments = (userId, flowType) => {
                             companies: 'companiesAccountsData',
                             donationMatches: 'donationMatchData',
                             groups: 'userGroups',
-                            paymentInstruments: 'paymentInstrumentsData',
                         };
                         let defaultTaxReceiptId = null;
                         if (!_.isEmpty(userData.data.relationships.defaultTaxReceiptProfile.data)) {
@@ -192,11 +211,24 @@ export const getDonationMatchAndPaymentInstruments = (userId, flowType) => {
                     fsa.payload.userGroups = data[1];
                     fsa.payload.userCampaigns = data[2];
                     fsa.payload.companiesAccountsData = data[3];
-                    fsa.payload.userAccountsFetched = true;
+                    fsa.payload.paymentInstrumentsData = [
+                        ...data[4].data,
+                    ];
+                    dispatch({
+                        payload: {
+                            userAccountsFetched: true,
+                        },
+                        type: actionTypes.SET_USER_ACCOUNT_FETCHED,
+                    });
                 },
             ).catch((error) => {
                 fsa.error = error;
-                fsa.payload.userAccountsFetched = true;
+                dispatch({
+                    payload: {
+                        userAccountsFetched: true,
+                    },
+                    type: actionTypes.SET_USER_ACCOUNT_FETCHED,
+                });
             }).finally(() => {
                 dispatch(fsa);
             });
@@ -274,9 +306,9 @@ export const getUser = (dispatch, userId, token = null) => {
                 _.merge(fsa.payload, {
                     activeRoleId,
                     currentAccount: {},
+                    info: data,
                     isAdmin: false,
                     otherAccounts: [],
-                    info: data,
                 });
                 if (!_.isEmpty(data.relationships.chimpAdminRole.data)) {
                     fsa.payload.isAdmin = true;
@@ -517,6 +549,10 @@ export const leaveGroup = (dispatch, group, allData, type) => {
     };
     const dataArray = _.merge([], allData.data);
     const currentpath = allData.currentLink;
+    dispatch({
+        payload: { buttonLoading: true },
+        type: actionTypes.GIVING_GROUPS_lEAVE_MODAL,
+    });
     coreApi.patch(`/groups/leave?slug=${group.attributes.slug}`, {
     }).then(
         async () => {
@@ -528,10 +564,21 @@ export const leaveGroup = (dispatch, group, allData, type) => {
                 nextLink: (currentData.links.next) ? currentData.links.next : null,
                 dataCount: currentData.meta.recordCount,
             };
-
+            
             dispatch(fsa);
+            dispatch({
+                payload: {
+                    buttonLoading: false,
+                    closeModal: true,
+                },
+                type: actionTypes.GIVING_GROUPS_lEAVE_MODAL,
+            });
         },
     ).catch((error) => {
+        dispatch({
+            payload: { buttonLoading: false },
+            type: actionTypes.GIVING_GROUPS_lEAVE_MODAL,
+        });
         const errorFsa = {
             payload: {
                 type,
@@ -577,7 +624,7 @@ export const setUserGivingGoal = (dispatch, goalAmount, userId) => {
     };
     return coreApi.post('givingGoals', {
         data: payload,
-    }).then((result)=> {
+    }).then((result) => {
         getUserGivingGoal(dispatch, userId);
     });
 };
@@ -656,6 +703,9 @@ export const getFavoritesList = (dispatch, userId, pageNumber, pageSize) => {
         },
         type: actionTypes.USER_FAVORITES,
     };
+    if(pageNumber === 1) {
+        fsa.type = actionTypes.USER_INITIAL_FAVORITES;
+    }
     const url = `user/favourites?userid=${Number(userId)}&page[number]=${pageNumber}&page[size]=${pageSize}`;
     return graphApi.get(
         url,

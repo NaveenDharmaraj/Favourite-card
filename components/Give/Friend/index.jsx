@@ -538,6 +538,7 @@ class Friend extends React.Component {
             flowObject.giveData.recipients = parseEmails(
                 flowObject.giveData.recipients,
             );
+            flowObject.stepsCompleted = false;
             dismissAllUxCritialErrors(this.props.dispatch);
             dispatch(proceed(flowObject, flowSteps[stepIndex + 1], stepIndex));
         }
@@ -867,9 +868,6 @@ class Friend extends React.Component {
                             formatCurrency,
                         )
                     }
-
-                    {accountTopUpComponent}
-                    {stripeCardComponent}
                     <Form.Field>
                         <Divider className="dividerMargin" />
                     </Form.Field>
@@ -896,6 +894,8 @@ class Friend extends React.Component {
                         placeholderText={formatMessage('friends:noteToSelfPlaceholderText')}
                         text={noteToSelf}
                     />
+                    {accountTopUpComponent}
+                    {stripeCardComponent}
                     <Divider hidden />
                     <Form.Button
                         primary

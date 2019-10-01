@@ -1,6 +1,7 @@
 import _isEmpty from 'lodash/isEmpty';
 import _findIndex from 'lodash/findIndex';
 import _uniqBy from 'lodash/uniqBy';
+import _cloneDeep from 'lodash/cloneDeep';
 
 const taxreceipt = (state = {}, action) => {
     let newState = {
@@ -14,13 +15,20 @@ const taxreceipt = (state = {}, action) => {
             ] : action.payload.taxReceiptProfileList;
             newState = {
                 ...state,
+                loader: action.payload.loader,
                 taxReceiptProfileList: _uniqBy(taxReceiptProfileListUnique, 'id'),
                 taxReceiptProfilePageCount: action.payload.taxReceiptProfilePageCount,
             };
             break;
+        case 'GET_PAGINATED_TAX_RECEIPT_PROFILE_LOADER':
+            newState = {
+                ...state,
+                loader: action.payload.loader,
+            };
+            break;
         case 'UPDATE_TAX_RECEIPT_PROFILE':
             const { taxReceiptProfileList } = state;
-            const editTaxProfile = action.payload.editedTaxProfile;
+            const editTaxProfile = _cloneDeep(action.payload.editedTaxProfile);
             const index = _findIndex(taxReceiptProfileList, (taxReceiptProfile) => taxReceiptProfile.id === editTaxProfile.id);
             if (!_isEmpty(editTaxProfile) && !_isEmpty(editTaxProfile.attributes) && editTaxProfile.attributes.isDefault) {
                 if (!_isEmpty(state.defaultTaxId)) {
@@ -38,6 +46,24 @@ const taxreceipt = (state = {}, action) => {
                 taxReceiptProfileList: Object.assign([], taxReceiptProfileList),
             };
             break;
+        case 'ADD_TAX_RECEIPT_PROFILE':
+            const AddTaxProfile = _cloneDeep(action.payload.editedTaxProfile);
+            if (!_isEmpty(AddTaxProfile) && !_isEmpty(AddTaxProfile.attributes) && AddTaxProfile.attributes.isDefault) {
+                if (!_isEmpty(state.defaultTaxId)) {
+                    state.taxReceiptProfileList.find((taxReceiptProfile) => {
+                        if (taxReceiptProfile.id === state.defaultTaxId) {
+                            taxReceiptProfile.attributes.isDefault = false;
+                            return taxReceiptProfile;
+                        }
+                    });
+                }
+            }
+            state.taxReceiptProfileList.push(AddTaxProfile);
+            newState = {
+                ...state,
+                taxReceiptProfileList: Object.assign([], state.taxReceiptProfileList),
+            };
+            break;
         case 'DEFAULT_TAX_RECEIPT_PROFILE_ID':
             newState = {
                 ...state,
@@ -47,6 +73,7 @@ const taxreceipt = (state = {}, action) => {
         case 'ISSUED_TAX_RECEIPTS_LIST':
             newState = {
                 ...state,
+                issuedTaxLloader: action.payload.issuedTaxLloader,
                 issuedTaxReceiptList: action.payload.issuedTaxReceiptList,
             };
             break;
@@ -54,6 +81,7 @@ const taxreceipt = (state = {}, action) => {
             newState = {
                 ...state,
                 issuedTaxReceiptYearlyDetail: action.payload.issuedTaxReceiptYearlyDetail,
+                yearLoader: action.payload.yearLoader,
             };
             break;
         case 'ISSUED_TAX_RECEIPIENT_DONATIONS_DETAIL':

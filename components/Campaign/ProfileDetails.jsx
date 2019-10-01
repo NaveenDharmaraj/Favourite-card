@@ -1,12 +1,16 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { Fragment } from 'react';
 import {
+    Card,
     Container,
     Grid,
+    Image,
+    Header,
     Tab,
 } from 'semantic-ui-react';
 
 import ImageGallery from '../shared/ImageGallery';
+import noDataImg from '../../static/images/noresults.png';
 
 import SupportingGroups from './SupportingGroups';
 
@@ -36,31 +40,59 @@ function ProfileDetails(props) {
                         imageArray.push(singleImagePropObj);
                     });
                 }
+                const noDataState = () => {
+                    return (
+                        <Card fluid className="noDataCard rightImg">
+                            <Card.Content>
+                                <Image
+                                    floated="right"
+                                    src={noDataImg}
+                                />
+                                <Card.Header className="font-s-14">
+                                    <Header as="h4">
+                                        <Header.Content>
+                                        Please check back later
+                                            <Header.Subheader>It looks like we haven’t yet received this information.</Header.Subheader>
+                                        </Header.Content>
+                                    </Header>
+                                </Card.Header>
+                            </Card.Content>
+                        </Card>
+                    );
+                };
                 return (
                     <Tab.Pane attached={false}>
                         <Container>
-                            <Grid>
-                                {short}
-                            </Grid>
-                            <Grid>
-                                <div className="mt-1">
-                                    <embed
-                                        title="video"
-                                        // width="50%"
-                                        // height="50%"
-                                        src={videoDirectLink}
-                                    />
-                                </div>
-                            </Grid>
-                            <Grid>
-                                {/* <div className="mt-1"> */}
-                                <ImageGallery
-                                    imagesArray={imageArray}
-                                    enableImageSelection={false}
-                                />
-                                {/* </div> */}
-                                
-                            </Grid>
+
+                            {
+                                (!videoDirectLink && !about && imageArray.length === 0 ) ? (
+                                    <Grid>
+                                        {noDataState()}
+                                    </Grid>
+                                ) : (
+                                    <Fragment>
+                                        <Grid>
+                                            { about }
+                                        </Grid>
+                                        <Grid>
+                                            <div className="mt-1">
+                                                <embed
+                                                    title="video"
+                                                    // width="50%"
+                                                    // height="50%"
+                                                    src={videoDirectLink}
+                                                />
+                                            </div>
+                                        </Grid>
+                                        <Grid>
+                                            <ImageGallery
+                                                imagesArray={imageArray}
+                                                enableImageSelection={false}
+                                            />
+                                        </Grid>
+                                    </Fragment>
+                                )
+                            }
                         </Container>
 
                     </Tab.Pane>
@@ -70,7 +102,7 @@ function ProfileDetails(props) {
     ];
     if (props.isAuthenticated) {
         panes.push({
-            menuItem: 'Givign Groups supporting this Campaign',
+            menuItem: 'Giving Groups supporting this Campaign',
             render: () => {
                 const {
                     campaignSubGroupDetails,

@@ -1,7 +1,9 @@
+import querystring from 'querystring';
 import Auth0Lock from 'auth0-lock';
 import _ from 'lodash';
 import jwt from 'jwt-decode';
 import getConfig from 'next/config';
+import _isEmpty from 'lodash/isEmpty';
 
 import { Router } from '../routes';
 import storage from '../helpers/storage';
@@ -76,8 +78,12 @@ const _auth0lockConfig = {
                 user_exists: 'An account with that email already exists.',
             },
         },
+        forgotPasswordAction: 'Forgot your password?',
+        forgotPasswordSubmitLabel: 'Reset password',
+        loginSubmitLabel: 'Sign in',
+        passwordInputPlaceholder: 'Your password',
         success: {
-            forgotPassword: 'Check your email—we’ve sent instructions for changing your password.',
+            forgotPassword: 'Check your inbox—we’ve sent instructions to reset your password.',
         },
         title: '',
     },
@@ -127,7 +133,7 @@ const auth0 = {
      */
 
     set accessToken(token) {
-        return token ? storage.set('auth0AccessToken', token, 'cookie', this.getRemainingSessionTime(token)) : storage.unset('auth0AccessToken', 'cookie');
+        return token ? storage.set('auth0AccessToken', token, 'cookie', this.getRemainingSessionTime(token) / 1000) : storage.unset('auth0AccessToken', 'cookie');
     },
 
     /**
@@ -183,10 +189,9 @@ const auth0 = {
 
         const expiry = new Date(exp * 1000); // seconds --> milliseconds
         const now = new Date();
-        if (expiry > now) {
-            return new Date(expiry).toString();
-        }
-        return null;
+        return (expiry > now)
+            ? (expiry - now)
+            : 0;
     },
     /**
      * By default, this property will base its value on `pathname`.
@@ -252,7 +257,9 @@ const auth0 = {
      */
     get returnProps() {
         let returnProps = storage.get('auth0ReturnProps', 'local');
-
+        if (typeof returnProps !== 'object') {
+            returnProps = JSON.parse(returnProps);
+        }
         if (isUndefinedOrEmpty(returnProps)) {
             returnProps = {
                 returnTo: '/dashboard',
@@ -394,15 +401,19 @@ const _handleLockSuccess = async ({
     accessToken,
     idToken,
 } = {}) => {
+    let { returnProps } = auth0;
+    const {
+        returnTo,
+    } = returnProps;
     if (!accessToken || !idToken) { return null(); }
     // Sets access token and expiry time in cookies
     chimpLogin(accessToken).then(async ({ currentUser }) => {
         const userId = parseInt(currentUser, 10);
+        await (auth0.returnProps = null);
         await (auth0.accessToken = accessToken);
         await (storage.set('chimpUserId', userId, 'cookie'));
         const dispatch = auth0.storeDispatch;
         await (getUser(dispatch, userId));
-        const returnTo = '/dashboard';
         const tagManagerArgs = {
             dataLayer: {
                 userId,
@@ -411,13 +422,14 @@ const _handleLockSuccess = async ({
         };
         addToDataLayer(tagManagerArgs);
         Router.pushRoute(returnTo);
-        // window.location.href = 
     }).catch(() => {
-        Router.pushRoute('/users/login');
+        let route = '/users/login';
+        if (!_isEmpty(returnTo)) {
+            route += `?returnTo=${returnTo}`;
+        }
+        Router.pushRoute(route);
     });
-    
     // After successfull login redirecting to home
-    
     return null;
 };
 

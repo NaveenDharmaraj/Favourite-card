@@ -15,17 +15,6 @@ class AuthCallback extends Component {
         auth0.storeDispatch = dispatch;
     }
 
-    // eslint-disable-next-line class-methods-use-this
-    renderComponentAuth() {
-        const {
-            auth,
-        } = this.props;
-        if (auth === 'undefined' || auth === false) {
-            return (<div>Loading...</div>);
-        }
-        return null;
-    }
-
     render() {
         return (
             <AuthLayout>

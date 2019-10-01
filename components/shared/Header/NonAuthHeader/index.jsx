@@ -6,6 +6,8 @@ import {
     Menu,
 } from 'semantic-ui-react';
 
+import { Link } from '../../../../routes';
+
 const NonAuthHeader = () => (
     <Fragment>
         <Menu.Menu className="left-menu">
@@ -28,16 +30,22 @@ const NonAuthHeader = () => (
             </Menu.Item>
         </Menu.Menu>
         <Menu.Menu position="right btn-wraper">
-            <Menu.Item as="a" to="" className="login-btn">
-                <Icon name='search'/>
-                Explore
-            </Menu.Item>
-            <Menu.Item as="a" to="" className="login-btn">
-                Login
-            </Menu.Item>
-            <Menu.Item className="signup">
-                <Button primary>Sign Up</Button>
-            </Menu.Item>
+            <Link route='/search'>
+                <Menu.Item as="a" to="" className="login-btn">
+                    <Icon name='search'/>
+                    Explore
+                </Menu.Item>
+            </Link>
+            <Link route='/users/login'>
+                <Menu.Item as="a" to="" className="login-btn">
+                    Login
+                </Menu.Item>
+            </Link>
+            <Link route='/users/new'>
+                <Menu.Item className="signup">
+                    <Button primary>Sign Up</Button>
+                </Menu.Item>
+            </Link>
         </Menu.Menu>
     </Fragment>
 );

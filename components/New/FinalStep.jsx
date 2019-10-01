@@ -21,13 +21,13 @@ function FinalStep(props) {
     } = props;
     return (
         <Fragment>
-            <Grid.Column className="left-bg"></Grid.Column>
+            <Grid.Column className="left-bg"><div></div></Grid.Column>
             <Grid.Column>
                 <div className="login-form-wraper">
                     <div className="reg-header">
                         <Header as="h3">Create your Impact Account. </Header>
                         <Header as="h4">
-                            By clicking ‘Create your Impact Account’, you acknowlege that you have read the
+                            By clicking ‘Create your Impact Account,’ you acknowlege that you have read the
                             <a href={`${APP_URL_ORIGIN}/privacy`}> Privacy Policy</a>
                             , and agree to the
                             <a href={`${APP_URL_ORIGIN}/terms`}> Terms & Conditions </a>
@@ -43,7 +43,7 @@ function FinalStep(props) {
                                 disabled={buttonClicked}
                                 onClick={handleSubmit}
                                 primary
-                                content={buttonClicked ? 'Submitting' : 'Create Your ImpactAccount'}
+                                content={buttonClicked ? 'Submitting' : 'Create Your Impact Account'}
                             />
                         </div>
                     </Form>

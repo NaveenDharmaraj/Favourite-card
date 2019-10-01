@@ -41,6 +41,7 @@ class GroupDetails extends React.Component {
         super(props);
         this.state = {
             joinClicked: false,
+            userJoinClicked: false,
         };
         this.handleJoin = this.handleJoin.bind(this);
         this.handleUserJoin = this.handleUserJoin.bind(this);
@@ -50,12 +51,15 @@ class GroupDetails extends React.Component {
         const {
             dispatch,
             deepLinkUrl,
-            userId,
+            isAuthenticated,
+            currentUser: {
+                id: userId,
+            },
             groupDetails: {
                 id: groupId,
             },
         } = this.props;
-        if (_.isEmpty(deepLinkUrl)) {
+        if (isAuthenticated && _.isEmpty(deepLinkUrl)) {
             generateDeepLink(`deeplink?profileType=charityprofile&sourceId=${userId}&profileId=${groupId}`, dispatch);
         }
     }
@@ -76,6 +80,9 @@ class GroupDetails extends React.Component {
             },
         } = this.props;
         joinGroup(dispatch, slug);
+        this.setState({
+            userJoinClicked: true,
+        });
     }
 
     render() {
@@ -93,10 +100,13 @@ class GroupDetails extends React.Component {
                 },
             },
             isAuthenticated,
-            userId,
+            currentUser: {
+                id: userId,
+            },
         } = this.props;
         const {
             joinClicked,
+            userJoinClicked,
         } = this.state;
         let getCauses = null;
         let giveButton = null;
@@ -145,6 +155,7 @@ class GroupDetails extends React.Component {
                                 onClick={this.handleUserJoin}
                                 fluid
                                 className="blue-bordr-btn-round"
+                                disabled={userJoinClicked}
                             >
                             Join
                             </Button>
@@ -158,7 +169,7 @@ class GroupDetails extends React.Component {
                     <Grid.Column>
                         <div className="buttonWraper">
                             <a href={(`${RAILS_APP_URL_ORIGIN}/groups/${slug}/edit`)}>
-                                <Button primary fluid className="blue-btn-rounded">Manage</Button>
+                                <Button fluid className="blue-bordr-btn-round">Manage</Button>
                             </a>
                         </div>
                     </Grid.Column>
@@ -261,6 +272,9 @@ class GroupDetails extends React.Component {
 }
 
 GroupDetails.defaultProps = {
+    currentUser: {
+        id: null,
+    },
     dispatch: _.noop,
     groupDetails: {
         attributes: {
@@ -272,10 +286,12 @@ GroupDetails.defaultProps = {
         },
     },
     isAuthenticated: false,
-    userId: null,
 };
 
 GroupDetails.propTypes = {
+    currentUser: {
+        id: string,
+    },
     dispatch: func,
     groupDetails: {
         attributes: {
@@ -287,16 +303,15 @@ GroupDetails.propTypes = {
         },
     },
     isAuthenticated: bool,
-    userId: number,
 };
 
 function mapStateToProps(state) {
     return {
+        currentUser: state.user.info,
         deepLinkUrl: state.profile.deepLinkUrl,
         disableFollow: state.profile.disableFollow,
         groupDetails: state.group.groupDetails,
         isAuthenticated: state.auth.isAuthenticated,
-        userId: state.user.info.id,
     };
 }
 
