@@ -14,11 +14,12 @@ import React from 'react';
  * @return {JSX}    The paragraph for error message
  */
 const FormValidationErrorMessage = ({
+    children,
     condition,
     errorMessage,
 }) => (
     condition ?
-        (<p className="error-message"><Icon name="exclamation circle" />{errorMessage}</p>)
+        (<p className="error-message"><Icon name="exclamation circle" />{errorMessage}{children}</p>)
         : null
 );
 

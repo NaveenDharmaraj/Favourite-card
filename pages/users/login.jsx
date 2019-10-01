@@ -42,7 +42,7 @@ class UserAuthView extends React.Component {
             <Fragment>
                 { !isAuthenticated && (
                     <Layout onBoarding>
-                        <div className="pageWraper">
+                        <div className="pageWraper loginPageBg">
                             <Container>
                                 <div className="linebg">
                                     <Grid columns={2} stackable>
