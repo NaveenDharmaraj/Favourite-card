@@ -84,7 +84,7 @@ class FriendsList extends React.Component {
                                     </Header>
                                     <div>
                                         <Link className="lnkChange" route="/user/profile/friends/findfriends">
-                                            <Button className="success-btn-rounded-def">Find Friends</Button>
+                                            <Button className="success-btn-rounded-def">Find friends</Button>
                                         </Link>
                                     </div>
                                 </div>
@@ -127,27 +127,34 @@ class FriendsList extends React.Component {
         }
         return (
             <div className="give-friends-list pt-2">
-                <Grid columns="equal" stackable doubling columns={7}>
-                    <Grid.Row stretched>
-                        {
-                            friendsData && friendsData.data && _.size(friendsData.data) > 0 && (
+                {
+                    friendsData && friendsData.data && _.size(friendsData.data) > 0 && (
+                        <Grid columns="equal" stackable doubling columns={7}>
+                            <Grid.Row stretched>
                                 <Grid.Column>
                                     <Card className="createGift" verticalAlign="middle">
                                         <Card.Content>
                                             <Card.Header>Find friends to give to </Card.Header>
                                             <Card.Description>
-                                                <Link className="lnkChange" route="/give/to/friend/new">
+                                                <Link className="lnkChange" route="/user/profile/friends/findfriends">
                                                     <Button className="give-frnds-btn">Find friends</Button>
                                                 </Link>
                                             </Card.Description>
                                         </Card.Content>
                                     </Card>
                                 </Grid.Column>
-                            )
-                        }
-                        {friendsList}
-                    </Grid.Row>
-                </Grid>
+                                {friendsList}
+                            </Grid.Row>
+                        </Grid>
+                    )
+                }
+                {
+                    _.size(friendsData.data) === 0 && (
+                        <div>
+                            {friendsList}
+                        </div>
+                    )
+                }
             </div>
         );
     }

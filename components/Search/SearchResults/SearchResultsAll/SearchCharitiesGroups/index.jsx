@@ -105,7 +105,7 @@ class SearchCharitiesGroups extends React.Component {
             <Fragment>
                 <div className="search-main-head charities">
                     <Header as="h2">
-                        CHARITIES
+                    Charities discovered for you
                         <Header.Subheader>
                             Manage your account settings and set email preferences
                             {

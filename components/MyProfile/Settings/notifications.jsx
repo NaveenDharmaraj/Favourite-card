@@ -50,7 +50,7 @@ class Notifications extends React.Component {
         } = this.props;
         this.setState({ [name]: checked });
         const columnName = notificationColumnName[name];
-        updateUserPreferences(dispatch, currentUser.id, columnName, checked);
+        updateUserPreferences(dispatch, currentUser.id, columnName, checked, null);
     }
 
     render() {

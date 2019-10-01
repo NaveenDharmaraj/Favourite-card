@@ -80,8 +80,8 @@ const NavBarMobile = ({
                                     {name}
                                 </div>
                                 <div className="iconWraper smo-d-none">
-                                    <a href="#" className="new"><Image src={notificationIcon}/></a>
-                                    <a className="settingsIcon"><Image src={messageIcon}/></a>
+                                    <Link route='/notifications/all'><Image src={notificationIcon}/></Link>
+                                    <Link route='/chats/all'><Image src={messageIcon}/></Link>
                                 </div>
                             </List.Content>
                         </List.Item>

@@ -301,7 +301,7 @@ class MyTags extends React.Component {
                         <p className="mb-2">Tags can refine the charities and Giving Groups discovered for you. </p>
                         {this.renderRecommendedTags()}
                     </div>
-                    <div className="pt-1">
+                    <div className="pt-1 mb-2">
                         {this.renderSeeMore()}
                     </div>
                 </div>

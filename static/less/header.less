@@ -407,7 +407,7 @@ button,a{
       max-width: 330px;
       box-shadow: 0 0 4px 0 rgba(0,0,0,0.29);
       border-radius: 2px;
-      margin-top: 0px !important;
+      margin-top: 8px !important;
       >.header{
         padding: .833em 1em;
         border-bottom:1px solid @grey-lighten-2; 
@@ -526,7 +526,7 @@ button,a{
       max-width: 330px;
       box-shadow: 0 0 4px 0 rgba(0,0,0,0.29);
       border-radius: 2px;
-      margin-top: 0px !important;
+      margin-top: 4px !important;
       >.header{
         padding: .833em 1em;
         border-bottom:1px solid @grey-lighten-2; 
@@ -759,7 +759,26 @@ button,a{
     width: 33px;
   }
 }
-
+body{
+  i{
+    &.icon{
+      &.ellipsis{
+        &.horizontal{
+          position: relative;
+          &::before{
+            content: '' !important;
+            background-image: url('../images/icons/ellipsis.svg') !important;
+            background-position: center !important;
+            background-size: contain !important;
+            background-repeat: no-repeat !important;
+            height: 3.67px;	width: 18px;
+            position: absolute;
+          }
+        }
+      }
+    }
+  }
+}
 
 
 .ui{
@@ -771,6 +790,7 @@ button,a{
       border: 0px solid rgba(151,151,151,0);	
       background-color: #FFFFFF;	
       box-shadow: 0 5px 10px 0 rgba(0,0,0,0.2);
+      margin-top: 23px !important;
       >.header{
         padding: 1rem;
         border-bottom: 1px solid rgba(34,36,38,.15);
@@ -1337,6 +1357,7 @@ button,a{
   }
   .ui{
     &.sidebar{
+
       .user-menu-header{
         padding: 1rem 2rem;
         background-image: url(../images/dashboard_bg.png);
@@ -1363,10 +1384,11 @@ button,a{
         }
       }
       &.menu{
-        margin-top:80px !important;
-        margin-bottom: -80px !important;
+        margin-top:69px !important;
+        height: calc(100% - 69px) !important;
         text-align: center;
         border: 0px solid transparent;
+        width: 100vw;
         >.item{
           border: 0px solid transparent;
           &.active,&:active{

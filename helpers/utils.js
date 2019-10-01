@@ -52,6 +52,16 @@ const renderText = (wordGroup, wordCount = 20) => {
     return null;
 };
 
+const redirectIfNotUSer = (currentAccount, railAppOrgin) => {
+    if (!_isEmpty(currentAccount) && currentAccount.accountType !== 'personal' && typeof window !== 'undefined') {
+        const typeMap = {
+            charity: `admin/beneficiaries/${currentAccount.slug}`,
+            company: `companies/${currentAccount.slug}`,
+        };
+        window.location.href = `${railAppOrgin}/${typeMap[currentAccount.accountType]}`;
+    }
+};
+
 const getMainNavItems = (accountType, slug) => {
     const menuLinks = [];
     if (accountType === 'company') {
@@ -121,4 +131,5 @@ export {
     isFalsy,
     distanceOfTimeInWords,
     renderText,
+    redirectIfNotUSer,
 };

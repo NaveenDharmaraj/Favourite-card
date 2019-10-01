@@ -41,9 +41,9 @@ class RecommendationList extends React.Component {
         getRecommendationList(dispatch, url);
     }
 
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         const {
-            recommendationData
+            recommendationData,
         } = this.props;
         let {
             recommendationListLoader,
@@ -110,7 +110,9 @@ class RecommendationList extends React.Component {
                                                                         <div className="filterPanel">
                                                                             <div className="filterPanelContent">
                                                                                 <div className="filterPanelItem">
-                                                                                    <div className="filter-header font-18 font-bold">Hide</div>
+                                                                                    <div className="filter-header font-18 font-bold">
+                                                                                        Hide
+                                                                                    </div>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -121,7 +123,7 @@ class RecommendationList extends React.Component {
                                                     </Grid.Column>
                                                 </Grid.Row>
                                             </Grid>
-                                            <Header as="h4" style={{ margin: '0rem 0rem .5rem' }}>
+                                            <Header as="h4" style={{ margin: '0rem 0.7rem .5rem 0rem' }}>
                                                 <Header.Content>
                                                     {charityName}
                                                 </Header.Content>

@@ -144,6 +144,11 @@ class MyProfile extends React.Component {
     render() {
         const {
             userProfileBasicData,
+            currentUser: {
+                attributes: {
+                    avatar,
+                }
+            },
         } = this.props;
         const {
             activeTabIndex,
@@ -156,7 +161,7 @@ class MyProfile extends React.Component {
         }
         return (
             <Layout authRequired>
-                <BasicProfile userData={userData} />
+                <BasicProfile userData={userData} avatar={avatar}/>
                 <div className="pb-3">
                     <Container>
                         <div className="charityTab n-border">

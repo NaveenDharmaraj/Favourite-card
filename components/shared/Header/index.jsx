@@ -8,6 +8,11 @@ import {
     Menu,
     Segment,
 } from 'semantic-ui-react';
+import {
+    connect,
+} from 'react-redux';
+import getConfig from 'next/config';
+import _isEmpty from 'lodash/isEmpty';
 
 import logo from '../../../static/images/CharitableImpact.svg';
 import { Link } from '../../../routes';
@@ -15,6 +20,11 @@ import { Link } from '../../../routes';
 import AuthHeader from './AuthHeader';
 import OnBoardingHeader from './OnBoarding';
 import NonAuthHeader from './NonAuthHeader';
+
+const { publicRuntimeConfig } = getConfig();
+const {
+    RAILS_APP_URL_ORIGIN,
+} = publicRuntimeConfig;
 
 const renderHeader = (onBoarding, isAuthenticated) => {
     let headerComponent = null;
@@ -26,6 +36,28 @@ const renderHeader = (onBoarding, isAuthenticated) => {
         headerComponent = <NonAuthHeader />;
     }
     return headerComponent;
+};
+
+const renderLogo = (currentAccount) => {
+    let logoComponent = null;
+    if (!_isEmpty(currentAccount) && currentAccount.accountType !== 'personal') {
+        const typeMap = {
+            charity: `admin/beneficiaries/${currentAccount.slug}`,
+            company: `companies/${currentAccount.slug}`,
+        };
+        logoComponent = (
+            <a href={`${RAILS_APP_URL_ORIGIN}/${typeMap[currentAccount.accountType]}`}>
+                <Image src={logo} />
+            </a>
+        );
+    } else {
+        logoComponent = (
+            <Link className="lnkChange" route={`/dashboard`}>
+                <Image src={logo} />
+            </Link>
+        );
+    }
+    return logoComponent;
 };
 
 const getHeaderClassName = (onBoarding, isAuthenticated) => {
@@ -40,6 +72,7 @@ const getHeaderClassName = (onBoarding, isAuthenticated) => {
 
 const Header = (props) => {
     const {
+        currentAccount,
         isAuthenticated,
         onBoarding,
     } = props;
@@ -52,9 +85,7 @@ const Header = (props) => {
             <Container>
                 <Menu secondary>
                     <Menu.Item className="chimpLogo">
-                        <Link className="lnkChange" route={`/dashboard`}>
-                            <Image src={logo} />
-                        </Link>
+                        {renderLogo(currentAccount)}
                     </Menu.Item>
                     {renderHeader(onBoarding, isAuthenticated)}
                 </Menu>
@@ -68,4 +99,8 @@ Header.propTypes = {
     onBoarding: boolean,
 };
 
-export default Header;
+const mapStateToProps = (state) => ({
+    currentAccount: state.user.currentAccount,
+});
+
+export default connect(mapStateToProps)(Header);

@@ -606,7 +606,7 @@ export const proceed = (
                     'give/to/friend': p2pDefaultProps,
                     'give/to/group': groupDefaultProps,
                 };
-                const defaultPropsData = _.merge({}, defaultProps[flowObject.type]);
+                const defaultPropsData = _.cloneDeep(defaultProps[flowObject.type]);
                 const payload = {
                     ...defaultPropsData.flowObject,
                 };

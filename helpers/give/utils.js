@@ -1178,7 +1178,7 @@ const formatDateForGivingTools = (date) => {
     let unformattedDate = new Date(date);
     // Need to use the original function, using this now as we need to integrate translaction for that
     const day = unformattedDate.getDate();
-    const month = monthNamesForGivingTools(unformattedDate.getMonth());
+    const month = monthNamesForGivingTools(unformattedDate.getMonth() + 1);
     const year = unformattedDate.getFullYear();
     
     return `${month} ${day}, ${year}`;
@@ -1412,7 +1412,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
                 `${fromData.displayName}${displayAmount}`,
             );
         }
-        if (creditCard.value > 0) {
+        if (creditCard.value > 0 && (giftType.value === 0 || giftType.value === null)) {
             const creditCardData = _.find(data[paymentMap[giveFrom.type]],
                 { id: creditCard.id });
             if (!_.isEmpty(creditCardData)) {
@@ -1430,7 +1430,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
                 );
             }
         }
-        if (donationMatch.value > 0) {
+        if (donationMatch.value > 0 && (giftType.value === 0 || giftType.value === null)) {
             const matchedData = getDonationMatchedData(donationMatch.id, donationAmount, donationMatchData);
             if (!_.isEmpty(matchedData)) {
                 sources.push(matchedData);
@@ -1463,7 +1463,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
         }
         const buildAccounts = (item) => {
             const val = item.amount;
-            if (val >= 0) {
+            if (val > 0 && val !== null) {
                 return {
                     ...item,
                     amount: formatCurrency(

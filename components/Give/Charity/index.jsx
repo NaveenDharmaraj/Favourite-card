@@ -127,7 +127,7 @@ class Charity extends React.Component {
             };
         }
         else{
-                payload =  _merge({}, props.flowObject)
+                payload =  _merge({}, props.flowObject);
             }
         this.state = {
             benificiaryIndex: 0,
@@ -138,7 +138,7 @@ class Charity extends React.Component {
                 infoToShareList: populateInfoToShare(
                     taxReceiptProfiles,
                     companyDetails,
-                    props.flowObject.giveData.giveFrom,
+                    payload.giveData.giveFrom,
                     {
                         displayName,
                         email,
@@ -148,7 +148,7 @@ class Charity extends React.Component {
                 paymentInstrumentList: populatePaymentInstrument(paymentInstruments, formatMessage),
             },
             findAnotherRecipientLabel: 'Find another recipient',
-            flowObject: payload,
+            flowObject: _.cloneDeep(payload),
             inValidCardNameValue: true,
             inValidCardNumber: true,
             inValidCvv: true,
@@ -529,6 +529,10 @@ class Charity extends React.Component {
             case 'inMemoryOf':
                 validity = validateGiveForm('dedicateType', null, validity, giveData);
             break;
+            case 'noteToCharity':
+            case 'noteToSelf':
+                giveData[name] = inputValue.trim();
+                break;
             default: break;
         }
         
@@ -602,7 +606,7 @@ class Charity extends React.Component {
                 },
             });
         }
-        if (name !== 'inHonorOf' && name !=='inMemoryOf' !== newValue) {
+        if (name !== 'inHonorOf' && name !=='inMemoryOf') {
             giveData[name] = newValue;
             giveData.userInteracted = true;
             switch (name) {
@@ -836,6 +840,7 @@ class Charity extends React.Component {
      */
     renderSpecialInstructionComponent(
         giveFrom, giftType, giftTypeList, infoToShare, infoToShareList, formatMessage
+        ,paymentInstrumentList, defaultTaxReceiptProfile, companyDetails
     ) {
         if (!_isEmpty(giveFrom) && giveFrom.value > 0) {
             return (
@@ -847,6 +852,13 @@ class Charity extends React.Component {
                     infoToShare={infoToShare}
                     infoToShareList={infoToShareList}
                     formatMessage={formatMessage}
+                    paymentInstrumentList={paymentInstrumentList}
+                    defaultTaxReceiptProfile={defaultTaxReceiptProfile}
+                    companyDetails={companyDetails}
+                    companyAccountsFetched={this.props.companyAccountsFetched}
+                    userAccountsFetched={this.props.userAccountsFetched}
+                    slug={this.props.slug}
+
                 />
             );
         }
@@ -941,67 +953,6 @@ class Charity extends React.Component {
         }
 
         return validCC;
-    }
-
-    renderPaymentTaxErrorMsg(paymentInstrumentList, defaultTaxReceiptProfile, giveFrom, companyDetails, giftType){
-        const{
-            companyAccountsFetched,
-            slug,
-            userAccountsFetched
-        } = this.props;
-        if(giftType > 0){
-            if(userAccountsFetched && giveFrom.type === 'user' || companyAccountsFetched && giveFrom.type === 'companies'){
-                let taxProfile = (giveFrom.type === 'companies' && companyDetails && companyDetails.companyDefaultTaxReceiptProfile) ?
-                companyDetails.companyDefaultTaxReceiptProfile :
-                defaultTaxReceiptProfile;
-                    if(_isEmpty(paymentInstrumentList) && _isEmpty(taxProfile)){
-                        return(
-                            <div>
-                               To send a monthly gift, first add a &nbsp;
-                               {
-                                   giveFrom.type === 'companies' 
-                                   ?  <a href={`/companies/${slug}/payment-profiles`}>payment method </a>
-                                   : <Link route = '/user/profile/settings/creditcard'>payment method</Link>
-                               }
-                              &nbsp; and&nbsp;
-                               {
-                                   giveFrom.type === 'companies' 
-                                   ?  <a href={`/companies/${slug}/tax-receipt-profiles`}>tax receipt recipient</a>
-                                   : <Link route = '/user/tax-receipts'>tax receipt recipient</Link>
-                               }
-                              &nbsp; to your account details.We won't charge your card without your permission.
-                            </div>
-                        ) 
-                    }
-                    else if(_isEmpty(paymentInstrumentList)){
-                        return(
-                            <div>
-                                 To send a monthly gift, first add a &nbsp;
-                                 {
-                                   giveFrom.type === 'companies' 
-                                   ?  <a href={`/companies/${slug}/payment-profiles`}>payment method </a>
-                                   : <Link route = '/user/profile/settings/creditcard'>payment method</Link>
-                               }
-                              &nbsp;   to your account details.We won't charge your card without your permission.
-                            </div>
-                        ) 
-                    }
-                    else if( _isEmpty(taxProfile)){
-                        return(
-                            <div>
-                            To send a monthly gift, first add a &nbsp;
-                            {
-                                   giveFrom.type === 'companies' 
-                                   ?  <a href={`/companies/${slug}/tax-receipt-profiles`}>tax receipt recipient</a>
-                                   : <Link route = '/user/tax-receipts'>tax receipt recipient</Link>
-                               }
-                           &nbsp; to your account details.
-                            </div>
-                        ) 
-                    }
-                 }
-            }
-            return null; 
     }
 
     render() {
@@ -1216,10 +1167,8 @@ class Charity extends React.Component {
                         {this.renderSpecialInstructionComponent(
                             giveFrom,
                             giftType, giftTypeList, infoToShare, infoToShareList, formatMessage,
+                            paymentInstrumentList, defaultTaxReceiptProfile, companyDetails
                         )}
-                        { 
-                            this.renderPaymentTaxErrorMsg(paymentInstrumentList, defaultTaxReceiptProfile, giveFrom,companyDetails, giftType.value)
-                        }
                         <Form.Field>
                             <Divider className="dividerMargin" />
                         </Form.Field>

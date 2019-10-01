@@ -5,6 +5,7 @@ import searchApi from '../services/searchApi';
 import securityApi from '../services/securityApi';
 import coreApi from '../services/coreApi';
 import eventApi from '../services/eventApi';
+import utilityApi from '../services/utilityApi';
 
 import {
     createToken,
@@ -27,9 +28,11 @@ export const actionTypes = {
     UPDATE_USER_PASSWORD: 'UPDATE_USER_PASSWORD',
     UPDATE_USER_PREFERENCES: 'UPDATE_USER_PREFERENCES',
     UPDATE_USER_PRIVACY_SETTING: 'UPDATE_USER_PRIVACY_SETTING',
+    USER_PROFILE_ADD_FRIEND: 'USER_PROFILE_ADD_FRIEND',
     USER_PROFILE_ADMIN_GROUP: 'USER_PROFILE_ADMIN_GROUP',
     USER_PROFILE_BASIC: 'USER_PROFILE_BASIC',
     USER_PROFILE_BASIC_FRIEND: 'USER_PROFILE_BASIC_FRIEND',
+    USER_PROFILE_BLOCK_USER: 'USER_PROFILE_BLOCK_USER',
     USER_PROFILE_BLOCKED_FRIENDS: 'USER_PROFILE_BLOCKED_FRIENDS',
     USER_PROFILE_CAUSES: 'USER_PROFILE_CAUSES',
     USER_PROFILE_CHARITABLE_INTERESTS: 'USER_PROFILE_CHARITABLE_INTERESTS',
@@ -42,11 +45,14 @@ export const actionTypes = {
     USER_PROFILE_FRIEND_ACCEPT: 'USER_PROFILE_FRIEND_ACCEPT',
     USER_PROFILE_FRIEND_REQUEST: 'USER_PROFILE_FRIEND_REQUEST',
     USER_PROFILE_INVITATIONS: 'USER_PROFILE_INVITATIONS',
+    USER_PROFILE_INVITE_FRIENDS: 'USER_PROFILE_INVITE_FRIENDS',
     USER_PROFILE_MEMBER_GROUP: 'USER_PROFILE_MEMBER_GROUP',
     USER_PROFILE_MY_FRIENDS: 'USER_PROFILE_MY_FRIENDS',
     USER_PROFILE_RECOMMENDED_TAGS: 'USER_PROFILE_RECOMMENDED_TAGS',
+    USER_PROFILE_SIGNUP_DEEPLINK: 'USER_PROFILE_SIGNUP_DEEPLINK',
     USER_PROFILE_TAX_RECEIPTS: 'USER_PROFILE_TAX_RECEIPTS',
     USER_PROFILE_UNBLOCK_FRIEND: 'USER_PROFILE_UNBLOCK_FRIEND',
+    USER_PROFILE_UPLOAD_IMAGE: 'USER_PROFILE_UPLOAD_IMAGE',
 };
 
 const getUserProfileBasic = (dispatch, email, userId, loggedInUserId) => {
@@ -381,31 +387,26 @@ const saveUserBasicProfile = (dispatch, userData, userId, email) => {
     });
 };
 
-const sendFriendRequest = (dispatch, sourceUserId, destinationEmailId, searchWord, pageNumber) => {
+const sendFriendRequest = (dispatch, sourceUserId, sourceEmail, avatar, firstName, userData, searchWord, pageNumber) => {
     const fsa = {
         payload: {
         },
         type: actionTypes.USER_PROFILE_FRIEND_REQUEST,
     };
-    sourceUserId = Number(sourceUserId);
     const bodyData = {
         data: {
             attributes: {
-                category: 'social',
-                eventName: 'friendRequest',
-                payload: {
-                    deepLink: 'https://testLink.com',
-                    destinationEmailId,
-                    message: 'Friend Request',
-                    sourceUserId,
-                },
-                source: 'socialapi',
-                subCategory: 'friend',
+                recipient_email_id: Buffer.from(userData.attributes.email_hash, 'base64').toString('ascii'),
+                recipient_user_id: Number(userData.attributes.user_id),
+                requester_avatar_link: avatar,
+                requester_email_id: sourceEmail,
+                requester_first_name: firstName,
+                requester_user_id: Number(sourceUserId),
+                source: 'web',
             },
-            type: 'event',
         },
     };
-    return eventApi.post(`/event`, bodyData).then(
+    return eventApi.post(`/friend/request`, bodyData).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -419,7 +420,7 @@ const sendFriendRequest = (dispatch, sourceUserId, destinationEmailId, searchWor
     });
 };
 
-const acceptFriendRequest = (dispatch, sourceUserId, destinationEmailId, pageNumber, sourceEmailId, pageName, searchWord) => {
+const acceptFriendRequest = (dispatch, sourceUserId, sourceEmailId, sourceAvatar, sourceFirstName, destinationEmailId, destinationUserId, pageNumber, pageName, searchWord) => {
     const fsa = {
         payload: {
         },
@@ -428,22 +429,17 @@ const acceptFriendRequest = (dispatch, sourceUserId, destinationEmailId, pageNum
     const bodyData = {
         data: {
             attributes: {
-                category: 'social',
-                eventName: 'friendAccept',
-                payload: {
-                    deepLink: 'https://testLink.com',
-                    destinationEmailId,
-                    linkedEventId: '1563362089449:venkata-Latitude-5580:12091:jy75dh74:10000',
-                    message: 'Hi, I would like to add you to my friend list',
-                    sourceUserId: Number(sourceUserId),
-                },
-                source: 'socialapi',
-                subCategory: 'friend',
+                acceptor_avatar_link: sourceAvatar,
+                acceptor_email_id: sourceEmailId,
+                acceptor_first_name: sourceFirstName,
+                acceptor_user_id: Number(sourceUserId),
+                requester_email_id: Buffer.from(destinationEmailId, 'base64').toString('ascii'),
+                requester_user_id: Number(destinationUserId),
+                source: 'web',
             },
-            type: 'event',
         },
     };
-    return eventApi.post(`/event`, bodyData).then(
+    return eventApi.post(`/friend/accept`, bodyData).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -462,6 +458,32 @@ const acceptFriendRequest = (dispatch, sourceUserId, destinationEmailId, pageNum
     });
 };
 
+const blockUser = (dispatch, sourceUserId, sourceEmailId, destinationUserId) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.USER_PROFILE_BLOCK_USER,
+    };
+    const blockUsers = [];
+    blockUsers.push(Number(destinationUserId));
+    const bodyData = {
+        block_user_ids: blockUsers,
+        source_user_id: Number(sourceUserId),
+    };
+    return graphApi.post(`/core/blockUser`, bodyData).then(
+        (result) => {
+            fsa.payload = {
+                data: result.data,
+            };
+            getUserFriendProfile(dispatch, sourceEmailId, destinationUserId, sourceUserId);
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    });
+};
+
 const unblockFriend = (dispatch, sourceUserId, destinationUserId) => {
     const fsa = {
         payload: {
@@ -469,7 +491,7 @@ const unblockFriend = (dispatch, sourceUserId, destinationUserId) => {
         type: actionTypes.USER_PROFILE_UNBLOCK_FRIEND,
     };
     const blockUsers = [];
-    blockUsers.push(destinationUserId);
+    blockUsers.push(Number(destinationUserId));
     const bodyData = {
         source_user_id: Number(sourceUserId),
         unblock_user_ids: blockUsers,
@@ -543,11 +565,12 @@ const editUserCreditCard = (dispatch, instrumentDetails) => {
         },
         type: actionTypes.UPDATE_USER_CREDIT_CARD,
     };
+    const expiryDate = instrumentDetails.expiry.split('/');
     const bodyData = {
         data: {
             attributes: {
-                expMonth: instrumentDetails.editMonth,
-                expYear: instrumentDetails.editYear,
+                expMonth: expiryDate[0],
+                expYear: expiryDate[1],
             },
             id: instrumentDetails.editPaymetInstrumentId,
             type: 'paymentInstruments',
@@ -708,7 +731,7 @@ const savePrivacySetting = (dispatch, userId, email, columnName, columnValue) =>
     });
 };
 
-const updateUserPreferences = (dispatch, userId, preferenceColumn, preferenceValue) => {
+const updateUserPreferences = (dispatch, userId, preferenceColumn, preferenceValue, selectedTaxReceipt) => {
     const fsa = {
         payload: {
         },
@@ -723,6 +746,7 @@ const updateUserPreferences = (dispatch, userId, preferenceColumn, preferenceVal
         dataName.charities_share_my_name = false;
         dataName.charities_share_my_name_email = false;
         dataName[preferenceColumn] = preferenceValue;
+        dataName.address = Number(selectedTaxReceipt);
     } else if (preferenceColumn === 'charities_share_my_name_email') {
         dataName.charities_share_my_name_address = false;
         dataName.charities_share_my_name = false;
@@ -780,6 +804,116 @@ const getUserDefaultTaxReceipt = (dispatch, userid) => {
     });
 };
 
+const addToFriend = (dispatch, sourceUserId, sourceEmail, sourceAvatar, sourceFirstName, destinationUserId, destinationEmailId) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.USER_PROFILE_ADD_FRIEND,
+    };
+    const bodyData = {
+        data: {
+            attributes: {
+                recipient_email_id: destinationEmailId,
+                recipient_user_id: Number(destinationUserId),
+                requester_avatar_link: sourceAvatar,
+                requester_email_id: sourceEmail,
+                requester_first_name: sourceFirstName,
+                requester_user_id: Number(sourceUserId),
+                source: 'web',
+            },
+        },
+    };
+    return eventApi.post(`/friend/request`, bodyData).then(
+        (result) => {
+            fsa.payload = {
+                data: result.data,
+            };
+            getUserFriendProfile(dispatch, sourceEmail, destinationUserId, sourceUserId);
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    });
+};
+
+const inviteFriends = (dispatch, inviteEmailIds) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.USER_PROFILE_INVITE_FRIENDS,
+    };
+    const bodyData = {
+        data: {
+            attributes: {
+                email: inviteEmailIds,
+                notification_type: 'inviteFriends',
+            },
+            type: 'users',
+        },
+    };
+    return coreApi.post(`/users/friend_mail_notifications`, bodyData).then(
+        (result) => {
+            fsa.payload = {
+                data: result.data,
+            };
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    });
+};
+
+const generateDeeplinkSignup = (dispatch, profileType) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.USER_PROFILE_SIGNUP_DEEPLINK,
+    };
+    return utilityApi.get(`/deeplink?profileType=${profileType}&webLink=true`).then(
+        (result) => {
+            fsa.payload = {
+                data: result.data,
+            };
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    });
+};
+
+const uploadUserImage = (dispatch, sourceUserId, imageData) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.USER_PROFILE_UPLOAD_IMAGE,
+    };
+    const bodyData = {
+        data: {
+            attributes: {
+                logo: imageData,
+            },
+            id: sourceUserId,
+            type: 'users',
+        },
+    };
+    return coreApi.patch(`/users/${Number(sourceUserId)}`, bodyData).then(
+        (result) => {
+            fsa.payload = {
+                data: result.data,
+            };
+            getUser(dispatch, sourceUserId, null);
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    });
+};
+
+
 export {
     getUserProfileBasic,
     getUserFriendProfile,
@@ -801,6 +935,7 @@ export {
     saveCharitableTags,
     sendFriendRequest,
     acceptFriendRequest,
+    blockUser,
     unblockFriend,
     editUserCreditCard,
     deleteUserCreditCard,
@@ -810,4 +945,8 @@ export {
     savePrivacySetting,
     updateUserPreferences,
     getUserDefaultTaxReceipt,
+    addToFriend,
+    inviteFriends,
+    generateDeeplinkSignup,
+    uploadUserImage,
 };

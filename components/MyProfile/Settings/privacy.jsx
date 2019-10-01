@@ -11,6 +11,7 @@ import {
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 
 import {
     getBlockedFriends,
@@ -18,13 +19,20 @@ import {
     updateUserPreferences,
 } from '../../../actions/userProfile';
 import PlaceHolderGrid from '../../shared/PlaceHolder';
+const ModalStatusMessage = dynamic(() => import('../../shared/ModalStatusMessage'), {
+    ssr: false
+});
 
 class Privacy extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            buttonClicked: false,
             blockedUserListLoader: !props.userBlockedFriendsList,
             discoverability: (!_.isEmpty(props.currentUser)) ? props.currentUser.attributes.preferences.discoverability : false,
+            errorMessage: null,
+            statusMessage: false,
+            successMessage: '',
         };
         this.handleUserPreferenceChange = this.handleUserPreferenceChange.bind(this);
     }
@@ -53,6 +61,10 @@ class Privacy extends React.Component {
     }
 
     handleFriendUnblockClick(userId) {
+        this.setState({
+            buttonClicked: true,
+            statusMessage: false,
+        });
         if (userId !== null) {
             const {
                 currentUser: {
@@ -60,7 +72,20 @@ class Privacy extends React.Component {
                 },
                 dispatch,
             } = this.props;
-            unblockFriend(dispatch, id, userId);
+            unblockFriend(dispatch, id, userId).then(() => {
+                this.setState({
+                    errorMessage: null,
+                    successMessage: 'Unblocking user was successfully.',
+                    statusMessage: true,
+                    buttonClicked: false,
+                });
+            }).catch((err) => {
+                this.setState({
+                    errorMessage: 'Error in Unblocking user.',
+                    statusMessage: true,
+                    buttonClicked: false,
+                });
+            });
         }
     }
 
@@ -75,26 +100,30 @@ class Privacy extends React.Component {
         } = this.props;
         this.setState({ [name]: checked });
         const columnName = 'discoverability';
-        updateUserPreferences(dispatch, currentUser.id, columnName, checked);
+        updateUserPreferences(dispatch, currentUser.id, columnName, checked, null);
     }
 
     renderBlockedFriendsList() {
         const {
             userBlockedFriendsList,
         } = this.props;
+        const {
+            buttonClicked,
+        } = this.state;
         let friendsBlockedList = 'Users you block will appear here.';
         if (!_.isEmpty(userBlockedFriendsList) && _.size(userBlockedFriendsList.data) > 0) {
             friendsBlockedList = userBlockedFriendsList.data.map((data) => {
                 const name = `${data.attributes.first_name} ${data.attributes.last_name}`;
                 const avatar = ((typeof data.attributes.avatar) === 'undefined' || data.attributes.avatar === null) ? 'https://react.semantic-ui.com/images/avatar/small/daniel.jpg' : data.attributes.avatar;
                 const email = Buffer.from(data.attributes.email_hash, 'base64').toString('ascii');
-                const location = (typeof data.attributes.city !== 'undefined') ? `${data.attributes.city}, ${data.attributes.province}` : email;
+                const location = (typeof data.attributes.city !== 'undefined') ? `${data.attributes.city}, ${data.attributes.province}` : '';
                 return (
                     <List.Item>
                         <List.Content floated="right">
                             <Button
                                 className="blue-bordr-btn-round-def c-small"
                                 onClick={() => this.handleFriendUnblockClick(data.attributes.user_id)}
+                                disabled={buttonClicked}
                             >
                                 Unblock
                             </Button>
@@ -121,6 +150,9 @@ class Privacy extends React.Component {
 
     render() {
         const {
+            errorMessage,
+            statusMessage,
+            successMessage,
             blockedUserListLoader,
             discoverability,
         } = this.state;
@@ -147,6 +179,16 @@ class Privacy extends React.Component {
                     </div>
                     <div className="settingsDetailWraper">
                         <Header as="h4">Blocked users</Header>
+                        {
+                            statusMessage && (
+                                <div className="mt-1 mb-2">
+                                    <ModalStatusMessage 
+                                        message = {!_.isEmpty(successMessage) ? successMessage : null}
+                                        error = {!_.isEmpty(errorMessage) ? errorMessage : null}
+                                    />
+                                </div>
+                            )
+                        }
                         { blockedUserListLoader
                             ? (
                                 <Table padded unstackable className="no-border-table">

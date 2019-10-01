@@ -29,7 +29,7 @@ const detailsView = (valuesObject) => {
                     <Grid.Column>
                         <Header as='h2'>
                             {valuesObject.groupsCount}
-                            <Header.Subheader className="small">Campaign Giving Groups</Header.Subheader>
+                            <Header.Subheader className="small">People supporting this campaign</Header.Subheader>
                         </Header>
                     </Grid.Column>
                 </Grid.Row>
