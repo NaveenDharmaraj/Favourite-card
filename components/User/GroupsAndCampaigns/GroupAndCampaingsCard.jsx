@@ -68,8 +68,16 @@ class GroupsAndCampaignsCard extends React.Component {
             id,
         } = data;
         const shortName = renderText(name, 3);
-        const urlType = (listingType === 'administeredCampaigns') ? 'campaigns' : 'groups';
-        const editLink = (listingType === 'administeredCampaigns') ? `/campaigns/${slug}/manage-basics` : `/groups/${slug}/edit`;
+        let urlType = 'groups';
+        let editText = 'Edit Group';
+        let headingText = 'giving group';
+        let editLink = `/groups/${slug}/edit`;
+        if (listingType === 'administeredCampaigns') {
+            urlType = 'campaigns';
+            editText = 'Edit Campaign';
+            editLink = `/campaigns/${slug}/manage-basics`;
+            headingText = 'Campaign';
+        }
         let showError = false;
         let showMangeGroups = false;
         if (!_.isEmpty(errorMessage) && errorMessage.id === id) {
@@ -94,7 +102,7 @@ class GroupsAndCampaignsCard extends React.Component {
                                             <Grid.Column>
                                                 <Header as="h4">
                                                     <Header.Content>
-                                                        <Header.Subheader className="chimp-lbl group">giving group</Header.Subheader>
+                                                        <Header.Subheader className="chimp-lbl group">{headingText}</Header.Subheader>
                                                     </Header.Content>
                                                 </Header>
                                             </Grid.Column>
@@ -112,7 +120,7 @@ class GroupsAndCampaignsCard extends React.Component {
                                                                         (listingType !== 'groupsWithMemberships')
                                                                         && (
                                                                             <Link route={editLink}>
-                                                                                <Dropdown.Item text="Edit Group"/>
+                                                                                <Dropdown.Item text={editText} />
                                                                             </Link>
                                                                         )
                                                                     }

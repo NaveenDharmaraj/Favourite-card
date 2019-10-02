@@ -128,9 +128,9 @@ class SearchCharitiesGroups extends React.Component {
                 </div>
                 <div className="search-main-head groups">
                     <Header as="h2">
-                    GIVING GROUPS
+                    Giving Groups discovered for you
                         <Header.Subheader>
-                            Manage your account settings and set email preferences
+                            Suggestions based on your interests.
                             {
                                 (!_isEmpty(groups) && !_isEmpty(groups.meta) && groups.meta.recordCount > 4)
                                 && <div className="right-align"><Link route={`/search?${searchQueryParam}result_type=Group`}>&nbsp;&nbsp;View all</Link></div>

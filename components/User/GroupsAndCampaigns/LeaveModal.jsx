@@ -61,7 +61,7 @@ class LeaveModal extends React.Component {
                                     <Button 
                                         className="blue-btn-rounded-def c-small" 
                                     >
-                                        Manage Groups
+                                        Manage members
                                     </Button>
                                 </Link>
                             )
