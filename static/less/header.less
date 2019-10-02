@@ -328,7 +328,6 @@ button,a{
                 z-index: 9;
                 &.chat{
                   &::before{
-                    
                     position: relative;
                     content: url(../images/icons/chatIcon.svg);
                   }
@@ -1015,6 +1014,113 @@ body{
 }
 @media only screen and (max-width:991px) and (min-width:767px){
   body{
+    .c-m-login-header .ui.secondary.menu{
+      .item{
+        &.user-img{
+          &.give-btn{
+            padding-right: 0px;
+            &:active{
+              background: 0 0 !important;
+            }
+            &:focus{
+              background: 0 0 !important;
+            }
+            &:visited{
+              background: 0 0 !important;
+            }
+          }
+        }
+        &.logoImg{
+
+        }
+
+      }
+      .right{
+        &.menu{
+          .item{
+            &.notifyNav{
+              border-radius: 100%;
+              width: 45px;
+              height: 45px;
+              text-align: center;
+              .icon{
+                position: relative;
+                //margin: 0px;
+                z-index: 1;
+                &.bell{
+                  position: relative;
+                  height: 24px;	width: 19px;
+                  margin: 0px auto;
+                  &::before{
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    background-image: url(../images/icons/notifications.svg) !important;
+                    background-size: contain !important;
+                    background-repeat: no-repeat !important;
+                    background-position: center !important;
+                  }
+                }
+                &.new{
+                  &::after{
+                    content: '';
+                    position: absolute;
+                    height: 8px;	width: 8px;	background-color: #DB0163;
+                    top: 1px;
+                    right: 2px;
+                    border-radius: 100%;
+                  }
+                }
+              }
+            }
+            &.give-btn{
+              
+            }
+            &.chatNav{
+              border-radius: 100%;
+              width: 45px;
+              height: 45px;
+              text-align: center;
+              .icon{
+                position: relative;
+                z-index: 9;
+                min-height: 24px;
+                min-width: 23px;
+                margin: 0px auto;
+                &.chat{
+                  height: 20px;	width: 20px;
+                  &::before{
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    background-image: url(../images/icons/messages.svg) !important;
+                    background-size: contain !important;
+                    background-repeat: no-repeat !important;
+                    background-position: center !important;
+                  }
+                }
+                &.new{
+                  &::after{
+                    content: '';
+                    position: absolute;
+                    height: 8px;	width: 8px;	background-color: #DB0163;
+                    top: 0;
+                    right: 1px;
+                    border-radius: 100%;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
     .text-center{
       .result{
         margin-top: 2rem;

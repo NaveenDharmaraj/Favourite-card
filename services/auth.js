@@ -48,6 +48,7 @@ const _auth0lockConfig = {
     avatar: null,
     container: 'auth0-lock-container',
     languageDictionary: {
+        emailInputPlaceholder: 'Enter your email',
         error: {
             forgotPassword: {
                 'lock.fallback': [
@@ -82,6 +83,7 @@ const _auth0lockConfig = {
         },
         forgotPasswordAction: 'Forgot your password?',
         forgotPasswordSubmitLabel: 'Reset password',
+        forgotPasswordTitle: 'Forgot your password?',
         loginSubmitLabel: 'Sign in',
         passwordInputPlaceholder: 'Your password',
         success: {
