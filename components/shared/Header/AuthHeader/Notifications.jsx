@@ -215,7 +215,7 @@ const Notifications = (props) => {
             className="notification-popup"
             trigger={
                 (
-                    <Menu.Item as="a" className="notifyNav">
+                    <Menu.Item as="a" className="notifyNav xs-d-none">
                         {(() => {
                             if (messageCount > 0 && false) {
                                 return (

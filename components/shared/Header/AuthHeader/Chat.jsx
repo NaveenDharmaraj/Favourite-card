@@ -180,7 +180,7 @@ class Chat extends React.Component {
                 className="chat-popup"
                 trigger={
                     (
-                        <Menu.Item as="a" className="chatNav">
+                        <Menu.Item as="a" className="chatNav xs-d-none">
                             {/* {userInfo.applogicClientRegistration ? (userInfo.applogicClientRegistration.totalUnreadCount > 0 ? <Label color="red" floating circular>4</Label> : '') : ''} */}
                             {/* {this.state.totalUnreadCount > 0 ? <Label color="red" floating circular className="chat-launcher-icon">{this.state.totalUnreadCount}</Label> : ""} */}
                             <Icon name={"chat" + (this.state.totalUnreadCount > 0 ? " new" : "")} />
