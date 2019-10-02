@@ -214,13 +214,13 @@ class GroupsAndCampaigns extends React.Component {
                         <div className="grpcampBannerContainer">
                             <div className="grpcampBannerTxt">
                                 <Header as="h3" icon>
-                                    Giving Groups & Campaigns
+                                    Give together
                                     <Header.Subheader>
-                                    You can give more as a part of group, and you can raise more when it’s easy to manage.
+                                        With a Giving Group, multiple people can combine forces, pool or raise money, and support one or more charities together.
                                     </Header.Subheader>
                                 </Header>
                                 <a href={`${RAILS_APP_URL_ORIGIN}/groups/new`}>
-                                    <Button fluid className="success-btn-rounded-def">Create a new Group</Button>
+                                    <Button fluid className="success-btn-rounded-def">Create a new Giving Group</Button>
                                 </a>
                             </div>
                         </div>

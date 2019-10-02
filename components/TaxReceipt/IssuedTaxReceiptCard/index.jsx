@@ -3,6 +3,7 @@ import {
     Button,
     Image,
     List,
+    Responsive,
 } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import _isEmpty from 'lodash/isEmpty';
@@ -25,9 +26,11 @@ const IssuedTaxReceiptCard = (props) => {
 
     return (
         <List.Item>
-            <List.Content floated="right">
-                <Button className="blue-bordr-btn-round-def c-small" onClick={() => { props.renderdonationDetailShow(issuedTaxReceipt.id, issuedTaxReceipt, false); }}> See issued receipts</Button>
-            </List.Content>
+            <Responsive minWidth={768}>
+                <List.Content floated="right">
+                    <Button className="blue-bordr-btn-round-def c-small" onClick={() => { props.renderdonationDetailShow(issuedTaxReceipt.id, issuedTaxReceipt, false); }}> See issued receipts</Button> 
+                </List.Content>
+            </Responsive>
             <Image className="greyIcon" src={docIcon} />
             <List.Content>
                 <List.Header className="font-s-15 mb-1-2">{full_name}</List.Header>
@@ -39,6 +42,11 @@ const IssuedTaxReceiptCard = (props) => {
                     {!_isEmpty(country) && `${country}, `}
                     {!_isEmpty(postal_code) && `${postal_code}`}
                 </p>
+                <Responsive minWidth={320} maxWidth={767}>
+                    <List.Content className="mt-1">
+                        <Button className="blue-bordr-btn-round-def c-small" onClick={() => { props.renderdonationDetailShow(issuedTaxReceipt.id, issuedTaxReceipt, false); }}> See issued receipts</Button>
+                    </List.Content>
+                </Responsive>
             </List.Content>
         </List.Item>
     );

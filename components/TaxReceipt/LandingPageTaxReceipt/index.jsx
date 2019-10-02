@@ -120,7 +120,7 @@ class LandingPageTaxReceipt extends React.Component {
                                                 <p className="font-s-13">Manage the legal names and addresses that appear on tax receipts. You can have multiple recepients on one account (for example, a spouse).</p>
                                             </Grid.Column>
                                             <Grid.Column mobile={16} tablet={4} computer={3} className="text-right">
-                                                <Button className="success-btn-rounded-def" onClick={()=>{this.onEdit()}}>+ Add new recipient</Button>
+                                                <Button className="success-btn-rounded-def f-w-mob" onClick={()=>{this.onEdit()}}>+ Add new recipient</Button>
                                                 {
                                                     isSelectPhotoModalOpen && (
                                                         <ModalComponent
