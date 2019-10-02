@@ -149,6 +149,7 @@ export const downloadTaxreceiptDonationsDetail = (dispatch, id, year) => {
                 dispatch,
                 uxCritical: true,
             },
+            responseType: 'blob',
         }).then((result) => {
         const blob = new Blob([
             result,
