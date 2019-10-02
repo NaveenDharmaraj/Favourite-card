@@ -144,7 +144,7 @@ class Layout extends React.Component {
                                 {children}
                                 </div>
                         </Responsive>
-                        <Footer />
+                        <Footer isAuthenticated={isAuthenticated}/>
                     </ErrorBoundary> 
                 </div>
             </Responsive>
