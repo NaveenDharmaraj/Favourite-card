@@ -8,13 +8,13 @@ import auth0 from './auth';
 const { publicRuntimeConfig } = getConfig();
 
 const {
-    WP_DOMAIN,
+    CORP_DOMAIN,
     WP_DOMAIN_BASE,
     WP_API_VERSION,
 } = publicRuntimeConfig;
 
 const instance = axios.create({
-    baseURL: `${WP_DOMAIN}/${WP_DOMAIN_BASE}/${WP_API_VERSION}/`,
+    baseURL: `${CORP_DOMAIN}/${WP_DOMAIN_BASE}/${WP_API_VERSION}/`,
     headers: {
         'Accept': 'application/vnd.api+json',
         'Content-Type': 'application/vnd.api+json',

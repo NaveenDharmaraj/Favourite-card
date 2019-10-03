@@ -46,8 +46,7 @@ const configVars = {
         STRIPE_URL: process.env.STRIPE_URL,
         UTILITY_API_BASE: process.env.UTILITY_API_BASE,
         WP_API_VERSION: process.env.WP_API_VERSION,
-        WP_DOMAIN: process.env.WP_DOMAIN,
-        WP_DOMAIN_BASE: process.env.WP_DOMAIN,
+        WP_DOMAIN_BASE: process.env.WP_DOMAIN_BASE,
     },
 };
 
