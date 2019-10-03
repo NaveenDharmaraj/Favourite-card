@@ -1,3 +1,4 @@
+/* eslint-disable import/exports-last */
 import _ from 'lodash';
 
 import coreApi from '../services/coreApi';
@@ -7,6 +8,7 @@ import graphApi from '../services/graphApi';
 export const actionTypes = {
     ACTIVITY_LIKE_STATUS: 'ACTIVITY_LIKE_STATUS',
     ADMIN_PLACEHOLDER_STATUS: 'ADMIN_PLACEHOLDER_STATUS',
+    GET_BENEFICIARIES_COUNT: 'GET_BENEFICIARIES_COUNT',
     GET_GROUP_ACTIVITY_DETAILS: 'GET_GROUP_ACTIVITY_DETAILS',
     GET_GROUP_ADMIN_DETAILS: 'GET_GROUP_ADMIN_DETAILS',
     GET_GROUP_BENEFICIARIES: 'GET_GROUP_BENEFICIARIES',
@@ -20,6 +22,8 @@ export const actionTypes = {
     POST_NEW_ACTIVITY: 'POST_NEW_ACTIVITY',
     REDIRECT_TO_DASHBOARD: 'REDIRECT_TO_DASHBOARD',
     // COMMENT_LIKE_STATUS: 'COMMENT_LIKE_STATUS',
+    LEAVE_GROUP_MODAL_ERROR_MESSAGE: 'LEAVE_GROUP_MODAL_ERROR_MESSAGE',
+    LEAVE_GROUP_MODAL_BUTTON_LOADER: 'LEAVE_GROUP_MODAL_BUTTON_LOADER',
 };
 
 export const getGroupFromSlug = async (dispatch, slug) => {
@@ -415,5 +419,80 @@ export const joinGroup = async (dispatch, groupSlug) => {
         // redirect('/give/error');
     }).finally(() => {
         dispatch(fsa);
+    });
+};
+
+export const getGroupBeneficiariesCount = async (dispatch, url) => {
+    const fsa = {
+        payload: {
+            groupBeneficiariesCount: {},
+        },
+        type: actionTypes.GET_BENEFICIARIES_COUNT,
+    };
+    coreApi.get(url,
+        {
+            params: {
+                dispatch,
+                uxCritical: true,
+            },
+        }).then((result) => {
+        if (result && !_.isEmpty(result.data)) {
+            fsa.payload.groupBeneficiariesCount = result.data;
+        }
+    }).catch().finally(() => {
+        dispatch(fsa);
+    });
+};
+
+const checkForOnlyOneAdmin = (error) => {
+    if (!_.isEmpty(error) && error.length === 1) {
+        const checkForAdminError = error[0];
+        if (!_.isEmpty(checkForAdminError.meta)
+            && !_.isEmpty(checkForAdminError.meta.validationCode)
+            && (checkForAdminError.meta.validationCode === '1329'
+            || checkForAdminError.meta.validationCode === 1329)) {
+            return true;
+        }
+    }
+    return false;
+};
+
+export const leaveGroup = async (dispatch, slug, groupId) => {
+    dispatch({
+        payload: { buttonLoading: true },
+        type: actionTypes.LEAVE_GROUP_MODAL_BUTTON_LOADER,
+    });
+    coreApi.patch(`/groups/leave?slug=${slug}`, {
+    }).then((result) => {
+        if (result && result.status === 'SUCCESS') {
+            getGroupFromSlug(dispatch, slug);
+            dispatch({
+                payload: {
+                    buttonLoading: false,
+                    closeModal: true,
+                },
+                type: actionTypes.LEAVE_GROUP_MODAL_BUTTON_LOADER,
+            });
+        }
+    }).catch((error) => {
+        dispatch({
+            payload: {
+                buttonLoading: false,
+            },
+            type: actionTypes.LEAVE_GROUP_MODAL_BUTTON_LOADER,
+        });
+        const errorFsa = {
+            payload: {
+                adminError: 0,
+                id: groupId,
+                message: error.errors[0].detail,
+            },
+            type: actionTypes.LEAVE_GROUP_MODAL_ERROR_MESSAGE,
+        };
+        if (checkForOnlyOneAdmin(error.errors)) {
+            errorFsa.payload.message = 'You are the only admin in this Group. In order to leave, please appoint another Group member as admin.';
+            errorFsa.payload.adminError = 1;
+        }
+        dispatch(errorFsa);
     });
 };

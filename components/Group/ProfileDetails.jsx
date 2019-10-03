@@ -19,6 +19,7 @@ import Activity from './Activity';
 import Members from './Members';
 import CharitySupport from './CharitySupport';
 import TransactionDetails from './TransactionDetails';
+import GroupNoDataState from './GroupNoDataState';
 
 const ProfileDetails = (props) => {
     const {
@@ -60,7 +61,7 @@ const ProfileDetails = (props) => {
                         {
                             (_isEmpty(imageArray) && !description && !videoDirectLink && !purpose && !helping && !about) ? (
                                 <Grid>
-                                    NO DATA
+                                    <GroupNoDataState />
                                 </Grid>
                             ) : (
                                 <Fragment>

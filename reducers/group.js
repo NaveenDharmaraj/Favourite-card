@@ -252,6 +252,28 @@ const group = (state = {}, action) => {
                 galleryImageData: action.payload.galleryImages,
             };
             break;
+        case 'GET_BENEFICIARIES_COUNT':
+            newState = {
+                ...state,
+                beneficiariesCount: action.payload.groupBeneficiariesCount,
+            };
+            break;
+        case 'LEAVE_GROUP_MODAL_ERROR_MESSAGE':
+            newState = {
+                ...state,
+                errorMessage: action.payload,
+            };
+            break;
+        case 'LEAVE_GROUP_MODAL_BUTTON_LOADER':
+            newState = {
+                ...state,
+                closeLeaveModal: action.payload.closeModal,
+                leaveButtonLoader: action.payload.buttonLoading,
+            };
+            break;
+        case 'RESET_STATES':
+            newState = {};
+            break;
         default:
             break;
     }

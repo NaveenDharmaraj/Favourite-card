@@ -62,6 +62,9 @@ const charity = (state = {}, action) => {
                 countriesData: action.payload.city,
             };
             break;
+        case 'RESET_STATES':
+            newState = {};
+            break;
         default:
             break;
     }

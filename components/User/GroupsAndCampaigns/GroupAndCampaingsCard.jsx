@@ -12,7 +12,7 @@ import _ from 'lodash';
 import { Link } from '../../../routes';
 import placeholder from '../../../static/images/no-data-avatar-giving-group-profile.png';
 
-import LeaveModal from './LeaveModal';
+import LeaveModal from '../../shared/LeaveModal';
 import { renderText } from '../../../helpers/utils';
 
 class GroupsAndCampaignsCard extends React.Component {
