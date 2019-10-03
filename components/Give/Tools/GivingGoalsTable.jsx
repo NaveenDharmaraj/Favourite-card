@@ -8,6 +8,10 @@ import {
 } from 'semantic-ui-react';
 import _ from 'lodash';
 
+import {
+    formatCurrency,
+} from '../../../helpers/give/utils';
+
 function GivingGoalsTable(props) {
     const {
         userGivingGoalDetails,
@@ -19,12 +23,13 @@ function GivingGoalsTable(props) {
                 const {
                     attributes,
                 } = goal;
-                const goalString = `You've given $${attributes.donatedAmount}, and your goal is ${attributes.amount}`;
+                const formattedGoalAmount = formatCurrency(attributes.amount, 'en', 'USD');
+                const goalString = `You've given $${attributes.donatedAmount}, and your goal is ${formattedGoalAmount}`;
                 tableBody.push(
                     <Table.Row>
                         <Table.Cell>{attributes.year}</Table.Cell>
                         <Table.Cell>{goalString}</Table.Cell>
-                    </Table.Row>
+                    </Table.Row>,
                 );
             });
         }
@@ -43,7 +48,7 @@ function GivingGoalsTable(props) {
                 <Table.Body>
                     {
                         renderTableData()
-                    }                    
+                    }
                 </Table.Body>
             </Table>
         )
