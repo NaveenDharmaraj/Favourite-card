@@ -28,6 +28,7 @@ import {
 import PlaceholderGrid from '../shared/PlaceHolder';
 
 import ActivityDetails from './ActivityDetails';
+import GroupNoDataState from './GroupNoDataState';
 
 const actionTypes = {
     PLACEHOLDER_STATUS: 'PLACEHOLDER_STATUS',
@@ -148,7 +149,7 @@ class Activity extends React.Component {
         const {
             commentText,
         } = this.state;
-        let viewData = 'NO DATA';
+        let viewData = <GroupNoDataState />;
         if (!_isEmpty(data)) {
             viewData = (
                 <div className="c-comment">

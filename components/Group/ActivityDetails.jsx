@@ -186,7 +186,7 @@ class ActivityDetails extends React.Component {
         const cls = (isLiked) ? 'heart' : 'heart outline';
         return (
             <Comment>
-                {type === 'events'
+                {type === 'events' && canReply
                 && (
                     <Feed.Meta className="cmntLike">
                         <Feed.Like>

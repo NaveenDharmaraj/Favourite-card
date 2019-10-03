@@ -24,6 +24,8 @@ import { getTransactionDetails } from '../../actions/group';
 import PaginationComponent from '../shared/Pagination';
 import PlaceholderGrid from '../shared/PlaceHolder';
 
+import GroupNoDataState from './GroupNoDataState';
+
 class TransactionDetails extends React.Component {
     constructor(props) {
         super(props);
@@ -66,7 +68,7 @@ class TransactionDetails extends React.Component {
         const {
             activePage,
         } = this.state;
-        let transactionData = 'No Data';
+        let transactionData = <GroupNoDataState />;
         if (!_isEmpty(groupData)) {
             transactionData = groupData.map((transaction) => {
                 let date = new Date(transaction.attributes.createdAt);

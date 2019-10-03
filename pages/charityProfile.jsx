@@ -12,11 +12,18 @@ import Layout from '../components/shared/Layout';
 import CharityProfileWrapper from '../components/charity';
 import { Router } from '../routes';
 
+const actionTypes = {
+    RESET_STATES: 'RESET_STATES',
+};
+
 class CharityProfile extends React.Component {
     static async getInitialProps({
         reduxStore,
         query,
     }) {
+        reduxStore.dispatch({
+            type: actionTypes.RESET_STATES,
+        });
         await getBeneficiaryFromSlug(reduxStore.dispatch, query.slug);
         return {
             slug: query.slug,

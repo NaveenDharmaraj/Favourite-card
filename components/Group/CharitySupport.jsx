@@ -21,6 +21,8 @@ import { getDetails } from '../../actions/group';
 import LeftImageCard from '../shared/LeftImageCard';
 import PlaceholderGrid from '../shared/PlaceHolder';
 
+import GroupNoDataState from './GroupNoDataState';
+
 class CharitySupport extends React.Component {
     static loadCards(data) {
         return (
@@ -71,10 +73,10 @@ class CharitySupport extends React.Component {
                 nextLink: beneficiariesNextLink,
             },
         } = this.props;
-        let viewData = 'NO DATA';
-        if (!_isEmpty(beneficiariesData)) {
-            viewData = CharitySupport.loadCards(beneficiariesData);
-        }
+        const viewData = !_isEmpty(beneficiariesData)
+            ? CharitySupport.loadCards(beneficiariesData)
+            : <GroupNoDataState />;
+
         return (
             <Fragment>
                 {!charityLoader ? (

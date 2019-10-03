@@ -14,11 +14,18 @@ import Layout from '../components/shared/Layout';
 import GroupProfileWrapper from '../components/Group';
 import { Router } from '../routes';
 
+const actionTypes = {
+    RESET_STATES: 'RESET_STATES',
+};
+
 class GroupProfile extends React.Component {
     static async getInitialProps({
         reduxStore,
         query,
     }) {
+        reduxStore.dispatch({
+            type: actionTypes.RESET_STATES,
+        });
         await getGroupFromSlug(reduxStore.dispatch, query.slug);
         return {
             slug: query.slug,
