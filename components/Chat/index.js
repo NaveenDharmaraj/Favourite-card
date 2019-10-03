@@ -26,9 +26,10 @@ import {
 import _ from 'lodash';
 import placeholderUser from '../../static/images/no-data-avatar-user-profile.png';
 import placeholderGroup from '../../static/images/no-data-avatar-user-profile.png';
-import moreIcon from '../../static/images/icons/icon-ellipsis-big.svg';
+import moreIcon from '../../static/images/icons/ellipsis.svg';
 import applozicApi from "../../services/applozicApi";
 import graphApi from "../../services/graphApi";
+import '../../static/less/message.less';
 
 class ChatWrapper extends React.Component {
     items = [];
@@ -646,7 +647,7 @@ class ChatWrapper extends React.Component {
                                     </Grid.Column>
                                     <Grid.Column mobile={16} tablet={4} computer={3} className="text-right">
                                         <div className="pb-1">
-                                            <Button className={"" + (self.state.compose ? " red-btn-rounded-def red" : "blue-btn-rounded-def")} onClick={() => { self.composeNew() }}><Icon name="edit" />{self.state.compose ? "Cancel" : "Compose"}</Button>
+                                            <Button className={"" + (self.state.compose ? " red-btn-rounded-def red" : "success-btn-rounded-def")} onClick={() => { self.composeNew() }}><Icon name="edit" />{self.state.compose ? "Cancel" : "Compose"}</Button>
                                         </div>
                                     </Grid.Column>
                                 </Grid.Row>
@@ -728,7 +729,7 @@ class ChatWrapper extends React.Component {
                                                             })()}
                                                         </div>
                                                         <div className="chatContent">
-                                                            <div className="mesgs" style={self.state.selectedConversation ? {} : { height: 300 }}>
+                                                            <div className="mesgs-1" style={self.state.selectedConversation ? {} : { height: 300 }}>
                                                                 <div className="msg_history">
                                                                     <div className="recipients">
                                                                         <div className="lbl">
@@ -823,10 +824,10 @@ class ChatWrapper extends React.Component {
 
                                                                             </List>
                                                                         </Modal.Description>
-                                                                        <div className="btn-wraper pt-3 text-right">
-                                                                            <Button className="blue-btn-rounded-def c-small" onClick={() => self.setGroupAction(null)}>Done</Button>
+                                                                        {/* <div className="btn-wraper pt-3 text-right">
+                                                                            <Button className="blue-btn-rounded-def c-small" onClick={() => self.setGroupAction(null)}>Done1</Button>
                                                                             <Button className="blue-bordr-btn-round-def c-small" onClick={() => self.setGroupAction(null)}>Cancel</Button>
-                                                                        </div>
+                                                                        </div> */}
                                                                     </Modal.Content>
                                                                 </Modal>
                                                                 <Modal size="tiny" open={self.state.groupAction == 'MEMBERS_ADD'} onClose={() => self.setGroupAction(null)} dimmer="inverted" className="chimp-modal" closeIcon centered={false}>
@@ -834,7 +835,7 @@ class ChatWrapper extends React.Component {
                                                                     <Modal.Content>
                                                                         <Modal.Description className="font-s-16">
                                                                             <div className="messageSearch">
-                                                                                <Input fluid iconPosition='left' icon='search' placeholder='Search...' />
+                                                                                <Input fluid iconPosition='left'  placeholder='Search...' />
                                                                             </div>
                                                                             <List divided verticalAlign='middle'>
                                                                                 {(() => {
@@ -868,18 +869,22 @@ class ChatWrapper extends React.Component {
                                                                                                             {/* <List.Description></List.Description> */}
                                                                                                         </List.Content>
                                                                                                     </List.Item>);
+                                                                                                   
                                                                                                 }
+                                                                                               
                                                                                             }
                                                                                             )
                                                                                         }
                                                                                     }
                                                                                 })()}
-
+                                                                                <div className="new_members">
+                                                                                <p>New members will see all previous messages from this conversation.</p> 
+                                                                                </div>
                                                                             </List>
                                                                         </Modal.Description>
                                                                         <div className="btn-wraper pt-3 text-right">
-                                                                            <Button className="blue-btn-rounded-def c-small" onClick={() => self.setGroupAction(null)}>Done</Button>
-                                                                            <Button className="blue-bordr-btn-round-def c-small" onClick={() => self.setGroupAction(null)}>Cancel</Button>
+                                                                            <Button className="blue-btn-rounded-def c-small" onClick={() => self.setGroupAction(null)}>Add</Button>
+                                                                            {/* <Button className="blue-bordr-btn-round-def c-small" onClick={() => self.setGroupAction(null)}>Cancel</Button> */}
                                                                         </div>
                                                                     </Modal.Content>
                                                                 </Modal>
@@ -899,7 +904,7 @@ class ChatWrapper extends React.Component {
                                                                     <Modal.Content>
                                                                         <Modal.Description className="font-s-16">Others can add you to the Group again.</Modal.Description>
                                                                         <div className="btn-wraper pt-3 text-right">
-                                                                            <Button className="blue-btn-rounded-def c-small" onClick={() => self.leaveGroup(self.state.selectedConversation.groupId)}>Leave</Button>
+                                                                            <Button className="blue-btn-rounded-def c-small" onClick={() => self.leaveGroup(self.state.selectedConversation.groupId)}>Leave conversation</Button>
                                                                             <Button className="blue-bordr-btn-round-def c-small" onClick={() => self.setGroupAction(null)}>Cancel</Button>
                                                                         </div>
                                                                     </Modal.Content>
@@ -1093,7 +1098,7 @@ class ChatWrapper extends React.Component {
                                                         </div>
                                                     </Fragment>
                                                 } else if (!self.state.compose) {
-                                                    return <div>{self.loading ? "Loading..." : "No Messages Click Compose to Start Messaging"}</div>
+                                                    return <div class="no-messages">{self.loading ? "Loading..." : "No Messages Click Compose to Start Messaging"}</div>
                                                 }
                                             })()}
                                         </div>
