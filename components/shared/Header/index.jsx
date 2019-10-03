@@ -26,10 +26,10 @@ const {
     RAILS_APP_URL_ORIGIN,
 } = publicRuntimeConfig;
 
-const renderHeader = (onBoarding, isAuthenticated) => {
+const renderHeader = (onBoarding, isAuthenticated, isLogin) => {
     let headerComponent = null;
     if (onBoarding) {
-        headerComponent = <OnBoardingHeader />;
+        headerComponent = <OnBoardingHeader isLogin={isLogin} />;
     } else if (isAuthenticated) {
         headerComponent = <AuthHeader />;
     } else {
@@ -74,6 +74,7 @@ const Header = (props) => {
     const {
         currentAccount,
         isAuthenticated,
+        isLogin,
         onBoarding,
     } = props;
     return (
@@ -87,7 +88,7 @@ const Header = (props) => {
                     <Menu.Item className="chimpLogo">
                         {renderLogo(currentAccount)}
                     </Menu.Item>
-                    {renderHeader(onBoarding, isAuthenticated)}
+                    {renderHeader(onBoarding, isAuthenticated, isLogin)}
                 </Menu>
             </Container>
         </Segment>

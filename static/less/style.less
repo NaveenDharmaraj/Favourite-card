@@ -1523,6 +1523,11 @@ h4{
   }
 }
 @media only screen and (max-width:991px) {
+  body{
+    .c-m-default-header .ui.secondary.menu{
+      margin-bottom: 0px;
+    }
+  }
   .left-bg{
     display: block !important;
     min-height: 300px;
@@ -1532,6 +1537,34 @@ h4{
   }
   .causesLeftImg > div{
     display: none;
+  }
+}
+@media only screen and (max-width:410px) {
+  body{
+    .c-m-login-header{
+      .ui.secondary.menu{
+        .item{
+          &.give-btn{
+            padding-right: 0px;
+            .blue-btn-rounded-def{
+              &.w-120{
+                min-width: 80px;
+              }
+            }
+          }
+          &.logoImg{
+            padding-right: 0px;
+          }
+        }
+        .right{
+          &.menu{
+            .item{
+              padding-left: 0px;
+            }
+          }
+        }
+      }
+    }
   }
 }
 @media only screen and (max-width:480px) {
@@ -1544,6 +1577,24 @@ h4{
 }
 @media only screen and (max-width:767px) {
   body{
+    .profile-social-wraper{
+      margin-left: -1rem;
+      margin-top: -1rem;
+      .profile-social-links{
+        .ui{
+          &.horizontal{
+            &.list{
+              text-align: left;
+              .item{
+                padding-left: 15px;
+                padding-right: 15px;
+                margin-right: 5px;
+              }
+            }
+          }
+        }
+      }
+    }
     .reg-btn-wraper .ui.button.blue-bordr-btn-round-def{
       padding: 0.8rem 2rem;
     }
@@ -1876,7 +1927,7 @@ h4{
 @media only screen and (max-width:767px) {
   .login-form-wraper{
     max-width: 320px;
-    margin: 0px auto;
+    margin: 25px auto 0px;
   }
 }
 
@@ -3514,6 +3565,11 @@ h4{
     .stories-tips .tips-card.ui.card{
       margin: auto;
     }
+    .db-activity-tbl.ui.basic{
+      .date{
+       //border-bottom: 1px solid #d7d7d7 !important;
+      }
+    }
     .db-activity-tbl.ui.basic .reason{
       text-align: left;
     }
@@ -4992,6 +5048,44 @@ h4{
     }
   }
 }
+@media only screen and (max-width:767px) {
+  body{
+    .auth0-lock.auth0-lock .auth0-lock-header-bg .auth0-lock-header-bg-solid{
+      opacity: 0 !important;
+    }
+    .auth0-lock.auth0-lock .auth0-lock-header{
+      background: transparent;
+    }
+    .auth0-lock.auth0-lock .auth0-lock-cred-pane{
+      background: transparent;
+    }
+    .allNotification{
+      .blankImage{
+        width: 60px;
+        height: 55px;
+        display: table-cell;
+        float: left;
+        +.content{
+          display: inline-block;
+          padding: 25px 0px;
+        }
+      }
+      .ui{
+        &.list{
+          >.item{
+            >img{
+              &.image{
+                width: 40px;
+                height: 40px;
+                margin: 15px 0px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
 .viewAllNotifications{
   padding: 50px 0px;
   .notificationHeader{
@@ -5476,7 +5570,7 @@ h4{
           &.ui{
             .label{
               &.ui{
-                height: 24px;border-radius: 12px;	background-color: #27CCD1;
+                height: 24px;border-radius: 12px;	background-color: #009EA2;
                 border: 1px solid transparent;
                 border: 0px solid transparent;
                 font-weight: 400;
@@ -6062,3 +6156,39 @@ body{
     }
   }
 }
+@media only screen and (min-width:767px) {
+  .campaignBtns{
+    text-align: right;
+  }
+ }
+ @media only screen and (max-width:991px) and (min-width:768px){
+  body{
+    .campaignBtns{
+      .ui{
+        &.primary{
+          &.button{
+            &.blue-btn-rounded{
+              width: 95px;
+            }
+          }
+        }
+      }
+    }
+  }
+ }
+ @media only screen and (max-width:767px){
+  .campaignBtns{
+    text-align: center;
+  }
+ }
+ .campaignBtns{
+  .ui{
+    &.primary{
+      &.button{
+        &.blue-btn-rounded{
+          width: 141px;
+        }
+      }
+    }
+  }
+ }

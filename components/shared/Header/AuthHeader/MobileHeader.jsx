@@ -102,6 +102,11 @@ const NavBarMobile = ({
                         </List.Item>
                     </List>
                 </Menu.Item>
+                <Link route={logoUrl}>
+                    <Menu.Item as="a">
+                        Dashboard
+                    </Menu.Item>
+                </Link>
                 <Link route='/search'>
                     <Menu.Item as="a">
                         Explore

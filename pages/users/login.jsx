@@ -41,7 +41,7 @@ class UserAuthView extends React.Component {
         return (
             <Fragment>
                 { !isAuthenticated && (
-                    <Layout onBoarding>
+                    <Layout onBoarding isLogin>
                         <div className="pageWraper loginPageBg">
                             <Container>
                                 <div className="linebg">

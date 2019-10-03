@@ -66,11 +66,6 @@ const getMainNavItems = (accountType, slug) => {
     const menuLinks = [];
     if (accountType === 'company') {
         menuLinks.push({
-            location: `/companies/${slug}`,
-            name: 'Dashboard',
-            isExternal: true,
-        });
-        menuLinks.push({
             location: `/companies/${slug}/match-requests/new`,
             name: 'Match Requests',
             isExternal: true,
@@ -81,11 +76,6 @@ const getMainNavItems = (accountType, slug) => {
             isExternal: true,
         });
     } else if (accountType === 'charity') {
-        menuLinks.push({
-            location: `/admin/beneficiaries/${slug}`,
-            name: 'Dashboard',
-            isExternal: true,
-        });
         menuLinks.push({
             location: `/admin/beneficiaries/${slug}/eft`,
             name: 'Direct Deposit',

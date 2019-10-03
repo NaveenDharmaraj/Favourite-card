@@ -82,6 +82,7 @@ const _auth0lockConfig = {
             },
         },
         forgotPasswordAction: 'Forgot your password?',
+        forgotPasswordInstructions: '',
         forgotPasswordSubmitLabel: 'Reset password',
         forgotPasswordTitle: 'Forgot your password?',
         loginSubmitLabel: 'Sign in',

@@ -69,7 +69,7 @@ class Layout extends React.Component {
         window.scrollTo(0, 0);
     };
 
-    renderLayout = (authRequired, children, isAuthenticated, onBoarding, dispatch, appErrors) => {
+    renderLayout = (authRequired, children, isAuthenticated, onBoarding, dispatch, appErrors, isLogin) => {
         if (authRequired && !isAuthenticated) {
             return null;
         }
@@ -106,7 +106,7 @@ class Layout extends React.Component {
                 <div>
                     <ErrorBoundary> 
                         <Responsive minWidth={320} maxWidth={991}>
-                            <MobileHeader isAuthenticated={isAuthenticated} onBoarding={onBoarding} >
+                            <MobileHeader isAuthenticated={isAuthenticated} onBoarding={onBoarding} isLogin={isLogin}>
                                 {!_.isEmpty(appErrors) &&
                                     <Container
                                         className="app-status-messages"
@@ -125,7 +125,7 @@ class Layout extends React.Component {
                             </MobileHeader>
                         </Responsive>
                         <Responsive minWidth={992}>
-                            <Header isAuthenticated={isAuthenticated} onBoarding={onBoarding} />
+                            <Header isAuthenticated={isAuthenticated} onBoarding={onBoarding} isLogin={isLogin} />
                                 {!_.isEmpty(appErrors) &&
                                     <Container
                                         className="app-status-messages"
@@ -157,11 +157,12 @@ class Layout extends React.Component {
             authRequired,
             children,
             isAuthenticated,
+            isLogin,
             dispatch,
             onBoarding,
         } = this.props;
         return (
-            this.renderLayout(authRequired, children, isAuthenticated, onBoarding, dispatch, appErrors)
+            this.renderLayout(authRequired, children, isAuthenticated, onBoarding, dispatch, appErrors, isLogin)
         );
     }
 };

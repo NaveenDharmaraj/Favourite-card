@@ -835,7 +835,7 @@ class ChatWrapper extends React.Component {
                                                                     <Modal.Content>
                                                                         <Modal.Description className="font-s-16">
                                                                             <div className="messageSearch">
-                                                                                <Input fluid iconPosition='left'  placeholder='Search...' />
+                                                                                <Input fluid iconPosition='left'  placeholder='Add members...' />
                                                                             </div>
                                                                             <List divided verticalAlign='middle'>
                                                                                 {(() => {
@@ -937,7 +937,7 @@ class ChatWrapper extends React.Component {
                                                                                                     {currentUserInfo.role == "1" ? <List.Item as='a' onClick={() => self.setGroupAction('MEMBERS_ADD')}>Add members</List.Item> : ""}
                                                                                                     <List.Item as='a' onClick={() => self.setGroupAction('MUTE_NOTIFICATIONS')}>Mute</List.Item>
                                                                                                     <Divider />
-                                                                                                    <List.Item as='a' onClick={() => self.setGroupAction('LEAVE_GROUP')} className="red">Leave Group</List.Item>
+                                                                                                    <List.Item as='a' onClick={() => self.setGroupAction('LEAVE_GROUP')} className="red">Leave Conversation</List.Item>
                                                                                                     {currentUserInfo.role == "1" ? <List.Item as='a' onClick={() => self.setGroupAction('DELETE_GROUP')} className="red">Delete Group</List.Item> : ""}
                                                                                                 </List>
                                                                                             </Popup.Content>
