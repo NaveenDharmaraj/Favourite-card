@@ -53,7 +53,8 @@ class Login extends React.Component {
     componentDidUpdate(prevProps) {
         if (!_.isEqual(this.props, prevProps)) {
             if (!_.isEmpty(this.props.newUserDetails)) {
-                storage.set('newUserDetails', this.props.newUserDetails, 'local', null);
+                storage.set('auth0UserEmail', this.props.newUserDetails.email, 'local', null);
+                storage.set('auth0UserId', this.props.newUserDetails.identities[0].user_id, 'local', null);
                 Router.pushRoute('/users/email-verification');
             }
         }

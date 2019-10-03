@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import {
     Button,
@@ -5,14 +6,18 @@ import {
     Header,
     Form,
     Grid,
-    Message,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
+import dynamic from 'next/dynamic';
 
 import { resendVerificationEmail } from '../../actions/onBoarding';
 import Layout from '../../components/shared/Layout';
 import storage from '../../helpers/storage';
 import { Router } from '../../routes';
+
+const ModalStatusMessage = dynamic(() => import('../../components/shared/ModalStatusMessage'), {
+    ssr: false
+});
 
 class EmailVerification extends React.Component {
     constructor(props) {
@@ -21,8 +26,12 @@ class EmailVerification extends React.Component {
             newUserDetails,
         } = this.props;
         if (newUserDetails === undefined) {
-            let newUserDetailsLocal = storage.get('newUserDetails', 'local');
-            newUserDetails = JSON.parse(newUserDetailsLocal);
+            const newUserDetailsEmail = storage.get('auth0UserEmail', 'local');
+            const newUserDetailsId = storage.get('auth0UserId', 'local');
+            newUserDetails = {
+                email: newUserDetailsEmail,
+                user_id: newUserDetailsId,
+            };
         }
 
         if (newUserDetails === null) {
@@ -41,8 +50,7 @@ class EmailVerification extends React.Component {
         const {
             dispatch,
         } = this.props;
-        const userId = `${newUserDetails.identities[0].provider}|${newUserDetails.identities[0].user_id}`;
-        resendVerificationEmail(userId, dispatch);
+        resendVerificationEmail(newUserDetails.user_id, dispatch);
     }
 
     render() {
@@ -59,9 +67,19 @@ class EmailVerification extends React.Component {
                         <Container>
                             <div className="linebg">
                                 <Grid columns={2}>
+                                
                                     <Grid.Row>
                                         <Grid.Column mobile={16} tablet={6} computer={7} className="left-bg verifyImg"><div></div></Grid.Column>
                                         <Grid.Column  mobile={16} tablet={8} computer={7}>
+                                        {!!apiResendEmail && (
+                                                        <Grid.Row>
+                                                            <Grid.Column width={16} className="mt-2">
+                                                                <ModalStatusMessage
+                                                                    message = "Email Sent"
+                                                                />
+                                                            </Grid.Column>
+                                                        </Grid.Row>
+                                                    )}
                                             <div className="login-form-wraper">
                                                 <div className="reg-header">
                                                     <Header as="h3">Verify your email.</Header>
@@ -86,7 +104,6 @@ class EmailVerification extends React.Component {
                                                         </p>
                                                         
                                                     </div>
-                                                    {!!apiResendEmail && <Message compact color='green'>Email sent</Message>}
     
                                                 </Form>
                                             </div>

@@ -78,7 +78,7 @@ class SecondStep extends React.Component {
                                 />
                                 <FormValidationErrorMessage
                                     condition={!!userExists && validity.isEmailValidFormat}
-                                    errorMessage="Looks like this email is already registered."
+                                    errorMessage="Looks like this email is already registered. "
                                 >
                                     Would you like to <Link route='/users/login'>log in</Link>?
                                 </FormValidationErrorMessage>

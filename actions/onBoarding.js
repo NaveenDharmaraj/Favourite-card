@@ -78,14 +78,7 @@ export const resendVerificationEmail = (userId, dispatch) => {
             },
             type: actionTypes.USER_EMAIL_RESEND,
         });
-        setTimeout(() => {
-            dispatch({
-                payload: {
-                    apiResendEmail: false,
-                },
-                type: actionTypes.USER_EMAIL_RESEND,
-            });
-        }, 3000);
+
     });
 };
 
