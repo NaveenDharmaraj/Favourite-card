@@ -57,7 +57,7 @@ class SearchResultSingleCharityGroups extends React.Component {
                 return 'View Giving Group';
             }
         }
-        return 'View Charity';
+        return 'View charity';
     }
 
     renderCharityGroupComponent() {
@@ -102,7 +102,7 @@ class SearchResultSingleCharityGroups extends React.Component {
                                                 {(!_isEmpty(description) && description.split(' ').length > 20) && '...'}
                                                 <br />
                                                 {!_isEmpty(city) ? city : null}
-                                                {!_isEmpty(province) ? ` ,${province}` : null}
+                                                {!_isEmpty(province) ? `, ${province}` : null}
                                                 <br />
                                             </Header.Subheader>
                                         </Header>
