@@ -2,6 +2,16 @@ const profile = (state = {}, action) => {
     let newState = {
         ...state,
     };
+    function arrayUnique(array) {
+        var a = array.concat();
+        for(var i=0; i<a.length; ++i) {
+            for(var j=i+1; j<a.length; ++j) {
+                if(a[i] === a[j])
+                    a.splice(j--, 1);
+            }
+        }
+        return a;
+    }
     switch (action.type) {
         case 'GET_CAMPAIGN_FROM_SLUG':
             newState = {
@@ -11,9 +21,10 @@ const profile = (state = {}, action) => {
             break;
         case 'GET_SUB_GROUPS_FOR_CAMPAIGN':
             if (state.campaignSubGroupDetails) {
+                const uniqueArray = arrayUnique(state.campaignSubGroupDetails, action.payload.campaignSubGroupDetails.data);
                 newState = {
                     ...state,
-                    campaignSubGroupDetails: state.campaignSubGroupDetails.concat(action.payload.campaignSubGroupDetails.data),
+                    campaignSubGroupDetails:[...uniqueArray],
                     campaignSubGroupsShowMoreUrl: action.payload.campaignSubGroupDetails.links.next,
                 };
             } else {
