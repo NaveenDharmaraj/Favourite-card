@@ -61,7 +61,9 @@ const ProfileDetails = (props) => {
                         {
                             (_isEmpty(imageArray) && !description && !videoDirectLink && !purpose && !helping && !about) ? (
                                 <Grid>
-                                    <GroupNoDataState />
+                                    <GroupNoDataState
+                                        type="common"
+                                    />
                                 </Grid>
                             ) : (
                                 <Fragment>
