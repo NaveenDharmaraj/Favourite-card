@@ -171,7 +171,7 @@ class Privacy extends React.Component {
                                 onChange={this.handleUserPreferenceChange}
                             />
                         </Header>
-                        <p>
+                        <p className="pr-3">
                             You can manage your discoverability settings -manage
                             whether you show up on searches or your
                             name appears on Giving Group profiles.

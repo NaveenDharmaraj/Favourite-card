@@ -159,7 +159,7 @@ h4{
   body{
     .profile-header{
       .badge-group{
-        padding-left: 15px;
+        padding-left: 0px;
       }
     }
   }
@@ -778,6 +778,9 @@ h4{
 }
 .pb-3{
   padding-bottom: 3rem;
+}
+.pr-3{
+  padding-right: 3.5rem !important;
 }
 .no-border{
   border: 0px solid transparent !important;
@@ -1445,6 +1448,9 @@ h4{
  }
  @media only screen and (max-width: 767px){  
   body{
+    .left-img-card.ui.card{
+      margin-bottom: 0px !important;
+    }
     button.ui.button.success-btn-rounded-def{
       &.f-w-mob{
         display: block;
@@ -1511,6 +1517,9 @@ h4{
     }
   }
   >div{
+    &.second{
+      top: -12px;
+    }
     position: absolute;
     left: -75px;
     right: 100px;
@@ -1584,7 +1593,7 @@ h4{
         .ui{
           &.horizontal{
             &.list{
-              text-align: left;
+              text-align: center;
               .item{
                 padding-left: 15px;
                 padding-right: 15px;
@@ -1689,6 +1698,12 @@ h4{
   }
 }
 @media only screen and (max-width:991px) and (min-width:767px) {
+  body{
+    .loginPageBg .left-bg > div{
+      left: 0px;
+      right: 30px;
+    }
+  }
   .causesLeftImg{
     >div{
       height: 100%;
@@ -2336,7 +2351,7 @@ h4{
           &.header{
             font-size: 14px;
             color: @greyNew;
-            line-height: 22px;
+            line-height: 21px;
           }
         }
       }
@@ -2454,6 +2469,11 @@ h4{
 }
 .auth0-lock.auth0-lock .auth0-lock-content-wrapper{
   margin-bottom: 20px;
+}
+body{
+  .auth0-lock.auth0-lock .auth0-lock-back-button{
+    left: 0px;
+  }
 }
 .reg-header{
   h3.ui.header{
@@ -2763,6 +2783,9 @@ h4{
     }
   }
 }
+@media only screen and (max-width:991px) {
+
+}
 .db-activity-tbl{
   &.ui{
     &.basic{
@@ -2777,7 +2800,6 @@ h4{
           }
         }
       }
-      
       tr{
         td{
           padding: 19px 15px 17px;
@@ -3348,7 +3370,7 @@ h4{
         button{
           &.ui{
             &.button{
-              min-width: 150px;
+              min-width: 140px;
             }
           }
         }
@@ -3445,7 +3467,7 @@ h4{
       button{
         &.ui{
           &.button{
-            min-width: 150px;
+            min-width: 140px;
           }
         }
       }
@@ -3454,7 +3476,7 @@ h4{
 }
 @media only screen and (min-width:991px){
   .left-bg > div{
-    min-height: 407px;
+    min-height: 480px;
   }
 }
 @media only screen and (min-width:991px) and (max-width:1199px) {
@@ -3572,9 +3594,11 @@ h4{
     }
     .db-activity-tbl.ui.basic .reason{
       text-align: left;
+      padding-left: 47px !important;
     }
     .db-activity-tbl.ui.basic .amount{
       text-align: left;
+      padding-left: 47px !important;
     }
   }
   .left-img-card{
@@ -3770,6 +3794,23 @@ h4{
         .sub{
           &.header{
             color: @grey-darken-3;
+            .icon{
+              &.users{
+                position: relative;
+                &::before{
+                  content: '';
+                  position: absolute;
+                  top: 0;
+                  bottom: 0;
+                  left: 0;
+                  right: 0;
+                  background-image: url(../images/icons/group.svg) !important;
+                  background-position: center !important;
+                  background-size: contain !important;
+                  background-repeat: no-repeat !important;
+                }
+              }
+            }
           }
         }
       }
@@ -3929,6 +3970,7 @@ h4{
     .charityDetailsList{
       margin-bottom: 34px !important;
       .item{
+        word-break: break-all;
         &:last-child{
           padding: .21428571em 0;
         }
@@ -4118,6 +4160,9 @@ h4{
 }
 @media only screen and (max-width:767px) {
   body{
+    .charityTab .ui.segment.tab{
+      padding-bottom: 5rem;
+    }
     .profile-social-wraper{
       padding-left: 0rem;
       border-left: 0px solid transparent;
@@ -4288,9 +4333,28 @@ h4{
   }
 }
 .error-message {
-  color: #DB2828;
+  color: #FF0000;
   font-size: 1em;
   font-weight: 400;
+  display: flex;
+  .icon{
+    &.exclamation{
+      color: #FF0000;
+    }
+  }
+}
+body{
+  .ui.form .field.error .input, .ui.form .field.error label, .ui.form .fields.error .field .input, .ui.form .fields.error .field label{
+    color: #FF0000;
+  }
+  .ui.form .field.error input:not([type]), .ui.form .field.error input[type=date], .ui.form .field.error input[type=datetime-local], .ui.form .field.error input[type=email], .ui.form .field.error input[type=file], .ui.form .field.error input[type=number], .ui.form .field.error input[type=password], .ui.form .field.error input[type=search], .ui.form .field.error input[type=tel], .ui.form .field.error input[type=text], .ui.form .field.error input[type=time], .ui.form .field.error input[type=url], .ui.form .field.error select, .ui.form .field.error textarea, .ui.form .fields.error .field input:not([type]), .ui.form .fields.error .field input[type=date], .ui.form .fields.error .field input[type=datetime-local], .ui.form .fields.error .field input[type=email], .ui.form .fields.error .field input[type=file], .ui.form .fields.error .field input[type=number], .ui.form .fields.error .field input[type=password], .ui.form .fields.error .field input[type=search], .ui.form .fields.error .field input[type=tel], .ui.form .fields.error .field input[type=text], .ui.form .fields.error .field input[type=time], .ui.form .fields.error .field input[type=url], .ui.form .fields.error .field select, .ui.form .fields.error .field textarea{
+    background: #fff;
+    border-color: #FF0000;;
+    color: #263238;;
+  }
+  .ElementsApp, .ElementsApp .InputElement{
+    font-family: 'ProximaNova-Regular'; 
+  }
 }
 .privacy-popup{
   &.ui{
@@ -4407,6 +4471,7 @@ h4{
 .swichAccounts{
   max-height: 210px;
   overflow-y: scroll;
+  margin-bottom: 30px;
   &::-webkit-scrollbar {
     width: 6px;
   }
@@ -4425,11 +4490,19 @@ h4{
         .item{
           padding-top: 1rem;
           padding-bottom: 1rem;
-          border-bottom: 1px solid @grey-lighten-2;
+          //border-bottom: 1px solid @grey-lighten-2;
           padding-right: 1rem;
+          margin-bottom: 0px;
+          margin-top: 0px;
           .content{
             &.right{
   
+            }
+            .header{
+              max-width: 280px;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
             }
           }
           .charity{
@@ -5021,6 +5094,20 @@ h4{
   }
 }
 @media only screen and (max-width:991px) and (min-width:768px){
+  body{
+    .ui.inverted.dimmer{
+      background-color: rgba(255,255,255,.65);
+    }
+    .auth0-lock.auth0-lock .auth0-lock-header-bg .auth0-lock-header-bg-solid{
+      opacity: 0 !important;
+    }
+    .auth0-lock.auth0-lock .auth0-lock-header{
+      background: transparent;
+    }
+    .auth0-lock.auth0-lock .auth0-lock-cred-pane{
+      background: transparent;
+    }
+  }
   .grpcampHeader{
     .grpcampBanner{
       &::before{
@@ -6192,3 +6279,29 @@ body{
     }
   }
  }
+ .shareInfoRadio{
+   >.field{
+    margin-bottom: 1rem;
+    label{
+      font-weight: 400;
+      font-size: 14px;
+    }
+    .ui.radio.checkbox input:checked~.box:before, .ui.radio.checkbox input:checked~label:before{
+      background-color: #0CC965;
+      border-color: #0CC965;
+      background-image: url(../images/icons/green.svg);
+      background-position: center;
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+    .ui.radio.checkbox input:checked~.box:after, .ui.radio.checkbox input:checked~label:after{
+      content: '';
+      background-color: transparent;
+    }
+    &.ui{
+      &.radio{
+
+      }
+    }
+  }
+}

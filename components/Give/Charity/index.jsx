@@ -1069,7 +1069,7 @@ class Charity extends React.Component {
                     <Fragment>
                         {
                             !groupFromUrl && (
-                                <div>
+                                <Fragment>
                                     <Form.Field>
                                         <label htmlFor="giveTo">
                                             {formatMessage('giveToLabel')}
@@ -1094,12 +1094,12 @@ class Charity extends React.Component {
                                                 formatMessage,
                                             )
                                     }
-                                </div>
+                                </Fragment>
                             )
                         }
                         {
                             !!groupFromUrl && (
-                                <div>
+                                <Fragment>
                                     <Form.Field>
                                         <label htmlFor="giveTo">
                                             {formatMessage('giveToLabel')}
@@ -1122,7 +1122,7 @@ class Charity extends React.Component {
                                         findAnotherRecipientLabel,
                                         formatMessage,
                                     )}
-                                </div>
+                                </Fragment>
                             )
                         }
                         <Form.Field>

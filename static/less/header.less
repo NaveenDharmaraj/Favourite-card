@@ -328,8 +328,18 @@ button,a{
                 z-index: 9;
                 &.chat{
                   &::before{
-                    position: relative;
-                    content: url(../images/icons/chatIcon.svg);
+                    content: '';
+                    width: 27px;
+                    height: 27px;                
+                    background-image: url(../images/icons/chatIcon.svg) !important;
+                    background-position: center !important;
+                    background-size: contain !important;
+                    background-repeat: no-repeat !important;
+                    position: absolute;
+                    left: 0;
+                    right: 0;
+                    top: -4px;
+                    bottom: 2px;
                   }
                 }
                 &.new{
