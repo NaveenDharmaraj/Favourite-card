@@ -479,6 +479,8 @@ class EditBasicProfile extends React.Component {
                                         placeholder="Giving Goal"
                                         id="givingGoal"
                                         name="givingGoal"
+                                        icon="dollar"
+                                        iconPosition="left"
                                         maxLength="11"
                                         onChange={this.handleInputChange}
                                         onBlur={this.handleInputOnBlur}

@@ -202,7 +202,7 @@ class MyFriends extends React.Component {
         const {
             currentMyFriendsActivePage,
         } = this.state;
-        let friendsList = 'No friends yet';
+        let friendsList = 'Friends you connect with on Charitable Impact will appear here.';
         if (!_.isEmpty(userMyFriendsList) && _.size(userMyFriendsList.data) > 0) {
             friendsList = userMyFriendsList.data.map((friend) => {
                 const name = `${friend.attributes.first_name} ${friend.attributes.last_name}`;

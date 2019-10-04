@@ -70,8 +70,8 @@ class StoriesAllList extends React.Component {
         const url = `/blogs/newBlogs?size=10&page=${data.activePage}`;
         getStoriesList(dispatch, url);
         this.setState({
-            storiesListLoader: true,
             currentActivePage: data.activePage,
+            storiesListLoader: true,
         });
     }
 
@@ -88,6 +88,7 @@ class StoriesAllList extends React.Component {
                     blog_URL,
                 } = data;
                 const displayAvatar = (!_.isEmpty(blog_image_URL)) ? blog_image_URL : allImg;
+                const blogTitle = decodeURI(blog_title.replace('&#8217;', "'")); 
                 return (
                     <div className="search-result-single">
                         <Grid stackable>
@@ -99,7 +100,7 @@ class StoriesAllList extends React.Component {
                                     <div className=" description">
                                         <Header as="h4">
                                             <Header.Subheader>
-                                                    {blog_title}
+                                                {blogTitle}
                                             </Header.Subheader>
                                         </Header>
                                     </div>
