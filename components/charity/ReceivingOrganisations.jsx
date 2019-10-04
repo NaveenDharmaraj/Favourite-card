@@ -20,6 +20,8 @@ import {
 } from '../../actions/charity';
 import PlaceholderGrid from '../shared/PlaceHolder';
 
+import CharityNoDataState from './CharityNoDataState';
+
 class ReceivingOrganisations extends React.Component {
     componentDidMount() {
         const {
@@ -82,7 +84,7 @@ class ReceivingOrganisations extends React.Component {
         if (totalElements && size) {
             remainingOrganisation = totalElements - size;
         }
-        let listData = 'NO DATA';
+        let listData = <CharityNoDataState />;
         let totalData = '';
         if (!_isEmpty(doneeList)) {
             listData = (

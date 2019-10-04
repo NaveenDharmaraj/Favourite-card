@@ -34,14 +34,15 @@ const DonationDetails = (props) => {
             },
         },
     } = props;
-    const lastDonationDay = distanceOfTimeInWords(lastDonationAt);
+    let lastDonationDay = '';
+    if (lastDonationAt !== null) {
+        lastDonationDay = distanceOfTimeInWords(lastDonationAt);
+    }
     let fundRaisingDuration = '';
-    const daysText = (fundraisingDaysRemaining && fundraisingDaysRemaining > 1) ? ' days left' : ' day left';
     if (fundraisingDaysRemaining !== null) {
         fundRaisingDuration = (
             <span className="badge white right">
-                {fundraisingDaysRemaining}
-                {daysText}
+                {`${fundraisingDaysRemaining} days left`}
             </span>
         );
     }
@@ -62,28 +63,32 @@ const DonationDetails = (props) => {
                                 
                             </Header>
                             <Progress className="mb-0 c-green" percent={fundraisingPercentage} size="tiny" />
-                            <div className="small-font">
-                                {`Last donation 
-                                ${lastDonationAt && lastDonationDay}`}
-                            </div>
+                            {lastDonationDay
+                            && (
+                                <div className="small-font">
+                                    {`Last donation
+                                    ${lastDonationDay}`}
+                                </div>
+                            )
+                            }
                         </Grid.Column>
                         <Grid.Column mobile={16} tablet={10} computer={10}>
                             <Header as="h3">
-                                Milestones
+                                Stats
                             </Header>
                             <div className="pt-1 campaign-amount">
                                 <Grid stackable columns={3}>
                                     <Grid.Row>
                                         <Grid.Column>
                                             <Header as="h2">
-                                                {formatCurrency(totalMoneyRaised, language, currency)}
-                                                <Header.Subheader className="small font-s-14">All time total raised</Header.Subheader>
+                                                {formatCurrency(totalMoneyGiven, language, currency)}
+                                                <Header.Subheader className="small font-s-14">All time total given</Header.Subheader>
                                             </Header>
                                         </Grid.Column>
                                         <Grid.Column>
                                             <Header as="h2">
-                                                {formatCurrency(totalMoneyGiven, language, currency)}
-                                                <Header.Subheader className="small font-s-14">All time total given</Header.Subheader>
+                                                {formatCurrency(totalMoneyRaised, language, currency)}
+                                                <Header.Subheader className="small font-s-14">All time total raised</Header.Subheader>
                                             </Header>
                                         </Grid.Column>
                                         <Grid.Column>

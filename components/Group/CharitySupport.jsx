@@ -72,10 +72,22 @@ class CharitySupport extends React.Component {
                 data: beneficiariesData,
                 nextLink: beneficiariesNextLink,
             },
+            groupDetails: {
+                attributes: {
+                    isAdmin,
+                    slug,
+                },
+            },
         } = this.props;
         const viewData = !_isEmpty(beneficiariesData)
             ? CharitySupport.loadCards(beneficiariesData)
-            : <GroupNoDataState />;
+            : (
+                <GroupNoDataState
+                    type="charities"
+                    isAdmin={isAdmin}
+                    slug={slug}
+                />
+            );
 
         return (
             <Fragment>
@@ -109,6 +121,12 @@ CharitySupport.defaultProps = {
         data: [],
         nextLink: '',
     },
+    groupDetails: {
+        attributes: {
+            isAdmin: false,
+            slug: '',
+        },
+    },
     id: null,
 };
 
@@ -119,6 +137,12 @@ CharitySupport.propTypes = {
         data: arrayOf(PropTypes.element),
         nextLink: string,
     },
+    groupDetails: {
+        attributes: {
+            isAdmin: bool,
+            slug: string,
+        },
+    },
     id: number,
 };
 
@@ -126,6 +150,7 @@ function mapStateToProps(state) {
     return {
         charityLoader: state.group.showPlaceholder,
         groupBeneficiaries: state.group.groupBeneficiaries,
+        groupDetails: state.group.groupDetails,
     };
 }
 

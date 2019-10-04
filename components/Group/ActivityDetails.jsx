@@ -230,7 +230,7 @@ class ActivityDetails extends React.Component {
                         )}
 
 
-                        {doReply
+                        {doReply && canReply
                             && (
                                 <Grid>
                                     <Grid.Row>
@@ -325,6 +325,7 @@ function mapStateToProps(state) {
     return {
         disableLike: state.group.disableLike,
         groupComments: state.group.groupComments,
+        groupDetails: state.group.groupDetails,
         userInfo: state.user.info,
     };
 }
