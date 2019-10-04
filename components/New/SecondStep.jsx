@@ -49,7 +49,7 @@ class SecondStep extends React.Component {
         let pwdEntered = (password && password.length > 0);
         return (
             <Grid.Row>
-                <Grid.Column className="left-bg"><div></div></Grid.Column>
+                <Grid.Column className="left-bg second"><div></div></Grid.Column>
                 <Grid.Column>
                     <div className="login-form-wraper">
                         <div className="reg-header">
@@ -141,6 +141,8 @@ class SecondStep extends React.Component {
                                     content={(apiValidating === true) ? 'Validating..' : 'Continue'}
                                     disabled={!validity.isEmailIdValid || !validity.isPasswordValid || !!userExists || typeof userExists === 'undefined' || !pwdEntered}
                                     onClick={handleSubmit}
+                                    tabIndex={1}
+
                                 />
                             </div>
                         </Form>
