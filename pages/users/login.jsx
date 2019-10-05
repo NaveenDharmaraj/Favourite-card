@@ -51,7 +51,7 @@ class UserAuthView extends React.Component {
                                             <Grid.Column>
                                                 <div className="login-form-wraper">
                                                     <div className="reg-header">
-                                                        <Header as="h3">Sign in to Charitable Impact</Header>
+                                                        <Header as="h3">Log in to Charitable Impact</Header>
                                                         <Header as="h4">Enter your details below</Header>
                                                     </div>
                                                     <div id="auth0-lock-container" />

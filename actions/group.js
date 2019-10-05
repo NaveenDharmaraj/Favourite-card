@@ -26,7 +26,7 @@ export const actionTypes = {
     LEAVE_GROUP_MODAL_BUTTON_LOADER: 'LEAVE_GROUP_MODAL_BUTTON_LOADER',
 };
 
-export const getGroupFromSlug = async (dispatch, slug) => {
+export const getGroupFromSlug = async (dispatch, slug, token = null) => {
     if (slug !== ':slug') {
         const fsa = {
             payload: {
@@ -46,11 +46,20 @@ export const getGroupFromSlug = async (dispatch, slug) => {
             },
             type: actionTypes.REDIRECT_TO_DASHBOARD,
         });
+        const params = {
+            dispatch,
+            slug,
+            uxCritical: true,
+        };
+        if (token !== null) {
+            params.headers = {
+                Authorization: `Bearer ${token}`,
+            };
+            console.log(params);
+        }
         await coreApi.get(`/groups/find_by_slug?load_full_profile=true`, {
             params: {
-                dispatch,
-                slug,
-                uxCritical: true,
+                ...params,
             },
         }).then(
             (result) => {

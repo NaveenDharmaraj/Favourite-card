@@ -271,7 +271,7 @@ class GroupDetails extends React.Component {
                     </div>
                     <div className="buttonWraper">
                         <Link route={`/users/login`}>
-                            <Button primary className="blue-btn-rounded">Sign in</Button>
+                            <Button primary className="blue-btn-rounded">Log in</Button>
                         </Link>
                     </div>
                 </Fragment>

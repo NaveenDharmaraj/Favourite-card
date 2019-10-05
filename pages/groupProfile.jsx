@@ -13,6 +13,7 @@ import {
 import Layout from '../components/shared/Layout';
 import GroupProfileWrapper from '../components/Group';
 import { Router } from '../routes';
+import storage from '../helpers/storage';
 
 const actionTypes = {
     RESET_STATES: 'RESET_STATES',
@@ -21,12 +22,17 @@ const actionTypes = {
 class GroupProfile extends React.Component {
     static async getInitialProps({
         reduxStore,
+        req,
         query,
     }) {
         reduxStore.dispatch({
             type: actionTypes.RESET_STATES,
         });
-        await getGroupFromSlug(reduxStore.dispatch, query.slug);
+        let auth0AccessToken = null;
+        if (typeof window === 'undefined') {
+            auth0AccessToken = storage.get('auth0AccessToken', 'cookie', req.headers.cookie);
+        }
+        await getGroupFromSlug(reduxStore.dispatch, query.slug, auth0AccessToken);
         return {
             slug: query.slug,
         };
