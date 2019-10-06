@@ -7,6 +7,7 @@ import getConfig from 'next/config';
 
 import auth0 from '../services/auth';
 import { triggerUxCritialErrors } from '../actions/error';
+import { softLogout } from '../actions/auth';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -31,10 +32,15 @@ instance.interceptors.request.use(function (config) {
             config.headers.Authorization = `Bearer ${token}`;
         }
     }
-    if(config.params) {
+    if (config.params) {
         config.uxCritical = (config.params.uxCritical);
         config.dispatch = (config.params.dispatch) ? config.params.dispatch : null;
-        config.params = _omit(config.params, ['uxCritical', 'dispatch']);
+        config.ignore401 = (config.params.ignore401);
+        config.params = _omit(config.params, [
+            'uxCritical',
+            'dispatch',
+            'ignore401',
+        ]);
     }
     return config;
 }, function (error) {
@@ -48,8 +54,15 @@ instance.interceptors.response.use(function (response) {
     const {
         config,
         data,
+        status,
     } = error.response;
-    if(config.uxCritical && config.dispatch) {
+    if (status === 401 && !config.ignore401 && typeof window !== 'undefined') {
+        window.location.href = '/users/logout';
+    } else if (status === 401) {
+        softLogout(config.dispatch);
+        return null;
+    }
+    if (config.uxCritical && config.dispatch) {
         triggerUxCritialErrors(data.errors || data, config.dispatch);
     }
     return Promise.reject(error.response.data);

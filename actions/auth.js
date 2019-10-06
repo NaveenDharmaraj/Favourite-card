@@ -42,8 +42,18 @@ const logout = () => {
         });
 };
 
+const softLogout = (dispatch) => {
+    dispatch({
+        payload: {
+            isAuthenticated: false,
+        },
+        type: 'SET_AUTH',
+    });
+}
+
 export {
     actionTypes,
     validateAuth0Failure,
     logout,
+    softLogout,
 };

@@ -181,10 +181,13 @@ const ProfileDetails = (props) => {
         );
     }
 
+    const activeIndexProp = (!isAUthenticated) ? { activeIndex: 0 } : {};
+
     return (
         <Container>
             <div className="charityTab">
                 <Tab
+                    {...activeIndexProp}
                     menu={{
                         pointing: true,
                         secondary: true,

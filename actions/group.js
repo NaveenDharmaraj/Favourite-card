@@ -125,6 +125,7 @@ export const getDetails = async (dispatch, id, type, url) => {
     coreApi.get(newUrl, {
         params: {
             dispatch,
+            ignore401: true,
             uxCritical: true,
         },
     }).then((result) => {
@@ -171,6 +172,7 @@ export const getTransactionDetails = async (dispatch, id, url) => {
     await coreApi.get(newUrl, {
         params: {
             dispatch,
+            ignore401: true,
             uxCritical: true,
         },
     }).then((result) => {
@@ -199,6 +201,7 @@ export const getGroupActivities = async (dispatch, id, url, isPostActivity) => {
     coreApi.get(newUrl, {
         params: {
             dispatch,
+            ignore401: true,
             uxCritical: true,
         },
     }).then((result) => {
@@ -231,6 +234,7 @@ export const getCommentFromActivityId = async (dispatch, id, url, isReply) => {
     coreApi.get(url, {
         params: {
             dispatch,
+            ignore401: true,
             uxCritical: true,
         },
     }).then((result) => {
@@ -254,6 +258,11 @@ export const postActivity = async (dispatch, id, msg) => {
                     groupId: id,
                 },
                 type: 'comments',
+            },
+        }, {
+            params: {
+                dispatch,
+                ignore401: true,
             },
         }).then((result) => {
         if (result && !_.isEmpty(result.data)) {
@@ -279,6 +288,11 @@ export const postComment = async (dispatch, groupId, eventId, msg, user) => {
                     groupId: Number(groupId),
                 },
                 type: 'comments',
+            },
+        }, {
+            params: {
+                dispatch,
+                ignore401: true,
             },
         }).then((result) => {
         if (result && !_.isEmpty(result.data)) {
@@ -319,13 +333,20 @@ export const likeActivity = async (dispatch, eventId, groupId, userId) => {
                 target: 'EVENT',
                 user_id: Number(userId),
             },
+        }, {
+            params: {
+                dispatch,
+                ignore401: true,
+            },
         }).then((result) => {
         if (result && !_.isEmpty(result.data)) {
             fsa.payload.activityStatus = true;
             fsa.payload.eventId = eventId;
         }
-    }).catch().finally(() => {
         dispatch(fsa);
+    }).catch(() => {
+        // console.log('like activity catch block');
+    }).finally(() => {
     });
 };
 
@@ -346,13 +367,18 @@ export const unlikeActivity = async (dispatch, eventId, groupId, userId) => {
                     user_id: Number(userId),
                 },
             },
+        }, {
+            params: {
+                dispatch,
+                ignore401: true,
+            },
         }).then((result) => {
         if (result && !_.isEmpty(result.data)) {
             fsa.payload.activityStatus = false;
             fsa.payload.eventId = eventId;
         }
-    }).catch().finally(() => {
         dispatch(fsa);
+    }).catch().finally(() => {
     });
 };
 
@@ -417,6 +443,11 @@ export const joinGroup = async (dispatch, groupSlug) => {
     };
     await coreApi.post(`/groups/join?load_full_profile=true`, {
         slug: groupSlug,
+    }, {
+        params: {
+            dispatch,
+            ignore401: true,
+        },
     }).then(
         (result) => {
             if (result && !_.isEmpty(result.data)) {
