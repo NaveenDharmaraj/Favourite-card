@@ -1446,8 +1446,30 @@ h4{
      }
    }
  }
+ .d-d-inline-block{
+   >div{
+     display: inline-block;
+   }
+ }
  @media only screen and (max-width: 767px){  
   body{
+    .tools-tabpane{
+      .ui{
+        &.segment{
+          >.grid{
+            >.row{
+              >.column{
+                &.right{
+                  &.aligned{
+                    text-align: center;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
     .left-img-card.ui.card{
       margin-bottom: 0px !important;
     }
@@ -1538,6 +1560,13 @@ h4{
     }
   }
   .left-bg{
+    &.verifyImg{
+      min-height: 200px;
+      > div{
+        max-height: 300px;
+        display: block !important;
+      }
+    }
     display: block !important;
     min-height: 300px;
     >div{
@@ -3477,6 +3506,7 @@ body{
 @media only screen and (min-width:991px){
   .left-bg > div{
     min-height: 480px;
+    max-height: 480px;
   }
 }
 @media only screen and (min-width:991px) and (max-width:1199px) {
@@ -3887,6 +3917,15 @@ body{
   }
 }
 @media only screen and (max-width:991px){
+  body{
+    .allNotification .ui.list > .item > img.image{
+      width: 40px;
+      height: 40px;
+    }
+    .allNotification .ui.list > .item .content.right{
+      padding: 20px 0px;
+    }
+  }
   .profile-img-rounded{
     margin-left: auto;
     margin-right: auto;

@@ -69,8 +69,8 @@ class EmailVerification extends React.Component {
                                 <Grid columns={2}>
                                 
                                     <Grid.Row>
-                                        <Grid.Column mobile={16} tablet={6} computer={7} className="left-bg verifyImg"><div></div></Grid.Column>
-                                        <Grid.Column  mobile={16} tablet={8} computer={7}>
+                                        <Grid.Column mobile={16} tablet={16} computer={7} className="left-bg verifyImg"><div></div></Grid.Column>
+                                        <Grid.Column  mobile={16} tablet={16} computer={7}>
                                         {!!apiResendEmail && (
                                                         <Grid.Row>
                                                             <Grid.Column width={16} className="mt-2">

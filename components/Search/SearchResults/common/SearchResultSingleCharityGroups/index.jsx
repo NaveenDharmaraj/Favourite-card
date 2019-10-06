@@ -93,7 +93,7 @@ class SearchResultSingleCharityGroups extends React.Component {
                                     {/* <Image src={displayAvatar} className="search-left-img" /> */}
                                     <div className="leftSideImage" style={{backgroundImage:`url(${displayAvatar})`}}></div>
                                 </Grid.Column>
-                                <Grid.Column mobile={16} tablet={7} computer={7} largeScreen={8} verticalAlign="middle">
+                                <Grid.Column mobile={16} tablet={6} computer={7} largeScreen={8} verticalAlign="middle">
                                     <div className=" description">
                                         <Header as="h4">
                                             {name}
@@ -108,7 +108,7 @@ class SearchResultSingleCharityGroups extends React.Component {
                                         </Header>
                                     </div>
                                 </Grid.Column>
-                                <Grid.Column mobile={16} tablet={4} computer={4} largeScreen={3} verticalAlign="middle" textAlign="center">
+                                <Grid.Column mobile={16} tablet={5} computer={4} largeScreen={3} verticalAlign="middle" textAlign="center">
                                     <div className="btn-wraper">
 
                                         { this.state[`loader${i}`] ? <Icon name="spinner" loading />

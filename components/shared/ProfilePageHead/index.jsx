@@ -39,7 +39,7 @@ function ProfilePageHead(props) {
                     </Link>
                     { pageDetails.attributes.isAdmin && (
                         <a href={(`${RAILS_APP_URL_ORIGIN}/campaigns/${pageDetails.attributes.slug}/manage-basics`)}>
-                            <Button primary className="blue-btn-rounded">Manage</Button>
+                            <Button className="blue-bordr-btn-round">Manage</Button>
                         </a>
                     )
                     }
