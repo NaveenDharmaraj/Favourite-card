@@ -1,5 +1,4 @@
 import React, { cloneElement, Fragment } from 'react';
-//import dynamic from 'next/dynamic';
 import { connect } from 'react-redux'
 import { Link, Router } from '../../routes';
 import placeholderUser from '../../static/images/no-data-avatar-user-profile.png';
@@ -11,19 +10,9 @@ import {
     Header,
     Icon,
     Image,
-    Menu,
-    Responsive,
-    Form,
-    Input,
     Dropdown,
-    Divider,
-    Table,
-    Tab,
-    Grid,
+    Responsive,
     List,
-    Pagination,
-    Breadcrumb,
-    TextArea,
 } from 'semantic-ui-react'
 import {
     updateUserPreferences,
@@ -40,109 +29,64 @@ class NotificationWrapper extends React.Component {
     intervalId = -1;
     constructor(props) {
         super(props)
-        /* const messageCount = props.messageCount;
-         const messages = props.messages;
-         const userInfo = props.userInfo;
-         const dispatch = props.dispatch;
-         this.state = {
-             msgId: props.msgId,
-             messageCount: messageCount,
-             messages: messages,
-             userInfo: userInfo,
-             dispatch: dispatch
-         };*/
         this.t = props.t;
-        /*const messageCount = props.messageCount;
-        const messages = props.messages;
-        const currentPage = props.page;
-        const userInfo = props.userInfo;
-        const dispatch = props.dispatch;
-        const msgId = props.msgId;
-        const lastSyncTime = props.lastSyncTime;
-        const localeCode = props.localeCode;
-        this.state = {
-            msgId: msgId,
-            messageCount: messageCount,
-            messages: messages,
-            lastSyncTime: lastSyncTime,
-            page: currentPage,
-            userInfo: userInfo,
-            localeCode: localeCode,
-            dispatch: dispatch
-        };*/
         this.listItems.bind(this);
         this.splitNotifications.bind(this);
-        this.updateReadFlag.bind(this);
         this.acceptFriendRequestAsync.bind(this);
         this.updateDeleteFlag.bind(this);
-        this.onLoadMoreClick.bind(this);
         this.onNotificationCTA.bind(this);
         this.onNotificationMsgAction.bind(this);
         this.handleScroll.bind(this);
+        this.state = {
+            deletedItems: [],
+            deleteTimeouts: {},
+            intervalId: -1,
+        }
     }
 
     handleScroll = (e) => {
         const {
             userInfo,
-            dispatch
-        } = this.state;
+            dispatch,
+            messages,
+        } = this.props;
         // Do something generic, if you have to
         let reachedBottom = document.scrollingElement.scrollHeight == document.scrollingElement.scrollTop + window.innerHeight;
         this.loading = false;
-        if (this.state.messages && this.state.messages.length > 0 && reachedBottom && !this.loading) {
+        if (messages && messages.length > 0 && reachedBottom && !this.loading) {
             this.loading = true;
-            let lastMsg = this.state.messages[this.state.messages.length - 1];
+            let lastMsg = messages[messages.length - 1];
             NotificationHelper.getMessages(userInfo, dispatch, 1, lastMsg, lastMsg["_key"]);
         }
     }
 
-    componentWillUpdate(nextProps, nextState) {
-
-    }
-
     async componentWillUnmount() {
         const {
-            userInfo,
-            dispatch
+            intervalId,
         } = this.state;
+        const {
+            userInfo,
+            dispatch,
+        } = this.props;
         await NotificationHelper.updateLastSyncTime(userInfo, dispatch, new Date().getTime());
         window.removeEventListener("scroll", this.handleScroll);
-        clearInterval(this.intervalId);
-        // await NotificationHelper.updateLastSyncTime();
+        clearInterval(intervalId);
     }
 
     async componentDidMount() {
-        const {
-            userInfo,
-            dispatch
-        } = this.state;
+        // const {
+        //     userInfo,
+        //     dispatch
+        // } = this.props;
         window.addEventListener("scroll", this.handleScroll);
-        this.intervalId = setInterval(async function () {
-            // await NotificationHelper.getMessages(userInfo, dispatch, 1);
-        }, 10000);
-        await NotificationHelper.getMessages(userInfo, dispatch, 1);
+        // await NotificationHelper.getMessages(userInfo, dispatch, 1);
     }
-    async onClick(userInfo, dispatch) {
-        await NotificationHelper.getMessages(userInfo, dispatch, 1);
-    }
-    async onLoadMoreClick(userInfo, dispatch, currentPage) {
-        let lastMsg = this.state.messages[0];//
-        lastMsg = this.state.messages[this.state.messages.length - 1];
-        await NotificationHelper.getMessages(userInfo, dispatch, currentPage + 1, lastMsg, lastMsg["_key"]);
-    }
-    // async onMessageClick(msgKey, msg) {
-    //     const {
-    //         userInfo,
-    //         dispatch
-    //     } = this.state;
-    //     // await NotificationHelper.markAsRead(userInfo, dispatch, msgKey, msg);
-    // };
 
     async acceptFriendRequestAsync(msg) {
         const {
             userInfo,
             dispatch
-        } = this.state;
+        } = this.props;
         await NotificationHelper.acceptFriendRequest(userInfo, dispatch, msg);
     };
 
@@ -153,7 +97,7 @@ class NotificationWrapper extends React.Component {
                 break;
             }
             case "turnOff": {
-                updateUserPreferences(this.state.dispatch, this.state.userInfo.id, "in_app_giving_group_activity", false);
+                updateUserPreferences(this.props.dispatch, this.props.userInfo.id, "in_app_giving_group_activity", false);
                 break;
             }
             default:
@@ -212,25 +156,27 @@ class NotificationWrapper extends React.Component {
         }
     }
 
-    listItems(messages) {
+    listItems(messages , newClass = "") {
         if (!messages) {
             messages = [];
         }
         let self = this;
         const {
-            userInfo,
-            localeCode,
-            dispatch
+            deletedItems,
         } = this.state;
+        const {
+            localeCode,
+            dispatch,
+            userInfo,
+        } = this.props;
         return messages.map(function (msg) {
-            // let messagePart = NotificationHelper.getMessagePart(msg, userInfo, localeCode);
             let messagePart;
             if (msg.msg) {
                 messagePart = NotificationHelper.getMessagePart(msg, userInfo, 'en_CA');
             } else {
                 return null;
             }
-            if (self.deletedItems.indexOf(msg["id"]) >= 0) {
+            if (deletedItems.indexOf(msg["id"]) >= 0) {
                 return <List.Item key={"notification_msg_" + msg._key} className="new">
                     <div className="blankImage"></div>
                     <List.Content>
@@ -239,49 +185,50 @@ class NotificationWrapper extends React.Component {
                 </List.Item>
             } else {
                 // className={msg.read ? "" : "new"} onClick={() => self.updateReadFlag(msg._key, msg, true)}
-                return (<List.Item key={"notification_msg_" + msg._key}>
-                    <List.Content floated='right'>
-                        {(() => {
-                            if (msg.cta) {
-                                // msg.callToActions = msg.callToActions.concat(msg.callToActions);
-                                return Object.keys(msg.cta).map(function (ctaKey) {
-                                    let cta = msg.cta[ctaKey];
-                                    if (cta.isWeb) {
-                                        return <Button className="blue-btn-rounded-def c-small" onClick={() => self.onNotificationCTA(ctaKey, cta, msg)}>{cta.title[localeCode]}</Button>
-                                    }
-                                });
-                            }
-                            /*if (msg.type == "friendRequest" && msg.sourceUserId != userInfo.id) {
-                                return <Button className="blue-btn-rounded-def c-small" onClick={() => self.acceptFriendRequestAsync(msg)}>{self.t("action_accept")}</Button>
-                            }*/
-                        })()}
-
+                return (<List.Item key={"notification_msg_" + msg._key} className={newClass}>
+                    <List.Content floated='right' className="d-d-inline-block">
+                        <Responsive minWidth={768}>
+                            {(() => {
+                                if (msg.cta) {
+                                    return Object.keys(msg.cta).map(function (ctaKey) {
+                                        let cta = msg.cta[ctaKey];
+                                        if (cta.isWeb) {
+                                            return <Button className="blue-btn-rounded-def c-small" onClick={() => self.onNotificationCTA(ctaKey, cta, msg)}>{cta.title[localeCode]}</Button>
+                                        }
+                                    });
+                                }
+                            })()}
+                        </Responsive>
                         <span className="more-btn">
                             <Dropdown className="rightBottom" icon='ellipsis horizontal'>
                                 <Dropdown.Menu>
                                     {(() => {
                                         if (msg.msgActions && msg.msgActions.length > 0) {
-                                            // msg.callToActions = msg.callToActions.concat(msg.callToActions);
                                             return msg.msgActions.map(function (cta) {
                                                 return <Dropdown.Item text={self.t(cta)} onClick={() => self.onNotificationMsgAction(cta, msg)} />
                                             });
                                         }
-                                        /*if (msg.type == "friendRequest" && msg.sourceUserId != userInfo.id) {
-                                            return <Button className="blue-btn-rounded-def c-small" onClick={() => self.acceptFriendRequestAsync(msg)}>{self.t("action_accept")}</Button>
-                                        }*/
                                     })()}
-                                    {/* <Dropdown.Item text={messagePart.read ? self.t("markAsUnread") : self.t("markAsRead")} onClick={() => self.updateReadFlag(msg._key, msg, !messagePart.read)} /> */}
-                                    {/* <Dropdown.Item text={self.t("delete")} onClick={() => self.updateDeleteFlag(msg._key, msg, true)} /> */}
-                                    {/* <Dropdown.Item text={self.t("stop")} /> */}
                                 </Dropdown.Menu>
                             </Dropdown>
                         </span>
                     </List.Content>
                     <Image avatar src={messagePart.sourceImageLink ? messagePart.sourceImageLink : placeholderUser} />
                     <List.Content>
-                        {/* <b dangerouslySetInnerHTML={{ __html: messagePart.sourceDisplayName }}></b> {messagePart.message} {msg.deleted ? " Deleted" : ""} */}
                         <span dangerouslySetInnerHTML={{ __html: messagePart.message }}></span>
                         <div className="time">{distanceOfTimeInWords(msg.createdTs)}</div>
+                        <Responsive maxWidth={767}>
+                            {(() => {
+                                if (msg.cta) {
+                                    return Object.keys(msg.cta).map(function (ctaKey) {
+                                        let cta = msg.cta[ctaKey];
+                                        if (cta.isWeb) {
+                                            return <Button className="blue-btn-rounded-def c-small" onClick={() => self.onNotificationCTA(ctaKey, cta, msg)}>{cta.title[localeCode]}</Button>
+                                        }
+                                    });
+                                }
+                            })()}
+                        </Responsive>
                     </List.Content>
                 </List.Item>)
             }
@@ -293,58 +240,59 @@ class NotificationWrapper extends React.Component {
             messages = [];
         }
         let recentItems = messages.filter(function (item) {
-            // return item.createdTs >= (new Date().getTime() - (1000 * 60 * 60 * 48));
             return item.createdTs > lastSyncTime;
         });
 
         let earlierItems = messages.filter(function (item) {
-            // return item.createdTs < (new Date().getTime() - (1000 * 60 * 60 * 48));
             return item.createdTs <= lastSyncTime;
         });
         return { "recent": recentItems, "earlier": earlierItems };
     }
-    async updateReadFlag(msgKey, msg, flag) {
-        await NotificationHelper.updateReadFlag(this.state.userInfo, this.state.dispatch, msgKey, msg, flag);
-    };
+    // async updateReadFlag(msgKey, msg, flag) {
+    //     await NotificationHelper.updateReadFlag(this.state.userInfo, this.state.dispatch, msgKey, msg, flag);
+    // };
 
     async updateDeleteFlag(msgKey, msg, flag) {
-        let self = this;
-        if (flag) {
-            this.deletedItems.push(msg.id);
-            this.deleteTimeouts[msg.id] = setTimeout(function () {
-                eventApi.post("/notification/delete", { "user_id": self.state.userInfo.id, "id": msg.id }).then(async function (response) {
-                    await NotificationHelper.getMessages(self.state.userInfo, self.state.dispatch, 1);
-                });
-            });
+        const {
+            deletedItems,
+            deleteTimeouts,
+        } = this.state;
+
+        const {
+            userInfo,
+        } = this.props;
+       if (flag) {
+            deletedItems.push(msg.id);
+            deleteTimeouts[msg.id] = setTimeout(function () {
+                eventApi.post("/notification/delete", { "user_id": userInfo.id, "id": msg.id });
+            },10000);
         } else {
-            this.deletedItems.splice(this.deletedItems.indexOf(msg.id), 1);
-            clearTimeout(this.deleteTimeouts[msg.id]);
+            deletedItems.splice(deletedItems.indexOf(msg.id), 1);
+            clearTimeout(deleteTimeouts[msg.id]);
         }
+        this.setState({
+            ...this.state,
+            deletedItems,
+            deleteTimeouts,
+        })
     }
 
     render() {
         this.t = this.props.t;
         this.loading = false;
-        const messageCount = this.props.messageCount;
-        const messages = this.props.messages;
         const currentPage = this.props.page;
-        const userInfo = this.props.userInfo;
-        const dispatch = this.props.dispatch;
         const msgId = this.props.msgId;
-        const lastSyncTime = this.props.lastSyncTime;
-        const localeCode = this.props.localeCode;
+        const {
+            lastSyncTime,
+
+        } = this.props;
         this.state = {
+            ...this.state,
             msgId: msgId,
-            messageCount: messageCount,
-            messages: messages,
-            lastSyncTime: lastSyncTime,
             page: currentPage,
-            userInfo: userInfo,
-            localeCode: localeCode,
-            dispatch: dispatch
         };
         let self = this;
-        let itemByType = self.splitNotifications(self.state.messages, lastSyncTime);
+        let itemByType = self.splitNotifications(this.props.messages, lastSyncTime);
         let recentItems = itemByType.recent;
         let earlierItems = itemByType.earlier;
         return (
@@ -403,7 +351,9 @@ function mapStateToProps(state) {
         messages: state.firebase.messages,
         lastSyncTime: state.firebase.lastSyncTime,
         page: state.firebase.page,
-        messageCount: state.firebase.messages ? Object.keys(state.firebase.messages.filter(function (m) { return !m.read; })).length : 0,
+        messageCount: state.firebase.messages ? Object.keys(state.firebase.messages.filter(function (m) { 
+            return !m.read;
+        })).length : 0,
         userInfo: state.user.info,
         localeCode: localeCodes[state.user.info.attributes.language ? state.user.info.attributes.language : 'en']
     };

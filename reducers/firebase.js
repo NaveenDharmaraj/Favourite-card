@@ -1,11 +1,12 @@
+import _findIndex from 'lodash/findIndex';
+import _remove from 'lodash/remove';
+
 const firebase = (state = {}, action) => {
     let newState = {
         ...state,
     };
     switch (action.type) {
-        case 'FIREBASE_MESSAGE_FETCH_COMPLETE': {
-            // console.log("FIREBASE_MESSAGE_FETCH_COMPLETE");
-            // console.error(action.payload.messages);
+        case 'FIREBASE_MESSAGE_FETCH_COMPLETE':
             let newMsgs = action.payload.messages || [];
             let oldMsgs = state.messages || [];
             let uniqueArray = oldMsgs.concat(newMsgs);
@@ -22,11 +23,49 @@ const firebase = (state = {}, action) => {
                 lastSyncTime: action.payload.lastSyncTime,
                 page: action.payload.page
             };
-        }
             break;
+        case 'INITAL_LOAD':
+            newState = {
+                ...state,
+                messages: action.payload.firebaseMessages,
+                lastSyncTime: action.payload.lastSyncTime,
+                page: action.payload.page,
+            };
+            break;
+        case 'ADD_NEW_FIREBASE_MESSAGE':
+            const newMessage = action.payload.addedMessage;
+            const oldMessages = state.messages || [];
+            oldMessages.unshift(newMessage);
+            newState = {
+                ...state,
+                messages: oldMessages,
+                lastSyncTime: action.payload.lastSyncTime,
+            };
+            break;
+            case 'UPDATE_FIREBASE_MESSAGE':
+            const updatenewMessage = action.payload.addedMessage;
+            const updateoldMessages = Object.assign([], state.messages) || [];
+            const index = _findIndex(updateoldMessages, (msg) => msg._key === updatenewMessage._key);
+            if(index !== -1) {
+                updateoldMessages.splice(index, 1, updatenewMessage);
+            }
+            newState = {
+                ...state,
+                messages: updateoldMessages,
+                lastSyncTime: action.payload.lastSyncTime,
+            };
+            break;
+            case 'REMOVE_FIREBASE_MESSAGE':
+                const deletedMessage = action.payload.deletedMessage;
+                let deleteOldMessages = Object.assign([], state.messages) || [];
+                _remove(deleteOldMessages, (msg) => msg._key === deletedMessage._key);
+                newState = {
+                    ...state,
+                    messages: deleteOldMessages,
+                    lastSyncTime: action.payload.lastSyncTime,
+                };
+                break;
         default:
-            // console.log(action.type);
-            // console.log(action.payload);
             break;
     }
     return newState;

@@ -56,7 +56,7 @@ function AllocationsTable(props) {
     };
     return ((_.isEmpty(upcomingTransactions)) ? null
         : (
-            <div className="responsiveTable">
+            <div className="responsiveTable mt-2">
                 <Table padded unstackable className="no-border-table">
                     <Table.Header>
                         <Table.Row>

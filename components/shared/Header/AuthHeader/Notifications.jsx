@@ -7,60 +7,138 @@ import { Link, Router } from '../../../../routes';
 import { withTranslation } from '../../../../i18n';
 import placeholderUser from '../../../../static/images/no-data-avatar-user-profile.png';
 import { distanceOfTimeInWords } from '../../../../helpers/utils';
+import eventApi from '../../../../services/eventApi';
 import {
     updateUserPreferences,
 } from '../../../../actions/userProfile';
 
-const noOfMessagesToShow = 6;
+import _cloneDeep from 'lodash/cloneDeep';
 
-const Notifications = (props) => {
-    const {
-        messageCount,
-        userInfo,
-        localeCode,
-        dispatch,
-        t,
-    } = props;
-    let {
-        messages,
-    } = props;
-    if (!messages) {
-        messages = [];
-    }
-    setInterval(async () => {
-        await NotificationHelper.getMessages(userInfo, dispatch, 1);
-    }, 1000 * 60 * 5);
-    const fetchMessages = async () => {
-        await NotificationHelper.getMessages(userInfo, dispatch, 1);
-    };
-    const updateReadFlag = async (msgKey, msg, flag) => {
-        await NotificationHelper.updateReadFlag(userInfo, dispatch, msgKey, msg, flag);
-    };
-
-    const acceptFriendRequestAsync = async (msg) => {
-        await NotificationHelper.acceptFriendRequest(userInfo, dispatch, msg);
-    };
-
-    const updateDeleteFlag = async (msgKey, msg, flag) => {
-        // await NotificationHelper.updateDeleteFlag(userInfo, dispatch, msgKey, msg, flag);
-    };
-
-    const onNotificationMsgAction = async (cta, msg) => {
-        switch (cta) {
-            case 'delete': {
-                updateDeleteFlag(msg._key, msg, true);
-                break;
-            }
-            case 'turnOff': {
-                updateUserPreferences(dispatch, userInfo.id, 'in_app_giving_group_activity', false);
-                break;
-            }
-            default:
-                break;
+class Notifications extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            deletedItems: [],
+            deleteTimeouts: {},
+            intervalId: -1,
         }
+        this.updateDeleteFlag = this.updateDeleteFlag.bind(this);
+        this.renderlistItems = this.renderlistItems.bind(this);
+        this.acceptFriendRequestAsync = this.acceptFriendRequestAsync.bind(this);
+        this.onNotificationMsgAction = this.onNotificationMsgAction.bind(this);
+    }
+
+    updateDeleteFlag(msgKey, msg, flag) {
+        const {
+            deletedItems,
+            deleteTimeouts,
+        } = this.state;
+
+        const {
+            userInfo,
+        } = this.props;
+       if (flag) {
+            deletedItems.push(msg.id);
+            deleteTimeouts[msg.id] = setTimeout(function () {
+                eventApi.post("/notification/delete", { "user_id": userInfo.id, "id": msg.id });
+            },10000);
+        } else {
+            deletedItems.splice(deletedItems.indexOf(msg.id), 1);
+            clearTimeout(deleteTimeouts[msg.id]);
+        }
+        this.setState({
+            ...this.state,
+            deletedItems,
+            deleteTimeouts,
+        })
+    }
+    
+    componentWillMount() {
+        const {
+            userInfo,
+            dispatch,
+        } = this.props;
+        NotificationHelper.fetchMessages(userInfo, dispatch);
+    }
+
+     acceptFriendRequestAsync(msg) {
+        const {
+            userInfo,
+            dispatch
+        } = this.props;
+        NotificationHelper.acceptFriendRequest(userInfo, dispatch, msg);
     };
 
-    const onNotificationCTA = async (ctaKey, ctaOptions, msg) => {
+    renderlistItems  () {
+         const {
+            userInfo,
+            localeCode,
+            messages,
+            t,
+        } = this.props;
+        if(!messages) {
+            return null;
+        }
+        return messages.slice(0, 6).map((msg) => {
+        // const messagePart = NotificationHelper.getMessagePart(msg, userInfo, 'en_CA');
+        let messagePart;
+        if (msg.msg) {
+            messagePart = NotificationHelper.getMessagePart(msg, userInfo, 'en_CA');
+        } else {
+            return null;
+        }
+        if (this.state.deletedItems.indexOf(msg["id"]) >= 0) {
+            return (
+                <List.Item key={`notification_msg_${msg._key}`} className="new">
+                    <div className="blankImage" />
+                    <List.Content>
+                        {t('removed')} <a onClick={() => this.updateDeleteFlag(msg._key, msg, false)} >{t('undo')}</a>
+                    </List.Content>
+                </List.Item>
+            );
+        }
+        // className={msg.read ? "" : "new"} onClick={() => updateReadFlag(msg._key, msg, true)}
+        return (
+            <List.Item key={`notification_head_${msg._key}`}>
+                <Image avatar src={messagePart.sourceImageLink ? messagePart.sourceImageLink : placeholderUser} />
+                <List.Content>
+                    <span dangerouslySetInnerHTML={{ __html: messagePart.message }} />
+                    <div className="time">{distanceOfTimeInWords(msg.createdTs)}</div>
+                    <span className="more-btn">
+                        <Dropdown className="rightBottom" icon="ellipsis horizontal">
+                            <Dropdown.Menu>
+                                {(() => {
+                                    if (msg.msgActions && msg.msgActions.length > 0) {
+                                        return msg.msgActions.map((cta) => {
+                                            return <Dropdown.Item key={cta} text={t(cta)} onClick={() => this.onNotificationMsgAction(cta, msg)} />;
+                                        });
+                                    }
+                                })()}
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    </span>
+                    {(() => {
+                        if (msg.cta) {
+                            return Object.keys(msg.cta).map((ctaKey) => {
+                                const cta = msg.cta[ctaKey];
+                                if (cta.isWeb) {
+                                    return <Button key={ctaKey} className="blue-btn-rounded-def c-small" onClick={() => this.onNotificationCTA(ctaKey, cta, msg)}>{cta.title[localeCode]}</Button>;
+                                }
+                            });
+                        }
+                        if (msg.callToActions && msg.callToActions.length > 0) {
+                            return msg.cta.map((cta) => {
+                                return <Button key={cta.actionTitle} className="blue-btn-rounded-def c-small" onClick={() => this.onNotificationCTA(cta, msg)}>{cta.actionTitle}</Button>;
+                            });
+                        }
+                    })()}
+                </List.Content>
+            </List.Item>
+        );
+    });
+     }
+
+     async onNotificationCTA (ctaKey, ctaOptions, msg) {
         const ctaActionId = ctaKey; // cta.actionId;
         switch (ctaActionId) {
             case 'setNewGivingGoal': {
@@ -78,7 +156,7 @@ const Notifications = (props) => {
                 break;
             }
             case 'viewMessage': {
-                // Router.pushRoute("/chats/" + cta.user_id);
+                Router.pushRoute("/chats/" + cta.user_id);
                 break;
             }
             case 'updatePayment': {
@@ -100,7 +178,7 @@ const Notifications = (props) => {
                 break;
             }
             case 'accept': {
-                acceptFriendRequestAsync(msg);
+                this.acceptFriendRequestAsync(msg);
                 break;
             }
             case 'viewProfile': {
@@ -113,141 +191,79 @@ const Notifications = (props) => {
         }
     };
 
-    const listItems = messages.slice(0, noOfMessagesToShow).map((msg) => {
-        // const messagePart = NotificationHelper.getMessagePart(msg, userInfo, 'en_CA');
-        let messagePart;
-        if (msg.msg) {
-            messagePart = NotificationHelper.getMessagePart(msg, userInfo, 'en_CA');
-        } else {
-            return null;
-        }
-        if (msg.deleted) {
-            return (
-                <List.Item key={`notification_msg_${msg._key}`} className="new">
-                    <div className="blankImage" />
-                    <List.Content>
-                        {t('removed')} <a onClick={() => updateDeleteFlag(msg._key, msg, false)} >{t('undo')}</a>
-                    </List.Content>
-                </List.Item>
-            );
-        }
-        // className={msg.read ? "" : "new"} onClick={() => updateReadFlag(msg._key, msg, true)}
-        return (
-            <List.Item key={`notification_head_${msg._key}`}>
-                <Image avatar src={messagePart.sourceImageLink ? messagePart.sourceImageLink : placeholderUser} />
-                <List.Content>
-                    {/* <b dangerouslySetInnerHTML={{ __html: messagePart.sourceDisplayName }}></b> {messagePart.message} */}
-                    <span dangerouslySetInnerHTML={{ __html: messagePart.message }} />
-                    <div className="time">{distanceOfTimeInWords(msg.createdTs)}</div>
-                    <span className="more-btn">
-                        <Dropdown className="rightBottom" icon='ellipsis horizontal'>
-                            <Dropdown.Menu>
-                                {(() => {
-                                    if (msg.msgActions && msg.msgActions.length > 0) {
-                                        // msg.callToActions = msg.callToActions.concat(msg.callToActions);
-                                        return msg.msgActions.map((cta) => {
-                                            return <Dropdown.Item key={cta} text={t(cta)} onClick={() => onNotificationMsgAction(cta, msg)} />;
-                                        });
-                                    }
-                                    /* if (msg.type == "friendRequest" && msg.sourceUserId != userInfo.id) {
-                                            return <Button className="blue-btn-rounded-def c-small" onClick={() => self.acceptFriendRequestAsync(msg)}>{self.t("action_accept")}</Button>
-                                        } */
-                                })()}
-                                {/* <Dropdown.Item text={messagePart.read ? t("markAsUnread") : t("markAsRead")} onClick={() => updateReadFlag(msg._key, msg, !messagePart.read)} />
-                                <Dropdown.Item text={t("delete")} onClick={() => updateDeleteFlag(msg._key, msg, true)} />
-                                <Dropdown.Item text={t("stop")} /> */}
-                            </Dropdown.Menu>
-                        </Dropdown>
-                    </span>
-                    {(() => {
-                        if (msg.cta) {
-                            // msg.callToActions = msg.callToActions.concat(msg.callToActions);
-                            return Object.keys(msg.cta).map((ctaKey) => {
-                                const cta = msg.cta[ctaKey];
-                                if (cta.isWeb) {
-                                    return <Button key={ctaKey} className="blue-btn-rounded-def c-small" onClick={() => onNotificationCTA(ctaKey, cta, msg)}>{cta.title[localeCode]}</Button>;
-                                }
-                            });
-                        }
-                        if (msg.callToActions && msg.callToActions.length > 0) {
-                            // msg.callToActions = msg.callToActions.concat(msg.callToActions);
-                            return msg.cta.map((cta) => {
-                                return <Button key={cta.actionTitle} className="blue-btn-rounded-def c-small" onClick={() => onNotificationCTA(cta, msg)}>{cta.actionTitle}</Button>;
-                            });
-                        }
-                        // if (msg.type == "friendRequest" && msg.sourceUserId != userInfo.id) {
-                        //     return <Button className="blue-btn-rounded-def c-small" onClick={() => acceptFriendRequestAsync(msg)}>{t("action_accept")}</Button>
-                        // }
-                    })()}
-                </List.Content>
-                {/* <List.Content floated='right'>
-                    {(() => {
-                        if (msg.callToActions && msg.callToActions.length > 0) {
-                            // msg.callToActions = msg.callToActions.concat(msg.callToActions);
-                            return msg.callToActions.map(function (cta) {
-                                return <Button className="blue-btn-rounded-def c-small" onClick={() => self.onNotificationCTA(cta, msg)}>{cta.actionTitle}</Button>
-                            });
-                        }
-                        // if (msg.type == "friendRequest" && msg.sourceUserId != userInfo.id) {
-                        //     return <Button className="blue-btn-rounded-def c-small" onClick={() => acceptFriendRequestAsync(msg)}>{t("action_accept")}</Button>
-                        // }
-                    })()}
-
-                    <span className="more-btn">
-                        <Dropdown className="rightBottom" icon='ellipsis horizontal'>
-                            <Dropdown.Menu>
-                                {/* <Dropdown.Item text={messagePart.read ? t("markAsUnread") : t("markAsRead")} onClick={() => updateReadFlag(msg._key, msg, !messagePart.read)} /> * /}
-                                <Dropdown.Item text={t("delete")} onClick={() => updateDeleteFlag(msg._key, msg, true)} />
-                                <Dropdown.Item text={t("stop")} />
-                            </Dropdown.Menu>
-                        </Dropdown>
-                    </span>
-                </List.Content> */}
-
-            </List.Item>
-        );
-    });
-    return (
-        <Popup
-            position="bottom right"
-            basic
-            on="click"
-            className="notification-popup"
-            trigger={
-                (
-                    <Menu.Item as="a" className="notifyNav xs-d-none">
-                        {(() => {
-                            if (messageCount > 0 && false) {
-                                return (
-                                    <Label color="red" floating circular onClick={fetchMessages}>
-                                        {messageCount}
-                                    </Label>
-                                );
-                            }
-                        })()}
-
-                        <Icon name={`bell outline${messageCount > 0 ? ' new' : ''}`} />
-                    </Menu.Item>
-                )
+    async onNotificationMsgAction(cta, msg) {
+        switch (cta) {
+            case "delete": {
+                this.updateDeleteFlag(msg._key, msg, true);
+                break;
             }
-        >
-            <Popup.Header>
-                {t('notificationHeader')} <a className="settingsIcon" style={{ display: 'none' }}><Icon name="setting" /></a>
-            </Popup.Header>
-            <Popup.Content>
-                {/* <div className="viewAllNotifications"> */}
-                {/* <div className="allNotification mb-3"> */}
-                <List divided verticalAlign="top">
-                    {listItems}
-                </List>
-                {/*            </div> */}
-                {/* </div> */}
-            </Popup.Content>
-            <div className="popup-footer text-center">
-                <Link route={`/notifications/all`}><a>{t('viewAll')}</a></Link>
-            </div>
-        </Popup>
-    );
+            case "turnOff": {
+                updateUserPreferences(this.props.dispatch, this.props.userInfo.id, "in_app_giving_group_activity", false);
+                break;
+            }
+            default:
+                break;
+        }
+    }
+
+    // fetchMessages = async () => {
+    //     await NotificationHelper.getMessages(userInfo, dispatch, 1);
+    // };
+
+    render() {
+        const {
+            messageCount,
+            userInfo,
+            localeCode,
+            dispatch,
+            t,
+        } = this.props;
+        // setInterval(async () => {
+        //     await NotificationHelper.getMessages(userInfo, dispatch, 1);
+        // }, 1000 * 60 * 5);
+
+        // updateReadFlag = async (msgKey, msg, flag) => {
+        //     await NotificationHelper.updateReadFlag(userInfo, dispatch, msgKey, msg, flag);
+        // };
+
+        return (
+            <Popup
+                position="bottom right"
+                basic
+                on="click"
+                className="notification-popup"
+                trigger={
+                    (
+                        <Menu.Item as="a" className="notifyNav xs-d-none">
+                            {(() => {
+                                if (messageCount > 0 && false) {
+                                    return (
+                                        <Label color="red" floating circular >
+                                            {messageCount}
+                                        </Label>
+                                    );
+                                }
+                            })()}
+
+                            <Icon name={`bell outline${messageCount > 0 ? ' new' : ''}`} />
+                        </Menu.Item>
+                    )
+                }
+            >
+                <Popup.Header>
+                    {t('notificationHeader')} <Link route="/user/profile/settings/notifications"><a className="settingsIcon"><Icon name="setting" /></a></Link>
+                </Popup.Header>
+                <Popup.Content>
+                    <List divided verticalAlign="top">
+                        {this.renderlistItems()}
+                    </List>
+                </Popup.Content>
+                <div className="popup-footer text-center">
+                    <Link route={`/notifications/all`}><a>{t('viewAll')}</a></Link>
+                </div>
+            </Popup>
+        );
+    }
 };
 
 function mapStateToProps(state) {
