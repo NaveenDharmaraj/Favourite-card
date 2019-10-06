@@ -32,7 +32,7 @@ function GivingGoalsTable(props) {
     };
     return ((_.isEmpty(userGivingGoalDetails)) ? null
         : (
-            <Table padded unstackable className="no-border-table">
+            <Table padded unstackable className="no-border-table mt-2">
                 <Table.Header>
                     <Table.Row>
                         <Table.HeaderCell>Year</Table.HeaderCell>
