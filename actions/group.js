@@ -46,21 +46,20 @@ export const getGroupFromSlug = async (dispatch, slug, token = null) => {
             },
             type: actionTypes.REDIRECT_TO_DASHBOARD,
         });
-        const params = {
-            dispatch,
-            slug,
-            uxCritical: true,
+        const fullParams = {
+            params: {
+                dispatch,
+                slug,
+                uxCritical: true,
+            },
         };
         if (token !== null) {
-            params.headers = {
+            fullParams.headers = {
                 Authorization: `Bearer ${token}`,
             };
-            console.log(params);
         }
         await coreApi.get(`/groups/find_by_slug?load_full_profile=true`, {
-            params: {
-                ...params,
-            },
+            ...fullParams,
         }).then(
             (result) => {
                 if (result && !_.isEmpty(result.data)) {
