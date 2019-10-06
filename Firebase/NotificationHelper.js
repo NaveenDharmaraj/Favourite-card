@@ -68,7 +68,7 @@ class NotificationHelper {
         });
     }
 
-    static fetchToDos = (userInfo, dispatch )=> {
+    static fetchMessages = (userInfo, dispatch )=> {
         const limit = 10;
         NotificationHelper.get(userInfo);
         let userRef = Firebase.database().ref("/organisation/chimp/users/" + userInfo.id);
@@ -132,7 +132,7 @@ class NotificationHelper {
                 });
             }
           dispatch({
-            type: 'FETCH_TODOS',
+            type: 'INITAL_LOAD',
             payload: {
                 firebaseMessages,
                 lastSyncTime,
@@ -198,8 +198,9 @@ class NotificationHelper {
         let msgText = msg["msg"][localeCode];
         if (msg.highlighted && msg.highlighted.length > 0) {
             msg.highlighted.forEach(function (w) {
-                let regEx = new RegExp("{{ " + w + " }}", "g");
-                msgText = msgText.replace(regEx, "<b>" + w + "</b>");
+                // let regEx = new RegExp("{{ " + w + " }}", "g");
+                msgText = msgText.replace(/{{/g, "<b>");
+                msgText = msgText.replace(/}}/g, "</b>");
             });
         }
         let d = { "sourceDisplayName": msg.sourceDisplayName, "message": msgText, read: msg.read };

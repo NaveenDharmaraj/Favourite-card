@@ -24,7 +24,7 @@ const firebase = (state = {}, action) => {
                 page: action.payload.page
             };
             break;
-        case 'FETCH_TODOS':
+        case 'INITAL_LOAD':
             newState = {
                 ...state,
                 messages: action.payload.firebaseMessages,

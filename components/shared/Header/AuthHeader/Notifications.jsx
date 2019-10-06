@@ -58,7 +58,7 @@ class Notifications extends React.Component {
             userInfo,
             dispatch,
         } = this.props;
-        NotificationHelper.fetchToDos(userInfo, dispatch);
+        NotificationHelper.fetchMessages(userInfo, dispatch);
     }
 
      acceptFriendRequestAsync(msg) {
@@ -92,7 +92,7 @@ class Notifications extends React.Component {
                 <List.Item key={`notification_msg_${msg._key}`} className="new">
                     <div className="blankImage" />
                     <List.Content>
-                        {t('removed')} <a onClick={() => updateDeleteFlag(msg._key, msg, false)} >{t('undo')}</a>
+                        {t('removed')} <a onClick={() => this.updateDeleteFlag(msg._key, msg, false)} >{t('undo')}</a>
                     </List.Content>
                 </List.Item>
             );

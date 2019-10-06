@@ -11,7 +11,7 @@ import {
     Icon,
     Image,
     Dropdown,
-    Grid,
+    Responsive,
     List,
 } from 'semantic-ui-react'
 import {
@@ -156,7 +156,7 @@ class NotificationWrapper extends React.Component {
         }
     }
 
-    listItems(messages) {
+    listItems(messages , newClass = "") {
         if (!messages) {
             messages = [];
         }
@@ -185,19 +185,20 @@ class NotificationWrapper extends React.Component {
                 </List.Item>
             } else {
                 // className={msg.read ? "" : "new"} onClick={() => self.updateReadFlag(msg._key, msg, true)}
-                return (<List.Item key={"notification_msg_" + msg._key}>
-                    <List.Content floated='right'>
-                        {(() => {
-                            if (msg.cta) {
-                                return Object.keys(msg.cta).map(function (ctaKey) {
-                                    let cta = msg.cta[ctaKey];
-                                    if (cta.isWeb) {
-                                        return <Button className="blue-btn-rounded-def c-small" onClick={() => self.onNotificationCTA(ctaKey, cta, msg)}>{cta.title[localeCode]}</Button>
-                                    }
-                                });
-                            }
-                        })()}
-
+                return (<List.Item key={"notification_msg_" + msg._key} className={newClass}>
+                    <List.Content floated='right' className="d-d-inline-block">
+                        <Responsive minWidth={768}>
+                            {(() => {
+                                if (msg.cta) {
+                                    return Object.keys(msg.cta).map(function (ctaKey) {
+                                        let cta = msg.cta[ctaKey];
+                                        if (cta.isWeb) {
+                                            return <Button className="blue-btn-rounded-def c-small" onClick={() => self.onNotificationCTA(ctaKey, cta, msg)}>{cta.title[localeCode]}</Button>
+                                        }
+                                    });
+                                }
+                            })()}
+                        </Responsive>
                         <span className="more-btn">
                             <Dropdown className="rightBottom" icon='ellipsis horizontal'>
                                 <Dropdown.Menu>
@@ -216,6 +217,18 @@ class NotificationWrapper extends React.Component {
                     <List.Content>
                         <span dangerouslySetInnerHTML={{ __html: messagePart.message }}></span>
                         <div className="time">{distanceOfTimeInWords(msg.createdTs)}</div>
+                        <Responsive maxWidth={767}>
+                            {(() => {
+                                if (msg.cta) {
+                                    return Object.keys(msg.cta).map(function (ctaKey) {
+                                        let cta = msg.cta[ctaKey];
+                                        if (cta.isWeb) {
+                                            return <Button className="blue-btn-rounded-def c-small" onClick={() => self.onNotificationCTA(ctaKey, cta, msg)}>{cta.title[localeCode]}</Button>
+                                        }
+                                    });
+                                }
+                            })()}
+                        </Responsive>
                     </List.Content>
                 </List.Item>)
             }
