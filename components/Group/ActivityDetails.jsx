@@ -232,30 +232,26 @@ class ActivityDetails extends React.Component {
 
                         {doReply && canReply
                             && (
-                                <Grid>
-                                    <Grid.Row>
-                                        <Grid.Column mobile={16} tablet={14} computer={14}>
-                                            <div className="two-icon-brdr-btm-input replayInput">
-                                                <Input
-                                                    value={commentText}
-                                                    onChange={this.updateInputValue}
-                                                    type="text"
-                                                    placeholder="Write a post..."
-                                                    action
-                                                    fluid
-                                                />
-                                            </div>
-                                        </Grid.Column>
-                                        <Grid.Column mobile={16} tablet={2} computer={2}>
-                                            <Button
-                                                onClick={this.postReplyComment}
-                                                className="blue-bordr-btn-round-def c-small"
-                                            >
-                                                Reply
-                                            </Button>
-                                        </Grid.Column>
-                                    </Grid.Row>
-                                </Grid>
+                                <div className="postInputMainWraper">
+                                    <div className="postInputWraper">
+                                        <Input
+                                            value={commentText}
+                                            onChange={this.updateInputValue}
+                                            type="text"
+                                            placeholder="Write a post..."
+                                            fluid
+                                        />
+                                    </div>
+                                    <div className="postBtnWraper">
+                                        <Button
+                                            fluid
+                                            onClick={this.postReplyComment}
+                                            className="blue-bordr-btn-round-def postButton"
+                                        >
+                                            Reply
+                                        </Button>
+                                    </div>
+                                </div>
                             )}
 
                     </Comment.Actions>
