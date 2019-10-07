@@ -93,6 +93,7 @@ class SecondStep extends React.Component {
                                     control={Input}
                                     id="password"
                                     name="password"
+                                    className="w-380"
                                     type={(pwdHide) ? "password" : "input"}
                                     value={_.isEmpty(password) ? '' : password}
                                     onChange={parentInputChange}
