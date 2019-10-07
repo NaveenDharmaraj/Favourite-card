@@ -64,7 +64,14 @@ class Layout extends React.Component {
                     name: currentUser.attributes.displayName,
                     email: currentUser.attributes.email,
                   });
-            }               
+            }
+            Beacon('config', {
+                "labels": {
+                    "suggestedForYou": "Answers to common questions",
+                    "responseTime": "One of our team members will get back to you shortly.",
+                    "messageSubmitLabel": "Send message"
+                  }
+            });
         }
         window.scrollTo(0, 0);
     };
