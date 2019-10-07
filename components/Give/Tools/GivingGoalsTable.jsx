@@ -24,7 +24,8 @@ function GivingGoalsTable(props) {
                     attributes,
                 } = goal;
                 const formattedGoalAmount = formatCurrency(attributes.amount, 'en', 'USD');
-                const goalString = `You've given $${attributes.donatedAmount}, and your goal is ${formattedGoalAmount}`;
+                const formattedDonatedAmount = formatCurrency(attributes.donatedAmount, 'en', 'USD');
+                const goalString = `You've given ${formattedDonatedAmount}, and your goal is ${formattedGoalAmount}`;
                 tableBody.push(
                     <Table.Row>
                         <Table.Cell>{attributes.year}</Table.Cell>
