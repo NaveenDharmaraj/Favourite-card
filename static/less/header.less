@@ -266,7 +266,7 @@ button,a{
             .notifyNav{
               position: relative;
               margin-top: 15px !important;
-              &:hover{
+              &:active,&:focus,&:visited{
                 &::after{
                 opacity: 1;
                 }
@@ -307,7 +307,17 @@ button,a{
               padding-bottom: 22px !important;
               position: relative;
               margin-top: 15px !important;
-              &:hover{
+              &:active{
+                &::after{
+                opacity: 1;
+                }
+              }
+              &:focus{
+                &::after{
+                opacity: 1;
+                }
+              }
+              &:visited{
                 &::after{
                 opacity: 1;
                 }
@@ -529,6 +539,7 @@ button,a{
     }
   }
 }
+
 .notification-popup{
   &.ui{
     &.popup{
@@ -545,6 +556,26 @@ button,a{
           float: right;
           cursor: pointer;
           color:  rgba(0,0,0,0.25);
+          .icon{
+            &.setting{
+              position: relative;
+              height: 18px;	width: 18px;
+              margin-right: 0px;
+              opacity: 0.5;
+              &::before{
+                content: '';
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                background-image: url(../images/icons/icon-account_settings.svg) !important;
+                background-size:contain !important;
+                background-repeat:no-repeat !important;
+                background-position: center !important;
+              }
+            }
+          }
         }
         &:after {
           content: "";
@@ -582,6 +613,32 @@ button,a{
                   top: 0;
                   right: 0;
                   color: #263238;
+                  .ui{
+                    &.dropdown{
+                      &.active{
+                        .icon{
+                          &::after{
+                            opacity: 1;
+                          }
+                        }
+                      }
+                    }
+                  }
+                  .icon{
+                    position: relative;
+                    &::after{
+                      content: '';
+                      height: 27px;
+                      width: 27px;
+                      background-color: #eee;
+                      position: absolute;
+                      z-index: -1;
+                      border-radius: 100%;
+                      top: -11px;
+                      left: 2px;
+                      opacity: 0;
+                    }
+                  }
                 }
                 .time{
                   color: @grey-darken-9;

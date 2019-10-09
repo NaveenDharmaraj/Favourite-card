@@ -265,7 +265,7 @@ class Favorites extends React.Component {
                         { (favoritesLoader) ? <PlaceholderGrid row={2} column={3} /> : (
                             this.showFavorites()
                         )}
-                        <div className="seeMore bigBtn mt-2-sm">
+                        <div className="seeMore bigBtn mt-2-sm mt-2-xs">
                             {this.renderSeeMore()}
                             {this.renderCount()}
                         </div>

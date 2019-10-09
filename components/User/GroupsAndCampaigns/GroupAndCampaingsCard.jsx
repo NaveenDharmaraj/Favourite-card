@@ -156,7 +156,9 @@ class GroupsAndCampaignsCard extends React.Component {
                                         <Header.Content>
                                             {shortName}
                                             <br />
-                                            {location}
+                                            <span className="location">
+                                                {location}
+                                            </span>
                                         </Header.Content>
                                     </Header>
                                     <Link className="lnkChange" route={`/${urlType}/${slug}`}>

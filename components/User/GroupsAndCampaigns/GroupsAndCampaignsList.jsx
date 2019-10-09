@@ -124,7 +124,7 @@ class GroupsAndCampaignsList extends React.Component {
                         {groupsAndCampaignsList}
                     </Grid.Row>
                 </Grid>
-                <div className="text-center">
+                <div className="text-center mt-2-xs">
                     {this.renderSeeMore(listingType)}
                     {this.renderCount()}
                 </div>
