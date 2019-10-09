@@ -36,8 +36,8 @@ class NotificationHelper {
                 console.error(e);
             }
         }
-        fbHelper.messaging = Firebase.messaging();
-        fbHelper.userInfo = userInfo;
+        // fbHelper.messaging = Firebase.messaging();
+        // fbHelper.userInfo = userInfo;
     }
     static get(userInfo) {
         if (NotificationHelper.instance == null || NotificationHelper.instance.messaging == null) {
