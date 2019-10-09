@@ -39,10 +39,12 @@ const DonationDetails = (props) => {
         lastDonationDay = distanceOfTimeInWords(lastDonationAt);
     }
     let fundRaisingDuration = '';
+    const daysText = (fundraisingDaysRemaining && fundraisingDaysRemaining === 1) ? ' day left' : ' days left';
     if (fundraisingDaysRemaining !== null) {
         fundRaisingDuration = (
             <span className="badge white right">
-                {`${fundraisingDaysRemaining} days left`}
+                {fundraisingDaysRemaining}
+                {daysText}
             </span>
         );
     }
