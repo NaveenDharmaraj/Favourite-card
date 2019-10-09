@@ -38,7 +38,7 @@ const ProfileDetails = (props) => {
                     groupDetails: {
                         attributes: {
                             description,
-                            videoDirectLink,
+                            videoPlayerLink,
                             purpose,
                             helping,
                             about,
@@ -59,7 +59,7 @@ const ProfileDetails = (props) => {
                 return (
                     <Tab.Pane attached={false}>
                         {
-                            (_isEmpty(imageArray) && !description && !videoDirectLink && !purpose && !helping && !about) ? (
+                            (_isEmpty(imageArray) && !description && !videoPlayerLink && !purpose && !helping && !about) ? (
                                 <Grid>
                                     <GroupNoDataState
                                         type="common"
@@ -73,14 +73,14 @@ const ProfileDetails = (props) => {
                                             { description }
                                         </div>
                                     )}
-                                    {videoDirectLink
+                                    {videoPlayerLink
                                         && (
                                             <div className="mb-3">
                                                 <embed
                                                     title="video"
                                                     // width="50%"
                                                     // height="50%"
-                                                    src={videoDirectLink}
+                                                    src={videoPlayerLink}
                                                 />
                                             </div>
                                         )}
@@ -205,7 +205,7 @@ ProfileDetails.defaultProps = {
             description: '',
             helping: '',
             purpose: '',
-            videoDirectLink: '',
+            videoPlayerLink: '',
         },
     },
     isAUthenticated: false,
@@ -219,7 +219,7 @@ ProfileDetails.propTypes = {
             description: string,
             helping: string,
             purpose: string,
-            videoDirectLink: string,
+            videoPlayerLink: string,
         },
     },
     isAUthenticated: bool,
