@@ -90,6 +90,7 @@ class Layout extends React.Component {
                         Charitable Impact
                     </title>
                     <link rel="manifest" href="/static/Manifest.json" />
+                    <link rel="shortcut icon" href="/static/images/favicon.ico" />
                     <link
                         rel="stylesheet"
                         href="//cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css"
