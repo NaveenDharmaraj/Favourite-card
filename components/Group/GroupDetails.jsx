@@ -76,8 +76,8 @@ class GroupDetails extends React.Component {
                 },
             },
         } = this.props;
-        if (isAuthenticated && _.isEmpty(deepLinkUrl)) {
-            generateDeepLink(`deeplink?profileType=charityprofile&sourceId=${userId}&profileId=${groupId}`, dispatch);
+        if (isAuthenticated) {
+            generateDeepLink(`deeplink?profileType=groupprofile&sourceId=${userId}&profileId=${groupId}`, dispatch);
         }
         if (isAuthenticated) {
             getGroupBeneficiariesCount(dispatch, related);

@@ -156,7 +156,7 @@ class UserDetails extends React.Component {
             },
         } = this.props;
         getBeneficiaryFromSlug(dispatch, slug);
-        if (isAUthenticated && _isEmpty(deepLinkUrl)) {
+        if (isAUthenticated) {
             generateDeepLink(`deeplink?profileType=charityprofile&sourceId=${userId}&profileId=${charityId}`, dispatch);
         }
     }
