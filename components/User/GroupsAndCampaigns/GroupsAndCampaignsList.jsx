@@ -68,7 +68,7 @@ class GroupsAndCampaignsList extends React.Component {
             const content = (
                 <div className="text-centre">
                     <Button
-                        className="blue-bordr-btn-round-def"
+                        className="blue-bordr-btn-round-def mb-1 seeMoreBtn"
                         onClick={() => this.handleSeeMore(type)}
                         loading={!!loader}
                         disabled={!!loader}

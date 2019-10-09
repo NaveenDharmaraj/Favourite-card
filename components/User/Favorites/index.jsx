@@ -141,6 +141,8 @@ class Favorites extends React.Component {
                     type,
                     slug,
                     is_campaign,
+                    province,
+                    city,
                 } = data.attributes;
                 let displayAvatar = charityImg;
                 const shortName = renderText(name, 3);
@@ -153,6 +155,14 @@ class Favorites extends React.Component {
                 }
                 displayAvatar = (!_.isEmpty(avatar)) ? avatar : displayAvatar;
                 const entityId = (type === 'charity') ? data.attributes.charity_id : data.attributes.group_id;
+                let location = '';
+                if (!_.isEmpty(city) && !_.isEmpty(province)) {
+                    location = `${city}, ${province}`;
+                } else if (!_.isEmpty(city)) {
+                    location = city;
+                } else if (!_.isEmpty(province)) {
+                    location = province;
+                }
                 return (
                     <Grid.Column key={index}>
                         <Card className="left-img-card" fluid>
@@ -172,6 +182,16 @@ class Favorites extends React.Component {
                                                         </span>
                                                     </Header.Subheader>
                                                     {shortName}
+                                                    {
+                                                        (location) && (
+                                                            <React.Fragment>
+                                                                <br />
+                                                                <span className="location">
+                                                                    {location}
+                                                                </span>
+                                                            </React.Fragment>
+                                                        )}
+
                                                 </Header.Content>
                                             </Header>
                                             <Link className="lnkChange" route={`/${route}/${slug}`}>
@@ -295,8 +315,8 @@ Favorites.propTypes = {
     dispatch: func,
     favorites: PropTypes.shape({
         dataCount : oneOfType([
-                    number,
-                    string,
+            number,
+            string,
         ]),
         pageCount : oneOfType([
             number,
