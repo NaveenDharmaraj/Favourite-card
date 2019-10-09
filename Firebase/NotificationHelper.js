@@ -68,78 +68,92 @@ class NotificationHelper {
         });
     }
 
-    static fetchMessages = (userInfo, dispatch )=> {
-        const limit = 10;
-        NotificationHelper.get(userInfo);
-        let userRef = Firebase.database().ref("/organisation/chimp/users/" + userInfo.id);
-        let lastSyncTime = null;
-        userRef.on("value", snapshot => {
-            let temp = snapshot;
-            lastSyncTime = temp.child("last_sync_time").val();
-        });
-
-        const messageRef = userRef.child("/messages");
-        messageRef.limitToLast(1).on('child_added', function(snapshot) {
-            const temp = snapshot.val();
-            temp._key = snapshot.key;
-            dispatch({
-                type: 'ADD_NEW_FIREBASE_MESSAGE',
-                payload: {
-                    addedMessage: temp,
-                    lastSyncTime,
-                }
+    static firebaseInitialLoad = async(userInfo, dispatch )=> {
+            const limit = 10;
+            NotificationHelper.get(userInfo);
+            let userRef = Firebase.database().ref("/organisation/chimp/users/" + userInfo.id);
+            let lastSyncTime = null;
+            userRef.on("value", snapshot => {
+                let temp = snapshot;
+                lastSyncTime = temp.child("last_sync_time").val();
+                dispatch({
+                    type: 'FIREBASE_LAST_SYNC_TIME',
+                    payload: {
+                        lastSyncTime,
+                    }
+                  });
             });
-        });
-        messageRef.on('child_changed', function(snapshot) {
-            const temp = snapshot.val();
-            temp._key = snapshot.key;
-            dispatch({
-                type: 'UPDATE_FIREBASE_MESSAGE',
-                payload: {
-                    addedMessage: temp,
-                    lastSyncTime,
+    
+            const messageRef = userRef.child("/messages");
+            const showMessages = messageRef.orderByChild("createdTs").limitToLast(limit);
+            await showMessages.once("value", snapshot => {
+                let firebaseMessages = [];
+                let temp = snapshot.val();
+                if (!temp) {
+                    firebaseMessages = [];
+                } else {
+                    firebaseMessages = [];
+                    Object.keys(temp).forEach(function (key) {
+                        let t = temp[key];
+                        if (t.sourceUserId != userInfo.id || true) {
+                            t["_key"] = key;
+                            if(!_.isEmpty(t)){
+                                firebaseMessages.push(t);
+                            }
+                        }
+                    });
+                    firebaseMessages.sort(function (a, b) {
+                        return a.createdTs > b.createdTs ? -1 : 1;
+                    });
                 }
-            });
-        });
-        messageRef.on('child_removed', function(snapshot) {
-            const temp = snapshot.val();
-            temp._key = snapshot.key;
-            dispatch({
-                type: 'REMOVE_FIREBASE_MESSAGE',
+              dispatch({
+                type: 'FIREBASE_INITIAL_LOAD',
                 payload: {
-                    deletedMessage: temp,
+                    firebaseMessages,
                     lastSyncTime,
+                    loaded: false,
+                    page: 1,
                 }
+              });
             });
-        });
-        const showMessages = messageRef.orderByChild("createdTs").limitToLast(limit);
-        showMessages.once("value", snapshot => {
-            let firebaseMessages = [];
-            let temp = snapshot.val();
-            if (!temp) {
-                firebaseMessages = [];
-            } else {
-                firebaseMessages = [];
-                Object.keys(temp).forEach(function (key) {
-                    let t = temp[key];
-                    if (t.sourceUserId != userInfo.id || true) {
-                        t["_key"] = key;
-                        firebaseMessages.push(t);
+          
+            messageRef.limitToLast(1).on('child_added', function(snapshot) {
+                const temp = snapshot.val();
+                temp._key = snapshot.key;
+                dispatch({
+                    type: 'ADD_NEW_FIREBASE_MESSAGE',
+                    payload: {
+                        addedMessage: temp,
+                        lastSyncTime,
+                        notificationUpdate: true,
                     }
                 });
-                firebaseMessages.sort(function (a, b) {
-                    return a.createdTs > b.createdTs ? -1 : 1;
+            });
+            messageRef.on('child_changed', function(snapshot) {
+                const temp = snapshot.val();
+                temp._key = snapshot.key;
+                dispatch({
+                    type: 'UPDATE_FIREBASE_MESSAGE',
+                    payload: {
+                        addedMessage: temp,
+                        lastSyncTime,
+                        notificationUpdate: true,
+                    }
                 });
-            }
-          dispatch({
-            type: 'INITAL_LOAD',
-            payload: {
-                firebaseMessages,
-                lastSyncTime,
-                page: 1
-            }
-          });
-        });
+            });
+            messageRef.on('child_removed', function(snapshot) {
+                const temp = snapshot.val();
+                temp._key = snapshot.key;
+                dispatch({
+                    type: 'REMOVE_FIREBASE_MESSAGE',
+                    payload: {
+                        deletedMessage: temp,
+                        lastSyncTime,
+                        notificationUpdate: true,
+                    }
+                });
+            });
+
     };
 
 

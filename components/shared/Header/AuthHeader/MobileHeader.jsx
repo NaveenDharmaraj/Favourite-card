@@ -44,7 +44,7 @@ const NavBarMobile = ({
   visible,
   currentAccount,
   formatMessage,
-  messageCount,
+  notificationUpdate,
   handleClick,
   activeIndex,
 }) => {
@@ -88,7 +88,7 @@ const NavBarMobile = ({
                                 </div>
                                 <div className="iconWraper smo-d-none">
                                     <Link route='/notifications/all'>
-                                        <a className={`${messageCount > 0 ? ' new' : ''}`}>
+                                        <a className={`${notificationUpdate ? ' new' : ''}`}>
                                             <Image src={notificationIcon}/>
                                         </a>
                                     </Link>
@@ -190,7 +190,7 @@ class MobileHeader extends Component {
     const {
         children,
         currentAccount,
-        messageCount,
+        notificationUpdate,
     } = this.props;
     const formatMessage = this.props.t;
     const { visible } = this.state;
@@ -204,7 +204,7 @@ class MobileHeader extends Component {
         currentAccount={currentAccount}
         formatMessage={formatMessage}
         activeIndex={activeIndex}
-        messageCount={messageCount}
+        notificationUpdate={notificationUpdate}
         >
             {children}
         </NavBarMobile>
@@ -214,7 +214,7 @@ class MobileHeader extends Component {
 
 const mapStateToProps = (state) => ({
     currentAccount: state.user.currentAccount,
-    messageCount: state.firebase.messages ? Object.keys(state.firebase.messages.filter(function (m) { return m.createdTs > state.firebase.lastSyncTime;})).length : 0,
+    notificationUpdate: state.firebase.notificationUpdate,
 });
 
 export default withTranslation('authHeader')(connect(mapStateToProps)(MobileHeader));

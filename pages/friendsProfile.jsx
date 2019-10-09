@@ -20,6 +20,7 @@ class FriendProfile extends React.Component {
     static async getInitialProps({ query }) {
         return {
             friendChimpId: query.slug,
+            namespacesRequired: [],
         };
     }
 

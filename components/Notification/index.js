@@ -240,10 +240,12 @@ class NotificationWrapper extends React.Component {
             messages = [];
         }
         let recentItems = messages.filter(function (item) {
+            if(item)
             return item.createdTs > lastSyncTime;
         });
 
         let earlierItems = messages.filter(function (item) {
+            if(item)
             return item.createdTs <= lastSyncTime;
         });
         return { "recent": recentItems, "earlier": earlierItems };
@@ -320,7 +322,7 @@ class NotificationWrapper extends React.Component {
                                 <div className="font-s-16 bold mt-2 mb-1">{self.t("recent")}</div>
                                 <div className="allNotification mb-3">
                                     <List celled verticalAlign='middle'>
-                                        {self.listItems(recentItems)}
+                                        {self.listItems(recentItems, 'new')}
                                     </List>
                                 </div>
                             </div>
@@ -351,9 +353,6 @@ function mapStateToProps(state) {
         messages: state.firebase.messages,
         lastSyncTime: state.firebase.lastSyncTime,
         page: state.firebase.page,
-        messageCount: state.firebase.messages ? Object.keys(state.firebase.messages.filter(function (m) { 
-            return !m.read;
-        })).length : 0,
         userInfo: state.user.info,
         localeCode: localeCodes[state.user.info.attributes.language ? state.user.info.attributes.language : 'en']
     };

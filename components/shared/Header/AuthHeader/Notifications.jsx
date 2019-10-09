@@ -1,9 +1,14 @@
 import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
-import { Button, Dropdown, Icon, Image, Label, List, Menu, Popup } from 'semantic-ui-react';
+import {
+    Button, Dropdown, Icon, Image, Label, List, Menu, Popup,
+} from 'semantic-ui-react';
+import _isEmpty from 'lodash/isEmpty';
 
 import { NotificationHelper } from '../../../../Firebase/NotificationHelper';
-import { Link, Router } from '../../../../routes';
+import {
+    Link, Router,
+} from '../../../../routes';
 import { withTranslation } from '../../../../i18n';
 import placeholderUser from '../../../../static/images/no-data-avatar-user-profile.png';
 import { distanceOfTimeInWords } from '../../../../helpers/utils';
@@ -12,8 +17,6 @@ import {
     updateUserPreferences,
 } from '../../../../actions/userProfile';
 
-import _cloneDeep from 'lodash/cloneDeep';
-
 class Notifications extends React.Component {
     constructor(props) {
         super(props);
@@ -21,11 +24,12 @@ class Notifications extends React.Component {
             deletedItems: [],
             deleteTimeouts: {},
             intervalId: -1,
-        }
+        };
         this.updateDeleteFlag = this.updateDeleteFlag.bind(this);
         this.renderlistItems = this.renderlistItems.bind(this);
         this.acceptFriendRequestAsync = this.acceptFriendRequestAsync.bind(this);
         this.onNotificationMsgAction = this.onNotificationMsgAction.bind(this);
+        this.renderIconColor = this.renderIconColor.bind(this);
     }
 
     updateDeleteFlag(msgKey, msg, flag) {
@@ -37,11 +41,14 @@ class Notifications extends React.Component {
         const {
             userInfo,
         } = this.props;
-       if (flag) {
+        if (flag) {
             deletedItems.push(msg.id);
-            deleteTimeouts[msg.id] = setTimeout(function () {
-                eventApi.post("/notification/delete", { "user_id": userInfo.id, "id": msg.id });
-            },10000);
+            deleteTimeouts[msg.id] = setTimeout(() => {
+                eventApi.post('/notification/delete', {
+                    id: msg.id,
+                    user_id: userInfo.id,
+                });
+            }, 10000);
         } else {
             deletedItems.splice(deletedItems.indexOf(msg.id), 1);
             clearTimeout(deleteTimeouts[msg.id]);
@@ -50,95 +57,98 @@ class Notifications extends React.Component {
             ...this.state,
             deletedItems,
             deleteTimeouts,
-        })
+        });
     }
     
     componentWillMount() {
         const {
+            messages,
             userInfo,
             dispatch,
         } = this.props;
-        NotificationHelper.fetchMessages(userInfo, dispatch);
+        if (_isEmpty(messages)) {
+            NotificationHelper.firebaseInitialLoad(userInfo, dispatch);
+        }
     }
 
-     acceptFriendRequestAsync(msg) {
+    acceptFriendRequestAsync(msg) {
         const {
             userInfo,
             dispatch
         } = this.props;
         NotificationHelper.acceptFriendRequest(userInfo, dispatch, msg);
-    };
+    }
 
-    renderlistItems  () {
-         const {
+    renderlistItems() {
+        const {
             userInfo,
             localeCode,
             messages,
             t,
         } = this.props;
-        if(!messages) {
+        if (_isEmpty(messages)) {
             return null;
         }
         return messages.slice(0, 6).map((msg) => {
         // const messagePart = NotificationHelper.getMessagePart(msg, userInfo, 'en_CA');
-        let messagePart;
-        if (msg.msg) {
-            messagePart = NotificationHelper.getMessagePart(msg, userInfo, 'en_CA');
-        } else {
-            return null;
-        }
-        if (this.state.deletedItems.indexOf(msg["id"]) >= 0) {
+            let messagePart;
+            if (!_isEmpty(msg) && msg.msg) {
+                messagePart = NotificationHelper.getMessagePart(msg, userInfo, 'en_CA');
+            } else {
+                return null;
+            }
+            if (this.state.deletedItems.indexOf(msg['id']) >= 0) {
+                return (
+                    <List.Item key={`notification_msg_${msg._key}`} className="new">
+                        <div className="blankImage" />
+                        <List.Content>
+                            {t('removed')} <a onClick={() => updateDeleteFlag(msg._key, msg, false)}>{t('undo')}</a>
+                        </List.Content>
+                    </List.Item>
+                );
+            }
+            // className={msg.read ? "" : "new"} onClick={() => updateReadFlag(msg._key, msg, true)}
             return (
-                <List.Item key={`notification_msg_${msg._key}`} className="new">
-                    <div className="blankImage" />
+                <List.Item key={`notification_head_${msg._key}`}>
+                    <Image avatar src={messagePart.sourceImageLink ? messagePart.sourceImageLink : placeholderUser} />
                     <List.Content>
-                        {t('removed')} <a onClick={() => this.updateDeleteFlag(msg._key, msg, false)} >{t('undo')}</a>
+                        <span dangerouslySetInnerHTML={{ __html: messagePart.message }} />
+                        <div className="time">{distanceOfTimeInWords(msg.createdTs)}</div>
+                        <span className="more-btn">
+                            <Dropdown className="rightBottom" icon="ellipsis horizontal">
+                                <Dropdown.Menu>
+                                    {(() => {
+                                        if (msg.msgActions && msg.msgActions.length > 0) {
+                                            return msg.msgActions.map((cta) => {
+                                                return <Dropdown.Item key={cta} text={t(cta)} onClick={() => this.onNotificationMsgAction(cta, msg)} />;
+                                            });
+                                        }
+                                    })()}
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        </span>
+                        {(() => {
+                            if (msg.cta) {
+                                return Object.keys(msg.cta).map((ctaKey) => {
+                                    const cta = msg.cta[ctaKey];
+                                    if (cta.isWeb) {
+                                        return <Button key={ctaKey} className="blue-btn-rounded-def c-small" onClick={() => this.onNotificationCTA(ctaKey, cta, msg)}>{cta.title[localeCode]}</Button>;
+                                    }
+                                });
+                            }
+                            if (msg.callToActions && msg.callToActions.length > 0) {
+                                return msg.cta.map((cta) => {
+                                    return <Button key={cta.actionTitle} className="blue-btn-rounded-def c-small" onClick={() => this.onNotificationCTA(cta, msg)}>{cta.actionTitle}</Button>;
+                                });
+                            }
+                        })()}
                     </List.Content>
                 </List.Item>
             );
-        }
-        // className={msg.read ? "" : "new"} onClick={() => updateReadFlag(msg._key, msg, true)}
-        return (
-            <List.Item key={`notification_head_${msg._key}`}>
-                <Image avatar src={messagePart.sourceImageLink ? messagePart.sourceImageLink : placeholderUser} />
-                <List.Content>
-                    <span dangerouslySetInnerHTML={{ __html: messagePart.message }} />
-                    <div className="time">{distanceOfTimeInWords(msg.createdTs)}</div>
-                    <span className="more-btn">
-                        <Dropdown className="rightBottom" icon="ellipsis horizontal">
-                            <Dropdown.Menu>
-                                {(() => {
-                                    if (msg.msgActions && msg.msgActions.length > 0) {
-                                        return msg.msgActions.map((cta) => {
-                                            return <Dropdown.Item key={cta} text={t(cta)} onClick={() => this.onNotificationMsgAction(cta, msg)} />;
-                                        });
-                                    }
-                                })()}
-                            </Dropdown.Menu>
-                        </Dropdown>
-                    </span>
-                    {(() => {
-                        if (msg.cta) {
-                            return Object.keys(msg.cta).map((ctaKey) => {
-                                const cta = msg.cta[ctaKey];
-                                if (cta.isWeb) {
-                                    return <Button key={ctaKey} className="blue-btn-rounded-def c-small" onClick={() => this.onNotificationCTA(ctaKey, cta, msg)}>{cta.title[localeCode]}</Button>;
-                                }
-                            });
-                        }
-                        if (msg.callToActions && msg.callToActions.length > 0) {
-                            return msg.cta.map((cta) => {
-                                return <Button key={cta.actionTitle} className="blue-btn-rounded-def c-small" onClick={() => this.onNotificationCTA(cta, msg)}>{cta.actionTitle}</Button>;
-                            });
-                        }
-                    })()}
-                </List.Content>
-            </List.Item>
-        );
-    });
-     }
+        });
+    }
 
-     async onNotificationCTA (ctaKey, ctaOptions, msg) {
+    async onNotificationCTA(ctaKey, ctaOptions, msg) {
         const ctaActionId = ctaKey; // cta.actionId;
         switch (ctaActionId) {
             case 'setNewGivingGoal': {
@@ -156,7 +166,7 @@ class Notifications extends React.Component {
                 break;
             }
             case 'viewMessage': {
-                Router.pushRoute("/chats/" + cta.user_id);
+                Router.pushRoute('/chats/' + cta.user_id);
                 break;
             }
             case 'updatePayment': {
@@ -193,12 +203,12 @@ class Notifications extends React.Component {
 
     async onNotificationMsgAction(cta, msg) {
         switch (cta) {
-            case "delete": {
+            case 'delete': {
                 this.updateDeleteFlag(msg._key, msg, true);
                 break;
             }
-            case "turnOff": {
-                updateUserPreferences(this.props.dispatch, this.props.userInfo.id, "in_app_giving_group_activity", false);
+            case 'turnOff': {
+                updateUserPreferences(this.props.dispatch, this.props.userInfo.id, 'in_app_giving_group_activity', false);
                 break;
             }
             default:
@@ -210,12 +220,21 @@ class Notifications extends React.Component {
     //     await NotificationHelper.getMessages(userInfo, dispatch, 1);
     // };
 
+    renderIconColor() {
+        const {
+            dispatch,
+        } = this.props;
+        dispatch({
+            payload: {
+                notificationUpdate: false,
+            },
+            type: 'FIREBASE_NOTIFICATION_COUNT',
+        });
+    }
+
     render() {
         const {
-            messageCount,
-            userInfo,
-            localeCode,
-            dispatch,
+            notificationUpdate,
             t,
         } = this.props;
         // setInterval(async () => {
@@ -232,20 +251,11 @@ class Notifications extends React.Component {
                 basic
                 on="click"
                 className="notification-popup"
+                onOpen={() => this.renderIconColor()}
                 trigger={
                     (
                         <Menu.Item as="a" className="notifyNav xs-d-none">
-                            {(() => {
-                                if (messageCount > 0 && false) {
-                                    return (
-                                        <Label color="red" floating circular >
-                                            {messageCount}
-                                        </Label>
-                                    );
-                                }
-                            })()}
-
-                            <Icon name={`bell outline${messageCount > 0 ? ' new' : ''}`} />
+                            <Icon name={`bell outline${notificationUpdate ? ' new' : ''}`} />
                         </Menu.Item>
                     )
                 }
@@ -264,7 +274,7 @@ class Notifications extends React.Component {
             </Popup>
         );
     }
-};
+}
 
 function mapStateToProps(state) {
     const localeCodes = {
@@ -275,7 +285,7 @@ function mapStateToProps(state) {
         messages: state.firebase.messages,
         lastSyncTime: state.firebase.lastSyncTime,
         localeCode: localeCodes[state.user.info.attributes.language ? state.user.info.attributes.language : 'en'],
-        messageCount: state.firebase.messages ? Object.keys(state.firebase.messages.filter(function (m) { return m.createdTs > state.firebase.lastSyncTime;/*! m.read;*/ })).length : 0,
+        notificationUpdate: state.firebase.notificationUpdate,
         userInfo: state.user.info,
     };
 }
