@@ -18,6 +18,7 @@ import StatusMessage from '../StatusMessage';
 import _ from 'lodash';
 import '../../../static/less/header.less';
 import '../../../static/less/style.less';
+import favIcon from '../../../static/images/favicon.ico';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -90,7 +91,7 @@ class Layout extends React.Component {
                         Charitable Impact
                     </title>
                     <link rel="manifest" href="/static/Manifest.json" />
-                    <link rel="shortcut icon" href="/static/images/favicon.ico" />
+                    <link rel="shortcut icon" href={favIcon} />
                     <link
                         rel="stylesheet"
                         href="//cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css"
