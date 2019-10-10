@@ -129,7 +129,9 @@ class Layout extends React.Component {
                                         ))}
                                     </Container>
                                 }
-                                {children}
+                                <div style={{minHeight:'60vh'}}>
+                                    {children}
+                                </div>
                                 <Footer isAuthenticated={isAuthenticated}/>
                             </MobileHeader>
                         </Responsive>

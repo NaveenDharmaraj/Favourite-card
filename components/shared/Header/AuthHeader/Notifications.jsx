@@ -24,6 +24,7 @@ class Notifications extends React.Component {
             deletedItems: [],
             deleteTimeouts: {},
             intervalId: -1,
+            showBackImage: false,
         };
         this.updateDeleteFlag = this.updateDeleteFlag.bind(this);
         this.renderlistItems = this.renderlistItems.bind(this);
@@ -31,6 +32,7 @@ class Notifications extends React.Component {
         this.onNotificationMsgAction = this.onNotificationMsgAction.bind(this);
         this.renderIconColor = this.renderIconColor.bind(this);
         this.splitNotifications = this.splitNotifications.bind(this);
+        this.renderbackImage = this.renderbackImage.bind(this);
     }
 
     updateDeleteFlag(msgKey, msg, flag) {
@@ -239,11 +241,20 @@ class Notifications extends React.Component {
         const {
             dispatch,
         } = this.props;
+        this.setState({
+            showBackImage: true,
+        });
         dispatch({
             payload: {
                 notificationUpdate: false,
             },
             type: 'FIREBASE_NOTIFICATION_COUNT',
+        });
+    }
+
+    renderbackImage() {
+        this.setState({
+            showBackImage: false,
         });
     }
 
@@ -260,6 +271,10 @@ class Notifications extends React.Component {
         // updateReadFlag = async (msgKey, msg, flag) => {
         //     await NotificationHelper.updateReadFlag(userInfo, dispatch, msgKey, msg, flag);
         // };
+        const {
+            showBackImage,
+        } = this.state;
+        const activeClass = (showBackImage) ? 'menuActive' : '';
         const itemByType = this.splitNotifications(messages);
         const recentItems = !_isEmpty(itemByType.recent) ? itemByType.recent : [];
         const earlierItems = !_isEmpty(itemByType.earlier) ? itemByType.earlier : [];
@@ -280,9 +295,10 @@ class Notifications extends React.Component {
                 on="click"
                 className="notification-popup"
                 onOpen={() => this.renderIconColor()}
+                onClose={() => this.renderbackImage()}
                 trigger={
                     (
-                        <Menu.Item as="a" className="notifyNav xs-d-none">
+                        <Menu.Item as="a" className={`notifyNav xs-d-none ${activeClass}`}>
                             <Icon name={`bell outline${notificationUpdate ? ' new' : ''}`} />
                         </Menu.Item>
                     )

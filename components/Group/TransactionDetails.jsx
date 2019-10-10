@@ -138,7 +138,7 @@ class TransactionDetails extends React.Component {
         }
 
         return (
-            <div className="pt-2">
+            <div>
                 <Table basic="very" className="brdr-top-btm db-activity-tbl">
                     {!tableListLoader ? (
                         <Table.Body>
