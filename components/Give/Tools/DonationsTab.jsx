@@ -29,7 +29,7 @@ function DonationsTab(props) {
                     <Grid.Row>
                         <Grid.Column mobile={16} tablet={10} computer={11}>
                             <Header as="h3" className="mb-1">
-                                Add money monthly
+                                Monthly deposits
                                 <Header.Subheader className="mt-1">
                                 Set up a monthly recurring donation, and you can regularly add money to your Impact Account without having to think about it. When you're inspired to give some away, it'll be ready and waiting for you.
                                 </Header.Subheader>

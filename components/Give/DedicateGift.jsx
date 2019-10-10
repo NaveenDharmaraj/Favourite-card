@@ -67,7 +67,7 @@ class DedicateGift extends Component {
         return (
             <Fragment>
                 <Header as="h3" className="f-weight-n">
-                    Dedicate this gift(optional)
+                    Dedicate this gift (optional)
                 </Header>
                 <Accordion>
                     <Accordion.Title

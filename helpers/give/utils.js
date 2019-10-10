@@ -540,7 +540,7 @@ const populatePaymentInstrument = (paymentInstrumentsData, formatMessage) => {
         const newCreditCard = [
             {
                 disabled: false,
-                text: 'Use new Credit Card',
+                text: 'Add new card',
                 value: 0,
             },
         ];

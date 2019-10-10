@@ -514,7 +514,7 @@ class Donation extends React.Component {
                     <Divider className="dividerMargin" />
                     <h3
                         className='ui header'
-                    >Payment
+                    >Payment method
                     </h3>
                 </Form.Field>
                 <Form.Field>

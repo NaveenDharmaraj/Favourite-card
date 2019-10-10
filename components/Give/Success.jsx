@@ -409,7 +409,7 @@ const Success = (props) => {
                                 {(!!fourthButton && (
                                     <Fragment>
                                         <span>
-                                            or &nbsp;
+                                            Or&nbsp;
                                             <Link className="paragraph-third" route={dashboardLink}>
                                                 {linkToDashboardText}
                                             </Link>

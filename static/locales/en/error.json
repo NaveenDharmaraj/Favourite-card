@@ -1,6 +1,6 @@
 {
-    "errorHeading": "Uh oh, it looks like something went wrong.",
-    "errorMessage1": "Unfortunately, we couldn't complete this transaction because of an error with our system. Please contact us before you try the transaction again: {{email}} or {{telephone}}.",
+    "errorHeading": "It looks like something went wrong.",
+    "errorMessage1": "Unfortunately, we couldn't complete this transaction because of an error on our end. Please contact us before trying again: {{email}} or {{telephone}}.",
     "errorMessage2": "We're sorry for the inconvenience, and we're here to help.",
     "errorGoToDashboard": "Go back to your dashboard"
 }
