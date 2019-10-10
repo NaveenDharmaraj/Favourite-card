@@ -18,7 +18,6 @@ import StatusMessage from '../StatusMessage';
 import _ from 'lodash';
 import '../../../static/less/header.less';
 import '../../../static/less/style.less';
-import favIcon from '../../../static/images/favicon.ico';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -90,8 +89,8 @@ class Layout extends React.Component {
                     <title>
                         Charitable Impact
                     </title>
+                    <link rel="icon" type="image/x-icon" href="https://corpchimpstage.wpengine.com/wp-content/themes/chimp-theme/inc/assets/images/favicon/favicon.ico" />
                     <link rel="manifest" href="/static/Manifest.json" />
-                    <link rel="shortcut icon" href={favIcon} />
                     <link
                         rel="stylesheet"
                         href="//cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css"
