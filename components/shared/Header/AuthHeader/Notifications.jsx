@@ -30,6 +30,7 @@ class Notifications extends React.Component {
         this.acceptFriendRequestAsync = this.acceptFriendRequestAsync.bind(this);
         this.onNotificationMsgAction = this.onNotificationMsgAction.bind(this);
         this.renderIconColor = this.renderIconColor.bind(this);
+        this.splitNotifications = this.splitNotifications.bind(this);
     }
 
     updateDeleteFlag(msgKey, msg, flag) {
@@ -59,7 +60,7 @@ class Notifications extends React.Component {
             deleteTimeouts,
         });
     }
-    
+
     componentWillMount() {
         const {
             messages,
@@ -74,22 +75,40 @@ class Notifications extends React.Component {
     acceptFriendRequestAsync(msg) {
         const {
             userInfo,
-            dispatch
+            dispatch,
         } = this.props;
         NotificationHelper.acceptFriendRequest(userInfo, dispatch, msg);
     }
 
-    renderlistItems() {
+    // eslint-disable-next-line class-methods-use-this
+    splitNotifications(messages = []) {
+        const {
+            lastSyncTime
+        } = this.props;
+        const recentItems = messages.filter((item) => {
+            if (item) { return item.createdTs > lastSyncTime; }
+        });
+
+        const earlierItems = messages.filter((item) => {
+            if (item) { return item.createdTs <= lastSyncTime; }
+        });
+        return {
+            earlier: earlierItems,
+            recent: recentItems,
+        };
+    }
+
+    renderlistItems(messages, newClass = '') {
         const {
             userInfo,
             localeCode,
-            messages,
             t,
         } = this.props;
         if (_isEmpty(messages)) {
             return null;
         }
-        return messages.slice(0, 6).map((msg) => {
+        let list = [];
+        messages.slice(0, 6).map((msg) => {
         // const messagePart = NotificationHelper.getMessagePart(msg, userInfo, 'en_CA');
             let messagePart;
             if (!_isEmpty(msg) && msg.msg) {
@@ -98,18 +117,18 @@ class Notifications extends React.Component {
                 return null;
             }
             if (this.state.deletedItems.indexOf(msg['id']) >= 0) {
-                return (
+                return list.push(
                     <List.Item key={`notification_msg_${msg._key}`} className="new">
                         <div className="blankImage" />
                         <List.Content>
                             {t('removed')} <a onClick={() => updateDeleteFlag(msg._key, msg, false)}>{t('undo')}</a>
                         </List.Content>
-                    </List.Item>
-                );
+                    </List.Item>,
+                )
             }
             // className={msg.read ? "" : "new"} onClick={() => updateReadFlag(msg._key, msg, true)}
-            return (
-                <List.Item key={`notification_head_${msg._key}`}>
+            return list.push(
+                <List.Item key={`notification_head_${msg._key}`} className={newClass}>
                     <Image avatar src={messagePart.sourceImageLink ? messagePart.sourceImageLink : placeholderUser} />
                     <List.Content>
                         <span dangerouslySetInnerHTML={{ __html: messagePart.message }} />
@@ -136,16 +155,12 @@ class Notifications extends React.Component {
                                     }
                                 });
                             }
-                            if (msg.callToActions && msg.callToActions.length > 0) {
-                                return msg.cta.map((cta) => {
-                                    return <Button key={cta.actionTitle} className="blue-btn-rounded-def c-small" onClick={() => this.onNotificationCTA(cta, msg)}>{cta.actionTitle}</Button>;
-                                });
-                            }
                         })()}
                     </List.Content>
-                </List.Item>
+                </List.Item>,
             );
         });
+        return list;
     }
 
     async onNotificationCTA(ctaKey, ctaOptions, msg) {
@@ -234,6 +249,7 @@ class Notifications extends React.Component {
 
     render() {
         const {
+            messages,
             notificationUpdate,
             t,
         } = this.props;
@@ -244,7 +260,19 @@ class Notifications extends React.Component {
         // updateReadFlag = async (msgKey, msg, flag) => {
         //     await NotificationHelper.updateReadFlag(userInfo, dispatch, msgKey, msg, flag);
         // };
-
+        const itemByType = this.splitNotifications(messages);
+        const recentItems = !_isEmpty(itemByType.recent) ? itemByType.recent : [];
+        const earlierItems = !_isEmpty(itemByType.earlier) ? itemByType.earlier : [];
+        const recentList = (recentItems && recentItems.length > 0) && this.renderlistItems(recentItems, 'new');
+        const earlierList = (earlierItems && earlierItems.length > 0) && this.renderlistItems(earlierItems);
+        let renderList = [];
+        if (recentList && recentList.length> 0 && earlierList && earlierList.length > 0) {
+            renderList = recentList.concat(earlierList).slice(0, 6);
+        } else if (recentList && recentList.length > 0) {
+            renderList = recentList;
+        } else if (earlierList && earlierList.length > 0) {
+            renderList = earlierList;
+        }
         return (
             <Popup
                 position="bottom right"
@@ -265,7 +293,7 @@ class Notifications extends React.Component {
                 </Popup.Header>
                 <Popup.Content>
                     <List divided verticalAlign="top">
-                        {this.renderlistItems()}
+                        {renderList.map((list) => list)}
                     </List>
                 </Popup.Content>
                 <div className="popup-footer text-center">
