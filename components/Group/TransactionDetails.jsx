@@ -147,7 +147,7 @@ class TransactionDetails extends React.Component {
                     ) : (<PlaceholderGrid row={3} column={3} placeholderType="table" />)
                     }
                 </Table>
-                {!_isEmpty(groupData)
+                {!_isEmpty(groupData) && pageCount > 1
                     && (
                         <div className="db-pagination right-align pt-2">
                             <PaginationComponent
