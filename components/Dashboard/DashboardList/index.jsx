@@ -123,7 +123,7 @@ class DashboradList extends React.Component {
                 } else {
                     date = '';
                 }
-                let givingType = ''; let rowClass = ''; let givingTypeClass = ''; let descriptionType = ''; let entity = ''; let transactionSign = '';
+                let givingType = ''; let rowClass = ''; let givingTypeClass = ''; let descriptionType = ''; let entity = ''; let transactionSign = ''; let profileUrl='';
                 let imageCls = 'ui image';
                 if (data.attributes.destination !== null) {
                     if (data.attributes.destination.type.toLowerCase() === 'group') {
@@ -134,6 +134,7 @@ class DashboradList extends React.Component {
                         descriptionType = 'Given to ';
                         entity = data.attributes.destination.name;
                         transactionSign = '-';
+                        profileUrl = `groups/${data.attributes.destination.slug}`;
                     } else if (data.attributes.destination.type.toLowerCase() === 'beneficiary') {
                         givingType = 'charity';
                         rowClass = 'allocation';
@@ -142,6 +143,15 @@ class DashboradList extends React.Component {
                         descriptionType = 'Given to ';
                         entity = data.attributes.destination.name;
                         transactionSign = '-';
+                        profileUrl = `charities/${data.attributes.destination.slug}`;
+                    } else if (data.attributes.destination.type.toLowerCase() === 'campaign') {
+                        givingType = 'campaign';
+                        rowClass = 'allocation';
+                        givingTypeClass = 'grp-color';
+                        descriptionType = 'Given to ';
+                        entity = data.attributes.destination.name;
+                        transactionSign = '-';
+                        profileUrl = `campaigns/${data.attributes.destination.slug}`;
                     } else if ((data.attributes.transactionType.toLowerCase() === 'fundallocation' || data.attributes.transactionType.toLowerCase() === 'gift') && data.attributes.destination.id !== Number(id)) {
                         givingType = '';
                         rowClass = 'gift';
@@ -149,6 +159,7 @@ class DashboradList extends React.Component {
                         descriptionType = 'Given to ';
                         entity = data.attributes.destination.name;
                         transactionSign = '-';
+                        profileUrl = `users/profile/${data.attributes.destination.id}`;
                     } else if (data.attributes.transactionType.toLowerCase() === 'donation') {
                         givingType = '';
                         rowClass = 'donation';
@@ -163,6 +174,7 @@ class DashboradList extends React.Component {
                         data.attributes.transactionType = 'Gift received';
                         entity = data.attributes.source.name;
                         transactionSign = '+';
+                        profileUrl = `users/profile/${data.attributes.source.id}`;
                     }
                 } else if (data.attributes.transactionType.toLowerCase() === 'fundallocation' || data.attributes.transactionType.toLowerCase() === 'gift') {
                     givingType = '';
@@ -184,9 +196,17 @@ class DashboradList extends React.Component {
                                     <List.Content>
                                         <List.Header>
                                             {descriptionType}
-                                            <b>
-                                                {entity}
-                                            </b>
+                                            {(profileUrl) ? (
+                                                <b>
+                                                    <a href={profileUrl} className="bolder blackText" target="_blank">
+                                                        {entity}
+                                                    </a>
+                                                </b>
+                                            ) : (
+                                                <b>
+                                                    {entity}
+                                                </b>
+                                            )}
                                         </List.Header>
                                         <List.Description className={givingTypeClass}>
                                             {givingType}

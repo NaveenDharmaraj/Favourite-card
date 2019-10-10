@@ -402,11 +402,11 @@ class Group extends React.Component {
             break;
             case 'noteToCharity':
                 giveData[name] = inputValue.trim();
-                validity = validateGiveForm('noteToCharity', giveData.noteToCharity, validity, giveData, coverFeesAmount);
+                validity = validateGiveForm('noteToCharity', giveData.noteToCharity, validity, giveData);
             break;
             case 'noteToSelf':
                 giveData[name] = inputValue.trim();
-                validity = validateGiveForm('noteToSelf', giveData.noteToSelf, validity, giveData, coverFeesAmount);
+                validity = validateGiveForm('noteToSelf', giveData.noteToSelf, validity, giveData);
             break;
             default: break;
         }

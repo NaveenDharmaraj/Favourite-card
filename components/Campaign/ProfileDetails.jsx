@@ -23,7 +23,7 @@ function ProfileDetails(props) {
                     campaignDetails: {
                         attributes: {
                             about,
-                            videoDirectLink,
+                            videoPlayerLink,
                             short,
                         },
                     },
@@ -65,7 +65,7 @@ function ProfileDetails(props) {
                         <Container>
 
                             {
-                                (!videoDirectLink && !about && imageArray.length === 0 ) ? (
+                                (!videoPlayerLink && !about && imageArray.length === 0 ) ? (
                                     <Grid>
                                         {noDataState()}
                                     </Grid>
@@ -80,7 +80,7 @@ function ProfileDetails(props) {
                                                     title="video"
                                                     // width="50%"
                                                     // height="50%"
-                                                    src={videoDirectLink}
+                                                    src={videoPlayerLink}
                                                 />
                                             </div>
                                         </Grid>
