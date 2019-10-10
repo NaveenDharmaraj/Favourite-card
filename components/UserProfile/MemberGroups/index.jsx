@@ -79,7 +79,9 @@ class UserMemberGroupList extends React.Component {
         return (
             <Grid columns="equal" stackable doubling columns={3}>
                 <Grid.Row>
-                    {memberGroupList}
+                    <Grid.Column>
+                        {memberGroupList}
+                    </Grid.Column>
                 </Grid.Row>
             </Grid>
         );

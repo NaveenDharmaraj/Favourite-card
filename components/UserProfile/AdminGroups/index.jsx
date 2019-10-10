@@ -76,7 +76,9 @@ class UserAdminGroupList extends React.Component {
         return (
             <Grid columns="equal" stackable doubling columns={3}>
                 <Grid.Row>
-                    {adminGroupList}
+                    <Grid.Column>
+                        {adminGroupList}
+                    </Grid.Column>
                 </Grid.Row>
             </Grid>
         );

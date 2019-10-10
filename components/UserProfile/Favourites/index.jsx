@@ -84,7 +84,9 @@ class FavouritesList extends React.Component {
         return (
             <Grid columns="equal" stackable doubling columns={3}>
                 <Grid.Row>
-                    {favouritesList}
+                    <Grid.Column>
+                        {favouritesList}
+                    </Grid.Column>
                 </Grid.Row>
             </Grid>
         );
