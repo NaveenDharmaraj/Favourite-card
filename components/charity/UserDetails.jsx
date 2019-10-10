@@ -199,7 +199,7 @@ class UserDetails extends React.Component {
                         <p className="mt-1">
                         *Is this your charity? You can claim your free profile page on your platform
                             <a href={CLAIM_CHARITY_URL}>
-                                <Button className="ml-1 blue-bordr-btn-round-def c-small">Claim Charity</Button>
+                                <Button className="ml-1 blue-bordr-btn-round-def c-small">Claim charity</Button>
                             </a>
                         </p>
                     </div>

@@ -53,7 +53,7 @@ export const getGroupFromSlug = async (dispatch, slug, token = null) => {
                 uxCritical: true,
             },
         };
-        if (token !== null) {
+        if (!_.isEmpty(token)) {
             fullParams.headers = {
                 Authorization: `Bearer ${token}`,
             };
@@ -65,7 +65,12 @@ export const getGroupFromSlug = async (dispatch, slug, token = null) => {
                 if (result && !_.isEmpty(result.data)) {
                     fsa.payload.groupDetails = result.data;
                     if (result.data.relationships && result.data.relationships.galleryImages) {
-                        coreApi.get(result.data.relationships.galleryImages.links.related)
+                        coreApi.get(result.data.relationships.galleryImages.links.related, {
+                            params: {
+                                dispatch,
+                                ignore401: true,
+                            },
+                        })
                             .then((galleryResult) => {
                                 if (galleryResult && !_.isEmpty(galleryResult.data)) {
                                     galleryfsa.payload.galleryImages = galleryResult.data;
@@ -472,6 +477,7 @@ export const getGroupBeneficiariesCount = async (dispatch, url) => {
         {
             params: {
                 dispatch,
+                ignore401: true,
                 uxCritical: true,
             },
         }).then((result) => {
