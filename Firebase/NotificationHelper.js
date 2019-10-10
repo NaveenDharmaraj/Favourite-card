@@ -116,7 +116,7 @@ class NotificationHelper {
                 }
               });
             });
-          
+
             messageRef.limitToLast(1).on('child_added', function(snapshot) {
                 const temp = snapshot.val();
                 temp._key = snapshot.key;
@@ -129,6 +129,7 @@ class NotificationHelper {
                     }
                 });
             });
+
             messageRef.on('child_changed', function(snapshot) {
                 const temp = snapshot.val();
                 temp._key = snapshot.key;
@@ -149,7 +150,7 @@ class NotificationHelper {
                     payload: {
                         deletedMessage: temp,
                         lastSyncTime,
-                        notificationUpdate: true,
+                        notificationUpdate: false,
                     }
                 });
             });
