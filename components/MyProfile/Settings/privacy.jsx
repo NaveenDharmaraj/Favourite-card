@@ -75,7 +75,7 @@ class Privacy extends React.Component {
             unblockFriend(dispatch, id, userId).then(() => {
                 this.setState({
                     errorMessage: null,
-                    successMessage: 'Unblocking user was successfully.',
+                    successMessage: 'User unblocked.',
                     statusMessage: true,
                     buttonClicked: false,
                 });

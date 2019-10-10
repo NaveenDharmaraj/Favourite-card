@@ -52,6 +52,7 @@ class EditBasicProfile extends React.Component {
                 givingGoal: (!_.isEmpty(props.userData)) ? props.userData.giving_goal_amt : '',
                 lastName: (!_.isEmpty(props.userData)) ? props.userData.last_name : '',
                 location: (!_.isEmpty(props.userData)) ? props.userData.location : '',
+                displayName: (!_.isEmpty(props.userData)) ? props.userData.display_name : '',
             },
             validity: this.intializeValidations(),
         };
@@ -75,6 +76,7 @@ class EditBasicProfile extends React.Component {
                     givingGoal: userData.giving_goal_amt,
                     lastName: userData.last_name,
                     location: userData.location,
+                    displayName: userData.display_name,
                 },
             });
         }
@@ -316,6 +318,7 @@ class EditBasicProfile extends React.Component {
                 about,
                 location,
                 givingGoal,
+                displayName,
             },
             uploadImagePreview,
             validity,
@@ -424,6 +427,19 @@ class EditBasicProfile extends React.Component {
                                     />
                                 </Form.Field>
                             </Form.Group>
+                            <Form.Field>
+                            <Form.Input
+                                fluid
+                                label="Display Name"
+                                id="displayName"
+                                name="displayName"
+                                placeholder="Display name"
+                                maxLength="30"
+                                onChange={this.handleInputChange}
+                                onBlur={this.handleInputOnBlur}
+                                value={displayName}
+                            />
+                            </Form.Field>
                             <Form.Field>
                                 <Form.TextArea
                                     label="Bio"

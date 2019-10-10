@@ -14,6 +14,7 @@ import {
 import {
     connect,
 } from 'react-redux';
+import dynamic from 'next/dynamic';
 
 import { Link } from '../../../routes';
 import UserPlaceholder from '../../../static/images/no-data-avatar-user-profile.png';
@@ -27,6 +28,9 @@ import {
 import {
     storeEmailIdToGive,
 } from '../../../actions/dashboard';
+const ModalStatusMessage = dynamic(() => import('../../shared/ModalStatusMessage'), {
+    ssr: false
+});
 
 class UserBasciProfile extends React.Component {
     constructor(props) {
@@ -34,10 +38,13 @@ class UserBasciProfile extends React.Component {
         this.state = {
             addButtonClicked: false,
             blockButtonClicked: false,
+            errorMessage: null,
             unfriendButtonClicked: false,
             acceptButtonClicked: false,
             confirmBlockModal: false,
             confirmUnfriendModal: false,
+            statusMessage: false,
+            successMessage: '',
         };
 
         this.handleBlockUser = this.handleBlockUser.bind(this);
@@ -47,6 +54,9 @@ class UserBasciProfile extends React.Component {
         this.handleAcceptFriend = this.handleAcceptFriend.bind(this);
         this.handleBlockModal = this.handleBlockModal.bind(this);
         this.handleUnfriendModal = this.handleUnfriendModal.bind(this);
+        this.handleBlockCancelClick = this.handleBlockCancelClick.bind(this);
+        this.handleUnfriendCancelClick = this.handleUnfriendCancelClick.bind(this);
+        this.handleCopyLink = this.handleCopyLink.bind(this);
     }
 
     componentDidMount() {
@@ -144,6 +154,12 @@ class UserBasciProfile extends React.Component {
         });
     }
 
+    handleBlockCancelClick() {
+        this.setState({
+            confirmBlockModal: false,
+        });
+    }
+
     giveButtonClick(email) {
         const {
             dispatch,
@@ -183,6 +199,12 @@ class UserBasciProfile extends React.Component {
         });
     }
 
+    handleUnfriendCancelClick() {
+        this.setState({
+            confirmUnfriendModal: false,
+        });
+    }
+
     // eslint-disable-next-line class-methods-use-this
     handleCopyLink(e) {
         const data = document.getElementById('txtDeeplinkUser');
@@ -191,6 +213,11 @@ class UserBasciProfile extends React.Component {
         document.execCommand('copy');
         data.type = 'hidden';
         e.target.focus();
+        this.setState({
+            errorMessage: null,
+            successMessage: 'Copied to clipboard',
+            statusMessage: true,
+        })
     }
 
     render() {
@@ -202,9 +229,12 @@ class UserBasciProfile extends React.Component {
             acceptButtonClicked,
             addButtonClicked,
             blockButtonClicked,
+            errorMessage,
             unfriendButtonClicked,
             confirmBlockModal,
             confirmUnfriendModal,
+            statusMessage,
+            successMessage,
         } = this.state;
         const avatar = (typeof userData.avatar === 'undefined') || (userData.avatar === null) ? UserPlaceholder : userData.avatar;
         const friendsVisibility = (typeof userData.friends_visibility === 'undefined') ? 0 : userData.friends_visibility;
@@ -277,7 +307,13 @@ class UserBasciProfile extends React.Component {
                                                         open={confirmBlockModal}
                                                         onClose={() => { this.setState({ confirmBlockModal: false }); }}
                                                     >
-                                                        <Modal.Header>Confirmation</Modal.Header>
+                                                        <Modal.Header>
+                                                            Block
+                                                            {' '}
+                                                            {userData.first_name}
+                                                            {' '}
+                                                            {userData.last_name}
+                                                        </Modal.Header>
                                                         <Modal.Content>
                                                             <Modal.Description className="font-s-16">
                                                                 Are you sure you want to block this user?
@@ -288,7 +324,14 @@ class UserBasciProfile extends React.Component {
                                                                     onClick={() => this.handleBlockUser(userData.user_id)}
                                                                     disabled={blockButtonClicked}
                                                                 >
-                                                                    Ok
+                                                                    Block
+                                                                </Button>
+                                                                <Button
+                                                                    className="blue-bordr-btn-round-def c-small"
+                                                                    onClick={this.handleBlockCancelClick}
+                                                                    disabled={blockButtonClicked}
+                                                                >
+                                                                    Cancel
                                                                 </Button>
                                                             </div>
                                                         </Modal.Content>
@@ -305,7 +348,13 @@ class UserBasciProfile extends React.Component {
                                                         open={confirmUnfriendModal}
                                                         onClose={() => { this.setState({ confirmUnfriendModal: false }); }}
                                                     >
-                                                        <Modal.Header>Confirmation</Modal.Header>
+                                                        <Modal.Header>
+                                                            Unfriend
+                                                            {' '}
+                                                            {userData.first_name}
+                                                            {' '}
+                                                            {userData.last_name}
+                                                        </Modal.Header>
                                                         <Modal.Content>
                                                             <Modal.Description className="font-s-16">
                                                                 Are you sure you want to unfriend this user?
@@ -316,7 +365,14 @@ class UserBasciProfile extends React.Component {
                                                                     onClick={() => this.handleUnfriendUser(userData.user_id)}
                                                                     disabled={unfriendButtonClicked}
                                                                 >
-                                                                    Ok
+                                                                    Unfriend
+                                                                </Button>
+                                                                <Button
+                                                                    className="blue-bordr-btn-round-def c-small"
+                                                                    onClick={this.handleUnfriendCancelClick}
+                                                                    disabled={unfriendButtonClicked}
+                                                                >
+                                                                    Cancel
                                                                 </Button>
                                                             </div>
                                                         </Modal.Content>
@@ -346,7 +402,7 @@ class UserBasciProfile extends React.Component {
                                                                         onClick={() => this.handleAddToFriends(userData.user_id, email)}
                                                                         disabled={addButtonClicked}
                                                                     >
-                                                                        Add to friends
+                                                                        Add Friend
                                                                     </Button>
                                                                 )
                                                             }                                                            
@@ -367,7 +423,7 @@ class UserBasciProfile extends React.Component {
                                                                         onClick={() => this.handleAcceptFriend(userData.user_id, email)}
                                                                         disabled={acceptButtonClicked}
                                                                     >
-                                                                        Accept
+                                                                        Accept Friend Request
                                                                     </Button>
                                                                 )
                                                             }
@@ -435,6 +491,18 @@ class UserBasciProfile extends React.Component {
                                     )
                                 }
                             </Grid.Row>
+                            {
+                                statusMessage && (
+                                    <Grid.Row>
+                                        <Grid.Column width={16}>
+                                            <ModalStatusMessage 
+                                                message = {!_.isEmpty(successMessage) ? successMessage : null}
+                                                error = {!_.isEmpty(errorMessage) ? errorMessage : null}
+                                            />
+                                        </Grid.Column>
+                                    </Grid.Row>
+                                )
+                            }
                         </Grid>
                     </Container>
                 </div>
