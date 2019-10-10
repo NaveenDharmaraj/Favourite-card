@@ -50,7 +50,7 @@ class UserAdminGroupList extends React.Component {
         const {
             userProfileAdminGroupData,
         } = this.props;
-        let adminGroupList = 'No Data';
+        let adminGroupList = 'Nothing to show here yet.';
         if (userProfileAdminGroupData
             && userProfileAdminGroupData.data
             && _.size(userProfileAdminGroupData.data) > 0) {
@@ -76,7 +76,9 @@ class UserAdminGroupList extends React.Component {
         return (
             <Grid columns="equal" stackable doubling columns={3}>
                 <Grid.Row>
-                    {adminGroupList}
+                    <Grid.Column>
+                        {adminGroupList}
+                    </Grid.Column>
                 </Grid.Row>
             </Grid>
         );

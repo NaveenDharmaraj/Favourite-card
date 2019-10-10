@@ -54,7 +54,7 @@ class FavouritesList extends React.Component {
         const {
             userProfileFavouritesData,
         } = this.props;
-        let favouritesList = 'No Data';
+        let favouritesList = 'Nothing to show here yet.';
         if (userProfileFavouritesData
             && userProfileFavouritesData.data
             && _.size(userProfileFavouritesData.data) > 0) {
@@ -84,7 +84,9 @@ class FavouritesList extends React.Component {
         return (
             <Grid columns="equal" stackable doubling columns={3}>
                 <Grid.Row>
-                    {favouritesList}
+                    <Grid.Column>
+                        {favouritesList}
+                    </Grid.Column>
                 </Grid.Row>
             </Grid>
         );

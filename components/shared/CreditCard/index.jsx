@@ -178,7 +178,7 @@ class CreditCard extends React.Component {
 
         const cardName = value.replace(/ /g,'');
 
-        const format = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+        const format = /[ !@#$%^&*()_+\-=\[\]{};:"\\|,.<>\/?]/;
         const specialCharacters = format.test(cardName);
 
         let inValidCardNameValue = false;

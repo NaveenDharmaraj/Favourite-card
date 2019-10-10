@@ -159,24 +159,31 @@ class Privacy extends React.Component {
         return (
             <div className="remove-gutter">
                 <div className="userSettingsContainer">
-                    <div className="settingsDetailWraper">
-                        <Header as="h4">
-                            Discoverability
-                            <Checkbox
-                                toggle
-                                className="c-chkBox right"
-                                id="discoverability"
-                                name="discoverability"
-                                checked={discoverability}
-                                onChange={this.handleUserPreferenceChange}
-                            />
-                        </Header>
-                        <p className="pr-3">
-                            You can manage your discoverability settings -manage
-                            whether you show up on searches or your
-                            name appears on Giving Group profiles.
-                        </p>
-                    </div>
+                        <div className="settingsDetailWraper">
+                            <Header as="h4">Discoverability </Header>
+                             <p>Choose whether people can see your name and find you on Charitable Impact.</p>
+                        </div>
+                        <div className="settingsDetailWraper">
+                            <List divided verticalAlign="middle" className="userList">
+                                <List.Item>
+                                    <List.Content floated="right">
+                                    <Checkbox
+                                        toggle
+                                        className="c-chkBox right"
+                                        id="discoverability"
+                                        name="discoverability"
+                                        checked={discoverability}
+                                        onChange={this.handleUserPreferenceChange}
+                                    />
+                                    </List.Content>
+                                    <List.Content>
+                                    <List.Description>
+                                        Show name and appear in search results
+                                    </List.Description>
+                                    </List.Content>
+                                </List.Item>
+                            </List>
+                        </div>
                     <div className="settingsDetailWraper">
                         <Header as="h4">Blocked users</Header>
                         {
