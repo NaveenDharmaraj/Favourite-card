@@ -38,6 +38,22 @@ class FriendProfile extends React.Component {
         getUserFriendProfile(dispatch, email, friendChimpId, id);
     }
 
+    componentDidUpdate(prevProps) {
+        const {
+            currentUser: {
+                id,
+                attributes: {
+                    email,
+                },
+            },
+            dispatch,
+            friendChimpId,
+        } = this.props;
+        if (!_.isEqual(friendChimpId, prevProps.friendChimpId)) {
+            getUserFriendProfile(dispatch, email, friendChimpId, id);
+        }
+    }
+    
     render() {
         const {
             userFriendProfileData,
