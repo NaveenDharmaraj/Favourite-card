@@ -50,7 +50,7 @@ class UserAdminGroupList extends React.Component {
         const {
             userProfileAdminGroupData,
         } = this.props;
-        let adminGroupList = 'No Data';
+        let adminGroupList = 'Nothing to show here yet.';
         if (userProfileAdminGroupData
             && userProfileAdminGroupData.data
             && _.size(userProfileAdminGroupData.data) > 0) {
