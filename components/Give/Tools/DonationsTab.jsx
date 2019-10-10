@@ -31,12 +31,12 @@ function DonationsTab(props) {
                             <Header as="h3" className="mb-1">
                                 Monthly deposits
                                 <Header.Subheader className="mt-1">
-                                Set up a monthly recurring donation, and you can regularly add money to your Impact Account without having to think about it. When you're inspired to give some away, it'll be ready and waiting for you.
+                                Always have charitable dollars on hand when you decide to give or for any scheduled monthly gifts you've set up.
                                 </Header.Subheader>
                             </Header>
                         </Grid.Column>
                         <Grid.Column mobile={16} tablet={6} computer={5} textAlign="right">
-                            <Link route="/donations/new?donation_details[recurring]=1"><a href="" className="ui button blue-btn-rounded-def" fluid>Create new monthly donation</a></Link>
+                            <Link route="/donations/new?donation_details[recurring]=1"><a href="" className="ui button blue-btn-rounded-def" fluid>Schedule monthly deposit</a></Link>
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>

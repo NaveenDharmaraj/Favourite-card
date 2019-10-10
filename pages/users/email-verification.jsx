@@ -75,14 +75,14 @@ class EmailVerification extends React.Component {
                                                         <Grid.Row>
                                                             <Grid.Column width={16} className="mt-2">
                                                                 <ModalStatusMessage
-                                                                    message = "Email Sent"
+                                                                    message = "Email sent"
                                                                 />
                                                             </Grid.Column>
                                                         </Grid.Row>
                                                     )}
                                             <div className="login-form-wraper">
                                                 <div className="reg-header">
-                                                    <Header as="h3">Verify your email.</Header>
+                                                    <Header as="h3">Verify your email</Header>
                                                     <Header as="h4">
                                                         We’ve emailed a verification link to <a>{newUserDetails.email}</a>
                                                         . Click the link in that email to finish creating your account.

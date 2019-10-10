@@ -62,10 +62,10 @@ function DonationsTable(props) {
                 <Table padded unstackable className="no-border-table">
                     <Table.Header>
                         <Table.Row>
-                            <Table.HeaderCell>Credit Card </Table.HeaderCell>
-                            <Table.HeaderCell>Amount</Table.HeaderCell>
+                            <Table.HeaderCell>Credit card </Table.HeaderCell>
+                            <Table.HeaderCell className="text-right">Amount</Table.HeaderCell>
                             <Table.HeaderCell>Day of month</Table.HeaderCell>
-                            <Table.HeaderCell>Matched By</Table.HeaderCell>
+                            <Table.HeaderCell>Matched by</Table.HeaderCell>
                             <Table.HeaderCell className="w-120">Created</Table.HeaderCell>
                             <Table.HeaderCell>Action</Table.HeaderCell>
                         </Table.Row>
