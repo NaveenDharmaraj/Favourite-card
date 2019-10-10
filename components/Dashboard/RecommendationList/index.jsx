@@ -83,16 +83,15 @@ class RecommendationList extends React.Component {
         if (recommendationData && recommendationData.data && _.size(recommendationData.data) > 0) {
             const showData = _.slice(recommendationData.data, 0, 9);
             recommendationList = showData.map((data, index) => {
-                let charityName = '';
+                let locationDetails = '';
                 const charityShortName = renderText(data.attributes.name, 3);
                 if (data.attributes.city != null) {
-                    charityName = `${charityShortName}, ${data.attributes.city}, ${data.attributes.province}`;
-                } else {
-                    charityName = charityShortName;
+                    locationDetails = `${data.attributes.city}, ${data.attributes.province}`;
                 }
                 const type = data.attributes.type === 'group' ? 'giving group' : 'charity';
                 const typeClass = data.attributes.type === 'group' ? 'chimp-lbl group' : 'chimp-lbl charity';
                 const placeholder = data.attributes.type === 'group' ? placeholderGroup : placeholderCharity;
+                const imageType = (typeof data.attributes.avatar === 'undefined' || data.attributes.avatar === null) ? placeholder : data.attributes.avatar;
                 const urlEntity = data.attributes.type === 'group' ? 'groups' : 'charities';
                 return (
                     <Grid.Column key={index}>
@@ -101,7 +100,7 @@ class RecommendationList extends React.Component {
                                 <Grid>
                                     <Grid.Row>
                                         <Grid.Column width={6}>
-                                            <Image src={placeholder} />
+                                            <Image src={imageType} />
                                         </Grid.Column>
                                         <Grid.Column width={10}>
                                             <Grid columns="2">
@@ -134,7 +133,9 @@ class RecommendationList extends React.Component {
                                             </Grid>
                                             <Header as="h4" style={{ margin: '0rem 0.7rem .5rem 0rem' }}>
                                                 <Header.Content>
-                                                    {charityName}
+                                                    {charityShortName}
+                                                    <br />
+                                                    {locationDetails}
                                                 </Header.Content>
                                             </Header>
                                             <Link className="lnkChange" route={`/${urlEntity}/${data.attributes.slug}`}>
