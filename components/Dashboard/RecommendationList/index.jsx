@@ -84,8 +84,14 @@ class RecommendationList extends React.Component {
             const showData = _.slice(recommendationData.data, 0, 9);
             recommendationList = showData.map((data, index) => {
                 let locationDetails = '';
+                const locationDetailsCity = (data.attributes.city != null || typeof data.attributes.city !== 'undefined') ? data.attributes.city : '';
+                const locationDetailsProvince = (data.attributes.province != null || typeof data.attributes.province !== 'undefined') ? data.attributes.province : '';
                 const charityShortName = renderText(data.attributes.name, 3);
-                if (data.attributes.city != null) {
+                if (locationDetailsCity === '' && locationDetailsProvince !== '') {
+                    locationDetails = locationDetailsProvince;
+                } else if (locationDetailsCity !== '' && locationDetailsProvince === '') {
+                    locationDetails = locationDetailsCity;
+                } else if (locationDetailsCity !== '' && locationDetailsProvince !== '') {
                     locationDetails = `${data.attributes.city}, ${data.attributes.province}`;
                 }
                 const type = data.attributes.type === 'group' ? 'giving group' : 'charity';
