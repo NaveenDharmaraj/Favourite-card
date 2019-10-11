@@ -248,23 +248,21 @@ class Friends extends React.Component {
                                         <Modal.Content>
                                             <Modal.Description>
                                                 <Form className="mb-2 inviteForm">
+                                                    {
+                                                        statusMessage && (
+                                                            <div className="mb-1">
+                                                                <ModalStatusMessage 
+                                                                    message = {!_.isEmpty(successMessage) ? successMessage : null}
+                                                                    error = {!_.isEmpty(errorMessage) ? errorMessage : null}
+                                                                />
+                                                            </div>
+                                                        )
+                                                    }
                                                     <label>
                                                         Enter as many email addresses as you like,
                                                         separated by comma
                                                     </label>
-                                                    <Grid verticalAlign="middle">
-                                                        {
-                                                            statusMessage && (
-                                                                <Grid.Row className="mt-1">
-                                                                    <Grid.Column width={16}>
-                                                                        <ModalStatusMessage 
-                                                                            message = {!_.isEmpty(successMessage) ? successMessage : null}
-                                                                            error = {!_.isEmpty(errorMessage) ? errorMessage : null}
-                                                                        />
-                                                                    </Grid.Column>
-                                                                </Grid.Row>
-                                                            )
-                                                        }
+                                                    <Grid verticalAlign="middle">                                                        
                                                         <Grid.Row>
                                                             <Grid.Column mobile={11} tablet={12} computer={13}>
                                                                 <Form.Field>
@@ -293,7 +291,7 @@ class Friends extends React.Component {
                                                 <div className="mt--1 mb-1">
                                                     <FormValidationErrorMessage
                                                         condition={!isValidEmails}
-                                                        errorMessage="Please enter vaid email address."
+                                                        errorMessage="Please enter a valid email address."
                                                     />
                                                 </div>
                                                 <Form className="inviteForm">

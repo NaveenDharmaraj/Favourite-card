@@ -189,8 +189,8 @@ class FriendsList extends React.Component {
                             <Grid.Column mobile={11} tablet={12} computer={12}>
                                 <Header as="h3">
                                     <Header.Content>
-                                        Find friends and give together
-                                        <span className="small">Send charitable dollars for friends to give away.</span>
+                                        Give to your friends
+                                        <span className="small">Send them charitable dollars that they can give away.</span>
                                     </Header.Content>
                                 </Header>
                             </Grid.Column>

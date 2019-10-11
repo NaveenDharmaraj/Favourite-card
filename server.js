@@ -9,6 +9,10 @@ const handler = routes.getRequestHandler(app)
 const port = (process.env.PORT) ? process.env.PORT : 3000;
 app.prepare().then(() => {
     const server = express();
+    server.get('/static/favicon.ico', (req, res) => (
+        res.status(200).sendFile('favicon.ico', {root: __dirname + '/static/'})
+    ));
+ 
     server.use(nextI18NextMiddleware(nextI18next));
     server.use(handler);
     server.listen(process.env.PORT || 3000);

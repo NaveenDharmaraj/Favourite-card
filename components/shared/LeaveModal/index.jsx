@@ -47,9 +47,10 @@ class LeaveModal extends React.Component {
                 </Modal.Header>
                 <Modal.Content>
                     <Modal.Description className="font-s-16">
+                                        Are you sure you would like to leave this Giving Group?
                         {
                             (showError)
-                                ? (
+                                && (
                                     <List divided relaxed className="modalWarning mt-1">
                                         <List.Item>
                                             <List.Icon verticalAlign="middle">
@@ -60,11 +61,6 @@ class LeaveModal extends React.Component {
                                             </List.Content>
                                         </List.Item>
                                     </List>
-                                )
-                                : (
-                                    <span>
-                                        Are you sure you would like to leave this Giving Group?
-                                    </span>
                                 )
                         }
                     </Modal.Description>

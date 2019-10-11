@@ -968,7 +968,7 @@ const resetDataForAccountChange = (giveData, dropDownOptions, props, type) => {
  * @param {String} senderEmail email of the sender
  * @return {object}  validity Return the validity object.
  */
-const validateGiveForm = (field, value, validity, giveData, coverFeesAmount, senderEmail = null) => {
+const validateGiveForm = (field, value, validity, giveData, coverFeesAmount = null, senderEmail = null) => {
     const giveAmount = giveData.totalP2pGiveAmount
         ? giveData.totalP2pGiveAmount
         : giveData.giveAmount;

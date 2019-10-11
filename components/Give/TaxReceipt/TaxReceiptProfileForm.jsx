@@ -252,7 +252,7 @@ function TaxReceiptProfileForm(props) {
                                     </Grid.Column>
                                 </Grid.Row>
                             </Grid>
-                            <Form.Field>
+                            <Form.Field className="mt-1">
                                 <label htmlFor="province">
                                     {formatMessage(provinceMessage)}
                                 </label>

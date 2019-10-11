@@ -123,24 +123,35 @@ class DashboradList extends React.Component {
                 } else {
                     date = '';
                 }
-                let givingType = ''; let rowClass = ''; let givingTypeClass = ''; let descriptionType = ''; let entity = ''; let transactionSign = '';
+                let givingType = ''; let rowClass = ''; let givingTypeClass = ''; let descriptionType = ''; let entity = ''; let transactionSign = ''; let profileUrl='';
                 let imageCls = 'ui image';
                 if (data.attributes.destination !== null) {
                     if (data.attributes.destination.type.toLowerCase() === 'group') {
                         givingType = 'giving group';
                         rowClass = 'm-allocation';
                         givingTypeClass = 'grp-color';
-                        data.attributes.transactionType = 'Allocation';
+                        data.attributes.transactionType = 'Gift given';
                         descriptionType = 'Given to ';
                         entity = data.attributes.destination.name;
                         transactionSign = '-';
+                        profileUrl = `groups/${data.attributes.destination.slug}`;
                     } else if (data.attributes.destination.type.toLowerCase() === 'beneficiary') {
                         givingType = 'charity';
                         rowClass = 'allocation';
                         givingTypeClass = 'charity-color';
+                        data.attributes.transactionType = 'Gift given';
                         descriptionType = 'Given to ';
                         entity = data.attributes.destination.name;
                         transactionSign = '-';
+                        profileUrl = `charities/${data.attributes.destination.slug}`;
+                    } else if (data.attributes.destination.type.toLowerCase() === 'campaign') {
+                        givingType = 'campaign';
+                        rowClass = 'allocation';
+                        givingTypeClass = 'grp-color';
+                        descriptionType = 'Given to ';
+                        entity = data.attributes.destination.name;
+                        transactionSign = '-';
+                        profileUrl = `campaigns/${data.attributes.destination.slug}`;
                     } else if ((data.attributes.transactionType.toLowerCase() === 'fundallocation' || data.attributes.transactionType.toLowerCase() === 'gift') && data.attributes.destination.id !== Number(id)) {
                         givingType = '';
                         rowClass = 'gift';
@@ -148,11 +159,12 @@ class DashboradList extends React.Component {
                         descriptionType = 'Given to ';
                         entity = data.attributes.destination.name;
                         transactionSign = '-';
+                        profileUrl = `users/profile/${data.attributes.destination.id}`;
                     } else if (data.attributes.transactionType.toLowerCase() === 'donation') {
                         givingType = '';
                         rowClass = 'donation';
                         descriptionType = 'Added to ';
-                        entity = 'Your account';
+                        entity = 'your Impact Account';
                         transactionSign = '+';
                         imageCls = 'ui avatar image';
                     } else if (data.attributes.transactionType.toLowerCase() === 'matchallocation') {
@@ -166,9 +178,10 @@ class DashboradList extends React.Component {
                         givingType = '';
                         rowClass = 'gift';
                         descriptionType = 'Received a gift from ';
-                        data.attributes.transactionType = 'Gift';
+                        data.attributes.transactionType = 'Gift received';
                         entity = data.attributes.source.name;
                         transactionSign = '+';
+                        profileUrl = `users/profile/${data.attributes.source.id}`;
                     }
                 } else if (data.attributes.transactionType.toLowerCase() === 'fundallocation' || data.attributes.transactionType.toLowerCase() === 'gift') {
                     givingType = '';
@@ -179,6 +192,7 @@ class DashboradList extends React.Component {
                     transactionSign = '-';
                 }
                 const amount = formatCurrency(data.attributes.amount, language, 'USD');
+                const transactionType = data.attributes.transactionType.toLowerCase() === 'donation' ? 'Deposit' : data.attributes.transactionType;
                 return (
                     <Table.Row className={rowClass} key={index}>
                         <Table.Cell className="date">{date}</Table.Cell>
@@ -189,9 +203,17 @@ class DashboradList extends React.Component {
                                     <List.Content>
                                         <List.Header>
                                             {descriptionType}
-                                            <b>
-                                                {entity}
-                                            </b>
+                                            {(profileUrl) ? (
+                                                <b>
+                                                    <a href={profileUrl} className="bolder blackText" target="_blank">
+                                                        {entity}
+                                                    </a>
+                                                </b>
+                                            ) : (
+                                                <b>
+                                                    {entity}
+                                                </b>
+                                            )}
                                         </List.Header>
                                         <List.Description className={givingTypeClass}>
                                             {givingType}
@@ -200,7 +222,7 @@ class DashboradList extends React.Component {
                                 </List.Item>
                             </List>
                         </Table.Cell>
-                        <Table.Cell className="reason">{data.attributes.transactionType}</Table.Cell>
+                        <Table.Cell className="reason">{transactionType}</Table.Cell>
                         <Table.Cell className="amount">
                             {transactionSign}
                             {amount}

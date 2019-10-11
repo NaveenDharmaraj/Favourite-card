@@ -236,24 +236,29 @@ class ModalComponent extends React.Component {
         } = this.state;
         if (!_isEmpty(selectedTaxReceiptProfile) && !_isEmpty(selectedTaxReceiptProfile.attributes) && selectedTaxReceiptProfile.attributes.isDefault) {
             return (
-                <Checkbox
-                    className="cp_chkbx f-weight-n"
-                    checked
-                    type="checkbox"
-                    id="checkbox"
-                    label="Set as default tax receipt recipient"
-                />
+                <div className="checkboxToRadio">
+                    <Checkbox
+                        className=" f-weight-n"
+                        checked
+                        type="checkbox"
+                        id="checkbox"
+                        label="Set as default tax receipt recipient"
+                    />
+                </div>
+                
             );
         // eslint-disable-next-line no-else-return
         } else {
             return (
-                <Checkbox
-                className="cp_chkbx f-weight-n"
-                    type="checkbox"
-                    id="checkbox"
-                    onClick={() => { this.setState({ buttonClicked: false, isDefaultChecked: !isDefaultChecked }); }}
-                    label="Set as default tax receipt recipient"
-                />
+                <div className="checkboxToRadio">
+                    <Checkbox
+                        className="checkboxToRadio f-weight-n"
+                        type="checkbox"
+                        id="checkbox"
+                        onClick={() => { this.setState({ buttonClicked: false, isDefaultChecked: !isDefaultChecked }); }}
+                        label="Set as default tax receipt recipient"
+                    />
+                </div>
             );
         }
     }

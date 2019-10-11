@@ -34,7 +34,7 @@ const Give = () => (
                         </Grid.Column>
                         <Grid.Column mobile={16} tablet={6} computer={6}>
                             <Link route="/give">
-                                <Button fluid basic content="Give" />
+                                <Button fluid className="blue-bordr-btn-round-def" content="Give" />
                             </Link>
                         </Grid.Column>
                     </Grid.Row>
@@ -62,7 +62,7 @@ const Give = () => (
                         </Grid.Column>
                         <Grid.Column mobile={16} tablet={6} computer={6}>
                             <Link route="/give/to/friend/new">
-                                <Button fluid basic content="Give" />
+                                <Button fluid className="blue-bordr-btn-round-def" content="Give" />
                             </Link>
                         </Grid.Column>
                     </Grid.Row>

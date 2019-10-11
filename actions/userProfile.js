@@ -365,23 +365,20 @@ const saveUserBasicProfile = (dispatch, userData, userId, email) => {
         type: actionTypes.UPDATE_USER_BASIC_PROFILE,
     };
     const bodyData = {
-        data: {
-            description: userData.about,
-            first_name: userData.firstName,
-            giving_goal_amt: userData.givingGoal,
-            last_name: userData.lastName,
-            location: userData.location,
-        },
-        filters: {
-            user_id: Number(userId),
-        },
+        description: userData.about,
+        family_name: userData.lastName,
+        given_name: userData.firstName,
+        giving_goal_amt: userData.givingGoal,
+        name: userData.displayName,
+        user_id: Number(userId),
     };
-    return graphApi.patch(`/core/update/user/property`, bodyData).then(
+    return securityApi.patch(`/update/user`, bodyData).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
             };
             getUserProfileBasic(dispatch, email, userId, userId);
+            getUser(dispatch, userId, null);
         },
     ).catch((error) => {
         fsa.error = error;

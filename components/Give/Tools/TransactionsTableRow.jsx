@@ -45,7 +45,7 @@ class TransactionTableRow extends React.Component {
         return (
             <Table.Row>
                 <Table.Cell>{firstColoumn}</Table.Cell>
-                <Table.Cell>{secondColoumn}</Table.Cell>
+                <Table.Cell className="text-right">{secondColoumn}</Table.Cell>
                 <Table.Cell>{thirdColoumn}</Table.Cell>
                 <Table.Cell>{fourthColoumn}</Table.Cell>
                 <Table.Cell>{fifthColoumn}</Table.Cell>
@@ -63,7 +63,7 @@ class TransactionTableRow extends React.Component {
                             </Button>
                         }
                     >
-                        <Modal.Header>Are you sure you want to cancel the transaction?</Modal.Header>
+                        <Modal.Header>Delete monthly deposit?</Modal.Header>
                         <Modal.Content>
                             <Modal.Actions>
                                 <Button

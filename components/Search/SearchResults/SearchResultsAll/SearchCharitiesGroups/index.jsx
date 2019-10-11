@@ -108,7 +108,7 @@ class SearchCharitiesGroups extends React.Component {
                     <Header as="h2">
                     Charities discovered for you
                         <Header.Subheader>
-                            Manage your account settings and set email preferences
+                        Suggestions based on your interests.
                             {
                                 (!_isEmpty(charities) && !_isEmpty(charities.meta) && charities.meta.recordCount > 4)
                                 && <div className="right-align"><Link route={`/search?${searchQueryParam}result_type=Beneficiary`}>&nbsp;&nbsp;View all</Link></div>
