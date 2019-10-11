@@ -5,6 +5,10 @@ import getConfig from 'next/config';
 import securityApi from '../services/securityApi';
 import graphApi from '../services/graphApi';
 
+import {
+    triggerUxCritialErrors,
+} from './error';
+
 const { publicRuntimeConfig } = getConfig();
 
 const {
@@ -39,6 +43,8 @@ export const saveUser = (dispatch, userDetails) => {
             },
             type: actionTypes.CREATE_USER,
         });
+    }).catch((error) => {
+        triggerUxCritialErrors(error.errors || error, dispatch);
     });
 };
 
@@ -93,6 +99,7 @@ export const getUserCauses = (dispatch) => {
         fsa.payload.causesList = result.data;
     }).catch((error) => {
         console.log(error);
+        triggerUxCritialErrors(error.errors || error, dispatch);
     }).finally(() => {
         dispatch(fsa);
     });
