@@ -398,9 +398,10 @@ class UserBasciProfile extends React.Component {
                                                             {
                                                                 !isFriendPending && !isFriend && (
                                                                     <Button
-                                                                        className="blue-bordr-btn-round"
+                                                                        className="blue-btn-rounded"
                                                                         onClick={() => this.handleAddToFriends(userData.user_id, email)}
                                                                         disabled={addButtonClicked}
+                                                                        primary
                                                                     >
                                                                         Add Friend
                                                                     </Button>
@@ -409,8 +410,9 @@ class UserBasciProfile extends React.Component {
                                                             {
                                                                 isProfileOut && (
                                                                     <Button
-                                                                        className="blue-bordr-btn-round"
+                                                                        className="blue-btn-rounded"
                                                                         disabled
+                                                                        primary
                                                                     >
                                                                         Pending
                                                                     </Button>
@@ -419,9 +421,10 @@ class UserBasciProfile extends React.Component {
                                                             {
                                                                 isProfileIn && (
                                                                     <Button
-                                                                        className="blue-bordr-btn-round"
+                                                                        className="blue-btn-rounded"
                                                                         onClick={() => this.handleAcceptFriend(userData.user_id, email)}
                                                                         disabled={acceptButtonClicked}
+                                                                        primary
                                                                     >
                                                                         Accept Friend Request
                                                                     </Button>
@@ -431,7 +434,8 @@ class UserBasciProfile extends React.Component {
                                                                 isFriend && (
                                                                     <Link className="lnkChange" route={`/chats/${userData.user_id}`}>
                                                                         <Button
-                                                                            className="blue-bordr-btn-round"
+                                                                            className="blue-btn-rounded"
+                                                                            primary
                                                                         >
                                                                             Message
                                                                         </Button>
@@ -440,9 +444,8 @@ class UserBasciProfile extends React.Component {
                                                             }
                                                             <Link className="lnkChange" route="/give/to/friend/new">
                                                                 <Button
-                                                                    className="blue-btn-rounded"
+                                                                    className="blue-bordr-btn-round"
                                                                     onClick={() => this.giveButtonClick(email)}
-                                                                    primary
                                                                 >
                                                                     Give
                                                                 </Button>

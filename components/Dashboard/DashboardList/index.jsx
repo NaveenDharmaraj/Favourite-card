@@ -167,6 +167,13 @@ class DashboradList extends React.Component {
                         entity = 'your Impact Account';
                         transactionSign = '+';
                         imageCls = 'ui avatar image';
+                    } else if (data.attributes.transactionType.toLowerCase() === 'matchallocation') {
+                        givingType = '';
+                        rowClass = 'gift';
+                        descriptionType = 'Matched by ';
+                        data.attributes.transactionType = 'Matched';
+                        entity = data.attributes.source.name;
+                        transactionSign = '+';
                     } else if (data.attributes.destination.id === Number(id)) {
                         givingType = '';
                         rowClass = 'gift';
