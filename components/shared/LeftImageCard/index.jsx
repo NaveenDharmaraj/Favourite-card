@@ -9,7 +9,7 @@ import {
 import PropTypes from 'prop-types';
 
 import { Link } from '../../../routes';
-import { renderText } from '../../../helpers/utils';
+import { renderTextByCharacter } from '../../../helpers/utils';
 
 const LeftImageCard = (props) => {
     const {
@@ -19,7 +19,7 @@ const LeftImageCard = (props) => {
         type,
         url,
     } = props;
-    const entityShortName = renderText(entityName, 3);
+    const entityShortName = renderTextByCharacter(entityName, 40);
     return (
         <Grid.Column>
             <Card className="left-img-card" fluid>

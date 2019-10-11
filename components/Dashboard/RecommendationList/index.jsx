@@ -22,7 +22,7 @@ import placeholderCharity from '../../../static/images/no-data-avatar-charity-pr
 import placeholderGroup from '../../../static/images/no-data-avatar-giving-group-profile.png';
 import { Link } from '../../../routes';
 import PlaceholderGrid from '../../shared/PlaceHolder';
-import { renderText } from '../../../helpers/utils';
+import { renderTextByCharacter } from '../../../helpers/utils';
 
 class RecommendationList extends React.Component {
     constructor(props) {
@@ -84,7 +84,7 @@ class RecommendationList extends React.Component {
             const showData = _.slice(recommendationData.data, 0, 9);
             recommendationList = showData.map((data, index) => {
                 let locationDetails = '';
-                const charityShortName = renderText(data.attributes.name, 3);
+                const charityShortName = renderTextByCharacter(data.attributes.name, 40);
                 if (data.attributes.city != null) {
                     locationDetails = `${data.attributes.city}, ${data.attributes.province}`;
                 }
