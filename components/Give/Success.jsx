@@ -268,13 +268,16 @@ const Success = (props) => {
         if (donationMatch.value > 0 && !_.isEmpty(donationMatchedData)) {
             const donationMessage = formatMessage('nonrecurringDonationDetails', {
                 amount: formatCurrency(formatAmount(donationMatchedData.amount),language, currency),
-                matchingParty: giveTo.name,
+                matchingParty: donationMatchedData.displayName,
                 to: donationDetails.name,
             });
             secondParagraph = `${secondParagraph} ${donationMessage}`;
         }
         thirdParagraph = (type === charityLink)
-            ? formatMessage('timeForSendingCharity', { month }) : null;
+            ? formatMessage('timeForSendingCharity', {
+                charityName: giveTo.name,
+                month,
+            }) : null;
         if (!_.isEmpty(thirdParagraph)) {
             needLearnmore = true;
         }
@@ -298,10 +301,9 @@ const Success = (props) => {
                 fromName,
                 startsOn,
             });
-            thirdParagraph = formatMessage('recurringAllocationNotes', {
-                creditCard: creditCard.text,
-            });
+            thirdParagraph = formatMessage('recurringAllocationNotes');
         } else if (giveTo.type === 'companies') {
+            // This condition can be placed inside if(type=== 'donations) block
             firstParagraph = formatMessage('companyRecurringDonation', {
                 amount: donationDetails.amount,
                 companyName: giveTo.name,
@@ -310,6 +312,7 @@ const Success = (props) => {
             thirdParagraph = formatMessage('companyRecurringTaxReceiptMessage', { companyName: giveTo.name});
             recurringDonationsLink = `/companies/${giveTo.slug}/recurring-donations`;
         } else if (giveTo.type === 'user') {
+            // This condition can be placed inside if(type=== 'donations) block
             firstParagraph = formatMessage('recurringDonation', {
                 amount: donationDetails.amount,
                 name: donationDetails.name,
@@ -327,6 +330,7 @@ const Success = (props) => {
                 </Link>
             );
         } else if (!_.isEmpty(creditCard) && creditCard.value > 0 && giftType.value === 0) {
+            // This else if block can be removed because giftType.value === 0 will never happen here
             taxProfileLink = (giveFrom.type !== 'user')
                 ? `/${giveFrom.type}/${giveFrom.slug}/tax-receipts` : taxProfileLink;
             fourthButton = (

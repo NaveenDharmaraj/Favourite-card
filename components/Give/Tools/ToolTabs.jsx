@@ -191,7 +191,7 @@ class ToolTabs extends React.Component {
                                             <Header as="h3" className="mb-1">
                                                 Giving goal
                                                 <Header.Subheader className="mt-1">
-                                                Set a goal for how much you'd like to donate to your account this year. You can track your progress throughout the year and feel super satisfied when you hit it. Giving it away might feel even better.
+                                                Set a personal goal for the dollars you want to commit for giving. Reach your goal by adding money to your account.
                                                 </Header.Subheader>
                                             </Header>
                                         </Grid.Column>
