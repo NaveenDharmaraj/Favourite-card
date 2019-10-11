@@ -41,6 +41,7 @@ function AllocationsTable(props) {
                 const recipientAccount = `${attributes.accountName} (${destinationType})`;
                 const formattedAmount = formatCurrency(attributes.amount, language, 'USD');
                 tableBody.push(<TransactionTableRow
+                    modalHeader="Delete monthly gift?"
                     firstColoumn={recipientAccount}
                     secondColoumn={formattedAmount}
                     thirdColoumn={transactionDate}

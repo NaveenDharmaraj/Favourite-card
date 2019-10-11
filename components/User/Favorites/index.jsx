@@ -30,7 +30,7 @@ import groupImg from '../../../static/images/no-data-avatar-giving-group-profile
 import PlaceholderGrid from '../../shared/PlaceHolder';
 import { Link } from '../../../routes';
 import { dismissAllUxCritialErrors } from '../../../actions/error';
-import { renderText } from '../../../helpers/utils';
+import { renderTextByCharacter } from '../../../helpers/utils';
 import noDataggFavourites from '../../../static/images/favourites_nodata_illustration.png';
 
 class Favorites extends React.Component {
@@ -145,7 +145,7 @@ class Favorites extends React.Component {
                     city,
                 } = data.attributes;
                 let displayAvatar = charityImg;
-                const shortName = renderText(name, 3);
+                const shortName = renderTextByCharacter(name, 40);
                 let route = 'charities';
                 let heading = 'charity';
                 if (type === 'group') {

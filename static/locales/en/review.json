@@ -35,9 +35,9 @@
     "messageToReceipientLabel": "Message for recipient",
     "messageToRecipientsLabel": "Message for recipient(s)",
     "privacyShareOrganizersCampaignLabel": "What to share with Giving Campaign organizers",
-    "privacyShareOrganizersGroupLabel": "What To Share with Giving Group Organizers",
+    "privacyShareOrganizersGroupLabel": "What to share with Giving Group Organizers",
     "privacyShareGivingCampaignLabel" :	"What to share with the Giving Campaign",
-    "privacyShareGivingGroupLabel":	"What to Share with the Giving Group",
+    "privacyShareGivingGroupLabel":	"What to share with the Giving Group",
     "allocationGiveMoney": "Send gift",
     "allocationRecurringGiveMoney": "Schedule monthly gift",
     "givingGroups": {

@@ -1142,7 +1142,7 @@ const populateCardData = (selectCardDetails, cardAmount) => {
     };
     const selectedCardName = _.split(selectCardDetails, ' ');
     if (isEnglishCard !== -1) {
-        cardData.displayName = _.replace(selectedCardName[0], '\'s', '');
+        cardData.displayName = selectedCardName ? selectedCardName[0] : '';
         cardData.processor = selectedCardName[selectedCardName.indexOf('ending') - 1].toLowerCase().trim();
         cardData.truncatedPaymentId = selectedCardName[selectedCardName.length - 1];
     } else {

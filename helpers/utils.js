@@ -52,6 +52,19 @@ const renderText = (wordGroup, wordCount = 20) => {
     return null;
 };
 
+const renderTextByCharacter = (string, charCount = 100) => {
+    let str;
+    if (!_isEmpty(string)) {
+        str = string.split('');
+        if (!_isEmpty(str) && str.length > 0) {
+            if (str.length > charCount) {
+                return `${str.slice(0, charCount).join('')}...`;
+            }
+            return string;
+        }
+    }
+    return null;
+};
 const redirectIfNotUSer = (currentAccount, railAppOrgin) => {
     if (!_isEmpty(currentAccount) && currentAccount.accountType !== 'personal' && typeof window !== 'undefined') {
         const typeMap = {
@@ -121,5 +134,6 @@ export {
     isFalsy,
     distanceOfTimeInWords,
     renderText,
+    renderTextByCharacter,
     redirectIfNotUSer,
 };

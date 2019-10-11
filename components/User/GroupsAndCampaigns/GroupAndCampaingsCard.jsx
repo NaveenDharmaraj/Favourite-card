@@ -13,7 +13,7 @@ import { Link } from '../../../routes';
 import placeholder from '../../../static/images/no-data-avatar-giving-group-profile.png';
 
 import LeaveModal from '../../shared/LeaveModal';
-import { renderText } from '../../../helpers/utils';
+import { renderTextByCharacter } from '../../../helpers/utils';
 
 class GroupsAndCampaignsCard extends React.Component {
     constructor(props) {
@@ -67,7 +67,7 @@ class GroupsAndCampaignsCard extends React.Component {
             },
             id,
         } = data;
-        const shortName = renderText(name, 3);
+        const shortName = renderTextByCharacter(name, 40);
         let urlType = 'groups';
         let editText = 'Edit Group';
         let headingText = 'giving group';
