@@ -197,7 +197,7 @@ class UserDetails extends React.Component {
                             </Grid.Row>
                         </Grid>
                         <p className="mt-1">
-                        *Is this your charity? You can claim your free profile page on your platform
+                        Is this your charity? Claim your charity page on Charitable Impact.
                             <a href={CLAIM_CHARITY_URL}>
                                 <Button className="ml-1 blue-bordr-btn-round-def c-small">Claim charity</Button>
                             </a>
