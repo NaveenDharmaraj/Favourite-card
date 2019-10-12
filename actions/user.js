@@ -790,3 +790,19 @@ export const removeFavorite = (dispatch, favId, userId, favorites, type, dataCou
         });
     });
 };
+
+export const saveUserCauses = (dispatch, userId, userCauses) => {
+    const bodyDataCauses = {
+        causes: userCauses,
+        userid: Number(userId),
+    };
+    return graphApi.patch(`/user/updatecauses`, bodyDataCauses).then(
+        () => {
+            getUserFund(dispatch, userId).then(() => {
+                Router.pushRoute('/dashboard');
+            });
+        },
+    ).catch((err) => {
+        triggerUxCritialErrors(err.errors || err, dispatch);
+    });
+};

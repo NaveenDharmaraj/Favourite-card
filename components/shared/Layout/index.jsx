@@ -6,6 +6,9 @@ import {
     Container,
     Responsive,
 } from 'semantic-ui-react';
+import {
+    boolean,
+} from 'prop-types';
 
 import Header from '../Header';
 import Footer from '../Footer';
@@ -37,11 +40,25 @@ class Layout extends React.Component {
     async componentDidMount() {
         const {
             dispatch,
+            addCauses,
             authRequired,
             currentUser,
             isAuthenticated,
             userInfo
         } = this.props;
+
+        // if the user didnt setup any causes then redirect to causes selection page
+        if  (!_.isEmpty(userInfo) && !addCauses) {
+            const {
+                attributes: {
+                    causes,
+                }
+            } = userInfo;
+
+            if (_.isEmpty(causes)) {
+                Router.pushRoute('/user/causes');
+            }
+        }
         if (authRequired && !isAuthenticated) {
             let nextPathname;
             let searchQuery;
@@ -76,7 +93,7 @@ class Layout extends React.Component {
         window.scrollTo(0, 0);
     };
 
-    renderLayout = (authRequired, children, isAuthenticated, onBoarding, dispatch, appErrors, isLogin) => {
+    renderLayout = (authRequired, children, isAuthenticated, onBoarding, dispatch, appErrors, isLogin, showHeader) => {
         if (authRequired && !isAuthenticated) {
             return null;
         }
@@ -114,7 +131,7 @@ class Layout extends React.Component {
                 <div>
                     <ErrorBoundary> 
                         <Responsive minWidth={320} maxWidth={991}>
-                            <MobileHeader isAuthenticated={isAuthenticated} onBoarding={onBoarding} isLogin={isLogin}>
+                            <MobileHeader isAuthenticated={isAuthenticated} onBoarding={onBoarding} isLogin={isLogin} showHeader={showHeader}>
                                 {!_.isEmpty(appErrors) &&
                                     <Container
                                         className="app-status-messages"
@@ -136,7 +153,7 @@ class Layout extends React.Component {
                             </MobileHeader>
                         </Responsive>
                         <Responsive minWidth={992}>
-                            <Header isAuthenticated={isAuthenticated} onBoarding={onBoarding} isLogin={isLogin} />
+                            <Header isAuthenticated={isAuthenticated} onBoarding={onBoarding} isLogin={isLogin} showHeader={showHeader}/>
                                 {!_.isEmpty(appErrors) &&
                                     <Container
                                         className="app-status-messages"
@@ -164,6 +181,7 @@ class Layout extends React.Component {
 
     render() {
         const {
+            addCauses,
             appErrors,
             authRequired,
             children,
@@ -172,10 +190,20 @@ class Layout extends React.Component {
             dispatch,
             onBoarding,
         } = this.props;
+
+        const showHeader = !addCauses;
         return (
-            this.renderLayout(authRequired, children, isAuthenticated, onBoarding, dispatch, appErrors, isLogin)
+            this.renderLayout(authRequired, children, isAuthenticated, onBoarding, dispatch, appErrors, isLogin, showHeader)
         );
     }
+};
+
+Layout.defaultProps = {
+    addCauses: false,
+};
+
+Layout.propTypes = {
+    addCauses: boolean,
 };
 
 function mapStateToProps(state) {

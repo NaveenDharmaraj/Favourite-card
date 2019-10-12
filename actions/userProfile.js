@@ -14,6 +14,9 @@ import {
     getUser,
     savePaymentInstrument,
 } from './user';
+import {
+    triggerUxCritialErrors,
+} from './error';
 
 // eslint-disable-next-line import/exports-last
 export const actionTypes = {
@@ -698,6 +701,7 @@ const userResetPassword = (dispatch, userData) => {
         },
     ).catch((error) => {
         fsa.error = error;
+        triggerUxCritialErrors(error.errors || error, dispatch);
     }).finally(() => {
         dispatch(fsa);
     });
