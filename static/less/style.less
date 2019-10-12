@@ -18,6 +18,12 @@ html body{
 p {
   font-size: 16/@em; 
 }
+.bolder{
+  font-family: 'ProximaNova-Bold';
+ }
+ .blackText{
+  color: #263238 !important;
+ }
 body{
   a{
     color: @blueButton;
@@ -1100,6 +1106,16 @@ h4{
 }
 .inviteSettings{
   padding: 3rem 0rem 2rem;
+  .ui.grid{
+    .row{
+      .column{
+        @media only screen and (min-width: 1199px){ 
+        padding-left: 0px;
+        padding-right: 0px;
+        }
+      }
+    }
+  }
   .ui{
     &.header{
       .settings{
@@ -1245,7 +1261,7 @@ h4{
       display: inline-block;
       vertical-align: top;
       margin-bottom: 1rem;
-      margin-top: 1rem;
+      margin-top: 0rem;
     }
     .postInputWraper{
       width: calc(100% - 141px);
@@ -1736,7 +1752,7 @@ h4{
 @media only screen and (max-width:767px) {
   body{
     .profile-social-wraper{
-      margin-left: -1rem;
+      margin-left: 0rem;
       margin-top: -1rem;
       .profile-social-links{
         .ui{
@@ -1747,6 +1763,10 @@ h4{
                 padding-left: 15px;
                 padding-right: 15px;
                 margin-right: 5px;
+                &:last-child{
+                  padding-right: 0px;
+                  margin-right: 0px;
+                }
               }
             }
           }
@@ -2137,6 +2157,7 @@ h4{
       border: 0px solid transparent;	
       background-color: #FFFFFF;	
       box-shadow: 0 5px 10px 0 rgba(0,0,0,0.2);
+      margin-top: 27px !important;
       @media only screen and (max-width:767px) {
         min-width: 250px;	
       }
@@ -2260,8 +2281,8 @@ h4{
   .ui{
     &.fluid{
       &.input{
-        input{
-          padding-right: 60px;
+        >input{
+          padding-right: 50px !important;
         }
       }
     }
@@ -2985,6 +3006,7 @@ body{
               }
             }
             .content{
+              width: (100% - 30px);
               .header{
                 font-size: 1rem;
                 font-weight: 400;
@@ -3117,6 +3139,7 @@ body{
       text-align: center;
       box-shadow: 0 2px 7px 0 rgba(135,135,135,0.3);
       padding: 5px 0px;
+      position: relative;
       &.createGift{
         background-color: #E3E8F0;	
         box-shadow: 2px 2px 7px 0 rgba(135,135,135,0.3);
@@ -3161,8 +3184,10 @@ body{
         height: 77px;
         margin: 1rem auto;
         border-radius: 100% !important;
+
         +.content{
           padding-top: 0px;
+          padding-bottom: 48px;
           border-top: 0px solid transparent;
           .header{
             font-size: 14px;
@@ -3170,7 +3195,14 @@ body{
             word-break: break-word;
           }
           .description{
+            min-height: 30px;
+            padding-bottom: 20px;
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
             .give-frnds-btn{
+              
               border-radius: 20px;	
               background-color: #055CE5;
               color: #fff;
@@ -5333,13 +5365,13 @@ body{
         opacity: 1;
         left: 0;
         right: 0;
-        top: 5px;
+        top: 152px;
         width: 145px;
         margin: auto;
         background-size: contain;
       }
       .grpcampBannerContainer{
-        padding-top: 120px;
+        padding-bottom: 120px;
       }
     }
   }
@@ -5369,11 +5401,11 @@ body{
       .ui{
         &.list{
           >.item{
-            padding-top: 10px;
-            padding-bottom: 10px;
+            padding-top: 20px;
+            padding-bottom: 20px;
             &:first-child,&:last-child{
-              padding-top: 10px;
-              padding-bottom: 10px;
+              padding-top: 20px;
+              padding-bottom: 20px;
             }
             >img{
               &.image{
@@ -5385,6 +5417,9 @@ body{
             >.content{
               &:not(.right){
                 width: calc(100% - 85px);
+              }
+              .time{
+                margin-bottom: 10px;
               }
               &.right{
                 padding: 0px;
@@ -5532,7 +5567,7 @@ body{
   .ui{
     &.comments{
       max-width: 100%;
-      padding-top: 2rem;
+      padding-top: 0rem;
       .ui{
         &.dividing{
           &.header{
