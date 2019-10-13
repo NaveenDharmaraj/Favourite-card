@@ -752,14 +752,12 @@ export const getBeneficiariesForGroup = (dispatch, groupId) => {
                     }
                 },
             ).catch(() => {
-                //Router.pushRoutes('/error');
-                console.log('error page');
+                Router.pushRoutes('/give/error');
             }).finally(() => {
                 dispatch(fsa);
             });
     } else {
-        //Router.pushRoutes('/dashboard');
-        console.log('dashboard');
+        Router.pushRoutes('/dashboard');
     }
 };
 
@@ -787,16 +785,13 @@ export const getBeneficiaryFromSlug = (dispatch, slug) => {
                 return dispatch(fsa);
             },
         ).catch(() => {
-            //redirect('/give/error');
-            console.log('redirect to error');
-        }).finally(() => {
-            return dispatch(fsa);
-        });
+            Router.pushRoute('/give/error');
+        }).finally(() => dispatch(fsa));
     } else {
-        //redirect('/dashboard');
-        console.log('dashboard');
+        Router.pushRoute('/dashboard');
     }
 };
+
 const getCoverFeesApi = async (amount, fundId) => {
     const params = {
         attributes: {
@@ -851,6 +846,7 @@ export const getCoverFees = async (feeData, fundId, giveAmount, dispatch) => {
     // hence no need to fetch the fees for balance
     dispatch(fsa);
 };
+
 export const getCompanyTaxReceiptProfile = (dispatch, companyId) => {
     return callApiAndGetData(`/companies/${companyId}/taxReceiptProfiles?page[size]=50&sort=-id`).then((result) => {
         // return dispatch(setTaxReceiptProfile(result, type = ''));
@@ -884,8 +880,7 @@ export const getGroupsFromSlug = (dispatch, slug) => {
                 type: actionTypes.GET_GROUP_FROM_SLUG,
             });
         },
-    ).catch((error) => {
-        console.log(error);
+    ).catch(() => {
         Router.pushRoute('/give/error');
     });
 };

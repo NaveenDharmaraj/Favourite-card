@@ -501,8 +501,7 @@ export const getGroupsForUser = (dispatch, userId) => {
                 }
                 dispatch(fsa);
             },
-        ).catch((error) => {
-            console.log(error);
+        ).catch(() => {
             Router.pushRoute('/give/error');
         });
 };
