@@ -369,10 +369,10 @@ const saveUserBasicProfile = (dispatch, userData, userId, email) => {
     };
     const bodyData = {
         description: userData.about,
+        display_name: userData.displayName,
         family_name: userData.lastName,
         given_name: userData.firstName,
-        giving_goal_amt: userData.givingGoal,
-        name: userData.displayName,
+        giving_goal_amt: Number(userData.givingGoal),
         user_id: Number(userId),
     };
     return securityApi.patch(`/update/user`, bodyData).then(

@@ -312,7 +312,7 @@ class UserBasciProfile extends React.Component {
                                                             {' '}
                                                             {userData.first_name}
                                                             {' '}
-                                                            {userData.last_name}
+                                                            {userData.last_name}?
                                                         </Modal.Header>
                                                         <Modal.Content>
                                                             <Modal.Description className="font-s-16">
@@ -353,7 +353,7 @@ class UserBasciProfile extends React.Component {
                                                             {' '}
                                                             {userData.first_name}
                                                             {' '}
-                                                            {userData.last_name}
+                                                            {userData.last_name}?
                                                         </Modal.Header>
                                                         <Modal.Content>
                                                             <Modal.Description className="font-s-16">
