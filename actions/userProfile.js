@@ -371,10 +371,12 @@ const saveUserBasicProfile = (dispatch, userData, userId, email) => {
         description: userData.about,
         family_name: userData.lastName,
         given_name: userData.firstName,
-        giving_goal_amt: userData.givingGoal,
-        name: userData.displayName,
+        giving_goal_amt: Number(userData.givingGoal),
         user_id: Number(userId),
     };
+    if (userData.displayName !== '') {
+        bodyData.display_name = userData.displayName;
+    }
     return securityApi.patch(`/update/user`, bodyData).then(
         (result) => {
             fsa.payload = {

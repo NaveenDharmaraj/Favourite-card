@@ -111,7 +111,13 @@ class FriendsList extends React.Component {
                 return (
                     <Grid.Column key={index}>
                         <Card>
-                            <Image src={data.attributes.avatar} circular />
+                            <Link  route={`/users/profile/${data.attributes.user_id}`}>
+                                <Image
+                                    className="pointer"
+                                    src={data.attributes.avatar}
+                                    circular
+                                />
+                            </Link>
                             <Card.Content>
                                 <Card.Header>{name}</Card.Header>
                                 <Card.Description>

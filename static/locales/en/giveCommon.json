@@ -33,6 +33,7 @@
         "testCreditCardListMessage": "More information on test accounts can be found at Stripe.",
         "cardNumberLabel": "Card number",
         "nameOnCardLabel": "Name on card",
+        "nameOnCardPlaceholder": "Your name",
         "expiryDateLabel": "Expiry",
         "cvvLabel": "CVV"
     },
