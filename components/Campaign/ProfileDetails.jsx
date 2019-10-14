@@ -33,7 +33,7 @@ function ProfileDetails(props) {
                 if (campaignImageGallery) {
                     campaignImageGallery.forEach((singleImage) => {
                         const singleImagePropObj = {};
-                        singleImagePropObj.src = singleImage.attributes.assetUrl;
+                        singleImagePropObj.src = singleImage.attributes.originalUrl;
                         singleImagePropObj.thumbnail = singleImage.attributes.assetUrl;
                         singleImagePropObj.thumbnailHeight = 196;
                         singleImagePropObj.thumbnailWidth = 196;
