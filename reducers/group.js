@@ -222,13 +222,13 @@ const group = (state = {}, action) => {
                 },
             };
             break;
-        case 'REDIRECT_TO_DASHBOARD':
+        case 'GROUP_REDIRECT_TO_DASHBOARD':
             newState = {
                 ...state,
                 redirectToDashboard: action.payload.redirectToDashboard,
             };
             break;
-        case 'PLACEHOLDER_STATUS':
+        case 'GROUP_PLACEHOLDER_STATUS':
             newState = {
                 ...state,
                 showPlaceholder: action.payload.showPlaceholder,
@@ -271,7 +271,7 @@ const group = (state = {}, action) => {
                 leaveButtonLoader: action.payload.buttonLoading,
             };
             break;
-        case 'RESET_STATES':
+        case 'RESET_GROUP_STATES':
             newState = {};
             break;
         default:

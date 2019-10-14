@@ -13,7 +13,7 @@ import CharityProfileWrapper from '../components/charity';
 import { Router } from '../routes';
 
 const actionTypes = {
-    RESET_STATES: 'RESET_STATES',
+    RESET_CHARITY_STATES: 'RESET_CHARITY_STATES',
 };
 
 class CharityProfile extends React.Component {
@@ -22,7 +22,7 @@ class CharityProfile extends React.Component {
         query,
     }) {
         reduxStore.dispatch({
-            type: actionTypes.RESET_STATES,
+            type: actionTypes.RESET_CHARITY_STATES,
         });
         await getBeneficiaryFromSlug(reduxStore.dispatch, query.slug);
         return {

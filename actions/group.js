@@ -18,9 +18,9 @@ export const actionTypes = {
     GET_GROUP_MEMBERS_DETAILS: 'GET_GROUP_MEMBERS_DETAILS',
     GET_GROUP_TRANSACTION_DETAILS: 'GET_GROUP_TRANSACTION_DETAILS',
     MEMBER_PLACEHOLDER_STATUS: 'MEMBER_PLACEHOLDER_STATUS',
-    PLACEHOLDER_STATUS: 'PLACEHOLDER_STATUS',
+    GROUP_PLACEHOLDER_STATUS: 'GROUP_PLACEHOLDER_STATUS',
     POST_NEW_ACTIVITY: 'POST_NEW_ACTIVITY',
-    REDIRECT_TO_DASHBOARD: 'REDIRECT_TO_DASHBOARD',
+    GROUP_REDIRECT_TO_DASHBOARD: 'GROUP_REDIRECT_TO_DASHBOARD',
     // COMMENT_LIKE_STATUS: 'COMMENT_LIKE_STATUS',
     LEAVE_GROUP_MODAL_ERROR_MESSAGE: 'LEAVE_GROUP_MODAL_ERROR_MESSAGE',
     LEAVE_GROUP_MODAL_BUTTON_LOADER: 'LEAVE_GROUP_MODAL_BUTTON_LOADER',
@@ -44,7 +44,7 @@ export const getGroupFromSlug = async (dispatch, slug, token = null) => {
             payload: {
                 redirectToDashboard: false,
             },
-            type: actionTypes.REDIRECT_TO_DASHBOARD,
+            type: actionTypes.GROUP_REDIRECT_TO_DASHBOARD,
         });
         const fullParams = {
             params: {
@@ -85,7 +85,7 @@ export const getGroupFromSlug = async (dispatch, slug, token = null) => {
                 payload: {
                     redirectToDashboard: true,
                 },
-                type: actionTypes.REDIRECT_TO_DASHBOARD,
+                type: actionTypes.GROUP_REDIRECT_TO_DASHBOARD,
             });
             return null;
         }).finally(() => {
@@ -121,7 +121,7 @@ export const getDetails = async (dispatch, id, type, url) => {
             fsa.type = actionTypes.GET_GROUP_BENEFICIARIES;
             newUrl = !_.isEmpty(url) ? url : `groups/${id}/groupBeneficiaries?page[size]=3`;
             placeholderfsa.payload.showPlaceholder = true;
-            placeholderfsa.type = actionTypes.PLACEHOLDER_STATUS;
+            placeholderfsa.type = actionTypes.GROUP_PLACEHOLDER_STATUS;
             break;
         default:
             break;
@@ -151,7 +151,7 @@ export const getDetails = async (dispatch, id, type, url) => {
                 break;
             case 'charitySupport':
                 placeholderfsa.payload.showPlaceholder = false;
-                placeholderfsa.type = actionTypes.PLACEHOLDER_STATUS;
+                placeholderfsa.type = actionTypes.GROUP_PLACEHOLDER_STATUS;
                 break;
             default:
                 break;
@@ -171,7 +171,7 @@ export const getTransactionDetails = async (dispatch, id, url) => {
         payload: {
             showPlaceholder: true,
         },
-        type: actionTypes.PLACEHOLDER_STATUS,
+        type: actionTypes.GROUP_PLACEHOLDER_STATUS,
     });
     const newUrl = !_.isEmpty(url) ? url : `groups/${id}/activities?filter[moneyItems]=all&page[size]=10`;
     await coreApi.get(newUrl, {
@@ -190,7 +190,7 @@ export const getTransactionDetails = async (dispatch, id, url) => {
             payload: {
                 showPlaceholder: false,
             },
-            type: actionTypes.PLACEHOLDER_STATUS,
+            type: actionTypes.GROUP_PLACEHOLDER_STATUS,
         });
     });
 };
@@ -223,7 +223,7 @@ export const getGroupActivities = async (dispatch, id, url, isPostActivity) => {
             payload: {
                 showPlaceholder: false,
             },
-            type: actionTypes.PLACEHOLDER_STATUS,
+            type: actionTypes.GROUP_PLACEHOLDER_STATUS,
         });
     });
 };

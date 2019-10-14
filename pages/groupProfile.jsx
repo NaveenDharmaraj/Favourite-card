@@ -16,7 +16,7 @@ import { Router } from '../routes';
 import storage from '../helpers/storage';
 
 const actionTypes = {
-    RESET_STATES: 'RESET_STATES',
+    RESET_GROUP_STATES: 'RESET_GROUP_STATES',
 };
 
 class GroupProfile extends React.Component {
@@ -26,7 +26,7 @@ class GroupProfile extends React.Component {
         query,
     }) {
         reduxStore.dispatch({
-            type: actionTypes.RESET_STATES,
+            type: actionTypes.RESET_GROUP_STATES,
         });
         let auth0AccessToken = null;
         if (typeof window === 'undefined') {

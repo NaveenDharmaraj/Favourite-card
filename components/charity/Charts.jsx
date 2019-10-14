@@ -440,7 +440,7 @@ class Charts extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        values: state.give.charityDetails.charityDetails.attributes,
+        values: state.charity.charityDetails.charityDetails.attributes,
     };
 }
 

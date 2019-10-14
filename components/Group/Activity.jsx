@@ -30,7 +30,7 @@ import PlaceholderGrid from '../shared/PlaceHolder';
 import ActivityDetails from './ActivityDetails';
 
 const actionTypes = {
-    PLACEHOLDER_STATUS: 'PLACEHOLDER_STATUS',
+    GROUP_PLACEHOLDER_STATUS: 'GROUP_PLACEHOLDER_STATUS',
 };
 
 class Activity extends React.Component {
@@ -58,7 +58,7 @@ class Activity extends React.Component {
                 payload: {
                     showPlaceholder: true,
                 },
-                type: actionTypes.PLACEHOLDER_STATUS,
+                type: actionTypes.GROUP_PLACEHOLDER_STATUS,
             });
             getGroupActivities(dispatch, id);
         }
