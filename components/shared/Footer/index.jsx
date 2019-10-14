@@ -13,6 +13,7 @@ import getConfig from 'next/config';
 import {
     bool,
 } from 'prop-types';
+import HubspotForm from 'react-hubspot-form';
 
 import { Link } from '../../../routes';
 import '../../../static/less/footer.less';
@@ -48,8 +49,11 @@ const Footer = ({ isAuthenticated }) => (
                             <Grid.Column mobile={16} tablet={8} computer={8}>
                                 <Form floated="right" className="footer-subscribe">
                                     <Form.Field inline>
-                                        <Input placeholder="Enter your email" className="rounded-input" />
-                                        <Button className="blue-btn-rounded-def">Subscribe</Button>
+                                        <HubspotForm
+                                            portalId='2004091'
+                                            formId='b7f3eaf4-a011-41b8-978d-f97c33939303'
+                                            loading={<div>Loading...</div>}
+                                        />
                                     </Form.Field>
                                 </Form>
                             </Grid.Column>
@@ -78,12 +82,10 @@ const Footer = ({ isAuthenticated }) => (
                                         <Grid.Column mobile={16} tablet={4} computer={4}>
                                             <div className="footer-main-links">
                                                 <Header as="h4"><a href={`${CORP_DOMAIN}/how-it-works/`}>How it works</a></Header>
-                                                <Header as="h4"><a href={`${CORP_DOMAIN}/fees/`}>Fees</a></Header>
-                                                
                                             </div>
                                         </Grid.Column>
                                         <Grid.Column mobile={16} tablet={4} computer={4}>
-                                            <Header as="h4" content="CHARITABLE IMPACT FOR" />
+                                            <Header as="h4" content="About" />
                                             <List link>
                                                 <List.Item as="a" href={`${CORP_DOMAIN}/who-we-are/`}>Who we are</List.Item>
                                                 <List.Item as="a" href={`${CORP_DOMAIN}/foundation/`}>Charitable Impact Foundation</List.Item>
@@ -93,7 +95,7 @@ const Footer = ({ isAuthenticated }) => (
                                             </List>
                                         </Grid.Column>
                                         <Grid.Column mobile={16} tablet={4} computer={4}>
-                                            <Header as="h4" content="CONTACT" />
+                                            <Header as="h4" content="Support" />
                                             <List link>
                                                 <List.Item as="a" href={`${HELP_CENTRE_URL}`}>Help Centre</List.Item>
                                                 <List.Item as="a" href={`${CORP_DOMAIN}/contact/`}>Contact Us</List.Item>
@@ -126,7 +128,7 @@ const Footer = ({ isAuthenticated }) => (
                                             </List>
                                         </Grid.Column>
                                         <Grid.Column mobile={16} tablet={4} computer={4}>
-                                            <Image src={appimg} />
+                                            <Header as="h4"><a href={`${CORP_DOMAIN}/charities/`}>Charitable Impact for charities</a></Header>
                                         </Grid.Column>
                                     </Grid.Row>
                                 </Grid>
