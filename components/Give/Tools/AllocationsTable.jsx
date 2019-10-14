@@ -45,8 +45,7 @@ function AllocationsTable(props) {
                     firstColoumn={recipientAccount}
                     secondColoumn={formattedAmount}
                     thirdColoumn={transactionDate}
-                    fourthColoumn={attributes.paymentInformation}
-                    fifthColoumn={formattedDate}
+                    fourthColoumn={formattedDate}
                     deleteTransaction={deleteTransaction}
                     transactionType={attributes.transactionType}
                     transactionId={id}
@@ -64,7 +63,6 @@ function AllocationsTable(props) {
                             <Table.HeaderCell>Recipient </Table.HeaderCell>
                             <Table.HeaderCell>Amount</Table.HeaderCell>
                             <Table.HeaderCell>Day of month</Table.HeaderCell>
-                            <Table.HeaderCell>Credit Card</Table.HeaderCell>
                             <Table.HeaderCell className="w-120">Created</Table.HeaderCell>
                             <Table.HeaderCell>Action</Table.HeaderCell>
                         </Table.Row>

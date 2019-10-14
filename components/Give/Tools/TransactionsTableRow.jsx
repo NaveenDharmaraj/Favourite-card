@@ -45,11 +45,11 @@ class TransactionTableRow extends React.Component {
 
         return (
             <Table.Row>
-                <Table.Cell>{firstColoumn}</Table.Cell>
-                <Table.Cell className="text-right">{secondColoumn}</Table.Cell>
-                <Table.Cell>{thirdColoumn}</Table.Cell>
-                <Table.Cell>{fourthColoumn}</Table.Cell>
-                <Table.Cell>{fifthColoumn}</Table.Cell>
+                {(firstColoumn) && (<Table.Cell>{firstColoumn}</Table.Cell>)}
+                {(secondColoumn) && (<Table.Cell className="text-right">{secondColoumn}</Table.Cell>)}
+                {(thirdColoumn) && (<Table.Cell>{thirdColoumn}</Table.Cell>)}
+                {(fourthColoumn) && (<Table.Cell>{fourthColoumn}</Table.Cell>)}
+                {(fifthColoumn) && (<Table.Cell>{fifthColoumn}</Table.Cell>)}
                 <Table.Cell>
                     <Modal 
                       size="tiny"
