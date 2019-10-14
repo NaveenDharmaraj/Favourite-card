@@ -23,6 +23,7 @@ import {
 
 export const actionTypes = {
     ADD_NEW_CREDIT_CARD_STATUS: 'ADD_NEW_CREDIT_CARD_STATUS',
+    COVER_AMOUNT_DISPLAY: 'COVER_AMOUNT_DISPLAY',
     COVER_FEES: 'COVER_FEES',
     GET_BENEFICIARY_FROM_SLUG: 'GET_BENEFICIARY_FROM_SLUG',
     GET_BENIFICIARY_FOR_GROUP: 'GET_BENIFICIARY_FOR_GROUP',
@@ -844,6 +845,28 @@ export const getCoverFees = async (feeData, fundId, giveAmount, dispatch) => {
     }
     // GIVEB-1912 with recent updates given we don't need 2 versions of text
     // hence no need to fetch the fees for balance
+    dispatch(fsa);
+};
+
+export const getCoverAmount = async (fundId, giveAmount, dispatch) => {
+    const fsa = {
+        payload: {
+            coverAmountDisplay: 0,
+        },
+        type: actionTypes.COVER_AMOUNT_DISPLAY,
+    };
+    if (giveAmount >= 5) {
+        await getCoverFeesApi(giveAmount, fundId).then((result) => {
+            const {
+                data: {
+                    attributes: {
+                        feeAmount,
+                    },
+                },
+            } = result;
+            fsa.payload.coverAmountDisplay = feeAmount;
+        });
+    }
     dispatch(fsa);
 };
 
