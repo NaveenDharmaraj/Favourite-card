@@ -68,12 +68,13 @@ class FavouritesList extends React.Component {
                 const type = data.attributes.type === 'group' ? 'giving group' : 'charity';
                 const typeClass = data.attributes.type === 'group' ? 'chimp-lbl group' : 'chimp-lbl charity';
                 const placeholder = data.attributes.type === 'group' ? placeholderGroup : placeholderCharity;
+                const imageType = (!_.isEmpty(data.attributes.avatar)) ? data.attributes.avatar : placeholder;
                 const urlEntity = data.attributes.type === 'group' ? 'groups' : 'charities';
                 const url = `/${urlEntity}/${data.attributes.slug}`;
                 return (
                     <LeftImageCard
                         entityName={entityName}
-                        placeholder={placeholder}
+                        placeholder={imageType}
                         typeClass={typeClass}
                         type={type}
                         url={url}

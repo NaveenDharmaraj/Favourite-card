@@ -452,7 +452,7 @@ class EditBasicProfile extends React.Component {
                                     error={!validity.isDescriptionNotNull}
                                     value={about}
                                 />
-                                <div className="field-info mt--1 text-right">{aboutCharCount} of 1000 characters left</div>
+                                <div className="field-info mt--1-2 text-right">{aboutCharCount} of 1000 characters left</div>
                                 <FormValidationErrorMessage
                                     condition={!validity.isDescriptionNotNull}
                                     errorMessage="Please input about yourself"
