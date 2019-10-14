@@ -1,5 +1,6 @@
 // import { Firebase } from "./init";
-import Firebase from "firebase";
+import * as Firebase from "firebase/app";
+import 'firebase/database';
 import firebaseConfig from "./config";
 import getConfig from 'next/config';
 import { firebaseMessageFetchCompleteAction } from "../actions/firebase";
