@@ -23,20 +23,24 @@ class EmailVerification extends React.Component {
     constructor(props) {
         super(props);
         let {
-            newUserDetails,
+            newUserDetailsApi,
         } = this.props;
-        if (newUserDetails === undefined) {
-            const newUserDetailsEmail = storage.get('auth0UserEmail', 'local');
-            const newUserDetailsId = storage.get('auth0UserId', 'local');
-            newUserDetails = {
-                email: newUserDetailsEmail,
-                user_id: newUserDetailsId,
-            };
+        let newUserDetailsEmail, newUserDetailsId;
+        if(newUserDetailsApi){
+            newUserDetailsEmail = newUserDetailsApi.email;
+            newUserDetailsId = newUserDetailsApi.identities[0].user_id;
+        } else if (newUserDetailsApi === undefined) {
+            newUserDetailsEmail = storage.get('auth0UserEmail', 'local');
+            newUserDetailsId = storage.get('auth0UserId', 'local');
         }
-
-        if (newUserDetails === null) {
+        let newUserDetails = {
+            email: newUserDetailsEmail,
+            user_id: newUserDetailsId,
+        };
+        if (newUserDetailsEmail === null && newUserDetailsId === null) {
             Router.pushRoute('/users/login');
         }
+
         this.state = {
             newUserDetails,
         };
@@ -123,7 +127,7 @@ class EmailVerification extends React.Component {
 function mapStateToProps(state) {
     return {
         apiResendEmail: state.onBoarding.apiResendEmail,
-        newUserDetails: state.onBoarding.newUserDetails,
+        newUserDetailsApi: state.onBoarding.newUserDetails,
     };
 }
 export default (connect(mapStateToProps)(EmailVerification));
