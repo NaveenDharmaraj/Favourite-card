@@ -1253,7 +1253,7 @@ const populateDonationReviewPage = (giveData, data, currency, formatMessage, lan
                 giveToData = {
                     accountId: selectedData.id,
                     avatar: giveTo.avatar,
-                    displayName: selectedData.attributes.name,
+                    displayName: selectedData.attributes.companyFundName,
                     type: 'company',
                 };
             }
