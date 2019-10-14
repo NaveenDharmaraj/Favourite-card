@@ -30,6 +30,7 @@ class CharitySupport extends React.Component {
                 {data.map((card) => (
                     <LeftImageCard
                         entityName={card.attributes.name}
+                        location=""
                         placeholder={card.attributes.avatar}
                         typeClass="chimp-lbl charity"
                         type="charity"

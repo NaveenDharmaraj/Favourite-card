@@ -58,7 +58,7 @@ class EditBasicProfile extends React.Component {
             userBasicDetails: {
                 about: (!_.isEmpty(props.userData)) ? props.userData.description : '',
                 firstName: (!_.isEmpty(props.userData)) ? props.userData.first_name : '',
-                givingGoal: (!_.isEmpty(props.userData)) ? formatAmount(props.userData.giving_goal_amt) : '',
+                givingGoal: (!_.isEmpty(props.userData.giving_goal_amt)) ? formatAmount(Number(props.userData.giving_goal_amt)) : '',
                 lastName: (!_.isEmpty(props.userData)) ? props.userData.last_name : '',
                 location: (!_.isEmpty(props.userData)) ? props.userData.location : '',
                 displayName: (!_.isEmpty(props.userData)) ? props.userData.display_name : '',
@@ -83,7 +83,7 @@ class EditBasicProfile extends React.Component {
                 userBasicDetails: {
                     about: userData.description,
                     firstName: userData.first_name,
-                    givingGoal: formatAmount(userData.giving_goal_amt),
+                    givingGoal: formatAmount(Number(userData.giving_goal_amt)),
                     lastName: userData.last_name,
                     location: userData.location,
                     displayName: userData.display_name,

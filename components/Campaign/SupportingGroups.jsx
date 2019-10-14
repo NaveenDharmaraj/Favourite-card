@@ -60,6 +60,7 @@ function SupportingGroups(props) {
                 groupCards.push(<LeftImageCard
                     entityName={subGroup.attributes.name}
                     placeholder={(groupImg) || placeholder}
+                    location=""
                     typeClass="chimp-lbl group"
                     type="Giving Groups"
                     url={`/${subGroup.type}/${subGroup.attributes.slug}`}

@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import _ from 'lodash';
 import {
@@ -56,11 +57,16 @@ class UserMemberGroupList extends React.Component {
             && userProfileMemberGroupData.data
             && _.size(userProfileMemberGroupData.data) > 0) {
             memberGroupList = userProfileMemberGroupData.data.map((data) => {
-                let entityName = '';
-                if (data.attributes.city != null) {
-                    entityName = `${data.attributes.name}, ${data.attributes.city}, ${data.attributes.province}`;
-                } else {
-                    entityName = data.attributes.name;
+                const entityName = data.attributes.name;
+                let locationDetails = '';
+                const locationDetailsCity = (!_.isEmpty(data.attributes.city)) ? data.attributes.city : '';
+                const locationDetailsProvince = (!_.isEmpty(data.attributes.province)) ? data.attributes.province : '';
+                if (locationDetailsCity === '' && locationDetailsProvince !== '') {
+                    locationDetails = locationDetailsProvince;
+                } else if (locationDetailsCity !== '' && locationDetailsProvince === '') {
+                    locationDetails = locationDetailsCity;
+                } else if (locationDetailsCity !== '' && locationDetailsProvince !== '') {
+                    locationDetails = `${data.attributes.city}, ${data.attributes.province}`;
                 }
                 const type = 'giving group';
                 const typeClass = 'chimp-lbl group';
@@ -68,6 +74,7 @@ class UserMemberGroupList extends React.Component {
                 return (
                     <LeftImageCard
                         entityName={entityName}
+                        location={locationDetails}
                         placeholder={placeholderGroup}
                         typeClass={typeClass}
                         type={type}
