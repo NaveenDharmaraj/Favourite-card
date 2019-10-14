@@ -20,7 +20,7 @@ import {
 
 // eslint-disable-next-line import/exports-last
 export const actionTypes = {
-    ADD_NEW_CREDIT_CARD_STATUS: 'ADD_NEW_CREDIT_CARD_STATUS',
+    
     ADD_USER_CREDIT_CARD: 'ADD_USER_CREDIT_CARD',
     DELETE_USER_CREDIT_CARD: 'DELETE_USER_CREDIT_CARD',
     UPDATE_USER_BASIC_PROFILE: 'UPDATE_USER_BASIC_PROFILE',
@@ -32,6 +32,7 @@ export const actionTypes = {
     UPDATE_USER_PREFERENCES: 'UPDATE_USER_PREFERENCES',
     UPDATE_USER_PRIVACY_SETTING: 'UPDATE_USER_PRIVACY_SETTING',
     USER_PROFILE_ADD_FRIEND: 'USER_PROFILE_ADD_FRIEND',
+    USER_PROFILE_ADD_NEW_CREDIT_CARD_STATUS: 'USER_PROFILE_ADD_NEW_CREDIT_CARD_STATUS',
     USER_PROFILE_ACCEPT_FRIEND: 'USER_PROFILE_ACCEPT_FRIEND',
     USER_PROFILE_ADMIN_GROUP: 'USER_PROFILE_ADMIN_GROUP',
     USER_PROFILE_BASIC: 'USER_PROFILE_BASIC',
@@ -54,6 +55,7 @@ export const actionTypes = {
     USER_PROFILE_MY_FRIENDS: 'USER_PROFILE_MY_FRIENDS',
     USER_PROFILE_RECOMMENDED_TAGS: 'USER_PROFILE_RECOMMENDED_TAGS',
     USER_PROFILE_REMOVE_FRIEND: 'USER_PROFILE_REMOVE_FRIEND',
+    USER_PROFILE_REMOVE_PHOTO: 'USER_PROFILE_REMOVE_PHOTO',
     USER_PROFILE_SIGNUP_DEEPLINK: 'USER_PROFILE_SIGNUP_DEEPLINK',
     USER_PROFILE_TAX_RECEIPTS: 'USER_PROFILE_TAX_RECEIPTS',
     USER_PROFILE_UNBLOCK_FRIEND: 'USER_PROFILE_UNBLOCK_FRIEND',
@@ -644,7 +646,7 @@ const saveNewCreditCard = async (dispatch, stripeCreditCard, cardHolderName, use
         payload: {
             newCreditCardApiCall: true,
         },
-        type: actionTypes.ADD_NEW_CREDIT_CARD_STATUS,
+        type: actionTypes.USER_PROFILE_ADD_NEW_CREDIT_CARD_STATUS,
     });
     const token = await createToken(stripeCreditCard, cardHolderName);
     const paymentInstrumentsData = {
@@ -679,7 +681,7 @@ const saveNewCreditCard = async (dispatch, stripeCreditCard, cardHolderName, use
             payload: {
                 newCreditCardApiCall: false,
             },
-            type: actionTypes.ADD_NEW_CREDIT_CARD_STATUS,
+            type: actionTypes.USER_PROFILE_ADD_NEW_CREDIT_CARD_STATUS,
         });
         dispatch(fsa);
     });
@@ -1000,6 +1002,26 @@ const generateDeeplinkUserProfile = (dispatch, sourceUserId, destinationUserId) 
     });
 };
 
+const removeProfilePhoto = (dispatch, sourceUserId) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.USER_PROFILE_REMOVE_PHOTO,
+    };
+    return coreApi.delete(`/users/${Number(sourceUserId)}/deleteLogo`).then(
+        (result) => {
+            fsa.payload = {
+                data: result,
+            };
+            getUser(dispatch, sourceUserId, null);
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    });
+};
+
 
 export {
     getUserProfileBasic,
@@ -1039,4 +1061,5 @@ export {
     uploadUserImage,
     removeFriend,
     generateDeeplinkUserProfile,
+    removeProfilePhoto,
 };

@@ -17,6 +17,7 @@ import dynamic from 'next/dynamic';
 import {
     saveUserBasicProfile,
     uploadUserImage,
+    removeProfilePhoto,
 } from '../../../actions/userProfile';
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 import PrivacySetting from '../../shared/Privacy';
@@ -38,10 +39,18 @@ import UserPlaceholder from '../../../static/images/no-data-avatar-user-profile.
 class EditBasicProfile extends React.Component {
     constructor(props) {
         super(props);
+        const {
+            currentUser: {
+                attributes: {
+                    logoFileName,
+                }
+            }
+        } = props;
         this.state = {
             buttonClicked: true,
             errorMessage: null,
             isImageChanged: false,
+            isDefaultImage: logoFileName === null ? true : false,
             uploadImage: '',
             uploadImagePreview: '',
             statusMessage: false,
@@ -49,19 +58,20 @@ class EditBasicProfile extends React.Component {
             userBasicDetails: {
                 about: (!_.isEmpty(props.userData)) ? props.userData.description : '',
                 firstName: (!_.isEmpty(props.userData)) ? props.userData.first_name : '',
-                givingGoal: (!_.isEmpty(props.userData)) ? props.userData.giving_goal_amt : '',
+                givingGoal: (!_.isEmpty(props.userData)) ? formatAmount(props.userData.giving_goal_amt) : '',
                 lastName: (!_.isEmpty(props.userData)) ? props.userData.last_name : '',
                 location: (!_.isEmpty(props.userData)) ? props.userData.location : '',
                 displayName: (!_.isEmpty(props.userData)) ? props.userData.display_name : '',
             },
             validity: this.intializeValidations(),
         };
-
+        
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleInputOnBlur = this.handleInputOnBlur.bind(this);
         this.handleUpload = this.handleUpload.bind(this);
         this.handleRemovePreview = this.handleRemovePreview.bind(this);
+        this.handleRemoveProfilePhoto = this.handleRemoveProfilePhoto.bind(this);
     }
 
     componentDidUpdate(prevProps) {
@@ -73,7 +83,7 @@ class EditBasicProfile extends React.Component {
                 userBasicDetails: {
                     about: userData.description,
                     firstName: userData.first_name,
-                    givingGoal: userData.giving_goal_amt,
+                    givingGoal: formatAmount(userData.giving_goal_amt),
                     lastName: userData.last_name,
                     location: userData.location,
                     displayName: userData.display_name,
@@ -289,6 +299,7 @@ class EditBasicProfile extends React.Component {
     handleUpload(event) {
         this.setState({
             uploadImagePreview: '',
+            isDefaultImage: true,
         })
         this.getBase64(event.target.files[0], (result) => {
             this.setState({
@@ -306,12 +317,38 @@ class EditBasicProfile extends React.Component {
         })
     }
 
+    handleRemoveProfilePhoto() {
+        const {
+            currentUser: {
+                id,
+            },
+            dispatch,
+        } = this.props;
+        removeProfilePhoto(dispatch, id).then(() => {
+            this.setState({
+                errorMessage: null,
+                successMessage: 'Profile photo removed successfully.',
+                statusMessage: true,
+                buttonClicked: true,
+                isDefaultImage: true,
+            });
+        }).catch((err) => {
+            this.setState({
+                errorMessage: 'Error in removing profile photo.',
+                statusMessage: true,
+                buttonClicked: true,
+                isDefaultImage: true,
+            });
+        });
+    }
+
     render() {
         const {
             buttonClicked,
             errorMessage,
             statusMessage,
             successMessage,
+            isDefaultImage,
             userBasicDetails: {
                 firstName,
                 lastName,
@@ -374,6 +411,15 @@ class EditBasicProfile extends React.Component {
                                                 href="#"
                                                 className="removeBtn"
                                                 onClick={this.handleRemovePreview}
+                                            />
+                                        )
+                                    }
+                                    {
+                                        !isDefaultImage && (
+                                            <a
+                                                href="#"
+                                                className="removeBtn"
+                                                onClick={this.handleRemoveProfilePhoto}
                                             />
                                         )
                                     }
