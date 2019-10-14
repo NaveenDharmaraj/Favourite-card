@@ -80,7 +80,7 @@ class SecondStep extends React.Component {
                                     condition={!!userExists && validity.isEmailValidFormat}
                                     errorMessage="Looks like this email is already registered. "
                                 >
-                                    Would you like to <Link route='/users/login'>log in</Link>?
+                                    Would you like to&nbsp;<Link route='/users/login'>log in</Link>?
                                 </FormValidationErrorMessage>
                                 <FormValidationErrorMessage
                                     condition={!validity.isEmailLengthInLimit && validity.isEmailIdNotNull}
