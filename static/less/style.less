@@ -738,6 +738,9 @@ h4{
 .mt--1{
   margin-top: -1rem;
 }
+.mt--1-2{
+  margin-top: -0.5rem;
+}
 .mr-1{
   margin-right: 1rem !important;
 }
@@ -2953,6 +2956,7 @@ body{
             .content{
               font-family: 'ProximaNova-Bold';
               font-size: 20px;
+              font-weight: 600;
               line-height: 24px;
             }
           }
@@ -3560,13 +3564,20 @@ body{
       text-align: center !important;
       >.buttonWraper{
         text-align: center !important;
-        display: block !important;
+        display: inline-block !important;
+        button{
+          &.ui{
+            &.button{
+              min-width: 80px !important;
+            }
+          }
+        }
       }
       .ui{
         &.floating{
           text-align: center !important;
           &.dropdown{
-            display: block !important;
+            
           }
         }
       }
@@ -3628,6 +3639,7 @@ body{
                 background-image: url(../images/icons/icon-account_settings.svg) !important;
                 background-size: contain !important;
                 background-position: center;
+                opacity: 0.5;
               }
             }
           }
@@ -3654,8 +3666,8 @@ body{
       &.dropdown{
         .icon{
           position: relative;
-          width: 32px;
-          height: 32px;
+          width: 24px;
+          height: 24px;
           vertical-align: middle;
           &.setting{
             &::before{
@@ -3668,11 +3680,18 @@ body{
               background-image: url(../images/icons/icon-account_settings.svg) !important;
               background-size: contain !important;
               background-position: center !important;
+              opacity: 0.5;
             }
           }
         }
       }
     }
+  }
+}
+.chimp-modal{
+  .ui.form .field :disabled {
+      background-color: #F8F8F8 !important;
+
   }
 }
 @media only screen and (min-width:1199px){
@@ -3808,6 +3827,10 @@ body{
   body{
     .give-friends-list .ui.card{
       margin: auto;
+    }
+    .ui.floating.dropdown .menu{
+      left: auto;
+      right: 0;
     }
     .stories-tips .tips-card.ui.card{
       margin: auto;
@@ -5352,8 +5375,9 @@ body{
   .grpcampHeader{
     .grpcampBanner{
       &::before{
-        top: 137px;
-        width: 166px;
+        top: 115px;
+        width: 195px;
+        left: 10px;
       }
     }
   }
@@ -6675,4 +6699,134 @@ body{
       }
     }
   }
+}
+
+.cFooter .subscribeForm .hs-form>div,
+   .cFooter .subscribeForm .hs_submit {
+     display: inline-block; }
+.cFooter .subscribeForm .hs-form>div {
+     margin-right: 10px; }
+.cFooter .subscribeForm .hs_email .input input {
+       height: 41px;
+       width: 300px;
+       border: 1px solid #dcdcdc;
+       border-radius: 22px;
+       padding: 10px 25px;
+       font-size: 16px;
+       margin: 0;
+       font-family: inherit;
+       font-size: inherit;
+       line-height: inherit; }
+   .cFooter .subscribeForm .hs_submit .actions .hs-button {
+     vertical-align: middle;
+     height: 41px;
+     width: 140px;
+     border-radius: 20.5px;
+     background-color: #055ce5;
+     -webkit-box-shadow: none;
+     box-shadow: none;
+     border: none;
+     color: #fff; }
+    .hs-richtext.hs-main-font-element{
+        display:none !important;
+    }
+  .hs-error-msg {
+   text-decoration: none;
+   list-style-type: none;
+   margin-top: 10px;
+   color: red;
+    display:table;
+    margin-left: 25px;
+}
+    .no-list.hs-error-msgs.inputs-list {
+   list-style: none;
+   margin-left: 0px;
+   padding-left: 0px;
+}
+    .submitted-message {
+   color: green !important;
+    }
+@media only screen and (max-width: 992px) {
+       body .cFooter .subscribeForm .hs_submit  {
+         display: block; }
+       body .cFooter .subscribeForm .hs_submit .actions .hs-button {
+         width: 100%;
+         display: block; }
+         body .cFooter .subscribeForm .hs-form>div {
+           margin-right: 0px;
+           display: block; }
+           body .cFooter .subscribeForm .hs_email .input input {
+             width: 100%;
+             margin-bottom: 10px; }
+     }
+@media only screen and (max-width: 767px) {
+         body .cFooter .subscribeForm .hs_email .input input {
+           margin-top: 10px; }
+}
+#label-email-b7f3eaf4-a011-41b8-978d-f97c33939303{
+ display: none;
+}
+.ui.form.footer-subscribe{
+ .inline.field{
+   .hs-nested-form-fix{
+     margin: 0px;
+     .hs-form{
+       >div{
+         display: inline-block;
+         vertical-align: middle;
+         @media only screen and (max-width: 992px) {
+           display:block;
+         }
+       }
+       .hs_email{
+         position: relative;
+         .input input{
+           height: 41px;
+           width: 300px;
+           border: 1px solid #dcdcdc;
+           border-radius: 22px;
+           padding: 10px 25px;
+           font-size: 16px;
+           margin: 0;
+           @media only screen and (max-width: 992px) {
+             width: 100%;
+           }
+         }
+         .hs-error-msgs{
+           @media only screen and (max-width: 992px) {
+             position: relative;
+             bottom: 0px;
+             margin-bottom: 0px;
+             margin-top: 5px;
+           }
+           position: absolute;
+           bottom: -40px;
+           margin-top: 0px;
+           left: 28px;
+           right: 0px;
+           .hs-error-msg{
+             margin: 0px;
+           }
+         }
+       }
+       .hs_submit .actions .hs-button {
+         vertical-align: middle;
+         height: 41px;
+         width: 140px;
+         border-radius: 20.5px;
+         background-color: #055ce5;
+         -webkit-box-shadow: none;
+         box-shadow: none;
+         border: none;
+         margin-left: 10px;;
+         color: #fff;
+         @media only screen and (max-width: 992px) {
+           width: 100%;
+           margin-left: 0px;
+           margin-top: 10px;
+         }
+       }
+     }
+   }
+ }
 }
