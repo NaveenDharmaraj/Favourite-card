@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import {
     number,
     string,
+    bool,
 } from 'prop-types';
 import {
     Container,
@@ -17,10 +18,15 @@ import {
 import {
     distanceOfTimeInWords,
 } from '../../helpers/utils';
+import ShareDetails from '../shared/ShareSectionProfilePage';
 
 const DonationDetails = (props) => {
     const {
         currency,
+        currentUser: {
+            id: userId,
+        },
+        deepLinkUrl,
         language,
         groupDetails: {
             attributes: {
@@ -33,6 +39,7 @@ const DonationDetails = (props) => {
                 lastDonationAt,
             },
         },
+        isAuthenticated,
     } = props;
     let lastDonationDay = '';
     if (lastDonationAt !== null) {
@@ -52,8 +59,8 @@ const DonationDetails = (props) => {
         <Container>
             <div className="profile-info-card giving">
                 <Grid stackable>
-                    <Grid.Row>
-                        <Grid.Column mobile={16} tablet={6} computer={6}>
+                    <Grid.Row verticalAlign="middle">
+                        <Grid.Column mobile={16} tablet={11} computer={11}>
                             <Header as="h2" className="font-s-34">
                                 {formatCurrency(totalMoneyRaised, language, currency)}
                                 {fundRaisingDuration}
@@ -73,11 +80,6 @@ const DonationDetails = (props) => {
                                 </div>
                             )
                             }
-                        </Grid.Column>
-                        <Grid.Column mobile={16} tablet={10} computer={10}>
-                            <Header as="h3">
-                                Stats
-                            </Header>
                             <div className="pt-1 campaign-amount">
                                 <Grid stackable columns={3}>
                                     <Grid.Row>
@@ -103,6 +105,16 @@ const DonationDetails = (props) => {
                                 </Grid>
                             </div>
                         </Grid.Column>
+                        {isAuthenticated
+                        && (
+                            <Grid.Column mobile={16} tablet={5} computer={5}>
+                                <ShareDetails
+                                    deepLinkUrl={deepLinkUrl}
+                                    profileDetails={props.groupDetails}
+                                    userId={userId}
+                                />
+                            </Grid.Column>
+                        )}
                     </Grid.Row>
                 </Grid>
             </div>
@@ -112,6 +124,9 @@ const DonationDetails = (props) => {
 
 DonationDetails.defaultProps = {
     currency: 'USD',
+    currentUser: {
+        id: null,
+    },
     groupDetails: {
         attributes: {
             balance: null,
@@ -122,11 +137,15 @@ DonationDetails.defaultProps = {
             totalMoneyRaised: null,
         },
     },
+    isAuthenticated: false,
     language: 'en',
 };
 
 DonationDetails.propTypes = {
     currency: string,
+    currentUser: {
+        id: string,
+    },
     groupDetails: {
         attributes: {
             balance: number,
@@ -137,12 +156,16 @@ DonationDetails.propTypes = {
             totalMoneyRaised: number,
         },
     },
+    isAuthenticated: bool,
     language: string,
 };
 
 function mapStateToProps(state) {
     return {
+        currentUser: state.user.info,
+        deepLinkUrl: state.profile.deepLinkUrl,
         groupDetails: state.group.groupDetails,
+        isAuthenticated: state.auth.isAuthenticated,
     };
 }
 

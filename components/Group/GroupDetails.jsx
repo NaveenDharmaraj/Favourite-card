@@ -295,10 +295,10 @@ class GroupDetails extends React.Component {
                                     </div>
                                 </div>
                             </Grid.Column>
-                            <Grid.Column mobile={16} tablet={9} computer={9}>
+                            <Grid.Column mobile={16} tablet={13} computer={14}>
                                 <Grid stackable>
                                     <Grid.Row>
-                                        <Grid.Column mobile={16} tablet={6} computer={5}>
+                                        <Grid.Column mobile={16} tablet={16} computer={9}>
                                             <div className="ProfileHeaderWraper">
                                                 <Header as="h3">
                                                     {name}
@@ -308,7 +308,7 @@ class GroupDetails extends React.Component {
                                                 </Header>
                                             </div>
                                         </Grid.Column>
-                                        <Grid.Column mobile={16} tablet={12} computer={11}>
+                                        <Grid.Column mobile={16} tablet={16} computer={7}>
                                             <div className="gpRightButtons">
                                                 {!joinClicked && giveButton}
                                                 {!joinClicked && joinButton}
@@ -365,14 +365,6 @@ class GroupDetails extends React.Component {
                                     {getCauses}
                                 </div>
                             </Grid.Column>
-                            {isAuthenticated
-                            && (
-                                <ShareDetails
-                                    deepLinkUrl={deepLinkUrl}
-                                    profileDetails={this.props.groupDetails}
-                                    userId={userId}
-                                />
-                            )}
                         </Grid.Row>
                     </Grid>
                 </Container>
