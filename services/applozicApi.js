@@ -28,6 +28,12 @@ instance.interceptors.request.use(function (config) {
         }
         config.headers.Authorization = `Bearer ${token}`;
     }
+    const deviceKey = storage.get("_deviceKey", 'cookie');
+    if (!deviceKey || deviceKey == "") {
+        if (registerAppLozic) {
+            registerAppLozic();
+        }
+    }
     config.headers.Authorization = "Basic " + base64.encode(storage.get('chimpUserId', 'cookie') + ":" + storage.get("_deviceKey", 'cookie'));
     return config;
 }, function (error) {

@@ -100,6 +100,8 @@ class Layout extends React.Component {
         const userEmail = this.props.userInfo ? this.props.userInfo.attributes.email : "";
         const userAvatar = this.props.userInfo ? this.props.userInfo.attributes.avatar : "";
         const userDisplayName = this.props.userInfo ? this.props.userInfo.attributes.displayName : "";
+        const userFirstName = this.props.userInfo ? this.props.userInfo.attributes.firstName : "";
+        const userLastName = this.props.userInfo ? this.props.userInfo.attributes.lastName : "";
         return (
             <Responsive getWidth={getWidth}>
                 <Head>
@@ -117,15 +119,17 @@ class Layout extends React.Component {
                         href="/static/fonts/proximanova/font.css"
                     />
                     <script id="stripe-js" src="https://js.stripe.com/v3/" />
-                    <script type="text/javascript" src="https://cdn.applozic.com/applozic/applozic.chat-5.6.1.min.js"></script>
-                    <script type="text/javascript">
+                    <script type="text/javascript" defer  src="https://cdn.applozic.com/applozic/applozic.chat-5.6.1.min.js"></script>
+                    <script type="text/javascript" defer>
                         window.APPLOZIC_WS_URL= "{APPLOZIC_WS_URL}";
                         window.APPLOZIC_APP_KEY="{APPLOZIC_APP_KEY}";
                         window.userEmail = "{userEmail}";
                         window.userAvatar = "{userAvatar}";
                         window.userDisplayName = "{userDisplayName}";
+                        window.userFirstName = "{userFirstName}";
+                        window.userLastName = "{userLastName}";
                     </script>
-                    {isAuthenticated ? <script type="text/javascript" src="/static/initApplozic.js"></script> : ""}
+                    {isAuthenticated ? <script defer  type="text/javascript" src="/static/initApplozic.js"></script> : ""}
                     {/* <script type="text/javascript" src="https://www.gstatic.com/firebasejs/5.9.4/firebase-app.js"></script> */}
                 </Head>
                 <div>

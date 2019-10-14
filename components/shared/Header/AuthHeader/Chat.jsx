@@ -30,6 +30,7 @@ class Chat extends React.Component {
         this.getDateString.bind(this);
         this.timeString.bind(this);
         this.loadRecentMessages.bind(this);
+        this.onChatPageRefreshEvent.bind(this);
     }
 
     /*onMessagesListLoad = (e) => {
@@ -81,7 +82,9 @@ class Chat extends React.Component {
     onMessageSent = (e) => {
         this.loadRecentMessages();
     };
-
+    onChatPageRefreshEvent = (e) => {
+        this.loadRecentMessages();
+    }
     onMessageReceived = (e) => {
         this.loadRecentMessages();
         // console.log("onMessageReceived");
@@ -119,6 +122,7 @@ class Chat extends React.Component {
     async componentDidMount() {
         // window.addEventListener('onMessagesListLoad', this.onMessagesListLoad, false);
         this.loadFriendsList();
+        window.addEventListener('onChatPageRefreshEvent', this.onChatPageRefreshEvent, false);
         window.addEventListener('onMessageReceived', this.onMessageReceived, false);
         window.addEventListener('onMessageSent', this.onMessageSent, false);
         window.addEventListener('applozicAppInitialized', this.applozicAppInitialized, false);
@@ -128,6 +132,7 @@ class Chat extends React.Component {
 
     componentWillUnmount() {
         // window.removeEventListener('onMessagesListLoad', this.onMessagesListLoad, false);
+        window.removeEventListener('onChatPageRefreshEvent', this.onChatPageRefreshEvent, false);
         window.removeEventListener('applozicAppInitialized', this.applozicAppInitialized, false);
         window.removeEventListener('onMessageReceived', this.onMessageReceived, false);
         window.removeEventListener('onMessageSent', this.onMessageSent, false);
@@ -207,9 +212,7 @@ class Chat extends React.Component {
                                                 </Link>
                                             </List.Header>
                                             <List.Description>
-                                                <Link route={`/chats/` + (msg.groupId ? msg.groupId : msg.contactIds)}>
-                                                    {msg.message}
-                                                </Link>
+                                                <Link route={`/chats/` + (msg.groupId ? msg.groupId : msg.contactIds)}><span dangerouslySetInnerHTML={{ __html: msg.message.replace(/(<([^>]+)>)/ig, '') }}></span></Link>
                                             </List.Description>
                                         </List.Content>
                                     </List.Item>)

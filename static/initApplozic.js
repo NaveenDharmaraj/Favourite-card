@@ -96,6 +96,7 @@ window.onfocus = function () {
 }
 // window.onload = function () {
 function registerAppLozic() {
+    if (undefined != window.Applozic) {
     Applozic.ALApiService.login(
         {
             data: {
@@ -107,6 +108,7 @@ function registerAppLozic() {
                     // password: '',//Enter password here for the userId passed above, read this if you want to add additional security by verifying password from your server https://www.applozic.com/docs/configuration.html#access-token-url
                     imageLink: window.userAvatar, //User's profile picture url
                     email: window.userEmail, //optional
+                    displayName: window.userFirstName + " " + userLastName,
                     // contactNumber: '', //optional, pass with internationl code eg: +13109097458
                     appVersionCode: 108,
                     applicationId: window.APPLOZIC_APP_KEY, //Get your App ID from [Applozic Dashboard](https://console.applozic.com/settings/install)
@@ -127,7 +129,7 @@ function registerAppLozic() {
                 document.cookie = "_applozicWebsocketUrl=" + data.websocketUrl + ";";
                 //Get your App ID from [Applozic Dashboard](https://console.applozic.com/settings/install)
                 window.Applozic.ALSocket.init(window.APPLOZIC_APP_KEY, data, events);
-                Notification.requestPermission();
+                // Notification.requestPermission();
                 window.dispatchEvent(new CustomEvent("applozicAppInitialized", { detail: { data: response, count: window.totalUnreadCount } }));
                 window.dispatchEvent(new CustomEvent("onUnreadMessageCountUpdate", { detail: { count: window.totalUnreadCount } }));
                 /*Applozic.ALApiService.getMessages({
@@ -150,6 +152,11 @@ function registerAppLozic() {
             }
         }
     );
+    } else {
+        setTimeout(function () {
+            registerAppLozic()
+        }, 2000);
+    }
 }
 (function () { registerAppLozic() })();
 window.onload = function () {
