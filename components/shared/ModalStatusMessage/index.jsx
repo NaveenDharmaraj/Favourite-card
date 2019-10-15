@@ -58,7 +58,7 @@ ModalStatusMessage.propTypes = {
 
 ModalStatusMessage.defaultProps = {
     error: '',
-    message: 'Your profile have been saved successfully.',
+    message: 'Information saved',
 };
 
 export default ModalStatusMessage;

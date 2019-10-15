@@ -404,6 +404,7 @@ class Charity extends React.Component {
                 giveData.giveFrom.type = defaultGroupFrom.type;
                 giveData.giveFrom.text = `${defaultGroupFrom.attributes.name} ($${defaultGroupFrom.attributes.balance})`;
                 giveData.giveFrom.balance = defaultGroupFrom.attributes.balance;
+                giveData.giveFrom.slug = defaultGroupFrom.attributes.slug;
              }
             }
             else{
