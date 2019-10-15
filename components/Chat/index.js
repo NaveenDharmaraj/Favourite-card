@@ -1236,6 +1236,7 @@ class ChatWrapper extends React.Component {
                                                                 <Form.Field>
                                                                     <textarea placeholder='Type a message…' disabled={conversationInfo.type == "group" && conversationInfo.info.removedMembersId.indexOf(self.state.userInfo.id) >= 0} rows="1" onKeyDown={this.handleMessageKeyDown.bind(this)} ></textarea>
                                                                 </Form.Field>
+                                                                <Button circular icon='paper plane outline' className="sendMsgBtn"/>
                                                             </Form>
                                                                 }
                                                             })()}

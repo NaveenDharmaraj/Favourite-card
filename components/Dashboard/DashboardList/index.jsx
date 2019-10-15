@@ -118,9 +118,11 @@ class DashboradList extends React.Component {
                 const month = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ];
                 const yyyy = date.getFullYear();
                 date = `${month[mm]} ${dd}, ${yyyy}`;
+                let dateClass = 'date boderBottom';
                 if (date !== compareDate) {
                     compareDate = date;
                 } else {
+                    dateClass = 'date';
                     date = '';
                 }
                 let givingType = ''; let rowClass = ''; let givingTypeClass = ''; let descriptionType = ''; let entity = ''; let transactionSign = ''; let profileUrl='';
@@ -195,7 +197,7 @@ class DashboradList extends React.Component {
                 const transactionType = data.attributes.transactionType.toLowerCase() === 'donation' ? 'Deposit' : data.attributes.transactionType;
                 return (
                     <Table.Row className={rowClass} key={index}>
-                        <Table.Cell className="date">{date}</Table.Cell>
+                        <Table.Cell className={dateClass}>{date}</Table.Cell>
                         <Table.Cell>
                             <List verticalAlign="middle">
                                 <List.Item>

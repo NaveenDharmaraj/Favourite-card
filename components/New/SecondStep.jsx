@@ -123,7 +123,7 @@ class SecondStep extends React.Component {
                                 <span className={(validity.doesPwdhaveUpperCase) ? 'blueText' : ''}>uppercase letters (A-Z),</span>
                                 <span className={(validity.doesPwdhaveSpecialChars) ? 'blueText' : ''}>special characters (e.g. !@#$%^&*)</span>
                             </p>
-                            <div className="reg-btn-wraper">
+                            <div className="reg-btn-wraper floatBtns">
                                 {/* {(!emailId || !password)
                                 && <Button type='submit' primary disabled onClick={handleSubmit}>Continue</Button>
                                 }
@@ -131,20 +131,21 @@ class SecondStep extends React.Component {
                                 && <Button type='submit' primary onClick={handleSubmit}>Continue</Button>
                                 } */}
                                 <Button
-                                    className="blue-bordr-btn-round-def"
-                                    content="Back"
-                                    onClick={handleBack}
-                                />
-                                
-                                <Button
                                     type='submit'
                                     primary
+                                    tabIndex="0"
                                     content={(apiValidating === true) ? 'Validating..' : 'Continue'}
                                     disabled={!validity.isEmailIdValid || !validity.isPasswordValid || !!userExists || typeof userExists === 'undefined' || !pwdEntered}
                                     onClick={handleSubmit}
                                     tabIndex={1}
 
                                 />
+                                <Button
+                                    className="blue-bordr-btn-round-def leftBtn"
+                                    content="Back"
+                                    onClick={handleBack}
+                                />
+
                             </div>
                         </Form>
                     </div>

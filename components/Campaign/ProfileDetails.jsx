@@ -67,28 +67,42 @@ function ProfileDetails(props) {
                             {
                                 (!videoPlayerLink && !about && imageArray.length === 0 ) ? (
                                     <Grid>
-                                        {noDataState()}
+                                        <Grid.Row>
+                                            <Grid.Column width={16}>
+                                                {noDataState()}
+                                            </Grid.Column>
+                                        </Grid.Row>
                                     </Grid>
                                 ) : (
                                     <Fragment>
                                         <Grid>
-                                            { about }
+                                            <Grid.Row>
+                                                <Grid.Column width={16}>
+                                                    { about }
+                                                </Grid.Column>
+                                            </Grid.Row>
                                         </Grid>
                                         <Grid>
-                                            <div className="mt-1">
-                                                <embed
-                                                    title="video"
-                                                    // width="50%"
-                                                    // height="50%"
-                                                    src={videoPlayerLink}
-                                                />
-                                            </div>
+                                            <Grid.Row>
+                                                <Grid.Column width={16}>
+                                                    <embed
+                                                        title="video"
+                                                        // width="50%"
+                                                        // height="50%"
+                                                        src={videoPlayerLink}
+                                                    />
+                                                </Grid.Column>
+                                            </Grid.Row>
                                         </Grid>
                                         <Grid>
-                                            <ImageGallery
-                                                imagesArray={imageArray}
-                                                enableImageSelection={false}
-                                            />
+                                            <Grid.Row>
+                                                <Grid.Column width={16}>
+                                                    <ImageGallery
+                                                        imagesArray={imageArray}
+                                                        enableImageSelection={false}
+                                                    />
+                                                </Grid.Column>
+                                            </Grid.Row>
                                         </Grid>
                                     </Fragment>
                                 )

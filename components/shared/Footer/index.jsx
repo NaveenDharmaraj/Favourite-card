@@ -17,7 +17,7 @@ import HubspotForm from 'react-hubspot-form';
 
 import { Link } from '../../../routes';
 import '../../../static/less/footer.less';
-import flogo from '../../../static/images/footer_logo.png';
+import flogo from '../../../static/images/CharitableImpact.svg';
 import appimg from '../../../static/images/app_img.png';
 import facebook from '../../../static/images/icons/facebook.png';
 import instagram from '../../../static/images/icons/instagram.png';
