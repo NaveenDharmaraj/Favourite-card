@@ -423,7 +423,7 @@ const _handleLockSuccess = async ({
         if (document) {
             console.log('working')
             document.cookie = cookieName +"=" + cookieValue + ";expires=" + myDate 
-            + ";domain=.stg.charitableimpact.com;path=/";
+            + ";domain=.charitableimpact.com;path=/";
         }
 
         const userId = parseInt(currentUser, 10);
