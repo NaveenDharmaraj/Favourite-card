@@ -2114,16 +2114,24 @@ h4{
 @media only screen and (max-width:767px) {
   .login-form-wraper{
     max-width: 320px;
-    margin: 25px auto 0px;
+    margin: 45px auto 0px;
   }
 }
 
 .reg-btn-wraper{
   margin-top: 74px;
+  &.floatBtns{
+    display: table;
+    width: 100%;
+    clear: both;
+    .leftBtn{
+      float: left;
+    }
+  }
   .ui{
     &.button{
       +.button{
-        margin-left: 1rem;
+        margin-right: 1rem;
       }
       &.primary{
         padding: 16/@rem 72/@rem;
@@ -2161,6 +2169,9 @@ h4{
       background-color: #FFFFFF;	
       box-shadow: 0 5px 10px 0 rgba(0,0,0,0.2);
       margin-top: 27px !important;
+      @media only screen and (max-width:991px){
+        margin-top: 18px !important;
+      }
       @media only screen and (max-width:767px) {
         min-width: 250px;	
       }
@@ -3725,6 +3736,10 @@ body{
 }
 @media only screen and (min-width:991px) and (max-width:1199px) {
   body{
+    .favourite .left-img-card.ui.card .header .grid > .column:last-child .btn-small-white-border{
+      bottom: 25px;
+      right: 20px;
+    }
     .left-img-card{
       &.ui{
         &.card{
@@ -3743,6 +3758,7 @@ body{
                 &:last-child{
                   .btn-small-white-border{
                     bottom: 10px;
+                    right: 20px;
                   }
                   .chimp-lbl{
                     .more-icon{
@@ -3837,7 +3853,9 @@ body{
     }
     .db-activity-tbl.ui.basic{
       .date{
-       //border-bottom: 1px solid #d7d7d7 !important;
+        &.boderBottom{
+          border-bottom: 1px solid #d7d7d7;
+        }
       }
     }
     .db-activity-tbl.ui.basic .reason{
@@ -6325,7 +6343,9 @@ button.ui.button.blue-bordr-btn-round-def{
   cursor: pointer !important;
   color: @link;
  }
+ @media only screen and (min-width: 420px){
 
+ }
 .noDataCard{
   >.content{
     padding: 0px;
@@ -6372,10 +6392,28 @@ button.ui.button.blue-bordr-btn-round-def{
           display: flex;
           align-items: center;
           justify-content: center;
+          @media only screen and (max-width: 420px){
+            -webkit-box-orient: horizontal;
+            -webkit-box-direction: normal;
+            -ms-flex-direction: row;
+            flex-direction: row;
+            -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
+            -webkit-box-pack: inherit;
+            -ms-flex-pack: inherit;
+            justify-content: inherit;
+            -webkit-box-align: stretch;
+            -ms-flex-align: stretch;
+            align-items: stretch;
+            text-align: center;
+          }
           >.header{
             width: calc(100% - 150px);
             margin: 30px 0px;
             font-size: 14px;
+            @media only screen and (max-width: 420px){
+              width: 100%;
+            }
           }
         }
         .content{
@@ -6387,9 +6425,13 @@ button.ui.button.blue-bordr-btn-round-def{
               margin-bottom: 0px;
               margin-right: auto;
               order: 2;
+              @media only screen and (max-width: 420px){
+                display: block;
+                margin: auto;
+                float: none;
+              }
             }
           }
-          
           .header{
             
             .ui{
@@ -6763,8 +6805,8 @@ body{
          body .cFooter .subscribeForm .hs_email .input input {
            margin-top: 10px; }
 }
-#label-email-b7f3eaf4-a011-41b8-978d-f97c33939303{
- display: none;
+.ui.form .field > #label-email-b7f3eaf4-a011-41b8-978d-f97c33939303{
+ display: none !important;
 }
 .ui.form.footer-subscribe{
  .inline.field{
@@ -6829,4 +6871,19 @@ body{
      }
    }
  }
+}
+.errorPage{
+  &.ui{
+    &.basic{
+      &.segment{
+        background-image: url(../images/error_bg.png);
+        background-position: right bottom;
+        background-size: contain;
+        background-repeat: no-repeat;
+        min-height: 100vh;
+        padding-top: 80px;
+        padding-bottom:80px;
+      }
+    }
+  }
 }

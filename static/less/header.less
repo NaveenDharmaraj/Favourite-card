@@ -243,6 +243,19 @@ button,a{
                 padding-bottom: 0px;
                 line-height: auto;
                 padding: 0px;
+                &.active{
+                  background: transparent !important;
+                  .ui{
+                    &.circular{
+                      &.image{
+                        border: 2px solid #90459a;
+                        -webkit-box-shadow: -1px 1px 7px -2px rgba(144,69,154,1);
+                        -moz-box-shadow: -1px 1px 7px -2px rgba(144,69,154,1);
+                        box-shadow: -1px 1px 7px -2px rgba(144,69,154,1);
+                      }
+                    }
+                  }
+                }
                 &:hover{
                   background: none;
                 }
@@ -972,11 +985,22 @@ body{
         padding: 1rem;
         .give-popup-inner{
           padding-bottom: 1rem;
+          .accordion{
+            &.ui{
+              .title{
+                padding-top: 0px;
+              }
+              .content{
+                border-top: 0px solid transparent;
+              }
+            }
+          }
         }
       }
     }
   }
 }
+
 .ui{
   &.segment{
     &.c-default-header{
