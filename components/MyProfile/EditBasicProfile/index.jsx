@@ -469,7 +469,7 @@ class EditBasicProfile extends React.Component {
                                     />
                                     <FormValidationErrorMessage
                                         condition={!validity.isLastNameNotNull}
-                                        errorMessage="Please input your Last name"
+                                        errorMessage="Please input your last name"
                                     />
                                 </Form.Field>
                             </Form.Group>

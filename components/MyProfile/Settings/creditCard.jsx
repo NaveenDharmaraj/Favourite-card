@@ -241,7 +241,7 @@ class MyCreditCards extends React.Component {
                 this.setState({
                     buttonClicked: false,
                     errorMessage: null,
-                    successMessage: 'Your Credit Card Saved Successfully.',
+                    successMessage: 'Credit card saved.',
                     statusMessage: true,
                 });
             }).catch((err) => {
