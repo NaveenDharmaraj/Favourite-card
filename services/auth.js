@@ -416,6 +416,16 @@ const _handleLockSuccess = async ({
         if (CORP_DOMAIN && WP_DOMAIN_BASE && WP_API_VERSION) {
             await wpLogin(accessToken);
         }
+        let cookieName = 'HelloWorld';
+        let cookieValue = 'HelloWorld';
+        let myDate = new Date();
+        myDate.setMonth(myDate.getMonth() + 12);
+        if (document) {
+            console.log('working')
+            document.cookie = cookieName +"=" + cookieValue + ";expires=" + myDate 
+            + ";domain=.stg.charitableimpact.com;path=/";
+        }
+
         const userId = parseInt(currentUser, 10);
         await (auth0.returnProps = null);
         await (auth0.accessToken = accessToken);
