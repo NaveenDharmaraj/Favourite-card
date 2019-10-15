@@ -1,6 +1,4 @@
-/* eslint-disable no-else-return */
-
-import _ from 'lodash';
+import _isEmpty from 'lodash/isEmpty';
 
 import coreApi from '../services/coreApi';
 
@@ -12,6 +10,7 @@ export const actionTypes = {
     ISSUED_TAX_RECEIPIENT_DONATIONS_DETAIL: 'ISSUED_TAX_RECEIPIENT_DONATIONS_DETAIL',
     ISSUED_TAX_RECEIPIENT_YEARLY_DETAIL: 'ISSUED_TAX_RECEIPIENT_YEARLY_DETAIL',
     ISSUED_TAX_RECEIPTS_LIST: 'ISSUED_TAX_RECEIPTS_LIST',
+    ISSUED_TAX_RECEIPTS_LIST_LOADER: 'ISSUED_TAX_RECEIPTS_LIST_LOADER',
 };
 
 export const getTaxReceiptProfilePaginated = (dispatch, userId, pageNumber, loadMore) => {
@@ -47,20 +46,21 @@ export const getTaxReceiptProfilePaginated = (dispatch, userId, pageNumber, load
 export const getTaxReceiptProfileMakeDefault = (taxRecptProfileId) => {
     return coreApi.patch(`taxReceiptProfiles/${taxRecptProfileId}/set_as_default`);
 };
-export const getIssuedTaxreceipts = (dispatch) => {
+export const getIssuedTaxreceipts = (dispatch, url, viewMore = false) => {
     const fsa = {
         payload: {
-            issuedTaxReceiptList: null,
+            issuedTaxReceiptList: [],
         },
         type: actionTypes.ISSUED_TAX_RECEIPTS_LIST,
     };
     dispatch({
         payload: {
-            issuedTaxLloader: true,
+            issuedTaxLloader: !viewMore,
+            viewMoreLoader: !!viewMore,
         },
-        type: actionTypes.ISSUED_TAX_RECEIPTS_LIST,
+        type: actionTypes.ISSUED_TAX_RECEIPTS_LIST_LOADER,
     });
-    coreApi.get('/taxReceipts',
+    coreApi.get(url,
         {
             params: {
                 dispatch,
@@ -69,11 +69,19 @@ export const getIssuedTaxreceipts = (dispatch) => {
         }).then((result) => {
         fsa.payload.issuedTaxReceiptList = result.data;
         fsa.payload.issuedTaxLloader = false;
+        fsa.payload.nextLink = !_isEmpty(result.links.next) ? result.links.next : null;
+        fsa.payload.recordCount = result.recordCount;
     }).catch((err) => {
         console.error(err);
-        fsa.payload.issuedTaxLloader = false;
     }).finally(() => {
         dispatch(fsa);
+        dispatch({
+            payload: {
+                issuedTaxLloader: false,
+                viewMoreLoader: false,
+            },
+            type: actionTypes.ISSUED_TAX_RECEIPTS_LIST_LOADER,
+        });
     });
 };
 export const getIssuedTaxreceiptYearlyDetail = (dispatch, id,) => {

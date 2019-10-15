@@ -15,13 +15,13 @@ const IssuedTaxReceiptCard = (props) => {
         issuedTaxReceipt,
     } = props;
     const {
-            address_one,
-            address_two,
-            city,
-            province,
-            country,
-            postal_code,
-            full_name,
+        address_one,
+        address_two,
+        city,
+        province,
+        country,
+        postal_code,
+        full_name,
     } = issuedTaxReceipt;
 
     return (
