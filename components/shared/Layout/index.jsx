@@ -8,6 +8,7 @@ import {
 } from 'semantic-ui-react';
 import {
     boolean,
+    string,
 } from 'prop-types';
 
 import Header from '../Header';
@@ -97,6 +98,10 @@ class Layout extends React.Component {
         if (authRequired && !isAuthenticated) {
             return null;
         }
+        const{
+            title,
+            description,
+        } = this.props;
         const userEmail = this.props.userInfo ? this.props.userInfo.attributes.email : "";
         const userAvatar = this.props.userInfo ? this.props.userInfo.attributes.avatar : "";
         const userDisplayName = this.props.userInfo ? this.props.userInfo.attributes.displayName : "";
@@ -106,8 +111,10 @@ class Layout extends React.Component {
             <Responsive getWidth={getWidth}>
                 <Head>
                     <title>
-                        Charitable Impact
+                       {title}
                     </title>
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+                    <meta name="description" content={description}/>
                     <link rel="icon" type="image/x-icon" href="https://corpchimpstage.wpengine.com/wp-content/themes/chimp-theme/inc/assets/images/favicon/favicon.ico" />
                     <link rel="manifest" href="/static/Manifest.json" />
                     <link
@@ -212,10 +219,14 @@ class Layout extends React.Component {
 
 Layout.defaultProps = {
     addCauses: false,
+    description : ' Charitable Impact',
+    title: ' Charitable Impact',
 };
 
 Layout.propTypes = {
     addCauses: boolean,
+    description: string,
+    title: string,
 };
 
 function mapStateToProps(state) {
