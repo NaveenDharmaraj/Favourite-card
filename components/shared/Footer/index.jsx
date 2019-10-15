@@ -29,6 +29,8 @@ const { publicRuntimeConfig } = getConfig();
 const {
     CORP_DOMAIN,
     HELP_CENTRE_URL,
+    HUBSPOT_PORTAL_ID,
+    HUBSPOT_FORM_ID,
 } = publicRuntimeConfig;
 
 const Footer = ({ isAuthenticated }) => (
@@ -50,8 +52,8 @@ const Footer = ({ isAuthenticated }) => (
                                 <Form floated="right" className="footer-subscribe">
                                     <Form.Field inline>
                                         <HubspotForm
-                                            portalId='2004091'
-                                            formId='b7f3eaf4-a011-41b8-978d-f97c33939303'
+                                            portalId={HUBSPOT_PORTAL_ID}
+                                            formId={HUBSPOT_FORM_ID}
                                             loading={<div>Loading...</div>}
                                         />
                                     </Form.Field>
@@ -69,8 +71,8 @@ const Footer = ({ isAuthenticated }) => (
                                 />
                                 <div className="footer-adderss">
                                     <p>
-                                        Charitable Impact
-                                        #1250 - 1500 W Georgia St
+                                        Charitable Impact <br/>
+                                        #1250 - 1500 W Georgia St <br/>
                                         Vancouver, BC V6G 2Z6 Canada
                                     </p>
                                 </div>
@@ -89,6 +91,7 @@ const Footer = ({ isAuthenticated }) => (
                                             <List link>
                                                 <List.Item as="a" href={`${CORP_DOMAIN}/who-we-are/`}>Who we are</List.Item>
                                                 <List.Item as="a" href={`${CORP_DOMAIN}/foundation/`}>Charitable Impact Foundation</List.Item>
+                                                <List.Item as="a" href={`${CORP_DOMAIN}/fees/`}>Fees</List.Item>
                                                 <List.Item as="a" href={`${CORP_DOMAIN}/careers/`}>Careers</List.Item>
                                                 <List.Item as="a" href={`${CORP_DOMAIN}/press/`}>Press</List.Item>
                                                 <List.Item as="a" href="/blog">Blog</List.Item>

@@ -30,6 +30,8 @@ const configVars = {
         GRAPH_API_BASE: process.env.GRAPH_API_BASE,
         HELP_CENTRE_URL: process.env.HELP_CENTRE_URL,
         HELP_SCOUT_KEY: process.env.HELP_SCOUT_KEY,
+        HUBSPOT_FORM_ID: process.env.HUBSPOT_FORM_ID,
+        HUBSPOT_PORTAL_ID: process.env.HUBSPOT_PORTAL_ID,
         LOG_LEVEL: process.env.LOG_LEVEL,
         LOGDNA_APP_NAME: process.env.LOGDNA_APP_NAME,
         LOGDNA_PUBLIC_INGESTION_KEY: process.env.LOGDNA_PUBLIC_INGESTION_KEY,
