@@ -20,7 +20,7 @@
     "nonrecurringCCAllocationDetails": "{{creditCard}} was used to complete this transaction, which will appear on the credit card statement as \"CHIMP FNDN * DONATION\".",
     "nonrecurringDonationDetails": "In addition, {{amount}} was matched by {{matchingParty}} and added to {{to}}'s Impact Account.",
     "timeForSendingCharity": "Your gift will be sent to {{charityName}} on {{month}}.",
-    "userRecurringAllocation" : "Thank you, {{name}}. {{amount}} is scheduled to be added to your Impact Account each month.",
+    "userRecurringAllocation" : "Thank you, {{name}}. {{amount}} is scheduled to be sent to {{Recipient}} each month.",
     "nonUserRecurringAllocation": "Thank you, {{name}}. You scheduled a monthly gift of {{amount}} by {{fromName}} to {{to}}.",
     "recurringAllocationDetails": "This gift will be made from {{fromName}}'s Impact Account on the {{dayOfMonth}} of each month, starting on {{startsOn}}.",
     "recurringAllocationNotes": "Because this gift will be coming from your Impact Account, please make sure there are enough funds in your account before each monthly processing date.",

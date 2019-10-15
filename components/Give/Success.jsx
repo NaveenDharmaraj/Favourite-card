@@ -288,7 +288,7 @@ const Success = (props) => {
                 ? formatMessage('userRecurringAllocation', {
                     amount: formatCurrency(formatAmount(giveAmount), language, currency),
                     name: donationDetails.name,
-                    to: giveTo.text,
+                    Recipient: giveTo.text,
                 })
                 : formatMessage('nonUserRecurringAllocation', {
                     amount: formatCurrency(formatAmount(giveAmount), language, currency),
