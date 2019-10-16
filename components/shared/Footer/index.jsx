@@ -101,7 +101,7 @@ const Footer = ({ isAuthenticated }) => (
                                             <Header as="h4" content="Support" />
                                             <List link>
                                                 <List.Item as="a" href={`${HELP_CENTRE_URL}`}>Help Centre</List.Item>
-                                                <List.Item as="a" href={`${CORP_DOMAIN}/contact/`}>Contact Us</List.Item>
+                                                <List.Item as="a" href={`${CORP_DOMAIN}/contact/`}>Contact us</List.Item>
                                                 { isAuthenticated && (
                                                     <Fragment>
                                                         <Link 
