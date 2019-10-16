@@ -26,7 +26,7 @@ const ModalStatusMessage = dynamic(() => import('../../shared/ModalStatusMessage
 });
 import {
     formatAmount,
-    isValidGiftAmount,
+    isValidGivingGoalAmount,
 } from '../../../helpers/give/utils';
 import {
     isInputBlank,
@@ -58,7 +58,7 @@ class EditBasicProfile extends React.Component {
             userBasicDetails: {
                 about: (!_.isEmpty(props.userData)) ? props.userData.description : '',
                 firstName: (!_.isEmpty(props.userData)) ? props.userData.first_name : '',
-                givingGoal: (!_.isEmpty(props.userData.giving_goal_amt)) ? formatAmount(Number(props.userData.giving_goal_amt)) : '',
+                givingGoal: (!_.isEmpty(props.userData.giving_goal_amt) || typeof props.userData.giving_goal_amt !== 'undefined') ? formatAmount(Number(props.userData.giving_goal_amt)) : '',
                 lastName: (!_.isEmpty(props.userData)) ? props.userData.last_name : '',
                 location: (!_.isEmpty(props.userData)) ? props.userData.location : '',
                 displayName: (!_.isEmpty(props.userData)) ? props.userData.display_name : '',
@@ -76,6 +76,7 @@ class EditBasicProfile extends React.Component {
 
     componentDidUpdate(prevProps) {
         const {
+            currentUser,
             userData,
         } = this.props;        
         if (!_.isEqual(userData, prevProps.userData)) {
@@ -88,6 +89,11 @@ class EditBasicProfile extends React.Component {
                     location: userData.location,
                     displayName: userData.display_name,
                 },
+            });
+        }
+        if (!_.isEqual(currentUser, prevProps.currentUser)) {
+            this.setState({
+                isDefaultImage: currentUser.attributes.logoFileName === null ? true : false,
             });
         }
     }
@@ -116,13 +122,10 @@ class EditBasicProfile extends React.Component {
 
     intializeValidations() {
         this.validity = {
-            doesAmountExist: true,
             isAmountLessThanOneBillion: true,
-            isAmountMoreThanOneDollor: true,
-            isDescriptionNotNull: true,
+            isDisplayNameNotNull: true,
             isFirstNameNotNull: true,
             isLastNameNotNull: true,
-            isValidPositiveNumber: true,
         };
         return this.validity;
     }
@@ -184,14 +187,11 @@ class EditBasicProfile extends React.Component {
             case 'lastName':
                 validity.isLastNameNotNull = !(!value || value.length === 0);
                 break;
-            case 'about':
-                validity.isDescriptionNotNull = !(!value || value.length === 0);
+            case 'displayName':
+                validity.isDisplayNameNotNull = !(!value || value.length === 0);
                 break;
             case 'givingGoal':
-                validity.doesAmountExist = !isInputBlank(value);
                 validity.isAmountLessThanOneBillion = isAmountLessThanOneBillionDollars(value);
-                validity.isAmountMoreThanOneDollor = isAmountMoreThanOneDollor(value);
-                validity.isValidPositiveNumber = isValidPositiveNumber(value);
                 break;
             default:
                 break;
@@ -207,13 +207,13 @@ class EditBasicProfile extends React.Component {
             userBasicDetails: {
                 firstName,
                 lastName,
-                about,
+                displayName,
                 givingGoal,
             },
         } = this.state;
         validity = this.validateUserProfileBasicForm('firstName', firstName, validity);
         validity = this.validateUserProfileBasicForm('lastName', lastName, validity);
-        validity = this.validateUserProfileBasicForm('about', about, validity);
+        validity = this.validateUserProfileBasicForm('displayName', displayName, validity);
         validity = this.validateUserProfileBasicForm('givingGoal', givingGoal, validity);
         this.setState({
             validity,
@@ -312,7 +312,15 @@ class EditBasicProfile extends React.Component {
     }
 
     handleRemovePreview() {
+        const {
+            currentUser: {
+                attributes: {
+                    logoFileName,
+                }
+            },
+        } = this.props;
         this.setState({
+            isDefaultImage: logoFileName === null ? true : false,
             uploadImagePreview: '',
         })
     }
@@ -474,39 +482,39 @@ class EditBasicProfile extends React.Component {
                                 </Form.Field>
                             </Form.Group>
                             <Form.Field>
-                            <Form.Input
-                                fluid
-                                label="Display Name"
-                                id="displayName"
-                                name="displayName"
-                                placeholder="Display name"
-                                maxLength="30"
-                                onChange={this.handleInputChange}
-                                onBlur={this.handleInputOnBlur}
-                                value={displayName}
-                            />
+                                <Form.Input
+                                    fluid
+                                    label="Display Name"
+                                    id="displayName"
+                                    name="displayName"
+                                    placeholder="Display name"
+                                    maxLength="30"
+                                    onChange={this.handleInputChange}
+                                    onBlur={this.handleInputOnBlur}
+                                    error={!validity.isDisplayNameNotNull}
+                                    value={displayName}
+                                />
+                                <FormValidationErrorMessage
+                                    condition={!validity.isDisplayNameNotNull}
+                                    errorMessage="Please input your display name"
+                                />
                             </Form.Field>
                             <Form.Field>
                                 <Form.TextArea
-                                    label="Bio"
+                                    label="Bio (optional)"
                                     placeholder="Tell us about yourself"
                                     id="about"
                                     name="about"
                                     maxLength="1000"
                                     onChange={this.handleInputChange}
                                     onBlur={this.handleInputOnBlur}
-                                    error={!validity.isDescriptionNotNull}
                                     value={about}
                                 />
                                 <div className="field-info mt--1-2 text-right">{aboutCharCount} of 1000 characters left</div>
-                                <FormValidationErrorMessage
-                                    condition={!validity.isDescriptionNotNull}
-                                    errorMessage="Please input about yourself"
-                                />
                             </Form.Field>
                             <Form.Input
                                 fluid
-                                label="Location"
+                                label="Location (optional)"
                                 placeholder="Location"
                                 id="location"
                                 name="location"
@@ -517,7 +525,7 @@ class EditBasicProfile extends React.Component {
                             />
                             <Form.Field>
                                 <label>
-                                    Giving Goal{' '}
+                                    Giving Goal  (optional){' '}
                                     <Popup
                                         content="Set a personal goal for the dollars you want to commit for giving. Reach your goal by adding money to your account."
                                         position="top center"
@@ -547,13 +555,8 @@ class EditBasicProfile extends React.Component {
                                         onChange={this.handleInputChange}
                                         onBlur={this.handleInputOnBlur}
                                         value={givingGoal}
-                                        error={!isValidGiftAmount(validity)}
-                                    />
-                                    <FormValidationErrorMessage
-                                        condition={!validity.doesAmountExist || !validity.isAmountMoreThanOneDollor
-                                        || !validity.isValidPositiveNumber}
-                                        errorMessage="Please choose an amount of 5 or more"
-                                    />
+                                        error={!isValidGivingGoalAmount(validity)}
+                                    />                                    
                                     <FormValidationErrorMessage
                                         condition={!validity.isAmountLessThanOneBillion}
                                         errorMessage="Please choose an amount less than one billion dollars"

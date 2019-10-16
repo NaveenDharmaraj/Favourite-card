@@ -169,6 +169,14 @@ const isValidGiftAmount = (validity) => {
     return _.every(giftAmountValidity);
 };
 
+const isValidGivingGoalAmount = (validity) => {
+    const giftAmountValidity = _.pick(validity, [
+        'isAmountLessThanOneBillion',
+    ]);
+
+    return _.every(giftAmountValidity);
+};
+
 const getDefaultCreditCard = (paymentInstrumentList) => {
     let creditCard = {
         value: 0,
@@ -1661,6 +1669,7 @@ export {
     validateTaxReceiptProfileForm,
     onWhatDayList,
     isValidGiftAmount,
+    isValidGivingGoalAmount,
     getDropDownOptionFromApiData,
     populateAccountOptions,
     populateDonationMatch,

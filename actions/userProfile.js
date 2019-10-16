@@ -369,11 +369,12 @@ const saveUserBasicProfile = (dispatch, userData, userId, email) => {
         },
         type: actionTypes.UPDATE_USER_BASIC_PROFILE,
     };
+    const givingAmount = Number(userData.givingGoal) === 0 ? null : Number(userData.givingGoal);
     const bodyData = {
         description: userData.about,
         family_name: userData.lastName,
         given_name: userData.firstName,
-        giving_goal_amt: Number(userData.givingGoal),
+        giving_goal_amt: givingAmount,
         user_id: Number(userId),
     };
     if (userData.displayName !== '') {

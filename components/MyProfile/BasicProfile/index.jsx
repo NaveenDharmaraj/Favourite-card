@@ -41,9 +41,10 @@ const UserBasciProfile = (props) => {
                                                     <span className="font-s-10 type-profile">MY PROFILE</span>
                                                     {userData.first_name}
                                                     {' '}
-                                                    {userData.last_name}, 
+                                                    {userData.last_name}
                                                     <span className="small m-0">
                                                         &nbsp;
+                                                        {' '}
                                                         {userData.location}
                                                     </span>
                                                     <Header.Subheader>

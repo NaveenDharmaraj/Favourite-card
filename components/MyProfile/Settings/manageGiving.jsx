@@ -62,9 +62,10 @@ class ManageGiving extends React.Component {
             userDefaultTaxReceipt,
         } = this.props;
         if (!_.isEqual(userDefaultTaxReceipt, prevProps.userDefaultTaxReceipt)) {
+            const addressTwo = (!_.isEmpty(userDefaultTaxReceipt.data)) ? `, ${userDefaultTaxReceipt.data.attributes.addressTwo}` : '';
             this.setState({
                 selectedTaxReceipt: (!_.isEmpty(userDefaultTaxReceipt.data)) ? userDefaultTaxReceipt.data.id : '',
-                userNameAddress: (!_.isEmpty(userDefaultTaxReceipt.data)) ? `${userDefaultTaxReceipt.data.attributes.fullName}, ${userDefaultTaxReceipt.data.attributes.addressOne}, ${userDefaultTaxReceipt.data.attributes.addressTwo}` : '',
+                userNameAddress: (!_.isEmpty(userDefaultTaxReceipt.data)) ? `${userDefaultTaxReceipt.data.attributes.fullName}, ${userDefaultTaxReceipt.data.attributes.addressOne} ${addressTwo}` : '',
             });
         }
     }

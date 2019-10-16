@@ -460,7 +460,7 @@ class MyCreditCards extends React.Component {
                 this.setState({
                     deleteButtonClicked: false,
                     errorMessage: null,
-                    successMessage: 'Your Credit Card deleted Successfully.',
+                    successMessage: 'Credit card deleted.',
                     statusMessage: true,
                     isDeleteMessageOpen: false,
                 });
