@@ -136,7 +136,7 @@ class Layout extends React.Component {
                         window.userFirstName = "{userFirstName}";
                         window.userLastName = "{userLastName}";
                     </script>
-                    <script type="text/javascript">
+                    <script type="text/javascript" defer>
                         var cookieName = 'layoutCookie';
                         var cookieValue = 'layoutCookie';
                         var myDate = new Date();
@@ -144,6 +144,7 @@ class Layout extends React.Component {
                         document.cookie = cookieName +"=" + cookieValue + ";expires=" + myDate 
                                         + ";domain=.charitableimpact.com;path=/";
                     </script>
+                    <script defer type="text/javascript" src="/static/corpCookie.js"></script>
                     {isAuthenticated ? <script defer  type="text/javascript" src="/static/initApplozic.js"></script> : ""}
                     {/* <script type="text/javascript" src="https://www.gstatic.com/firebasejs/5.9.4/firebase-app.js"></script> */}
                 </Head>
