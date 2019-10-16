@@ -78,7 +78,7 @@ class SearchCharitiesGroups extends React.Component {
                                     <Card.Meta>
                                         {!_isEmpty(group.attributes.city) ? group.attributes.city : null}
                                         {(!_isEmpty(group.attributes.city) && !_isEmpty(group.attributes.province)) && ','}
-                                        {!_isEmpty(group.attributes.province) ? `, ${group.attributes.province}` : null}
+                                        {!_isEmpty(group.attributes.province) ? ` ${group.attributes.province}` : null}
                                     </Card.Meta>
                                 </Card.Content>
                             </Card>
