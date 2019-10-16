@@ -51,10 +51,22 @@ class GroupProfile extends React.Component {
 
     render() {
         const {
+            groupDetails: {
+                attributes: {
+                    description,
+                    location,
+                    name,
+                },
+            },
             redirectToDashboard,
         } = this.props;
+        let title = name;
+        if (!_.isEmpty(location)) {
+            title = `${name} | ${location}`;
+        }
+        const desc = (!_.isEmpty(description)) ? description : title;
         return (
-            <Layout>
+            <Layout title={title} description={desc}>
                 {!redirectToDashboard
                     ? <GroupProfileWrapper {...this.props} />
                     : Router.push('/dashboard')}
@@ -65,6 +77,13 @@ class GroupProfile extends React.Component {
 
 GroupProfile.defaultProps = {
     dispatch: func,
+    groupDetails: {
+        attributes: {
+            description: '',
+            location: '',
+            name: '',
+        },
+    },
     isAUthenticated: false,
     redirectToDashboard: false,
     slug: '',
@@ -72,6 +91,13 @@ GroupProfile.defaultProps = {
 
 GroupProfile.propTypes = {
     dispatch: _.noop,
+    groupDetails: {
+        attributes: {
+            description: string,
+            location: string,
+            name: string,
+        },
+    },
     isAUthenticated: bool,
     redirectToDashboard: bool,
     slug: string,
@@ -79,6 +105,7 @@ GroupProfile.propTypes = {
 
 function mapStateToProps(state) {
     return {
+        groupDetails: state.group.groupDetails,
         isAUthenticated: state.auth.isAuthenticated,
         redirectToDashboard: state.group.redirectToDashboard,
     };

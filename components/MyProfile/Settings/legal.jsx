@@ -36,7 +36,7 @@ class Legal extends React.Component {
                         <p className="bold">Privacy policy</p>
                         <p>
                         See our
-                            <Link route="/chimp-account-agreement">
+                            <Link route="/account-agreement">
                                 <span className="link border"> Account Agreement.</span>
                             </Link>
                         </p>

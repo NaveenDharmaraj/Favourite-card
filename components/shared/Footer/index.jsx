@@ -115,7 +115,7 @@ const Footer = ({ isAuthenticated }) => (
                                                             <List.Item as="a">Terms</List.Item>
                                                         </Link>
                                                         <Link
-                                                            route='/chimp-account-agreement'
+                                                            route='/account-agreement'
                                                         >
                                                             <List.Item as="a">Account Agreement</List.Item>
                                                         </Link>
@@ -125,7 +125,7 @@ const Footer = ({ isAuthenticated }) => (
                                                     <Fragment>
                                                         <List.Item as="a" href={`${CORP_DOMAIN}/privacy/`}>Privacy </List.Item>
                                                         <List.Item as="a" href={`${CORP_DOMAIN}/terms/`}>Terms</List.Item>
-                                                        <List.Item as="a" href={`${CORP_DOMAIN}/chimp-account-agreement/`}>Account Agreement</List.Item>
+                                                        <List.Item as="a" href={`${CORP_DOMAIN}/account-agreement/`}>Account Agreement</List.Item>
                                                     </Fragment>
                                                 )}
                                             </List>

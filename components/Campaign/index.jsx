@@ -16,7 +16,7 @@ import ProfileDetails from './ProfileDetails';
 const actionTypes = {
     SEE_MORE_LOADER: 'SEE_MORE_LOADER',
 };
-class CharityProfileWrapper extends React.Component {
+class CampaignProfileWrapper extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -135,4 +135,4 @@ class CharityProfileWrapper extends React.Component {
     }
 }
 
-export default CharityProfileWrapper;
+export default CampaignProfileWrapper;
