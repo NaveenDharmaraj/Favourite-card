@@ -9,15 +9,32 @@ const firebase = (state = {}, action) => {
         ...state,
     };
     switch (action.type) {
+        case 'FIREBASE_MESSAGE_FETCH_COMPLETE': {
+            const newMsgs = action.payload.messages || [];
+            const oldMsgs = _cloneDeep(state.messages) || [];
+            let uniqueArray = oldMsgs.concat(newMsgs);
+            uniqueArray = uniqueArray.filter((obj, pos, arr) => {
+                return arr.map((mapObj) => mapObj._key).indexOf(obj._key) === pos;
+            });
+            uniqueArray.sort((a, b) => (a.createdTs > b.createdTs ? -1 : 1));
+            newState = {
+                ...state,
+                lastSyncTime: action.payload.lastSyncTime,
+                messages: uniqueArray,
+                page: action.payload.page,
+            };
+        }
+            break;
         case 'FIREBASE_INITIAL_LOAD':
-            const newMsgs = action.payload.firebaseMessages || [];
-            const oldMsgs = state.messages || [];
-            const uniqueArray = _uniqBy(oldMsgs.concat(newMsgs), '_key');
+            const intialMessages = action.payload.firebaseMessages || [];
+            const intialOldMessages = state.messages || [];
+            const uniqueArr = _uniqBy(intialOldMessages.concat(intialMessages), '_key');
+            uniqueArr.sort((a, b) => (a.createdTs > b.createdTs ? -1 : 1));
             newState = {
                 ...state,
                 initialLoadCompleted: true,
                 lastSyncTime: action.payload.lastSyncTime,
-                messages: uniqueArray,
+                messages: uniqueArr,
                 page: action.payload.page,
             };
             break;

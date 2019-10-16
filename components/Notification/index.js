@@ -50,8 +50,9 @@ class NotificationWrapper extends React.Component {
             dispatch,
             messages,
         } = this.props;
+        const footerHeight = document.getElementsByClassName('my-footer')[0].offsetHeight;
         // Do something generic, if you have to
-        let reachedBottom = document.scrollingElement.scrollHeight == document.scrollingElement.scrollTop + window.innerHeight;
+        let reachedBottom = document.scrollingElement.scrollHeight - footerHeight <= document.scrollingElement.scrollTop + window.innerHeight;
         this.loading = false;
         if (messages && messages.length > 0 && reachedBottom && !this.loading) {
             this.loading = true;

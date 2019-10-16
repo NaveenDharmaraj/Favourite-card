@@ -32,7 +32,11 @@ class NotificationHelper {
         let fbHelper = this;
         try { Firebase.getInstance() } catch (err) {
             try {
-                Firebase.initializeApp(firebaseConfig);
+                if (!Firebase.apps.length) {
+                    Firebase.initializeApp(firebaseConfig);
+                } else {
+                    Firebase.app();
+                }
             } catch (e) {
                 console.error(e);
             }
@@ -171,7 +175,6 @@ class NotificationHelper {
                 lastSyncTime = temp.child("last_sync_time").val();
             });
             let messageRef = null;
-
             if (lastMsgKey) {
                 messageRef = userRef.child("/messages").orderByChild("createdTs").endAt(lastMsg.createdTs).limitToLast(limit);
             } else {
