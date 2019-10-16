@@ -142,9 +142,8 @@ const auth0 = {
     },
 
     set wpAccessToken(token) {
-        document.cookie = "wpAccessToken" +"=" + token + ";expires=" + this.getRemainingSessionTime(token) / 1000) 
-            + ";domain=.charitableimpact.com;path=/";
-    }
+        document.cookie = "wpAccessToken" +"=" + token + ";expires=" + this.getRemainingSessionTime(token) / 1000 + ";domain=.charitableimpact.com;path=/";
+    },
 
     /**
      * Erase Auth0 data from local
