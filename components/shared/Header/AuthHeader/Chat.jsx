@@ -5,7 +5,7 @@ import _ from 'lodash';
 import applozicApi from "./../../../../services/applozicApi";
 import graphApi from "./../../../../services/graphApi";
 import placeholderUser from './../../../../static/images/no-data-avatar-user-profile.png';
-import placeholderGroup from './../../../../static/images/no-data-avatar-user-profile.png';
+import placeholderGroup from './../../../../static/images/no-data-avatar-group-chat-profile.png';
 import { Link } from '../../../../routes';
 
 class Chat extends React.Component {
@@ -18,7 +18,8 @@ class Chat extends React.Component {
             totalUnreadCount: props.totalUnreadCount || 0,
             messagesList: props.messagesList || [],
             userDetails: {},
-            groupFeeds: {}
+            groupFeeds: {},
+            showBackImage: false
         }
         // this.onMessagesListLoad.bind(this);
         this.loadFriendsList.bind(this);
@@ -31,6 +32,7 @@ class Chat extends React.Component {
         this.timeString.bind(this);
         this.loadRecentMessages.bind(this);
         this.onChatPageRefreshEvent.bind(this);
+        this.renderbackImage = this.renderbackImage.bind(this);
     }
 
     /*onMessagesListLoad = (e) => {
@@ -174,18 +176,37 @@ class Chat extends React.Component {
             return convHead;
         }
     }
+    renderIconColor() {
+        const {
+            dispatch,
+        } = this.props;
+        this.setState({
+            showBackImage: true,
+        });
+    }
 
+    renderbackImage() {
+        this.setState({
+            showBackImage: false,
+        });
+    }
     render() {
         let self = this;
+        const {
+            showBackImage,
+        } = this.state;
+        const activeClass = (showBackImage) ? 'menuActive' : '';
         return (
             <Popup
                 position="bottom right"
                 basic
                 on='click'
                 className="chat-popup"
+                onOpen={() => this.renderIconColor()}
+                onClose={() => this.renderbackImage()}
                 trigger={
                     (
-                        <Menu.Item as="a" className="chatNav xs-d-none">
+                        <Menu.Item as="a" className={`chatNav xs-d-none ${activeClass}`}>
                             {/* {userInfo.applogicClientRegistration ? (userInfo.applogicClientRegistration.totalUnreadCount > 0 ? <Label color="red" floating circular>4</Label> : '') : ''} */}
                             {/* {this.state.totalUnreadCount > 0 ? <Label color="red" floating circular className="chat-launcher-icon">{this.state.totalUnreadCount}</Label> : ""} */}
                             <Icon name={"chat" + (this.state.totalUnreadCount > 0 ? " new" : "")} />
@@ -208,7 +229,7 @@ class Chat extends React.Component {
                                         <List.Content>
                                             <List.Header>
                                                 <Link route={`/chats/` + (msg.groupId ? msg.groupId : msg.contactIds)}>
-                                                    <a className="header"><span className="name">{conversationHead.title}</span> <span className="time">{self.timeString(msg.createdAtTime, true)}</span></a>
+                                                    <a className="header"><span className={"name " + (conversationHead.info.unreadCount > 0 ? " newMessage" : "")}>{conversationHead.title}</span> <span className="time">{self.timeString(msg.createdAtTime, true)}</span></a>
                                                 </Link>
                                             </List.Header>
                                             <List.Description>
@@ -237,7 +258,7 @@ function mapStateToProps(state) {
     return {
         userInfo: state.user.info,
         messageList: state.chat.messages,
-        totalUnreadCount: window.totalUnreadCount
+        totalUnreadCount: 0
     };
 }
 export default connect(mapStateToProps)(Chat);
