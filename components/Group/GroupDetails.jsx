@@ -19,6 +19,7 @@ import {
     Image,
     Grid,
     Dropdown,
+    Responsive,
 } from 'semantic-ui-react';
 import getConfig from 'next/config';
 
@@ -306,6 +307,12 @@ class GroupDetails extends React.Component {
                                                         {location}
                                                     </Header.Subheader>
                                                 </Header>
+                                                <Responsive minWidth={320} maxWidth={991}>
+                                                    <div className=" badge-group mt-1">
+                                                        {getCauses}
+                                                    </div>
+                                                </Responsive>
+
                                             </div>
                                         </Grid.Column>
                                         <Grid.Column mobile={16} tablet={16} computer={7}>
@@ -361,9 +368,12 @@ class GroupDetails extends React.Component {
                                         </Grid.Column>
                                     </Grid.Row>
                                 </Grid>
-                                <div className=" badge-group mt-1">
-                                    {getCauses}
-                                </div>
+                                <Responsive minWidth={992}>
+                                    <div className=" badge-group mt-1">
+                                        {getCauses}
+                                    </div>
+                                </Responsive>
+
                             </Grid.Column>
                         </Grid.Row>
                     </Grid>
