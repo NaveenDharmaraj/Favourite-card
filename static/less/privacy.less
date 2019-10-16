@@ -3,6 +3,10 @@
 
 .aboutyourprivacy-header-image{
   background-color: #F2F7FE;
+  background-image: url(../images/legalpages.svg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
   width: 100%;
   min-height: 309px;
   margin: auto;
@@ -33,13 +37,28 @@
   padding:50px 0px 40px 0px;
   .ui{
     &.header{
-    text-align: left;
-    color: #263238;
-    font-family: 'ProximaNova-medium';
-    font-size: 20px;
-    font-weight: 600;
-    line-height: 24px;
-    padding-bottom: 10px;
+      text-align: left;
+      color: #263238;
+      font-family: 'ProximaNova-medium';
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 24px;
+      padding-bottom: 20px;  
+      margin-bottom: 20px;  
+      position: relative;
+      &::before,&::after{
+        content: '';
+        position: absolute;
+        bottom: 0px;
+      }
+      &::before{
+        left: 0px;
+        height: 5px;	width: 46px;	background-color: #DB0163;
+      }
+      &::after{
+        left: 52px;
+        height: 5px;	width: 16px;	background-color: #ED803B;
+      }
     }
   } 
     .ui{

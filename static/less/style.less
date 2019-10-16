@@ -237,7 +237,7 @@ h4{
                       content: '';
                       background-image: url(../images/icons/close.svg) !important;
                       background-size: contain !important;
-                      background-repeat: no-repeat;
+                      background-repeat: no-repeat !important;
                       display: inline-block;
                       border-radius: 100%;
                       position: absolute;
@@ -260,18 +260,22 @@ h4{
             >i{
               &.icon{
                 &.close{
-                  top: 12px;
-                  right: 0px;
-                  color: @grey-darken-3;
+                  top: 15px !important;
+                  right: 15px !important;
+                  height: 17px;
+                  width: 17px;
                   &:before{
-                    content: url(../images/icons/close.svg);
+                    content: '';
+                    background-image: url(../images/icons/close.svg) !important;
+                    background-size: contain !important;
+                    background-repeat: no-repeat !important;
                     display: inline-block;
                     //border-radius: 100%;
                     position: absolute;
                     margin: auto;
-                    top: -3px;
+                    top: 0;
                     bottom: 0;
-                    left: -3px;
+                    left: 0;
                     right: 0;
                   }
                 }
@@ -372,6 +376,26 @@ h4{
     &.form{
       border-bottom: 1px solid rgba(34, 36, 38, 0.15);
       margin-bottom: 2rem;
+      @media only screen and (max-width: 767px){
+        >.ui{
+          &.grid{
+            .column{
+              &:first-child{
+  
+              }
+              &:last-child{
+                padding-left: 0px;
+                padding-right: 0px;
+                .button{
+                    margin-right: 15px;
+                    padding: 8px 15px;
+                }
+              }
+            }
+          }
+        }
+      }
+      
       .field{
         input{
           border:0px solid transparent;
@@ -1065,7 +1089,7 @@ h4{
     padding: 2rem 0rem 2rem; 
     border-bottom: 1px solid @grey-lighten-2;
     &.pMethodHead{
-      padding-top: 5px !important;
+      padding-top: 3px !important;
     }
     p{
       >a{
@@ -3845,7 +3869,7 @@ body{
       margin: auto;
     }
     .ui.floating.dropdown .menu{
-      left: auto;
+      left: auto !important;
       right: 0;
     }
     .stories-tips .tips-card.ui.card{
@@ -4829,6 +4853,9 @@ body{
                 color: @grey-darken-6;
                 font-weight: 600;
                 padding: .833em 1em;
+                a{
+                  color: @grey-darken-6;
+                }
                 &.red{
                   color: #D0021B;
                 }
@@ -6056,10 +6083,58 @@ button.ui.button.blue-bordr-btn-round-def{
   }
 }
 .inputWraper{
+  .ui{
+    &.fluid{
+      &.multiple{
+        &.selection{
+          &.dropdown{
+            border-radius: 40px !important;
+            .label{
+              &.ui{
+                height: 24px;border-radius: 12px;	background-color: #009EA2;
+                border: 1px solid transparent;
+                border: 0px solid transparent;
+                font-weight: 400;
+                color: #fff;
+                box-shadow: none;
+                margin-top: 5px;
+                .delete{
+                  &.icon{
+                    font-weight: 400;
+                    opacity: 1;
+                    color: #FFF;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
   .multiple{
     &.search{
       &.selection{
         &.dropdown{
+          &.ui{
+            .label{
+              &.ui{
+                height: 24px;border-radius: 12px;	background-color: #009EA2;
+                border: 1px solid transparent;
+                border: 0px solid transparent;
+                font-weight: 400;
+                color: #fff;
+                box-shadow: none;
+                .delete{
+                  &.icon{
+                    font-weight: 400;
+                    opacity: 1;
+                    color: #FFF;
+                  }
+                }
+              }
+            }
+          }
           .default{
             &.text{
               text-transform: none;
@@ -6217,6 +6292,18 @@ button.ui.button.blue-bordr-btn-round-def{
   }
  }
  @media only screen and (min-width:767px) {
+   body{
+    .ui.form .field{
+      position: relative;
+      .error{
+        +.field-info{
+          position: absolute;
+          right: 0px;
+          bottom: 0;
+        }
+      }
+    }
+   }
   .userProfileRightBtn{
     text-align: right;
     button{

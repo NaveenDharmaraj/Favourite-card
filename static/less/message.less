@@ -27,7 +27,6 @@
             }
           }
         }   
-        
         .messageLeftSearch{
           padding-top: 20/@rem;
           padding-right: 1rem;
@@ -44,7 +43,7 @@
         }
         .chatList{
           margin-top: 2rem;
-          max-height: 64vh;
+          max-height: 68.8vh;
           overflow-y: scroll;
           &::-webkit-scrollbar {
             width: 6px;
@@ -54,9 +53,9 @@
               background-color: transparent;
           }
           &::-webkit-scrollbar-thumb {
-            background-color: @link;
+            background-color: #ddd;
             //outline: 1px solid slategrey;
-            border-radius:0px;
+            border-radius:4px;
           }
           .ui{
             &.divided{
@@ -95,11 +94,20 @@
                           i{
                             &.mute{
                               &.icon{
-                                transform: scale(1.2);
-                                margin-right: 6px;
+                                margin-right: 10px;
                                 margin-top: 2px;
+                                position: relative;
                                 &::before{
-                                  content: url(../images/icons/icon-mute.svg);
+                                  content: '';
+                                  background-image: url(../images/icons/icon-mute.svg) !important;
+                                  background-size: contain !important;
+                                  background-position: center !important;
+                                  background-repeat: no-repeat !important;
+                                  width: 18px;
+                                  height: 18px;
+                                  right: 0px;
+                                  top: 2px;
+                                  position: absolute;
                                 }
                               }
                             }
@@ -202,7 +210,7 @@
                   }
                   .charCount{
                     position: absolute;
-                    right: 30px;
+                    right: -3px;
                     bottom: 7px;
                     padding: 2px;
                     font-size: 16px;	font-weight: 600;
@@ -213,7 +221,7 @@
                       &.EditGrpName{
                         position: absolute;
                         right:-38px;
-                        bottom: 7px;
+                        bottom: 0px;
                         padding: 2px;
                         margin: 0px;
                         top: 0px;
@@ -272,7 +280,7 @@
         }
       }
       .chatContent{
-        padding: 1rem 0rem 1rem 1rem;
+        padding: 0rem 0rem 1rem 1rem;
         .mesgs{
           max-height: 66vh;
           min-height: 60vh;
@@ -302,10 +310,10 @@
             .incoming_msg{
               margin: 13px 0 13px;
               .incoming_msg_img{
-                width: 45px;
+                width: 35px;
                 height: 45px;
                 display: inline-block;
-                margin-right: 1rem;
+                margin-right: 0.5rem;
                 -webkit-box-orient: vertical;
                 -webkit-box-direction: normal;
                 -ms-flex-direction: column;
@@ -325,7 +333,7 @@
                 display: inline-block;
                 max-width: 85%;
                 .received_withd_msg{
-                  border: 1px solid @grey-lighten-2;
+                  border: 0px solid transparent;
                   border-radius: 10px;
                   padding: 15px 24px;
                   background-color: #F3F3F7;
@@ -361,8 +369,22 @@
         }
       }
       .chatFooter{
-        padding: 1rem;
+        padding: 1rem 55px 1rem 1rem;
         background-color: #F3F3F7;
+        position: relative;
+        button{
+          &.ui{
+            &.button{
+              &.sendMsgBtn{
+                background-color: #0CC965;
+                color: #fff;
+                position: absolute;
+                right: -48px;
+                top: 2px;
+              }
+            }
+          }
+        }
       }
     }
     .messageHeader{
@@ -412,12 +434,33 @@
       padding-top: 10px;
   }
   .description{
+    .messageSearch{
+      margin-bottom: 2rem;
+    }
     .ui{
       &.divided{
         &.list{
           .item{
-            margin: 10px;
+            margin: 5px 10px;
+            .right{
+              &.floated{
+                &.content{
+                  padding-top: 0px;
+                  input[type='checkbox']{
+                    margin-top: 15px;
+                  }
+                }
+              }
+            }
+            .ui{
+              &.avatar{
+                &.image{
+                  margin-top: 8px;
+                }
+              }
+            }
             .content{
+              padding-top: 7px;
               a{
                 &.header{
                   color: #263238 !important;	font-family: "ProximaNova-Light";	font-size: 14px;	font-weight: 600;	line-height: 21px;
@@ -443,7 +486,22 @@
     } 
   }
 }
-
+button,a{
+  &.ui{
+    &.button{
+      &.red-btn-rounded-def{
+        &.red{
+          border-radius: 20px !important;
+          background-color: #F24040;
+          border: 1px solid #F24040;
+          &.c-small{
+            padding: 0.5rem 1.5rem;
+          }
+        }
+      }
+    }
+  } 
+}
    
   @media only screen and (max-width:991px) {
     .messageMainWraper .messageWraper .messageLeftMenu .chatList .ui.divided.list > .item .content .description{
