@@ -6,6 +6,12 @@ import {
     Popup,
     Accordion,
 } from 'semantic-ui-react';
+import getConfig from 'next/config';
+const { publicRuntimeConfig } = getConfig();
+const {
+    RAILS_APP_URL_ORIGIN,
+} = publicRuntimeConfig;
+
 import { withTranslation } from '../../../../i18n';
 import { Link } from '../../../../routes';
 
@@ -68,7 +74,9 @@ class Give extends Component {
                                     <p>
                                         Give to any Canadian charity through CHIMP—either directly, or via a Giving Group. A Giving Group is where people pool or raise money together for the charities of their choice.
                                     </p>
-                                    <Button className="blue-bordr-btn-round-def" content="Start your own group" />
+                                    <a href={`${RAILS_APP_URL_ORIGIN}/groups/new`}>
+                                        <Button className="blue-bordr-btn-round-def" content="Start your own group" />
+                                    </a>
                                     </Accordion.Content>
                                 </Accordion>
                             </div>
