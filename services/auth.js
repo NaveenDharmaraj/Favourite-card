@@ -141,6 +141,11 @@ const auth0 = {
         return token ? storage.set('auth0AccessToken', token, 'cookie', this.getRemainingSessionTime(token) / 1000) : storage.unset('auth0AccessToken', 'cookie');
     },
 
+    set wpAccessToken(token) {
+        document.cookie = "wpAccessToken" +"=" + token + ";expires=" + this.getRemainingSessionTime(token) / 1000) 
+            + ";domain=.charitableimpact.com;path=/";
+    }
+
     /**
      * Erase Auth0 data from local
      * @method empty
@@ -421,9 +426,8 @@ const _handleLockSuccess = async ({
         let myDate = new Date();
         myDate.setMonth(myDate.getMonth() + 12);
         if (document) {
-            console.log('working')
-            document.cookie = cookieName +"=" + cookieValue + ";expires=" + myDate 
-            + ";domain=.charitableimpact.com;path=/";
+            console.log('setting wp access token');
+            await (auth0.wpAccessToken = accessToken);
         }
 
         const userId = parseInt(currentUser, 10);
