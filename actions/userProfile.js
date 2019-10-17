@@ -31,19 +31,22 @@ export const actionTypes = {
     UPDATE_USER_PASSWORD: 'UPDATE_USER_PASSWORD',
     UPDATE_USER_PREFERENCES: 'UPDATE_USER_PREFERENCES',
     UPDATE_USER_PRIVACY_SETTING: 'UPDATE_USER_PRIVACY_SETTING',
+    USER_PROFILE_ACCEPT_FRIEND: 'USER_PROFILE_ACCEPT_FRIEND',
     USER_PROFILE_ADD_FRIEND: 'USER_PROFILE_ADD_FRIEND',
     USER_PROFILE_ADD_NEW_CREDIT_CARD_STATUS: 'USER_PROFILE_ADD_NEW_CREDIT_CARD_STATUS',
-    USER_PROFILE_ACCEPT_FRIEND: 'USER_PROFILE_ACCEPT_FRIEND',
     USER_PROFILE_ADMIN_GROUP: 'USER_PROFILE_ADMIN_GROUP',
+    USER_PROFILE_ADMIN_GROUP_LOAD_STATUS: 'USER_PROFILE_ADMIN_GROUP_LOAD_STATUS',
     USER_PROFILE_BASIC: 'USER_PROFILE_BASIC',
     USER_PROFILE_BASIC_FRIEND: 'USER_PROFILE_BASIC_FRIEND',
     USER_PROFILE_BLOCK_USER: 'USER_PROFILE_BLOCK_USER',
     USER_PROFILE_BLOCKED_FRIENDS: 'USER_PROFILE_BLOCKED_FRIENDS',
     USER_PROFILE_CAUSES: 'USER_PROFILE_CAUSES',
     USER_PROFILE_CHARITABLE_INTERESTS: 'USER_PROFILE_CHARITABLE_INTERESTS',
+    USER_PROFILE_CHARITABLE_INTERESTS_LOAD_STATUS: 'USER_PROFILE_CHARITABLE_INTERESTS_LOAD_STATUS',
     USER_PROFILE_CREDIT_CARDS: 'USER_PROFILE_CREDIT_CARDS',
     USER_PROFILE_DEFAULT_TAX_RECEIPT: 'USER_PROFILE_DEFAULT_TAX_RECEIPT',
     USER_PROFILE_FAVOURITES: 'USER_PROFILE_FAVOURITES',
+    USER_PROFILE_FAVOURITES_LOAD_STATUS: 'USER_PROFILE_FAVOURITES_LOAD_STATUS',
     USER_PROFILE_FIND_FRIENDS: 'USER_PROFILE_FIND_FRIENDS',
     USER_PROFILE_FIND_TAGS: 'USER_PROFILE_FIND_TAGS',
     USER_PROFILE_FOLLOWED_TAGS: 'USER_PROFILE_FOLLOWED_TAGS',
@@ -52,6 +55,7 @@ export const actionTypes = {
     USER_PROFILE_INVITATIONS: 'USER_PROFILE_INVITATIONS',
     USER_PROFILE_INVITE_FRIENDS: 'USER_PROFILE_INVITE_FRIENDS',
     USER_PROFILE_MEMBER_GROUP: 'USER_PROFILE_MEMBER_GROUP',
+    USER_PROFILE_MEMBER_GROUP_LOAD_STATUS: 'USER_PROFILE_MEMBER_GROUP_LOAD_STATUS',
     USER_PROFILE_MY_FRIENDS: 'USER_PROFILE_MY_FRIENDS',
     USER_PROFILE_RECOMMENDED_TAGS: 'USER_PROFILE_RECOMMENDED_TAGS',
     USER_PROFILE_REMOVE_FRIEND: 'USER_PROFILE_REMOVE_FRIEND',
@@ -110,6 +114,12 @@ const getUserCharitableInterests = (dispatch, userId) => {
         },
         type: actionTypes.USER_PROFILE_CHARITABLE_INTERESTS,
     };
+    dispatch({
+        payload: {
+            userProfileCharitableInterestsLoadStatus: true,
+        },
+        type: actionTypes.USER_PROFILE_CHARITABLE_INTERESTS_LOAD_STATUS,
+    });
     graphApi.get(`/get/user/causetags?userid=${Number(userId)}`).then(
         (result) => {
             fsa.payload = {
@@ -119,6 +129,12 @@ const getUserCharitableInterests = (dispatch, userId) => {
     ).catch((error) => {
         fsa.error = error;
     }).finally(() => {
+        dispatch({
+            payload: {
+                userProfileCharitableInterestsLoadStatus: false,
+            },
+            type: actionTypes.USER_PROFILE_CHARITABLE_INTERESTS_LOAD_STATUS,
+        });
         dispatch(fsa);
     });
 };
@@ -130,6 +146,12 @@ const getUserMemberGroup = (dispatch, userId) => {
         },
         type: actionTypes.USER_PROFILE_MEMBER_GROUP,
     };
+    dispatch({
+        payload: {
+            userProfileMemberGroupsLoadStatus: true,
+        },
+        type: actionTypes.USER_PROFILE_MEMBER_GROUP_LOAD_STATUS,
+    });
     graphApi.get(`/user/groupbyrelationship?type=member&userid=${Number(userId)}&limit=9`).then(
         (result) => {
             fsa.payload = {
@@ -139,6 +161,12 @@ const getUserMemberGroup = (dispatch, userId) => {
     ).catch((error) => {
         fsa.error = error;
     }).finally(() => {
+        dispatch({
+            payload: {
+                userProfileMemberGroupsLoadStatus: false,
+            },
+            type: actionTypes.USER_PROFILE_MEMBER_GROUP_LOAD_STATUS,
+        });
         dispatch(fsa);
     });
 };
@@ -150,6 +178,12 @@ const getUserAdminGroup = (dispatch, userId) => {
         },
         type: actionTypes.USER_PROFILE_ADMIN_GROUP,
     };
+    dispatch({
+        payload: {
+            userProfileAdminGroupsLoadStatus: true,
+        },
+        type: actionTypes.USER_PROFILE_ADMIN_GROUP_LOAD_STATUS,
+    });
     graphApi.get(`/user/groupbyrelationship?type=admin&userid=${Number(userId)}&limit=9`).then(
         (result) => {
             fsa.payload = {
@@ -159,6 +193,12 @@ const getUserAdminGroup = (dispatch, userId) => {
     ).catch((error) => {
         fsa.error = error;
     }).finally(() => {
+        dispatch({
+            payload: {
+                userProfileAdminGroupsLoadStatus: false,
+            },
+            type: actionTypes.USER_PROFILE_ADMIN_GROUP_LOAD_STATUS,
+        });
         dispatch(fsa);
     });
 };
@@ -170,6 +210,12 @@ const getUserFavourites = (dispatch, userId) => {
         },
         type: actionTypes.USER_PROFILE_FAVOURITES,
     };
+    dispatch({
+        payload: {
+            userProfileFavouritesLoadStatus: true,
+        },
+        type: actionTypes.USER_PROFILE_FAVOURITES_LOAD_STATUS,
+    });
     graphApi.get(`/user/favourites?userid=${Number(userId)}`).then(
         (result) => {
             fsa.payload = {
@@ -179,6 +225,12 @@ const getUserFavourites = (dispatch, userId) => {
     ).catch((error) => {
         fsa.error = error;
     }).finally(() => {
+        dispatch({
+            payload: {
+                userProfileFavouritesLoadStatus: false,
+            },
+            type: actionTypes.USER_PROFILE_FAVOURITES_LOAD_STATUS,
+        });
         dispatch(fsa);
     });
 };

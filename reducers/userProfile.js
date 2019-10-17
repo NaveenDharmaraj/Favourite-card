@@ -131,6 +131,30 @@ const userProfile = (state = {}, action) => {
                 userProfileProfilelink: Object.assign({}, action.payload),
             };
             break;
+        case 'USER_PROFILE_ADMIN_GROUP_LOAD_STATUS':
+            newState = {
+                ...state,
+                userProfileAdminGroupsLoadStatus: action.payload.userProfileAdminGroupsLoadStatus,
+            };
+            break;
+        case 'USER_PROFILE_MEMBER_GROUP_LOAD_STATUS':
+            newState = {
+                ...state,
+                userProfileMemberGroupsLoadStatus: action.payload.userProfileMemberGroupsLoadStatus,
+            };
+            break;
+        case 'USER_PROFILE_FAVOURITES_LOAD_STATUS':
+            newState = {
+                ...state,
+                userProfileFavouritesLoadStatus: action.payload.userProfileFavouritesLoadStatus,
+            };
+            break;
+        case 'USER_PROFILE_CHARITABLE_INTERESTS_LOAD_STATUS':
+            newState = {
+                ...state,
+                userProfileCharitableInterestsLoadStatus: action.payload.userProfileCharitableInterestsLoadStatus,
+            };
+            break;
         default:
             break;
     }

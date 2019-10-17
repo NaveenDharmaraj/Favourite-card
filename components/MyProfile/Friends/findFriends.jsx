@@ -195,6 +195,10 @@ class FindFriends extends React.Component {
                     friendStatus = 'Pending';
                     btnData = 'pendingout';
                     isButtonDisabled = true;
+                } else if (data.attributes.friend_status.toLowerCase() === 'blocked') {
+                    friendStatus = 'Blocked';
+                    btnData = 'blocked';
+                    isButtonDisabled = true;
                 } else {
                     friendStatus = 'Accept';
                     btnData = 'accept';

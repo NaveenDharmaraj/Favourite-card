@@ -15,6 +15,9 @@ import AdminGroupList from '../components/UserProfile/AdminGroups';
 import CharitableInterestsList from '../components/UserProfile/CharitableInterest';
 import GivingGoal from '../components/UserProfile/GivingGoal';
 import BasicProfile from '../components/UserProfile/BasicProfile';
+import {
+    formatAmount,
+} from '../helpers/give/utils';
 
 class FriendProfile extends React.Component {
     static async getInitialProps({ query }) {
@@ -53,7 +56,18 @@ class FriendProfile extends React.Component {
             getUserFriendProfile(dispatch, email, friendChimpId, id);
         }
     }
-    
+
+    componentWillUnmount() {
+        const {
+            dispatch,
+        } = this.props;
+        dispatch({
+            payload: {
+            },
+            type: 'USER_PROFILE_BASIC_FRIEND',
+        });
+    }
+
     render() {
         const {
             userFriendProfileData,
@@ -62,8 +76,8 @@ class FriendProfile extends React.Component {
         let givingAmount = 0; let givenAmount = 0; let percentage = 0; let profileType = '';
         if (!_.isEmpty(userFriendProfileData) && _.size(userFriendProfileData.data) > 0) {
             userData = userFriendProfileData.data[0].attributes;
-            givingAmount = (typeof userData.giving_goal_amt !== 'undefined') ? Number(userData.giving_goal_amt) : 0;
-            givenAmount = (typeof userData.giving_goal_met !== 'undefined') ? Number(userData.giving_goal_met) : 0;
+            givingAmount = (typeof userData.giving_goal_amt !== 'undefined') ? formatAmount(Number(userData.giving_goal_amt)) : formatAmount(0);
+            givenAmount = (typeof userData.giving_goal_met !== 'undefined') ? formatAmount(Number(userData.giving_goal_met)) : formatAmount(0);
             percentage = (givenAmount * 100) / givingAmount;
             profileType = userData.profile_type.toUpperCase();
         }

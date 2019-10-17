@@ -19,13 +19,6 @@ import PlaceholderGrid from '../../shared/PlaceHolder';
 import LeftImageCard from '../../shared/LeftImageCard';
 
 class FavouritesList extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            favouritesListLoader: !props.userProfileFavouritesData,
-        };
-    }
-
     componentDidMount() {
         const {
             dispatch,
@@ -34,21 +27,15 @@ class FavouritesList extends React.Component {
         getUserFavourites(dispatch, friendUserId);
     }
 
-    componentDidUpdate(prevProps, prevState) {
+    componentWillUnmount() {
         const {
-            userProfileFavouritesData,
+            dispatch,
         } = this.props;
-        let {
-            favouritesListLoader,
-        } = this.state;
-        if (!_.isEqual(this.props, prevProps)) {
-            if (!_.isEqual(userProfileFavouritesData, prevProps.userProfileFavouritesData)) {
-                favouritesListLoader = false;
-            }
-            this.setState({
-                favouritesListLoader,
-            });
-        }
+        dispatch({
+            payload: {
+            },
+            type: 'USER_PROFILE_FAVOURITES',
+        });
     }
 
     favouriteList() {
@@ -93,14 +80,14 @@ class FavouritesList extends React.Component {
             <Grid columns="equal" stackable doubling columns={3}>
                 <Grid.Row>
                     {
-                        (_.size(userProfileFavouritesData.data) > 0) && (
+                        !_.isEmpty(userProfileFavouritesData) && (_.size(userProfileFavouritesData.data) > 0) && (
                             <React.Fragment>
                                 {favouritesList}
                             </React.Fragment>
                         )
                     }
                     {
-                        (_.size(userProfileFavouritesData.data) === 0) && (
+                        !_.isEmpty(userProfileFavouritesData) && (_.size(userProfileFavouritesData.data) === 0) && (
                             <Grid.Column>
                                 {favouritesList}
                             </Grid.Column>
@@ -113,15 +100,16 @@ class FavouritesList extends React.Component {
 
     render() {
         const {
-            favouritesListLoader,
-        } = this.state;
+            userProfileFavouritesData,
+            userProfileFavouritesLoadStatus,
+        } = this.props;
         return (
             <div className="pb-3">
                 <Container>
                     <Header as="h4" className="underline">
                     Favourites
                     </Header>
-                    { favouritesListLoader ? <PlaceholderGrid row={1} column={3} /> : (
+                    { (_.isEmpty(userProfileFavouritesData) && userProfileFavouritesLoadStatus) ? <PlaceholderGrid row={1} column={3} /> : (
                         this.favouriteList()
                     )}
                 </Container>
@@ -134,6 +122,7 @@ function mapStateToProps(state) {
     return {
         currentUser: state.user.info,
         userProfileFavouritesData: state.userProfile.userProfileFavouritesData,
+        userProfileFavouritesLoadStatus: state.userProfile.userProfileFavouritesLoadStatus,
     };
 }
 
