@@ -50,21 +50,27 @@ class UserAdminGroupList extends React.Component {
         const {
             userProfileAdminGroupData,
         } = this.props;
-        let adminGroupList = 'No Data';
+        let adminGroupList = 'Nothing to show here yet.';
         if (userProfileAdminGroupData
             && userProfileAdminGroupData.data
             && _.size(userProfileAdminGroupData.data) > 0) {
             adminGroupList = userProfileAdminGroupData.data.map((data) => {
-                let entityName = '';
-                if (data.attributes.city != null) {
-                    entityName = `${data.attributes.name}, ${data.attributes.city}, ${data.attributes.province}`;
-                } else {
-                    entityName = data.attributes.name;
+                const entityName = data.attributes.name;
+                let locationDetails = '';
+                const locationDetailsCity = (!_.isEmpty(data.attributes.city)) ? data.attributes.city : '';
+                const locationDetailsProvince = (!_.isEmpty(data.attributes.province)) ? data.attributes.province : '';
+                if (locationDetailsCity === '' && locationDetailsProvince !== '') {
+                    locationDetails = locationDetailsProvince;
+                } else if (locationDetailsCity !== '' && locationDetailsProvince === '') {
+                    locationDetails = locationDetailsCity;
+                } else if (locationDetailsCity !== '' && locationDetailsProvince !== '') {
+                    locationDetails = `${data.attributes.city}, ${data.attributes.province}`;
                 }
                 const url = `/groups/${data.attributes.slug}`;
                 return (
                     <LeftImageCard
                         entityName={entityName}
+                        location={locationDetails}
                         placeholder={placeholderGroup}
                         typeClass="chimp-lbl group"
                         type="giving group"
@@ -76,7 +82,9 @@ class UserAdminGroupList extends React.Component {
         return (
             <Grid columns="equal" stackable doubling columns={3}>
                 <Grid.Row>
-                    {adminGroupList}
+                    <Grid.Column>
+                        {adminGroupList}
+                    </Grid.Column>
                 </Grid.Row>
             </Grid>
         );

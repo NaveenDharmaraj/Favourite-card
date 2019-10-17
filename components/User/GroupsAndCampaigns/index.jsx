@@ -27,6 +27,7 @@ import GroupsAndCampaignsList from './GroupsAndCampaignsList';
 const { publicRuntimeConfig } = getConfig();
 
 const {
+    HELP_CENTRE_URL,
     RAILS_APP_URL_ORIGIN,
 } = publicRuntimeConfig;
 
@@ -38,6 +39,7 @@ class GroupsAndCampaigns extends React.Component {
             showloaderForAdministeredGroups: !props.administeredGroups,
             showloaderForCampaigns: !props.administeredCampaigns,
             showloaderForMemberGroups: !props.groupsWithMemberships,
+            showInitialButton: (_.isEmpty(props.administeredGroups)),
         };
     }
 
@@ -59,9 +61,11 @@ class GroupsAndCampaigns extends React.Component {
             showloaderForAdministeredGroups,
             showloaderForCampaigns,
             showloaderForMemberGroups,
+            showInitialButton,
         } = this.state;
         if (!_.isEqual(this.props, prevProps)) {
             if (!_.isEqual(administeredCampaigns, prevProps.administeredCampaigns)) {
+                showInitialButton = (!_.isEmpty(administeredCampaigns) && _.isEmpty(administeredCampaigns.data))
                 showloaderForCampaigns = false;
             }
             if (!_.isEqual(administeredGroups, prevProps.administeredGroups)) {
@@ -74,6 +78,7 @@ class GroupsAndCampaigns extends React.Component {
                 showloaderForAdministeredGroups,
                 showloaderForCampaigns,
                 showloaderForMemberGroups,
+                showInitialButton,
             });
         }
     }
@@ -201,6 +206,7 @@ class GroupsAndCampaigns extends React.Component {
             showloaderForCampaigns,
             showloaderForAdministeredGroups,
             showloaderForMemberGroups,
+            showInitialButton,
         } = this.state;
         const {
             administeredGroups,
@@ -214,14 +220,24 @@ class GroupsAndCampaigns extends React.Component {
                         <div className="grpcampBannerContainer">
                             <div className="grpcampBannerTxt">
                                 <Header as="h3" icon>
-                                    Giving Groups & Campaigns
+                                    Give together
                                     <Header.Subheader>
-                                    You can give more as a part of group, and you can raise more when it’s easy to manage.
+                                        With a Giving Group, multiple people can combine forces, pool or raise money, and support one or more charities together.
                                     </Header.Subheader>
                                 </Header>
-                                <a href={`${RAILS_APP_URL_ORIGIN}/groups/new`}>
-                                    <Button fluid className="success-btn-rounded-def">Create a new Group</Button>
-                                </a>
+                                <Fragment>
+                                    { showInitialButton ? (
+                                        <a href={`${HELP_CENTRE_URL}article/147-what-is-a-giving-group`}>
+                                            <Button fluid className="success-btn-rounded-def">Learn how to start a Giving Group</Button>
+                                        </a>
+                                        ) : (
+                                        <a href={`${RAILS_APP_URL_ORIGIN}/groups/new`}>
+                                            <Button fluid className="success-btn-rounded-def">Create a new Giving Group</Button>
+                                        </a>
+                                    )
+                                    }
+                                </Fragment>
+
                             </div>
                         </div>
                     </div>
@@ -245,18 +261,12 @@ class GroupsAndCampaigns extends React.Component {
                     {this.renderList(showloaderForMemberGroups, 'groupsWithMemberships', groupsWithMemberships)}
                 </div>
                 <Divider />
-                {(administeredCampaigns && administeredCampaigns.dataCount && administeredCampaigns.dataCount > 0) ? (
-                    <Fragment>
-                        <div className="pt-2 pb-2">
-                            <p className="bold font-s-16">Campaigns you manage</p>
-                        </div>
-                        <div className="pt-1 pb-3">
-                            {this.renderList(showloaderForCampaigns, 'administeredCampaigns', administeredCampaigns)}
-                        </div>
-                    </Fragment>
-                ) : null
-
-                }
+                <div className="pt-2 pb-2">
+                    <p className="bold font-s-16">Campaigns you manage</p>
+                </div>
+                <div className="pt-1 pb-3">
+                    {this.renderList(showloaderForCampaigns, 'administeredCampaigns', administeredCampaigns)}
+                </div>
             </Container>
         );
     }

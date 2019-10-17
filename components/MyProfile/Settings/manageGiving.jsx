@@ -62,11 +62,23 @@ class ManageGiving extends React.Component {
             userDefaultTaxReceipt,
         } = this.props;
         if (!_.isEqual(userDefaultTaxReceipt, prevProps.userDefaultTaxReceipt)) {
+            const addressTwo = (!_.isEmpty(userDefaultTaxReceipt.data)) ? `, ${userDefaultTaxReceipt.data.attributes.addressTwo}` : '';
             this.setState({
-                userNameAddress: (!_.isEmpty(userDefaultTaxReceipt.data)) ? `${userDefaultTaxReceipt.data.attributes.fullName}, ${userDefaultTaxReceipt.data.attributes.addressOne}, ${userDefaultTaxReceipt.data.attributes.addressTwo}` : '',
                 selectedTaxReceipt: (!_.isEmpty(userDefaultTaxReceipt.data)) ? userDefaultTaxReceipt.data.id : '',
+                userNameAddress: (!_.isEmpty(userDefaultTaxReceipt.data)) ? `${userDefaultTaxReceipt.data.attributes.fullName}, ${userDefaultTaxReceipt.data.attributes.addressOne} ${addressTwo}` : '',
             });
         }
+    }
+
+    componentWillUnmount() {
+        const {
+            dispatch,
+        } = this.props;
+        dispatch({
+            payload: {
+            },
+            type: 'USER_PROFILE_DEFAULT_TAX_RECEIPT',
+        });
     }
 
     handleUserPreferenceChange(event, data) {
@@ -78,10 +90,13 @@ class ManageGiving extends React.Component {
             currentUser,
             dispatch,
         } = this.props;
+        const {
+            selectedTaxReceipt,
+        } = this.state;
         this.setState({ [id]: checked });
         const columnName = givingColumnName[id];
         if (columnName !== null) {
-            updateUserPreferences(dispatch, currentUser.id, columnName, checked);
+            updateUserPreferences(dispatch, currentUser.id, columnName, checked, selectedTaxReceipt);
         }
     }
 
@@ -102,7 +117,7 @@ class ManageGiving extends React.Component {
         this.setState({ [id]: checked });
         const columnName = givingColumnName[id];
         if (columnName === 'charities_dont_share' && checked === false) {
-            updateUserPreferences(dispatch, currentUser.id, columnName, checked);
+            updateUserPreferences(dispatch, currentUser.id, columnName, checked, null);
         } else {
             getUserDefaultTaxReceipt(dispatch, currentUser.id);
             charitiesShareMyName = true;
@@ -113,7 +128,7 @@ class ManageGiving extends React.Component {
                 charitiesShareMyNameAddress,
                 charitiesShareMyNameEmail,
             });
-            updateUserPreferences(dispatch, currentUser.id, columnName, true);
+            updateUserPreferences(dispatch, currentUser.id, columnName, true, null);
         }
     }
 
@@ -131,6 +146,7 @@ class ManageGiving extends React.Component {
             userNameEmail,
             userNameAddress,
             isCharityShareInfo,
+            selectedTaxReceipt,
         } = this.state;
         const userInfoEmail = `${userName}, ${userNameEmail}`;
         const userInfoAddress = `${userNameAddress}`;
@@ -248,45 +264,50 @@ class ManageGiving extends React.Component {
                                 </List.Content>
                                 <List.Content>
                                     <List.Description>Share my information</List.Description>
+                                    {
+                                        isCharityShareInfo && (
+                                            <div className="label-f-normal shareInfoRadio mt-2">
+                                                <Form.Field>
+                                                    <Radio
+                                                        label={userName}
+                                                        checked={charitiesShareMyName}
+                                                        name="radioGroup"
+                                                        id="charitiesShareMyName"
+                                                        onChange={this.handleUserPreferenceChange}
+                                                        className="grnRadio"
+                                                    />
+                                                </Form.Field>
+                                                <Form.Field>
+                                                    <Radio
+                                                        label={userInfoEmail}
+                                                        checked={charitiesShareMyNameEmail}
+                                                        name="radioGroup"
+                                                        id="charitiesShareMyNameEmail"
+                                                        onChange={this.handleUserPreferenceChange}
+                                                        className="grnRadio"
+                                                    />
+                                                </Form.Field>
+                                                {
+                                                    selectedTaxReceipt !== '' && (
+                                                        <Form.Field>
+                                                            <Radio
+                                                                label={userInfoAddress}
+                                                                checked={charitiesShareMyNameAddress}
+                                                                name="radioGroup"
+                                                                id="charitiesShareMyNameAddress"
+                                                                onChange={this.handleUserPreferenceChange}
+                                                                className="grnRadio"
+                                                            />
+                                                        </Form.Field>
+                                                    )
+                                                }
+                                            </div>
+                                        )
+                                    }
                                 </List.Content>
                             </List.Item>
                         </List>
-                        {
-                            isCharityShareInfo && (
-                                <div className="label-f-normal shareInfoRadio">
-                                    <Form.Field>
-                                        <Radio
-                                            label={userName}
-                                            checked={charitiesShareMyName}
-                                            name="radioGroup"
-                                            id="charitiesShareMyName"
-                                            onChange={this.handleUserPreferenceChange}
-                                            className="grnRadio"
-                                        />
-                                    </Form.Field>
-                                    <Form.Field>
-                                        <Radio
-                                            label={userInfoEmail}
-                                            checked={charitiesShareMyNameEmail}
-                                            name="radioGroup"
-                                            id="charitiesShareMyNameEmail"
-                                            onChange={this.handleUserPreferenceChange}
-                                            className="grnRadio"
-                                        />
-                                    </Form.Field>
-                                    <Form.Field>
-                                        <Radio
-                                            label={userInfoAddress}
-                                            checked={charitiesShareMyNameAddress}
-                                            name="radioGroup"
-                                            id="charitiesShareMyNameAddress"
-                                            onChange={this.handleUserPreferenceChange}
-                                            className="grnRadio"
-                                        />
-                                    </Form.Field>
-                                </div>
-                            )
-                        }
+                        
                     </div>
                 </div>
             </div>

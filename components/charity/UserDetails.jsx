@@ -32,40 +32,45 @@ const {
 } = publicRuntimeConfig;
 
 const createUserDetails = (valuesObject) => {
-    const data = [
-        {
-            Content: valuesObject.contactName,
-            name: 'user',
-        },
-        {
+    const data = [];
+    if (!_isEmpty(valuesObject.contactPhone)) {
+        data.push({
             Content: valuesObject.contactPhone,
             name: 'phone',
-        },
-        {
+        });
+    }
+    if (!_isEmpty(valuesObject.email)) {
+        data.push({
             Content: valuesObject.email,
             link: `mailto:${valuesObject.email}`,
             name: 'mail',
-        },
-        {
+        });
+    }
+    if (!_isEmpty(valuesObject.website)) {
+        data.push({
             Content: valuesObject.website,
             link: valuesObject.website,
             name: 'linkify',
-        },
-        {
-            Content: (valuesObject.staffCount && valuesObject.staffCount > 0)
-                ? valuesObject.staffCount : null,
+        });
+    }
+    if (!_isEmpty(valuesObject.staffCount) && valuesObject.staffCount > 0) {
+        data.push({
+            Content: valuesObject.staffCount,
             name: 'users',
-        },
-        {
+        });
+    }
+    if (!_isEmpty(valuesObject.businessNumber)) {
+        data.push({
             Content: valuesObject.businessNumber,
             name: 'briefcase',
-        },
-        {
+        });
+    }
+    if (!_isEmpty(valuesObject.address)) {
+        data.push({
             Content: valuesObject.address,
             name: 'map marker alternate',
-        },
-
-    ];
+        });
+    }
     return data;
 };
 
@@ -156,7 +161,7 @@ class UserDetails extends React.Component {
             },
         } = this.props;
         getBeneficiaryFromSlug(dispatch, slug);
-        if (isAUthenticated && _isEmpty(deepLinkUrl)) {
+        if (isAUthenticated) {
             generateDeepLink(`deeplink?profileType=charityprofile&sourceId=${userId}&profileId=${charityId}`, dispatch);
         }
     }
@@ -197,9 +202,9 @@ class UserDetails extends React.Component {
                             </Grid.Row>
                         </Grid>
                         <p className="mt-1">
-                        *Is this your charity? You can claim your free profile page on your platform
+                        Is this your charity? Claim your charity page on Charitable Impact.
                             <a href={CLAIM_CHARITY_URL}>
-                                <Button className="ml-1 blue-bordr-btn-round-def c-small">Claim Charity</Button>
+                                <Button className="ml-1 blue-bordr-btn-round-def c-small">Claim charity</Button>
                             </a>
                         </p>
                     </div>

@@ -50,7 +50,7 @@ class Notifications extends React.Component {
         } = this.props;
         this.setState({ [name]: checked });
         const columnName = notificationColumnName[name];
-        updateUserPreferences(dispatch, currentUser.id, columnName, checked);
+        updateUserPreferences(dispatch, currentUser.id, columnName, checked, null);
     }
 
     render() {
@@ -142,7 +142,7 @@ class Notifications extends React.Component {
                             </List.Item>
                         </List>
                         <p className="bold mt-2">Email</p>
-                        <p>Updates send to your primary email address</p>
+                        <p>Updates sent to your primary email address.</p>
                         <List divided verticalAlign="middle" className="userList">
                             <List.Item>
                                 <List.Content floated="right">

@@ -15,6 +15,7 @@ import {
 import {
     chimpLogin,
     getUser,
+    wpLogin,
 } from '../actions/user';
 import isUndefinedOrEmpty from '../helpers/object';
 import { addToDataLayer } from '../helpers/users/googleTagManager';
@@ -28,6 +29,9 @@ const {
     AUTH0_DOMAIN,
     AUTH0_WEB_CLIENT_ID,
     AUTH0_WEB_AUDIENCE,
+    CORP_DOMAIN,
+    WP_DOMAIN_BASE,
+    WP_API_VERSION,
 } = publicRuntimeConfig;
 
 /**
@@ -46,6 +50,7 @@ const _auth0lockConfig = {
     avatar: null,
     container: 'auth0-lock-container',
     languageDictionary: {
+        emailInputPlaceholder: 'Enter your email',
         error: {
             forgotPassword: {
                 'lock.fallback': [
@@ -79,8 +84,10 @@ const _auth0lockConfig = {
             },
         },
         forgotPasswordAction: 'Forgot your password?',
+        forgotPasswordInstructions: '',
         forgotPasswordSubmitLabel: 'Reset password',
-        loginSubmitLabel: 'Sign in',
+        forgotPasswordTitle: 'Forgot your password?',
+        loginSubmitLabel: 'Log in',
         passwordInputPlaceholder: 'Your password',
         success: {
             forgotPassword: 'Check your inbox—we’ve sent instructions to reset your password.',
@@ -134,6 +141,10 @@ const auth0 = {
 
     set accessToken(token) {
         return token ? storage.set('auth0AccessToken', token, 'cookie', this.getRemainingSessionTime(token) / 1000) : storage.unset('auth0AccessToken', 'cookie');
+    },
+
+    set wpAccessToken(token) {
+        document.cookie = "wpAccessToken" +"=" + token + ";expires=" + this.getRemainingSessionTime(token) / 1000 + ";domain=.charitableimpact.com;path=/";
     },
 
     /**
@@ -408,6 +419,18 @@ const _handleLockSuccess = async ({
     if (!accessToken || !idToken) { return null(); }
     // Sets access token and expiry time in cookies
     chimpLogin(accessToken).then(async ({ currentUser }) => {
+        if (CORP_DOMAIN && WP_DOMAIN_BASE && WP_API_VERSION) {
+            await wpLogin(accessToken);
+        }
+        let cookieName = 'HelloWorld';
+        let cookieValue = 'HelloWorld';
+        let myDate = new Date();
+        myDate.setMonth(myDate.getMonth() + 12);
+        if (document) {
+            console.log('setting wp access token');
+            await (auth0.wpAccessToken = accessToken);
+        }
+
         const userId = parseInt(currentUser, 10);
         await (auth0.returnProps = null);
         await (auth0.accessToken = accessToken);

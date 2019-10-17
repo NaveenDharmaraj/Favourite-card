@@ -76,7 +76,7 @@ const AccountTopUp = (props) => {
     }
 
     let donationMatchField = null;
-    if (isDonationMatchFieldVisible) {
+    if (isDonationMatchFieldVisible && !_isEmpty(donationMatchList)) {
         donationMatchField = (
             <Form.Field>
                 <label htmlFor="donationMatch">

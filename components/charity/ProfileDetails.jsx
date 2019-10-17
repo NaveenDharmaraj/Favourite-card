@@ -7,6 +7,7 @@ import {
 import {
     Tab, Container,
 } from 'semantic-ui-react';
+import _isEmpty from 'lodash/isEmpty';
 
 import {
     getBeneficiaryDoneeList,
@@ -15,6 +16,8 @@ import {
 import Chart from './Charts';
 import Maps from './Maps';
 import ReceivingOrganisations from './ReceivingOrganisations';
+import CharityNoDataState from './CharityNoDataState';
+
 
 const ProfileDetails = (props) => {
     const {
@@ -25,7 +28,10 @@ const ProfileDetails = (props) => {
             menuItem: 'About',
             render: () => (
                 <Tab.Pane attached={false}>
-                    <p>{charityDetails.charityDetails.attributes.description}</p>
+                    {_isEmpty(charityDetails.charityDetails.attributes.description)
+                        ? <CharityNoDataState />
+                        : <p>{charityDetails.charityDetails.attributes.description}</p>
+                    }
                 </Tab.Pane>
             ),
         },

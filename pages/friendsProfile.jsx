@@ -20,6 +20,7 @@ class FriendProfile extends React.Component {
     static async getInitialProps({ query }) {
         return {
             friendChimpId: query.slug,
+            namespacesRequired: [],
         };
     }
 
@@ -37,25 +38,41 @@ class FriendProfile extends React.Component {
         getUserFriendProfile(dispatch, email, friendChimpId, id);
     }
 
+    componentDidUpdate(prevProps) {
+        const {
+            currentUser: {
+                id,
+                attributes: {
+                    email,
+                },
+            },
+            dispatch,
+            friendChimpId,
+        } = this.props;
+        if (!_.isEqual(friendChimpId, prevProps.friendChimpId)) {
+            getUserFriendProfile(dispatch, email, friendChimpId, id);
+        }
+    }
+    
     render() {
         const {
             userFriendProfileData,
         } = this.props;
         let userData = '';
         let givingAmount = 0; let givenAmount = 0; let percentage = 0; let profileType = '';
-        if (!_.isEmpty(userFriendProfileData) && _.size(userFriendProfileData.data > 0)) {
+        if (!_.isEmpty(userFriendProfileData) && _.size(userFriendProfileData.data) > 0) {
             userData = userFriendProfileData.data[0].attributes;
             givingAmount = (typeof userData.giving_goal_amt !== 'undefined') ? Number(userData.giving_goal_amt) : 0;
-            givenAmount = (typeof userData.giving_goal_amt !== 'undefined') ? Number(userData.giving_goal_met) : 0;
+            givenAmount = (typeof userData.giving_goal_met !== 'undefined') ? Number(userData.giving_goal_met) : 0;
             percentage = (givenAmount * 100) / givingAmount;
             profileType = userData.profile_type.toUpperCase();
         }
         return (
             <Layout authRequired>
-                <BasicProfile userData={userData} />
+                <BasicProfile userData={userData} friendUserId={userData.user_id}/>
                 {
                     (userData.causes_visibility === 0 || (profileType === 'FRIENDS_PROFILE' && userData.causes_visibility === 1)) && (
-                        <CharitableInterestsList />
+                        <CharitableInterestsList friendUserId={userData.user_id} />
                     )
                 }
                 {

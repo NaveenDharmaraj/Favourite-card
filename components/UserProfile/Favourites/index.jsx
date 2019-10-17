@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import _ from 'lodash';
 import {
@@ -26,7 +27,7 @@ class FavouritesList extends React.Component {
     }
 
     componentDidMount() {
-        const {            
+        const {
             dispatch,
             friendUserId,
         } = this.props;
@@ -54,26 +55,33 @@ class FavouritesList extends React.Component {
         const {
             userProfileFavouritesData,
         } = this.props;
-        let favouritesList = 'No Data';
+        let favouritesList = 'Nothing to show here yet.';
         if (userProfileFavouritesData
             && userProfileFavouritesData.data
             && _.size(userProfileFavouritesData.data) > 0) {
             favouritesList = userProfileFavouritesData.data.map((data) => {
-                let entityName = '';
-                if (data.attributes.city != null) {
-                    entityName = `${data.attributes.name}, ${data.attributes.city}, ${data.attributes.province}`;
-                } else {
-                    entityName = data.attributes.name;
+                const entityName = data.attributes.name;
+                let locationDetails = '';
+                const locationDetailsCity = (!_.isEmpty(data.attributes.city)) ? data.attributes.city : '';
+                const locationDetailsProvince = (!_.isEmpty(data.attributes.province)) ? data.attributes.province : '';
+                if (locationDetailsCity === '' && locationDetailsProvince !== '') {
+                    locationDetails = locationDetailsProvince;
+                } else if (locationDetailsCity !== '' && locationDetailsProvince === '') {
+                    locationDetails = locationDetailsCity;
+                } else if (locationDetailsCity !== '' && locationDetailsProvince !== '') {
+                    locationDetails = `${data.attributes.city}, ${data.attributes.province}`;
                 }
                 const type = data.attributes.type === 'group' ? 'giving group' : 'charity';
                 const typeClass = data.attributes.type === 'group' ? 'chimp-lbl group' : 'chimp-lbl charity';
                 const placeholder = data.attributes.type === 'group' ? placeholderGroup : placeholderCharity;
+                const imageType = (!_.isEmpty(data.attributes.avatar)) ? data.attributes.avatar : placeholder;
                 const urlEntity = data.attributes.type === 'group' ? 'groups' : 'charities';
                 const url = `/${urlEntity}/${data.attributes.slug}`;
                 return (
                     <LeftImageCard
                         entityName={entityName}
-                        placeholder={placeholder}
+                        location={locationDetails}
+                        placeholder={imageType}
                         typeClass={typeClass}
                         type={type}
                         url={url}
@@ -84,7 +92,20 @@ class FavouritesList extends React.Component {
         return (
             <Grid columns="equal" stackable doubling columns={3}>
                 <Grid.Row>
-                    {favouritesList}
+                    {
+                        (_.size(userProfileFavouritesData.data) > 0) && (
+                            <React.Fragment>
+                                {favouritesList}
+                            </React.Fragment>
+                        )
+                    }
+                    {
+                        (_.size(userProfileFavouritesData.data) === 0) && (
+                            <Grid.Column>
+                                {favouritesList}
+                            </Grid.Column>
+                        )
+                    }
                 </Grid.Row>
             </Grid>
         );

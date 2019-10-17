@@ -37,7 +37,7 @@ class EditCharitableInterest extends React.Component {
             });
         }
         this.state = {
-            buttonClicked: false,
+            buttonClicked: true,
             errorMessage: null,
             errorMessageTag: null,
             isCausesValid: false,
@@ -86,6 +86,7 @@ class EditCharitableInterest extends React.Component {
 
     getSelectedCausesSave(userCauses) {
         this.setState({
+            buttonClicked: false,
             userCauses,
             statusMessage: false,
         });
@@ -93,6 +94,7 @@ class EditCharitableInterest extends React.Component {
 
     getSelectedTagsSave(userTags) {
         this.setState({
+            buttonClicked: false,
             userTags,
             statusMessage: false,
         });
@@ -115,6 +117,8 @@ class EditCharitableInterest extends React.Component {
     handleCharitableInterestSubmit() {
         this.setState({
             buttonClicked: true,
+            statusMessage: false,
+            statusMessageTags: false,
         });
         const isValid = this.validateForm();
         if (isValid) {
@@ -132,29 +136,29 @@ class EditCharitableInterest extends React.Component {
             saveCharitableCauses(dispatch, id, userCauses).then(() => {
                 this.setState({
                     errorMessage: null,
-                    successMessage: 'User Profile Causes saved Successfully.',
+                    successMessage: 'Changes saved.',
                     statusMessage: true,
-                    buttonClicked: false,
+                    buttonClicked: true,
                 });
             }).catch(() => {
                 this.setState({
                     errorMessage: 'Error in saving the Causes.',
                     statusMessage: true,
-                    buttonClicked: false,
+                    buttonClicked: true,
                 });
             });
             saveCharitableTags(dispatch, id, userTags).then(() => {
                 this.setState({
-                    errorMessageTag: null,
-                    successMessageTag: 'User Profile Tags saved Successfully.',
-                    statusMessageTags: true,
-                    buttonClicked: false,
+                    errorMessage: null,
+                    successMessage: 'Changes saved.',
+                    statusMessage: true,
+                    buttonClicked: true,
                 });
             }).catch(() => {
                 this.setState({
                     errorMessageTag: 'Error in saving the Tags.',
                     statusMessageTags: true,
-                    buttonClicked: false,
+                    buttonClicked: true,
                 });
             });
         } else {

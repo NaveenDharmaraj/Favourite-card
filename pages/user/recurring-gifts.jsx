@@ -2,11 +2,25 @@ import React from 'react';
 import {
     Container,
 } from 'semantic-ui-react';
+import {
+    connect,
+} from 'react-redux';
+import getConfig from 'next/config';
 
 import Layout from '../../components/shared/Layout';
 import ToolTabs from '../../components/Give/Tools/ToolTabs';
-// import charityLogo from '../static/images/canadian_red_cross.png';
-function RecurringGifts(props) {
+import { redirectIfNotUSer } from '../../helpers/utils';
+
+const { publicRuntimeConfig } = getConfig();
+const {
+    RAILS_APP_URL_ORIGIN,
+} = publicRuntimeConfig;
+
+const RecurringGifts = (props) => {
+    const {
+        currentAccount,
+    } = props;
+    redirectIfNotUSer(currentAccount, RAILS_APP_URL_ORIGIN);
     return (
         <Layout authRequired={true} >
             <Container>
@@ -20,6 +34,10 @@ function RecurringGifts(props) {
             </Container>
         </Layout>
     );
-}
+};
 
-export default RecurringGifts;
+const mapStateToProps = (state) => ({
+    currentAccount: state.user.currentAccount,
+});
+
+export default (connect(mapStateToProps)(RecurringGifts));

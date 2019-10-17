@@ -30,7 +30,7 @@ import PlaceholderGrid from '../shared/PlaceHolder';
 import ActivityDetails from './ActivityDetails';
 
 const actionTypes = {
-    PLACEHOLDER_STATUS: 'PLACEHOLDER_STATUS',
+    GROUP_PLACEHOLDER_STATUS: 'GROUP_PLACEHOLDER_STATUS',
 };
 
 class Activity extends React.Component {
@@ -58,7 +58,7 @@ class Activity extends React.Component {
                 payload: {
                     showPlaceholder: true,
                 },
-                type: actionTypes.PLACEHOLDER_STATUS,
+                type: actionTypes.GROUP_PLACEHOLDER_STATUS,
             });
             getGroupActivities(dispatch, id);
         }
@@ -148,7 +148,7 @@ class Activity extends React.Component {
         const {
             commentText,
         } = this.state;
-        let viewData = 'NO DATA';
+        let viewData = '';
         if (!_isEmpty(data)) {
             viewData = (
                 <div className="c-comment">
@@ -164,30 +164,26 @@ class Activity extends React.Component {
                     <Grid.Column mobile={16} tablet={14} computer={14}>
                         {isMember
                         && (
-                            <Grid>
-                                <Grid.Row>
-                                    <Grid.Column mobile={16} tablet={14} computer={14}>
-                                        <div className="two-icon-brdr-btm-input">
-                                            <Input
-                                                value={commentText}
-                                                onChange={this.updateInputValue}
-                                                type="text"
-                                                placeholder="Write a post..."
-                                                action
-                                                fluid
-                                            />
-                                        </div>
-                                    </Grid.Column>
-                                    <Grid.Column mobile={16} tablet={2} computer={2}>
-                                        <Button
-                                            onClick={this.postComment}
-                                            className="blue-bordr-btn-round-def c-small"
-                                        >
-                                        Post
-                                        </Button>
-                                    </Grid.Column>
-                                </Grid.Row>
-                            </Grid>
+                            <div className="postInputMainWraper">
+                                <div className="postInputWraper">
+                                    <Input
+                                        value={commentText}
+                                        onChange={this.updateInputValue}
+                                        type="text"
+                                        placeholder="Write a post..."
+                                        fluid
+                                    />
+                                </div>
+                                <div className="postBtnWraper">
+                                    <Button
+                                        fluid
+                                        onClick={this.postComment}
+                                        className="blue-bordr-btn-round-def postButton"
+                                    >
+                                    Post
+                                    </Button>
+                                </div>
+                            </div>
                         )
                         }
                         {viewData}

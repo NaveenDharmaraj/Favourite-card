@@ -169,6 +169,14 @@ const isValidGiftAmount = (validity) => {
     return _.every(giftAmountValidity);
 };
 
+const isValidGivingGoalAmount = (validity) => {
+    const giftAmountValidity = _.pick(validity, [
+        'isAmountLessThanOneBillion',
+    ]);
+
+    return _.every(giftAmountValidity);
+};
+
 const getDefaultCreditCard = (paymentInstrumentList) => {
     let creditCard = {
         value: 0,
@@ -540,7 +548,7 @@ const populatePaymentInstrument = (paymentInstrumentsData, formatMessage) => {
         const newCreditCard = [
             {
                 disabled: false,
-                text: 'Use new Credit Card',
+                text: 'Add new card',
                 value: 0,
             },
         ];
@@ -968,7 +976,7 @@ const resetDataForAccountChange = (giveData, dropDownOptions, props, type) => {
  * @param {String} senderEmail email of the sender
  * @return {object}  validity Return the validity object.
  */
-const validateGiveForm = (field, value, validity, giveData, coverFeesAmount, senderEmail = null) => {
+const validateGiveForm = (field, value, validity, giveData, coverFeesAmount = null, senderEmail = null) => {
     const giveAmount = giveData.totalP2pGiveAmount
         ? giveData.totalP2pGiveAmount
         : giveData.giveAmount;
@@ -1142,7 +1150,7 @@ const populateCardData = (selectCardDetails, cardAmount) => {
     };
     const selectedCardName = _.split(selectCardDetails, ' ');
     if (isEnglishCard !== -1) {
-        cardData.displayName = _.replace(selectedCardName[0], '\'s', '');
+        cardData.displayName = selectedCardName ? selectedCardName[0] : '';
         cardData.processor = selectedCardName[selectedCardName.indexOf('ending') - 1].toLowerCase().trim();
         cardData.truncatedPaymentId = selectedCardName[selectedCardName.length - 1];
     } else {
@@ -1178,7 +1186,7 @@ const formatDateForGivingTools = (date) => {
     let unformattedDate = new Date(date);
     // Need to use the original function, using this now as we need to integrate translaction for that
     const day = unformattedDate.getDate();
-    const month = monthNamesForGivingTools(unformattedDate.getMonth());
+    const month = monthNamesForGivingTools(unformattedDate.getMonth() + 1);
     const year = unformattedDate.getFullYear();
     
     return `${month} ${day}, ${year}`;
@@ -1253,7 +1261,7 @@ const populateDonationReviewPage = (giveData, data, currency, formatMessage, lan
                 giveToData = {
                     accountId: selectedData.id,
                     avatar: giveTo.avatar,
-                    displayName: selectedData.attributes.name,
+                    displayName: selectedData.attributes.companyFundName,
                     type: 'company',
                 };
             }
@@ -1412,7 +1420,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
                 `${fromData.displayName}${displayAmount}`,
             );
         }
-        if (creditCard.value > 0) {
+        if (creditCard.value > 0 && (giftType.value === 0 || giftType.value === null)) {
             const creditCardData = _.find(data[paymentMap[giveFrom.type]],
                 { id: creditCard.id });
             if (!_.isEmpty(creditCardData)) {
@@ -1430,7 +1438,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
                 );
             }
         }
-        if (donationMatch.value > 0) {
+        if (donationMatch.value > 0 && (giftType.value === 0 || giftType.value === null)) {
             const matchedData = getDonationMatchedData(donationMatch.id, donationAmount, donationMatchData);
             if (!_.isEmpty(matchedData)) {
                 sources.push(matchedData);
@@ -1463,7 +1471,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
         }
         const buildAccounts = (item) => {
             const val = item.amount;
-            if (val >= 0) {
+            if (val > 0 && val !== null) {
                 return {
                     ...item,
                     amount: formatCurrency(
@@ -1661,6 +1669,7 @@ export {
     validateTaxReceiptProfileForm,
     onWhatDayList,
     isValidGiftAmount,
+    isValidGivingGoalAmount,
     getDropDownOptionFromApiData,
     populateAccountOptions,
     populateDonationMatch,

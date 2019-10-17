@@ -6,40 +6,39 @@ document.focus = window.focus;
 
 var events = {
     'onConnectFailed': function (resp) {
-        console.log(resp);
+        // console.log(resp);
         window.Applozic.ALSocket.reconnect();
     },
     'onConnect': function (resp) {
         console.log("Applozic Web Socket Connection Established!");
     },
     'onMessageDelivered': function (resp) {
-        console.log(resp);
+        // console.log(resp);
     },
     'onMessageRead': function (resp) {
         //called when a message is read by the receiver
-        console.log(resp);
+        // console.log(resp);
     },
     'onMessageDeleted': function (resp) { },
     'onConversationDeleted': function (resp) { },
     'onUserConnect': function (resp) {
-        console.log(resp);
+        // console.log(resp);
     },
     'onUserDisconnect': function (resp) { },
     'onConversationReadFromOtherSource': function (resp) {
-        console.log(resp);
+        // console.log(resp);
     },
     'onConversationRead': function (resp) {
         //called when the conversation thread is read by the receiver
-        console.log(resp);
+        // console.log(resp);
     },
     'onMessageReceived': function (resp) {
         //called when a new message is received
-        console.log("New Message REcieved");
         if (resp.message.contentType !== 10 && resp.message.contentType !== 102) {
             window.totalUnreadCount++;
             window.dispatchEvent(new CustomEvent("onUnreadMessageCountUpdate", { detail: { count: window.totalUnreadCount } }));
             // document.title = window.totalUnreadCount + " Unread Msgs";
-            if (!window.hasFocus) {
+            /*if (!window.hasFocus) {
                 Notification.requestPermission(function (permission) {
                     // If the user accepts, let's create a notification
                     if (permission === "granted") {
@@ -49,24 +48,25 @@ var events = {
                 });
             } else {
 
-            }
+            }*/
             var onMessageReceived = new CustomEvent("onMessageReceived", { detail: resp });
             window.dispatchEvent(onMessageReceived);
         }
     },
     'onMessageSentUpdate': function (resp) {
-        console.log(resp);
+        // console.log(resp);
     },
     'onMessageSent': function (resp) {
         //called when the message is sent
-        console.log(resp);
+        var onMessageSent = new CustomEvent("onMessageSent", { detail: resp });
+        window.dispatchEvent(onMessageSent);
     },
     'onUserBlocked': function (resp) { },
     'onUserUnblocked': function (resp) { },
     'onUserActivated': function (resp) { },
     'onUserDeactivated': function (resp) { },
     'connectToSocket': function (resp) {
-        console.log(resp);
+        // console.log(resp);
     },
     'onMessage': function (resp) {
         //called when the websocket receive the data
@@ -74,7 +74,7 @@ var events = {
         window.dispatchEvent(onMessageEvent);
     },
     'onTypingStatus': function (resp) {
-        console.log(resp);
+        // console.log(resp);
     }
 };
 function getCookie(name) {
@@ -94,7 +94,9 @@ window.onblur = function () {
 window.onfocus = function () {
     window.hasFocus = true;
 }
-window.onload = function () {
+// window.onload = function () {
+function registerAppLozic() {
+    if (undefined != window.Applozic) {
     Applozic.ALApiService.login(
         {
             data: {
@@ -104,15 +106,15 @@ window.onload = function () {
                     // userId: localStorage.getItem("userId"), //Logged in user's id, a unique identifier for user
                     userId: getCookie("chimpUserId"),
                     // password: '',//Enter password here for the userId passed above, read this if you want to add additional security by verifying password from your server https://www.applozic.com/docs/configuration.html#access-token-url
-                    // imageLink: '', //User's profile picture url
-                    // email: '', //optional
+                    imageLink: window.userAvatar, //User's profile picture url
+                    email: window.userEmail, //optional
+                    displayName: window.userFirstName + " " + userLastName,
                     // contactNumber: '', //optional, pass with internationl code eg: +13109097458
                     appVersionCode: 108,
                     applicationId: window.APPLOZIC_APP_KEY, //Get your App ID from [Applozic Dashboard](https://console.applozic.com/settings/install)
                 }
             },
             success: function (response) {
-                console.log(response);
                 var data = {};
                 data.token = response.token;
                 data.deviceKey = response.deviceKey;
@@ -127,7 +129,8 @@ window.onload = function () {
                 document.cookie = "_applozicWebsocketUrl=" + data.websocketUrl + ";";
                 //Get your App ID from [Applozic Dashboard](https://console.applozic.com/settings/install)
                 window.Applozic.ALSocket.init(window.APPLOZIC_APP_KEY, data, events);
-                Notification.requestPermission();
+                // Notification.requestPermission();
+                window.dispatchEvent(new CustomEvent("applozicAppInitialized", { detail: { data: response, count: window.totalUnreadCount } }));
                 window.dispatchEvent(new CustomEvent("onUnreadMessageCountUpdate", { detail: { count: window.totalUnreadCount } }));
                 /*Applozic.ALApiService.getMessages({
                     data:
@@ -149,7 +152,17 @@ window.onload = function () {
             }
         }
     );
+    } else {
+        setTimeout(function () {
+            registerAppLozic()
+        }, 2000);
+    }
+}
+(function () { registerAppLozic() })();
+window.onload = function () {
+    registerAppLozic();
 };
+// };
 /*
 (function (d, m) {
     var s, h;

@@ -23,6 +23,7 @@ import _isEqual from 'lodash/isEqual';
 import _isEmpty from 'lodash/isEmpty';
 import _merge from 'lodash/merge';
 import _replace from 'lodash/replace';
+import _cloneDeep from 'lodash/cloneDeep';
 
 import {
     formatCurrency,
@@ -84,7 +85,9 @@ class Friend extends React.Component {
             t:formatMessage,
             i18n: {
                 language,
-            }
+            },
+            userFriendEmail,
+            dispatch,
         } = props;
         const paymentInstruments = Friend.constructPaymentInstruments(
             props,
@@ -109,7 +112,7 @@ class Friend extends React.Component {
                 // giveFromList: accountOptions,
                 paymentInstrumentList: populatePaymentInstrument(paymentInstruments, formatMessage),
             },
-            flowObject: payload,
+            flowObject: _cloneDeep(payload),
             // forceContinue: props.forceContinue,
             inValidCardNameValue: true,
             inValidCardNumber: true,
@@ -119,20 +122,14 @@ class Friend extends React.Component {
             userEmail: email,
             validity: this.initializeValidations(),
         };
-        // if (userAccountsFetched) {
-        //     const giveData = Friend.setGiveFrom(
-        //         this.state.flowObject.giveData,
-        //         fund,
-        //         id,
-        //         // accountOptions,
-        //         `${firstName} ${lastName}`,
-        //         // props.intl,
-        //         formatNumber,
-        //     );
-        //     this.state.flowObject.giveData.giveFrom = giveData.giveFrom;
-        // }
-
-        // this.dimissErrors();
+        if(!_isEmpty(userFriendEmail) && this.state.flowObject.giveData.recipients.length === 0) {
+            this.state.flowObject.giveData.recipients = [userFriendEmail.email];
+            dispatch({
+                payload: {
+                },
+                type: 'USER_FRIEND_EMAIL',
+            });
+        }
         
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleOnInputBlur = this.handleOnInputBlur.bind(this);
@@ -215,10 +212,10 @@ class Friend extends React.Component {
                 slug,
                 i18n: {
                     language,
-                }
+                },
             } = this.props;
             const formatMessage = this.props.t;
-            let paymentInstruments = null;
+            let paymentInstruments = paymentInstrumentsData;
             let companyPaymentInstrumentChanged = false;
             if (giveData.giveFrom.type === 'companies' && !_isEmpty(companyDetails)) {
                 if (_isEmpty(prevProps.companyDetails)
@@ -241,7 +238,7 @@ class Friend extends React.Component {
                     companyPaymentInstrumentChanged,
                     `${firstName} ${lastName}`, companiesAccountsData, userGroups, userCampaigns,
                 );
-            }            
+            }
             this.setState({
                 dropDownOptions: {
                     ...dropDownOptions,
@@ -925,6 +922,7 @@ function mapStateToProps(state) {
         userCampaigns: state.user.userCampaigns,
         userGroups: state.user.userGroups,
         creditCardApiCall: state.give.creditCardApiCall,
+        userFriendEmail: state.dashboard.userFriendEmail,
     };
 }
 

@@ -21,6 +21,15 @@ const give = (state = {}, action) => {
                 coverFeesData: Object.assign({}, state.coverFees, coverFees),
             };
             break;
+        case 'COVER_AMOUNT_DISPLAY':
+            const {
+                coverAmountDisplay,
+            } = action.payload;
+            newState = {
+                ...state,
+                coverAmountDisplay,
+            };
+            break;
         case 'GET_COMPANY_PAYMENT_AND_TAXRECEIPT':
             newState = {
                 ...state,

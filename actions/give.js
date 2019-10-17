@@ -23,6 +23,7 @@ import {
 
 export const actionTypes = {
     ADD_NEW_CREDIT_CARD_STATUS: 'ADD_NEW_CREDIT_CARD_STATUS',
+    COVER_AMOUNT_DISPLAY: 'COVER_AMOUNT_DISPLAY',
     COVER_FEES: 'COVER_FEES',
     GET_BENEFICIARY_FROM_SLUG: 'GET_BENEFICIARY_FROM_SLUG',
     GET_BENIFICIARY_FOR_GROUP: 'GET_BENIFICIARY_FOR_GROUP',
@@ -606,7 +607,7 @@ export const proceed = (
                     'give/to/friend': p2pDefaultProps,
                     'give/to/group': groupDefaultProps,
                 };
-                const defaultPropsData = _.merge({}, defaultProps[flowObject.type]);
+                const defaultPropsData = _.cloneDeep(defaultProps[flowObject.type]);
                 const payload = {
                     ...defaultPropsData.flowObject,
                 };
@@ -752,14 +753,12 @@ export const getBeneficiariesForGroup = (dispatch, groupId) => {
                     }
                 },
             ).catch(() => {
-                //Router.pushRoutes('/error');
-                console.log('error page');
+                Router.pushRoutes('/give/error');
             }).finally(() => {
                 dispatch(fsa);
             });
     } else {
-        //Router.pushRoutes('/dashboard');
-        console.log('dashboard');
+        Router.pushRoutes('/dashboard');
     }
 };
 
@@ -787,16 +786,13 @@ export const getBeneficiaryFromSlug = (dispatch, slug) => {
                 return dispatch(fsa);
             },
         ).catch(() => {
-            //redirect('/give/error');
-            console.log('redirect to error');
-        }).finally(() => {
-            return dispatch(fsa);
-        });
+            Router.pushRoute('/give/error');
+        }).finally(() => dispatch(fsa));
     } else {
-        //redirect('/dashboard');
-        console.log('dashboard');
+        Router.pushRoute('/dashboard');
     }
 };
+
 const getCoverFeesApi = async (amount, fundId) => {
     const params = {
         attributes: {
@@ -851,6 +847,29 @@ export const getCoverFees = async (feeData, fundId, giveAmount, dispatch) => {
     // hence no need to fetch the fees for balance
     dispatch(fsa);
 };
+
+export const getCoverAmount = async (fundId, giveAmount, dispatch) => {
+    const fsa = {
+        payload: {
+            coverAmountDisplay: 0,
+        },
+        type: actionTypes.COVER_AMOUNT_DISPLAY,
+    };
+    if (giveAmount >= 5) {
+        await getCoverFeesApi(giveAmount, fundId).then((result) => {
+            const {
+                data: {
+                    attributes: {
+                        feeAmount,
+                    },
+                },
+            } = result;
+            fsa.payload.coverAmountDisplay = feeAmount;
+        });
+    }
+    dispatch(fsa);
+};
+
 export const getCompanyTaxReceiptProfile = (dispatch, companyId) => {
     return callApiAndGetData(`/companies/${companyId}/taxReceiptProfiles?page[size]=50&sort=-id`).then((result) => {
         // return dispatch(setTaxReceiptProfile(result, type = ''));
@@ -884,8 +903,7 @@ export const getGroupsFromSlug = (dispatch, slug) => {
                 type: actionTypes.GET_GROUP_FROM_SLUG,
             });
         },
-    ).catch((error) => {
-        console.log(error);
+    ).catch(() => {
         Router.pushRoute('/give/error');
     });
 };

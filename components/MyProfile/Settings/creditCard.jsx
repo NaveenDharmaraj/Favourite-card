@@ -30,6 +30,7 @@ import {
 } from '../../../actions/userProfile';
 import Pagination from '../../shared/Pagination';
 import PlaceHolderGrid from '../../shared/PlaceHolder';
+import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 
 const ModalStatusMessage = dynamic(() => import('../../shared/ModalStatusMessage'));
 const CreditCard = dynamic(() => import('../../shared/CreditCard'));
@@ -66,10 +67,8 @@ class MyCreditCards extends React.Component {
                 editCardNumber: '',
                 editNameOnCard: '',
                 editPaymetInstrumentId: '',
-                editMonth: '',
-                editYear: '',
-                isValidMonth: '',
-                isValidYear: '',
+                expiry: '',
+                isValidExpiry: true,
             },
             creditCard: {
                 value: 0,
@@ -96,6 +95,7 @@ class MyCreditCards extends React.Component {
         this.handleAddCardClick = this.handleAddCardClick.bind(this);
         this.handleSetPrimaryClick = this.handleSetPrimaryClick.bind(this);
         this.handleCCAddClose = this.handleCCAddClose.bind(this);
+        this.handleEditExpiryBlur = this.handleEditExpiryBlur.bind(this);
     }
 
     componentDidMount() {
@@ -241,7 +241,7 @@ class MyCreditCards extends React.Component {
                 this.setState({
                     buttonClicked: false,
                     errorMessage: null,
-                    successMessage: 'Your Credit Card Saved Successfully.',
+                    successMessage: 'Credit card saved.',
                     statusMessage: true,
                 });
             }).catch((err) => {
@@ -282,11 +282,12 @@ class MyCreditCards extends React.Component {
                 editCardNumber: lastFour,
                 editNameOnCard: cardNameOnly,
                 editPaymetInstrumentId: paymentInstrument.id,
+                isValidExpiry: true,
             }            
         });
     }
 
-    handleInputChange(event, data) {        
+    handleInputChange(event, data) {
         const {
             name,
             options,
@@ -295,7 +296,7 @@ class MyCreditCards extends React.Component {
         const {
             editDetails,
         } = this.state;
-        const newValue = (!_.isEmpty(options)) ? _.find(options, { value }) : value;
+        let newValue = (!_.isEmpty(options)) ? _.find(options, { value }) : value;        
         if (editDetails[name] !== newValue) {
             editDetails[name] = newValue;
         }
@@ -307,29 +308,68 @@ class MyCreditCards extends React.Component {
         });
     }
 
+    handleKeyUp(event) {
+        let code = event.keyCode;
+        let allowedKeys = [8];
+        if (allowedKeys.indexOf(code) !== -1) {
+            return;
+        }
+
+        event.target.value = event.target.value.replace(
+            /^([1-9]\/|[2-9])$/g, '0$1/' // 3 > 03/
+        ).replace(
+            /^(0[1-9]|1[0-2])$/g, '$1/' // 11 > 11/
+        ).replace(
+            /^([0-1])([3-9])$/g, '0$1/$2' // 13 > 01/3
+        ).replace(
+            /^(0?[1-9]|1[0-2])([0-9]{2})$/g, '$1/$2' // 141 > 01/41
+        ).replace(
+            /^([0]+)\/|[0]+$/g, '0' // 0/ > 0 and 00 > 0
+        ).replace(
+            /[^\d\/]|^[\/]*$/g, '' // To allow only digits and `/`
+        ).replace(
+            /\/\//g, '/' // Prevent entering more than 1 `/`
+        );
+    }
+
+    handleEditExpiryBlur(event, data) {
+        const {
+            value,
+        } = !_.isEmpty(data) ? data : event.target;
+        const {
+            editDetails,
+        } = this.state;
+
+        const expiryRegex = new RegExp(/^((0[1-9])|(1[0-2]))\/((2019)|(20[1-3][0-9]))$/);
+        editDetails.isValidExpiry = expiryRegex.test(value);
+        this.setState({
+            editButtonClicked: !expiryRegex.test(value),
+            editDetails: {
+                ...this.state.editDetails,
+                ...editDetails,
+            },
+        });
+    }
+
     validateEditForm() {
         const {
             editDetails: {
-                editMonth,
-                editYear,
-                editPaymetInstrumentId,
+                expiry,
             }
         } = this.state;
         let {
             editDetails: {
-                isValidMonth,
-                isValidYear
+                isValidExpiry,
             }
         } = this.state;
-        isValidMonth = !(!editMonth || editMonth.length === 0);
-        isValidYear = !(!editYear || editYear.length === 0);
+        const expiryRegex = new RegExp(/^((0[1-9])|(1[0-2]))\/((2019)|(20[1-3][0-9]))$/);
+        isValidExpiry = expiryRegex.test(expiry);
         this.setState({
             editDetails: {
-                isValidMonth,
-                isValidYear,
+                isValidExpiry,
             }
         });
-        if(isValidMonth && isValidYear) {
+        if(isValidExpiry) {
             return true;
         }
         return false;
@@ -341,7 +381,7 @@ class MyCreditCards extends React.Component {
             statusMessage: false,
         });
         const isEditDataValid = this.validateEditForm();
-        if(isEditDataValid) {
+        if (isEditDataValid) {
             const {
                 editDetails,
                 isDefaultCard,
@@ -365,10 +405,8 @@ class MyCreditCards extends React.Component {
                         editCardNumber: '',
                         editNameOnCard: '',
                         editPaymetInstrumentId: '',
-                        editMonth: '',
-                        editYear: '',
-                        isValidMonth: '',
-                        isValidYear: '',
+                        expiry: '',
+                        isValidExpiry: true,
                     },
                     isDefaultCard: false,
                     isEditModalOpen: false,
@@ -422,7 +460,7 @@ class MyCreditCards extends React.Component {
                 this.setState({
                     deleteButtonClicked: false,
                     errorMessage: null,
-                    successMessage: 'Your Credit Card deleted Successfully.',
+                    successMessage: 'Credit card deleted.',
                     statusMessage: true,
                     isDeleteMessageOpen: false,
                 });
@@ -563,17 +601,13 @@ class MyCreditCards extends React.Component {
                                         onClose={this.onClose}
                                         onClick={() => {this.handleEditClick(data)}}
                                     />
-                                    {
-                                        !data.attributes.default && (
-                                            <Dropdown.Item
-                                                text="Delete" 
-                                                open={isDropdownOpen}
-                                                onOpen={this.onOpen}
-                                                onClose={this.onClose}
-                                                onClick={() => {this.handleDeleteClick(data.attributes.description, data.id)}}
-                                            />
-                                        )
-                                    }
+                                    <Dropdown.Item
+                                        text="Delete" 
+                                        open={isDropdownOpen}
+                                        onOpen={this.onOpen}
+                                        onClose={this.onClose}
+                                        onClick={() => {this.handleDeleteClick(data.attributes.description, data.id)}}
+                                    /> 
                                 </Dropdown.Menu>
                             </Dropdown>
                         </List.Content>
@@ -623,22 +657,21 @@ class MyCreditCards extends React.Component {
             editDetails: {
                 editCardNumber,
                 editNameOnCard,
-                editMonth,
-                editYear,
+                expiry,
+                isValidExpiry,
             },
             myCreditCardListLoader,
             statusMessage,
             successMessage,
         } = this.state;
         const {
-            editCreditCardApiCall,
             newCreditCardApiCall,
         } = this.props;
         const formatMessage = this.props.t;
         return (
             <div>
                 <div className="userSettingsContainer">
-                    <div className="settingsDetailWraper heading brdr-btm pb-1 pt-2">
+                    <div className="settingsDetailWraper heading brdr-btm pb-1 pt-2 pMethodHead">
                         <Grid verticalAlign="middle">
                             <Grid.Row>
                                 <Grid.Column mobile={16} tablet={11} computer={11}>
@@ -685,7 +718,7 @@ class MyCreditCards extends React.Component {
                                                         <Form.Field
                                                             checked={isDefaultCard}
                                                             control={Checkbox}
-                                                            className="ui checkbox chkMarginBtm"
+                                                            className="ui checkbox chkMarginBtm checkboxToRadio"
                                                             id="isDefaultCard"
                                                             label="Set as primary card"
                                                             name="isDefaultCard"
@@ -755,33 +788,32 @@ class MyCreditCards extends React.Component {
                                         />
                                     </Form.Field>
                                     <Form.Group widths="equal">
-                                        <Form.Input
-                                            fluid
-                                            label="Expiry Month"
-                                            placeholder="MM"
-                                            id="editMonth"
-                                            name="editMonth"
-                                            maxLength="2"
-                                            type="number"
-                                            onChange={this.handleInputChange}
-                                            value={editMonth}
-                                        />
-                                        <Form.Input 
-                                            fluid
-                                            label="Expiry Year"
-                                            placeholder="YYYY"
-                                            id="editYear"
-                                            name="editYear"
-                                            maxLength="4"
-                                            type="number"
-                                            onChange={this.handleInputChange}
-                                            value={editYear}
-                                        />
+                                        <Form.Field>
+                                            <Form.Input
+                                                    fluid
+                                                    label="Expiry"
+                                                    placeholder="MM/YYYY"
+                                                    id="expiry"
+                                                    name="expiry"
+                                                    maxLength="7"
+                                                    error={!isValidExpiry}
+                                                    onBlur={this.handleEditExpiryBlur}
+                                                    onChange={this.handleInputChange}
+                                                    onKeyUp={(e) => {this.handleKeyUp(e)}}
+                                                    value={expiry}
+                                            />
+                                            <FormValidationErrorMessage
+                                                condition={!isValidExpiry}
+                                                errorMessage="Please enter a valid expiry."
+                                            />
+                                        </Form.Field>
+                                        <Form.Field>
+                                        </Form.Field>
                                     </Form.Group>
                                     <Form.Field
                                         checked={isDefaultCard}
                                         control={Checkbox}
-                                        className="ui checkbox chkMarginBtm"
+                                        className="ui checkbox chkMarginBtm checkboxToRadio"
                                         id="isDefaultCard"
                                         label="Set as primary card"
                                         name="isDefaultCard"

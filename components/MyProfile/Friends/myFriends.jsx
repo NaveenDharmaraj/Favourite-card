@@ -9,6 +9,7 @@ import {
     Table,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
+import dynamic from 'next/dynamic';
 
 import PlaceHolderGrid from '../../shared/PlaceHolder';
 import { Link } from '../../../routes';
@@ -19,15 +20,22 @@ import {
 } from '../../../actions/userProfile';
 import Pagination from '../../shared/Pagination';
 import NoFriendAvatar from '../../../static/images/no-data-avatar-user-profile.png';
+const ModalStatusMessage = dynamic(() => import('../../shared/ModalStatusMessage'), {
+    ssr: false
+});
 
 class MyFriends extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            buttonClicked: false,
             currentMyFriendsActivePage: 1,
             currentMyInvitaionsActivePage: 1,
+            errorMessage: null,
             myFriendInvitationLoader: !props.userFriendsInvitationsList,
             myFriendListLoader: !props.userMyFriendsList,
+            statusMessage: false,
+            successMessage: '',
         };
         this.onMyFriendsPageChanged = this.onMyFriendsPageChanged.bind(this);
         this.onMyFriendsInvitaionsPageChanged = this.onMyFriendsInvitaionsPageChanged.bind(this);
@@ -87,19 +95,44 @@ class MyFriends extends React.Component {
         });
     }
 
-    handleFriendAcceptClick(email) {
-        if (email !== null) {
+    handleFriendAcceptClick(destinationEmail, destinationUserId) {
+        this.setState({
+            buttonClicked: true,
+            statusMessage: false,
+        });
+        if (destinationEmail !== null) {
             const {
                 currentUser: {
                     id,
-                    attributes,
+                    attributes: {
+                        avatar,
+                        email,
+                        firstName,
+                    },
                 },
                 dispatch,
             } = this.props;
             const {
                 currentMyInvitaionsActivePage,
             } = this.state;
-            acceptFriendRequest(dispatch, id, email, currentMyInvitaionsActivePage, attributes.email, 'MYFRIENDS', null);
+            acceptFriendRequest(dispatch, id, email, avatar, firstName, destinationEmail, destinationUserId, currentMyInvitaionsActivePage, 'MYFRIENDS', null).then(() => {
+                this.setState({
+                    errorMessage: null,
+                    successMessage: 'Friend request accepted successfully.',
+                    statusMessage: true,
+                    buttonClicked: false,
+                });
+            }).catch((err) => {
+                this.setState({
+                    errorMessage: 'Error in accepting friend request.',
+                    statusMessage: true,
+                    buttonClicked: false,
+                });
+            });
+        } else {
+            this.setState({
+                buttonClicked: false,
+            });
         }
     }
 
@@ -109,6 +142,7 @@ class MyFriends extends React.Component {
         } = this.props;
         const {
             currentMyInvitaionsActivePage,
+            buttonClicked,
         } = this.state;
         let friendsList = 'No invitations yet ';
         if (!_.isEmpty(userFriendsInvitationsList) && _.size(userFriendsInvitationsList.data) > 0) {
@@ -116,13 +150,14 @@ class MyFriends extends React.Component {
                 const name = `${friend.attributes.first_name} ${friend.attributes.last_name}`;
                 const avatar = ((typeof friend.attributes.avatar) === 'undefined' || friend.attributes.avatar === null) ? NoFriendAvatar : friend.attributes.avatar;
                 const email = Buffer.from(friend.attributes.email_hash, 'base64').toString('ascii');
-                const location = (typeof friend.attributes.city === 'undefined' || friend.attributes.province === '') ? email : `${friend.attributes.city}, ${friend.attributes.province}`;
+                const location = (typeof friend.attributes.city === 'undefined' || friend.attributes.province === '') ? '' : `${friend.attributes.city}, ${friend.attributes.province}`;
                 return (
                     <List.Item>
                         <List.Content floated="right">
                             <Button
                                 className="blue-bordr-btn-round-def c-small"
-                                onClick={() => this.handleFriendAcceptClick(friend.attributes.email_hash)}
+                                onClick={() => this.handleFriendAcceptClick(friend.attributes.email_hash, friend.attributes.user_id)}
+                                disabled={buttonClicked}
                             >
                                 Accept
                             </Button>
@@ -167,17 +202,17 @@ class MyFriends extends React.Component {
         const {
             currentMyFriendsActivePage,
         } = this.state;
-        let friendsList = 'No friends yet';
+        let friendsList = 'Friends you connect with on Charitable Impact will appear here.';
         if (!_.isEmpty(userMyFriendsList) && _.size(userMyFriendsList.data) > 0) {
             friendsList = userMyFriendsList.data.map((friend) => {
                 const name = `${friend.attributes.first_name} ${friend.attributes.last_name}`;
                 const email = Buffer.from(friend.attributes.email_hash, 'base64').toString('ascii');
-                const location = (typeof friend.attributes.city !== 'undefined') ? `${friend.attributes.city}, ${friend.attributes.province}` : email;
+                const location = (typeof friend.attributes.city !== 'undefined') ? `${friend.attributes.city}, ${friend.attributes.province}` : '';
                 const avatar = (typeof friend.attributes.avatar) !== 'undefined' ? friend.attributes.avatar : NoFriendAvatar;
                 return (
                     <List.Item>
                         <List.Content floated="right">
-                            <Link route="/chats/all">
+                            <Link route={`/chats/${friend.attributes.user_id}`}>
                                 <Button className="blue-btn-rounded-def c-small">Message</Button>
                             </Link>
                         </List.Content>
@@ -216,25 +251,49 @@ class MyFriends extends React.Component {
 
     render() {
         const {
+            errorMessage,
+            statusMessage,
+            successMessage,
             myFriendInvitationLoader,
             myFriendListLoader,
         } = this.state;
+        const {
+            userFriendsInvitationsList
+        } = this.props;
         return (
             <div className="remove-gutter">
                 <div className="userSettingsContainer">
                     <div className="settingsDetailWraper">
-                        <Header className="mb-1" as="h4">Invitations </Header>
-                        { myFriendInvitationLoader
-                            ? (
-                                <Table padded unstackable className="no-border-table">
-                                    <PlaceHolderGrid row={2} column={2} placeholderType="table" />
-                                </Table>
+                        {
+                            statusMessage && (
+                                <div>
+                                    <ModalStatusMessage 
+                                        message = {!_.isEmpty(successMessage) ? successMessage : null}
+                                        error = {!_.isEmpty(errorMessage) ? errorMessage : null}
+                                    />
+                                </div>
                             )
-                            : (
-                                this.renderFriendsInvitations()
-                            )}
-                        <div className="pt-2">
-                            <Header className="mb-1 mt-3" as="h4">Friends </Header>
+                        }
+                        {
+                            !_.isEmpty(userFriendsInvitationsList) && _.size(userFriendsInvitationsList.data) > 0 && (
+                                <div className="pt-2 mb-2">
+                                    <Header className="mb-1" as="h4">Invitations </Header>
+                                    <div>
+                                    { myFriendInvitationLoader
+                                        ? (
+                                            <Table padded unstackable className="no-border-table">
+                                                <PlaceHolderGrid row={2} column={2} placeholderType="table" />
+                                            </Table>
+                                        )
+                                        : (
+                                            this.renderFriendsInvitations()
+                                        )}
+                                    </div>
+                                </div>
+                            )
+                        }
+                        <div>
+                            <Header className="mb-1 mt-1" as="h4">Friends </Header>
                             { myFriendListLoader
                                 ? (
                                     <Table padded unstackable className="no-border-table">

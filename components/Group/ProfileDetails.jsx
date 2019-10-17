@@ -19,6 +19,7 @@ import Activity from './Activity';
 import Members from './Members';
 import CharitySupport from './CharitySupport';
 import TransactionDetails from './TransactionDetails';
+import GroupNoDataState from './GroupNoDataState';
 
 const ProfileDetails = (props) => {
     const {
@@ -37,7 +38,7 @@ const ProfileDetails = (props) => {
                     groupDetails: {
                         attributes: {
                             description,
-                            videoDirectLink,
+                            videoPlayerLink,
                             purpose,
                             helping,
                             about,
@@ -58,9 +59,11 @@ const ProfileDetails = (props) => {
                 return (
                     <Tab.Pane attached={false}>
                         {
-                            (_isEmpty(imageArray) && !description && !videoDirectLink && !purpose && !helping && !about) ? (
+                            (_isEmpty(imageArray) && !description && !videoPlayerLink && !purpose && !helping && !about) ? (
                                 <Grid>
-                                    NO DATA
+                                    <GroupNoDataState
+                                        type="common"
+                                    />
                                 </Grid>
                             ) : (
                                 <Fragment>
@@ -70,14 +73,14 @@ const ProfileDetails = (props) => {
                                             { description }
                                         </div>
                                     )}
-                                    {videoDirectLink
+                                    {videoPlayerLink
                                         && (
                                             <div className="mb-3">
                                                 <embed
                                                     title="video"
                                                     // width="50%"
                                                     // height="50%"
-                                                    src={videoDirectLink}
+                                                    src={videoPlayerLink}
                                                 />
                                             </div>
                                         )}
@@ -178,10 +181,13 @@ const ProfileDetails = (props) => {
         );
     }
 
+    const activeIndexProp = (!isAUthenticated) ? { activeIndex: 0 } : {};
+
     return (
         <Container>
             <div className="charityTab">
                 <Tab
+                    {...activeIndexProp}
                     menu={{
                         pointing: true,
                         secondary: true,
@@ -202,7 +208,7 @@ ProfileDetails.defaultProps = {
             description: '',
             helping: '',
             purpose: '',
-            videoDirectLink: '',
+            videoPlayerLink: '',
         },
     },
     isAUthenticated: false,
@@ -216,7 +222,7 @@ ProfileDetails.propTypes = {
             description: string,
             helping: string,
             purpose: string,
-            videoDirectLink: string,
+            videoPlayerLink: string,
         },
     },
     isAUthenticated: bool,

@@ -92,7 +92,14 @@ export const getCampaignFromSlug = async (dispatch, slug) => {
             });
             // API call for subgroups
             if (result.data) {
-                coreApi.get(`${result.data.relationships.subGroups.links.related}?page[size]=9`).then(
+                coreApi.get(`${result.data.relationships.subGroups.links.related}?page[size]=9`,
+                    {
+                        params: {
+                            dispatch,
+                            ignore401: true,
+                            uxCritical: true,
+                        },
+                    }).then(
                     (subGroupResult) => {
                         dispatch({
                             payload: {
@@ -113,7 +120,14 @@ export const getCampaignFromSlug = async (dispatch, slug) => {
             }
             // API call for images
             if (result.data) {
-                coreApi.get(result.data.relationships.galleryImages.links.related).then(
+                coreApi.get(result.data.relationships.galleryImages.links.related,
+                    {
+                        params: {
+                            dispatch,
+                            ignore401: true,
+                            uxCritical: true,
+                        },
+                    }).then(
                     (galleryImagesResult) => {
                         dispatch({
                             payload: {
@@ -146,7 +160,13 @@ export const generateDeepLink = (url, dispatch) => {
         },
         type: actionTypes.DEEP_LINK_URL,
     };
-    utilityApi.get(url).then(
+    utilityApi.get(url, {
+        params: {
+            dispatch,
+            ignore401: true,
+            uxCritical: true,
+        },
+    }).then(
         (result) => {
             fsa.payload.deepLink = result.data;
         },
@@ -182,7 +202,12 @@ export const followProfile = (dispatch, userId, entityId, type) => {
             break;
     }
     const payloadObj = generatePayloadBodyForFollowAndUnfollow(userId, entityId, type);
-    graphApi.post(`core/create/relationship`, payloadObj).then(
+    graphApi.post(`core/create/relationship`, payloadObj, {
+        params: {
+            dispatch,
+            ignore401: true,
+        },
+    }).then(
         (result) => {
             fsa.payload.followStatus = true;
         },
@@ -222,7 +247,12 @@ export const unfollowProfile = (dispatch, userId, entityId, type) => {
             break;
     }
     const payloadObj = generatePayloadBodyForFollowAndUnfollow(userId, entityId, type);
-    graphApi.post(`/users/deleterelationship`, payloadObj).then(
+    graphApi.post(`/users/deleterelationship`, payloadObj, {
+        params: {
+            dispatch,
+            ignore401: true,
+        },
+    }).then(
         (result) => {
             fsa.payload.followStatus = false;
         },
@@ -236,7 +266,13 @@ export const unfollowProfile = (dispatch, userId, entityId, type) => {
 };
 
 export const campaignSubGroupSeeMore = (url, dispatch) => {
-    return coreApi.get(url).then(
+    return coreApi.get(url, {
+        params: {
+            dispatch,
+            ignore401: true,
+            uxCritical: true,
+        },
+    }).then(
         (subGroupResult) => {
             dispatch({
                 payload: {

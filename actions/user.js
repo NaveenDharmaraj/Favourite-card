@@ -5,6 +5,7 @@ import _ from 'lodash';
 import coreApi from '../services/coreApi';
 import authRorApi from '../services/authRorApi';
 import graphApi from '../services/graphApi';
+import wpApi from '../services/wpApi';
 import { Router } from '../routes';
 import {
     triggerUxCritialErrors,
@@ -235,6 +236,18 @@ export const getDonationMatchAndPaymentInstruments = (userId, flowType) => {
     };
 };
 
+export const wpLogin = (token = null) => {
+    let params = null;
+    if (!_.isEmpty(token)) {
+        params = {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        };
+    }
+    return wpApi.post('/login', null, params);
+};
+
 export const chimpLogin = (token = null) => {
     let params = null;
     if (!_.isEmpty(token)) {
@@ -301,6 +314,7 @@ export const getUser = (dispatch, userId, token = null) => {
                 const { data } = userData;
                 const {
                     activeRoleId,
+                    hasAdminAccess,
                 } = data.attributes;
                 let adminRoleId = null;
                 _.merge(fsa.payload, {
@@ -311,8 +325,11 @@ export const getUser = (dispatch, userId, token = null) => {
                     otherAccounts: [],
                 });
                 if (!_.isEmpty(data.relationships.chimpAdminRole.data)) {
-                    fsa.payload.isAdmin = true;
+                    // fsa.payload.isAdmin = true;
                     adminRoleId = data.relationships.chimpAdminRole.data.id;
+                }
+                if (hasAdminAccess) {
+                    fsa.payload.isAdmin = true;
                 }
                 const includedData = _.concat(
                     userData.included, allData[1], allData[2], allData[3], allData[4],
@@ -488,8 +505,7 @@ export const getGroupsForUser = (dispatch, userId) => {
                 }
                 dispatch(fsa);
             },
-        ).catch((error) => {
-            console.log(error);
+        ).catch(() => {
             Router.pushRoute('/give/error');
         });
 };
@@ -775,5 +791,21 @@ export const removeFavorite = (dispatch, favId, userId, favorites, type, dataCou
             },
             type: actionTypes.ENABLE_FAVORITES_BUTTON,
         });
+    });
+};
+
+export const saveUserCauses = (dispatch, userId, userCauses) => {
+    const bodyDataCauses = {
+        causes: userCauses,
+        userid: Number(userId),
+    };
+    return graphApi.patch(`/user/updatecauses`, bodyDataCauses).then(
+        () => {
+            getUserFund(dispatch, userId).then(() => {
+                Router.pushRoute('/dashboard');
+            });
+        },
+    ).catch((err) => {
+        triggerUxCritialErrors(err.errors || err, dispatch);
     });
 };

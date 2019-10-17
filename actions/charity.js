@@ -20,10 +20,10 @@ if (!_.isEmpty(BASIC_AUTH_KEY)) {
 
 export const actionTypes = {
     GET_BENEFICIARY_DONEE_LIST: 'GET_BENEFICIARY_DONEE_LIST',
-    GET_BENEFICIARY_FROM_SLUG: 'GET_BENEFICIARY_FROM_SLUG',
-    PLACEHOLDER_STATUS: 'PLACEHOLDER_STATUS',
-    REDIRECT_TO_DASHBOARD: 'REDIRECT_TO_DASHBOARD',
-    SAVE_DEEP_LINK: 'SAVE_DEEP_LINK',
+    GET_CHARITY_DETAILS_FROM_SLUG: 'GET_CHARITY_DETAILS_FROM_SLUG',
+    CHARITY_PLACEHOLDER_STATUS: 'CHARITY_PLACEHOLDER_STATUS',
+    CHARITY_REDIRECT_TO_DASHBOARD: 'CHARITY_REDIRECT_TO_DASHBOARD',
+    CHARITY_SAVE_DEEP_LINK: 'CHARITY_SAVE_DEEP_LINK',
     SAVE_FOLLOW_STATUS: 'SAVE_FOLLOW_STATUS',
     SET_COUNTRIES_GEOCODE: 'SET_COUNTRIES_GEOCODE',
     SET_HEADQUARTER_GEOCODE: 'SET_HEADQUARTER_GEOCODE',
@@ -40,7 +40,7 @@ export const getBeneficiaryDoneeList = (dispatch, charityId) => {
         payload: {
             showPlaceholder: true,
         },
-        type: actionTypes.PLACEHOLDER_STATUS,
+        type: actionTypes.CHARITY_PLACEHOLDER_STATUS,
     });
     utilityApi.get(`/beneficiaryDoneeList/${charityId}?locale=en_ca&tenant_name=chimp&page=1&size=20`, {
         params: {
@@ -59,7 +59,7 @@ export const getBeneficiaryDoneeList = (dispatch, charityId) => {
             payload: {
                 showPlaceholder: false,
             },
-            type: actionTypes.PLACEHOLDER_STATUS,
+            type: actionTypes.CHARITY_PLACEHOLDER_STATUS,
         });
     });
 };
@@ -130,7 +130,7 @@ export const copyDeepLink = (url, dispatch) => {
         payload: {
             deepLink: {},
         },
-        type: actionTypes.SAVE_DEEP_LINK,
+        type: actionTypes.CHARITY_SAVE_DEEP_LINK,
     };
     utilityApi.get(url).then(
         (result) => {
@@ -147,13 +147,13 @@ export const getBeneficiaryFromSlug = async (dispatch, slug) => {
             payload: {
                 charityDetails: {},
             },
-            type: actionTypes.GET_BENEFICIARY_FROM_SLUG,
+            type: actionTypes.GET_CHARITY_DETAILS_FROM_SLUG,
         };
         dispatch({
             payload: {
                 redirectToDashboard: false,
             },
-            type: actionTypes.REDIRECT_TO_DASHBOARD,
+            type: actionTypes.CHARITY_REDIRECT_TO_DASHBOARD,
         });
         await coreApi.get(`/beneficiaries/find_by_slug?load_full_profile=true`, {
             params: {
@@ -172,7 +172,7 @@ export const getBeneficiaryFromSlug = async (dispatch, slug) => {
                 payload: {
                     redirectToDashboard: true,
                 },
-                type: actionTypes.REDIRECT_TO_DASHBOARD,
+                type: actionTypes.CHARITY_REDIRECT_TO_DASHBOARD,
             });
             return null;
         }).finally(() => {

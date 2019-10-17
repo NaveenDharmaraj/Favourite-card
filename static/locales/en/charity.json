@@ -1,4 +1,8 @@
 {
+    "coverFeeLabel": "Less a third-party processing fee of {{amount}}.",
+    "coverFeeModalHeader": "Why is there a third-party processing fee?",
+    "coverFeeModalContentFirst" : "Banks and credit card companies charge charities, including Charitable Impact, a fee to process online donations. We don't set or benefit from this fee, but we do recover it. When you give to a charity from your Impact Account, the charity receives your gift minus this fee.",
+    "coverFeeModalContentSecond" : "However, Charitable Impact has access to lower bank and credit card fees than most other charity websites. This means more money can get to charity when you give from your Impact Account.",
     "giveToLabel": "Give to",
     "findAnotherRecipientMessage": "Find another recipient",
     "findAnotherRecipientCancel": "Cancel",
@@ -10,6 +14,7 @@
     "goToGroupSecondLabel": "you belong to",
     "feeAmountCoveragePopup": "Banks and credit card companies charge a processing fee to complete online transactions, including online donations.CHARITABLE IMPACT does not benefit from these fees, but we do pass them on to gift recipients. You can choose to cover this fee so the recipient receives 100% of your intended gift.",
     "feeAmountCoverageNote": "Cover {{feeAmount}} in third-party processing fees on behalf of this charity, for a total amount of {{totalAmount}}.",
-    "giftTypeSingle": "This is a one time gift"
+    "giftTypeSingle": "This is a one time gift",
+    "learnMore" : "Learn more."
 }
 

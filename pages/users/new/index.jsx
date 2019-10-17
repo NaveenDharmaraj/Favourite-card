@@ -52,9 +52,12 @@ class Login extends React.Component {
 
     componentDidUpdate(prevProps) {
         if (!_.isEqual(this.props, prevProps)) {
-            if (!_.isEmpty(this.props.newUserDetails)) {
-                storage.set('newUserDetails', this.props.newUserDetails, 'local', null);
-                Router.pushRoute('/users/email-verification');
+            if (!_.isEmpty(this.props.newUserDetails) && this.state.stepIndex >= 3) {
+                if(this.props.newUserDetails && this.props.newUserDetails.email && this.props.newUserDetails.identities && this.props.newUserDetails.identities[0] && this.props.newUserDetails.identities[0].user_id){
+                    storage.set('auth0UserEmail', this.props.newUserDetails.email, 'local', null);
+                    storage.set('auth0UserId', this.props.newUserDetails.identities[0].user_id, 'local', null);
+                    Router.pushRoute('/users/email-verification');    
+                }
             }
         }
     }
@@ -151,6 +154,7 @@ class Login extends React.Component {
             },
             stepIndex,
         } = this.state;
+        validity = this.intializeValidations();
         switch (stepIndex) {
             case 0:
                 validity = validateUserRegistrationForm('firstName', firstName, validity);
@@ -335,7 +339,7 @@ class Login extends React.Component {
                             }
                             {
                                 (stepIndex === 3) && (
-                                    <Grid columns={2} centered>
+                                    <Grid columns={2} centered doubling>
                                         <Grid.Row>
                                             <FinalStep
                                                 handleSubmit={this.handleSubmit}
