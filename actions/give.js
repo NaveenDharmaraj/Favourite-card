@@ -587,7 +587,6 @@ export const proceed = (
                     // }
                 }
             }).catch((err) => {
-                // logger.error(err);
                 if (checkForQuaziSuccess(err.errors)) {
                     successData.quaziSuccessStatus = true;
                 } else {

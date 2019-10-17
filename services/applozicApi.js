@@ -4,6 +4,7 @@ import getConfig from 'next/config';
 import base64 from "base-64";
 import auth0 from './auth';
 import storage from '../helpers/storage';
+import logger from '../helpers/logger';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -44,6 +45,16 @@ instance.interceptors.response.use(function (response) {
     // Do something with response data
     return response.data;
 }, function (error) {
+    const {
+        config,
+    } = error.response;
+    const logDNAErrorObj = {
+        data: config.data ? JSON.parse(config.data) : null,
+        error: error.response.data,
+        method: config.method,
+        url: config.url,
+    };
+    logger.error(`[APPLOZIC] API failed: ${JSON.stringify(logDNAErrorObj)}`);
     return Promise.reject(error.response.data);
 });
 instance.APPLOZIC_APP_KEY = APPLOZIC_APP_KEY;
