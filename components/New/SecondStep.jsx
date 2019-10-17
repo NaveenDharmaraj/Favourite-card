@@ -118,9 +118,9 @@ class SecondStep extends React.Component {
                             <p className="font-s-12">
                                 <span className={(validity.doesPwdHaveCount) ? 'blueText' : ''}>
                                     {pwdCharCount}/8 characters,
-                                </span>
-                                <span className={(validity.doesPwdhaveLowerCase) ? 'blueText' : ''}>lowercase letters (a-z),</span>
-                                <span className={(validity.doesPwdhaveUpperCase) ? 'blueText' : ''}>uppercase letters (A-Z),</span>
+                                </span><br />
+                                <span className={(validity.doesPwdhaveLowerCase) ? 'blueText' : ''}>lowercase letters (a-z),</span><br />
+                                <span className={(validity.doesPwdhaveUpperCase) ? 'blueText' : ''}>uppercase letters (A-Z),</span><br />
                                 <span className={(validity.doesPwdhaveSpecialChars) ? 'blueText' : ''}>special characters (e.g. !@#$%^&*)</span>
                             </p>
                             <div className="reg-btn-wraper floatBtns">
