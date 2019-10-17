@@ -170,16 +170,16 @@ class LandingPageTaxReceipt extends React.Component {
                                     </Fragment>
                                 )}
                                 {(recordCount && !_isEmpty(issuedTaxReceiptList) && recordCount > issuedTaxReceiptList.length)
-                                 && (
-                                     <div className="text-center">
-                                         <Button
-                                             className="blue-bordr-btn-round-def"
-                                             onClick={() => this.handleLoadMoreClick()}
-                                             loading={viewMoreLoader}
-                                             content="View more"
-                                         />
-                                     </div>
-                                 )
+                                    ? (
+                                        <div className="text-center">
+                                            <Button
+                                                className="blue-bordr-btn-round-def"
+                                                onClick={() => this.handleLoadMoreClick()}
+                                                loading={viewMoreLoader}
+                                                content="View more"
+                                            />
+                                        </div>
+                                    ) : null
                                 }
                             </Container>
                         </div>
