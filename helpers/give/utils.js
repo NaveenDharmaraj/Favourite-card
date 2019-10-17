@@ -307,7 +307,7 @@ const populateAccountOptions = (data, translate, giveToId = null, allocationType
                 disabled: false,
                 id,
                 name: `${firstName} ${lastName}`,
-                text: `${fund.attributes.name} (${formatCurrency(fund.attributes.balance, language, currency)})`,
+                text: `${fund.attributes.name}: ${formatCurrency(fund.attributes.balance, language, currency)}`,
                 type: 'user',
                 value: fund.id,
             },
@@ -361,7 +361,7 @@ const populateAccountOptions = (data, translate, giveToId = null, allocationType
                     userGroups,
                     null,
                     (item) => item.attributes.fundId,
-                    (attributes) => `${attributes.fundName} (${formatCurrency(attributes.balance, language, currency)})`,
+                    (attributes) => `${attributes.fundName}: ${formatCurrency(attributes.balance, language, currency)}`,
                     (attributes) => false,
                     [
                         {
@@ -405,7 +405,7 @@ const populateAccountOptions = (data, translate, giveToId = null, allocationType
                     userCampaigns,
                     null,
                     (item) => item.attributes.fundId,
-                    (attributes) => `${attributes.fundName} (${formatCurrency(attributes.balance, language, currency)})`,
+                    (attributes) => `${attributes.fundName}: ${formatCurrency(attributes.balance, language, currency)}`,
                     (attributes) => false,
                     [
                         {
@@ -433,7 +433,7 @@ const populateAccountOptions = (data, translate, giveToId = null, allocationType
                     companiesAccountsData,
                     null,
                     (item) => item.attributes.companyFundId,
-                    (attributes) => `${attributes.companyFundName} (${formatCurrency(attributes.balance, language, currency)})`,
+                    (attributes) => `${attributes.companyFundName}: ${formatCurrency(attributes.balance, language, currency)}`,
                     (attributes) => false,
                     [
                         {
