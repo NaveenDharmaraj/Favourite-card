@@ -315,6 +315,7 @@ export const getUser = (dispatch, userId, token = null) => {
                 const {
                     activeRoleId,
                     hasAdminAccess,
+                    donorAccount,
                 } = data.attributes;
                 let adminRoleId = null;
                 _.merge(fsa.payload, {
@@ -360,8 +361,7 @@ export const getUser = (dispatch, userId, token = null) => {
                                     location: `/contexts/${id}`,
                                     name: data.attributes.displayName,
                                 };
-                                if (id == activeRoleId
-                        || adminRoleId == activeRoleId) {
+                                if (id == activeRoleId || donorAccount) {
                                     fsa.payload.currentAccount = donor;
                                 } else {
                                     fsa.payload.otherAccounts.unshift(donor);
