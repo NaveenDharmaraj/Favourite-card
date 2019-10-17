@@ -314,6 +314,7 @@ export const getUser = (dispatch, userId, token = null) => {
                 const { data } = userData;
                 const {
                     activeRoleId,
+                    hasAdminAccess,
                 } = data.attributes;
                 let adminRoleId = null;
                 _.merge(fsa.payload, {
@@ -324,8 +325,11 @@ export const getUser = (dispatch, userId, token = null) => {
                     otherAccounts: [],
                 });
                 if (!_.isEmpty(data.relationships.chimpAdminRole.data)) {
-                    fsa.payload.isAdmin = true;
+                    // fsa.payload.isAdmin = true;
                     adminRoleId = data.relationships.chimpAdminRole.data.id;
+                }
+                if (hasAdminAccess) {
+                    fsa.payload.isAdmin = true;
                 }
                 const includedData = _.concat(
                     userData.included, allData[1], allData[2], allData[3], allData[4],
