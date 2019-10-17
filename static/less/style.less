@@ -4844,29 +4844,26 @@ body{
     &.popup{
       margin-top: 0px;
       padding: 0px;
-      &.bottom{
-        margin-top: 0px !important;
-        .content{
-          .list{
-            &.ui{
-              .item{
+      margin-top: 0px !important;
+      .content{
+        .list{
+          &.ui{
+            .item{
+              color: @grey-darken-6;
+              font-weight: 600;
+              padding: .833em 1em;
+              a{
                 color: @grey-darken-6;
-                font-weight: 600;
-                padding: .833em 1em;
-                a{
-                  color: @grey-darken-6;
-                }
-                &.red{
-                  color: #D0021B;
-                }
               }
-              .divider{
-                margin: 0px;
+              &.red{
+                color: #D0021B;
               }
+            }
+            .divider{
+              margin: 0px;
             }
           }
         }
-        
       }
     }
   }
