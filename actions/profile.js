@@ -115,7 +115,7 @@ export const getCampaignFromSlug = async (dispatch, slug) => {
                         });
                     },
                 ).catch((error) => {
-                    console.log(error);
+                    // console.log(error);
                 });
             }
             // API call for images
@@ -137,12 +137,12 @@ export const getCampaignFromSlug = async (dispatch, slug) => {
                         });
                     },
                 ).catch((error) => {
-                    console.log(error);
+                    // console.log(error);
                 });
             }
         },
     ).catch((error) => {
-        console.log(error);
+        // console.log(error);
         dispatch({
             payload: {
                 slugApiErrorStats: true,
@@ -171,7 +171,7 @@ export const generateDeepLink = (url, dispatch) => {
             fsa.payload.deepLink = result.data;
         },
     ).catch((error) => {
-        console.log(error);
+        // console.log(error);
     }).finally(() => dispatch(fsa));
 };
 
@@ -212,7 +212,7 @@ export const followProfile = (dispatch, userId, entityId, type) => {
             fsa.payload.followStatus = true;
         },
     ).catch((error) => {
-        console.log(error);
+        // console.log(error);
     }).finally(() => {
         dispatch(fsa);
         dispatch(iconStatusFsa);
@@ -257,7 +257,7 @@ export const unfollowProfile = (dispatch, userId, entityId, type) => {
             fsa.payload.followStatus = false;
         },
     ).catch((error) => {
-        console.log(error);
+        // console.log(error);
     }).finally(() => {
         dispatch(fsa);
         dispatch(iconStatusFsa);
@@ -288,6 +288,6 @@ export const campaignSubGroupSeeMore = (url, dispatch) => {
             });
         },
     ).catch((error) => {
-        console.log(error);
+        // console.log(error);
     });
 };

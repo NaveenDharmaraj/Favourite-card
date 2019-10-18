@@ -425,7 +425,7 @@ const _handleLockSuccess = async ({
         let myDate = new Date();
         myDate.setMonth(myDate.getMonth() + 12);
         if (document) {
-            console.log('setting wp access token');
+            // console.log('setting wp access token');
             await (auth0.wpAccessToken = accessToken);
         }
 

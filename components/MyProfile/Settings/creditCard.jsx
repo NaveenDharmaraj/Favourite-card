@@ -489,7 +489,7 @@ class MyCreditCards extends React.Component {
     }
 
     onPageChanged(event, data) {
-        console.log(data);
+        // console.log(data);
         const {
             currentUser: {
                 id,

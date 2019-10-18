@@ -69,7 +69,7 @@ export const validateNewUser = (dispatch, emailId) => {
             type: actionTypes.USER_EXISTS,
         });
     }).catch((error) => {
-        console.log(error);
+        // console.log(error);
     });
 };
 
@@ -98,7 +98,7 @@ export const getUserCauses = (dispatch) => {
     return graphApi.get(`/user/causes`, BASIC_AUTH_HEADER).then((result) => {
         fsa.payload.causesList = result.data;
     }).catch((error) => {
-        console.log(error);
+        // console.log(error);
         triggerUxCritialErrors(error.errors || error, dispatch);
     }).finally(() => {
         dispatch(fsa);

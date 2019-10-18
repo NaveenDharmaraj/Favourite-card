@@ -389,7 +389,7 @@ export const getUser = (dispatch, userId, token = null) => {
                 }
             },
         ).catch((error) => {
-            console.log(JSON.stringify(error));
+            // console.log(JSON.stringify(error));
             isAuthenticated = false;
         }).finally(() => {
             dispatch({
@@ -432,7 +432,7 @@ export const getUserFund = (dispatch, userId) => {
             type: actionTypes.UPDATE_USER_FUND,
         });
     }).catch((error) => {
-        console.log(error);
+        // console.log(error);
     });
 };
 
@@ -450,7 +450,7 @@ export const getTaxReceiptProfile = (dispatch, userId) => {
     return coreApi.get(`/users/${userId}/taxReceiptProfiles`).then((result) => {
         return dispatch(setTaxReceiptProfile(result.data));
     }).catch((error) => {
-        console.log(error);
+        // console.log(error);
     });
 };
 
@@ -628,7 +628,7 @@ export const getUserGivingGoal = (dispatch, userId) => {
                 type: actionTypes.USER_GIVING_GOAL_DETAILS,
             });
         }).catch((error) => {
-            console.log(error);
+            // console.log(error);
         });
 };
 export const setUserGivingGoal = (dispatch, goalAmount, userId) => {
@@ -669,7 +669,7 @@ export const getUpcomingTransactions = (dispatch, url) => {
             });
         },
     ).catch((error) => {
-        console.log(error);
+        // console.log(error);
         // Router.pushRoute('/give/error');
     });
 };
@@ -706,7 +706,7 @@ export const deleteUpcomingTransaction = (dispatch, id, transactionType, activeP
             getUpcomingTransactions(dispatch, activepageUrl);
         },
     ).catch((error) => {
-        console.log(error);
+        // console.log(error);
     });
 };
 
@@ -741,7 +741,7 @@ export const getFavoritesList = (dispatch, userId, pageNumber, pageSize) => {
             };
         },
     ).catch((error) => {
-        console.log(error);
+        // console.log(error);
     }).finally(() => {
         dispatch(fsa);
     });

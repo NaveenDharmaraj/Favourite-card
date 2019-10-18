@@ -218,7 +218,7 @@ class Login extends React.Component {
                 });
             }
         } else {
-            console.log('invalid');
+            // console.log('invalid');
         }
     }
 

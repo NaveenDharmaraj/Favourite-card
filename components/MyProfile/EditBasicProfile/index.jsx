@@ -292,7 +292,7 @@ class EditBasicProfile extends React.Component {
             cb(reader.result)
         };
         reader.onerror = function (error) {
-            console.log('Error: ', error);
+            // console.log('Error: ', error);
         };
     }
     

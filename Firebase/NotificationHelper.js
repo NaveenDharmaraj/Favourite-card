@@ -201,7 +201,7 @@ class NotificationHelper {
             firebaseMessageFetchCompleteAction(dispatch, firebaseMessages, lastSyncTime, page);
 
         } catch (e) {
-            console.log(e);
+            // console.log(e);
         }
     };
 
@@ -209,7 +209,7 @@ class NotificationHelper {
         let userRef = Firebase.database().ref("/organisation/chimp/users/" + userInfo.id);
         userRef.child("last_sync_time").set(lastSyncTime).then(async function () {
         }).catch(function (e) {
-            console.log(e);
+            // console.log(e);
         });
     }
 
