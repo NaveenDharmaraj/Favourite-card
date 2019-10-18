@@ -89,6 +89,12 @@ class CampaignProfileWrapper extends React.Component {
             subGroupListLoader,
             isAuthenticated,
         } = this.props;
+        let bannerStyle;
+        if (campaignDetails.attributes.banner) {
+            bannerStyle = {
+                backgroundImage: `url( ${campaignDetails.attributes.banner})`,
+            };
+        }
         return (
             <React.Fragment>
                 <div className="top-breadcrumb">
@@ -96,8 +102,7 @@ class CampaignProfileWrapper extends React.Component {
                         pathDetails={pathDetails}
                     />
                 </div>
-                <div className="profile-header-image campaign" />
-
+                <div className="profile-header-image campaign" style={bannerStyle} />
                 {campaignDetails && (
                     <ProfilePageHead
                         pageDetails={campaignDetails}
