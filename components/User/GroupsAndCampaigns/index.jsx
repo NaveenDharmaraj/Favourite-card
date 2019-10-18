@@ -16,6 +16,9 @@ import getConfig from 'next/config';
 import {
     getInitalGivingGroupsAndCampaigns,
 } from '../../../actions/user';
+import {
+    getUserProfileBasic,
+} from '../../../actions/userProfile';
 import { Link } from '../../../routes';
 import PlaceholderGrid from '../../shared/PlaceHolder';
 import noDataImgCampain from '../../../static/images/campaignprofile_nodata_illustration.png';
@@ -23,6 +26,7 @@ import noDataggManage from '../../../static/images/givinggroupsyoumanage_nodata_
 import noDataggJoin from '../../../static/images/givinggroupsyoujoined_nodata_illustration.png';
 
 import GroupsAndCampaignsList from './GroupsAndCampaignsList';
+import PrivacySetting from '../../shared/Privacy';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -49,6 +53,7 @@ class GroupsAndCampaigns extends React.Component {
             dispatch,
         } = this.props;
         getInitalGivingGroupsAndCampaigns(dispatch, currentUser.id);
+        getUserProfileBasic(dispatch, currentUser.attributes.email, currentUser.id, currentUser.id);
     }
 
     componentDidUpdate(prevProps) {
@@ -212,7 +217,16 @@ class GroupsAndCampaigns extends React.Component {
             administeredGroups,
             administeredCampaigns,
             groupsWithMemberships,
+            userProfileBasicData,
         } = this.props;
+        let givingGroupsMemberVisible = 0;
+        let givingGroupsManageVisible = 0;
+        if (!_.isEmpty(userProfileBasicData)) {
+            givingGroupsMemberVisible = userProfileBasicData.data[0].attributes.giving_group_member_visibility;
+            givingGroupsManageVisible = userProfileBasicData.data[0].attributes.giving_group_manage_visibility;
+        }
+        const memberPrivacyColumn = 'giving_group_member_visibility';
+        const managePrivacyColumn = 'giving_group_manage_visibility';
         return (
             <Container>
                 <div className="grpcampHeader">
@@ -248,14 +262,30 @@ class GroupsAndCampaigns extends React.Component {
                     </div> */}
                 </div>
                 <div className="pt-2 pb-2">
-                    <p className="bold font-s-16">Giving Groups you manage</p>
+                    <p
+                        className="bold font-s-16"
+                    >
+                        Giving Groups you manage
+                        <PrivacySetting
+                            columnName={managePrivacyColumn}
+                            columnValue={givingGroupsManageVisible}
+                        />
+                    </p>
                 </div>
                 <div className="pt-1 pb-3">
                     {this.renderList(showloaderForAdministeredGroups, 'administeredGroups', administeredGroups)}
                 </div>
                 <Divider />
                 <div className="pt-2 pb-2">
-                    <p className="bold font-s-16">Giving Groups you have joined</p>
+                    <p
+                        className="bold font-s-16"
+                    >
+                        Giving Groups you have joined
+                        <PrivacySetting
+                            columnName={memberPrivacyColumn}
+                            columnValue={givingGroupsMemberVisible}
+                        />
+                    </p>
                 </div>
                 <div className="pt-1 pb-3">
                     {this.renderList(showloaderForMemberGroups, 'groupsWithMemberships', groupsWithMemberships)}
@@ -281,6 +311,7 @@ function mapStateToProps(state) {
         displayError: state.user.leaveErrorMessage,
         groupsWithMemberships: state.user.groupsWithMemberships,
         leaveButtonLoader: state.user.leaveButtonLoader,
+        userProfileBasicData: state.userProfile.userProfileBasicData,
     };
 }
 
