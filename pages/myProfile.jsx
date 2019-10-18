@@ -44,15 +44,18 @@ class MyProfile extends React.Component {
 
     componentDidMount() {
         const {
-            currentUser: {
+            currentUser,
+            dispatch,
+        } = this.props;
+        if (!_.isEmpty(currentUser)) {
+            const {
                 id,
                 attributes: {
                     email,
                 },
-            },
-            dispatch,
-        } = this.props;
-        getUserProfileBasic(dispatch, email, id, id);
+            } = currentUser;
+            getUserProfileBasic(dispatch, email, id, id);
+        }
     }
 
     getPageIndexByName(pageName) {
@@ -144,11 +147,7 @@ class MyProfile extends React.Component {
     render() {
         const {
             userProfileBasicData,
-            currentUser: {
-                attributes: {
-                    avatar,
-                }
-            },
+            currentUser,
         } = this.props;
         const {
             activeTabIndex,
@@ -159,9 +158,13 @@ class MyProfile extends React.Component {
             && _.size(userProfileBasicData.data) > 0) {
             userData = userProfileBasicData.data[0].attributes;
         }
+        let userAvatar = '';
+        if(!_.isEmpty(currentUser)) {
+            userAvatar = currentUser.attributes.avatar;
+        }
         return (
             <Layout authRequired>
-                <BasicProfile userData={userData} avatar={avatar}/>
+                <BasicProfile userData={userData} avatar={userAvatar}/>
                 <div className="pb-3">
                     <Container>
                         <div className="charityTab n-border">

@@ -29,16 +29,19 @@ class FriendProfile extends React.Component {
 
     componentDidMount() {
         const {
-            currentUser: {
+            currentUser,
+            dispatch,
+            friendChimpId,
+        } = this.props;
+        if (!_.isEmpty(currentUser)) {
+            const {
                 id,
                 attributes: {
                     email,
                 },
-            },
-            dispatch,
-            friendChimpId,
-        } = this.props;
-        getUserFriendProfile(dispatch, email, friendChimpId, id);
+            } = currentUser;
+            getUserFriendProfile(dispatch, email, friendChimpId, id);
+        }
     }
 
     componentDidUpdate(prevProps) {
