@@ -167,6 +167,12 @@ const user = (state = {}, action) => {
                 disableFavorites: false,
             };
             break;
+        case 'DISABLE_BUTTON_IN_USER_MIGRATION':
+            newState = {
+                ...state,
+                disableMigrationButtons: action.payload.continueButtonDisable,
+            };
+            break;
         default:
             break;
     }
