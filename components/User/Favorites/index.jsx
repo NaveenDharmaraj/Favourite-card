@@ -299,10 +299,12 @@ class Favorites extends React.Component {
                             className="bold font-s-16"
                         >
                             Favourites
-                            <PrivacySetting
-                                columnName={favouritePrivacyColumn}
-                                columnValue={favouriteVisible}
-                            />
+                            <span className="font-w-normal">
+                                <PrivacySetting
+                                    columnName={favouritePrivacyColumn}
+                                    columnValue={favouriteVisible}
+                                />
+                            </span>
                         </p>
                     </div>
                     <div className="pt-2 favourite">

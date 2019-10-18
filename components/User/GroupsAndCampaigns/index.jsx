@@ -266,10 +266,12 @@ class GroupsAndCampaigns extends React.Component {
                         className="bold font-s-16"
                     >
                         Giving Groups you manage
-                        <PrivacySetting
-                            columnName={managePrivacyColumn}
-                            columnValue={givingGroupsManageVisible}
-                        />
+                        <span className="font-w-normal">
+                            <PrivacySetting
+                                columnName={managePrivacyColumn}
+                                columnValue={givingGroupsManageVisible}
+                            />
+                        </span>
                     </p>
                 </div>
                 <div className="pt-1 pb-3">
@@ -281,10 +283,12 @@ class GroupsAndCampaigns extends React.Component {
                         className="bold font-s-16"
                     >
                         Giving Groups you have joined
-                        <PrivacySetting
-                            columnName={memberPrivacyColumn}
-                            columnValue={givingGroupsMemberVisible}
-                        />
+                        <span className="font-w-normal">
+                            <PrivacySetting
+                                columnName={memberPrivacyColumn}
+                                columnValue={givingGroupsMemberVisible}
+                            />
+                        </span>
                     </p>
                 </div>
                 <div className="pt-1 pb-3">
