@@ -3,15 +3,15 @@ import React, { Fragment } from 'react';
 //import dynamic from 'next/dynamic';
 // import InfiniteScroll from 'react-infinite-scroller';
 import { connect } from 'react-redux';
-import { Button, Container, Divider, Dropdown, Form, Grid, Header, Icon, Image, Input, List, Modal, Popup } from 'semantic-ui-react';
+import { Button, Checkbox, Container, Divider, Dropdown, Form, Grid, Header, Icon, Image, Input, List, Modal, Popup } from 'semantic-ui-react';
+import { Link } from '../../routes';
 import applozicApi from "../../services/applozicApi";
 import graphApi from "../../services/graphApi";
 import utilityApi from "../../services/utilityApi";
 import moreIcon from '../../static/images/icons/ellipsis.svg';
-import { default as placeholderUser } from '../../static/images/no-data-avatar-user-profile.png';
 import { default as placeholderGroup } from '../../static/images/no-data-avatar-group-chat-profile.png';
+import { default as placeholderUser } from '../../static/images/no-data-avatar-user-profile.png';
 import '../../static/less/message.less';
-import { Link } from '../../routes';
 
 class ChatWrapper extends React.Component {
     items = [];
@@ -47,6 +47,8 @@ class ChatWrapper extends React.Component {
             smallerScreenSection: "convList",
             userInfo: userInfo,
             showMoreOptions: false,
+            groupUserName: "",
+            groupUserInfo: [],
             dispatch: dispatch
         };
         this.composeNew.bind(this);
@@ -121,6 +123,7 @@ class ChatWrapper extends React.Component {
         const self = this;
         const data = new FormData();
         data.append("file", e.target.files[0]);
+        // data.append("file", new Blob(e.target.files, { type: "image/jpg" }));
         // data.append("id", conversationInfo.info.id);
         // data.append("type", "images");
         utilityApi.post("/image/upload/" + (isForNewGroup ? new Date().getTime() : conversationInfo.info.id), data, {
@@ -154,9 +157,10 @@ class ChatWrapper extends React.Component {
         });
     }
 
-    onMemberSelectForAddition = ({ target }, text) => {
-        const value = target.value;
-        if (target.checked) {
+    onMemberSelectForAddition = (value, text) => {
+        // const value = target.value;
+        // const value = target;
+        if (this.state.groupAddMemberValues.indexOf(value) < 0) {
             this.setState((prevState) => ({
                 groupAddMemberOptions: [{ text: text, value }, ...prevState.groupAddMemberOptions],
                 groupAddMemberValues: [value, ...prevState.groupAddMemberValues]
@@ -184,10 +188,13 @@ class ChatWrapper extends React.Component {
     composeNew() {
         this.setState({ compose: !this.state.compose, smallerScreenSection: this.state.compose ? "convList" : "convMsgs", newGroupMemberIds: [], newGroupName: "New Group", newGroupImageUrl: null, selectedConversation: (!this.state.compose ? null : (this.state.selectedConversation && this.state.selectedConversation.key ? this.state.selectedConversation : (this.state.filteredMessages ? this.state.filteredMessages[0] : null))) });
     }
-    setGroupAction(action, triggeredFromPopup) {
-        const newState = { groupAction: action, memberSearchText: "", groupAddMemberOptions: [], groupAddMemberValues: [] };
+    setGroupAction(action, triggeredFromPopup, additionalStateVars) {
+        let newState = { groupAction: action, memberSearchText: "", groupAddMemberOptions: [], groupAddMemberValues: [] };
         if (triggeredFromPopup) {
             newState["showMoreOptions"] = false;
+        }
+        if (additionalStateVars && additionalStateVars != "") {
+            newState = Object.assign(newState, additionalStateVars);
         }
         this.setState(newState);
     }
@@ -298,7 +305,11 @@ class ChatWrapper extends React.Component {
     deleteConversation(params) {
         // console.log(params);
         let self = this;
-        applozicApi.get("/message/delete/conversation", { params: params }).then(function (response) {
+        applozicApi.get("/message/delete/conversation", {
+            params: params, headers: {
+                'Accept': 'text/plain'
+            }
+        }).then(function (response) {
             self.setState({ groupAction: null, conversationAction: null });
             self.loadConversations();
         }).catch(function (error) {
@@ -328,7 +339,7 @@ class ChatWrapper extends React.Component {
         // params["_deviceKey"] = this.state.userInfo.applogicClientRegistration.deviceKey;
         applozicApi.post("/group/left", params).then(function (response) {
             self.setGroupAction(null);
-            self.loadConversations();
+            self.loadConversations(false, groupId);
         });
     }
 
@@ -371,7 +382,7 @@ class ChatWrapper extends React.Component {
         });
     }
 
-    updateGroupDetails(groupId, usersInfo, groupInfo) {
+    updateGroupDetails(groupId, usersInfo, groupInfo, resetActionVar) {
         let self = this;
         let params = { groupId: groupId };
         let currentGroupInfo = self.state.groupFeeds[groupId];
@@ -381,7 +392,7 @@ class ChatWrapper extends React.Component {
         if (!currentGroupInfo || currentGroupInfo.imageUrl != self.state.editGroupImageUrl) {
             params["imageUrl"] = self.state.editGroupImageUrl;
         }
-        if (groupInfo && groupInfo['imageLink']) {
+        if (groupInfo && groupInfo['imageLink'] != undefined && groupInfo["imageLink"] != null) {
             params['imageUrl'] = groupInfo['imageLink'];
         }
         if (usersInfo) {
@@ -391,6 +402,9 @@ class ChatWrapper extends React.Component {
         // params['_userId'] = this.state.userInfo.id;
         // params["_deviceKey"] = this.state.userInfo.applogicClientRegistration.deviceKey;
         applozicApi.post("/group/update", params).then(function (response) {
+            if (resetActionVar) {
+                self.setGroupAction(null);
+            }
             self.loadConversations(false, groupId);
         });
     }
@@ -870,7 +884,7 @@ class ChatWrapper extends React.Component {
                                                                                         </List>
                                                                                     </Popup.Content>
                                                                                 </Popup>
-                                                                                <List.Content className="grpNameEdit">
+`                                                                                <List.Content className="grpNameEdit">
                                                                                     {(() => {
                                                                                         if (self.state.editGroup) {
                                                                                             return <Fragment><Input maxLength="25" placeholder='Group Title' ref="groupName" onKeyDown={(e) => { }} value={self.state.newGroupName} onChange={(e) => { self.setState({ newGroupName: e.target.value }) }} /><span className="charCount" ref="groupNameCharCount">{self.state.newGroupName.length}/25</span><Button className="EditGrpName" onClick={self.handleNewGroupEditDone.bind(this)}><Icon name="check circle" /></Button></Fragment>
@@ -916,7 +930,7 @@ class ChatWrapper extends React.Component {
                                                                     <Form>
                                                                         <Form.Field>
                                                                             <textarea rows="1" placeholder='Type a message…' ref="newConvMessageTextRef" onKeyDown={self.handleComposeMessageKeyDown.bind(this)}></textarea>
-                                                                            {self.state.isSmallerScreen ? <Button circular icon='paper plane outline' className="sendMsgBtn" onClick={() => { self.onSendKeyClick("newConvMessageTextRef") }}></Button> : ""}
+                                                                            <Button circular icon='paper plane outline' className="sendMsgBtn" onClick={() => { self.onSendKeyClick("newConvMessageTextRef") }}></Button>
                                                                         </Form.Field>
                                                                     </Form>
                                                                 </div>
@@ -932,6 +946,36 @@ class ChatWrapper extends React.Component {
                                                         // return <ChatNameHeadGroup selectedConversation={this.state.selectedConversation} userDetails={this.state.userDetails} groupFeeds={this.state.groupFeeds} />
                                                         return (<div className="chatHeader">
                                                             <div className="chatWithGroup">
+                                                                <Modal size="tiny" open={self.state.groupAction == 'REMOVE_USER'} onClose={() => self.setGroupAction("MEMBERS_LIST")} dimmer="inverted" className="chimp-modal" closeIcon centered={false}>
+                                                                    <Modal.Header>Remove {self.state.groupUserName}?</Modal.Header>
+                                                                    <Modal.Content>
+                                                                        <Modal.Description className="font-s-16">{self.state.groupUserName} will be removed from this conversation.</Modal.Description>
+                                                                        <div className="btn-wraper pt-3 text-right">
+                                                                            <Button className="red-btn-rounded-def red" onClick={() => { self.removeUserFromGroup(self.state.groupId, self.state.userId); self.setGroupAction("MEMBERS_LIST"); }}>Remove</Button>
+                                                                            <Button className="blue-bordr-btn-round-def c-small" onClick={() => self.setGroupAction("MEMBERS_LIST")}>Cancel</Button>
+                                                                        </div>
+                                                                    </Modal.Content>
+                                                                </Modal>
+                                                                <Modal size="tiny" open={self.state.groupAction == 'REMOVE_ADMIN'} onClose={() => self.setGroupAction("MEMBERS_LIST")} dimmer="inverted" className="chimp-modal" closeIcon centered={false}>
+                                                                    <Modal.Header>Remove group admin?</Modal.Header>
+                                                                    <Modal.Content>
+                                                                        <Modal.Description className="font-s-16">{self.state.groupUserName} will no longer be able to manage all the members of this group chat.</Modal.Description>
+                                                                        <div className="btn-wraper pt-3 text-right">
+                                                                            <Button className="red-btn-rounded-def red" onClick={() => { self.updateGroupDetails(self.state.groupId, self.state.groupUserInfo); self.setGroupAction("MEMBERS_LIST") }}>Remove group admin</Button>
+                                                                            <Button className="blue-bordr-btn-round-def c-small" onClick={() => self.setGroupAction("MEMBERS_LIST")}>Cancel</Button>
+                                                                        </div>
+                                                                    </Modal.Content>
+                                                                </Modal>
+                                                                <Modal size="tiny" open={self.state.groupAction == 'MAKE_USER_ADMIN'} onClose={() => self.setGroupAction("MEMBERS_LIST")} dimmer="inverted" className="chimp-modal" closeIcon centered={false}>
+                                                                    <Modal.Header>Make {self.state.groupUserName} group chat admin for group name?</Modal.Header>
+                                                                    <Modal.Content>
+                                                                        <Modal.Description className="font-s-16">As an administrator, {self.state.groupUserName} will be able to manage all the members of this group chat.</Modal.Description>
+                                                                        <div className="btn-wraper pt-3 text-right">
+                                                                            <Button className="blue-btn-rounded-def c-small" onClick={() => { self.updateGroupDetails(self.state.groupId, self.state.groupUserInfo); self.setGroupAction("MEMBERS_LIST") }}>Make group admin</Button>
+                                                                            <Button className="blue-bordr-btn-round-def c-small" onClick={() => self.setGroupAction("MEMBERS_LIST")}>Cancel</Button>
+                                                                        </div>
+                                                                    </Modal.Content>
+                                                                </Modal>
                                                                 <Modal open={self.state.groupAction == 'MEMBERS_LIST'} onClose={() => self.setGroupAction(null)} size="tiny" dimmer="inverted" className="chimp-modal" closeIcon centered={false}>
                                                                     <Modal.Header>Members</Modal.Header>
                                                                     <Modal.Content>
@@ -960,10 +1004,13 @@ class ChatWrapper extends React.Component {
                                                                                                                         <List>
                                                                                                                             {/* <List.Item as='a' onClick={() => self.setGroupAction('MEMBERS_LIST')}>Message</List.Item> */}
                                                                                                                         <List.Item as='a'> <Link route={"/users/profile/" + user.userId}><a>View profile</a></Link></List.Item>
-                                                                                                                                {user.userId != self.state.userInfo.id && currentUserInfo.role == "1" && user.role != "1" ? <List.Item as='a' onClick={() => self.updateGroupDetails(groupFeed.clientGroupId, [{ "userId": Number(user.userId), "role": "1" }])}>Make group admin</List.Item> : ""}
-                                                                                                                                {user.userId != self.state.userInfo.id && currentUserInfo.role == "1" && user.role == "1" ? <List.Item as='a' onClick={() => self.updateGroupDetails(groupFeed.clientGroupId, [{ "userId": Number(user.userId), "role": "3" }])}>Remove group admin</List.Item> : ""}
+                                                                                                                                {/* {user.userId != self.state.userInfo.id && currentUserInfo.role == "1" && user.role != "1" ? <List.Item as='a' onClick={() => self.updateGroupDetails(groupFeed.clientGroupId, [{ "userId": Number(user.userId), "role": "1" }])}>Make group admin</List.Item> : ""} */}
+                                                                                                                                {user.userId != self.state.userInfo.id && currentUserInfo.role == "1" && user.role != "1" ? <List.Item as='a' onClick={() => self.setGroupAction("MAKE_USER_ADMIN", false, { groupId: groupFeed.clientGroupId, groupUserInfo: [{ "userId": Number(user.userId), "role": "1" }], groupUserName: self.state.userDetails[user.userId].displayName || "User" })}>Make group admin</List.Item> : ""}
+                                                                                                                                {/* {user.userId != self.state.userInfo.id && currentUserInfo.role == "1" && user.role == "1" ? <List.Item as='a' onClick={() => self.updateGroupDetails(groupFeed.clientGroupId, [{ "userId": Number(user.userId), "role": "3" }])}>Remove group admin</List.Item> : ""} */}
+                                                                                                                                {user.userId != self.state.userInfo.id && currentUserInfo.role == "1" && user.role == "1" ? <List.Item as='a' onClick={() => self.setGroupAction("REMOVE_ADMIN", false, { groupId: groupFeed.clientGroupId, groupUserInfo: [{ "userId": Number(user.userId), "role": "3" }], groupUserName: self.state.userDetails[user.userId].displayName || "User" })}>Remove group admin</List.Item> : ""}
                                                                                                                         {user.userId != self.state.userInfo.id && currentUserInfo.role == "1" && user.role != "1" ? <Divider /> : ""}
-                                                                                                                                {user.userId != self.state.userInfo.id && currentUserInfo.role == "1" ? <List.Item as='a' className="red" onClick={() => self.removeUserFromGroup(groupFeed.clientGroupId, user.userId)}>Remove from conversation</List.Item> : ""}
+                                                                                                                                {/* {user.userId != self.state.userInfo.id && currentUserInfo.role == "1" ? <List.Item as='a' className="red" onClick={() => self.removeUserFromGroup(groupFeed.clientGroupId, user.userId)}>Remove from conversation</List.Item> : ""} */}
+                                                                                                                                {user.userId != self.state.userInfo.id && currentUserInfo.role == "1" ? <List.Item as='a' className="red" onClick={() => self.setGroupAction("REMOVE_USER", false, { groupId: groupFeed.clientGroupId, userId: user.userId, groupUserName: self.state.userDetails[user.userId].displayName || "User" })}>Remove from conversation</List.Item> : ""}
                                                                                                                         </List>
                                                                                                                     </Popup.Content>
                                                                                                                 </Popup>
@@ -1011,6 +1058,7 @@ class ChatWrapper extends React.Component {
 
                                                                                 {/* <Input fluid iconPosition='left' placeholder='Add members...' /> */}
                                                                             </div>
+                                                                            <div className="swichAccounts mt-2 mb-2">
                                                                             <List divided verticalAlign='middle'>
                                                                                 {(() => {
                                                                                     if (self.state.selectedConversation && self.state.selectedConversation.groupId) {
@@ -1021,22 +1069,9 @@ class ChatWrapper extends React.Component {
                                                                                                 let user = self.state.userDetails[userId];
                                                                                                 if (user.userId != self.state.userInfo.id && (user.displayName || user.userName) && groupFeed.membersId.indexOf(user.userId+"") < 0) {
                                                                                                     return (<List.Item key={"member_" + user.userId}>
-                                                                                                        <List.Content floated='right'>
-                                                                                                            <input value={user.userId} onChange={(e) => self.onMemberSelectForAddition(e, (user.displayName || user.userName))} checked={self.state.groupAddMemberValues.indexOf(user.userId + "") >= 0} type="checkbox" className="cp_chkbx" tabIndex="0" />
-                                                                                                            {/* <Popup className="moreOptionPopup"
-                                                                                                                trigger={<Button className="moreOption-btn transparent" circular>
-                                                                                                                    <Image src={moreIcon} ref={self.contextRef} />
-                                                                                                                </Button>} basic position='bottom right' on='click'>
-                                                                                                                <Popup.Content>
-                                                                                                                    
-                                                                                                                    <List>
-                                                                                                                        <List.Item as='a' onClick={() => self.addUserToGroup(groupFeed.clientGroupId, user.userId, 3)}>Add as Member</List.Item>
-                                                                                                                        <Divider />
-                                                                                                                        <List.Item as='a' onClick={() => self.addUserToGroup(groupFeed.clientGroupId, user.userId, 1)}>Add as Admin</List.Item>
-                                                                                                                    </List>
-                                                                                                                </Popup.Content>
-                                                                                                            </Popup> */}
-
+                                                                                                        <List.Content floated='right' className="ui checkbox">
+                                                                                                            {/* <input value={user.userId} onChange={(e) => self.onMemberSelectForAddition(e, (user.displayName || user.userName))} checked={self.state.groupAddMemberValues.indexOf(user.userId + "") >= 0} type="checkbox" className="cp_chkbx" tabIndex="0" /> */}
+                                                                                                            <Checkbox className="cp_chkbx" value={user.userId} onClick={(e) => self.onMemberSelectForAddition(user.userId + "", (user.displayName || user.userName))} checked={self.state.groupAddMemberValues.indexOf(user.userId + "") >= 0} />
                                                                                                         </List.Content>
                                                                                                         <Image avatar src={user.imageLink ? user.imageLink : placeholderUser} />
                                                                                                         <List.Content>
@@ -1044,9 +1079,7 @@ class ChatWrapper extends React.Component {
                                                                                                             {/* <List.Description></List.Description> */}
                                                                                                         </List.Content>
                                                                                                     </List.Item>);
-                                                                                                   
                                                                                                 }
-                                                                                               
                                                                                             }
                                                                                             )
                                                                                         }
@@ -1056,6 +1089,7 @@ class ChatWrapper extends React.Component {
                                                                                 <p>New members will see all previous messages from this conversation.</p> 
                                                                                 </div>
                                                                             </List>
+                                                                            </div>
                                                                         </Modal.Description>
                                                                         <div className="btn-wraper pt-3 text-right">
                                                                             <Button className="blue-btn-rounded-def c-small" onClick={() => self.addSelectedUsersToGroup(groupFeed.clientGroupId)}>Add</Button>
@@ -1108,6 +1142,17 @@ class ChatWrapper extends React.Component {
                                                                     </Modal.Content>
                                                                 </Modal>
 
+                                                                <Modal size="tiny" open={self.state.groupAction == 'REMOVE_GROUP_IMAGE'} onClose={() => self.setGroupAction(null)} dimmer="inverted" className="chimp-modal" closeIcon centered={false}>
+                                                                    <Modal.Header>Remove group image?</Modal.Header>
+                                                                    <Modal.Content>
+                                                                        <Modal.Description className="font-s-16">Cannot undo this action. The image of the group will be removed for all members.</Modal.Description>
+                                                                        <div className="btn-wraper pt-3 text-right">
+                                                                            <Button className="red-btn-rounded-def red c-small" onClick={() => self.updateGroupDetails(self.state.selectedConversation.groupId, false, { imageLink: " " }, true)}>Remove</Button>
+                                                                            <Button className="blue-bordr-btn-round-def c-small" onClick={() => self.setGroupAction(null)}>Cancel</Button>
+                                                                        </div>
+                                                                    </Modal.Content>
+                                                                </Modal>
+                                                                <Modal size="tiny" open={self.state.groupAction == "VIEW_GROUP_IMAGE"} onClose={() => self.setGroupAction(null)} dimmer="inverted" className="chimp-modal image-modal" style={{ backgroundImage: 'url(' + conversationInfo.image + ')' }} closeIcon centered={false}></Modal>
                                                                 <List divided verticalAlign='middle'>
                                                                     <List.Item>
                                                                         {(() => {
@@ -1145,13 +1190,13 @@ class ChatWrapper extends React.Component {
                                                                                     </List.Content>)
                                                                             }
                                                                         })()}
-                                                                        <Popup className="moreOptionPopup"
-                                                                            trigger={<Image avatar src={conversationInfo.image} />} basic position='bottom left' on='click'>
+                                                                        <Popup className="moreOptionPopup" open={self.state.groupAction == "IMAGE_ACTION"} onClose={() => self.setGroupAction(null)}
+                                                                            trigger={<Image avatar onClick={() => self.setGroupAction("IMAGE_ACTION")} src={conversationInfo.image} />} basic position='bottom left' on='click'>
                                                                             <Popup.Content>
                                                                                 <List>
                                                                                     {(() => {
                                                                                         if (conversationInfo.imagePresent) {
-                                                                                            return <Modal size="tiny" dimmer="inverted" className="chimp-modal image-modal" style={{ backgroundImage: 'url(' + conversationInfo.image + ')' }} closeIcon trigger={<List.Item as='a'>View photo</List.Item>} centered={false}></Modal>
+                                                                                            return <List.Item as='a'  onClick={(e) => self.setGroupAction("VIEW_GROUP_IMAGE", true)}>View photo</List.Item>
                                                                                         }
                                                                                     })()}
 
@@ -1161,7 +1206,7 @@ class ChatWrapper extends React.Component {
                                                                                                 <Fragment>
                                                                                                     <input id="myInput" accept="images/*" type="file" onChange={(event) => { self.onGroupImageChange(event, conversationInfo) }} ref={(ref) => this.upload = ref} style={{ display: 'none' }} />
                                                                                                     <List.Item as='a' onClick={(e) => this.upload.click()}>Upload photo</List.Item>
-                                                                                                    {conversationInfo.imagePresent ? <List.Item as='a'>Remove photo</List.Item> : ""}
+                                                                                                    {conversationInfo.imagePresent ? <List.Item as='a' onClick={(e) => self.setGroupAction("REMOVE_GROUP_IMAGE", true)}>Remove photo</List.Item> : ""}
                                                                                                 </Fragment>
                                                                                             )
                                                                                         }
@@ -1310,7 +1355,7 @@ class ChatWrapper extends React.Component {
                                                                     return <Form>
                                                                 <Form.Field>
                                                                             <textarea placeholder='Type a message…' ref="currentConvMessageTextRef" disabled={conversationInfo.type == "group" && conversationInfo.info.removedMembersId.indexOf(self.state.userInfo.id) >= 0} rows="1" onKeyDown={this.handleMessageKeyDown.bind(this)}></textarea>
-                                                                            {self.state.isSmallerScreen ? <Button circular icon='paper plane outline' className="sendMsgBtn" disabled={conversationInfo.type == "group" && conversationInfo.info.removedMembersId.indexOf(self.state.userInfo.id) >= 0} onClick={() => { self.onSendKeyClick("currentConvMessageTextRef") }}></Button> : ""}
+                                                                            <Button circular icon='paper plane outline' className="sendMsgBtn" disabled={conversationInfo.type == "group" && conversationInfo.info.removedMembersId.indexOf(self.state.userInfo.id) >= 0} onClick={() => { self.onSendKeyClick("currentConvMessageTextRef") }}></Button>
                                                                 </Form.Field>
                                                             </Form>
                                                                 }
