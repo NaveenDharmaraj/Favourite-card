@@ -43,7 +43,7 @@ class GroupsAndCampaigns extends React.Component {
             showloaderForAdministeredGroups: !props.administeredGroups,
             showloaderForCampaigns: !props.administeredCampaigns,
             showloaderForMemberGroups: !props.groupsWithMemberships,
-            showInitialButton: (_.isEmpty(props.administeredGroups)),
+            showInitialButton: (_.isEmpty(props.administeredGroups) || (!_.isEmpty(props.administeredGroups) && _.isEmpty(props.administeredGroups.data))),
         };
     }
 
@@ -70,10 +70,10 @@ class GroupsAndCampaigns extends React.Component {
         } = this.state;
         if (!_.isEqual(this.props, prevProps)) {
             if (!_.isEqual(administeredCampaigns, prevProps.administeredCampaigns)) {
-                showInitialButton = !(!_.isEmpty(administeredCampaigns) && !_.isEmpty(administeredCampaigns.data));
                 showloaderForCampaigns = false;
             }
             if (!_.isEqual(administeredGroups, prevProps.administeredGroups)) {
+                showInitialButton = !(!_.isEmpty(administeredGroups) && !_.isEmpty(administeredGroups.data));
                 showloaderForAdministeredGroups = false;
             }
             if (!_.isEqual(groupsWithMemberships, prevProps.groupsWithMemberships)) {
