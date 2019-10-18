@@ -65,7 +65,7 @@ class GroupsAndCampaigns extends React.Component {
         } = this.state;
         if (!_.isEqual(this.props, prevProps)) {
             if (!_.isEqual(administeredCampaigns, prevProps.administeredCampaigns)) {
-                showInitialButton = (!_.isEmpty(administeredCampaigns) && _.isEmpty(administeredCampaigns.data))
+                showInitialButton = !(!_.isEmpty(administeredCampaigns) && !_.isEmpty(administeredCampaigns.data));
                 showloaderForCampaigns = false;
             }
             if (!_.isEqual(administeredGroups, prevProps.administeredGroups)) {
