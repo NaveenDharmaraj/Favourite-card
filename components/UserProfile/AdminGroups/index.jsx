@@ -20,10 +20,13 @@ import LeftImageCard from '../../shared/LeftImageCard';
 class UserAdminGroupList extends React.Component {
     componentDidMount() {
         const {
+            currentUser: {
+                id,
+            },
             dispatch,
             friendUserId,
         } = this.props;
-        getUserAdminGroup(dispatch, friendUserId);
+        getUserAdminGroup(dispatch, friendUserId, id);
     }
 
     componentWillUnmount() {
@@ -58,11 +61,12 @@ class UserAdminGroupList extends React.Component {
                     locationDetails = `${data.attributes.city}, ${data.attributes.province}`;
                 }
                 const url = `/groups/${data.attributes.slug}`;
+                const groupImage = (!_.isEmpty(data.attributes.avatar)) ? data.attributes.avatar : placeholderGroup;
                 return (
                     <LeftImageCard
                         entityName={entityName}
                         location={locationDetails}
-                        placeholder={placeholderGroup}
+                        placeholder={groupImage}
                         typeClass="chimp-lbl group"
                         type="giving group"
                         url={url}

@@ -139,7 +139,7 @@ const getUserCharitableInterests = (dispatch, userId) => {
     });
 };
 
-const getUserMemberGroup = (dispatch, userId) => {
+const getUserMemberGroup = (dispatch, userId, sourceUserId) => {
     const fsa = {
         payload: {
             userId,
@@ -152,7 +152,7 @@ const getUserMemberGroup = (dispatch, userId) => {
         },
         type: actionTypes.USER_PROFILE_MEMBER_GROUP_LOAD_STATUS,
     });
-    graphApi.get(`/user/groupbyrelationship?type=member&userid=${Number(userId)}&limit=9`).then(
+    coreApi.get(`/users/${Number(sourceUserId)}/friendGroups?friend_id=${Number(userId)}&fields[groups]=name,city,province,slug,avatar,groupType&page[number]=1&page[size]=9`).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -171,7 +171,7 @@ const getUserMemberGroup = (dispatch, userId) => {
     });
 };
 
-const getUserAdminGroup = (dispatch, userId) => {
+const getUserAdminGroup = (dispatch, userId, sourceUserId) => {
     const fsa = {
         payload: {
             userId,
@@ -184,7 +184,8 @@ const getUserAdminGroup = (dispatch, userId) => {
         },
         type: actionTypes.USER_PROFILE_ADMIN_GROUP_LOAD_STATUS,
     });
-    graphApi.get(`/user/groupbyrelationship?type=admin&userid=${Number(userId)}&limit=9`).then(
+
+    coreApi.get(`users/${Number(sourceUserId)}/friendAdministeredGroups?friend_id=${Number(userId)}&fields[groups]=name,city,province,slug,avatar,groupType&page[number]=1&page[size]=9`).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
