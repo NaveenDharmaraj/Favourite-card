@@ -51,47 +51,59 @@ class ChatWrapper extends React.Component {
             groupUserInfo: [],
             dispatch: dispatch
         };
-        this.composeNew.bind(this);
-        this.setGroupAction.bind(this);
-        this.groupMessagesByDate.bind(this);
-        this.getDateString.bind(this);
-        this.loadFriendsList.bind(this);
-        this.createGroup.bind(this);
-        this.deleteConversation.bind(this);
-        this.getFriendsListDropDownOptions.bind(this);
-        this.leaveGroup.bind(this);
-        this.deleteGroup.bind(this);
-        this.addUserToGroup.bind(this);
-        this.removeUserFromGroup.bind(this);
-        this.updateGroupDetails.bind(this);
-        this.loadConversationMessages.bind(this);
-        this.sendMessageToSelectedConversation.bind(this);
-        this.conversationHead.bind(this);
-        this.loadConversations.bind(this);
-        this.onMessageReceived.bind(this);
-        this.applozicAppInitialized.bind(this);
-        this.onMessageEvent.bind(this);
-        this.refreshForNewMessages.bind(this);
-        this.onConversationSelect.bind(this);
-        this.handleContactSelection.bind(this);
-        this.handleComposeMessageKeyDown.bind(this);
-        this.handleMessageKeyDown.bind(this);
-        this.onConversationSearchChange.bind(this);
-        this.timeString.bind(this);
-        this.handleScroll.bind(this);
-        this.handleNewGroupEdit.bind(this);
-        this.handleNewGroupEditDone.bind(this);
-        this.getCurrentUserRoleInGroup.bind(this);
-        this.handleGroupAddMemberSelected.bind(this);
-        this.handleGroupAddMemberChange.bind(this);
-        this.onMemberSelectForAddition.bind(this);
-        this.addSelectedUsersToGroup.bind(this);
-        this.onGroupImageChange.bind(this);
-        this.setShowMoreOptions.bind(this);
-        this.muteOrUnmuteConversation.bind(this);
+        this.composeNew = this.composeNew.bind(this);
+        this.setGroupAction = this.setGroupAction.bind(this);
+        this.groupMessagesByDate = this.groupMessagesByDate.bind(this);
+        this.getDateString = this.getDateString.bind(this);
+        this.loadFriendsList = this.loadFriendsList.bind(this);
+        this.createGroup = this.createGroup.bind(this);
+        this.deleteConversation = this.deleteConversation.bind(this);
+        this.getFriendsListDropDownOptions = this.getFriendsListDropDownOptions.bind(this);
+        this.leaveGroup = this.leaveGroup.bind(this);
+        this.deleteGroup = this.deleteGroup.bind(this);
+        this.addUserToGroup = this.addUserToGroup.bind(this);
+        this.removeUserFromGroup = this.removeUserFromGroup.bind(this);
+        this.updateGroupDetails = this.updateGroupDetails.bind(this);
+        this.loadConversationMessages = this.loadConversationMessages.bind(this);
+        this.sendMessageToSelectedConversation = this.sendMessageToSelectedConversation.bind(this);
+        this.conversationHead = this.conversationHead.bind(this);
+        this.loadConversations = this.loadConversations.bind(this);
+        this.onMessageReceived = this.onMessageReceived.bind(this);
+        this.applozicAppInitialized = this.applozicAppInitialized.bind(this);
+        this.onMessageEvent = this.onMessageEvent.bind(this);
+        this.refreshForNewMessages = this.refreshForNewMessages.bind(this);
+        this.onConversationSelect = this.onConversationSelect.bind(this);
+        this.handleContactSelection = this.handleContactSelection.bind(this);
+        this.handleComposeMessageKeyDown = this.handleComposeMessageKeyDown.bind(this);
+        this.handleMessageKeyDown = this.handleMessageKeyDown.bind(this);
+        this.onConversationSearchChange = this.onConversationSearchChange.bind(this);
+        this.timeString = this.timeString.bind(this);
+        this.handleScroll = this.handleScroll.bind(this);
+        this.handleNewGroupEdit = this.handleNewGroupEdit.bind(this);
+        this.handleNewGroupEditDone = this.handleNewGroupEditDone.bind(this);
+        this.getCurrentUserRoleInGroup = this.getCurrentUserRoleInGroup.bind(this);
+        this.handleGroupAddMemberSelected = this.handleGroupAddMemberSelected.bind(this);
+        this.handleGroupAddMemberChange = this.handleGroupAddMemberChange.bind(this);
+        this.onMemberSelectForAddition = this.onMemberSelectForAddition.bind(this);
+        this.addSelectedUsersToGroup = this.addSelectedUsersToGroup.bind(this);
+        this.onGroupImageChange = this.onGroupImageChange.bind(this);
+        this.setShowMoreOptions = this.setShowMoreOptions.bind(this);
+        this.muteOrUnmuteConversation = this.muteOrUnmuteConversation.bind(this);
         this.memberSearchTextChange = this.memberSearchTextChange.bind(this);
-        this.resize.bind(this);
-        this.onSendKeyClick.bind(this);
+        this.resize = this.resize.bind(this);
+        this.onSendKeyClick = this.onSendKeyClick.bind(this);
+        this.getBase64 = this.getBase64.bind(this);
+    }
+
+    getBase64(file, cb) {
+        let reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function () {
+            cb(reader.result)
+        };
+        reader.onerror = function (error) {
+            console.log('Error: ', error);
+        };
     }
 
     memberSearchTextChange(event) {
@@ -121,25 +133,27 @@ class ChatWrapper extends React.Component {
     }
     onGroupImageChange = (e, conversationInfo, isForNewGroup) => {
         const self = this;
-        const data = new FormData();
-        data.append("file", e.target.files[0]);
-        // data.append("file", new Blob(e.target.files, { type: "image/jpg" }));
-        // data.append("id", conversationInfo.info.id);
-        // data.append("type", "images");
+        self.getBase64(event.target.files[0], (result) => {
+            const data = { "data": { "type": "users", "attributes": { "file": result }, "id": (isForNewGroup ? new Date().getTime() : conversationInfo.info.id) } };
         utilityApi.post("/image/upload/" + (isForNewGroup ? new Date().getTime() : conversationInfo.info.id), data, {
             headers: {
-                'Accept': 'multipart/form-data',
-                'Content-Type': 'multipart/form-data'
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
             }
         }).then(function (response) {
             const newImage = response.data.attributes.location;
-
             if (isForNewGroup) {
-                self.setState({ newGroupImageUrl: newImage });
+                    self.setState({ newGroupImageUrl: newImage, groupAction: null });
             } else {
                 self.updateGroupDetails(conversationInfo.info.id, false, { imageLink: newImage });
-                self.setState({ editGroupImageUrl: newImage });
+                    self.setState({ editGroupImageUrl: newImage, groupAction: null });
             }
+            }).catch((err) => {
+                console.log(err);
+                if (err && err.statusCode == "413") {
+                    self.setState({ groupAction: null, groupActionError: err.message || err.error });
+                }
+            });;
         });
     }
 
@@ -670,7 +684,6 @@ class ChatWrapper extends React.Component {
     }
 
     onSendKeyClick(refName) {
-        console.log(this.refs[refName]);
         const self = this;
         if (self.refs[refName] && self.refs[refName].value.trim() != "") {
             if (refName == "currentConvMessageTextRef") {
@@ -771,7 +784,7 @@ class ChatWrapper extends React.Component {
     handleNewGroupEditDone(e) {
         if (this.refs.groupName.inputRef.current.value.trim() != "") {
         this.setState({ editGroup: false });
-            this.setState({ newGroupName: this.refs.groupName.inputRef.current.value, newGroupImageUrl: "" });
+            this.setState({ newGroupName: this.refs.groupName.inputRef.current.value });
     }
     }
 
@@ -869,8 +882,8 @@ class ChatWrapper extends React.Component {
                                                                                 <List.Content floated='right'>
                                                                                     <div className="moreOption"></div>
                                                                                 </List.Content>
-                                                                                <Popup className="moreOptionPopup"
-                                                                                    trigger={<Image avatar src={self.state.newGroupImageUrl ? self.state.newGroupImageUrl : placeholderGroup} />} basic position='bottom left' on='click'>
+                                                                                <Popup className="moreOptionPopup" open={self.state.groupAction == "IMAGE_ACTION"} onClose={() => self.setGroupAction(null)}
+                                                                                    trigger={<Image avatar onClick={() => self.setGroupAction("IMAGE_ACTION")} src={self.state.newGroupImageUrl ? self.state.newGroupImageUrl : placeholderGroup} />} basic position='bottom left' on='click'>
                                                                                     <Popup.Content>
                                                                                         <List>
                                                                                             {(() => {
@@ -884,7 +897,7 @@ class ChatWrapper extends React.Component {
                                                                                         </List>
                                                                                     </Popup.Content>
                                                                                 </Popup>
-`                                                                                <List.Content className="grpNameEdit">
+                                                                                <List.Content className="grpNameEdit">
                                                                                     {(() => {
                                                                                         if (self.state.editGroup) {
                                                                                             return <Fragment><Input maxLength="25" placeholder='Group Title' ref="groupName" onKeyDown={(e) => { }} value={self.state.newGroupName} onChange={(e) => { self.setState({ newGroupName: e.target.value }) }} /><span className="charCount" ref="groupNameCharCount">{self.state.newGroupName.length}/25</span><Button className="EditGrpName" onClick={self.handleNewGroupEditDone.bind(this)}><Icon name="check circle" /></Button></Fragment>
@@ -946,6 +959,16 @@ class ChatWrapper extends React.Component {
                                                         // return <ChatNameHeadGroup selectedConversation={this.state.selectedConversation} userDetails={this.state.userDetails} groupFeeds={this.state.groupFeeds} />
                                                         return (<div className="chatHeader">
                                                             <div className="chatWithGroup">
+                                                                <Modal size="tiny" open={self.state.groupActionError != null} onClose={() => self.setState({ groupActionError: null,groupAction:null })} dimmer="inverted" className="chimp-modal" closeIcon centered={false}>
+                                                                    <Modal.Header>Error uploading photo</Modal.Header>
+                                                                    <Modal.Content>
+                                                                        <Modal.Description className="font-s-16">{self.state.groupActionError}</Modal.Description>
+                                                                        <div className="btn-wraper pt-3 text-right">
+                                                                            <Button className="blue-bordr-btn-round-def c-small" onClick={() => self.setState({ groupActionError: null,groupAction:null })}>Close</Button>
+                                                                        </div>
+                                                                    </Modal.Content>
+                                                                </Modal>
+
                                                                 <Modal size="tiny" open={self.state.groupAction == 'REMOVE_USER'} onClose={() => self.setGroupAction("MEMBERS_LIST")} dimmer="inverted" className="chimp-modal" closeIcon centered={false}>
                                                                     <Modal.Header>Remove {self.state.groupUserName}?</Modal.Header>
                                                                     <Modal.Content>
