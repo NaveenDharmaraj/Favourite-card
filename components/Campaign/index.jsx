@@ -51,7 +51,7 @@ class CampaignProfileWrapper extends React.Component {
                 dispatch,
             } = this.props;
             if (currentUser && currentUser.id) {
-                generateDeepLink(`deeplink?profileType=groupprofile&sourceId=${currentUser.id}&profileId=${campaignDetails.id}`, dispatch);
+                generateDeepLink(`deeplink?profileType=campaignprofile&sourceId=${currentUser.id}&profileId=${campaignDetails.attributes.groupId}`, dispatch);
             }
         }
     }
@@ -89,11 +89,11 @@ class CampaignProfileWrapper extends React.Component {
             subGroupListLoader,
             isAuthenticated,
         } = this.props;
-        let bannerStyle;
+        let bannerStyle = {
+            minHeight: '390px',
+        };
         if (campaignDetails.attributes.banner) {
-            bannerStyle = {
-                backgroundImage: `url( ${campaignDetails.attributes.banner})`,
-            };
+            bannerStyle.backgroundImage = `url( ${campaignDetails.attributes.banner})`;
         }
         return (
             <React.Fragment>
