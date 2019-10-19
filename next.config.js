@@ -4,6 +4,7 @@ const withImages = require('next-images');
 
 const configVars = {
     publicRuntimeConfig: {
+		CHAT_GROUP_DEFAULT_AVATAR:"http://d1wjn4fmcgu4dn.cloudfront.net/web/group-chat-avatar.png",
         APP_URL_ORIGIN: process.env.APP_URL_ORIGIN,
         APPLOZIC_APP_KEY: process.env.APPLOZIC_APP_KEY,
         APPLOZIC_WS_URL: process.env.APPLOZIC_WS_URL,
