@@ -995,6 +995,7 @@ class ChatWrapper extends React.Component {
                                                         // return <ChatNameHeadGroup selectedConversation={this.state.selectedConversation} userDetails={this.state.userDetails} groupFeeds={this.state.groupFeeds} />
                                                         return (<div className="chatHeader">
                                                             <div className="chatWithGroup">
+
                                                                 <Modal size="tiny" open={self.state.groupActionError != null} onClose={() => self.setState({ groupActionError: null, groupAction: null })} dimmer="inverted" className="chimp-modal" closeIcon centered={false}>
                                                                     <Modal.Header>Error uploading photo</Modal.Header>
                                                                     <Modal.Content>

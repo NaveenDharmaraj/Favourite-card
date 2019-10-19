@@ -200,7 +200,7 @@ class Login extends React.Component {
                     buttonClicked: true,
                 });
                 const userDetails = {};
-                userDetails.name = (firstName) ? `${firstName} ${lastName}` : '';
+                // userDetails.name = (firstName) ? `${firstName} ${lastName}` : '';
                 userDetails.given_name = firstName;
                 userDetails.family_name = lastName;
                 userDetails.email = emailId;

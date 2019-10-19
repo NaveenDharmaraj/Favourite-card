@@ -14,7 +14,6 @@ import {
 import {
     chimpLogin,
     getUser,
-    wpLogin,
 } from '../actions/user';
 import isUndefinedOrEmpty from '../helpers/object';
 
@@ -27,9 +26,6 @@ const {
     AUTH0_DOMAIN,
     AUTH0_WEB_CLIENT_ID,
     AUTH0_WEB_AUDIENCE,
-    CORP_DOMAIN,
-    WP_DOMAIN_BASE,
-    WP_API_VERSION,
 } = publicRuntimeConfig;
 
 /**
@@ -154,6 +150,7 @@ const auth0 = {
         this.accessToken = null;
         this.userEmail = null;
         this.userId = null;
+        this.wpAccessToken = null;
 
         return null;
     },
@@ -417,13 +414,6 @@ const _handleLockSuccess = async ({
     if (!accessToken || !idToken) { return null(); }
     // Sets access token and expiry time in cookies
     chimpLogin(accessToken).then(async ({ currentUser }) => {
-        if (CORP_DOMAIN && WP_DOMAIN_BASE && WP_API_VERSION) {
-            await wpLogin(accessToken);
-        }
-        let cookieName = 'HelloWorld';
-        let cookieValue = 'HelloWorld';
-        let myDate = new Date();
-        myDate.setMonth(myDate.getMonth() + 12);
         if (document) {
             // console.log('setting wp access token');
             await (auth0.wpAccessToken = accessToken);

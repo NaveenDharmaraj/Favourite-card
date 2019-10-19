@@ -794,18 +794,41 @@ export const removeFavorite = (dispatch, favId, userId, favorites, type, dataCou
     });
 };
 
-export const saveUserCauses = (dispatch, userId, userCauses) => {
+export const saveUserCauses = (dispatch, userId, userCauses, discoverValue) => {
     const bodyDataCauses = {
         causes: userCauses,
         userid: Number(userId),
     };
+
+    const bodyData = {
+        data: {
+            attributes: {
+                preferences: {
+                    discoverability: discoverValue,
+                },
+            },
+            id: Number(userId),
+            type: 'users',
+        },
+    };
+
     return graphApi.patch(`/user/updatecauses`, bodyDataCauses).then(
         () => {
-            getUserFund(dispatch, userId).then(() => {
-                Router.pushRoute('/dashboard');
-            });
+            coreApi.patch(`/users/${userId}`, bodyData).then(
+                () => {
+                    getUserFund(dispatch, userId).then(() => {
+                        Router.pushRoute('/dashboard');
+                    });
+                },
+            );
         },
     ).catch((err) => {
+        dispatch({
+            payload: {
+                continueButtonDisable: false,
+            },
+            type: 'DISABLE_BUTTON_IN_USER_MIGRATION'
+        });
         triggerUxCritialErrors(err.errors || err, dispatch);
     });
 };

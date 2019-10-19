@@ -119,6 +119,7 @@ function ProfileDetails(props) {
             menuItem: 'Giving Groups supporting this Campaign',
             render: () => {
                 const {
+                    campaignDetails,
                     campaignSubGroupDetails,
                     campaignSubGroupsShowMoreUrl,
                     seeMoreLoaderStatus,
@@ -128,6 +129,7 @@ function ProfileDetails(props) {
                 return (
                     <Tab.Pane attached={false}>
                         <SupportingGroups
+                            campaignDetails={campaignDetails}
                             campaignSubGroupDetails={campaignSubGroupDetails}
                             campaignSubGroupsShowMoreUrl={campaignSubGroupsShowMoreUrl}
                             seeMoreLoaderStatus={seeMoreLoaderStatus}

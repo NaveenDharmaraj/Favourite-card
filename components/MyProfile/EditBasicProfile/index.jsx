@@ -537,7 +537,7 @@ class EditBasicProfile extends React.Component {
                                             />
                                         }
                                     />
-                                    <span className="font-w-normal">
+                                    <span className="font-w-normal ml--1-2">
                                         <PrivacySetting
                                             columnName={privacyColumn}
                                             columnValue={userData.giving_goal_visibility}

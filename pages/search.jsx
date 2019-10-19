@@ -64,7 +64,7 @@ class Search extends React.Component {
             currentPageClicked,
         } = this.state;
         if (_isEmpty(searchWord) && isAuthenticated === false) {
-            Router.pushRoute('/search?search=charitable impact&result_type=All');
+            Router.pushRoute('/search?search=charitable impact&result_type=Beneficiary');
         }
         if (_isEmpty(searchWord) && searchType === 'All') {
             dispatch(fetchInitialCharitiesGroups(isAuthenticated, id));
