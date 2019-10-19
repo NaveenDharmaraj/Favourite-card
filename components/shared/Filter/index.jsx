@@ -39,7 +39,7 @@ const generateFilterObj = (obj) => {
             }
             if (field === 'Charity designation') {
                 finalObjects.push({
-                    field: 'designations',
+                    field: 'designation',
                     value,
                 });
             }
@@ -82,7 +82,7 @@ class FilterComponent extends React.Component {
                 if (key === 'city') {
                     key = 'location';
                 }
-                if (key === 'designations') {
+                if (key === 'designation') {
                     key = 'Charity designation';
                 }
                 if (key === 'charity_size') {
