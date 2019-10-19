@@ -243,6 +243,7 @@ class UserBasciProfile extends React.Component {
         let isFriend = false; let isLimited = false; let isProfileOut = false; let isProfileIn = false;
         let email = '';
         let profileType = ''; let userProfileDeeplink = '';
+        let locationDetails = '';
         if (!_.isEmpty(userData)) {
             const profile = userData.profile_type;
             isBlocked = profile.substring(0, 7) === 'blocked' ? true : false;
@@ -253,6 +254,15 @@ class UserBasciProfile extends React.Component {
             isProfileIn = profile === 'pending_profile_in' ? true : false;
             email = Buffer.from(userData.email_hash, 'base64').toString('ascii');
             profileType = profile.substring(0, 7);
+            const locationDetailsCity = (!_.isEmpty(userData.city)) && userData.city !== 'null' ? userData.city : '';
+            const locationDetailsProvince = (!_.isEmpty(userData.province)) && userData.province !== 'null' ? userData.province : '';
+            if (locationDetailsCity === '' && locationDetailsProvince !== '') {
+                locationDetails = locationDetailsProvince;
+            } else if (locationDetailsCity !== '' && locationDetailsProvince === '') {
+                locationDetails = locationDetailsCity;
+            } else if (locationDetailsCity !== '' && locationDetailsProvince !== '') {
+                locationDetails = `${userData.city}, ${userData.province}`;
+            }
         }
         if (!_.isEmpty(userProfileProfilelink)) {
             userProfileDeeplink = userProfileProfilelink.data.attributes['short-link'];
@@ -283,7 +293,7 @@ class UserBasciProfile extends React.Component {
                                                         {userData.last_name}
                                                         <span className="small m-0">
                                                             &nbsp;
-                                                            {userData.location}
+                                                            {locationDetails}
                                                         </span>
                                                         {
                                                             friendsVisibility === 0 && (

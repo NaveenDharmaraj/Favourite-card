@@ -115,8 +115,16 @@ class Privacy extends React.Component {
             friendsBlockedList = userBlockedFriendsList.data.map((data) => {
                 const name = `${data.attributes.first_name} ${data.attributes.last_name}`;
                 const avatar = ((typeof data.attributes.avatar) === 'undefined' || data.attributes.avatar === null) ? 'https://react.semantic-ui.com/images/avatar/small/daniel.jpg' : data.attributes.avatar;
-                const email = Buffer.from(data.attributes.email_hash, 'base64').toString('ascii');
-                const location = (typeof data.attributes.city !== 'undefined') ? `${data.attributes.city}, ${data.attributes.province}` : '';
+                let locationDetails = '';
+                const locationDetailsCity = (!_.isEmpty(data.attributes.city)) && data.attributes.city !== 'null' ? data.attributes.city : '';
+                const locationDetailsProvince = (!_.isEmpty(data.attributes.province)) && data.attributes.province !== 'null' ? data.attributes.province : '';
+                if (locationDetailsCity === '' && locationDetailsProvince !== '') {
+                    locationDetails = locationDetailsProvince;
+                } else if (locationDetailsCity !== '' && locationDetailsProvince === '') {
+                    locationDetails = locationDetailsCity;
+                } else if (locationDetailsCity !== '' && locationDetailsProvince !== '') {
+                    locationDetails = `${data.attributes.city}, ${data.attributes.province}`;
+                }
                 return (
                     <List.Item>
                         <List.Content floated="right">
@@ -135,7 +143,7 @@ class Privacy extends React.Component {
                                     {name}
                                 </Link>
                             </List.Header>
-                            <List.Description>{location}</List.Description>
+                            <List.Description>{locationDetails}</List.Description>
                         </List.Content>
                     </List.Item>
                 );
