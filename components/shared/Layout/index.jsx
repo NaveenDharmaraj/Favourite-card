@@ -115,7 +115,7 @@ class Layout extends React.Component {
                     </title>
                     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
                     <meta name="description" content={description}/>
-                    <link rel="icon" type="image/x-icon" href="http://d1wjn4fmcgu4dn.cloudfront.net/web/favicon.ico" />
+                    <link rel="icon" type="image/x-icon" href="https://d1wjn4fmcgu4dn.cloudfront.net/web/favicon.ico" />
                     <link rel="manifest" href="/static/Manifest.json" />
                     <link
                         rel="stylesheet"
