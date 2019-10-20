@@ -18,6 +18,16 @@ const UserBasciProfile = (props) => {
     } = props;
     const privacyColumn = 'friends_visibility';
     const userAvatar = (avatar === '') || (avatar === null) ? UserPlaceholder : avatar;
+    let locationDetails = '';
+    const locationDetailsCity = (!_.isEmpty(userData.city)) && userData.city !== 'null' ? userData.city : '';
+    const locationDetailsProvince = (!_.isEmpty(userData.province)) && userData.province !== 'null' ? userData.province : '';
+    if (locationDetailsCity === '' && locationDetailsProvince !== '') {
+        locationDetails = locationDetailsProvince;
+    } else if (locationDetailsCity !== '' && locationDetailsProvince === '') {
+        locationDetails = locationDetailsCity;
+    } else if (locationDetailsCity !== '' && locationDetailsProvince !== '') {
+        locationDetails = `${userData.city}, ${userData.province}`;
+    }
     return (
         <div>
             <div className="profile-header-image user" />
@@ -35,7 +45,7 @@ const UserBasciProfile = (props) => {
                             <Grid.Column mobile={16} tablet={13} computer={12}>
                                 <Grid stackable>
                                     <Grid.Row>
-                                        <Grid.Column mobile={16} tablet={16} computer={5}>
+                                        <Grid.Column mobile={16} tablet={16} computer={16}>
                                             <div className="ProfileHeaderWraper">
                                                 <Header as="h3">
                                                     <span className="font-s-10 type-profile">MY PROFILE</span>
@@ -45,7 +55,7 @@ const UserBasciProfile = (props) => {
                                                     <span className="small m-0">
                                                         &nbsp;
                                                         {' '}
-                                                        {userData.location}
+                                                        {locationDetails}
                                                     </span>
                                                     <Header.Subheader>
                                                         <Icon name="users" />

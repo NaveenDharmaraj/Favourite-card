@@ -19,8 +19,15 @@ const profile = (state = {}, action) => {
                 campaignDetails: Object.assign({}, action.payload.campaignDetails),
             };
             break;
+        case 'CLEAR_DATA_FOR_CAMPAIGNS':
+            newState = {
+                ...state,
+                campaignSubGroupDetails: action.payload.campaignSubGroupDetails,
+                campaignSubGroupsShowMoreUrl: null,
+            };
+            break;
         case 'GET_SUB_GROUPS_FOR_CAMPAIGN':
-            if (state.campaignSubGroupDetails) {
+            if (state.campaignSubGroupDetails && state.campaignSubGroupDetails.length > 0) {
                 const uniqueArray = arrayUnique(state.campaignSubGroupDetails, action.payload.campaignSubGroupDetails.data);
                 newState = {
                     ...state,

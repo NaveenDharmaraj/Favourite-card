@@ -71,13 +71,13 @@ class PrivacySetting extends React.Component {
         let showFriendsIcon = false;
         let showonlyMeIcon = false;
         let showPublicIcon = false;
-        if (columnValue === 0) {
+        if (Number(columnValue) === 0) {
             publicLink = 'active';
             showPublicIcon = true;
-        } else if (columnValue === 1) {
+        } else if (Number(columnValue) === 1) {
             friendsLink = 'active';
             showFriendsIcon = true;
-        } else if (columnValue === 2) {
+        } else if (Number(columnValue) === 2) {
             onlyMeLink = 'active';
             showonlyMeIcon = true;
         }

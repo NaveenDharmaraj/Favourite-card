@@ -94,7 +94,7 @@ const Footer = ({ isAuthenticated }) => (
                                                 <List.Item as="a" href={`${CORP_DOMAIN}/fees/`}>Fees</List.Item>
                                                 <List.Item as="a" href={`${CORP_DOMAIN}/careers/`}>Careers</List.Item>
                                                 <List.Item as="a" href={`${CORP_DOMAIN}/press/`}>Press</List.Item>
-                                                <List.Item as="a" href="/blog">Blog</List.Item>
+                                                <List.Item as="a" href={`${CORP_DOMAIN}/blog/`}>Blog</List.Item>
                                             </List>
                                         </Grid.Column>
                                         <Grid.Column mobile={16} tablet={4} computer={4}>
