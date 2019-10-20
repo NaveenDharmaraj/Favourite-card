@@ -4,6 +4,7 @@ const withImages = require('next-images');
 
 const configVars = {
     publicRuntimeConfig: {
+		CHAT_GROUP_DEFAULT_AVATAR:process.env.CHAT_GROUP_DEFAULT_AVATAR,
         APP_URL_ORIGIN: process.env.APP_URL_ORIGIN,
         APPLOZIC_APP_KEY: process.env.APPLOZIC_APP_KEY,
         APPLOZIC_WS_URL: process.env.APPLOZIC_WS_URL,

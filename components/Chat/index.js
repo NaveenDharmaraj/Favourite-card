@@ -3,15 +3,21 @@ import React, { Fragment } from 'react';
 //import dynamic from 'next/dynamic';
 // import InfiniteScroll from 'react-infinite-scroller';
 import { connect } from 'react-redux';
-import { Button, Checkbox, Container, Divider, Dropdown, Form, Grid, Header, Icon, Image, Input, List, Modal, Popup } from 'semantic-ui-react';
+import getConfig from 'next/config';
+import { Button, Checkbox, Container, Dimmer, Loader, Divider, Dropdown, Form, Grid, Header, Icon, Image, Input, List, Modal, Popup, Table, Placeholder } from 'semantic-ui-react';
 import { Link } from '../../routes';
 import applozicApi from "../../services/applozicApi";
 import graphApi from "../../services/graphApi";
+import PlaceHolderGrid from '../shared/PlaceHolder';
 import utilityApi from "../../services/utilityApi";
 import moreIcon from '../../static/images/icons/ellipsis.svg';
 import { default as placeholderGroup } from '../../static/images/no-data-avatar-group-chat-profile.png';
 import { default as placeholderUser } from '../../static/images/no-data-avatar-user-profile.png';
 import '../../static/less/message.less';
+const { publicRuntimeConfig } = getConfig();
+const {
+    CHAT_GROUP_DEFAULT_AVATAR
+} = publicRuntimeConfig;
 
 class ChatWrapper extends React.Component {
     items = [];
@@ -43,12 +49,14 @@ class ChatWrapper extends React.Component {
             newGroupImageUrl: "",
             editGroupName: "",
             editGroupImageUrl: "",
-            isSmallerScreen: window.innerWidth <= 780,
+            isSmallerScreen: window.innerWidth <= 767,
             smallerScreenSection: "convList",
             userInfo: userInfo,
             showMoreOptions: false,
             groupUserName: "",
             groupUserInfo: [],
+            muteUserList: {},
+            loading: true,
             dispatch: dispatch
         };
         this.composeNew = this.composeNew.bind(this);
@@ -93,6 +101,9 @@ class ChatWrapper extends React.Component {
         this.resize = this.resize.bind(this);
         this.onSendKeyClick = this.onSendKeyClick.bind(this);
         this.getBase64 = this.getBase64.bind(this);
+        this.loadMuteUserList = this.loadMuteUserList.bind(this);
+        this.setLoading = this.setLoading.bind(this);
+        this.isLoading = this.isLoading.bind(this);
     }
 
     getBase64(file, cb) {
@@ -102,7 +113,7 @@ class ChatWrapper extends React.Component {
             cb(reader.result)
         };
         reader.onerror = function (error) {
-            console.log('Error: ', error);
+            // console.log('Error: ', error);
         };
     }
 
@@ -125,6 +136,7 @@ class ChatWrapper extends React.Component {
             applozicApi.post("/user/chat/mute?userId=" + params.userId + "&notificationAfterTime=" + params.notificationAfterTime, params).then(function (response) {
                 self.setState({ conversationAction: null, groupAction: null });
                 self.loadConversations(false, null, conversationInfo.contactIds);
+                self.loadMuteUserList();
             });
         }
     }
@@ -149,7 +161,7 @@ class ChatWrapper extends React.Component {
                     self.setState({ editGroupImageUrl: newImage, groupAction: null });
             }
             }).catch((err) => {
-                console.log(err);
+                // console.log(err);
                 if (err && err.statusCode == "413") {
                     self.setState({ groupAction: null, groupActionError: err.message || err.error });
                 }
@@ -252,6 +264,16 @@ class ChatWrapper extends React.Component {
     componentWillUpdate(nextProps, nextState) {
 
     }
+    async loadMuteUserList() {
+        const self = this;
+        const muteUserList = {};
+        applozicApi.get("/user/chat/mute/list", {}).then(function (response) {
+            _.forEach(response, function (muteUser) {
+                muteUserList[muteUser["userId"]] = muteUser;
+            })
+        });
+        self.setState({ muteUserList: muteUserList });
+    }
 
     loadFriendsList = () => {
         let self = this;
@@ -303,6 +325,10 @@ class ChatWrapper extends React.Component {
         params["groupName"] = self.state.newGroupName;
         params["groupMemberList"] = self.state.newGroupMemberIds,
             params["imageUrl"] = self.state.newGroupImageUrl;
+        if (!params["imageUrl"] || params["imageUrl"] == "" || params["imageUrl"] == null) {
+            params["imageUrl"] = CHAT_GROUP_DEFAULT_AVATAR;
+        }
+        self.setLoading(true);
         applozicApi.post("/group/v2/create", params).then(function (response) {
             let groupId = response.response.id;
             let groupFeeds = self.state.groupFeeds;
@@ -312,7 +338,7 @@ class ChatWrapper extends React.Component {
                 self.sendMessageToSelectedConversation({ groupId: groupId }, messageInfo.message, false);
             }
         }).catch(function (error) {
-            console.log(error);
+            // console.log(error);
         });
     }
 
@@ -327,7 +353,7 @@ class ChatWrapper extends React.Component {
             self.setState({ groupAction: null, conversationAction: null });
             self.loadConversations();
         }).catch(function (error) {
-            console.log(error);
+            // console.log(error);
             self.setState({ groupAction: null, conversationAction: null });
             self.loadConversations();
         });
@@ -422,18 +448,23 @@ class ChatWrapper extends React.Component {
             self.loadConversations(false, groupId);
         });
     }
-
+    setLoading(isLoading) {
+        this.setState({ loading: isLoading });
+    }
+    isLoading() {
+        return this.state.loading;
+    }
     loadConversationMessages(selectedConversation, endTime, resetMessages) {
         self = this;
-        if (selectedConversation && !self.loading) {
+        if (selectedConversation && !self.isLoading()) {
             // console.log("loadConversationMessages");
-            self.loading = true;
+            // self.setLoading(true);
             let params = { endTime: endTime, pageSize: 10 }; //{ startIndex: startIndex, mainPageSize: 100, pageSize: 50 };
             if (selectedConversation.groupId) {
                 params["groupId"] = selectedConversation.groupId;
             } else { params["userId"] = selectedConversation.contactIds; }
             applozicApi.get("/message/v2/list", { params: params }).then(function (response) {
-                self.loading = false;
+                self.setLoading(false);
                 // handle success
                 // console.log(response);
                 let oldMsgs = [];
@@ -460,12 +491,13 @@ class ChatWrapper extends React.Component {
                 .catch(function (error) {
                     self.loading = false;
                     // handle error
-                    console.log(error);
-                    self.setState({ selectedConversationMessages: [] });
+                    // console.log(error);
+                    self.setState({ selectedConversationMessages: [], loading: false });
 
                 })
                 .finally(function () {
                     self.loading = false;
+                    self.setLoading(false);
                     if (resetMessages) {
                         window.dispatchEvent(new CustomEvent("onChatPageRefreshEvent", { detail: { data: self.state.messages } }));
                     }
@@ -493,9 +525,11 @@ class ChatWrapper extends React.Component {
             params['contentType'] = 3;
             // params['_userId'] = this.state.userInfo.id;
             // params["_deviceKey"] = this.state.userInfo.applogicClientRegistration.deviceKey;
+            // self.setLoading(true);
             applozicApi.post("/message/v2/send", params).then(function (response) {
                 // handle success
                 self.loadConversations(ignoreLoadingChatMsgs);
+                self.setLoading(false);
                 if (ignoreLoadingChatMsgs) {
                 //load messages again
                 self.loadConversationMessages(conversation, new Date().getTime() + 2000, true);
@@ -552,6 +586,7 @@ class ChatWrapper extends React.Component {
                 response.response.message[0].selected = true;
                 selectedConversation = response.response.message[0];
             }
+            newState['loading'] = false;
             self.setState(newState);
             if (self.refs.conversationSearchEl && self.refs.conversationSearchEl.inputRef && self.refs.conversationSearchEl.inputRef.current) {
                 self.refs.conversationSearchEl.inputRef.current.value = "";
@@ -565,6 +600,7 @@ class ChatWrapper extends React.Component {
                     newState["editGroupName"] = groupInfo["name"];
                     newState["editGroupImageUrl"] = groupInfo["imageUrl"];
                 }
+
                 // newState["compose"] = false;
                 self.setState(newState);
                 self.loadConversationMessages(selectedConversation, new Date().getTime() + 2000, true);//(self.state.selectedConversation.contactIds != response.response.message[0]['contactIds'] || self.state.selectedConversation.groupId != response.response.message[0]['groupId'])
@@ -584,13 +620,14 @@ class ChatWrapper extends React.Component {
     componentDidMount() {
         let self = this;
         self.loadFriendsList();
+        self.loadMuteUserList();
         window.addEventListener('applozicAppInitialized', this.applozicAppInitialized, false);
         window.addEventListener('onMessageEvent', this.onMessageEvent, false);
         window.addEventListener('onMessageReceived', this.onMessageReceived, false);
         window.addEventListener("resize", this.resize.bind(this));
     }
     resize() {
-        this.setState({ isSmallerScreen: window.innerWidth <= 760 });
+        this.setState({ isSmallerScreen: window.innerWidth <= 767 });
     }
     applozicAppInitialized = (e) => {
         this.loadConversations(false, this.state.msgId, this.state.msgId);
@@ -633,6 +670,7 @@ class ChatWrapper extends React.Component {
                 newState["editGroupName"] = this.state.groupFeeds[msg.groupId]["name"];
                 newState["editGroupImageUrl"] = this.state.groupFeeds[msg.groupId]["imageUrl"];
             }
+            newState["loading"] = true;
             newState["smallerScreenSection"] = "convMsgs";
             this.setState(newState);
             // this.loading = true;
@@ -647,12 +685,13 @@ class ChatWrapper extends React.Component {
         let currentUserId = this.state.userInfo.id;
         if (msg.groupId) {
             let info = this.state.groupFeeds[msg.groupId];
-            let groupHead = { type: "group", title: info.name, image: (info.imageUrl ? info.imageUrl : placeholderGroup), imagePresent: (info.imageUrl && info.imageUrl != "" && info.imageUrl != null ? true : false), isMuted: (info.notificationAfterTime && info.notificationAfterTime > new Date().getTime()), info: info };
+            let groupHead = { type: "group", title: info.name, image: (info.imageUrl ? info.imageUrl : placeholderGroup), imagePresent: (info.imageUrl && info.imageUrl != "" && info.imageUrl != null && info.imageUrl != CHAT_GROUP_DEFAULT_AVATAR ? true : false), isMuted: (info.notificationAfterTime && info.notificationAfterTime > new Date().getTime()), info: info };
             groupHead["disabled"] = (info.removedMembersId && info.removedMembersId.indexOf(currentUserId) >= 0);
             return groupHead;
         } else {
             let info = this.state.userDetails[msg.contactIds];
-            let convHead = info ? { type: 'user', title: info['displayName'], image: (info.imageLink ? info.imageLink : placeholderUser), imagePresent: (info.imageLink && info.imageLink != "" && info.imageLink != null ? true : false), info: info, isMuted: (info.notificationAfterTime && info.notificationAfterTime > new Date().getTime()) } : {};
+            const muteInfo = this.state.muteUserList[msg.contactIds];
+            let convHead = info ? { type: 'user', title: info['displayName'], image: (info.imageLink ? info.imageLink : placeholderUser), imagePresent: (info.imageLink && info.imageLink != "" && info.imageLink != null ? true : false), info: info, isMuted: (muteInfo && muteInfo.notificationAfterTime && muteInfo.notificationAfterTime > new Date().getTime()) } : {};
             return convHead;
         }
     }
@@ -804,6 +843,13 @@ class ChatWrapper extends React.Component {
         let self = this;
         return (
             <Fragment>
+                {(() => {
+                    if (self.isLoading()) {
+                        return <Dimmer active inverted>
+                            <Loader size='large'>Loading</Loader>
+                        </Dimmer>
+                    }
+                })()}
                 <div className="messageMainWraper">
                     <Container>
                         <div className="messageHeader">
@@ -837,6 +883,21 @@ class ChatWrapper extends React.Component {
                                             <div className="chatList">
                                                 <List divided verticalAlign='middle'>
                                                     {(() => {
+                                                        // if (self.isLoading()) {
+                                                        // return <Dimmer active inverted>
+                                                        //     <Loader size='large'>Loading</Loader>
+                                                        // </Dimmer>
+                                                        //   <Placeholder>
+                                                        //         <Placeholder.Header>
+                                                        //             <Placeholder.Line length="medium" />
+                                                        //         </Placeholder.Header>
+                                                        //         <Placeholder.Paragraph>
+                                                        //             <Placeholder.Line />
+                                                        //             <Placeholder.Line />
+
+                                                        //         </Placeholder.Paragraph>
+                                                        //     </Placeholder>
+                                                        // }
                                                         if (self.state.filteredMessages && self.state.filteredMessages.length > 0 && (!self.state.isSmallerScreen || (self.state.smallerScreenSection == "convList" && !self.state.compose))) {
                                                             return self.state.filteredMessages.map((msg) => (
                                                                 <List.Item as="a" active={self.state.selectedConversation && msg.key == self.state.selectedConversation.key} key={"head_" + msg.key} onClick={() => self.onConversationSelect(msg)}>
@@ -959,12 +1020,12 @@ class ChatWrapper extends React.Component {
                                                         // return <ChatNameHeadGroup selectedConversation={this.state.selectedConversation} userDetails={this.state.userDetails} groupFeeds={this.state.groupFeeds} />
                                                         return (<div className="chatHeader">
                                                             <div className="chatWithGroup">
-                                                                <Modal size="tiny" open={self.state.groupActionError != null} onClose={() => self.setState({ groupActionError: null,groupAction:null })} dimmer="inverted" className="chimp-modal" closeIcon centered={false}>
+                                                                <Modal size="tiny" open={self.state.groupActionError != null} onClose={() => self.setState({ groupActionError: null, groupAction: null })} dimmer="inverted" className="chimp-modal" closeIcon centered={false}>
                                                                     <Modal.Header>Error uploading photo</Modal.Header>
                                                                     <Modal.Content>
                                                                         <Modal.Description className="font-s-16">{self.state.groupActionError}</Modal.Description>
                                                                         <div className="btn-wraper pt-3 text-right">
-                                                                            <Button className="blue-bordr-btn-round-def c-small" onClick={() => self.setState({ groupActionError: null,groupAction:null })}>Close</Button>
+                                                                            <Button className="blue-bordr-btn-round-def c-small" onClick={() => self.setState({ groupActionError: null, groupAction: null })}>Close</Button>
                                                                         </div>
                                                                     </Modal.Content>
                                                                 </Modal>
@@ -1386,7 +1447,7 @@ class ChatWrapper extends React.Component {
                                                         </div>
                                                     </Fragment>
                                                 } else if (!self.state.compose && (!self.state.isSmallerScreen || self.state.smallerScreenSection != "convList")) {
-                                                    return <div class="no-messages">{self.loading ? "Loading..." : (self.refs.conversationSearchEl && self.refs.conversationSearchEl.inputRef.current.value != "" ? "No mathcing conversations found!" : "No conversations to display. Click on compose to start new!")}</div>
+                                                    return <div class="no-messages">{self.isLoading() ? "Loading..." : (self.refs.conversationSearchEl && self.refs.conversationSearchEl.inputRef.current.value != "" ? "No mathcing conversations found!" : "No conversations to display. Click on compose to start new!")}</div>
                                                 }
                                             })()}
                                         </div>
