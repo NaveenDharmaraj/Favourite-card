@@ -86,7 +86,7 @@ function TermsConditions() {
                         <a href="/account-agreement">
                         &nbsp;charitableimpact.com/account-agreement.
                         </a>
-                        The Agreement must be reviewed and agreed to by you before you can become a User and create your own Charitable Impact Account.
+                        &nbsp;The Agreement must be reviewed and agreed to by you before you can become a User and create your own Charitable Impact Account.
                     </p>
                     <div className="back-top"><a href="#top">Back to top</a></div>
                 </Container>
@@ -107,7 +107,7 @@ function TermsConditions() {
                         <a href="/account-agreement">
                         &nbsp;charitableimpact.com/account-agreement
                         </a>
-                        The Agreement must be reviewed and approved by a Community before it can become a Community and create its own Community Account.
+                        &nbsp;The Agreement must be reviewed and approved by a Community before it can become a Community and create its own Community Account.
                     </p>
                     <div className="back-top"><a href="#top">Back to top</a></div>
                 </Container>
@@ -121,7 +121,7 @@ function TermsConditions() {
                         <a href="/account-agreement">
                         &nbsp;charitableimpact.com/account-agreement.
                         </a>
-                        The Agreement must be reviewed and approved by the Qualified Recipient before it can create its own Qualified Recipient Account.
+                        &nbsp;The Agreement must be reviewed and approved by the Qualified Recipient before it can create its own Qualified Recipient Account.
                     </p>
                     <div className="back-top"><a href="#top">Back to top</a></div>
                 </Container>
