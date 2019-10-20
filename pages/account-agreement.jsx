@@ -33,7 +33,7 @@ function ChimpAccountAgreement() {
                 <Container>
                     <div className="chimp_account_banner_text">
                         <p>
-                            This Charitable Impact Account Agreement (the <span className="bold"> "Agreement"</span>) is a legal agreement between you, when you become a user of the Charitable Impact System, and the Charitable Impact Collective (as defined in this Agreement). In this Agreement, the Charitable Impact Collective shall be referred to as the<span className="bold">"Charitable Impact Collective"</span>,<span className="bold">"we"</span>,<span className="bold">"our"</span> or <span className="bold">"us"</span> and you shall be referred to as <span className="bold">"you"</span> or as a <span className="bold">"User"</span>.</p>
+                            This Charitable Impact Account Agreement (the <span className="bold"> "Agreement"</span>) is a legal agreement between you, when you become a user of the Charitable Impact System, and the Charitable Impact Collective (as defined in this Agreement). In this Agreement, the Charitable Impact Collective shall be referred to as the <span className="bold">"Charitable Impact Collective"</span>, <span className="bold">"we"</span>, <span className="bold">"our"</span> or <span className="bold">"us"</span> and you shall be referred to as <span className="bold">"you"</span> or as a <span className="bold">"User"</span>.</p>
                     </div>
                 </Container>
             </div>
@@ -68,7 +68,7 @@ function ChimpAccountAgreement() {
                     <p><strong>"Disbursement"</strong> or <strong>"Disburse"</strong> means a disbursement to a Qualified Recipient authorized by the Foundation and includes any single or multiple authorized disbursement(s) from an Impact Account, a Giving Group Account or a Community Account to a Qualified Recipient. For purposes of this Agreement, a Transfer is not a Disbursement;</p>
                     <p><strong>"Disbursement Request"</strong> means a request made by us as contemplated in paragraph 8.1 of this Agreement;</p>
                     <p><strong>"Donations"</strong> includes any funds, monies, securities and other property donated to the Foundation by a User or other Person including a One-Time Donor for credit to an Account maintained by the Foundation;</p>
-                    <p><strong>"Foundation"</strong> means CHIMP: Charitable Impact Foundation (Canada), a charity registered with Canada Revenue Agency.The Foundation is a non-share capital corporation that was originally incorporated under the Canada Corporations Act, Income Tax Act (Canada), has had audited financial statements since its fiscal year-end 2011 and has continued under the Canada Not-for-profit Corporations Act.;</p>
+                    <p><strong>"Foundation"</strong> means CHIMP: Charitable Impact Foundation (Canada), a charity registered with Canada Revenue Agency.The Foundation is a non-share capital corporation that was originally incorporated under the <i>Canada Corporations Act, Income Tax Act</i> (Canada), has had audited financial statements since its fiscal year-end 2011 and has continued under the <i>Canada Not-for-profit Corporations Act.</i>;</p>
                     <p><strong>"Giving Group"</strong> means a group of Users, One-Time Donors and other Persons who have formed and/or participated in a designated group using the Charitable Impact  System consistent with this Agreement, the purpose of which is to Disburse or Transfer funds as a group and to use the Charitable Impact System and certain services as a group, as described below in Section 9;</p>
                     <p><strong>"License"</strong> means the license referred to in Section 2 of this Agreement;</p>
                     <p><strong>"Member"</strong> means a Person who Transfers funds to an account for the credit of, or participates in, a Community or Giving Group and may include you;</p>
@@ -77,7 +77,7 @@ function ChimpAccountAgreement() {
                     <p><strong>"Person"</strong> means an individual, a corporation, a partnership, a trust, an unincorporated organization, and the executors, administrators or other legal representatives of an individual;</p>
                     <p><strong>"Privacy Policy"</strong> means the policy which is available for review on the Charitable Impact System referred to in paragraph 3.1 of this Agreement;</p>
                     <p><strong>"Profile"</strong> means the profile generated in the Charitable Impact System based on the information provided to us, and for Qualified Recipients information made publically available about you from the Canada Revenue Agency.</p>
-                    <p><strong>"Qualified Recipient"</strong> means a registered charity and/or other entity classified at the relevant time as a "qualified donee" under the Income Tax Act (Canada) which has been approved by us as an eligible donee, and includes the Foundation;</p>
+                    <p><strong>"Qualified Recipient"</strong> means a registered charity and/or other entity classified at the relevant time as a "qualified donee" under the <i>Income Tax Act</i> (Canada) which has been approved by us as an eligible donee, and includes the Foundation;</p>
                     <p><strong>"Services"</strong> means, after the creation of your Charitable Impact Account, your permitted access to the Charitable Impact System and use of your Impact Account for the limited purpose of making Donations, making recommendations regarding Disbursements and giving instructions regarding Transfers, receiving Disbursements, the creation of or joining a Giving Group Account, posting, searching and/or uploading certain information and reviewing certain information posted by one or more members of the Charitable Impact Collective, other Users, Qualified Recipients, Communities or Giving Group Members on the Charitable Impact System and may include additional services and/or premium services offered by one or more members of the Charitable Impact Collective from time to time;</p>
                     <p><strong>"Termination Notice"</strong> means a notice given pursuant to paragraph 13.1 of this Agreement;</p>
                     <p><strong>"Transfer"</strong> or <strong>"Transferred"</strong> means any transfer of funds or other assets from or to one or more accounts on the Charitable Impact System;</p>
@@ -88,9 +88,9 @@ function ChimpAccountAgreement() {
                 <Container>
                     <Header as="h1">2. Site License</Header>
                     <p>
-                        2.1 The Charitable Impact System is owned by CHIMP Tech. Upon your acceptance of this Agreement, you are granted a non-transferable, non-exclusive, limited license to use the Charitable Impact System (with no right to sublicense on your part) (the 
+                        2.1 The Charitable Impact System is owned by CHIMP Tech. Upon your acceptance of this Agreement, you are granted a non-transferable, non-exclusive, limited license to use the Charitable Impact System (with no right to sublicense on your part) (the
                         <strong>
-                            "License"
+                        &nbsp;"License"
                         </strong>
                         ), on the terms set out in this Agreement.
                     </p>
@@ -121,7 +121,7 @@ function ChimpAccountAgreement() {
                                 &nbsp;charitableimpact.com/privacy
                                 </a>
                                 &nbsp;(the
-                                <strong>"Privacy Policy"</strong>
+                                <strong>&nbsp;"Privacy Policy"</strong>
                                 );
                             </List.Item>
                             <List.Item as="li" className="Principles_list">we have the right, but not the obligation, to verify any information you disclose to us;</List.Item>
@@ -142,9 +142,10 @@ function ChimpAccountAgreement() {
                                 <List.Item as="li" className="Principles_list">refuse to allow a One-Time Donor to make a Donation to the Foundation for credit to a Qualified Recipient Account; or</List.Item>
                                 <List.Item as="li" className="Principles_list">terminate your Account and/or your access to the Charitable Impact System, if we reasonably believe that you or any unauthorized Person that accesses your Account or the Charitable Impact System through you has misused your Account or the Charitable Impact System;</List.Item>
                             </List.List>
+                            <List.Item as="li" className="Principles_list">to notify us immediately if you become aware of any unauthorized use of the Charitable Impact System, any Account, any Profile, or any Account Identification.</List.Item>
                         </List>
                     </div>
-                    <p>3.2 From time to time, other Users, Giving Group Members, Communities, Qualified Recipients and Persons other than members of the Charitable Impact Collective may post content and/or comments to the Charitable Impact System. You acknowledge and agree that we are not responsible for nor do we necessarily endorse any content and/or comments posted.</p>
+                    <p className="mt-1">3.2 From time to time, other Users, Giving Group Members, Communities, Qualified Recipients and Persons other than members of the Charitable Impact Collective may post content and/or comments to the Charitable Impact System. You acknowledge and agree that we are not responsible for nor do we necessarily endorse any content and/or comments posted.</p>
                     <p>3.3  We want people to use Charitable Impact to express their giving and to share initiatives that are important to them, but not at the expense of the safety and well-being of others or the integrity of the Charitable Impact Collective. You therefore agree not to engage in the conduct described below (or to facilitate or support others in doing so):</p>
                     <p>You may not use our products to do or share anything:</p>
                     <List as="ul" className="alphabetList">
@@ -182,9 +183,9 @@ function ChimpAccountAgreement() {
                     <p>5.4 All administrative costs incurred by the Foundation in furtherance of obtaining, disbursing, transferring or otherwise handling Donations, Disbursements and/or Transfers and administering and/or investing funds associated to the Account, may be deducted from the funds or other assets held in the Account, as the case may be. Without limiting the generality of the foregoing, the Foundation may deduct from the funds or other assets held in such Account, reimbursements for amounts that it has paid and a reasonable fee for its services.</p>
                     <p>
                         5.5 The governing principle underlying all investment and administrative policies relating to Accounts is to protect the underlying financial value of the assets in the Account and to provide liquidity such that recommendations with regard to Disbursements made by Users, Designated Advisors, Community Administrators and Giving Group Administrators can be fulfilled on demand. The Foundation will notify the holder of the Account, the Designated Advisor, the Community Administrator or the Giving Group Administrator, as the case may be, if it intends to increase the fees or costs that are deducted from the Account over those outlined at
-                        &nbsp;<a href={`${CORP_DOMAIN}/fees/`}>charitableimpact.com/fees.</a>
+                        <a href={`${CORP_DOMAIN}/fees/`}>&nbsp;charitableimpact.com/fees.</a>
                     </p>
-                    <p>Neither you nor any other Person may receive any tangible benefit or privilege in return for, or as a result of, making a Donation.</p>
+                    <p>5.6 Neither you nor any other Person may receive any tangible benefit or privilege in return for, or as a result of, making a Donation.</p>
                                 
                 </Container>
             </div>
@@ -234,7 +235,7 @@ function ChimpAccountAgreement() {
                     <p>
                         8.2 In addition to Charitable Impact Collective's mandate described in paragraph 8.1, the Foundation has adopted policies to comply with applicable tax law and the disbursement quota requirements for public foundations in the
                         <i>
-                            Income Tax Act.
+                        &nbsp;Income Tax Act.
                         </i>
                     </p>
                     <p>8.3 Transfers made to other Accounts during the relevant twelve (12)-month period will be reflected in the Disbursement calculations of the destination Account. However, if it appears to the Foundation that Transfers are being made with the intention of avoiding Minimum Disbursement requirements, we retain the right to make Disbursement Requests at our discretion.</p>
@@ -305,7 +306,7 @@ function ChimpAccountAgreement() {
                     <p>
                         13.1 Either party may terminate this Agreement for any reason by giving the other party a written termination notice (the
                         <strong>
-                            "Termination Notice"
+                        &nbsp;"Termination Notice"
                         </strong>
                             ). After receipt of a Termination Notice, if there are any funds, monies or assets in your Account, such funds, monies or assets shall be Disbursed in accordance with Section 7 of this Agreement. If at any time the Foundation reasonably believes that there is no Designated Advisor and is unable, after reasonable efforts, to contact the User or the Designated Advisor who was last designated for the Impact Account according to the Foundation's records, the Foundation may terminate this Agreement by giving notice in accordance with Section 14 of this Agreement or, at its option, may make such Disbursements and/or such Transfers as it determines in its full and unfettered discretion, including Disbursements to itself for its own use, if it is a Qualified Recipient at that time, subject to any valid Default Recommendation.
                     </p>
