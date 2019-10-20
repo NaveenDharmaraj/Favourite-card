@@ -127,7 +127,7 @@ class DashboradList extends React.Component {
                 }
                 let givingType = ''; let rowClass = ''; let givingTypeClass = ''; let descriptionType = ''; let entity = ''; let transactionSign = ''; let profileUrl='';
                 let imageCls = 'ui image';
-                if (data.attributes.destination !== null) {
+                if (!_.isEmpty(data.attributes.destination)) {
                     if (data.attributes.destination.type.toLowerCase() === 'group') {
                         givingType = 'giving group';
                         rowClass = 'm-allocation';
@@ -154,14 +154,6 @@ class DashboradList extends React.Component {
                         entity = data.attributes.destination.name;
                         transactionSign = '-';
                         profileUrl = `campaigns/${data.attributes.destination.slug}`;
-                    } else if ((data.attributes.transactionType.toLowerCase() === 'fundallocation' || data.attributes.transactionType.toLowerCase() === 'gift') && data.attributes.destination.id !== Number(id)) {
-                        givingType = '';
-                        rowClass = 'gift';
-                        data.attributes.transactionType = 'Gift given';
-                        descriptionType = 'Given to ';
-                        entity = data.attributes.destination.name;
-                        transactionSign = '-';
-                        profileUrl = `users/profile/${data.attributes.destination.id}`;
                     } else if (data.attributes.transactionType.toLowerCase() === 'donation') {
                         givingType = '';
                         rowClass = 'donation';
@@ -184,8 +176,16 @@ class DashboradList extends React.Component {
                         entity = data.attributes.source.name;
                         transactionSign = '+';
                         profileUrl = `users/profile/${data.attributes.source.id}`;
+                    } else if ((data.attributes.source.id === Number(id) || data.attributes.transactionType.toLowerCase() === 'gift')) {
+                        givingType = '';
+                        rowClass = 'gift';
+                        data.attributes.transactionType = 'Gift given';
+                        descriptionType = 'Given to ';
+                        entity = data.attributes.destination.name;
+                        transactionSign = '-';
+                        profileUrl = `users/profile/${data.attributes.destination.id}`;
                     }
-                } else if (data.attributes.transactionType.toLowerCase() === 'fundallocation' || data.attributes.transactionType.toLowerCase() === 'gift') {
+                } else if (data.attributes.source.id === Number(id) || data.attributes.transactionType.toLowerCase() === 'gift') {
                     givingType = '';
                     rowClass = 'gift';
                     data.attributes.transactionType = 'Gift given';
