@@ -4,7 +4,7 @@ import React, { Fragment } from 'react';
 // import InfiniteScroll from 'react-infinite-scroller';
 import { connect } from 'react-redux';
 import getConfig from 'next/config';
-import { Button, Checkbox, Container, Divider, Dropdown, Form, Grid, Header, Icon, Image, Input, List, Modal, Popup, Table, Placeholder } from 'semantic-ui-react';
+import { Button, Checkbox, Container, Dimmer, Loader, Divider, Dropdown, Form, Grid, Header, Icon, Image, Input, List, Modal, Popup, Table, Placeholder } from 'semantic-ui-react';
 import { Link } from '../../routes';
 import applozicApi from "../../services/applozicApi";
 import graphApi from "../../services/graphApi";
@@ -327,7 +327,6 @@ class ChatWrapper extends React.Component {
             params["imageUrl"] = self.state.newGroupImageUrl;
         if (!params["imageUrl"] || params["imageUrl"] == "" || params["imageUrl"] == null) {
             params["imageUrl"] = CHAT_GROUP_DEFAULT_AVATAR;
-            console.log(CHAT_GROUP_DEFAULT_AVATAR);
         }
         applozicApi.post("/group/v2/create", params).then(function (response) {
             let groupId = response.response.id;
@@ -840,6 +839,13 @@ class ChatWrapper extends React.Component {
         let self = this;
         return (
             <Fragment>
+                {(() => {
+                    if (self.isLoading()) {
+                        return <Dimmer active inverted>
+                            <Loader size='large'>Loading</Loader>
+                        </Dimmer>
+                    }
+                })()}
                 <div className="messageMainWraper">
                     <Container>
                         <div className="messageHeader">
@@ -873,6 +879,21 @@ class ChatWrapper extends React.Component {
                                             <div className="chatList">
                                                 <List divided verticalAlign='middle'>
                                                     {(() => {
+                                                        // if (self.isLoading()) {
+                                                        // return <Dimmer active inverted>
+                                                        //     <Loader size='large'>Loading</Loader>
+                                                        // </Dimmer>
+                                                        //   <Placeholder>
+                                                        //         <Placeholder.Header>
+                                                        //             <Placeholder.Line length="medium" />
+                                                        //         </Placeholder.Header>
+                                                        //         <Placeholder.Paragraph>
+                                                        //             <Placeholder.Line />
+                                                        //             <Placeholder.Line />
+
+                                                        //         </Placeholder.Paragraph>
+                                                        //     </Placeholder>
+                                                        // }
                                                         if (self.state.filteredMessages && self.state.filteredMessages.length > 0 && (!self.state.isSmallerScreen || (self.state.smallerScreenSection == "convList" && !self.state.compose))) {
                                                             return self.state.filteredMessages.map((msg) => (
                                                                 <List.Item as="a" active={self.state.selectedConversation && msg.key == self.state.selectedConversation.key} key={"head_" + msg.key} onClick={() => self.onConversationSelect(msg)}>
