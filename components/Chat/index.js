@@ -113,7 +113,7 @@ class ChatWrapper extends React.Component {
             cb(reader.result)
         };
         reader.onerror = function (error) {
-            console.log('Error: ', error);
+            // console.log('Error: ', error);
         };
     }
 
@@ -161,7 +161,7 @@ class ChatWrapper extends React.Component {
                     self.setState({ editGroupImageUrl: newImage, groupAction: null });
             }
             }).catch((err) => {
-                console.log(err);
+                // console.log(err);
                 if (err && err.statusCode == "413") {
                     self.setState({ groupAction: null, groupActionError: err.message || err.error });
                 }
@@ -328,6 +328,7 @@ class ChatWrapper extends React.Component {
         if (!params["imageUrl"] || params["imageUrl"] == "" || params["imageUrl"] == null) {
             params["imageUrl"] = CHAT_GROUP_DEFAULT_AVATAR;
         }
+        self.setLoading(true);
         applozicApi.post("/group/v2/create", params).then(function (response) {
             let groupId = response.response.id;
             let groupFeeds = self.state.groupFeeds;
@@ -337,7 +338,7 @@ class ChatWrapper extends React.Component {
                 self.sendMessageToSelectedConversation({ groupId: groupId }, messageInfo.message, false);
             }
         }).catch(function (error) {
-            console.log(error);
+            // console.log(error);
         });
     }
 
@@ -352,7 +353,7 @@ class ChatWrapper extends React.Component {
             self.setState({ groupAction: null, conversationAction: null });
             self.loadConversations();
         }).catch(function (error) {
-            console.log(error);
+            // console.log(error);
             self.setState({ groupAction: null, conversationAction: null });
             self.loadConversations();
         });
@@ -457,7 +458,7 @@ class ChatWrapper extends React.Component {
         self = this;
         if (selectedConversation && !self.isLoading()) {
             // console.log("loadConversationMessages");
-            self.setLoading(true);
+            // self.setLoading(true);
             let params = { endTime: endTime, pageSize: 10 }; //{ startIndex: startIndex, mainPageSize: 100, pageSize: 50 };
             if (selectedConversation.groupId) {
                 params["groupId"] = selectedConversation.groupId;
@@ -490,7 +491,7 @@ class ChatWrapper extends React.Component {
                 .catch(function (error) {
                     self.loading = false;
                     // handle error
-                    console.log(error);
+                    // console.log(error);
                     self.setState({ selectedConversationMessages: [], loading: false });
 
                 })
@@ -524,9 +525,11 @@ class ChatWrapper extends React.Component {
             params['contentType'] = 3;
             // params['_userId'] = this.state.userInfo.id;
             // params["_deviceKey"] = this.state.userInfo.applogicClientRegistration.deviceKey;
+            // self.setLoading(true);
             applozicApi.post("/message/v2/send", params).then(function (response) {
                 // handle success
                 self.loadConversations(ignoreLoadingChatMsgs);
+                self.setLoading(false);
                 if (ignoreLoadingChatMsgs) {
                 //load messages again
                 self.loadConversationMessages(conversation, new Date().getTime() + 2000, true);
@@ -624,7 +627,7 @@ class ChatWrapper extends React.Component {
         window.addEventListener("resize", this.resize.bind(this));
     }
     resize() {
-        this.setState({ isSmallerScreen: window.innerWidth <= 760 });
+        this.setState({ isSmallerScreen: window.innerWidth <= 767 });
     }
     applozicAppInitialized = (e) => {
         this.loadConversations(false, this.state.msgId, this.state.msgId);
@@ -667,6 +670,7 @@ class ChatWrapper extends React.Component {
                 newState["editGroupName"] = this.state.groupFeeds[msg.groupId]["name"];
                 newState["editGroupImageUrl"] = this.state.groupFeeds[msg.groupId]["imageUrl"];
             }
+            newState["loading"] = true;
             newState["smallerScreenSection"] = "convMsgs";
             this.setState(newState);
             // this.loading = true;
@@ -1016,7 +1020,6 @@ class ChatWrapper extends React.Component {
                                                         // return <ChatNameHeadGroup selectedConversation={this.state.selectedConversation} userDetails={this.state.userDetails} groupFeeds={this.state.groupFeeds} />
                                                         return (<div className="chatHeader">
                                                             <div className="chatWithGroup">
-
                                                                 <Modal size="tiny" open={self.state.groupActionError != null} onClose={() => self.setState({ groupActionError: null, groupAction: null })} dimmer="inverted" className="chimp-modal" closeIcon centered={false}>
                                                                     <Modal.Header>Error uploading photo</Modal.Header>
                                                                     <Modal.Content>
@@ -1444,7 +1447,7 @@ class ChatWrapper extends React.Component {
                                                         </div>
                                                     </Fragment>
                                                 } else if (!self.state.compose && (!self.state.isSmallerScreen || self.state.smallerScreenSection != "convList")) {
-                                                    return <div class="no-messages">{self.isLoading ? "Loading..." : (self.refs.conversationSearchEl && self.refs.conversationSearchEl.inputRef.current.value != "" ? "No mathcing conversations found!" : "No conversations to display. Click on compose to start new!")}</div>
+                                                    return <div class="no-messages">{self.isLoading() ? "Loading..." : (self.refs.conversationSearchEl && self.refs.conversationSearchEl.inputRef.current.value != "" ? "No mathcing conversations found!" : "No conversations to display. Click on compose to start new!")}</div>
                                                 }
                                             })()}
                                         </div>
