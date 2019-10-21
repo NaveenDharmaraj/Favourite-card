@@ -298,10 +298,16 @@ class ChatWrapper extends React.Component {
                         userDetails[Number(userDetail.user_id)] = { userId: userDetail.user_id, displayName: displayName, email: userDetail.email_hash, imageLink: userDetail.avatar };
                     }
                 });
-                self.setState({ userDetails: userDetails });
+                const newState = { userDetails: userDetails };
+                if (!friendsList || friendsList.length <= 0) {
+                    newState["loading"] = false;
+                }
+                self.setState(newState);
                 self.loadConversations(false, self.state.msgId, self.state.msgId);
             }
-        );
+        ).catch(function (error) {
+            self.setState({ loading: false, compose: true });
+        });;
 
         /*
         let self = this;
@@ -338,6 +344,7 @@ class ChatWrapper extends React.Component {
                 self.sendMessageToSelectedConversation({ groupId: groupId }, messageInfo.message, false);
             }
         }).catch(function (error) {
+            self.setLoading(false);
             // console.log(error);
         });
     }
@@ -586,13 +593,16 @@ class ChatWrapper extends React.Component {
                 response.response.message[0].selected = true;
                 selectedConversation = response.response.message[0];
             }
+            if (response.response.message.length <= 0) {
+                newState["compose"] = true;
+            }
             newState['loading'] = false;
             self.setState(newState);
             if (self.refs.conversationSearchEl && self.refs.conversationSearchEl.inputRef && self.refs.conversationSearchEl.inputRef.current) {
                 self.refs.conversationSearchEl.inputRef.current.value = "";
             }
 
-            if (!ignoreLoadingChatMsgs || (self.state.selectedConversation && self.state.selectedConversation.contactIds == response.response.message[0]['contactIds'] && self.state.selectedConversation.groupId == response.response.message[0]['groupId'])) {
+            if (!ignoreLoadingChatMsgs || (self.state.selectedConversation && response.response.message.length > 0 && self.state.selectedConversation.contactIds == response.response.message[0]['contactIds'] && self.state.selectedConversation.groupId == response.response.message[0]['groupId'])) {
                 // console.log("Loading Conv msgs");
                 let newState = { selectedConversation: selectedConversation };
                 if (selectedConversation.groupId) {
@@ -610,7 +620,7 @@ class ChatWrapper extends React.Component {
         })
             .catch(function (error) {
                 // handle error
-                self.setState({ messages: [] });
+                self.setState({ messages: [], loading: false, compose: true });
             })
             .finally(function () {
                 // always executed 
