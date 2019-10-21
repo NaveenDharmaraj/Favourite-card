@@ -28,11 +28,11 @@ function FinalStep(props) {
                         <Header as="h3">Create your Impact Account. </Header>
                         <Header as="h4">
                             By clicking ‘Create your Impact Account,’ you acknowlege that you have read the
-                            <a href={`${APP_URL_ORIGIN}/privacy`}> Privacy Policy</a>
+                            <a href={`${APP_URL_ORIGIN}/privacy`} target="_blank"> Privacy Policy</a>
                             , and agree to the
-                            <a href={`${APP_URL_ORIGIN}/terms`}> Terms & Conditions </a>
+                            <a href={`${APP_URL_ORIGIN}/terms`} target="_blank"> Terms & Conditions </a>
                              and
-                            <a href={`${APP_URL_ORIGIN}/chimp-account-agreement`}> Account Agreement</a>
+                            <a href={`${APP_URL_ORIGIN}/account-agreement`} target="_blank"> Account Agreement</a>
                             .
                         </Header>
                     </div>

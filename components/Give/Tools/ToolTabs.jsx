@@ -9,7 +9,10 @@ import {
     Grid,
     Tab,
 } from 'semantic-ui-react';
-import _ from 'lodash'
+import _ from 'lodash';
+import {
+    formatAmount,
+} from '../../../helpers/give/utils';
 import AllocationsTab from './AllocationsTab';
 import GivingGoalsTable from './GivingGoalsTable';
 import DonationsTab from './DonationsTab'
@@ -38,6 +41,7 @@ class ToolTabs extends React.Component {
         this.deleteTransaction = this.deleteTransaction.bind(this);
         this.onPageChange = this.onPageChange.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleInputOnBlurGivingGoal = this.handleInputOnBlurGivingGoal.bind(this);
         
     }
     closeModal = () => {
@@ -62,8 +66,6 @@ class ToolTabs extends React.Component {
         }
     }
     handleInputChange(event) {
-
-       
         const {
             target: {
                 name, value
@@ -72,6 +74,20 @@ class ToolTabs extends React.Component {
         this.setState({
             givingGoal:value
         });
+    }
+    handleInputOnBlurGivingGoal(event) {
+        const {
+            target: {
+                name, value
+            },
+        } = event;
+        if(this.validateForm()){
+            let formattedValue = formatAmount(value)
+            this.setState({
+                givingGoal:formattedValue
+            });
+        }
+
     }
     intializeValidations() {
         this.validity = {
@@ -90,8 +106,6 @@ class ToolTabs extends React.Component {
         let {
             validity,
         } = this.state;
-
-
         validity = validateGivingGoal(givingGoal, validity);
         this.setState({
             validity,
@@ -159,7 +173,7 @@ class ToolTabs extends React.Component {
             menuItem: 'Your giving goal',
             render: () => {
                 const {
-                    userGivingGoalDetails
+                    userGivingGoalDetails,
                 } = this.props
                 const {
                     givingGoal,
@@ -177,7 +191,7 @@ class ToolTabs extends React.Component {
                                             <Header as="h3" className="mb-1">
                                                 Giving goal
                                                 <Header.Subheader className="mt-1">
-                                                Set a goal for how much you'd like to donate to your account this year. You can track your progress throughout the year and feel super satisfied when you hit it. Giving it away might feel even better.
+                                                Set a personal goal for the dollars you want to commit for giving. Reach your goal by adding money to your account.
                                                 </Header.Subheader>
                                             </Header>
                                         </Grid.Column>
@@ -203,6 +217,7 @@ class ToolTabs extends React.Component {
                                             <Modal.Content>
                                                 <ModalContent 
                                                         handleInputChange={this.handleInputChange}
+                                                        handleInputOnBlurGivingGoal={this.handleInputOnBlurGivingGoal}
                                                         givingGoal={givingGoal}
                                                         validity={validity}
                                                         currentYear={currentYear}

@@ -169,6 +169,14 @@ const isValidGiftAmount = (validity) => {
     return _.every(giftAmountValidity);
 };
 
+const isValidGivingGoalAmount = (validity) => {
+    const giftAmountValidity = _.pick(validity, [
+        'isAmountLessThanOneBillion',
+    ]);
+
+    return _.every(giftAmountValidity);
+};
+
 const getDefaultCreditCard = (paymentInstrumentList) => {
     let creditCard = {
         value: 0,
@@ -299,7 +307,7 @@ const populateAccountOptions = (data, translate, giveToId = null, allocationType
                 disabled: false,
                 id,
                 name: `${firstName} ${lastName}`,
-                text: `${fund.attributes.name} (${formatCurrency(fund.attributes.balance, language, currency)})`,
+                text: `${fund.attributes.name}: ${formatCurrency(fund.attributes.balance, language, currency)}`,
                 type: 'user',
                 value: fund.id,
             },
@@ -353,7 +361,7 @@ const populateAccountOptions = (data, translate, giveToId = null, allocationType
                     userGroups,
                     null,
                     (item) => item.attributes.fundId,
-                    (attributes) => `${attributes.fundName} (${formatCurrency(attributes.balance, language, currency)})`,
+                    (attributes) => `${attributes.fundName}: ${formatCurrency(attributes.balance, language, currency)}`,
                     (attributes) => false,
                     [
                         {
@@ -397,7 +405,7 @@ const populateAccountOptions = (data, translate, giveToId = null, allocationType
                     userCampaigns,
                     null,
                     (item) => item.attributes.fundId,
-                    (attributes) => `${attributes.fundName} (${formatCurrency(attributes.balance, language, currency)})`,
+                    (attributes) => `${attributes.fundName}: ${formatCurrency(attributes.balance, language, currency)}`,
                     (attributes) => false,
                     [
                         {
@@ -425,7 +433,7 @@ const populateAccountOptions = (data, translate, giveToId = null, allocationType
                     companiesAccountsData,
                     null,
                     (item) => item.attributes.companyFundId,
-                    (attributes) => `${attributes.companyFundName} (${formatCurrency(attributes.balance, language, currency)})`,
+                    (attributes) => `${attributes.companyFundName}: ${formatCurrency(attributes.balance, language, currency)}`,
                     (attributes) => false,
                     [
                         {
@@ -540,7 +548,7 @@ const populatePaymentInstrument = (paymentInstrumentsData, formatMessage) => {
         const newCreditCard = [
             {
                 disabled: false,
-                text: 'Use new Credit Card',
+                text: 'Add new card',
                 value: 0,
             },
         ];
@@ -968,7 +976,7 @@ const resetDataForAccountChange = (giveData, dropDownOptions, props, type) => {
  * @param {String} senderEmail email of the sender
  * @return {object}  validity Return the validity object.
  */
-const validateGiveForm = (field, value, validity, giveData, coverFeesAmount, senderEmail = null) => {
+const validateGiveForm = (field, value, validity, giveData, coverFeesAmount = null, senderEmail = null) => {
     const giveAmount = giveData.totalP2pGiveAmount
         ? giveData.totalP2pGiveAmount
         : giveData.giveAmount;
@@ -1142,7 +1150,8 @@ const populateCardData = (selectCardDetails, cardAmount) => {
     };
     const selectedCardName = _.split(selectCardDetails, ' ');
     if (isEnglishCard !== -1) {
-        cardData.displayName = _.replace(selectedCardName[0], '\'s', '');
+        const dispName = selectedCardName ? selectedCardName[0] : '';
+        cardData.displayName = _.replace(dispName, '\'s', '');
         cardData.processor = selectedCardName[selectedCardName.indexOf('ending') - 1].toLowerCase().trim();
         cardData.truncatedPaymentId = selectedCardName[selectedCardName.length - 1];
     } else {
@@ -1178,7 +1187,7 @@ const formatDateForGivingTools = (date) => {
     let unformattedDate = new Date(date);
     // Need to use the original function, using this now as we need to integrate translaction for that
     const day = unformattedDate.getDate();
-    const month = monthNamesForGivingTools(unformattedDate.getMonth());
+    const month = monthNamesForGivingTools(unformattedDate.getMonth() + 1);
     const year = unformattedDate.getFullYear();
     
     return `${month} ${day}, ${year}`;
@@ -1253,7 +1262,7 @@ const populateDonationReviewPage = (giveData, data, currency, formatMessage, lan
                 giveToData = {
                     accountId: selectedData.id,
                     avatar: giveTo.avatar,
-                    displayName: selectedData.attributes.name,
+                    displayName: selectedData.attributes.companyFundName,
                     type: 'company',
                 };
             }
@@ -1661,6 +1670,7 @@ export {
     validateTaxReceiptProfileForm,
     onWhatDayList,
     isValidGiftAmount,
+    isValidGivingGoalAmount,
     getDropDownOptionFromApiData,
     populateAccountOptions,
     populateDonationMatch,

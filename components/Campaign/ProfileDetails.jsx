@@ -23,7 +23,7 @@ function ProfileDetails(props) {
                     campaignDetails: {
                         attributes: {
                             about,
-                            videoDirectLink,
+                            videoPlayerLink,
                             short,
                         },
                     },
@@ -33,10 +33,10 @@ function ProfileDetails(props) {
                 if (campaignImageGallery) {
                     campaignImageGallery.forEach((singleImage) => {
                         const singleImagePropObj = {};
-                        singleImagePropObj.src = singleImage.attributes.assetUrl;
+                        singleImagePropObj.src = singleImage.attributes.originalUrl;
                         singleImagePropObj.thumbnail = singleImage.attributes.assetUrl;
-                        singleImagePropObj.thumbnailHeight = 174;
-                        singleImagePropObj.thumbnailWidth = 320;
+                        singleImagePropObj.thumbnailHeight = 196;
+                        singleImagePropObj.thumbnailWidth = 196;
                         imageArray.push(singleImagePropObj);
                     });
                 }
@@ -65,30 +65,44 @@ function ProfileDetails(props) {
                         <Container>
 
                             {
-                                (!videoDirectLink && !about && imageArray.length === 0 ) ? (
+                                (!videoPlayerLink && !about && imageArray.length === 0 ) ? (
                                     <Grid>
-                                        {noDataState()}
+                                        <Grid.Row>
+                                            <Grid.Column width={16}>
+                                                {noDataState()}
+                                            </Grid.Column>
+                                        </Grid.Row>
                                     </Grid>
                                 ) : (
                                     <Fragment>
                                         <Grid>
-                                            { about }
+                                            <Grid.Row>
+                                                <Grid.Column width={16}>
+                                                    { about }
+                                                </Grid.Column>
+                                            </Grid.Row>
                                         </Grid>
                                         <Grid>
-                                            <div className="mt-1">
-                                                <embed
-                                                    title="video"
-                                                    // width="50%"
-                                                    // height="50%"
-                                                    src={videoDirectLink}
-                                                />
-                                            </div>
+                                            <Grid.Row>
+                                                <Grid.Column width={16}>
+                                                    <embed
+                                                        title="video"
+                                                        // width="50%"
+                                                        // height="50%"
+                                                        src={videoPlayerLink}
+                                                    />
+                                                </Grid.Column>
+                                            </Grid.Row>
                                         </Grid>
                                         <Grid>
-                                            <ImageGallery
-                                                imagesArray={imageArray}
-                                                enableImageSelection={false}
-                                            />
+                                            <Grid.Row>
+                                                <Grid.Column width={16}>
+                                                    <ImageGallery
+                                                        imagesArray={imageArray}
+                                                        enableImageSelection={false}
+                                                    />
+                                                </Grid.Column>
+                                            </Grid.Row>
                                         </Grid>
                                     </Fragment>
                                 )
@@ -105,6 +119,7 @@ function ProfileDetails(props) {
             menuItem: 'Giving Groups supporting this Campaign',
             render: () => {
                 const {
+                    campaignDetails,
                     campaignSubGroupDetails,
                     campaignSubGroupsShowMoreUrl,
                     seeMoreLoaderStatus,
@@ -114,6 +129,7 @@ function ProfileDetails(props) {
                 return (
                     <Tab.Pane attached={false}>
                         <SupportingGroups
+                            campaignDetails={campaignDetails}
                             campaignSubGroupDetails={campaignSubGroupDetails}
                             campaignSubGroupsShowMoreUrl={campaignSubGroupsShowMoreUrl}
                             seeMoreLoaderStatus={seeMoreLoaderStatus}

@@ -33,9 +33,10 @@ class LeaveModal extends React.Component {
                 <Modal.Header>Leave {name} </Modal.Header>
                 <Modal.Content>
                     <Modal.Description className="font-s-16">
+                                        Are you sure you would like to leave this Giving Group?
                         {
-                            (showError) ?
-                                (
+                            (showError)
+                                && (
                                     <List divided relaxed className="modalWarning mt-1">
                                         <List.Item>
                                             <List.Icon verticalAlign='middle'>
@@ -47,11 +48,6 @@ class LeaveModal extends React.Component {
                                         </List.Item>
                                     </List>
                                 )
-                                : (
-                                    <span>
-                                        Are you sure you would like to leave this Giving Group?
-                                    </span>
-                                )
                         }
                     </Modal.Description>
                     <div className="btn-wraper pt-3 text-right">
@@ -61,7 +57,7 @@ class LeaveModal extends React.Component {
                                     <Button 
                                         className="blue-btn-rounded-def c-small" 
                                     >
-                                        Manage Groups
+                                        Manage members
                                     </Button>
                                 </Link>
                             )

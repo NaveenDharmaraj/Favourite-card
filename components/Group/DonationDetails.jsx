@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import {
     number,
     string,
+    bool,
 } from 'prop-types';
 import {
     Container,
@@ -17,10 +18,15 @@ import {
 import {
     distanceOfTimeInWords,
 } from '../../helpers/utils';
+import ShareDetails from '../shared/ShareSectionProfilePage';
 
 const DonationDetails = (props) => {
     const {
         currency,
+        currentUser: {
+            id: userId,
+        },
+        deepLinkUrl,
         language,
         groupDetails: {
             attributes: {
@@ -33,10 +39,14 @@ const DonationDetails = (props) => {
                 lastDonationAt,
             },
         },
+        isAuthenticated,
     } = props;
-    const lastDonationDay = distanceOfTimeInWords(lastDonationAt);
+    let lastDonationDay = '';
+    if (lastDonationAt !== null) {
+        lastDonationDay = distanceOfTimeInWords(lastDonationAt);
+    }
     let fundRaisingDuration = '';
-    const daysText = (fundraisingDaysRemaining && fundraisingDaysRemaining > 1) ? ' days left' : ' day left';
+    const daysText = (fundraisingDaysRemaining && fundraisingDaysRemaining === 1) ? ' day left' : ' days left';
     if (fundraisingDaysRemaining !== null) {
         fundRaisingDuration = (
             <span className="badge white right">
@@ -49,8 +59,8 @@ const DonationDetails = (props) => {
         <Container>
             <div className="profile-info-card giving">
                 <Grid stackable>
-                    <Grid.Row>
-                        <Grid.Column mobile={16} tablet={6} computer={6}>
+                    <Grid.Row verticalAlign="middle">
+                        <Grid.Column mobile={16} tablet={11} computer={11}>
                             <Header as="h2" className="font-s-34">
                                 {formatCurrency(totalMoneyRaised, language, currency)}
                                 {fundRaisingDuration}
@@ -62,28 +72,27 @@ const DonationDetails = (props) => {
                                 
                             </Header>
                             <Progress className="mb-0 c-green" percent={fundraisingPercentage} size="tiny" />
-                            <div className="small-font">
-                                {`Last donation 
-                                ${lastDonationAt && lastDonationDay}`}
-                            </div>
-                        </Grid.Column>
-                        <Grid.Column mobile={16} tablet={10} computer={10}>
-                            <Header as="h3">
-                                Milestones
-                            </Header>
+                            {lastDonationDay
+                            && (
+                                <div className="small-font">
+                                    {`Last donation
+                                    ${lastDonationDay}`}
+                                </div>
+                            )
+                            }
                             <div className="pt-1 campaign-amount">
                                 <Grid stackable columns={3}>
                                     <Grid.Row>
                                         <Grid.Column>
                                             <Header as="h2">
-                                                {formatCurrency(totalMoneyRaised, language, currency)}
-                                                <Header.Subheader className="small font-s-14">All time total raised</Header.Subheader>
+                                                {formatCurrency(totalMoneyGiven, language, currency)}
+                                                <Header.Subheader className="small font-s-14">All time total given</Header.Subheader>
                                             </Header>
                                         </Grid.Column>
                                         <Grid.Column>
                                             <Header as="h2">
-                                                {formatCurrency(totalMoneyGiven, language, currency)}
-                                                <Header.Subheader className="small font-s-14">All time total given</Header.Subheader>
+                                                {formatCurrency(totalMoneyRaised, language, currency)}
+                                                <Header.Subheader className="small font-s-14">All time total raised</Header.Subheader>
                                             </Header>
                                         </Grid.Column>
                                         <Grid.Column>
@@ -96,6 +105,16 @@ const DonationDetails = (props) => {
                                 </Grid>
                             </div>
                         </Grid.Column>
+                        {isAuthenticated
+                        && (
+                            <Grid.Column mobile={16} tablet={5} computer={5}>
+                                <ShareDetails
+                                    deepLinkUrl={deepLinkUrl}
+                                    profileDetails={props.groupDetails}
+                                    userId={userId}
+                                />
+                            </Grid.Column>
+                        )}
                     </Grid.Row>
                 </Grid>
             </div>
@@ -105,6 +124,9 @@ const DonationDetails = (props) => {
 
 DonationDetails.defaultProps = {
     currency: 'USD',
+    currentUser: {
+        id: null,
+    },
     groupDetails: {
         attributes: {
             balance: null,
@@ -115,11 +137,15 @@ DonationDetails.defaultProps = {
             totalMoneyRaised: null,
         },
     },
+    isAuthenticated: false,
     language: 'en',
 };
 
 DonationDetails.propTypes = {
     currency: string,
+    currentUser: {
+        id: string,
+    },
     groupDetails: {
         attributes: {
             balance: number,
@@ -130,12 +156,16 @@ DonationDetails.propTypes = {
             totalMoneyRaised: number,
         },
     },
+    isAuthenticated: bool,
     language: string,
 };
 
 function mapStateToProps(state) {
     return {
+        currentUser: state.user.info,
+        deepLinkUrl: state.profile.deepLinkUrl,
         groupDetails: state.group.groupDetails,
+        isAuthenticated: state.auth.isAuthenticated,
     };
 }
 

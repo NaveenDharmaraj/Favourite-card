@@ -14,7 +14,7 @@ import {
 import {
     chimpLogin,
     getUser,
-} from '../actions/user'
+} from '../actions/user';
 import isUndefinedOrEmpty from '../helpers/object';
 
 import coreApi from './coreApi';
@@ -44,6 +44,7 @@ const _auth0lockConfig = {
     avatar: null,
     container: 'auth0-lock-container',
     languageDictionary: {
+        emailInputPlaceholder: 'Enter your email',
         error: {
             forgotPassword: {
                 'lock.fallback': [
@@ -77,8 +78,10 @@ const _auth0lockConfig = {
             },
         },
         forgotPasswordAction: 'Forgot your password?',
+        forgotPasswordInstructions: '',
         forgotPasswordSubmitLabel: 'Reset password',
-        loginSubmitLabel: 'Sign in',
+        forgotPasswordTitle: 'Forgot your password?',
+        loginSubmitLabel: 'Log in',
         passwordInputPlaceholder: 'Your password',
         success: {
             forgotPassword: 'Check your inbox—we’ve sent instructions to reset your password.',
@@ -134,6 +137,10 @@ const auth0 = {
         return token ? storage.set('auth0AccessToken', token, 'cookie', this.getRemainingSessionTime(token) / 1000) : storage.unset('auth0AccessToken', 'cookie');
     },
 
+    set wpAccessToken(token) {
+        document.cookie = "wpAccessToken" +"=" + token + ";expires=" + this.getRemainingSessionTime(token) / 1000 + ";domain=.charitableimpact.com;path=/";
+    },
+
     /**
      * Erase Auth0 data from local
      * @method empty
@@ -143,6 +150,7 @@ const auth0 = {
         this.accessToken = null;
         this.userEmail = null;
         this.userId = null;
+        this.wpAccessToken = null;
 
         return null;
     },
@@ -406,6 +414,11 @@ const _handleLockSuccess = async ({
     if (!accessToken || !idToken) { return null(); }
     // Sets access token and expiry time in cookies
     chimpLogin(accessToken).then(async ({ currentUser }) => {
+        if (document) {
+            // console.log('setting wp access token');
+            await (auth0.wpAccessToken = accessToken);
+        }
+
         const userId = parseInt(currentUser, 10);
         await (auth0.returnProps = null);
         await (auth0.accessToken = accessToken);

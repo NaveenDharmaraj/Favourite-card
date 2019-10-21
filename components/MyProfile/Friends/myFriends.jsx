@@ -149,8 +149,16 @@ class MyFriends extends React.Component {
             friendsList = userFriendsInvitationsList.data.map((friend) => {
                 const name = `${friend.attributes.first_name} ${friend.attributes.last_name}`;
                 const avatar = ((typeof friend.attributes.avatar) === 'undefined' || friend.attributes.avatar === null) ? NoFriendAvatar : friend.attributes.avatar;
-                const email = Buffer.from(friend.attributes.email_hash, 'base64').toString('ascii');
-                const location = (typeof friend.attributes.city === 'undefined' || friend.attributes.province === '') ? '' : `${friend.attributes.city}, ${friend.attributes.province}`;
+                let locationDetails = '';
+                const locationDetailsCity = (!_.isEmpty(friend.attributes.city)) && friend.attributes.city !== 'null' ? friend.attributes.city : '';
+                const locationDetailsProvince = (!_.isEmpty(friend.attributes.province)) && friend.attributes.province !== 'null' ? friend.attributes.province : '';
+                if (locationDetailsCity === '' && locationDetailsProvince !== '') {
+                    locationDetails = locationDetailsProvince;
+                } else if (locationDetailsCity !== '' && locationDetailsProvince === '') {
+                    locationDetails = locationDetailsCity;
+                } else if (locationDetailsCity !== '' && locationDetailsProvince !== '') {
+                    locationDetails = `${friend.attributes.city}, ${friend.attributes.province}`;
+                }
                 return (
                     <List.Item>
                         <List.Content floated="right">
@@ -169,7 +177,7 @@ class MyFriends extends React.Component {
                                     {name}
                                 </Link>
                             </List.Header>
-                            <List.Description>{location}</List.Description>
+                            <List.Description>{locationDetails}</List.Description>
                         </List.Content>
                     </List.Item>
                 );
@@ -202,12 +210,20 @@ class MyFriends extends React.Component {
         const {
             currentMyFriendsActivePage,
         } = this.state;
-        let friendsList = 'No friends yet';
+        let friendsList = 'Friends you connect with on Charitable Impact will appear here.';
         if (!_.isEmpty(userMyFriendsList) && _.size(userMyFriendsList.data) > 0) {
             friendsList = userMyFriendsList.data.map((friend) => {
-                const name = `${friend.attributes.first_name} ${friend.attributes.last_name}`;
-                const email = Buffer.from(friend.attributes.email_hash, 'base64').toString('ascii');
-                const location = (typeof friend.attributes.city !== 'undefined') ? `${friend.attributes.city}, ${friend.attributes.province}` : '';
+                const name = `${friend.attributes.first_name} ${friend.attributes.last_name}`;                
+                let locationDetails = '';
+                const locationDetailsCity = (!_.isEmpty(friend.attributes.city)) && friend.attributes.city !== 'null' ? friend.attributes.city : '';
+                const locationDetailsProvince = (!_.isEmpty(friend.attributes.province)) && friend.attributes.province !== 'null' ? friend.attributes.province : '';
+                if (locationDetailsCity === '' && locationDetailsProvince !== '') {
+                    locationDetails = locationDetailsProvince;
+                } else if (locationDetailsCity !== '' && locationDetailsProvince === '') {
+                    locationDetails = locationDetailsCity;
+                } else if (locationDetailsCity !== '' && locationDetailsProvince !== '') {
+                    locationDetails = `${friend.attributes.city}, ${friend.attributes.province}`;
+                }
                 const avatar = (typeof friend.attributes.avatar) !== 'undefined' ? friend.attributes.avatar : NoFriendAvatar;
                 return (
                     <List.Item>
@@ -223,7 +239,7 @@ class MyFriends extends React.Component {
                                     {name}
                                 </Link>
                             </List.Header>
-                            <List.Description>{location}</List.Description>
+                            <List.Description>{locationDetails}</List.Description>
                         </List.Content>
                     </List.Item>
                 );

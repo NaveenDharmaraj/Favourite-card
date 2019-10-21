@@ -141,9 +141,9 @@ class IndividualTaxDonationContent extends React.Component {
             if (`${today.getMonth() + 1}-${today.getDate()}` === '1-1') {
                 return `${firstName}-for-${date}.`;
             }
-            return `${firstName}-from-${year}-01-01-to-${date}.`;
+            return `${firstName}-from-${year}-01-01-to-${date}.pdf`;
         }
-        return `${firstName}-from-${year}-01-01-to-${year}-12-31.`;
+        return `${firstName}-from-${year}-01-01-to-${year}-12-31.pdf`;
     }
 
     downloadTaxReceipt(event, year) {

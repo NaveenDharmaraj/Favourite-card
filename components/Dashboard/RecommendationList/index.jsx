@@ -5,11 +5,10 @@ import {
     Button,
     Container,
     Header,
-    Icon,
     Image,
     Grid,
     Card,
-    Popup,
+    Dropdown,
 } from 'semantic-ui-react';
 import {
     connect,
@@ -17,12 +16,13 @@ import {
 
 import {
     getRecommendationList,
+    hideRecommendations,
 } from '../../../actions/dashboard';
 import placeholderCharity from '../../../static/images/no-data-avatar-charity-profile.png';
 import placeholderGroup from '../../../static/images/no-data-avatar-giving-group-profile.png';
 import { Link } from '../../../routes';
 import PlaceholderGrid from '../../shared/PlaceHolder';
-import { renderText } from '../../../helpers/utils';
+import { renderTextByCharacter } from '../../../helpers/utils';
 
 class RecommendationList extends React.Component {
     constructor(props) {
@@ -30,6 +30,7 @@ class RecommendationList extends React.Component {
         this.state = {
             recommendationListLoader: !props.recommendationData,
         };
+        this.handleHideClick = this.handleHideClick.bind(this);
     }
 
     componentDidMount() {
@@ -58,6 +59,22 @@ class RecommendationList extends React.Component {
         }
     }
 
+    handleHideClick(data) {
+        const {
+            currentUser: {
+                id,
+            },
+            dispatch,
+        } = this.props;
+        let hideEntityId = 0;
+        if (data.attributes.type === 'charity') {
+            hideEntityId = data.attributes.charity_id;
+        } else if (data.attributes.type === 'group') {
+            hideEntityId = data.attributes.group_id;
+        }
+        hideRecommendations(dispatch, id, hideEntityId, data.attributes.type);
+    }
+
     recommendationList() {
         const {
             recommendationData,
@@ -66,16 +83,21 @@ class RecommendationList extends React.Component {
         if (recommendationData && recommendationData.data && _.size(recommendationData.data) > 0) {
             const showData = _.slice(recommendationData.data, 0, 9);
             recommendationList = showData.map((data, index) => {
-                let charityName = '';
-                const charityShortName = renderText(data.attributes.name, 3);
-                if (data.attributes.city != null) {
-                    charityName = `${charityShortName}, ${data.attributes.city}, ${data.attributes.province}`;
-                } else {
-                    charityName = charityShortName;
+                let locationDetails = '';
+                const locationDetailsCity = (!_.isEmpty(data.attributes.city)) ? data.attributes.city : '';
+                const locationDetailsProvince = (!_.isEmpty(data.attributes.province)) ? data.attributes.province : '';
+                const charityShortName = renderTextByCharacter(data.attributes.name, 40);
+                if (locationDetailsCity === '' && locationDetailsProvince !== '') {
+                    locationDetails = locationDetailsProvince;
+                } else if (locationDetailsCity !== '' && locationDetailsProvince === '') {
+                    locationDetails = locationDetailsCity;
+                } else if (locationDetailsCity !== '' && locationDetailsProvince !== '') {
+                    locationDetails = `${data.attributes.city}, ${data.attributes.province}`;
                 }
                 const type = data.attributes.type === 'group' ? 'giving group' : 'charity';
                 const typeClass = data.attributes.type === 'group' ? 'chimp-lbl group' : 'chimp-lbl charity';
                 const placeholder = data.attributes.type === 'group' ? placeholderGroup : placeholderCharity;
+                const imageType = (!_.isEmpty(data.attributes.avatar)) ? data.attributes.avatar : placeholder;
                 const urlEntity = data.attributes.type === 'group' ? 'groups' : 'charities';
                 return (
                     <Grid.Column key={index}>
@@ -84,7 +106,7 @@ class RecommendationList extends React.Component {
                                 <Grid>
                                     <Grid.Row>
                                         <Grid.Column width={6}>
-                                            <Image src={placeholder} />
+                                            <Image src={imageType} />
                                         </Grid.Column>
                                         <Grid.Column width={10}>
                                             <Grid columns="2">
@@ -100,32 +122,26 @@ class RecommendationList extends React.Component {
                                                         <Header as="h4">
                                                             <Header.Content>
                                                                 <Header.Subheader>
-                                                                    <Popup
-                                                                        basic
-                                                                        className="filterPopup"
-                                                                        on="click"
-                                                                        pinned
-                                                                        position="bottom right"
-                                                                        trigger={<a><span className="more-icon"><Icon name="ellipsis horizontal" /></span></a>}>
-                                                                        <div className="filterPanel">
-                                                                            <div className="filterPanelContent">
-                                                                                <div className="filterPanelItem">
-                                                                                    <div className="filter-header font-18 font-bold">
-                                                                                        Hide
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </Popup>
+                                                                    <Dropdown
+                                                                        className="rightBottom"
+                                                                        icon="ellipsis horizontal"
+                                                                        closeOnBlur
+                                                                    >
+                                                                        <Dropdown.Menu>
+                                                                            <Dropdown.Item text="Hide" onClick={() => this.handleHideClick(data)} />
+                                                                        </Dropdown.Menu>
+                                                                    </Dropdown>
                                                                 </Header.Subheader>
                                                             </Header.Content>
                                                         </Header>
                                                     </Grid.Column>
                                                 </Grid.Row>
                                             </Grid>
-                                            <Header as="h4" style={{ margin: '0rem 0rem .5rem' }}>
+                                            <Header as="h4" style={{ margin: '0rem 0.7rem .5rem 0rem' }}>
                                                 <Header.Content>
-                                                    {charityName}
+                                                    {charityShortName}
+                                                    <br />
+                                                    {locationDetails}
                                                 </Header.Content>
                                             </Header>
                                             <Link className="lnkChange" route={`/${urlEntity}/${data.attributes.slug}`}>

@@ -222,13 +222,13 @@ const group = (state = {}, action) => {
                 },
             };
             break;
-        case 'REDIRECT_TO_DASHBOARD':
+        case 'GROUP_REDIRECT_TO_DASHBOARD':
             newState = {
                 ...state,
                 redirectToDashboard: action.payload.redirectToDashboard,
             };
             break;
-        case 'PLACEHOLDER_STATUS':
+        case 'GROUP_PLACEHOLDER_STATUS':
             newState = {
                 ...state,
                 showPlaceholder: action.payload.showPlaceholder,
@@ -251,6 +251,28 @@ const group = (state = {}, action) => {
                 ...state,
                 galleryImageData: action.payload.galleryImages,
             };
+            break;
+        case 'GET_BENEFICIARIES_COUNT':
+            newState = {
+                ...state,
+                beneficiariesCount: action.payload.groupBeneficiariesCount,
+            };
+            break;
+        case 'LEAVE_GROUP_MODAL_ERROR_MESSAGE':
+            newState = {
+                ...state,
+                errorMessage: action.payload,
+            };
+            break;
+        case 'LEAVE_GROUP_MODAL_BUTTON_LOADER':
+            newState = {
+                ...state,
+                closeLeaveModal: action.payload.closeModal,
+                leaveButtonLoader: action.payload.buttonLoading,
+            };
+            break;
+        case 'RESET_GROUP_STATES':
+            newState = {};
             break;
         default:
             break;

@@ -75,7 +75,7 @@ class Privacy extends React.Component {
             unblockFriend(dispatch, id, userId).then(() => {
                 this.setState({
                     errorMessage: null,
-                    successMessage: 'Unblocking user was successfully.',
+                    successMessage: 'User unblocked.',
                     statusMessage: true,
                     buttonClicked: false,
                 });
@@ -115,8 +115,16 @@ class Privacy extends React.Component {
             friendsBlockedList = userBlockedFriendsList.data.map((data) => {
                 const name = `${data.attributes.first_name} ${data.attributes.last_name}`;
                 const avatar = ((typeof data.attributes.avatar) === 'undefined' || data.attributes.avatar === null) ? 'https://react.semantic-ui.com/images/avatar/small/daniel.jpg' : data.attributes.avatar;
-                const email = Buffer.from(data.attributes.email_hash, 'base64').toString('ascii');
-                const location = (typeof data.attributes.city !== 'undefined') ? `${data.attributes.city}, ${data.attributes.province}` : '';
+                let locationDetails = '';
+                const locationDetailsCity = (!_.isEmpty(data.attributes.city)) && data.attributes.city !== 'null' ? data.attributes.city : '';
+                const locationDetailsProvince = (!_.isEmpty(data.attributes.province)) && data.attributes.province !== 'null' ? data.attributes.province : '';
+                if (locationDetailsCity === '' && locationDetailsProvince !== '') {
+                    locationDetails = locationDetailsProvince;
+                } else if (locationDetailsCity !== '' && locationDetailsProvince === '') {
+                    locationDetails = locationDetailsCity;
+                } else if (locationDetailsCity !== '' && locationDetailsProvince !== '') {
+                    locationDetails = `${data.attributes.city}, ${data.attributes.province}`;
+                }
                 return (
                     <List.Item>
                         <List.Content floated="right">
@@ -135,7 +143,7 @@ class Privacy extends React.Component {
                                     {name}
                                 </Link>
                             </List.Header>
-                            <List.Description>{location}</List.Description>
+                            <List.Description>{locationDetails}</List.Description>
                         </List.Content>
                     </List.Item>
                 );
@@ -159,24 +167,31 @@ class Privacy extends React.Component {
         return (
             <div className="remove-gutter">
                 <div className="userSettingsContainer">
-                    <div className="settingsDetailWraper">
-                        <Header as="h4">
-                            Discoverability
-                            <Checkbox
-                                toggle
-                                className="c-chkBox right"
-                                id="discoverability"
-                                name="discoverability"
-                                checked={discoverability}
-                                onChange={this.handleUserPreferenceChange}
-                            />
-                        </Header>
-                        <p>
-                            You can manage your discoverability settings -manage
-                            whether you show up on searches or your
-                            name appears on Giving Group profiles.
-                        </p>
-                    </div>
+                        <div className="settingsDetailWraper">
+                            <Header as="h4">Discoverability </Header>
+                             <p>Choose whether people can see your name and find you on Charitable Impact.</p>
+                        </div>
+                        <div className="settingsDetailWraper">
+                            <List divided verticalAlign="middle" className="userList">
+                                <List.Item>
+                                    <List.Content floated="right">
+                                    <Checkbox
+                                        toggle
+                                        className="c-chkBox right"
+                                        id="discoverability"
+                                        name="discoverability"
+                                        checked={discoverability}
+                                        onChange={this.handleUserPreferenceChange}
+                                    />
+                                    </List.Content>
+                                    <List.Content>
+                                    <List.Description>
+                                        Show name and appear in search results
+                                    </List.Description>
+                                    </List.Content>
+                                </List.Item>
+                            </List>
+                        </div>
                     <div className="settingsDetailWraper">
                         <Header as="h4">Blocked users</Header>
                         {

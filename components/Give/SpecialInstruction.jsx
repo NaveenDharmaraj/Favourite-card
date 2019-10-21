@@ -3,6 +3,7 @@ import React, {
     Fragment,
 } from 'react';
 import {
+    Container,
     Divider,
     Form,
     Header,
@@ -37,44 +38,53 @@ const SpecialInstruction = (props) => {
                 : defaultTaxReceiptProfile;
             if (_isEmpty(paymentInstrumentList) && _isEmpty(taxProfile)) {
                 return (
-                    <div>
+                    <div className="mb-1">
+                        <Icon color="red" name="warning circle" />
+                        <span style={{ color: 'red' }}>
                                To send a monthly gift, first add a &nbsp;
-                        {
-                            giveFrom.type === 'companies'
-                                ? <a href={`/companies/${slug}/payment-profiles`}>payment method </a>
-                                : <Link route = '/user/profile/settings/creditcard'>payment method</Link>
-                        }
+                            {
+                                giveFrom.type === 'companies'
+                                    ? <a href={`/companies/${slug}/payment-profiles`}>payment method </a>
+                                    : <Link route = '/user/profile/settings/creditcard'>payment method</Link>
+                            }
                               &nbsp; and&nbsp;
-                        {
-                            giveFrom.type === 'companies'
-                                ? <a href={`/companies/${slug}/tax-receipt-profiles`}>tax receipt recipient</a>
-                                : <Link route = '/user/tax-receipts'>tax receipt recipient</Link>
-                        }
+                            {
+                                giveFrom.type === 'companies'
+                                    ? <a href={`/companies/${slug}/tax-receipt-profiles`}>tax receipt recipient</a>
+                                    : <Link route = '/user/tax-receipts'>tax receipt recipient</Link>
+                            }
                               &nbsp; to your account details.We won't charge your card without your permission.
+                        </span>
                     </div>
                 );
             } else if (_isEmpty(paymentInstrumentList)) {
                 return (
-                    <div>
+                    <div className="mb-1">
+                        <Icon color="red" name="warning circle" />
+                        <span style={{ color: 'red' }}>
                                  To send a monthly gift, first add a &nbsp;
-                        {
-                            giveFrom.type === 'companies'
-                                ? <a href={`/companies/${slug}/payment-profiles`}>payment method </a>
-                                : <Link route = '/user/profile/settings/creditcard'>payment method</Link>
-                        }
+                            {
+                                giveFrom.type === 'companies'
+                                    ? <a href={`/companies/${slug}/payment-profiles`}>payment method </a>
+                                    : <Link route = '/user/profile/settings/creditcard'>payment method</Link>
+                            }
                               &nbsp;   to your account details.We won't charge your card without your permission.
+                        </span>
                     </div>
                 );
-            } else if ( _isEmpty(taxProfile)) {
+            } else if (_isEmpty(taxProfile)) {
                 return (
-                    <div>
+                    <div className="mb-1">
+                        <Icon color="red" name="warning circle" />
+                        <span style={{ color: 'red' }}>
                             To send a monthly gift, first add a &nbsp;
-                        {
-                            giveFrom.type === 'companies'
-                                ? <a href={`/companies/${slug}/tax-receipt-profiles`}>tax receipt recipient</a>
-                                : <Link route="/user/tax-receipts">tax receipt recipient</Link>
-                        }
+                            {
+                                giveFrom.type === 'companies'
+                                    ? <a href={`/companies/${slug}/tax-receipt-profiles`}>tax receipt recipient</a>
+                                    : <Link route="/user/tax-receipts">tax receipt recipient</Link>
+                            }
                            &nbsp; to your account details.
+                        </span>
                     </div>
                 );
             }

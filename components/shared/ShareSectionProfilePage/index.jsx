@@ -107,7 +107,7 @@ class ShareDetails extends React.Component {
         const inputValue = (!_.isEmpty(deepLinkUrl)) ? deepLinkUrl.attributes["short-link"] : '';0.
 
         return (
-            <Grid.Column mobile={16} tablet={6} computer={6}>
+            <Grid.Column mobile={16} tablet={4} computer={5}>
                 <div className="profile-social-wraper">
                     <div className="profile-social-links">
                         <List horizontal>
@@ -149,7 +149,7 @@ class ShareDetails extends React.Component {
                     <div className="share-link">
                         <Form>
                             <Form.Field>
-                                <label>Or share link</label>
+                                <label>Share link</label>
                                 <input
                                     value={inputValue}
                                     ref={(textarea) => this.textArea = textarea}

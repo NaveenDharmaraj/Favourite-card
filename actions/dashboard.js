@@ -72,9 +72,7 @@ const getFriendsList = (dispatch, email) => {
         },
     ).catch((error) => {
         fsa.error = error;
-        logger.error(' ->>>> getFriendsList API failed');
     }).finally(() => {
-        logger.debug('[Debug] -> getFriendsList API finally block and dispatching');
         dispatch(fsa);
     });
 };
@@ -101,9 +99,7 @@ const getRecommendationList = (dispatch, url) => {
         },
     ).catch((error) => {
         fsa.error = error;
-        logger.error('->>>> getRecommendationList API failed');
     }).finally(() => {
-        logger.debug('[Debug] -> getRecommendationList API finally block and dispatching');
         dispatch(fsa);
     });
 };
@@ -126,9 +122,7 @@ const getStoriesList = (dispatch, url) => {
         },
     ).catch((error) => {
         fsa.error = error;
-        logger.error(' ->>>> getStoriesList API failed');
     }).finally(() => {
-        logger.debug('[Debug] -> getStoriesList API finally block and dispatching');
         dispatch(fsa);
     });
 };
@@ -155,7 +149,7 @@ const hideRecommendations = (dispatch, sourceUserId, hideEntityId, type) => {
         hide_entity_ids: hideEntities,
         user_id: Number(sourceUserId),
     };
-    return coreApi.post(`/core/updateUser/hide/${type}`, bodyData).then(
+    return graphApi.post(`/core/updateUser/hide/${type}`, bodyData).then(
         (result) => {
             fsa.payload = {
                 data: result.data,

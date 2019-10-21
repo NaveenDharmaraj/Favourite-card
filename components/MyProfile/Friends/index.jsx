@@ -22,6 +22,7 @@ import {
     inviteFriends,
     generateDeeplinkSignup,
 } from '../../../actions/userProfile';
+import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 const ModalStatusMessage = dynamic(() => import('../../shared/ModalStatusMessage'), {
     ssr: false
 });
@@ -73,22 +74,21 @@ class Friends extends React.Component {
             statusMessage: false,
             successMessage: '',
             userEmailIds: '',
+            isValidEmails: true,
         };
         this.handleTab = this.handleTab.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleInviteFriendsClick = this.handleInviteFriendsClick.bind(this);
         this.handleCopyLink = this.handleCopyLink.bind(this);
         this.handleInviteClick = this.handleInviteClick.bind(this);
+        this.validateEmailIds = this.validateEmailIds.bind(this);
     }
 
     componentDidMount() {
         const {
-            currentUser: {
-                id,
-            },
             dispatch,
         } = this.props;
-        generateDeeplinkSignup(dispatch, id);
+        generateDeeplinkSignup(dispatch, 'signup');
     }
 
     componentDidUpdate(prevProps) {
@@ -122,6 +122,7 @@ class Friends extends React.Component {
         this.setState({
             statusMessage: false,
             userEmailIds: '',
+            isValidEmails: true,
         })
     }
 
@@ -136,6 +137,18 @@ class Friends extends React.Component {
         this.setState({
             userEmailIds,
         });
+    }    
+    
+    validateEmailIds(emailIds) {        
+        let isValidEmail = true;
+        let splitedEmails = emailIds.split(',');
+        for (let i = 0; i < splitedEmails.length; i++) {
+            isValidEmail = /[\w\d\.-]+@[\w\d\.-]+\.[\w\d\.-]+/.test(splitedEmails[i]);
+            if(!isValidEmail) {
+                return false;
+            }
+        }
+        return true;
     }
 
     handleInviteFriendsClick() {
@@ -146,7 +159,9 @@ class Friends extends React.Component {
         const {
             userEmailIds,
         } = this.state;
-        if(userEmailIds !== null) {
+        const emailsValid = this.validateEmailIds(userEmailIds);
+        this.setState({ isValidEmails: emailsValid });
+        if(userEmailIds !== null && emailsValid) {
             const {
                 dispatch,
             } = this.props;
@@ -156,12 +171,14 @@ class Friends extends React.Component {
                     successMessage: 'Invite sent.',
                     statusMessage: true,
                     inviteButtonClicked: false,
+                    userEmailIds: '',
                 });
             }).catch((err) => {
                 this.setState({
                     errorMessage: 'Error in sending invite.',
                     statusMessage: true,
                     inviteButtonClicked: false,
+                    userEmailIds: '',
                 });
             });
         } else {
@@ -203,6 +220,7 @@ class Friends extends React.Component {
             successMessage,
             activeTabIndex,
             userEmailIds,
+            isValidEmails,
         } = this.state;
         return (
             <div>
@@ -231,34 +249,33 @@ class Friends extends React.Component {
                                         <Modal.Content>
                                             <Modal.Description>
                                                 <Form className="mb-2 inviteForm">
+                                                    {
+                                                        statusMessage && (
+                                                            <div className="mb-1">
+                                                                <ModalStatusMessage 
+                                                                    message = {!_.isEmpty(successMessage) ? successMessage : null}
+                                                                    error = {!_.isEmpty(errorMessage) ? errorMessage : null}
+                                                                />
+                                                            </div>
+                                                        )
+                                                    }
                                                     <label>
                                                         Enter as many email addresses as you like,
                                                         separated by comma
                                                     </label>
-                                                    <Grid verticalAlign="middle">
-                                                        {
-                                                            statusMessage && (
-                                                                <Grid.Row className="mt-1">
-                                                                    <Grid.Column width={16}>
-                                                                        <ModalStatusMessage 
-                                                                            message = {!_.isEmpty(successMessage) ? successMessage : null}
-                                                                            error = {!_.isEmpty(errorMessage) ? errorMessage : null}
-                                                                        />
-                                                                    </Grid.Column>
-                                                                </Grid.Row>
-                                                            )
-                                                        }
+                                                    <Grid verticalAlign="middle">                                                        
                                                         <Grid.Row>
                                                             <Grid.Column mobile={11} tablet={12} computer={13}>
                                                                 <Form.Field>
                                                                     <input
                                                                         placeholder="Email Address"
+                                                                        error={!isValidEmails}
                                                                         id="userEmailIds"
                                                                         name="userEmailIds"
                                                                         onChange={this.handleInputChange}
                                                                         value={userEmailIds}
-                                                                    />
-                                                                </Form.Field>
+                                                                    />                                                                    
+                                                                </Form.Field>                                                                
                                                             </Grid.Column>
                                                             <Grid.Column mobile={5} tablet={4} computer={3} className="text-right">
                                                                 <Button
@@ -272,9 +289,15 @@ class Friends extends React.Component {
                                                         </Grid.Row>
                                                     </Grid>
                                                 </Form>
+                                                <div className="mt--1 mb-1">
+                                                    <FormValidationErrorMessage
+                                                        condition={!isValidEmails}
+                                                        errorMessage="Please enter a valid email address."
+                                                    />
+                                                </div>
                                                 <Form className="inviteForm">
                                                     <label>
-                                                        Or share link
+                                                        Share link
                                                     </label>
                                                     <Grid verticalAlign="middle">
                                                         <Grid.Row>

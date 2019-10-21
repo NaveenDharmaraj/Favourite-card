@@ -178,7 +178,7 @@ class CreditCard extends React.Component {
 
         const cardName = value.replace(/ /g,'');
 
-        const format = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+        const format = /[ !@#$%^&*()_+\=\[\]{};:"\\|,.<>\/?]/;
         const specialCharacters = format.test(cardName);
 
         let inValidCardNameValue = false;
@@ -293,7 +293,7 @@ class CreditCard extends React.Component {
                         name="nameOnCard"
                         onChange={this.handleNameChange}
                         onBlur={this.handleNameBlur}
-                        placeholder={formatMessage('giveCommon:creditCard.nameOnCardLabel')}
+                        placeholder={formatMessage('giveCommon:creditCard.nameOnCardPlaceholder')}
                         size="large"
                         value={nameOnCard}
                     />
@@ -342,7 +342,7 @@ class CreditCard extends React.Component {
                             className="field fieldCC"
                             id="card-cvv"
                             onChange={this.handleCvvChange}
-                            placeholder="Security Code"
+                            placeholder="Security code"
                             {...createOptions()}
                         />
                         <FormValidationErrorMessage

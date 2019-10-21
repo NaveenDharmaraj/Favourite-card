@@ -3,7 +3,8 @@
 import React from 'react';
 import {
     Form,
-    Input
+    Icon,
+    Input,
 } from 'semantic-ui-react';
 
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
@@ -11,7 +12,8 @@ import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage'
 function ModalContent(props) {
     const {
         handleInputChange,
-        givngGoal,
+        handleInputOnBlurGivingGoal,
+        givingGoal,
         validity,
         currentYear,
     } = props;
@@ -20,14 +22,20 @@ function ModalContent(props) {
             <Form.Field inline>
                 <label>My {currentYear} Goal is</label>
                 <Form.Field
-                    placeholder="$"
                     control={Input}
                     id="givingGoal"
                     name="givingGoal"
-                    value={givngGoal}
+                    value={givingGoal}
                     error={!validity.isValidGiveAmount}
                     onChange={handleInputChange}
+                    onBlur={handleInputOnBlurGivingGoal}
                     fluid
+                    icon={(
+                        <Icon
+                            name='dollar sign'
+                        />
+                    )}
+                    iconPosition="left"
                 />
             </Form.Field>
             <FormValidationErrorMessage

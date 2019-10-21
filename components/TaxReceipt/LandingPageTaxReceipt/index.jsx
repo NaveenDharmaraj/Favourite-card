@@ -35,24 +35,28 @@ class LandingPageTaxReceipt extends React.Component {
         };
         this.onEdit = this.onEdit.bind(this);
         this.handleModalOpen = this.handleModalOpen.bind(this);
+        this.handleLoadMoreClick = this.handleLoadMoreClick.bind(this);
         this.renderdonationDetailShow = this.renderdonationDetailShow.bind(this);
     }
-
 
 
     componentDidMount() {
         const {
             dispatch,
-            issuedTaxReceiptList,
         } = this.props;
-        if (_isEmpty(issuedTaxReceiptList)) {
-            getIssuedTaxreceipts(dispatch);
-        }
+        getIssuedTaxreceipts(dispatch, `/taxReceipts?page[size]=10`);
     }
-
 
     onEdit() {
         this.setState({ isSelectPhotoModalOpen: true });
+    }
+
+    handleLoadMoreClick() {
+        const {
+            dispatch,
+            nextLink,
+        } = this.props;
+        getIssuedTaxreceipts(dispatch, nextLink, true);
     }
 
     handleModalOpen(modalBool) {
@@ -74,6 +78,8 @@ class LandingPageTaxReceipt extends React.Component {
             issuedTaxReceiptList,
             dispatch,
             issuedTaxLloader,
+            recordCount,
+            viewMoreLoader,
         } = this.props;
         const {
             donationDetailhide,
@@ -123,11 +129,11 @@ class LandingPageTaxReceipt extends React.Component {
                                                 <p className="font-s-13">Manage the legal names and addresses that appear on tax receipts. You can have multiple recepients on one account (for example, a spouse).</p>
                                             </Grid.Column>
                                             <Grid.Column mobile={16} tablet={4} computer={3} className="text-right">
-                                                <Button className="success-btn-rounded-def" onClick={()=>{this.onEdit()}}>+ Add new recipient</Button>
+                                                <Button className="success-btn-rounded-def" onClick={() => { this.onEdit(); }}>+ Add new recipient</Button>
                                                 {
                                                     isSelectPhotoModalOpen && (
                                                         <ModalComponent
-                                                            name='Add new tax receipt recipient'
+                                                            name="Add new tax receipt recipient"
                                                             isSelectPhotoModalOpen={isSelectPhotoModalOpen}
                                                             dispatch={dispatch}
                                                             taxReceipt={intializeFormData}
@@ -144,7 +150,7 @@ class LandingPageTaxReceipt extends React.Component {
                                 <TaxReceipientsList />
                                 <div className="mb-2 mt-3">
                                     <p className="font-s-16 bold mb-1-2">Issued tax receipts</p>
-                                    <p className="font-s-13">Tax receipts are organizied by recipient.</p>
+                                    <p className="font-s-13">Tax receipts are organized by recipient.</p>
                                 </div>
                                 {issuedTaxLloader ? <PlaceholderGrid row={2} column={2} /> : (
                                     <Fragment>
@@ -163,6 +169,18 @@ class LandingPageTaxReceipt extends React.Component {
                                         }
                                     </Fragment>
                                 )}
+                                {(recordCount && !_isEmpty(issuedTaxReceiptList) && recordCount > issuedTaxReceiptList.length)
+                                    ? (
+                                        <div className="text-center">
+                                            <Button
+                                                className="blue-bordr-btn-round-def"
+                                                onClick={() => this.handleLoadMoreClick()}
+                                                loading={viewMoreLoader}
+                                                content="View more"
+                                            />
+                                        </div>
+                                    ) : null
+                                }
                             </Container>
                         </div>
                     </Fragment>
@@ -179,6 +197,9 @@ const mapStateToProps = (state) => ({
     currentUser: state.user.info,
     issuedTaxLloader: state.taxreceipt.issuedTaxLloader,
     issuedTaxReceiptList: state.taxreceipt.issuedTaxReceiptList,
+    nextLink: state.taxreceipt.nextLink,
+    recordCount: state.taxreceipt.recordCount,
+    viewMoreLoader: state.taxreceipt.viewMoreLoader,
 });
 
 export default connect(mapStateToProps)(LandingPageTaxReceipt);

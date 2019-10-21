@@ -107,7 +107,7 @@ const userProfile = (state = {}, action) => {
                 userAcceptFriendRequestData: Object.assign({}, action.payload),
             };
             break;
-        case 'ADD_NEW_CREDIT_CARD_STATUS':
+        case 'USER_PROFILE_ADD_NEW_CREDIT_CARD_STATUS':
             newState = {
                 ...state,
                 newCreditCardApiCall: action.payload.newCreditCardApiCall,
@@ -123,6 +123,36 @@ const userProfile = (state = {}, action) => {
             newState = {
                 ...state,
                 userProfileSignUpDeeplink: Object.assign({}, action.payload),
+            };
+            break;
+        case 'USER_PROFILE_USERPROFILE_DEEPLINK':
+            newState = {
+                ...state,
+                userProfileProfilelink: Object.assign({}, action.payload),
+            };
+            break;
+        case 'USER_PROFILE_ADMIN_GROUP_LOAD_STATUS':
+            newState = {
+                ...state,
+                userProfileAdminGroupsLoadStatus: action.payload.userProfileAdminGroupsLoadStatus,
+            };
+            break;
+        case 'USER_PROFILE_MEMBER_GROUP_LOAD_STATUS':
+            newState = {
+                ...state,
+                userProfileMemberGroupsLoadStatus: action.payload.userProfileMemberGroupsLoadStatus,
+            };
+            break;
+        case 'USER_PROFILE_FAVOURITES_LOAD_STATUS':
+            newState = {
+                ...state,
+                userProfileFavouritesLoadStatus: action.payload.userProfileFavouritesLoadStatus,
+            };
+            break;
+        case 'USER_PROFILE_CHARITABLE_INTERESTS_LOAD_STATUS':
+            newState = {
+                ...state,
+                userProfileCharitableInterestsLoadStatus: action.payload.userProfileCharitableInterestsLoadStatus,
             };
             break;
         default:

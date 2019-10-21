@@ -59,13 +59,13 @@ const Error = (props) => {
                                 >
                                     <p>
                                         {formatMessage('errorMessage1', {
-                                            email: 'hello@chimp.net',
-                                            telephone: '+1 (877) 531-0580.',
+                                            email: 'hello@charitableimpact.com',
+                                            telephone: '1-877-531-0580',
                                         })}
                                     </p>
-                                    <p>
+                                    {/* <p>
                                         {formatMessage('errorMessage2')}
-                                    </p>
+                                    </p> */}
                                 </div>
                             </Grid.Column>
                         </Grid.Row>

@@ -8,6 +8,14 @@ const taxreceipt = (state = {}, action) => {
         ...state,
     };
     switch (action.type) {
+        case 'GET_INITIAL_TAX_RECEIPT_PROFILE':
+            newState = {
+                ...state,
+                loader: action.payload.loader,
+                taxReceiptProfileList: action.payload.taxReceiptProfileList,
+                taxReceiptProfilePageCount: action.payload.taxReceiptProfilePageCount,
+            };
+            break;
         case 'GET_PAGINATED_TAX_RECEIPT_PROFILE':
             const taxReceiptProfileListUnique = !_isEmpty(state.taxReceiptProfileList) ? [
                 ...state.taxReceiptProfileList,
@@ -71,10 +79,24 @@ const taxreceipt = (state = {}, action) => {
             };
             break;
         case 'ISSUED_TAX_RECEIPTS_LIST':
+            const uniqueIssuedTaxReceiptList = !_isEmpty(state.issuedTaxReceiptList) ? [
+                ...state.issuedTaxReceiptList,
+                ...action.payload.issuedTaxReceiptList,
+            ]
+                : action.payload.issuedTaxReceiptList;
             newState = {
                 ...state,
                 issuedTaxLloader: action.payload.issuedTaxLloader,
-                issuedTaxReceiptList: action.payload.issuedTaxReceiptList,
+                issuedTaxReceiptList: _uniqBy(uniqueIssuedTaxReceiptList, 'id'),
+                nextLink: action.payload.nextLink,
+                recordCount: action.payload.recordCount,
+            };
+            break;
+        case 'ISSUED_TAX_RECEIPTS_LIST_LOADER':
+            newState = {
+                ...state,
+                issuedTaxLloader: action.payload.issuedTaxLloader,
+                viewMoreLoader: action.payload.viewMoreLoader,
             };
             break;
         case 'ISSUED_TAX_RECEIPIENT_YEARLY_DETAIL':

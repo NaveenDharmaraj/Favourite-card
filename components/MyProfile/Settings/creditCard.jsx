@@ -241,14 +241,16 @@ class MyCreditCards extends React.Component {
                 this.setState({
                     buttonClicked: false,
                     errorMessage: null,
-                    successMessage: 'Your Credit Card Saved Successfully.',
+                    successMessage: 'Credit card saved.',
                     statusMessage: true,
+                    isAddModalOpen: false,
                 });
             }).catch((err) => {
                 this.setState({
                     buttonClicked: false,
                     errorMessage: 'Error in saving the Credit Card.',
                     statusMessage: true,
+                    isAddModalOpen: false,
                 });
             });
         }
@@ -287,7 +289,7 @@ class MyCreditCards extends React.Component {
         });
     }
 
-    handleInputChange(event, data) {        
+    handleInputChange(event, data) {
         const {
             name,
             options,
@@ -296,7 +298,7 @@ class MyCreditCards extends React.Component {
         const {
             editDetails,
         } = this.state;
-        const newValue = (!_.isEmpty(options)) ? _.find(options, { value }) : value;
+        let newValue = (!_.isEmpty(options)) ? _.find(options, { value }) : value;        
         if (editDetails[name] !== newValue) {
             editDetails[name] = newValue;
         }
@@ -306,6 +308,30 @@ class MyCreditCards extends React.Component {
                 ...editDetails,
             },
         });
+    }
+
+    handleKeyUp(event) {
+        let code = event.keyCode;
+        let allowedKeys = [8];
+        if (allowedKeys.indexOf(code) !== -1) {
+            return;
+        }
+
+        event.target.value = event.target.value.replace(
+            /^([1-9]\/|[2-9])$/g, '0$1/' // 3 > 03/
+        ).replace(
+            /^(0[1-9]|1[0-2])$/g, '$1/' // 11 > 11/
+        ).replace(
+            /^([0-1])([3-9])$/g, '0$1/$2' // 13 > 01/3
+        ).replace(
+            /^(0?[1-9]|1[0-2])([0-9]{2})$/g, '$1/$2' // 141 > 01/41
+        ).replace(
+            /^([0]+)\/|[0]+$/g, '0' // 0/ > 0 and 00 > 0
+        ).replace(
+            /[^\d\/]|^[\/]*$/g, '' // To allow only digits and `/`
+        ).replace(
+            /\/\//g, '/' // Prevent entering more than 1 `/`
+        );
     }
 
     handleEditExpiryBlur(event, data) {
@@ -436,7 +462,7 @@ class MyCreditCards extends React.Component {
                 this.setState({
                     deleteButtonClicked: false,
                     errorMessage: null,
-                    successMessage: 'Your Credit Card deleted Successfully.',
+                    successMessage: 'Credit card deleted.',
                     statusMessage: true,
                     isDeleteMessageOpen: false,
                 });
@@ -465,7 +491,7 @@ class MyCreditCards extends React.Component {
     }
 
     onPageChanged(event, data) {
-        console.log(data);
+        // console.log(data);
         const {
             currentUser: {
                 id,
@@ -622,6 +648,7 @@ class MyCreditCards extends React.Component {
             deleteButtonClicked,
             editButtonClicked,
             errorMessage,
+            isAddModalOpen,
             inValidCardNumber,
             inValidExpirationDate,
             inValidNameOnCard,
@@ -639,15 +666,12 @@ class MyCreditCards extends React.Component {
             myCreditCardListLoader,
             statusMessage,
             successMessage,
-        } = this.state;
-        const {
-            newCreditCardApiCall,
-        } = this.props;
+        } = this.state;        
         const formatMessage = this.props.t;
         return (
             <div>
                 <div className="userSettingsContainer">
-                    <div className="settingsDetailWraper heading brdr-btm pb-1 pt-2">
+                    <div className="settingsDetailWraper heading brdr-btm pb-1 pt-2 pMethodHead">
                         <Grid verticalAlign="middle">
                             <Grid.Row>
                                 <Grid.Column mobile={16} tablet={11} computer={11}>
@@ -660,7 +684,7 @@ class MyCreditCards extends React.Component {
                                             dimmer="inverted"
                                             className="chimp-modal"
                                             closeIcon
-                                            open={newCreditCardApiCall}
+                                            open={isAddModalOpen}
                                             onClose={this.handleCCAddClose}
                                             trigger={<Button
                                                 className="success-btn-rounded-def"
@@ -694,7 +718,7 @@ class MyCreditCards extends React.Component {
                                                         <Form.Field
                                                             checked={isDefaultCard}
                                                             control={Checkbox}
-                                                            className="ui checkbox chkMarginBtm"
+                                                            className="ui checkbox chkMarginBtm checkboxToRadio"
                                                             id="isDefaultCard"
                                                             label="Set as primary card"
                                                             name="isDefaultCard"
@@ -775,6 +799,7 @@ class MyCreditCards extends React.Component {
                                                     error={!isValidExpiry}
                                                     onBlur={this.handleEditExpiryBlur}
                                                     onChange={this.handleInputChange}
+                                                    onKeyUp={(e) => {this.handleKeyUp(e)}}
                                                     value={expiry}
                                             />
                                             <FormValidationErrorMessage
@@ -788,7 +813,7 @@ class MyCreditCards extends React.Component {
                                     <Form.Field
                                         checked={isDefaultCard}
                                         control={Checkbox}
-                                        className="ui checkbox chkMarginBtm"
+                                        className="ui checkbox chkMarginBtm checkboxToRadio"
                                         id="isDefaultCard"
                                         label="Set as primary card"
                                         name="isDefaultCard"

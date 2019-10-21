@@ -21,6 +21,8 @@ import { getDetails } from '../../actions/group';
 import LeftImageCard from '../shared/LeftImageCard';
 import PlaceholderGrid from '../shared/PlaceHolder';
 
+import GroupNoDataState from './GroupNoDataState';
+
 class CharitySupport extends React.Component {
     static loadCards(data) {
         return (
@@ -28,6 +30,7 @@ class CharitySupport extends React.Component {
                 {data.map((card) => (
                     <LeftImageCard
                         entityName={card.attributes.name}
+                        location=""
                         placeholder={card.attributes.avatar}
                         typeClass="chimp-lbl charity"
                         type="charity"
@@ -70,11 +73,23 @@ class CharitySupport extends React.Component {
                 data: beneficiariesData,
                 nextLink: beneficiariesNextLink,
             },
+            groupDetails: {
+                attributes: {
+                    isAdmin,
+                    slug,
+                },
+            },
         } = this.props;
-        let viewData = 'NO DATA';
-        if (!_isEmpty(beneficiariesData)) {
-            viewData = CharitySupport.loadCards(beneficiariesData);
-        }
+        const viewData = !_isEmpty(beneficiariesData)
+            ? CharitySupport.loadCards(beneficiariesData)
+            : (
+                <GroupNoDataState
+                    type="charities"
+                    isAdmin={isAdmin}
+                    slug={slug}
+                />
+            );
+
         return (
             <Fragment>
                 {!charityLoader ? (
@@ -107,6 +122,12 @@ CharitySupport.defaultProps = {
         data: [],
         nextLink: '',
     },
+    groupDetails: {
+        attributes: {
+            isAdmin: false,
+            slug: '',
+        },
+    },
     id: null,
 };
 
@@ -117,6 +138,12 @@ CharitySupport.propTypes = {
         data: arrayOf(PropTypes.element),
         nextLink: string,
     },
+    groupDetails: {
+        attributes: {
+            isAdmin: bool,
+            slug: string,
+        },
+    },
     id: number,
 };
 
@@ -124,6 +151,7 @@ function mapStateToProps(state) {
     return {
         charityLoader: state.group.showPlaceholder,
         groupBeneficiaries: state.group.groupBeneficiaries,
+        groupDetails: state.group.groupDetails,
     };
 }
 

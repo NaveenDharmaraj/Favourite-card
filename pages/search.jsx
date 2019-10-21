@@ -24,6 +24,7 @@ import {
     fetchTextSearchCharities,
     fetchTextSearchGroups,
 } from '../actions/search';
+import { Router } from '../routes';
 import PaginationComponent from '../components/shared/Pagination';
 
 class Search extends React.Component {
@@ -62,6 +63,9 @@ class Search extends React.Component {
         const {
             currentPageClicked,
         } = this.state;
+        if (_isEmpty(searchWord) && isAuthenticated === false) {
+            Router.pushRoute('/search?search=charitable impact&result_type=Beneficiary');
+        }
         if (_isEmpty(searchWord) && searchType === 'All') {
             dispatch(fetchInitialCharitiesGroups(isAuthenticated, id));
         } else if (_isEmpty(searchWord) && searchType === 'Beneficiary') {

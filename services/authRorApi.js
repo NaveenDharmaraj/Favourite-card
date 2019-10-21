@@ -3,6 +3,7 @@ import _isEmpty from 'lodash/isEmpty';
 import getConfig from 'next/config';
 
 import auth0 from '../services/auth';
+import logger from '../helpers/logger';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -36,6 +37,16 @@ instance.interceptors.response.use(function (response) {
     // Do something with response data
     return response.data;
   }, function (error) {
+      const {
+        config,
+    } = error.response;
+    const logDNAErrorObj = {
+        data: config.data ? JSON.parse(config.data) : null,
+        error: error.response.data,
+        method: config.method,
+        url: config.url,
+    };
+    logger.error(`[AUTHROR] API failed: ${JSON.stringify(logDNAErrorObj)}`);
     return Promise.reject(error.response.data);
   });
 

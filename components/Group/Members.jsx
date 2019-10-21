@@ -107,7 +107,7 @@ class Members extends React.Component {
 
         return (
             <Fragment>
-                <div className="give-friends-list pt-2">
+                <div className="give-friends-list">
                     {(adminsData.length > 0)
                         && (
                             <Header as="h4">

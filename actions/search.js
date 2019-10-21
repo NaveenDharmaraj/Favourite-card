@@ -62,7 +62,7 @@ export const fetchInitialCharitiesGroups = (isAuthenticated, userId) => (dispatc
         }).catch((err) => {
             fsa.payload.charityFlag = true;
             fsa.payload.groupFlag = true;
-            console.log(err);
+            // console.log(err);
         }).finally(() => {
             return dispatch(fsa);
         });
@@ -105,7 +105,7 @@ export const fetchInitialCharities = (pageNumber, isAuthenticated, userId) => (d
             fsa.payload.pageCount = result.meta.pageCount;
             fsa.payload.charityFlag = true;
         }).catch((err) => {
-            console.log(err);
+            // console.log(err);
             fsa.payload.charityFlag = true;
         }).finally(() => {
             return dispatch(fsa);
@@ -148,7 +148,7 @@ export const fetchInitialGroups = (pageNumber, isAuthenticated, userId) => (disp
             fsa.payload.groupFlag = true;
         }).catch((err) => {
             fsa.payload.groupFlag = true;
-            console.log(err);
+            // console.log(err);
         }).finally(() => {
             return dispatch(fsa);
         });

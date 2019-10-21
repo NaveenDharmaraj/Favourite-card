@@ -27,6 +27,9 @@ import settingsIcon from '../../../../static/images/icons/icon-account_settings.
 import MainNavItem from './MainNavItem';
 import { getMainNavItems } from '../../../../helpers/utils';
 import { Link } from '../../../../routes';
+import Notifications from './Notifications';
+import Chat from './Chat';
+import Give from './Give';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -41,6 +44,7 @@ const NavBarMobile = ({
   visible,
   currentAccount,
   formatMessage,
+  notificationUpdate,
   handleClick,
   activeIndex,
 }) => {
@@ -53,13 +57,16 @@ const NavBarMobile = ({
     const menuLinks = getMainNavItems(accountType, slug);
     let accountSettingsText = formatMessage('accountSettings');
     let accountUrl = `/user/profile/basic`;
+    let logoUrl = `/dashboard`;
     let isExternal = false;
     if (accountType === 'company') {
         accountSettingsText = formatMessage('companyAccountSettings');
         accountUrl = `${RAILS_APP_URL_ORIGIN}/companies/${slug}/edit`;
+        logoUrl = `${RAILS_APP_URL_ORIGIN}/companies/${slug}`;
         isExternal = true;
     } else if (accountType === 'charity') {
         accountUrl = `${RAILS_APP_URL_ORIGIN}/beneficiaries/${slug}/info`;
+        logoUrl = `${RAILS_APP_URL_ORIGIN}/admin/beneficiaries/${slug}`;
         isExternal = true;
     }
     return (
@@ -80,13 +87,26 @@ const NavBarMobile = ({
                                     {name}
                                 </div>
                                 <div className="iconWraper smo-d-none">
-                                    <a href="#" className="new"><Image src={notificationIcon}/></a>
-                                    <a className="settingsIcon"><Image src={messageIcon}/></a>
+                                    <Link route='/notifications/all'>
+                                        <a className={`${notificationUpdate ? ' new' : ''}`}>
+                                            <Image src={notificationIcon}/>
+                                        </a>
+                                    </Link>
+                                    <Link route='/chats/all'>
+                                        <a>
+                                            <Image src={messageIcon}/>
+                                        </a>
+                                    </Link>
                                 </div>
                             </List.Content>
                         </List.Item>
                     </List>
                 </Menu.Item>
+                <Link route={logoUrl}>
+                    <Menu.Item as="a">
+                        Dashboard
+                    </Menu.Item>
+                </Link>
                 <Link route='/search'>
                     <Menu.Item as="a">
                         Explore
@@ -113,113 +133,20 @@ const NavBarMobile = ({
                 onClick={onPusherClick}
             >
                 <Menu secondary>
-                    <Menu.Item>
-                        <Button className="blue-btn-rounded-def c-small">Give</Button>
-                    </Menu.Item>
+                    <Give />
                     <Menu.Item className="logoImg">
-                        <Image src={logo} />
+                        <Link route={logoUrl}>
+                            <Image src={logo} />
+                        </Link>
                     </Menu.Item>
 
                     <Menu.Menu position="right">
-                        <Popup
-                            position="bottom right"
-                            basic
-                            on='click'
-                            className="notification-popup"
-                            trigger={
-                                (<Menu.Item className="xs-d-none">
-                                <Image src={notificationIcon}/>
-                              </Menu.Item>
-                              )
-                              }
-                        >
-                            <Popup.Header>
-                                Notification <a className="settingsIcon"><Icon name="setting"/></a>
-                            </Popup.Header>
-                            <Popup.Content>
-                                <List divided verticalAlign='top'>
-                                    <List.Item className="new">
-                                        <List.Content>
-                                            This notification is now removed. <a>Undo</a>
-                                        </List.Content>
-                                    </List.Item>
-                                    <List.Item className="new">
-                                        <Image avatar src='https://react.semantic-ui.com/images/avatar/small/lena.png' />
-                                        <List.Content>
-                                            <b>Sophia Yakisoba</b> is waiting for you to accept their invitation. 
-                                            <div className="time">4 hours ago</div>
-                                            <span className="more-btn">
-                                                <Dropdown className="rightBottom" icon='ellipsis horizontal'>
-                                                    <Dropdown.Menu>
-                                                        <Dropdown.Item text='Delete this notification' />
-                                                        <Dropdown.Item text='Stop recieving notifications like this' />
-                                                    </Dropdown.Menu>
-                                                </Dropdown>
-                                            </span>
-                                            <Button className="blue-btn-rounded-def c-small">Accept</Button>
-                                        </List.Content>
-                                    </List.Item>
-                                    <List.Item className="new">
-                                        <Image avatar src='https://react.semantic-ui.com/images/avatar/small/lena.png' />
-                                        <List.Content>
-                                            <b>Pablo Jorge</b> just met his Giving Goal!
-                                            <div className="time">4 hours ago</div>
-                                            <span className="more-btn">
-                                                <Dropdown className="rightBottom" icon='ellipsis horizontal'>
-                                                    <Dropdown.Menu>
-                                                        <Dropdown.Item text='Delete this notification' />
-                                                        <Dropdown.Item text='Stop recieving notifications like this' />
-                                                    </Dropdown.Menu>
-                                                </Dropdown>
-                                            </span>
-                                            <Button className="blue-bordr-btn-round-def c-small">View profile</Button>
-                                        </List.Content>
-                                    </List.Item>
-                                    <List.Item className="new">
-                                        <Image avatar src='https://react.semantic-ui.com/images/avatar/small/lena.png' />
-                                        <List.Content>
-                                            <b>Kholde Brew </b> and you are now friends.
-                        
-                                            <div className="time">Sunday</div>
-                                            <span className="more-btn">
-                                                <Dropdown className="rightBottom" icon='ellipsis horizontal'>
-                                                    <Dropdown.Menu>
-                                                        <Dropdown.Item text='Delete this notification' />
-                                                        <Dropdown.Item text='Stop recieving notifications like this' />
-                                                    </Dropdown.Menu>
-                                                </Dropdown>
-                                            </span>
-                                            <Button className="blue-btn-rounded-def c-small">Accept</Button>
-                                        </List.Content>
-                                    </List.Item>
-                                    <List.Item>
-                                        <Image avatar src='https://react.semantic-ui.com/images/avatar/small/lena.png' />
-                                        <List.Content>
-                                            <b>CHIMP </b> just introduced a new way of giving to maximize your donation.
-                        
-                                            <div className="time">Jan 13</div>
-                                            <span className="more-btn">
-                                                <Dropdown className="rightBottom" icon='ellipsis horizontal'>
-                                                    <Dropdown.Menu>
-                                                        <Dropdown.Item text='Delete this notification' />
-                                                        <Dropdown.Item text='Stop recieving notifications like this' />
-                                                    </Dropdown.Menu>
-                                                </Dropdown>
-                                            </span>
-                                            <Button className="blue-btn-rounded-def c-small">Accept</Button>
-                                        </List.Content>
-                                    </List.Item>
-                                </List>
-                            </Popup.Content>
-                            <div className="popup-footer text-center">
-                                <a href="">See all activity</a>
-                            </div>
-                        </Popup>
-                        <Menu.Item className="xs-d-none">
-                          <Image src={messageIcon}/>
-                        </Menu.Item>
+                        <Notifications />
+                        <Chat />
                         <Menu.Item>
-                          <Image src={searchIcon}/>
+                            <Link route="/search">
+                                <Image src={searchIcon}/>
+                            </Link>
                         </Menu.Item>
                         <Menu.Item onClick={onToggle}>
                             <div class="nav-icon3">
@@ -263,6 +190,7 @@ class MobileHeader extends Component {
     const {
         children,
         currentAccount,
+        notificationUpdate,
     } = this.props;
     const formatMessage = this.props.t;
     const { visible } = this.state;
@@ -276,6 +204,7 @@ class MobileHeader extends Component {
         currentAccount={currentAccount}
         formatMessage={formatMessage}
         activeIndex={activeIndex}
+        notificationUpdate={notificationUpdate}
         >
             {children}
         </NavBarMobile>
@@ -285,6 +214,7 @@ class MobileHeader extends Component {
 
 const mapStateToProps = (state) => ({
     currentAccount: state.user.currentAccount,
+    notificationUpdate: state.firebase.notificationUpdate,
 });
 
 export default withTranslation('authHeader')(connect(mapStateToProps)(MobileHeader));

@@ -9,17 +9,18 @@ import {
 import PropTypes from 'prop-types';
 
 import { Link } from '../../../routes';
-import { renderText } from '../../../helpers/utils';
+import { renderTextByCharacter } from '../../../helpers/utils';
 
 const LeftImageCard = (props) => {
     const {
         entityName,
+        location,
         placeholder,
         typeClass,
         type,
         url,
     } = props;
-    const entityShortName = renderText(entityName, 3);
+    const entityShortName = renderTextByCharacter(entityName, 25);
     return (
         <Grid.Column>
             <Card className="left-img-card" fluid>
@@ -39,6 +40,8 @@ const LeftImageCard = (props) => {
                                                 {type}
                                             </Header.Subheader>
                                             {entityShortName}
+                                            <br />
+                                            {location}
                                         </Header.Content>
                                     </Header>
                                     <Link className="lnkChange" route={url}>
@@ -57,6 +60,7 @@ const LeftImageCard = (props) => {
 
 LeftImageCard.propTypes = {
     entityName: PropTypes.string,
+    location: PropTypes.string,
     placeholder: PropTypes.string,
     type: PropTypes.string,
     typeClass: PropTypes.string,
@@ -65,6 +69,7 @@ LeftImageCard.propTypes = {
 
 LeftImageCard.defaultProps = {
     entityName: '',
+    location: '',
     placeholder: '',
     type: '',
     typeClass: '',
