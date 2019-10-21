@@ -147,7 +147,7 @@ class ShareDetails extends React.Component {
                     <div className="share-link">
                         <Form>
                             <Form.Field>
-                                <label>Or share link</label>
+                                <label>Share link</label>
                                 <input
                                     value={inputValue}
                                     ref={(textarea) => this.textArea = textarea}

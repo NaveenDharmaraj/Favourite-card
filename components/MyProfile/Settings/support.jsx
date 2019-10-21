@@ -28,7 +28,7 @@ class Support extends React.Component {
                         <p className="bold">Live chat</p>
                         <p>
                             Chat live with a client success team member.
-                            Our team is available from Monday to Friday, 9am to 5pm (Pacific Time)
+                            Our team is available from Monday to Friday, 9am to 5pm (Pacific Time).
                         </p>
                         <Button
                             className="success-btn-rounded-def"

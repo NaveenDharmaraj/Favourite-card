@@ -21,8 +21,13 @@ import {
 } from 'react-redux';
 
 import { getTransactionDetails } from '../../actions/group';
+import {
+    formatCurrency,
+} from '../../helpers/give/utils';
 import PaginationComponent from '../shared/Pagination';
 import PlaceholderGrid from '../shared/PlaceHolder';
+
+import GroupNoDataState from './GroupNoDataState';
 
 class TransactionDetails extends React.Component {
     constructor(props) {
@@ -55,18 +60,24 @@ class TransactionDetails extends React.Component {
 
     render() {
         const {
+            currency,
             groupTransactions: {
                 data: groupData,
                 meta: {
                     pageCount,
                 },
             },
+            language,
             tableListLoader,
         } = this.props;
         const {
             activePage,
         } = this.state;
-        let transactionData = 'No Data';
+        let transactionData = (
+            <GroupNoDataState
+                type="transactions"
+            />
+        );
         if (!_isEmpty(groupData)) {
             transactionData = groupData.map((transaction) => {
                 let date = new Date(transaction.attributes.createdAt);
@@ -118,8 +129,7 @@ class TransactionDetails extends React.Component {
                             </Table.Cell>
                             <Table.Cell className="amount">
                                 {transactionSign}
-                                $
-                                {transaction.attributes.amount}
+                                {formatCurrency(transaction.attributes.amount, language, currency)}
                             </Table.Cell>
                         </Table.Row>
                     </Fragment>
@@ -128,7 +138,7 @@ class TransactionDetails extends React.Component {
         }
 
         return (
-            <div className="pt-2">
+            <div>
                 <Table basic="very" className="brdr-top-btm db-activity-tbl">
                     {!tableListLoader ? (
                         <Table.Body>
@@ -137,7 +147,7 @@ class TransactionDetails extends React.Component {
                     ) : (<PlaceholderGrid row={3} column={3} placeholderType="table" />)
                     }
                 </Table>
-                {!_isEmpty(groupData)
+                {!_isEmpty(groupData) && pageCount > 1
                     && (
                         <div className="db-pagination right-align pt-2">
                             <PaginationComponent
@@ -158,6 +168,7 @@ class TransactionDetails extends React.Component {
 }
 
 TransactionDetails.defaultProps = {
+    currency: 'USD',
     dispatch: func,
     groupTransactions: {
         data: [],
@@ -169,10 +180,12 @@ TransactionDetails.defaultProps = {
         },
     },
     id: null,
+    language: 'en',
     tableListLoader: true,
 };
 
 TransactionDetails.propTypes = {
+    currency: string,
     dispatch: _.noop,
     groupTransactions: {
         data: arrayOf(PropTypes.element),
@@ -184,6 +197,7 @@ TransactionDetails.propTypes = {
         }),
     },
     id: number,
+    language: string,
     tableListLoader: bool,
 };
 
@@ -191,6 +205,7 @@ TransactionDetails.propTypes = {
 function mapStateToProps(state) {
     return {
         currentUser: state.user.info,
+        groupDetails: state.group.groupDetails,
         groupTransactions: state.group.groupTransactions,
         tableListLoader: state.group.showPlaceholder,
     };

@@ -55,7 +55,7 @@ function FirstStep(props) {
                             />
                             <FormValidationErrorMessage
                                 condition={!validity.isFirstnameLengthInLimit && validity.isFirstNameNotNull}
-                                errorMessage="First Name cannot have more than 150 characters"
+                                errorMessage="First Name cannot have more than 30 characters"
                             />
                         </Form.Field>
                         <Form.Field>
@@ -78,7 +78,7 @@ function FirstStep(props) {
                             />
                             <FormValidationErrorMessage
                                 condition={!validity.isLastnameLengthInLimit && validity.isLastNameNotNull}
-                                errorMessage="Last Name cannot have more than 150 characters"
+                                errorMessage="Last Name cannot have more than 30 characters"
                             />
                         </Form.Field>
                         <div className="reg-btn-wraper">

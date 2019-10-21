@@ -10,7 +10,7 @@
     "preloadedAccountPlaceHolder": "Votre liste de comptes est en cours de chargement. Cela peut prendre un instant.",
     "accountPlaceHolder": "Sélectionnez un compte source",
     "amountLessOrInvalid": "Veuillez choisir un montant de {{minAmount}} $ ou plus",
-    "invalidMaxAmountError": "9 999 $ est le maximum que nous pouvons traiter ici. Pour des montants plus importants, veuillez nous contacter: hello@chimp.net ou 1-877-531-0580.",
+    "invalidMaxAmountError": "9 999 $ est le maximum que nous pouvons traiter ici. Pour des montants plus importants, veuillez nous contacter: hello@charitableimpact.com ou 1-877-531-0580.",
     "blankError":  "Doit être rempli",
     "giftTypeSingle": "Ceci est un don unique"
 

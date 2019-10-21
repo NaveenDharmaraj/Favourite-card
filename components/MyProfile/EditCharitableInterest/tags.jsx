@@ -76,11 +76,11 @@ class MyTags extends React.Component {
             if (saveClickedTags) {
                 recommendedTagsLists = [];
                 recommendedTagsLists = userTagsRecommendedList.data;
+                this.setState({ currentActivePage: 1 });
             } else {
                 recommendedTagsLists = recommendedTagsLists.concat(userTagsRecommendedList.data);
             }
-            this.setState({
-                currentActivePage: 1,
+            this.setState({                
                 loader: false,
                 recommendedTagsLists,
             });
@@ -153,9 +153,7 @@ class MyTags extends React.Component {
         } = this.props;
         let {
             loader,
-        } = this.state;
-        const {
-            currentActivePage,
+            currentActivePage
         } = this.state;
         resetSaveClicked(false);
         if (currentActivePage === pageCount) {

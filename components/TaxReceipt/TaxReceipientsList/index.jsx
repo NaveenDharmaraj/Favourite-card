@@ -36,11 +36,8 @@ class TaxReceipientsList extends React.Component {
                 id,
             },
             dispatch,
-            taxReceiptProfileList,
         } = this.props;
-        if (_isEmpty(taxReceiptProfileList)) {
-            getTaxReceiptProfilePaginated(dispatch, id, 1);
-        }
+        getTaxReceiptProfilePaginated(dispatch, id, 1);
     }
 
 

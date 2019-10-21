@@ -24,9 +24,9 @@ function AllocationsTab(props) {
     return (
         <Segment className="no-border no-shadow">
             <Header as="h3">
-                Your monthly giving
+                Monthly gifts
                 <Header.Subheader className="mt-1">
-                Setup a new monthly gift by searching for a charity, Giving Group, or Campaign and then selecting 'Give' on the page. Your credit card will only be charged if your account balance is less than the amount you are attempting to give.
+                Set up a new monthly gift by searching for a charity, Giving Group, or Campaign and then selecting 'Give' on the page.
                 </Header.Subheader>
             </Header>
             <AllocationsTable

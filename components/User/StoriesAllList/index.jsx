@@ -20,6 +20,7 @@ import {
     PropTypes,
     string,
 } from 'prop-types';
+import _isEmpty from 'lodash/isEmpty';
 
 import {
     getStoriesList,
@@ -70,8 +71,8 @@ class StoriesAllList extends React.Component {
         const url = `/blogs/newBlogs?size=10&page=${data.activePage}`;
         getStoriesList(dispatch, url);
         this.setState({
-            storiesListLoader: true,
             currentActivePage: data.activePage,
+            storiesListLoader: true,
         });
     }
 
@@ -83,11 +84,15 @@ class StoriesAllList extends React.Component {
         if (storiesData && storiesData.data && _.size(storiesData.data) > 0) {
             storiesList = storiesData.data.map((data, index) => {
                 const {
+                    blog_excerpt,
                     blog_image_URL,
                     blog_title,
                     blog_URL,
                 } = data;
                 const displayAvatar = (!_.isEmpty(blog_image_URL)) ? blog_image_URL : allImg;
+                const blogTitle = decodeURI(blog_title.replace('&#8217;', "'"));
+                let blogDescription = decodeURI(blog_excerpt.replace('&#8217;', "'"));
+                blogDescription = blogDescription.replace(/<[^>]*>/g, '');
                 return (
                     <div className="search-result-single">
                         <Grid stackable>
@@ -98,8 +103,12 @@ class StoriesAllList extends React.Component {
                                 <Grid.Column mobile={16} tablet={7} computer={8} verticalAlign="top">
                                     <div className=" description">
                                         <Header as="h4">
+                                            {blogTitle}
+                                            <br />
+                                            <br />
                                             <Header.Subheader>
-                                                    {blog_title}
+                                                {!_isEmpty(blogDescription) ? blogDescription.split(' ').slice(0, 20).join(' ') : null}
+                                                {(!_isEmpty(blogDescription) && blogDescription.split(' ').length > 20) && '...'}
                                             </Header.Subheader>
                                         </Header>
                                     </div>

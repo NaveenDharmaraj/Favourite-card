@@ -6,15 +6,22 @@ import {
     Image,
     Button,
 } from 'semantic-ui-react';
+import getConfig from 'next/config';
 
 import PlaceholderGrid from '../shared/PlaceHolder';
 import placeholder from '../../static/images/no-data-avatar-giving-group-profile.png';
 import LeftImageCard from '../shared/LeftImageCard';
 import noDataImgCampain from '../../static/images/campaignprofile_nodata_illustration.png';
 
+const { publicRuntimeConfig } = getConfig();
+
+const {
+    RAILS_APP_URL_ORIGIN,
+} = publicRuntimeConfig;
 
 function SupportingGroups(props) {
     const {
+        campaignDetails,
         campaignSubGroupDetails,
         campaignSubGroupsShowMoreUrl,
         seeMoreLoaderStatus,
@@ -41,7 +48,9 @@ function SupportingGroups(props) {
                                         </Header.Content>
                                     </Header>
                                     <div>
-                                        <Button className="success-btn-rounded-def">Create a Giving Group</Button>
+                                        <a href={`${RAILS_APP_URL_ORIGIN}/campaigns/${campaignDetails.attributes.slug}/step/one`}>
+                                            <Button className="success-btn-rounded-def">Create a Giving Group</Button>
+                                        </a>
                                     </div>
                                 </div>
                             </Grid.Column>
@@ -60,6 +69,7 @@ function SupportingGroups(props) {
                 groupCards.push(<LeftImageCard
                     entityName={subGroup.attributes.name}
                     placeholder={(groupImg) || placeholder}
+                    location=""
                     typeClass="chimp-lbl group"
                     type="Giving Groups"
                     url={`/${subGroup.type}/${subGroup.attributes.slug}`}

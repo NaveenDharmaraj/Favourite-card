@@ -149,6 +149,9 @@ class Donation extends React.Component {
         if(name !== 'giveTo') {
             validity = validateDonationForm(name, inputValue, validity, giveData);
         }
+        if(name === 'noteToSelf'){
+            giveData[name] = inputValue.trim();
+        }
         this.setState({
             flowObject: {
                 ...this.state.flowObject,
@@ -511,7 +514,7 @@ class Donation extends React.Component {
                     <Divider className="dividerMargin" />
                     <h3
                         className='ui header'
-                    >Payment
+                    >Payment method
                     </h3>
                 </Form.Field>
                 <Form.Field>

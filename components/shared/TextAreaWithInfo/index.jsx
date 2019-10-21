@@ -19,7 +19,7 @@ import React, {
  */
 const TextAreaWithInfo = ({
     info,
-    ...rest,
+    ...rest
 }) => (
     <Fragment>
         <textarea {...rest} rows={3} />

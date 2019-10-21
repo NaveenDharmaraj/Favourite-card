@@ -41,7 +41,8 @@ class SearchCharitiesGroups extends React.Component {
                                 </Card.Description>
                                 <Card.Meta>
                                     {!_isEmpty(charity.attributes.city) ? charity.attributes.city : null}
-                                    {!_isEmpty(charity.attributes.province) ? ` ,${charity.attributes.province}` : null}
+                                    {(!_isEmpty(charity.attributes.city) && !_isEmpty(charity.attributes.province)) && ','}
+                                    {!_isEmpty(charity.attributes.province) ? ` ${charity.attributes.province}` : null}
                                 </Card.Meta>
                             </Card.Content>
                         </Card>
@@ -76,7 +77,8 @@ class SearchCharitiesGroups extends React.Component {
                                     </Card.Description>
                                     <Card.Meta>
                                         {!_isEmpty(group.attributes.city) ? group.attributes.city : null}
-                                        {!_isEmpty(group.attributes.province) ? ` ,${group.attributes.province}` : null}
+                                        {(!_isEmpty(group.attributes.city) && !_isEmpty(group.attributes.province)) && ','}
+                                        {!_isEmpty(group.attributes.province) ? ` ${group.attributes.province}` : null}
                                     </Card.Meta>
                                 </Card.Content>
                             </Card>
@@ -105,9 +107,9 @@ class SearchCharitiesGroups extends React.Component {
             <Fragment>
                 <div className="search-main-head charities">
                     <Header as="h2">
-                        CHARITIES
+                    Charities discovered for you
                         <Header.Subheader>
-                            Manage your account settings and set email preferences
+                        Suggestions based on your interests.
                             {
                                 (!_isEmpty(charities) && !_isEmpty(charities.meta) && charities.meta.recordCount > 4)
                                 && <div className="right-align"><Link route={`/search?${searchQueryParam}result_type=Beneficiary`}>&nbsp;&nbsp;View all</Link></div>
@@ -128,9 +130,9 @@ class SearchCharitiesGroups extends React.Component {
                 </div>
                 <div className="search-main-head groups">
                     <Header as="h2">
-                    GIVING GROUPS
+                    Giving Groups discovered for you
                         <Header.Subheader>
-                            Manage your account settings and set email preferences
+                            Suggestions based on your interests.
                             {
                                 (!_isEmpty(groups) && !_isEmpty(groups.meta) && groups.meta.recordCount > 4)
                                 && <div className="right-align"><Link route={`/search?${searchQueryParam}result_type=Group`}>&nbsp;&nbsp;View all</Link></div>

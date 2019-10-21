@@ -5,6 +5,7 @@ import {
     PropTypes,
     string,
 } from 'prop-types';
+import _ from 'lodash';
 
 import { Router } from '../routes';
 import {
@@ -39,12 +40,19 @@ class CampaignProfile extends React.Component {
 
     render() {
         const {
+            campaignDetails: {
+                attributes: {
+                    about,
+                    name,
+                },
+            },
             slugApiErrorStats,
         } = this.props;
 
+        const description = (!_.isEmpty(about)) ? about : name;
         if (!slugApiErrorStats) {
             return (
-                <Layout>
+                <Layout title={name} description={description}>
                     <CampaignProfileWrapper {...this.props} />
                 </Layout>
             );
@@ -54,10 +62,22 @@ class CampaignProfile extends React.Component {
 }
 
 CampaignProfile.defaultProps = {
+    campaignDetails: {
+        attributes: {
+            about: '',
+            name: '',
+        },
+    },
     slug: '',
 };
 
 CampaignProfile.propTypes = {
+    campaignDetails: {
+        attributes: {
+            about: string,
+            name: string,
+        },
+    },
     slug: string,
 };
 

@@ -7,6 +7,7 @@ import {
     Grid,
     Popup,
     Icon,
+    Image
 } from 'semantic-ui-react';
 import {
     connect,
@@ -16,6 +17,7 @@ import dynamic from 'next/dynamic';
 import {
     saveUserBasicProfile,
     uploadUserImage,
+    removeProfilePhoto,
 } from '../../../actions/userProfile';
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 import PrivacySetting from '../../shared/Privacy';
@@ -24,7 +26,7 @@ const ModalStatusMessage = dynamic(() => import('../../shared/ModalStatusMessage
 });
 import {
     formatAmount,
-    isValidGiftAmount,
+    isValidGivingGoalAmount,
 } from '../../../helpers/give/utils';
 import {
     isInputBlank,
@@ -32,34 +34,49 @@ import {
     isAmountMoreThanOneDollor,
     isValidPositiveNumber,
 } from '../../../helpers/give/giving-form-validation';
+import UserPlaceholder from '../../../static/images/no-data-avatar-user-profile.png';
 
 class EditBasicProfile extends React.Component {
     constructor(props) {
         super(props);
+        const {
+            currentUser: {
+                attributes: {
+                    logoFileName,
+                }
+            }
+        } = props;
         this.state = {
             buttonClicked: true,
             errorMessage: null,
+            isImageChanged: false,
+            isDefaultImage: logoFileName === null ? true : false,
             uploadImage: '',
+            uploadImagePreview: '',
             statusMessage: false,
             successMessage: '',
             userBasicDetails: {
                 about: (!_.isEmpty(props.userData)) ? props.userData.description : '',
                 firstName: (!_.isEmpty(props.userData)) ? props.userData.first_name : '',
-                givingGoal: (!_.isEmpty(props.userData)) ? props.userData.giving_goal_amt : '',
+                givingGoal: (!_.isEmpty(props.userData.giving_goal_amt) || typeof props.userData.giving_goal_amt !== 'undefined') ? formatAmount(Number(props.userData.giving_goal_amt)) : '',
                 lastName: (!_.isEmpty(props.userData)) ? props.userData.last_name : '',
                 location: (!_.isEmpty(props.userData)) ? props.userData.location : '',
+                displayName: (!_.isEmpty(props.userData)) ? props.userData.display_name : '',
             },
             validity: this.intializeValidations(),
         };
-
+        
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleInputOnBlur = this.handleInputOnBlur.bind(this);
         this.handleUpload = this.handleUpload.bind(this);
+        this.handleRemovePreview = this.handleRemovePreview.bind(this);
+        this.handleRemoveProfilePhoto = this.handleRemoveProfilePhoto.bind(this);
     }
 
     componentDidUpdate(prevProps) {
         const {
+            currentUser,
             userData,
         } = this.props;        
         if (!_.isEqual(userData, prevProps.userData)) {
@@ -67,10 +84,16 @@ class EditBasicProfile extends React.Component {
                 userBasicDetails: {
                     about: userData.description,
                     firstName: userData.first_name,
-                    givingGoal: userData.giving_goal_amt,
+                    givingGoal: typeof userData.giving_goal_amt !== 'undefined' ? formatAmount(Number(userData.giving_goal_amt)) : '',
                     lastName: userData.last_name,
                     location: userData.location,
+                    displayName: userData.display_name,
                 },
+            });
+        }
+        if (!_.isEqual(currentUser, prevProps.currentUser)) {
+            this.setState({
+                isDefaultImage: currentUser.attributes.logoFileName === null ? true : false,
             });
         }
     }
@@ -99,13 +122,10 @@ class EditBasicProfile extends React.Component {
 
     intializeValidations() {
         this.validity = {
-            doesAmountExist: true,
             isAmountLessThanOneBillion: true,
-            isAmountMoreThanOneDollor: true,
-            isDescriptionNotNull: true,
+            isDisplayNameNotNull: true,
             isFirstNameNotNull: true,
             isLastNameNotNull: true,
-            isValidPositiveNumber: true,
         };
         return this.validity;
     }
@@ -167,14 +187,11 @@ class EditBasicProfile extends React.Component {
             case 'lastName':
                 validity.isLastNameNotNull = !(!value || value.length === 0);
                 break;
-            case 'about':
-                validity.isDescriptionNotNull = !(!value || value.length === 0);
+            case 'displayName':
+                validity.isDisplayNameNotNull = !(!value || value.length === 0);
                 break;
             case 'givingGoal':
-                validity.doesAmountExist = !isInputBlank(value);
                 validity.isAmountLessThanOneBillion = isAmountLessThanOneBillionDollars(value);
-                validity.isAmountMoreThanOneDollor = isAmountMoreThanOneDollor(value);
-                validity.isValidPositiveNumber = isValidPositiveNumber(value);
                 break;
             default:
                 break;
@@ -190,13 +207,13 @@ class EditBasicProfile extends React.Component {
             userBasicDetails: {
                 firstName,
                 lastName,
-                about,
+                displayName,
                 givingGoal,
             },
         } = this.state;
         validity = this.validateUserProfileBasicForm('firstName', firstName, validity);
         validity = this.validateUserProfileBasicForm('lastName', lastName, validity);
-        validity = this.validateUserProfileBasicForm('about', about, validity);
+        validity = this.validateUserProfileBasicForm('displayName', displayName, validity);
         validity = this.validateUserProfileBasicForm('givingGoal', givingGoal, validity);
         this.setState({
             validity,
@@ -222,6 +239,7 @@ class EditBasicProfile extends React.Component {
                 dispatch,
             } = this.props;
             const {
+                isImageChanged,
                 userBasicDetails,
             } = this.state;
             saveUserBasicProfile(dispatch, userBasicDetails, id, email).then(() => {
@@ -238,24 +256,98 @@ class EditBasicProfile extends React.Component {
                     buttonClicked: true,
                 });
             });
+            if (isImageChanged) {
+                const {
+                    currentUser: {
+                        id,
+                    },
+                    dispatch,
+                } = this.props;
+                const {
+                    uploadImage,
+                } = this.state;
+                uploadUserImage(dispatch, id, uploadImage).then(() => {
+                    this.setState({                       
+                        buttonClicked: true,
+                        uploadImagePreview: '',
+                    });
+                }).catch((err) => {
+                    this.setState({                        
+                        buttonClicked: true,
+                        uploadImagePreview: '',
+                    });
+                });
+            }
         } else {
             this.setState({
                 buttonClicked: false,
             });
         }
     }
+
+    getBase64(file, cb) {
+        let reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function () {
+            cb(reader.result)
+        };
+        reader.onerror = function (error) {
+            // console.log('Error: ', error);
+        };
+    }
     
     handleUpload(event) {
         this.setState({
-            uploadImage: event.target.files[0]
+            uploadImagePreview: '',
+            isDefaultImage: true,
+        })
+        this.getBase64(event.target.files[0], (result) => {
+            this.setState({
+                isImageChanged: true,
+                uploadImage: result,
+                buttonClicked: false,
+                uploadImagePreview: result,
+            });
         });
+    }
+
+    handleRemovePreview() {
+        const {
+            currentUser: {
+                attributes: {
+                    logoFileName,
+                }
+            },
+        } = this.props;
+        this.setState({
+            isDefaultImage: logoFileName === null ? true : false,
+            uploadImagePreview: '',
+        })
+    }
+
+    handleRemoveProfilePhoto() {
         const {
             currentUser: {
                 id,
             },
             dispatch,
         } = this.props;
-        uploadUserImage(dispatch, id, '');
+        removeProfilePhoto(dispatch, id).then(() => {
+            this.setState({
+                errorMessage: null,
+                successMessage: 'Profile photo removed successfully.',
+                statusMessage: true,
+                buttonClicked: true,
+                isDefaultImage: true,
+            });
+        }).catch((err) => {
+            this.setState({
+                errorMessage: 'Error in removing profile photo.',
+                statusMessage: true,
+                buttonClicked: true,
+                isDefaultImage: true,
+            });
+        });
     }
 
     render() {
@@ -264,20 +356,31 @@ class EditBasicProfile extends React.Component {
             errorMessage,
             statusMessage,
             successMessage,
+            isDefaultImage,
             userBasicDetails: {
                 firstName,
                 lastName,
                 about,
                 location,
                 givingGoal,
+                displayName,
             },
+            uploadImagePreview,
             validity,
         } = this.state;
         const {
             userData,
+            currentUser: {
+                attributes: {
+                    avatar,
+                },
+            }
         } = this.props;
         const privacyColumn = 'giving_goal_visibility';
         let aboutCharCount = (!_.isEmpty(about)) ? Math.max(0, (1000 - Number(about.length))) : 1000;
+        const userAvatar = (avatar === '') || (avatar === null) ? UserPlaceholder : avatar;
+        const imageView = uploadImagePreview !== '' ? uploadImagePreview : userAvatar;
+        const isPreview = uploadImagePreview !== '' ? true : false;
         return (
             <Grid>
                 {
@@ -296,8 +399,49 @@ class EditBasicProfile extends React.Component {
                     <Grid.Column mobile={16} tablet={12} computer={10}>
                         <Form>
                             <Form.Field>
-                            <input id="myInput" accept="images/*" type="file" ref={(ref) => this.upload = ref} style={{ display: 'none' }} onChange={(e) => this.handleUpload(event)} />
-                            <Button as='a' onClick={(e) => this.upload.click()}>Upload photo</Button>
+                                <input
+                                    id="myInput"
+                                    accept="image/png, image/jpeg, image/jpg"
+                                    type="file"
+                                    ref={(ref) => this.upload = ref}
+                                    style={{ display: 'none' }}
+                                    onChange={(e) => this.handleUpload(event)}
+                                />
+                            </Form.Field>
+                            <Form.Field>
+                                <div className="changeImageWraper removable">
+                                <div className="subHead">Profile photo</div>
+                                <div className="proPicWraper">
+                                    <Image src={imageView} height="125px" width="125px"/>
+                                    {
+                                        isPreview && (
+                                            <a
+                                                href="#"
+                                                className="removeBtn"
+                                                onClick={this.handleRemovePreview}
+                                            />
+                                        )
+                                    }
+                                    {
+                                        !isDefaultImage && (
+                                            <a
+                                                href="#"
+                                                className="removeBtn"
+                                                onClick={this.handleRemoveProfilePhoto}
+                                            />
+                                        )
+                                    }
+                                </div>
+                                <div className="rightBtnWraper">
+                                    <Button
+                                    as="a"
+                                        className="success-btn-rounded-def medium"
+                                        onClick={(e) => this.upload.click()}
+                                    >
+                                        Change profile photo
+                                    </Button>
+                                </div>
+                                </div>
                             </Form.Field>
                             <Form.Group widths="equal">
                                 <Form.Field>
@@ -307,7 +451,7 @@ class EditBasicProfile extends React.Component {
                                         placeholder="First name"
                                         id="firstName"
                                         name="firstName"
-                                        maxLength="50"
+                                        maxLength="30"
                                         onChange={this.handleInputChange}
                                         onBlur={this.handleInputOnBlur}
                                         error={!validity.isFirstNameNotNull}
@@ -325,7 +469,7 @@ class EditBasicProfile extends React.Component {
                                         id="lastName"
                                         name="lastName"
                                         placeholder="Last name"
-                                        maxLength="50"
+                                        maxLength="30"
                                         onChange={this.handleInputChange}
                                         onBlur={this.handleInputOnBlur}
                                         error={!validity.isLastNameNotNull}
@@ -333,31 +477,44 @@ class EditBasicProfile extends React.Component {
                                     />
                                     <FormValidationErrorMessage
                                         condition={!validity.isLastNameNotNull}
-                                        errorMessage="Please input your Last name"
+                                        errorMessage="Please input your last name"
                                     />
                                 </Form.Field>
                             </Form.Group>
                             <Form.Field>
+                                <Form.Input
+                                    fluid
+                                    label="Display Name"
+                                    id="displayName"
+                                    name="displayName"
+                                    placeholder="Display name"
+                                    maxLength="30"
+                                    onChange={this.handleInputChange}
+                                    onBlur={this.handleInputOnBlur}
+                                    error={!validity.isDisplayNameNotNull}
+                                    value={displayName}
+                                />
+                                <FormValidationErrorMessage
+                                    condition={!validity.isDisplayNameNotNull}
+                                    errorMessage="Please input your display name"
+                                />
+                            </Form.Field>
+                            <Form.Field>
                                 <Form.TextArea
-                                    label="Bio"
+                                    label="Bio (optional)"
                                     placeholder="Tell us about yourself"
                                     id="about"
                                     name="about"
                                     maxLength="1000"
                                     onChange={this.handleInputChange}
                                     onBlur={this.handleInputOnBlur}
-                                    error={!validity.isDescriptionNotNull}
                                     value={about}
                                 />
-                                <div className="field-info mt--1 text-right">{aboutCharCount} of 1000 characters left</div>
-                                <FormValidationErrorMessage
-                                    condition={!validity.isDescriptionNotNull}
-                                    errorMessage="Please input about yourself"
-                                />
+                                <div className="field-info mt--1-2 text-right">{aboutCharCount} of 1000 characters left</div>
                             </Form.Field>
                             <Form.Input
                                 fluid
-                                label="Location"
+                                label="Location (optional)"
                                 placeholder="Location"
                                 id="location"
                                 name="location"
@@ -368,7 +525,7 @@ class EditBasicProfile extends React.Component {
                             />
                             <Form.Field>
                                 <label>
-                                    Giving Goal{' '}
+                                    Giving Goal  (optional){' '}
                                     <Popup
                                         content="Set a personal goal for the dollars you want to commit for giving. Reach your goal by adding money to your account."
                                         position="top center"
@@ -380,7 +537,7 @@ class EditBasicProfile extends React.Component {
                                             />
                                         }
                                     />
-                                    <span className="font-w-normal">
+                                    <span className="font-w-normal ml--1-2">
                                         <PrivacySetting
                                             columnName={privacyColumn}
                                             columnValue={userData.giving_goal_visibility}
@@ -392,17 +549,14 @@ class EditBasicProfile extends React.Component {
                                         placeholder="Giving Goal"
                                         id="givingGoal"
                                         name="givingGoal"
+                                        icon="dollar"
+                                        iconPosition="left"
                                         maxLength="11"
                                         onChange={this.handleInputChange}
                                         onBlur={this.handleInputOnBlur}
                                         value={givingGoal}
-                                        error={!isValidGiftAmount(validity)}
-                                    />
-                                    <FormValidationErrorMessage
-                                        condition={!validity.doesAmountExist || !validity.isAmountMoreThanOneDollor
-                                        || !validity.isValidPositiveNumber}
-                                        errorMessage="Please choose an amount of 5 or more"
-                                    />
+                                        error={!isValidGivingGoalAmount(validity)}
+                                    />                                    
                                     <FormValidationErrorMessage
                                         condition={!validity.isAmountLessThanOneBillion}
                                         errorMessage="Please choose an amount less than one billion dollars"

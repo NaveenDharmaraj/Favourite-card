@@ -25,13 +25,17 @@ import {
     getFavoritesList,
     removeFavorite,
 } from '../../../actions/user';
+import {
+    getUserProfileBasic,
+} from '../../../actions/userProfile';
 import charityImg from '../../../static/images/no-data-avatar-charity-profile.png';
 import groupImg from '../../../static/images/no-data-avatar-giving-group-profile.png';
 import PlaceholderGrid from '../../shared/PlaceHolder';
 import { Link } from '../../../routes';
 import { dismissAllUxCritialErrors } from '../../../actions/error';
-import { renderText } from '../../../helpers/utils';
+import { renderTextByCharacter } from '../../../helpers/utils';
 import noDataggFavourites from '../../../static/images/favourites_nodata_illustration.png';
+import PrivacySetting from '../../shared/Privacy';
 
 class Favorites extends React.Component {
     constructor(props) {
@@ -52,6 +56,7 @@ class Favorites extends React.Component {
         } = this.props;
         dismissAllUxCritialErrors(dispatch);
         getFavoritesList(dispatch, currentUser.id, 1, this.state.pageSize);
+        getUserProfileBasic(dispatch, currentUser.attributes.email, currentUser.id, currentUser.id);
     }
 
     componentDidUpdate(prevProps) {
@@ -140,18 +145,29 @@ class Favorites extends React.Component {
                     name,
                     type,
                     slug,
+                    is_campaign,
+                    province,
+                    city,
                 } = data.attributes;
-                let displayAvatar = groupImg;
-                const shortName = renderText(name, 3);
-                let route = 'groups';
-                let heading = 'giving group';
-                if (type === 'charity') {
-                    displayAvatar = charityImg;
-                    route = 'charities';
-                    heading = 'charity';
+                let displayAvatar = charityImg;
+                const shortName = renderTextByCharacter(name, 40);
+                let route = 'charities';
+                let heading = 'charity';
+                if (type === 'group') {
+                    displayAvatar = groupImg;
+                    route = (is_campaign) ? 'campaigns' : 'groups';
+                    heading = 'giving group';
                 }
                 displayAvatar = (!_.isEmpty(avatar)) ? avatar : displayAvatar;
                 const entityId = (type === 'charity') ? data.attributes.charity_id : data.attributes.group_id;
+                let location = '';
+                if (!_.isEmpty(city) && !_.isEmpty(province)) {
+                    location = `${city}, ${province}`;
+                } else if (!_.isEmpty(city)) {
+                    location = city;
+                } else if (!_.isEmpty(province)) {
+                    location = province;
+                }
                 return (
                     <Grid.Column key={index}>
                         <Card className="left-img-card" fluid>
@@ -171,6 +187,16 @@ class Favorites extends React.Component {
                                                         </span>
                                                     </Header.Subheader>
                                                     {shortName}
+                                                    {
+                                                        (location) && (
+                                                            <React.Fragment>
+                                                                <br />
+                                                                <span className="location">
+                                                                    {location}
+                                                                </span>
+                                                            </React.Fragment>
+                                                        )}
+
                                                 </Header.Content>
                                             </Header>
                                             <Link className="lnkChange" route={`/${route}/${slug}`}>
@@ -184,14 +210,16 @@ class Favorites extends React.Component {
                     </Grid.Column>
                 );
             });
+            return (
+                <Grid stackable doubling columns={3}>
+                    <Grid.Row>
+                        {favoritesList}
+                    </Grid.Row>
+                </Grid>
+            );
         }
-        return (
-            <Grid stackable doubling columns={3}>
-                <Grid.Row>
-                    {favoritesList}
-                </Grid.Row>
-            </Grid>
-        );
+
+        return favoritesList;
     }
 
     handleSeeMore() {
@@ -255,14 +283,35 @@ class Favorites extends React.Component {
         const {
             favoritesLoader,
         } = this.state;
+        const {
+            userProfileBasicData,
+        } = this.props;
+        let favouriteVisible = 0;
+        if (!_.isEmpty(userProfileBasicData)) {
+            favouriteVisible = userProfileBasicData.data[0].attributes.favourites_visibility;
+        }
+        const favouritePrivacyColumn = 'favourites_visibility';
         return (
             <div className="pt-2 pb-2">
                 <Container>
+                    <div className="pt-1 pb-1">
+                        <p
+                            className="bold font-s-16"
+                        >
+                            Favourites
+                            <span className="font-w-normal">
+                                <PrivacySetting
+                                    columnName={favouritePrivacyColumn}
+                                    columnValue={favouriteVisible}
+                                />
+                            </span>
+                        </p>
+                    </div>
                     <div className="pt-2 favourite">
                         { (favoritesLoader) ? <PlaceholderGrid row={2} column={3} /> : (
                             this.showFavorites()
                         )}
-                        <div className="seeMore bigBtn">
+                        <div className="seeMore bigBtn mt-2-sm mt-2-xs">
                             {this.renderSeeMore()}
                             {this.renderCount()}
                         </div>
@@ -292,8 +341,8 @@ Favorites.propTypes = {
     dispatch: func,
     favorites: PropTypes.shape({
         dataCount : oneOfType([
-                    number,
-                    string,
+            number,
+            string,
         ]),
         pageCount : oneOfType([
             number,
@@ -313,6 +362,7 @@ function mapStateToProps(state) {
         currentUser: state.user.info,
         disableFavorites: state.user.disableFavorites,
         favorites: state.user.favorites,
+        userProfileBasicData: state.userProfile.userProfileBasicData,
     };
 }
 

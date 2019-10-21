@@ -3,6 +3,7 @@
 import React from 'react';
 import {
     Form,
+    Grid,
     Icon,
     Input,
     Button,
@@ -197,53 +198,61 @@ function TaxReceiptProfileForm(props) {
                                     errorMessage={invalidCharsErrorMsg}
                                 />
                             </Form.Field>
-                            <Form.Field>
-                                <label htmlFor="country">
-                                    {formatMessage('country')}
-                                </label>
-                                <Form.Field
-                                    control={Select}
-                                    id="country"
-                                    name="country"
-                                    onBlur={handleInputOnBlur}
-                                    options={countryOptions}
-                                    onChange={handleInputChange}
-                                    selection
-                                    value={country}
-                                />
-                            </Form.Field>
-                            <Form.Field>
-                                <label htmlFor="postalCode">
-                                    {formatMessage('postalCode')}
-                                </label>
-                                <Form.Field
-                                    control={Input}
-                                    id="postalCode"
-                                    name="postalCode"
-                                    size="large"
-                                    error={!validity.isValidPostalCode}
-                                    onBlur={handleInputOnBlur}
-                                    onChange={handleInputChange}
-                                    placeholder={formatMessage('postalCodePlaceHolder')}
-                                    value={postalCode}
-                                />
-                                <FormValidationErrorMessage
-                                    condition={!validity.isPostalCodehas5Chars}
-                                    errorMessage={formatMessage('invalidPostalCode')}
-                                />
-                                <FormValidationErrorMessage
-                                    condition={!validity.isPostalCodeLessThan16}
-                                    errorMessage={formatMessage('invalidFieldLength', {
-                                        fieldName: 'postal code',
-                                        length: 16,
-                                    })}
-                                />
-                                <FormValidationErrorMessage
-                                    condition={!validity.isValidPostalCodeFormat}
-                                    errorMessage={invalidCharsErrorMsg}
-                                />
-                            </Form.Field>
-                            <Form.Field>
+                            <Grid>
+                                <Grid.Row>
+                                    <Grid.Column mobile={16} tablet={8} computer={8}>
+                                        <Form.Field>
+                                            <label htmlFor="country">
+                                                {formatMessage('country')}
+                                            </label>
+                                            <Form.Field
+                                                control={Select}
+                                                id="country"
+                                                name="country"
+                                                onBlur={handleInputOnBlur}
+                                                options={countryOptions}
+                                                onChange={handleInputChange}
+                                                selection
+                                                value={country}
+                                            />
+                                        </Form.Field>
+                                    </Grid.Column>
+                                    <Grid.Column mobile={16} tablet={8} computer={8}>
+                                        <Form.Field>
+                                            <label htmlFor="postalCode">
+                                                {formatMessage('postalCode')}
+                                            </label>
+                                            <Form.Field
+                                                control={Input}
+                                                id="postalCode"
+                                                name="postalCode"
+                                                size="large"
+                                                error={!validity.isValidPostalCode}
+                                                onBlur={handleInputOnBlur}
+                                                onChange={handleInputChange}
+                                                placeholder={formatMessage('postalCodePlaceHolder')}
+                                                value={postalCode}
+                                            />
+                                            <FormValidationErrorMessage
+                                                condition={!validity.isPostalCodehas5Chars}
+                                                errorMessage={formatMessage('invalidPostalCode')}
+                                            />
+                                            <FormValidationErrorMessage
+                                                condition={!validity.isPostalCodeLessThan16}
+                                                errorMessage={formatMessage('invalidFieldLength', {
+                                                    fieldName: 'postal code',
+                                                    length: 16,
+                                                })}
+                                            />
+                                            <FormValidationErrorMessage
+                                                condition={!validity.isValidPostalCodeFormat}
+                                                errorMessage={invalidCharsErrorMsg}
+                                            />
+                                        </Form.Field>
+                                    </Grid.Column>
+                                </Grid.Row>
+                            </Grid>
+                            <Form.Field className="mt-1">
                                 <label htmlFor="province">
                                     {formatMessage(provinceMessage)}
                                 </label>

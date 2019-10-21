@@ -41,11 +41,11 @@ function AllocationsTable(props) {
                 const recipientAccount = `${attributes.accountName} (${destinationType})`;
                 const formattedAmount = formatCurrency(attributes.amount, language, 'USD');
                 tableBody.push(<TransactionTableRow
+                    modalHeader="Delete monthly gift?"
                     firstColoumn={recipientAccount}
                     secondColoumn={formattedAmount}
                     thirdColoumn={transactionDate}
-                    fourthColoumn={attributes.paymentInformation}
-                    fifthColoumn={formattedDate}
+                    fourthColoumn={formattedDate}
                     deleteTransaction={deleteTransaction}
                     transactionType={attributes.transactionType}
                     transactionId={id}
@@ -56,14 +56,13 @@ function AllocationsTable(props) {
     };
     return ((_.isEmpty(upcomingTransactions)) ? null
         : (
-            <div className="responsiveTable">
+            <div className="responsiveTable mt-2">
                 <Table padded unstackable className="no-border-table">
                     <Table.Header>
                         <Table.Row>
                             <Table.HeaderCell>Recipient </Table.HeaderCell>
                             <Table.HeaderCell>Amount</Table.HeaderCell>
                             <Table.HeaderCell>Day of month</Table.HeaderCell>
-                            <Table.HeaderCell>Credit Card</Table.HeaderCell>
                             <Table.HeaderCell className="w-120">Created</Table.HeaderCell>
                             <Table.HeaderCell>Action</Table.HeaderCell>
                         </Table.Row>

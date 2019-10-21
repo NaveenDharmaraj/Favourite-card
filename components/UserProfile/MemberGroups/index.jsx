@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import _ from 'lodash';
 import {
@@ -17,58 +18,57 @@ import PlaceholderGrid from '../../shared/PlaceHolder';
 import LeftImageCard from '../../shared/LeftImageCard';
 
 class UserMemberGroupList extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            userMemberGroupListLoader: !props.userProfileMemberGroupData,
-        };
-    }
-
     componentDidMount() {
         const {
+            currentUser: {
+                id,
+            },
             dispatch,
             friendUserId,
         } = this.props;
-        getUserMemberGroup(dispatch, friendUserId);
+        getUserMemberGroup(dispatch, friendUserId, id);
     }
 
-    componentDidUpdate(prevProps, prevState) {
+    componentWillUnmount() {
         const {
-            userProfileMemberGroupData,
+            dispatch,
         } = this.props;
-        let {
-            userMemberGroupListLoader,
-        } = this.state;
-        if (!_.isEqual(this.props, prevProps)) {
-            if (!_.isEqual(userProfileMemberGroupData, prevProps.userProfileMemberGroupData)) {
-                userMemberGroupListLoader = false;
-            }
-            this.setState({ userMemberGroupListLoader });
-        }
+        dispatch({
+            payload: {
+            },
+            type: 'USER_PROFILE_MEMBER_GROUP',
+        });
     }
 
     userMemberGroupList() {
         const {
             userProfileMemberGroupData,
         } = this.props;
-        let memberGroupList = 'No Data';
+        let memberGroupList = 'Nothing to show here yet.';
         if (userProfileMemberGroupData
             && userProfileMemberGroupData.data
             && _.size(userProfileMemberGroupData.data) > 0) {
             memberGroupList = userProfileMemberGroupData.data.map((data) => {
-                let entityName = '';
-                if (data.attributes.city != null) {
-                    entityName = `${data.attributes.name}, ${data.attributes.city}, ${data.attributes.province}`;
-                } else {
-                    entityName = data.attributes.name;
+                const entityName = data.attributes.name;
+                let locationDetails = '';
+                const locationDetailsCity = (!_.isEmpty(data.attributes.city)) ? data.attributes.city : '';
+                const locationDetailsProvince = (!_.isEmpty(data.attributes.province)) ? data.attributes.province : '';
+                if (locationDetailsCity === '' && locationDetailsProvince !== '') {
+                    locationDetails = locationDetailsProvince;
+                } else if (locationDetailsCity !== '' && locationDetailsProvince === '') {
+                    locationDetails = locationDetailsCity;
+                } else if (locationDetailsCity !== '' && locationDetailsProvince !== '') {
+                    locationDetails = `${data.attributes.city}, ${data.attributes.province}`;
                 }
                 const type = 'giving group';
                 const typeClass = 'chimp-lbl group';
                 const url = `/groups/${data.attributes.slug}`;
+                const groupImage = (!_.isEmpty(data.attributes.avatar)) ? data.attributes.avatar : placeholderGroup;
                 return (
                     <LeftImageCard
                         entityName={entityName}
-                        placeholder={placeholderGroup}
+                        location={locationDetails}
+                        placeholder={groupImage}
                         typeClass={typeClass}
                         type={type}
                         url={url}
@@ -79,7 +79,20 @@ class UserMemberGroupList extends React.Component {
         return (
             <Grid columns="equal" stackable doubling columns={3}>
                 <Grid.Row>
-                    {memberGroupList}
+                    {
+                        !_.isEmpty(userProfileMemberGroupData) && (_.size(userProfileMemberGroupData.data) > 0) && (
+                            <React.Fragment>
+                                {memberGroupList}
+                            </React.Fragment>
+                        )
+                    }
+                    {
+                        !_.isEmpty(userProfileMemberGroupData) && (_.size(userProfileMemberGroupData.data) === 0) && (
+                            <Grid.Column>
+                                {memberGroupList}
+                            </Grid.Column>
+                        )
+                    }
                 </Grid.Row>
             </Grid>
         );
@@ -87,15 +100,16 @@ class UserMemberGroupList extends React.Component {
 
     render() {
         const {
-            userMemberGroupListLoader,
-        } = this.state;
+            userProfileMemberGroupData,
+            userProfileMemberGroupsLoadStatus,
+        } = this.props;
         return (
             <div className="pb-3">
                 <Container>
                     <Header as="h4" className="underline">
                     Joined Groups
                     </Header>
-                    { userMemberGroupListLoader ? <PlaceholderGrid row={1} column={3} /> : (
+                    { (_.isEmpty(userProfileMemberGroupData) && userProfileMemberGroupsLoadStatus) ? <PlaceholderGrid row={1} column={3} /> : (
                         this.userMemberGroupList()
                     )}
                 </Container>
@@ -108,6 +122,7 @@ function mapStateToProps(state) {
     return {
         currentUser: state.user.info,
         userProfileMemberGroupData: state.userProfile.userProfileMemberGroupData,
+        userProfileMemberGroupsLoadStatus: state.userProfile.userProfileMemberGroupsLoadStatus,
     };
 }
 

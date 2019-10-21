@@ -4,6 +4,7 @@ import {
     bool,
     string,
 } from 'prop-types';
+import _isEmpty from 'lodash/isEmpty';
 
 import {
     getBeneficiaryFromSlug,
@@ -12,11 +13,18 @@ import Layout from '../components/shared/Layout';
 import CharityProfileWrapper from '../components/charity';
 import { Router } from '../routes';
 
+const actionTypes = {
+    RESET_CHARITY_STATES: 'RESET_CHARITY_STATES',
+};
+
 class CharityProfile extends React.Component {
     static async getInitialProps({
         reduxStore,
         query,
     }) {
+        reduxStore.dispatch({
+            type: actionTypes.RESET_CHARITY_STATES,
+        });
         await getBeneficiaryFromSlug(reduxStore.dispatch, query.slug);
         return {
             slug: query.slug,
@@ -25,10 +33,29 @@ class CharityProfile extends React.Component {
 
     render() {
         const {
+            charityDetails: {
+                charityDetails: {
+                    attributes: {
+                        city,
+                        description,
+                        name,
+                        province,
+                    },
+                },
+            },
             redirectToDashboard,
         } = this.props;
+        let title = `${name}`;
+        if (!_isEmpty(city) && !_isEmpty(province)) {
+            title = `${name} | ${city}, ${province}`;
+        } else if (!_isEmpty(city) && _isEmpty(province)) {
+            title = `${name} | ${city}`;
+        } else if (_isEmpty(city) && !_isEmpty(province)) {
+            title = `${name} | ${province}`;
+        }
+        const charityDescription = !_isEmpty(description) ? description : title;
         return (
-            <Layout>
+            <Layout title={title} description={charityDescription}>
                 {!redirectToDashboard
                     ? <CharityProfileWrapper {...this.props} />
                     : Router.push('/dashboard')
@@ -39,11 +66,33 @@ class CharityProfile extends React.Component {
 }
 
 CharityProfile.defaultProps = {
+    charityDetails: {
+        charityDetails: {
+            attributes: {
+                city: '',
+                description: '',
+                name: '',
+                province: '',
+            },
+            type: '',
+        },
+    },
     redirectToDashboard: false,
     slug: '',
 };
 
 CharityProfile.propTypes = {
+    charityDetails: {
+        charityDetails: {
+            attributes: {
+                city: string,
+                description: string,
+                name: '',
+                province: string,
+            },
+            type: string,
+        },
+    },
     redirectToDashboard: bool,
     slug: string,
 };

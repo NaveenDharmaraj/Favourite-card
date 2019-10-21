@@ -22,6 +22,7 @@ import NoFriendAvatar from '../../../static/images/no-data-avatar-user-profile.p
 const ModalStatusMessage = dynamic(() => import('../../shared/ModalStatusMessage'), {
     ssr: false
 });
+import { Router } from '../../../routes';
 
 class FindFriends extends React.Component {
     constructor(props) {
@@ -160,6 +161,8 @@ class FindFriends extends React.Component {
                     buttonClicked: false,
                 });
             });
+        } else if(btnData === 'message') {
+            Router.pushRoute(`/chats/${userData.attributes.user_id}`);
         }
     }
 
@@ -171,16 +174,24 @@ class FindFriends extends React.Component {
             buttonClicked,
         } = this.state;
         let friendsList = '';
-        let isButtonDisabled = false;
         if (!_.isEmpty(userFindFriendsList)) {
             friendsList = userFindFriendsList.data.map((data) => {
                 const name = `${data.attributes.first_name} ${data.attributes.last_name}`;
                 const avatar = ((typeof data.attributes.avatar) === 'undefined' || data.attributes.avatar === null) ? NoFriendAvatar : data.attributes.avatar;
-                const email = Buffer.from(data.attributes.email_hash, 'base64').toString('ascii');
-                const location = (typeof data.attributes.city === 'undefined' || data.attributes.province === '') ? '' : `${data.attributes.city}, ${data.attributes.province}`;
+                let locationDetails = '';
+                const locationDetailsCity = (!_.isEmpty(data.attributes.city)) && data.attributes.city !== 'null' ? data.attributes.city : '';
+                const locationDetailsProvince = (!_.isEmpty(data.attributes.province)) && data.attributes.province !== 'null' ? data.attributes.province : '';
+                if (locationDetailsCity === '' && locationDetailsProvince !== '') {
+                    locationDetails = locationDetailsProvince;
+                } else if (locationDetailsCity !== '' && locationDetailsProvince === '') {
+                    locationDetails = locationDetailsCity;
+                } else if (locationDetailsCity !== '' && locationDetailsProvince !== '') {
+                    locationDetails = `${data.attributes.city}, ${data.attributes.province}`;
+                }                
                 let btnClass = 'blue-bordr-btn-round-def c-small';
                 let friendStatus = '';
                 let btnData = '';
+                let isButtonDisabled = false;
                 if (data.attributes.friend_status === '') {
                     friendStatus = 'Add Friend';
                     btnData = 'addfriend';
@@ -191,6 +202,10 @@ class FindFriends extends React.Component {
                 } else if (data.attributes.friend_status.toLowerCase() === 'pending_out') {
                     friendStatus = 'Pending';
                     btnData = 'pendingout';
+                    isButtonDisabled = true;
+                } else if (data.attributes.friend_status.toLowerCase() === 'blocked') {
+                    friendStatus = 'Blocked';
+                    btnData = 'blocked';
                     isButtonDisabled = true;
                 } else {
                     friendStatus = 'Accept';
@@ -214,7 +229,7 @@ class FindFriends extends React.Component {
                                     {name}
                                 </Link>
                             </List.Header>
-                            <List.Description>{location}</List.Description>
+                            <List.Description>{locationDetails}</List.Description>
                         </List.Content>
                     </List.Item>
                 );

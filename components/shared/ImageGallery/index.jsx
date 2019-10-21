@@ -10,6 +10,7 @@ function ImageGallery(props) {
         <Gallery
             images={imagesArray}
             enableImageSelection={enableImageSelection}
+            margin={8}
         />
         // document.getElementById('example-0')
     );

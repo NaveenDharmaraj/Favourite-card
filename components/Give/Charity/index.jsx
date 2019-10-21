@@ -17,7 +17,7 @@ import {
     Image,
     Input,
     List,
-    Popup,
+    Modal,
     Select,
 } from 'semantic-ui-react';
 import _find from 'lodash/find';
@@ -34,6 +34,7 @@ import { Link } from '../../../routes';
 import { beneficiaryDefaultProps } from '../../../helpers/give/defaultProps';
 import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
 import {
+    formatCurrency,
     formatAmount,
     getDefaultCreditCard,
     populateDonationMatch,
@@ -49,14 +50,16 @@ import {
 } from '../../../helpers/give/utils';
 import {
     actionTypes,
+    getCoverAmount,
     getCompanyPaymentAndTax,
     getBeneficiariesForGroup,
     getBeneficiaryFromSlug,
     proceed,
 } from '../../../actions/give';
-import IconCharity from '../../../static/images/chimp-icon-charity.png';
-import IconGroup from '../../../static/images/chimp-icon-giving-group.png';
-import IconIndividual from '../../../static/images/chimp-icon-individual.png';
+import IconCharity from '../../../static/images/no-data-avatar-charity-profile.png';
+import IconGroup from '../../../static/images/no-data-avatar-giving-group-profile.png';
+import IconIndividual from '../../../static/images/no-data-avatar-group-chat-profile.png';
+
 import { withTranslation } from '../../../i18n';
 import '../../shared/style/styles.less';
 import { dismissAllUxCritialErrors } from '../../../actions/error';
@@ -155,6 +158,7 @@ class Charity extends React.Component {
             inValidExpirationDate: true,
             inValidNameOnCard: true,
             showAnotherRecipient: false,
+            showModal: false,
             validity: this.intializeValidations(),
         };
         if (this.state.flowObject.giveData.giveTo.value === null) {
@@ -210,6 +214,20 @@ class Charity extends React.Component {
             groupId,
             slug,
         } = this.props;
+        const {
+            flowObject: {
+                giveData,
+            },
+        } = this.state;
+        if ( !_isEmpty(giveData) && !_isEmpty(giveData.giveFrom) && 
+                _isEmpty(giveData.giveFrom.value)) {	
+                    dispatch( {
+                        payload: {
+                            coverAmountDisplay: 0,
+                        },
+                        type: 'COVER_AMOUNT_DISPLAY',
+                    });	
+        }
         if (Number(groupId) > 0) {
             getBeneficiariesForGroup(dispatch, Number(groupId));
         } else if (slug != null) {
@@ -261,7 +279,7 @@ class Charity extends React.Component {
                 },
             } = this.props;
             const formatMessage = this.props.t;
-            let paymentInstruments = null;
+            let paymentInstruments = paymentInstrumentsData;
             let companyPaymentInstrumentChanged = false;
             if (giveData.giveFrom.type === 'companies' && !_isEmpty(companyDetails)) {
                 if (_isEmpty(prevProps.companyDetails)
@@ -386,6 +404,7 @@ class Charity extends React.Component {
                 giveData.giveFrom.type = defaultGroupFrom.type;
                 giveData.giveFrom.text = `${defaultGroupFrom.attributes.name} ($${defaultGroupFrom.attributes.balance})`;
                 giveData.giveFrom.balance = defaultGroupFrom.attributes.balance;
+                giveData.giveFrom.slug = defaultGroupFrom.attributes.slug;
              }
             }
             else{
@@ -491,7 +510,7 @@ class Charity extends React.Component {
      * @param  {object} data The Options of event
      * @return {Void} { void } The return nothing.
      */
-    handleInputOnBlur(event, data) {
+     handleInputOnBlur(event, data) {
         const {
             name,
             value,
@@ -506,6 +525,7 @@ class Charity extends React.Component {
         } = this.state;
         const {
             coverFeesData,
+            dispatch,
         } = this.props;
         let inputValue = value;
         const isNumber = /^\d+(\.\d*)?$/;
@@ -514,6 +534,11 @@ class Charity extends React.Component {
             inputValue = formatAmount(value);
         }
         const coverFeesAmount = Charity.getCoverFeesAmount(giveData, coverFeesData);
+        if (Number(giveData.giveFrom.value) > 0 && Number(giveData.giveAmount) > 0) {		
+             getCoverAmount(giveData.giveFrom.value, giveData.giveAmount, dispatch);	
+        } else {
+             getCoverAmount(giveData.giveFrom.value, 0, dispatch);
+        }
         if (name !== 'giftType' && name !== 'giveFrom') {
             validity = validateGiveForm(name, inputValue, validity, giveData, coverFeesAmount);
         }
@@ -529,9 +554,16 @@ class Charity extends React.Component {
             case 'inMemoryOf':
                 validity = validateGiveForm('dedicateType', null, validity, giveData);
             break;
+            case 'noteToCharity':
+                giveData[name] = inputValue.trim();
+                validity = validateGiveForm('noteToCharity', giveData.noteToCharity, validity, giveData, coverFeesAmount);
+            break;
+            case 'noteToSelf':
+                giveData[name] = inputValue.trim();
+                validity = validateGiveForm('noteToSelf', giveData.noteToSelf, validity, giveData, coverFeesAmount);
+                break;
             default: break;
         }
-        
         this.setState({
             flowObject: {
                 ...this.state.flowObject,
@@ -954,9 +986,13 @@ class Charity extends React.Component {
     render() {
         const {
             companyDetails,
+            coverAmountDisplay,
             coverFeesData,
             creditCardApiCall,
             defaultTaxReceiptProfile,
+            i18n: {
+                language,
+            }
         } = this.props;
         const {
             flowObject: {
@@ -1061,7 +1097,7 @@ class Charity extends React.Component {
                     <Fragment>
                         {
                             !groupFromUrl && (
-                                <div>
+                                <Fragment>
                                     <Form.Field>
                                         <label htmlFor="giveTo">
                                             {formatMessage('giveToLabel')}
@@ -1086,12 +1122,12 @@ class Charity extends React.Component {
                                                 formatMessage,
                                             )
                                     }
-                                </div>
+                                </Fragment>
                             )
                         }
                         {
                             !!groupFromUrl && (
-                                <div>
+                                <Fragment>
                                     <Form.Field>
                                         <label htmlFor="giveTo">
                                             {formatMessage('giveToLabel')}
@@ -1114,7 +1150,7 @@ class Charity extends React.Component {
                                         findAnotherRecipientLabel,
                                         formatMessage,
                                     )}
-                                </div>
+                                </Fragment>
                             )
                         }
                         <Form.Field>
@@ -1151,6 +1187,39 @@ class Charity extends React.Component {
                             condition={!validity.isAmountCoverGive}
                             errorMessage={formatMessage('giveCommon:errorMessages.giveAmountGreaterThanBalance')}
                         />
+                        {
+                            (!_isEmpty(coverAmountDisplay) && coverAmountDisplay > 0)&&
+                            <p>
+                                {formatMessage('coverFeeLabel', {
+                                    amount: formatCurrency(coverAmountDisplay, language, 'USD'),
+                                })}
+                                    <Modal
+                                        size="tiny"
+                                        dimmer="inverted"
+                                        closeIcon
+                                        className="chimp-modal"
+                                        open={this.state.showModal}
+                                        onClose={()=>{this.setState({showModal: false})}}
+                                        trigger={
+                                            <a
+                                                onClick={() => this.setState({ showModal: true })}
+                                                className="link border bold"
+                                            >
+                                                &nbsp;{formatMessage('learnMore')}
+                                            </a>
+                                        }
+                                    >
+                                <Modal.Header>{formatMessage('coverFeeModalHeader')}</Modal.Header>
+                                <Modal.Content className="pb-2">
+                                {formatMessage('coverFeeModalContentFirst')}
+                                    <br/><br/>
+                                    {formatMessage('coverFeeModalContentSecond')}
+                                    <br/><br/>
+                                    </Modal.Content>
+                                </Modal>
+                            </p>
+                              
+                        }
                         <DropDownAccountOptions
                             type={type}
                             validity={validity.isValidGiveFrom}
@@ -1215,6 +1284,7 @@ function mapStateToProps(state) {
         companiesAccountsData: state.user.companiesAccountsData,
         companyDetails: state.give.companyData,
         companyAccountsFetched: state.give.companyAccountsFetched,
+        coverAmountDisplay: state.give.coverAmountDisplay,
         coverFeesData: state.give.coverFeesData,
         currentUser: state.user.info,
         giveCharityDetails: state.give.charityDetails,

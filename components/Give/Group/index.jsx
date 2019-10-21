@@ -192,7 +192,7 @@ class Group extends React.Component {
                 giveGroupDetails,
                 userMembershipGroups
             } = this.props;
-            let paymentInstruments = null;
+            let paymentInstruments = paymentInstrumentsData;
             let companyPaymentInstrumentChanged = false;
             const formatMessage = this.props.t;
             if (giveData.giveFrom.type === 'companies' && !_isEmpty(companyDetails)) {
@@ -399,6 +399,14 @@ class Group extends React.Component {
             case 'inHonorOf':
             case 'inMemoryOf':
                 validity = validateGiveForm('dedicateType', null, validity, giveData);
+            break;
+            case 'noteToCharity':
+                giveData[name] = inputValue.trim();
+                validity = validateGiveForm('noteToCharity', giveData.noteToCharity, validity, giveData);
+            break;
+            case 'noteToSelf':
+                giveData[name] = inputValue.trim();
+                validity = validateGiveForm('noteToSelf', giveData.noteToSelf, validity, giveData);
             break;
             default: break;
         }
@@ -748,46 +756,55 @@ class Group extends React.Component {
                 defaultTaxReceiptProfile;
                     if(_isEmpty(paymentInstrumentList) && _isEmpty(taxProfile)){
                         return(
-                            <div>
-                               To send a monthly gift, first add a &nbsp;
-                               {
-                                   giveFrom.type === 'companies' 
-                                   ?  <a href={`/companies/${slug}/payment-profiles`}>payment method </a>
-                                   : <Link route = '/user/profile/settings/creditcard'>payment method</Link>
-                               }&nbsp;
-                               and &nbsp;
-                               {
-                                   giveFrom.type === 'companies' 
-                                   ?  <a href={`/companies/${slug}/tax-receipt-profiles`}>tax receipt recipient</a>
-                                   : <Link route = '/user/tax-receipts'>tax receipt recipient</Link>
-                               }&nbsp;
-                               to your account details.We won't charge your card without your permission.
+                            <div className="mb-1">
+                                <Icon color="red" name="warning circle" />
+                                <span style={{ color: 'red' }}>
+                                    To send a monthly gift, first add a &nbsp;
+                                    {
+                                        giveFrom.type === 'companies' 
+                                        ?  <a href={`/companies/${slug}/payment-profiles`}>payment method </a>
+                                        : <Link route = '/user/profile/settings/creditcard'>payment method</Link>
+                                    }&nbsp;
+                                    and &nbsp;
+                                    {
+                                        giveFrom.type === 'companies' 
+                                        ?  <a href={`/companies/${slug}/tax-receipt-profiles`}>tax receipt recipient</a>
+                                        : <Link route = '/user/tax-receipts'>tax receipt recipient</Link>
+                                    }&nbsp;
+                                    to your account details.We won't charge your card without your permission.
+                                    </span>
                             </div>
                         ) 
                     }
                     else if(_isEmpty(paymentInstrumentList)){
                         return(
-                            <div>
+                            <div className="mb-1">
+                                <Icon color="red" name="warning circle" />
+                                <span style={{ color: 'red' }}>
                                  To send a monthly gift, first add a &nbsp;
                                  {
                                    giveFrom.type === 'companies' 
                                    ?  <a href={`/companies/${slug}/payment-profiles`}>payment method </a>
                                    : <Link route = '/user/profile/settings/creditcard'>payment method</Link>
-                               }
-                             &nbsp; to your account details.We won't charge your card without your permission.
+                                 }
+                                &nbsp; to your account details.We won't charge your card without your permission.
+                                </span>
                             </div>
                         ) 
                     }
                     else if( _isEmpty(taxProfile)){
                         return(
-                            <div>
-                            To send a monthly gift, first add a &nbsp;
-                            {
-                                   giveFrom.type === 'companies' 
-                                   ?  <a href={`/companies/${slug}/tax-receipt-profiles`}>tax receipt recipient</a>
-                                   : <Link route = '/user/tax-receipts'>tax receipt recipient</Link>
-                               }
-                          &nbsp; to your account details.
+                            <div className="mb-1">
+                                    <Icon color="red" name="warning circle" />
+                                    <span style={{ color: 'red' }}>
+                                    To send a monthly gift, first add a &nbsp;
+                                    {
+                                        giveFrom.type === 'companies' 
+                                        ?  <a href={`/companies/${slug}/tax-receipt-profiles`}>tax receipt recipient</a>
+                                        : <Link route = '/user/tax-receipts'>tax receipt recipient</Link>
+                                    }
+                                &nbsp; to your account details.
+                                </span>
                             </div>
                         ) 
                     }
@@ -845,8 +862,8 @@ class Group extends React.Component {
         let stripeCardComponent = null;
         let privacyOptionComponent = null;
         if ((giveFrom.type === 'user' || giveFrom.type === 'companies')
-        && (giftType.value > 0 || (giftType.value === 0 &&
-            Number(giveAmount) > Number(giveFrom.balance)))
+        &&  (giftType.value === 0 &&
+            Number(giveAmount) > Number(giveFrom.balance))
         ) {
             const topupAmount = formatAmount((formatAmount(giveAmount) -
                 formatAmount(giveFrom.balance)));

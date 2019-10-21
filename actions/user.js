@@ -5,6 +5,7 @@ import _ from 'lodash';
 import coreApi from '../services/coreApi';
 import authRorApi from '../services/authRorApi';
 import graphApi from '../services/graphApi';
+import wpApi from '../services/wpApi';
 import { Router } from '../routes';
 import {
     triggerUxCritialErrors,
@@ -235,6 +236,18 @@ export const getDonationMatchAndPaymentInstruments = (userId, flowType) => {
     };
 };
 
+export const wpLogin = (token = null) => {
+    let params = null;
+    if (!_.isEmpty(token)) {
+        params = {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        };
+    }
+    return wpApi.post('/login', null, params);
+};
+
 export const chimpLogin = (token = null) => {
     let params = null;
     if (!_.isEmpty(token)) {
@@ -301,6 +314,8 @@ export const getUser = (dispatch, userId, token = null) => {
                 const { data } = userData;
                 const {
                     activeRoleId,
+                    hasAdminAccess,
+                    donorAccount,
                 } = data.attributes;
                 let adminRoleId = null;
                 _.merge(fsa.payload, {
@@ -311,8 +326,11 @@ export const getUser = (dispatch, userId, token = null) => {
                     otherAccounts: [],
                 });
                 if (!_.isEmpty(data.relationships.chimpAdminRole.data)) {
-                    fsa.payload.isAdmin = true;
+                    // fsa.payload.isAdmin = true;
                     adminRoleId = data.relationships.chimpAdminRole.data.id;
+                }
+                if (hasAdminAccess) {
+                    fsa.payload.isAdmin = true;
                 }
                 const includedData = _.concat(
                     userData.included, allData[1], allData[2], allData[3], allData[4],
@@ -343,8 +361,7 @@ export const getUser = (dispatch, userId, token = null) => {
                                     location: `/contexts/${id}`,
                                     name: data.attributes.displayName,
                                 };
-                                if (id == activeRoleId
-                        || adminRoleId == activeRoleId) {
+                                if (id == activeRoleId || donorAccount) {
                                     fsa.payload.currentAccount = donor;
                                 } else {
                                     fsa.payload.otherAccounts.unshift(donor);
@@ -372,7 +389,7 @@ export const getUser = (dispatch, userId, token = null) => {
                 }
             },
         ).catch((error) => {
-            console.log(JSON.stringify(error));
+            // console.log(JSON.stringify(error));
             isAuthenticated = false;
         }).finally(() => {
             dispatch({
@@ -415,7 +432,7 @@ export const getUserFund = (dispatch, userId) => {
             type: actionTypes.UPDATE_USER_FUND,
         });
     }).catch((error) => {
-        console.log(error);
+        // console.log(error);
     });
 };
 
@@ -433,7 +450,7 @@ export const getTaxReceiptProfile = (dispatch, userId) => {
     return coreApi.get(`/users/${userId}/taxReceiptProfiles`).then((result) => {
         return dispatch(setTaxReceiptProfile(result.data));
     }).catch((error) => {
-        console.log(error);
+        // console.log(error);
     });
 };
 
@@ -488,8 +505,7 @@ export const getGroupsForUser = (dispatch, userId) => {
                 }
                 dispatch(fsa);
             },
-        ).catch((error) => {
-            console.log(error);
+        ).catch(() => {
             Router.pushRoute('/give/error');
         });
 };
@@ -612,7 +628,7 @@ export const getUserGivingGoal = (dispatch, userId) => {
                 type: actionTypes.USER_GIVING_GOAL_DETAILS,
             });
         }).catch((error) => {
-            console.log(error);
+            // console.log(error);
         });
 };
 export const setUserGivingGoal = (dispatch, goalAmount, userId) => {
@@ -653,7 +669,7 @@ export const getUpcomingTransactions = (dispatch, url) => {
             });
         },
     ).catch((error) => {
-        console.log(error);
+        // console.log(error);
         // Router.pushRoute('/give/error');
     });
 };
@@ -690,7 +706,7 @@ export const deleteUpcomingTransaction = (dispatch, id, transactionType, activeP
             getUpcomingTransactions(dispatch, activepageUrl);
         },
     ).catch((error) => {
-        console.log(error);
+        // console.log(error);
     });
 };
 
@@ -725,7 +741,7 @@ export const getFavoritesList = (dispatch, userId, pageNumber, pageSize) => {
             };
         },
     ).catch((error) => {
-        console.log(error);
+        // console.log(error);
     }).finally(() => {
         dispatch(fsa);
     });
@@ -775,5 +791,44 @@ export const removeFavorite = (dispatch, favId, userId, favorites, type, dataCou
             },
             type: actionTypes.ENABLE_FAVORITES_BUTTON,
         });
+    });
+};
+
+export const saveUserCauses = (dispatch, userId, userCauses, discoverValue) => {
+    const bodyDataCauses = {
+        causes: userCauses,
+        userid: Number(userId),
+    };
+
+    const bodyData = {
+        data: {
+            attributes: {
+                preferences: {
+                    discoverability: discoverValue,
+                },
+            },
+            id: Number(userId),
+            type: 'users',
+        },
+    };
+
+    return graphApi.patch(`/user/updatecauses`, bodyDataCauses).then(
+        () => {
+            coreApi.patch(`/users/${userId}`, bodyData).then(
+                () => {
+                    getUserFund(dispatch, userId).then(() => {
+                        Router.pushRoute('/dashboard');
+                    });
+                },
+            );
+        },
+    ).catch((err) => {
+        dispatch({
+            payload: {
+                continueButtonDisable: false,
+            },
+            type: 'DISABLE_BUTTON_IN_USER_MIGRATION'
+        });
+        triggerUxCritialErrors(err.errors || err, dispatch);
     });
 };

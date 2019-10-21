@@ -20,8 +20,8 @@ class NoTaxReceipts extends React.Component {
                     <Card.Header className="font-s-14">
                         <Header as="h4">
                             <Header.Content>
-                        No tax receipts yet
-                                <Header.Subheader>When you add money to your Impact Account, it’s considered a donation. Tax receipts for donations will appear here.</Header.Subheader>
+                                No recipients yet
+                                <Header.Subheader>When you add tax receipt recipients to your account, you’ll be able to manage them here.</Header.Subheader>
                             </Header.Content>
                         </Header>
                     </Card.Header>

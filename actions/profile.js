@@ -49,6 +49,7 @@ export const generatePayloadBodyForFollowAndUnfollow = (userId, id, type) => {
 };
 
 export const actionTypes = {
+    CLEAR_DATA_FOR_CAMPAIGNS: 'CLEAR_DATA_FOR_CAMPAIGNS',
     DEEP_LINK_URL: 'DEEP_LINK_URL',
     DISABLE_FOLLOW_BUTTON: 'DISABLE_FOLLOW_BUTTON',
     GET_CAMPAIGN_FROM_SLUG: 'GET_CAMPAIGN_FROM_SLUG',
@@ -68,6 +69,12 @@ export const getCampaignFromSlug = async (dispatch, slug) => {
             slugApiErrorStats: false,
         },
         type: actionTypes.SLUG_API_ERROR_STATUS,
+    });
+    dispatch({
+        payload: {
+            campaignSubGroupDetails: [],
+        },
+        type: actionTypes.CLEAR_DATA_FOR_CAMPAIGNS,
     });
     // return coreApi.get(`campaign/find_by_slug`, {
     await coreApi.get(`campaigns/find_by_slug`, {
@@ -92,7 +99,14 @@ export const getCampaignFromSlug = async (dispatch, slug) => {
             });
             // API call for subgroups
             if (result.data) {
-                coreApi.get(`${result.data.relationships.subGroups.links.related}?page[size]=9`).then(
+                coreApi.get(`${result.data.relationships.subGroups.links.related}?page[size]=9`,
+                    {
+                        params: {
+                            dispatch,
+                            ignore401: true,
+                            uxCritical: true,
+                        },
+                    }).then(
                     (subGroupResult) => {
                         dispatch({
                             payload: {
@@ -108,12 +122,19 @@ export const getCampaignFromSlug = async (dispatch, slug) => {
                         });
                     },
                 ).catch((error) => {
-                    console.log(error);
+                    // console.log(error);
                 });
             }
             // API call for images
             if (result.data) {
-                coreApi.get(result.data.relationships.galleryImages.links.related).then(
+                coreApi.get(result.data.relationships.galleryImages.links.related,
+                    {
+                        params: {
+                            dispatch,
+                            ignore401: true,
+                            uxCritical: true,
+                        },
+                    }).then(
                     (galleryImagesResult) => {
                         dispatch({
                             payload: {
@@ -123,12 +144,12 @@ export const getCampaignFromSlug = async (dispatch, slug) => {
                         });
                     },
                 ).catch((error) => {
-                    console.log(error);
+                    // console.log(error);
                 });
             }
         },
     ).catch((error) => {
-        console.log(error);
+        // console.log(error);
         dispatch({
             payload: {
                 slugApiErrorStats: true,
@@ -146,12 +167,18 @@ export const generateDeepLink = (url, dispatch) => {
         },
         type: actionTypes.DEEP_LINK_URL,
     };
-    utilityApi.get(url).then(
+    utilityApi.get(url, {
+        params: {
+            dispatch,
+            ignore401: true,
+            uxCritical: true,
+        },
+    }).then(
         (result) => {
             fsa.payload.deepLink = result.data;
         },
     ).catch((error) => {
-        console.log(error);
+        // console.log(error);
     }).finally(() => dispatch(fsa));
 };
 
@@ -182,12 +209,17 @@ export const followProfile = (dispatch, userId, entityId, type) => {
             break;
     }
     const payloadObj = generatePayloadBodyForFollowAndUnfollow(userId, entityId, type);
-    graphApi.post(`core/create/relationship`, payloadObj).then(
+    graphApi.post(`core/create/relationship`, payloadObj, {
+        params: {
+            dispatch,
+            ignore401: true,
+        },
+    }).then(
         (result) => {
             fsa.payload.followStatus = true;
         },
     ).catch((error) => {
-        console.log(error);
+        // console.log(error);
     }).finally(() => {
         dispatch(fsa);
         dispatch(iconStatusFsa);
@@ -222,12 +254,17 @@ export const unfollowProfile = (dispatch, userId, entityId, type) => {
             break;
     }
     const payloadObj = generatePayloadBodyForFollowAndUnfollow(userId, entityId, type);
-    graphApi.post(`/users/deleterelationship`, payloadObj).then(
+    graphApi.post(`/users/deleterelationship`, payloadObj, {
+        params: {
+            dispatch,
+            ignore401: true,
+        },
+    }).then(
         (result) => {
             fsa.payload.followStatus = false;
         },
     ).catch((error) => {
-        console.log(error);
+        // console.log(error);
     }).finally(() => {
         dispatch(fsa);
         dispatch(iconStatusFsa);
@@ -236,7 +273,13 @@ export const unfollowProfile = (dispatch, userId, entityId, type) => {
 };
 
 export const campaignSubGroupSeeMore = (url, dispatch) => {
-    return coreApi.get(url).then(
+    return coreApi.get(url, {
+        params: {
+            dispatch,
+            ignore401: true,
+            uxCritical: true,
+        },
+    }).then(
         (subGroupResult) => {
             dispatch({
                 payload: {
@@ -252,6 +295,6 @@ export const campaignSubGroupSeeMore = (url, dispatch) => {
             });
         },
     ).catch((error) => {
-        console.log(error);
+        // console.log(error);
     });
 };

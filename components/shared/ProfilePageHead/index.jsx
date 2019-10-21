@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import _ from 'lodash';
 import {
     Grid,
@@ -33,10 +33,22 @@ function ProfilePageHead(props) {
     if (pageDetails.attributes) {
         if (isAuthenticated) {
             buttonLink = (
-                <Link route={(`/give/to/${profileType}/${pageDetails.attributes.slug}/new`)}>
-                    <Button primary fluid className="blue-btn-rounded">Give</Button>
-                </Link>
+                <Fragment>
+                    <Link route={(`/give/to/${profileType}/${pageDetails.attributes.slug}/new`)}>
+                        <Button primary className="blue-btn-rounded">Give</Button>
+                    </Link>
+                    <a href={`${RAILS_APP_URL_ORIGIN}/campaigns/${pageDetails.attributes.slug}/step/one`}>
+                        <Button className="blue-bordr-btn-round">Create Group</Button>
+                    </a>
+                    { pageDetails.attributes.isAdmin && (
+                        <a href={(`${RAILS_APP_URL_ORIGIN}/campaigns/${pageDetails.attributes.slug}/manage-basics`)}>
+                            <Button className="blue-bordr-btn-round">Manage</Button>
+                        </a>
+                    )
+                    }
+                </Fragment>
             );
+
         } else {
             buttonLink = (
                 <a href={(`${RAILS_APP_URL_ORIGIN}/send/to/${profileType}/${pageDetails.attributes.slug}`)}>
@@ -59,7 +71,7 @@ function ProfilePageHead(props) {
             <Container>
                 <Grid>
                     <Grid.Row>
-                        <Grid.Column mobile={16} tablet={3} computer={2}>
+                        <Grid.Column mobile={16} tablet={3} computer={2} largeScreen={2}>
                             <div className="profile-img-rounded">
                                 <div className="pro-pic-wraper">
                                     <Image
@@ -69,7 +81,7 @@ function ProfilePageHead(props) {
                                 </div>
                             </div>
                         </Grid.Column>
-                        <Grid.Column mobile={16} tablet={10} computer={12}>
+                        <Grid.Column mobile={16} tablet={13} computer={6} largeScreen={7}>
                             <div className="ProfileHeaderWraper">
                                 <Header as="h3">
                                     {pageDetails.attributes.name}
@@ -82,8 +94,8 @@ function ProfilePageHead(props) {
                                 </div>
                             </div>
                         </Grid.Column>
-                        <Grid.Column mobile={16} tablet={3} computer={2}>
-                            <div className="buttonWraper">
+                        <Grid.Column mobile={16} tablet={16} computer={8} largeScreen={7}>
+                            <div className="buttonWraper campaignBtns text-center-sm">
                                 {buttonLink}
                             </div>
                         </Grid.Column>

@@ -15,15 +15,36 @@ import AdminGroupList from '../components/UserProfile/AdminGroups';
 import CharitableInterestsList from '../components/UserProfile/CharitableInterest';
 import GivingGoal from '../components/UserProfile/GivingGoal';
 import BasicProfile from '../components/UserProfile/BasicProfile';
+import {
+    formatAmount,
+} from '../helpers/give/utils';
 
 class FriendProfile extends React.Component {
     static async getInitialProps({ query }) {
         return {
             friendChimpId: query.slug,
+            namespacesRequired: [],
         };
     }
 
     componentDidMount() {
+        const {
+            currentUser,
+            dispatch,
+            friendChimpId,
+        } = this.props;
+        if (!_.isEmpty(currentUser)) {
+            const {
+                id,
+                attributes: {
+                    email,
+                },
+            } = currentUser;
+            getUserFriendProfile(dispatch, email, friendChimpId, id);
+        }
+    }
+
+    componentDidUpdate(prevProps) {
         const {
             currentUser: {
                 id,
@@ -34,7 +55,20 @@ class FriendProfile extends React.Component {
             dispatch,
             friendChimpId,
         } = this.props;
-        getUserFriendProfile(dispatch, email, friendChimpId, id);
+        if (!_.isEqual(friendChimpId, prevProps.friendChimpId)) {
+            getUserFriendProfile(dispatch, email, friendChimpId, id);
+        }
+    }
+
+    componentWillUnmount() {
+        const {
+            dispatch,
+        } = this.props;
+        dispatch({
+            payload: {
+            },
+            type: 'USER_PROFILE_BASIC_FRIEND',
+        });
     }
 
     render() {
@@ -45,14 +79,14 @@ class FriendProfile extends React.Component {
         let givingAmount = 0; let givenAmount = 0; let percentage = 0; let profileType = '';
         if (!_.isEmpty(userFriendProfileData) && _.size(userFriendProfileData.data) > 0) {
             userData = userFriendProfileData.data[0].attributes;
-            givingAmount = (typeof userData.giving_goal_amt !== 'undefined') ? Number(userData.giving_goal_amt) : 0;
-            givenAmount = (typeof userData.giving_goal_met !== 'undefined') ? Number(userData.giving_goal_met) : 0;
+            givingAmount = (typeof userData.giving_goal_amt !== 'undefined') ? formatAmount(Number(userData.giving_goal_amt)) : formatAmount(0);
+            givenAmount = (typeof userData.giving_goal_met !== 'undefined') ? formatAmount(Number(userData.giving_goal_met)) : formatAmount(0);
             percentage = (givenAmount * 100) / givingAmount;
             profileType = userData.profile_type.toUpperCase();
         }
         return (
             <Layout authRequired>
-                <BasicProfile userData={userData} />
+                <BasicProfile userData={userData} friendUserId={userData.user_id}/>
                 {
                     (userData.causes_visibility === 0 || (profileType === 'FRIENDS_PROFILE' && userData.causes_visibility === 1)) && (
                         <CharitableInterestsList friendUserId={userData.user_id} />
