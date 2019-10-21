@@ -176,7 +176,13 @@ class DashboradList extends React.Component {
                         transactionTypeDisplay = 'Gift received';
                         entity = data.attributes.source.name;
                         transactionSign = '+';
-                        profileUrl = `users/profile/${data.attributes.source.id}`;
+                        if (data.attributes.source.type === 'User') {
+                            profileUrl = `users/profile/${data.attributes.source.id}`;
+                        } else if (data.attributes.source.type.toLowerCase() === 'campaign') {
+                            profileUrl = `campaigns/${data.attributes.source.slug}`;
+                        } else if (data.attributes.source.type.toLowerCase() === 'group') {
+                            profileUrl = `groups/${data.attributes.source.slug}`;
+                        }
                     } else if ((data.attributes.source.id === Number(id) && data.attributes.transactionType.toLowerCase() === 'fundallocation')) {
                         givingType = '';
                         rowClass = 'gift';
