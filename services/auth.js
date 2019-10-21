@@ -23,6 +23,7 @@ const { publicRuntimeConfig } = getConfig();
 
 const {
     APP_URL_ORIGIN,
+    AUTH0_CONFIGURATION_BASE_URL,
     AUTH0_DOMAIN,
     AUTH0_WEB_CLIENT_ID,
     AUTH0_WEB_AUDIENCE,
@@ -42,6 +43,7 @@ const _auth0lockConfig = {
         scope: 'openid',
     },
     avatar: null,
+    configurationBaseUrl: AUTH0_CONFIGURATION_BASE_URL,
     container: 'auth0-lock-container',
     languageDictionary: {
         emailInputPlaceholder: 'Enter your email',
