@@ -476,7 +476,7 @@ const _handleLockFailure = async ({ errorDescription }) => {
  * @return {auth0lock} - The auth0lock instance.
  */
 function _makeLock() {
-    _auth0lock = new Auth0Lock(AUTH0_WEB_CLIENT_ID, AUTH0_DOMAIN, _auth0lockConfig, _.merge(_auth0lockConfig, {
+    _auth0lock = new Auth0Lock(AUTH0_WEB_CLIENT_ID, AUTH0_DOMAIN, _.merge(_auth0lockConfig, {
         auth: {
             audience: `${AUTH0_WEB_AUDIENCE}`,
             redirectUrl: `${APP_URL_ORIGIN}/auth/callback`,
