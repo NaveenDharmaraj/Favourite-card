@@ -86,14 +86,14 @@ class FriendProfile extends React.Component {
         }
         return (
             <Layout authRequired>
-                <BasicProfile userData={userData} friendUserId={userData.user_id}/>
+                <BasicProfile userData={userData} friendUserId={userData.user_id} />
                 {
                     (userData.causes_visibility === 0 || (profileType === 'FRIENDS_PROFILE' && userData.causes_visibility === 1)) && (
                         <CharitableInterestsList friendUserId={userData.user_id} />
                     )
                 }
                 {
-                    (userData.causes_visibility === 0 || (profileType === 'FRIENDS_PROFILE' && userData.causes_visibility === 1)) && (
+                    (userData.giving_goal_visibility === 0 || (profileType === 'FRIENDS_PROFILE' && userData.giving_goal_visibility === 1)) && (
                         <GivingGoal
                             givingAmount={givingAmount}
                             givenAmount={givenAmount}
@@ -102,7 +102,7 @@ class FriendProfile extends React.Component {
                     )
                 }
                 {
-                    (userData.causes_visibility === 0 || (profileType === 'FRIENDS_PROFILE' && userData.causes_visibility === 1)) && (
+                    (userData.giving_group_manage_visibility === 0 || (profileType === 'FRIENDS_PROFILE' && userData.giving_group_manage_visibility === 1)) && (
                         <AdminGroupList
                             friendUserId={userData.user_id}
                             friendFirstName={userData.first_name}
@@ -110,12 +110,12 @@ class FriendProfile extends React.Component {
                     )
                 }
                 {
-                    (userData.causes_visibility === 0 || (profileType === 'FRIENDS_PROFILE' && userData.causes_visibility === 1)) && (
+                    (userData.giving_group_member_visibility === 0 || (profileType === 'FRIENDS_PROFILE' && userData.giving_group_member_visibility === 1)) && (
                         <MemberGroupList friendUserId={userData.user_id} />
                     )
                 }
                 {
-                    (userData.causes_visibility === 0 || (profileType === 'FRIENDS_PROFILE' && userData.causes_visibility === 1)) && (
+                    (userData.favourites_visibility === 0 || (profileType === 'FRIENDS_PROFILE' && userData.favourites_visibility === 1)) && (
                         <FavouritesList friendUserId={userData.user_id} />
                     )
                 }
