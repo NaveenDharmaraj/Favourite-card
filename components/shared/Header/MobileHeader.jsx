@@ -3,6 +3,15 @@ import {
     boolean,
 } from 'prop-types';
 
+import {
+    Container,
+    Image,
+    Menu,
+    Segment,
+} from 'semantic-ui-react';
+
+import logo from '../../../static/images/CharitableImpact.svg';
+
 import AuthHeader from './AuthHeader/MobileHeader';
 // import OnBoardingHeader from './OnBoarding';
 import NonAuthHeader from './NonAuthHeader/MobileHeader';
@@ -26,6 +35,26 @@ const renderHeader = (onBoarding, isAuthenticated, children, showHeader) => {
             <NonAuthHeader>
                 { children }
             </NonAuthHeader>
+        );
+    } else if (!showHeader) {
+        headerComponent = (
+            <Fragment>
+                <div className="staticNav">
+                    <Segment
+                        textAlign="center"
+                        vertical
+                    >
+                        <Container>
+                            <Menu secondary>
+                                <Menu.Item className="chimpLogo">
+                                    <Image src={logo} />
+                                </Menu.Item>
+                            </Menu>
+                        </Container>
+                    </Segment>
+                </div>
+                { children }
+            </Fragment>
         );
     }
     return headerComponent;
