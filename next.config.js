@@ -8,6 +8,7 @@ const configVars = {
         APP_URL_ORIGIN: process.env.APP_URL_ORIGIN,
         APPLOZIC_APP_KEY: process.env.APPLOZIC_APP_KEY,
         APPLOZIC_WS_URL: process.env.APPLOZIC_WS_URL,
+        APPLOZIC_BASE_URL: process.env.APPLOZIC_BASE_URL,
         AUTH0_CONFIGURATION_BASE_URL: process.env.AUTH0_CONFIGURATION_BASE_URL,
         AUTH0_DOMAIN: process.env.AUTH0_DOMAIN,
         AUTH0_WEB_AUDIENCE: process.env.AUTH0_WEB_AUDIENCE,
