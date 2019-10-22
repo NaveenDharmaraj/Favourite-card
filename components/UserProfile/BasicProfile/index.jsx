@@ -393,7 +393,7 @@ class UserBasciProfile extends React.Component {
                                     </Grid>
                                 </Grid.Column>
                                 {
-                                    !isBlocked && (
+                                    !isBlocked && !_.isEmpty(userData) && (
                                         <Grid.Column mobile={16} tablet={8} computer={7}>
                                             <Grid stackable>
                                                 <Grid.Row>
