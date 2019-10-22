@@ -26,6 +26,7 @@ import '../../../static/less/style.less';
 const { publicRuntimeConfig } = getConfig();
 
 const {
+    APPLOZIC_BASE_URL,
     APPLOZIC_WS_URL,
     APPLOZIC_APP_KEY,
     HELP_SCOUT_KEY
@@ -128,6 +129,7 @@ class Layout extends React.Component {
                     <script id="stripe-js" src="https://js.stripe.com/v3/" />
                     <script type="text/javascript" defer  src="https://cdn.applozic.com/applozic/applozic.chat-5.6.1.min.js"></script>
                     <script type="text/javascript" defer>
+                        window.APPLOZIC_BASE_URL= "{APPLOZIC_BASE_URL}";
                         window.APPLOZIC_WS_URL= "{APPLOZIC_WS_URL}";
                         window.APPLOZIC_APP_KEY="{APPLOZIC_APP_KEY}";
                         window.userEmail = "{userEmail}";
