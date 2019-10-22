@@ -244,6 +244,7 @@ class UserBasciProfile extends React.Component {
         let email = '';
         let profileType = ''; let userProfileDeeplink = '';
         let locationDetails = '';
+        let profileTypeValidation = '';
         if (!_.isEmpty(userData)) {
             const profile = userData.profile_type;
             isBlocked = profile.substring(0, 7) === 'blocked' ? true : false;
@@ -263,6 +264,7 @@ class UserBasciProfile extends React.Component {
             } else if (locationDetailsCity !== '' && locationDetailsProvince !== '') {
                 locationDetails = `${userData.city}, ${userData.province}`;
             }
+            profileTypeValidation = userData.profile_type.toUpperCase();
         }
         if (!_.isEmpty(userProfileProfilelink)) {
             userProfileDeeplink = userProfileProfilelink.data.attributes['short-link'];
@@ -296,7 +298,7 @@ class UserBasciProfile extends React.Component {
                                                             {locationDetails}
                                                         </span>
                                                         {
-                                                            friendsVisibility === 0 && (
+                                                            (friendsVisibility === 0 || (profileTypeValidation === 'FRIENDS_PROFILE' && friendsVisibility === 1)) && (
                                                                 <Header.Subheader>
                                                                     <Icon name="users" />
                                                                     {userData.number_of_friends}
