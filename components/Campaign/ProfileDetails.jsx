@@ -25,6 +25,7 @@ function ProfileDetails(props) {
                             about,
                             videoPlayerLink,
                             short,
+                            impact,
                         },
                     },
                     campaignImageGallery,
@@ -65,7 +66,7 @@ function ProfileDetails(props) {
                         <Container>
 
                             {
-                                (!videoPlayerLink && !about && imageArray.length === 0 ) ? (
+                                (!videoPlayerLink && !short && !impact && imageArray.length === 0) ? (
                                     <Grid>
                                         <Grid.Row>
                                             <Grid.Column width={16}>
@@ -78,7 +79,14 @@ function ProfileDetails(props) {
                                         <Grid>
                                             <Grid.Row>
                                                 <Grid.Column width={16}>
-                                                    { about }
+                                                    { short }
+                                                </Grid.Column>
+                                            </Grid.Row>
+                                        </Grid>
+                                        <Grid>
+                                            <Grid.Row>
+                                                <Grid.Column width={16}>
+                                                    { impact }
                                                 </Grid.Column>
                                             </Grid.Row>
                                         </Grid>
