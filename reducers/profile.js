@@ -1,9 +1,10 @@
+
 const profile = (state = {}, action) => {
     let newState = {
         ...state,
     };
-    function arrayUnique(array) {
-        var a = array.concat();
+    function arrayUnique(array1, array2) {
+        var a = array1.concat(array2);
         for(var i=0; i<a.length; ++i) {
             for(var j=i+1; j<a.length; ++j) {
                 if(a[i] === a[j])
@@ -27,7 +28,8 @@ const profile = (state = {}, action) => {
             };
             break;
         case 'GET_SUB_GROUPS_FOR_CAMPAIGN':
-            if (state.campaignSubGroupDetails && state.campaignSubGroupDetails.length > 0) {
+            // isViewMore used to ignore the initial componentDidMount call - duplicate groups
+            if (state.campaignSubGroupDetails && state.campaignSubGroupDetails.length > 0 && action.payload.isViewMore) {
                 const uniqueArray = arrayUnique(state.campaignSubGroupDetails, action.payload.campaignSubGroupDetails.data);
                 newState = {
                     ...state,
