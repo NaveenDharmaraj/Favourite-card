@@ -272,7 +272,7 @@ export const unfollowProfile = (dispatch, userId, entityId, type) => {
     });
 };
 
-export const campaignSubGroupSeeMore = (url, dispatch) => {
+export const campaignSubGroupSeeMore = (url, dispatch, isViewMore) => {
     return coreApi.get(url, {
         params: {
             dispatch,
@@ -290,6 +290,7 @@ export const campaignSubGroupSeeMore = (url, dispatch) => {
             dispatch({
                 payload: {
                     campaignSubGroupDetails: subGroupResult,
+                    isViewMore,
                 },
                 type: actionTypes.GET_SUB_GROUPS_FOR_CAMPAIGN,
             });
