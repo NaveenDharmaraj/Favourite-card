@@ -74,7 +74,11 @@ const getUserProfileBasic = (dispatch, email, userId, loggedInUserId) => {
         },
         type: actionTypes.USER_PROFILE_BASIC,
     };
-    graphApi.get(`/recommendation/withProfileType/user?emailid=${email}&targetId=${Number(loggedInUserId)}&sourceId=${Number(userId)}&limit=&sort=`).then(
+    graphApi.get(`/recommendation/withProfileType/user`, { params: {
+        emailid: email,
+        sourceId: Number(userId),
+        targetId: Number(loggedInUserId),
+    } }).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -94,7 +98,11 @@ const getUserFriendProfile = (dispatch, email, userId, loggedInUserId) => {
         },
         type: actionTypes.USER_PROFILE_BASIC_FRIEND,
     };
-    graphApi.get(`/recommendation/withProfileType/user?emailid=${email}&targetId=${Number(userId)}&sourceId=${Number(loggedInUserId)}&limit=&sort=`).then(
+    graphApi.get(`/recommendation/withProfileType/user`, { params: {
+        emailid: email,
+        sourceId: Number(loggedInUserId),
+        targetId: Number(userId),
+    } }).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -298,7 +306,12 @@ const getMyFriendsList = (dispatch, email, pageNumber) => {
         },
         type: actionTypes.USER_PROFILE_MY_FRIENDS,
     };
-    return graphApi.get(`/user/myfriends?userid=${email}&page[number]=${pageNumber}&page[size]=10&status=accepted`).then(
+    return graphApi.get(`/user/myfriends`, { params: {
+        'page[number]': pageNumber,
+        'page[size]': 10,
+        status: 'accepted',
+        userid: email,
+    } }).then(
         (result) => {
             fsa.payload = {
                 count: result.meta.recordCount,
@@ -319,7 +332,13 @@ const getFriendsInvitations = (dispatch, email, pageNumber) => {
         },
         type: actionTypes.USER_PROFILE_INVITATIONS,
     };
-    return graphApi.get(`/user/myfriends?userid=${email}&page[number]=${pageNumber}&page[size]=10&status=pending&direction=in`).then(
+    return graphApi.get(`/user/myfriends`, { params: {
+        direction: 'in',
+        'page[number]': pageNumber,
+        'page[size]': 10,
+        status: 'pending',
+        userid: email,
+    } }).then(
         (result) => {
             fsa.payload = {
                 count: result.meta.recordCount,
@@ -360,6 +379,10 @@ const getFriendsByText = (dispatch, userId, searchText, pageNumber) => {
         type: actionTypes.USER_PROFILE_FIND_FRIENDS,
     };
     const bodyData = {
+        sort: {
+            field: 'first_name',
+            order: 'asc',
+        },
         text: searchText,
     };
     return searchApi.post(`/users?page[number]=${pageNumber}&page[size]=10&user_id=${Number(userId)}`, bodyData).then(
