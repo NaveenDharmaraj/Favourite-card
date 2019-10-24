@@ -69,7 +69,7 @@ class GroupProfile extends React.Component {
             <Layout title={title} description={desc}>
                 {!redirectToDashboard
                     ? <GroupProfileWrapper {...this.props} />
-                    : Router.push('/dashboard')}
+                    : Router.push('/search')}
             </Layout>
         );
     }

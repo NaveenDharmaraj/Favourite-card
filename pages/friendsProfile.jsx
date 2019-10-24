@@ -86,7 +86,11 @@ class FriendProfile extends React.Component {
         }
         return (
             <Layout authRequired>
-                <BasicProfile userData={userData} friendUserId={userData.user_id} />
+                {
+                    !_.isEmpty(userData) && (
+                        <BasicProfile userData={userData} friendUserId={userData.user_id} />
+                    )
+                }
                 {
                     (userData.causes_visibility === 0 || (profileType === 'FRIENDS_PROFILE' && userData.causes_visibility === 1)) && (
                         <CharitableInterestsList friendUserId={userData.user_id} />

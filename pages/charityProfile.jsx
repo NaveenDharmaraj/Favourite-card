@@ -58,7 +58,7 @@ class CharityProfile extends React.Component {
             <Layout title={title} description={charityDescription}>
                 {!redirectToDashboard
                     ? <CharityProfileWrapper {...this.props} />
-                    : Router.push('/dashboard')
+                    : Router.push('/search')
                 }
             </Layout>
         );
