@@ -1069,7 +1069,7 @@ const generateDeeplinkUserProfile = (dispatch, sourceUserId, destinationUserId) 
         },
         type: actionTypes.USER_PROFILE_USERPROFILE_DEEPLINK,
     };
-    return utilityApi.get(`/deeplink?profileType=userprofile&sourceId=${Number(sourceUserId)}&profileId=${Number(destinationUserId)}&webLink=true`).then(
+    return utilityApi.get(`/deeplink?profileType=userprofile&sourceId=${sourceUserId}&profileId=${destinationUserId}&webLink=true`).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
