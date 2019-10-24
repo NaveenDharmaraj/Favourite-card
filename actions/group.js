@@ -64,6 +64,7 @@ export const getGroupFromSlug = async (dispatch, slug, token = null) => {
             (result) => {
                 if (result && !_.isEmpty(result.data)) {
                     fsa.payload.groupDetails = result.data;
+                    dispatch(fsa);
                     if (result.data.relationships && result.data.relationships.galleryImages) {
                         coreApi.get(result.data.relationships.galleryImages.links.related, {
                             params: {
@@ -88,8 +89,6 @@ export const getGroupFromSlug = async (dispatch, slug, token = null) => {
                 type: actionTypes.GROUP_REDIRECT_TO_DASHBOARD,
             });
             return null;
-        }).finally(() => {
-            dispatch(fsa);
         });
     } else {
         // redirect('/dashboard');
