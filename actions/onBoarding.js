@@ -55,7 +55,14 @@ export const validateNewUser = (dispatch, emailId) => {
         },
         type: actionTypes.USER_API_VALIDATING,
     });
-    return securityApi.get(`/verify/useremailid?emailid=${emailId}`, BASIC_AUTH_HEADER).then((result) => {
+    return securityApi.get(`/verify/useremailid`, {
+        headers: {
+            Authorization: `Basic ${BASIC_AUTH_KEY}`,
+        },
+        params: {
+            emailid: emailId,
+        },
+    }).then((result) => {
         dispatch({
             payload: {
                 apiValidating: false,
