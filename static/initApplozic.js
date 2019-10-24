@@ -10,7 +10,7 @@ var events = {
         window.Applozic.ALSocket.reconnect();
     },
     'onConnect': function (resp) {
-        console.log("Applozic Web Socket Connection Established!");
+        // console.log("Applozic Web Socket Connection Established!");
     },
     'onMessageDelivered': function (resp) {
         // console.log(resp);
@@ -100,7 +100,7 @@ function registerAppLozic() {
     Applozic.ALApiService.login(
         {
             data: {
-                baseUrl: 'https://apps.applozic.com',
+                    baseUrl: window.APPLOZIC_BASE_URL,//'https://apps.applozic.com'
                 alUser:
                 {
                     // userId: localStorage.getItem("userId"), //Logged in user's id, a unique identifier for user

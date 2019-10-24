@@ -8,6 +8,7 @@ import getConfig from 'next/config';
 import auth0 from '../services/auth';
 import { triggerUxCritialErrors } from '../actions/error';
 import { softLogout } from '../actions/auth';
+import logger from '../helpers/logger';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -65,6 +66,13 @@ instance.interceptors.response.use(function (response) {
     if (config.uxCritical && config.dispatch) {
         triggerUxCritialErrors(data.errors || data, config.dispatch);
     }
+    const logDNAErrorObj = {
+        data: config.data ? JSON.parse(config.data) : null,
+        error: error.response.data,
+        method: config.method,
+        url: config.url,
+    };
+    logger.error(`[SECURITY] API failed: ${JSON.stringify(logDNAErrorObj)}`);
     return Promise.reject(error.response.data);
 });
 

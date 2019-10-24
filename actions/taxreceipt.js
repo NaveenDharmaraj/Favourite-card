@@ -30,7 +30,7 @@ export const getTaxReceiptProfilePaginated = (dispatch, userId, pageNumber, load
         fsa.payload.taxReceiptProfileList = result.data;
         fsa.payload.taxReceiptProfilePageCount = result.meta.pageCount;
     }).catch((error) => {
-        console.log(error);
+        // console.log(error);
     }).finally(() => {
         const type = pageNumber === 1 ? actionTypes.GET_INITIAL_TAX_RECEIPT_PROFILE : actionTypes.GET_PAGINATED_TAX_RECEIPT_PROFILE;
         fsa.type = type;

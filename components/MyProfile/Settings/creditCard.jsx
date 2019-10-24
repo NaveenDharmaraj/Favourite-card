@@ -243,12 +243,14 @@ class MyCreditCards extends React.Component {
                     errorMessage: null,
                     successMessage: 'Credit card saved.',
                     statusMessage: true,
+                    isAddModalOpen: false,
                 });
             }).catch((err) => {
                 this.setState({
                     buttonClicked: false,
                     errorMessage: 'Error in saving the Credit Card.',
                     statusMessage: true,
+                    isAddModalOpen: false,
                 });
             });
         }
@@ -489,7 +491,7 @@ class MyCreditCards extends React.Component {
     }
 
     onPageChanged(event, data) {
-        console.log(data);
+        // console.log(data);
         const {
             currentUser: {
                 id,
@@ -646,6 +648,7 @@ class MyCreditCards extends React.Component {
             deleteButtonClicked,
             editButtonClicked,
             errorMessage,
+            isAddModalOpen,
             inValidCardNumber,
             inValidExpirationDate,
             inValidNameOnCard,
@@ -663,10 +666,7 @@ class MyCreditCards extends React.Component {
             myCreditCardListLoader,
             statusMessage,
             successMessage,
-        } = this.state;
-        const {
-            newCreditCardApiCall,
-        } = this.props;
+        } = this.state;        
         const formatMessage = this.props.t;
         return (
             <div>
@@ -684,7 +684,7 @@ class MyCreditCards extends React.Component {
                                             dimmer="inverted"
                                             className="chimp-modal"
                                             closeIcon
-                                            open={newCreditCardApiCall}
+                                            open={isAddModalOpen}
                                             onClose={this.handleCCAddClose}
                                             trigger={<Button
                                                 className="success-btn-rounded-def"

@@ -18,34 +18,26 @@ import PlaceholderGrid from '../../shared/PlaceHolder';
 import LeftImageCard from '../../shared/LeftImageCard';
 
 class UserMemberGroupList extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            userMemberGroupListLoader: !props.userProfileMemberGroupData,
-        };
-    }
-
     componentDidMount() {
         const {
+            currentUser: {
+                id,
+            },
             dispatch,
             friendUserId,
         } = this.props;
-        getUserMemberGroup(dispatch, friendUserId);
+        getUserMemberGroup(dispatch, friendUserId, id);
     }
 
-    componentDidUpdate(prevProps, prevState) {
+    componentWillUnmount() {
         const {
-            userProfileMemberGroupData,
+            dispatch,
         } = this.props;
-        let {
-            userMemberGroupListLoader,
-        } = this.state;
-        if (!_.isEqual(this.props, prevProps)) {
-            if (!_.isEqual(userProfileMemberGroupData, prevProps.userProfileMemberGroupData)) {
-                userMemberGroupListLoader = false;
-            }
-            this.setState({ userMemberGroupListLoader });
-        }
+        dispatch({
+            payload: {
+            },
+            type: 'USER_PROFILE_MEMBER_GROUP',
+        });
     }
 
     userMemberGroupList() {
@@ -71,11 +63,12 @@ class UserMemberGroupList extends React.Component {
                 const type = 'giving group';
                 const typeClass = 'chimp-lbl group';
                 const url = `/groups/${data.attributes.slug}`;
+                const groupImage = (!_.isEmpty(data.attributes.avatar)) ? data.attributes.avatar : placeholderGroup;
                 return (
                     <LeftImageCard
                         entityName={entityName}
                         location={locationDetails}
-                        placeholder={placeholderGroup}
+                        placeholder={groupImage}
                         typeClass={typeClass}
                         type={type}
                         url={url}
@@ -86,9 +79,20 @@ class UserMemberGroupList extends React.Component {
         return (
             <Grid columns="equal" stackable doubling columns={3}>
                 <Grid.Row>
-                    <Grid.Column>
-                        {memberGroupList}
-                    </Grid.Column>
+                    {
+                        !_.isEmpty(userProfileMemberGroupData) && (_.size(userProfileMemberGroupData.data) > 0) && (
+                            <React.Fragment>
+                                {memberGroupList}
+                            </React.Fragment>
+                        )
+                    }
+                    {
+                        !_.isEmpty(userProfileMemberGroupData) && (_.size(userProfileMemberGroupData.data) === 0) && (
+                            <Grid.Column>
+                                {memberGroupList}
+                            </Grid.Column>
+                        )
+                    }
                 </Grid.Row>
             </Grid>
         );
@@ -96,15 +100,16 @@ class UserMemberGroupList extends React.Component {
 
     render() {
         const {
-            userMemberGroupListLoader,
-        } = this.state;
+            userProfileMemberGroupData,
+            userProfileMemberGroupsLoadStatus,
+        } = this.props;
         return (
             <div className="pb-3">
                 <Container>
                     <Header as="h4" className="underline">
                     Joined Groups
                     </Header>
-                    { userMemberGroupListLoader ? <PlaceholderGrid row={1} column={3} /> : (
+                    { (_.isEmpty(userProfileMemberGroupData) && userProfileMemberGroupsLoadStatus) ? <PlaceholderGrid row={1} column={3} /> : (
                         this.userMemberGroupList()
                     )}
                 </Container>
@@ -117,6 +122,7 @@ function mapStateToProps(state) {
     return {
         currentUser: state.user.info,
         userProfileMemberGroupData: state.userProfile.userProfileMemberGroupData,
+        userProfileMemberGroupsLoadStatus: state.userProfile.userProfileMemberGroupsLoadStatus,
     };
 }
 

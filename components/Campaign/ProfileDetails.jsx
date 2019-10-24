@@ -25,6 +25,7 @@ function ProfileDetails(props) {
                             about,
                             videoPlayerLink,
                             short,
+                            impact,
                         },
                     },
                     campaignImageGallery,
@@ -65,7 +66,7 @@ function ProfileDetails(props) {
                         <Container>
 
                             {
-                                (!videoPlayerLink && !about && imageArray.length === 0 ) ? (
+                                (!videoPlayerLink && !short && !impact && imageArray.length === 0) ? (
                                     <Grid>
                                         <Grid.Row>
                                             <Grid.Column width={16}>
@@ -78,7 +79,14 @@ function ProfileDetails(props) {
                                         <Grid>
                                             <Grid.Row>
                                                 <Grid.Column width={16}>
-                                                    { about }
+                                                    { short }
+                                                </Grid.Column>
+                                            </Grid.Row>
+                                        </Grid>
+                                        <Grid>
+                                            <Grid.Row>
+                                                <Grid.Column width={16}>
+                                                    { impact }
                                                 </Grid.Column>
                                             </Grid.Row>
                                         </Grid>
@@ -119,6 +127,7 @@ function ProfileDetails(props) {
             menuItem: 'Giving Groups supporting this Campaign',
             render: () => {
                 const {
+                    campaignDetails,
                     campaignSubGroupDetails,
                     campaignSubGroupsShowMoreUrl,
                     seeMoreLoaderStatus,
@@ -128,6 +137,7 @@ function ProfileDetails(props) {
                 return (
                     <Tab.Pane attached={false}>
                         <SupportingGroups
+                            campaignDetails={campaignDetails}
                             campaignSubGroupDetails={campaignSubGroupDetails}
                             campaignSubGroupsShowMoreUrl={campaignSubGroupsShowMoreUrl}
                             seeMoreLoaderStatus={seeMoreLoaderStatus}

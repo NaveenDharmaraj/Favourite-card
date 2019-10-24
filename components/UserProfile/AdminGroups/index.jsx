@@ -18,32 +18,26 @@ import PlaceholderGrid from '../../shared/PlaceHolder';
 import LeftImageCard from '../../shared/LeftImageCard';
 
 class UserAdminGroupList extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            userAdminGroupListLoader: !props.userProfileAdminGroupData,
-        };
-    }
-
     componentDidMount() {
-        const {            
+        const {
+            currentUser: {
+                id,
+            },
             dispatch,
             friendUserId,
         } = this.props;
-        getUserAdminGroup(dispatch, friendUserId);
+        getUserAdminGroup(dispatch, friendUserId, id);
     }
 
-    componentDidUpdate(prevProps) {
+    componentWillUnmount() {
         const {
-            userProfileAdminGroupData,
+            dispatch,
         } = this.props;
-        let {
-            userAdminGroupListLoader,
-        } = this.state;
-        if (!_.isEqual(userProfileAdminGroupData, prevProps.userProfileAdminGroupData)) {
-            userAdminGroupListLoader = false;
-            this.setState({ userAdminGroupListLoader });
-        }
+        dispatch({
+            payload: {
+            },
+            type: 'USER_PROFILE_ADMIN_GROUP',
+        });
     }
 
     userAdminGroupList() {
@@ -67,11 +61,12 @@ class UserAdminGroupList extends React.Component {
                     locationDetails = `${data.attributes.city}, ${data.attributes.province}`;
                 }
                 const url = `/groups/${data.attributes.slug}`;
+                const groupImage = (!_.isEmpty(data.attributes.avatar)) ? data.attributes.avatar : placeholderGroup;
                 return (
                     <LeftImageCard
                         entityName={entityName}
                         location={locationDetails}
-                        placeholder={placeholderGroup}
+                        placeholder={groupImage}
                         typeClass="chimp-lbl group"
                         type="giving group"
                         url={url}
@@ -82,9 +77,20 @@ class UserAdminGroupList extends React.Component {
         return (
             <Grid columns="equal" stackable doubling columns={3}>
                 <Grid.Row>
-                    <Grid.Column>
-                        {adminGroupList}
-                    </Grid.Column>
+                    {
+                        !_.isEmpty(userProfileAdminGroupData) && (_.size(userProfileAdminGroupData.data) > 0) && (
+                            <React.Fragment>
+                                {adminGroupList}
+                            </React.Fragment>
+                        )
+                    }
+                    {
+                        !_.isEmpty(userProfileAdminGroupData) && (_.size(userProfileAdminGroupData.data) === 0) && (
+                            <Grid.Column>
+                                {adminGroupList}
+                            </Grid.Column>
+                        )
+                    }
                 </Grid.Row>
             </Grid>
         );
@@ -92,18 +98,18 @@ class UserAdminGroupList extends React.Component {
 
     render() {
         const {
-            userAdminGroupListLoader,
-        } = this.state;
-        const {
             friendFirstName,
+            userProfileAdminGroupData,
+            userProfileAdminGroupsLoadStatus,
         } = this.props;
         return (
             <div className="pb-3">
                 <Container>
                     <Header as="h4" className="underline">
-                    {friendFirstName}'s Giving Groups
+                        {friendFirstName}
+                        's Giving Groups
                     </Header>
-                    { userAdminGroupListLoader ? <PlaceholderGrid row={1} column={3} /> : (
+                    { (_.isEmpty(userProfileAdminGroupData) && userProfileAdminGroupsLoadStatus) ? <PlaceholderGrid row={1} column={3} /> : (
                         this.userAdminGroupList()
                     )}
                 </Container>
@@ -116,6 +122,7 @@ function mapStateToProps(state) {
     return {
         currentUser: state.user.info,
         userProfileAdminGroupData: state.userProfile.userProfileAdminGroupData,
+        userProfileAdminGroupsLoadStatus: state.userProfile.userProfileAdminGroupsLoadStatus,
     };
 }
 

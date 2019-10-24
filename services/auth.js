@@ -15,7 +15,6 @@ import {
 import {
     chimpLogin,
     getUser,
-    wpLogin,
 } from '../actions/user';
 import isUndefinedOrEmpty from '../helpers/object';
 import { addToDataLayer } from '../helpers/users/googleTagManager';
@@ -26,12 +25,10 @@ const { publicRuntimeConfig } = getConfig();
 
 const {
     APP_URL_ORIGIN,
+    AUTH0_CONFIGURATION_BASE_URL,
     AUTH0_DOMAIN,
     AUTH0_WEB_CLIENT_ID,
     AUTH0_WEB_AUDIENCE,
-    CORP_DOMAIN,
-    WP_DOMAIN_BASE,
-    WP_API_VERSION,
 } = publicRuntimeConfig;
 
 /**
@@ -48,6 +45,7 @@ const _auth0lockConfig = {
         scope: 'openid',
     },
     avatar: null,
+    configurationBaseUrl: AUTH0_CONFIGURATION_BASE_URL,
     container: 'auth0-lock-container',
     languageDictionary: {
         emailInputPlaceholder: 'Enter your email',
@@ -156,6 +154,7 @@ const auth0 = {
         this.accessToken = null;
         this.userEmail = null;
         this.userId = null;
+        this.wpAccessToken = null;
 
         return null;
     },
@@ -419,15 +418,8 @@ const _handleLockSuccess = async ({
     if (!accessToken || !idToken) { return null(); }
     // Sets access token and expiry time in cookies
     chimpLogin(accessToken).then(async ({ currentUser }) => {
-        if (CORP_DOMAIN && WP_DOMAIN_BASE && WP_API_VERSION) {
-            await wpLogin(accessToken);
-        }
-        let cookieName = 'HelloWorld';
-        let cookieValue = 'HelloWorld';
-        let myDate = new Date();
-        myDate.setMonth(myDate.getMonth() + 12);
         if (document) {
-            console.log('setting wp access token');
+            // console.log('setting wp access token');
             await (auth0.wpAccessToken = accessToken);
         }
 
@@ -493,7 +485,7 @@ const _handleLockFailure = async ({ errorDescription }) => {
  * @return {auth0lock} - The auth0lock instance.
  */
 function _makeLock() {
-    _auth0lock = new Auth0Lock(AUTH0_WEB_CLIENT_ID, AUTH0_DOMAIN, _auth0lockConfig, _.merge(_auth0lockConfig, {
+    _auth0lock = new Auth0Lock(AUTH0_WEB_CLIENT_ID, AUTH0_DOMAIN, _.merge(_auth0lockConfig, {
         auth: {
             audience: `${AUTH0_WEB_AUDIENCE}`,
             redirectUrl: `${APP_URL_ORIGIN}/auth/callback`,

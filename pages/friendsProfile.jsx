@@ -15,6 +15,9 @@ import AdminGroupList from '../components/UserProfile/AdminGroups';
 import CharitableInterestsList from '../components/UserProfile/CharitableInterest';
 import GivingGoal from '../components/UserProfile/GivingGoal';
 import BasicProfile from '../components/UserProfile/BasicProfile';
+import {
+    formatAmount,
+} from '../helpers/give/utils';
 
 class FriendProfile extends React.Component {
     static async getInitialProps({ query }) {
@@ -26,16 +29,19 @@ class FriendProfile extends React.Component {
 
     componentDidMount() {
         const {
-            currentUser: {
+            currentUser,
+            dispatch,
+            friendChimpId,
+        } = this.props;
+        if (!_.isEmpty(currentUser)) {
+            const {
                 id,
                 attributes: {
                     email,
                 },
-            },
-            dispatch,
-            friendChimpId,
-        } = this.props;
-        getUserFriendProfile(dispatch, email, friendChimpId, id);
+            } = currentUser;
+            getUserFriendProfile(dispatch, email, friendChimpId, id);
+        }
     }
 
     componentDidUpdate(prevProps) {
@@ -53,7 +59,18 @@ class FriendProfile extends React.Component {
             getUserFriendProfile(dispatch, email, friendChimpId, id);
         }
     }
-    
+
+    componentWillUnmount() {
+        const {
+            dispatch,
+        } = this.props;
+        dispatch({
+            payload: {
+            },
+            type: 'USER_PROFILE_BASIC_FRIEND',
+        });
+    }
+
     render() {
         const {
             userFriendProfileData,
@@ -62,21 +79,21 @@ class FriendProfile extends React.Component {
         let givingAmount = 0; let givenAmount = 0; let percentage = 0; let profileType = '';
         if (!_.isEmpty(userFriendProfileData) && _.size(userFriendProfileData.data) > 0) {
             userData = userFriendProfileData.data[0].attributes;
-            givingAmount = (typeof userData.giving_goal_amt !== 'undefined') ? Number(userData.giving_goal_amt) : 0;
-            givenAmount = (typeof userData.giving_goal_met !== 'undefined') ? Number(userData.giving_goal_met) : 0;
+            givingAmount = (typeof userData.giving_goal_amt !== 'undefined') ? formatAmount(Number(userData.giving_goal_amt)) : formatAmount(0);
+            givenAmount = (typeof userData.giving_goal_met !== 'undefined') ? formatAmount(Number(userData.giving_goal_met)) : formatAmount(0);
             percentage = (givenAmount * 100) / givingAmount;
             profileType = userData.profile_type.toUpperCase();
         }
         return (
             <Layout authRequired>
-                <BasicProfile userData={userData} friendUserId={userData.user_id}/>
+                <BasicProfile userData={userData} friendUserId={userData.user_id} />
                 {
                     (userData.causes_visibility === 0 || (profileType === 'FRIENDS_PROFILE' && userData.causes_visibility === 1)) && (
                         <CharitableInterestsList friendUserId={userData.user_id} />
                     )
                 }
                 {
-                    (userData.causes_visibility === 0 || (profileType === 'FRIENDS_PROFILE' && userData.causes_visibility === 1)) && (
+                    (userData.giving_goal_visibility === 0 || (profileType === 'FRIENDS_PROFILE' && userData.giving_goal_visibility === 1)) && (
                         <GivingGoal
                             givingAmount={givingAmount}
                             givenAmount={givenAmount}
@@ -85,7 +102,7 @@ class FriendProfile extends React.Component {
                     )
                 }
                 {
-                    (userData.causes_visibility === 0 || (profileType === 'FRIENDS_PROFILE' && userData.causes_visibility === 1)) && (
+                    (userData.giving_group_manage_visibility === 0 || (profileType === 'FRIENDS_PROFILE' && userData.giving_group_manage_visibility === 1)) && (
                         <AdminGroupList
                             friendUserId={userData.user_id}
                             friendFirstName={userData.first_name}
@@ -93,12 +110,12 @@ class FriendProfile extends React.Component {
                     )
                 }
                 {
-                    (userData.causes_visibility === 0 || (profileType === 'FRIENDS_PROFILE' && userData.causes_visibility === 1)) && (
+                    (userData.giving_group_member_visibility === 0 || (profileType === 'FRIENDS_PROFILE' && userData.giving_group_member_visibility === 1)) && (
                         <MemberGroupList friendUserId={userData.user_id} />
                     )
                 }
                 {
-                    (userData.causes_visibility === 0 || (profileType === 'FRIENDS_PROFILE' && userData.causes_visibility === 1)) && (
+                    (userData.favourites_visibility === 0 || (profileType === 'FRIENDS_PROFILE' && userData.favourites_visibility === 1)) && (
                         <FavouritesList friendUserId={userData.user_id} />
                     )
                 }

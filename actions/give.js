@@ -511,7 +511,7 @@ export const getCompanyPaymentAndTax = (dispatch, companyId) => {
         });
         return dispatch(fsa);
     }).catch((error) => {
-        console.log(error);
+        // console.log(error);
     });
 };
 
@@ -587,7 +587,6 @@ export const proceed = (
                     // }
                 }
             }).catch((err) => {
-                // logger.error(err);
                 if (checkForQuaziSuccess(err.errors)) {
                     successData.quaziSuccessStatus = true;
                 } else {
@@ -654,7 +653,7 @@ export const proceed = (
                 callApiAndDispatchData(dispatch, accountDetails);
             }).catch((err) => {
                 triggerUxCritialErrors(err.errors || err, dispatch);
-                console.log(err);
+                // console.log(err);
             }).finally(() => {
                 dispatch({
                     payload: {
@@ -882,7 +881,7 @@ export const getCompanyTaxReceiptProfile = (dispatch, companyId) => {
         };
         return dispatch(fsa);
     }).catch((error) => {
-        console.log(error);
+        // console.log(error);
     });
 };
 

@@ -84,7 +84,7 @@ class EditBasicProfile extends React.Component {
                 userBasicDetails: {
                     about: userData.description,
                     firstName: userData.first_name,
-                    givingGoal: formatAmount(Number(userData.giving_goal_amt)),
+                    givingGoal: typeof userData.giving_goal_amt !== 'undefined' ? formatAmount(Number(userData.giving_goal_amt)) : '',
                     lastName: userData.last_name,
                     location: userData.location,
                     displayName: userData.display_name,
@@ -292,7 +292,7 @@ class EditBasicProfile extends React.Component {
             cb(reader.result)
         };
         reader.onerror = function (error) {
-            console.log('Error: ', error);
+            // console.log('Error: ', error);
         };
     }
     
@@ -537,7 +537,7 @@ class EditBasicProfile extends React.Component {
                                             />
                                         }
                                     />
-                                    <span className="font-w-normal">
+                                    <span className="font-w-normal ml--1-2">
                                         <PrivacySetting
                                             columnName={privacyColumn}
                                             columnValue={userData.giving_goal_visibility}

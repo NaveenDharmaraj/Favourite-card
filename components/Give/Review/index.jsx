@@ -64,6 +64,7 @@ class Review extends React.Component {
             companiesAccountsData,
             donationMatchData,
             fund,
+            giveGroupDetails,
             paymentInstrumentsData,
             companyDetails: {
                 companyPaymentInstrumentsData,
@@ -78,6 +79,17 @@ class Review extends React.Component {
         const formatMessage = this.props.t;
         let reviewData = {};
         let activeGroupMatch = null;
+        if (!_.isEmpty(giveGroupDetails)) {
+            const {
+                attributes: {
+                    activeMatch,
+                    hasActiveMatch,
+                },
+            } = giveGroupDetails;
+            if (!_.isEmpty(activeMatch) && hasActiveMatch) {
+                activeGroupMatch = activeMatch;
+            }
+        }
         let toURL = `/${type}/${flowSteps[0]}`;
         if (sourceAccountHolderId) {
             toURL = `${toURL}?source_account_holder_id=${sourceAccountHolderId}`;
@@ -200,6 +212,7 @@ function mapStateToProps(state) {
         currentUser: state.user.info,
         donationMatchData: state.user.donationMatchData,
         fund: state.user.fund,
+        giveGroupDetails: state.give.groupSlugDetails,
         paymentInstrumentsData: state.user.paymentInstrumentsData,
         companyDetails: state.give.companyData,
         userCampaigns: state.user.userCampaigns,

@@ -32,8 +32,13 @@ const hasTwoChar = (value) => {
     return (value && value.length >= 2);
 };
 
-const validateUserRegistrationForm = (field, value, validity) => {
+const validateUserRegistrationForm = (field, untrimmedValue, validity) => {
     const emailRegex = new RegExp(/^[A-Z0-9a-z._%+-]+@[^-][A-Za-z0-9.-]+[^-]\.[A-Za-z]{2,64}$/i);
+    let value;
+    if (untrimmedValue) {
+        value = untrimmedValue.trim();
+    }
+
     switch (field) {
         case 'firstName':
             validity.isFirstNameNotNull = !(!value || value.length === 0);

@@ -33,9 +33,9 @@ const {
 
 const createUserDetails = (valuesObject) => {
     const data = [];
-    if (!_isEmpty(valuesObject.contactPhone)) {
+    if (!_isEmpty(valuesObject.phone)) {
         data.push({
-            Content: valuesObject.contactPhone,
+            Content: valuesObject.phone,
             name: 'phone',
         });
     }
@@ -201,12 +201,16 @@ class UserDetails extends React.Component {
 
                             </Grid.Row>
                         </Grid>
-                        <p className="mt-1">
-                        Is this your charity? Claim your charity page on Charitable Impact.
-                            <a href={CLAIM_CHARITY_URL}>
-                                <Button className="ml-1 blue-bordr-btn-round-def c-small">Claim charity</Button>
-                            </a>
-                        </p>
+                        {(!_isEmpty(charityDetails.charityDetails.attributes) && !charityDetails.charityDetails.attributes.isClaimed)
+                            && (
+                                <p className="mt-1">
+                                Is this your charity? Claim your charity page on Charitable Impact.
+                                    <a href={CLAIM_CHARITY_URL}>
+                                        <Button className="ml-1 blue-bordr-btn-round-def c-small">Claim charity</Button>
+                                    </a>
+                                </p>
+                            )
+                        }
                     </div>
                 </Container>
             </div>

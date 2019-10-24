@@ -31,19 +31,22 @@ export const actionTypes = {
     UPDATE_USER_PASSWORD: 'UPDATE_USER_PASSWORD',
     UPDATE_USER_PREFERENCES: 'UPDATE_USER_PREFERENCES',
     UPDATE_USER_PRIVACY_SETTING: 'UPDATE_USER_PRIVACY_SETTING',
+    USER_PROFILE_ACCEPT_FRIEND: 'USER_PROFILE_ACCEPT_FRIEND',
     USER_PROFILE_ADD_FRIEND: 'USER_PROFILE_ADD_FRIEND',
     USER_PROFILE_ADD_NEW_CREDIT_CARD_STATUS: 'USER_PROFILE_ADD_NEW_CREDIT_CARD_STATUS',
-    USER_PROFILE_ACCEPT_FRIEND: 'USER_PROFILE_ACCEPT_FRIEND',
     USER_PROFILE_ADMIN_GROUP: 'USER_PROFILE_ADMIN_GROUP',
+    USER_PROFILE_ADMIN_GROUP_LOAD_STATUS: 'USER_PROFILE_ADMIN_GROUP_LOAD_STATUS',
     USER_PROFILE_BASIC: 'USER_PROFILE_BASIC',
     USER_PROFILE_BASIC_FRIEND: 'USER_PROFILE_BASIC_FRIEND',
     USER_PROFILE_BLOCK_USER: 'USER_PROFILE_BLOCK_USER',
     USER_PROFILE_BLOCKED_FRIENDS: 'USER_PROFILE_BLOCKED_FRIENDS',
     USER_PROFILE_CAUSES: 'USER_PROFILE_CAUSES',
     USER_PROFILE_CHARITABLE_INTERESTS: 'USER_PROFILE_CHARITABLE_INTERESTS',
+    USER_PROFILE_CHARITABLE_INTERESTS_LOAD_STATUS: 'USER_PROFILE_CHARITABLE_INTERESTS_LOAD_STATUS',
     USER_PROFILE_CREDIT_CARDS: 'USER_PROFILE_CREDIT_CARDS',
     USER_PROFILE_DEFAULT_TAX_RECEIPT: 'USER_PROFILE_DEFAULT_TAX_RECEIPT',
     USER_PROFILE_FAVOURITES: 'USER_PROFILE_FAVOURITES',
+    USER_PROFILE_FAVOURITES_LOAD_STATUS: 'USER_PROFILE_FAVOURITES_LOAD_STATUS',
     USER_PROFILE_FIND_FRIENDS: 'USER_PROFILE_FIND_FRIENDS',
     USER_PROFILE_FIND_TAGS: 'USER_PROFILE_FIND_TAGS',
     USER_PROFILE_FOLLOWED_TAGS: 'USER_PROFILE_FOLLOWED_TAGS',
@@ -52,6 +55,7 @@ export const actionTypes = {
     USER_PROFILE_INVITATIONS: 'USER_PROFILE_INVITATIONS',
     USER_PROFILE_INVITE_FRIENDS: 'USER_PROFILE_INVITE_FRIENDS',
     USER_PROFILE_MEMBER_GROUP: 'USER_PROFILE_MEMBER_GROUP',
+    USER_PROFILE_MEMBER_GROUP_LOAD_STATUS: 'USER_PROFILE_MEMBER_GROUP_LOAD_STATUS',
     USER_PROFILE_MY_FRIENDS: 'USER_PROFILE_MY_FRIENDS',
     USER_PROFILE_RECOMMENDED_TAGS: 'USER_PROFILE_RECOMMENDED_TAGS',
     USER_PROFILE_REMOVE_FRIEND: 'USER_PROFILE_REMOVE_FRIEND',
@@ -70,7 +74,11 @@ const getUserProfileBasic = (dispatch, email, userId, loggedInUserId) => {
         },
         type: actionTypes.USER_PROFILE_BASIC,
     };
-    graphApi.get(`/recommendation/withProfileType/user?emailid=${email}&targetId=${Number(loggedInUserId)}&sourceId=${Number(userId)}&limit=&sort=`).then(
+    graphApi.get(`/recommendation/withProfileType/user`, { params: {
+        emailid: email,
+        sourceId: Number(userId),
+        targetId: Number(loggedInUserId),
+    } }).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -90,7 +98,11 @@ const getUserFriendProfile = (dispatch, email, userId, loggedInUserId) => {
         },
         type: actionTypes.USER_PROFILE_BASIC_FRIEND,
     };
-    graphApi.get(`/recommendation/withProfileType/user?emailid=${email}&targetId=${Number(userId)}&sourceId=${Number(loggedInUserId)}&limit=&sort=`).then(
+    graphApi.get(`/recommendation/withProfileType/user`, { params: {
+        emailid: email,
+        sourceId: Number(loggedInUserId),
+        targetId: Number(userId),
+    } }).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -110,6 +122,12 @@ const getUserCharitableInterests = (dispatch, userId) => {
         },
         type: actionTypes.USER_PROFILE_CHARITABLE_INTERESTS,
     };
+    dispatch({
+        payload: {
+            userProfileCharitableInterestsLoadStatus: true,
+        },
+        type: actionTypes.USER_PROFILE_CHARITABLE_INTERESTS_LOAD_STATUS,
+    });
     graphApi.get(`/get/user/causetags?userid=${Number(userId)}`).then(
         (result) => {
             fsa.payload = {
@@ -119,18 +137,30 @@ const getUserCharitableInterests = (dispatch, userId) => {
     ).catch((error) => {
         fsa.error = error;
     }).finally(() => {
+        dispatch({
+            payload: {
+                userProfileCharitableInterestsLoadStatus: false,
+            },
+            type: actionTypes.USER_PROFILE_CHARITABLE_INTERESTS_LOAD_STATUS,
+        });
         dispatch(fsa);
     });
 };
 
-const getUserMemberGroup = (dispatch, userId) => {
+const getUserMemberGroup = (dispatch, userId, sourceUserId) => {
     const fsa = {
         payload: {
             userId,
         },
         type: actionTypes.USER_PROFILE_MEMBER_GROUP,
     };
-    graphApi.get(`/user/groupbyrelationship?type=member&userid=${Number(userId)}&limit=9`).then(
+    dispatch({
+        payload: {
+            userProfileMemberGroupsLoadStatus: true,
+        },
+        type: actionTypes.USER_PROFILE_MEMBER_GROUP_LOAD_STATUS,
+    });
+    coreApi.get(`/users/${Number(sourceUserId)}/friendGroups?friend_id=${Number(userId)}&fields[groups]=name,city,province,slug,avatar,groupType&page[number]=1&page[size]=9`).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -139,18 +169,31 @@ const getUserMemberGroup = (dispatch, userId) => {
     ).catch((error) => {
         fsa.error = error;
     }).finally(() => {
+        dispatch({
+            payload: {
+                userProfileMemberGroupsLoadStatus: false,
+            },
+            type: actionTypes.USER_PROFILE_MEMBER_GROUP_LOAD_STATUS,
+        });
         dispatch(fsa);
     });
 };
 
-const getUserAdminGroup = (dispatch, userId) => {
+const getUserAdminGroup = (dispatch, userId, sourceUserId) => {
     const fsa = {
         payload: {
             userId,
         },
         type: actionTypes.USER_PROFILE_ADMIN_GROUP,
     };
-    graphApi.get(`/user/groupbyrelationship?type=admin&userid=${Number(userId)}&limit=9`).then(
+    dispatch({
+        payload: {
+            userProfileAdminGroupsLoadStatus: true,
+        },
+        type: actionTypes.USER_PROFILE_ADMIN_GROUP_LOAD_STATUS,
+    });
+
+    coreApi.get(`users/${Number(sourceUserId)}/friendAdministeredGroups?friend_id=${Number(userId)}&fields[groups]=name,city,province,slug,avatar,groupType&page[number]=1&page[size]=9`).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -159,6 +202,12 @@ const getUserAdminGroup = (dispatch, userId) => {
     ).catch((error) => {
         fsa.error = error;
     }).finally(() => {
+        dispatch({
+            payload: {
+                userProfileAdminGroupsLoadStatus: false,
+            },
+            type: actionTypes.USER_PROFILE_ADMIN_GROUP_LOAD_STATUS,
+        });
         dispatch(fsa);
     });
 };
@@ -170,6 +219,12 @@ const getUserFavourites = (dispatch, userId) => {
         },
         type: actionTypes.USER_PROFILE_FAVOURITES,
     };
+    dispatch({
+        payload: {
+            userProfileFavouritesLoadStatus: true,
+        },
+        type: actionTypes.USER_PROFILE_FAVOURITES_LOAD_STATUS,
+    });
     graphApi.get(`/user/favourites?userid=${Number(userId)}`).then(
         (result) => {
             fsa.payload = {
@@ -179,6 +234,12 @@ const getUserFavourites = (dispatch, userId) => {
     ).catch((error) => {
         fsa.error = error;
     }).finally(() => {
+        dispatch({
+            payload: {
+                userProfileFavouritesLoadStatus: false,
+            },
+            type: actionTypes.USER_PROFILE_FAVOURITES_LOAD_STATUS,
+        });
         dispatch(fsa);
     });
 };
@@ -245,7 +306,12 @@ const getMyFriendsList = (dispatch, email, pageNumber) => {
         },
         type: actionTypes.USER_PROFILE_MY_FRIENDS,
     };
-    return graphApi.get(`/user/myfriends?userid=${email}&page[number]=${pageNumber}&page[size]=10&status=accepted`).then(
+    return graphApi.get(`/user/myfriends`, { params: {
+        'page[number]': pageNumber,
+        'page[size]': 10,
+        status: 'accepted',
+        userid: email,
+    } }).then(
         (result) => {
             fsa.payload = {
                 count: result.meta.recordCount,
@@ -266,7 +332,13 @@ const getFriendsInvitations = (dispatch, email, pageNumber) => {
         },
         type: actionTypes.USER_PROFILE_INVITATIONS,
     };
-    return graphApi.get(`/user/myfriends?userid=${email}&page[number]=${pageNumber}&page[size]=10&status=pending&direction=in`).then(
+    return graphApi.get(`/user/myfriends`, { params: {
+        direction: 'in',
+        'page[number]': pageNumber,
+        'page[size]': 10,
+        status: 'pending',
+        userid: email,
+    } }).then(
         (result) => {
             fsa.payload = {
                 count: result.meta.recordCount,
@@ -307,6 +379,10 @@ const getFriendsByText = (dispatch, userId, searchText, pageNumber) => {
         type: actionTypes.USER_PROFILE_FIND_FRIENDS,
     };
     const bodyData = {
+        sort: {
+            field: 'first_name',
+            order: 'asc',
+        },
         text: searchText,
     };
     return searchApi.post(`/users?page[number]=${pageNumber}&page[size]=10&user_id=${Number(userId)}`, bodyData).then(
@@ -380,7 +456,8 @@ const saveUserBasicProfile = (dispatch, userData, userId, email) => {
     if (userData.displayName !== '') {
         bodyData.display_name = userData.displayName;
     }
-    return securityApi.patch(`/update/user`, bodyData).then(
+    const basicResponse = securityApi.patch(`/update/user`, bodyData);
+    basicResponse.then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -393,6 +470,7 @@ const saveUserBasicProfile = (dispatch, userData, userId, email) => {
     }).finally(() => {
         dispatch(fsa);
     });
+    return basicResponse;
 };
 
 const sendFriendRequest = (dispatch, sourceUserId, sourceEmail, avatar, firstName, userData, searchWord, pageNumber) => {
@@ -414,7 +492,8 @@ const sendFriendRequest = (dispatch, sourceUserId, sourceEmail, avatar, firstNam
             },
         },
     };
-    return eventApi.post(`/friend/request`, bodyData).then(
+    const sendFriendRequestResponse = eventApi.post(`/friend/request`, bodyData);
+    sendFriendRequestResponse.then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -426,6 +505,7 @@ const sendFriendRequest = (dispatch, sourceUserId, sourceEmail, avatar, firstNam
     }).finally(() => {
         dispatch(fsa);
     });
+    return sendFriendRequestResponse;
 };
 
 const acceptFriendRequest = (dispatch, sourceUserId, sourceEmailId, sourceAvatar, sourceFirstName, destinationEmailId, destinationUserId, pageNumber, pageName, searchWord) => {
@@ -447,7 +527,8 @@ const acceptFriendRequest = (dispatch, sourceUserId, sourceEmailId, sourceAvatar
             },
         },
     };
-    return eventApi.post(`/friend/accept`, bodyData).then(
+    const acceptFriendRequestResponse = eventApi.post(`/friend/accept`, bodyData);
+    acceptFriendRequestResponse.then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -464,6 +545,7 @@ const acceptFriendRequest = (dispatch, sourceUserId, sourceEmailId, sourceAvatar
     }).finally(() => {
         dispatch(fsa);
     });
+    return acceptFriendRequestResponse;
 };
 
 const blockUser = (dispatch, sourceUserId, sourceEmailId, destinationUserId) => {
@@ -504,7 +586,8 @@ const unblockFriend = (dispatch, sourceUserId, destinationUserId) => {
         source_user_id: Number(sourceUserId),
         unblock_user_ids: blockUsers,
     };
-    return graphApi.post(`/core/unblockUser`, bodyData).then(
+    const unblockFriendResponse = graphApi.post(`/core/unblockUser`, bodyData);
+    unblockFriendResponse.then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -516,6 +599,7 @@ const unblockFriend = (dispatch, sourceUserId, destinationUserId) => {
     }).finally(() => {
         dispatch(fsa);
     });
+    return unblockFriendResponse;
 };
 
 const saveCharitableCauses = (dispatch, userId, userCauses) => {
@@ -528,7 +612,8 @@ const saveCharitableCauses = (dispatch, userId, userCauses) => {
         causes: userCauses,
         userid: Number(userId),
     };
-    return graphApi.patch(`/user/updatecauses`, bodyDataCauses).then(
+    const causesResponse = graphApi.patch(`/user/updatecauses`, bodyDataCauses);
+    causesResponse.then(
         (result) => {
             fsaCauses.payload = {
                 data: result.data,
@@ -540,6 +625,7 @@ const saveCharitableCauses = (dispatch, userId, userCauses) => {
     }).finally(() => {
         dispatch(fsaCauses);
     });
+    return causesResponse;
 };
 
 const saveCharitableTags = (dispatch, userId, userTags) => {
@@ -552,7 +638,8 @@ const saveCharitableTags = (dispatch, userId, userTags) => {
         tags: userTags,
         userid: Number(userId),
     };
-    return graphApi.patch(`/user/updatetags`, bodyDataTags).then(
+    const tagsResponse = graphApi.patch(`/user/updatetags`, bodyDataTags);
+    tagsResponse.then(
         (result) => {
             fsaTags.payload = {
                 data: result.data,
@@ -565,6 +652,7 @@ const saveCharitableTags = (dispatch, userId, userTags) => {
     }).finally(() => {
         dispatch(fsaTags);
     });
+    return tagsResponse;
 };
 
 const editUserCreditCard = (dispatch, instrumentDetails) => {
@@ -584,7 +672,8 @@ const editUserCreditCard = (dispatch, instrumentDetails) => {
             type: 'paymentInstruments',
         },
     };
-    return coreApi.patch(`/paymentInstruments/${Number(instrumentDetails.editPaymetInstrumentId)}`, bodyData).then(
+    const editCreditCardResponse = coreApi.patch(`/paymentInstruments/${Number(instrumentDetails.editPaymetInstrumentId)}`, bodyData);
+    editCreditCardResponse.then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -595,6 +684,7 @@ const editUserCreditCard = (dispatch, instrumentDetails) => {
     }).finally(() => {
         dispatch(fsa);
     });
+    return editCreditCardResponse;
 };
 
 const deleteUserCreditCard = (dispatch, paymentInstrumentId, userId, pageNumber) => {
@@ -603,7 +693,8 @@ const deleteUserCreditCard = (dispatch, paymentInstrumentId, userId, pageNumber)
         },
         type: actionTypes.DELETE_USER_CREDIT_CARD,
     };
-    return coreApi.delete(`/paymentInstruments/${Number(paymentInstrumentId)}`).then(
+    const deleteCreditCardResponse = coreApi.delete(`/paymentInstruments/${Number(paymentInstrumentId)}`);
+    deleteCreditCardResponse.then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -615,6 +706,7 @@ const deleteUserCreditCard = (dispatch, paymentInstrumentId, userId, pageNumber)
     }).finally(() => {
         dispatch(fsa);
     });
+    return deleteCreditCardResponse;
 };
 
 const setUserDefaultCard = (dispatch, paymentInstrumentId, userId, pageNumber) => {
@@ -664,7 +756,8 @@ const saveNewCreditCard = async (dispatch, stripeCreditCard, cardHolderName, use
         },
         type: 'paymentInstruments',
     };
-    return savePaymentInstrument(paymentInstrumentsData).then(
+    const creditCardResponse = savePaymentInstrument(paymentInstrumentsData);
+    creditCardResponse.then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -686,6 +779,7 @@ const saveNewCreditCard = async (dispatch, stripeCreditCard, cardHolderName, use
         });
         dispatch(fsa);
     });
+    return creditCardResponse;
 };
 
 const userResetPassword = (dispatch, userData) => {
@@ -698,7 +792,8 @@ const userResetPassword = (dispatch, userData) => {
         auth_user_id: userData.authId,
         password: userData.password,
     };
-    return securityApi.post('/user/changepassword', bodyData).then(
+    const resetPasswordResponse = securityApi.post('/user/changepassword', bodyData);
+    resetPasswordResponse.then(
         (result) => {
             fsa.payload = {
                 data: result,
@@ -710,6 +805,7 @@ const userResetPassword = (dispatch, userData) => {
     }).finally(() => {
         dispatch(fsa);
     });
+    return resetPasswordResponse;
 };
 
 const savePrivacySetting = (dispatch, userId, email, columnName, columnValue) => {
@@ -832,7 +928,8 @@ const addToFriend = (dispatch, sourceUserId, sourceEmail, sourceAvatar, sourceFi
             },
         },
     };
-    return eventApi.post(`/friend/request`, bodyData).then(
+    const addToFriendResponse = eventApi.post(`/friend/request`, bodyData);
+    addToFriendResponse.then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -844,6 +941,7 @@ const addToFriend = (dispatch, sourceUserId, sourceEmail, sourceAvatar, sourceFi
     }).finally(() => {
         dispatch(fsa);
     });
+    return addToFriendResponse;
 };
 
 const acceptFriend = (dispatch, sourceUserId, sourceEmail, sourceAvatar, sourceFirstName, destinationUserId, destinationEmailId) => {
@@ -865,7 +963,8 @@ const acceptFriend = (dispatch, sourceUserId, sourceEmail, sourceAvatar, sourceF
             },
         },
     };
-    return eventApi.post(`/friend/accept`, bodyData).then(
+    const acceptFriendResponse = eventApi.post(`/friend/accept`, bodyData);
+    acceptFriendResponse.then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -877,6 +976,7 @@ const acceptFriend = (dispatch, sourceUserId, sourceEmail, sourceAvatar, sourceF
     }).finally(() => {
         dispatch(fsa);
     });
+    return acceptFriendResponse;
 };
 
 const inviteFriends = (dispatch, inviteEmailIds) => {
@@ -894,7 +994,8 @@ const inviteFriends = (dispatch, inviteEmailIds) => {
             type: 'users',
         },
     };
-    return coreApi.post(`/users/friend_mail_notifications`, bodyData).then(
+    const inviteFriendsResponse = coreApi.post(`/users/friend_mail_notifications`, bodyData);
+    inviteFriendsResponse.then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -905,6 +1006,7 @@ const inviteFriends = (dispatch, inviteEmailIds) => {
     }).finally(() => {
         dispatch(fsa);
     });
+    return inviteFriendsResponse;
 };
 
 const generateDeeplinkSignup = (dispatch, profileType) => {
@@ -1009,7 +1111,8 @@ const removeProfilePhoto = (dispatch, sourceUserId) => {
         },
         type: actionTypes.USER_PROFILE_REMOVE_PHOTO,
     };
-    return coreApi.delete(`/users/${Number(sourceUserId)}/deleteLogo`).then(
+    const removeProfilePhotoResponse = coreApi.delete(`/users/${Number(sourceUserId)}/deleteLogo`);
+    removeProfilePhotoResponse.then(
         (result) => {
             fsa.payload = {
                 data: result,
@@ -1021,6 +1124,7 @@ const removeProfilePhoto = (dispatch, sourceUserId) => {
     }).finally(() => {
         dispatch(fsa);
     });
+    return removeProfilePhotoResponse;
 };
 
 

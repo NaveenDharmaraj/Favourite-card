@@ -150,7 +150,7 @@ class LandingPageTaxReceipt extends React.Component {
                                 <TaxReceipientsList />
                                 <div className="mb-2 mt-3">
                                     <p className="font-s-16 bold mb-1-2">Issued tax receipts</p>
-                                    <p className="font-s-13">Tax receipts are organizied by recipient.</p>
+                                    <p className="font-s-13">Tax receipts are organized by recipient.</p>
                                 </div>
                                 {issuedTaxLloader ? <PlaceholderGrid row={2} column={2} /> : (
                                     <Fragment>
@@ -170,16 +170,16 @@ class LandingPageTaxReceipt extends React.Component {
                                     </Fragment>
                                 )}
                                 {(recordCount && !_isEmpty(issuedTaxReceiptList) && recordCount > issuedTaxReceiptList.length)
-                                 && (
-                                     <div className="text-center">
-                                         <Button
-                                             className="blue-bordr-btn-round-def"
-                                             onClick={() => this.handleLoadMoreClick()}
-                                             loading={viewMoreLoader}
-                                             content="View more"
-                                         />
-                                     </div>
-                                 )
+                                    ? (
+                                        <div className="text-center">
+                                            <Button
+                                                className="blue-bordr-btn-round-def"
+                                                onClick={() => this.handleLoadMoreClick()}
+                                                loading={viewMoreLoader}
+                                                content="View more"
+                                            />
+                                        </div>
+                                    ) : null
                                 }
                             </Container>
                         </div>

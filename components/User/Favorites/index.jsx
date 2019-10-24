@@ -25,6 +25,9 @@ import {
     getFavoritesList,
     removeFavorite,
 } from '../../../actions/user';
+import {
+    getUserProfileBasic,
+} from '../../../actions/userProfile';
 import charityImg from '../../../static/images/no-data-avatar-charity-profile.png';
 import groupImg from '../../../static/images/no-data-avatar-giving-group-profile.png';
 import PlaceholderGrid from '../../shared/PlaceHolder';
@@ -32,6 +35,7 @@ import { Link } from '../../../routes';
 import { dismissAllUxCritialErrors } from '../../../actions/error';
 import { renderTextByCharacter } from '../../../helpers/utils';
 import noDataggFavourites from '../../../static/images/favourites_nodata_illustration.png';
+import PrivacySetting from '../../shared/Privacy';
 
 class Favorites extends React.Component {
     constructor(props) {
@@ -52,6 +56,7 @@ class Favorites extends React.Component {
         } = this.props;
         dismissAllUxCritialErrors(dispatch);
         getFavoritesList(dispatch, currentUser.id, 1, this.state.pageSize);
+        getUserProfileBasic(dispatch, currentUser.attributes.email, currentUser.id, currentUser.id);
     }
 
     componentDidUpdate(prevProps) {
@@ -278,9 +283,30 @@ class Favorites extends React.Component {
         const {
             favoritesLoader,
         } = this.state;
+        const {
+            userProfileBasicData,
+        } = this.props;
+        let favouriteVisible = 0;
+        if (!_.isEmpty(userProfileBasicData)) {
+            favouriteVisible = userProfileBasicData.data[0].attributes.favourites_visibility;
+        }
+        const favouritePrivacyColumn = 'favourites_visibility';
         return (
             <div className="pt-2 pb-2">
                 <Container>
+                    <div className="pt-1 pb-1">
+                        <p
+                            className="bold font-s-16"
+                        >
+                            Favourites
+                            <span className="font-w-normal">
+                                <PrivacySetting
+                                    columnName={favouritePrivacyColumn}
+                                    columnValue={favouriteVisible}
+                                />
+                            </span>
+                        </p>
+                    </div>
                     <div className="pt-2 favourite">
                         { (favoritesLoader) ? <PlaceholderGrid row={2} column={3} /> : (
                             this.showFavorites()
@@ -336,6 +362,7 @@ function mapStateToProps(state) {
         currentUser: state.user.info,
         disableFavorites: state.user.disableFavorites,
         favorites: state.user.favorites,
+        userProfileBasicData: state.userProfile.userProfileBasicData,
     };
 }
 

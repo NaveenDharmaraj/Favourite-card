@@ -6,11 +6,6 @@ import {
     Popup,
     Accordion,
 } from 'semantic-ui-react';
-import getConfig from 'next/config';
-const { publicRuntimeConfig } = getConfig();
-const {
-    RAILS_APP_URL_ORIGIN,
-} = publicRuntimeConfig;
 
 import { withTranslation } from '../../../../i18n';
 import { Link } from '../../../../routes';
@@ -52,7 +47,7 @@ class Give extends Component {
                         <Grid verticalAlign="middle">
                             <Grid.Row columns={2}>
                                 <Grid.Column mobile={16} tablet={10} computer={10}>
-                                Send chairty dollars to a charity or Giving Group
+                                    Give to a charity or Giving Group
                                     <br />
                                 </Grid.Column>
                                 <Grid.Column mobile={16} tablet={6} computer={6}>
@@ -72,11 +67,8 @@ class Give extends Component {
                                     </Accordion.Title>
                                     <Accordion.Content active={activeIndex === 0}>
                                     <p>
-                                        Give to any Canadian charity through CHIMP—either directly, or via a Giving Group. A Giving Group is where people pool or raise money together for the charities of their choice.
+                                    Give to registered charities in Canada. Or, give to a Giving Group, which are groups of people supporting charities together.
                                     </p>
-                                    <a href={`${RAILS_APP_URL_ORIGIN}/groups/new`}>
-                                        <Button className="blue-bordr-btn-round-def" content="Start your own group" />
-                                    </a>
                                     </Accordion.Content>
                                 </Accordion>
                             </div>
@@ -88,7 +80,7 @@ class Give extends Component {
                         <Grid verticalAlign="middle">
                             <Grid.Row columns={2}>
                                 <Grid.Column mobile={16} tablet={10} computer={10}>
-                                    Send charity dollars to other people
+                                    Give charitable dollars to a friend
                                     <br />
                                 </Grid.Column>
                                 <Grid.Column mobile={16} tablet={6} computer={6}>
@@ -108,7 +100,7 @@ class Give extends Component {
                                     </Accordion.Title>
                                     <Accordion.Content active={activeIndex === 1}>
                                     <p>
-                                        Send more meaningful gifts, and empower your friends, family, and wider circles to give wherever and whenever they want.
+                                        Send friends charitable dollars that they can give away.
                                     </p>
                                     </Accordion.Content>
                                 </Accordion>

@@ -1,5 +1,5 @@
-console.log("Cookie reader from web app");
-console.log(document.cookie);
+// console.log("Cookie reader from web app");
+// console.log(document.cookie);
 var cookieName = 'layoutCookie';
 var cookieValue = 'layoutCookie';
 var myDate = new Date();
