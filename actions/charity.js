@@ -165,6 +165,7 @@ export const getBeneficiaryFromSlug = async (dispatch, slug) => {
             (result) => {
                 if (result && !_.isEmpty(result.data)) {
                     fsa.payload.charityDetails = result.data;
+                    dispatch(fsa);
                 }
             },
         ).catch(() => {
@@ -175,8 +176,6 @@ export const getBeneficiaryFromSlug = async (dispatch, slug) => {
                 type: actionTypes.CHARITY_REDIRECT_TO_DASHBOARD,
             });
             return null;
-        }).finally(() => {
-            dispatch(fsa);
         });
     } else {
         //redirect('/dashboard');
