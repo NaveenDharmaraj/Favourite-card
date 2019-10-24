@@ -58,7 +58,12 @@ class Chat extends React.Component {
         const pageSize = 999;
         const pageNumber = 1;
         const email = this.state.userInfo.attributes.email;
-        graphApi.get(`/user/myfriends?userid=${email}&page[number]=${pageNumber}&page[size]=${pageSize}&status=accepted`).then(
+        graphApi.get(`/user/myfriends`, { params: {
+            'page[number]': pageNumber,
+            'page[size]': pageSize,
+            status: 'accepted',
+            userid: email,
+        } }).then(
             (result) => {
                 let userDetails = self.state.userDetails;
                 let friendsList = result.data;
