@@ -4,11 +4,14 @@ import _isEmpty from 'lodash/isEmpty';
 import {
     Grid,
     Header,
+    Message,
     Container,
+    Button,
 } from 'semantic-ui-react';
 
 import { formatCurrency } from '../../helpers/give/utils';
 import ShareDetails from '../shared/ShareSectionProfilePage';
+import ActiveMatchBlock from '../shared/ActiveMatchBlock';
 
 const detailsView = (valuesObject) => {
 
@@ -78,8 +81,16 @@ const CampaignDetails = (props) => {
 
                         </Grid.Row>
                     </Grid>
-                    
                 </div>
+                {
+                    (campaignDetails.attributes.hasActiveMatch) ? 
+                        (
+                            <ActiveMatchBlock
+                                entityDetails={campaignDetails}
+                            />
+                        )
+                        : null
+                }
             </Container>
         </div>
     );
