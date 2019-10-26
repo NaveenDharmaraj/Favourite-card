@@ -125,7 +125,7 @@ class DashboradList extends React.Component {
                     dateClass = 'date';
                     date = '';
                 }
-                let givingType = ''; let rowClass = ''; let givingTypeClass = ''; let descriptionType = ''; let entity = ''; let transactionSign = ''; let profileUrl='';
+                let givingType = ''; let rowClass = ''; let givingTypeClass = ''; let descriptionType = ''; let entity = ''; let transactionSign = ''; let profileUrl = '';
                 let imageCls = 'ui image';
                 let transactionTypeDisplay = '';
                 if (!_.isEmpty(data.attributes.destination)) {
@@ -151,6 +151,7 @@ class DashboradList extends React.Component {
                         givingType = 'campaign';
                         rowClass = 'allocation';
                         givingTypeClass = 'grp-color';
+                        transactionTypeDisplay = 'Gift given';
                         descriptionType = 'Given to ';
                         entity = data.attributes.destination.name;
                         transactionSign = '-';
@@ -174,14 +175,19 @@ class DashboradList extends React.Component {
                         rowClass = 'gift';
                         descriptionType = 'Received a gift from ';
                         transactionTypeDisplay = 'Gift received';
-                        entity = data.attributes.source.name;
                         transactionSign = '+';
-                        if (data.attributes.source.type === 'User') {
-                            profileUrl = `users/profile/${data.attributes.source.id}`;
-                        } else if (data.attributes.source.type.toLowerCase() === 'campaign') {
-                            profileUrl = `campaigns/${data.attributes.source.slug}`;
-                        } else if (data.attributes.source.type.toLowerCase() === 'group') {
-                            profileUrl = `groups/${data.attributes.source.slug}`;
+                        if (!_.isEmpty(data.attributes.source)) {
+                            entity = data.attributes.source.name;
+                            if (data.attributes.source.type === 'User') {
+                                profileUrl = `users/profile/${data.attributes.source.id}`;
+                            } else if (data.attributes.source.type.toLowerCase() === 'campaign') {
+                                profileUrl = `campaigns/${data.attributes.source.slug}`;
+                            } else if (data.attributes.source.type.toLowerCase() === 'group') {
+                                profileUrl = `groups/${data.attributes.source.slug}`;
+                            }
+                        } else {
+                            // fall back to description InvestmentTransfer, Dispostion
+                            descriptionType = data.attributes.description;
                         }
                     } else if ((data.attributes.source.id === Number(id) && data.attributes.transactionType.toLowerCase() === 'fundallocation')) {
                         givingType = '';
@@ -199,6 +205,16 @@ class DashboradList extends React.Component {
                     descriptionType = 'Given to ';
                     entity = data.attributes.recipientEmail;
                     transactionSign = '-';
+                } else if (data.attributes.source.id === Number(id)) {
+                    // last catch block to handle all other senarios
+                    transactionTypeDisplay = 'Gift given';
+                    descriptionType = data.attributes.description;
+                    transactionSign = '-';
+                    // for catransfer destination is blank but it is a deposit
+                    if (data.attributes.transactionType.toLowerCase() === 'catransfer') {
+                        transactionSign = '+';
+                        transactionTypeDisplay = 'Deposit';
+                    }
                 }
                 const amount = formatCurrency(data.attributes.amount, language, 'USD');
                 const transactionType = data.attributes.transactionType.toLowerCase() === 'donation' ? 'Deposit' : transactionTypeDisplay;
