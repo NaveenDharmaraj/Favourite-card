@@ -4,9 +4,7 @@ import _isEmpty from 'lodash/isEmpty';
 import {
     Grid,
     Header,
-    Message,
     Container,
-    Button,
 } from 'semantic-ui-react';
 
 import { formatCurrency } from '../../helpers/give/utils';
