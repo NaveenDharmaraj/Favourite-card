@@ -19,6 +19,7 @@ import {
     distanceOfTimeInWords,
 } from '../../helpers/utils';
 import ShareDetails from '../shared/ShareSectionProfilePage';
+import ActiveMatchBlock from '../shared/ActiveMatchBlock';
 
 const DonationDetails = (props) => {
     const {
@@ -118,6 +119,15 @@ const DonationDetails = (props) => {
                     </Grid.Row>
                 </Grid>
             </div>
+            {
+                (props.groupDetails.attributes.hasActiveMatch) ? 
+                    (
+                        <ActiveMatchBlock
+                            entityDetails={props.groupDetails}
+                        />
+                    )
+                    : null
+            }
         </Container>
     );
 };
