@@ -8,6 +8,7 @@ import {
     Header,
     Tab,
 } from 'semantic-ui-react';
+import ReactHtmlParser from 'react-html-parser';
 
 import ImageGallery from '../shared/ImageGallery';
 import noDataImg from '../../static/images/noresults.png';
@@ -79,14 +80,14 @@ function ProfileDetails(props) {
                                         <Grid>
                                             <Grid.Row>
                                                 <Grid.Column width={16}>
-                                                    { short }
+                                                    { ReactHtmlParser(short) }
                                                 </Grid.Column>
                                             </Grid.Row>
                                         </Grid>
                                         <Grid>
                                             <Grid.Row>
                                                 <Grid.Column width={16}>
-                                                    { impact }
+                                                    { ReactHtmlParser(impact) }
                                                 </Grid.Column>
                                             </Grid.Row>
                                         </Grid>
