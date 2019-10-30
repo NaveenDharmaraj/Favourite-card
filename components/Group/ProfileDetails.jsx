@@ -12,6 +12,7 @@ import {
     Grid,
 } from 'semantic-ui-react';
 import _isEmpty from 'lodash/isEmpty';
+import ReactHtmlParser from 'react-html-parser';
 
 import ImageGallery from '../shared/ImageGallery';
 
@@ -70,7 +71,7 @@ const ProfileDetails = (props) => {
                                     {description
                                     && (
                                         <div className="mb-3">
-                                            { description }
+                                            { ReactHtmlParser(description) }
                                         </div>
                                     )}
                                     {videoPlayerLink
@@ -99,21 +100,21 @@ const ProfileDetails = (props) => {
                                         && (
                                             <p className="clear-fix mb-3">
                                                 <div className="mb-1 bold">The Group's Purpose</div>
-                                                <p>{purpose}</p>
+                                                <p>{ ReactHtmlParser(purpose) }</p>
                                             </p>
                                         )}
                                     {helping
                                         && (
                                             <p className="clear-fix mb-3">
                                                 <div className="mb-1 bold">How to Help</div>
-                                                <p>{helping}</p>
+                                                <p>{ ReactHtmlParser(helping) }</p>
                                             </p>
                                         )}
                                     {about
                                         && (
                                             <p className="clear-fix mb-3">
                                                 <div className="mb-1 bold">About the Organizers</div>
-                                                <p>{about}</p>
+                                                <p>{ ReactHtmlParser(about) }</p>
                                             </p>
                                         )}
                                 </Fragment>
