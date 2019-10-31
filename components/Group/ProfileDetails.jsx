@@ -52,8 +52,8 @@ const ProfileDetails = (props) => {
                         const singleImagePropObj = {};
                         singleImagePropObj.src = singleImage.attributes.originalUrl;
                         singleImagePropObj.thumbnail = singleImage.attributes.assetUrl;
-                        singleImagePropObj.thumbnailHeight = 174;
-                        singleImagePropObj.thumbnailWidth = 320;
+                        singleImagePropObj.thumbnailHeight = 196;
+                        singleImagePropObj.thumbnailWidth = 196;
                         imageArray.push(singleImagePropObj);
                     });
                 }
