@@ -52,7 +52,7 @@ const firebase = (state = {}, action) => {
             addedMesagesArray.sort((a, b) => {
                 return a.createdTs > b.createdTs ? -1 : 1;
             });
-            if (state.initialLoadCompleted) {
+            if (state.initialLoadCompleted && !_isEmpty(state.messages)) {
                 notificationAddedUpdate = false;
             }
             newState = {
