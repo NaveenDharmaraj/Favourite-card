@@ -50,10 +50,10 @@ const ProfileDetails = (props) => {
                 if (!_isEmpty(galleryImages)) {
                     galleryImages.forEach((singleImage) => {
                         const singleImagePropObj = {};
-                        singleImagePropObj.src = singleImage.attributes.assetUrl;
+                        singleImagePropObj.src = singleImage.attributes.originalUrl;
                         singleImagePropObj.thumbnail = singleImage.attributes.assetUrl;
-                        singleImagePropObj.thumbnailHeight = 174;
-                        singleImagePropObj.thumbnailWidth = 320;
+                        singleImagePropObj.thumbnailHeight = 196;
+                        singleImagePropObj.thumbnailWidth = 196;
                         imageArray.push(singleImagePropObj);
                     });
                 }
