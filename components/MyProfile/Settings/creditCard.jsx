@@ -205,10 +205,6 @@ class MyCreditCards extends React.Component {
     }
 
     handleAddButtonClick() {
-        this.setState({
-            buttonClicked: true,
-            statusMessage: false,
-        });
         const {
             creditCard,
             inValidCardNumber,
@@ -231,6 +227,10 @@ class MyCreditCards extends React.Component {
             inValidCardNameValue,
         );
         if(validateCC) {
+            this.setState({
+                buttonClicked: true,
+                statusMessage: false,
+            });
             const {
                 currentUser: {
                     id,
@@ -543,10 +543,7 @@ class MyCreditCards extends React.Component {
             cardNameValid = true;
         } else {
             this.setState({
-                flowObject: {
-                    ...this.state.flowObject,
-                    cardHolderName,
-                },
+                cardHolderName,
             });
         }
         this.setState({
@@ -555,7 +552,7 @@ class MyCreditCards extends React.Component {
         });
     }
 
-    getStripeCreditCard(data, cardHolderName) {        
+    getStripeCreditCard(data, cardHolderName) {
         this.setState({            
             cardHolderName,
             stripeCreditCard: data,
