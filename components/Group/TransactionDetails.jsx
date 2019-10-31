@@ -65,6 +65,7 @@ class TransactionDetails extends React.Component {
             currency,
             groupDetails: {
                 attributes: {
+                    isAdmin,
                     slug,
                 }
             },
@@ -146,7 +147,7 @@ class TransactionDetails extends React.Component {
 
         return (
             <div>
-                {!_isEmpty(groupData) && (
+                {!_isEmpty(groupData) && isAdmin && (
                     <a href={`/groups/${slug}.csv`} target="_blank">
                         <Button
                             className="blue-bordr-btn-round"
