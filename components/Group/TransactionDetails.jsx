@@ -4,6 +4,7 @@ import React, {
 import _ from 'lodash';
 import _isEmpty from 'lodash/isEmpty';
 import {
+    Button,
     Table,
     Image,
     List,
@@ -26,6 +27,7 @@ import {
 } from '../../helpers/give/utils';
 import PaginationComponent from '../shared/Pagination';
 import PlaceholderGrid from '../shared/PlaceHolder';
+import downloadIcon from '../../static/images/icons/icon-download.svg';
 
 import GroupNoDataState from './GroupNoDataState';
 
@@ -61,6 +63,11 @@ class TransactionDetails extends React.Component {
     render() {
         const {
             currency,
+            groupDetails: {
+                attributes: {
+                    slug,
+                }
+            },
             groupTransactions: {
                 data: groupData,
                 meta: {
@@ -139,6 +146,17 @@ class TransactionDetails extends React.Component {
 
         return (
             <div>
+                {!_isEmpty(groupData) && (
+                    <a href={`/groups/${slug}.csv`} target="_blank">
+                        <Button
+                            className="blue-bordr-btn-round"
+                        >
+                            Download transaction data <div className="btn-icon-line"><Image src={downloadIcon} /></div>
+                        </Button>
+                    </a>
+
+                )
+                }
                 <Table basic="very" className="brdr-top-btm db-activity-tbl">
                     {!tableListLoader ? (
                         <Table.Body>
