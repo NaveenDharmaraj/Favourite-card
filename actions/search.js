@@ -162,7 +162,7 @@ export const fetchInitialGroups = (pageNumber, isAuthenticated, userId) => (disp
     }
 };
 
-export const fetchTextSearchCharitiesGroups = (searchWord, pageNumber, filterData, isAuthenticated = false, id) => (dispatch) => {
+export const fetchTextSearchCharitiesGroups = (searchWord, pageNumber, filterData, id) => (dispatch) => {
     const fsa = {
         payload: {
             charityFlag: null,
@@ -178,8 +178,8 @@ export const fetchTextSearchCharitiesGroups = (searchWord, pageNumber, filterDat
     });
    
     let textSearchUrl = `/public/charities-groups?page[number]=${pageNumber}&page[size]=10`;
-    if (isAuthenticated) {
-        textSearchUrl = `charities-groups?user_id=${id}&page[size]=10&page[number]=${pageNumber}`;
+    if (!_isEmpty(id)) {
+        textSearchUrl = `/charities-groups?user_id=${id}&page[size]=10&page[number]=${pageNumber}`;
     }
     let textSearchCharitiesGroups = null;
     if (!_isEmpty(filterData)) {
@@ -204,7 +204,7 @@ export const fetchTextSearchCharitiesGroups = (searchWord, pageNumber, filterDat
     });
 };
 
-export const fetchTextSearchCharities = (searchWord, pageNumber, filterData, isAuthenticated = false, id) => (dispatch) => {
+export const fetchTextSearchCharities = (searchWord, pageNumber, filterData, id) => (dispatch) => {
     const fsa = {
         payload: {
             TextSearchedCharities: null,
@@ -218,8 +218,8 @@ export const fetchTextSearchCharities = (searchWord, pageNumber, filterData, isA
         type: 'GET_API_DATA_FECHED_FLAG',
     });
     let textSearchUrl = `/public/charities?page[size]=10&page[number]=${pageNumber}`;
-    if (isAuthenticated) {
-        textSearchUrl = `charities?user_id=${id}&page[size]=10&page[number]=${pageNumber}`;
+    if (!_isEmpty(id)) {
+        textSearchUrl = `/charities?user_id=${id}&page[size]=10&page[number]=${pageNumber}`;
     }
     let textSearchCharities = null;
     if (!_isEmpty(filterData)) {
@@ -244,7 +244,7 @@ export const fetchTextSearchCharities = (searchWord, pageNumber, filterData, isA
     });
 };
 
-export const fetchTextSearchGroups = (searchWord, pageNumber, filterData, isAuthenticated = false, id) => (dispatch) => {
+export const fetchTextSearchGroups = (searchWord, pageNumber, filterData, id) => (dispatch) => {
     const fsa = {
         payload: {
             TextSearchedCharities: null,
@@ -258,8 +258,8 @@ export const fetchTextSearchGroups = (searchWord, pageNumber, filterData, isAuth
         type: 'GET_API_DATA_FECHED_FLAG',
     });
     let textSearchUrl = `/public/groups?page[size]=10&page[number]=${pageNumber}`;
-    if (isAuthenticated) {
-        textSearchUrl = `groups?user_id=${id}&page[size]=10&page[number]=${pageNumber}`;
+    if (!_isEmpty(id)) {
+        textSearchUrl = `/groups?user_id=${id}&page[size]=10&page[number]=${pageNumber}`;
     }
     let textSearchGroups = null;
     if (!_isEmpty(filterData)) {
