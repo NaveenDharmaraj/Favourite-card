@@ -162,7 +162,7 @@ export const fetchInitialGroups = (pageNumber, isAuthenticated, userId) => (disp
     }
 };
 
-export const fetchTextSearchCharitiesGroups = (searchWord, pageNumber, filterData, id) => (dispatch) => {
+export const fetchTextSearchCharitiesGroups = (searchWord, pageNumber, filterData, id = null) => (dispatch) => {
     const fsa = {
         payload: {
             charityFlag: null,
@@ -204,7 +204,7 @@ export const fetchTextSearchCharitiesGroups = (searchWord, pageNumber, filterDat
     });
 };
 
-export const fetchTextSearchCharities = (searchWord, pageNumber, filterData, id) => (dispatch) => {
+export const fetchTextSearchCharities = (searchWord, pageNumber, filterData, id = null) => (dispatch) => {
     const fsa = {
         payload: {
             TextSearchedCharities: null,
@@ -244,7 +244,7 @@ export const fetchTextSearchCharities = (searchWord, pageNumber, filterData, id)
     });
 };
 
-export const fetchTextSearchGroups = (searchWord, pageNumber, filterData, id) => (dispatch) => {
+export const fetchTextSearchGroups = (searchWord, pageNumber, filterData, id = null) => (dispatch) => {
     const fsa = {
         payload: {
             TextSearchedCharities: null,
