@@ -69,7 +69,7 @@ const search = (state = {}, action) => {
         case 'DISPATCH_FILTER_VALUE_SHOWED':
             newState = {
                 ...state,
-                filterValuesShowed: Object.assign({}, state.filterValuesShowed, action.payload.filterValuesShowed),
+                filterValuesShowed: action.payload.filterValuesShowed,
             };
             break;
         default:
