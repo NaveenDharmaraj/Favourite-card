@@ -2,7 +2,9 @@ import React from 'react';
 import {
     Container,
 } from 'semantic-ui-react';
+import { connect } from 'react-redux';
 
+import { Router } from '../routes';
 import Group from '../components/Give/Group';
 import GiveWrapper from '../components/Give';
 import Layout from '../components/shared/Layout';
@@ -33,26 +35,47 @@ class Groups extends React.Component {
         };
     }
 
+    async componentDidMount() {
+        const {
+            isAuthenticated,
+            slug,
+        } = this.props;
+        if (!isAuthenticated) {
+            const pathName = (slug) ? `/send/to/group/${slug}` : `/users/login`;
+            Router.pushRoute(pathName);
+        }
+    }
+
     render() {
         const {
+            isAuthenticated,
             slug,
         } = this.props;
         // const baseUrl = (slug) ? `/give/to/group/${slug}` : '/give/to/group';
         if (slug) {
             flowSteps[0] = `${slug}/${firstStep}`;
         }
-        return (
-            <Layout authRequired={true}>
-                <Container>
-                    <div className="pageWraper">
-                        <GiveWrapper {...this.props} baseUrl="/give/to/group" flowSteps={(slug) ? flowSteps : null}>
-                            <Group />
-                        </GiveWrapper>
-                    </div>
-                </Container>
-            </Layout>
-        );
+        if (isAuthenticated) {
+            return (
+                <Layout authRequired={true}>
+                    <Container>
+                        <div className="pageWraper">
+                            <GiveWrapper {...this.props} baseUrl="/give/to/group" flowSteps={(slug) ? flowSteps : null}>
+                                <Group />
+                            </GiveWrapper>
+                        </div>
+                    </Container>
+                </Layout>
+            );
+        }
+        return null;
     }
 }
 
-export default Groups;
+function mapStateToProps(state) {
+    return {
+        isAuthenticated: state.auth.isAuthenticated,
+    };
+}
+
+export default connect(mapStateToProps)(Groups);
