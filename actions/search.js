@@ -162,7 +162,7 @@ export const fetchInitialGroups = (pageNumber, isAuthenticated, userId) => (disp
     }
 };
 
-export const fetchTextSearchCharitiesGroups = (searchWord, pageNumber, filterData, id = null) => (dispatch) => {
+export const fetchTextSearchCharitiesGroups = (searchWord, pageNumber, filterData, isAuthenticated = false, id = null) => (dispatch) => {
     const fsa = {
         payload: {
             charityFlag: null,
@@ -178,7 +178,7 @@ export const fetchTextSearchCharitiesGroups = (searchWord, pageNumber, filterDat
     });
    
     let textSearchUrl = `/public/charities-groups?page[number]=${pageNumber}&page[size]=10`;
-    if (!_isEmpty(id)) {
+    if (isAuthenticated) {
         textSearchUrl = `/charities-groups?user_id=${id}&page[size]=10&page[number]=${pageNumber}`;
     }
     let textSearchCharitiesGroups = null;
@@ -204,7 +204,7 @@ export const fetchTextSearchCharitiesGroups = (searchWord, pageNumber, filterDat
     });
 };
 
-export const fetchTextSearchCharities = (searchWord, pageNumber, filterData, id = null) => (dispatch) => {
+export const fetchTextSearchCharities = (searchWord, pageNumber, filterData, isAuthenticated = false, id = null) => (dispatch) => {
     const fsa = {
         payload: {
             TextSearchedCharities: null,
@@ -218,7 +218,7 @@ export const fetchTextSearchCharities = (searchWord, pageNumber, filterData, id 
         type: 'GET_API_DATA_FECHED_FLAG',
     });
     let textSearchUrl = `/public/charities?page[size]=10&page[number]=${pageNumber}`;
-    if (!_isEmpty(id)) {
+    if (isAuthenticated) {
         textSearchUrl = `/charities?user_id=${id}&page[size]=10&page[number]=${pageNumber}`;
     }
     let textSearchCharities = null;
@@ -244,7 +244,7 @@ export const fetchTextSearchCharities = (searchWord, pageNumber, filterData, id 
     });
 };
 
-export const fetchTextSearchGroups = (searchWord, pageNumber, filterData, id = null) => (dispatch) => {
+export const fetchTextSearchGroups = (searchWord, pageNumber, filterData, isAuthenticated = false, id = null) => (dispatch) => {
     const fsa = {
         payload: {
             TextSearchedCharities: null,
@@ -258,7 +258,7 @@ export const fetchTextSearchGroups = (searchWord, pageNumber, filterData, id = n
         type: 'GET_API_DATA_FECHED_FLAG',
     });
     let textSearchUrl = `/public/groups?page[size]=10&page[number]=${pageNumber}`;
-    if (!_isEmpty(id)) {
+    if (isAuthenticated) {
         textSearchUrl = `/groups?user_id=${id}&page[size]=10&page[number]=${pageNumber}`;
     }
     let textSearchGroups = null;
