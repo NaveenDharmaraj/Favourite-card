@@ -47,9 +47,8 @@ class Charities extends React.Component {
             isAuthenticated,
             slug,
         } = this.props;
-        if (!isAuthenticated) {
-            const pathName = (slug) ? `/send/to/charity/${slug}/gift/new` : `/users/login`;
-            Router.pushRoute(pathName);
+        if (!isAuthenticated && slug) {
+            Router.pushRoute(`/send/to/charity/${slug}/gift/new`);
         }
     }
 
@@ -61,21 +60,18 @@ class Charities extends React.Component {
         if (slug) {
             flowSteps[0] = `${slug}/${firstStep}`;
         }
-        if (isAuthenticated) {
-            return (
-                // eslint-disable-next-line react/jsx-filename-extension
-                <Layout authRequired={true}>
-                    <Container>
-                        <div className="pageWraper">
-                            <GiveWrapper {...this.props} baseUrl="/give/to/charity" flowSteps={(slug) ? flowSteps : null}>
-                                <Charity />
-                            </GiveWrapper>
-                        </div>
-                    </Container>
-                </Layout>
-            );
-        }
-        return null;
+        return (
+            // eslint-disable-next-line react/jsx-filename-extension
+            <Layout authRequired={true}>
+                <Container>
+                    <div className="pageWraper">
+                        <GiveWrapper {...this.props} baseUrl="/give/to/charity" flowSteps={(slug) ? flowSteps : null}>
+                            <Charity />
+                        </GiveWrapper>
+                    </div>
+                </Container>
+            </Layout>
+        );
     }
 }
 

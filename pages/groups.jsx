@@ -40,9 +40,8 @@ class Groups extends React.Component {
             isAuthenticated,
             slug,
         } = this.props;
-        if (!isAuthenticated) {
-            const pathName = (slug) ? `/send/to/group/${slug}` : `/users/login`;
-            Router.pushRoute(pathName);
+        if (!isAuthenticated && slug) {
+            Router.pushRoute(`/send/to/group/${slug}`);
         }
     }
 
@@ -55,20 +54,17 @@ class Groups extends React.Component {
         if (slug) {
             flowSteps[0] = `${slug}/${firstStep}`;
         }
-        if (isAuthenticated) {
-            return (
-                <Layout authRequired={true}>
-                    <Container>
-                        <div className="pageWraper">
-                            <GiveWrapper {...this.props} baseUrl="/give/to/group" flowSteps={(slug) ? flowSteps : null}>
-                                <Group />
-                            </GiveWrapper>
-                        </div>
-                    </Container>
-                </Layout>
-            );
-        }
-        return null;
+        return (
+            <Layout authRequired={true}>
+                <Container>
+                    <div className="pageWraper">
+                        <GiveWrapper {...this.props} baseUrl="/give/to/group" flowSteps={(slug) ? flowSteps : null}>
+                            <Group />
+                        </GiveWrapper>
+                    </div>
+                </Container>
+            </Layout>
+        );
     }
 }
 
