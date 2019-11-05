@@ -105,8 +105,7 @@ class Maps extends React.Component {
         if (!_isEmpty(headQuarterGeocode) || !_isEmpty(countriesGeocode)) {
             mapData = (
                 <GoogleMapReact
-                    // bootstrapURLKeys={{ key: `${GOOGLE_MAP_API_KEY}` }}
-                    bootstrapURLKeys={{ key: 'AIzaSyBz5mvzY3bxLFfOu6cWo8dlFXJl2mx7x0E' }}
+                    bootstrapURLKeys={{ key: `${GOOGLE_MAP_API_KEY}` }}
                     zoom={2}
                     center={centerLocation}
                 >
