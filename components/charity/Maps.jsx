@@ -56,6 +56,17 @@ class Maps extends React.Component {
         } = this.props;
         const cityData = [];
         const headQuarterData = [];
+
+        if ((!_isEmpty(headQuarterAddress) && _isEmpty(headQuarterGeocode))
+        || (!_isEmpty(countries) && _isEmpty(countriesGeocode))) {
+            dispatch({
+                payload: {
+                    mapLoader: true,
+                },
+                type: actionTypes.CHARITY_LOADER_STATUS,
+            });
+        }
+
         if (!_isEmpty(headQuarterAddress) && _isEmpty(headQuarterGeocode)) {
             headQuarterData.push(headQuarterAddress);
             getGeoCoding(dispatch, headQuarterData, true);
@@ -85,16 +96,6 @@ class Maps extends React.Component {
         } = this.props;
         let centerLocation = {};
         let mapData = <CharityNoDataState />;
-
-        if ((!_isEmpty(headQuarterAddress) && _isEmpty(headQuarterGeocode))
-        || (!_isEmpty(countries) && _isEmpty(countriesGeocode))) {
-            dispatch({
-                payload: {
-                    mapLoader: true,
-                },
-                type: actionTypes.CHARITY_LOADER_STATUS,
-            });
-        }
 
         if (!_isEmpty(headQuarterGeocode)) {
             centerLocation = headQuarterGeocode[0].attributes.lat_long;
