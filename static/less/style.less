@@ -1775,12 +1775,35 @@ h4{
   }
 }
 @media only screen and (max-width:480px) {
+  .active-match-message .active-match-heading h2 {
+    color: #263238;
+    font-family: 'ProximaNova-Regular';
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 18px;
+
+}
+.active-match-message .active-match-btn {
+
+  background-color: #fff;
+  border-radius: 30px;
+  padding: 5px;
+  text-align: center;
+  font-size: 12px;
+
+}
   .auth0-lock.auth0-lock .auth0-lock-content-wrapper{
     max-height: 155px;
   }
   .auth0-lock.auth0-lock .auth0-lock-cred-pane-internal-wrapper{
     height: auto !important;
   }
+}
+@media only screen and (max-width:400px) {
+  .active-match-message .active-match-btn {
+    text-align: center;
+    font-size: 12px;
+}
 }
 @media only screen and (max-width:767px) {
   body{
@@ -3838,6 +3861,15 @@ body{
   }
 }
 @media only screen and (min-width:1199px){
+  .active-match-message .active-match-btn {
+
+    background-color: #fff;
+    border-radius: 30px;
+    padding: 4px;
+    text-align: center;
+    font-size: 12px;
+
+} 
   .gpRightButtons{
     text-align: right;
     >div{
@@ -7115,5 +7147,45 @@ body{
         }
       }
     }
+  }
+}
+.active-match-message{
+  background-color: #E3E8F0;
+  border-radius: 10px;
+  padding: 10px;
+  .active-match-heading{
+      h2{
+        color: #263238; font-family: 'ProximaNova-Regular';font-size: 16px;font-weight: 600;line-height: 17px;
+      }
+  }
+  .ui{
+    &.message{
+      background-color: transparent !important; 
+      box-shadow: none !important;
+    }
+  }
+  .active-match-btn{
+    background-color: #fff;
+    border-radius: 30px;
+    padding: 5px;
+    text-align: center;
+  }
+  .active-match-comments{
+    p{
+      color: #263238; font-family: 'ProximaNova-Regular';  font-size: 14px;    line-height: 17px;
+      .active-match-dollar{
+        font-weight: 600;
+      }
+    }
+  }
+}
+.btn-icon-line {
+  display: inline !important;
+  img{
+    .imgColorBlue();
+    padding-left: 5px;
+    width: 25px;
+    height: 25px;
+    display: inline-block !important;
   }
 }
