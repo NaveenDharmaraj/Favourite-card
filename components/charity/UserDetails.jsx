@@ -65,9 +65,9 @@ const createUserDetails = (valuesObject) => {
             name: 'briefcase',
         });
     }
-    if (!_isEmpty(valuesObject.address)) {
+    if (!_isEmpty(valuesObject.headQuarterAddress)) {
         data.push({
-            Content: valuesObject.address,
+            Content: valuesObject.headQuarterAddress,
             name: 'map marker alternate',
         });
     }
@@ -75,14 +75,6 @@ const createUserDetails = (valuesObject) => {
 };
 
 const detailsView = (valuesObject) => {
-    let address = '';
-    if (valuesObject.primaryAddress && valuesObject.primaryAddress.address_one) {
-        address = `${valuesObject.primaryAddress.address_one}, ${valuesObject.primaryAddress.city}, ${valuesObject.primaryAddress.province}, ${valuesObject.primaryAddress.country}`;
-        valuesObject = {
-            ...valuesObject,
-            address,
-        };
-    }
     const values = createUserDetails(valuesObject);
     return (
         <Grid.Row>
