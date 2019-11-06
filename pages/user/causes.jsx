@@ -156,7 +156,7 @@ class CausesMigration extends React.Component {
                                                             <Header as="h3" className="pb-3">A couple of quick questions before heading to your account...</Header>
                                                             <Header as="h4" className="font-s-20">What causes are important to you? </Header>
                                                             <p className="pb-2">
-                                                                Your answers help us find charities and Giving Groups that you might be interested in. You'll see them in the new "Discovered for you" section in your account.<br/><br/>
+                                                            Your answers help us find charities and Giving Groups that match your interests. You'll see them in the new "Discovered for you" section in your account dashboard.<br/><br/>
                                                                 The causes you select are visible only to you unless you choose to share them on your Charitable Impact profile, and only you can see the charities and Giving Groups discovered for you. We don't share the information you provide with charities or anyone else.
                                                             </p>
                                                         </div>
