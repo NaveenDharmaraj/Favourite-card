@@ -65,6 +65,12 @@ const charity = (state = {}, action) => {
         case 'RESET_CHARITY_STATES':
             newState = {};
             break;
+        case 'CHARITY_LOADER_STATUS':
+            newState = {
+                ...state,
+                mapLoader: action.payload.mapLoader,
+            };
+            break;
         default:
             break;
     }

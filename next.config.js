@@ -2,6 +2,7 @@ const withLess = require('@zeit/next-less');
 const withPlugins = require('next-compose-plugins');
 const withImages = require('next-images');
 
+
 const configVars = {
     publicRuntimeConfig: {
 		CHAT_GROUP_DEFAULT_AVATAR:process.env.CHAT_GROUP_DEFAULT_AVATAR,
@@ -31,6 +32,9 @@ const configVars = {
         FIREBASE_STORAGE_BUCKET: process.env.FIREBASE_STORAGE_BUCKET,
         GOOGLE_MAP_API_KEY: process.env.GOOGLE_MAP_API_KEY,
         GRAPH_API_BASE: process.env.GRAPH_API_BASE,
+        GTM_AUTH: process.env.GTM_AUTH,
+        GTM_ENV_NUMBER: process.env.GTM_ENV_NUMBER,
+        GTM_ID: process.env.GTM_ID,
         HELP_CENTRE_URL: process.env.HELP_CENTRE_URL,
         HELP_SCOUT_KEY: process.env.HELP_SCOUT_KEY,
         HUBSPOT_FORM_ID: process.env.HUBSPOT_FORM_ID,

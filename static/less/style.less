@@ -2069,7 +2069,29 @@ h4{
     }
   }
   p{
-    margin-top: 74/@rem;
+    margin-top: 32px;
+  }
+  .reg-header{
+    +p{
+      font-size: 17px;	font-weight: 600;
+      font-family: 'ProximaNova-Medium';
+    }
+    h3{
+      &.ui{
+        &.header{
+          font-family: 'ProximaNova-Medium';
+        }
+      }
+    }
+    h4{
+      &.ui{
+        &.header{
+          margin-top: 40px;
+          font-size: 20px;
+          font-family: 'ProximaNova-Medium';
+        }
+      }
+    }
   }
   .select-btn-wraper{
     margin-top: 16/@rem;
@@ -7187,5 +7209,21 @@ body{
     width: 25px;
     height: 25px;
     display: inline-block !important;
+  }
+}
+.map-icon-1{
+  .small{
+    &.icons{
+      .map{
+        &.marker{
+          &.alternate{
+            &.icon{
+              font-size: 35px;
+               color: #eb4f35;
+            }
+          }
+        }
+      }
+    }
   }
 }
