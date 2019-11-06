@@ -73,11 +73,11 @@ class Search extends React.Component {
         } else if (_isEmpty(searchWord) && searchType === 'Group') {
             dispatch(fetchInitialGroups(currentPageClicked, isAuthenticated, id));
         } else if (!_isEmpty(searchWord) && searchType === 'All') {
-            dispatch(fetchTextSearchCharitiesGroups(decodeURI(searchWord), currentPageClicked));
+            dispatch(fetchTextSearchCharitiesGroups(decodeURI(searchWord), currentPageClicked, null, isAuthenticated, id));
         } else if (!_isEmpty(searchWord) && searchType === 'Beneficiary') {
-            dispatch(fetchTextSearchCharities(decodeURI(searchWord), currentPageClicked));
+            dispatch(fetchTextSearchCharities(decodeURI(searchWord), currentPageClicked, null, isAuthenticated, id));
         } else {
-            dispatch(fetchTextSearchGroups(decodeURI(searchWord), currentPageClicked));
+            dispatch(fetchTextSearchGroups(decodeURI(searchWord), currentPageClicked, null, isAuthenticated, id));
         }
     }
 
@@ -143,21 +143,21 @@ class Search extends React.Component {
                         if (_isEmpty(searchWord)) {
                             dispatch(fetchInitialCharitiesGroups(isAuthenticated, id));
                         } else {
-                            dispatch(fetchTextSearchCharitiesGroups(decodeURI(searchWord), currentPageClicked, filterData));
+                            dispatch(fetchTextSearchCharitiesGroups(decodeURI(searchWord), currentPageClicked, filterData, isAuthenticated, id));
                         }
                         break;
                     case 'Beneficiary':
                         if (_isEmpty(searchWord)) {
                             dispatch(fetchInitialCharities(currentPageClicked, isAuthenticated, id));
                         } else {
-                            dispatch(fetchTextSearchCharities(decodeURI(searchWord), currentPageClicked, filterData));
+                            dispatch(fetchTextSearchCharities(decodeURI(searchWord), currentPageClicked, filterData, isAuthenticated, id));
                         }
                         break;
                     case 'Group':
                         if (_isEmpty(searchWord)) {
                             dispatch(fetchInitialGroups(currentPageClicked, isAuthenticated, id));
                         } else {
-                            dispatch(fetchTextSearchGroups(decodeURI(searchWord), currentPageClicked, filterData));
+                            dispatch(fetchTextSearchGroups(decodeURI(searchWord), currentPageClicked, filterData, isAuthenticated, id));
                         }
                         break;
                     default: break;
