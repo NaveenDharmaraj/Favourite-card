@@ -46,7 +46,11 @@ function CausesSelection(props) {
                     <div className="prefered-img" />
                     <div className="reg-header">
                         <Header as="h3">What causes are important to you? </Header>
-                        <Header as="h4">Your answers help us personalize your experience. </Header>
+                        <Header as="h4">Your answers help us find charities and Giving Groups that you might be interested in. </Header>
+                        <p className="pb-2">
+                        The causes you select are visible only to you unless you choose to share them on your Charitable Impact profile, and only you can see the charities and Giving Groups discovered for you.<br/><br/>
+                        We don't share the information you provide with charities or anyone else.
+                        </p>
                     </div>
                     <p>Choose 3 or more:</p>
                     <Grid className="select-btn-wraper">
