@@ -109,7 +109,7 @@ class Search extends React.Component {
                     type: 'DISPATCH_FILTER_DATA',
                 });
             }
-            if (!_isEmpty(textSearchedCharitiesGroups) && !_isEmpty(textSearchedCharitiesGroups.data) && !_isEmpty(textSearchedCharitiesGroups.meta)) {
+            if (!_isEmpty(textSearchedCharitiesGroups) && !_isEmpty(textSearchedCharitiesGroups.meta) && !_isEmpty(textSearchedCharitiesGroups.meta.aggregations) && searchType === 'All') {
                 dispatch({
                     payload: {
                         filterValuesShowed: textSearchedCharitiesGroups.meta.aggregations,
@@ -118,7 +118,7 @@ class Search extends React.Component {
                 });
             }
 
-            if (!_isEmpty(textSearchedCharities) && !_isEmpty(textSearchedCharities.data) && !_isEmpty(textSearchedCharities.meta)) {
+            if (!_isEmpty(textSearchedCharities) && !_isEmpty(textSearchedCharities.meta) && !_isEmpty(textSearchedCharities.meta.aggregations) && searchType === 'Beneficiary') {
                 dispatch({
                     payload: {
                         filterValuesShowed: textSearchedCharities.meta.aggregations,
@@ -127,7 +127,7 @@ class Search extends React.Component {
                 });
             }
 
-            if (!_isEmpty(textSearchedGroups) && !_isEmpty(textSearchedGroups.data) && !_isEmpty(textSearchedGroups.meta)) {
+            if (!_isEmpty(textSearchedGroups) && !_isEmpty(textSearchedGroups.meta) && !_isEmpty(textSearchedGroups.meta.aggregations) && searchType === 'Group') {
                 dispatch({
                     payload: {
                         filterValuesShowed: textSearchedGroups.meta.aggregations,
