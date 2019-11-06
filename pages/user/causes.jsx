@@ -146,9 +146,19 @@ class CausesMigration extends React.Component {
                                                 <Grid.Column mobile={16} tablet={16} computer={14} largeScreen={12}>
                                                     <div className="prefered-wraper">
                                                         <div className="prefered-img" />
+                                                        <div className="pb-3 stepList">
+                                                            <ul>
+                                                                <li className="active">1. Discoverability</li>
+                                                                <li className="active">2. Causes</li>
+                                                            </ul>
+                                                        </div>
                                                         <div className="reg-header">
-                                                            <Header as="h3">What causes are important to you? </Header>
-                                                            <Header as="h4">Your answers help us find charities and Giving Groups that you might be interested in. You'll see them in the new "Discovered for you" section in your account. </Header>
+                                                            <Header as="h3" className="pb-3">A couple of quick questions before heading to your account...</Header>
+                                                            <Header as="h4" className="font-s-20">What causes are important to you? </Header>
+                                                            <p className="pb-2">
+                                                            Your answers help us find charities and Giving Groups that match your interests. You'll see them in the new "Discovered for you" section in your account dashboard.<br/><br/>
+                                                                The causes you select are visible only to you unless you choose to share them on your Charitable Impact profile, and only you can see the charities and Giving Groups discovered for you. We don't share the information you provide with charities or anyone else.
+                                                            </p>
                                                         </div>
                                                         <p>Choose 3 or more:</p>
                                                         <Grid className="select-btn-wraper">

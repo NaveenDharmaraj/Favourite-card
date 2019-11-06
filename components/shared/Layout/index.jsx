@@ -84,6 +84,10 @@ class Layout extends React.Component {
                     email: currentUser.attributes.email,
                   });
             }
+            Beacon('session-data', {
+                'currentPage': window.location.href,
+              })
+              
             Beacon('config', {
                 "labels": {
                     "suggestedForYou": "Answers to common questions",

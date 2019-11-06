@@ -19,11 +19,12 @@ if (!_.isEmpty(BASIC_AUTH_KEY)) {
 }
 
 export const actionTypes = {
-    GET_BENEFICIARY_DONEE_LIST: 'GET_BENEFICIARY_DONEE_LIST',
-    GET_CHARITY_DETAILS_FROM_SLUG: 'GET_CHARITY_DETAILS_FROM_SLUG',
+    CHARITY_LOADER_STATUS: 'CHARITY_LOADER_STATUS',
     CHARITY_PLACEHOLDER_STATUS: 'CHARITY_PLACEHOLDER_STATUS',
     CHARITY_REDIRECT_TO_DASHBOARD: 'CHARITY_REDIRECT_TO_DASHBOARD',
     CHARITY_SAVE_DEEP_LINK: 'CHARITY_SAVE_DEEP_LINK',
+    GET_BENEFICIARY_DONEE_LIST: 'GET_BENEFICIARY_DONEE_LIST',
+    GET_CHARITY_DETAILS_FROM_SLUG: 'GET_CHARITY_DETAILS_FROM_SLUG',
     SAVE_FOLLOW_STATUS: 'SAVE_FOLLOW_STATUS',
     SET_COUNTRIES_GEOCODE: 'SET_COUNTRIES_GEOCODE',
     SET_HEADQUARTER_GEOCODE: 'SET_HEADQUARTER_GEOCODE',
@@ -200,5 +201,12 @@ export const getGeoCoding = async (dispatch, city, isHeadQuarter) => {
             }
             dispatch(fsa);
         }
-    }).catch().finally();
+    }).catch().finally(() => {
+        dispatch({
+            payload: {
+                mapLoader: false,
+            },
+            type: actionTypes.CHARITY_LOADER_STATUS,
+        });
+    });
 };
