@@ -56,6 +56,8 @@ class GroupProfile extends React.Component {
                     description,
                     location,
                     name,
+                    isCampaign,
+                    slug,
                 },
             },
             redirectToDashboard,
@@ -65,13 +67,19 @@ class GroupProfile extends React.Component {
             title = `${name} | ${location}`;
         }
         const desc = (!_.isEmpty(description)) ? description : title;
-        return (
-            <Layout title={title} description={desc}>
-                {!redirectToDashboard
-                    ? <GroupProfileWrapper {...this.props} />
-                    : Router.push('/search')}
-            </Layout>
-        );
+
+        if (isCampaign === true) {
+            Router.push(`/campaigns/${slug}`);
+        } else {
+            return (
+                <Layout title={title} description={desc}>
+                    {!redirectToDashboard
+                        ? <GroupProfileWrapper {...this.props} />
+                        : Router.push('/search')}
+                </Layout>
+            );
+        }
+        return null;
     }
 }
 
