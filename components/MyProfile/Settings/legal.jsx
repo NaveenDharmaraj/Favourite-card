@@ -33,7 +33,7 @@ class Legal extends React.Component {
                         </p>
                     </div>
                     <div className="settingsDetailWraper brdr-btm pb-2">
-                        <p className="bold">Privacy policy</p>
+                        <p className="bold">Account agreement</p>
                         <p>
                         See our
                             <Link route="/account-agreement">
