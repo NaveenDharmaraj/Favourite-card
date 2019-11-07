@@ -321,7 +321,7 @@ class GroupDetails extends React.Component {
                                                 {!joinClicked && joinButton}
                                                 {joinClicked && permissionButtons}
                                                 {isAdmin && giveFromGroupButton }
-                                                {isMember
+                                                {(isMember || isAdmin)
                                                 && (
                                                     <Fragment>
                                                         <Dropdown floating icon="setting">
