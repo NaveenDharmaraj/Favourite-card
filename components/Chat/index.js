@@ -311,7 +311,7 @@ class ChatWrapper extends React.Component {
                 self.loadConversations(false, self.state.msgId, self.state.msgId);
             }
         ).catch(function (error) {
-            self.setState({ loading: false, compose: true });
+            self.setState({ loading: false, compose: true, smallerScreenSection: 'convMsgs' });
         });;
 
         /*
@@ -339,6 +339,17 @@ class ChatWrapper extends React.Component {
         if (!params["imageUrl"] || params["imageUrl"] == "" || params["imageUrl"] == null) {
             params["imageUrl"] = CHAT_GROUP_DEFAULT_AVATAR;
         }
+        params["metadata"] = {
+            "CREATE_GROUP_MESSAGE": "",
+            "REMOVE_MEMBER_MESSAGE": "",
+            "ADD_MEMBER_MESSAGE": "",
+            "JOIN_MEMBER_MESSAGE": "",
+            "GROUP_NAME_CHANGE_MESSAGE": "",
+            "GROUP_ICON_CHANGE_MESSAGE": "",
+            "GROUP_LEFT_MESSAGE": "",
+            "DELETED_GROUP_MESSAGE": "",
+            "HIDE": "true"
+        };
         self.setLoading(true);
         applozicApi.post("/group/v2/create", params).then(function (response) {
             let groupId = response.response.id;
@@ -625,7 +636,7 @@ class ChatWrapper extends React.Component {
         })
             .catch(function (error) {
                 // handle error
-                self.setState({ messages: [], loading: false, compose: true });
+                self.setState({ messages: [], loading: false, compose: true, smallerScreenSection: 'convMsgs' });
             })
             .finally(function () {
                 // always executed 
@@ -1116,7 +1127,7 @@ class ChatWrapper extends React.Component {
                                                                                                                 }
                                                                                                         })()}
                                                                                                     </List.Content>
-                                                                                                    <Image avatar src={user.imageLink ? user.imageLink : placeholderUser} />
+                                                                                                        <Image avatar src={self.state.userDetails[user.userId] && self.state.userDetails[user.userId].imageLink ? self.state.userDetails[user.userId].imageLink : placeholderUser} />
                                                                                                     <List.Content>
                                                                                                             <List.Header as='a'>{self.state.userDetails[user.userId].displayName || "User"} {(Number(user.userId) == Number(self.state.userInfo.id) ? "(You)" : "")} {user.role == "1" ? " (Admin)" : ""}</List.Header>
                                                                                                         {/* <List.Description></List.Description> */}
@@ -1172,7 +1183,7 @@ class ChatWrapper extends React.Component {
                                                                                                             {/* <input value={user.userId} onChange={(e) => self.onMemberSelectForAddition(e, (user.displayName || user.userName))} checked={self.state.groupAddMemberValues.indexOf(user.userId + "") >= 0} type="checkbox" className="cp_chkbx" tabIndex="0" /> */}
                                                                                                             <Checkbox className="cp_chkbx" value={user.userId} onClick={(e) => self.onMemberSelectForAddition(user.userId + "", (user.displayName || user.userName))} checked={self.state.groupAddMemberValues.indexOf(user.userId + "") >= 0} />
                                                                                                         </List.Content>
-                                                                                                        <Image avatar src={user.imageLink ? user.imageLink : placeholderUser} />
+                                                                                                            <Image avatar src={self.state.userDetails[user.userId] && self.state.userDetails[user.userId].imageLink ? self.state.userDetails[user.userId].imageLink : placeholderUser} />
                                                                                                         <List.Content>
                                                                                                             <List.Header as='a'>{user.displayName ? user.displayName : user.userName}</List.Header>
                                                                                                             {/* <List.Description></List.Description> */}
