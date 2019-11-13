@@ -7,6 +7,7 @@ import {
     Card,
     Dropdown
 } from 'semantic-ui-react';
+import getConfig from 'next/config';
 import _ from 'lodash';
 
 import { Link } from '../../../routes';
@@ -14,6 +15,11 @@ import placeholder from '../../../static/images/no-data-avatar-giving-group-prof
 
 import LeaveModal from '../../shared/LeaveModal';
 import { renderTextByCharacter } from '../../../helpers/utils';
+
+const { publicRuntimeConfig } = getConfig();
+const {
+    RAILS_APP_URL_ORIGIN,
+} = publicRuntimeConfig;
 
 class GroupsAndCampaignsCard extends React.Component {
     constructor(props) {
@@ -69,13 +75,12 @@ class GroupsAndCampaignsCard extends React.Component {
         } = data;
         const shortName = renderTextByCharacter(name, 40);
         let urlType = 'groups';
-        let editText = 'Edit Group';
+        let editText = 'Edit';
         let headingText = 'giving group';
-        let editLink = `/groups/${slug}/edit`;
+        let editLink = `${RAILS_APP_URL_ORIGIN}/groups/${slug}/edit`;
         if (listingType === 'administeredCampaigns') {
             urlType = 'campaigns';
-            editText = 'Edit Campaign';
-            editLink = `/campaigns/${slug}/manage-basics`;
+            editLink = `${RAILS_APP_URL_ORIGIN}/campaigns/${slug}/manage-basics`;
             headingText = 'Campaign';
         }
         let showError = false;
@@ -117,14 +122,6 @@ class GroupsAndCampaignsCard extends React.Component {
                                                             >
                                                                 <Dropdown.Menu>
                                                                     {
-                                                                        (listingType !== 'groupsWithMemberships')
-                                                                        && (
-                                                                            <Link route={editLink}>
-                                                                                <Dropdown.Item text={editText} />
-                                                                            </Link>
-                                                                        )
-                                                                    }
-                                                                    {
                                                                         (listingType !== 'administeredCampaigns') &&
                                                                         <Dropdown.Item text="Leave Group" onClick={() => { this.openModal(); }} />
                                                                     }
@@ -164,6 +161,14 @@ class GroupsAndCampaignsCard extends React.Component {
                                     <Link className="lnkChange" route={`/${urlType}/${slug}`}>
                                         <Button className="btn-small-white-border">View</Button>
                                     </Link>
+                                    {
+                                        (listingType !== 'groupsWithMemberships')
+                                        && (
+                                            <a href={editLink}>
+                                                <Button className="btn-small-white-border editOpt">{editText}</Button>
+                                            </a>
+                                        )
+                                    }
                                 </Grid.Column>
                             </Grid.Row>
                         </Grid>
