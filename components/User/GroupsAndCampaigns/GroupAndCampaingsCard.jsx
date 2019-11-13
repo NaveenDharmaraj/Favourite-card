@@ -5,21 +5,14 @@ import {
     Grid,
     Button,
     Card,
-    Dropdown
+    Dropdown,
 } from 'semantic-ui-react';
-import getConfig from 'next/config';
 import _ from 'lodash';
 
 import { Link } from '../../../routes';
 import placeholder from '../../../static/images/no-data-avatar-giving-group-profile.png';
-
 import LeaveModal from '../../shared/LeaveModal';
 import { renderTextByCharacter } from '../../../helpers/utils';
-
-const { publicRuntimeConfig } = getConfig();
-const {
-    RAILS_APP_URL_ORIGIN,
-} = publicRuntimeConfig;
 
 class GroupsAndCampaignsCard extends React.Component {
     constructor(props) {
@@ -75,12 +68,12 @@ class GroupsAndCampaignsCard extends React.Component {
         } = data;
         const shortName = renderTextByCharacter(name, 40);
         let urlType = 'groups';
-        let editText = 'Edit';
+        const editText = 'Edit';
         let headingText = 'giving group';
-        let editLink = `${RAILS_APP_URL_ORIGIN}/groups/${slug}/edit`;
+        let editLink = `/groups/${slug}/edit`;
         if (listingType === 'administeredCampaigns') {
             urlType = 'campaigns';
-            editLink = `${RAILS_APP_URL_ORIGIN}/campaigns/${slug}/manage-basics`;
+            editLink = `/campaigns/${slug}/manage-basics`;
             headingText = 'Campaign';
         }
         let showError = false;
@@ -115,18 +108,19 @@ class GroupsAndCampaignsCard extends React.Component {
                                                 <Header as="h4">
                                                     <Header.Content>
                                                         <Header.Subheader>
-                                                            <Dropdown
-                                                                className="rightBottom"
-                                                                icon="ellipsis horizontal"
-                                                                closeOnBlur
-                                                            >
-                                                                <Dropdown.Menu>
-                                                                    {
-                                                                        (listingType !== 'administeredCampaigns') &&
+                                                            {(listingType !== 'administeredCampaigns')
+                                                            && (
+                                                                <Dropdown
+                                                                    className="rightBottom"
+                                                                    icon="ellipsis horizontal"
+                                                                    closeOnBlur
+                                                                >
+                                                                    <Dropdown.Menu>
                                                                         <Dropdown.Item text="Leave Group" onClick={() => { this.openModal(); }} />
-                                                                    }
-                                                                </Dropdown.Menu>
-                                                            </Dropdown>
+                                                                    </Dropdown.Menu>
+                                                                </Dropdown>
+                                                            )
+                                                            }
                                                             {
                                                                 this.state.open && (
                                                                     <LeaveModal
@@ -164,9 +158,9 @@ class GroupsAndCampaignsCard extends React.Component {
                                     {
                                         (listingType !== 'groupsWithMemberships')
                                         && (
-                                            <a href={editLink}>
+                                            <Link route={editLink}>
                                                 <Button className="btn-small-white-border editOpt">{editText}</Button>
-                                            </a>
+                                            </Link>
                                         )
                                     }
                                 </Grid.Column>
