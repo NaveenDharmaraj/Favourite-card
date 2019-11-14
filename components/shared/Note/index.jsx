@@ -73,10 +73,9 @@ const Note = ({
     placeholderText,
     popupText,
     text,
-    disableNote,
 }) => (
     <Fragment>
-        <Form.Field style={{display: disableNote ? 'none' : 'block' }}>
+        <Form.Field>
             <label htmlFor={fieldName}>
                 {labelText}
             </label>
@@ -122,13 +121,11 @@ const Note = ({
 );
 
 Note.defaultProps = {
-    disableNote: false,
     enableCharacterCount: true,
     text: null,
 };
 
 Note.propTypes = {
-    disableNote: bool,
     enableCharacterCount: bool,
     fieldName: string.isRequired,
     handleOnInputBlur: func.isRequired,
