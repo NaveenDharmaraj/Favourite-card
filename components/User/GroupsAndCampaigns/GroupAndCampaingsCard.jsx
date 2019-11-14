@@ -7,12 +7,18 @@ import {
     Card,
     Dropdown,
 } from 'semantic-ui-react';
+import getConfig from 'next/config';
 import _ from 'lodash';
 
 import { Link } from '../../../routes';
 import placeholder from '../../../static/images/no-data-avatar-giving-group-profile.png';
 import LeaveModal from '../../shared/LeaveModal';
 import { renderTextByCharacter } from '../../../helpers/utils';
+
+const { publicRuntimeConfig } = getConfig();
+const {
+    RAILS_APP_URL_ORIGIN,
+} = publicRuntimeConfig;
 
 class GroupsAndCampaignsCard extends React.Component {
     constructor(props) {
@@ -70,10 +76,10 @@ class GroupsAndCampaignsCard extends React.Component {
         let urlType = 'groups';
         const editText = 'Edit';
         let headingText = 'giving group';
-        let editLink = `/groups/${slug}/edit`;
+        let editLink = `${RAILS_APP_URL_ORIGIN}/groups/${slug}/edit`;
         if (listingType === 'administeredCampaigns') {
             urlType = 'campaigns';
-            editLink = `/campaigns/${slug}/manage-basics`;
+            editLink = `${RAILS_APP_URL_ORIGIN}/campaigns/${slug}/manage-basics`;
             headingText = 'Campaign';
         }
         let showError = false;
@@ -158,9 +164,9 @@ class GroupsAndCampaignsCard extends React.Component {
                                     {
                                         (listingType !== 'groupsWithMemberships')
                                         && (
-                                            <Link route={editLink}>
+                                            <a href={editLink}>
                                                 <Button className="btn-small-white-border editOpt">{editText}</Button>
-                                            </Link>
+                                            </a>
                                         )
                                     }
                                 </Grid.Column>
