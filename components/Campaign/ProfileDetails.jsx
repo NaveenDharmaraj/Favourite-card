@@ -25,8 +25,8 @@ function ProfileDetails(props) {
                         attributes: {
                             about,
                             videoPlayerLink,
-                            short,
-                            impact,
+                            formattedShort,
+                            formattedImpact,
                         },
                     },
                     campaignImageGallery,
@@ -67,7 +67,7 @@ function ProfileDetails(props) {
                         <Container>
 
                             {
-                                (!videoPlayerLink && !short && !impact && imageArray.length === 0) ? (
+                                (!videoPlayerLink && !formattedShort && !formattedImpact && imageArray.length === 0) ? (
                                     <Grid>
                                         <Grid.Row>
                                             <Grid.Column width={16}>
@@ -80,14 +80,14 @@ function ProfileDetails(props) {
                                         <Grid>
                                             <Grid.Row>
                                                 <Grid.Column width={16}>
-                                                    { ReactHtmlParser(short) }
+                                                    { ReactHtmlParser(formattedShort) }
                                                 </Grid.Column>
                                             </Grid.Row>
                                         </Grid>
                                         <Grid>
                                             <Grid.Row>
                                                 <Grid.Column width={16}>
-                                                    { ReactHtmlParser(impact) }
+                                                    { ReactHtmlParser(formattedImpact) }
                                                 </Grid.Column>
                                             </Grid.Row>
                                         </Grid>
