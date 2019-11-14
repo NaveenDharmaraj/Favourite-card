@@ -124,6 +124,8 @@ class Friend extends React.Component {
         };
         if(!_isEmpty(userFriendEmail) && this.state.flowObject.giveData.recipients.length === 0) {
             this.state.flowObject.giveData.recipients = [userFriendEmail.email];
+            this.state.flowObject.giveData.recipientName = userFriendEmail.name;
+            this.state.flowObject.giveData.emailMasked = true;
             dispatch({
                 payload: {
                 },
@@ -707,11 +709,13 @@ class Friend extends React.Component {
                     creditCard,
                     donationAmount,
                     donationMatch,
+                    emailMasked,
                     giveAmount,
                     giveFrom,
                     noteToRecipients,
                     noteToSelf,
                     recipients,
+                    recipientName,
                     totalP2pGiveAmount,
                 },
                 type,
@@ -827,6 +831,23 @@ class Friend extends React.Component {
                         parentOnBlurChange={this.handleOnInputBlur}
                         formatMessage={formatMessage}
                     />
+                    {
+                        (emailMasked) &&
+                        <Form.Field>
+                            <label htmlFor="recipientName">
+                                {formatMessage('friends:recipientsLabel')}
+                            </label>
+                            <Form.Field
+                                control={Input}
+                                disabled
+                                id="recipientName"
+                                maxLength="20"
+                                name="recipientName"
+                                size="large"
+                                value={recipientName}
+                            />
+                        </Form.Field>
+                    }
                     <Note
                         enableCharacterCount={false}
                         fieldName="recipients"
@@ -837,6 +858,7 @@ class Friend extends React.Component {
                         popupText={formatMessage('friends:recipientsPopup')}
                         placeholderText={formatMessage('friends:recipientsPlaceholderText')}
                         text={recipients.join(',')}
+                        disableNote={emailMasked}
                     />
                     <FormValidationErrorMessage
                         condition={!validity.isValidEmailList}

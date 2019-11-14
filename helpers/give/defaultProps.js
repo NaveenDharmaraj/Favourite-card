@@ -156,6 +156,8 @@ export const p2pDefaultProps = {
             recipients: [],
             totalP2pGiveAmount: 0,
             userInteracted: false,
+            emailMasked: false,
+            recipientName: '',
         },
         nextSteptoProceed: {},
         selectedTaxReceiptProfile: {},
