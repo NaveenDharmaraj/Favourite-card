@@ -10,7 +10,7 @@ import { // eslint-disable-line import/order
     Button,
 } from 'semantic-ui-react';
 
-import logger from '../helpers/logger';
+import logger from '../../../helpers/logger';
 import errorImage from '../../../static/images/errorpage.png';
 /**
  * This component MUST BE SIMPLE. It should have as little logic as possible because this is the
