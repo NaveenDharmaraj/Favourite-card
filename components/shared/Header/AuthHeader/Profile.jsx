@@ -75,7 +75,7 @@ class Profile extends React.Component {
             accountSettingsText = formatMessage('companyAccountSettings');
             accountUrl = `${RAILS_APP_URL_ORIGIN}/companies/${slug}/edit`;
         } else if (accountType === 'charity') {
-            accountUrl = `${RAILS_APP_URL_ORIGIN}/beneficiaries/${slug}/info`;
+            accountUrl = `${RAILS_APP_URL_ORIGIN}/admin/beneficiaries/${slug}/info`;
         }
         return (
             <Fragment>

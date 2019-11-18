@@ -66,6 +66,8 @@ const Success = (props) => {
             giveFrom,
             giftType,
             recipients,
+            emailMasked,
+            recipientName,
         },
         quaziSuccessStatus,
         type,
@@ -234,7 +236,7 @@ const Success = (props) => {
                 const p2pTotalGiveAmount = calculateP2pTotalGiveAmount(recipients.length, successData.giveData.giveAmount);
                 const numberOfRecipient = recipients.length;
                 const p2pGiveAmount = successData.giveData.giveAmount;
-                const recipientEmail = successData.giveData.recipients[0];
+                let recipientEmail = successData.giveData.recipients[0];
 
                 if (numberOfRecipient > 1) {
                     amount = formatCurrency(
@@ -250,6 +252,9 @@ const Success = (props) => {
                         total,
                     });
                 } else {
+                    if (emailMasked && recipientName) {
+                        recipientEmail = recipientName;
+                    }
                     amount = formatCurrency(p2pGiveAmount, language, currency);
                     firstParagraph = formatMessage('fromToSingleRecipient', {
                         amount,

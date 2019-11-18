@@ -131,10 +131,11 @@ const getStoriesList = (dispatch, url) => {
     });
 };
 
-const storeEmailIdToGive = (dispatch, email) => {
+const storeEmailIdToGive = (dispatch, email, name) => {
     const fsa = {
         payload: {
             email,
+            name,
         },
         type: actionTypes.USER_FRIEND_EMAIL,
     };
