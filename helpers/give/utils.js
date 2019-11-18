@@ -1335,6 +1335,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
         creditCard,
         donationAmount,
         donationMatch,
+        emailMasked,
         giftType,
         giveAmount,
         giveFrom,
@@ -1344,6 +1345,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
         privacyShareEmail,
         privacyShareName,
         newCreditCardId,
+        recipientName,
         totalP2pGiveAmount,
     } = giveData;
 
@@ -1509,19 +1511,30 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
             } = giftType;
 
             if (emails) {
-                // build recipients images
-                _.each(emails, (email) => {
-                    const recipientData = {
-                        displayName: email,
-                        type: 'email',
+                if (emailMasked && emails.length === 1) {
+                    const resData = {
+                        displayName: (recipientName) || emails[0],
+                        type: 'user',
                     };
-                    recipients.push(recipientData);
 
-                    const displayAmount = (recipientData.amount) ? ` (${formatCurrency(recipientData.amount, language, currency)})` : ``;
+                    recipients.push(resData);
                     state.toList.push(
-                        `${recipientData.displayName}${displayAmount}`,
+                        `${resData.displayName}`,
                     );
-                });
+                } else {
+                    _.each(emails, (email) => {
+                        const recipientData = {
+                            displayName: email,
+                            type: 'email',
+                        };
+                        recipients.push(recipientData);
+                        const displayAmount = (recipientData.amount) ? ` (${formatCurrency(recipientData.amount, language, currency)})` : ``;
+                        state.toList.push(
+                            `${recipientData.displayName}${displayAmount}`,
+                        );
+                    });
+                }
+                // build recipients images
             } else {
                 const recipientData = {
                     accountId: giveTo.id,

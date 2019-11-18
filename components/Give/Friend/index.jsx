@@ -124,6 +124,8 @@ class Friend extends React.Component {
         };
         if(!_isEmpty(userFriendEmail) && this.state.flowObject.giveData.recipients.length === 0) {
             this.state.flowObject.giveData.recipients = [userFriendEmail.email];
+            this.state.flowObject.giveData.recipientName = userFriendEmail.name;
+            this.state.flowObject.giveData.emailMasked = true;
             dispatch({
                 payload: {
                 },
@@ -707,11 +709,13 @@ class Friend extends React.Component {
                     creditCard,
                     donationAmount,
                     donationMatch,
+                    emailMasked,
                     giveAmount,
                     giveFrom,
                     noteToRecipients,
                     noteToSelf,
                     recipients,
+                    recipientName,
                     totalP2pGiveAmount,
                 },
                 type,
@@ -827,33 +831,55 @@ class Friend extends React.Component {
                         parentOnBlurChange={this.handleOnInputBlur}
                         formatMessage={formatMessage}
                     />
-                    <Note
-                        enableCharacterCount={false}
-                        fieldName="recipients"
-                        formatMessage={formatMessage}
-                        handleOnInputChange={this.handleInputChange}
-                        handleOnInputBlur={this.handleOnInputBlur}
-                        labelText={formatMessage('friends:recipientsLabel')}
-                        popupText={formatMessage('friends:recipientsPopup')}
-                        placeholderText={formatMessage('friends:recipientsPlaceholderText')}
-                        text={recipients.join(',')}
-                    />
-                    <FormValidationErrorMessage
-                        condition={!validity.isValidEmailList}
-                        errorMessage={formatMessage('friends:invalidEmailError')}
-                    />
-                    <FormValidationErrorMessage
-                        condition={!validity.isRecipientListUnique}
-                        errorMessage={formatMessage('friends:duplicateEmail')}
-                    />
-                    <FormValidationErrorMessage
-                        condition={!validity.isRecipientHaveSenderEmail}
-                        errorMessage={formatMessage('friends:haveSenderEmail')}
-                    />
-                    <FormValidationErrorMessage
-                        condition={!validity.isNumberOfEmailsLessThanMax}
-                        errorMessage={formatMessage('friends:maxEmail')}
-                    />
+                    {
+                        (emailMasked) &&
+                        <Form.Field>
+                            <label htmlFor="recipientName">
+                                {formatMessage('friends:recipientsLabel')}
+                            </label>
+                            <Form.Field
+                                control={Input}
+                                disabled
+                                id="recipientName"
+                                maxLength="20"
+                                name="recipientName"
+                                size="large"
+                                value={recipientName}
+                            />
+                        </Form.Field>
+                    }
+                    {
+                        (!emailMasked) &&
+                        <Fragment>
+                            <Note
+                                enableCharacterCount={false}
+                                fieldName="recipients"
+                                formatMessage={formatMessage}
+                                handleOnInputChange={this.handleInputChange}
+                                handleOnInputBlur={this.handleOnInputBlur}
+                                labelText={formatMessage('friends:recipientsLabel')}
+                                popupText={formatMessage('friends:recipientsPopup')}
+                                placeholderText={formatMessage('friends:recipientsPlaceholderText')}
+                                text={recipients.join(',')}
+                            />
+                            <FormValidationErrorMessage
+                                condition={!validity.isValidEmailList}
+                                errorMessage={formatMessage('friends:invalidEmailError')}
+                            />
+                            <FormValidationErrorMessage
+                                condition={!validity.isRecipientListUnique}
+                                errorMessage={formatMessage('friends:duplicateEmail')}
+                            />
+                            <FormValidationErrorMessage
+                                condition={!validity.isRecipientHaveSenderEmail}
+                                errorMessage={formatMessage('friends:haveSenderEmail')}
+                            />
+                            <FormValidationErrorMessage
+                                condition={!validity.isNumberOfEmailsLessThanMax}
+                                errorMessage={formatMessage('friends:maxEmail')}
+                            />
+                        </Fragment>
+                    }
                     {
                         Friend.renderTotalP2pGiveAmount(
                             totalP2pGiveAmount,
