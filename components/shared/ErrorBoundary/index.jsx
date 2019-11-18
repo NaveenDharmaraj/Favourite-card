@@ -9,6 +9,8 @@ import { // eslint-disable-line import/order
     Container,
     Button,
 } from 'semantic-ui-react';
+
+import logger from '../helpers/logger';
 import errorImage from '../../../static/images/errorpage.png';
 /**
  * This component MUST BE SIMPLE. It should have as little logic as possible because this is the
@@ -26,6 +28,14 @@ class ErrorBoundary extends Component {
     static getDerivedStateFromError() {
         return { hasError: true };
     }
+
+    componentDidCatch(error, errorInfo) {
+        // You can also log the error to an error reporting service
+        logger.error(`[ErrorBoundary] - error: ${JSON.stringify(error)}`);
+        logger.error(`[ErrorBoundary] - error: ${JSON.stringify(errorInfo)}`);
+        // logErrorToMyService(error, errorInfo);
+    }
+
 
     render() {
         const {
