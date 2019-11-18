@@ -48,12 +48,16 @@ function ProfilePageHead(props) {
                     }
                 </Fragment>
             );
-
         } else {
             buttonLink = (
-                <a href={(`${RAILS_APP_URL_ORIGIN}/send/to/${profileType}/${pageDetails.attributes.slug}`)}>
-                    <Button primary fluid className="blue-btn-rounded">Give</Button>
-                </a>
+                <Fragment>
+                    <a href={(`${RAILS_APP_URL_ORIGIN}/send/to/${profileType}/${pageDetails.attributes.slug}`)}>
+                        <Button primary className="blue-btn-rounded">Give</Button>
+                    </a>
+                    <a href={`${RAILS_APP_URL_ORIGIN}/campaigns/${pageDetails.attributes.slug}/step/one`}>
+                        <Button className="blue-bordr-btn-round">Create Group</Button>
+                    </a>
+                </Fragment>
             );
         }
     }
