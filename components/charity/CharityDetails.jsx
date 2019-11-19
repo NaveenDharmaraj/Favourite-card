@@ -30,7 +30,7 @@ const CharityDetails = (props) => {
     let buttonLink = null;
     let getCauses = null;
 
-    if (charityDetails.charityDetails.attributes) {
+    if (charityDetails.charityDetails.attributes && !charityDetails.charityDetails.attributes.hideGive) {
         if (isAUthenticated) {
             buttonLink = (
                 <Link route={(`/give/to/charity/${charityDetails.charityDetails.attributes.slug}/gift/new`)}>
