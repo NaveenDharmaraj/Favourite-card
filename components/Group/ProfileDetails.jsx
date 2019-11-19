@@ -38,11 +38,11 @@ const ProfileDetails = (props) => {
                     galleryImages,
                     groupDetails: {
                         attributes: {
-                            description,
+                            formattedShort,
                             videoPlayerLink,
-                            purpose,
-                            helping,
-                            about,
+                            formattedImpact,
+                            formattedHelping,
+                            formattedAbout,
                         },
                     },
                 } = props;
@@ -60,7 +60,7 @@ const ProfileDetails = (props) => {
                 return (
                     <Tab.Pane attached={false}>
                         {
-                            (_isEmpty(imageArray) && !description && !videoPlayerLink && !purpose && !helping && !about) ? (
+                            (_isEmpty(imageArray) && !formattedShort && !videoPlayerLink && !formattedImpact && !formattedHelping && !formattedAbout) ? (
                                 <Grid>
                                     <GroupNoDataState
                                         type="common"
@@ -68,10 +68,10 @@ const ProfileDetails = (props) => {
                                 </Grid>
                             ) : (
                                 <Fragment>
-                                    {description
+                                    {formattedShort
                                     && (
                                         <div className="mb-3">
-                                            { ReactHtmlParser(description) }
+                                            { ReactHtmlParser(formattedShort) }
                                         </div>
                                     )}
                                     {videoPlayerLink
@@ -96,25 +96,25 @@ const ProfileDetails = (props) => {
                                                 </div>
                                             </div>
                                         )}
-                                    {purpose
+                                    {formattedImpact
                                         && (
                                             <p className="clear-fix mb-3">
                                                 <div className="mb-1 bold">The Group's Purpose</div>
-                                                <p>{ ReactHtmlParser(purpose) }</p>
+                                                <p>{ ReactHtmlParser(formattedImpact) }</p>
                                             </p>
                                         )}
-                                    {helping
+                                    {formattedHelping
                                         && (
                                             <p className="clear-fix mb-3">
                                                 <div className="mb-1 bold">How to Help</div>
-                                                <p>{ ReactHtmlParser(helping) }</p>
+                                                <p>{ ReactHtmlParser(formattedHelping) }</p>
                                             </p>
                                         )}
-                                    {about
+                                    {formattedAbout
                                         && (
                                             <p className="clear-fix mb-3">
                                                 <div className="mb-1 bold">About the Organizers</div>
-                                                <p>{ ReactHtmlParser(about) }</p>
+                                                <p>{ ReactHtmlParser(formattedAbout) }</p>
                                             </p>
                                         )}
                                 </Fragment>
@@ -205,10 +205,10 @@ ProfileDetails.defaultProps = {
     galleryImages: [],
     groupDetails: {
         attributes: {
-            about: '',
-            description: '',
-            helping: '',
-            purpose: '',
+            formattedAbout: '',
+            formattedHelping: '',
+            formattedImpact: '',
+            formattedShort: '',
             videoPlayerLink: '',
         },
     },
@@ -219,10 +219,10 @@ ProfileDetails.propTypes = {
     galleryImages: arrayOf(PropTypes.element),
     groupDetails: {
         attributes: {
-            about: string,
-            description: string,
-            helping: string,
-            purpose: string,
+            formattedAbout: string,
+            formattedHelping: string,
+            formattedImpact: string,
+            formattedShort: string,
             videoPlayerLink: string,
         },
     },
