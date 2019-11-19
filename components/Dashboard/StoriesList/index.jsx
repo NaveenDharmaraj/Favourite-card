@@ -16,6 +16,7 @@ import {
 } from '../../../actions/dashboard';
 import PlaceholderGrid from '../../shared/PlaceHolder';
 import { Link } from '../../../routes';
+import logger from '../../../helpers/logger'
 
 class StoriesList extends React.Component {
     constructor(props) {
@@ -58,7 +59,13 @@ class StoriesList extends React.Component {
         if (storiesData && storiesData.data && _.size(storiesData.data) > 0) {
             const showData = _.slice(storiesData.data, 0, 7);
             storiesList = showData.map((data, index) => {
-                const blogTitle = decodeURI(data.blog_title.replace('&#8217;', "'"));
+                let blogTitle = data.blog_title.replace('&#8217;', "'");
+                try {
+                    blogTitle = decodeURI(blogTitle);
+                } catch (e) {
+                    logger.error(`[StoriesList] - decodeURI: ${JSON.stringify(e)}`);
+                }
+
                 return (
                     <Grid.Column key={index}>
                         <Card as="a" href={data.blog_URL} target="_blank" className="tips-card" style={{ backgroundImage: `url(${data.blog_image_URL})` }}>
