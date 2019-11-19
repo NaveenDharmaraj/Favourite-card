@@ -29,9 +29,9 @@ const ProfileDetails = (props) => {
             menuItem: 'About',
             render: () => (
                 <Tab.Pane attached={false}>
-                    {_isEmpty(charityDetails.charityDetails.attributes.description)
+                    {_isEmpty(charityDetails.charityDetails.attributes.formattedDescription)
                         ? <CharityNoDataState />
-                        : <p>{ReactHtmlParser(charityDetails.charityDetails.attributes.description)}</p>
+                        : <p>{ReactHtmlParser(charityDetails.charityDetails.attributes.formattedDescription)}</p>
                     }
                 </Tab.Pane>
             ),
@@ -71,7 +71,7 @@ ProfileDetails.defaultProps = {
     charityDetails: {
         charityDetails: {
             attributes: {
-                description: '',
+                formattedDescription: '',
             },
         },
     },
@@ -81,7 +81,7 @@ ProfileDetails.propTypes = {
     charityDetails: {
         charityDetails: {
             attributes: PropTypes.shape({
-                description: string,
+                formattedDescription: string,
             }),
         },
     },
