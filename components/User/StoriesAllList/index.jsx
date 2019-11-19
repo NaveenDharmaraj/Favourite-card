@@ -29,6 +29,7 @@ import { dismissAllUxCritialErrors } from '../../../actions/error';
 import Pagination from '../../shared/Pagination';
 import allImg from '../../../static/images/all.png';
 import PlaceholderGrid from '../../shared/PlaceHolder';
+import logger from '../../../helpers/logger';
 
 class StoriesAllList extends React.Component {
     constructor(props) {
@@ -90,8 +91,14 @@ class StoriesAllList extends React.Component {
                     blog_URL,
                 } = data;
                 const displayAvatar = (!_.isEmpty(blog_image_URL)) ? blog_image_URL : allImg;
-                const blogTitle = decodeURI(blog_title.replace('&#8217;', "'"));
-                let blogDescription = decodeURI(blog_excerpt.replace('&#8217;', "'"));
+                let blogTitle = blog_title.replace('&#8217;', "'");
+                let blogDescription = blog_excerpt.replace('&#8217;', "'");
+                try {
+                    blogTitle = decodeURI(blogTitle);
+                    blogDescription = decodeURI(blogDescription);
+                } catch (e) {
+                    logger.error(`[StoriesListAll] - decodeURI: ${JSON.stringify(e)}`);
+                }
                 blogDescription = blogDescription.replace(/<[^>]*>/g, '');
                 return (
                     <div className="search-result-single">
