@@ -274,6 +274,12 @@ const group = (state = {}, action) => {
         case 'RESET_GROUP_STATES':
             newState = {};
             break;
+        case 'GET_CAMPAIGN_SUPPORTING_GROUP':
+            newState = {
+                ...state,
+                campaignSupporting: action.payload.campaignDetails,
+            };
+            break;
         default:
             break;
     }
