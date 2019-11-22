@@ -22,6 +22,9 @@ const actionTypes = {
 class GroupShareDetails extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            showShareModal: false,
+        }
         this.handleOnClick = this.handleOnClick.bind(this);
         this.handleCopyLink = this.handleCopyLink.bind(this);
         this.handleFollow = this.handleFollow.bind(this);
@@ -80,6 +83,7 @@ class GroupShareDetails extends React.Component {
             default:
                 break;
         }
+        this.closeShareModal();
     }
 
     handleCopyLink = (e) => {
@@ -87,6 +91,10 @@ class GroupShareDetails extends React.Component {
         document.execCommand('copy');
         e.target.focus();
     };
+
+    closeShareModal = () => {
+        this.setState({ showShareModal: false })
+      }
 
     render() {
         const {
@@ -98,6 +106,9 @@ class GroupShareDetails extends React.Component {
             deepLinkUrl,
             disableFollow,
         } = this.props;
+        const {
+            showShareModal,
+        } = this.state;
         const inputValue = (!_.isEmpty(deepLinkUrl)) ? deepLinkUrl.attributes["short-link"] : '';
 
         return (    
@@ -112,9 +123,9 @@ class GroupShareDetails extends React.Component {
             disabled={disableFollow}
             />
         </List.Item>
-        <Modal className="chimp-modal" closeIcon size="tiny" trigger={
+        <Modal className="chimp-modal" onClose={this.closeShareModal} open={showShareModal} closeIcon size="tiny" trigger={
             <List.Item as="a">
-                <Icon className="share alternate"></Icon>
+                <Icon className="share alternate" onClick={() => this.setState({ showShareModal: true })}></Icon>
             </List.Item>
             }>
             <Modal.Header>Share this Group</Modal.Header>
