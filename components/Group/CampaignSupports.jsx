@@ -12,6 +12,7 @@ import {
 import _isEmpty from 'lodash/isEmpty';
 
 import placeholder from '../../static/images/no-data-avatar-giving-group-profile.png';
+import { Link } from '../../routes';
 
 const CampaignSupports = (props) => {
     const {
@@ -20,6 +21,7 @@ const CampaignSupports = (props) => {
                 avatar,
                 city,
                 name,
+                slug,
             },
         },
     } = props;
@@ -30,15 +32,17 @@ const CampaignSupports = (props) => {
                 <div className="groupSupports">
                     <Header as="h3">Campaign this group supports</Header>
                     <List relaxed verticalAlign="middle" className="groupSupportsList">
-                        <List.Item>
-                            <Image src={imgUrl} />
-                            <List.Content>
-                                <List.Header as="a">{name}</List.Header>
-                                <List.Description>
-                                    {city}
-                                </List.Description>
-                            </List.Content>
-                        </List.Item>
+                        <Link route={`/campaigns/${slug}`}>
+                            <List.Item as="a">
+                                <Image src={imgUrl} />
+                                <List.Content>
+                                    <List.Header>{name}</List.Header>
+                                    <List.Description>
+                                        {city}
+                                    </List.Description>
+                                </List.Content>
+                            </List.Item>
+                        </Link>
                     </List>
                 </div>
             </div>
