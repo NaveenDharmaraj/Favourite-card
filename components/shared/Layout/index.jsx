@@ -26,6 +26,7 @@ import '../../../static/less/style.less';
 const { publicRuntimeConfig } = getConfig();
 
 const {
+    APPLOZIC_BASE_URL,
     APPLOZIC_WS_URL,
     APPLOZIC_APP_KEY,
     HELP_SCOUT_KEY
@@ -83,6 +84,10 @@ class Layout extends React.Component {
                     email: currentUser.attributes.email,
                   });
             }
+            Beacon('session-data', {
+                'currentPage': window.location.href,
+              })
+              
             Beacon('config', {
                 "labels": {
                     "suggestedForYou": "Answers to common questions",
@@ -115,7 +120,7 @@ class Layout extends React.Component {
                     </title>
                     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
                     <meta name="description" content={description}/>
-                    <link rel="icon" type="image/x-icon" href="https://corpchimpstage.wpengine.com/wp-content/themes/chimp-theme/inc/assets/images/favicon/favicon.ico" />
+                    <link rel="icon" type="image/x-icon" href="https://d1wjn4fmcgu4dn.cloudfront.net/web/favicon.ico" />
                     <link rel="manifest" href="/static/Manifest.json" />
                     <link
                         rel="stylesheet"
@@ -128,6 +133,7 @@ class Layout extends React.Component {
                     <script id="stripe-js" src="https://js.stripe.com/v3/" />
                     <script type="text/javascript" defer  src="https://cdn.applozic.com/applozic/applozic.chat-5.6.1.min.js"></script>
                     <script type="text/javascript" defer>
+                        window.APPLOZIC_BASE_URL= "{APPLOZIC_BASE_URL}";
                         window.APPLOZIC_WS_URL= "{APPLOZIC_WS_URL}";
                         window.APPLOZIC_APP_KEY="{APPLOZIC_APP_KEY}";
                         window.userEmail = "{userEmail}";
@@ -140,7 +146,7 @@ class Layout extends React.Component {
                     {/* <script type="text/javascript" src="https://www.gstatic.com/firebasejs/5.9.4/firebase-app.js"></script> */}
                 </Head>
                 <div>
-                    <ErrorBoundary> 
+                    <ErrorBoundary>
                         <Responsive minWidth={320} maxWidth={991}>
                             <MobileHeader isAuthenticated={isAuthenticated} onBoarding={onBoarding} isLogin={isLogin} showHeader={showHeader}>
                                 {!_.isEmpty(appErrors) &&
@@ -184,7 +190,7 @@ class Layout extends React.Component {
                                 </div>
                                 <Footer isAuthenticated={isAuthenticated}/>
                         </Responsive>
-                    </ErrorBoundary> 
+                    </ErrorBoundary>
                 </div>
             </Responsive>
         );

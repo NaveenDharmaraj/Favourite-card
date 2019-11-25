@@ -11,12 +11,13 @@ import chimpLogo from '../static/images/chimp-logo-new.png';
 import {
     validateAuth0Failure,
 } from '../actions/auth';
+
 import {
     chimpLogin,
     getUser,
-    wpLogin,
 } from '../actions/user';
 import isUndefinedOrEmpty from '../helpers/object';
+import { addToDataLayer } from '../helpers/users/googleTagManager';
 
 import coreApi from './coreApi';
 
@@ -24,12 +25,10 @@ const { publicRuntimeConfig } = getConfig();
 
 const {
     APP_URL_ORIGIN,
+    AUTH0_CONFIGURATION_BASE_URL,
     AUTH0_DOMAIN,
     AUTH0_WEB_CLIENT_ID,
     AUTH0_WEB_AUDIENCE,
-    CORP_DOMAIN,
-    WP_DOMAIN_BASE,
-    WP_API_VERSION,
 } = publicRuntimeConfig;
 
 /**
@@ -46,6 +45,7 @@ const _auth0lockConfig = {
         scope: 'openid',
     },
     avatar: null,
+    configurationBaseUrl: AUTH0_CONFIGURATION_BASE_URL,
     container: 'auth0-lock-container',
     languageDictionary: {
         emailInputPlaceholder: 'Enter your email',
@@ -145,6 +145,10 @@ const auth0 = {
         document.cookie = "wpAccessToken" +"=" + token + ";expires=" + this.getRemainingSessionTime(token) / 1000 + ";domain=.charitableimpact.com;path=/";
     },
 
+    set wpUserId(userId) {
+        document.cookie = "wpUserId" +"=" + userId + ";domain=.charitableimpact.com;path=/";
+    },
+
     /**
      * Erase Auth0 data from local
      * @method empty
@@ -154,6 +158,7 @@ const auth0 = {
         this.accessToken = null;
         this.userEmail = null;
         this.userId = null;
+        this.wpAccessToken = null;
 
         return null;
     },
@@ -417,24 +422,24 @@ const _handleLockSuccess = async ({
     if (!accessToken || !idToken) { return null(); }
     // Sets access token and expiry time in cookies
     chimpLogin(accessToken).then(async ({ currentUser }) => {
-        if (CORP_DOMAIN && WP_DOMAIN_BASE && WP_API_VERSION) {
-            await wpLogin(accessToken);
-        }
-        let cookieName = 'HelloWorld';
-        let cookieValue = 'HelloWorld';
-        let myDate = new Date();
-        myDate.setMonth(myDate.getMonth() + 12);
+        const userId = parseInt(currentUser, 10);
         if (document) {
             // console.log('setting wp access token');
             await (auth0.wpAccessToken = accessToken);
+            await (auth0.wpUserId = userId);
         }
-
-        const userId = parseInt(currentUser, 10);
         await (auth0.returnProps = null);
         await (auth0.accessToken = accessToken);
         await (storage.set('chimpUserId', userId, 'cookie'));
         const dispatch = auth0.storeDispatch;
         await (getUser(dispatch, userId));
+        const tagManagerArgs = {
+            dataLayer: {
+                userId,
+            },
+            dataLayerName: 'dataLayer',
+        };
+        addToDataLayer(tagManagerArgs);
         Router.pushRoute(returnTo);
     }).catch(() => {
         let route = '/users/login';
@@ -484,7 +489,7 @@ const _handleLockFailure = async ({ errorDescription }) => {
  * @return {auth0lock} - The auth0lock instance.
  */
 function _makeLock() {
-    _auth0lock = new Auth0Lock(AUTH0_WEB_CLIENT_ID, AUTH0_DOMAIN, _auth0lockConfig, _.merge(_auth0lockConfig, {
+    _auth0lock = new Auth0Lock(AUTH0_WEB_CLIENT_ID, AUTH0_DOMAIN, _.merge(_auth0lockConfig, {
         auth: {
             audience: `${AUTH0_WEB_AUDIENCE}`,
             redirectUrl: `${APP_URL_ORIGIN}/auth/callback`,

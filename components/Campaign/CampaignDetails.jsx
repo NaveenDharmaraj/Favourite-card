@@ -9,6 +9,7 @@ import {
 
 import { formatCurrency } from '../../helpers/give/utils';
 import ShareDetails from '../shared/ShareSectionProfilePage';
+import ActiveMatchBlock from '../shared/ActiveMatchBlock';
 
 const detailsView = (valuesObject) => {
 
@@ -34,7 +35,7 @@ const detailsView = (valuesObject) => {
                     <Grid.Column>
                         <Header as='h2'>
                             {valuesObject.groupsCount}
-                            <Header.Subheader className="small">People supporting this campaign</Header.Subheader>
+                            <Header.Subheader className="small">Groups supporting this campaign</Header.Subheader>
                         </Header>
                     </Grid.Column>
                 </Grid.Row>
@@ -78,8 +79,16 @@ const CampaignDetails = (props) => {
 
                         </Grid.Row>
                     </Grid>
-                    
                 </div>
+                {
+                    (campaignDetails.attributes.hasActiveMatch) ? 
+                        (
+                            <ActiveMatchBlock
+                                entityDetails={campaignDetails}
+                            />
+                        )
+                        : null
+                }
             </Container>
         </div>
     );

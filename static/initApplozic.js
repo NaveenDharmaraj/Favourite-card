@@ -100,7 +100,7 @@ function registerAppLozic() {
     Applozic.ALApiService.login(
         {
             data: {
-                baseUrl: 'https://apps.applozic.com',
+                    baseUrl: window.APPLOZIC_BASE_URL,//'https://apps.applozic.com'
                 alUser:
                 {
                     // userId: localStorage.getItem("userId"), //Logged in user's id, a unique identifier for user

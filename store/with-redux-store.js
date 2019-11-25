@@ -9,6 +9,7 @@ import {
 import {
     initializeStore,
 } from './store';
+import { addToDataLayer } from '../helpers/users/googleTagManager';
 
 const isServer = typeof window === 'undefined';
 const __NEXT_REDUX_STORE__ = '__NEXT_REDUX_STORE__';
@@ -72,6 +73,15 @@ export default (App) => {
         }
 
         render() {
+            if (typeof window !== 'undefined') {
+                const tagManagerArgs = {
+                    dataLayer: {
+                        page: window.location.pathname,
+                    },
+                    dataLayerName: 'dataLayer',
+                };
+                addToDataLayer(tagManagerArgs);
+            }
             return <App {...this.props} reduxStore={this.reduxStore} />
         }
     };

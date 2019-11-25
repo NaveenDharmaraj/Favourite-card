@@ -12,6 +12,7 @@ import {
     Grid,
 } from 'semantic-ui-react';
 import _isEmpty from 'lodash/isEmpty';
+import ReactHtmlParser from 'react-html-parser';
 
 import ImageGallery from '../shared/ImageGallery';
 
@@ -37,11 +38,11 @@ const ProfileDetails = (props) => {
                     galleryImages,
                     groupDetails: {
                         attributes: {
-                            description,
+                            formattedShort,
                             videoPlayerLink,
-                            purpose,
-                            helping,
-                            about,
+                            formattedImpact,
+                            formattedHelping,
+                            formattedAbout,
                         },
                     },
                 } = props;
@@ -49,17 +50,17 @@ const ProfileDetails = (props) => {
                 if (!_isEmpty(galleryImages)) {
                     galleryImages.forEach((singleImage) => {
                         const singleImagePropObj = {};
-                        singleImagePropObj.src = singleImage.attributes.assetUrl;
+                        singleImagePropObj.src = singleImage.attributes.originalUrl;
                         singleImagePropObj.thumbnail = singleImage.attributes.assetUrl;
-                        singleImagePropObj.thumbnailHeight = 174;
-                        singleImagePropObj.thumbnailWidth = 320;
+                        singleImagePropObj.thumbnailHeight = 196;
+                        singleImagePropObj.thumbnailWidth = 196;
                         imageArray.push(singleImagePropObj);
                     });
                 }
                 return (
                     <Tab.Pane attached={false}>
                         {
-                            (_isEmpty(imageArray) && !description && !videoPlayerLink && !purpose && !helping && !about) ? (
+                            (_isEmpty(imageArray) && !formattedShort && !videoPlayerLink && !formattedImpact && !formattedHelping && !formattedAbout) ? (
                                 <Grid>
                                     <GroupNoDataState
                                         type="common"
@@ -67,10 +68,10 @@ const ProfileDetails = (props) => {
                                 </Grid>
                             ) : (
                                 <Fragment>
-                                    {description
+                                    {formattedShort
                                     && (
                                         <div className="mb-3">
-                                            { description }
+                                            { ReactHtmlParser(formattedShort) }
                                         </div>
                                     )}
                                     {videoPlayerLink
@@ -95,25 +96,25 @@ const ProfileDetails = (props) => {
                                                 </div>
                                             </div>
                                         )}
-                                    {purpose
+                                    {formattedImpact
                                         && (
                                             <p className="clear-fix mb-3">
                                                 <div className="mb-1 bold">The Group's Purpose</div>
-                                                <p>{purpose}</p>
+                                                <p>{ ReactHtmlParser(formattedImpact) }</p>
                                             </p>
                                         )}
-                                    {helping
+                                    {formattedHelping
                                         && (
                                             <p className="clear-fix mb-3">
                                                 <div className="mb-1 bold">How to Help</div>
-                                                <p>{helping}</p>
+                                                <p>{ ReactHtmlParser(formattedHelping) }</p>
                                             </p>
                                         )}
-                                    {about
+                                    {formattedAbout
                                         && (
                                             <p className="clear-fix mb-3">
                                                 <div className="mb-1 bold">About the Organizers</div>
-                                                <p>{about}</p>
+                                                <p>{ ReactHtmlParser(formattedAbout) }</p>
                                             </p>
                                         )}
                                 </Fragment>
@@ -204,10 +205,10 @@ ProfileDetails.defaultProps = {
     galleryImages: [],
     groupDetails: {
         attributes: {
-            about: '',
-            description: '',
-            helping: '',
-            purpose: '',
+            formattedAbout: '',
+            formattedHelping: '',
+            formattedImpact: '',
+            formattedShort: '',
             videoPlayerLink: '',
         },
     },
@@ -218,10 +219,10 @@ ProfileDetails.propTypes = {
     galleryImages: arrayOf(PropTypes.element),
     groupDetails: {
         attributes: {
-            about: string,
-            description: string,
-            helping: string,
-            purpose: string,
+            formattedAbout: string,
+            formattedHelping: string,
+            formattedImpact: string,
+            formattedShort: string,
             videoPlayerLink: string,
         },
     },

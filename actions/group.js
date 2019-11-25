@@ -9,6 +9,7 @@ export const actionTypes = {
     ACTIVITY_LIKE_STATUS: 'ACTIVITY_LIKE_STATUS',
     ADMIN_PLACEHOLDER_STATUS: 'ADMIN_PLACEHOLDER_STATUS',
     GET_BENEFICIARIES_COUNT: 'GET_BENEFICIARIES_COUNT',
+    GET_CAMPAIGN_SUPPORTING_GROUP: 'GET_CAMPAIGN_SUPPORTING_GROUP',
     GET_GROUP_ACTIVITY_DETAILS: 'GET_GROUP_ACTIVITY_DETAILS',
     GET_GROUP_ADMIN_DETAILS: 'GET_GROUP_ADMIN_DETAILS',
     GET_GROUP_BENEFICIARIES: 'GET_GROUP_BENEFICIARIES',
@@ -64,6 +65,7 @@ export const getGroupFromSlug = async (dispatch, slug, token = null) => {
             (result) => {
                 if (result && !_.isEmpty(result.data)) {
                     fsa.payload.groupDetails = result.data;
+                    dispatch(fsa);
                     if (result.data.relationships && result.data.relationships.galleryImages) {
                         coreApi.get(result.data.relationships.galleryImages.links.related, {
                             params: {
@@ -88,8 +90,6 @@ export const getGroupFromSlug = async (dispatch, slug, token = null) => {
                 type: actionTypes.GROUP_REDIRECT_TO_DASHBOARD,
             });
             return null;
-        }).finally(() => {
-            dispatch(fsa);
         });
     } else {
         // redirect('/dashboard');
@@ -547,4 +547,24 @@ export const leaveGroup = async (dispatch, slug, groupId, loadMembers) => {
         }
         dispatch(errorFsa);
     });
+};
+
+export const getCampaignFromId = async (dispatch, campaignId) => {
+    const fsa = {
+        payload: {
+            campaignDetails: {},
+        },
+        type: actionTypes.GET_CAMPAIGN_SUPPORTING_GROUP,
+    };
+    coreApi.get(`campaigns/${campaignId}`, {
+        params: {
+            dispatch,
+            uxCritical: true,
+        },
+    }).then((result) => {
+        if (result && !_.isEmpty(result.data)) {
+            fsa.payload.campaignDetails = result.data;
+            dispatch(fsa);
+        }
+    }).catch();
 };

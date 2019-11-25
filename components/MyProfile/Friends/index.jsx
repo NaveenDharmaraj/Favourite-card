@@ -122,6 +122,7 @@ class Friends extends React.Component {
         this.setState({
             statusMessage: false,
             userEmailIds: '',
+            isValidEmails: true,
         })
     }
 

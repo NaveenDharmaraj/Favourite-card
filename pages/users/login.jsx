@@ -7,12 +7,24 @@ import { // eslint-disable-line import/order
     Grid,
     Header,
 } from 'semantic-ui-react';
+import _includes from 'lodash/includes';
 
 import auth0 from '../../services/auth';
 import Layout from '../../components/shared/Layout';
 import { Router } from '../../routes';
+import ModalStatusMessage from '../../components/shared/ModalStatusMessage';
 
 class UserAuthView extends React.Component {
+    static async getInitialProps({
+        query,
+    }) {
+        return {
+            code: query.code,
+            message: query.message,
+            success: query.success,
+        };
+    }
+
     componentDidMount() {
         const {
             isAuthenticated,
@@ -35,8 +47,39 @@ class UserAuthView extends React.Component {
 
     render() {
         const {
+            code,
             isAuthenticated,
+            message,
+            success,
         } = this.props;
+        let messageText = '';
+
+        if (success === 'true') {
+            messageText = (
+                <ModalStatusMessage
+                    message="Thanks! Your email is confirmed. To continue, please log in below."
+                />
+            );
+            if (code === '3') {
+                messageText = (
+                    <ModalStatusMessage
+                        message="Thanks! Your password is now changed. To continue, please log in below."
+                    />
+                );
+            }
+        } else if (_includes(message, 'This URL can be used only once')) {
+            messageText = (
+                <ModalStatusMessage
+                    message="Thanks! Your email is confirmed. To continue, please log in below."
+                />
+            );
+        } else if (success === 'false') {
+            messageText = (
+                <ModalStatusMessage
+                    error="We’re sorry, something went wrong. Please contact support."
+                />
+            );
+        }
 
         return (
             <Fragment>
@@ -44,6 +87,7 @@ class UserAuthView extends React.Component {
                     <Layout onBoarding isLogin>
                         <div className="pageWraper loginPageBg">
                             <Container>
+                                { messageText }
                                 <div className="linebg">
                                     <Grid columns={2} stackable>
                                         <Grid.Row>

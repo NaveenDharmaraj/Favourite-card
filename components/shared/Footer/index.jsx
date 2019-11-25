@@ -94,7 +94,7 @@ const Footer = ({ isAuthenticated }) => (
                                                 <List.Item as="a" href={`${CORP_DOMAIN}/fees/`}>Fees</List.Item>
                                                 <List.Item as="a" href={`${CORP_DOMAIN}/careers/`}>Careers</List.Item>
                                                 <List.Item as="a" href={`${CORP_DOMAIN}/press/`}>Press</List.Item>
-                                                <List.Item as="a" href="/blog">Blog</List.Item>
+                                                <List.Item as="a" href={`${CORP_DOMAIN}/blog/`}>Blog</List.Item>
                                             </List>
                                         </Grid.Column>
                                         <Grid.Column mobile={16} tablet={4} computer={4}>
@@ -146,10 +146,10 @@ const Footer = ({ isAuthenticated }) => (
                         </List.Item>
                     </List>
                     <List horizontal floated="right" className="social">
-                        <List.Item href="https://www.facebook.com/wearechimp"><Image src={facebook} /></List.Item>
-                        <List.Item href="https://www.linkedin.com/company/wearechimp/"><Image src={linkedin} /></List.Item>
-                        <List.Item href="https://twitter.com/wearechimp"><Image src={twitter} /></List.Item>
-                        <List.Item href="https://instagram.com/wearechimp"><Image src={instagram} /></List.Item>
+                        <List.Item href="https://go.charitableimpact.com/facebook"><Image src={facebook} /></List.Item>
+                        <List.Item href="https://go.charitableimpact.com/linkedin"><Image src={linkedin} /></List.Item>
+                        <List.Item href="https://go.charitableimpact.com/twitter"><Image src={twitter} /></List.Item>
+                        <List.Item href="https://go.charitableimpact.com/instagram"><Image src={instagram} /></List.Item>
                     </List>
                 </div>
             </Container>

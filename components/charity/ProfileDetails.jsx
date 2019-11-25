@@ -8,6 +8,7 @@ import {
     Tab, Container,
 } from 'semantic-ui-react';
 import _isEmpty from 'lodash/isEmpty';
+import ReactHtmlParser from 'react-html-parser';
 
 import {
     getBeneficiaryDoneeList,
@@ -28,9 +29,9 @@ const ProfileDetails = (props) => {
             menuItem: 'About',
             render: () => (
                 <Tab.Pane attached={false}>
-                    {_isEmpty(charityDetails.charityDetails.attributes.description)
+                    {_isEmpty(charityDetails.charityDetails.attributes.formattedDescription)
                         ? <CharityNoDataState />
-                        : <p>{charityDetails.charityDetails.attributes.description}</p>
+                        : <p>{ReactHtmlParser(charityDetails.charityDetails.attributes.formattedDescription)}</p>
                     }
                 </Tab.Pane>
             ),
@@ -70,7 +71,7 @@ ProfileDetails.defaultProps = {
     charityDetails: {
         charityDetails: {
             attributes: {
-                description: '',
+                formattedDescription: '',
             },
         },
     },
@@ -80,7 +81,7 @@ ProfileDetails.propTypes = {
     charityDetails: {
         charityDetails: {
             attributes: PropTypes.shape({
-                description: string,
+                formattedDescription: string,
             }),
         },
     },

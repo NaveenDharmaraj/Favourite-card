@@ -1,17 +1,9 @@
+import _ from 'lodash';
+
 const profile = (state = {}, action) => {
     let newState = {
         ...state,
     };
-    function arrayUnique(array) {
-        var a = array.concat();
-        for(var i=0; i<a.length; ++i) {
-            for(var j=i+1; j<a.length; ++j) {
-                if(a[i] === a[j])
-                    a.splice(j--, 1);
-            }
-        }
-        return a;
-    }
     switch (action.type) {
         case 'GET_CAMPAIGN_FROM_SLUG':
             newState = {
@@ -19,9 +11,17 @@ const profile = (state = {}, action) => {
                 campaignDetails: Object.assign({}, action.payload.campaignDetails),
             };
             break;
+        case 'CLEAR_DATA_FOR_CAMPAIGNS':
+            newState = {
+                ...state,
+                campaignSubGroupDetails: action.payload.campaignSubGroupDetails,
+                campaignSubGroupsShowMoreUrl: null,
+            };
+            break;
         case 'GET_SUB_GROUPS_FOR_CAMPAIGN':
-            if (state.campaignSubGroupDetails) {
-                const uniqueArray = arrayUnique(state.campaignSubGroupDetails, action.payload.campaignSubGroupDetails.data);
+            // isViewMore used to ignore the initial componentDidMount call - duplicate groups
+            if (state.campaignSubGroupDetails && state.campaignSubGroupDetails.length > 0 && action.payload.isViewMore) {
+                const uniqueArray = _.uniqBy(_.concat(state.campaignSubGroupDetails, action.payload.campaignSubGroupDetails.data), 'id');
                 newState = {
                     ...state,
                     campaignSubGroupDetails:[...uniqueArray],

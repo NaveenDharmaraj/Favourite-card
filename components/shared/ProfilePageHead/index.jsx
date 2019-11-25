@@ -37,6 +37,9 @@ function ProfilePageHead(props) {
                     <Link route={(`/give/to/${profileType}/${pageDetails.attributes.slug}/new`)}>
                         <Button primary className="blue-btn-rounded">Give</Button>
                     </Link>
+                    <a href={`${RAILS_APP_URL_ORIGIN}/campaigns/${pageDetails.attributes.slug}/step/one`}>
+                        <Button className="blue-bordr-btn-round">Create Group</Button>
+                    </a>
                     { pageDetails.attributes.isAdmin && (
                         <a href={(`${RAILS_APP_URL_ORIGIN}/campaigns/${pageDetails.attributes.slug}/manage-basics`)}>
                             <Button className="blue-bordr-btn-round">Manage</Button>
@@ -45,12 +48,16 @@ function ProfilePageHead(props) {
                     }
                 </Fragment>
             );
-
         } else {
             buttonLink = (
-                <a href={(`${RAILS_APP_URL_ORIGIN}/send/to/${profileType}/${pageDetails.attributes.slug}`)}>
-                    <Button primary fluid className="blue-btn-rounded">Give</Button>
-                </a>
+                <Fragment>
+                    <a href={(`${RAILS_APP_URL_ORIGIN}/send/to/${profileType}/${pageDetails.attributes.slug}`)}>
+                        <Button primary className="blue-btn-rounded">Give</Button>
+                    </a>
+                    <a href={`${RAILS_APP_URL_ORIGIN}/campaigns/${pageDetails.attributes.slug}/step/one`}>
+                        <Button className="blue-bordr-btn-round">Create Group</Button>
+                    </a>
+                </Fragment>
             );
         }
     }
@@ -78,7 +85,7 @@ function ProfilePageHead(props) {
                                 </div>
                             </div>
                         </Grid.Column>
-                        <Grid.Column mobile={16} tablet={8} computer={8} largeScreen={9}>
+                        <Grid.Column mobile={16} tablet={13} computer={6} largeScreen={7}>
                             <div className="ProfileHeaderWraper">
                                 <Header as="h3">
                                     {pageDetails.attributes.name}
@@ -91,8 +98,8 @@ function ProfilePageHead(props) {
                                 </div>
                             </div>
                         </Grid.Column>
-                        <Grid.Column mobile={16} tablet={5} computer={6} largeScreen={5}>
-                            <div className="buttonWraper campaignBtns">
+                        <Grid.Column mobile={16} tablet={16} computer={8} largeScreen={7}>
+                            <div className="buttonWraper campaignBtns text-center-sm">
                                 {buttonLink}
                             </div>
                         </Grid.Column>

@@ -301,6 +301,7 @@ class Charity extends React.Component {
                 groupFromUrl = false;
                 giveData.giveTo = {
                     avatar: giveCharityDetails.charityDetails.attributes.avatar,
+                    eftEnabled: giveCharityDetails.charityDetails.attributes.eftEnabled,
                     id: giveCharityDetails.charityDetails.id,
                     name: giveCharityDetails.charityDetails.attributes.name,
                     text: giveCharityDetails.charityDetails.attributes.name,

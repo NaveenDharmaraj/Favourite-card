@@ -2,7 +2,9 @@ import React from 'react';
 import {
     Container,
 } from 'semantic-ui-react';
+import { connect } from 'react-redux';
 
+import { Router } from '../routes';
 import Group from '../components/Give/Group';
 import GiveWrapper from '../components/Give';
 import Layout from '../components/shared/Layout';
@@ -33,8 +35,19 @@ class Groups extends React.Component {
         };
     }
 
+    async componentDidMount() {
+        const {
+            isAuthenticated,
+            slug,
+        } = this.props;
+        if (!isAuthenticated && slug) {
+            Router.pushRoute(`/send/to/group/${slug}`);
+        }
+    }
+
     render() {
         const {
+            isAuthenticated,
             slug,
         } = this.props;
         // const baseUrl = (slug) ? `/give/to/group/${slug}` : '/give/to/group';
@@ -55,4 +68,10 @@ class Groups extends React.Component {
     }
 }
 
-export default Groups;
+function mapStateToProps(state) {
+    return {
+        isAuthenticated: state.auth.isAuthenticated,
+    };
+}
+
+export default connect(mapStateToProps)(Groups);

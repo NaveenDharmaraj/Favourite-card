@@ -2,11 +2,15 @@ const withLess = require('@zeit/next-less');
 const withPlugins = require('next-compose-plugins');
 const withImages = require('next-images');
 
+
 const configVars = {
     publicRuntimeConfig: {
+		CHAT_GROUP_DEFAULT_AVATAR:process.env.CHAT_GROUP_DEFAULT_AVATAR,
         APP_URL_ORIGIN: process.env.APP_URL_ORIGIN,
         APPLOZIC_APP_KEY: process.env.APPLOZIC_APP_KEY,
         APPLOZIC_WS_URL: process.env.APPLOZIC_WS_URL,
+        APPLOZIC_BASE_URL: process.env.APPLOZIC_BASE_URL,
+        AUTH0_CONFIGURATION_BASE_URL: process.env.AUTH0_CONFIGURATION_BASE_URL,
         AUTH0_DOMAIN: process.env.AUTH0_DOMAIN,
         AUTH0_WEB_AUDIENCE: process.env.AUTH0_WEB_AUDIENCE,
         AUTH0_WEB_CLIENT_ID: process.env.AUTH0_WEB_CLIENT_ID,
@@ -28,6 +32,9 @@ const configVars = {
         FIREBASE_STORAGE_BUCKET: process.env.FIREBASE_STORAGE_BUCKET,
         GOOGLE_MAP_API_KEY: process.env.GOOGLE_MAP_API_KEY,
         GRAPH_API_BASE: process.env.GRAPH_API_BASE,
+        GTM_AUTH: process.env.GTM_AUTH,
+        GTM_ENV_NUMBER: process.env.GTM_ENV_NUMBER,
+        GTM_ID: process.env.GTM_ID,
         HELP_CENTRE_URL: process.env.HELP_CENTRE_URL,
         HELP_SCOUT_KEY: process.env.HELP_SCOUT_KEY,
         HUBSPOT_FORM_ID: process.env.HUBSPOT_FORM_ID,

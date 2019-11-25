@@ -49,6 +49,7 @@ export const generatePayloadBodyForFollowAndUnfollow = (userId, id, type) => {
 };
 
 export const actionTypes = {
+    CLEAR_DATA_FOR_CAMPAIGNS: 'CLEAR_DATA_FOR_CAMPAIGNS',
     DEEP_LINK_URL: 'DEEP_LINK_URL',
     DISABLE_FOLLOW_BUTTON: 'DISABLE_FOLLOW_BUTTON',
     GET_CAMPAIGN_FROM_SLUG: 'GET_CAMPAIGN_FROM_SLUG',
@@ -68,6 +69,12 @@ export const getCampaignFromSlug = async (dispatch, slug) => {
             slugApiErrorStats: false,
         },
         type: actionTypes.SLUG_API_ERROR_STATUS,
+    });
+    dispatch({
+        payload: {
+            campaignSubGroupDetails: [],
+        },
+        type: actionTypes.CLEAR_DATA_FOR_CAMPAIGNS,
     });
     // return coreApi.get(`campaign/find_by_slug`, {
     await coreApi.get(`campaigns/find_by_slug`, {
@@ -265,7 +272,7 @@ export const unfollowProfile = (dispatch, userId, entityId, type) => {
     });
 };
 
-export const campaignSubGroupSeeMore = (url, dispatch) => {
+export const campaignSubGroupSeeMore = (url, dispatch, isViewMore) => {
     return coreApi.get(url, {
         params: {
             dispatch,
@@ -283,6 +290,7 @@ export const campaignSubGroupSeeMore = (url, dispatch) => {
             dispatch({
                 payload: {
                     campaignSubGroupDetails: subGroupResult,
+                    isViewMore,
                 },
                 type: actionTypes.GET_SUB_GROUPS_FOR_CAMPAIGN,
             });

@@ -752,12 +752,12 @@ export const getBeneficiariesForGroup = (dispatch, groupId) => {
                     }
                 },
             ).catch(() => {
-                Router.pushRoutes('/give/error');
+                Router.pushRoute('/give/error');
             }).finally(() => {
                 dispatch(fsa);
             });
     } else {
-        Router.pushRoutes('/dashboard');
+        Router.pushRoute('/dashboard');
     }
 };
 

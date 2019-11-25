@@ -43,7 +43,15 @@ class GroupProfile extends React.Component {
             dispatch,
             isAUthenticated,
             slug,
+            groupDetails: {
+                attributes: {
+                    isCampaign,
+                },
+            },
         } = this.props;
+        if (isCampaign === true) {
+            Router.pushRoute(`/campaigns/${slug}`);
+        }
         (isAUthenticated
             && getGroupFromSlug(dispatch, slug)
         );
@@ -56,6 +64,7 @@ class GroupProfile extends React.Component {
                     description,
                     location,
                     name,
+                    isCampaign,
                 },
             },
             redirectToDashboard,
@@ -65,13 +74,17 @@ class GroupProfile extends React.Component {
             title = `${name} | ${location}`;
         }
         const desc = (!_.isEmpty(description)) ? description : title;
-        return (
-            <Layout title={title} description={desc}>
-                {!redirectToDashboard
-                    ? <GroupProfileWrapper {...this.props} />
-                    : Router.push('/dashboard')}
-            </Layout>
-        );
+
+        if (isCampaign !== true) {
+            return (
+                <Layout title={title} description={desc}>
+                    {!redirectToDashboard
+                        ? <GroupProfileWrapper {...this.props} />
+                        : Router.push('/search')}
+                </Layout>
+            );
+        }
+        return null;
     }
 }
 
