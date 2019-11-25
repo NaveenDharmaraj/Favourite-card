@@ -11,7 +11,7 @@ const group = (state = {}, action) => {
             };
             break;
         case 'GET_GROUP_MEMBERS_DETAILS':
-            if (state.groupMembersDetails && state.groupMembersDetails.data) {
+            if (state.groupMembersDetails && state.groupMembersDetails.data && action.payload.isViewMore) {
                 newState = {
                     ...state,
                     groupMembersDetails: {
@@ -32,7 +32,7 @@ const group = (state = {}, action) => {
             }
             break;
         case 'GET_GROUP_ADMIN_DETAILS':
-            if (state.groupAdminsDetails && state.groupAdminsDetails.data) {
+            if (state.groupAdminsDetails && state.groupAdminsDetails.data && action.payload.isViewMore) {
                 newState = {
                     ...state,
                     groupAdminsDetails: {

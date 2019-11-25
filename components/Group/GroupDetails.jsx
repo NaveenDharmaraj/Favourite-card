@@ -116,13 +116,17 @@ class GroupDetails extends React.Component {
     handleUserJoin() {
         const {
             dispatch,
+            groupAdminsDetails,
             groupDetails: {
                 attributes: {
                     slug,
                 },
+                id: groupId,
             },
+            groupMembersDetails,
         } = this.props;
-        joinGroup(dispatch, slug);
+        const loadMembers = (!_isEmpty(groupAdminsDetails) || !_isEmpty(groupMembersDetails));
+        joinGroup(dispatch, slug, groupId, loadMembers);
         this.setState({
             userJoinClicked: true,
         });
@@ -137,14 +141,17 @@ class GroupDetails extends React.Component {
     callLeaveGroup() {
         const {
             dispatch,
+            groupAdminsDetails,
             groupDetails: {
                 attributes: {
                     slug,
                 },
                 id: groupId,
             },
+            groupMembersDetails,
         } = this.props;
-        leaveGroup(dispatch, slug, groupId);
+        const loadMembers = (!_isEmpty(groupAdminsDetails) || !_isEmpty(groupMembersDetails));
+        leaveGroup(dispatch, slug, groupId, loadMembers);
         this.setState({
             userJoinClicked: false,
         });
@@ -400,6 +407,7 @@ GroupDetails.defaultProps = {
         adminError: null,
         id: '',
     },
+    groupAdminsDetails: {},
     groupDetails: {
         attributes: {
             avatar: '',
@@ -409,6 +417,7 @@ GroupDetails.defaultProps = {
             slug: '',
         },
     },
+    groupMembersDetails: {},
     isAuthenticated: false,
 };
 
@@ -423,6 +432,7 @@ GroupDetails.propTypes = {
         adminError: number,
         id: string,
     },
+    groupAdminsDetails: {},
     groupDetails: {
         attributes: {
             avatar: string,
@@ -432,6 +442,7 @@ GroupDetails.propTypes = {
             slug: string,
         },
     },
+    groupMembersDetails: {},
     isAuthenticated: bool,
 };
 
@@ -444,7 +455,9 @@ function mapStateToProps(state) {
         deepLinkUrl: state.profile.deepLinkUrl,
         disableFollow: state.profile.disableFollow,
         errorMessage: state.group.errorMessage,
+        groupAdminsDetails: state.group.groupAdminsDetails,
         groupDetails: state.group.groupDetails,
+        groupMembersDetails: state.group.groupMembersDetails,
         isAuthenticated: state.auth.isAuthenticated,
     };
 }
