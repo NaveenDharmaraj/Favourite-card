@@ -59,7 +59,7 @@ class StoriesList extends React.Component {
         if (storiesData && storiesData.data && _.size(storiesData.data) > 0) {
             const showData = _.slice(storiesData.data, 0, 7);
             storiesList = showData.map((data, index) => {
-                let blogTitle = data.blog_title.replace('&#8217;', "'");
+                let blogTitle = data.blog_title.replace(/&#8217;/g, "'");
                 try {
                     blogTitle = decodeURI(blogTitle);
                 } catch (e) {

@@ -91,8 +91,8 @@ class StoriesAllList extends React.Component {
                     blog_URL,
                 } = data;
                 const displayAvatar = (!_.isEmpty(blog_image_URL)) ? blog_image_URL : allImg;
-                let blogTitle = blog_title.replace('&#8217;', "'");
-                let blogDescription = blog_excerpt.replace('&#8217;', "'");
+                let blogTitle = blog_title.replace(/&#8217;/g, "'");
+                let blogDescription = blog_excerpt.replace(/&#8217;/g, "'");
                 try {
                     blogTitle = decodeURI(blogTitle);
                     blogDescription = decodeURI(blogDescription);
