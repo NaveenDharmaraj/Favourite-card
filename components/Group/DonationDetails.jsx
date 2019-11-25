@@ -18,19 +18,17 @@ import {
 import {
     distanceOfTimeInWords,
 } from '../../helpers/utils';
-import ShareDetails from '../shared/ShareSectionProfilePage';
 import ActiveMatchBlock from '../shared/ActiveMatchBlock';
+
+import CampaignSupports from './CampaignSupports';
 
 const DonationDetails = (props) => {
     const {
         currency,
-        currentUser: {
-            id: userId,
-        },
-        deepLinkUrl,
         language,
         groupDetails: {
             attributes: {
+                campaignId,
                 totalMoneyRaised,
                 goal,
                 fundraisingPercentage,
@@ -40,7 +38,6 @@ const DonationDetails = (props) => {
                 lastDonationAt,
             },
         },
-        isAuthenticated,
     } = props;
     let lastDonationDay = '';
     if (lastDonationAt !== null) {
@@ -106,22 +103,13 @@ const DonationDetails = (props) => {
                                 </Grid>
                             </div>
                         </Grid.Column>
-                        {isAuthenticated
-                        && (
-                            <Grid.Column mobile={16} tablet={5} computer={5}>
-                                <ShareDetails
-                                    deepLinkUrl={deepLinkUrl}
-                                    profileDetails={props.groupDetails}
-                                    userId={userId}
-                                />
-                            </Grid.Column>
-                        )}
+                        {campaignId && <CampaignSupports />}
                     </Grid.Row>
                 </Grid>
             </div>
             {
-                (props.groupDetails.attributes.hasActiveMatch) ? 
-                    (
+                (props.groupDetails.attributes.hasActiveMatch)
+                    ? (
                         <ActiveMatchBlock
                             entityDetails={props.groupDetails}
                         />
@@ -134,9 +122,6 @@ const DonationDetails = (props) => {
 
 DonationDetails.defaultProps = {
     currency: 'USD',
-    currentUser: {
-        id: null,
-    },
     groupDetails: {
         attributes: {
             balance: null,
@@ -147,15 +132,11 @@ DonationDetails.defaultProps = {
             totalMoneyRaised: null,
         },
     },
-    isAuthenticated: false,
     language: 'en',
 };
 
 DonationDetails.propTypes = {
     currency: string,
-    currentUser: {
-        id: string,
-    },
     groupDetails: {
         attributes: {
             balance: number,
@@ -166,7 +147,6 @@ DonationDetails.propTypes = {
             totalMoneyRaised: number,
         },
     },
-    isAuthenticated: bool,
     language: string,
 };
 

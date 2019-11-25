@@ -145,6 +145,10 @@ const auth0 = {
         document.cookie = "wpAccessToken" +"=" + token + ";expires=" + this.getRemainingSessionTime(token) / 1000 + ";domain=.charitableimpact.com;path=/";
     },
 
+    set wpUserId(userId) {
+        document.cookie = "wpUserId" +"=" + userId + ";domain=.charitableimpact.com;path=/";
+    },
+
     /**
      * Erase Auth0 data from local
      * @method empty
@@ -418,12 +422,12 @@ const _handleLockSuccess = async ({
     if (!accessToken || !idToken) { return null(); }
     // Sets access token and expiry time in cookies
     chimpLogin(accessToken).then(async ({ currentUser }) => {
+        const userId = parseInt(currentUser, 10);
         if (document) {
             // console.log('setting wp access token');
             await (auth0.wpAccessToken = accessToken);
+            await (auth0.wpUserId = userId);
         }
-
-        const userId = parseInt(currentUser, 10);
         await (auth0.returnProps = null);
         await (auth0.accessToken = accessToken);
         await (storage.set('chimpUserId', userId, 'cookie'));

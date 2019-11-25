@@ -28,15 +28,16 @@ import {
 } from '../../routes';
 import {
     joinGroup,
+    getCampaignFromId,
     getGroupBeneficiariesCount,
     leaveGroup,
 } from '../../actions/group';
 import {
     generateDeepLink,
 } from '../../actions/profile';
-import ShareDetails from '../shared/ShareSectionProfilePage';
 import LeaveModal from '../../components/shared/LeaveModal';
 
+import GroupShareDetails from './GroupShareDetails';
 import GiveFromGroupModal from './GiveFromGroupModal';
 
 const { publicRuntimeConfig } = getConfig();
@@ -61,12 +62,14 @@ class GroupDetails extends React.Component {
     componentDidMount() {
         const {
             dispatch,
-            deepLinkUrl,
             isAuthenticated,
             currentUser: {
                 id: userId,
             },
             groupDetails: {
+                attributes: {
+                    campaignId,
+                },
                 id: groupId,
                 relationships: {
                     groupBeneficiaries: {
@@ -77,6 +80,9 @@ class GroupDetails extends React.Component {
                 },
             },
         } = this.props;
+        if (campaignId) {
+            getCampaignFromId(dispatch, campaignId);
+        }
         if (isAuthenticated) {
             generateDeepLink(`deeplink?profileType=groupprofile&sourceId=${userId}&profileId=${groupId}`, dispatch);
         }
@@ -148,7 +154,6 @@ class GroupDetails extends React.Component {
         const {
             buttonLoader,
             beneficiariesCount,
-            deepLinkUrl,
             errorMessage,
             groupDetails: {
                 attributes: {
@@ -299,7 +304,7 @@ class GroupDetails extends React.Component {
                             <Grid.Column mobile={16} tablet={13} computer={14}>
                                 <Grid stackable>
                                     <Grid.Row>
-                                        <Grid.Column mobile={16} tablet={16} computer={9}>
+                                        <Grid.Column mobile={16} tablet={16} computer={8}>
                                             <div className="ProfileHeaderWraper">
                                                 <Header as="h3">
                                                     {name}
@@ -315,7 +320,7 @@ class GroupDetails extends React.Component {
 
                                             </div>
                                         </Grid.Column>
-                                        <Grid.Column mobile={16} tablet={16} computer={7}>
+                                        <Grid.Column mobile={16} tablet={16} computer={8}>
                                             <div className="gpRightButtons">
                                                 {!joinClicked && giveButton}
                                                 {!joinClicked && joinButton}
@@ -324,6 +329,7 @@ class GroupDetails extends React.Component {
                                                 {(isMember || isAdmin)
                                                 && (
                                                     <Fragment>
+                                                        <GroupShareDetails />
                                                         <Dropdown floating icon="setting">
                                                             <Dropdown.Menu>
                                                                 {isAdmin
