@@ -20,10 +20,6 @@ import {
     Grid,
     Dropdown,
     Responsive,
-    List,
-    Icon,
-    Modal,
-    Input
 } from 'semantic-ui-react';
 import getConfig from 'next/config';
 

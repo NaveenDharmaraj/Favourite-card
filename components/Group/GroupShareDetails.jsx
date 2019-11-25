@@ -110,64 +110,63 @@ class GroupShareDetails extends React.Component {
             showShareModal,
         } = this.state;
         const inputValue = (!_.isEmpty(deepLinkUrl)) ? deepLinkUrl.attributes["short-link"] : '';
-
         return (    
-    <Fragment>
-            <List horizontal className="shareAndLike">
-        <List.Item as="a">
-            <Icon
-            id="follow"
-            color={liked ? "red" : "outline"}
-            name="heart"
-            onClick={this.handleFollow}
-            disabled={disableFollow}
-            />
-        </List.Item>
-        <Modal className="chimp-modal" onClose={this.closeShareModal} open={showShareModal} closeIcon size="tiny" trigger={
-            <List.Item as="a">
-                <Icon className="share alternate" onClick={() => this.setState({ showShareModal: true })}></Icon>
-            </List.Item>
-            }>
-            <Modal.Header>Share this Group</Modal.Header>
-            <Modal.Content>
-                <Modal.Description>
-                <List divided relaxed verticalAlign='middle' className="shareModalList">
-                <List.Item
-                id="twitter"
-                onClick={this.handleOnClick}
-                >
-                        <List.Icon 
-                        name='twitter'
-                        />
-                        <List.Content>
-                            <List.Header as='a'>Twitter</List.Header>
-                        </List.Content>
-                </List.Item>
-                <List.Item
-                id="facebook"
-                onClick={this.handleOnClick}
-                >
-                        <List.Icon name='facebook' />
-                        <List.Content>
-                            <List.Header as='a'>Facebook</List.Header>
-                        </List.Content>
-                </List.Item>
-                <List.Item className="shareCopyLink">
-                        <List.Content>
-                            <div className='shareLinkLeft'>Or share link</div>
-                            <div className='shareLinkTextBox'>
-                                <Input
-                                value={inputValue}
-                                />
-                            </div>
-                        </List.Content>
-                </List.Item>
+            <Fragment>
+                <List horizontal className="shareAndLike">
+                    <List.Item as="a">
+                        <Icon
+                        id="follow"
+                        color={liked ? "red" : "outline"}
+                        name="heart"
+                        onClick={this.handleFollow}
+                        disabled={disableFollow}
+                    />
+                    </List.Item>
+                    <Modal className="chimp-modal" onClose={this.closeShareModal} open={showShareModal} closeIcon size="tiny" trigger={
+                        <List.Item as="a">
+                            <Icon className="share alternate" onClick={() => this.setState({ showShareModal: true })}></Icon>
+                        </List.Item>
+                    }>
+                        <Modal.Header>Share this Group</Modal.Header>
+                        <Modal.Content>
+                            <Modal.Description>
+                                <List divided relaxed verticalAlign='middle' className="shareModalList">
+                                    <List.Item
+                                    id="twitter"
+                                    onClick={this.handleOnClick}
+                                    >
+                                        <List.Icon
+                                        name='twitter'
+                                        />
+                                        <List.Content>
+                                            <List.Header as='a'>Twitter</List.Header>
+                                        </List.Content>
+                                    </List.Item>
+                                    <List.Item
+                                    id="facebook"
+                                    onClick={this.handleOnClick}
+                                    >
+                                        <List.Icon name='facebook' />
+                                        <List.Content>
+                                            <List.Header as='a'>Facebook</List.Header>
+                                        </List.Content>
+                                    </List.Item>
+                                    <List.Item className="shareCopyLink">
+                                        <List.Content>
+                                            <div className='shareLinkLeft'>Or share link</div>
+                                            <div className='shareLinkTextBox'>
+                                                <Input
+                                                value={inputValue}
+                                                />
+                                            </div>
+                                        </List.Content>
+                                    </List.Item>
+                                </List>
+                            </Modal.Description>
+                        </Modal.Content>
+                    </Modal>
                 </List>
-                </Modal.Description>
-            </Modal.Content>
-    </Modal>
-    </List>
-    </Fragment>
+            </Fragment>
         );
     }
 }

@@ -549,7 +549,7 @@ export const getCampaignFromId = async (dispatch, campaignId) => {
         },
         type: actionTypes.GET_CAMPAIGN_SUPPORTING_GROUP,
     };
-    await coreApi.get(`campaigns/${campaignId}`, {
+    coreApi.get(`campaigns/${campaignId}`, {
         params: {
             dispatch,
             uxCritical: true,

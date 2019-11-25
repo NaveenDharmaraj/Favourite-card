@@ -28,6 +28,7 @@ const DonationDetails = (props) => {
         language,
         groupDetails: {
             attributes: {
+                campaignId,
                 totalMoneyRaised,
                 goal,
                 fundraisingPercentage,
@@ -102,13 +103,13 @@ const DonationDetails = (props) => {
                                 </Grid>
                             </div>
                         </Grid.Column>
-                        <CampaignSupports />
+                        {campaignId && <CampaignSupports />}
                     </Grid.Row>
                 </Grid>
             </div>
             {
-                (props.groupDetails.attributes.hasActiveMatch) ? 
-                    (
+                (props.groupDetails.attributes.hasActiveMatch)
+                    ? (
                         <ActiveMatchBlock
                             entityDetails={props.groupDetails}
                         />
