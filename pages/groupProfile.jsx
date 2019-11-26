@@ -41,7 +41,6 @@ class GroupProfile extends React.Component {
     componentDidMount() {
         const {
             dispatch,
-            isAUthenticated,
             slug,
             groupDetails: {
                 attributes: {
@@ -52,9 +51,7 @@ class GroupProfile extends React.Component {
         if (isCampaign === true) {
             Router.pushRoute(`/campaigns/${slug}`);
         }
-        (isAUthenticated
-            && getGroupFromSlug(dispatch, slug)
-        );
+        getGroupFromSlug(dispatch, slug);
     }
 
     render() {

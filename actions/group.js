@@ -9,6 +9,7 @@ export const actionTypes = {
     ACTIVITY_LIKE_STATUS: 'ACTIVITY_LIKE_STATUS',
     ADMIN_PLACEHOLDER_STATUS: 'ADMIN_PLACEHOLDER_STATUS',
     GET_BENEFICIARIES_COUNT: 'GET_BENEFICIARIES_COUNT',
+    GET_CAMPAIGN_SUPPORTING_GROUP: 'GET_CAMPAIGN_SUPPORTING_GROUP',
     GET_GROUP_ACTIVITY_DETAILS: 'GET_GROUP_ACTIVITY_DETAILS',
     GET_GROUP_ADMIN_DETAILS: 'GET_GROUP_ADMIN_DETAILS',
     GET_GROUP_BENEFICIARIES: 'GET_GROUP_BENEFICIARIES',
@@ -100,6 +101,7 @@ export const getDetails = async (dispatch, id, type, url) => {
         payload: {},
     };
     let newUrl = '';
+    const isViewMore = !_.isEmpty(url);
     const placeholderfsa = {
         payload: {},
     };
@@ -107,12 +109,14 @@ export const getDetails = async (dispatch, id, type, url) => {
         case 'members':
             fsa.type = actionTypes.GET_GROUP_MEMBERS_DETAILS;
             newUrl = !_.isEmpty(url) ? url : `/groups/${id}/groupMembers?page[size]=7`;
+            fsa.payload.isViewMore = isViewMore;
             placeholderfsa.payload.memberPlaceholder = true;
             placeholderfsa.type = actionTypes.MEMBER_PLACEHOLDER_STATUS;
             break;
         case 'admins':
             fsa.type = actionTypes.GET_GROUP_ADMIN_DETAILS;
             newUrl = !_.isEmpty(url) ? url : `/groups/${id}/groupAdmins?page[size]=7`;
+            fsa.payload.isViewMore = isViewMore;
             placeholderfsa.payload.adminPlaceholder = true;
             placeholderfsa.type = actionTypes.ADMIN_PLACEHOLDER_STATUS;
             break;
@@ -438,7 +442,7 @@ export const unlikeActivity = async (dispatch, eventId, groupId, userId) => {
 //     });
 // };
 
-export const joinGroup = async (dispatch, groupSlug) => {
+export const joinGroup = async (dispatch, groupSlug, groupId, loadMembers) => {
     const fsa = {
         payload: {
             groupDetails: {},
@@ -456,6 +460,8 @@ export const joinGroup = async (dispatch, groupSlug) => {
         (result) => {
             if (result && !_.isEmpty(result.data)) {
                 fsa.payload.groupDetails = result.data;
+                getDetails(dispatch, groupId, 'members');
+                getDetails(dispatch, groupId, 'admins');
             }
         },
     ).catch(() => {
@@ -501,7 +507,7 @@ const checkForOnlyOneAdmin = (error) => {
     return false;
 };
 
-export const leaveGroup = async (dispatch, slug, groupId) => {
+export const leaveGroup = async (dispatch, slug, groupId, loadMembers) => {
     dispatch({
         payload: { buttonLoading: true },
         type: actionTypes.LEAVE_GROUP_MODAL_BUTTON_LOADER,
@@ -517,6 +523,8 @@ export const leaveGroup = async (dispatch, slug, groupId) => {
                 },
                 type: actionTypes.LEAVE_GROUP_MODAL_BUTTON_LOADER,
             });
+            getDetails(dispatch, groupId, 'members');
+            getDetails(dispatch, groupId, 'admins');
         }
     }).catch((error) => {
         dispatch({
@@ -539,4 +547,24 @@ export const leaveGroup = async (dispatch, slug, groupId) => {
         }
         dispatch(errorFsa);
     });
+};
+
+export const getCampaignFromId = async (dispatch, campaignId) => {
+    const fsa = {
+        payload: {
+            campaignDetails: {},
+        },
+        type: actionTypes.GET_CAMPAIGN_SUPPORTING_GROUP,
+    };
+    coreApi.get(`campaigns/${campaignId}`, {
+        params: {
+            dispatch,
+            uxCritical: true,
+        },
+    }).then((result) => {
+        if (result && !_.isEmpty(result.data)) {
+            fsa.payload.campaignDetails = result.data;
+            dispatch(fsa);
+        }
+    }).catch();
 };

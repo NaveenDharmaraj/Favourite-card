@@ -3841,7 +3841,6 @@ body{
                 background-image: url(../images/icons/icon-account_settings.svg) !important;
                 background-size: contain !important;
                 background-position: center;
-                opacity: 0.5;
               }
             }
           }
@@ -3882,7 +3881,6 @@ body{
               background-image: url(../images/icons/icon-account_settings.svg) !important;
               background-size: contain !important;
               background-position: center !important;
-              opacity: 0.5;
             }
           }
         }
@@ -4040,6 +4038,9 @@ body{
   }
 }
 @media only screen and (max-width:767px) {
+  body .gpRightButtons > div {
+    margin-bottom: 22px;
+  }
   body{
     .give-friends-list .ui.card{
       margin: auto;
@@ -4446,6 +4447,9 @@ body{
     }
     &.giving{
       background-image: url(../images/giving_info_card_bg.png);
+      @media only screen and (min-width:991px){
+        overflow: hidden;
+      }
     }
     .charityDetailsList{
       margin-bottom: 34px !important;
@@ -4545,6 +4549,72 @@ body{
 .profile-social-wraper{
   padding-left: 2rem;
   border-left: 1px solid #D8D8D8;
+  &.groupSupportsWraper{
+    @media only screen and (min-width:991px){
+      position: relative;
+      &::before{
+        content: '';
+        position: absolute;
+        left: -1px;
+        top: -50px;
+        bottom: -50px;
+        width: 1px;
+        background-color: #D8D8D8;
+      }
+    }
+    @media only screen and (min-width:767px) and (max-width:991px){
+      padding-top: 2rem;
+      padding-left: 0px;
+      border-left: 0px solid transparent;
+    }
+  }
+  .groupSupports{
+    h3{
+      &.ui{
+        &.header{
+          color: #263238;		
+          font-size: 20px !important;
+          font-weight: 600;	
+          line-height: 24px;
+          margin-bottom: 18px !important;
+        }
+      }
+    }
+    
+    .groupSupportsList{
+      &.ui{
+        &.relaxed{
+          &.list{
+            .item{
+              @media only screen and (max-width: 767px){
+                margin-left: 0px;
+              }
+              >.image{
+                &.ui{
+                  width: 66px;
+                  border-radius: 4px;
+                }
+              }
+              .content{
+                width: calc(100% - 73px);
+                a{
+                    &.header{
+                    font-size: 14px;
+                    line-height: 17px;
+                    color:#262626 !important;
+                  }
+                  .description{
+                    font-size: 14px;
+                    color:#262626 !important;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
   &.pl-0{
     padding-left: 0;
   }
@@ -4650,6 +4720,7 @@ body{
     .profile-info-wraper{
       .profile-info-card{
         background-position: 0px 3/@rem;
+        padding: 2rem 2rem;
         .profile-social-wraper{
           padding-left: 0rem;
           border-left: 0px solid transparent;
@@ -7064,6 +7135,21 @@ body{
            body .cFooter .subscribeForm .hs_email .input input {
              width: 100%;
              margin-bottom: 10px; }
+      .profile-social-wraper{
+        &.groupSupportsWraper{
+          position: relative;
+          padding-top: 30px;
+          &::before{
+            position: absolute;
+            content: "";
+            top: 15px;
+            left:-3rem;
+            right:-3rem;
+            height: 1px;
+            background-color: #ccc;
+          }
+        }
+      }
      }
 @media only screen and (max-width: 767px) {
          body .cFooter .subscribeForm .hs_email .input input {
@@ -7240,4 +7326,101 @@ body{
       }
     }
   }
+}
+.shareAndLike{
+  &.ui{
+    &.horizontal{
+      &.list{
+        width: auto;
+        .item{
+          i{
+            &.icon{
+              &.heart{
+                font-size: 24px;
+                margin-left: 11px;
+                color: #dc2928;
+                &.outline{
+                  color: #4e4e4e;
+                  font-weight: 400;
+                  &:hover{
+                    color: #dc2928;
+                  }
+                }
+              }
+            }
+            &.icon{
+              &.share{
+                &.alternate{
+                  position: relative;
+                  min-width: 24px;
+                  min-height: 24px;
+                  &::before{
+                    content: '';
+                    position: absolute;
+                    top: -8px;
+                    left: 0;
+                    bottom: 0;
+                    right: 0;
+                    background-image: url(../images/icons/share.svg) !important;
+                    background-repeat: no-repeat !important;
+                    background-size: contain !important;
+                    background-position: center !important;
+                    
+                  }
+                }
+              }
+            }
+          }
+          &:last-child{
+            padding-left:6px;
+            margin-left: 0px;
+            padding-right:6px;
+          }
+        }
+      }
+    }
+  }
+}
+.shareModalList{
+  &.ui{
+    &.list{
+      &.divided{
+        &.relaxed{
+          >.item{
+            &.shareCopyLink{
+              padding: 20px 15px 20px 5px;
+              border-bottom:1px solid rgba(34,36,38,.15);
+              margin-bottom: 50px;
+              .shareLinkLeft{
+                display: inline-block;
+                color: #4E4E4E;	font-size: 14px;	font-weight: 600;	line-height: 21px;margin-left:5px;
+              }
+              .shareLinkTextBox{
+                display: inline-block;
+                margin-left: 15px;
+                width: calc(100% - 100px);
+                .ui{
+                  &.input{
+                    width: 100%;
+                   >input{
+                    border: none !important;
+                    border-bottom: 1px solid #ccc !important;
+                    border-radius: 0px;
+                    width: 100%;
+                   }
+                  }
+                }
+              }
+            }
+            >i{
+              &.icon{
+                padding:15px 15px 15px 5px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+ 
 }
