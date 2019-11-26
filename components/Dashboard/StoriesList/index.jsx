@@ -10,6 +10,7 @@ import _ from 'lodash';
 import {
     connect,
 } from 'react-redux';
+import ReactHtmlParser from 'react-html-parser';
 
 import {
     getStoriesList,
@@ -59,7 +60,7 @@ class StoriesList extends React.Component {
         if (storiesData && storiesData.data && _.size(storiesData.data) > 0) {
             const showData = _.slice(storiesData.data, 0, 7);
             storiesList = showData.map((data, index) => {
-                let blogTitle = data.blog_title.replace(/&#8217;/g, "'");
+                let blogTitle = data.blog_title;
                 try {
                     blogTitle = decodeURI(blogTitle);
                 } catch (e) {
@@ -70,7 +71,7 @@ class StoriesList extends React.Component {
                     <Grid.Column key={index}>
                         <Card as="a" href={data.blog_URL} target="_blank" className="tips-card" style={{ backgroundImage: `url(${data.blog_image_URL})` }}>
                             <Card.Content>
-                                <Card.Header>{blogTitle}</Card.Header>
+                                <Card.Header>{ ReactHtmlParser(blogTitle) }</Card.Header>
                             </Card.Content>
                         </Card>
                     </Grid.Column>
