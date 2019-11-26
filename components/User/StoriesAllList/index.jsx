@@ -92,8 +92,8 @@ class StoriesAllList extends React.Component {
                     blog_URL,
                 } = data;
                 const displayAvatar = (!_.isEmpty(blog_image_URL)) ? blog_image_URL : allImg;
-                let blogTitle = ReactHtmlParser(blog_title);
-                let blogDescription = ReactHtmlParser(blog_excerpt);
+                let blogTitle = blog_title;
+                let blogDescription = blog_excerpt;
                 try {
                     blogTitle = decodeURI(blogTitle);
                     blogDescription = decodeURI(blogDescription);
@@ -111,11 +111,11 @@ class StoriesAllList extends React.Component {
                                 <Grid.Column mobile={16} tablet={7} computer={8} verticalAlign="top">
                                     <div className=" description">
                                         <Header as="h4">
-                                            {blogTitle}
+                                            { ReactHtmlParser(blogTitle)}
                                             <br />
                                             <br />
                                             <Header.Subheader>
-                                                {!_isEmpty(blogDescription) ? blogDescription.split(' ').slice(0, 20).join(' ') : null}
+                                                {!_isEmpty(blogDescription) ? ReactHtmlParser(blogDescription.split(' ').slice(0, 20).join(' ')) : null}
                                                 {(!_isEmpty(blogDescription) && blogDescription.split(' ').length > 20) && '...'}
                                             </Header.Subheader>
                                         </Header>
