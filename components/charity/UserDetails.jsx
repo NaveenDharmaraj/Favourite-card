@@ -33,6 +33,12 @@ const {
 
 const createUserDetails = (valuesObject) => {
     const data = [];
+    if (!_isEmpty(valuesObject.contactName)) {
+        data.push({
+            Content: `Contact: ${valuesObject.contactName}`,
+            name: 'user',
+        });
+    }
     if (!_isEmpty(valuesObject.phone)) {
         data.push({
             Content: valuesObject.phone,
