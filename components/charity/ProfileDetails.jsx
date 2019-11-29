@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
 import {
     PropTypes,
@@ -22,16 +22,28 @@ import CharityNoDataState from './CharityNoDataState';
 
 const ProfileDetails = (props) => {
     const {
-        charityDetails,
+        charityDetails: {
+            charityDetails: {
+                attributes: {
+                    formattedDescription,
+                    formattedDescriptionNew,
+                },
+            },
+        },
     } = props;
     const panes = [
         {
             menuItem: 'About',
             render: () => (
                 <Tab.Pane attached={false}>
-                    {_isEmpty(charityDetails.charityDetails.attributes.formattedDescription)
+                    {(_isEmpty(formattedDescription) && _isEmpty(formattedDescriptionNew))
                         ? <CharityNoDataState />
-                        : <p>{ReactHtmlParser(charityDetails.charityDetails.attributes.formattedDescription)}</p>
+                        : (
+                            <Fragment>
+                                {!_isEmpty(formattedDescription) && <p>{ReactHtmlParser(formattedDescription)}</p>}
+                                {!_isEmpty(formattedDescriptionNew) && <p>{ReactHtmlParser(formattedDescriptionNew)}</p>}
+                            </Fragment>
+                        )
                     }
                 </Tab.Pane>
             ),
@@ -72,6 +84,7 @@ ProfileDetails.defaultProps = {
         charityDetails: {
             attributes: {
                 formattedDescription: '',
+                formattedDescriptionNew: '',
             },
         },
     },
@@ -82,6 +95,7 @@ ProfileDetails.propTypes = {
         charityDetails: {
             attributes: PropTypes.shape({
                 formattedDescription: string,
+                formattedDescriptionNew: string,
             }),
         },
     },
