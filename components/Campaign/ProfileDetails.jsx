@@ -122,9 +122,7 @@ function ProfileDetails(props) {
                 );
             },
         },
-    ];
-    if (props.isAuthenticated) {
-        panes.push({
+        {
             menuItem: 'Giving Groups supporting this Campaign',
             render: () => {
                 const {
@@ -148,8 +146,8 @@ function ProfileDetails(props) {
                     </Tab.Pane>
                 );
             },
-        });
-    }
+        },
+    ];
     return (
         <Container>
             <div className="charityTab">

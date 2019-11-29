@@ -135,7 +135,10 @@ class Search extends React.Component {
                     type: 'DISPATCH_FILTER_VALUE_SHOWED',
                 });
             }
-            
+            // Changing the state to intial everytime there is a change in result type
+            if (!_isEqual(searchType, prevProps.searchType) || !_isEqual(searchWord, prevProps.searchWord)) {
+                currentPageClicked = 1;
+            }
             if (!_isEqual(searchType, prevProps.searchType) || !_isEqual(searchWord, prevProps.searchWord)
                 || !_isEqual(currentPageClicked, prevState.currentPageClicked) || !_isEqual(filterData, prevProps.filterData)) {
                 switch (searchType) {
@@ -162,10 +165,7 @@ class Search extends React.Component {
                         break;
                     default: break;
                 }
-                // Changing the state to intial everytime there is a change in result type
-                if (!_isEqual(searchType, prevProps.searchType) || !_isEqual(searchWord, prevProps.searchWord)) {
-                    currentPageClicked = 1;
-                }
+
                 currentTab = searchType;
             }
             this.setState({
