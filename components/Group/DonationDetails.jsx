@@ -1,4 +1,6 @@
-import React from 'react';
+import React, {
+    Fragment,
+} from 'react';
 import { connect } from 'react-redux';
 import {
     number,
@@ -36,6 +38,7 @@ const DonationDetails = (props) => {
                 balance,
                 fundraisingDaysRemaining,
                 lastDonationAt,
+                goalAmountRaised,
             },
         },
     } = props;
@@ -59,25 +62,29 @@ const DonationDetails = (props) => {
                 <Grid stackable>
                     <Grid.Row verticalAlign="middle">
                         <Grid.Column mobile={16} tablet={11} computer={11}>
-                            <Header as="h2" className="font-s-34">
-                                {formatCurrency(totalMoneyRaised, language, currency)}
-                                {fundRaisingDuration}
-                                <Header.Subheader className="small font-s-14" style={{ marginTop: '.7rem' }}>
-                                    {`raised of 
-                                    ${formatCurrency(goal, language, currency)}
-                                    goal`}
-                                </Header.Subheader>
-                                
-                            </Header>
-                            <Progress className="mb-0 c-green" percent={fundraisingPercentage} size="tiny" />
-                            {lastDonationDay
+                            {(fundraisingDaysRemaining !== null && fundraisingDaysRemaining >= 0)
                             && (
-                                <div className="small-font">
-                                    {`Last donation
-                                    ${lastDonationDay}`}
-                                </div>
-                            )
-                            }
+                                <Fragment>
+                                    <Header as="h2" className="font-s-34">
+                                        {formatCurrency(goalAmountRaised, language, currency)}
+                                        {fundRaisingDuration}
+                                        <Header.Subheader className="small font-s-14" style={{ marginTop: '.7rem' }}>
+                                            {`raised of
+                                            ${formatCurrency(goal, language, currency)}
+                                            goal`}
+                                        </Header.Subheader>
+                                    </Header>
+                                    <Progress className="mb-0 c-green" percent={fundraisingPercentage} size="tiny" />
+                                    {lastDonationDay
+                                    && (
+                                        <div className="small-font">
+                                            {`Last donation
+                                            ${lastDonationDay}`}
+                                        </div>
+                                    )
+                                    }
+                                </Fragment>
+                            )}
                             <div className="pt-1 campaign-amount">
                                 <Grid stackable columns={3}>
                                     <Grid.Row>
