@@ -6,6 +6,7 @@ import securityApi from '../services/securityApi';
 import coreApi from '../services/coreApi';
 import eventApi from '../services/eventApi';
 import utilityApi from '../services/utilityApi';
+import { Router } from '../routes';
 
 import {
     createToken,
@@ -99,9 +100,11 @@ const getUserFriendProfile = (dispatch, email, userId, loggedInUserId) => {
         type: actionTypes.USER_PROFILE_BASIC_FRIEND,
     };
     graphApi.get(`/recommendation/withProfileType/user`, { params: {
+        dispatch,
         emailid: email,
         sourceId: Number(loggedInUserId),
         targetId: Number(userId),
+        uxCritical: true,
     } }).then(
         (result) => {
             fsa.payload = {
@@ -109,6 +112,7 @@ const getUserFriendProfile = (dispatch, email, userId, loggedInUserId) => {
             };
         },
     ).catch((error) => {
+        Router.back();
         fsa.error = error;
     }).finally(() => {
         dispatch(fsa);
