@@ -24,6 +24,7 @@ import _isEmpty from 'lodash/isEmpty';
 import _merge from 'lodash/merge';
 import _replace from 'lodash/replace';
 import _cloneDeep from 'lodash/cloneDeep';
+import ReactHtmlParser from 'react-html-parser';
 
 import {
     formatCurrency,
@@ -815,7 +816,7 @@ class Friend extends React.Component {
                     />
                     <FormValidationErrorMessage
                         condition={!validity.isAmountLessThanOneBillion}
-                        errorMessage={formatMessage('giveCommon:errorMessages.invalidMaxAmountError')}
+                        errorMessage={ReactHtmlParser(formatMessage('giveCommon:errorMessages.invalidMaxAmountError'))}
                     />
                     <FormValidationErrorMessage
                         condition={!validity.isAmountCoverGive}
