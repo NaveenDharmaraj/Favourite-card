@@ -37,6 +37,19 @@ const columnComponent = (column, placeholderType) => {
                     </Grid>
                 </Card.Header>,
             );
+        } else if (placeholderType === 'singleCard') {
+            columnComponents.push(
+                <Grid.Column width={14}>
+                    <div className="profile-social-wraper groupSupportsWraper">
+                        <Placeholder className="bgTransparent">
+                            <Placeholder.Header image>
+                                <Placeholder.Line />
+                                <Placeholder.Line />
+                            </Placeholder.Header>
+                        </Placeholder>
+                    </div>
+                </Grid.Column>,
+            );
         } else {
             columnComponents.push(
                 <Grid.Column>
@@ -79,6 +92,12 @@ const PlaceholderGrid = (props) => {
                 <Table.Row>
                     {columnComponent(column, placeholderType)}
                 </Table.Row>,
+            );
+        } else if (placeholderType === 'singleCard') {
+            placeHolderComponent.push(
+                <Grid.Row>
+                    {columnComponent(column, placeholderType)}
+                </Grid.Row>,
             );
         } else {
             placeHolderComponent.push(
