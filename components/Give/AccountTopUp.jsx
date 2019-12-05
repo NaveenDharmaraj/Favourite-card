@@ -11,6 +11,7 @@ import {
     Popup,
     Select,
 } from 'semantic-ui-react';
+import ReactHtmlParser from 'react-html-parser';
 
 import FormValidationErrorMessage from '../shared/FormValidationErrorMessage';
 
@@ -63,7 +64,7 @@ const AccountTopUp = (props) => {
                 />
                 <FormValidationErrorMessage
                     condition={!validity.isDonationAmountLessThan1Billion}
-                    errorMessage={formatMessage('giveCommon:errorMessages.invalidMaxAmountError')}
+                    errorMessage={ReactHtmlParser(formatMessage('giveCommon:errorMessages.invalidMaxAmountError'))}
                 />
                 <FormValidationErrorMessage
                     condition={!!validity.isDonationAmountPositive && !validity.isDonationAmountCoverGive}

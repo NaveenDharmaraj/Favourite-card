@@ -30,6 +30,7 @@ import {
 import {
     connect,
 } from 'react-redux';
+import ReactHtmlParser from 'react-html-parser';
 import { Link } from '../../../routes';
 import { beneficiaryDefaultProps } from '../../../helpers/give/defaultProps';
 import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
@@ -1182,7 +1183,7 @@ class Charity extends React.Component {
                         />
                         <FormValidationErrorMessage
                             condition={!validity.isAmountLessThanOneBillion}
-                            errorMessage={formatMessage('giveCommon:errorMessages.invalidMaxAmountError')}
+                            errorMessage={ReactHtmlParser(formatMessage('giveCommon:errorMessages.invalidMaxAmountError'))}
                         />
                         <FormValidationErrorMessage
                             condition={!validity.isAmountCoverGive}

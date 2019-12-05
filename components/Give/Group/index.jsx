@@ -27,6 +27,7 @@ import {
   Popup,
   Select,
 } from 'semantic-ui-react';
+import ReactHtmlParser from 'react-html-parser';
 import { Link } from '../../../routes';
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 import NoteTo from '../NoteTo';
@@ -1025,7 +1026,7 @@ class Group extends React.Component {
                         />
                         <FormValidationErrorMessage
                             condition={!validity.isAmountLessThanOneBillion}
-                            errorMessage={formatMessage('invalidMaxAmountError')}
+                            errorMessage={ReactHtmlParser(formatMessage('invalidMaxAmountError'))}
                         />
                         <FormValidationErrorMessage
                             condition={!validity.isAmountCoverGive}
