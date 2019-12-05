@@ -1,5 +1,7 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React,  {
+    Fragment,
+} from 'react';
 import _ from 'lodash';
 import {
     Card,
@@ -9,6 +11,7 @@ import {
     List,
     Grid,
     Header,
+    Modal,
 } from 'semantic-ui-react';
 import {
     connect,
@@ -19,6 +22,7 @@ import {
 } from '../../../actions/dashboard';
 import Pagination from '../../shared/Pagination';
 import noDataImg from '../../../static/images/noresults.png';
+import iconsRight from '../../../static/images/icons/icon-document.svg';
 import PlaceHolderGrid from '../../shared/PlaceHolder';
 import { withTranslation } from '../../../i18n';
 import {
@@ -118,6 +122,7 @@ class DashboradList extends React.Component {
                 const month = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ];
                 const yyyy = date.getFullYear();
                 date = `${month[mm]} ${dd}, ${yyyy}`;
+                let modalDate = `${month[mm]} ${dd}, ${yyyy}`;
                 let dateClass = 'date boderBottom';
                 if (date !== compareDate) {
                     compareDate = date;
@@ -126,6 +131,7 @@ class DashboradList extends React.Component {
                     date = '';
                 }
                 let givingType = ''; let rowClass = ''; let givingTypeClass = ''; let descriptionType = ''; let entity = ''; let transactionSign = ''; let profileUrl = '';
+                let informationSharedEntity = '';
                 let imageCls = 'ui image';
                 let transactionTypeDisplay = '';
                 if (!_.isEmpty(data.attributes.destination)) {
@@ -138,6 +144,7 @@ class DashboradList extends React.Component {
                         entity = data.attributes.destination.name;
                         transactionSign = '-';
                         profileUrl = `groups/${data.attributes.destination.slug}`;
+                        informationSharedEntity = 'Giving Group admin';
                     } else if (data.attributes.destination.type.toLowerCase() === 'beneficiary') {
                         givingType = 'charity';
                         rowClass = 'allocation';
@@ -147,6 +154,7 @@ class DashboradList extends React.Component {
                         entity = data.attributes.destination.name;
                         transactionSign = '-';
                         profileUrl = `charities/${data.attributes.destination.slug}`;
+                        informationSharedEntity = 'charity';
                     } else if (data.attributes.destination.type.toLowerCase() === 'campaign') {
                         givingType = 'campaign';
                         rowClass = 'allocation';
@@ -156,6 +164,7 @@ class DashboradList extends React.Component {
                         entity = data.attributes.destination.name;
                         transactionSign = '-';
                         profileUrl = `campaigns/${data.attributes.destination.slug}`;
+                        informationSharedEntity = 'campaign';
                     } else if (data.attributes.transactionType.toLowerCase() === 'donation') {
                         givingType = '';
                         rowClass = 'donation';
@@ -239,6 +248,202 @@ class DashboradList extends React.Component {
                                                     {entity}
                                                 </b>
                                             )}
+                                            <Modal size="tiny" dimmer="inverted" className="chimp-modal acntActivityModel" closeIcon trigger={<span className="descriptionRight"><Image className="icons-right-page" src={iconsRight}/></span>}>
+                                                <Modal.Header>{modalDate}</Modal.Header>
+                                                <Modal.Content>
+                                                    <div className="acntActivityHeader">
+                                                        <Header as='h2' icon>
+                                                            <Image className={imageCls} size="tiny" src={data.attributes.imageUrl} />
+                                                            {transactionSign}
+                                                            {amount}
+                                                            <Header.Subheader>
+                                                                {descriptionType}
+                                                                {(profileUrl) ? (
+                                                                    <span>
+                                                                        {entity}
+                                                                    </span>
+                                                                ) : (
+                                                                    <span>
+                                                                        {entity}
+                                                                    </span>
+                                                                )}
+                                                            </Header.Subheader>
+                                                        </Header>
+                                                    </div>
+                                                    {
+                                                        !_.isEmpty(data.attributes.metaValues) && (
+                                                            <div className="acntActivityContent">
+                                                                <List celled className="acntActivityList">
+                                                                    {
+                                                                        data.attributes.transactionType.toLowerCase() === 'donation' && (
+                                                                            <Fragment>
+                                                                                <List.Item>
+                                                                                    <List.Content>
+                                                                                        <List.Header>Payment Method</List.Header>
+                                                                                        {data.attributes.paymentInstrument.data.attributes.description}
+                                                                                    </List.Content>
+                                                                                </List.Item>
+                                                                                <List.Item>
+                                                                                    <List.Content>
+                                                                                        <List.Header>Tax receipient</List.Header>
+                                                                                        {data.attributes.metaValues.full_name}
+                                                                                        <br />
+                                                                                        {data.attributes.metaValues.address_one}
+                                                                                        {', '}
+                                                                                        {data.attributes.metaValues.address_two}
+                                                                                        <br />
+                                                                                        {data.attributes.metaValues.city}
+                                                                                        {', '}
+                                                                                        {data.attributes.metaValues.province}
+                                                                                        {' '}
+                                                                                        {data.attributes.metaValues.postal_code}
+                                                                                    </List.Content>
+                                                                                </List.Item>
+                                                                                <List.Item>
+                                                                                    <List.Content>
+                                                                                        <List.Header>Note to self</List.Header>
+                                                                                        {data.attributes.reason}
+                                                                                    </List.Content>
+                                                                                </List.Item>
+                                                                            </Fragment>
+                                                                        )
+                                                                    }
+                                                                    {
+                                                                        (data.attributes.transactionType.toLowerCase() === 'fundallocation' || data.attributes.transactionType.toLowerCase() === 'allocation') && (
+                                                                            <List.Item>
+                                                                                <List.Content>
+                                                                                    <List.Header>Source account</List.Header>
+                                                                                    {data.attributes.source.name}
+                                                                                </List.Content>
+                                                                            </List.Item>
+                                                                        )
+                                                                    }
+                                                                    {
+                                                                        data.attributes.transactionType.toLowerCase() === 'fundallocation' && (
+                                                                            !_.isEmpty(data.attributes.metaValues.share.name)
+                                                                            || !_.isEmpty(data.attributes.metaValues.share.email)
+                                                                        ) && (
+                                                                            <Fragment>
+                                                                                <List.Item>
+                                                                                    <List.Content>
+                                                                                        <List.Header>
+                                                                                            Information shared with
+                                                                                            {' '}
+                                                                                            {informationSharedEntity}
+                                                                                        </List.Header>
+                                                                                        {
+                                                                                            !_.isEmpty(data.attributes.metaValues.share.name) && (
+                                                                                                <div>
+                                                                                                    {data.attributes.metaValues.share.name}
+                                                                                                </div>
+                                                                                            )
+                                                                                        }
+                                                                                        {
+                                                                                            !_.isEmpty(data.attributes.metaValues.share.email) && (
+                                                                                                <div>
+                                                                                                    {data.attributes.metaValues.share.email}
+                                                                                                </div>
+                                                                                            )
+                                                                                        }
+                                                                                    </List.Content>
+                                                                                </List.Item>
+                                                                                {
+                                                                                    !_.isEmpty(data.attributes.metaValues.dedicate) && (
+                                                                                        <List.Item>
+                                                                                            <List.Content>
+                                                                                                <List.Header>Gift dedication</List.Header>
+                                                                                                {
+                                                                                                    !_.isEmpty(data.attributes.metaValues.dedicate.in_honor_of) && (
+                                                                                                        <div>
+                                                                                                            In honour of
+                                                                                                            {' '}
+                                                                                                            {data.attributes.metaValues.dedicate.in_honor_of}
+                                                                                                        </div>
+                                                                                                    )
+                                                                                                }
+                                                                                                {
+                                                                                                    !_.isEmpty(data.attributes.metaValues.dedicate.in_memory_of) && (
+                                                                                                        <div>
+                                                                                                            In memory of
+                                                                                                            {data.attributes.metaValues.dedicate.in_memory_of}
+                                                                                                        </div>
+                                                                                                    )
+                                                                                                }
+                                                                                            </List.Content>
+                                                                                        </List.Item>
+                                                                                    )
+                                                                                }
+                                                                            </Fragment>
+                                                                        )
+                                                                    }
+                                                                    {
+                                                                        !_.isEmpty(data.attributes.noteToRecipient) && !_.isEmpty(data.attributes.destination) && (
+                                                                            <List.Item>
+                                                                                <List.Content>
+                                                                                    {
+                                                                                        (data.attributes.destination.type.toLowerCase() === 'user') && (
+                                                                                            <List.Header>Message to friend</List.Header>
+                                                                                        )
+                                                                                    }
+                                                                                    {
+                                                                                        (data.attributes.destination.type.toLowerCase() !== 'user') && (
+                                                                                            <List.Header>Note to Recipient</List.Header>
+                                                                                        )
+                                                                                    }
+                                                                                    {data.attributes.noteToRecipient}
+                                                                                </List.Content>
+                                                                            </List.Item>
+                                                                        )
+                                                                    }
+                                                                    {
+                                                                        !_.isEmpty(data.attributes.noteToRecipient) && _.isEmpty(data.attributes.destination) && (
+                                                                            <List.Item>
+                                                                                <List.Content>
+                                                                                    <List.Header>Message to friend</List.Header>
+                                                                                    {data.attributes.noteToRecipient}
+                                                                                </List.Content>
+                                                                            </List.Item>
+                                                                        )
+                                                                    }
+                                                                    {
+                                                                        !_.isEmpty(data.attributes.destination) && (
+                                                                            <Fragment>
+                                                                                {
+                                                                                    data.attributes.destination.id !== Number(id) && (
+                                                                                        <Fragment>
+                                                                                            {
+                                                                                                !_.isEmpty(data.attributes.noteToSelf) && (
+                                                                                                    <List.Item>
+                                                                                                        <List.Content>
+                                                                                                            <List.Header>Note to self</List.Header>
+                                                                                                            {data.attributes.noteToSelf}
+                                                                                                        </List.Content>
+                                                                                                    </List.Item>
+                                                                                                )
+                                                                                            }
+                                                                                        </Fragment>
+                                                                                    )
+                                                                                }
+                                                                            </Fragment>
+                                                                        )
+                                                                    }
+                                                                    {
+                                                                        !_.isEmpty(data.attributes.noteToSelf) && _.isEmpty(data.attributes.destination) && (
+                                                                            <List.Item>
+                                                                                <List.Content>
+                                                                                    <List.Header>Note to self</List.Header>
+                                                                                    {data.attributes.noteToSelf}
+                                                                                </List.Content>
+                                                                            </List.Item>
+                                                                        )
+                                                                    }
+                                                                </List>
+                                                            </div>
+                                                        )
+                                                    }
+                                                    
+                                                </Modal.Content>
+                                            </Modal>
                                         </List.Header>
                                         <List.Description className={givingTypeClass}>
                                             {givingType}
