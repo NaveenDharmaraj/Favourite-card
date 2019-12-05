@@ -62,7 +62,7 @@ const DonationDetails = (props) => {
                 <Grid stackable>
                     <Grid.Row verticalAlign="middle">
                         <Grid.Column mobile={16} tablet={11} computer={11}>
-                            {(fundraisingDaysRemaining !== null && fundraisingDaysRemaining >= 0)
+                            {(fundraisingDaysRemaining !== null && fundraisingDaysRemaining > 0)
                             && (
                                 <Fragment>
                                     <Header as="h2" className="font-s-34">
