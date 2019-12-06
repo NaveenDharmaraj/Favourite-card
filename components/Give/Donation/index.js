@@ -18,6 +18,7 @@ import {
 import {
     connect,
 } from 'react-redux';
+import ReactHtmlParser from 'react-html-parser';
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 import Note from '../../shared/Note';
 import DropDownAccountOptions from '../../shared/DropDownAccountOptions';
@@ -310,6 +311,7 @@ class Donation extends React.Component {
      * @return {JSX} JSX representing donation amount.
      */  
     renderDonationAmountField(amount, validity, formatMessage) {
+
       return (
           <Form.Field>
               <label htmlFor="donationAmount">
@@ -338,7 +340,7 @@ class Donation extends React.Component {
                 />
                 <FormValidationErrorMessage
                     condition={!validity.isAmountLessThanOneBillion}
-                    errorMessage={formatMessage('giveCommon:errorMessages.invalidMaxAmountError')}
+                    errorMessage={ReactHtmlParser(formatMessage('giveCommon:errorMessages.invalidMaxAmountError'))}
                 />
             </Form.Field>
         );
