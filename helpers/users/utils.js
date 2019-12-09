@@ -33,7 +33,7 @@ const hasTwoChar = (value) => {
 };
 
 const validateUserRegistrationForm = (field, untrimmedValue, validity) => {
-    const emailRegex = new RegExp(/^[A-Z0-9a-z._%+-]+@[^-][A-Za-z0-9.-]+[^-]\.[A-Za-z]{2,64}$/i);
+    const emailRegex = new RegExp(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i);
     let value;
     if (untrimmedValue) {
         value = untrimmedValue.trim();
