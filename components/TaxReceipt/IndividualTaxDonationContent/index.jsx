@@ -255,13 +255,11 @@ class IndividualTaxDonationContent extends React.Component {
     }
 }
 const mapStateToProps = (state) => ({
-    currentIndex: state.taxreceipt.currentIndex,
     currentYear: state.taxreceipt.currentYear,
     downloadloader: state.taxreceipt.downloadloader,
 });
 
 IndividualTaxDonationContent.defaultProps = {
-    currentIndex: null,
     donationDetail: {
         year: null,
     },
