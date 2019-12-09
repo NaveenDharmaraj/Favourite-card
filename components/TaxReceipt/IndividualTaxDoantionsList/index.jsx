@@ -46,7 +46,7 @@ class IndividualTaxDoantionsList extends React.Component {
         });
         dispatch({
             payload: {
-                issuedTaxReceiptDonationsDetail: [],
+                issuedTaxReceiptDonationsDetail: {},
             },
             type: actionTypes.ISSUED_TAX_RECEIPIENT_DONATIONS_DETAIL,
         });
@@ -54,6 +54,11 @@ class IndividualTaxDoantionsList extends React.Component {
 
     render() {
         const {
+            currentUser: {
+                attributes: {
+                    displayName,
+                },
+            },
             currentIssuedTaxReceipt: {
                 address_one,
                 address_two,
@@ -65,10 +70,9 @@ class IndividualTaxDoantionsList extends React.Component {
                 isDefault,
             },
             id,
+            issuedTaxReceiptDonationsDetail,
             issuedTaxReceiptYearlyDetail,
-            name,
             renderdonationDetailShow,
-            year,
             yearLoader,
         } = this.props;
         return (
@@ -120,10 +124,10 @@ class IndividualTaxDoantionsList extends React.Component {
                                         issuedTaxReceiptYearlyDetail.map((donationDetail, index) => (
                                             <IndividualTaxDonationContent
                                                 donationDetail={donationDetail}
+                                                DonationsDetails={(!_isEmpty(issuedTaxReceiptDonationsDetail) && !_isEmpty(issuedTaxReceiptDonationsDetail[donationDetail.year])) && issuedTaxReceiptDonationsDetail[donationDetail.year]}
                                                 index={index}
                                                 id={id}
-                                                name={name}
-                                                year={year}
+                                                name={displayName}
                                             />
                                         ))
 
@@ -143,7 +147,6 @@ const mapStateToProps = (state) => ({
     currentUser: state.user.info,
     issuedTaxReceiptDonationsDetail: state.taxreceipt.issuedTaxReceiptDonationsDetail,
     issuedTaxReceiptYearlyDetail: state.taxreceipt.issuedTaxReceiptYearlyDetail,
-    issuedTaxReceiptYearlyDetailPageCount: state.taxreceipt.issuedTaxReceiptYearlyDetailPageCount,
     year: state.taxreceipt.year,
     yearLoader: state.taxreceipt.yearLoader,
 });

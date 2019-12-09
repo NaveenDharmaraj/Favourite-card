@@ -3,7 +3,7 @@ import _isEmpty from 'lodash/isEmpty';
 import coreApi from '../services/coreApi';
 
 export const actionTypes = {
-    DOWNLOAD_TAX_RECEIPT_DONATION_DETAIL: 'DOWNLOAD_TAX_RECEIPT_DONATION_DETAIL',
+    DOWNLOAD_TAX_RECEIPT_DONATION_DETAIL_LOADER: 'DOWNLOAD_TAX_RECEIPT_DONATION_DETAIL_LOADER',
     GET_INITIAL_TAX_RECEIPT_PROFILE: 'GET_INITIAL_TAX_RECEIPT_PROFILE',
     GET_PAGINATED_TAX_RECEIPT_PROFILE: 'GET_PAGINATED_TAX_RECEIPT_PROFILE',
     GET_PAGINATED_TAX_RECEIPT_PROFILE_LOADER: 'GET_PAGINATED_TAX_RECEIPT_PROFILE_LOADER',
@@ -121,6 +121,7 @@ export const getIssuedTaxreceiptDonationsDetail = (dispatch, id, year, pageNumbe
         },
         type: actionTypes.ISSUED_TAX_RECEIPIENT_DONATIONS_DETAIL,
     };
+    
     coreApi.get(`/taxReceipts/${id}?year=${year}&page[number]=${pageNumber}&page[size]=10`,
         {
             params: {
@@ -128,8 +129,13 @@ export const getIssuedTaxreceiptDonationsDetail = (dispatch, id, year, pageNumbe
                 uxCritical: true,
             },
         }).then((result) => {
-        fsa.payload.issuedTaxReceiptDonationsDetail = result.data;
-        fsa.payload.issuedTaxReceiptYearlyDetailPageCount = result.pageCount;
+        fsa.payload.issuedTaxReceiptDonationsDetail = {
+            [year]:{
+                data: result.data,
+                pageCount: result.pageCount
+            }
+        };
+        fsa.payload.currentDonationYear = year;
     }).catch((err) => {
         console.error(err);
     }).finally(() => {
@@ -138,39 +144,19 @@ export const getIssuedTaxreceiptDonationsDetail = (dispatch, id, year, pageNumbe
 };
 
 export const downloadTaxreceiptDonationsDetail = (dispatch, id, year) => {
-    const fsa = {
-        payload: {
-            url: null,
-        },
-        type: actionTypes.DOWNLOAD_TAX_RECEIPT_DONATION_DETAIL,
-    };
     dispatch({
         payload: {
             downloadloader: true,
-            urlChange: false,
+            currentYear: year,
         },
-        type: actionTypes.DOWNLOAD_TAX_RECEIPT_DONATION_DETAIL,
+        type: actionTypes.DOWNLOAD_TAX_RECEIPT_DONATION_DETAIL_LOADER,
     });
-    coreApi.get(`/taxReceipts/${id}?format=pdf&year=${year}`,
+    return coreApi.get(`/taxReceipts/${id}?format=pdf&year=${year}`,
         {
             params: {
                 dispatch,
                 uxCritical: true,
             },
             responseType: 'blob',
-        }).then((result) => {
-        const blob = new Blob([
-            result,
-        ], { type: 'application/pdf' });
-        const url = window.URL.createObjectURL(blob);
-        fsa.payload.url = url;
-        fsa.payload.urlChange = true;
-        fsa.payload.year = year;
-        fsa.payload.downloadloader = false;
-    }).catch((err) => {
-        console.error(err);
-        fsa.payload.downloadloader = false;
-    }).finally(() => {
-        dispatch(fsa);
-    });
+        });
 };
