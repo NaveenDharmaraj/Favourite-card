@@ -8,7 +8,6 @@ import {
     Table,
     Image,
     List,
-    TableRow,
 } from 'semantic-ui-react';
 import {
     arrayOf,
