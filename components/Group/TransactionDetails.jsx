@@ -144,15 +144,15 @@ class TransactionDetails extends React.Component {
                                             <List.Header>
                                                 {transaction.attributes.description}
                                             </List.Header>
-                                            {isChimpAdmin
+                                            {(isChimpAdmin && (transaction.attributes.canToggleAmount || transaction.attributes.canToggleName))
                                             && (
                                                 <Fragment>
-                                                        <a id="name" onClick={() => this.toggleVisibility(event,transaction.id)} className="mr-1">
+                                                        {transaction.attributes.canToggleName && <a id="name" onClick={() => this.toggleVisibility(event,transaction.id)} className="mr-1">
                                                             {nameStatus}
-                                                        </a>
-                                                        <a id="amount" onClick={() => this.toggleVisibility(event,transaction.id)}>
+                                                        </a>}
+                                                        {transaction.attributes.canToggleAmount && <a id="amount" onClick={() => this.toggleVisibility(event,transaction.id)}>
                                                             {amountStatus}
-                                                        </a>
+                                                        </a>}
                                                 </Fragment>
                                             )}
                                         </List.Content>
