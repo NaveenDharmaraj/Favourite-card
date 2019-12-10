@@ -121,7 +121,9 @@ const taxreceipt = (state = {}, action) => {
                         data: 
                             state.issuedTaxReceiptDonationsDetail[yr].data.concat( action.payload.issuedTaxReceiptDonationsDetail[yr].data),
                         pageCount: 
-                            action.payload.issuedTaxReceiptDonationsDetail[yr].pageCount
+                            action.payload.issuedTaxReceiptDonationsDetail[yr].pageCount,
+                        recordCount:
+                            action.payload.recordCount,
                         }
                     }
                 }

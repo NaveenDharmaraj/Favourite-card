@@ -132,7 +132,8 @@ export const getIssuedTaxreceiptDonationsDetail = (dispatch, id, year, pageNumbe
         fsa.payload.issuedTaxReceiptDonationsDetail = {
             [year]:{
                 data: result.data,
-                pageCount: result.pageCount
+                pageCount: result.pageCount,
+                recordCount: result.recordCount,
             }
         };
         fsa.payload.currentDonationYear = year;

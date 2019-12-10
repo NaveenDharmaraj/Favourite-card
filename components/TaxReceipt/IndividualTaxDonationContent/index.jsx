@@ -236,8 +236,8 @@ class IndividualTaxDonationContent extends React.Component {
                 }
                 </Accordion.Content>
                 {
-                    (!_isEmpty(DonationsDetails) && DonationsDetails.pageCount 
-                    && DonationsDetails.pageCount > 1 && loadMoreIncrementor <= DonationsDetails.pageCount) && (
+                    (!_isEmpty(DonationsDetails) && DonationsDetails.pageCount && DonationsDetails.recordCount
+                    && DonationsDetails.pageCount > 1 && DonationsDetails.data.length <= DonationsDetails.recordCount) && (
                         <Accordion.Content active={activeIndex === index}>
                             <div className="text-center">
                                 {
