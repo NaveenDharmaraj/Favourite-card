@@ -280,6 +280,18 @@ const group = (state = {}, action) => {
                 campaignSupporting: action.payload.campaignDetails,
             };
             break;
+        case 'TOGGLE_TRANSACTION_VISIBILITY':
+            const transactionIndex = _.findIndex(state.groupTransactions.data, (data) => data.id === action.payload.transactionId);
+            const transactionArray = state.groupTransactions.data;
+            transactionArray[transactionIndex] = action.payload.data;
+            newState = {
+                ...state,
+                groupTransactions: {
+                    ...state.groupTransactions,
+                    data: transactionArray,
+                },
+            };
+            break;
         default:
             break;
     }
