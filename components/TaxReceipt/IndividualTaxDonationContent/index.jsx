@@ -164,7 +164,7 @@ class IndividualTaxDonationContent extends React.Component {
                 type: 'DOWNLOAD_TAX_RECEIPT_DONATION_DETAIL_LOADER',
             });
         }).catch((err) => {
-            console.error(err);
+            //console.error(err);
             dispatch({
                 payload: {
                     downloadloader: false,
@@ -204,7 +204,7 @@ class IndividualTaxDonationContent extends React.Component {
                             tax-receiptable donations
                         </div>
                     </div>
-                    <div className="rightContent" id={index}>
+                    <div className="rightContent">
                         {formatCurrency(formatAmount(donationDetail.total_amount), language, 'USD')}
                         {(downloadloader && currentYear === donationDetail.year) ? <Icon name="spinner" loading /> : (
                             <div className="downloadIcon" id={index} onClick={(event) => { this.downloadTaxReceipt(event, donationDetail.year); }}>

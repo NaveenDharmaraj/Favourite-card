@@ -72,7 +72,7 @@ export const getIssuedTaxreceipts = (dispatch, url, viewMore = false) => {
         fsa.payload.nextLink = !_isEmpty(result.links.next) ? result.links.next : null;
         fsa.payload.recordCount = result.recordCount;
     }).catch((err) => {
-        console.error(err);
+        //console.error(err);
     }).finally(() => {
         dispatch(fsa);
         dispatch({
@@ -107,7 +107,7 @@ export const getIssuedTaxreceiptYearlyDetail = (dispatch, id,) => {
         fsa.payload.issuedTaxReceiptYearlyDetail = result.data;
         fsa.payload.yearLoader = false;
     }).catch((err) => {
-        console.error(err);
+        //console.error(err);
         fsa.payload.yearLoader = false;
     }).finally(() => {
         dispatch(fsa);
@@ -138,7 +138,7 @@ export const getIssuedTaxreceiptDonationsDetail = (dispatch, id, year, pageNumbe
         };
         fsa.payload.currentDonationYear = year;
     }).catch((err) => {
-        console.error(err);
+        //console.error(err);
     }).finally(() => {
         dispatch(fsa);
     });
