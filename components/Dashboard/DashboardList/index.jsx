@@ -299,23 +299,53 @@ class DashboradList extends React.Component {
                                                                                         {data.attributes.metaValues.postal_code}
                                                                                     </List.Content>
                                                                                 </List.Item>
-                                                                                <List.Item>
-                                                                                    <List.Content>
-                                                                                        <List.Header>Note to self</List.Header>
-                                                                                        {data.attributes.reason}
-                                                                                    </List.Content>
-                                                                                </List.Item>
+                                                                                {
+                                                                                    data.attributes.reason !== '' && (
+                                                                                        <List.Item>
+                                                                                            <List.Content>
+                                                                                                <List.Header>Note to self</List.Header>
+                                                                                                {data.attributes.reason}
+                                                                                            </List.Content>
+                                                                                        </List.Item>
+                                                                                    )
+                                                                                }
                                                                             </Fragment>
                                                                         )
                                                                     }
                                                                     {
-                                                                        (data.attributes.transactionType.toLowerCase() === 'fundallocation' || data.attributes.transactionType.toLowerCase() === 'allocation') && (
+                                                                        data.attributes.transactionType.toLowerCase() === 'matchallocation' && (
                                                                             <List.Item>
                                                                                 <List.Content>
-                                                                                    <List.Header>Source account</List.Header>
-                                                                                    {data.attributes.source.name}
+                                                                                    <List.Header>This match is for a deposit you made</List.Header>
+                                                                                    {modalDate}
+                                                                                    <br />
+                                                                                    $
+                                                                                    {data.attributes.amount}
+                                                                                    added to your impact account
                                                                                 </List.Content>
                                                                             </List.Item>
+                                                                        )
+                                                                    }
+                                                                    {
+                                                                        (data.attributes.transactionType.toLowerCase() === 'fundallocation' || data.attributes.transactionType.toLowerCase() === 'allocation') && (
+                                                                            <Fragment>
+                                                                                {
+                                                                                    data.attributes.destination !== null && (
+                                                                                        <Fragment>
+                                                                                            {
+                                                                                                data.attributes.destination.type.toLowerCase() !== 'user' && (
+                                                                                                    <List.Item>
+                                                                                                        <List.Content>
+                                                                                                            <List.Header>Source account</List.Header>
+                                                                                                            Impact Account
+                                                                                                        </List.Content>
+                                                                                                    </List.Item>
+                                                                                                )
+                                                                                            }
+                                                                                        </Fragment>
+                                                                                    )
+                                                                                }
+                                                                            </Fragment>
                                                                         )
                                                                     }
                                                                     {
@@ -428,7 +458,7 @@ class DashboradList extends React.Component {
                                                                         )
                                                                     }
                                                                     {
-                                                                        !_.isEmpty(data.attributes.noteToSelf) && _.isEmpty(data.attributes.destination) && (
+                                                                        !_.isEmpty(data.attributes.noteToSelf) && _.isEmpty(data.attributes.destination) && data.attributes.transactionType.toLowerCase() !== 'donation' && (
                                                                             <List.Item>
                                                                                 <List.Content>
                                                                                     <List.Header>Note to self</List.Header>
