@@ -207,7 +207,7 @@ class IndividualTaxDonationContent extends React.Component {
                     <div className="rightContent">
                         {formatCurrency(formatAmount(donationDetail.total_amount), language, 'USD')}
                         {(downloadloader && currentYear === donationDetail.year) ? <Icon name="spinner" loading /> : (
-                            <div className="downloadIcon" id={index} onClick={(event) => { this.downloadTaxReceipt(event, donationDetail.year); }}>
+                            <div className="downloadIcon" onClick={(event) => { this.downloadTaxReceipt(event, donationDetail.year); }}>
                                 <Image src={downloadIcon} />
                             </div>
                         )}
