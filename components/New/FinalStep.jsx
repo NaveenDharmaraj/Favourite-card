@@ -27,7 +27,7 @@ function FinalStep(props) {
                     <div className="reg-header">
                         <Header as="h3">Create your Impact Account. </Header>
                         <Header as="h4">
-                            By clicking ‘Create your Impact Account,’ you acknowlege that you have read the
+                            By clicking ‘Create your Impact Account’, you acknowlege that you have read the
                             <a href={`${APP_URL_ORIGIN}/privacy`} target="_blank"> Privacy Policy</a>
                             , and agree to the
                             <a href={`${APP_URL_ORIGIN}/terms`} target="_blank"> Terms & Conditions </a>

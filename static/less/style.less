@@ -7421,8 +7421,19 @@ body{
         }
       }
     }
+  } 
+}
+.bgTransparent{
+  &.ui.placeholder, &.ui.placeholder .image.header:after, &.ui.placeholder .line, &.ui.placeholder .line:after, &.ui.placeholder>:before{
+    background-color: #eeebeb;
   }
- 
+  &.ui{
+    &.placeholder{
+      background-image: -webkit-gradient(90deg, rgba(2,0,36,1) 0%, rgba(255,255,255,1) 0%, rgba(233,233,233,1) 100%) !important;
+      background-image: -webkit-linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(255,255,255,1) 0%, rgba(233,233,233,1) 100%) !important;
+      background-image: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(255,255,255,1) 0%, rgba(233,233,233,1) 100%) !important;
+    }
+  }
 }
 
 span{
