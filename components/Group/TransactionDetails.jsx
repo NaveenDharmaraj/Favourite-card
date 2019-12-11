@@ -121,8 +121,7 @@ class TransactionDetails extends React.Component {
                 let rowClass = '';
                 let transactionSign = '';
                 const imageCls = 'ui image';
-                let nameStatus = transaction.attributes.showName ? 'Hide Name' : 'Show Name';
-                let amountStatus = transaction.attributes.showAmount ? 'Hide Amount' : 'Show Amount';
+                const amountStatus = transaction.attributes.showAmount ? 'hide' : 'unhide';
 
                 // TODO after Api Changes to show + or -
                 if (transaction.attributes.transactionType === 'GroupReceivedAllocationEvent') {
@@ -144,33 +143,39 @@ class TransactionDetails extends React.Component {
                                             <List.Header>
                                                 {transaction.attributes.description}
                                             </List.Header>
-                                            {(isChimpAdmin && (transaction.attributes.canToggleAmount || transaction.attributes.canToggleName))
+                                            {(isChimpAdmin && transaction.attributes.canToggleName)
                                             && (
                                                 <Fragment>
-                                                        {transaction.attributes.canToggleName && <a id="name" onClick={() => this.toggleVisibility(event,transaction.id)} className="mr-1">
-                                                            {nameStatus}
-                                                        </a>}
-                                                        {transaction.attributes.canToggleAmount && <a id="amount" onClick={() => this.toggleVisibility(event,transaction.id)}>
-                                                            {amountStatus}
-                                                        </a>}
+                                                    <a id="name" onClick={() => this.toggleVisibility(event,transaction.id)} className="mr-1">
+                                                                toggle display of name
+                                                    </a>
                                                 </Fragment>
                                             )}
                                         </List.Content>
                                     </List.Item>
                                 </List>
                             </Table.Cell>
-                            {transaction.attributes.showAmount
-                                ? (
-                                    <Table.Cell className="amount">
-                                        {transactionSign}
-                                        {formatCurrency(transaction.attributes.amount, language, currency)}
-                                    </Table.Cell>
-                                )
-                                : (
-                                    <Table.Cell className="amount">
-                                        Hidden
-                                    </Table.Cell>
+                            <Table.Cell className="amount">
+                                {transaction.attributes.showAmount
+                                    ? (
+                                        <Fragment>
+                                            {transactionSign}
+                                            {formatCurrency(transaction.attributes.totalAmount, language, currency)}
+                                        </Fragment>
+                                    )
+                                    : (
+                                        'Hidden'
+                                    )}
+                                {(isChimpAdmin && transaction.attributes.canToggleAmount)
+                                && (
+                                    <Fragment>
+                                        <br />
+                                        <a className="font-w-normal font-s-14 pointer" id="amount" onClick={() => this.toggleVisibility(event,transaction.id)}>
+                                            {amountStatus}
+                                        </a>
+                                    </Fragment>
                                 )}
+                            </Table.Cell>
                         </Table.Row>
                     </Fragment>
                 );
