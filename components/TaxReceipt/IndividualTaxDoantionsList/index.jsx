@@ -54,11 +54,6 @@ class IndividualTaxDoantionsList extends React.Component {
 
     render() {
         const {
-            currentUser: {
-                attributes: {
-                    displayName,
-                },
-            },
             currentIssuedTaxReceipt: {
                 address_one,
                 address_two,
@@ -127,7 +122,7 @@ class IndividualTaxDoantionsList extends React.Component {
                                                 DonationsDetails={(!_isEmpty(issuedTaxReceiptDonationsDetail) && !_isEmpty(issuedTaxReceiptDonationsDetail[donationDetail.year])) && issuedTaxReceiptDonationsDetail[donationDetail.year]}
                                                 index={index}
                                                 id={id}
-                                                name={displayName}
+                                                name={full_name}
                                             />
                                         ))
 
@@ -144,7 +139,6 @@ class IndividualTaxDoantionsList extends React.Component {
     }
 }
 const mapStateToProps = (state) => ({
-    currentUser: state.user.info,
     issuedTaxReceiptDonationsDetail: state.taxreceipt.issuedTaxReceiptDonationsDetail,
     issuedTaxReceiptYearlyDetail: state.taxreceipt.issuedTaxReceiptYearlyDetail,
     year: state.taxreceipt.year,
