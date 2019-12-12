@@ -123,7 +123,7 @@ class DashboradList extends React.Component {
                 const month = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ];
                 const yyyy = date.getFullYear();
                 date = `${month[mm]} ${dd}, ${yyyy}`;
-                let modalDate = `${month[mm]} ${dd}, ${yyyy}`;
+                const modalDate = `${month[mm]} ${dd}, ${yyyy}`;
                 let dateClass = 'date boderBottom';
                 if (date !== compareDate) {
                     compareDate = date;
