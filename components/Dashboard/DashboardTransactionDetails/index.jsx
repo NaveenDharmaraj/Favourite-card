@@ -40,22 +40,21 @@ const DashboardTransactionDetails = (props) => {
         dataArrayTransaction.push(dataObjectData);
     }
     if (!_.isEmpty(data.attributes.metaValues.share)) {
+        dataObjectData = {};
         if (!_.isEmpty(data.attributes.metaValues.share.name)) {
             dataObjectData.labelValue = `Information shared with ${informationSharedEntity}`;           
             dataObjectData.transactionValue = `${data.attributes.metaValues.share.name} <br />`;
-            dataArrayTransaction.push(dataObjectData);
         }
         if (!_.isEmpty(data.attributes.metaValues.share.email)) {
             dataObjectData.labelValue = `Information shared with ${informationSharedEntity}`;
             dataObjectData.transactionValue += `${data.attributes.metaValues.share.email} <br />`;
-            dataArrayTransaction.push(dataObjectData);
         }
         if (!_.isEmpty(data.attributes.metaValues.share.address_one)) {
             dataObjectData.labelValue = `Information shared with ${informationSharedEntity}`;
             const address = !_.isEmpty(data.attributes.metaValues.share.address_two) ? `${data.attributes.metaValues.share.address_one} ${data.attributes.metaValues.share.address_two}` : data.attributes.metaValues.share.address_one;
             dataObjectData.transactionValue += `${address} <br /> ${data.attributes.metaValues.share.city}, ${data.attributes.metaValues.share.province} ${data.attributes.metaValues.share.postal_code}`;
-            dataArrayTransaction.push(dataObjectData);
         }
+        dataArrayTransaction.push(dataObjectData);
     }
     if (!_.isEmpty(data.attributes.metaValues.dedicate)) {
         dataObjectData = {};
