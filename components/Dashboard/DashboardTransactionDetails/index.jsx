@@ -90,7 +90,7 @@ const DashboardTransactionDetails = (props) => {
     }
     if (data.attributes.transactionType.toLowerCase() === 'matchallocation') {
         dataObjectData.labelValue = 'This match is for a deposit you made';
-        dataObjectData.transactionValue = `${modalDate} ${data.attributes.amount} added to your impact account`;
+        dataObjectData.transactionValue = `${modalDate} <br /> ${data.attributes.amount} added to your impact account`;
         dataArrayTransaction.push(dataObjectData);
     }
     let transactionDetails = '';
