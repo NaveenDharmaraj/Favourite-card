@@ -54,7 +54,9 @@ const DashboardTransactionDetails = (props) => {
             const address = !_.isEmpty(data.attributes.metaValues.share.address_two) ? `${data.attributes.metaValues.share.address_one} ${data.attributes.metaValues.share.address_two}` : data.attributes.metaValues.share.address_one;
             dataObjectData.transactionValue += `${address} <br /> ${data.attributes.metaValues.share.city}, ${data.attributes.metaValues.share.province} ${data.attributes.metaValues.share.postal_code}`;
         }
-        dataArrayTransaction.push(dataObjectData);
+        if (!_.isEmpty(dataObjectData)) {
+            dataArrayTransaction.push(dataObjectData);
+        }
     }
     if (!_.isEmpty(data.attributes.metaValues.dedicate)) {
         dataObjectData = {};
