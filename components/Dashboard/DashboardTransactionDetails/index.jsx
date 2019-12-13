@@ -88,12 +88,12 @@ const DashboardTransactionDetails = (props) => {
             if (data.attributes.destination.id !== Number(sourceUserId)) {
                 dataObjectData = {};
                 dataObjectData.labelValue = 'Note to self';
-                dataObjectData.transactionValue = !_.isEmpty(data.attributes.noteToSelf) ? data.attributes.noteToSelf : data.attributes.reason;
+                dataObjectData.transactionValue = data.attributes.noteToSelf;
                 dataArrayTransaction.push(dataObjectData);
             } else if (data.attributes.destination.id === Number(sourceUserId) && data.attributes.transactionType.toLowerCase() === 'donation') {
                 dataObjectData = {};
                 dataObjectData.labelValue = 'Note to self';
-                dataObjectData.transactionValue = !_.isEmpty(data.attributes.noteToSelf) ? data.attributes.noteToSelf : data.attributes.reason;
+                dataObjectData.transactionValue = data.attributes.reason;
                 dataArrayTransaction.push(dataObjectData);
             }
         } else if (_.isEmpty(data.attributes.destination) && !_.isEmpty(data.attributes.noteToSelf)) {
