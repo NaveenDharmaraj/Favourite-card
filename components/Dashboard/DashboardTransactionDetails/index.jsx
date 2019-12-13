@@ -17,12 +17,12 @@ const DashboardTransactionDetails = (props) => {
     let dataObjectData = {};
     if (data.attributes.transactionType.toLowerCase() === 'donation') {
         dataObjectData = {};
-        dataObjectData.labelValue = 'Payment Method';
+        dataObjectData.labelValue = 'Payment method';
         dataObjectData.transactionValue = data.attributes.paymentInstrument.data.attributes.description;
         dataArrayTransaction.push(dataObjectData);
         if (data.attributes.metaValues.address_one !== null && data.attributes.transactionType.toLowerCase() === 'donation') {
             dataObjectData = {};
-            dataObjectData.labelValue = 'Tax receipient';
+            dataObjectData.labelValue = 'Tax receipt recipient';
             const address = !_.isEmpty(data.attributes.metaValues.address_two) ? `${data.attributes.metaValues.address_one} ${data.attributes.metaValues.address_two}` : data.attributes.metaValues.address_one;
             dataObjectData.transactionValue = `${data.attributes.metaValues.full_name} <br /> ${address} <br /> ${data.attributes.metaValues.city}, ${data.attributes.metaValues.province} ${data.attributes.metaValues.postal_code}`;
             dataArrayTransaction.push(dataObjectData);
@@ -42,7 +42,7 @@ const DashboardTransactionDetails = (props) => {
     if (!_.isEmpty(data.attributes.metaValues.share)) {
         dataObjectData = {};
         if (!_.isEmpty(data.attributes.metaValues.share.name)) {
-            dataObjectData.labelValue = `Information shared with ${informationSharedEntity}`;           
+            dataObjectData.labelValue = `Information shared with ${informationSharedEntity}`;
             dataObjectData.transactionValue = `${data.attributes.metaValues.share.name} <br />`;
         }
         if (!_.isEmpty(data.attributes.metaValues.share.email)) {
@@ -61,7 +61,7 @@ const DashboardTransactionDetails = (props) => {
     if (!_.isEmpty(data.attributes.metaValues.dedicate)) {
         dataObjectData = {};
         dataObjectData.labelValue = 'Gift dedication';
-        if (!_.isEmpty(data.attributes.metaValues.dedicate.in_honor_of)) {            
+        if (!_.isEmpty(data.attributes.metaValues.dedicate.in_honor_of)) {
             dataObjectData.transactionValue = `In honour of ${data.attributes.metaValues.dedicate.in_honor_of}`;
             dataArrayTransaction.push(dataObjectData);
         } else if (!_.isEmpty(data.attributes.metaValues.dedicate.in_memory_of)) {
@@ -71,7 +71,7 @@ const DashboardTransactionDetails = (props) => {
     }
     if (!_.isEmpty(data.attributes.noteToRecipient)) {
         dataObjectData = {};
-        dataObjectData.labelValue = 'Note to Recipient';
+        dataObjectData.labelValue = 'Note to recipient';
         if (!_.isEmpty(data.attributes.destination)) {
             if (data.attributes.destination.id === Number(sourceUserId)) {
                 dataObjectData.labelValue = `Message from ${data.attributes.source.name}`;
@@ -84,10 +84,24 @@ const DashboardTransactionDetails = (props) => {
         dataArrayTransaction.push(dataObjectData);
     }
     if (!_.isEmpty(data.attributes.noteToSelf) || !_.isEmpty(data.attributes.reason)) {
-        dataObjectData = {};
-        dataObjectData.labelValue = 'Note to self';
-        dataObjectData.transactionValue = !_.isEmpty(data.attributes.noteToSelf) ? data.attributes.noteToSelf : data.attributes.reason;
-        dataArrayTransaction.push(dataObjectData);
+        if (!_.isEmpty(data.attributes.destination)) {
+            if (data.attributes.destination.id !== Number(sourceUserId)) {
+                dataObjectData = {};
+                dataObjectData.labelValue = 'Note to self';
+                dataObjectData.transactionValue = !_.isEmpty(data.attributes.noteToSelf) ? data.attributes.noteToSelf : data.attributes.reason;
+                dataArrayTransaction.push(dataObjectData);
+            } else if (data.attributes.destination.id === Number(sourceUserId) && data.attributes.transactionType.toLowerCase() === 'donation') {
+                dataObjectData = {};
+                dataObjectData.labelValue = 'Note to self';
+                dataObjectData.transactionValue = !_.isEmpty(data.attributes.noteToSelf) ? data.attributes.noteToSelf : data.attributes.reason;
+                dataArrayTransaction.push(dataObjectData);
+            }
+        } else if (_.isEmpty(data.attributes.destination)) {
+            dataObjectData = {};
+            dataObjectData.labelValue = 'Note to self';
+            dataObjectData.transactionValue = !_.isEmpty(data.attributes.noteToSelf) ? data.attributes.noteToSelf : data.attributes.reason;
+            dataArrayTransaction.push(dataObjectData);
+        }
     }
     if (data.attributes.transactionType.toLowerCase() === 'matchallocation') {
         dataObjectData.labelValue = 'This match is for a deposit you made';
