@@ -65,17 +65,15 @@ const CampaignDetails = (props) => {
                                 {((!_isEmpty(campaignDetails.attributes))
                                 && detailsView(campaignDetails.attributes))}
                             </Grid.Column>
-                            {(isAuthenticated
-                            && (
-                                <ShareDetails
-                                    profileDetails={campaignDetails}
-                                    deepLinkUrl={deepLinkUrl}
-                                    dispatch={dispatch}
-                                    userId={userId}
-                                />
-                            )
-                            )
-                            }
+                        
+                            <ShareDetails
+                                isAuthenticated={isAuthenticated}
+                                profileDetails={campaignDetails}
+                                deepLinkUrl={deepLinkUrl}
+                                dispatch={dispatch}
+                                userId={userId}
+                            />
+                        
 
                         </Grid.Row>
                     </Grid>

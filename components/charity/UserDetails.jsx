@@ -159,9 +159,12 @@ class UserDetails extends React.Component {
             },
         } = this.props;
         getBeneficiaryFromSlug(dispatch, slug);
+        let deepLinkApiUrl = `deeplink?profileType=charityprofile&profileId=${charityId}`;
         if (isAUthenticated) {
-            generateDeepLink(`deeplink?profileType=charityprofile&sourceId=${userId}&profileId=${charityId}`, dispatch);
+            deepLinkApiUrl += `&sourceId=${userId}`;
         }
+        generateDeepLink(deepLinkApiUrl, dispatch);
+
     }
 
     render() {
@@ -188,14 +191,13 @@ class UserDetails extends React.Component {
                                         && detailsView(charityDetails.charityDetails.attributes))}
                                     </Grid>
                                 </Grid.Column>
-                                {isAUthenticated
-                                && (
-                                    <ShareDetails
-                                        deepLinkUrl={deepLinkUrl}
-                                        profileDetails={this.props.charityDetails.charityDetails}
-                                        userId={userId}
-                                    />
-                                )}
+
+                                <ShareDetails
+                                    deepLinkUrl={deepLinkUrl}
+                                    isAuthenticated={isAUthenticated}
+                                    profileDetails={this.props.charityDetails.charityDetails}
+                                    userId={userId}
+                                />
 
                             </Grid.Row>
                         </Grid>

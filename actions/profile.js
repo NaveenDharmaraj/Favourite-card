@@ -1,10 +1,25 @@
 /* eslint-disable no-else-return */
 import _ from 'lodash';
+import getConfig from 'next/config';
 
 import coreApi from '../services/coreApi';
 import utilityApi from '../services/utilityApi';
 import graphApi from '../services/graphApi';
 
+const { publicRuntimeConfig } = getConfig();
+
+const {
+    BASIC_AUTH_KEY,
+} = publicRuntimeConfig;
+
+let BASIC_AUTH_HEADER = null;
+if (!_.isEmpty(BASIC_AUTH_KEY)) {
+    BASIC_AUTH_HEADER = {
+        headers: {
+            Authorization: `Basic ${BASIC_AUTH_KEY}`,
+        },
+    };
+}
 export const generatePayloadBodyForFollowAndUnfollow = (userId, id, type) => {
 
     let filterObj = {};
@@ -167,7 +182,7 @@ export const generateDeepLink = (url, dispatch) => {
         },
         type: actionTypes.DEEP_LINK_URL,
     };
-    utilityApi.get(url, {
+    utilityApi.get(url, BASIC_AUTH_HEADER, {
         params: {
             dispatch,
             ignore401: true,

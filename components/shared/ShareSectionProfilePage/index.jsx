@@ -103,6 +103,7 @@ class ShareDetails extends React.Component {
         const {
             profileDetails,
             deepLinkUrl,
+            isAuthenticated,
         } = this.props;
         const inputValue = (!_.isEmpty(deepLinkUrl)) ? deepLinkUrl.attributes["short-link"] : '';0.
 
@@ -111,7 +112,7 @@ class ShareDetails extends React.Component {
                 <div className="profile-social-wraper">
                     <div className="profile-social-links">
                         <List horizontal>
-                            <List.Item as="a">
+                            { isAuthenticated && (<List.Item as="a">
                                 {(profileDetails.type ==='beneficiaries') ? (
                                 <Icon
                                     id="follow"
@@ -129,7 +130,7 @@ class ShareDetails extends React.Component {
                                     disabled={this.props.disableFollow}
                                 />
                                 )}
-                            </List.Item>
+                            </List.Item>)}
                             <List.Item as="a">
                                 <Icon
                                     id="twitter"
