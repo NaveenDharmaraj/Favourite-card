@@ -107,19 +107,38 @@ const taxreceipt = (state = {}, action) => {
             };
             break;
         case 'ISSUED_TAX_RECEIPIENT_DONATIONS_DETAIL':
-            newState = {
-                ...state,
-                issuedTaxReceiptDonationsDetail: action.payload.issuedTaxReceiptDonationsDetail,
-                issuedTaxReceiptYearlyDetailPageCount: action.payload.issuedTaxReceiptYearlyDetailPageCount,
-            };
+            let newIssuedTaxReceiptDonationsDetail = action.payload.issuedTaxReceiptDonationsDetail;
+            let yr = action.payload.currentDonationYear;
+            if(!_isEmpty(state.issuedTaxReceiptDonationsDetail) && !_isEmpty( action.payload.issuedTaxReceiptDonationsDetail ) ){
+                newIssuedTaxReceiptDonationsDetail = {
+                    ...state.issuedTaxReceiptDonationsDetail,
+                    ...action.payload.issuedTaxReceiptDonationsDetail,
+                }
+                if(Object.keys(state.issuedTaxReceiptDonationsDetail).indexOf(yr) !== -1){
+                    newIssuedTaxReceiptDonationsDetail = {
+                        ...state.issuedTaxReceiptDonationsDetail,
+                        [yr]:{
+                        data: 
+                            state.issuedTaxReceiptDonationsDetail[yr].data.concat( action.payload.issuedTaxReceiptDonationsDetail[yr].data),
+                        pageCount: 
+                            action.payload.issuedTaxReceiptDonationsDetail[yr].pageCount,
+                        recordCount:
+                            action.payload.recordCount,
+                        }
+                    }
+                }
+            }
+                newState = {
+                    ...state,
+                    issuedTaxReceiptDonationsDetail: newIssuedTaxReceiptDonationsDetail,
+                } 
+           
             break;
-        case 'DOWNLOAD_TAX_RECEIPT_DONATION_DETAIL':
+        case 'DOWNLOAD_TAX_RECEIPT_DONATION_DETAIL_LOADER':
             newState = {
                 ...state,
+                currentYear: action.payload.currentYear,
                 downloadloader: action.payload.downloadloader,
-                url: action.payload.url,
-                urlChange: action.payload.urlChange,
-                year: action.payload.year,
             };
             break;
         default:
