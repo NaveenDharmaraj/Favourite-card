@@ -28,21 +28,13 @@ const DashboardTransactionDetails = (props) => {
             dataArrayTransaction.push(dataObjectData);
         }
     }
+    
     if (data.attributes.transactionType.toLowerCase() === 'fundallocation' || data.attributes.transactionType.toLowerCase() === 'allocation') {
-        if (!_.isEmpty(data.attributes.destination)) {
-            if (data.attributes.destination.id !== Number(sourceUserId)) {
-                dataObjectData = {};
-                dataObjectData.labelValue = 'Source account';
-                dataObjectData.transactionValue = 'Impact Account';
-                dataArrayTransaction.push(dataObjectData);
-            }
-        } else if (_.isEmpty(data.attributes.destination)) {
-            if (!_.isEmpty(data.attributes.source) && data.attributes.source.id === Number(sourceUserId)) {
-                dataObjectData = {};
-                dataObjectData.labelValue = 'Source account';
-                dataObjectData.transactionValue = 'Impact Account';
-                dataArrayTransaction.push(dataObjectData);
-            }
+        if (((_.isEmpty(data.attributes.destination) || (!_.isEmpty(data.attributes.destination) && data.attributes.destination.id !== Number(sourceUserId))) && data.attributes.source.id === Number(sourceUserId))) {
+            dataObjectData = {};
+            dataObjectData.labelValue = 'Source account';
+            dataObjectData.transactionValue = 'Impact Account';
+            dataArrayTransaction.push(dataObjectData);
         }
     }
     if (!_.isEmpty(data.attributes.metaValues.share)) {
