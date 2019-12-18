@@ -40,7 +40,6 @@ class IndividualTaxDonationContent extends React.Component {
         this.state = {
             activeIndex: null,
             contentLoader: false,
-            issuedTaxReceiptDonationsDetailState: [],
             loadMoreIncrementor: 1,
             loadMoreLoader: false,
         };
@@ -51,39 +50,27 @@ class IndividualTaxDonationContent extends React.Component {
 
     componentDidUpdate(prevProps) {
         const {
-            issuedTaxReceiptDonationsDetail,
-            url,
-            urlChange,
+            DonationsDetails,
         } = this.props;
-        let {
+
+        let{
             contentLoader,
             loadMoreLoader,
-            issuedTaxReceiptDonationsDetailState,
+            loadMoreIncrementor,
         } = this.state;
-        if (!_isEqual(this.props, prevProps)) {
 
-            if (!_isEqual(issuedTaxReceiptDonationsDetail, prevProps.issuedTaxReceiptDonationsDetail)) {
-                issuedTaxReceiptDonationsDetailState = _uniqBy(issuedTaxReceiptDonationsDetailState.concat(issuedTaxReceiptDonationsDetail), 'donation_id');
-                contentLoader = false;
-                loadMoreLoader = false;
-            }
-            if (!_isEqual(urlChange, prevProps.urlChange) && !_isEmpty(url)) {
-                const fileName = this.displayDownloadedFileName();
-                const link = document.createElement('a');
-                link.href = url;
-                link.setAttribute('download', fileName);
-                // Append to html page
-                document.body.appendChild(link);
-                // Force download
-                link.click();
-                // Clean up and remove the link
-                link.parentNode.removeChild(link);
+
+        if (!_isEqual(this.props, prevProps)){
+            if (!_isEqual(DonationsDetails, prevProps.DonationsDetails)){
+                    contentLoader = false;
+                    loadMoreLoader = false;
+                    loadMoreIncrementor += 1;
             }
             this.setState({
                 contentLoader,
-                issuedTaxReceiptDonationsDetailState,
+                loadMoreIncrementor,
                 loadMoreLoader,
-            });
+            })
         }
     }
 
@@ -92,38 +79,37 @@ class IndividualTaxDonationContent extends React.Component {
         const {
             id,
             dispatch,
-            issuedTaxReceiptYearlyDetailPageCount,
+            DonationsDetails,
         } = this.props;
         let {
             loadMoreIncrementor,
         } = this.state;
-        if (loadMoreIncrementor < issuedTaxReceiptYearlyDetailPageCount) {
-            loadMoreIncrementor += 1;
+        if (!_isEmpty(DonationsDetails) && DonationsDetails.pageCount && loadMoreIncrementor <= DonationsDetails.pageCount) {
             getIssuedTaxreceiptDonationsDetail(dispatch, id, year, loadMoreIncrementor);
             this.setState({
-                loadMoreIncrementor,
                 loadMoreLoader: true,
             });
         }
     }
 
     handleClick(year, index) {
-        let { activeIndex, contentLoader, issuedTaxReceiptDonationsDetailState} = this.state;
+        let {
+            activeIndex,
+            contentLoader,
+        } = this.state;
         const {
             id,
             dispatch,
         } = this.props;
         const newIndex = activeIndex === index ? -1 : index;
         if (activeIndex !== index && activeIndex !== -1) {
-            contentLoader = true;
             getIssuedTaxreceiptDonationsDetail(dispatch, id, year, 1);
-            issuedTaxReceiptDonationsDetailState = [];
+            contentLoader = true;
         }
 
         this.setState({
             activeIndex: newIndex,
             contentLoader,
-            issuedTaxReceiptDonationsDetailState,
             loadMoreIncrementor: 1,
         });
     }
@@ -131,7 +117,9 @@ class IndividualTaxDonationContent extends React.Component {
     displayDownloadedFileName() {
         const {
             name,
-            year,
+            donationDetail: {
+                year,
+            },
         } = this.props;
         const firstName = `tax-receipt-for-${name}`;
         const today = new Date();
@@ -152,40 +140,74 @@ class IndividualTaxDonationContent extends React.Component {
             id,
             dispatch,
         } = this.props;
-        downloadTaxreceiptDonationsDetail(dispatch, id, year);
+        downloadTaxreceiptDonationsDetail(dispatch, id, year).then((result) => {
+            const blob = new Blob([
+                result,
+            ], { type: 'application/pdf' });
+            const url = window.URL.createObjectURL(blob);
+            if (url) {
+                const fileName = this.displayDownloadedFileName();
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', fileName);
+                // Append to html page
+                document.body.appendChild(link);
+                // Force download
+                link.click();
+                // Clean up and remove the link
+                link.parentNode.removeChild(link);
+            }
+            dispatch({
+                payload: {
+                    downloadloader: false,
+                },
+                type: 'DOWNLOAD_TAX_RECEIPT_DONATION_DETAIL_LOADER',
+            });
+        }).catch((err) => {
+            //console.error(err);
+            dispatch({
+                payload: {
+                    downloadloader: false,
+                },
+                type: 'DOWNLOAD_TAX_RECEIPT_DONATION_DETAIL_LOADER',
+            });
+        });
     }
 
     render() {
         const {
             activeIndex,
             contentLoader,
-            issuedTaxReceiptDonationsDetailState,
             loadMoreIncrementor,
             loadMoreLoader,
         } = this.state;
         const {
+            currentYear,
             donationDetail,
             downloadloader,
+            DonationsDetails,
             index,
             i18n: {
                 language,
             },
-            issuedTaxReceiptYearlyDetailPageCount,
         } = this.props;
         return (
             <Fragment>
-                <Accordion.Title active={activeIndex === index} index onClick={(e) => {this.handleClick(donationDetail.year, index);}}>
+                <Accordion.Title id={index} active={activeIndex === index} index onClick={(e) => { this.handleClick(donationDetail.year, index); }}>
                     <div className="leftIcon">
                         <Image src={angleDown} className="greyIcon" />
                     </div>
                     <div className="leftContent">
                         <div className="year">{donationDetail.year}</div>
-                        <div>{donationDetail.total} tax-receiptable donations</div>
+                        <div>
+                            {donationDetail.total}
+                            tax-receiptable donations
+                        </div>
                     </div>
                     <div className="rightContent">
                         {formatCurrency(formatAmount(donationDetail.total_amount), language, 'USD')}
-                        {downloadloader ? <Icon name="spinner" loading /> : (
-                            <div className="downloadIcon" onClick={(event)=>{this.downloadTaxReceipt(event, donationDetail.year);}}>
+                        {(downloadloader && currentYear === donationDetail.year) ? <Icon name="spinner" loading /> : (
+                            <div className="downloadIcon" onClick={(event) => { this.downloadTaxReceipt(event, donationDetail.year); }}>
                                 <Image src={downloadIcon} />
                             </div>
                         )}
@@ -193,29 +215,29 @@ class IndividualTaxDonationContent extends React.Component {
                 </Accordion.Title>
                 <Accordion.Content active={activeIndex === index}>
 
-                    {contentLoader ? (
-                        <Table padded unstackable className="no-border-table">
-                            <PlaceholderGrid row={2} column={2} placeholderType="table" />
-                        </Table>
-                    )
-                        : ((!_isEmpty(issuedTaxReceiptDonationsDetailState) && issuedTaxReceiptDonationsDetailState.length > 0) && (
-                            issuedTaxReceiptDonationsDetailState.map((yearlydetails) => (
-                                <List divided verticalAlign="middle">
-                                    <List.Item className="pt-1 pb-1">
-                                        <List.Content floated="right" className="bold">
-                                            {formatCurrency(formatAmount(yearlydetails.amount), language, 'USD')}
-                                        </List.Content>
-                                        <List.Content>{formatDateTaxReceipt(yearlydetails.transfer_date)}</List.Content>
-                                    </List.Item>
-                                </List>
-                            ))
+                {contentLoader ? (
+                    <Table padded unstackable className="no-border-table">
+                        <PlaceholderGrid row={2} column={2} placeholderType="table" />
+                    </Table>
+                )
+                    : ((!_isEmpty(DonationsDetails) && !_isEmpty(DonationsDetails.data) && DonationsDetails.data.length > 0) && (
+                        DonationsDetails.data.map((yearlydetails) => (
+                            <List divided verticalAlign="middle">
+                                <List.Item className="pt-1 pb-1">
+                                    <List.Content floated="right" className="bold">
+                                        {formatCurrency(formatAmount(yearlydetails.amount), language, 'USD')}
+                                    </List.Content>
+                                    <List.Content>{formatDateTaxReceipt(yearlydetails.transfer_date)}</List.Content>
+                                </List.Item>
+                            </List>
                         ))
+                    ))
 
-                    }
+                }
                 </Accordion.Content>
-
                 {
-                    (issuedTaxReceiptYearlyDetailPageCount > 1 && loadMoreIncrementor < issuedTaxReceiptYearlyDetailPageCount) && (
+                    (!_isEmpty(DonationsDetails) && DonationsDetails.pageCount && DonationsDetails.recordCount
+                    && DonationsDetails.pageCount > 1 && DonationsDetails.data.length <= DonationsDetails.recordCount) && (
                         <Accordion.Content active={activeIndex === index}>
                             <div className="text-center">
                                 {
@@ -233,11 +255,19 @@ class IndividualTaxDonationContent extends React.Component {
     }
 }
 const mapStateToProps = (state) => ({
+    currentYear: state.taxreceipt.currentYear,
     downloadloader: state.taxreceipt.downloadloader,
-    issuedTaxReceiptDonationsDetail: state.taxreceipt.issuedTaxReceiptDonationsDetail,
-    issuedTaxReceiptYearlyDetailPageCount: state.taxreceipt.issuedTaxReceiptYearlyDetailPageCount,
-    url: state.taxreceipt.url,
-    urlChange: state.taxreceipt.urlChange,
 });
+
+IndividualTaxDonationContent.defaultProps = {
+    donationDetail: {
+        year: null,
+    },
+    index: null,
+    DonationsDetails: {
+        data: [],
+        pageCount: null,
+    },
+};
 
 export default withTranslation('giveCommon')(connect(mapStateToProps)(IndividualTaxDonationContent));
