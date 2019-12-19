@@ -33,7 +33,7 @@ const DashboardTransactionDetails = (props) => {
         if ((_.isEmpty(data.attributes.destination) || (!_.isEmpty(data.attributes.destination) && data.attributes.destination.id !== Number(sourceUserId))) && data.attributes.source.id === Number(sourceUserId)) {
             dataObjectData = {};
             dataObjectData.labelValue = 'Source account';
-            dataObjectData.transactionValue = 'Impact Account';
+            dataObjectData.transactionValue = !_.isEmpty(data.attributes.source.name) ? `${data.attributes.source.name}'s Impact Account` : 'Impact Account';
             dataArrayTransaction.push(dataObjectData);
         }
     }
