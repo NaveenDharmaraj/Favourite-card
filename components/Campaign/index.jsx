@@ -50,9 +50,11 @@ class CampaignProfileWrapper extends React.Component {
                 campaignDetails,
                 dispatch,
             } = this.props;
+            let deepLinkApiUrl = `deeplink?profileType=campaignprofile&profileId=${campaignDetails.attributes.groupId}`;
             if (currentUser && currentUser.id) {
-                generateDeepLink(`deeplink?profileType=campaignprofile&sourceId=${currentUser.id}&profileId=${campaignDetails.attributes.groupId}`, dispatch);
+                deepLinkApiUrl += `sourceId=${currentUser.id}`;
             }
+            generateDeepLink(deepLinkApiUrl, dispatch);
         }
     }
 
