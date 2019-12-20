@@ -107,7 +107,7 @@ class Maps extends React.Component {
             mapData = (
                 <GoogleMapReact
                     bootstrapURLKeys={{ key: `${GOOGLE_MAP_API_KEY}` }}
-                    zoom={2}
+                    zoom={17}
                     center={centerLocation}
                 >
                     {!_isEmpty(headQuarterGeocode)
@@ -130,6 +130,7 @@ class Maps extends React.Component {
             <div style={{
                 height: '500px',
                 position: 'relative',
+                width: '100%',
             }}
             >
                 { !mapLoader
