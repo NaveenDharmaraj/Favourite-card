@@ -1,4 +1,6 @@
-import React from 'react';
+import React, {
+    Fragment,
+} from 'react';
 import { connect } from 'react-redux';
 import {
     string,
@@ -12,26 +14,9 @@ import {
 } from 'semantic-ui-react';
 import _isEmpty from 'lodash/isEmpty';
 
-import { Router } from '../../routes';
 import PlaceholderGrid from '../shared/PlaceHolder';
 import placeholder from '../../static/images/no-data-avatar-giving-group-profile.png';
-// import { Link } from '../../routes';
-
-const redirectToCampaign = (props) => {
-    const {
-        groupDetails: {
-            attributes: {
-                campaignSlug,
-                isCampaignPrivate,
-            },
-        },
-    } = props;
-    if (!isCampaignPrivate) {
-        Router.pushRoute(`/campaigns/${campaignSlug}`);
-    } // else {
-    //     Router.pushRoute('/dashboard');
-    // }
-};
+import { Link } from '../../routes';
 
 const CampaignSupports = (props) => {
     const {
@@ -46,6 +31,17 @@ const CampaignSupports = (props) => {
         },
     } = props;
     const imgUrl = !_isEmpty(avatar) ? avatar : placeholder;
+    const campaignDetails = (
+        <Fragment>
+            <Image src={imgUrl} />
+            <List.Content>
+                <List.Header>{name}</List.Header>
+                <List.Description>
+                    {city}
+                </List.Description>
+            </List.Content>
+        </Fragment>
+    );
     return (
         <Grid.Column mobile={16} tablet={16} computer={5}>
             {!_isEmpty(name)
@@ -53,19 +49,21 @@ const CampaignSupports = (props) => {
                     <div className="profile-social-wraper groupSupportsWraper">
                         <div className="groupSupports">
                             <Header as="h3">Campaign this group supports</Header>
-                            <div role="link" tabIndex="0" onKeyDown={() => redirectToCampaign(props)} onClick={() => redirectToCampaign(props)}>
-                                <List relaxed verticalAlign="middle" className="groupSupportsList">
-                                    <List.Item as="a">
-                                        <Image src={imgUrl} />
-                                        <List.Content>
-                                            <List.Header>{name}</List.Header>
-                                            <List.Description>
-                                                {city}
-                                            </List.Description>
-                                        </List.Content>
-                                    </List.Item>
-                                </List>
-                            </div>
+                            <List relaxed verticalAlign="middle" className="groupSupportsList">
+                                {isCampaignPrivate
+                                    ? (
+                                        <List.Item>
+                                            {campaignDetails}
+                                        </List.Item>
+                                    ) : (
+                                        <Link route={`/campaigns/${slug}`}>
+                                            <List.Item as="a">
+                                                {campaignDetails}
+                                            </List.Item>
+                                        </Link>
+                                    )
+                                }
+                            </List>
                         </div>
                     </div>
                 ) : (<PlaceholderGrid row={1} column={1} placeholderType="singleCard" />)
