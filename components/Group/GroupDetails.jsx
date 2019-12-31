@@ -83,12 +83,12 @@ class GroupDetails extends React.Component {
         // if (campaignId) {
         //     getCampaignFromId(dispatch, campaignId);
         // }
+        let deepLinkApiUrl = `deeplink?profileType=groupprofile&profileId=${groupId}`;
         if (isAuthenticated) {
-            generateDeepLink(`deeplink?profileType=groupprofile&sourceId=${userId}&profileId=${groupId}`, dispatch);
-        }
-        if (isAuthenticated) {
+            deepLinkApiUrl += `&sourceId=${userId}`;
             getGroupBeneficiariesCount(dispatch, related);
         }
+        generateDeepLink(deepLinkApiUrl, dispatch);
     }
 
     componentDidUpdate(prevProps) {
@@ -329,14 +329,15 @@ class GroupDetails extends React.Component {
                                         </Grid.Column>
                                         <Grid.Column mobile={16} tablet={16} computer={8}>
                                             <div className="gpRightButtons">
+
                                                 {!joinClicked && giveButton}
                                                 {!joinClicked && joinButton}
                                                 {joinClicked && permissionButtons}
                                                 {isAdmin && giveFromGroupButton }
+                                                <GroupShareDetails />
                                                 {(isMember || isAdmin)
                                                 && (
                                                     <Fragment>
-                                                        <GroupShareDetails />
                                                         <Dropdown floating icon="setting">
                                                             <Dropdown.Menu>
                                                                 {isAdmin

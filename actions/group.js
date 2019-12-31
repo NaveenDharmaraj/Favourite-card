@@ -25,6 +25,7 @@ export const actionTypes = {
     // COMMENT_LIKE_STATUS: 'COMMENT_LIKE_STATUS',
     LEAVE_GROUP_MODAL_ERROR_MESSAGE: 'LEAVE_GROUP_MODAL_ERROR_MESSAGE',
     LEAVE_GROUP_MODAL_BUTTON_LOADER: 'LEAVE_GROUP_MODAL_BUTTON_LOADER',
+    TOGGLE_TRANSACTION_VISIBILITY: 'TOGGLE_TRANSACTION_VISIBILITY',
 };
 
 export const getGroupFromSlug = async (dispatch, slug, token = null) => {
@@ -569,3 +570,37 @@ export const leaveGroup = async (dispatch, slug, groupId, loadMembers) => {
 //         }
 //     }).catch();
 // };
+
+export const toggleTransactionVisibility = async (dispatch, transactionId, type) => {
+    const fsa = {
+        payload: {},
+        type: actionTypes.TOGGLE_TRANSACTION_VISIBILITY,
+    };
+    let url = '';
+    switch (type) {
+        case 'name':
+            url = `events/${transactionId}/toggleNameVisibility`;
+            break;
+        case 'amount':
+            url = `events/${transactionId}/toggleMoneyVisibility`;
+            break;
+        default:
+            break;
+    }
+    coreApi.patch(url,
+        {
+            params: {
+                dispatch,
+                ignore401: true,
+                uxCritical: true,
+            },
+        }).then(
+        (result) => {
+            if (result && !_.isEmpty(result.data)) {
+                fsa.payload.data = result.data;
+                fsa.payload.transactionId = transactionId;
+                dispatch(fsa);
+            }
+        },
+    ).catch().finally();
+};

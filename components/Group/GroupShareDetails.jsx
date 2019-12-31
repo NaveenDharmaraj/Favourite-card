@@ -103,6 +103,7 @@ class GroupShareDetails extends React.Component {
                     liked,
                 }
             },
+            currentUser,
             deepLinkUrl,
             disableFollow,
         } = this.props;
@@ -113,7 +114,7 @@ class GroupShareDetails extends React.Component {
         return (    
             <Fragment>
                 <List horizontal className="shareAndLike">
-                    <List.Item as="a">
+                    { currentUser && ( <List.Item as="a">
                         <Icon
                         id="follow"
                         color={liked ? "red" : "outline"}
@@ -122,6 +123,7 @@ class GroupShareDetails extends React.Component {
                         disabled={disableFollow}
                     />
                     </List.Item>
+                    )}
                     <Modal className="chimp-modal" onClose={this.closeShareModal} open={showShareModal} closeIcon size="tiny" trigger={
                         <List.Item as="a">
                             <Icon className="share alternate" onClick={() => this.setState({ showShareModal: true })}></Icon>

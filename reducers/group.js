@@ -281,6 +281,35 @@ const group = (state = {}, action) => {
         //         campaignSupporting: action.payload.campaignDetails,
         //     };
         //     break;
+        case 'TOGGLE_TRANSACTION_VISIBILITY':
+            const transactionIndex = _.findIndex(state.groupTransactions.data, (data) => data.id === action.payload.transactionId);
+            const transactionArray = state.groupTransactions.data;
+            transactionArray[transactionIndex] = action.payload.data;
+            if (state.groupActivities && !_.isEmpty(state.groupActivities.data)) {
+                const NewActivityIndex = _.findIndex(state.groupActivities.data, (data) => data.id === action.payload.transactionId);
+                const NewActivityArray = state.groupActivities.data;
+                NewActivityArray[NewActivityIndex] = action.payload.data;
+                newState = {
+                    ...state,
+                    groupActivities: {
+                        ...state.groupActivities,
+                        data: NewActivityArray,
+                    },
+                    groupTransactions: {
+                        ...state.groupTransactions,
+                        data: transactionArray,
+                    },
+                };
+            } else {
+                newState = {
+                    ...state,
+                    groupTransactions: {
+                        ...state.groupTransactions,
+                        data: transactionArray,
+                    },
+                };
+            }
+            break;
         default:
             break;
     }
