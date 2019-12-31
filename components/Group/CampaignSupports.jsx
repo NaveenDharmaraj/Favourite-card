@@ -12,18 +12,36 @@ import {
 } from 'semantic-ui-react';
 import _isEmpty from 'lodash/isEmpty';
 
+import { Router } from '../../routes';
 import PlaceholderGrid from '../shared/PlaceHolder';
 import placeholder from '../../static/images/no-data-avatar-giving-group-profile.png';
-import { Link } from '../../routes';
+// import { Link } from '../../routes';
+
+const redirectToCampaign = (props) => {
+    const {
+        groupDetails: {
+            attributes: {
+                campaignSlug,
+                isCampaignPrivate,
+            },
+        },
+    } = props;
+    if (!isCampaignPrivate) {
+        Router.pushRoute(`/campaigns/${campaignSlug}`);
+    } // else {
+    //     Router.pushRoute('/dashboard');
+    // }
+};
 
 const CampaignSupports = (props) => {
     const {
-        campaignSupporting: {
+        groupDetails: {
             attributes: {
-                avatar,
-                city,
-                name,
-                slug,
+                campaignAvatar: avatar,
+                campaignCity: city,
+                campaignName: name,
+                campaignSlug: slug,
+                isCampaignPrivate,
             },
         },
     } = props;
@@ -35,8 +53,8 @@ const CampaignSupports = (props) => {
                     <div className="profile-social-wraper groupSupportsWraper">
                         <div className="groupSupports">
                             <Header as="h3">Campaign this group supports</Header>
-                            <List relaxed verticalAlign="middle" className="groupSupportsList">
-                                <Link route={`/campaigns/${slug}`}>
+                            <div role="link" tabIndex="0" onKeyDown={() => redirectToCampaign(props)} onClick={() => redirectToCampaign(props)}>
+                                <List relaxed verticalAlign="middle" className="groupSupportsList">
                                     <List.Item as="a">
                                         <Image src={imgUrl} />
                                         <List.Content>
@@ -46,8 +64,8 @@ const CampaignSupports = (props) => {
                                             </List.Description>
                                         </List.Content>
                                     </List.Item>
-                                </Link>
-                            </List>
+                                </List>
+                            </div>
                         </div>
                     </div>
                 ) : (<PlaceholderGrid row={1} column={1} placeholderType="singleCard" />)
@@ -57,20 +75,20 @@ const CampaignSupports = (props) => {
 };
 
 CampaignSupports.defaultProps = {
-    campaignSupporting: {
+    groupDetails: {
         attributes: {
-            avatar: '',
-            city: '',
+            campaignAvatar: '',
+            campaignCity: '',
             name: '',
         },
     },
 };
 
 CampaignSupports.propTypes = {
-    campaignSupporting: {
+    groupDetails: {
         attributes: {
-            avatar: string,
-            city: string,
+            campaignAvatar: string,
+            campaignCity: string,
             name: string,
         },
     },
@@ -78,7 +96,8 @@ CampaignSupports.propTypes = {
 
 function mapStateToProps(state) {
     return {
-        campaignSupporting: state.group.campaignSupporting,
+        // campaignSupporting: state.group.campaignSupporting,
+        groupDetails: state.group.groupDetails,
     };
 }
 
