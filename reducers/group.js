@@ -162,6 +162,7 @@ const group = (state = {}, action) => {
                         ...state.groupComments,
                         [action.payload.activityId]: action.payload.groupComments,
                         loadComments: true,
+                        // loadMoreComments: action.payload.loadMoreComments,
                     },
     
                 };
@@ -274,12 +275,12 @@ const group = (state = {}, action) => {
         case 'RESET_GROUP_STATES':
             newState = {};
             break;
-        case 'GET_CAMPAIGN_SUPPORTING_GROUP':
-            newState = {
-                ...state,
-                campaignSupporting: action.payload.campaignDetails,
-            };
-            break;
+        // case 'GET_CAMPAIGN_SUPPORTING_GROUP':
+        //     newState = {
+        //         ...state,
+        //         campaignSupporting: action.payload.campaignDetails,
+        //     };
+        //     break;
         default:
             break;
     }

@@ -250,6 +250,7 @@ export const getCommentFromActivityId = async (dispatch, id, url, isReply) => {
             fsa.payload.groupComments = result.data;
             fsa.payload.activityId = id;
             fsa.payload.isReply = isReply ? isReply : false;
+            // fsa.payload.loadMoreComments = !_.isEmpty(result.links.next) ? result.links.next : '';
         }
     }).catch().finally(() => {
         dispatch(fsa);
@@ -549,22 +550,22 @@ export const leaveGroup = async (dispatch, slug, groupId, loadMembers) => {
     });
 };
 
-export const getCampaignFromId = async (dispatch, campaignId) => {
-    const fsa = {
-        payload: {
-            campaignDetails: {},
-        },
-        type: actionTypes.GET_CAMPAIGN_SUPPORTING_GROUP,
-    };
-    coreApi.get(`campaigns/${campaignId}`, {
-        params: {
-            dispatch,
-            uxCritical: true,
-        },
-    }).then((result) => {
-        if (result && !_.isEmpty(result.data)) {
-            fsa.payload.campaignDetails = result.data;
-            dispatch(fsa);
-        }
-    }).catch();
-};
+// export const getCampaignFromId = async (dispatch, campaignId) => {
+//     const fsa = {
+//         payload: {
+//             campaignDetails: {},
+//         },
+//         type: actionTypes.GET_CAMPAIGN_SUPPORTING_GROUP,
+//     };
+//     coreApi.get(`campaigns/${campaignId}`, {
+//         params: {
+//             dispatch,
+//             uxCritical: true,
+//         },
+//     }).then((result) => {
+//         if (result && !_.isEmpty(result.data)) {
+//             fsa.payload.campaignDetails = result.data;
+//             dispatch(fsa);
+//         }
+//     }).catch();
+// };

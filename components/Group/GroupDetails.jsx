@@ -28,7 +28,7 @@ import {
 } from '../../routes';
 import {
     joinGroup,
-    getCampaignFromId,
+    // getCampaignFromId,
     getGroupBeneficiariesCount,
     leaveGroup,
 } from '../../actions/group';
@@ -67,9 +67,9 @@ class GroupDetails extends React.Component {
                 id: userId,
             },
             groupDetails: {
-                attributes: {
-                    campaignId,
-                },
+                // attributes: {
+                //     campaignId,
+                // },
                 id: groupId,
                 relationships: {
                     groupBeneficiaries: {
@@ -80,9 +80,9 @@ class GroupDetails extends React.Component {
                 },
             },
         } = this.props;
-        if (campaignId) {
-            getCampaignFromId(dispatch, campaignId);
-        }
+        // if (campaignId) {
+        //     getCampaignFromId(dispatch, campaignId);
+        // }
         if (isAuthenticated) {
             generateDeepLink(`deeplink?profileType=groupprofile&sourceId=${userId}&profileId=${groupId}`, dispatch);
         }
