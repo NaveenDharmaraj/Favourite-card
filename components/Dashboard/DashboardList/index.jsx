@@ -1,5 +1,7 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, {
+    Fragment,
+} from 'react';
 import _ from 'lodash';
 import {
     Card,
@@ -9,6 +11,7 @@ import {
     List,
     Grid,
     Header,
+    Modal,
 } from 'semantic-ui-react';
 import {
     connect,
@@ -19,11 +22,13 @@ import {
 } from '../../../actions/dashboard';
 import Pagination from '../../shared/Pagination';
 import noDataImg from '../../../static/images/noresults.png';
+import iconsRight from '../../../static/images/icons/icon-document.svg';
 import PlaceHolderGrid from '../../shared/PlaceHolder';
 import { withTranslation } from '../../../i18n';
 import {
     formatCurrency,
 } from '../../../helpers/give/utils';
+import DashboardTransactionDetails from '../DashboardTransactionDetails';
 
 class DashboradList extends React.Component {
     constructor(props) {
@@ -118,6 +123,7 @@ class DashboradList extends React.Component {
                 const month = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ];
                 const yyyy = date.getFullYear();
                 date = `${month[mm]} ${dd}, ${yyyy}`;
+                const modalDate = `${month[mm]} ${dd}, ${yyyy}`;
                 let dateClass = 'date boderBottom';
                 if (date !== compareDate) {
                     compareDate = date;
@@ -126,6 +132,7 @@ class DashboradList extends React.Component {
                     date = '';
                 }
                 let givingType = ''; let rowClass = ''; let givingTypeClass = ''; let descriptionType = ''; let entity = ''; let transactionSign = ''; let profileUrl = '';
+                let informationSharedEntity = '';
                 let imageCls = 'ui image';
                 let transactionTypeDisplay = '';
                 if (!_.isEmpty(data.attributes.destination)) {
@@ -138,6 +145,7 @@ class DashboradList extends React.Component {
                         entity = data.attributes.destination.name;
                         transactionSign = '-';
                         profileUrl = `groups/${data.attributes.destination.slug}`;
+                        informationSharedEntity = 'Giving Group admin';
                     } else if (data.attributes.destination.type.toLowerCase() === 'beneficiary') {
                         givingType = 'charity';
                         rowClass = 'allocation';
@@ -147,6 +155,7 @@ class DashboradList extends React.Component {
                         entity = data.attributes.destination.name;
                         transactionSign = '-';
                         profileUrl = `charities/${data.attributes.destination.slug}`;
+                        informationSharedEntity = 'charity';
                     } else if (data.attributes.destination.type.toLowerCase() === 'campaign') {
                         givingType = 'campaign';
                         rowClass = 'allocation';
@@ -156,6 +165,7 @@ class DashboradList extends React.Component {
                         entity = data.attributes.destination.name;
                         transactionSign = '-';
                         profileUrl = `campaigns/${data.attributes.destination.slug}`;
+                        informationSharedEntity = 'campaign';
                     } else if (data.attributes.transactionType.toLowerCase() === 'donation') {
                         givingType = '';
                         rowClass = 'donation';
@@ -239,6 +249,40 @@ class DashboradList extends React.Component {
                                                     {entity}
                                                 </b>
                                             )}
+                                            <Modal size="tiny" dimmer="inverted" className="chimp-modal acntActivityModel" closeIcon trigger={<span className="descriptionRight"><Image className="icons-right-page" src={iconsRight}/></span>}>
+                                                <Modal.Header>{modalDate}</Modal.Header>
+                                                <Modal.Content>
+                                                    <div className="acntActivityHeader">
+                                                        <Header as="h2" icon>
+                                                            <Image className={imageCls} size="tiny" src={data.attributes.imageUrl} />
+                                                            {transactionSign}
+                                                            {amount}
+                                                            <Header.Subheader>
+                                                                {descriptionType}
+                                                                {(profileUrl) ? (
+                                                                    <span>
+                                                                        {entity}
+                                                                    </span>
+                                                                ) : (
+                                                                    <span>
+                                                                        {entity}
+                                                                    </span>
+                                                                )}
+                                                            </Header.Subheader>
+                                                        </Header>
+                                                    </div>
+                                                    {
+                                                        !_.isEmpty(data.attributes.metaValues) && (
+                                                            <DashboardTransactionDetails
+                                                                data={data}
+                                                                modalDate={modalDate}
+                                                                informationSharedEntity={informationSharedEntity}
+                                                                sourceUserId={id}
+                                                            />
+                                                        )
+                                                    }
+                                                </Modal.Content>
+                                            </Modal>
                                         </List.Header>
                                         <List.Description className={givingTypeClass}>
                                             {givingType}
