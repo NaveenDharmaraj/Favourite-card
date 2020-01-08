@@ -19,7 +19,7 @@ const notificationColumnName = {
     emailRemindersCompanyMatch: 'email_reminders_amount_within_company_match',
     inAppFriendsActivity: 'in_app_friends_activity_update_and_giving_goals',
     inAppGivingGroupActivity: 'in_app_giving_group_activity',
-    inAppGivingGroupMessagesLikes: 'in_app_giving_group_messages_likes_for_you',
+    // inAppGivingGroupMessagesLikes: 'in_app_giving_group_messages_likes_for_you',
     inAppNewsAndStories: 'in_app_news_and_stories_from_charitable_impact',
 };
 
@@ -33,7 +33,7 @@ class Notifications extends React.Component {
             emailRemindersCompanyMatch: (!_.isEmpty(props.currentUser)) ? props.currentUser.attributes.preferences.email_reminders_amount_within_company_match : false,
             inAppFriendsActivity: (!_.isEmpty(props.currentUser)) ? props.currentUser.attributes.preferences.in_app_friends_activity_update_and_giving_goals : false,
             inAppGivingGroupActivity: (!_.isEmpty(props.currentUser)) ? props.currentUser.attributes.preferences.in_app_giving_group_activity : false,
-            inAppGivingGroupMessagesLikes: (!_.isEmpty(props.currentUser)) ? props.currentUser.attributes.preferences.in_app_giving_group_messages_likes_for_you : false,
+            // inAppGivingGroupMessagesLikes: (!_.isEmpty(props.currentUser)) ? props.currentUser.attributes.preferences.in_app_giving_group_messages_likes_for_you : false,
             inAppNewsAndStories: (!_.isEmpty(props.currentUser)) ? props.currentUser.attributes.preferences.in_app_news_and_stories_from_charitable_impact : false,
         };
         this.handleUserPreferenceChange = this.handleUserPreferenceChange.bind(this);
@@ -58,7 +58,7 @@ class Notifications extends React.Component {
             inAppNewsAndStories,
             inAppFriendsActivity,
             inAppGivingGroupActivity,
-            inAppGivingGroupMessagesLikes,
+            // inAppGivingGroupMessagesLikes,
             emailGivingGroupActivity,
             emailGivingGroupAdminUpdates,
             emailNewsAndStories,
@@ -123,7 +123,8 @@ class Notifications extends React.Component {
                                     <List.Description>Giving Group activity</List.Description>
                                 </List.Content>
                             </List.Item>
-                            <List.Item>
+                            {/* CPP-204_hide this option in notification settings until P3 notifications are implemented. */}
+                            {/* <List.Item>
                                 <List.Content floated="right">
                                     <Checkbox
                                         toggle
@@ -139,7 +140,7 @@ class Notifications extends React.Component {
                                         Giving Group messages and likes for you
                                     </List.Description>
                                 </List.Content>
-                            </List.Item>
+                            </List.Item> */}
                         </List>
                         <p className="bold mt-2">Email</p>
                         <p>Updates sent to your primary email address.</p>
