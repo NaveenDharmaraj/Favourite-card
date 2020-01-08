@@ -103,7 +103,6 @@ CampaignSupports.propTypes = {
 
 function mapStateToProps(state) {
     return {
-        // campaignSupporting: state.group.campaignSupporting,
         groupDetails: state.group.groupDetails,
     };
 }
