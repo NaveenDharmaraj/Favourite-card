@@ -52,20 +52,18 @@ const CampaignSupports = (props) => {
                             <List relaxed verticalAlign="middle" className="groupSupportsList">
                                 {(!hasCampaignAccess)
                                     ? (
-                                        // <Popup
-                                        //     basic
-                                        //     content="This group is private, so you need an invitation to join."
-                                        //     trigger={
-                                        //         (
-                                        //             <List.Item>
-                                        //                 {campaignDetails}
-                                        //             </List.Item>
-                                        //         )
-                                        //     }
-                                        // />
-                                        <List.Item>
-                                            {campaignDetails}
-                                        </List.Item>
+                                        <Popup
+                                            position="bottom center"
+                                            basic
+                                            content="This group is private, so you need an invitation to join."
+                                            trigger={
+                                                (
+                                                    <List.Item>
+                                                        {campaignDetails}
+                                                    </List.Item>
+                                                )
+                                            }
+                                        />
                                     ) : (
                                         <Link route={`/campaigns/${slug}`}>
                                             <List.Item as="a">
