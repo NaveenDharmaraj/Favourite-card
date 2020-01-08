@@ -465,7 +465,7 @@ const _handleLockFailure = async (result) => {
         errorDescription,
     } = result;
     if (errorDescription) {
-        logger.error(`[Auth0] API failed: ${JSON.stringify(errorDescription)}`);
+        logger.error(`[Auth0] Login failed: ${JSON.stringify(errorDescription)}`);
     }
     if (!_.includes(errorDescription, 'Please verify your email before logging in')) {
         if (errorDescription) {
