@@ -162,7 +162,6 @@ const group = (state = {}, action) => {
                         ...state.groupComments,
                         [action.payload.activityId]: action.payload.groupComments,
                         loadComments: true,
-                        // loadMoreComments: action.payload.loadMoreComments,
                     },
     
                 };
