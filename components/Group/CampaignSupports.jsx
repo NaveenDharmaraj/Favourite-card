@@ -10,7 +10,7 @@ import {
     List,
     Image,
     Header,
-    Placeholder,
+    Popup,
 } from 'semantic-ui-react';
 import _isEmpty from 'lodash/isEmpty';
 
@@ -26,7 +26,7 @@ const CampaignSupports = (props) => {
                 campaignCity: city,
                 campaignName: name,
                 campaignSlug: slug,
-                isCampaignPrivate,
+                hasCampaignAccess,
             },
         },
     } = props;
@@ -50,8 +50,19 @@ const CampaignSupports = (props) => {
                         <div className="groupSupports">
                             <Header as="h3">Campaign this group supports</Header>
                             <List relaxed verticalAlign="middle" className="groupSupportsList">
-                                {isCampaignPrivate
+                                {(!hasCampaignAccess)
                                     ? (
+                                        // <Popup
+                                        //     basic
+                                        //     content="This group is private, so you need an invitation to join."
+                                        //     trigger={
+                                        //         (
+                                        //             <List.Item>
+                                        //                 {campaignDetails}
+                                        //             </List.Item>
+                                        //         )
+                                        //     }
+                                        // />
                                         <List.Item>
                                             {campaignDetails}
                                         </List.Item>
