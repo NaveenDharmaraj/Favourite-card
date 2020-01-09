@@ -55,7 +55,7 @@ const CampaignSupports = (props) => {
                                         <Popup
                                             position="bottom center"
                                             basic
-                                            content="This group is private, so you need an invitation to join."
+                                            content="This group is private, you need an invitation to join."
                                             trigger={
                                                 (
                                                     <List.Item>
