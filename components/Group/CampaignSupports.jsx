@@ -1,4 +1,6 @@
-import React from 'react';
+import React, {
+    Fragment,
+} from 'react';
 import { connect } from 'react-redux';
 import {
     string,
@@ -8,7 +10,7 @@ import {
     List,
     Image,
     Header,
-    Placeholder,
+    Popup,
 } from 'semantic-ui-react';
 import _isEmpty from 'lodash/isEmpty';
 
@@ -18,16 +20,28 @@ import { Link } from '../../routes';
 
 const CampaignSupports = (props) => {
     const {
-        campaignSupporting: {
+        groupDetails: {
             attributes: {
-                avatar,
-                city,
-                name,
-                slug,
+                campaignAvatar: avatar,
+                campaignCity: city,
+                campaignName: name,
+                campaignSlug: slug,
+                hasCampaignAccess,
             },
         },
     } = props;
     const imgUrl = !_isEmpty(avatar) ? avatar : placeholder;
+    const campaignDetails = (
+        <Fragment>
+            <Image src={imgUrl} />
+            <List.Content>
+                <List.Header>{name}</List.Header>
+                <List.Description>
+                    {city}
+                </List.Description>
+            </List.Content>
+        </Fragment>
+    );
     return (
         <Grid.Column mobile={16} tablet={16} computer={5}>
             {!_isEmpty(name)
@@ -36,17 +50,28 @@ const CampaignSupports = (props) => {
                         <div className="groupSupports">
                             <Header as="h3">Campaign this group supports</Header>
                             <List relaxed verticalAlign="middle" className="groupSupportsList">
-                                <Link route={`/campaigns/${slug}`}>
-                                    <List.Item as="a">
-                                        <Image src={imgUrl} />
-                                        <List.Content>
-                                            <List.Header>{name}</List.Header>
-                                            <List.Description>
-                                                {city}
-                                            </List.Description>
-                                        </List.Content>
-                                    </List.Item>
-                                </Link>
+                                {(!hasCampaignAccess)
+                                    ? (
+                                        <Popup
+                                            position="bottom center"
+                                            basic
+                                            content="This group is private, you need an invitation to join."
+                                            trigger={
+                                                (
+                                                    <List.Item>
+                                                        {campaignDetails}
+                                                    </List.Item>
+                                                )
+                                            }
+                                        />
+                                    ) : (
+                                        <Link route={`/campaigns/${slug}`}>
+                                            <List.Item as="a">
+                                                {campaignDetails}
+                                            </List.Item>
+                                        </Link>
+                                    )
+                                }
                             </List>
                         </div>
                     </div>
@@ -57,20 +82,20 @@ const CampaignSupports = (props) => {
 };
 
 CampaignSupports.defaultProps = {
-    campaignSupporting: {
+    groupDetails: {
         attributes: {
-            avatar: '',
-            city: '',
+            campaignAvatar: '',
+            campaignCity: '',
             name: '',
         },
     },
 };
 
 CampaignSupports.propTypes = {
-    campaignSupporting: {
+    groupDetails: {
         attributes: {
-            avatar: string,
-            city: string,
+            campaignAvatar: string,
+            campaignCity: string,
             name: string,
         },
     },
@@ -78,7 +103,7 @@ CampaignSupports.propTypes = {
 
 function mapStateToProps(state) {
     return {
-        campaignSupporting: state.group.campaignSupporting,
+        groupDetails: state.group.groupDetails,
     };
 }
 
