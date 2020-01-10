@@ -29,6 +29,7 @@ function ModalContent(props) {
                     error={!validity.isValidGiveAmount}
                     onChange={handleInputChange}
                     onBlur={handleInputOnBlurGivingGoal}
+                    placeholder="Enter goal amount"
                     fluid
                     icon={(
                         <Icon
