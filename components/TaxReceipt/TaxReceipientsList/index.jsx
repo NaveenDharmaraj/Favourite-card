@@ -15,6 +15,9 @@ import PropTypes from 'prop-types';
 
 import TaxReceipientCard from '../TaxReceipientCard';
 import {
+    getUserDefaultTaxReceipt,
+} from '../../../actions/userProfile';
+import {
     getTaxReceiptProfilePaginated,
 } from '../../../actions/taxreceipt';
 import PlaceholderGrid from '../../shared/PlaceHolder';
@@ -38,6 +41,7 @@ class TaxReceipientsList extends React.Component {
             dispatch,
         } = this.props;
         getTaxReceiptProfilePaginated(dispatch, id, 1);
+        getUserDefaultTaxReceipt(dispatch, id);
     }
 
 
@@ -89,6 +93,7 @@ class TaxReceipientsList extends React.Component {
             loader,
             taxReceiptProfileList,
             taxReceiptProfilePageCount,
+            userDefaultTaxReceipt,
         } = this.props;
         const {
             loadMoreIncrementor,
@@ -102,12 +107,11 @@ class TaxReceipientsList extends React.Component {
                             ? (
                                 <Grid verticalAlign="middle" stackable>
                                     <Grid.Row>
-                                        {_map(taxReceiptProfileList.slice(0, 4), (taxReceipt) => (
+                                        {(!_isEmpty(userDefaultTaxReceipt) && !_isEmpty(userDefaultTaxReceipt.data)) && (
                                             <Grid.Column mobile={16} tablet={8} computer={8}>
-                                                <TaxReceipientCard taxReceipt={taxReceipt} id={id} dispatch={dispatch} />
+                                                <TaxReceipientCard taxReceipt={userDefaultTaxReceipt.data} id={id} dispatch={dispatch} />
                                             </Grid.Column>
-                                        ))
-                                        }
+                                        )}
                                     </Grid.Row>
                                 </Grid>
 
@@ -159,6 +163,7 @@ const mapStateToProps = (state) => ({
     loader: state.taxreceipt.loader,
     taxReceiptProfileList: state.taxreceipt.taxReceiptProfileList,
     taxReceiptProfilePageCount: state.taxreceipt.taxReceiptProfilePageCount,
+    userDefaultTaxReceipt: state.userProfile.userDefaultTaxReceipt,
 });
 
 TaxReceipientsList.propTypes = {

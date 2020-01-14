@@ -7,11 +7,15 @@ import {
     Message,
     Modal,
 } from 'semantic-ui-react';
+import {
+    connect,
+} from 'react-redux';
 import _every from 'lodash/every';
 import _merge from 'lodash/merge';
 import _isEmpty from 'lodash/isEmpty';
 import dynamic from 'next/dynamic';
 import _cloneDeep from 'lodash/cloneDeep';
+import PropTypes from 'prop-types';
 
 import {
     validateTaxReceiptProfileForm,
@@ -19,6 +23,9 @@ import {
 import {
     updateTaxReceiptProfile,
 } from '../../../actions/user';
+import {
+    getUserDefaultTaxReceipt,
+} from '../../../actions/userProfile';
 import {
     getTaxReceiptProfileMakeDefault,
 } from '../../../actions/taxreceipt';
@@ -168,6 +175,7 @@ class ModalComponent extends React.Component {
                             attributes,
                         } = response.data;
                         attributes.isDefault = isDefaultChecked;
+                        getUserDefaultTaxReceipt(dispatch, this.props.currentUser.id);
                         dispatch({
                             payload: {
                                 editedTaxProfile: response.data,
@@ -355,4 +363,18 @@ class ModalComponent extends React.Component {
         );
     }
 }
-export default withTranslation('taxReceipt')(ModalComponent);
+ModalComponent.propTypes = {
+    currentUser: PropTypes.shape({
+        id: PropTypes.string,
+    }),
+};
+
+ModalComponent.defaultProps = {
+    currentUser: {
+        id: null,
+    },
+};
+const mapStateToProps = (state) => ({
+    currentUser: state.user.info,
+});
+export default withTranslation(['taxReceipt'])(connect(mapStateToProps)(ModalComponent));
