@@ -314,7 +314,7 @@ const Success = (props) => {
                         {formatMessage('recurringAllocationNotesLink')}
                     </Link>
                     &nbsp;
-                    {formatMessage('recurringAllocationNotesPArt2')}
+                    {formatMessage('recurringAllocationNotesPart2')}
                 </Fragment>
             );
         } else if (giveTo.type === 'companies') {
