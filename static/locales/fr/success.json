@@ -25,7 +25,7 @@
     "recurringAllocationDetails": "Ce don sera fait à partir du Compte CHARITABLE IMPACT de {{fromName}} le {{dayOfMonth}} de chaque mois, à partir du {{startsOn}}.",
     "recurringAllocationNotesPart1": "Because this gift will be coming from your Impact Account, please make sure there are enough funds in your account before each monthly processing date, or",
     "recurringAllocationNotesLink": "set up a monthly deposit",
-    "recurringAllocationNotesPArt2": "into your account to cover the monthly gifts you send.",
+    "recurringAllocationNotesPart2": "into your account to cover the monthly gifts you send.",
     "companyRecurringDonation": "Bien joué, {{name}}. Vous ajoutez maintenant {{amount}} au Compte CHARITABLE IMPACT de {{companyName}} chaque mois.",
     "companyRecurringTaxReceiptMessage": "À chaque fois, un reçu fiscal sera automatiquement affiché dans le Compte CHARITABLE IMPACT de {{companyName}} et la transaction apparaîtra sur le relevé de carte de crédit sous le nom \"CHIMP FNDN * DONATION\".",
     "recurringDonation": "Nicely done, {{name}}. You scheduled {{amount}} to be added to your CHARITABLE IMPACT Account each month.",
