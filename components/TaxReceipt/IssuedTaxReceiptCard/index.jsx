@@ -8,6 +8,7 @@ import {
 import PropTypes from 'prop-types';
 import _isEmpty from 'lodash/isEmpty';
 
+import { Router } from '../../../routes';
 import docIcon from '../../../static/images/icons/icon-document.svg?next-images-ignore=true';
 
 const IssuedTaxReceiptCard = (props) => {
@@ -28,7 +29,7 @@ const IssuedTaxReceiptCard = (props) => {
         <List.Item>
             <Responsive minWidth={768}>
                 <List.Content floated="right">
-                    <Button className="blue-bordr-btn-round-def c-small" onClick={() => { props.renderdonationDetailShow(issuedTaxReceipt.id, issuedTaxReceipt, false); }}> See issued receipts</Button> 
+                    <Button className="blue-bordr-btn-round-def c-small" onClick={() => { Router.pushRoute(`/user/tax-receipts/${issuedTaxReceipt.id}`); }}> See issued receipts</Button> 
                 </List.Content>
             </Responsive>
             <Image className="greyIcon" src={docIcon} />
@@ -44,7 +45,7 @@ const IssuedTaxReceiptCard = (props) => {
                 </p>
                 <Responsive minWidth={320} maxWidth={767}>
                     <List.Content className="mt-1">
-                        <Button className="blue-bordr-btn-round-def c-small" onClick={() => { props.renderdonationDetailShow(issuedTaxReceipt.id, issuedTaxReceipt, false); }}> See issued receipts</Button>
+                        <Button className="blue-bordr-btn-round-def c-small" onClick={() => { Router.pushRoute(`/user/tax-receipts/${issuedTaxReceipt.id}`); }}> See issued receipts</Button>
                     </List.Content>
                 </Responsive>
             </List.Content>
@@ -57,12 +58,10 @@ IssuedTaxReceiptCard.propTypes = {
         full_name: PropTypes.string,
         id: PropTypes.string,
     }),
-    renderdonationDetailShow: PropTypes.func,
 
 };
 IssuedTaxReceiptCard.defaultProps = {
     issuedTaxReceipt: null,
-    renderdonationDetailShow: () => {},
 };
 
 export default IssuedTaxReceiptCard;
