@@ -108,7 +108,7 @@ class TaxReceipientsList extends React.Component {
                                 <Grid verticalAlign="middle" stackable>
                                     <Grid.Row>
                                         {(!_isEmpty(userDefaultTaxReceipt) && !_isEmpty(userDefaultTaxReceipt.data)) && (
-                                            <Grid.Column mobile={16} tablet={8} computer={8}>
+                                            <Grid.Column mobile={16} tablet={16} computer={16}>
                                                 <TaxReceipientCard taxReceipt={userDefaultTaxReceipt.data} id={id} dispatch={dispatch} />
                                             </Grid.Column>
                                         )}
