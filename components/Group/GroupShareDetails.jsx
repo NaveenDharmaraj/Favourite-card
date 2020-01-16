@@ -74,11 +74,11 @@ class GroupShareDetails extends React.Component {
         switch (data.id) {
             case 'twitter':
                 title=encodeURIComponent(`Check out ${name} on @wearechimp.`);
-                window.open('https://twitter.com/share?url='+encodedUrl+'&text='+title,'sharer','toolbar=0,location=0,status=0,width='+width+',height='+height+',top='+top+',left='+left);
+                window.open('https://twitter.com/share?url='+encodedUrl+'&text='+title,'_blank');
                 break;
             case 'facebook':
                 title = encodeURIComponent(`Give to any canadian ${type}`);
-                window.open('http://www.facebook.com/sharer.php?u='+encodedUrl+'&t='+title,'sharer','toolbar=0,location=0,status=0,width='+width+',height='+height+',top='+top+',left='+left);
+                window.open('http://www.facebook.com/sharer.php?u='+encodedUrl+'&t='+title,'_blank');
                 break;
             default:
                 break;
