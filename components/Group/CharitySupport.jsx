@@ -26,18 +26,28 @@ import GroupNoDataState from './GroupNoDataState';
 class CharitySupport extends React.Component {
     static loadCards(data) {
         return (
-            <Grid.Row stretched>
-                {data.map((card) => (
+            data.map((card) => {
+                let locationDetails = '';
+                const locationDetailsCity = (!_.isEmpty(card.attributes.city)) ? card.attributes.city : '';
+                const locationDetailsProvince = (!_.isEmpty(card.attributes.province)) ? card.attributes.province : '';
+                if (locationDetailsCity === '' && locationDetailsProvince !== '') {
+                    locationDetails = locationDetailsProvince;
+                } else if (locationDetailsCity !== '' && locationDetailsProvince === '') {
+                    locationDetails = locationDetailsCity;
+                } else if (locationDetailsCity !== '' && locationDetailsProvince !== '') {
+                    locationDetails = `${card.attributes.city}, ${card.attributes.province}`;
+                }
+                return (
                     <LeftImageCard
                         entityName={card.attributes.name}
-                        location=""
+                        location={locationDetails}
                         placeholder={card.attributes.avatar}
                         typeClass="chimp-lbl charity"
                         type="charity"
                         url={`/charities/${card.attributes.slug}`}
                     />
-                ))}
-            </Grid.Row>
+                );
+            })
         );
     }
 
@@ -81,7 +91,11 @@ class CharitySupport extends React.Component {
             },
         } = this.props;
         const viewData = !_isEmpty(beneficiariesData)
-            ? CharitySupport.loadCards(beneficiariesData)
+            ? (
+                <Grid.Row stretched>
+                    {CharitySupport.loadCards(beneficiariesData)}
+                </Grid.Row>
+            )
             : (
                 <GroupNoDataState
                     type="charities"
