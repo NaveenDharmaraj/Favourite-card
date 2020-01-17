@@ -7533,3 +7533,28 @@ span{
     }
   }
 }
+.rmLnk {
+  text-decoration: none! important;
+}
+
+body .userEllips{
+  &.ui{
+    &.dropdown{
+      &.middleEllipse{
+        .menu{
+          left: auto;
+          right: 0;
+        }
+        i.icon.ellipsis.horizontal{
+          &::before{
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: auto auto 3px;
+          }
+        }
+      }
+    }
+  }
+}
