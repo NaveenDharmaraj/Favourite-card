@@ -104,6 +104,7 @@ export const getIssuedTaxreceiptYearlyDetail = (dispatch, id,) => {
                 uxCritical: true,
             },
         }).then((result) => {
+        fsa.payload.currentIssuedTaxReceipt = result.trp_data;
         fsa.payload.issuedTaxReceiptYearlyDetail = result.data;
         fsa.payload.yearLoader = false;
     }).catch((err) => {

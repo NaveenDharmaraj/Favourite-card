@@ -7,6 +7,7 @@ import {
     Divider,
     Image,
     Table,
+    Placeholder,
 } from 'semantic-ui-react';
 import _isEmpty from 'lodash/isEmpty';
 import {
@@ -98,20 +99,31 @@ class IndividualTaxDoantionsList extends React.Component {
                             <List verticalAlign="middle" className="receiptList pd-0">
                                 <List.Item>
                                     <Image className="greyIcon mr-1" src={docIcon} />
-                                    <List.Content>
-                                        <List.Header className="font-s-15 mb-1-2">
-                                            {full_name}
-                                            {isDefault && <span className="default">default</span>}
-                                        </List.Header>
-                                        <p className="font-s-14">
-                                            {!_isEmpty(address_one) && `${address_one}, `}
-                                            {!_isEmpty(address_two) && `${address_two}, `}
-                                            {!_isEmpty(city) && `${city}, `}
-                                            {!_isEmpty(province) && `${province}, `}
-                                            {!_isEmpty(country) && `${country}, `}
-                                            {!_isEmpty(postal_code) && `${postal_code}`}
-                                        </p>
-                                    </List.Content>
+                                    {
+                                        yearLoader ? (
+                                            <List.Content className="taxPlaceHolder">
+                                                <Placeholder>
+                                                    <Placeholder.Line length="medium" />
+                                                    <Placeholder.Line length="full" />
+                                                </Placeholder>
+                                            </List.Content>
+                                        ) : (
+                                            <List.Content>
+                                                <List.Header className="font-s-15 mb-1-2">
+                                                    {full_name}
+                                                    {isDefault && <span className="default">default</span>}
+                                                </List.Header>
+                                                <p className="font-s-14">
+                                                    {!_isEmpty(address_one) && `${address_one}, `}
+                                                    {!_isEmpty(address_two) && `${address_two}, `}
+                                                    {!_isEmpty(city) && `${city}, `}
+                                                    {!_isEmpty(province) && `${province}, `}
+                                                    {!_isEmpty(country) && `${country}, `}
+                                                    {!_isEmpty(postal_code) && `${postal_code}`}
+                                                </p>
+                                            </List.Content>
+                                        )
+                                    }
                                 </List.Item>
                             </List>
                         </div>
@@ -146,6 +158,7 @@ class IndividualTaxDoantionsList extends React.Component {
     }
 }
 const mapStateToProps = (state) => ({
+    currentIssuedTaxReceipt: state.taxreceipt.currentIssuedTaxReceipt,
     issuedTaxReceiptDonationsDetail: state.taxreceipt.issuedTaxReceiptDonationsDetail,
     issuedTaxReceiptYearlyDetail: state.taxreceipt.issuedTaxReceiptYearlyDetail,
     year: state.taxreceipt.year,
@@ -172,14 +185,14 @@ IndividualTaxDoantionsList.propTypes = {
 
 IndividualTaxDoantionsList.defaultProps = {
     currentIssuedTaxReceipt: {
-        address_one: "123",
-        address_two: "456",
-        city: "salem",
-        province: "",
-        country: "",
-        postal_code: "",
-        full_name: "chimp",
-        isDefault: true,
+        address_one: '',
+        address_two: '',
+        city: '',
+        country: '',
+        full_name: '',
+        isDefault: false,
+        postal_code: '',
+        province: '',
     },
     dispatch: () => { },
     issuedTaxReceiptYearlyDetail: null,
