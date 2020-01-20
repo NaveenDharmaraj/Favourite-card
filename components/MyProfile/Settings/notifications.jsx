@@ -123,7 +123,7 @@ class Notifications extends React.Component {
                                     <List.Description>Giving Group activity</List.Description>
                                 </List.Content>
                             </List.Item>
-                            {/* CPP-204_hide this option in notification settings until P3 notifications are implemented. */}
+                            {/* Bugherd-204_hide this option in notification settings until P3 notifications are implemented. */}
                             {/* <List.Item>
                                 <List.Content floated="right">
                                     <Checkbox
