@@ -25,9 +25,6 @@ const FlowBreadcrumbs = ({
     const currentStepIndex = _.indexOf(steps, currentStep);
     const stepsCount = steps.length;
     const makeBreadcrumb = (step, i) => {
-        if (currentStepIndex !== 1 && i === 1) {
-            return null;
-        }
         const messageKey = step;
         const props = {};
         let output = null;
