@@ -1,0 +1,531 @@
+@import "_mixins.less";
+.flowSuccess{
+    @media only screen and (min-width: 1199px){
+        min-height: 685px;
+    }
+    .flowSuccessImg{
+        margin-top: 30px;
+     img{
+        margin-bottom: 30px;
+     }
+    }
+    .flowSuccessImgHeading{
+       h4{
+        &.ui{
+            &.aligned{
+                &.header{
+                   font-size: 24px;
+                   line-height: 29px;
+                   color: #263238;
+                   font-family: 'ProximaNova-Regular';
+                   font-weight: 600;
+                   .sub{
+                    &.header{
+                        font-size: 16px;
+                        line-height: 20px;
+                        color: #263238;
+                        font-family: 'ProximaNova-Regular';
+                        max-width: 500px;
+                        width: 100%;
+                        margin: 20px auto;
+                        text-align: center;
+                    }
+                   } 
+                }
+            }
+        }
+       }
+    }
+    button{
+        &.flowConfirmBtn{
+            &.ui{
+                &.button{
+                    max-width: 268px;
+                    width: 100%;
+                    margin: 0px auto 20px !important;
+                    text-align: center;
+                    display: block;
+                }
+            }
+        }
+    }
+}
+.flowPadding{
+    padding-top: 40px;
+}
+
+.ui{
+    &.table{
+        &.no_shadow_tbl_mob{
+            tbody{
+                tr{
+                    @media only screen and (max-width:767px) {
+                        box-shadow: none !important;
+                    } 
+                }
+            }
+        }
+        tbody{
+            tr{
+                td{
+                    &.mobile-text-right{
+                        @media only screen and (max-width:767px) {
+                            display: inline-block !important;
+                            width: 48% !important; 
+                         } 
+                     }
+                }
+                 .mobile-text-left{
+                    &.tableOne{
+                        @media only screen and (max-width:767px) {
+                            display: inline-block !important;
+                            width: 48% !important; 
+                         } 
+                    } 
+                 }
+                &.mob_brdr_btm_none{
+                    .mob_btn_edit{
+                        @media only screen and (max-width:767px) {
+                            display: block;
+                            margin:15px auto;
+                        } 
+                    }
+                    .width-full-btn{
+                        &.w-120{
+                            @media only screen and (max-width:767px) {
+                                width: 100% !important;
+                                max-width: 335px;
+                                min-width: auto;
+                             } 
+                        } 
+                    }
+                    @media only screen and (max-width:767px) {
+                        border-bottom: 0px solid transparent !important;
+                        box-shadow: none !important;
+                    } 
+                }
+            }
+        }
+        
+    }
+}
+
+
+.flowBreadcrumb{
+    @media only screen and (max-width:767px) {
+        text-align: center !important;
+    }
+    &::after{
+        content: '';
+        display: table;
+        clear: both;
+    }
+    .ui{
+        &.breadcrumb{
+            float: right;
+            &::after{
+                content: '';
+                display: table;
+                clear: both;
+            }
+            @media only screen and (max-width:767px) {
+                float: none;
+                text-align: center !important;
+            }
+            i{
+                &.right{
+                    &.chevron{
+                        &.icon{
+                            &.divider{
+                                position: relative;
+                                
+                                &::before{
+                                    content: '';
+                                    position: absolute;
+                                    top: 0;
+                                    left: 0;
+                                    right: 0;
+                                    bottom: 0;
+                                    width: 12px;
+                                    height: 16px;
+                                    background-image: url(../images/icons/icon-arrow-down.svg) !important;
+                                    background-size: contain !important;
+                                    background-repeat: no-repeat !important;
+                                    background-position: center !important;
+                                    transform: rotate(-90deg);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+/***********flowReviewbanner********/
+.flowReviewbanner{
+    background-image: url(../images/giving_and_campaign_group_profile_bg.png)!important;
+    background-size:cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    width: 100%;
+    height: 152px;
+    margin-top: 3px;
+    vertical-align: middle;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    @media only screen and (max-width:768px) {
+        height: 55px;
+        margin-top:1px;
+    }
+    .flowReviewbannerText{
+        @media only screen and (min-width:768px) {
+            text-align: left;
+        }
+        @media only screen and (max-width:767px) {
+            text-align: center !important;
+        }
+        h2{
+            &.ui{
+                &.header{
+                  font-size: 24px;
+                  color: #263238;
+                  font-family: 'ProximaNova-Regular';
+                  font-weight: 600;
+                  @media only screen and (max-width:768px) {
+                    font-size: 17px;  
+                  }
+                }
+            }
+        } 
+    }
+}
+.flowReview{
+    margin-bottom: 100px;
+    .GivingGroupIcons{
+        margin:20px auto 50px auto;
+        text-align: center;
+        img{
+            &.Icon_Profile{
+                width:98px;
+                height: 98px;
+                border-radius: 100px;
+                border:6px solid #F5F8FC;
+                box-shadow: 2px 2px 7px 0 rgba(105,146,203,0.3);
+            }
+        }
+        .ui{
+            &.header{
+                font-size: 24px;
+                color: #263238;
+                font-family: 'ProximaNova-Regular';
+                font-weight: 600;
+                .sub{
+                  &.header{
+                    font-size: 17px;
+                    color: #263238;
+                    font-family: 'ProximaNova-Regular';
+                    font-weight: 600;
+                    margin-top:10px;
+                  }  
+                } 
+            }
+        }
+  
+    }
+ .GiveTable{
+     .ui{
+         &.very{
+             &.basic{
+                 &.table{
+                     border-top: 1px solid rgba(34,36,38,.1);
+                     border-radius: 0px;
+                    tbody{
+                         tr{
+                            td{
+                                &.tableOne{
+                                    @media only screen and (min-width:768px) {
+                                        width: 220px !important;
+                                        padding: 20px 4px 20px 0px;
+                                    }
+                                }
+                                &.transaction-text{
+                                    font-size: 12px;
+                                    color: #263238;
+                                }
+                            }
+                         }
+                     }
+                 }
+             }
+         }
+     }
+ }
+}
+
+
+/***********flowReviewbanner*close*******/ 
+.flowBreadcrumb{
+    &.flowPadding{
+        .ui{
+            &.breadcrumb{
+           
+             a{
+             
+                &.section{
+                    color: #BBBBBB;
+                    font-size: 14px;
+                    line-height: 21px;
+                    font-family: 'ProximaNova-Regular';
+                    font-weight: 600;
+                }
+             }
+            }
+        } 
+    }
+}
+.ui.breadcrumb .active.section{
+    color: #90459A !important;
+    font-size: 14px;
+    line-height: 21px;
+    font-family: 'ProximaNova-Regular';
+    font-weight: 600;
+}
+
+/*###################### Naveen #########################*/
+.btn-basic-outline{
+    &.ui{
+        &.button{
+            background-color: transparent;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            &.small{
+                height: 31px;
+                padding-top: 8px;
+                padding-bottom: 8px;
+            }
+            &:hover,&:focus{
+                background-color: #F1F6FD;
+            }
+        }
+    }
+}
+.font-w-n{
+    &.ui{
+        &.radio{
+            label{
+                font-weight: normal;
+            }
+        }
+    }
+}
+.chimpRadio{
+    &.ui{
+        &.radio{
+            input:checked~label:before {
+                border: 1px solid #BBBBBB;
+            }
+            input:checked~label:after {
+                background-color: @blueButton !important;
+            }
+            input{
+                +label{
+                    &::before{
+                        border: 1px solid #BBBBBB;
+                    }
+                }
+            }
+        }
+    }
+}
+.addNewCardInput{
+    height: 40px;
+    border: 1px solid #DDDDDD;	
+    border-radius: 5px;	
+    background-color: #FFFFFF;
+    color: #055CE5;	
+    font-size: 14px;
+    cursor: pointer;
+    padding: 10px 15px;
+}
+.flowFirst{
+    .ui{
+        &.form{
+            >.grid{
+                width: 100%;
+            }
+        }
+    }
+}
+.addCreditCardBtn{
+    width: 126px;
+    height: 40px;
+}
+.tickCheckBox{
+    &.ui{
+        &.checkbox{
+            &.font-w-n{
+                label{
+                    font-weight: normal;
+                }
+            }
+            input:checked~label:before {
+                border: 1px solid #BBBBBB;
+                color: #fff;
+                border-radius: 100%;
+            }
+            input:checked~label:after {
+                background-color: @blueButton !important;
+                color: #fff;
+                border-radius: 100%;
+                &:focus{
+                    color: #fff !important;
+                }
+            }
+            input{
+                +label{
+                    &::before{
+                        border: 1px solid #BBBBBB;
+                        border-radius: 100%;
+                    }
+                    &::after{
+                        color: #fff !important;
+                    }
+                }
+            }
+        }
+    }
+}
+.paymentMethodDropdown{
+    .ui{
+        &.button{
+            &.dropdown{
+                &.active{
+                    &::before{
+                        filter: brightness(0) invert(1);
+                        z-index: 99;
+                        transform: rotate(180deg);
+                    }
+                    .menu{
+                        .item{
+                            &.selected{
+                                background-color: #055CE5;
+                                color: #fff;
+                                border-color: #055CE5;
+                                .image{
+                                    &.ui{
+                                        //filter: brightness(0) invert(1);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                &::before{
+                    content: '';
+                    background-image: url(../images/icons/icon-arrow-down.svg);
+                    height: 15px;
+                    width: 15px;
+                    position: absolute;
+                    right: 10px;
+                    background-size: contain;
+                    background-position: center;
+                    background-repeat: no-repeat;
+                    transition: all 0.3s ease-out;
+                }
+                .default{
+                    &.text{
+                        color: #ddd;
+                    }
+                }
+                i{
+                    &.dropdown{
+                        &.icon{
+                            &::before{
+                                display: none;
+                            }
+                        }
+                    }
+                }
+                .menu{
+                    top:-9px;
+                    border-color: none;
+                    a{
+                        &.item{
+                            color: #055CE5;
+                        }
+                    }
+                    .item{
+                        .text{
+                            span{
+                                line-height: 14px;
+                                &:first-child{
+                                    display: block;
+                                    font-weight: bold;
+                                    margin-bottom: 5px;
+                                }
+                                &:last-child{
+                                    display: inline-block;
+                                    max-width: 200px;
+                                    font-weight: normal;
+                                }
+                            }
+                        }
+                        .image{
+                            &.ui{
+                                width: 32px;
+                                height: 18px;
+                                vertical-align: middle;
+                                object-fit: contain;
+                            }
+                        }
+                    }
+                }
+                .icon{
+                    background-color: transparent !important;
+                    &::before{
+                        background-position: center !important;
+                        background-repeat: no-repeat !important;
+                        background-size: contain !important;
+                    }
+                    &.cardVisa{
+                        &::before{
+                            content: '';
+                            background-image: url(../images/icons/icon-cc-visa-colour.png) !important;
+                            left: 10px;
+                            width: 20px;
+                            height: 20px;
+                        }
+                    }
+                    &.cardMaster{
+                        &::before{
+                            content: '';
+                            background-image: url(../images/icons/icon-cc-mastercard-colour.png) !important;
+                            left: 10px;
+                            width: 20px;
+                            height: 20px;
+                        }
+                    }
+                    &.cardExpress{
+                        &::before{
+                            content: '';
+                            background-image: url(../images/icons/icon-cc-american-express-colour.png) !important;
+                            left: 10px;
+                            width: 20px;
+                            height: 20px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+.flowFirstBtn{
+    &.ui{
+        &.button{
+            height: 40px;
+            width: 126px;
+        }
+    }
+}
