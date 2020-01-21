@@ -11,12 +11,12 @@ import {actionTypes} from '../../actions/give';
 import FlowBreadcrumbs from './FlowBreadcrumbs';
 import { withTranslation } from '../../i18n';
 import {Router} from '../../routes';
-const TaxReceipt = dynamic(() => import('./TaxReceipt'));
+// const TaxReceipt = dynamic(() => import('./TaxReceipt'));
 const Review = dynamic(() => import('./Review'));
 const Success = dynamic(() => import('./Success'));
 const Error = dynamic(() => import('./Error'));
 
-const flowStepsDefault = ['new', 'tax-receipt-profile', 'review', 'success', 'error']
+const flowStepsDefault = ['new', 'review', 'success', 'error']
 
 const renderChildWithProps = (props, stepIndex, flowSteps) => {
     switch (props.step) {
@@ -34,19 +34,6 @@ const renderChildWithProps = (props, stepIndex, flowSteps) => {
                 }) }
                 </div>
             );
-        case "tax-receipt-profile" :
-            if(!_.isEmpty(props.flowObject)){
-                return (<TaxReceipt
-                    dispatch={props.dispatch}
-                    flowObject={props.flowObject}
-                    flowSteps={flowSteps}
-                    stepIndex={_.indexOf(flowSteps, props.step)}
-                />);
-            }
-            else{
-                Router.pushRoute('/dashboard');
-                break;
-            }
         case "review" :
             if(!_.isEmpty(props.flowObject)){
                 return (<Review
@@ -101,21 +88,6 @@ class Give extends React.Component {
             flowSteps,
         } = this.state;
         if(flowObject && !_.isEmpty(flowObject.nextStep) && flowObject.nextStep!==nextProps.step) {
-            if (
-                (!_.isEmpty(flowObject.selectedTaxReceiptProfile)
-                || (_.isEmpty(flowObject.selectedTaxReceiptProfile)
-                    && (flowObject.giveData.creditCard.value === null))
-                )
-                && flowObject.nextStep === 'tax-receipt-profile'
-            ) {
-                return dispatch({
-                    payload: {
-                        ...flowObject,
-                        nextStep: flowSteps[2]
-                    },
-                    type: actionTypes.SAVE_FLOW_OBJECT,
-                });
-            }
             const  routeUrl = `${nextProps.baseUrl}/${flowObject.nextStep}`;
             Router.pushRoute(routeUrl);
         }
@@ -142,7 +114,6 @@ class Give extends React.Component {
         const formatMessage = this.props.t;
         const breadcrumbArray = [
             (baseUrl === '/donations') ? formatMessage('breadCrumb.new') : formatMessage('breadCrumb.give'),
-            formatMessage('breadCrumb.taxReceipt'),
             formatMessage('breadCrumb.review'),
             formatMessage('breadCrumb.success'),
         ]
