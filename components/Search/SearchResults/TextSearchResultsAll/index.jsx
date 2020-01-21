@@ -7,6 +7,8 @@ import _isEmpty from 'lodash/isEmpty';
 import {
     connect,
 } from 'react-redux';
+
+import NoDataState from '../../../shared/NoDataState';
 import FilterComponent from '../../../shared/Filter';
 import SearchResultSingleCharityGroups from '../common/SearchResultSingleCharityGroups';
 import PlaceholderGrid from '../../../shared/PlaceHolder';
@@ -20,6 +22,7 @@ class TextSearchResultsAll extends React.Component {
             CharityGroups,
             dispatch,
             filterValuesShowed,
+            searchWord,
         } = this.props;
         let filterobj = {};
         if (!_isEmpty(filterValuesShowed)) {
@@ -35,7 +38,8 @@ class TextSearchResultsAll extends React.Component {
                 }
             });
         }
-
+        const contentData = `Sorry, there are no results under ${searchWord}.`;
+        const subHeaderData = 'Try a new search with more general words';
         return (
 
             <div>
@@ -55,7 +59,9 @@ class TextSearchResultsAll extends React.Component {
                         <SearchResultSingleCharityGroups charityGroups={CharityGroups.data} />
                     </Fragment>
                 )
-                    : 'No Charities-Groups Available'
+                    : (
+                        <NoDataState contentData={contentData} subHeaderData={subHeaderData} />
+                    )
                 }
             </div>
         );
