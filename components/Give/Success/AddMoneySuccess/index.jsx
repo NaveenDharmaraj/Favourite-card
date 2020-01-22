@@ -16,7 +16,6 @@ import {
 import { Link } from '../../../../routes';
 
 const AddMoneySuccess = (props) => {
-    const currency = 'USD';
     const {
         donationMatchData,
         i18n: {
@@ -26,6 +25,7 @@ const AddMoneySuccess = (props) => {
         t: formatMessage,
     } = props;
     const {
+        currency,
         giveData: {
             donationAmount,
             donationMatch,
@@ -33,17 +33,18 @@ const AddMoneySuccess = (props) => {
             giftType,
         },
     } = successData;
+    debugger
     let donationMatchedData = null;
     let displayAmount = Number(donationAmount);
     // donationmatch value exists it get added to displayamount
-    if (!_isEmpty(donationMatch) && donationMatch.value > 0) {
-        donationMatchedData = getDonationMatchedData(
-            donationMatch.id,
-            donationAmount,
-            donationMatchData,
-        );
-        displayAmount += Number(donationMatchedData.amount);
-    }
+    // if (!_isEmpty(donationMatch) && donationMatch.value > 0) {
+    //     donationMatchedData = getDonationMatchedData(
+    //         donationMatch.id,
+    //         donationAmount,
+    //         donationMatchData,
+    //     );
+    //     displayAmount += Number(donationMatchedData.amount);
+    // }
     const amount = formatCurrency(formatAmount(displayAmount), language, currency);
     let secondParagraph = formatMessage('addMoneySecondText', { amount });
     const thirdParagh = giftType && giftType.value === 0 ? formatMessage('addMoneyThirdText') : null;
@@ -101,6 +102,7 @@ const AddMoneySuccess = (props) => {
 };
 
 AddMoneySuccess.propTypes = {
+    currency: PropTypes.string,
     donationMatchData: PropTypes.arrayOf,
     i18n: PropTypes.shape({
         language: PropTypes.string,
@@ -129,6 +131,7 @@ AddMoneySuccess.propTypes = {
     t: PropTypes.func,
 };
 AddMoneySuccess.defaultProps = {
+    currency: 'USD',
     donationMatchData: [],
     i18n: {
         language: 'en',
