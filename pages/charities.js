@@ -14,7 +14,6 @@ const firstStep = 'gift/new';
 
 const flowSteps = [
     firstStep,
-    'tax-receipt-profile',
     'review',
     'success',
     'error',
