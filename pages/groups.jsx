@@ -13,7 +13,6 @@ const firstStep = 'new';
 
 const flowSteps = [
     firstStep,
-    'tax-receipt-profile',
     'review',
     'success',
     'error',
