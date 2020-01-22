@@ -11,10 +11,11 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 
 
-import AddMoneySuccess from '../../Give/Success/AddMoneySuccess';
 import { reInitNextStep } from '../../../actions/give';
 // This image is dummy image since we dont have a proper image
 import successImg from '../../../static/images/dashboard_gift.png';
+
+import AddMoneySuccess from './AddMoneySuccess';
 
 const Success = (props) => {
     const {
