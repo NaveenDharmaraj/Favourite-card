@@ -8,9 +8,8 @@ import {
     connect,
 } from 'react-redux';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
 
-
+import { withTranslation } from '../../../i18n';
 import { reInitNextStep } from '../../../actions/give';
 // This image is dummy image since we dont have a proper image
 import successImg from '../../../static/images/dashboard_gift.png';

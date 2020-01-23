@@ -7,8 +7,8 @@ import {
 } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import _isEmpty from 'lodash/isEmpty';
-import { withTranslation } from 'react-i18next';
 
+import { withTranslation } from '../../../../i18n';
 import '../../../../static/less/giveFlows.less';
 import {
     getDonationMatchedData, formatCurrency, formatAmount,
