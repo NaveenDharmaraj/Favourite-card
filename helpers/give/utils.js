@@ -584,7 +584,7 @@ const percentage = (donationMatch) => {
     return matchAmount;
 };
 
-const setDateFormat = (nextTuesday, monthNames) => `Tuesday  ${monthNames[nextTuesday.getMonth()]} ${nextTuesday.getDate()}`;
+const setDateFormat = (nextTuesday, monthNames) => `${monthNames[nextTuesday.getMonth()]} ${nextTuesday.getDate()}`;
 
 const getNextTuesday = (currentDateUTC, monthNames) => {
     const day = currentDateUTC.getDay();

@@ -30,7 +30,6 @@ const CharitySuccess = (props) => {
         eftEnabled,
         name,
     } = giveTo;
-    // here month is returned as Tuesday January 28. but in the screens it is January 28.
     const month = getNextAllocationMonth(formatMessage, eftEnabled);
     const secondParagraph = formatMessage('charityTimeForSending', {
         charityName: name,
