@@ -33,7 +33,6 @@ const AddMoneySuccess = (props) => {
             giftType,
         },
     } = successData;
-    debugger
     let donationMatchedData = null;
     let displayAmount = Number(donationAmount);
     // donationmatch value exists it get added to displayamount

@@ -5,5 +5,10 @@
     "addMoneySecondText": "You added {{amount}} to your {{name}}Impact Account.",
     "addMoneySecondTextCompany": "You added {{amount}} to the {{companyName}} Impact Account.",
     "addMoneyThirdText": "You can give these charitable dollars to others, including charities and Giving Groups, whenever you choose.",
-    "addMoneyTaxButtonText": "View tax receipt "
+    "addMoneyTaxButtonText": "View tax receipt ",
+    "allocationFirstText": "Thank you for giving, {{name}}.",
+    "charityTimeForSending": "Your gift will be sent to {{charityName}} on {{month}}.",
+    "charityRecurringThirdText": "Because this gift will be coming from your Impact Account, please make sure there are enough funds in your account before each monthly processing date If you'd like, you can also set up a monthly deposit to make sure you always have enough money in your Impact Account to cover your monthly gifts.",
+    "charityMonthlyDepositButtonText": "Set up a monthly deposit ",
+    "doneText": "Done"
 }

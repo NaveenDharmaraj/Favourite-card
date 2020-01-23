@@ -16,6 +16,7 @@ import { reInitNextStep } from '../../../actions/give';
 import successImg from '../../../static/images/dashboard_gift.png';
 
 import AddMoneySuccess from './AddMoneySuccess';
+import CharitySuccess from './CharitySuccess';
 
 const Success = (props) => {
     const {
@@ -26,7 +27,7 @@ const Success = (props) => {
             displayName,
         },
     } = currentUser;
-    const firstParagraph = formatMessage('addMoneyFirstText', { name: displayName });
+    const firstParagraph = successData.type === 'donations' ? formatMessage('addMoneyFirstText', { name: displayName }) : formatMessage('allocationFirstText', { name: displayName });
     useEffect(() => {
         if (flowObject) {
             reInitNextStep(dispatch, flowObject);
@@ -41,6 +42,12 @@ const Success = (props) => {
                 return (
                     <AddMoneySuccess
                         donationMatchData={donationMatchData}
+                        successData={successData}
+                    />
+                );
+            case 'give/to/charity':
+                return (
+                    <CharitySuccess
                         successData={successData}
                     />
                 );
