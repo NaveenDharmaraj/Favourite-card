@@ -113,6 +113,7 @@ CharitySuccess.defaultProps = {
 };
 
 const memoCharitySuccess = React.memo(CharitySuccess);
+export { CharitySuccess };
 export default withTranslation([
     'success',
 ])(memoCharitySuccess);
