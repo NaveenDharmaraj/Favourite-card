@@ -103,16 +103,22 @@ const NavBarMobile = ({
                     </List>
                 </Menu.Item>
                 <Link route={logoUrl}>
-                    <Menu.Item as="a">
+                    <Menu.Item
+                        as="a"
+                        onClick={onPusherClick}
+                    >
                         Dashboard
                     </Menu.Item>
                 </Link>
                 <Link route='/search'>
-                    <Menu.Item as="a">
+                    <Menu.Item
+                        as="a"
+                        onClick={onPusherClick}
+                    >
                         Explore
                     </Menu.Item>
                 </Link>
-                {menuLinks.map((item) => <MainNavItem {...item} />)}
+                {menuLinks.map((item) => <MainNavItem {...item} onPusherClick={onPusherClick} />)}
                 {
                     (!isExternal) ? (
                         <Link route={accountUrl}>
