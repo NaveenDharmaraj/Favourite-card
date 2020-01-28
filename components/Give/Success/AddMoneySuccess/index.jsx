@@ -102,7 +102,10 @@ const AddMoneySuccess = (props) => {
 
 AddMoneySuccess.propTypes = {
     currency: PropTypes.string,
-    donationMatchData: PropTypes.arrayOf,
+    donationMatchData: PropTypes.arrayOf(PropTypes.shape({
+        id: PropTypes.any,
+        value: PropTypes.string,
+    })),
     i18n: PropTypes.shape({
         language: PropTypes.string,
     }),
@@ -157,6 +160,8 @@ AddMoneySuccess.defaultProps = {
 };
 
 const memoAddMoneySuccess = React.memo(AddMoneySuccess);
+
+export { AddMoneySuccess };
 export default withTranslation([
     'success',
 ])(memoAddMoneySuccess);

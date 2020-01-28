@@ -91,7 +91,10 @@ Success.propTypes = {
         }),
     }),
     dispatch: PropTypes.func,
-    donationMatchData: PropTypes.arrayOf,
+    donationMatchData: PropTypes.arrayOf(PropTypes.shape({
+        id: PropTypes.any,
+        value: PropTypes.string,
+    })),
     i18n: PropTypes.shape({
         language: PropTypes.string,
     }),
@@ -176,6 +179,8 @@ const mapStateToProps = (state) => ({
     successData: state.give.successData,
 });
 
+
+export { Success };
 export default withTranslation([
     'success',
 ])(connect(mapStateToProps)(Success));
