@@ -16,6 +16,7 @@ import successImg from '../../../static/images/dashboard_gift.png';
 
 import AddMoneySuccess from './AddMoneySuccess';
 import CharitySuccess from './CharitySuccess';
+import P2PSuccess from './P2PSuccess';
 
 const Success = (props) => {
     const {
@@ -47,6 +48,12 @@ const Success = (props) => {
             case 'give/to/charity':
                 return (
                     <CharitySuccess
+                        successData={successData}
+                    />
+                );
+            case 'give/to/friend':
+                return (
+                    <P2PSuccess
                         successData={successData}
                     />
                 );
@@ -161,7 +168,7 @@ Success.defaultProps = {
         stepsCompleted: false,
         type: null,
     },
-    t: () => {},
+    t: () => { },
 };
 const mapStateToProps = (state) => ({
     currentUser: state.user.info,
