@@ -54,12 +54,16 @@ class Layout extends React.Component {
             const {
                 attributes: {
                     causes,
+                    skipCauseSelection,
                 }
             } = userInfo;
-
-            if (_.isEmpty(causes)) {
+            if(!skipCauseSelection || skipCauseSelection === null) {
                 Router.pushRoute('/user/causes');
             }
+
+            // if (_.isEmpty(causes)) {
+            //     //Router.pushRoute('/user/causes');
+            // }
         }
         if (authRequired && !isAuthenticated) {
             let nextPathname;
