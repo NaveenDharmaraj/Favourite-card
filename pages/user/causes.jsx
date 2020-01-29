@@ -9,6 +9,7 @@ import {
     Radio,
     Grid,
     Container,
+    List,
 } from 'semantic-ui-react';
 import _ from 'lodash';
 
@@ -61,7 +62,7 @@ class CausesMigration extends React.Component {
             dispatch,
             currentUser,
         } = this.props;
-        if (userCauses.length >= 3 && currentUser && currentUser.id) {
+        if (currentUser && currentUser.id) {
             dispatch({
                 payload: {
                     continueButtonDisable: true,
@@ -156,16 +157,16 @@ class CausesMigration extends React.Component {
                                                             <Header as="h3" className="pb-3">A couple of quick questions before heading to your account...</Header>
                                                             <Header as="h4" className="font-s-20">What causes are important to you? </Header>
                                                             <p className="pb-2">
-                                                            Your answers help us find charities and Giving Groups that match your interests. You'll see them in the new "Discovered for you" section in your account dashboard.<br/><br/>
-                                                                The causes you select are visible only to you unless you choose to share them on your Charitable Impact profile, and only you can see the charities and Giving Groups discovered for you. We don't share the information you provide with charities or anyone else.
+                                                            Select causes to see charities and Giving Groups that might interest you. You’ll see them in the <b>"discovered for you"</b> section of your account.
                                                             </p>
                                                         </div>
-                                                        <p>Choose 3 or more:</p>
+                                                        <p>Select as many as you like:</p>
                                                         <Grid className="select-btn-wraper">
                                                             <Grid.Row>
                                                                 {renderCauses()}
                                                             </Grid.Row>
                                                         </Grid>
+                                                        <p className="causes-selection">Only you can see causes you care about unless you decide to share them on your personal profile. We don't share your selected causes with charities or anyone else.</p>
                                                         <div className="reg-btn-wraper">
                                                             <Button
                                                                 className="blue-bordr-btn-round-def"
@@ -175,7 +176,7 @@ class CausesMigration extends React.Component {
                                                             />
                                                             <Button
                                                                 type="submit"
-                                                                disabled={(userCauses.length < 3) || this.props.disableMigrationButtons}
+                                                                disabled={this.props.disableMigrationButtons}
                                                                 primary
                                                                 onClick={this.handleCausesSubmit}
                                                             >
@@ -202,20 +203,26 @@ class CausesMigration extends React.Component {
                                                             <li>2. Causes</li>
                                                         </ul>
                                                     </div>
-                                                    <div className="reg-header">
-                                                        <Header as="h3" className="pb-3">A couple of quick questions before heading to your account...</Header>
-                                                        <Header as="h4" className="font-s-20">Show your profile on Charitable Impact?</Header>
-                                                        <p className="pb-2">
+                                                    <div className="reg-header quickquestions">
+                                                        <Header as="h3" className="pb-1">A couple of quick questions before heading to your account...</Header>
+                                                        <Header as="h4" className="font-s-20">Show your personal profile on Charitable Impact?
+                                                        </Header>
+                                                        <List bulleted>
+                                                            <List.Item className="profile">Others who are logged in can search for you and request to add you as a friend</List.Item>
+                                                            <List.Item className="profile">Friends can easily send you charitable dollars that you can give away</List.Item>
+                                                            <List.Item className="profile">Choose what information to share on your profile or hide from others</List.Item>
+                                                        </List>
+                                                        {/* <p className="pb-2">
                                         When you set your profile to "discoverable”, friends, family, and others who are logged in can search for you by name or email address and can see the information you choose to share on your profile.
 People will be able to request to add you as a friend, message you, and easily send you charitable dollars that you can give away.
 
-                                                        </p>
+                                                        </p> */}
                                                     </div>
                                                     <div className="reg-header">
-                                                        <Header as="h4" className="font-s-20">Discoverability</Header>
+                                                        {/* <Header as="h4" className="font-s-20">Discoverability</Header>
                                                         <p>
                                             Show your name and appear in search results?
-                                                        </p>
+                                                        </p> */}
                                                         <Form className="discoverRadio">
                                                             <Form.Field>
                                                                 <Radio
