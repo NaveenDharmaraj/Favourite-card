@@ -550,26 +550,6 @@ export const leaveGroup = async (dispatch, slug, groupId, loadMembers) => {
     });
 };
 
-export const getCampaignFromId = async (dispatch, campaignId) => {
-    const fsa = {
-        payload: {
-            campaignDetails: {},
-        },
-        type: actionTypes.GET_CAMPAIGN_SUPPORTING_GROUP,
-    };
-    coreApi.get(`campaigns/${campaignId}`, {
-        params: {
-            dispatch,
-            uxCritical: true,
-        },
-    }).then((result) => {
-        if (result && !_.isEmpty(result.data)) {
-            fsa.payload.campaignDetails = result.data;
-            dispatch(fsa);
-        }
-    }).catch();
-};
-
 export const toggleTransactionVisibility = async (dispatch, transactionId, type) => {
     const fsa = {
         payload: {},
