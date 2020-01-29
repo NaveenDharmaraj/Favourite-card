@@ -57,6 +57,13 @@ instance.interceptors.response.use((response) => {
         data,
         status,
     } = error.response;
+    const logDNAErrorObj = {
+        data: config.data ? JSON.parse(config.data) : null,
+        error: error.response.data,
+        method: config.method,
+        url: config.url,
+    };
+    logger.error(`[SEARCH] API failed: ${JSON.stringify(logDNAErrorObj)}`);
     if (status === 401 && !config.ignore401 && typeof window !== 'undefined') {
         window.location.href = '/users/logout';
     } else if (status === 401) {
@@ -66,13 +73,7 @@ instance.interceptors.response.use((response) => {
     if (config.uxCritical && config.dispatch) {
         triggerUxCritialErrors(data.errors || data, config.dispatch);
     }
-    const logDNAErrorObj = {
-        data: config.data ? JSON.parse(config.data) : null,
-        error: error.response.data,
-        method: config.method,
-        url: config.url,
-    };
-    logger.error(`[SEARCH] API failed: ${JSON.stringify(logDNAErrorObj)}`);
+
     return Promise.reject(error.response.data);
 });
 
