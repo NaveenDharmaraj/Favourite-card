@@ -40,19 +40,6 @@ const handleOnInputChangeWrapper = (event, handleOnInputChange) => {
     });
 };
 
-const renderInfo = (enableCharacterCount, formatMessage, text) => {
-    if (enableCharacterCount) {
-        return formatMessage(
-            'giveCommon:noteRemainingChars1000',
-            {
-                currentCount: (!_.isEmpty(text)) ? Math.max(0, (1000 - Number(text.length))) : 1000,
-                maximum: 1000,
-            },
-        );
-    }
-    return '';
-};
-
 const isValidTextCount = (enableCharacterCount, text) => {
     if (!enableCharacterCount) {
         return true;
@@ -79,30 +66,12 @@ const Note = ({
             <label htmlFor={fieldName}>
                 {labelText}
             </label>
-            <Popup
-                content={popupText}
-                position="top center"
-                trigger={
-                    <Icon
-                        color="blue"
-                        name="question circle"
-                        size="large"
-                    />
-                }
-            />
             <Form.Field
                 className="with-info"
                 control={TextAreaWithInfo}
                 error={!isValidText(enableCharacterCount, text)}
                 name={fieldName}
                 id={fieldName}
-                info={
-                    renderInfo(
-                        enableCharacterCount,
-                        formatMessage,
-                        text,
-                    )
-                }
                 onChange={(e) => handleOnInputChangeWrapper(e, handleOnInputChange)}
                 onBlur={handleOnInputBlur}
                 placeholder={placeholderText}

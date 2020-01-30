@@ -122,17 +122,6 @@ class DropDownAccountOptions extends React.Component {
                         <label htmlFor="giveFrom">
                             {giveFromHeader}
                         </label>
-                        <Popup
-                            content={formatMessage('allocationsGiveFromPopup')}
-                            position="top center"
-                            trigger={(
-                                <Icon
-                                    color="blue"
-                                    name="question circle"
-                                    size="large"
-                                />
-                            )}
-                        />
                         {fieldData}
                     </Form.Field>
                     <FormValidationErrorMessage

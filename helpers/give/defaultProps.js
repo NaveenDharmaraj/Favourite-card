@@ -11,6 +11,7 @@ export const donationDefaultProps = {
             donationMatch: {
                 value: null,
             },
+            formatedDonationAmount: '',
             giftType: {
                 value: 0,
             },

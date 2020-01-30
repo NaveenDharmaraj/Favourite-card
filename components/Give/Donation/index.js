@@ -7,12 +7,16 @@ import getConfig from 'next/config';
 import _isEmpty from 'lodash/isEmpty';
 import _merge from 'lodash/merge';
 import {
+    Button,
     Checkbox,
     Divider,
+    Dropdown,
     Form,
     Icon,
     Input,
+    Modal,
     Popup,
+    Radio,
     Select,
 } from 'semantic-ui-react';
 import {
@@ -52,7 +56,30 @@ import {
     fullMonthNames,
     formatCurrency,
 } from '../../../helpers/give/utils';
+// import '../../../static/less/giveFlows.less';
+
 const CreditCard = dynamic(() => import('../../shared/CreditCard'));
+
+const taxOptions = [
+    {
+      text: ReactHtmlParser('<span>Tammy Tuba</span><span>121-4567 W Georgia Street Vancouver, BC V5T G5K</span>'),
+      value: 'Jenny Hess',
+    },
+    {
+        text: ReactHtmlParser('<span>Sophia Yakisoba</span><span>121-4567 W Georgia Street Vancouver, BC V5T G5K</span>'),
+        value: '22222',
+    },
+    {
+        text: ReactHtmlParser('<span>Sophia Yakisoba</span><span>121-4567 W Georgia Street Vancouver, BC V5T G5K</span>'),
+        value: '1111',
+    },
+    {
+      as:'a',
+      key: '+ Add new tax receipt',
+      text: '+ Add new tax receipt',
+      value: '0',
+    },
+  ]
 
 class Donation extends React.Component {
     constructor(props) {
@@ -75,6 +102,7 @@ class Donation extends React.Component {
                 }
             }
         this.state = {
+            buttonClicked: false,
             flowObject: _.cloneDeep(payload),
             disableButton: !props.userAccountsFetched,
             inValidCardNameValue: true,
@@ -82,6 +110,8 @@ class Donation extends React.Component {
             inValidCvv: true,
             inValidExpirationDate: true,
             inValidNameOnCard: true,
+            isCreditCardModalOpen: false,
+            isTaxReceiptModelOpen: false,
             validity: this.intializeValidations(),
             dropDownOptions: {},
         }
@@ -94,6 +124,7 @@ class Donation extends React.Component {
         this.validateCreditCardCvv = this.validateCreditCardCvv.bind(this);
         this.validateCreditCardName = this.validateCreditCardName.bind(this);
         this.getStripeCreditCard = this.getStripeCreditCard.bind(this);
+        this.handleCCAddClose = this.handleCCAddClose.bind(this);
         dismissAllUxCritialErrors(props.dispatch);
     }
 
@@ -105,6 +136,8 @@ class Donation extends React.Component {
         }
     } = this.props;
         dispatch(getDonationMatchAndPaymentInstruments(id, 'donations'));
+
+        console.log(this.props.flowObject);
     }
 
     intializeValidations() {
@@ -142,10 +175,14 @@ class Donation extends React.Component {
             validity,
         } = this.state;
         let inputValue = value;
-        const isNumber = /^\d+(\.\d*)?$/;
-        if ((name === 'donationAmount') && !_.isEmpty(value) && value.match(isNumber)) {
-            giveData[name] = formatAmount(value);
+        // const isNumber = /^\d+(\.\d*)?$/;
+        const isValidNumber = /^(?:[0-9]+,)*[0-9]+(?:\.[0-9]+)?$/;
+        giveData[name] = formatAmount(value);
+        if ((name === 'donationAmount') && !_.isEmpty(value) && value.match(isValidNumber)) {
             inputValue = formatAmount(value);
+            inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
+            giveData[name] = inputValue;
+            giveData.formatedDonationAmount = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
         }
         if(name !== 'giveTo') {
             validity = validateDonationForm(name, inputValue, validity, giveData);
@@ -183,7 +220,16 @@ class Donation extends React.Component {
         this.setState({ validity });
         return _.every(validity);
     }
-
+    
+    onChangeTaxReceipt = (event,data) => {
+        // if the correct one is selected then...
+        if(data.value == "newCardModal"){
+            this.setState({open: true});
+        }else{
+            this.setState({open: false});
+        }
+    }
+    
     handleInputChange = (event, data) =>  {
         const {
             name,
@@ -215,6 +261,7 @@ class Donation extends React.Component {
         if (giveData[name] !== newValue) {
             giveData[name] = newValue;
             giveData.userInteracted = true;
+            debugger
         switch (name) {
             case 'giveTo':
                 if(giveData.giveTo.type === 'companies') {
@@ -241,7 +288,24 @@ class Donation extends React.Component {
                 const inputValue  = target.checked;
                 giveData.automaticDonation = inputValue;
                 giveData.giftType.value = (inputValue) ? 1 : 0;
-                break;                                 
+                break;
+            case 'donationAmount' :
+                giveData.formatedDonationAmount = newValue;
+                break;
+            case 'creditCard'  :
+                if(newValue.value === 0) {
+                    this.setState({
+                        isCreditCardModalOpen:true
+                    })
+                }  
+            case 'taxReceipt' :
+                if(data.value == "0"){
+                    this.setState({open: true});
+                }else{
+                    this.setState({open: false});
+                }
+                debugger
+                break;                        
             default: break;
             }
             this.setState({
@@ -255,6 +319,7 @@ class Donation extends React.Component {
                     validity,
                 },
             });
+            console.log(this.state)
         }
     }  
   
@@ -313,6 +378,7 @@ class Donation extends React.Component {
     renderDonationAmountField(amount, validity, formatMessage) {
 
       return (
+          
           <Form.Field>
               <label htmlFor="donationAmount">
                 {formatMessage('giveCommon:amountLabel')}
@@ -324,7 +390,7 @@ class Donation extends React.Component {
                   icon="dollar"
                   iconPosition="left"
                   name="donationAmount"
-                  maxLength="7"
+                  maxLength="8"
                   onBlur={this.handleInputOnBlur}
                   onChange={this.handleInputChange}
                   placeholder={formatMessage('giveCommon:amountPlaceHolder')}
@@ -342,10 +408,34 @@ class Donation extends React.Component {
                     condition={!validity.isAmountLessThanOneBillion}
                     errorMessage={ReactHtmlParser(formatMessage('giveCommon:errorMessages.invalidMaxAmountError'))}
                 />
+                <div className="mt-1">
+                    <Button className="btn-basic-outline" type="button" size="small" value="25" onClick={this.handlePresetAmountClick} >$25</Button>
+                    <Button className="btn-basic-outline" type="button" size="small" value="50" onClick={this.handlePresetAmountClick} >$50</Button>
+                    <Button className="btn-basic-outline" type="button" size="small" value="100" onClick={this.handlePresetAmountClick} >$100</Button>
+                    <Button className="btn-basic-outline" type="button" size="small" value="500" onClick={this.handlePresetAmountClick} >$500</Button>
+                </div>
             </Form.Field>
         );
     }
-  
+    handlePresetAmountClick = (event, data) =>{
+        const {
+            value,
+        } = data;
+        const inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
+        const formatedDonationAmount = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
+        debugger
+        this.setState({
+            ...this.state,
+            flowObject:{
+                ...this.state.flowObject,
+                giveData:{
+                    ...this.state.flowObject.giveData,
+                    donationAmount:inputValue,
+                    formatedDonationAmount,
+                }
+            }
+        });
+    }
     /**
        * Render recurring donation option.
        * @param {object} formData The state object representing form data.
@@ -381,9 +471,7 @@ class Donation extends React.Component {
                         onChange={this.handleInputChange}
                         toggle
                     />
-                    <div>
-                      {formatMessage('recurringMontlyDonationLabel')}
-                    </div>
+
                 </Form.Field>
                 {
                     !!formData.automaticDonation && (
@@ -513,15 +601,8 @@ class Donation extends React.Component {
           const creditCardField = (
             <Fragment>
                 <Form.Field>
-                    <Divider className="dividerMargin" />
-                    <h3
-                        className='ui header'
-                    >Payment method
-                    </h3>
-                </Form.Field>
-                <Form.Field>
                     <label htmlFor="creditCard">
-                    {formatMessage('creditCardLabel')}
+                    Payment method
                     </label>
                     <Form.Field
                         control={Select}
@@ -703,10 +784,82 @@ class Donation extends React.Component {
         }
 
         return validCC;
-    }    
-    
+    }
+
+    handleAddButtonClick() {
+        const {
+            creditCard,
+            inValidCardNumber,
+            inValidExpirationDate,
+            inValidNameOnCard,
+            inValidCvv,
+            inValidCardNameValue,
+            isDefaultCard,
+            stripeCreditCard,
+            cardHolderName,
+            currentActivePage,
+        } = this.state;
+        const validateCC = this.isValidCC(
+            creditCard,
+            inValidCardNumber,
+            inValidExpirationDate,
+            inValidNameOnCard,
+            inValidCvv,
+            inValidCardNameValue,
+        );
+        if(validateCC) {
+            this.setState({
+                buttonClicked: true,
+                statusMessage: false,
+            });
+            const {
+                currentUser: {
+                    id,
+                },
+                dispatch,
+            } = this.props;
+            saveNewCreditCard(dispatch, stripeCreditCard, cardHolderName, id, isDefaultCard, currentActivePage).then(() => {
+                this.setState({
+                    buttonClicked: false,
+                    errorMessage: null,
+                    successMessage: 'Credit card saved.',
+                    statusMessage: true,
+                    isAddModalOpen: false,
+                });
+            }).catch((err) => {
+                this.setState({
+                    buttonClicked: false,
+                    errorMessage: 'Error in saving the Credit Card.',
+                    statusMessage: true,
+                    isAddModalOpen: false,
+                });
+            });
+        }
+    }
+
+    handleCCAddClose() {
+        // const {
+        //     dispatch
+        // } = this.props;
+        // dispatch({
+        //     payload: {
+        //         newCreditCardApiCall: false,
+        //     },
+        //     type: 'ADD_NEW_CREDIT_CARD_STATUS',
+        // });
+        debugger
+        this.setState({ 
+            ...this.state,    
+            isCreditCardModalOpen: false
+        });
+    }
+
+
+    handleFrequencyChange = (e, { value }) => this.setState({ value })
+
     render() {
         const {
+            buttonClicked,
             flowObject: {
                 currency,
                 giveData,
@@ -717,6 +870,8 @@ class Donation extends React.Component {
             inValidNameOnCard,
             inValidCvv,
             inValidCardNameValue,
+            isCreditCardModalOpen,
+            isTaxReceiptModelOpen,
             validity,
         } = this.state;
         const {
@@ -728,6 +883,7 @@ class Donation extends React.Component {
             },
             creditCardApiCall,
         } = this.props;
+        console.log(isCreditCardModalOpen);
         const formatMessage = this.props.t;
         const donationMatchOptions = populateDonationMatch(donationMatchData, formatMessage, language);
         let paymentInstruments = paymentInstrumentsData;
@@ -735,21 +891,151 @@ class Donation extends React.Component {
             paymentInstruments = !_.isEmpty(companyDetails.companyPaymentInstrumentsData) ? companyDetails.companyPaymentInstrumentsData : [];
         }
         const paymentInstrumenOptions  = populatePaymentInstrument(paymentInstruments, formatMessage);
-
         return (
         <Fragment>
             <Form onSubmit={this.handleSubmit}>
-            { this.renderDonationAmountField(giveData.donationAmount, validity, formatMessage) }
+            { this.renderDonationAmountField(giveData.formatedDonationAmount, validity, formatMessage) }
+            
             <DropDownAccountOptions
-            formatMessage={formatMessage}
-            type={type}
-            validity= {validity.isValidAddingToSource}
-            selectedValue={this.state.flowObject.giveData.giveTo.value}
-            name="giveTo"
-            parentInputChange={this.handleInputChange}
-            parentOnBlurChange={this.handleInputOnBlur}
+                formatMessage={formatMessage}
+                type={type}
+                validity= {validity.isValidAddingToSource}
+                selectedValue={this.state.flowObject.giveData.giveTo.value}
+                name="giveTo"
+                parentInputChange={this.handleInputChange}
+                parentOnBlurChange={this.handleInputOnBlur}
             />
-            { this.renderingRecurringDonationFields(giveData, formatMessage, language) }
+            {/* { this.renderingRecurringDonationFields(giveData, formatMessage, language) } */}
+            <div className="mb-2">
+                <Form.Field>
+                    <label>Frequency</label>
+                </Form.Field>
+                <Form.Field>
+                    <Radio
+                        className="chimpRadio font-w-n"
+                        label='Add once'
+                        name='radioGroup'
+                        value='this'
+                        checked
+                        checked={this.state.value === 'this'}
+                        onChange={this.handleFrequencyChange}
+                    />
+                </Form.Field>
+                <Form.Field>
+                    <Radio
+                        className="chimpRadio font-w-n"
+                        label='Add monthly'
+                        name='radioGroup'
+                        value='that'
+                        checked={this.state.value === 'that'}
+                        onChange={this.handleFrequencyChange}
+                    />
+                </Form.Field>
+            </div>
+            {/* if no credit card added */}
+            {/* <Form.Field className="mb-2">
+                <label>Payment method</label>
+                <Modal size="tiny" dimmer="inverted" className="chimp-modal" closeIcon
+                    trigger={<div className="addNewCardInput">+ Add new card</div>}>
+                    <Modal.Header>Add new card</Modal.Header>
+                    <Modal.Content>
+                        <Modal.Description className="font-s-16">
+                            <Form>
+                                <Form.Field>
+                                    <Checkbox className="font-w-n tickCheckBox"
+                                        label='Set as primary card' defaultChecked />
+                                </Form.Field>
+                            </Form>
+                        </Modal.Description>
+                        <div className="btn-wraper pt-3 text-right">
+                            <Button disabled
+                                className="blue-btn-rounded-def addCreditCardBtn">
+                                Done
+                            </Button>
+                        </div>
+                    </Modal.Content>
+                </Modal>
+            </Form.Field> */}
+            {/* if no credit card added */}
+
+            {
+                ((!_isEmpty(paymentInstrumenOptions) && parseFloat(giveData.donationAmount.replace(/,/g, ''))> 0) &&
+                    this.renderpaymentInstrumentOptions(giveData, paymentInstrumenOptions, formatMessage)
+                )
+            }
+            {
+                <Modal
+                    size="tiny"
+                    dimmer="inverted"
+                    className="chimp-modal"
+                    closeIcon
+                    open={isCreditCardModalOpen}
+                    onClose={this.handleCCAddClose}
+                        >
+                    <Modal.Header>Add new card</Modal.Header>
+                    <Modal.Content>
+                        <Modal.Description className="font-s-16">
+                            <Form>
+                                <StripeProvider apiKey={STRIPE_KEY}>
+                                    <Elements>
+                                        <CreditCard
+                                            creditCardElement={this.getStripeCreditCard}
+                                            creditCardValidate={inValidCardNumber}
+                                            creditCardExpiryValidate={inValidExpirationDate}
+                                            creditCardNameValidte={inValidNameOnCard}
+                                            creditCardNameValueValidate={inValidCardNameValue}
+                                            creditCardCvvValidate={inValidCvv}
+                                            validateCCNo={this.validateStripeCreditCardNo}
+                                            validateExpiraton={this.validateStripeExpirationDate}
+                                            validateCvv={this.validateCreditCardCvv}
+                                            validateCardName={this.validateCreditCardName}
+                                            formatMessage = {formatMessage}
+                                            // eslint-disable-next-line no-return-assign
+                                            onRef={(ref) => (this.CreditCard = ref)}
+                                        />
+                                    </Elements>
+                                </StripeProvider>
+                                <Form.Field
+                                    // checked={isDefaultCard}
+                                    control={Checkbox}
+                                    className="ui checkbox chkMarginBtm checkboxToRadio"
+                                    id="isDefaultCard"
+                                    label="Set as primary card"
+                                    name="isDefaultCard"
+                                    onChange={this.handleSetPrimaryClick}
+                                    // readOnly={isDefaultCardReadOnly}
+                                />
+                            </Form>
+                        </Modal.Description>
+                        <div className="btn-wraper pt-3 text-right">
+                            <Button
+                                className="blue-btn-rounded-def sizeBig w-180"
+                                onClick={this.handleAddButtonClick}
+                                disabled={buttonClicked}
+                            >
+                                Add
+                            </Button>
+                        </div>
+                    </Modal.Content>
+                </Modal>
+            }
+
+            <Form.Field className="mb-2">
+                <div className="paymentMethodDropdown">
+                    <label htmlFor="">Tax receipt</label>
+                    <Dropdown
+                        button
+                        icon='cardExpress'
+                        floating
+                        fluid
+                        selection
+                        options={taxOptions}
+                        onChange={this.handleInputChange}
+                        placeholder='Select Tax Receipt'
+                    />
+                </div>
+            </Form.Field>
+
             <Note
                 fieldName="noteToSelf"
                 handleOnInputChange={this.handleInputChange}
@@ -762,34 +1048,6 @@ class Donation extends React.Component {
             />
             { this.renderdonationMatchOptions(giveData, donationMatchOptions, formatMessage, donationMatchData, language, currency)}
 
-            {
-                ((!_isEmpty(paymentInstrumenOptions) && giveData.giveTo.value > 0) &&
-                    this.renderpaymentInstrumentOptions(giveData, paymentInstrumenOptions, formatMessage)
-                )
-            }
-            {
-                ((_isEmpty(paymentInstrumenOptions) && giveData.giveTo.value > 0) || giveData.creditCard.value === 0) && (
-                    <StripeProvider apiKey={STRIPE_KEY}>
-                        <Elements>
-                            <CreditCard
-                                creditCardElement={this.getStripeCreditCard}
-                                creditCardValidate={inValidCardNumber}
-                                creditCardExpiryValidate={inValidExpirationDate}
-                                creditCardNameValidte={inValidNameOnCard}
-                                creditCardNameValueValidate={inValidCardNameValue}
-                                creditCardCvvValidate={inValidCvv}
-                                validateCCNo={this.validateStripeCreditCardNo}
-                                validateExpiraton={this.validateStripeExpirationDate}
-                                validateCvv={this.validateCreditCardCvv}
-                                validateCardName={this.validateCreditCardName}
-                                formatMessage = {formatMessage}
-                                // eslint-disable-next-line no-return-assign
-                                onRef={(ref) => (this.CreditCard = ref)}
-                            />
-                        </Elements>
-                    </StripeProvider>
-                )
-            }
             <Divider hidden />
                 <Form.Button
                     primary
