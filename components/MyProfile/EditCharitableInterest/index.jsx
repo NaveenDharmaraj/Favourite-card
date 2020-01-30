@@ -100,19 +100,19 @@ class EditCharitableInterest extends React.Component {
         });
     }
 
-    validateForm() {
-        const {
-            userCauses,
-        } = this.state;
-        let {
-            isCausesValid,
-        } = this.state;
-        isCausesValid = (userCauses.length >= 3);
-        this.setState({
-            isCausesValid,
-        });
-        return isCausesValid;
-    }
+    // validateForm() {
+    //     const {
+    //         userCauses,
+    //     } = this.state;
+    //     let {
+    //         isCausesValid,
+    //     } = this.state;
+    //     isCausesValid = (userCauses.length >= 3);
+    //     this.setState({
+    //         isCausesValid,
+    //     });
+    //     return isCausesValid;
+    // }
 
     handleCharitableInterestSubmit() {
         this.setState({
@@ -120,8 +120,8 @@ class EditCharitableInterest extends React.Component {
             statusMessage: false,
             statusMessageTags: false,
         });
-        const isValid = this.validateForm();
-        if (isValid) {
+        // const isValid = this.validateForm();
+        // if (isValid) {
             const {
                 currentUser: {
                     id,
@@ -161,13 +161,14 @@ class EditCharitableInterest extends React.Component {
                     buttonClicked: true,
                 });
             });
-        } else {
-            this.setState({
-                buttonClicked: false,
-                errorMessage: 'Please select 3 or more cause',
-                statusMessage: true,
-            });
-        }
+        // } 
+        // else {
+        //     this.setState({
+        //         buttonClicked: false,
+        //         errorMessage: 'Please select 3 or more cause',
+        //         statusMessage: true,
+        //     });
+        // }
     }
 
     resetSaveClicked(setValue) {
