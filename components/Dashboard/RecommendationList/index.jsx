@@ -81,7 +81,9 @@ class RecommendationList extends React.Component {
             recommendationData,
         } = this.props;
         let recommendationList = (
-            <DiscoveredForYou />
+            <div className="ml-1 mr-1">
+                <DiscoveredForYou />
+            </div>
         );
         if (recommendationData && recommendationData.data && _.size(recommendationData.data) > 0) {
             const showData = _.slice(recommendationData.data, 0, 9);
