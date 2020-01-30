@@ -10,6 +10,7 @@ import _isEmpty from 'lodash/isEmpty';
 import _map from 'lodash/map';
 
 import PlaceholderGrid from '../../../../shared/PlaceHolder';
+import DiscoveredForYou from '../../../../shared/DiscoveredForYou';
 import { Link } from '../../../../../routes';
 import charityImg from '../../../../../static/images/no-data-avatar-charity-profile.png';
 import groupImg from '../../../../../static/images/no-data-avatar-giving-group-profile.png';
@@ -100,58 +101,86 @@ class SearchCharitiesGroups extends React.Component {
             searchWord
         } = this.props;
         let searchQueryParam = '';
+        let showNoData = false;
+
+        if ((charities && _isEmpty(charities.data)) && (groups && _isEmpty(groups.data))) {
+            showNoData = true;
+        }
+
         if (!_isEmpty(searchWord)) {
             searchQueryParam = `search=${searchWord}&`;
         }
         return (
             <Fragment>
-                <div className="search-main-head charities">
-                    <Header as="h2">
-                    Charities discovered for you
-                        <Header.Subheader>
-                        Suggestions based on your interests.
-                            {
-                                (!_isEmpty(charities) && !_isEmpty(charities.meta) && charities.meta.recordCount > 4)
-                                && <div className="right-align"><Link route={`/search?${searchQueryParam}result_type=Beneficiary`}>&nbsp;&nbsp;View all</Link></div>
+                {!showNoData
+                    ? (
+                        <Fragment>
+                            {(charities && !_isEmpty(charities.data))
+                            && (
+                                <div className="search-main-head charities">
+                                    <Header as="h2">
+                                    Charities discovered for you
+                                        <Header.Subheader>
+                                        Suggestions based on your interests.
+                                            {
+                                                (!_isEmpty(charities) && !_isEmpty(charities.meta) && charities.meta.recordCount > 4)
+                                                && <div className="right-align"><Link route={`/search?${searchQueryParam}result_type=Beneficiary`}>&nbsp;&nbsp;View all</Link></div>
+                                            }
+                                        </Header.Subheader>
+                                    </Header>
+                                    <div className="search-result-all">
+                                        {charityLoader ? (
+                                            <PlaceholderGrid column={4} row={1} />
+                                        ) : (
+                                            <Grid>
+                                                <Grid.Row stretched>
+                                                    {this.renderCharityComponent()}
+                                                </Grid.Row>
+                                            </Grid>
+                                        )}
+                                    </div>
+                                </div>
+                            )
                             }
-                        </Header.Subheader>
-                    </Header>
-                    <div className="search-result-all">
-                        {charityLoader ? (
-                            <PlaceholderGrid column={4} row={1} />
-                        ) : (
-                            <Grid>
-                                <Grid.Row stretched>
-                                    {this.renderCharityComponent()}
-                                </Grid.Row>
-                            </Grid>
-                        )}
-                    </div>
-                </div>
-                <div className="search-main-head groups">
-                    <Header as="h2">
-                    Giving Groups discovered for you
-                        <Header.Subheader>
-                            Suggestions based on your interests.
-                            {
-                                (!_isEmpty(groups) && !_isEmpty(groups.meta) && groups.meta.recordCount > 4)
-                                && <div className="right-align"><Link route={`/search?${searchQueryParam}result_type=Group`}>&nbsp;&nbsp;View all</Link></div>
-                            }
-                        </Header.Subheader>
-                        
-                    </Header>
-                    {groupLoader ? (
-                        <PlaceholderGrid column={4} row={1} />
-                    ) : (
-                        <div className="search-result-all">
-                            <Grid>
-                                <Grid.Row stretched>
-                                    {this.renderGroupComponent()}
-                                </Grid.Row>
-                            </Grid>
-                        </div>
+                            {(groups && !_isEmpty(groups.data))
+                            && (
+                                <div className="search-main-head groups">
+                                    <Header as="h2">
+                                    Giving Groups discovered for you
+                                        <Header.Subheader>
+                                            Suggestions based on your interests.
+                                            {
+                                                (!_isEmpty(groups) && !_isEmpty(groups.meta) && groups.meta.recordCount > 4)
+                                                && <div className="right-align"><Link route={`/search?${searchQueryParam}result_type=Group`}>&nbsp;&nbsp;View all</Link></div>
+                                            }
+                                        </Header.Subheader>
+                                    </Header>
+                                    {groupLoader ? (
+                                        <PlaceholderGrid column={4} row={1} />
+                                    ) : (
+                                        <div className="search-result-all">
+                                            <Grid>
+                                                <Grid.Row stretched>
+                                                    {this.renderGroupComponent()}
+                                                </Grid.Row>
+                                            </Grid>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </Fragment>
+                    )
+                    : (
+                        <Fragment>
+                            <Header as="h3">
+                                <Header.Content>
+                                    Discovered for you
+                                    <span className="small">Suggestions based on your interests. </span>
+                                </Header.Content>
+                            </Header>
+                            <DiscoveredForYou />
+                        </Fragment>
                     )}
-                </div>
             </Fragment>
         );
     }
