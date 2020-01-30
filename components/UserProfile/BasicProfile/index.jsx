@@ -254,7 +254,7 @@ class UserBasciProfile extends React.Component {
             isProfileOut = profile === 'pending_profile_out' ? true : false;
             isProfileIn = profile === 'pending_profile_in' ? true : false;
             email = Buffer.from(userData.email_hash, 'base64').toString('ascii');
-            profileType = profile.substring(0, 7);
+            profileType = profile.substring(0, 7) === 'limited' ? '' : profile.substring(0, 7);
             const locationDetailsCity = (!_.isEmpty(userData.city)) && userData.city !== 'null' ? userData.city : '';
             const locationDetailsProvince = (!_.isEmpty(userData.province)) && userData.province !== 'null' ? userData.province : '';
             if (locationDetailsCity === '' && locationDetailsProvince !== '') {
@@ -462,41 +462,35 @@ class UserBasciProfile extends React.Component {
                                                                     Give
                                                                 </Button>
                                                             </Link>
-                                                            {
-                                                                !isProfileOut && !isProfileIn && (
-                                                                    <Dropdown
-                                                                        className="userEllips ml-1"
-                                                                        icon="ellipsis horizontal"
-                                                                        closeOnBlur
-                                                                    >
-                                                                        <Dropdown.Menu>
-                                                                            {
-                                                                                (isFriend || isLimited) && (
-                                                                                    <Dropdown.Item
-                                                                                        text="Copy Profile URL"
-                                                                                        onClick={this.handleCopyLink}
-                                                                                    />
-                                                                                )
-                                                                            }
-                                                                            {
-                                                                                isFriend && (
-                                                                                    <Dropdown.Item
-                                                                                        text="Unfriend"
-                                                                                        onClick={this.handleUnfriendModal}
-                                                                                    />
-                                                                                )
-                                                                            }                                                                            
-                                                                            {
-                                                                                !isProfileOut && !isProfileIn && (
-                                                                                    <Dropdown.Item
-                                                                                        text="Block"
-                                                                                        onClick={this.handleBlockModal}
-                                                                                    />
-                                                                                )
-                                                                            }
-                                                                        </Dropdown.Menu>
-                                                                    </Dropdown>
-                                                                )
+                                                            {   
+                                                                <Dropdown
+                                                                    className="userEllips middleEllipse ml-1"
+                                                                    icon="ellipsis horizontal"
+                                                                    closeOnBlur
+                                                                >
+                                                                    <Dropdown.Menu>
+                                                                        {
+                                                                            <Dropdown.Item
+                                                                                text="Copy Profile URL"
+                                                                                onClick={this.handleCopyLink}
+                                                                            />
+                                                                        }
+                                                                        {
+                                                                            isFriend && (
+                                                                                <Dropdown.Item
+                                                                                    text="Unfriend"
+                                                                                    onClick={this.handleUnfriendModal}
+                                                                                />
+                                                                            )
+                                                                        }                                                                            
+                                                                        {
+                                                                            <Dropdown.Item
+                                                                                text="Block"
+                                                                                onClick={this.handleBlockModal}
+                                                                            />
+                                                                        }
+                                                                    </Dropdown.Menu>
+                                                                </Dropdown>
                                                             }                                                            
                                                         </div>
                                                     </Grid.Column>
