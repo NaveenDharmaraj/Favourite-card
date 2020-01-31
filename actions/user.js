@@ -5,6 +5,7 @@ import _ from 'lodash';
 import coreApi from '../services/coreApi';
 import authRorApi from '../services/authRorApi';
 import graphApi from '../services/graphApi';
+import securityApi from '../services/securityApi';
 import wpApi from '../services/wpApi';
 import { Router } from '../routes';
 import {
@@ -831,4 +832,14 @@ export const saveUserCauses = (dispatch, userId, userCauses, discoverValue) => {
         });
         triggerUxCritialErrors(err.errors || err, dispatch);
     });
+};
+
+export const updateSkipCausesSelection = (dispatch, userId) => {
+    const bodyData = {
+        skipCauseSelection: true,
+        user_id: Number(userId),
+    };
+    securityApi.patch(`update/user`, bodyData).then((result) => {
+        getUser(dispatch, userId, null);
+    }).catch();
 };
