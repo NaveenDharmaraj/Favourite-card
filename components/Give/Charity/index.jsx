@@ -90,7 +90,9 @@ class Charity extends React.Component {
             currentUser: {
                 attributes: {
                     displayName,
+                    firstName,
                     email,
+                    lastName,
                 },
             },
             donationMatchData,
@@ -144,7 +146,7 @@ class Charity extends React.Component {
                     companyDetails,
                     payload.giveData.giveFrom,
                     {
-                        displayName,
+                        displayName: `${firstName} ${lastName}`,
                         email,
                     },
                     formatMessage,
@@ -343,7 +345,7 @@ class Charity extends React.Component {
                         companyDetails,
                         giveData.giveFrom,
                         {
-                            displayName,
+                            displayName: `${firstName} ${lastName}`,
                             email,
                         },
                         formatMessage,
