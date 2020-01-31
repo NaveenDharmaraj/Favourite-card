@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import ReactHtmlParser from 'react-html-parser';
 
 import {
     hasMinFiveChars,
@@ -19,6 +20,7 @@ import {
     isValidNoteData,
     parseEmails,
 } from '../give/giving-form-validation';
+import placeholderUser from '../../static/images/no-data-avatar-user-profile.png';
 import { actionTypes } from '../../actions/give';
 import {
     beneficiaryDefaultProps,
@@ -1203,6 +1205,7 @@ const getDonationMatchedData = (donationMatchId, donationAmount, donationMatchDa
                 companyName,
                 policyMax,
                 policyPercentage,
+                policyPeriod,
                 totalMatched,
             },
             id,
@@ -1218,6 +1221,8 @@ const getDonationMatchedData = (donationMatchId, donationAmount, donationMatchDa
             amount: donationMatchedAmount,
             displayName: companyName,
             type: 'donationMatch',
+            periodType: policyPeriod,
+            maxMatch: policyMax,
         };
         return matchedData;
     }
@@ -1231,86 +1236,103 @@ const populateDonationReviewPage = (giveData, data, currency, formatMessage, lan
         donationMatch,
         giftType,
         giveTo,
+        noteToSelf,
     } = giveData;
     const {
         companiesAccountsData,
         donationMatchData,
-        fund,
+        selectedTaxReceiptProfile,
     } = data;
     const state = {
+        buttonText : formatMessage('reviewAddMoney'),
+        editUrl: "/donations/new",
+        headingText: formatMessage('donationHeadingText'),
+        isRecurring: !(giftType.value === 0),
+        mainDisplayAmount:  formatCurrency(
+            Number(donationAmount),
+            language,
+            currency,
+        ),
+        mainDisplayImage: '',
+        mainDisplayText: 'To Impact Account',
     };
 
-    const paymentMap = {
-        companies: 'companyPaymentInstrumentsData',
-        user: 'paymentInstrumentsData',
-    };
+    const {
+        attributes,
+    } = selectedTaxReceiptProfile;
 
-    const sources = [];
-    const recipients = [];
-    let giveToData = {};
+    const listingData = [];
     if (!_.isEmpty(giveTo)) {
+        state.mainDisplayImage = giveTo.avatar;
         if (giveTo.type === 'user') {
-            giveToData = {
-                accountId: giveTo.id,
-                avatar: giveTo.avatar,
-                displayName: fund.attributes.name,
-                type: giveTo.type,
-            };
+            state.accountType = giveTo.type;
         } else {
             const selectedData = _.find(companiesAccountsData, { id: giveTo.id });
             if (!_.isEmpty(selectedData)) {
-                giveToData = {
-                    accountId: selectedData.id,
-                    avatar: giveTo.avatar,
-                    displayName: selectedData.attributes.companyFundName,
-                    type: 'company',
-                };
+                state.mainDisplayText = selectedData.attributes.companyFundName;
+                state.accountType = 'company';
             }
         }
-        recipients.push(giveToData);
         if (creditCard.value > 0) {
-            const creditCardData = _.find(data[paymentMap[giveTo.type]],
-                { id: creditCard.id });
-            if (!_.isEmpty(creditCardData)) {
-                const cardData = populateCardData(creditCardData.attributes.description,
-                    (donationAmount) ? Number(donationAmount) : null);
-                cardData.accountId = creditCard.id;
-                sources.push(cardData);
-            }
+            listingData.push({
+                name: 'reviewPaymentMethod',
+                value: creditCard.text,
+            });
         }
+        const taxData = `${attributes.fullName} <br/> ${attributes.addressOne},  ${(attributes.addressTwo)? attributes.addressTwo : ''} <br/> ${attributes.city}, ${attributes.province} ${attributes.postalCode}`;
+        listingData.push({
+            name: 'reviewTaxReceipt',
+            value: ReactHtmlParser(taxData),
+        });
+
         if (donationMatch.value > 0) {
+            let matchingDetails = '';
             const matchedData = getDonationMatchedData(donationMatch.id, donationAmount, donationMatchData);
             if (!_.isEmpty(matchedData)) {
-                sources.push(matchedData);
+                matchingDetails = (giftType.value === 0) ?
+                    `${formatMessage('reviewMatchingDetails', {
+                        companyName: matchedData.displayName,
+                        matchedAmount: formatCurrency(
+                            Number(matchedData.amount),
+                            language,
+                            currency
+                        ),
+                    })}` :
+                    `${formatMessage('reviewRecurringMatchingDetails', {
+                        companyName: matchedData.displayName,
+                        maxMatch: formatCurrency(
+                            Number(matchedData.maxMatch),
+                            language,
+                            currency
+                        ),
+                        periodType: matchedData.periodType
+                    })}`
             }
-        }
-        if (giftType.value === 1 || giftType.value === 15) {
-            state.startsOn = setDateForRecurring(giftType.value, formatMessage, language);
+            listingData.push({
+                name: 'reviewMatchingPartner',
+                value: matchingDetails,
+            });
         }
 
-        state.totalAmount = formatCurrency(
-            _.sumBy(sources, (item) => Number(item.amount)),
-            language,
-            currency,
-        );
+        let frequencyMessage = formatMessage('reviewAddOnce');
+        if (giftType.value === 1) {
+            frequencyMessage = `${formatMessage('reviewAddMonthly')} <br/> ${formatMessage('onFirstMessage')}`;
+        } else if(giftType.value === 15) {
+            frequencyMessage = `${formatMessage('reviewAddMonthly')} <br/> ${formatMessage('onFifteenthMessage')}`;
+        }
 
-        const buildAccounts = (item) => {
-            const val = item.amount;
-            if (val >= 0) {
-                return {
-                    ...item,
-                    amount: formatCurrency(
-                        val,
-                        language,
-                        currency,
-                    ),
-                };
-            }
-            return item;
-        };
-        state.sources = _.map(sources, buildAccounts);
-        state.recipients = _.map(recipients, buildAccounts);
+        listingData.push({
+            name : 'reviewFrequency',
+            value: ReactHtmlParser(frequencyMessage)
+        });
+
+        listingData.push({
+            name: 'reviewNoteToSelf',
+            value: (!_.isEmpty(noteToSelf)) ? noteToSelf : formatMessage('reviewEmptyNoteToSelf')
+        });
+        state.listingData = listingData;
         return (state);
+
     }
 };
 
@@ -1325,278 +1347,222 @@ const populateDonationReviewPage = (giveData, data, currency, formatMessage, lan
 
 const populateGiveReviewPage = (giveData, data, currency, formatMessage, language) => {
     const {
-        fund,
-        activeGroupMatch,
-        donationMatchData,
+        giveGroupDetails,
+        toURL,
+        type,
     } = data;
     const {
-        coverFeesAmount,
-        coverFees,
-        creditCard,
-        donationAmount,
-        donationMatch,
-        emailMasked,
+        dedicateGift,
+        infoToShare,
         giftType,
         giveAmount,
         giveFrom,
         giveTo,
+        noteToCharity,
+        noteToSelf,
         privacyShareAddress,
         privacyShareAmount,
         privacyShareEmail,
         privacyShareName,
-        newCreditCardId,
+    } = giveData;
+
+    // Create this constant to not conflict with recipient constant.
+    const state = {
+        editUrl: toURL,
+        buttonText : formatMessage('reviewSendGift'),
+        headingText: `${formatMessage('reviewGiveToText')} ${ giveTo.name}`,
+        isRecurring: !(giftType.value === 0),
+        mainDisplayAmount:  formatCurrency(
+            Number(giveAmount),
+            language,
+            currency,
+        ),
+        mainDisplayImage: giveTo.avatar,
+        mainDisplayText: `${formatMessage('reviewGiveToText')} ${ giveTo.name}`,
+    };
+    const listingData = [];
+
+    if (!_.isEmpty(giveFrom)) {
+        listingData.push({
+            name: 'reviewGiveFrom',
+            value: giveFrom.text
+        });
+
+        let frequencyMessage = formatMessage('reviewSendOnce');
+        if (giftType.value === 1) {
+            frequencyMessage = `${formatMessage('reviewSendMonthly')} <br/> ${formatMessage('onFirstMessage')}`;
+        } else if(giftType.value === 15) {
+            frequencyMessage = `${formatMessage('reviewSendMonthly')} <br/> ${formatMessage('onFifteenthMessage')}`;
+        }
+        listingData.push({
+            name : 'reviewFrequency',
+            value: ReactHtmlParser(frequencyMessage)
+        });
+
+        if (!_.isEmpty(giveGroupDetails)) {
+            const {
+                attributes: {
+                    activeMatch,
+                    hasActiveMatch,
+                },
+            } = giveGroupDetails;
+            if (!_.isEmpty(activeMatch) && hasActiveMatch) {
+                const {
+                    company,
+                    maxMatchAmount,
+                    balance,
+                } = activeMatch;
+                const maxMatchedAmount = (Number(maxMatchAmount) <= Number(balance)) ?
+                    Number(maxMatchAmount) : Number(balance);
+                const activeMatchedAmount = (Number(giveAmount) > maxMatchedAmount) ?
+                    maxMatchedAmount : Number(giveAmount);
+                listingData.push({
+                    name : 'giftToGroupMatchedBy',
+                    value: `${company} (${formatCurrency(activeMatchedAmount, language, currency)})`
+                });
+            }
+        }
+        if(type === 'give/to/charity'){
+            let infoToShareMessage = formatMessage('reviewGiveAnonymously');
+            if(infoToShare.value !== 'anonymous') {
+                infoToShareMessage = infoToShare.text;
+            }
+            listingData.push({
+                name : 'reviewInfoToCharity',
+                value: infoToShareMessage,
+            });
+        } else {
+            let privacyShareNameMessage = '';
+            if (privacyShareAmount && privacyShareName) {
+                privacyShareNameMessage = formatMessage('givingGroups.privacyShareGiftAndName');
+            } else if (!privacyShareAmount && privacyShareName) {
+                privacyShareNameMessage = formatMessage('givingGroups.privacyShareNameHideGift');
+            } else if (privacyShareAmount && !privacyShareName) {
+                privacyShareNameMessage = formatMessage('givingGroups.privacyShareGiftHideName');
+            } else {
+                privacyShareNameMessage = formatMessage('givingGroups.privacyHideGiftAndName');
+            }
+            let privacyShareEmailMessage = '';
+            if (privacyShareEmail && privacyShareAddress) {
+                privacyShareEmailMessage = formatMessage('givingGroups.privacyShareEmailAndPostal');
+            } else if (!privacyShareEmail && privacyShareAddress) {
+                privacyShareEmailMessage = formatMessage('givingGroups.privacySharePostal');
+            } else if (privacyShareEmail && !privacyShareAddress) {
+                privacyShareEmailMessage = formatMessage('givingGroups.privacyShareEmail');
+            } else {
+                privacyShareEmailMessage = formatMessage('givingGroups.privacyHideEmailAndPostal');
+            }
+            const giveToType = (giveTo.isCampaign) ? 'Campaign' : 'Group';
+            listingData.push({
+                name : `privacyShareGiving${giveToType}Label`,
+                value: ReactHtmlParser(privacyShareNameMessage)
+            });
+
+            listingData.push({
+                name : `privacyShareOrganizers${giveToType}Label`,
+                value: ReactHtmlParser(privacyShareEmailMessage)
+            });
+        }
+
+        const dedicatedDetails = {
+            name: 'reviewGiftDedication',
+            value: formatMessage('reviewNoGift')
+        }
+
+        if(!_.isEmpty(dedicateGift) && !_.isEmpty(dedicateGift.dedicateType)){
+            dedicatedDetails.value = `${(dedicateGift.dedicateType === 'inHonorOf')? 'In honour of' : 'In memory of' } ${dedicateGift.dedicateValue}`;
+        }
+
+        listingData.push(dedicatedDetails);
+
+        listingData.push({
+            name: (type == 'give/to/charity')? 'reviewMessageToCharityLabel' : 'reviewMessageToGroupLabel',
+            value: (!_.isEmpty(noteToCharity)) ? noteToCharity : formatMessage('reviewDefaultMessage')
+        });
+
+        listingData.push({
+            name: 'reviewNoteToSelf',
+            value: (!_.isEmpty(noteToSelf)) ? noteToSelf : formatMessage('reviewEmptyNoteToSelf')
+        })
+    }
+
+    state.listingData = listingData;
+    return (state);
+};
+
+/**
+* Setup the display parameters for review page
+* @param {object} giveData state object for give page
+* @param {object[]} data with all details like tax, payment,donationmatch etc
+* @param {object} intl format message and format number
+* @param {string} language language
+* @return {string} currency
+*/
+
+const populateP2pReviewPage = (giveData, data, currency, formatMessage, language) => {
+    const {
+        toURL,
+    } = data;
+    const {
+        emailMasked,
+        giveAmount,
+        giveFrom,
+        noteToRecipients,
+        noteToSelf,
+        recipientImage,
         recipientName,
         totalP2pGiveAmount,
     } = giveData;
 
-    // Create this constant to not conflict with recipient constant.
     const emails = giveData.recipients;
     const state = {
-        fromList: [],
-        givingGroupMessage: '',
-        givingOrganizerMessage: '',
-        toList: [],
-    };
-    const sources = [];
-    const recipients = [];
-    let amountToGiveFrom = 0;
-    let amountFromGroupMatch = 0;
-    let fromData = {};
-    let privacyShareNameMessage = '';
-    let privacyShareEmailMessage = '';
-    const dataMap = {
-        campaigns: 'userCampaigns',
-        companies: 'companiesAccountsData',
-        donationMatches: 'donationMatchData',
-        groups: 'userGroups',
-    };
-    const paymentMap = {
-        companies: 'companyPaymentInstrumentsData',
-        user: 'paymentInstrumentsData',
+        buttonText : formatMessage('reviewP2pGive'),
+        editUrl: toURL,
+        headingText: formatMessage('reviewP2pText'),
+        isRecurring: false,
+        mainDisplayAmount:  formatCurrency(
+            Number(totalP2pGiveAmount),
+            language,
+            currency,
+        ),
     };
 
-    const typeMap = {
-        beneficiaries: 'beneficiary',
-        campaigns: 'group',
-        companies: 'company',
-        donationMatches: 'donationMatch',
-        groups: 'group',
-    };
+    const listingData = [];
+    listingData.push({
+        name: 'reviewGiveFrom',
+        value: giveFrom.text
+    });
 
-    if (!_.isEmpty(giveFrom)) {
-        if (giveFrom.type === 'user') {
-            fromData = {
-                accountId: giveFrom.id,
-                avatar: giveFrom.avatar,
-                displayName: fund.attributes.name,
-                type: giveFrom.type,
-            };
+    if (emails) {
+        if (emails.length === 1) {
+            state.mainDisplayImage = (recipientImage) || placeholderUser;
+            state.mainDisplayText = `${formatMessage('reviewGiveToText')} ${ (recipientName) || emails[0]}`;
+
         } else {
-            const selectedData = _.find(data[dataMap[giveFrom.type]], { id: giveFrom.id });
-            if (!_.isEmpty(selectedData)) {
-                fromData = {
-                    accountId: selectedData.id,
-                    avatar: selectedData.attributes.avatar,
-                    displayName: selectedData.attributes.name,
-                    type: typeMap[giveFrom.type],
-                };
-            }
-        }
-
-        const amountToGive = totalP2pGiveAmount ? Number(totalP2pGiveAmount) : Number(giveAmount);
-        const amountFromDonation = (donationAmount) ? Number(donationAmount) : 0;
-        const coverFeesAmt = (coverFeesAmount) ? Number(coverFeesAmount) : 0;
-        amountToGiveFrom = (amountFromDonation >= (amountToGive + coverFeesAmt))
-            ? (amountFromDonation - (amountToGive + coverFeesAmt)) : 0;
-
-        if (!_.isEmpty(fromData)
-            && (amountToGiveFrom === 0 && (amountFromDonation !== (amountToGive + coverFeesAmt)))) {
-            const {
-                value,
-            } = giftType;
-            let amt = (amountToGive - amountFromDonation) + coverFeesAmt;
-            amt = (value === 0 || value === null) ? amt : null;
-            fromData.amount = amt;
-            sources.push(fromData);
-            const displayAmount = (amt) ? ` (${formatCurrency(amt, language, currency)})` : ``;
-            state.fromList.push(
-                `${fromData.displayName}${displayAmount}`,
-            );
-        }
-        if (creditCard.value > 0 && (giftType.value === 0 || giftType.value === null)) {
-            const creditCardData = _.find(data[paymentMap[giveFrom.type]],
-                { id: creditCard.id });
-            if (!_.isEmpty(creditCardData)) {
-                const cardData = populateCardData(creditCardData.attributes.description,
-                    (donationAmount) ? Number(donationAmount) : null);
-                cardData.accountId = creditCard.id;
-                sources.push(cardData);
-                const displayAmount = (cardData.amount) ? ` (${formatCurrency(cardData.amount, language, currency)})` : ``;
-                state.fromList.push(
-                    `${formatMessage('giveAccounts_withoutAmountCard', {
-                        displayName: cardData.displayName,
-                        processor: _.capitalize(cardData.processor),
-                        truncatedPaymentId: cardData.truncatedPaymentId,
-                    })}${displayAmount}`,
-                );
-            }
-        }
-        if (donationMatch.value > 0 && (giftType.value === 0 || giftType.value === null)) {
-            const matchedData = getDonationMatchedData(donationMatch.id, donationAmount, donationMatchData);
-            if (!_.isEmpty(matchedData)) {
-                sources.push(matchedData);
-                const displayAmount = (giftType.value === 0 || giftType.value === null) ?
-                    ` (${formatCurrency(matchedData.amount, language, currency)})` : ``;
-                state.matchList = `${matchedData.displayName}${displayAmount}`;
-            }
-        }
-        if (!_.isEmpty(activeGroupMatch)) {
-            const {
-                company,
-                companyId,
-                maxMatchAmount,
-                balance,
-            } = activeGroupMatch;
-            const maxMatchedAmount = (Number(maxMatchAmount) <= Number(balance)) ?
-                Number(maxMatchAmount) : Number(balance);
-            const activeMatchedAmount = (Number(giveAmount) > maxMatchedAmount) ?
-                maxMatchedAmount : Number(giveAmount);
-
-            const groupMatchedData = {
-                accountId: companyId,
-                amount: activeMatchedAmount,
-                displayName: company,
-                type: 'company',
-            };
-            amountFromGroupMatch = Number(groupMatchedData.amount);
-            sources.push(groupMatchedData);
-            state.groupMatchedBy = `${groupMatchedData.displayName} (${formatCurrency(groupMatchedData.amount, language, currency)})`;
-        }
-        const buildAccounts = (item) => {
-            const val = item.amount;
-            if (val > 0 && val !== null) {
-                return {
-                    ...item,
-                    amount: formatCurrency(
-                        val,
-                        language,
-                        currency,
-                    ),
-                };
-            }
-            return item;
-        };
-        state.totalAmount = (giftType.value === 0 || giftType.value === null) ?
-            formatCurrency(_.sumBy(sources, (item) => {
-                return Number(item.amount);
-            }), language, currency) : formatCurrency((Number(giveAmount) + coverFeesAmt),
-                language, currency);
-        state.sources = _.map(sources, buildAccounts);
-
-        if (coverFees) {
-            const amount = formatCurrency(coverFeesAmt, language, currency);
-            state.coverFessText = (giftType.value === 0 || giftType.value === null) ?
-                formatMessage('givingAllocationSingleCoverFeesText',
-                    {
-                        amount,
-                    }) : formatMessage('givingAllocationRecurringingCoverFeesText',
-                    {
-                        amount,
-                    });
-        }
-
-        if (giveTo) {
-            const {
-                value,
-            } = giftType;
-
-            if (emails) {
-                if (emailMasked && emails.length === 1) {
-                    const resData = {
-                        displayName: (recipientName) || emails[0],
-                        type: 'user',
-                    };
-
-                    recipients.push(resData);
-                    state.toList.push(
-                        `${resData.displayName}`,
-                    );
-                } else {
-                    _.each(emails, (email) => {
-                        const recipientData = {
-                            displayName: email,
-                            type: 'email',
-                        };
-                        recipients.push(recipientData);
-                        const displayAmount = (recipientData.amount) ? ` (${formatCurrency(recipientData.amount, language, currency)})` : ``;
-                        state.toList.push(
-                            `${recipientData.displayName}${displayAmount}`,
-                        );
-                    });
-                }
-                // build recipients images
-            } else {
+            state.recipients = [];
+            state.showP2pList = true;
+            _.each(emails, (email) => {
                 const recipientData = {
-                    accountId: giveTo.id,
-                    avatar: giveTo.avatar,
-                    amount: (value === 0 || value === null) ?
-                        (Number(giveAmount) + Number(amountFromGroupMatch)) : null,
-                    displayName: giveTo.name,
-                    type: typeMap[giveTo.type],
+                    displayName: email,
+                    type: 'email',
+                    amount: formatCurrency(Number(giveAmount), language, currency)
                 };
-                recipients.push(recipientData);
-
-                const displayAmount = (recipientData.amount) ? ` (${formatCurrency(recipientData.amount, language, currency)})` : ``;
-                state.toList.push(
-                    `${recipientData.displayName}${displayAmount}`,
-                );
-            }
-            if ((value === 0) &&
-                (amountToGiveFrom > 0)
-                && !_.isEmpty(fromData)) {
-                fromData.amount = amountToGiveFrom;
-                recipients.push(fromData);
-                state.toList.push(
-                    `${fromData.displayName} (${formatCurrency(fromData.amount, language, currency)})`,
-                );
-            }
+                state.recipients.push(recipientData);
+            });
         }
-        if (giftType.value === 1 || giftType.value === 15) {
-            state.startsOn = setDateForRecurring(giftType.value, formatMessage, language);
-        }
-        state.showTaxOnRecurring = false;
-        if (newCreditCardId) {
-            state.showTaxOnRecurring = (
-                (newCreditCardId === creditCard.value) &&
-                (giftType.value !== 0 || giftType.value !== null)
-            );
-        }
-
-        if (privacyShareAmount && privacyShareName) {
-            privacyShareNameMessage = formatMessage('givingGroups.privacyShareGiftAndName');
-        } else if (!privacyShareAmount && privacyShareName) {
-            privacyShareNameMessage = formatMessage('givingGroups.privacyShareNameHideGift');
-        } else if (privacyShareAmount && !privacyShareName) {
-            privacyShareNameMessage = formatMessage('givingGroups.privacyShareGiftHideName');
-        } else {
-            privacyShareNameMessage = formatMessage('givingGroups.privacyHideGiftAndName');
-        }
-        state.givingGroupMessage = privacyShareNameMessage;
-
-        if (privacyShareEmail && privacyShareAddress) {
-            privacyShareEmailMessage = formatMessage('givingGroups.privacyShareEmailAndPostal');
-        } else if (!privacyShareEmail && privacyShareAddress) {
-            privacyShareEmailMessage = formatMessage('givingGroups.privacySharePostal');
-        } else if (privacyShareEmail && !privacyShareAddress) {
-            privacyShareEmailMessage = formatMessage('givingGroups.privacyShareEmail');
-        } else {
-            privacyShareEmailMessage = formatMessage('givingGroups.privacyHideEmailAndPostal');
-        }
-        state.givingOrganizerMessage = privacyShareEmailMessage;
-        state.recipients = _.map(recipients, buildAccounts);
-        return state;
     }
-};
+
+    listingData.push({
+        name: 'reviewP2pMessage',
+        value: (!_.isEmpty(noteToRecipients)) ? noteToRecipients : formatMessage('reviewDefaultMessage')
+    });
+    listingData.push({
+        name: 'reviewNoteToSelf',
+        value: (!_.isEmpty(noteToSelf)) ? noteToSelf : formatMessage('reviewEmptyNoteToSelf')
+    });
+    state.listingData = listingData;
+    return (state);
+}
 
 /**
  * Calculates what we need to give in total to all of our recipients.
@@ -1690,6 +1656,7 @@ export {
     populateGiveToGroupsofUser,
     populateGroupsOfUser,
     populatePaymentInstrument,
+    populateP2pReviewPage,
     populateGiftType,
     populateInfoToShare,
     formatAmount,

@@ -203,6 +203,22 @@
 }
 .flowReview{
     margin-bottom: 100px;
+    .ui.centered.grid > .row > .column:not(.aligned):not(.justified){
+        @media only screen and (max-width:767px) {
+            text-align: left !important;
+            -webkit-box-pack: left !important;
+            -ms-flex-pack: left !important;
+            justify-content: left !important;
+        } 
+    }
+    .ui.centered.grid, .ui.centered.grid>.row, .ui.grid>.centered.row {
+        @media only screen and (max-width:767px) {
+            text-align: left !important;
+            -webkit-box-pack: left !important;
+            -ms-flex-pack: left !important;
+            justify-content: left !important;
+        }
+    }
     .GivingGroupIcons{
         margin:20px auto 50px auto;
         text-align: center;
@@ -526,6 +542,153 @@
         &.button{
             height: 40px;
             width: 126px;
+        }
+    }
+}
+.noteDefault{
+    border-radius: 4px;	
+    background-color: #E3E8F0;
+    padding:7px 9px 6px;
+    .noteWraper{
+        display: list-item;
+        table-layout: fixed;
+        list-style-type: none;
+        list-style-position: outside;
+        .leftImg{
+            display: inline-block;
+            vertical-align: middle!important;
+            height: 24px;
+            .notifyDefaultIcon{
+                display: inline-block;
+                width: 23px;
+                height: 23px;
+                background-color: #fff;
+                border-radius: 100%;
+                position: relative;
+                &::before{
+                    content: '';
+                    position: absolute;
+                    left: 0px;
+                    right: 0px;
+                    top: 3px;
+                    bottom: 3px;
+                    margin: auto;
+                    background-image: url(../images/icons/exclamation.svg);
+                    background-repeat: no-repeat;
+                    background-position: center;
+                    background-size: contain;
+                }
+            }
+        }
+        .noteContent{
+            display: inline-block;
+            vertical-align: middle!important;
+            padding-left: 10px;
+            width: calc(100% - 45px);
+        }
+    }
+}
+.totalAmount{
+    border-top: 1px dashed #999;
+    padding: 22px 0px;
+    margin-top: 15px;
+    >td{
+        border-top: 1px dashed #999 !important;
+    }
+}
+.p2p-top-table {
+    margin-top: 10px;
+    .amount-table{
+        color: #263238;	font-size: 20px;	font-weight: 600;	line-height: 21px;
+    }
+    .ui.table:not(.unstackable) tr{
+        box-shadow: none !important;
+    }
+}
+.table-top-mr{
+    margin-top: 0px !important;
+}
+.send-table{
+    margin-top: 10px;
+    @media only screen and (max-width:767px) {
+            float: left;
+            margin-left: 10px;
+            font-weight: 700;
+    }
+}
+.table-name{
+    font-weight: normal !important;
+    width: 50% !important;
+    float: left;
+}
+.ui{
+    &.button{
+        &.selection{
+            &.dropdown{
+                .text{
+                    font-weight: normal;
+                    &.default{
+                        font-weight: normal;
+                    }
+                }
+            }
+        }
+    }
+    &.error{
+        &.dropdown{
+            &.selection{
+                background-color: #fff !important;
+                border-color: #ff0000 !important;
+                &::before{
+                    filter: invert(16%) sepia(100%) saturate(7215%) hue-rotate(357deg) brightness(103%) contrast(111%);
+                }
+                .dropdown{
+                    &.icon{
+                        
+                    }
+                }
+                .text{
+                    color: #263238;
+                }
+            }
+        }
+    }
+}
+.ModalWarning{
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    flex-direction: row;
+    flex-wrap: wrap;
+    -webkit-box-align: stretch;
+    align-items: stretch;
+    span{
+
+    }
+    .warningContent{
+        width: calc(100% - 50px);
+    }
+}
+.errorNote{
+    display: inline-block;
+    color: #ff0000;
+    &.small{
+        font-size: 12px;
+    }
+    .iconRed{
+        width: 18px;
+        display: inline-block;
+        vertical-align: middle;
+        padding-right: 10px;
+        &::before{
+            content: '';
+            width: 17px;
+            height: 17px;
+            display: block;
+            background-image: url(../images/icons/red.svg);
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
         }
     }
 }
