@@ -78,7 +78,7 @@ export const actionTypes = {
     SUB_GROUP_LIST_LOADER: 'SUB_GROUP_LIST_LOADER',
 };
 
-export const getCampaignFromSlug = async (dispatch, slug) => {
+export const getCampaignFromSlug = async (dispatch, slug, token = null) => {
     dispatch({
         payload: {
             slugApiErrorStats: false,
@@ -91,13 +91,21 @@ export const getCampaignFromSlug = async (dispatch, slug) => {
         },
         type: actionTypes.CLEAR_DATA_FOR_CAMPAIGNS,
     });
-    // return coreApi.get(`campaign/find_by_slug`, {
-    await coreApi.get(`campaigns/find_by_slug`, {
+    const fullParams = {
         params: {
             dispatch,
             slug,
             uxCritical: true,
         },
+    };
+    if (!_.isEmpty(token)) {
+        fullParams.headers = {
+            Authorization: `Bearer ${token}`,
+        };
+    }
+    // return coreApi.get(`campaign/find_by_slug`, {
+    await coreApi.get(`campaigns/find_by_slug`, {
+        ...fullParams,
     }).then(
         (result) => {
             dispatch({
@@ -112,15 +120,23 @@ export const getCampaignFromSlug = async (dispatch, slug) => {
                 },
                 type: actionTypes.GET_CAMPAIGN_FROM_SLUG,
             });
+            const fullParams = {
+                params: {
+                    dispatch,
+                    ignore401: true,
+                    uxCritical: true,
+                },
+            };
+            if (!_.isEmpty(token)) {
+                fullParams.headers = {
+                    Authorization: `Bearer ${token}`,
+                };
+            }
             // API call for subgroups
             if (result.data) {
                 coreApi.get(`${result.data.relationships.subGroups.links.related}?page[size]=9`,
                     {
-                        params: {
-                            dispatch,
-                            ignore401: true,
-                            uxCritical: true,
-                        },
+                        ...fullParams,
                     }).then(
                     (subGroupResult) => {
                         dispatch({
@@ -144,11 +160,7 @@ export const getCampaignFromSlug = async (dispatch, slug) => {
             if (result.data) {
                 coreApi.get(result.data.relationships.galleryImages.links.related,
                     {
-                        params: {
-                            dispatch,
-                            ignore401: true,
-                            uxCritical: true,
-                        },
+                        ...fullParams,
                     }).then(
                     (galleryImagesResult) => {
                         dispatch({

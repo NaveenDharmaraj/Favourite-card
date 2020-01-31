@@ -13,7 +13,7 @@ import {Router} from '../../routes';
 import '../../static/less/giveFlows.less';
 // const TaxReceipt = dynamic(() => import('./TaxReceipt'));
 const Review = dynamic(() => import('./Review'));
-const Success = dynamic(() => import('./Success'));
+const Success = dynamic(() => import('../Give/Success/index'));
 const Error = dynamic(() => import('./Error'));
 
 const flowStepsDefault = ['new', 'review', 'success', 'error']
