@@ -13,13 +13,23 @@ import {
 } from '../actions/profile';
 import Layout from '../components/shared/Layout';
 import CampaignProfileWrapper from '../components/Campaign';
+import storage from '../helpers/storage';
 
 class CampaignProfile extends React.Component {
     static async getInitialProps({
         reduxStore,
+        req,
         query,
     }) {
-        await getCampaignFromSlug(reduxStore.dispatch, query.slug);
+        // reduxStore.dispatch({
+        //     type: actionTypes.RESET_GROUP_STATES,
+        // });
+        let auth0AccessToken = null;
+        if (typeof window === 'undefined') {
+            auth0AccessToken = storage.get('auth0AccessToken', 'cookie', req.headers.cookie);
+        }
+
+        await getCampaignFromSlug(reduxStore.dispatch, query.slug, auth0AccessToken);
         return {
             slug: query.slug,
         };
