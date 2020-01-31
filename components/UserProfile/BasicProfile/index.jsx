@@ -160,11 +160,11 @@ class UserBasciProfile extends React.Component {
         });
     }
 
-    giveButtonClick(email, name) {
+    giveButtonClick(email, name, avatar) {
         const {
             dispatch,
         } = this.props;
-        storeEmailIdToGive(dispatch, email, name);
+        storeEmailIdToGive(dispatch, email, name, avatar);
     }
 
     handleUnfriendModal() {
@@ -457,7 +457,7 @@ class UserBasciProfile extends React.Component {
                                                             <Link className="lnkChange" route="/give/to/friend/new">
                                                                 <Button
                                                                     className="blue-bordr-btn-round"
-                                                                    onClick={() => this.giveButtonClick(email, `${userData.first_name} ${userData.last_name}`)}
+                                                                    onClick={() => this.giveButtonClick(email, `${userData.first_name} ${userData.last_name}`, avatar)}
                                                                 >
                                                                     Give
                                                                 </Button>
