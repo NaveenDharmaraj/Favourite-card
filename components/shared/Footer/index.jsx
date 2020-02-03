@@ -32,7 +32,13 @@ const {
     HUBSPOT_PORTAL_ID,
     HUBSPOT_FORM_ID,
 } = publicRuntimeConfig;
-
+const ERRORMESSAGES = {
+    en: {
+        invalidEmail: "Please enter a valid email address",
+        invalidEmailFormat: "Please enter a valid email address",
+        required: "Please enter a valid email address",
+    },
+};
 const Footer = ({ isAuthenticated }) => (
     <div>
         <div className="my-footer">
@@ -55,6 +61,7 @@ const Footer = ({ isAuthenticated }) => (
                                             portalId={HUBSPOT_PORTAL_ID}
                                             formId={HUBSPOT_FORM_ID}
                                             loading={<div>Loading...</div>}
+                                            translations={ERRORMESSAGES}
                                         />
                                     </Form.Field>
                                 </Form>
