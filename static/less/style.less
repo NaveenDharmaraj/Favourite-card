@@ -297,7 +297,7 @@ h4{
               padding: 30px 35px 15px;
               &.scrollContent{
                 max-height: 70vh;
-                overflow-y: scroll;
+                overflow-y: auto;
               }
             }
             &.image-modal{
@@ -1548,6 +1548,9 @@ h4{
   padding: 0px !important;
   display: inline-block !important;
   width: 190px !important;
+  @media only screen and (max-width: 767px){  
+    width: 100% !important;
+  }
  }
  .auth0-lock.auth0-lock .auth0-lock-header .auth0-lock-name{
   font-family: 'ProximaNova-Regular';
@@ -2850,6 +2853,9 @@ h4{
 // Auth0 custom css overriding ends
 .auth0-lock.auth0-lock .auth0-lock-form{
   padding: 0px !important;
+  p{
+    text-align: right !important;
+  }
 }
 .auth0-lock.auth0-lock .auth0-lock-content-wrapper{
   margin-bottom: 20px;
