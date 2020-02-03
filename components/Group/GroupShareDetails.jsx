@@ -73,7 +73,7 @@ class GroupShareDetails extends React.Component {
         let encodedUrl = encodeURIComponent(deepLinkUrl.attributes["short-link"]);
         switch (data.id) {
             case 'twitter':
-                title=encodeURIComponent(`Check out ${name} on @wearechimp.`);
+                title=encodeURIComponent(`Check out ${name} on @wearecharitable.`);
                 window.open('https://twitter.com/share?url='+encodedUrl+'&text='+title,'_blank');
                 break;
             case 'facebook':
