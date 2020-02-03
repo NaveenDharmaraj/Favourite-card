@@ -421,7 +421,7 @@ const Success = (props) => {
                                             Or&nbsp;
                                             <Link className="paragraph-third" route={dashboardLink}>
                                                 {linkToDashboardText}
-                                            </Link>
+                                            </Link>.
                                         </span>
                                     </Fragment>
                                 ))}
@@ -432,10 +432,12 @@ const Success = (props) => {
                                 //   </GeminiLink>
                                 && (
                                     <Link className="paragraph-third" route={dashboardLink}>
-                                        {
-                                            linkToDashboardText.charAt(0).toUpperCase()
-                                            + linkToDashboardText.slice(1)
-                                        }
+                                        <Button className="blue-bordr-btn-round-def">
+                                            {
+                                                linkToDashboardText.charAt(0).toUpperCase()
+                                                + linkToDashboardText.slice(1)
+                                            }
+                                        </Button>
                                     </Link>
                                 )
                                 )}

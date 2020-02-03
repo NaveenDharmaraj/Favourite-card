@@ -1,5 +1,5 @@
 {
-    "goToYourDashboard": "go to your Dashboard.",
+    "goToYourDashboard": "go to your Dashboard",
     "creditCardMessage": "{{name}}'s {{cardType}} ending with {{lastFourDigitCardNo}} was used to complete this transaction, which will appear on your credit card statement as \"CHIMP FNDN * DONATION\".",
     "recurringCreditCardMessage": "{{name}}'s {{cardType}} ending with {{lastFourDigitCardNo}} will be charged {{amount}} on the {{recurringDay}} of each month, starting on {{recurringDate}}.",
     "quaziDonationMessageForAllocations": "Apologies,{{name}}. To send your gift,please wait for a confirmation email from us.",
