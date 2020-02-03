@@ -1156,7 +1156,7 @@ class ChatWrapper extends React.Component {
                                                                                 <Dropdown
                                                                                     noResultsMessage={null}
                                                                                     options={self.state.groupAddMemberOptions}
-                                                                                    placeholder='Add members...'
+                                                                                    placeholder='Type a name or multiple names'
                                                                                     // search
                                                                                     selection
                                                                                     fluid
