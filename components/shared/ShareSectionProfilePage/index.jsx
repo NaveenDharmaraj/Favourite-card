@@ -80,7 +80,7 @@ class ShareDetails extends React.Component {
         switch (data.id) {
             case 'twitter':
                 url=encodedUrl;
-                title=encodeURIComponent(`Check out ${name} on @wearechimp.`);
+                title=encodeURIComponent(`Check out ${name} on @wearecharitable.`);
                 window.open('https://twitter.com/share?url='+url+'&text='+title,'_blank');
                 break;
             case 'facebook':
