@@ -122,7 +122,7 @@ const NavBarMobile = ({
                 {
                     (!isExternal) ? (
                         <Link route={accountUrl}>
-                            <Menu.Item as='a'><span className="mobMenuLeftIcon"><Image src={settingsIcon}/></span>{accountSettingsText}</Menu.Item>
+                            <Menu.Item as='a'><span className="mobMenuLeftIcon settingsIcon"><Image src={settingsIcon}/></span>{accountSettingsText}</Menu.Item>
                         </Link>
                     ) : (
                         <a href={accountUrl}>
@@ -145,11 +145,10 @@ const NavBarMobile = ({
                             <Image src={logo} />
                         </Link>
                     </Menu.Item>
-
                     <Menu.Menu position="right">
                         <Notifications />
                         <Chat />
-                        <Menu.Item>
+                        <Menu.Item className="mobSearchIcon">
                             <Link route="/search">
                                 <Image src={searchIcon}/>
                             </Link>
