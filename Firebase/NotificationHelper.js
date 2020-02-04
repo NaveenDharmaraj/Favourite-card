@@ -221,8 +221,13 @@ class NotificationHelper {
                 msgText = msgText.replace(/{{/g, "<b>");
                 msgText = msgText.replace(/}}/g, "</b>");
             });
-        }
-        let d = { "sourceDisplayName": msg.sourceDisplayName, "message": msgText, read: msg.read };
+        }        
+        let d = {
+            "sourceDisplayName": msg.sourceDisplayName,
+            "message": msgText,
+            read: msg.read,
+            sourceImageLink: msg.avatar_link
+        };
         if (msg.sourceUserId == userInfo.id) {
             d.sourceDisplayName = "You";
         }
