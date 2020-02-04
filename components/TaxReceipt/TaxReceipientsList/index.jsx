@@ -101,7 +101,7 @@ class TaxReceipientsList extends React.Component {
         } = this.state;
         return (
             <Fragment>
-                {loader ? <PlaceholderGrid row={2} column={2} /> : (
+                {loader ? <PlaceholderGrid row={1} column={2} /> : (
                     <Fragment>
                         {(!_isEmpty(taxReceiptProfileList) && taxReceiptProfileList.length > 0)
                             ? (
@@ -125,7 +125,7 @@ class TaxReceipientsList extends React.Component {
                             )
                         }
 
-                        {(!_isEmpty(taxReceiptProfileList) && taxReceiptProfileList.length > 4)
+                        {(!_isEmpty(taxReceiptProfileList) && taxReceiptProfileList.length > 1)
                     && (
                         <div className="text-center mt-1 mb-1">
                             <Modal size="tiny" dimmer="inverted" className="chimp-modal" closeIcon trigger={<Button className="blue-bordr-btn-round-def c-small">Manage recipients</Button>}>
