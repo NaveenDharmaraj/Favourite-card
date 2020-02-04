@@ -17,7 +17,7 @@
     "nonUserSingleAllocation": "Merci {{name}}. Vous avez donné {{amount}} du Compte CHARITABLE IMPACT de {{fromName}} à {{to}}.",
     "fromToMultipleRecipient": "Beau travail, {{name}}. Vous avez donné {{number}} dons de {{amount}} pour un total de {{total}} envoyé.",
     "fromToSingleRecipient": "Beau travail, {{name}}. Vous avez donné {{amount}} à {{emailAddress}}.",
-    "nonrecurringCCAllocationDetails": "{{creditCard}} a été utilisée pour effectuer cette transaction et apparaîtra sur votre relevé bancaire sous le nom \"CHIMP FNDN * DONATION\".",
+    "nonrecurringCCAllocationDetails": "{{creditCard}} was charged ${{amount}} to complete this transaction, which will appear on the credit card statement as \"CHIMP FNDN * DONATION\".",
     "nonrecurringDonationDetails": "De plus, {{amount}} a été apparié par {{matchingParty}} et ajouté au Compte CHARITABLE IMPACT de {{to}}.",
     "timeForSendingCharity": "Votre contribution sera envoyée au destinataire le {{month}}.",
     "userRecurringAllocation": "Merci {{name}}. Vous avez démarré un don mensuel de {{amount}} pour {{to}}.",

@@ -267,6 +267,7 @@ const Success = (props) => {
         if (creditCard.value > 0 && type !== 'doantions') {
             secondParagraph = formatMessage('nonrecurringCCAllocationDetails',
                 {
+                    amount: donationAmount,
                     creditCard: ccText,
                 });
         }
