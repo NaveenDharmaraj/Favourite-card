@@ -49,6 +49,8 @@ export const beneficiaryDefaultProps = {
             donationMatch: {
                 value: null,
             },
+            formatedCharityAmount: '',
+            formatedDonationAmount: '',
             giftType: {
                 value: 0,
             },
@@ -93,6 +95,8 @@ export const groupDefaultProps = {
             donationMatch: {
                 value: null,
             },
+            formatedDonationAmount: '',
+            formatedGroupAmount: '',
             giftType: {
                 value: 0,
             },
@@ -137,6 +141,8 @@ export const p2pDefaultProps = {
             donationMatch: {
                 value: null,
             },
+            formatedDonationAmount: '',
+            formatedP2PAmount: '',
             // P2P gift type is always 0
             giftType: {
                 value: 0,
