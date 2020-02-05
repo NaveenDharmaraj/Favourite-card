@@ -17,7 +17,6 @@ import Layout from '../../components/shared/Layout';
 // import FormValidationErrorMessage from '../../components/shared/FormValidationErrorMessage';
 import { getUserCauses } from '../../actions/onBoarding';
 import { saveUserCauses,
-        updateSkipCausesSelection,
         } from '../../actions/user';
 import SingleCause from '../../components/New/SingleCause';
 import { Router } from '../../routes';
@@ -71,7 +70,6 @@ class CausesMigration extends React.Component {
                 },
                 type: 'DISABLE_BUTTON_IN_USER_MIGRATION'
             });
-            updateSkipCausesSelection(dispatch, currentUser.id);
             saveUserCauses(dispatch, currentUser.id, userCauses, discoverValue);
         }
     }

@@ -802,20 +802,14 @@ export const saveUserCauses = (dispatch, userId, userCauses, discoverValue) => {
     };
 
     const bodyData = {
-        data: {
-            attributes: {
-                preferences: {
-                    discoverability: discoverValue,
-                },
-            },
-            id: Number(userId),
-            type: 'users',
-        },
+        is_searchable: discoverValue,
+        skipCauseSelection: true,
+        user_id: Number(userId),
     };
 
     return graphApi.patch(`/user/updatecauses`, bodyDataCauses).then(
         () => {
-            coreApi.patch(`/users/${userId}`, bodyData).then(
+            securityApi.patch(`update/user`, bodyData).then(
                 () => {
                     getUserFund(dispatch, userId).then(() => {
                         Router.pushRoute('/dashboard');
@@ -832,14 +826,4 @@ export const saveUserCauses = (dispatch, userId, userCauses, discoverValue) => {
         });
         triggerUxCritialErrors(err.errors || err, dispatch);
     });
-};
-
-export const updateSkipCausesSelection = (dispatch, userId) => {
-    const bodyData = {
-        skipCauseSelection: true,
-        user_id: Number(userId),
-    };
-    securityApi.patch(`update/user`, bodyData).then((result) => {
-        getUser(dispatch, userId, null);
-    }).catch();
 };
