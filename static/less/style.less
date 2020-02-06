@@ -69,6 +69,30 @@ h2{
     }
   }
 }
+.ui{
+  &.table{
+    tr{
+      td{
+        &.date{
+          &.boderBottom{
+            &.mobBrdrBtm{
+              @media only screen and (max-width: 767px){
+                border-bottom: 1px solid rgba(0,0,0,.1) !important;
+                margin-bottom: 5px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.mobBrdrBtm{
+  @media only screen and (max-width: 767px){
+    border-bottom: 1px solid rgba(0,0,0,.1) !important;
+  }
+}
 .font-w-normal{
   font-weight: 400; 
   >div,>span,>a{
