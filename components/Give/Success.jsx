@@ -107,6 +107,7 @@ const Success = (props) => {
         // });
         ccText = creditCard.text;
         creditCardMessage = formatMessage('creditCardMessage', {
+            amount: formatCurrency(formatAmount(donationAmount), language, currency),
             cardType: _.capitalize(creditcardData.processor),
             lastFourDigitCardNo: creditcardData.truncatedPaymentId,
             name: creditcardData.displayName,
