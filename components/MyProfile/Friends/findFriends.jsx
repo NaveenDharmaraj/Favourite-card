@@ -126,13 +126,14 @@ class FindFriends extends React.Component {
                 },
             },
             dispatch,
+            userFindFriendsList,
         } = this.props;
         const {
             currentActivePage,
             searchWord,
         } = this.state;
         if (btnData === 'addfriend') {
-            sendFriendRequest(dispatch, id, email, avatar, firstName, userData, searchWord, currentActivePage).then(() => {
+            sendFriendRequest(dispatch, id, email, avatar, firstName, userData, searchWord, currentActivePage, userFindFriendsList).then(() => {
                 this.setState({
                     errorMessage: null,
                     successMessage: 'Add Friend request sent successfully.',

@@ -308,7 +308,17 @@ const Success = (props) => {
                 fromName,
                 startsOn,
             });
-            thirdParagraph = formatMessage('recurringAllocationNotes');
+            thirdParagraph = (
+                <Fragment>
+                    {formatMessage('recurringAllocationNotesPart1')}
+                    &nbsp;
+                    <Link route={recurringDonationsLink}>
+                        {formatMessage('recurringAllocationNotesLink')}
+                    </Link>
+                    &nbsp;
+                    {formatMessage('recurringAllocationNotesPart2')}
+                </Fragment>
+            );
         } else if (giveTo.type === 'companies') {
             // This condition can be placed inside if(type=== 'donations) block
             firstParagraph = formatMessage('companyRecurringDonation', {

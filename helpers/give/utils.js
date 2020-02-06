@@ -714,7 +714,7 @@ const populateInfoToShare = (taxReceiptProfile,
             } = userDetails;
             const userTaxProfileData = !_.isEmpty(taxReceiptProfile)
                 ? getDropDownOptionFromApiData(taxReceiptProfile, null, (item) => `name_address_email|${item.id}`,
-                    (attributes) => `${attributes.fullName}, ${attributes.addressOne}, ${attributes.city}, ${attributes.province}, ${attributes.postalCode}`,
+                    (attributes) => `${attributes.fullName} (${email}), ${attributes.addressOne}, ${attributes.city}, ${attributes.province}, ${attributes.postalCode}`,
                     (attributes) => false) : null;
             infoToShareList = [
                 {
@@ -872,7 +872,9 @@ const resetDataForAccountChange = (giveData, dropDownOptions, props, type) => {
         currentUser: {
             attributes: {
                 displayName,
+                firstName,
                 email,
+                lastName,
             },
         },
         paymentInstrumentsData,
@@ -954,7 +956,7 @@ const resetDataForAccountChange = (giveData, dropDownOptions, props, type) => {
             companyDetails,
             giveData.giveFrom,
             {
-                displayName,
+                displayName: `${firstName} ${lastName}`,
                 email,
             },
             formatMessage,
