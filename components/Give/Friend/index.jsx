@@ -336,10 +336,10 @@ class Friend extends React.Component {
             validity,
         } = this.state;
         let inputValue = value;
-        const isNumber = /^\d+(\.\d*)?$/;
+        const isNumber = /^(?:[0-9]+,)*[0-9]+(?:\.[0-9]+)?$/;
         if ((name === 'giveAmount' || name === 'donationAmount') && !_.isEmpty(value) && value.match(isNumber)) {
-            giveData[name] = formatAmount(value);
-            inputValue = formatAmount(value);
+            inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
+            giveData[name] = inputValue;
         }
         const coverFeesAmount = 0;
         if (name !== 'coverFees' && name !== 'giftType' && name !== 'giveFrom') {
@@ -347,6 +347,7 @@ class Friend extends React.Component {
         }
         switch (name) {
             case 'giveAmount':
+                giveData['formatedP2PAmount'] = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
                 validity = validateGiveForm(
                     'donationAmount',
                     giveData.donationAmount,
@@ -370,6 +371,9 @@ class Friend extends React.Component {
                     giveData,
                     coverFeesAmount,
                 );
+                break;
+            case 'donationAmount':
+                    giveData['formatedDonationAmount'] = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
                 break;
             case 'recipients':
                 validity = validateGiveForm(
@@ -442,6 +446,9 @@ class Friend extends React.Component {
             giveData[name] = newValue;
             giveData.userInteracted = true;
             switch (name) {
+                case 'donationAmount':
+                        giveData['formatedDonationAmount'] =  newValue;
+                    break;
                 case 'giveFrom':
                     const {
                         modifiedDropDownOptions,
@@ -463,6 +470,8 @@ class Friend extends React.Component {
                     }
                     break;
                 case 'giveAmount':
+                    giveData['formatedP2PAmount'] = newValue;
+                    giveData[name]=formatAmount(parseFloat(newValue.replace(/,/g, '')));
                     giveData = resetP2pDataForOnInputChange(giveData, dropDownOptions);
                     break;
                 case 'recipients':
@@ -711,6 +720,8 @@ class Friend extends React.Component {
                     donationAmount,
                     donationMatch,
                     emailMasked,
+                    formatedDonationAmount,
+                    formatedP2PAmount,
                     giveAmount,
                     giveFrom,
                     noteToRecipients,
@@ -747,13 +758,13 @@ class Friend extends React.Component {
             accountTopUpComponent = (
                 <AccountTopUp
                     creditCard={creditCard}
-                    donationAmount={donationAmount}
+                    donationAmount={formatedDonationAmount}
                     donationMatch={donationMatch}
                     donationMatchList={donationMatchList}
                     formatMessage={formatMessage}
                     getStripeCreditCard={this.getStripeCreditCard}
                     handleInputChange={this.handleInputChange}
-                    handleOnInputBlur={this.handleOnInputBlur}
+                    handleInputOnBlur={this.handleOnInputBlur}
                     isAmountFieldVisible
                     isDonationMatchFieldVisible={giveFrom.type === 'user'}
                     paymentInstrumentList={paymentInstrumentList}
@@ -804,7 +815,7 @@ class Friend extends React.Component {
                             onChange={this.handleInputChange}
                             placeholder={formatMessage('giveCommon:amountPlaceHolder')}
                             size="large"
-                            value={giveAmount}
+                            value={formatedP2PAmount}
                         />
                     </Form.Field>
                     <FormValidationErrorMessage
