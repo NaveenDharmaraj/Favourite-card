@@ -1,6 +1,6 @@
 {
     "goToYourDashboard": "allez sur votre Tableau de bord",
-    "creditCardMessage": "La carte {{cardType}} de {{name}} finissant par {{lastFourDigitCardNo}} a été utilisée pour effectuer cette transaction. Celle-ci apparaîtra sur le relevé de carte de crédit sous le nom \"CHIMP FNDN * DONATION\".",
+    "creditCardMessage": "{{name}}'s {{cardType}} ending with {{lastFourDigitCardNo}} was charged {{amount}} to complete this transaction, which will appear on your credit card statement as \"CHIMP FNDN * DONATION\".",
     "recurringCreditCardMessagerecurringCreditCardMessage": "Un montant de {{amount}} sera facturé à la carte {{cardType}} de {{name}} finissant par {{lastFourDigitCardNo}} le {{recurringDay}} de chaque mois, à partir du {{recurringDate}}.",  "giving.donations.success.recurringDonation": "Bien joué, {{name}}. Vous avez démarré un ajout mensuel de {{amount}}.",
     "quaziDonationMessageForAllocations": "Toutes mes excuses, {{name}}. Pour envoyer votre cadeau, veuillez attendre un courriel de confirmation de notre part.",
     "quaziDonationSuccessMessagequaziDonationSuccessMessage": "Merci, {{name}}. Nous traitons votre transaction et ajouterons bientôt {{amount}} à votre Compte CHARITABLE IMPACT.",
