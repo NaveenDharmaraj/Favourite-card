@@ -100,11 +100,12 @@ const Success = (props) => {
     let recurringCreditCardMessage = null;
     if (!_.isEmpty(creditCard && creditCard.text)) {
         creditcardData = populateCardData(creditCard.text, null);
-        ccText = formatMessage('withoutAmountCard', {
-            displayName: creditcardData.displayName,
-            processor: _.capitalize(creditcardData.processor),
-            truncatedPaymentId: creditcardData.truncatedPaymentId,
-        });
+        // ccText = formatMessage('withoutAmountCard', {
+        //     displayName: creditcardData.displayName,
+        //     processor: _.capitalize(creditcardData.processor),
+        //     truncatedPaymentId: creditcardData.truncatedPaymentId,
+        // });
+        ccText = creditCard.text;
         creditCardMessage = formatMessage('creditCardMessage', {
             cardType: _.capitalize(creditcardData.processor),
             lastFourDigitCardNo: creditcardData.truncatedPaymentId,
@@ -264,7 +265,7 @@ const Success = (props) => {
                 }
             }
         }
-        if (creditCard.value > 0 && type !== 'doantions') {
+        if (creditCard.value > 0 && type !== 'donations') {
             secondParagraph = formatMessage('nonrecurringCCAllocationDetails',
                 {
                     amount: donationAmount,

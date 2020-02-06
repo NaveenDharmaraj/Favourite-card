@@ -1207,7 +1207,7 @@ class ChatWrapper extends React.Component {
                                                                         </div>
                                                                     </Modal.Content>
                                                                 </Modal>
-                                                                <Modal size="tiny" open={self.state.groupAction == 'MUTE_NOTIFICATIONS'} onClose={() => self.setGroupAction(null)} dimmer="inverted" className="chimp-modal" closeIcon centered={false}>
+                                                                <Modal size="tiny" open={self.state.groupAction == 'MUTE_NOTIFICATIONS'} onClose={() => self.setGroupAction(null)} dimmer="inverted" className="chimp-modal" closeIcon centered={true}>
                                                                     <Modal.Header>Mute conversation?</Modal.Header>
                                                                     <Modal.Content>
                                                                         <Modal.Description className="font-s-16">You can unmute this conversation anytime.</Modal.Description>
@@ -1218,7 +1218,7 @@ class ChatWrapper extends React.Component {
                                                                     </Modal.Content>
                                                                 </Modal>
 
-                                                                <Modal size="tiny" open={self.state.groupAction == 'UNMUTE_NOTIFICATIONS'} onClose={() => self.setGroupAction(null)} dimmer="inverted" className="chimp-modal" closeIcon centered={false}>
+                                                                <Modal size="tiny" open={self.state.groupAction == 'UNMUTE_NOTIFICATIONS'} onClose={() => self.setGroupAction(null)} dimmer="inverted" className="chimp-modal" closeIcon centered={true}>
                                                                     <Modal.Header>Unmute conversation?</Modal.Header>
                                                                     <Modal.Content>
                                                                         <Modal.Description className="font-s-16">You can mute this conversation anytime.</Modal.Description>
@@ -1230,7 +1230,7 @@ class ChatWrapper extends React.Component {
                                                                 </Modal>
 
 
-                                                                <Modal size="tiny" open={self.state.groupAction == 'LEAVE_GROUP'} onClose={() => self.setGroupAction(null)} dimmer="inverted" className="chimp-modal" closeIcon centered={false}>
+                                                                <Modal size="tiny" open={self.state.groupAction == 'LEAVE_GROUP'} onClose={() => self.setGroupAction(null)} dimmer="inverted" className="chimp-modal" closeIcon centered={true}>
                                                                     <Modal.Header>Leave conversation?</Modal.Header>
                                                                     <Modal.Content>
                                                                         <Modal.Description className="font-s-16">You won't get messages from this group chat unless another member adds you back into the chat.</Modal.Description>
@@ -1241,7 +1241,7 @@ class ChatWrapper extends React.Component {
                                                                     </Modal.Content>
                                                                 </Modal>
 
-                                                                <Modal size="tiny" open={self.state.groupAction == 'DELETE_GROUP'} onClose={() => self.setGroupAction(null)} dimmer="inverted" className="chimp-modal" closeIcon centered={false}>
+                                                                <Modal size="tiny" open={self.state.groupAction == 'DELETE_GROUP'} onClose={() => self.setGroupAction(null)} dimmer="inverted" className="chimp-modal" closeIcon centered={true}>
                                                                     <Modal.Header>Delete group?</Modal.Header>
                                                                     <Modal.Content>
                                                                         <Modal.Description className="font-s-16">Cannot undo this action. All the messages in this group will be deleted permanentaly.</Modal.Description>
@@ -1252,7 +1252,7 @@ class ChatWrapper extends React.Component {
                                                                     </Modal.Content>
                                                                 </Modal>
 
-                                                                <Modal size="tiny" open={self.state.groupAction == 'REMOVE_GROUP_IMAGE'} onClose={() => self.setGroupAction(null)} dimmer="inverted" className="chimp-modal" closeIcon centered={false}>
+                                                                <Modal size="tiny" open={self.state.groupAction == 'REMOVE_GROUP_IMAGE'} onClose={() => self.setGroupAction(null)} dimmer="inverted" className="chimp-modal" closeIcon centered={true}>
                                                                     <Modal.Header>Remove group image?</Modal.Header>
                                                                     <Modal.Content>
                                                                         <Modal.Description className="font-s-16">Cannot undo this action. The image of the group will be removed for all members.</Modal.Description>

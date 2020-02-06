@@ -131,6 +131,9 @@ class DashboradList extends React.Component {
                     dateClass = 'date';
                     date = '';
                 }
+                if (date) {
+                    dateClass += ' mobBrdrBtm';
+                }
                 let givingType = ''; let rowClass = ''; let givingTypeClass = ''; let descriptionType = ''; let entity = ''; let transactionSign = ''; let profileUrl = '';
                 let informationSharedEntity = '';
                 let imageCls = 'ui image';
