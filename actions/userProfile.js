@@ -270,7 +270,7 @@ const getUserTagsFollowed = (dispatch, userId) => {
         },
         type: actionTypes.USER_PROFILE_FOLLOWED_TAGS,
     };
-    return graphApi.get(`/get/tags/user?id=${Number(userId)}&page[number]=1&page[size]=10&sort=asc`).then(
+    return graphApi.get(`/get/tags/user?id=${Number(userId)}&page[number]=1&page[size]=15&sort=asc`).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -289,7 +289,7 @@ const getUserTagsRecommended = (dispatch, userId, pageNumber) => {
         },
         type: actionTypes.USER_PROFILE_RECOMMENDED_TAGS,
     };
-    return graphApi.get(`/get/tags/recommended?id=${Number(userId)}&page[number]=${pageNumber}&page[size]=10&sort=asc`).then(
+    return graphApi.get(`/get/tags/recommended?id=${Number(userId)}&page[number]=${pageNumber}&page[size]=15&sort=asc`).then(
         (result) => {
             fsa.payload = {
                 count: result.meta.recordCount,
