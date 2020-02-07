@@ -39,7 +39,7 @@ class TextSearchResultsAll extends React.Component {
             });
         }
         const contentData = `Sorry, there are no results under ${searchWord}.`;
-        const subHeaderData = 'Try a new search with more general words';
+        const subHeaderData = 'Try a new search with more general words.';
         return (
 
             <div>
