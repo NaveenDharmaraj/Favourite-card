@@ -17,7 +17,7 @@
     "nonUserSingleAllocation": "Thank you, {{name}}. You gave {{amount}} from {{fromName}}'s Impact Account to {{to}}.",
     "fromToMultipleRecipient": "Thank you, {{name}}. You gave {{number}} gifts of {{amount}} for a total of {{total}} sent.",
     "fromToSingleRecipient": "Thank you, {{name}}. You gave {{amount}} to {{emailAddress}}.",
-    "nonrecurringCCAllocationDetails": "{{creditCard}} was charged ${{amount}} to complete this transaction, which will appear on the credit card statement as \"CHIMP FNDN * DONATION\".",
+    "nonrecurringCCAllocationDetails": "{{creditCard}} was charged {{amount}} to complete this transaction, which will appear on the credit card statement as \"CHIMP FNDN * DONATION\".",
     "nonrecurringDonationDetails": "In addition, {{amount}} was matched by {{matchingParty}} and added to {{to}}'s Impact Account.",
     "timeForSendingCharity": "Your gift will be sent to {{charityName}} on {{month}}.",
     "userRecurringAllocation" : "Thank you, {{name}}. {{amount}} is scheduled to be sent to {{Recipient}} each month.",

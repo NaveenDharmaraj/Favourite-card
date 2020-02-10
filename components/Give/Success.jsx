@@ -269,7 +269,7 @@ const Success = (props) => {
         if (creditCard.value > 0 && type !== 'donations') {
             secondParagraph = formatMessage('nonrecurringCCAllocationDetails',
                 {
-                    amount: donationAmount,
+                    amount: formatCurrency(formatAmount(donationAmount), language, currency),
                     creditCard: ccText,
                 });
         }
