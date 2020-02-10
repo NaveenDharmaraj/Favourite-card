@@ -9,7 +9,7 @@ import {
     Header,
     Select,
 } from 'semantic-ui-react';
-
+import ReactHtmlParser from 'react-html-parser';
 
 const PrivacyOptions = (props) => {
     const {
@@ -23,6 +23,7 @@ const PrivacyOptions = (props) => {
         handleInputChange,
         infoToShare,
         infoToShareList,
+        showSupportMessage,
     } = props;
     let privacyShareAddressLabel = null;
     let privacyShareEmailLabel = null;
@@ -34,8 +35,12 @@ const PrivacyOptions = (props) => {
     switch (giveFrom.type) {
         case 'user':
             privacyShareNameLabel = formatMessage(`privacyOptions:share${giveToType}UserName`);
-            privacyShareEmailLabel = formatMessage(`privacyOptions:share${giveToType}PrivacyPostal`, { privacyData: privacyEmail });
-            privacyShareAddressLabel = formatMessage(`privacyOptions:share${giveToType}PrivacyPostal`, { privacyData: privacyPostal });
+            privacyShareEmailLabel = (showSupportMessage && giveToType === 'Group')
+                ? formatMessage(`privacyOptions:shareGgAndCampaignPrivacyPostal`, { privacyData: privacyEmail })
+                : formatMessage(`privacyOptions:share${giveToType}PrivacyPostal`, { privacyData: privacyEmail });
+            privacyShareAddressLabel = (showSupportMessage && giveToType === 'Group')
+                ? formatMessage(`privacyOptions:shareGgAndCampaignPrivacyPostal`, { privacyData: privacyPostal })
+                : formatMessage(`privacyOptions:share${giveToType}PrivacyPostal`, { privacyData: privacyPostal })
             break;
         case 'companies':
             privacyShareNameLabel = formatMessage(`privacyOptions:share${giveToType}PrivacyName`, { giveFrom: myGiveFromType });
@@ -94,6 +99,14 @@ const PrivacyOptions = (props) => {
                         >
                             {
                                 formatMessage(`privacyOptions:forGiving${giveToType}OrganizersLabel`)
+                            }
+                            {
+                                (!!showSupportMessage && giveToType === 'Group')  && (
+                                    <Fragment>
+                                        <br/>
+                                        <span className="font-w-normal">This group supports a campaign—organizers of both will see the info you share.</span>
+                                    </Fragment>
+                                )
                             }
                         </label>
                         <br />

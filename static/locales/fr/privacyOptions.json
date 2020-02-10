@@ -15,6 +15,7 @@
     "shareGroupPrivacyGiftAmount": "Partager le montant de mon don avec le Groupe de dons destinataire",
     "shareGroupPrivacyPostal": "Partager mon adresse {{privacyData}} avec le Groupe de dons destinataire",
     "shareCampaignPrivacyPostal": "Partager mon adresse {{privacyData}} avec la Campagne de dons destinataire",
+    "shareGgAndCampaignPrivacyPostal": "Share my {{privacyData}} address with the Giving Group and Campaign organizers",
     "mycampaigns": "ma Campagne",
     "mygroups": "mon Groupe",
     "mycompanies": "mon Entreprise"
