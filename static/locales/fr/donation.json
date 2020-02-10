@@ -13,8 +13,8 @@
     "donationsMatchPopup": "S'il y a une occasion d’appariement de dons, elle apparaîtra ici. Une demande sera envoyée à la partie correspondante, comme votre employeur, par exemple, qui pourra ensuite choisir d'apparier votre don selon sa politique mise en place.",
     "policyPeriodMonth": "mois",
     "policyPeriodYear": "l'année",
-    "donationMatchNote": "{{companyName}} a apparié {{totalMatched}} sur le {{totalRequested}} que vous avez donné en {{donationMonth}}.",
-    "donations.donationMatchPolicyNote": "La politique de {{companyName}} consiste à apparier {{policyPercentage}} par dollar donné, jusqu'à {{policyMax}} par {{policyPeriod}}.",
+    "donationMatchPolicyNote": "{{companyName}}’s matches {{policyPercentage}} for each $1.00 you add up to {{policyMax}} each {{policyPeriod}}.",
+    "donationMatchNote": "So far, {{companyName}} has matched {{totalMatched}} in {{donationMonth}}.",
     "creditCardLabel": "Carte de crédit",
     "creditCardPlaceholder": "Sélectionnez la carte de crédit",
     "forNoMatchingPolicy": "aucune politique d'appariement"

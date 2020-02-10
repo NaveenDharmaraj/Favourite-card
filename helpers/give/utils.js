@@ -227,7 +227,7 @@ const createDonationMatchString = (attributes, formatMessage, language) => {
         default:
             break;
     }
-    return `${attributes.displayName} (${formatCurrency(attributes.policyMax, language, 'USD')} ${formatMessage('giveCommon:forPer')} ${policyPeriodText})`;
+    return `${attributes.displayName}: ${formatCurrency(attributes.policyMax, language, 'USD')} ${formatMessage('giveCommon:forPer')} ${policyPeriodText}`;
 
 };
 
