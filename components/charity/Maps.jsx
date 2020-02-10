@@ -102,6 +102,9 @@ class Maps extends React.Component {
         } else if (!_isEmpty(countriesGeocode)) {
             centerLocation = countriesGeocode[0].attributes.lat_long;
         }
+        const mapOptions = {
+            maxZoom: 10,
+        };
 
         if (!_isEmpty(headQuarterGeocode) || !_isEmpty(countriesGeocode)) {
             mapData = (
@@ -109,6 +112,7 @@ class Maps extends React.Component {
                     bootstrapURLKeys={{ key: `${GOOGLE_MAP_API_KEY}` }}
                     zoom={17}
                     center={centerLocation}
+                    options={mapOptions}
                 >
                     {!_isEmpty(headQuarterGeocode)
                     && (
