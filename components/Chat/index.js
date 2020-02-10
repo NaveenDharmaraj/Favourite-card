@@ -1354,7 +1354,7 @@ class ChatWrapper extends React.Component {
                                                             </div>
                                                             <div className="moreOption">
                                                                 {/* <Button className="moreOption-btn transparent" circular onClick={self.setShowMoreOptions}><Image src={moreIcon} ref={this.contextRef} /></Button> */}
-                                                                <Modal size="tiny" dimmer="inverted" className="chimp-modal" onClose={() => self.setState({ conversationAction: null })} closeIcon open={self.state.conversationAction == "MUTE"} centered={false}>
+                                                                <Modal size="tiny" dimmer="inverted" className="chimp-modal" onClose={() => self.setState({ conversationAction: null })} closeIcon open={self.state.conversationAction == "MUTE"} centered={true}>
                                                                     <Modal.Header>Mute conversation?</Modal.Header>
                                                                     <Modal.Content>
                                                                         <Modal.Description className="font-s-16">You can unmute this conversation anytime.</Modal.Description>
@@ -1364,7 +1364,7 @@ class ChatWrapper extends React.Component {
                                                                         </div>
                                                                     </Modal.Content>
                                                                 </Modal>
-                                                                <Modal size="tiny" dimmer="inverted" className="chimp-modal" onClose={() => self.setState({ conversationAction: null })} closeIcon open={self.state.conversationAction == "UNMUTE"} centered={false}>
+                                                                <Modal size="tiny" dimmer="inverted" className="chimp-modal" onClose={() => self.setState({ conversationAction: null })} closeIcon open={self.state.conversationAction == "UNMUTE"} centered={true}>
                                                                     <Modal.Header>Unmute conversation?</Modal.Header>
                                                                     <Modal.Content>
                                                                         <Modal.Description className="font-s-16">You can mute this conversation anytime.</Modal.Description>
@@ -1374,7 +1374,7 @@ class ChatWrapper extends React.Component {
                                                                         </div>
                                                                     </Modal.Content>
                                                                 </Modal>
-                                                                <Modal size="tiny" dimmer="inverted" className="chimp-modal" onClose={() => self.setState({ conversationAction: null })} closeIcon open={self.state.conversationAction == "DELETE"} centered={false}>
+                                                                <Modal size="tiny" dimmer="inverted" className="chimp-modal" onClose={() => self.setState({ conversationAction: null })} closeIcon open={self.state.conversationAction == "DELETE"} centered={true}>
                                                                     <Modal.Header>Delete conversation?</Modal.Header>
                                                                     <Modal.Content>
                                                                         <Modal.Description className="font-s-16">Deleting removes conversations from inbox, but no ones else’s inbox.</Modal.Description>
