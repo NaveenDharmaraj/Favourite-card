@@ -7668,3 +7668,14 @@ body .userEllips{
 .hs-main-font-element{
   display: none;
 }
+.no-list{
+  &.hs-error-msgs{
+    &.inputs-list{
+      li{
+        &:nth-child(2){
+          display: none !important;
+        }
+      }
+    }
+  }
+}
