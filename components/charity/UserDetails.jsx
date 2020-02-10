@@ -93,7 +93,7 @@ const detailsView = (valuesObject) => {
                                 <List.Icon name={value.name} />
                                 {value.link && (
                                     <List.Content>
-                                        <a href={value.link}>
+                                        <a href={value.link} target={value.name === 'linkify' ? '_blank' : '_self'}>
                                             {value.Content}
                                         </a>
                                     </List.Content>

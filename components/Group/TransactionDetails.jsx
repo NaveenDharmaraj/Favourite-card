@@ -117,7 +117,7 @@ class TransactionDetails extends React.Component {
                     'Dec',
                 ];
                 const yyyy = date.getFullYear();
-                date = `${month[mm]} ${dd} ,${yyyy}`;
+                date = `${month[mm]} ${dd}, ${yyyy}`;
                 let rowClass = '';
                 let transactionSign = '';
                 const imageCls = 'ui image';

@@ -17,11 +17,15 @@ const MainNavItem = (props) => {
         isExternal,
         location,
         name,
+        onPusherClick,
     } = props;
     if (isExternal) {
         return (
             <Link href={`${RAILS_APP_URL_ORIGIN}${location}`} activeClassName="active">
-                <Menu.Item as="a">
+                <Menu.Item
+                    as="a"
+                    onClick={onPusherClick}
+                >
                     {name}
                 </Menu.Item>
             </Link>
@@ -29,7 +33,10 @@ const MainNavItem = (props) => {
     }
     return (
         <Link route={location} activeClassName="active">
-            <Menu.Item as="a">
+            <Menu.Item
+                as="a"
+                onClick={onPusherClick}
+            >
                 {name}
             </Menu.Item>
         </Link>
