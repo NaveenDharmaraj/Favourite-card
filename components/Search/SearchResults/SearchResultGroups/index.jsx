@@ -9,6 +9,7 @@ import {
 import PropTypes from 'prop-types';
 import _isEmpty from 'lodash/isEmpty';
 
+import NodataState from '../../../shared/NoDataState';
 import FilterComponent from '../../../shared/Filter/index';
 import SearchResultSingleCharityGroups from '../common/SearchResultSingleCharityGroups';
 import PlaceholderGrid from '../../../shared/PlaceHolder';
@@ -43,6 +44,8 @@ class SearchResultGroups extends React.Component {
             searchWord,
         } = this.props;
         let filterobj = {};
+        const contentData = `Sorry, there are no results under ${searchWord}.`;
+        const subHeaderData = 'Try a new search with more general words.';
         if (!_isEmpty(filterValuesShowed)) {
             Object.entries(filterValuesShowed).map(([
                 key,
@@ -86,7 +89,7 @@ class SearchResultGroups extends React.Component {
                         )}
                         <Grid.Column>
                             {
-                                (!_isEmpty(groups) && !_isEmpty(groups.meta) && !_isEmpty(groups.meta.aggregations)) && (
+                                (!_isEmpty(groups) && !_isEmpty(groups.data) && groups.data.length > 0) && (
                                     <FilterComponent
                                         dispatch={dispatch}
                                         FilterHeaders={(!_isEmpty(filterValuesShowed)) ? Object.keys(filterobj) : null}
@@ -98,7 +101,7 @@ class SearchResultGroups extends React.Component {
                 </Grid>
                 {(groups && groups.data && groups.data.length > 0)
                     ? <SearchResultSingleCharityGroups charityGroups={groups.data} />
-                    : 'No Groups Available'
+                    : <NodataState contentData={contentData} subHeaderData={subHeaderData} />
                 }
             </div>
         );
