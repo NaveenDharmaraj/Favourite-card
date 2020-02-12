@@ -47,6 +47,18 @@ const userProfile = (state = {}, action) => {
                 userCausesList: action.payload.userCausesList,
             };
             break;
+        case 'USER_PROFILE_LOCATION_SEARCH':
+            newState = {
+                ...state,
+                locationOptions: action.payload.data,
+            };
+            break;
+        case 'USER_PROFILE_LOCATION_SEARCH_LOADER':
+            newState = {
+                ...state,
+                locationLoader: action.payload.locationLoader,
+            };
+            break;
         case 'USER_PROFILE_FOLLOWED_TAGS':
             newState = {
                 ...state,

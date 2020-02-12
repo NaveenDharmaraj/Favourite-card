@@ -7,7 +7,8 @@ import {
     Grid,
     Popup,
     Icon,
-    Image
+    Image,
+    Select
 } from 'semantic-ui-react';
 import {
     connect,
@@ -18,6 +19,7 @@ import {
     saveUserBasicProfile,
     uploadUserImage,
     removeProfilePhoto,
+    searchLocationByUserInput,
 } from '../../../actions/userProfile';
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 import PrivacySetting from '../../shared/Privacy';
@@ -48,6 +50,7 @@ class EditBasicProfile extends React.Component {
             }
         } = props;
         const givingGoalAmount = (!_.isEmpty(props.userData.giving_goal_amt) || typeof props.userData.giving_goal_amt !== 'undefined') ? formatAmount(Number(props.userData.giving_goal_amt)) : '';
+        const location = `${props.userData.city ? props.userData.city : ''},${props.userData.province ? props.userData.province : ''}`;
         this.state = {
             buttonClicked: true,
             errorMessage: null,
@@ -55,6 +58,7 @@ class EditBasicProfile extends React.Component {
             isDefaultImage: logoFileName === null ? true : false,
             uploadImage: '',
             uploadImagePreview: '',
+            searchQuery: (!_.isEmpty(location)) ? location : '',
             statusMessage: false,
             successMessage: '',
             userBasicDetails: {
@@ -62,7 +66,6 @@ class EditBasicProfile extends React.Component {
                 firstName: (!_.isEmpty(props.userData)) ? props.userData.first_name : '',
                 givingGoal: givingGoalAmount,
                 lastName: (!_.isEmpty(props.userData)) ? props.userData.last_name : '',
-                location: (!_.isEmpty(props.userData)) ? props.userData.location : '',
                 displayName: (!_.isEmpty(props.userData)) ? props.userData.display_name : '',
                 formatedGoalAmount: _.replace(formatCurrency(givingGoalAmount, 'en', 'USD'), '$', ''),
             },
@@ -75,6 +78,9 @@ class EditBasicProfile extends React.Component {
         this.handleUpload = this.handleUpload.bind(this);
         this.handleRemovePreview = this.handleRemovePreview.bind(this);
         this.handleRemoveProfilePhoto = this.handleRemoveProfilePhoto.bind(this);
+        this.handleLocationSearchChange = this.handleLocationSearchChange.bind(this);
+        this.handleLocationChange = this.handleLocationChange.bind(this);
+        this.handleCustomSearch = this.handleCustomSearch.bind(this);
     }
 
     componentDidUpdate(prevProps) {
@@ -84,13 +90,14 @@ class EditBasicProfile extends React.Component {
         } = this.props;        
         if (!_.isEqual(userData, prevProps.userData)) {
             const givingGoalAmount = typeof userData.giving_goal_amt !== 'undefined' ? formatAmount(Number(userData.giving_goal_amt)) : '';
+            const  location = `${userData.city ? userData.city : ''},${userData.province ? userData.province : ''}`;
             this.setState({
+                searchQuery: (!_.isEmpty(location)) ? location : '',
                 userBasicDetails: {
                     about: userData.description,
                     firstName: userData.first_name,
                     givingGoal: givingGoalAmount,
                     lastName: userData.last_name,
-                    location: userData.location,
                     displayName: userData.display_name,
                     formatedGoalAmount: _.replace(formatCurrency(givingGoalAmount, 'en', 'USD'), '$', ''),
                 },
@@ -360,7 +367,46 @@ class EditBasicProfile extends React.Component {
             });
         });
     }
+    handleLocationChange(event, data){
+        const locationValue = event.target.innerText;
+        const {
+            options,
+            value,
+        } = data;
+        const {
+            userBasicDetails,
+        } = this.state;
+        const newValue = (!_.isEmpty(options)) ? _.find(options, { value }) : locationValue;
+        userBasicDetails['city'] = newValue.city ? newValue.city : '';
+        userBasicDetails['province'] = newValue.province ? newValue.province : '';
+        this.setState({
+                buttonClicked: false,
+                userBasicDetails: {
+                    ...this.state.userBasicDetails,
+                    ...userBasicDetails,
+                },
+                searchQuery: locationValue,
+        });
+    }
 
+    handleLocationSearchChange(event, {searchQuery}){
+        if (event.target.value.length >= 3) {
+            const {
+                dispatch,
+            } = this.props;
+            dispatch(searchLocationByUserInput(event.target.value));
+        }
+        if (event.target.value.length === 0) {
+            const {
+                dispatch,
+            } = this.props;
+            dispatch(searchLocationByUserInput(""));
+        }
+        this.setState({searchQuery});
+    }
+    handleCustomSearch = (options) => {
+        return options
+      }
     render() {
         const {
             buttonClicked,
@@ -372,11 +418,11 @@ class EditBasicProfile extends React.Component {
                 firstName,
                 lastName,
                 about,
-                location,
                 givingGoal,
                 displayName,
                 formatedGoalAmount,
             },
+            searchQuery,
             uploadImagePreview,
             validity,
         } = this.state;
@@ -386,7 +432,9 @@ class EditBasicProfile extends React.Component {
                 attributes: {
                     avatar,
                 },
-            }
+            },
+            locationLoader,
+            locationOptions,
         } = this.props;
         const privacyColumn = 'giving_goal_visibility';
         let aboutCharCount = (!_.isEmpty(about)) ? Math.max(0, (1000 - Number(about.length))) : 1000;
@@ -524,17 +572,25 @@ class EditBasicProfile extends React.Component {
                                 />
                                 <div className="field-info mt--1-2 text-right">{aboutCharCount} of 1000 characters left</div>
                             </Form.Field>
-                            <Form.Input
-                                fluid
-                                label="Location (optional)"
-                                placeholder="Location"
-                                id="location"
-                                name="location"
-                                maxLength="150"
-                                onChange={this.handleInputChange}
-                                onBlur={this.handleInputOnBlur}
-                                value={location}
-                            />
+                            <Form.Field>
+                                <label htmlFor="location">
+                                     Location (optional)
+                                </label>
+                                <Form.Field
+                                    single
+                                    control={Select}
+                                    id="location"
+                                    name="location"
+                                    onChange={this.handleLocationChange}
+                                    onSearchChange={this.handleLocationSearchChange}
+                                    options={locationOptions}
+                                    search={this.handleCustomSearch}
+                                    selection
+                                    searchQuery={searchQuery}
+                                    placeholder="Search location"
+                                    loading={locationLoader}
+                                />
+                            </Form.Field>
                             <Form.Field>
                                 <label>
                                     Giving Goal  (optional){' '}
@@ -601,8 +657,13 @@ class EditBasicProfile extends React.Component {
 function mapStateToProps(state) {
     return {
         currentUser: state.user.info,
+        locationLoader:state.userProfile.locationLoader,
+        locationOptions: state.userProfile.locationOptions,
         userProfileBasicData: state.userProfile.userProfileBasicData,
     };
 }
 
+EditBasicProfile.defaultProps ={
+    locationOptions: [{ key:'0', value: "No record found", text: "No record found" }],
+}
 export default (connect(mapStateToProps)(EditBasicProfile));
