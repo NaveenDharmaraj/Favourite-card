@@ -32,13 +32,16 @@ const PrivacyOptions = (props) => {
     const privacyPostal = formatMessage('privacyOptions:privacyDataPostal');
     const privacyShareAmountLabel = formatMessage(`privacyOptions:share${giveToType}PrivacyGiftAmount`);
     const myGiveFromType = (giveFrom.type !== 'user') ? formatMessage(`privacyOptions:my${giveFrom.type}`) : '';
+
+    const showGgAndCampaignMsg = (showSupportMessage && giveToType === 'Group');
+    console.log(showGgAndCampaignMsg);
     switch (giveFrom.type) {
         case 'user':
             privacyShareNameLabel = formatMessage(`privacyOptions:share${giveToType}UserName`);
-            privacyShareEmailLabel = (showSupportMessage && giveToType === 'Group')
+            privacyShareEmailLabel = (showGgAndCampaignMsg)
                 ? formatMessage(`privacyOptions:shareGgAndCampaignPrivacyPostal`, { privacyData: privacyEmail })
                 : formatMessage(`privacyOptions:share${giveToType}PrivacyPostal`, { privacyData: privacyEmail });
-            privacyShareAddressLabel = (showSupportMessage && giveToType === 'Group')
+            privacyShareAddressLabel = (showGgAndCampaignMsg)
                 ? formatMessage(`privacyOptions:shareGgAndCampaignPrivacyPostal`, { privacyData: privacyPostal })
                 : formatMessage(`privacyOptions:share${giveToType}PrivacyPostal`, { privacyData: privacyPostal })
             break;
@@ -97,12 +100,14 @@ const PrivacyOptions = (props) => {
                             className="privacy-header"
                             htmlFor="privacyShareEmail"
                         >
-                            {
-                                formatMessage(`privacyOptions:forGiving${giveToType}OrganizersLabel`)
+                            { (!showGgAndCampaignMsg)  && (
+                                    formatMessage(`privacyOptions:forGiving${giveToType}OrganizersLabel`)
+                                )
                             }
                             {
-                                (!!showSupportMessage && giveToType === 'Group')  && (
+                                (showGgAndCampaignMsg)  && (
                                     <Fragment>
+                                        { formatMessage(`privacyOptions:forGivingGroupAndCampaignOrganizersLabel`) }
                                         <br/>
                                         <span className="font-w-normal">This group supports a campaign—organizers of both will see the info you share.</span>
                                     </Fragment>

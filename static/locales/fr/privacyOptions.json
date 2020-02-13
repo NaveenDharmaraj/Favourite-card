@@ -3,6 +3,7 @@
     "selectNameAndAddressLabel": "Sélectionner une adresse",
     "forGivingCampaignLabel": "Pour la Campagne",
     "forGivingCampaignOrganizersLabel": "Pour les organisateurs de la Campagne",
+    "forGivingGroupAndCampaignOrganizersLabel": "For Giving Group and Campaign organizers",
     "forGivingGroupLabel": "Pour les Groupes de dons",
     "forGivingGroupOrganizersLabel": "Pour les organisateurs du Groupe de dons",
     "shareGroupPrivacyName": "Partager le nom de {{giveFrom}} avec le Groupe de dons destinataire",

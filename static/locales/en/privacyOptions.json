@@ -5,6 +5,7 @@
     "forGivingCampaignOrganizersLabel": "For Campaign organizers",
     "forGivingGroupLabel": "For Giving Group",
     "forGivingGroupOrganizersLabel": "For Giving Group organizers",
+    "forGivingGroupAndCampaignOrganizersLabel": "For Giving Group and Campaign organizers",
     "shareGroupPrivacyName": "Share {{giveFrom}} name with the Giving Group I’m giving to",
     "shareCampaignPrivacyName": "Share my {{giveFrom}} name with the Giving Campaign I’m giving to",
     "privacyDataPostal": "postal",
