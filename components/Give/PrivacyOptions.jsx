@@ -9,7 +9,6 @@ import {
     Header,
     Select,
 } from 'semantic-ui-react';
-import ReactHtmlParser from 'react-html-parser';
 
 const PrivacyOptions = (props) => {
     const {
@@ -34,7 +33,6 @@ const PrivacyOptions = (props) => {
     const myGiveFromType = (giveFrom.type !== 'user') ? formatMessage(`privacyOptions:my${giveFrom.type}`) : '';
 
     const showGgAndCampaignMsg = (showSupportMessage && giveToType === 'Group');
-    console.log(showGgAndCampaignMsg);
     switch (giveFrom.type) {
         case 'user':
             privacyShareNameLabel = formatMessage(`privacyOptions:share${giveToType}UserName`);
