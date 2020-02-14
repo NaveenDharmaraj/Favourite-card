@@ -10,7 +10,6 @@ import {
     Select,
 } from 'semantic-ui-react';
 
-
 const PrivacyOptions = (props) => {
     const {
         formatMessage,
@@ -23,6 +22,7 @@ const PrivacyOptions = (props) => {
         handleInputChange,
         infoToShare,
         infoToShareList,
+        showSupportMessage,
     } = props;
     let privacyShareAddressLabel = null;
     let privacyShareEmailLabel = null;
@@ -31,11 +31,17 @@ const PrivacyOptions = (props) => {
     const privacyPostal = formatMessage('privacyOptions:privacyDataPostal');
     const privacyShareAmountLabel = formatMessage(`privacyOptions:share${giveToType}PrivacyGiftAmount`);
     const myGiveFromType = (giveFrom.type !== 'user') ? formatMessage(`privacyOptions:my${giveFrom.type}`) : '';
+
+    const showGgAndCampaignMsg = (showSupportMessage && giveToType === 'Group');
     switch (giveFrom.type) {
         case 'user':
             privacyShareNameLabel = formatMessage(`privacyOptions:share${giveToType}UserName`);
-            privacyShareEmailLabel = formatMessage(`privacyOptions:share${giveToType}PrivacyPostal`, { privacyData: privacyEmail });
-            privacyShareAddressLabel = formatMessage(`privacyOptions:share${giveToType}PrivacyPostal`, { privacyData: privacyPostal });
+            privacyShareEmailLabel = (showGgAndCampaignMsg)
+                ? formatMessage(`privacyOptions:shareGgAndCampaignPrivacyPostal`, { privacyData: privacyEmail })
+                : formatMessage(`privacyOptions:share${giveToType}PrivacyPostal`, { privacyData: privacyEmail });
+            privacyShareAddressLabel = (showGgAndCampaignMsg)
+                ? formatMessage(`privacyOptions:shareGgAndCampaignPrivacyPostal`, { privacyData: privacyPostal })
+                : formatMessage(`privacyOptions:share${giveToType}PrivacyPostal`, { privacyData: privacyPostal })
             break;
         case 'companies':
             privacyShareNameLabel = formatMessage(`privacyOptions:share${giveToType}PrivacyName`, { giveFrom: myGiveFromType });
@@ -92,8 +98,18 @@ const PrivacyOptions = (props) => {
                             className="privacy-header"
                             htmlFor="privacyShareEmail"
                         >
+                            { (!showGgAndCampaignMsg)  && (
+                                    formatMessage(`privacyOptions:forGiving${giveToType}OrganizersLabel`)
+                                )
+                            }
                             {
-                                formatMessage(`privacyOptions:forGiving${giveToType}OrganizersLabel`)
+                                (showGgAndCampaignMsg)  && (
+                                    <Fragment>
+                                        { formatMessage(`privacyOptions:forGivingGroupAndCampaignOrganizersLabel`) }
+                                        <br/>
+                                        <span className="font-w-normal">This group supports a campaign—organizers of both will see the info you share.</span>
+                                    </Fragment>
+                                )
                             }
                         </label>
                         <br />
