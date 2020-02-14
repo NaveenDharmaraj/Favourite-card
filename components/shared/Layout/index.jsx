@@ -86,8 +86,16 @@ class Layout extends React.Component {
             }
             Beacon('session-data', {
                 'currentPage': window.location.href,
-              })
+            })
+            if(document){
+                Beacon('event', {
+                    type: 'page-viewed',
+                    url: window.location.href,
+                    title: document.title,
+                })
+            }
               
+                
             Beacon('config', {
                 "labels": {
                     "suggestedForYou": "Answers to common questions",
