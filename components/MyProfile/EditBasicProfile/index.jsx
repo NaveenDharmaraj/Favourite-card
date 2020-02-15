@@ -50,7 +50,9 @@ class EditBasicProfile extends React.Component {
             }
         } = props;
         const givingGoalAmount = (!_.isEmpty(props.userData.giving_goal_amt) || typeof props.userData.giving_goal_amt !== 'undefined') ? formatAmount(Number(props.userData.giving_goal_amt)) : '';
-        const location = `${props.userData.city ? props.userData.city : ''},${props.userData.province ? props.userData.province : ''}`;
+        const userDataProvince = props.userData.province ? `,${props.userData.province}` : '';
+        const locationString = `${props.userData.city ? props.userData.city : ''}${userDataProvince}`;
+        const location = locationString ? locationString.trim() : null;
         this.state = {
             buttonClicked: true,
             errorMessage: null,
@@ -58,7 +60,8 @@ class EditBasicProfile extends React.Component {
             isDefaultImage: logoFileName === null ? true : false,
             uploadImage: '',
             uploadImagePreview: '',
-            searchQuery: (!_.isEmpty(location)) ? location : '',
+            searchQuery: (!_.isEmpty(location)) ? location : null,
+            locationDropdownValue: '',
             statusMessage: false,
             successMessage: '',
             userBasicDetails: {
@@ -68,6 +71,7 @@ class EditBasicProfile extends React.Component {
                 lastName: (!_.isEmpty(props.userData)) ? props.userData.last_name : '',
                 displayName: (!_.isEmpty(props.userData)) ? props.userData.display_name : '',
                 formatedGoalAmount: _.replace(formatCurrency(givingGoalAmount, 'en', 'USD'), '$', ''),
+                location,
             },
             validity: this.intializeValidations(),
         };
@@ -90,9 +94,12 @@ class EditBasicProfile extends React.Component {
         } = this.props;        
         if (!_.isEqual(userData, prevProps.userData)) {
             const givingGoalAmount = typeof userData.giving_goal_amt !== 'undefined' ? formatAmount(Number(userData.giving_goal_amt)) : '';
-            const  location = `${userData.city ? userData.city : ''},${userData.province ? userData.province : ''}`;
+            const userDataProvince = userData.province ? `,${userData.province}` : '';
+            const locationString = `${userData.city ? userData.city : ''}${userDataProvince}`;
+            const location = locationString ? locationString.trim() : null;
             this.setState({
-                searchQuery: (!_.isEmpty(location)) ? location : '',
+                searchQuery: (!_.isEmpty(location)) ? location : null,
+                locationDropdownValue: '',
                 userBasicDetails: {
                     about: userData.description,
                     firstName: userData.first_name,
@@ -100,6 +107,7 @@ class EditBasicProfile extends React.Component {
                     lastName: userData.last_name,
                     displayName: userData.display_name,
                     formatedGoalAmount: _.replace(formatCurrency(givingGoalAmount, 'en', 'USD'), '$', ''),
+                    location,
                 },
             });
         }
@@ -370,6 +378,7 @@ class EditBasicProfile extends React.Component {
     handleLocationChange(event, data){
         const locationValue = event.target.innerText;
         const {
+            name,
             options,
             value,
         } = data;
@@ -380,16 +389,20 @@ class EditBasicProfile extends React.Component {
         userBasicDetails['city'] = newValue.city ? newValue.city : '';
         userBasicDetails['province'] = newValue.province ? newValue.province : '';
         this.setState({
-                buttonClicked: false,
+                buttonClicked: userBasicDetails[name] != locationValue ? false : true,
                 userBasicDetails: {
                     ...this.state.userBasicDetails,
                     ...userBasicDetails,
                 },
                 searchQuery: locationValue,
+                locationDropdownValue: value,
         });
     }
 
     handleLocationSearchChange(event, {searchQuery}){
+        const {
+            userBasicDetails,
+        } = this.state;
         if (event.target.value.length >= 3) {
             const {
                 dispatch,
@@ -399,10 +412,25 @@ class EditBasicProfile extends React.Component {
         if (event.target.value.length === 0) {
             const {
                 dispatch,
+                userData:{
+                    city,
+                }
             } = this.props;
             dispatch(searchLocationByUserInput(""));
+            userBasicDetails['city'] = null;
+            userBasicDetails['province'] = null;
+            this.setState({
+                buttonClicked: city ? false : true,
+                userBasicDetails: {
+                    ...this.state.userBasicDetails,
+                    ...userBasicDetails,
+                },
+        });
         }
-        this.setState({searchQuery});
+        this.setState({
+                searchQuery: event.target.value,
+                locationDropdownValue: '',
+            });
     }
     handleCustomSearch = (options) => {
         return options
@@ -414,6 +442,7 @@ class EditBasicProfile extends React.Component {
             statusMessage,
             successMessage,
             isDefaultImage,
+            locationDropdownValue,
             userBasicDetails: {
                 firstName,
                 lastName,
@@ -589,6 +618,7 @@ class EditBasicProfile extends React.Component {
                                     searchQuery={searchQuery}
                                     placeholder="Search location"
                                     loading={locationLoader}
+                                    value={locationDropdownValue}
                                 />
                             </Form.Field>
                             <Form.Field>

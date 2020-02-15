@@ -452,27 +452,15 @@ const saveUserBasicProfile = (dispatch, userData, userId, email) => {
         type: actionTypes.UPDATE_USER_BASIC_PROFILE,
     };
     const givingAmount = Number(userData.givingGoal) === 0 ? null : Number(userData.givingGoal);
-    let bodyData = {
+    const bodyData = {
+        city: userData.city,
         description: userData.about,
         family_name: userData.lastName,
         given_name: userData.firstName,
         giving_goal_amt: givingAmount,
+        province: userData.province,
         user_id: Number(userId),
     };
-        if(userData.city){
-            bodyData= {
-                ...bodyData,
-                city: userData.city,
-            }
-        }
-        if(userData.province){
-            bodyData= {
-                ...bodyData,
-                province: userData.province,
-            }
-        }
-
-
     if (userData.displayName !== '') {
         bodyData.display_name = userData.displayName;
     }
