@@ -33,7 +33,7 @@ class ErrorBoundary extends Component {
         // You can also log the error to an error reporting service
         logger.error(`[ErrorBoundary] [DataDog] - ${window ? window.location.href : ''}`);
         logger.error(`[ErrorBoundary] [DataDog] - ${JSON.stringify(error.message)}`);
-        logger.error(`[ErrorBoundary] [DataDog] - : ${JSON.stringify(errorInfo)}`);
+        logger.error(`[ErrorBoundary] [DataDog] - ${JSON.stringify(errorInfo)}`);
         // logErrorToMyService(error, errorInfo);
     }
 
