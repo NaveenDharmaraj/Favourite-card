@@ -15,8 +15,22 @@ import CreditCard from './creditCard';
 import Notifications from './notifications';
 import Support from './support';
 import Legal from './legal';
+import EmailList from './emailList';
 
 const panes1 = [
+    {
+        menuItem: {
+            content: 'Email',
+            icon: 'user',
+            iconPosition: 'left',
+            key: 'Email',
+        },
+        render: () => (
+            <Tab.Pane attached={false}>
+                <EmailList />
+            </Tab.Pane>
+        ),
+    },
     {
         menuItem: {
             content: 'Change password',
@@ -130,24 +144,27 @@ class UserSettings extends React.Component {
     handleTab(event, data) {
         switch (data.activeIndex) {
             case 0:
-                Router.pushRoute('/user/profile/settings/managepassword');
+                Router.pushRoute('/user/profile/settings/email');
                 break;
             case 1:
-                Router.pushRoute('/user/profile/settings/managegiving');
+                Router.pushRoute('/user/profile/settings/managepassword');
                 break;
             case 2:
-                Router.pushRoute('/user/profile/settings/privacy');
+                Router.pushRoute('/user/profile/settings/managegiving');
                 break;
             case 3:
-                Router.pushRoute('/user/profile/settings/creditcard');
+                Router.pushRoute('/user/profile/settings/privacy');
                 break;
             case 4:
-                Router.pushRoute('/user/profile/settings/notifications');
+                Router.pushRoute('/user/profile/settings/creditcard');
                 break;
             case 5:
-                Router.pushRoute('/user/profile/settings/support');
+                Router.pushRoute('/user/profile/settings/notifications');
                 break;
             case 6:
+                Router.pushRoute('/user/profile/settings/support');
+                break;
+            case 7:
                 Router.pushRoute('/user/profile/settings/legal');
                 break;
             default:
@@ -161,20 +178,22 @@ class UserSettings extends React.Component {
     // eslint-disable-next-line class-methods-use-this
     getPageIndexByName(pageName) {
         switch (pageName) {
-            case 'managepassword':
+            case 'email':
                 return 0;
-            case 'managegiving':
+            case 'managepassword':
                 return 1;
-            case 'privacy':
+            case 'managegiving':
                 return 2;
-            case 'creditcard':
+            case 'privacy':
                 return 3;
-            case 'notifications':
+            case 'creditcard':
                 return 4;
-            case 'support':
+            case 'notifications':
                 return 5;
-            case 'legal':
+            case 'support':
                 return 6;
+            case 'legal':
+                return 7;
             default:
                 break;
         }

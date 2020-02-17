@@ -24,6 +24,7 @@ export const actionTypes = {
     
     ADD_USER_CREDIT_CARD: 'ADD_USER_CREDIT_CARD',
     DELETE_USER_CREDIT_CARD: 'DELETE_USER_CREDIT_CARD',
+    TRIGGER_UX_CRITICAL_ERROR: 'TRIGGER_UX_CRITICAL_ERROR',
     UPDATE_USER_BASIC_PROFILE: 'UPDATE_USER_BASIC_PROFILE',
     UPDATE_USER_CHARITY_CAUSES: 'UPDATE_USER_CHARITY_CAUSES',
     UPDATE_USER_CHARITY_TAGS: 'UPDATE_USER_CHARITY_TAGS',
@@ -33,6 +34,7 @@ export const actionTypes = {
     UPDATE_USER_PREFERENCES: 'UPDATE_USER_PREFERENCES',
     UPDATE_USER_PRIVACY_SETTING: 'UPDATE_USER_PRIVACY_SETTING',
     USER_PROFILE_ACCEPT_FRIEND: 'USER_PROFILE_ACCEPT_FRIEND',
+    USER_PROFILE_ADD_DUPLICATE_EMAIL_ERROR: 'USER_PROFILE_ADD_DUPLICATE_EMAIL_ERROR',
     USER_PROFILE_ADD_FRIEND: 'USER_PROFILE_ADD_FRIEND',
     USER_PROFILE_ADD_NEW_CREDIT_CARD_STATUS: 'USER_PROFILE_ADD_NEW_CREDIT_CARD_STATUS',
     USER_PROFILE_ADMIN_GROUP: 'USER_PROFILE_ADMIN_GROUP',
@@ -53,6 +55,7 @@ export const actionTypes = {
     USER_PROFILE_FOLLOWED_TAGS: 'USER_PROFILE_FOLLOWED_TAGS',
     USER_PROFILE_FRIEND_ACCEPT: 'USER_PROFILE_FRIEND_ACCEPT',
     USER_PROFILE_FRIEND_REQUEST: 'USER_PROFILE_FRIEND_REQUEST',
+    USER_PROFILE_GET_EMAIL_LIST: 'USER_PROFILE_GET_EMAIL_LIST',
     USER_PROFILE_INVITATIONS: 'USER_PROFILE_INVITATIONS',
     USER_PROFILE_INVITE_FRIENDS: 'USER_PROFILE_INVITE_FRIENDS',
     USER_PROFILE_MEMBER_GROUP: 'USER_PROFILE_MEMBER_GROUP',
@@ -1156,6 +1159,124 @@ const removeProfilePhoto = (dispatch, sourceUserId) => {
     return removeProfilePhotoResponse;
 };
 
+const getEmailList = (dispatch, userId) => {
+    const fsa = {
+        payload: {
+            emailDetailList: {},
+        },
+        type: actionTypes.USER_PROFILE_GET_EMAIL_LIST,
+    };
+    coreApi.get(`users/${userId}/emailAddresses?sort=-isPrimary,-verified`, {
+        params: {
+            dispatch,
+            uxCritical: true,
+        },
+    }).then((result) => {
+        if (result && !_.isEmpty(result.data)) {
+            fsa.payload.emailDetailList = result.data;
+            dispatch(fsa);
+        }
+    }).catch().finally();
+};
+
+const createUserEmailAddress = async (dispatch, emailId, userId) => {
+    const bodyData = {
+        data: {
+            attributes: {
+                email: emailId,
+            },
+            type: 'emailAddresses',
+        },
+    };
+    const statusMessageProps = {
+        message: 'Email address added',
+        type: 'success',
+    };
+    await coreApi.post(`emailAddresses`, bodyData).then((result) => {
+        if (result && !_.isEmpty(result.data)) {
+            getEmailList(dispatch, userId);
+            dispatch({
+                payload: {
+                    errors: [
+                        statusMessageProps,
+                    ],
+                },
+                type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
+            });
+        }
+    }).catch((error) => {
+        if (error.errors[0]) {
+            dispatch({
+                payload: {
+                    errorMessageTitle: error.errors[0].title,
+                    showEmailError: true,
+                },
+                type: actionTypes.USER_PROFILE_ADD_DUPLICATE_EMAIL_ERROR,
+            });
+        }
+    }).finally();
+};
+
+const deleteUserEmailAddress = (dispatch, userEmailId, userId) => {
+    const statusMessageProps = {
+        message: 'Email address removed',
+        type: 'success',
+    };
+    coreApi.delete(`emailAddresses/${userEmailId}`).then((result) => {
+        if (result && (result.status === 200)) {
+            getEmailList(dispatch, userId);
+            dispatch({
+                payload: {
+                    errors: [
+                        statusMessageProps,
+                    ],
+                },
+                type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
+            });
+        }
+    }).catch().finally();
+};
+
+const setPrimaryUserEmailAddress = (dispatch, userEmailId, userId) => {
+    const statusMessageProps = {
+        message: 'Email address set as primary',
+        type: 'success',
+    };
+    coreApi.patch(`emailAddresses/${userEmailId}/setPrimaryEmail`).then((result) => {
+        if (result && (result.status === 200)) {
+            // getEmailList(dispatch, userId);
+            // dispatch({
+            //     payload: {
+            //         errors: [
+            //             statusMessageProps,
+            //         ],
+            //     },
+            //     type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
+            // });
+            Router.pushRoute('/users/logout');
+        }
+    }).catch().finally();
+};
+
+const resendUserVerifyEmail = (dispatch, userEmailId, userId) => {
+    const statusMessageProps = {
+        message: 'Verification email sent',
+        type: 'success',
+    };
+    coreApi.get(`emailAddresses/${userEmailId}/resendVerify`).then((result) => {
+        if (result && (result.status === 200)) {
+            getEmailList(dispatch, userId);
+            dispatch({
+                payload: {
+                    errors: [
+                        statusMessageProps,
+                    ],
+                },
+                type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
+            });
+        }
+    }).catch().finally();
+};
 
 export {
     getUserProfileBasic,
@@ -1196,4 +1317,9 @@ export {
     removeFriend,
     generateDeeplinkUserProfile,
     removeProfilePhoto,
+    getEmailList,
+    createUserEmailAddress,
+    deleteUserEmailAddress,
+    setPrimaryUserEmailAddress,
+    resendUserVerifyEmail,
 };
