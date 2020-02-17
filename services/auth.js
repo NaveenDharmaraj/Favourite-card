@@ -87,7 +87,7 @@ const _auth0lockConfig = {
         forgotPasswordSubmitLabel: 'Reset password',
         forgotPasswordTitle: 'Forgot your password?',
         loginSubmitLabel: 'Log in',
-        passwordInputPlaceholder: 'Your password',
+        passwordInputPlaceholder: 'Enter your password',
         success: {
             forgotPassword: 'Check your inbox—we’ve sent instructions to reset your password.',
         },

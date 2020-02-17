@@ -73,6 +73,13 @@ class UserAuthView extends React.Component {
                     message="Thanks! Your email is confirmed. To continue, please log in below."
                 />
             );
+            if (code === '3') {
+                messageText = (
+                    <ModalStatusMessage
+                        message="Thanks! Your password is now changed. To continue, please log in below."
+                    />
+                );
+            }
         } else if (success === 'false') {
             messageText = (
                 <ModalStatusMessage
