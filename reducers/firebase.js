@@ -66,7 +66,7 @@ const firebase = (state = {}, action) => {
         case 'UPDATE_FIREBASE_MESSAGE':
             const updatenewMessage = action.payload.addedMessage;
             const updateoldMessages = _cloneDeep(state.messages) || [];
-            const index = updateoldMessages.find((msg) => {
+            const index = updateoldMessages.findIndex((msg) => {
                 if (!_isEmpty(msg)) {
                     return msg._key === updatenewMessage._key;
                 }
