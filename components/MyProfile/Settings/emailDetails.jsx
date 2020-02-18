@@ -157,7 +157,7 @@ class EmailDetails extends React.Component {
                     <Modal.Header>Delete email address?</Modal.Header>
                     <Modal.Content>
                         <Modal.Description className="font-s-16">
-                            {`Your email address '${email}' will be removed. Another email address will become your primary.`}
+                            {`Your email address '${email}' will be removed.`}
                         </Modal.Description>
                         <div className="btn-wraper pt-3 text-right">
                             <Button className="danger-btn-rounded-def c-small" onClick={this.onDeleteClick}>Delete</Button>
