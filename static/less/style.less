@@ -3367,6 +3367,7 @@ body{
           min-width: auto;
           text-align: center;
           justify-content: center;
+          position: relative;
           &:hover{
             background-color: #ddd;
           }
@@ -3382,11 +3383,49 @@ body{
               background-color: #055CE5;
             }
           }
+          .icon{
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: -1px;
+            bottom: 0;
+            height: 100%;
+            &.angle{
+              &::before{
+                content: '';
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                margin: auto;
+                background-image: url(../images/icons/icon-arrow-down.svg) !important;
+                background-size: contain !important;
+                background-repeat: no-repeat !important;
+                background-position: center !important;
+                width: 12px;
+                height: 12px;
+              }
+              &.right{
+                &::before{
+                  transform: rotate(-90deg);
+                }
+              }
+              &.left{
+                &::before{
+                  transform: rotate(90deg);
+                }
+              }
+            }
+          } 
           &:first-child{
             font-weight: 600;
           }
           &:last-child{
             font-weight: 600;
+            font-size: 12px;
+            height: 26px; width: 26px;
+            border-radius: 100%;
           }
         }
       }

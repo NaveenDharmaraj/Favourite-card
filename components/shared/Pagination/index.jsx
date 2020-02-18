@@ -20,8 +20,8 @@ const PaginationComponent = (props) => {
             lastItem={false}
             // firstItem={(activePage === 1) ? null : undefined}
             // lastItem={(activePage === totalPages) ? null : undefined}
-            prevItem={{ disabled: (activePage === 1), content: <Icon name='angle left' />, icon: true }}
-            nextItem={{ disabled: (activePage === totalPages), content: <Icon name='angle right' />, icon: true }}
+            prevItem={(activePage === 1) ? null : {content: <Icon name="angle left" />, icon: true }}
+            nextItem={(activePage === totalPages) ? null : {content: <Icon name="angle right" />, icon: true }}
         />
     );
 };
