@@ -3347,7 +3347,7 @@ body{
       }
     }
     &:after{
-      content: '';
+      content: ‘’;
       display: table;
       clear: both;
     }
@@ -3360,13 +3360,27 @@ body{
         .item{
           outline: none;
           font-size: 12px;
-          height: 30px;
-          &.active{
-            background-color: transparent;
-            font-weight: 600;
-          }
+          height: 26px; width: 26px;
+          border-radius: 100%;
+          background-color: transparent;
+          padding: 0px;
+          min-width: auto;
+          text-align: center;
+          justify-content: center;
           &:hover{
-            background: none;
+            background-color: #ddd;
+          }
+          &::before{
+            width: 0px;
+          }
+          &.active{
+            background-color: #055CE5;
+            color: #fff;
+            font-weight: 600;
+            padding: 0px;
+            &:hover{
+              background-color: #055CE5;
+            }
           }
           &:first-child{
             font-weight: 600;
@@ -4212,7 +4226,7 @@ body{
     }
     .footer-help .helpImg > div{
       top: -88px;
-      height: 175px;
+      height: 122px;
       background-size: contain;
     }
   }
