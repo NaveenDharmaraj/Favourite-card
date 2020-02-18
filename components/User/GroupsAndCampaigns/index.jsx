@@ -157,7 +157,7 @@ class GroupsAndCampaigns extends React.Component {
                                                 </Header.Content>
                                             </Header>
                                             <div>
-                                                <Link route="/search?result_type=Group">
+                                                <Link route="/search?result_type=Group" passHref>
                                                     <Button className="white-btn-rounded-def">Find a Giving Group</Button>
                                                 </Link>
                                             </div>
