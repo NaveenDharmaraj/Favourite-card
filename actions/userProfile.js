@@ -1238,21 +1238,8 @@ const deleteUserEmailAddress = (dispatch, userEmailId, userId) => {
 };
 
 const setPrimaryUserEmailAddress = (dispatch, userEmailId, userId) => {
-    const statusMessageProps = {
-        message: 'Email address set as primary',
-        type: 'success',
-    };
     coreApi.patch(`emailAddresses/${userEmailId}/setPrimaryEmail`).then((result) => {
         if (result && (result.status === 200)) {
-            // getEmailList(dispatch, userId);
-            // dispatch({
-            //     payload: {
-            //         errors: [
-            //             statusMessageProps,
-            //         ],
-            //     },
-            //     type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
-            // });
             Router.pushRoute('/users/logout');
         }
     }).catch().finally();
