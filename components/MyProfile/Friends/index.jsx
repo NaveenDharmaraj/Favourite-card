@@ -172,6 +172,9 @@ class Friends extends React.Component {
     validateEmailIds(emailIds) {        
         let isValidEmail = true;
         // let splitedEmails = emailIds.split(',');
+        if(emailIds.length === 0) {
+            return false
+        }
         for (let i = 0; i < emailIds.length; i++) {
             isValidEmail = /[\w\d\.-]+@[\w\d\.-]+\.[\w\d\.-]+/.test(emailIds[i]);
             if(!isValidEmail) {
@@ -188,15 +191,24 @@ class Friends extends React.Component {
         });
         const {
             userEmailId,
-            userEmailIdsArray
+            userEmailIdsArray,
         } = this.state;
-        const emailsValid = this.validateEmailIds(userEmailIdsArray);
+        let emailIdsArray = userEmailIdsArray;
+        if(userEmailId !== null) {
+            var value = userEmailId.trim();
+            let isEmailIdValid = this.isEmail(userEmailId);
+            this.setState({ isValidEmails: isEmailIdValid });
+            // if (value && isEmailIdValid) {
+                emailIdsArray = [...userEmailIdsArray, userEmailId];               
+            // }
+        }
+        const emailsValid = this.validateEmailIds(emailIdsArray);
         this.setState({ isValidEmails: emailsValid });
-        if(userEmailIdsArray !== null && emailsValid) {
+        if(emailIdsArray !== null && emailsValid) {
             const {
                 dispatch,
             } = this.props;
-            let userEmailIdList = userEmailIdsArray.join();
+            let userEmailIdList = emailIdsArray.join();
             inviteFriends(dispatch, userEmailIdList).then(() => {
                 this.setState({
                     errorMessage: null,
@@ -204,6 +216,7 @@ class Friends extends React.Component {
                     statusMessage: true,
                     inviteButtonClicked: false,
                     userEmailId: '',
+                    userEmailIdsArray:[],
                 });
             }).catch((err) => {
                 this.setState({
@@ -211,6 +224,7 @@ class Friends extends React.Component {
                     statusMessage: true,
                     inviteButtonClicked: false,
                     userEmailId: '',
+                    userEmailIdsArray:[],
                 });
             });
         } else {
@@ -300,8 +314,9 @@ class Friends extends React.Component {
                                                     <Grid verticalAlign="middle">                                                        
                                                         <Grid.Row>
                                                             <Grid.Column mobile={11} tablet={12} computer={13}>
-                                                                <Form.Field className="cpTagsInput">
-                                                                    <>
+                                                                <Form.Field className="cpTagsInput" 
+                                                                onClick={() => {this.myInp.focus()}}
+                                                                >
                                                                     {this.state.userEmailIdsArray.map(item => (
                                                                     <div className="tag-item" key={item}>
                                                                         {item}
@@ -314,7 +329,6 @@ class Friends extends React.Component {
                                                                         </button>
                                                                     </div>
                                                                     ))}
-                                                                    </>
                                                                     <input
                                                                         placeholder="Email Address"
                                                                         error={!isValidEmails}
@@ -322,6 +336,7 @@ class Friends extends React.Component {
                                                                         name="userEmailId"
                                                                         onKeyDown={this.handleKeyDown}
                                                                         onChange={this.handleInputChange}
+                                                                        ref={(ip) => this.myInp = ip}
                                                                         value={userEmailId}
                                                                     />                                                                    
                                                                 </Form.Field>                                                                
