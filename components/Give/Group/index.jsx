@@ -856,9 +856,14 @@ class Group extends React.Component {
         } = this.state;
         const {
             companyDetails,
+            giveGroupDetails,
             defaultTaxReceiptProfile,
         } = this.props;
         const formatMessage = this.props.t;
+        let showGroupSupport = false;
+        if(!_.isEmpty(giveGroupDetails)){
+            showGroupSupport = (giveGroupDetails.attributes.campaignId) ? true : false ;
+        }
         const giveToType = (giveTo.isCampaign) ? 'Campaign' : 'Group';
         let accountTopUpComponent = null;
         let stripeCardComponent = null;
@@ -924,6 +929,7 @@ class Group extends React.Component {
                     privacyShareAmount={privacyShareAmount}
                     privacyShareEmail={privacyShareEmail}
                     privacyShareName={privacyShareName}
+                    showSupportMessage={showGroupSupport}
                 />
             );
         }
