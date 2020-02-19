@@ -13,6 +13,7 @@ import {
     connect,
 } from 'react-redux';
 import {
+    arrayOf,
     PropTypes,
     func,
 } from 'prop-types';
@@ -182,7 +183,9 @@ class EmailList extends React.Component {
                                     <div className="pt-1">
                                         <Header as="h4">Email addresses </Header>
                                         <p>
-                                        Add multiple email addresses to your account so that people can add you as a friend and send you charitable dollars.
+                                        Add multiple email addresses to your account
+                                        so that people can add you as a friend
+                                        and send you charitable dollars.
                                         </p>
                                     </div>
                                 </Grid.Column>
@@ -231,8 +234,8 @@ class EmailList extends React.Component {
                                             <Modal.Content>
                                                 <Modal.Description className="font-s-16">
                                                     <Form>
-                                                        <label>Email</label>
                                                         <Form.Field error={false}>
+                                                            <label>Email</label>
                                                             <input
                                                                 placeholder="Email address"
                                                                 value={emailId}
@@ -256,7 +259,6 @@ class EmailList extends React.Component {
                                                     </Button>
                                                 </div>
                                             </Modal.Content>
-                                            
                                         </Modal>
                                     </div>
                                 </Grid.Column>
@@ -276,13 +278,19 @@ class EmailList extends React.Component {
 
 EmailList.defaultProps = {
     dispatch: func,
+    emailDetailList: [],
+    errorMessageTitle: '',
+    showEmailError: false,
     userInfo: {
-        id: null,
+        id: '',
     },
 };
 
 EmailList.propTypes = {
     dispatch: _.noop,
+    emailDetailList: arrayOf(PropTypes.element),
+    errorMessageTitle: PropTypes.string,
+    showEmailError: PropTypes.bool,
     userInfo: PropTypes.shape({
         id: PropTypes.string,
     }),

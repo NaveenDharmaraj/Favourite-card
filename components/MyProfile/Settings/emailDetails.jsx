@@ -8,6 +8,11 @@ import {
 import {
     connect,
 } from 'react-redux';
+import {
+    PropTypes,
+    func,
+} from 'prop-types';
+import _ from 'lodash';
 
 import {
     deleteUserEmailAddress,
@@ -47,9 +52,6 @@ class EmailDetails extends React.Component {
         const {
             dispatch,
             id,
-            email,
-            isPrimary,
-            verified,
             userInfo: {
                 id: userId,
             },
@@ -91,7 +93,7 @@ class EmailDetails extends React.Component {
             showSetPrimaryEmailModal: false,
         });
     }
- 
+
     render() {
         const {
             email,
@@ -188,6 +190,28 @@ class EmailDetails extends React.Component {
         );
     }
 }
+
+EmailDetails.defaultProps = {
+    dispatch: func,
+    email: '',
+    id: '',
+    isPrimary: false,
+    userInfo: {
+        id: '',
+    },
+    verified: false,
+};
+
+EmailDetails.propTypes = {
+    dispatch: _.noop,
+    email: PropTypes.string,
+    id: PropTypes.string,
+    isPrimary: PropTypes.bool,
+    userInfo: PropTypes.shape({
+        id: PropTypes.string,
+    }),
+    verified: PropTypes.bool,
+};
 
 function mapStateToProps(state) {
     return {
