@@ -1229,7 +1229,12 @@ const deleteUserEmailAddress = (dispatch, userEmailId, userId) => {
         type: 'success',
     };
     dismissAllUxCritialErrors(dispatch);
-    coreApi.delete(`emailAddresses/${userEmailId}`).then((result) => {
+    coreApi.delete(`emailAddresses/${userEmailId}`, {
+        params: {
+            dispatch,
+            uxCritical: true,
+        },
+    }).then((result) => {
         if (result && (result.status === 200)) {
             getEmailList(dispatch, userId);
             dispatch({
@@ -1245,7 +1250,12 @@ const deleteUserEmailAddress = (dispatch, userEmailId, userId) => {
 };
 
 const setPrimaryUserEmailAddress = (dispatch, userEmailId, userId) => {
-    coreApi.patch(`emailAddresses/${userEmailId}/setPrimaryEmail`).then((result) => {
+    coreApi.patch(`emailAddresses/${userEmailId}/setPrimaryEmail`, {
+        params: {
+            dispatch,
+            uxCritical: true,
+        },
+    }).then((result) => {
         if (result && (result.status === 200)) {
             Router.pushRoute('/users/logout');
         }
@@ -1258,7 +1268,12 @@ const resendUserVerifyEmail = (dispatch, userEmailId, userId) => {
         type: 'success',
     };
     dismissAllUxCritialErrors(dispatch);
-    coreApi.get(`emailAddresses/${userEmailId}/resendVerify`).then((result) => {
+    coreApi.get(`emailAddresses/${userEmailId}/resendVerify`, {
+        params: {
+            dispatch,
+            uxCritical: true,
+        },
+    }).then((result) => {
         if (result && (result.status === 200)) {
             getEmailList(dispatch, userId);
             dispatch({
