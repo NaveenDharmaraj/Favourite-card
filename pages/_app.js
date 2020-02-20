@@ -5,8 +5,11 @@ import { Provider } from 'react-redux';
 import getConfig from 'next/config';
 import TagManager from 'react-gtm-module';
 
+
 import withReduxStore from '../store/with-redux-store';
 import { appWithTranslation } from '../i18n';
+import { Router } from '../routes';
+import { isValidBrowser } from '../helpers/utils';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -28,6 +31,9 @@ class MainApp extends App {
         // Initializes Tagmanager
         if (!window[__GOOGLE_TAG_MANAGER_INITIALIZE__]) {
             TagManager.initialize(tagManagerConfig)
+        }
+        if (window && isValidBrowser(window.navigator.userAgent)) {
+            Router.pushRoute('/browser');
         }
     }
 
