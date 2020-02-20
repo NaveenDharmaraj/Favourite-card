@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import {
     Accordion,
     Container,
@@ -7,23 +7,32 @@ import {
     Divider,
     Image,
     Table,
+    Placeholder,
 } from 'semantic-ui-react';
 import _isEmpty from 'lodash/isEmpty';
-import _isEqual from 'lodash/isEqual';
 import {
     connect,
 } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import docIcon from '../../../static/images/icons/icon-document.svg?next-images-ignore=true';
+import { Router } from '../routes';
+import Layout from '../components/shared/Layout';
+import docIcon from '../static/images/icons/icon-document.svg?next-images-ignore=true';
 import {
     actionTypes,
     getIssuedTaxreceiptYearlyDetail,
-} from '../../../actions/taxreceipt';
-import PlaceholderGrid from '../../shared/PlaceHolder';
-import IndividualTaxDonationContent from '../IndividualTaxDonationContent';
+} from '../actions/taxreceipt';
+import PlaceholderGrid from '../components/shared/PlaceHolder';
+import IndividualTaxDonationContent from '../components/TaxReceipt/IndividualTaxDonationContent';
 
 class IndividualTaxDoantionsList extends React.Component {
+    static async getInitialProps({
+        query,
+    }) {
+        return {
+            id: query.slug,
+        };
+    }
 
     componentDidMount() {
         const {
@@ -67,18 +76,17 @@ class IndividualTaxDoantionsList extends React.Component {
             id,
             issuedTaxReceiptDonationsDetail,
             issuedTaxReceiptYearlyDetail,
-            renderdonationDetailShow,
             yearLoader,
         } = this.props;
         return (
-            <Fragment>
+            <Layout authRequired>
                 <div className="top-breadcrumb">
                     <Container>
                         <Breadcrumb className="c-breadcrumb">
-                            <Breadcrumb.Section link onClick={() => { renderdonationDetailShow(null, null, true); }}>Tax receipts</Breadcrumb.Section>
+                            <Breadcrumb.Section link onClick={() => { Router.pushRoute('/user/tax-receipts'); }}>Tax receipts</Breadcrumb.Section>
                             <Breadcrumb.Divider icon="caret right" />
                             <Breadcrumb.Section active>
-                                { full_name }
+                                {full_name}
                             </Breadcrumb.Section>
                         </Breadcrumb>
                     </Container>
@@ -91,20 +99,31 @@ class IndividualTaxDoantionsList extends React.Component {
                             <List verticalAlign="middle" className="receiptList pd-0">
                                 <List.Item>
                                     <Image className="greyIcon mr-1" src={docIcon} />
-                                    <List.Content>
-                                        <List.Header className="font-s-15 mb-1-2">
-                                            {full_name}
-                                            {isDefault && <span className="default">default</span>}
-                                        </List.Header>
-                                        <p className="font-s-14">
-                                            {!_isEmpty(address_one) && `${address_one}, `}
-                                            {!_isEmpty(address_two) && `${address_two}, `}
-                                            {!_isEmpty(city) && `${city}, `}
-                                            {!_isEmpty(province) && `${province}, `}
-                                            {!_isEmpty(country) && `${country}, `}
-                                            {!_isEmpty(postal_code) && `${postal_code}`}
-                                        </p>
-                                    </List.Content>
+                                    {
+                                        yearLoader ? (
+                                            <List.Content className="taxPlaceHolder">
+                                                <Placeholder>
+                                                    <Placeholder.Line length="medium" />
+                                                    <Placeholder.Line length="full" />
+                                                </Placeholder>
+                                            </List.Content>
+                                        ) : (
+                                            <List.Content>
+                                                <List.Header className="font-s-15 mb-1-2">
+                                                    {full_name}
+                                                    {isDefault && <span className="default">default</span>}
+                                                </List.Header>
+                                                <p className="font-s-14">
+                                                    {!_isEmpty(address_one) && `${address_one}, `}
+                                                    {!_isEmpty(address_two) && `${address_two}, `}
+                                                    {!_isEmpty(city) && `${city}, `}
+                                                    {!_isEmpty(province) && `${province}, `}
+                                                    {!_isEmpty(country) && `${country}, `}
+                                                    {!_isEmpty(postal_code) && `${postal_code}`}
+                                                </p>
+                                            </List.Content>
+                                        )
+                                    }
                                 </List.Item>
                             </List>
                         </div>
@@ -134,11 +153,12 @@ class IndividualTaxDoantionsList extends React.Component {
                         )}
                     </Container>
                 </div>
-            </Fragment>
+            </Layout>
         );
     }
 }
 const mapStateToProps = (state) => ({
+    currentIssuedTaxReceipt: state.taxreceipt.currentIssuedTaxReceipt,
     issuedTaxReceiptDonationsDetail: state.taxreceipt.issuedTaxReceiptDonationsDetail,
     issuedTaxReceiptYearlyDetail: state.taxreceipt.issuedTaxReceiptYearlyDetail,
     year: state.taxreceipt.year,
@@ -146,21 +166,37 @@ const mapStateToProps = (state) => ({
 });
 
 IndividualTaxDoantionsList.propTypes = {
+    currentIssuedTaxReceipt: {
+        address_one: PropTypes.string,
+        address_two: PropTypes.string,
+        city: PropTypes.string,
+        province: PropTypes.string,
+        country: PropTypes.string,
+        postal_code: PropTypes.string,
+        full_name: PropTypes.string,
+        isDefault: PropTypes.bool,
+    },
     dispatch: PropTypes.func,
     issuedTaxReceiptYearlyDetail: PropTypes.arrayOf(PropTypes.shape({
         year: PropTypes.string,
     })),
     name: PropTypes.string,
-    renderdonationDetailShow: PropTypes.func,
-
 };
 
 IndividualTaxDoantionsList.defaultProps = {
-    dispatch: () => {},
+    currentIssuedTaxReceipt: {
+        address_one: '',
+        address_two: '',
+        city: '',
+        country: '',
+        full_name: '',
+        isDefault: false,
+        postal_code: '',
+        province: '',
+    },
+    dispatch: () => { },
     issuedTaxReceiptYearlyDetail: null,
     name: '',
-    renderdonationDetailShow: () => {},
-
 };
 
 export default connect(mapStateToProps)(IndividualTaxDoantionsList);

@@ -270,7 +270,7 @@ const getUserTagsFollowed = (dispatch, userId) => {
         },
         type: actionTypes.USER_PROFILE_FOLLOWED_TAGS,
     };
-    return graphApi.get(`/get/tags/user?id=${Number(userId)}&page[number]=1&page[size]=10&sort=asc`).then(
+    return graphApi.get(`/get/tags/user?id=${Number(userId)}&page[number]=1&page[size]=15&sort=asc`).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -289,7 +289,7 @@ const getUserTagsRecommended = (dispatch, userId, pageNumber) => {
         },
         type: actionTypes.USER_PROFILE_RECOMMENDED_TAGS,
     };
-    return graphApi.get(`/get/tags/recommended?id=${Number(userId)}&page[number]=${pageNumber}&page[size]=10&sort=asc`).then(
+    return graphApi.get(`/get/tags/recommended?id=${Number(userId)}&page[number]=${pageNumber}&page[size]=15&sort=asc`).then(
         (result) => {
             fsa.payload = {
                 count: result.meta.recordCount,
@@ -383,10 +383,10 @@ const getFriendsByText = (dispatch, userId, searchText, pageNumber) => {
         type: actionTypes.USER_PROFILE_FIND_FRIENDS,
     };
     const bodyData = {
-        sort: {
-            field: 'first_name',
-            order: 'asc',
-        },
+        // sort: {
+        //     field: 'first_name',
+        //     order: 'asc',
+        // },
         text: searchText,
     };
     return searchApi.post(`/users?page[number]=${pageNumber}&page[size]=10&user_id=${Number(userId)}`, bodyData).then(
@@ -477,7 +477,16 @@ const saveUserBasicProfile = (dispatch, userData, userId, email) => {
     return basicResponse;
 };
 
-const sendFriendRequest = (dispatch, sourceUserId, sourceEmail, avatar, firstName, userData, searchWord, pageNumber) => {
+function searchFriendsObj(friendList, toSearch) {
+    for (var i=0; i < friendList.data.length; i++) {
+        if (friendList.data[i].attributes.user_id === toSearch) {
+            friendList.data[i].attributes.friend_status = 'PENDING_OUT';
+        }
+    }
+    return friendList;
+}
+
+const sendFriendRequest = (dispatch, sourceUserId, sourceEmail, avatar, firstName, userData, searchWord, pageNumber, userFindFriendsList) => {
     const fsa = {
         payload: {
         },
@@ -502,7 +511,18 @@ const sendFriendRequest = (dispatch, sourceUserId, sourceEmail, avatar, firstNam
             fsa.payload = {
                 data: result.data,
             };
-            getFriendsByText(dispatch, sourceUserId, searchWord, pageNumber);
+            const newFriendList = searchFriendsObj(userFindFriendsList, Number(userData.attributes.user_id));
+            const friendListFsa = {
+                payload: {
+                },
+                type: actionTypes.USER_PROFILE_FIND_FRIENDS,
+            };
+            friendListFsa.payload = {
+                count: newFriendList.record_count,
+                data: newFriendList.data,
+            };
+            dispatch(friendListFsa);
+            // getFriendsByText(dispatch, sourceUserId, searchWord, pageNumber);
         },
     ).catch((error) => {
         fsa.error = error;

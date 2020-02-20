@@ -35,6 +35,12 @@ class UserAuthView extends React.Component {
             auth0.returnProps = querystring.parse(
                 window.location.search.slice(1), // must skip the '?' prefix
             );
+            window.addEventListener('resize', this.showlock.bind(this));
+            this.setState(
+                {
+                    innerWidth: window.innerWidth,
+                },
+            );
             auth0.lock.show({
                 initialScreen: auth0.initialScreen,
             });
@@ -43,6 +49,20 @@ class UserAuthView extends React.Component {
 
     componentWillUnmount() {
         auth0.lock.hide(); // lock MUST be hidden before being re-shown, because reasons
+    }
+
+    showlock() {
+        const {
+            innerWidth,
+        } = this.state;
+        if ((innerWidth >= 992 && window.innerWidth < 992) || (innerWidth < 992 && window.innerWidth >= 992)) {
+            this.setState(
+                {
+                    innerWidth: window.innerWidth,
+                },
+            );
+            location.reload();
+        }
     }
 
     render() {
@@ -73,6 +93,13 @@ class UserAuthView extends React.Component {
                     message="Thanks! Your email is confirmed. To continue, please log in below."
                 />
             );
+            if (code === '3') {
+                messageText = (
+                    <ModalStatusMessage
+                        message="Thanks! Your password is now changed. To continue, please log in below."
+                    />
+                );
+            }
         } else if (success === 'false') {
             messageText = (
                 <ModalStatusMessage

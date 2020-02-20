@@ -50,6 +50,7 @@ class SearchResults extends React.Component {
                             ? <PlaceholderGrid row={2} column={1} />
                             : (
                                 <TextSearchResultsAll
+                                    searchWord={searchWord}
                                     dispatch={dispatch}
                                     textSearchCharityGroupLoader={charityLoader}
                                     CharityGroups={textSearchedCharitiesGroups}

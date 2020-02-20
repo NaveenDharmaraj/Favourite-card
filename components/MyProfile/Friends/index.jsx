@@ -73,7 +73,8 @@ class Friends extends React.Component {
             signUpDeeplink: '',
             statusMessage: false,
             successMessage: '',
-            userEmailIds: '',
+            userEmailId: '',
+            userEmailIdsArray:[],
             isValidEmails: true,
         };
         this.handleTab = this.handleTab.bind(this);
@@ -121,7 +122,8 @@ class Friends extends React.Component {
     handleInviteClick() {
         this.setState({
             statusMessage: false,
-            userEmailIds: '',
+            userEmailId: '',
+            userEmailIdsArray:[],
             isValidEmails: true,
         })
     }
@@ -131,19 +133,51 @@ class Friends extends React.Component {
             value,
         } = !_.isEmpty(data) ? data : event.target;
         let {
-            userEmailIds,
+            userEmailId,
         } = this.state;
-        userEmailIds = value;
+        userEmailId = value;
         this.setState({
-            userEmailIds,
+            userEmailId,
         });
-    }    
+    }
+
+    handleKeyDown = evt => {
+        let {
+            userEmailIdsArray,
+            userEmailId,
+        } = this.state;
+        if (["Enter", "Tab", " ", ","].includes(evt.key)) {
+            evt.preventDefault();
+            var value = userEmailId.trim();
+            let isEmailIdValid = this.isEmail(userEmailId);
+            this.setState({ isValidEmails: isEmailIdValid });
+            if (value && isEmailIdValid) {
+            this.setState({
+                userEmailIdsArray: [...userEmailIdsArray, userEmailId],
+                userEmailId: "",
+            });
+            }
+        }
+    };
     
+    isEmail(email) {
+        return /[\w\d\.-]+@[\w\d\.-]+\.[\w\d\.-]+/.test(email);
+    }
+
+    handleDelete = item => {
+        this.setState({
+          userEmailIdsArray: this.state.userEmailIdsArray.filter(i => i !== item)
+        });
+    };
+
     validateEmailIds(emailIds) {        
         let isValidEmail = true;
-        let splitedEmails = emailIds.split(',');
-        for (let i = 0; i < splitedEmails.length; i++) {
-            isValidEmail = /[\w\d\.-]+@[\w\d\.-]+\.[\w\d\.-]+/.test(splitedEmails[i]);
+        // let splitedEmails = emailIds.split(',');
+        if(emailIds.length === 0) {
+            return false
+        }
+        for (let i = 0; i < emailIds.length; i++) {
+            isValidEmail = /[\w\d\.-]+@[\w\d\.-]+\.[\w\d\.-]+/.test(emailIds[i]);
             if(!isValidEmail) {
                 return false;
             }
@@ -157,28 +191,41 @@ class Friends extends React.Component {
             statusMessage: false,
         });
         const {
-            userEmailIds,
+            userEmailId,
+            userEmailIdsArray,
         } = this.state;
-        const emailsValid = this.validateEmailIds(userEmailIds);
+        let emailIdsArray = userEmailIdsArray;
+        if(userEmailId !== null) {
+            var value = userEmailId.trim();
+            let isEmailIdValid = this.isEmail(userEmailId);
+            this.setState({ isValidEmails: isEmailIdValid });
+            // if (value && isEmailIdValid) {
+                emailIdsArray = [...userEmailIdsArray, userEmailId];               
+            // }
+        }
+        const emailsValid = this.validateEmailIds(emailIdsArray);
         this.setState({ isValidEmails: emailsValid });
-        if(userEmailIds !== null && emailsValid) {
+        if(emailIdsArray !== null && emailsValid) {
             const {
                 dispatch,
             } = this.props;
-            inviteFriends(dispatch, userEmailIds).then(() => {
+            let userEmailIdList = emailIdsArray.join();
+            inviteFriends(dispatch, userEmailIdList).then(() => {
                 this.setState({
                     errorMessage: null,
                     successMessage: 'Invite sent.',
                     statusMessage: true,
                     inviteButtonClicked: false,
-                    userEmailIds: '',
+                    userEmailId: '',
+                    userEmailIdsArray:[],
                 });
             }).catch((err) => {
                 this.setState({
                     errorMessage: 'Error in sending invite.',
                     statusMessage: true,
                     inviteButtonClicked: false,
-                    userEmailIds: '',
+                    userEmailId: '',
+                    userEmailIdsArray:[],
                 });
             });
         } else {
@@ -219,7 +266,7 @@ class Friends extends React.Component {
             statusMessage,
             successMessage,
             activeTabIndex,
-            userEmailIds,
+            userEmailId,
             isValidEmails,
         } = this.state;
         return (
@@ -263,17 +310,35 @@ class Friends extends React.Component {
                                                         Enter as many email addresses as you like,
                                                         separated by comma
                                                     </label>
+
+                                                    
                                                     <Grid verticalAlign="middle">                                                        
                                                         <Grid.Row>
                                                             <Grid.Column mobile={11} tablet={12} computer={13}>
-                                                                <Form.Field>
+                                                                <Form.Field className="cpTagsInput" 
+                                                                onClick={() => {this.myInp.focus()}}
+                                                                >
+                                                                    {this.state.userEmailIdsArray.map(item => (
+                                                                    <div className="tag-item" key={item}>
+                                                                        {item}
+                                                                        <button
+                                                                        type="button"
+                                                                        className="button"
+                                                                        onClick={() => this.handleDelete(item)}
+                                                                        >
+                                                                        &times;
+                                                                        </button>
+                                                                    </div>
+                                                                    ))}
                                                                     <input
                                                                         placeholder="Email Address"
                                                                         error={!isValidEmails}
-                                                                        id="userEmailIds"
-                                                                        name="userEmailIds"
+                                                                        id="userEmailId"
+                                                                        name="userEmailId"
+                                                                        onKeyDown={this.handleKeyDown}
                                                                         onChange={this.handleInputChange}
-                                                                        value={userEmailIds}
+                                                                        ref={(ip) => this.myInp = ip}
+                                                                        value={userEmailId}
                                                                     />                                                                    
                                                                 </Form.Field>                                                                
                                                             </Grid.Column>

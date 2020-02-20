@@ -23,20 +23,17 @@ import PlaceholderGrid from '../../shared/PlaceHolder';
 import IssuedTaxReceiptCard from '../IssuedTaxReceiptCard';
 import NoTaxReceipts from '../../TaxReceipt/NoTaxReceipts';
 import TaxReceipientsList from '../TaxReceipientsList';
-import IndividualTaxDoantionsList from '../IndividualTaxDoantionsList';
 import ModalComponent from '../../shared/Modal';
 
 class LandingPageTaxReceipt extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            donationDetailhide: true,
             isSelectPhotoModalOpen: false,
         };
         this.onEdit = this.onEdit.bind(this);
         this.handleModalOpen = this.handleModalOpen.bind(this);
         this.handleLoadMoreClick = this.handleLoadMoreClick.bind(this);
-        this.renderdonationDetailShow = this.renderdonationDetailShow.bind(this);
     }
 
 
@@ -65,14 +62,6 @@ class LandingPageTaxReceipt extends React.Component {
         });
     }
 
-    renderdonationDetailShow(id, currentIssuedTaxReceipt, toogling) {
-        this.setState({
-            donationDetailhide: toogling,
-            id,
-            currentIssuedTaxReceipt,
-        });
-    }
-
     render() {
         const {
             issuedTaxReceiptList,
@@ -82,10 +71,7 @@ class LandingPageTaxReceipt extends React.Component {
             viewMoreLoader,
         } = this.props;
         const {
-            donationDetailhide,
-            id,
             isSelectPhotoModalOpen,
-            currentIssuedTaxReceipt,
         } = this.state;
         const intializeFormData = {
             attributes: {
@@ -109,85 +95,78 @@ class LandingPageTaxReceipt extends React.Component {
         };
         return (
             <Fragment>
-                {donationDetailhide ? (
-                    <Fragment>
-                        <div className="top-breadcrumb">
-                            <Container>
-                                <Breadcrumb className="c-breadcrumb">
-                                    <Breadcrumb.Section link>Tax receipts </Breadcrumb.Section>
-                                </Breadcrumb>
-                            </Container>
-                        </div>
+                <div className="top-breadcrumb">
+                    <Container>
+                        <Breadcrumb className="c-breadcrumb">
+                            <Breadcrumb.Section link>Tax receipts </Breadcrumb.Section>
+                        </Breadcrumb>
+                    </Container>
+                </div>
 
-                        <div className="search-result">
-                            <Container>
-                                <div>
-                                    <Grid verticalAlign="middle" stackable>
-                                        <Grid.Row>
-                                            <Grid.Column mobile={16} tablet={12} computer={13}>
-                                                <p className="font-s-16 bold mb-1-2">Tax receipt recipients</p>
-                                                <p className="font-s-13">Manage the legal names and addresses that appear on tax receipts. You can have multiple recepients on one account (for example, a spouse).</p>
-                                            </Grid.Column>
-                                            <Grid.Column mobile={16} tablet={4} computer={3} className="text-right">
-                                                <Button className="success-btn-rounded-def" onClick={() => { this.onEdit(); }}>+ Add new recipient</Button>
-                                                {
-                                                    isSelectPhotoModalOpen && (
-                                                        <ModalComponent
-                                                            name="Add new tax receipt recipient"
-                                                            isSelectPhotoModalOpen={isSelectPhotoModalOpen}
-                                                            dispatch={dispatch}
-                                                            taxReceipt={intializeFormData}
-                                                            handleModalOpen={this.handleModalOpen}
-                                                            action="add"
-                                                        />
-                                                    )
-                                                }
-                                            </Grid.Column>
-                                        </Grid.Row>
-                                    </Grid>
-                                </div>
-                                <Divider />
-                                <TaxReceipientsList />
-                                <div className="mb-2 mt-3">
-                                    <p className="font-s-16 bold mb-1-2">Issued tax receipts</p>
-                                    <p className="font-s-13">Tax receipts are organized by recipient.</p>
-                                </div>
-                                {issuedTaxLloader ? <PlaceholderGrid row={2} column={2} /> : (
-                                    <Fragment>
-                                        {(!_isEmpty(issuedTaxReceiptList) && issuedTaxReceiptList.length > 0)
-                                            ? (
-                                                <div className="mb-1">
-                                                    <List celled verticalAlign="middle" className="receiptList">
-                                                        {_map(issuedTaxReceiptList, (issuedTaxReceipt) => (
-                                                            <IssuedTaxReceiptCard issuedTaxReceipt={issuedTaxReceipt} renderdonationDetailShow={this.renderdonationDetailShow} />
-                                                        ))
-                                                        }
-                                                    </List>
-                                                </div>
+                <div className="search-result">
+                    <Container>
+                        <div>
+                            <Grid verticalAlign="middle" stackable>
+                                <Grid.Row>
+                                    <Grid.Column mobile={16} tablet={12} computer={13}>
+                                        <p className="font-s-16 bold mb-1-2">Tax receipt recipients</p>
+                                        <p className="font-s-13">Manage the legal names and addresses that appear on tax receipts. You can have multiple recepients on one account (for example, a spouse).</p>
+                                    </Grid.Column>
+                                    <Grid.Column mobile={16} tablet={4} computer={3} className="text-right">
+                                        <Button className="success-btn-rounded-def" onClick={() => { this.onEdit(); }}>+ Add new recipient</Button>
+                                        {
+                                            isSelectPhotoModalOpen && (
+                                                <ModalComponent
+                                                    name="Add new tax receipt recipient"
+                                                    isSelectPhotoModalOpen={isSelectPhotoModalOpen}
+                                                    dispatch={dispatch}
+                                                    taxReceipt={intializeFormData}
+                                                    handleModalOpen={this.handleModalOpen}
+                                                    action="add"
+                                                />
                                             )
-                                            : <NoTaxReceipts />
                                         }
-                                    </Fragment>
-                                )}
-                                {(recordCount && !_isEmpty(issuedTaxReceiptList) && recordCount > issuedTaxReceiptList.length)
-                                    ? (
-                                        <div className="text-center">
-                                            <Button
-                                                className="blue-bordr-btn-round-def"
-                                                onClick={() => this.handleLoadMoreClick()}
-                                                loading={viewMoreLoader}
-                                                content="View more"
-                                            />
-                                        </div>
-                                    ) : null
-                                }
-                            </Container>
+                                    </Grid.Column>
+                                </Grid.Row>
+                            </Grid>
                         </div>
-                    </Fragment>
-                ) : (
-                    <IndividualTaxDoantionsList renderdonationDetailShow={this.renderdonationDetailShow} id={id} currentIssuedTaxReceipt={currentIssuedTaxReceipt} />
-                )
-                }
+                        <Divider />
+                        <TaxReceipientsList />
+                        <div className="mb-2 mt-3">
+                            <p className="font-s-16 bold mb-1-2">Issued tax receipts</p>
+                            <p className="font-s-13">Tax receipts are organized by recipient.</p>
+                        </div>
+                        {issuedTaxLloader ? <PlaceholderGrid row={2} column={2} /> : (
+                            <Fragment>
+                                {(!_isEmpty(issuedTaxReceiptList) && issuedTaxReceiptList.length > 0)
+                                    ? (
+                                        <div className="mb-1">
+                                            <List celled verticalAlign="middle" className="receiptList">
+                                                {_map(issuedTaxReceiptList, (issuedTaxReceipt) => (
+                                                    <IssuedTaxReceiptCard issuedTaxReceipt={issuedTaxReceipt} />
+                                                ))
+                                                }
+                                            </List>
+                                        </div>
+                                    )
+                                    : <NoTaxReceipts />
+                                }
+                            </Fragment>
+                        )}
+                        {(recordCount && !_isEmpty(issuedTaxReceiptList) && recordCount > issuedTaxReceiptList.length)
+                            ? (
+                                <div className="text-center">
+                                    <Button
+                                        className="blue-bordr-btn-round-def"
+                                        onClick={() => this.handleLoadMoreClick()}
+                                        loading={viewMoreLoader}
+                                        content="View more"
+                                    />
+                                </div>
+                            ) : null
+                        }
+                    </Container>
+                </div>
             </Fragment>
         );
     }

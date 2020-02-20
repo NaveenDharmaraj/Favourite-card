@@ -51,7 +51,7 @@ button,a{
         font-size: 12/@rem;
         display: inline-block;
         &.medium{
-          height: 31px;	min-width: 95px;
+          height: 31px;	min-width: 80px;
           padding: 0.5rem 1rem;
         }
         &.active{
@@ -149,6 +149,24 @@ button,a{
         &:hover{
           border-color: @link-hover;
         }
+      }
+    }
+  }
+}
+a{
+  &.ui{
+    &.button{
+      display: inline-block;
+      &.btn-small-white-border{
+        height: 20px;	width: 51.85px;
+        border-radius: 24/@rem;	
+        background-color: #FFFFFF;
+        font-size: 12px;
+        padding: 0px;
+        color: @link;
+        border:1px solid @primary-color;
+        padding-top: 2px;
+        padding-bottom: 2px;
       }
     }
   }

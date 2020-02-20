@@ -52,7 +52,8 @@ import {
     resetDataForGiveAmountChange,
     resetDataForAccountChange,
     resetDataForGiftTypeChange,
-    validateGiveForm
+    validateGiveForm,
+    formatCurrency
 } from '../../../helpers/give/utils';
 import {
     getCompanyPaymentAndTax,
@@ -381,16 +382,21 @@ class Group extends React.Component {
             validity,
         } = this.state;
         let inputValue = value;
-        const isNumber = /^\d+(\.\d*)?$/;
+        const isNumber = /^(?:[0-9]+,)*[0-9]+(?:\.[0-9]+)?$/;
         if ((name === 'giveAmount' || name === 'donationAmount') && !_isEmpty(value) && value.match(isNumber)) {
-            giveData[name] = formatAmount(value);
-            inputValue = formatAmount(value);
+            inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
+            giveData[name] = inputValue;
+           
         }
         if (name !== 'giftType' && name !== 'giveFrom') {
             validity = validateGiveForm(name, inputValue, validity, giveData, 0);
         }
         switch (name) {
+            case 'donationAmount':
+                    giveData['formatedDonationAmount'] = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
+                break;
             case 'giveAmount':
+                giveData['formatedGroupAmount'] = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
                 validity = validateGiveForm('donationAmount', giveData.donationAmount, validity, giveData, 0);
                 break;
             case 'giveFrom':
@@ -564,6 +570,9 @@ class Group extends React.Component {
             giveData[name] = newValue;
             giveData.userInteracted = true;
             switch (name) {
+                case 'donationAmount':
+                        giveData['formatedDonationAmount'] =  newValue;
+                    break;
                 case 'giveFrom':
                     const {
                         modifiedDropDownOptions,
@@ -584,6 +593,8 @@ class Group extends React.Component {
                     giveData = resetDataForGiftTypeChange(giveData, dropDownOptions, coverFeesData);
                     break;
                 case 'giveAmount':
+                    giveData[name]=formatAmount(parseFloat(newValue.replace(/,/g, '')));
+                    giveData['formatedGroupAmount'] = newValue;
                     giveData = resetDataForGiveAmountChange(
                         giveData, dropDownOptions, coverFeesData,
                     );
@@ -756,55 +767,43 @@ class Group extends React.Component {
                 companyDetails.companyDefaultTaxReceiptProfile :
                 defaultTaxReceiptProfile;
                     if(_isEmpty(paymentInstrumentList) && _isEmpty(taxProfile)){
+                        const paymentLink = (giveFrom.type === 'companies')
+                            ? <a href={`/companies/${slug}/payment-profiles`}>payment method</a>
+                            : <Link route = '/user/profile/settings/creditcard'>payment method</Link> ;
+                        const taxLink = (giveFrom.type === 'companies')
+                            ? <a href={`/companies/${slug}/tax-receipt-profiles`}>tax receipt recipient</a>
+                            : <Link route = '/user/tax-receipts'>tax receipt recipient</Link>
                         return(
                             <div className="mb-1">
                                 <Icon color="red" name="warning circle" />
                                 <span style={{ color: 'red' }}>
-                                    To send a monthly gift, first add a &nbsp;
-                                    {
-                                        giveFrom.type === 'companies' 
-                                        ?  <a href={`/companies/${slug}/payment-profiles`}>payment method </a>
-                                        : <Link route = '/user/profile/settings/creditcard'>payment method</Link>
-                                    }&nbsp;
-                                    and &nbsp;
-                                    {
-                                        giveFrom.type === 'companies' 
-                                        ?  <a href={`/companies/${slug}/tax-receipt-profiles`}>tax receipt recipient</a>
-                                        : <Link route = '/user/tax-receipts'>tax receipt recipient</Link>
-                                    }&nbsp;
-                                    to your account details.We won't charge your card without your permission.
-                                    </span>
+                                    To send a monthly gift, first add a {paymentLink} and {taxLink} to your account details. We won't charge your card without your permission.
+                                </span>
                             </div>
                         ) 
                     }
                     else if(_isEmpty(paymentInstrumentList)){
+                        const link = (giveFrom.type === 'companies')
+                            ? <a href={`/companies/${slug}/payment-profiles`}>payment method</a>
+                            : <Link route = '/user/profile/settings/creditcard'>payment method</Link>
                         return(
                             <div className="mb-1">
                                 <Icon color="red" name="warning circle" />
                                 <span style={{ color: 'red' }}>
-                                 To send a monthly gift, first add a &nbsp;
-                                 {
-                                   giveFrom.type === 'companies' 
-                                   ?  <a href={`/companies/${slug}/payment-profiles`}>payment method </a>
-                                   : <Link route = '/user/profile/settings/creditcard'>payment method</Link>
-                                 }
-                                &nbsp; to your account details.We won't charge your card without your permission.
+                                    To send a monthly gift, first add a {link} to your account details. We won't charge your card without your permission.
                                 </span>
                             </div>
                         ) 
                     }
                     else if( _isEmpty(taxProfile)){
+                        const link = (giveFrom.type === 'companies')
+                            ? <a href={`/companies/${slug}/tax-receipt-profiles`}>tax receipt recipient</a>
+                            : <Link route="/user/tax-receipts">tax receipt recipient</Link>
                         return(
                             <div className="mb-1">
                                     <Icon color="red" name="warning circle" />
                                     <span style={{ color: 'red' }}>
-                                    To send a monthly gift, first add a &nbsp;
-                                    {
-                                        giveFrom.type === 'companies' 
-                                        ?  <a href={`/companies/${slug}/tax-receipt-profiles`}>tax receipt recipient</a>
-                                        : <Link route = '/user/tax-receipts'>tax receipt recipient</Link>
-                                    }
-                                &nbsp; to your account details.
+                                        To send a monthly gift, first add a {link} to your account details.
                                 </span>
                             </div>
                         ) 
@@ -826,6 +825,8 @@ class Group extends React.Component {
                     donationAmount,
                     donationMatch,
                     giftType,
+                    formatedDonationAmount,
+                    formatedGroupAmount,
                     giveAmount,
                     giveTo,
                     giveFrom,
@@ -855,9 +856,14 @@ class Group extends React.Component {
         } = this.state;
         const {
             companyDetails,
+            giveGroupDetails,
             defaultTaxReceiptProfile,
         } = this.props;
         const formatMessage = this.props.t;
+        let showGroupSupport = false;
+        if(!_.isEmpty(giveGroupDetails)){
+            showGroupSupport = (giveGroupDetails.attributes.campaignId) ? true : false ;
+        }
         const giveToType = (giveTo.isCampaign) ? 'Campaign' : 'Group';
         let accountTopUpComponent = null;
         let stripeCardComponent = null;
@@ -871,7 +877,7 @@ class Group extends React.Component {
             accountTopUpComponent = (
                 <AccountTopUp
                     creditCard={creditCard}
-                    donationAmount={donationAmount}
+                    donationAmount={formatedDonationAmount}
                     donationMatch={donationMatch}
                     donationMatchList={donationMatchList}
                     formatMessage={formatMessage}
@@ -923,6 +929,7 @@ class Group extends React.Component {
                     privacyShareAmount={privacyShareAmount}
                     privacyShareEmail={privacyShareEmail}
                     privacyShareName={privacyShareName}
+                    showSupportMessage={showGroupSupport}
                 />
             );
         }
@@ -1013,7 +1020,7 @@ class Group extends React.Component {
                                 onChange={this.handleInputChange}
                                 placeholder={formatMessage('amountPlaceHolder')}
                                 size="large"
-                                value={giveAmount}
+                                value={formatedGroupAmount}
                             />
                         </Form.Field>
                         
