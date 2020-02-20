@@ -137,8 +137,14 @@ const isValidBrowser = (userAgent) => {
             Chrome: '>67',
             Chromium: '>67',
             Firefox: '>58',
+            'Microsoft Edge': '>17',
+            safari: '>11',
         },
         macos: {
+            Chrome: '>67',
+            Chromium: '>67',
+            Firefox: '>58',
+            'Microsoft Edge': '>17',
             safari: '>11',
         },
         mobile: {
@@ -146,10 +152,13 @@ const isValidBrowser = (userAgent) => {
                 Chrome: '>67',
                 Chromium: '>67',
                 Firefox: '>58',
+                'Microsoft Edge': '>17',
             },
             iOS: {
                 Chrome: '>67',
                 Chromium: '>67',
+                Firefox: '>58',
+                'Microsoft Edge': '>17',
                 safari: '>10',
             },
         },
@@ -157,7 +166,6 @@ const isValidBrowser = (userAgent) => {
             Chrome: '>67',
             Chromium: '>67',
             Firefox: '>58',
-            ie: '>10',
             'Microsoft Edge': '>17',
         },
     });
