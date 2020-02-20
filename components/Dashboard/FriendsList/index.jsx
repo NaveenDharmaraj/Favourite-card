@@ -111,7 +111,7 @@ class FriendsList extends React.Component {
                 return (
                     <Grid.Column key={index}>
                         <Card>
-                            <Link  route={`/users/profile/${data.attributes.user_id}`}>
+                            <Link  route={`/users/profile/${data.attributes.user_id}`} passHref>
                                 <Image
                                     className="pointer"
                                     src={data.attributes.avatar}
@@ -121,7 +121,7 @@ class FriendsList extends React.Component {
                             <Card.Content>
                                 <Card.Header>{name}</Card.Header>
                                 <Card.Description>
-                                    <Link className="lnkChange" route="/give/to/friend/new">
+                                    <Link className="lnkChange" route="/give/to/friend/new" passHref>
                                         <Button className="give-frnds-btn" onClick={() => this.giveButtonClick(email, name)}>Give</Button>
                                     </Link>
                                 </Card.Description>
@@ -142,7 +142,7 @@ class FriendsList extends React.Component {
                                         <Card.Content>
                                             <Card.Header>Find friends to give to </Card.Header>
                                             <Card.Description>
-                                                <Link className="lnkChange" route="/user/profile/friends/findfriends">
+                                                <Link className="lnkChange" route="/user/profile/friends/findfriends" passHref>
                                                     <Button className="give-frnds-btn">Find friends</Button>
                                                 </Link>
                                             </Card.Description>
