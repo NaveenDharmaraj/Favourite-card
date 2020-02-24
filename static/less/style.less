@@ -7654,42 +7654,6 @@ span{
     }
   }
 }
-.quickquestions{
-  margin-bottom:50px;
-  h3{
-    &.ui{
-      &.header{
-        font-size: 24px !important;
-        line-height: 29px;
-        color:#263238;
-      }
-    }
-  }
-  h4{
-    &.ui{
-      &.header{
-        font-size: 20px !important;
-        line-height: 24px;
-        color:#263238;
-        font-family: 'ProximaNova-Regular' !important;
-      }
-    }
-  }
-  .ui{
-    &.bulleted{
-      &.list{
-        font-size: 17px;
-        color: #263238;
-        line-height: 26px !important;
-        list-style: none;
-        .item{
-          &.profile{
-            margin-left: 12px;
-            &::before{
-             font-size:40px !important;
-             top:-1px;
-             left: -12px;
-            }
 .ui{
   &.list{
     >.item{
@@ -7791,68 +7755,78 @@ body .userEllips{
     }
     .img_Discovered{
     }
-.hs-main-font-element{
-  display: none;
 }
-.no-list{
-  &.hs-error-msgs{
-    &.inputs-list{
-      li{
-        &:nth-child(2){
-          display: none !important;
+.quickquestions{
+  margin-bottom:50px;
+  h3{
+    &.ui{
+      &.header{
+        font-size: 24px !important;
+        line-height: 29px;
+        color:#263238;
+      }
+    }
+  }
+  h4{
+    &.ui{
+      &.header{
+        font-size: 20px !important;
+        line-height: 24px;
+        color:#263238;
+        font-family: 'ProximaNova-Regular' !important;
+      }
+    }
+  }
+  .ui{
+    &.bulleted{
+      &.list{
+        font-size: 17px;
+        color: #263238;
+        line-height: 26px !important;
+        list-style: none;
+        .item{
+          &.profile{
+            margin-left: 12px;
+            &::before{
+             font-size:40px !important;
+             top:-1px;
+             left: -12px;
+            }
+          }
         }
       }
     }
   }
 }
-.ui.form.footer-subscribe .inline.field .hs-nested-form-fix .hs-form .hs_email .hs-error-msgs{
-  left: 2px !important;
-}
-.inviteForm.ui.form{
-  .field {
-    &.cpTagsInput{
-      .tag-item{
-        display: inline-block;
-        padding: 4px 12px;
-        font-size: 12px;
-        border-radius: 3px;
-        font-weight: bold;
-        line-height: 14px;
-        color: #fff;
-        text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
-        white-space: nowrap;
-        vertical-align: baseline;
-        border-radius: 12px;	background-color: #009EA2;
-        margin-right: 5px;
-        margin-top: 3px;
-        margin-bottom: 2px;
-        >.button{
-          padding: 0px;
-          margin: -8px 0px -1px 6px;
-          box-shadow: none;
-          background-color:transparent;
-          border: none;
-          font-size: 20px;
-          color:#fff;
-          cursor: pointer;
-          opacity: 1;
-          font-weight: bold;
-          position: relative;
-          bottom: -3px;
-        }
-        +input{
-          border: none;
-          box-shadow: none;
-          background-color: transparent;
-          padding: 0;
-          margin: 0;
-          width: auto !important;
-          max-width: inherit;
-          height: auto;
-          min-height: 24px;
-          vertical-align: bottom;
+.Discovered-box{
+  box-sizing: border-box; width:100%; border: 1px solid #E6E5E5;  border-radius: 5px; /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#e8f2ff+0,e8f2ff+50,f5f8fc+50,f5f8fc+100 */
+  background: #E8F2FF; /* Old browsers */
+  background: -moz-linear-gradient(45deg,  #E8F2FF 0%, #E8F2FF 50%, #F5F8FC 50%, #F5F8FC 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(45deg,  #E8F2FF 0%,#E8F2FF 50%,#F5F8FC 50%,#F5F8FC 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(45deg,  #E8F2FF 0%,#E8F2FF 50%,#F5F8FC 50%,#F5F8FC 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#E8F2FF', endColorstr='#F5F8FC',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+    box-shadow: 0 1px 7px 0 rgba(0,0,0,0.17);
+    margin-bottom: 80px;
+    margin-top: 40px;
+    position: relative;
+    padding: 42px 38px;
+    h4{
+      &.ui{
+        &.header{
+          font-size: 17px;
         }
       }
     }
+    .dots{
+      background-image: url('../images/dots@3x.svg');
+      position: absolute;
+      background-position: center;
+      background-repeat: no-repeat;
+      width: 114px;
+      height: 205px;
+      top: -58px;
+      right: 170px;
+    }
+    .img_Discovered{
+    }
   }
-}
