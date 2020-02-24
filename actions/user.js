@@ -248,14 +248,29 @@ export const wpLogin = (token = null) => {
     return wpApi.post('/login', null, params);
 };
 
-export const chimpLogin = (token = null) => {
+export const chimpLogin = (token = null, options= null) => {
     let params = null;
+    let querystring=[];
+    if (options && typeof options === 'object'){
+        Object.entries(options).map(([key, value])=>{
+            let str = `${key}=${value}&`;
+            if(str){
+                querystring.push(str);
+            }
+        })
+        if(!_.isEmpty(querystring)){
+            querystring = querystring.join('').slice(0,querystring.join('').length-1);
+        }
+    } 
     if (!_.isEmpty(token)) {
         params = {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
         };
+    }
+    if(!_.isEmpty(querystring)){
+        return authRorApi.post(`/auth/login?${querystring}`, null, params);
     }
     return authRorApi.post('/auth/login', null, params);
 };
