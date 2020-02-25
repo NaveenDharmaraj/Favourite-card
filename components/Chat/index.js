@@ -545,8 +545,7 @@ class ChatWrapper extends React.Component {
             if (conversation.groupId) {
                 params["clientGroupId"] = conversation.groupId;
             } else { params["to"] = conversation.contactIds; }
-            // commenting this for mobile app team for testing purpose
-            // params['contentType'] = 3;
+            params['contentType'] = 3;
             // params['_userId'] = this.state.userInfo.id;
             // params["_deviceKey"] = this.state.userInfo.applogicClientRegistration.deviceKey;
             // self.setLoading(true);
