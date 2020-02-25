@@ -41,12 +41,14 @@ class Favorites extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            buttonState: false,
             favoritesLoader: !props.favorites,
             loader: false,
             pageSize: 9,
         };
         this.handleSeeMore = this.handleSeeMore.bind(this);
         this.callRemoveFav = this.callRemoveFav.bind(this);
+        this.changeButtonState = this.changeButtonState.bind(this);
     }
 
     componentDidMount() {
@@ -111,6 +113,9 @@ class Favorites extends React.Component {
         const {
             favorites,
         } = this.props;
+        const {
+            buttonState,
+        } = this.state;
         let favoritesList = (
             <Grid.Column width={16}>
                 <div className="favouritesNoData noData mt-1 mb-2">
@@ -200,7 +205,13 @@ class Favorites extends React.Component {
                                                 </Header.Content>
                                             </Header>
                                             <Link className="lnkChange" route={`/${route}/${slug}`}>
-                                                <Button className="btn-small-white-border">View</Button>
+                                                <Button
+                                                    disabled={buttonState}
+                                                    className="btn-small-white-border"
+                                                    onClick={this.changeButtonState}
+                                                >
+                                                    View
+                                                </Button>
                                             </Link>
                                         </div>
                                     </Grid.Column>
@@ -238,6 +249,12 @@ class Favorites extends React.Component {
                 loader: true,
             });
         }
+    }
+
+    changeButtonState() {
+        this.setState({
+            buttonState: true,
+        });
     }
 
     renderSeeMore() {
