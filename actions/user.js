@@ -248,7 +248,7 @@ export const wpLogin = (token = null) => {
     return wpApi.post('/login', null, params);
 };
 
-export const chimpLogin = (token = null, options= null) => {
+export const chimpLogin = (token = null, options = null) => {
     let params = null;
     let querystring=[];
     if (options && typeof options === 'object'){
