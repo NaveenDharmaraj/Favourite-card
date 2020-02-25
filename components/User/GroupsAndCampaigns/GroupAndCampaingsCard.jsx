@@ -24,10 +24,12 @@ class GroupsAndCampaignsCard extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            buttonState: false,
             open: false,
         };
         this.openModal = this.openModal.bind(this);
         this.close = this.close.bind(this);
+        this.changeButtonState = this.changeButtonState.bind(this);
     }
 
     componentDidUpdate(prevProps) {
@@ -52,6 +54,12 @@ class GroupsAndCampaignsCard extends React.Component {
         });
     }
 
+    changeButtonState() {
+        this.setState({
+            buttonState: true,
+        });
+    }
+
     render() {
         const {
             listingType,
@@ -62,6 +70,7 @@ class GroupsAndCampaignsCard extends React.Component {
         } = this.props;
         const {
             dropDownOpen,
+            buttonState,
         } = this.state;
         const {
             attributes:{
@@ -159,7 +168,13 @@ class GroupsAndCampaignsCard extends React.Component {
                                         </Header.Content>
                                     </Header>
                                     <Link className="lnkChange" route={`/${urlType}/${slug}`}>
-                                        <Button className="btn-small-white-border">View</Button>
+                                        <Button
+                                            disabled={buttonState}
+                                            className="btn-small-white-border"
+                                            onClick={this.changeButtonState}
+                                        >
+                                        View
+                                        </Button>
                                     </Link>
                                     {
                                         (listingType !== 'groupsWithMemberships')
