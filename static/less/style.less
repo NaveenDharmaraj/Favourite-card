@@ -3367,6 +3367,7 @@ body{
           min-width: auto;
           text-align: center;
           justify-content: center;
+          position: relative;
           &:hover{
             background-color: #ddd;
           }
@@ -3382,11 +3383,49 @@ body{
               background-color: #055CE5;
             }
           }
+          .icon{
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: -1px;
+            bottom: 0;
+            height: 100%;
+            &.angle{
+              &::before{
+                content: '';
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                margin: auto;
+                background-image: url(../images/icons/icon-arrow-down.svg) !important;
+                background-size: contain !important;
+                background-repeat: no-repeat !important;
+                background-position: center !important;
+                width: 12px;
+                height: 12px;
+              }
+              &.right{
+                &::before{
+                  transform: rotate(-90deg);
+                }
+              }
+              &.left{
+                &::before{
+                  transform: rotate(90deg);
+                }
+              }
+            }
+          } 
           &:first-child{
             font-weight: 600;
           }
           &:last-child{
             font-weight: 600;
+            font-size: 12px;
+            height: 26px; width: 26px;
+            border-radius: 100%;
           }
         }
       }
@@ -7699,4 +7738,52 @@ body .userEllips{
 }
 .ui.form.footer-subscribe .inline.field .hs-nested-form-fix .hs-form .hs_email .hs-error-msgs{
   left: 2px !important;
+}
+.inviteForm.ui.form{
+  .field {
+    &.cpTagsInput{
+      .tag-item{
+        display: inline-block;
+        padding: 4px 12px;
+        font-size: 12px;
+        border-radius: 3px;
+        font-weight: bold;
+        line-height: 14px;
+        color: #fff;
+        text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
+        white-space: nowrap;
+        vertical-align: baseline;
+        border-radius: 12px;	background-color: #009EA2;
+        margin-right: 5px;
+        margin-top: 3px;
+        margin-bottom: 2px;
+        >.button{
+          padding: 0px;
+          margin: -8px 0px -1px 6px;
+          box-shadow: none;
+          background-color:transparent;
+          border: none;
+          font-size: 20px;
+          color:#fff;
+          cursor: pointer;
+          opacity: 1;
+          font-weight: bold;
+          position: relative;
+          bottom: -3px;
+        }
+        +input{
+          border: none;
+          box-shadow: none;
+          background-color: transparent;
+          padding: 0;
+          margin: 0;
+          width: auto !important;
+          max-width: inherit;
+          height: auto;
+          min-height: 24px;
+          vertical-align: bottom;
+        }
+      }
+    }
+  }
 }
