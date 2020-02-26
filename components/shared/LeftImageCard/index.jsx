@@ -7,12 +7,15 @@ import {
     Card,
 } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 
 import { Link } from '../../../routes';
 import { renderTextByCharacter } from '../../../helpers/utils';
 
 const LeftImageCard = (props) => {
     const {
+        buttonState,
+        changeButtonState,
         entityName,
         location,
         placeholder,
@@ -47,7 +50,13 @@ const LeftImageCard = (props) => {
                                         </Header.Content>
                                     </Header>
                                     <Link className="lnkChange" route={url}>
-                                        <Button className="btn-small-white-border">View</Button>
+                                        <Button
+                                            disabled={buttonState}
+                                            className="btn-small-white-border"
+                                            onClick={changeButtonState}
+                                        >
+                                            View
+                                        </Button>
                                     </Link>
                                 </div>
                                 
@@ -61,6 +70,8 @@ const LeftImageCard = (props) => {
 };
 
 LeftImageCard.propTypes = {
+    buttonState: PropTypes.bool,
+    changeButtonState: PropTypes.func,
     entityName: PropTypes.string,
     location: PropTypes.string,
     placeholder: PropTypes.string,
@@ -70,6 +81,8 @@ LeftImageCard.propTypes = {
 };
 
 LeftImageCard.defaultProps = {
+    buttonState: false,
+    changeButtonState: _.noop,
     entityName: '',
     location: '',
     placeholder: '',
