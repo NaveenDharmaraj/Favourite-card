@@ -162,6 +162,21 @@ const isValidBrowser = (userAgent) => {
                 safari: '>10',
             },
         },
+        tablet: {
+            android: {
+                Chrome: '>67',
+                Chromium: '>67',
+                Firefox: '>58',
+                'Microsoft Edge': '>17',
+            },
+            iOS: {
+                Chrome: '>67',
+                Chromium: '>67',
+                Firefox: '>58',
+                'Microsoft Edge': '>17',
+                safari: '>10',
+            },
+        },
         Windows: {
             Chrome: '>67',
             Chromium: '>67',
