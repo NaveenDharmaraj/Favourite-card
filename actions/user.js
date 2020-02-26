@@ -250,18 +250,6 @@ export const wpLogin = (token = null) => {
 
 export const chimpLogin = (token = null, options = null) => {
     let params = null;
-    let querystring=[];
-    if (options && typeof options === 'object'){
-        Object.entries(options).map(([key, value])=>{
-            let str = `${key}=${value}&`;
-            if(str){
-                querystring.push(str);
-            }
-        })
-        if(!_.isEmpty(querystring)){
-            querystring = querystring.join('').slice(0,querystring.join('').length-1);
-        }
-    } 
     if (!_.isEmpty(token)) {
         params = {
             headers: {
@@ -269,10 +257,15 @@ export const chimpLogin = (token = null, options = null) => {
             },
         };
     }
-    if(!_.isEmpty(querystring)){
-        return authRorApi.post(`/auth/login?${querystring}`, null, params);
-    }
-    return authRorApi.post('/auth/login', null, params);
+    if (options && typeof options === 'object'){
+        params = {
+            ...params,
+            params:{
+                ...options,
+            },
+        }
+    } 
+        return authRorApi.post(`/auth/login`, null, params);
 };
 
 const setDataToPayload = ({
