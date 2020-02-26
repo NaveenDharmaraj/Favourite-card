@@ -65,6 +65,7 @@ class NotificationHelper {
         requestData.attributes.acceptor_user_id = Number(userInfo.id);
         requestData.attributes.acceptor_avatar_link = userInfo.attributes.avatar,
         requestData.attributes.acceptor_first_name = userInfo.attributes.firstName;
+        requestData.attributes.acceptor_display_name = userInfo.attributes.displayName;
 
         requestData.attributes.requester_user_id = user_id;
         requestData.attributes.requester_email_id = user_email_id;
