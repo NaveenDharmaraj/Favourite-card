@@ -28,9 +28,11 @@ class RecommendationList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            buttonState: false,
             recommendationListLoader: !props.recommendationData,
         };
         this.handleHideClick = this.handleHideClick.bind(this);
+        this.changeButtonState = this.changeButtonState.bind(this);
     }
 
     componentDidMount() {
@@ -75,10 +77,19 @@ class RecommendationList extends React.Component {
         hideRecommendations(dispatch, id, hideEntityId, data.attributes.type);
     }
 
+    changeButtonState() {
+        this.setState({
+            buttonState: true,
+        });
+    }
+
     recommendationList() {
         const {
             recommendationData,
         } = this.props;
+        const {
+            buttonState,
+        } = this.state;
         let recommendationList = 'No Data';
         if (recommendationData && recommendationData.data && _.size(recommendationData.data) > 0) {
             const showData = _.slice(recommendationData.data, 0, 9);
@@ -145,7 +156,13 @@ class RecommendationList extends React.Component {
                                                 </Header.Content>
                                             </Header>
                                             <Link className="lnkChange" route={`/${urlEntity}/${data.attributes.slug}`}>
-                                                <Button className="btn-small-white-border">View</Button>
+                                                <Button
+                                                    disabled={buttonState}
+                                                    className="btn-small-white-border"
+                                                    onClick={this.changeButtonState}
+                                                >
+                                                View
+                                                </Button>
                                             </Link>
                                         </Grid.Column>
                                     </Grid.Row>
