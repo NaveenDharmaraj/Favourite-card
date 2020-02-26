@@ -24,13 +24,31 @@ import PlaceholderGrid from '../shared/PlaceHolder';
 import GroupNoDataState from './GroupNoDataState';
 
 class CharitySupport extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            viewButtonState: false,
-        };
-        this.loadCards = this.loadCards.bind(this);
-        this.changeViewButtonState = this.changeViewButtonState.bind(this);
+    static loadCards(data) {
+        return (
+            data.map((card) => {
+                let locationDetails = '';
+                const locationDetailsCity = (!_.isEmpty(card.attributes.city)) ? card.attributes.city : '';
+                const locationDetailsProvince = (!_.isEmpty(card.attributes.province)) ? card.attributes.province : '';
+                if (locationDetailsCity === '' && locationDetailsProvince !== '') {
+                    locationDetails = locationDetailsProvince;
+                } else if (locationDetailsCity !== '' && locationDetailsProvince === '') {
+                    locationDetails = locationDetailsCity;
+                } else if (locationDetailsCity !== '' && locationDetailsProvince !== '') {
+                    locationDetails = `${card.attributes.city}, ${card.attributes.province}`;
+                }
+                return (
+                    <LeftImageCard
+                        entityName={card.attributes.name}
+                        location={locationDetails}
+                        placeholder={card.attributes.avatar}
+                        typeClass="chimp-lbl charity"
+                        type="charity"
+                        url={`/charities/${card.attributes.slug}`}
+                    />
+                );
+            })
+        );
     }
 
     componentDidMount() {
@@ -46,43 +64,6 @@ class CharitySupport extends React.Component {
         }
     }
 
-    loadCards() {
-        const {
-            groupBeneficiaries: {
-                data,
-            },
-        } = this.props;
-        const {
-            viewButtonState,
-        } = this.state;
-        return (
-            data.map((card) => {
-                let locationDetails = '';
-                const locationDetailsCity = (!_.isEmpty(card.attributes.city)) ? card.attributes.city : '';
-                const locationDetailsProvince = (!_.isEmpty(card.attributes.province)) ? card.attributes.province : '';
-                if (locationDetailsCity === '' && locationDetailsProvince !== '') {
-                    locationDetails = locationDetailsProvince;
-                } else if (locationDetailsCity !== '' && locationDetailsProvince === '') {
-                    locationDetails = locationDetailsCity;
-                } else if (locationDetailsCity !== '' && locationDetailsProvince !== '') {
-                    locationDetails = `${card.attributes.city}, ${card.attributes.province}`;
-                }
-                return (
-                    <LeftImageCard
-                        buttonState={viewButtonState}
-                        changeButtonState={this.changeViewButtonState}
-                        entityName={card.attributes.name}
-                        location={locationDetails}
-                        placeholder={card.attributes.avatar}
-                        typeClass="chimp-lbl charity"
-                        type="charity"
-                        url={`/charities/${card.attributes.slug}`}
-                    />
-                );
-            })
-        );
-    }
-
     loadMore() {
         const {
             dispatch,
@@ -91,14 +72,8 @@ class CharitySupport extends React.Component {
             },
             id: groupId,
         } = this.props;
-        const url = !_isEmpty(beneficiariesNextLink) ? beneficiariesNextLink : null;
+        const url = (beneficiariesNextLink) ? beneficiariesNextLink : null;
         getDetails(dispatch, groupId, 'charitySupport', url);
-    }
-
-    changeViewButtonState() {
-        this.setState({
-            viewButtonState: true,
-        });
     }
 
     render() {
@@ -118,7 +93,7 @@ class CharitySupport extends React.Component {
         const viewData = !_isEmpty(beneficiariesData)
             ? (
                 <Grid.Row stretched>
-                    {this.loadCards()}
+                    {CharitySupport.loadCards(beneficiariesData)}
                 </Grid.Row>
             )
             : (
