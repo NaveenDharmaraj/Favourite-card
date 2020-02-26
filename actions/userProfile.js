@@ -404,12 +404,17 @@ const getFriendsByText = (dispatch, userId, searchText, pageNumber) => {
 };
 
 const getTagsByText = (dispatch, userId, searchText) => {
+    const bodyData = {
+        text: searchText,
+    };
     const fsa = {
         payload: {
         },
         type: actionTypes.USER_PROFILE_FIND_TAGS,
     };
-    return graphApi.get(`/recommend/searchtags?userid=${Number(userId)}&text=${searchText}&skip=&limit=10&sort=asc`).then(
+    // temporarily using search api to get tags
+    // return graphApi.get(`/recommend/searchtags?userid=${Number(userId)}&text=${searchText}&skip=&limit=10&sort=asc`).then(
+    return searchApi.post(`/tags`, bodyData).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
