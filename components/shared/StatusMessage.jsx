@@ -22,6 +22,7 @@ const iconMap = {
     warning: 'exclamation',
 };
 const types = Object.keys(iconMap);
+let timer = null;
 
 class StatusMessage extends Component {
     constructor(props) {
@@ -29,9 +30,19 @@ class StatusMessage extends Component {
         this.handleDismiss = this.handleDismiss.bind(this);
     }
 
+    componentDidMount() {
+        timer = setTimeout(() => {
+            this.handleDismiss();
+        }, 5000);
+    }
+
+    componentWillUnmount() {
+        clearTimeout(timer);
+    }
+
     handleDismiss() {
         dismissUxCritialErrors(this.props.error, this.props.dispatch);
-    };
+    }
 
     render() {
         const {
