@@ -30,6 +30,7 @@ const {
     AUTH0_DOMAIN,
     AUTH0_WEB_CLIENT_ID,
     AUTH0_WEB_AUDIENCE,
+    BRANCH_IO_KEY,
 } = publicRuntimeConfig;
 
 /**
@@ -428,6 +429,14 @@ const _handleLockSuccess = async ({
             // console.log('setting wp access token');
             await (auth0.wpAccessToken = accessToken);
             await (auth0.wpUserId = userId);
+        }
+        // Intializing Branch io functionalities to window object
+        if (branch) {
+            branch.init(BRANCH_IO_KEY, (_err, data) => {
+                if (data) {
+                    branch.setIdentity(userId);
+                }
+            });
         }
         await (auth0.returnProps = null);
         await (auth0.accessToken = accessToken);
