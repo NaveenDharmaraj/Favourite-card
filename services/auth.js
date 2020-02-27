@@ -422,7 +422,7 @@ const _handleLockSuccess = async ({
     } = returnProps;
     if (!accessToken || !idToken) { return null(); }
     // Sets access token and expiry time in cookies
-    chimpLogin(accessToken).then(async ({ currentUser }) => {
+    chimpLogin(accessToken, returnProps).then(async ({ currentUser }) => {
         const userId = parseInt(currentUser, 10);
         if (document) {
             // console.log('setting wp access token');

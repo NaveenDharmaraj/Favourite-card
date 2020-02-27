@@ -1,4 +1,5 @@
 import _isEmpty from 'lodash/isEmpty';
+import Bowser from 'bowser';
 
 const isFalsy = (val) => {
     const falsyArray = [
@@ -129,6 +130,63 @@ const getMainNavItems = (accountType, slug) => {
     return menuLinks;
 }
 
+const isValidBrowser = (userAgent) => {
+    const browser = Bowser.getParser(userAgent);
+    const isvalid = browser.satisfies({
+        Linux: {
+            Chrome: '>67',
+            Chromium: '>67',
+            Firefox: '>58',
+            'Microsoft Edge': '>17',
+            safari: '>11',
+        },
+        macos: {
+            Chrome: '>67',
+            Chromium: '>67',
+            Firefox: '>58',
+            'Microsoft Edge': '>17',
+            safari: '>11',
+        },
+        mobile: {
+            android: {
+                Chrome: '>67',
+                Chromium: '>67',
+                Firefox: '>58',
+                'Microsoft Edge': '>17',
+            },
+            iOS: {
+                Chrome: '>67',
+                Chromium: '>67',
+                Firefox: '>58',
+                'Microsoft Edge': '>17',
+                safari: '>10',
+            },
+        },
+        tablet: {
+            android: {
+                Chrome: '>67',
+                Chromium: '>67',
+                Firefox: '>58',
+                'Microsoft Edge': '>17',
+            },
+            iOS: {
+                Chrome: '>67',
+                Chromium: '>67',
+                Firefox: '>58',
+                'Microsoft Edge': '>17',
+                safari: '>10',
+            },
+        },
+        Windows: {
+            Chrome: '>67',
+            Chromium: '>67',
+            Firefox: '>58',
+            'Microsoft Edge': '>17',
+        },
+    });
+    return !isvalid;
+};
+
 export {
     getMainNavItems,
     isFalsy,
@@ -136,4 +194,5 @@ export {
     renderText,
     renderTextByCharacter,
     redirectIfNotUSer,
+    isValidBrowser,
 };
