@@ -38,6 +38,10 @@ import noDataggFavourites from '../../../static/images/favourites_nodata_illustr
 import PrivacySetting from '../../shared/Privacy';
 
 class Favorites extends React.Component {
+    static changeButtonState(event) {
+        event.target.disabled = true;
+    }
+
     constructor(props) {
         super(props);
         this.state = {
@@ -48,7 +52,6 @@ class Favorites extends React.Component {
         };
         this.handleSeeMore = this.handleSeeMore.bind(this);
         this.callRemoveFav = this.callRemoveFav.bind(this);
-        this.changeButtonState = this.changeButtonState.bind(this);
     }
 
     componentDidMount() {
@@ -206,9 +209,8 @@ class Favorites extends React.Component {
                                             </Header>
                                             <Link className="lnkChange" route={`/${route}/${slug}`}>
                                                 <Button
-                                                    disabled={buttonState}
                                                     className="btn-small-white-border"
-                                                    onClick={this.changeButtonState}
+                                                    onClick={Favorites.changeButtonState}
                                                 >
                                                     View
                                                 </Button>
@@ -249,12 +251,6 @@ class Favorites extends React.Component {
                 loader: true,
             });
         }
-    }
-
-    changeButtonState() {
-        this.setState({
-            buttonState: true,
-        });
     }
 
     renderSeeMore() {
