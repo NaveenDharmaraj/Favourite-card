@@ -98,16 +98,15 @@ const PrivacyOptions = (props) => {
                             className="privacy-header"
                             htmlFor="privacyShareEmail"
                         >
-                            { (!showGgAndCampaignMsg)  && (
+                            { (!showGgAndCampaignMsg) && (
                                     formatMessage(`privacyOptions:forGiving${giveToType}OrganizersLabel`)
                                 )
                             }
                             {
-                                (showGgAndCampaignMsg)  && (
+                                (showGgAndCampaignMsg) && (
                                     <Fragment>
                                         { formatMessage(`privacyOptions:forGivingGroupAndCampaignOrganizersLabel`) }
-                                        <br/>
-                                        <span className="font-w-normal">This group supports a campaign—organizers of both will see the info you share.</span>
+                                        <div className="font-w-normal mb-1-2">This group supports a campaign—organizers of both will see the info you share.</div>
                                     </Fragment>
                                 )
                             }

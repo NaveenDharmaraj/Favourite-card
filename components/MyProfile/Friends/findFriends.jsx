@@ -121,6 +121,7 @@ class FindFriends extends React.Component {
                 id,
                 attributes: {
                     avatar,
+                    displayName,
                     email,
                     firstName,
                 },
@@ -133,7 +134,7 @@ class FindFriends extends React.Component {
             searchWord,
         } = this.state;
         if (btnData === 'addfriend') {
-            sendFriendRequest(dispatch, id, email, avatar, firstName, userData, searchWord, currentActivePage, userFindFriendsList).then(() => {
+            sendFriendRequest(dispatch, id, email, avatar, firstName, displayName, userData, searchWord, currentActivePage, userFindFriendsList).then(() => {
                 this.setState({
                     errorMessage: null,
                     successMessage: 'Add Friend request sent successfully.',
@@ -148,7 +149,7 @@ class FindFriends extends React.Component {
                 });
             });
         } else if (btnData === 'accept') {
-            acceptFriendRequest(dispatch, id, email, avatar, firstName, userData.attributes.email_hash, userData.attributes.user_id, currentActivePage, 'FINDFRIENDS', searchWord).then(() => {
+            acceptFriendRequest(dispatch, id, email, avatar, firstName, displayName, userData.attributes.email_hash, userData.attributes.user_id, currentActivePage, 'FINDFRIENDS', searchWord).then(() => {
                 this.setState({
                     errorMessage: null,
                     successMessage: 'Friend request accepted successfully.',

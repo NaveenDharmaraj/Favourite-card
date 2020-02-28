@@ -490,7 +490,7 @@ function searchFriendsObj(friendList, toSearch) {
     return friendList;
 }
 
-const sendFriendRequest = (dispatch, sourceUserId, sourceEmail, avatar, firstName, userData, searchWord, pageNumber, userFindFriendsList) => {
+const sendFriendRequest = (dispatch, sourceUserId, sourceEmail, avatar, firstName, displayName, userData, searchWord, pageNumber, userFindFriendsList) => {
     const fsa = {
         payload: {
         },
@@ -502,6 +502,7 @@ const sendFriendRequest = (dispatch, sourceUserId, sourceEmail, avatar, firstNam
                 recipient_email_id: Buffer.from(userData.attributes.email_hash, 'base64').toString('ascii'),
                 recipient_user_id: Number(userData.attributes.user_id),
                 requester_avatar_link: avatar,
+                requester_display_name: displayName,
                 requester_email_id: sourceEmail,
                 requester_first_name: firstName,
                 requester_user_id: Number(sourceUserId),
@@ -536,7 +537,7 @@ const sendFriendRequest = (dispatch, sourceUserId, sourceEmail, avatar, firstNam
     return sendFriendRequestResponse;
 };
 
-const acceptFriendRequest = (dispatch, sourceUserId, sourceEmailId, sourceAvatar, sourceFirstName, destinationEmailId, destinationUserId, pageNumber, pageName, searchWord) => {
+const acceptFriendRequest = (dispatch, sourceUserId, sourceEmailId, sourceAvatar, sourceFirstName, sourceDisplayName, destinationEmailId, destinationUserId, pageNumber, pageName, searchWord) => {
     const fsa = {
         payload: {
         },
@@ -546,6 +547,7 @@ const acceptFriendRequest = (dispatch, sourceUserId, sourceEmailId, sourceAvatar
         data: {
             attributes: {
                 acceptor_avatar_link: sourceAvatar,
+                acceptor_display_name: sourceDisplayName,
                 acceptor_email_id: sourceEmailId,
                 acceptor_first_name: sourceFirstName,
                 acceptor_user_id: Number(sourceUserId),

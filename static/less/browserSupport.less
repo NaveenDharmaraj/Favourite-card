@@ -1,0 +1,146 @@
+.browserSupport{
+    position: relative;
+    padding: 90px 0px;
+    overflow: hidden;
+    @media (max-width: 1024px){
+        overflow: hidden;
+    }
+    &::before{
+        content: '';
+        position: absolute;
+        top: 55px;
+        right: -150px;
+        height: 916.93px;	width: 905.13px;
+        background-image: url(../images/backrgound-shape.png);
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-position: center;
+        @media (max-width: 991px){
+            right: -100px;
+            height: 516.93px;
+            width: 505.13px;
+            bottom: -200px;
+            top: auto;
+        }
+        @media (max-width: 767px){
+            right: -285px;
+            height: 616.93px;
+            width: 605.13px;
+            bottom: -288px;
+            top: auto;
+        }
+    }
+    .browserLeftContent{
+        max-width: 635px;
+        h2{
+            &.ui{
+                &.header{
+                    font-size: 42px;
+                    line-height: 52px;
+                    font-family: 'ProximaNova-Medium';
+                    letter-spacing: 1.2px;
+                    @media (max-width: 767px){
+                        text-align: left;
+                    }
+                    .sub{
+                        &.header{
+                            font-family: 'ProximaNova-Regular';
+                            font-size: 24px;
+                            line-height: 29px;
+                            max-width: 635px;
+                            margin-top: 20px;
+                            margin-bottom: 20px;
+                            letter-spacing: 0px;
+                            @media (max-width: 767px){
+                                text-align: left;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        p{
+            font-size: 16px;
+            margin-bottom: 1rem;
+            max-width: 450px;
+            line-height: 20px;
+            @media (max-width: 767px){
+                text-align: left;
+            }
+        }
+    }
+    .browsersList{
+        margin: 0px;
+        padding: 0px;
+        list-style: none;
+        li{
+            display: inline-block;
+            min-width: 90px;
+            padding-right: 40px;
+            margin-bottom: 20px;
+            @media (max-width: 543px){
+                display: block;
+            }
+            a{
+                display: block;
+                text-align: center;
+                text-decoration: underline;
+                img{
+                    margin: 0px auto;
+                    text-align: center;
+                    margin-bottom: 10px;
+                }
+            }
+        }
+    }
+    .browserSupportWraper{
+        display: flex;
+        width: 100%;
+        position: relative;
+    }
+    .browserHelp{
+        margin-top: 60px;
+        font-size: 16px;
+        a{
+            text-decoration: underline;
+        }
+    }
+    .browserRightImage{
+        -webkit-box-flex: 1;
+        -ms-flex-positive: 1;
+        flex-grow: 1;
+        img{
+            position: absolute;
+            height: 248px;	width: 334px;
+            top: 0;
+            bottom: 0;
+            margin: auto;
+            right: -100px;
+            @media (max-width: 1199px){
+                top: auto;
+                bottom: -60px;
+                height: auto;	width: 300px;
+            }
+            @media (max-width: 991px){
+                height: 178px;
+                width: 240px;
+                bottom: -165px;
+                right: -60px;
+            }
+            @media (max-width: 767px){
+                display: none !important;
+            }
+        }
+    }
+}
+.pushable{
+    &.c-m-default-header{
+        .pusher{
+            >div{
+                &:nth-child(2){
+                    min-height: auto !important;
+                }
+            }
+        }
+    }
+}
