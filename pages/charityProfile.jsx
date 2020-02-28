@@ -8,6 +8,8 @@ import {
 import _isEmpty from 'lodash/isEmpty';
 import _join from 'lodash/join';
 import _slice from 'lodash/slice';
+import _map from 'lodash/map';
+import _property from 'lodash/property';
 import getConfig from 'next/config';
 
 import {
@@ -66,7 +68,8 @@ class CharityProfile extends React.Component {
             title = `${name} | ${province}`;
         }
         const charityDescription = !_isEmpty(description) ? description : title;
-        const keywords = (causes.length > 0) ? _join(_slice(causes, 0, 10), ', ') : '';
+        const causesList = (causes.length > 0) ? _map(causes, _property('name')) : [];
+        const keywords = (causesList.length > 0) ? _join(_slice(causesList, 0, 10), ', ') : '';
         const url = `${APP_URL_ORIGIN}/charities/${slug}`;
         return (
             <Layout

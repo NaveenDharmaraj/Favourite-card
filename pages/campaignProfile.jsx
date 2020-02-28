@@ -71,7 +71,8 @@ class CampaignProfile extends React.Component {
         } = this.props;
 
         const description = (!_.isEmpty(about)) ? about : name;
-        const keywords = (causes.length > 0) ? _.join(_.slice(causes, 0, 10), ', ') : '';
+        const causesList = (causes.length > 0) ? _.map(causes, _.property('name')) : [];
+        const keywords = (causesList.length > 0) ? _.join(_.slice(causesList, 0, 10), ', ') : '';
         const url = `${APP_URL_ORIGIN}/charities/${slug}`;
         if (!slugApiErrorStats) {
             return (
