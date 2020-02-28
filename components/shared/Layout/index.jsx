@@ -112,9 +112,12 @@ class Layout extends React.Component {
             return null;
         }
         const{
+            avatar,
             title,
             description,
             isMobile,
+            keywords,
+            url,
         } = this.props;
         const userEmail = this.props.userInfo ? this.props.userInfo.attributes.email : "";
         const userAvatar = this.props.userInfo ? this.props.userInfo.attributes.avatar : "";
@@ -129,7 +132,12 @@ class Layout extends React.Component {
                        {title}
                     </title>
                     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-                    <meta name="description" content={description}/>
+                    <meta name="description" content={description.substring(0, 150)}/>
+                    <meta name="keywords" content={keywords} />
+                    <meta property="og:title" content={title} />
+                    <meta property="og:url" content={url} />
+                    <meta property="og:image" content={avatar} />
+                    <meta property="og:description" content={description.substring(0, 150)}/>
                     <link rel="icon" type="image/x-icon" href="https://d1wjn4fmcgu4dn.cloudfront.net/web/favicon.ico" />
                     <link rel="manifest" href="/static/Manifest.json" />
                     <link
