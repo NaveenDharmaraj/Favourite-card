@@ -45,7 +45,6 @@ class Favorites extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            buttonState: false,
             favoritesLoader: !props.favorites,
             loader: false,
             pageSize: 9,
@@ -116,9 +115,6 @@ class Favorites extends React.Component {
         const {
             favorites,
         } = this.props;
-        const {
-            buttonState,
-        } = this.state;
         let favoritesList = (
             <Grid.Column width={16}>
                 <div className="favouritesNoData noData mt-1 mb-2">
