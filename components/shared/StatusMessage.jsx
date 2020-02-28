@@ -13,6 +13,8 @@ import {
     Icon,
     Message,
 } from 'semantic-ui-react';
+import getConfig from 'next/config';
+
 import { dismissUxCritialErrors } from '../../actions/error';
 
 const iconMap = {
@@ -23,6 +25,10 @@ const iconMap = {
 };
 const types = Object.keys(iconMap);
 let timer = null;
+const { publicRuntimeConfig } = getConfig();
+const {
+    TOAST_MESSAGE_TIMEOUT,
+} = publicRuntimeConfig;
 
 class StatusMessage extends Component {
     constructor(props) {
@@ -33,7 +39,7 @@ class StatusMessage extends Component {
     componentDidMount() {
         timer = setTimeout(() => {
             this.handleDismiss();
-        }, 5000);
+        }, TOAST_MESSAGE_TIMEOUT);
     }
 
     componentWillUnmount() {
