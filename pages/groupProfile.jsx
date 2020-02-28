@@ -2,10 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import {
+    array,
     string,
     bool,
     func,
 } from 'prop-types';
+import getConfig from 'next/config';
 
 import {
     getGroupFromSlug,
@@ -55,13 +57,22 @@ class GroupProfile extends React.Component {
     }
 
     render() {
+        const { publicRuntimeConfig } = getConfig();
+
+        const {
+            APP_URL_ORIGIN,
+        } = publicRuntimeConfig;
+
         const {
             groupDetails: {
                 attributes: {
+                    avatar,
+                    causes,
                     description,
                     location,
                     name,
                     isCampaign,
+                    slug,
                 },
             },
             redirectToDashboard,
@@ -71,10 +82,18 @@ class GroupProfile extends React.Component {
             title = `${name} | ${location}`;
         }
         const desc = (!_.isEmpty(description)) ? description : title;
+        const keywords = (causes.length > 0) ? _.join(_.slice(causes, 0, 10), ', ') : '';
+        const url = `${APP_URL_ORIGIN}/charities/${slug}`;
 
         if (isCampaign !== true) {
             return (
-                <Layout title={title} description={desc}>
+                <Layout
+                    avatar={avatar}
+                    keywords={keywords}
+                    title={title}
+                    description={desc}
+                    url={url}
+                >
                     {!redirectToDashboard
                         ? <GroupProfileWrapper {...this.props} />
                         : Router.push('/search')}
@@ -89,9 +108,13 @@ GroupProfile.defaultProps = {
     dispatch: func,
     groupDetails: {
         attributes: {
+            avatar: '',
+            causes: [],
             description: '',
+            isCampaign: true,
             location: '',
             name: '',
+            slug: '',
         },
     },
     isAUthenticated: false,
@@ -103,9 +126,13 @@ GroupProfile.propTypes = {
     dispatch: _.noop,
     groupDetails: {
         attributes: {
+            avatar: string,
+            causes: array,
             description: string,
+            isCampaign: bool,
             location: string,
             name: string,
+            slug: string,
         },
     },
     isAUthenticated: bool,
