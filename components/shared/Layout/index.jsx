@@ -34,7 +34,7 @@ const {
 
 const getWidth = () => {
     const isSSR = typeof window === 'undefined';
-    return isSSR ? Responsive.onlyTablet.minWidth : window.innerWidth
+    return isSSR ? 1000 : window.innerWidth
 };
 
 
@@ -114,12 +114,14 @@ class Layout extends React.Component {
         const{
             title,
             description,
+            isMobile,
         } = this.props;
         const userEmail = this.props.userInfo ? this.props.userInfo.attributes.email : "";
         const userAvatar = this.props.userInfo ? this.props.userInfo.attributes.avatar : "";
         const userDisplayName = this.props.userInfo ? this.props.userInfo.attributes.displayName : "";
         const userFirstName = this.props.userInfo ? this.props.userInfo.attributes.firstName : "";
         const userLastName = this.props.userInfo ? this.props.userInfo.attributes.lastName : "";
+        const widthProp = (!isMobile) ? {getWidth: getWidth} : {};
         return (
             <Responsive getWidth={getWidth}>
                 <Head>
@@ -155,7 +157,7 @@ class Layout extends React.Component {
                 </Head>
                 <div>
                     <ErrorBoundary>
-                        <Responsive minWidth={320} maxWidth={991}>
+                        <Responsive {...widthProp} minWidth={320} maxWidth={991}>
                             <MobileHeader isAuthenticated={isAuthenticated} onBoarding={onBoarding} isLogin={isLogin} showHeader={showHeader}>
                                 {!_.isEmpty(appErrors) &&
                                     <Container
@@ -177,7 +179,7 @@ class Layout extends React.Component {
                                 <Footer isAuthenticated={isAuthenticated}/>
                             </MobileHeader>
                         </Responsive>
-                        <Responsive minWidth={992}>
+                        <Responsive {...widthProp} minWidth={992}>
                             <Header isAuthenticated={isAuthenticated} onBoarding={onBoarding} isLogin={isLogin} showHeader={showHeader}/>
                                 {!_.isEmpty(appErrors) &&
                                     <Container
@@ -238,6 +240,7 @@ Layout.propTypes = {
 function mapStateToProps(state) {
     return {
         isAuthenticated: state.auth.isAuthenticated,
+        isMobile: state.app.isMobile,
         userInfo: state.user.info,
         appErrors: state.app.errors,
         currentUser: state.user.info,
