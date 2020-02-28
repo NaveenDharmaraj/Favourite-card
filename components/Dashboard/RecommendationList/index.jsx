@@ -25,6 +25,10 @@ import PlaceholderGrid from '../../shared/PlaceHolder';
 import { renderTextByCharacter } from '../../../helpers/utils';
 
 class RecommendationList extends React.Component {
+    static changeButtonState(event) {
+        event.target.disabled = true;
+    }
+
     constructor(props) {
         super(props);
         this.state = {
@@ -32,7 +36,6 @@ class RecommendationList extends React.Component {
             recommendationListLoader: !props.recommendationData,
         };
         this.handleHideClick = this.handleHideClick.bind(this);
-        this.changeButtonState = this.changeButtonState.bind(this);
     }
 
     componentDidMount() {
@@ -75,12 +78,6 @@ class RecommendationList extends React.Component {
             hideEntityId = data.attributes.group_id;
         }
         hideRecommendations(dispatch, id, hideEntityId, data.attributes.type);
-    }
-
-    changeButtonState() {
-        this.setState({
-            buttonState: true,
-        });
     }
 
     recommendationList() {
@@ -157,9 +154,8 @@ class RecommendationList extends React.Component {
                                             </Header>
                                             <Link className="lnkChange" route={`/${urlEntity}/${data.attributes.slug}`}>
                                                 <Button
-                                                    disabled={buttonState}
                                                     className="btn-small-white-border"
-                                                    onClick={this.changeButtonState}
+                                                    onClick={RecommendationList.changeButtonState}
                                                 >
                                                 View
                                                 </Button>
