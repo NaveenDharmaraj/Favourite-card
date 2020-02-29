@@ -25,6 +25,7 @@ import _merge from 'lodash/merge';
 import _replace from 'lodash/replace';
 import _cloneDeep from 'lodash/cloneDeep';
 import ReactHtmlParser from 'react-html-parser';
+import _ from 'lodash';
 
 import {
     formatCurrency,

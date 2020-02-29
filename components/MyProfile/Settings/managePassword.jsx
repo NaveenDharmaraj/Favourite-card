@@ -32,7 +32,7 @@ class ManagePassword extends React.Component {
             errorMessage: null,
             statusMessage: false,
             successMessage: '',
-            authId: this.getAuthId(),
+            // authId: this.getAuthId(),
             confirmButtonClicked: false,
             confirmPasswordModal: false,
             password: '',
@@ -44,6 +44,10 @@ class ManagePassword extends React.Component {
         this.handlePasswordChange = this.handlePasswordChange.bind(this);
         this.handleCancelButton = this.handleCancelButton.bind(this);
         this.handleRedirectOkClick = this.handleRedirectOkClick.bind(this);
+    }
+
+    componentDidMount() {
+        this.setState({ authId: this.getAuthId() });
     }
 
     // eslint-disable-next-line class-methods-use-this
