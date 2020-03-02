@@ -64,7 +64,6 @@ class StatusMessage extends Component {
         const props = {
             className: 'status-message',
             compact,
-            onDismiss: this.handleDismiss,
             [type]: true,
         };
         if (hasList) {

@@ -4973,27 +4973,51 @@ body{
   line-height: 14/@rem;
   font-weight: 400;
 }
+.ui.attached.success.message, .ui.success.message{
+  border: none !important;
+}
+.statusMsgWraper{
+  position: fixed;
+  z-index: 9999;
+  right:19%;
+  @media only screen and (max-width:991px){
+    top: 85px;
+  }
+}
 .status-message-container{
-  text-align: center;
-  -webkit-box-pack: center;
-  -ms-flex-pack: center;
-  justify-content: center;
+  margin-bottom: 5px;
   .chimp-center-msg{
     &.ui{
       &.message{
-        margin-bottom: 1rem; 
+        margin-bottom: 1rem;
+        background-color: #fff;
+        height: 81px;
+        width: 335px !important;
+        box-shadow: 0 2px 7px 0 rgba(135,135,135,0.3);
+        border-radius: 10px;
       }
       &.icon{
         text-align: left;
         width: auto;
         padding: 15/@rem 40/@rem 15/@rem 30/@rem;
-        
+        &.status-icon{
+          color: #000;
+        }
+        .content{
+          color: #263238;
+          font-size: 14px;
+          line-height: 17px;
+        }
         .header{
           margin-bottom: 5/@rem;
         }
       }
     }
   }
+}
+i.check.circle.icon.status-icon {
+  font-size:17px !important;
+  color: #0CC965;
 }
 .error-message {
   color: #FF0000;

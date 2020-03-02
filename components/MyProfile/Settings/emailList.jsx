@@ -179,7 +179,7 @@ class EmailList extends React.Component {
                     <div className="settingsDetailWraper heading brdr-btm pb-1 pt-2 pMethodHead">
                         <Grid verticalAlign="middle">
                             <Grid.Row>
-                                <Grid.Column mobile={16} tablet={11} computer={11}>
+                                <Grid.Column mobile={16} tablet={16} computer={11}>
                                     <div className="pt-1">
                                         <Header as="h4">Email addresses </Header>
                                         <p>
@@ -189,7 +189,7 @@ class EmailList extends React.Component {
                                         </p>
                                     </div>
                                 </Grid.Column>
-                                <Grid.Column mobile={16} tablet={5} computer={5}>
+                                <Grid.Column mobile={16} tablet={16} computer={5}>
                                     <div className="right-align">
                                         <Modal
                                             onClose={this.closeAddEmailModal}
