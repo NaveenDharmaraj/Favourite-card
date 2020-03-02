@@ -43,10 +43,10 @@ const renderChildWithProps = (props, stepIndex, flowSteps) => {
                     stepIndex={_.indexOf(flowSteps, props.step)}
                 />);
             }
-            else{
+            else if (typeof window !== 'undefined'){
                 Router.pushRoute('/dashboard');
-                break;
             }
+            break;
         case "review" :
             if(!_.isEmpty(props.flowObject)){
                 return (<Review
@@ -57,10 +57,10 @@ const renderChildWithProps = (props, stepIndex, flowSteps) => {
                     slug={props.slug}
                 />);
             }
-            else{
+            else if (typeof window !== 'undefined'){
                 Router.pushRoute('/dashboard');
-                break;
             }
+            break;
         case "success" :
             if(!_.isEmpty(props.flowObject)){
                 return (<Success 
@@ -68,10 +68,10 @@ const renderChildWithProps = (props, stepIndex, flowSteps) => {
                     flowObject={props.flowObject}
                 />);
             }
-            else{
+            else if (typeof window !== 'undefined'){
                 Router.pushRoute('/dashboard');
-                break;
             }
+            break;
         case "error" :
             return (<Error 
                 dispatch={props.dispatch}

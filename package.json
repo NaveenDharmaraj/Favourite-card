@@ -29,6 +29,7 @@
     "less": "^3.9.0",
     "lodash": "^4.17.11",
     "logdna": "^3.3.0",
+    "mobile-detect": "^1.4.4",
     "next": "^8.1.0",
     "next-compose-plugins": "^2.2.0",
     "next-i18next": "^0.44.0",
