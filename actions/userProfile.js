@@ -17,7 +17,6 @@ import {
 } from './user';
 import {
     triggerUxCritialErrors,
-    dismissAllUxCritialErrors,
 } from './error';
 
 // eslint-disable-next-line import/exports-last
@@ -1199,7 +1198,6 @@ const createUserEmailAddress = async (dispatch, emailId, userId) => {
         message: 'Email address added',
         type: 'success',
     };
-    dismissAllUxCritialErrors(dispatch);
     await coreApi.post(`emailAddresses`, bodyData).then((result) => {
         if (result && !_.isEmpty(result.data)) {
             getEmailList(dispatch, userId);
@@ -1230,7 +1228,6 @@ const deleteUserEmailAddress = (dispatch, userEmailId, userId) => {
         message: 'Email address removed',
         type: 'success',
     };
-    dismissAllUxCritialErrors(dispatch);
     coreApi.delete(`emailAddresses/${userEmailId}`, {
         params: {
             dispatch,
@@ -1269,7 +1266,6 @@ const resendUserVerifyEmail = (dispatch, userEmailId, userId) => {
         message: 'Verification email sent',
         type: 'success',
     };
-    dismissAllUxCritialErrors(dispatch);
     coreApi.get(`emailAddresses/${userEmailId}/resendVerify`, {
         params: {
             dispatch,
