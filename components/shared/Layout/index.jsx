@@ -22,6 +22,7 @@ import StatusMessage from '../StatusMessage';
 import _ from 'lodash';
 import '../../../static/less/header.less';
 import '../../../static/less/style.less';
+import { isValidBrowser } from '../../../helpers/utils';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -48,7 +49,10 @@ class Layout extends React.Component {
             isAuthenticated,
             userInfo
         } = this.props;
-
+        //re-route the app to /browser if browser version is unsupported
+        if (window && isValidBrowser(window.navigator.userAgent)) {
+            Router.pushRoute('/browser');
+        }
         // if the user didnt setup any causes then redirect to causes selection page
         if  (!_.isEmpty(userInfo) && !addCauses) {
             const {
