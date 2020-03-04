@@ -340,15 +340,16 @@ class ChatWrapper extends React.Component {
             params["imageUrl"] = CHAT_GROUP_DEFAULT_AVATAR;
         }
         params["metadata"] = {
-            "CREATE_GROUP_MESSAGE": "",
-            "REMOVE_MEMBER_MESSAGE": "",
-            "ADD_MEMBER_MESSAGE": "",
-            "JOIN_MEMBER_MESSAGE": "",
-            "GROUP_NAME_CHANGE_MESSAGE": "",
-            "GROUP_ICON_CHANGE_MESSAGE": "",
-            "GROUP_LEFT_MESSAGE": "",
-            "DELETED_GROUP_MESSAGE": "",
-            "HIDE": "true"
+            "CREATE_GROUP_MESSAGE": ":adminName created group",
+            "REMOVE_MEMBER_MESSAGE": ":userName removed",
+            "ADD_MEMBER_MESSAGE": ":userName added",
+            "JOIN_MEMBER_MESSAGE": ":userName joined",
+            "GROUP_NAME_CHANGE_MESSAGE": "Group renamed to :groupName",
+            "GROUP_ICON_CHANGE_MESSAGE": ":groupName icon changed",
+            "GROUP_LEFT_MESSAGE": ":userName left",
+            "DELETED_GROUP_MESSAGE": ":groupName deleted",
+            "HIDE": "true",
+            "ALERT": "false",
         };
         self.setLoading(true);
         applozicApi.post("/group/v2/create", params).then(function (response) {
