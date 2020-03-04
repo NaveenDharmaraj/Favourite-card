@@ -1127,7 +1127,14 @@ const searchLocationByUserInput = (searchText) => (dispatch) => {
         type: actionTypes.USER_PROFILE_LOCATION_SEARCH_LOADER,
     });
     const cityArr = [];
-    return searchApi.get(`/autocomplete/uniquecities?query='${searchText}'&page[number]=1&page[size]=999`).then(
+    const config = {
+        params: {
+            'page[number]': 1,
+            'page[size]': 999,
+            query: searchText,
+        },
+    };
+    return searchApi.get('/autocomplete/uniquecities', config).then(
         (result) => {
             if (result.data && result.data.length >= 1) {
                 const {
