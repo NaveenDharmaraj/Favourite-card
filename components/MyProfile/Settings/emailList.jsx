@@ -38,12 +38,13 @@ class EmailList extends React.Component {
             emailId: '',
             showAddEmailModal: false,
             validEmailAddress: false,
+            validity: this.intializeValidations(),
         };
         this.renderEmailList = this.renderEmailList.bind(this);
+        this.handleOnBlur = this.handleOnBlur.bind(this);
         this.handleOnChange = this.handleOnChange.bind(this);
         this.handleEmailSubmit = this.handleEmailSubmit.bind(this);
         this.closeAddEmailModal = this.closeAddEmailModal.bind(this);
-        this.getUpdatedList = this.getUpdatedList.bind(this);
     }
 
     componentDidMount() {
@@ -56,17 +57,25 @@ class EmailList extends React.Component {
         getEmailList(dispatch, userId);
     }
 
-    async getUpdatedList() {
+    componentDidUpdate(prevProps) {
         const {
-            dispatch,
-            userInfo: {
-                id: userId,
-            },
+            showEmailError,
         } = this.props;
-        const {
-            emailId,
-        } = this.state;
-        await createUserEmailAddress(dispatch, emailId, userId);
+        if (!_.isEqual(this.props, prevProps)) {
+            if (!showEmailError) {
+                this.closeAddEmailModal();
+            }
+        }
+    }
+
+    intializeValidations() {
+        this.validity = {
+            isEmailIdNotNull: true,
+            isEmailIdValid: true,
+            isEmailLengthInLimit: true,
+            isEmailValidFormat: true,
+        };
+        return this.validity;
     }
 
     handleOnChange(event) {
@@ -75,14 +84,9 @@ class EmailList extends React.Component {
                 value,
             },
         } = event;
-        let validity = {
-            isEmailIdNotNull: true,
-            isEmailIdValid: true,
-            isEmailLengthInLimit: true,
-            isEmailValidFormat: true,
-        };
-        validity = validateUserRegistrationForm('emailId', value, validity);
-        if (validity.isEmailIdValid) {
+        let validEmail = this.intializeValidations();
+        validEmail = validateUserRegistrationForm('emailId', value, validEmail);
+        if (validEmail.isEmailIdValid) {
             this.setState({
                 validEmailAddress: true,
             });
@@ -96,35 +100,35 @@ class EmailList extends React.Component {
         });
     }
 
+    handleOnBlur(event) {
+        const {
+            target: {
+                value,
+            },
+        } = event;
+        let {
+            validity,
+        } = this.state;
+        validity = this.intializeValidations();
+        validity = validateUserRegistrationForm('emailId', value, validity);
+        this.setState({
+            validity,
+        });
+    }
+
     handleEmailSubmit() {
         const {
             dispatch,
+            userInfo: {
+                id: userId,
+            },
         } = this.props;
         const {
+            validity,
             emailId,
         } = this.state;
-        let validity = {
-            isEmailIdNotNull: true,
-            isEmailIdValid: true,
-            isEmailLengthInLimit: true,
-            isEmailValidFormat: true,
-        };
-        validity = validateUserRegistrationForm('emailId', emailId, validity);
         if (validity.isEmailIdValid) {
-            dispatch({
-                payload: {
-                    showEmailError: false,
-                },
-                type: actionTypes.USER_PROFILE_ADD_DUPLICATE_EMAIL_ERROR,
-            });
-            this.getUpdatedList().then(() => {
-                this.setState({ emailId: '' });
-                if (!this.props.showEmailError) {
-                    this.closeAddEmailModal();
-                }
-            });
-        } else {
-            this.setState({ validEmailAddress: false });
+            createUserEmailAddress(dispatch, emailId, userId);
         }
     }
 
@@ -132,10 +136,18 @@ class EmailList extends React.Component {
         const {
             dispatch,
         } = this.props;
+        let {
+            validity,
+        } = this.state;
+        validity = this.intializeValidations();
+        this.setState({
+            validity,
+        });
         this.setState({
             emailId: '',
             showAddEmailModal: false,
             validEmailAddress: false,
+            validity,
         });
         dispatch({
             payload: {
@@ -172,6 +184,7 @@ class EmailList extends React.Component {
             emailId,
             showAddEmailModal,
             validEmailAddress,
+            validity,
         } = this.state;
         return (
             <div>
@@ -239,6 +252,7 @@ class EmailList extends React.Component {
                                                             <input
                                                                 placeholder="Email address"
                                                                 value={emailId}
+                                                                onBlur={this.handleOnBlur}
                                                                 onChange={this.handleOnChange}
                                                             />
                                                         </Form.Field>
@@ -246,6 +260,21 @@ class EmailList extends React.Component {
                                                             className="mt-0"
                                                             condition={showEmailError}
                                                             errorMessage={errorMessageTitle}
+                                                        />
+                                                        <FormValidationErrorMessage
+                                                            className="mt-0"
+                                                            condition={!validity.isEmailIdNotNull}
+                                                            errorMessage="Please enter your email address"
+                                                        />
+                                                        <FormValidationErrorMessage
+                                                            className="mt-0"
+                                                            condition={!validity.isEmailValidFormat}
+                                                            errorMessage="Please enter a valid email address"
+                                                        />
+                                                        <FormValidationErrorMessage
+                                                            className="mt-0"
+                                                            condition={!validity.isEmailLengthInLimit && validity.isEmailIdNotNull}
+                                                            errorMessage="Email address cannot have more than 100 characters"
                                                         />
                                                     </Form>
                                                 </Modal.Description>

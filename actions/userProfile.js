@@ -1209,6 +1209,12 @@ const createUserEmailAddress = async (dispatch, emailId, userId) => {
                 },
                 type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
             });
+            dispatch({
+                payload: {
+                    showEmailError: false,
+                },
+                type: actionTypes.USER_PROFILE_ADD_DUPLICATE_EMAIL_ERROR,
+            });
         }
     }).catch((error) => {
         if (error.errors[0]) {
