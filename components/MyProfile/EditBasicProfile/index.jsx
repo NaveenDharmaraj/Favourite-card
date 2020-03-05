@@ -619,9 +619,12 @@ class EditBasicProfile extends React.Component {
                                 <Form.Field
                                     single
                                     control={Select}
+                                    className="locationSearchDropdown"
                                     id="location"
                                     name="location"
-                                    onClick = {(e)=>{e.target.focus()}}
+                                    onClick = {()=>{
+                                        document.querySelector('#location input').focus()
+                                    }}
                                     onChange={this.handleLocationChange}
                                     onSearchChange={this.handleLocationSearchChange}
                                     options={locationOptions}
