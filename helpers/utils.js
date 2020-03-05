@@ -128,8 +128,14 @@ const getMainNavItems = (accountType, slug) => {
         });
     }
     return menuLinks;
-}
+};
 
+/**
+ * Returns isvalid which checks version of the browser.
+ *
+ * @param {object} userAgent gives details about browser.
+ * @return {boolean} isvalid which checks version of the browser
+ */
 const isValidBrowser = (userAgent) => {
     const browser = Bowser.getParser(userAgent);
     const isvalid = browser.satisfies({
