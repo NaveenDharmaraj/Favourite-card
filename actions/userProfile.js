@@ -55,6 +55,8 @@ export const actionTypes = {
     USER_PROFILE_FRIEND_REQUEST: 'USER_PROFILE_FRIEND_REQUEST',
     USER_PROFILE_INVITATIONS: 'USER_PROFILE_INVITATIONS',
     USER_PROFILE_INVITE_FRIENDS: 'USER_PROFILE_INVITE_FRIENDS',
+    USER_PROFILE_LOCATION_SEARCH: 'USER_PROFILE_LOCATION_SEARCH',
+    USER_PROFILE_LOCATION_SEARCH_LOADER: 'USER_PROFILE_LOCATION_SEARCH_LOADER',
     USER_PROFILE_MEMBER_GROUP: 'USER_PROFILE_MEMBER_GROUP',
     USER_PROFILE_MEMBER_GROUP_LOAD_STATUS: 'USER_PROFILE_MEMBER_GROUP_LOAD_STATUS',
     USER_PROFILE_MY_FRIENDS: 'USER_PROFILE_MY_FRIENDS',
@@ -451,10 +453,12 @@ const saveUserBasicProfile = (dispatch, userData, userId, email) => {
     };
     const givingAmount = Number(userData.givingGoal) === 0 ? null : Number(userData.givingGoal);
     const bodyData = {
+        city: userData.city,
         description: userData.about,
         family_name: userData.lastName,
         given_name: userData.firstName,
         giving_goal_amt: givingAmount,
+        province: userData.province,
         user_id: Number(userId),
     };
     if (userData.displayName !== '') {
@@ -478,7 +482,7 @@ const saveUserBasicProfile = (dispatch, userData, userId, email) => {
 };
 
 function searchFriendsObj(friendList, toSearch) {
-    for (var i=0; i < friendList.data.length; i++) {
+    for (var i = 0; i < friendList.data.length; i++) {
         if (friendList.data[i].attributes.user_id === toSearch) {
             friendList.data[i].attributes.friend_status = 'PENDING_OUT';
         }
@@ -1112,6 +1116,62 @@ const removeFriend = (dispatch, sourceUserId, sourceEmail, destinationUserId) =>
     });
 };
 
+const searchLocationByUserInput = (searchText) => (dispatch) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.USER_PROFILE_LOCATION_SEARCH,
+    };
+    dispatch({
+        payload: {
+            locationLoader: true,
+        },
+        type: actionTypes.USER_PROFILE_LOCATION_SEARCH_LOADER,
+    });
+    const cityArr = [];
+    const config = {
+        params: {
+            'page[number]': 1,
+            'page[size]': 999,
+            query: searchText,
+        },
+    };
+    return searchApi.get('/autocomplete/uniquecities', config).then(
+        (result) => {
+            if (result.data && result.data.length >= 1) {
+                const {
+                    data,
+                } = result;
+                for (let i = 0; i < data.length; i++) {
+                    if (data[i].attributes && data[i].attributes.city) {
+                        const dataObj = {
+                            id: i,
+                            text: `${data[i].attributes.city},${data[i].attributes.province_name}`,
+                            value: `${data[i].attributes.city}${i}`,
+                            city: `${data[i].attributes.city}`,
+                            province: `${data[i].attributes.province_name}`
+                        };
+                        cityArr.push(dataObj);
+                    }
+                }
+            }
+            fsa.payload = {
+                data: cityArr,
+            };
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch({
+            payload: {
+                locationLoader: false,
+            },
+            type: actionTypes.USER_PROFILE_LOCATION_SEARCH_LOADER,
+        });
+        dispatch(fsa);
+    });
+};
+
 const generateDeeplinkUserProfile = (dispatch, sourceUserId, destinationUserId) => {
     const fsa = {
         payload: {
@@ -1198,4 +1258,5 @@ export {
     removeFriend,
     generateDeeplinkUserProfile,
     removeProfilePhoto,
+    searchLocationByUserInput,
 };
