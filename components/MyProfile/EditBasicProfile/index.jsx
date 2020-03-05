@@ -39,6 +39,7 @@ import {
 } from '../../../helpers/give/giving-form-validation';
 import UserPlaceholder from '../../../static/images/no-data-avatar-user-profile.png';
 
+let timeout = '';
 class EditBasicProfile extends React.Component {
     constructor(props) {
         super(props);
@@ -50,8 +51,8 @@ class EditBasicProfile extends React.Component {
             }
         } = props;
         const givingGoalAmount = (!_.isEmpty(props.userData.giving_goal_amt) || typeof props.userData.giving_goal_amt !== 'undefined') ? formatAmount(Number(props.userData.giving_goal_amt)) : '';
-        const userDataProvince = props.userData.province ? `${props.userData.city ? ',' : ''}${props.userData.province}` : '';
-        const locationString = `${props.userData.city ? props.userData.city : ''} ${userDataProvince}`;
+        const userDataProvince = props.userData.province ? `${props.userData.city ? ', ' : ''}${props.userData.province}` : '';
+        const locationString = `${props.userData.city ? props.userData.city : ''}${userDataProvince}`;
         const location = locationString ? locationString.trim() : null;
         this.state = {
             buttonClicked: true,
@@ -94,7 +95,7 @@ class EditBasicProfile extends React.Component {
         } = this.props;
         if (!_.isEqual(userData, prevProps.userData)) {
             const givingGoalAmount = typeof userData.giving_goal_amt !== 'undefined' ? formatAmount(Number(userData.giving_goal_amt)) : '';
-            const userDataProvince = userData.province ? `,${userData.province}` : '';
+            const userDataProvince = userData.province ? `${userData.city ? ', ' : ''}${props.userData.province}` : '';
             const locationString = `${userData.city ? userData.city : ''}${userDataProvince}`;
             const location = locationString ? locationString.trim() : null;
             this.setState({
@@ -399,6 +400,15 @@ class EditBasicProfile extends React.Component {
         });
     }
 
+    debounceFunction = ({dispatch, searchValue}, delay) => {
+        if(timeout){
+            clearTimeout(timeout);
+        }
+        timeout = setTimeout(function(){
+            dispatch(searchLocationByUserInput(searchValue));
+        },delay);
+    }
+
     handleLocationSearchChange(event, { searchQuery }) {
         const {
             userBasicDetails,
@@ -407,7 +417,8 @@ class EditBasicProfile extends React.Component {
             const {
                 dispatch,
             } = this.props;
-            dispatch(searchLocationByUserInput(event.target.value));
+        const params = { dispatch, searchValue: event.target.value};
+            this.debounceFunction(params, 300);
         }
         if (event.target.value.length === 0) {
             const {
