@@ -621,6 +621,7 @@ class EditBasicProfile extends React.Component {
                                     control={Select}
                                     id="location"
                                     name="location"
+                                    onClick = {(e)=>{e.target.focus()}}
                                     onChange={this.handleLocationChange}
                                     onSearchChange={this.handleLocationSearchChange}
                                     options={locationOptions}
