@@ -167,6 +167,19 @@ const userProfile = (state = {}, action) => {
                 userProfileCharitableInterestsLoadStatus: action.payload.userProfileCharitableInterestsLoadStatus,
             };
             break;
+        case 'USER_PROFILE_GET_EMAIL_LIST':
+            newState = {
+                ...state,
+                emailDetailList: action.payload.emailDetailList,
+            };
+            break;
+        case 'USER_PROFILE_ADD_DUPLICATE_EMAIL_ERROR':
+            newState = {
+                ...state,
+                errorMessageTitle: action.payload.errorMessageTitle,
+                showEmailError: action.payload.showEmailError,
+            };
+            break;
         default:
             break;
     }
