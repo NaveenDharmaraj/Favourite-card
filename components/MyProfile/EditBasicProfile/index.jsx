@@ -21,6 +21,7 @@ import {
     removeProfilePhoto,
     searchLocationByUserInput,
 } from '../../../actions/userProfile';
+import { actionTypes } from '../../../actions/userProfile';
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 import PrivacySetting from '../../shared/Privacy';
 const ModalStatusMessage = dynamic(() => import('../../shared/ModalStatusMessage'), {
@@ -427,7 +428,12 @@ class EditBasicProfile extends React.Component {
                     city,
                 }
             } = this.props;
-            dispatch(searchLocationByUserInput(""));
+            dispatch({
+                type: actionTypes.USER_PROFILE_LOCATION_SEARCH,
+                payload: {
+                    data : []
+                },
+            });
             userBasicDetails['city'] = null;
             userBasicDetails['province'] = null;
             this.setState({
