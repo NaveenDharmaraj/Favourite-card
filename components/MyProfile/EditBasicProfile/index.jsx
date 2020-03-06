@@ -626,6 +626,7 @@ class EditBasicProfile extends React.Component {
                                     single
                                     control={Select}
                                     className="locationSearchDropdown"
+                                    style={{minHeight : 'auto'}}
                                     id="location"
                                     name="location"
                                     onClick = {()=>{
