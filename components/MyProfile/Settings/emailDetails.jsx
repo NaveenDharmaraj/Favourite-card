@@ -4,6 +4,7 @@ import {
     Modal,
     List,
     Dropdown,
+    Placeholder,
 } from 'semantic-ui-react';
 import {
     connect,
@@ -99,11 +100,25 @@ class EmailDetails extends React.Component {
             email,
             isPrimary,
             verified,
+            showEmailLoader,
         } = this.props;
         const {
             showDeleteEmailModalState,
             showSetPrimaryEmailModal,
         } = this.state;
+        const emailData = (
+            <Fragment>
+                <span className="font-s-16">{email}</span>
+                {isPrimary
+                    && (
+                        <span className="primary">Primary</span>
+                    )}
+                {!verified
+                    && (
+                        <span className="pending">PENDING VERIFICATION</span>
+                    )}
+            </Fragment>
+        );
         return (
             <Fragment>
                 <List.Item>
@@ -136,15 +151,14 @@ class EmailDetails extends React.Component {
                     )}
                     <List.Content>
                         <List.Header>
-                            <span className="font-s-16">{email}</span>
-                            {isPrimary
-                            && (
-                                <span className="primary">Primary</span>
-                            )}
-                            {!verified
-                            && (
-                                <span className="pending">PENDING VERIFICATION</span>
-                            )}
+                            {showEmailLoader
+                                ? (
+                                    <Placeholder>
+                                        <Placeholder.Line length="medium" />
+                                    </Placeholder>
+                                )
+                                : emailData
+                            }
                         </List.Header>
                     </List.Content>
                 </List.Item>
@@ -196,6 +210,7 @@ EmailDetails.defaultProps = {
     email: '',
     id: '',
     isPrimary: false,
+    showEmailLoader: false,
     userInfo: {
         id: '',
     },
@@ -207,6 +222,7 @@ EmailDetails.propTypes = {
     email: PropTypes.string,
     id: PropTypes.string,
     isPrimary: PropTypes.bool,
+    showEmailLoader: PropTypes.bool,
     userInfo: PropTypes.shape({
         id: PropTypes.string,
     }),
@@ -215,6 +231,7 @@ EmailDetails.propTypes = {
 
 function mapStateToProps(state) {
     return {
+        showEmailLoader: state.userProfile.showEmailLoader,
         userInfo: state.user.info,
     };
 }

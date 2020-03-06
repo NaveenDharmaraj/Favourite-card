@@ -66,6 +66,8 @@ export const actionTypes = {
     USER_PROFILE_RECOMMENDED_TAGS: 'USER_PROFILE_RECOMMENDED_TAGS',
     USER_PROFILE_REMOVE_FRIEND: 'USER_PROFILE_REMOVE_FRIEND',
     USER_PROFILE_REMOVE_PHOTO: 'USER_PROFILE_REMOVE_PHOTO',
+    USER_PROFILE_SHOW_ADD_BUTTON_LOADER: 'USER_PROFILE_SHOW_ADD_BUTTON_LOADER',
+    USER_PROFILE_SHOW_EMAIL_LOADER: 'USER_PROFILE_SHOW_EMAIL_LOADER',
     USER_PROFILE_SIGNUP_DEEPLINK: 'USER_PROFILE_SIGNUP_DEEPLINK',
     USER_PROFILE_TAX_RECEIPTS: 'USER_PROFILE_TAX_RECEIPTS',
     USER_PROFILE_UNBLOCK_FRIEND: 'USER_PROFILE_UNBLOCK_FRIEND',
@@ -1258,6 +1260,18 @@ const createUserEmailAddress = (dispatch, emailId, userId) => {
         message: 'Email address added',
         type: 'success',
     };
+    dispatch({
+        payload: {
+            showAddButtonLoader: true,
+        },
+        type: actionTypes.USER_PROFILE_SHOW_ADD_BUTTON_LOADER,
+    });
+    dispatch({
+        payload: {
+            showEmailLoader: true,
+        },
+        type: actionTypes.USER_PROFILE_SHOW_EMAIL_LOADER,
+    });
     coreApi.post(`emailAddresses`, bodyData).then((result) => {
         if (result && !_.isEmpty(result.data)) {
             getEmailList(dispatch, userId);
@@ -1286,7 +1300,20 @@ const createUserEmailAddress = (dispatch, emailId, userId) => {
                 type: actionTypes.USER_PROFILE_ADD_DUPLICATE_EMAIL_ERROR,
             });
         }
-    }).finally();
+    }).finally(() => {
+        dispatch({
+            payload: {
+                showAddButtonLoader: false,
+            },
+            type: actionTypes.USER_PROFILE_SHOW_ADD_BUTTON_LOADER,
+        });
+        dispatch({
+            payload: {
+                showEmailLoader: false,
+            },
+            type: actionTypes.USER_PROFILE_SHOW_EMAIL_LOADER,
+        });
+    });
 };
 
 const deleteUserEmailAddress = (dispatch, userEmailId, userId) => {
@@ -1294,6 +1321,12 @@ const deleteUserEmailAddress = (dispatch, userEmailId, userId) => {
         message: 'Email address removed',
         type: 'success',
     };
+    dispatch({
+        payload: {
+            showEmailLoader: true,
+        },
+        type: actionTypes.USER_PROFILE_SHOW_EMAIL_LOADER,
+    });
     coreApi.delete(`emailAddresses/${userEmailId}`, {
         params: {
             dispatch,
@@ -1311,7 +1344,14 @@ const deleteUserEmailAddress = (dispatch, userEmailId, userId) => {
                 type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
             });
         }
-    }).catch().finally();
+    }).catch().finally(() => {
+        dispatch({
+            payload: {
+                showEmailLoader: false,
+            },
+            type: actionTypes.USER_PROFILE_SHOW_EMAIL_LOADER,
+        });
+    });
 };
 
 const setPrimaryUserEmailAddress = (dispatch, userEmailId, userId) => {

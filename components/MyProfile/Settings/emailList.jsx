@@ -29,6 +29,7 @@ import EmailDetails from './emailDetails';
 
 const actionTypes = {
     USER_PROFILE_ADD_DUPLICATE_EMAIL_ERROR: 'USER_PROFILE_ADD_DUPLICATE_EMAIL_ERROR',
+    USER_PROFILE_SHOW_EMAIL_LOADER: 'USER_PROFILE_SHOW_EMAIL_LOADER',
 };
 
 class EmailList extends React.Component {
@@ -59,10 +60,11 @@ class EmailList extends React.Component {
 
     componentDidUpdate(prevProps) {
         const {
+            showAddButtonLoader,
             showEmailError,
         } = this.props;
         if (!_.isEqual(this.props, prevProps)) {
-            if (!showEmailError) {
+            if (!showEmailError && !showAddButtonLoader) {
                 this.closeAddEmailModal();
             }
         }
@@ -177,6 +179,7 @@ class EmailList extends React.Component {
     render() {
         const {
             emailDetailList,
+            showAddButtonLoader,
             showEmailError,
             errorMessageTitle,
         } = this.props;
@@ -280,6 +283,7 @@ class EmailList extends React.Component {
                                                 </Modal.Description>
                                                 <div className="btn-wraper pt-3 text-right">
                                                     <Button
+                                                        loading={showAddButtonLoader}
                                                         disabled={!validEmailAddress}
                                                         className="blue-btn-rounded-def  w-120"
                                                         onClick={this.handleEmailSubmit}
@@ -309,6 +313,7 @@ EmailList.defaultProps = {
     dispatch: func,
     emailDetailList: [],
     errorMessageTitle: '',
+    showAddButtonLoader: false,
     showEmailError: false,
     userInfo: {
         id: '',
@@ -319,6 +324,7 @@ EmailList.propTypes = {
     dispatch: _.noop,
     emailDetailList: arrayOf(PropTypes.element),
     errorMessageTitle: PropTypes.string,
+    showAddButtonLoader: PropTypes.bool,
     showEmailError: PropTypes.bool,
     userInfo: PropTypes.shape({
         id: PropTypes.string,
@@ -329,6 +335,7 @@ function mapStateToProps(state) {
     return {
         emailDetailList: state.userProfile.emailDetailList,
         errorMessageTitle: state.userProfile.errorMessageTitle,
+        showAddButtonLoader: state.userProfile.showAddButtonLoader,
         showEmailError: state.userProfile.showEmailError,
         userInfo: state.user.info,
     };
