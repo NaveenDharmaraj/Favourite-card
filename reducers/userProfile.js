@@ -180,6 +180,18 @@ const userProfile = (state = {}, action) => {
                 showEmailError: action.payload.showEmailError,
             };
             break;
+        case 'USER_PROFILE_SHOW_EMAIL_LOADER':
+            newState = {
+                ...state,
+                showEmailLoader: action.payload.showEmailLoader,
+            };
+            break;
+        case 'USER_PROFILE_SHOW_ADD_BUTTON_LOADER':
+            newState = {
+                ...state,
+                showAddButtonLoader: action.payload.showAddButtonLoader,
+            };
+            break;
         default:
             break;
     }
