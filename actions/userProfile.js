@@ -403,7 +403,7 @@ const getFriendsByText = (dispatch, userId, searchText, pageNumber) => {
     });
 };
 
-const getTagsByText = (dispatch, userId, searchText) => {
+const getTagsByText = (dispatch, userId, searchText, pageNumber) => {
     const bodyData = {
         text: searchText,
     };
@@ -414,10 +414,12 @@ const getTagsByText = (dispatch, userId, searchText) => {
     };
     // temporarily using search api to get tags
     // return graphApi.get(`/recommend/searchtags?userid=${Number(userId)}&text=${searchText}&skip=&limit=10&sort=asc`).then(
-    return searchApi.post(`/tags`, bodyData).then(
+    return searchApi.post(`/tags?page[number]=${pageNumber}&page[size]=24`, bodyData).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
+                pageCount: result.meta.pageCount,
+                recordCount: result.meta.record_count,
             };
         },
     ).catch((error) => {
