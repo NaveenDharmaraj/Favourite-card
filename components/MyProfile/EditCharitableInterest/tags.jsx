@@ -1,5 +1,7 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, {
+    Fragment,
+} from 'react';
 import _ from 'lodash';
 import {
     Input,
@@ -48,10 +50,13 @@ class MyTags extends React.Component {
         const {
             currentActivePage,
         } = this.state;
-        if (_.isEmpty(userTagsRecommendedList)) {
-            getUserTagsRecommended(dispatch, id, currentActivePage);
-        }
+        const searchWord = '';
+        const pageNumber = 1;
+        // if (_.isEmpty(userTagsRecommendedList)) {
+        //     getUserTagsRecommended(dispatch, id, currentActivePage);
+        // }
         getUserTagsFollowed(dispatch, id);
+        getTagsByText(dispatch, id, searchWord, pageNumber);
     }
 
     componentDidUpdate(prevProps) {
@@ -237,18 +242,27 @@ class MyTags extends React.Component {
             } = this.state;
             const {
                 userTagsRecommendedList,
+                userFindTagsList: {
+                    recordCount,
+                    pageCount,
+                },
             } = this.props;
-            if (userTagsRecommendedList.pageCount !== currentActivePage) {
+            if (pageCount !== currentActivePage) {
                 const content = (
-                    <div className="text-centre">
-                        <Button
-                            className="blue-bordr-btn-round-def"
-                            onClick={() => this.handleLoadMoreClick()}
-                            loading={!!loader}
-                            disabled={!!loader}
-                            content="Load more"
-                        />
-                    </div>
+                    <Fragment>
+                        <div className="text-centre">
+                            <Button
+                                className="blue-bordr-btn-round-def"
+                                onClick={() => this.handleLoadMoreClick()}
+                                loading={!!loader}
+                                disabled={!!loader}
+                                content="See more"
+                            />
+                        </div>
+                        <div>
+                            {`Showing 24 of ${recordCount}`}
+                        </div>
+                    </Fragment>
                 );
                 return content;
             }
@@ -263,14 +277,27 @@ class MyTags extends React.Component {
         } = this.props;
         return (
             <div>
-                <div className="pt-2">
+                <div className="pt-1">
+                    {userTagsFollowedList && (!_.isEmpty(userTagsFollowedList.data))
+                        && (
+                            <div>
+                                <p className="mb-1"><strong>Topics you care about</strong></p>
+                                {this.renderTags(userTagsFollowedList)}
+                            </div>
+                        )}
+                    <div className="pt-2">
+                        <strong>All topics</strong>
+                    </div>
+                    <div className="pt-1 mb-1">
+                    Topics represent specific areas of charitable interests.
+                    </div>
                     <Grid>
                         <Grid.Row>
                             <Grid.Column mobile={16} tablet={14} computer={8} largeScreen={8}>
                                 <div className="pb-3 searchbox no-padd">
                                     <Input
                                         className="searchInput"
-                                        placeholder="Search related tags"
+                                        placeholder="Search topics"
                                         onChange={this.handleInputChange}
                                         fluid
                                         onKeyPress={(event) => { (event.keyCode || event.which) === 13 ? this.handleTagsSearch() : null; }}
@@ -290,15 +317,11 @@ class MyTags extends React.Component {
                     <div className="pt-2">
                         {this.renderTags(userFindTagsList)}
                     </div>
-                    <div className="pt-2">
-                        <p className="mb-2"><strong>Related tags you follow</strong></p>
-                        {this.renderTags(userTagsFollowedList)}
-                    </div>
-                    <div className="pt-2">
+                    {/* <div className="pt-2">
                         <p className="mb-1-2"><strong>Related tags to follow</strong></p>
                         <p className="mb-2">Tags can refine the charities and Giving Groups discovered for you. </p>
                         {this.renderRecommendedTags()}
-                    </div>
+                    </div> */}
                     <div className="pt-1 mb-2">
                         {this.renderSeeMore()}
                     </div>
