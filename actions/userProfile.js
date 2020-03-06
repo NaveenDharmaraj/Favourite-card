@@ -1151,10 +1151,10 @@ const searchLocationByUserInput = (searchText) => (dispatch) => {
                     if (data[i].attributes && data[i].attributes.city) {
                         const dataObj = {
                             id: i,
-                            text: `${data[i].attributes.city},${data[i].attributes.province_name}`,
+                            text: `${data[i].attributes.city}${data[i].attributes.province_name ? ', ' : ''}${data[i].attributes.province_name}`,
                             value: `${data[i].attributes.city}${i}`,
                             city: `${data[i].attributes.city}`,
-                            province: `${data[i].attributes.province_name}`
+                            province: `${data[i].attributes.province_name}`,
                         };
                         cityArr.push(dataObj);
                     }

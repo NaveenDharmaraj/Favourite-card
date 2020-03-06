@@ -96,7 +96,7 @@ class EditBasicProfile extends React.Component {
         } = this.props;
         if (!_.isEqual(userData, prevProps.userData)) {
             const givingGoalAmount = typeof userData.giving_goal_amt !== 'undefined' ? formatAmount(Number(userData.giving_goal_amt)) : '';
-            const userDataProvince = userData.province ? `${userData.city ? ', ' : ''}${props.userData.province}` : '';
+            const userDataProvince = userData.province ? `${userData.city ? ', ' : ''}${userData.province}` : '';
             const locationString = `${userData.city ? userData.city : ''}${userDataProvince}`;
             const location = locationString ? locationString.trim() : null;
             this.setState({
