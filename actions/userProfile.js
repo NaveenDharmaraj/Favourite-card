@@ -403,7 +403,7 @@ const getFriendsByText = (dispatch, userId, searchText, pageNumber) => {
     });
 };
 
-const getTagsByText = (dispatch, userId, searchText, pageNumber) => {
+const getTagsByText = (dispatch, userId, searchText, isSearch, pageNumber = 1, loadedData = 0) => {
     const bodyData = {
         text: searchText,
     };
@@ -418,7 +418,9 @@ const getTagsByText = (dispatch, userId, searchText, pageNumber) => {
         (result) => {
             fsa.payload = {
                 data: result.data,
-                pageCount: result.meta.pageCount,
+                isSearch,
+                loadedData: loadedData + result.data.length,
+                pageNumber: pageNumber + 1,
                 recordCount: result.meta.record_count,
             };
         },

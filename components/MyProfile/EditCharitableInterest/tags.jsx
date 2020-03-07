@@ -51,12 +51,11 @@ class MyTags extends React.Component {
             currentActivePage,
         } = this.state;
         const searchWord = '';
-        const pageNumber = 1;
         // if (_.isEmpty(userTagsRecommendedList)) {
         //     getUserTagsRecommended(dispatch, id, currentActivePage);
         // }
         getUserTagsFollowed(dispatch, id);
-        getTagsByText(dispatch, id, searchWord, pageNumber);
+        getTagsByText(dispatch, id, searchWord, false);
     }
 
     componentDidUpdate(prevProps) {
@@ -142,7 +141,7 @@ class MyTags extends React.Component {
         const {
             searchWord,
         } = this.state;
-        getTagsByText(dispatch, id, searchWord);
+        getTagsByText(dispatch, id, searchWord, true);
     }
 
     handleLoadMoreClick() {
@@ -152,25 +151,29 @@ class MyTags extends React.Component {
             },
             dispatch,
             resetSaveClicked,
-            userTagsRecommendedList: {
-                pageCount,
-            },
+            // userTagsRecommendedList: {
+            //     pageCount,
+            // },
+            pageNumber,
+            loadedData,
         } = this.props;
         let {
             loader,
             currentActivePage
         } = this.state;
+        const searchText = '';
         resetSaveClicked(false);
-        if (currentActivePage === pageCount) {
-            loader = false;
-        } else {
-            getUserTagsRecommended(dispatch, id, currentActivePage + 1);
-            loader = true;
-        }
-        this.setState({
-            currentActivePage: currentActivePage + 1,
-            loader,
-        });
+        getTagsByText(dispatch, id, searchText, false, pageNumber, loadedData);
+        // if (currentActivePage === pageCount) {
+        //     loader = false;
+        // } else {
+        //     getUserTagsRecommended(dispatch, id, currentActivePage + 1);
+        //     loader = true;
+        // }
+        // this.setState({
+        //     currentActivePage: currentActivePage + 1,
+        //     loader,
+        // });
     }
 
     checkForData() {
@@ -235,37 +238,76 @@ class MyTags extends React.Component {
     }
 
     renderSeeMore() {
-        if (this.checkForData()) {
-            const {
-                loader,
-                currentActivePage,
-            } = this.state;
-            const {
-                userTagsRecommendedList,
-                userFindTagsList: {
-                    recordCount,
-                    pageCount,
-                },
-            } = this.props;
-            if (pageCount !== currentActivePage) {
-                const content = (
-                    <Fragment>
-                        <div className="text-centre">
-                            <Button
-                                className="blue-bordr-btn-round-def"
-                                onClick={() => this.handleLoadMoreClick()}
-                                loading={!!loader}
-                                disabled={!!loader}
-                                content="See more"
-                            />
-                        </div>
-                        <div>
-                            {`Showing 24 of ${recordCount}`}
-                        </div>
-                    </Fragment>
-                );
-                return content;
-            }
+        // if (this.checkForData()) {
+        //     const {
+        //         loader,
+        //         currentActivePage,
+        //     } = this.state;
+        //     const {
+        //         userTagsRecommendedList,
+        //         userFindTagsList: {
+        //             recordCount,
+        //             pageCount,
+        //         },
+        //     } = this.props;
+        //     if (pageCount !== currentActivePage) {
+        //         const content = (
+        //             <Fragment>
+        //                 <div className="text-centre">
+        //                     <Button
+        //                         className="blue-bordr-btn-round-def"
+        //                         onClick={() => this.handleLoadMoreClick()}
+        //                         loading={!!loader}
+        //                         disabled={!!loader}
+        //                         content="See more"
+        //                     />
+        //                 </div>
+        //                 <div>
+        //                     {`Showing 24 of ${recordCount}`}
+        //                 </div>
+        //             </Fragment>
+        //         );
+        //         return content;
+        //     }
+        // }
+        // return null;
+        const {
+            loader,
+            currentActivePage,
+        } = this.state;
+        const {
+            userTagsRecommendedList,
+            userFindTagsList,
+            recordCount,
+            loadedData,
+        } = this.props;
+        if (userFindTagsList) {
+            const content = (
+                <Fragment>
+                    {(recordCount > loadedData)
+                        && (
+                            <div className="text-center">
+                                <Button
+                                    className="blue-bordr-btn-round-def"
+                                    onClick={() => this.handleLoadMoreClick()}
+                                    loading={!!loader}
+                                    disabled={!!loader}
+                                    content="See more"
+                                />
+                            </div>
+                        )
+                    }
+                    {
+                        (loadedData
+                            && (
+                                <div className=" mt-1 text-center">
+                                    {`Showing ${loadedData} of ${recordCount}`}
+                                </div>
+                            ))
+                    }
+                </Fragment>
+            );
+            return content;
         }
         return null;
     }
@@ -334,6 +376,9 @@ class MyTags extends React.Component {
 function mapStateToProps(state) {
     return {
         currentUser: state.user.info,
+        loadedData: state.userProfile.loadedData,
+        pageNumber: state.userProfile.pageNumber,
+        recordCount: state.userProfile.recordCount,
         userFindTagsList: state.userProfile.userFindTagsList,
         userTagsFollowedList: state.userProfile.userTagsFollowedList,
         userTagsRecommendedList: state.userProfile.userTagsRecommendedList,
