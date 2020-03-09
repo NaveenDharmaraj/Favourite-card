@@ -171,6 +171,14 @@ const userProfile = (state = {}, action) => {
                 userProfileCharitableInterestsLoadStatus: action.payload.userProfileCharitableInterestsLoadStatus,
             };
             break;
+        case 'USER_PROFILE_RESET_TAG_LIST':
+            newState = {
+                ...state,
+                loadedData: 0,
+                pageNumber: 1,
+                userFindTagsList: {},
+            };
+            break;
         default:
             break;
     }

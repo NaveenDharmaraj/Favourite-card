@@ -16,6 +16,10 @@ import {
     getTagsByText,
 } from '../../../actions/userProfile';
 
+const actionType = {
+    USER_PROFILE_RESET_TAG_LIST: 'USER_PROFILE_RESET_TAG_LIST',
+};
+
 class MyTags extends React.Component {
     constructor(props) {
         super(props);
@@ -44,6 +48,9 @@ class MyTags extends React.Component {
             dispatch,
         } = this.props;
         const searchWord = '';
+        dispatch({
+            type: actionType.USER_PROFILE_RESET_TAG_LIST,
+        });
         getUserTagsFollowed(dispatch, id);
         getTagsByText(dispatch, id, searchWord, false);
     }
