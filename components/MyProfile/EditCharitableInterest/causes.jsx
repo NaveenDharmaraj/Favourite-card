@@ -121,10 +121,6 @@ class MyCauses extends React.Component {
                 </div>
                 <p className="mb-1-2 mt-1">
                     <strong>Causes</strong>
-                    {/* <PrivacySetting
-                        columnName={privacyColumn}
-                        columnValue={causesVisible}
-                    /> */}
                 </p>
                 <p>
                 Causes represent broader areas of charitable interests.
