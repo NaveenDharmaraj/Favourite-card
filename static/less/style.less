@@ -7763,6 +7763,12 @@ body .userEllips{
     }
   }
 }
+.DiscoveredMargin{
+  @media only screen and (max-width: 768px) {
+    margin-left: -15px !important;
+    margin-right: -15px !important;
+  }
+}
 .Discovered-box{
   box-sizing: border-box; width:100%; border: 1px solid #E6E5E5;  border-radius: 5px; /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#e8f2ff+0,e8f2ff+50,f5f8fc+50,f5f8fc+100 */
   background: #E8F2FF; /* Old browsers */
@@ -7775,26 +7781,76 @@ body .userEllips{
     margin-top: 40px;
     position: relative;
     padding: 42px 38px;
+    .OrderMobile{
+      @media only screen and (max-width: 768px) {
+    width: 100%;
+    float: none;
+    text-align: center;
+    margin-top: 40%;
+    margin-bottom: 40px;
+      }
+      @media only screen and (max-width: 600px) {
+        margin-top: 50%;
+        margin-bottom: 20px;
+      }
+      @media only screen and (max-width: 475px) {
+        margin-top:260px;
+        margin-bottom: 20px;
+      }
+    }
+    @media only screen and (max-width: 992px) {
+      padding: 31px 38px;
+    }
+    @media only screen and (max-width: 768px) {
+      width: 100%;
+      text-align: center;
+      padding: 15px;
+    }
     h4{
       &.ui{
         &.header{
           font-size: 17px;
+          @media only screen and (max-width: 992px) {
+            width: 50%;
+          }
+          @media only screen and (max-width: 768px) {
+            width: 100%;
+            text-align: center;
+            order: 2;
+          }
         }
       }
     }
-    .dots{
-      background-image: url('../images/dots@3x.svg');
-      position: absolute;
-      background-position: center;
-      background-repeat: no-repeat;
-      width: 114px;
-      height: 205px;
-      top: -58px;
-      right: 170px;
-    }
-    .img_Discovered{
-    }
+.img_Discovered{
+  @media only screen and (max-width: 768px) {
+    width: 100%;
+    display: inline-block;
+    text-align: center;
+  }
 }
+}
+.discoverdNoDataImg{
+  position: absolute;
+  right: 25px;
+  top: 0px;
+  width: 194px;
+  @media only screen and (max-width: 768px) {
+    position: absolute;
+    flex: 0 0 100%;
+    height: 100px;
+    margin-top: 40px;
+    float: none !important;
+    width: 250px;
+    left: 0;
+    right: 0;
+    top: 30px;
+    margin: auto;
+  }
+  img.ui.right.floated.image {
+    width: auto;
+  }
+}
+
 .quickquestions{
   margin-bottom:50px;
   h3{

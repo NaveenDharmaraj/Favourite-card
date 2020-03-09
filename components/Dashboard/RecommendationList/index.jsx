@@ -81,7 +81,7 @@ class RecommendationList extends React.Component {
             recommendationData,
         } = this.props;
         let recommendationList = (
-            <div className="ml-1 mr-1">
+            <div className="ml-1 mr-1 DiscoveredMargin">
                 <DiscoveredForYou />
             </div>
         );
