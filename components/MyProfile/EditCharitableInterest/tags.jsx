@@ -238,39 +238,6 @@ class MyTags extends React.Component {
     }
 
     renderSeeMore() {
-        // if (this.checkForData()) {
-        //     const {
-        //         loader,
-        //         currentActivePage,
-        //     } = this.state;
-        //     const {
-        //         userTagsRecommendedList,
-        //         userFindTagsList: {
-        //             recordCount,
-        //             pageCount,
-        //         },
-        //     } = this.props;
-        //     if (pageCount !== currentActivePage) {
-        //         const content = (
-        //             <Fragment>
-        //                 <div className="text-centre">
-        //                     <Button
-        //                         className="blue-bordr-btn-round-def"
-        //                         onClick={() => this.handleLoadMoreClick()}
-        //                         loading={!!loader}
-        //                         disabled={!!loader}
-        //                         content="See more"
-        //                     />
-        //                 </div>
-        //                 <div>
-        //                     {`Showing 24 of ${recordCount}`}
-        //                 </div>
-        //             </Fragment>
-        //         );
-        //         return content;
-        //     }
-        // }
-        // return null;
         const {
             loader,
             currentActivePage,
