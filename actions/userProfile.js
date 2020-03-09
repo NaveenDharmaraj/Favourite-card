@@ -412,8 +412,6 @@ const getTagsByText = (dispatch, userId, searchText, isSearch, pageNumber = 1, l
         },
         type: actionTypes.USER_PROFILE_FIND_TAGS,
     };
-    // temporarily using search api to get tags
-    // return graphApi.get(`/recommend/searchtags?userid=${Number(userId)}&text=${searchText}&skip=&limit=10&sort=asc`).then(
     return searchApi.post(`/tags?page[number]=${pageNumber}&page[size]=24`, bodyData).then(
         (result) => {
             fsa.payload = {
