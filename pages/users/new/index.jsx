@@ -205,7 +205,6 @@ class Login extends React.Component {
                 userDetails.longitude = null;
                 userDetails.latitude = null;
                 userDetails.causes = userCauses;
-                // userDetails.skipCauseSelection = _.isEmpty(userCauses) ? true : false;
                 saveUser(dispatch, userDetails);
             }
             if (stepIndex !== 3) {
