@@ -138,21 +138,30 @@ const getMainNavItems = (accountType, slug) => {
  */
 const isValidBrowser = (userAgent) => {
     const browser = Bowser.getParser(userAgent);
-    const isvalid = browser.satisfies({
-        Linux: {
-            Chrome: '>67',
-            Chromium: '>67',
-            Firefox: '>58',
-            'Microsoft Edge': '>17',
-            safari: '>11',
+    const browserversionList = {
+        desktop: {
+            Linux: {
+                Chrome: '>67',
+                Chromium: '>67',
+                Firefox: '>58',
+                'Microsoft Edge': '>17',
+                safari: '>11',
+            },
+            macos: {
+                Chrome: '>67',
+                Chromium: '>67',
+                Firefox: '>58',
+                'Microsoft Edge': '>17',
+                safari: '>11',
+            },
+            Windows: {
+                Chrome: '>67',
+                Chromium: '>67',
+                Firefox: '>58',
+                'Microsoft Edge': '>17',
+            },
         },
-        macos: {
-            Chrome: '>67',
-            Chromium: '>67',
-            Firefox: '>58',
-            'Microsoft Edge': '>17',
-            safari: '>11',
-        },
+
         mobile: {
             android: {
                 Chrome: '>67',
@@ -183,13 +192,30 @@ const isValidBrowser = (userAgent) => {
                 safari: '>10',
             },
         },
-        Windows: {
-            Chrome: '>67',
-            Chromium: '>67',
-            Firefox: '>58',
-            'Microsoft Edge': '>17',
-        },
-    });
+
+    };
+    let platform;
+    let os;
+    let currentBrowser;
+    let browserCheck;
+    let isvalid = true;
+    if (browser.parsedResult) {
+        platform = browser.parsedResult.platform.type;
+        currentBrowser = browser.parsedResult.browser.name;
+        os = browser.parsedResult.os.name;
+    }
+    if (browserversionList[platform] && Object.keys(browserversionList[platform]) && Object.keys(browserversionList[platform]).length > 0) {
+        Object.keys(browserversionList[platform]).forEach((individualOs) => {
+            if (individualOs.toLowerCase().includes(os.toLowerCase())) {
+                browserCheck = Object.keys(browserversionList[platform][individualOs]).find((individualBrowser) => {
+                    return individualBrowser.toLowerCase().includes(currentBrowser.toLowerCase());
+                });
+            }
+        });
+        if (browserCheck) {
+            isvalid = browser.satisfies(browserversionList);
+        }
+    }
     return !isvalid;
 };
 
