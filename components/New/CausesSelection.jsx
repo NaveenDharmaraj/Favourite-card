@@ -72,7 +72,6 @@ function CausesSelection(props) {
                         />
                         <Button
                             type="submit"
-                            // disabled={!(userCauses.length>=3)}
                             primary
                             onClick={handleSubmit}
                         >

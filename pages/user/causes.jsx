@@ -213,17 +213,8 @@ class CausesMigration extends React.Component {
                                                             <List.Item className="profile">Friends can easily send you charitable dollars that you can give away</List.Item>
                                                             <List.Item className="profile">Choose what information to share on your profile or hide from others</List.Item>
                                                         </List>
-                                                        {/* <p className="pb-2">
-                                        When you set your profile to "discoverable”, friends, family, and others who are logged in can search for you by name or email address and can see the information you choose to share on your profile.
-People will be able to request to add you as a friend, message you, and easily send you charitable dollars that you can give away.
-
-                                                        </p> */}
                                                     </div>
                                                     <div className="reg-header">
-                                                        {/* <Header as="h4" className="font-s-20">Discoverability</Header>
-                                                        <p>
-                                            Show your name and appear in search results?
-                                                        </p> */}
                                                         <Form className="discoverRadio">
                                                             <Form.Field>
                                                                 <Radio

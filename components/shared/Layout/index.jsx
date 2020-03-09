@@ -60,10 +60,6 @@ class Layout extends React.Component {
             if(!skipCauseSelection || skipCauseSelection === null) {
                 Router.pushRoute('/user/causes');
             }
-
-            // if (_.isEmpty(causes)) {
-            //     //Router.pushRoute('/user/causes');
-            // }
         }
         if (authRequired && !isAuthenticated) {
             let nextPathname;

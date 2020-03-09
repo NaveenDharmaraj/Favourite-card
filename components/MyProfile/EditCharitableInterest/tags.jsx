@@ -326,11 +326,6 @@ class MyTags extends React.Component {
                     <div className="pt-2">
                         {this.renderTags(userFindTagsList)}
                     </div>
-                    {/* <div className="pt-2">
-                        <p className="mb-1-2"><strong>Related tags to follow</strong></p>
-                        <p className="mb-2">Tags can refine the charities and Giving Groups discovered for you. </p>
-                        {this.renderRecommendedTags()}
-                    </div> */}
                     <div className="pt-1 mb-2">
                         {this.renderSeeMore()}
                     </div>
