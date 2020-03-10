@@ -178,7 +178,7 @@ class MyTags extends React.Component {
             recordCount,
             loadedData,
         } = this.props;
-        if (userFindTagsList) {
+        if (userFindTagsList && !_.isEmpty(userFindTagsList)) {
             const content = (
                 <Fragment>
                     {(recordCount > loadedData)
