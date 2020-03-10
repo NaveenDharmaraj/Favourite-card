@@ -24,6 +24,7 @@ export const actionTypes = {
     
     ADD_USER_CREDIT_CARD: 'ADD_USER_CREDIT_CARD',
     DELETE_USER_CREDIT_CARD: 'DELETE_USER_CREDIT_CARD',
+    TRIGGER_UX_CRITICAL_ERROR: 'TRIGGER_UX_CRITICAL_ERROR',
     UPDATE_USER_BASIC_PROFILE: 'UPDATE_USER_BASIC_PROFILE',
     UPDATE_USER_CHARITY_CAUSES: 'UPDATE_USER_CHARITY_CAUSES',
     UPDATE_USER_CHARITY_TAGS: 'UPDATE_USER_CHARITY_TAGS',
@@ -33,6 +34,7 @@ export const actionTypes = {
     UPDATE_USER_PREFERENCES: 'UPDATE_USER_PREFERENCES',
     UPDATE_USER_PRIVACY_SETTING: 'UPDATE_USER_PRIVACY_SETTING',
     USER_PROFILE_ACCEPT_FRIEND: 'USER_PROFILE_ACCEPT_FRIEND',
+    USER_PROFILE_ADD_DUPLICATE_EMAIL_ERROR: 'USER_PROFILE_ADD_DUPLICATE_EMAIL_ERROR',
     USER_PROFILE_ADD_FRIEND: 'USER_PROFILE_ADD_FRIEND',
     USER_PROFILE_ADD_NEW_CREDIT_CARD_STATUS: 'USER_PROFILE_ADD_NEW_CREDIT_CARD_STATUS',
     USER_PROFILE_ADMIN_GROUP: 'USER_PROFILE_ADMIN_GROUP',
@@ -53,14 +55,19 @@ export const actionTypes = {
     USER_PROFILE_FOLLOWED_TAGS: 'USER_PROFILE_FOLLOWED_TAGS',
     USER_PROFILE_FRIEND_ACCEPT: 'USER_PROFILE_FRIEND_ACCEPT',
     USER_PROFILE_FRIEND_REQUEST: 'USER_PROFILE_FRIEND_REQUEST',
+    USER_PROFILE_GET_EMAIL_LIST: 'USER_PROFILE_GET_EMAIL_LIST',
     USER_PROFILE_INVITATIONS: 'USER_PROFILE_INVITATIONS',
     USER_PROFILE_INVITE_FRIENDS: 'USER_PROFILE_INVITE_FRIENDS',
+    USER_PROFILE_LOCATION_SEARCH: 'USER_PROFILE_LOCATION_SEARCH',
+    USER_PROFILE_LOCATION_SEARCH_LOADER: 'USER_PROFILE_LOCATION_SEARCH_LOADER',
     USER_PROFILE_MEMBER_GROUP: 'USER_PROFILE_MEMBER_GROUP',
     USER_PROFILE_MEMBER_GROUP_LOAD_STATUS: 'USER_PROFILE_MEMBER_GROUP_LOAD_STATUS',
     USER_PROFILE_MY_FRIENDS: 'USER_PROFILE_MY_FRIENDS',
     USER_PROFILE_RECOMMENDED_TAGS: 'USER_PROFILE_RECOMMENDED_TAGS',
     USER_PROFILE_REMOVE_FRIEND: 'USER_PROFILE_REMOVE_FRIEND',
     USER_PROFILE_REMOVE_PHOTO: 'USER_PROFILE_REMOVE_PHOTO',
+    USER_PROFILE_SHOW_ADD_BUTTON_LOADER: 'USER_PROFILE_SHOW_ADD_BUTTON_LOADER',
+    USER_PROFILE_SHOW_EMAIL_LOADER: 'USER_PROFILE_SHOW_EMAIL_LOADER',
     USER_PROFILE_SIGNUP_DEEPLINK: 'USER_PROFILE_SIGNUP_DEEPLINK',
     USER_PROFILE_TAX_RECEIPTS: 'USER_PROFILE_TAX_RECEIPTS',
     USER_PROFILE_UNBLOCK_FRIEND: 'USER_PROFILE_UNBLOCK_FRIEND',
@@ -451,10 +458,12 @@ const saveUserBasicProfile = (dispatch, userData, userId, email) => {
     };
     const givingAmount = Number(userData.givingGoal) === 0 ? null : Number(userData.givingGoal);
     const bodyData = {
+        city: userData.city,
         description: userData.about,
         family_name: userData.lastName,
         given_name: userData.firstName,
         giving_goal_amt: givingAmount,
+        province: userData.province,
         user_id: Number(userId),
     };
     if (userData.displayName !== '') {
@@ -478,7 +487,7 @@ const saveUserBasicProfile = (dispatch, userData, userId, email) => {
 };
 
 function searchFriendsObj(friendList, toSearch) {
-    for (var i=0; i < friendList.data.length; i++) {
+    for (var i = 0; i < friendList.data.length; i++) {
         if (friendList.data[i].attributes.user_id === toSearch) {
             friendList.data[i].attributes.friend_status = 'PENDING_OUT';
         }
@@ -1112,6 +1121,62 @@ const removeFriend = (dispatch, sourceUserId, sourceEmail, destinationUserId) =>
     });
 };
 
+const searchLocationByUserInput = (searchText) => (dispatch) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.USER_PROFILE_LOCATION_SEARCH,
+    };
+    dispatch({
+        payload: {
+            locationLoader: true,
+        },
+        type: actionTypes.USER_PROFILE_LOCATION_SEARCH_LOADER,
+    });
+    const cityArr = [];
+    const config = {
+        params: {
+            'page[number]': 1,
+            'page[size]': 999,
+            query: searchText,
+        },
+    };
+    return searchApi.get('/autocomplete/uniquecities', config).then(
+        (result) => {
+            if (result.data && result.data.length >= 1) {
+                const {
+                    data,
+                } = result;
+                for (let i = 0; i < data.length; i++) {
+                    if (data[i].attributes && data[i].attributes.city) {
+                        const dataObj = {
+                            id: i,
+                            text: `${data[i].attributes.city}${data[i].attributes.province_name ? ', ' : ''}${data[i].attributes.province_name}`,
+                            value: `${data[i].attributes.city}${i}`,
+                            city: `${data[i].attributes.city}`,
+                            province: `${data[i].attributes.province_name}`,
+                        };
+                        cityArr.push(dataObj);
+                    }
+                }
+            }
+            fsa.payload = {
+                data: cityArr,
+            };
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch({
+            payload: {
+                locationLoader: false,
+            },
+            type: actionTypes.USER_PROFILE_LOCATION_SEARCH_LOADER,
+        });
+        dispatch(fsa);
+    });
+};
+
 const generateDeeplinkUserProfile = (dispatch, sourceUserId, destinationUserId) => {
     const fsa = {
         payload: {
@@ -1158,6 +1223,174 @@ const removeProfilePhoto = (dispatch, sourceUserId) => {
     return removeProfilePhotoResponse;
 };
 
+const getEmailList = (dispatch, userId) => {
+    const fsa = {
+        payload: {
+            emailDetailList: [],
+        },
+        type: actionTypes.USER_PROFILE_GET_EMAIL_LIST,
+    };
+    coreApi.get(`users/${userId}/emailAddresses?sort=-isPrimary,-verified`, {
+        params: {
+            dispatch,
+            uxCritical: true,
+        },
+    }).then((result) => {
+        if (result && !_.isEmpty(result.data)) {
+            fsa.payload.emailDetailList = result.data;
+            dispatch(fsa);
+        }
+    }).catch().finally();
+};
+
+const createUserEmailAddress = (dispatch, emailId, userId) => {
+    const bodyData = {
+        data: {
+            attributes: {
+                email: emailId,
+            },
+            type: 'emailAddresses',
+        },
+        params: {
+            dispatch,
+            uxCritical: true,
+        },
+    };
+    const statusMessageProps = {
+        message: 'Email address added',
+        type: 'success',
+    };
+    dispatch({
+        payload: {
+            showAddButtonLoader: true,
+        },
+        type: actionTypes.USER_PROFILE_SHOW_ADD_BUTTON_LOADER,
+    });
+    dispatch({
+        payload: {
+            showEmailLoader: true,
+        },
+        type: actionTypes.USER_PROFILE_SHOW_EMAIL_LOADER,
+    });
+    coreApi.post(`emailAddresses`, bodyData).then((result) => {
+        if (result && !_.isEmpty(result.data)) {
+            getEmailList(dispatch, userId);
+            dispatch({
+                payload: {
+                    errors: [
+                        statusMessageProps,
+                    ],
+                },
+                type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
+            });
+            dispatch({
+                payload: {
+                    showEmailError: false,
+                },
+                type: actionTypes.USER_PROFILE_ADD_DUPLICATE_EMAIL_ERROR,
+            });
+        }
+    }).catch((error) => {
+        if (error.errors[0]) {
+            dispatch({
+                payload: {
+                    errorMessageTitle: error.errors[0].title,
+                    showEmailError: true,
+                },
+                type: actionTypes.USER_PROFILE_ADD_DUPLICATE_EMAIL_ERROR,
+            });
+        }
+    }).finally(() => {
+        dispatch({
+            payload: {
+                showAddButtonLoader: false,
+            },
+            type: actionTypes.USER_PROFILE_SHOW_ADD_BUTTON_LOADER,
+        });
+        dispatch({
+            payload: {
+                showEmailLoader: false,
+            },
+            type: actionTypes.USER_PROFILE_SHOW_EMAIL_LOADER,
+        });
+    });
+};
+
+const deleteUserEmailAddress = (dispatch, userEmailId, userId) => {
+    const statusMessageProps = {
+        message: 'Email address removed',
+        type: 'success',
+    };
+    dispatch({
+        payload: {
+            showEmailLoader: true,
+        },
+        type: actionTypes.USER_PROFILE_SHOW_EMAIL_LOADER,
+    });
+    coreApi.delete(`emailAddresses/${userEmailId}`, {
+        params: {
+            dispatch,
+            uxCritical: true,
+        },
+    }).then((result) => {
+        if (result && (result.status === 200)) {
+            getEmailList(dispatch, userId);
+            dispatch({
+                payload: {
+                    errors: [
+                        statusMessageProps,
+                    ],
+                },
+                type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
+            });
+        }
+    }).catch().finally(() => {
+        dispatch({
+            payload: {
+                showEmailLoader: false,
+            },
+            type: actionTypes.USER_PROFILE_SHOW_EMAIL_LOADER,
+        });
+    });
+};
+
+const setPrimaryUserEmailAddress = (dispatch, userEmailId, userId) => {
+    coreApi.patch(`emailAddresses/${userEmailId}/setPrimaryEmail`, {
+        params: {
+            dispatch,
+            uxCritical: true,
+        },
+    }).then((result) => {
+        if (result && (result.status === 200)) {
+            Router.pushRoute('/users/logout');
+        }
+    }).catch().finally();
+};
+
+const resendUserVerifyEmail = (dispatch, userEmailId, userId) => {
+    const statusMessageProps = {
+        message: 'Verification email sent',
+        type: 'success',
+    };
+    coreApi.get(`emailAddresses/${userEmailId}/resendVerify`, {
+        params: {
+            dispatch,
+            uxCritical: true,
+        },
+    }).then((result) => {
+        if (result && (result.status === 200)) {
+            getEmailList(dispatch, userId);
+            dispatch({
+                payload: {
+                    errors: [
+                        statusMessageProps,
+                    ],
+                },
+                type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
+            });
+        }
+    }).catch().finally();
+};
 
 export {
     getUserProfileBasic,
@@ -1198,4 +1431,10 @@ export {
     removeFriend,
     generateDeeplinkUserProfile,
     removeProfilePhoto,
+    getEmailList,
+    createUserEmailAddress,
+    deleteUserEmailAddress,
+    setPrimaryUserEmailAddress,
+    resendUserVerifyEmail,
+    searchLocationByUserInput,
 };
