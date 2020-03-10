@@ -185,7 +185,7 @@ class MyTags extends React.Component {
                         && (
                             <div className="text-center">
                                 <Button
-                                    className="blue-bordr-btn-round-def"
+                                    className="blue-bordr-btn-round-def  w-140"
                                     onClick={() => this.handleLoadMoreClick()}
                                     loading={loader}
                                     disabled={loader}
