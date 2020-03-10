@@ -5,6 +5,7 @@ import jwt from 'jwt-decode';
 import getConfig from 'next/config';
 import _isEmpty from 'lodash/isEmpty';
 
+import logger from '../helpers/logger';
 import { Router } from '../routes';
 import storage from '../helpers/storage';
 import chimpLogo from '../static/images/chimp-logo-new.png';
@@ -86,7 +87,7 @@ const _auth0lockConfig = {
         forgotPasswordSubmitLabel: 'Reset password',
         forgotPasswordTitle: 'Forgot your password?',
         loginSubmitLabel: 'Log in',
-        passwordInputPlaceholder: 'Your password',
+        passwordInputPlaceholder: 'Enter your password',
         success: {
             forgotPassword: 'Check your inbox—we’ve sent instructions to reset your password.',
         },
@@ -421,7 +422,7 @@ const _handleLockSuccess = async ({
     } = returnProps;
     if (!accessToken || !idToken) { return null(); }
     // Sets access token and expiry time in cookies
-    chimpLogin(accessToken).then(async ({ currentUser }) => {
+    chimpLogin(accessToken, returnProps).then(async ({ currentUser }) => {
         const userId = parseInt(currentUser, 10);
         if (document) {
             // console.log('setting wp access token');
@@ -459,7 +460,13 @@ const _handleLockSuccess = async ({
  * added to the Location header's URL as a query string.
  * @return {void}
  */
-const _handleLockFailure = async ({ errorDescription }) => {
+const _handleLockFailure = async (result) => {
+    const {
+        errorDescription,
+    } = result;
+    if (errorDescription) {
+        logger.error(`[Auth0] Login failed: ${JSON.stringify(errorDescription)}`);
+    }
     if (!_.includes(errorDescription, 'Please verify your email before logging in')) {
         if (errorDescription) {
             console.error(errorDescription);
@@ -497,7 +504,6 @@ function _makeLock() {
     }))
         .on('authenticated', _handleLockSuccess)
         .on('authorization_error', _handleLockFailure);
-
     return _auth0lock;
 }
 

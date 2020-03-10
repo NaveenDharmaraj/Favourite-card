@@ -28,7 +28,6 @@ import {
 } from '../../routes';
 import {
     joinGroup,
-    getCampaignFromId,
     getGroupBeneficiariesCount,
     leaveGroup,
 } from '../../actions/group';
@@ -67,9 +66,6 @@ class GroupDetails extends React.Component {
                 id: userId,
             },
             groupDetails: {
-                attributes: {
-                    campaignId,
-                },
                 id: groupId,
                 relationships: {
                     groupBeneficiaries: {
@@ -80,9 +76,6 @@ class GroupDetails extends React.Component {
                 },
             },
         } = this.props;
-        if (campaignId) {
-            getCampaignFromId(dispatch, campaignId);
-        }
         let deepLinkApiUrl = `deeplink?profileType=groupprofile&profileId=${groupId}`;
         if (isAuthenticated) {
             deepLinkApiUrl += `&sourceId=${userId}`;
@@ -283,7 +276,7 @@ class GroupDetails extends React.Component {
                         </Link>
                     </div>
                     <div className="buttonWraper">
-                        <Link route={`/users/login`}>
+                        <Link route={`/users/login?returnTo=/groups/${slug}`}>
                             <Button primary className="blue-btn-rounded">Log in</Button>
                         </Link>
                     </div>

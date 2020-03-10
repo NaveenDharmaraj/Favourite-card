@@ -158,7 +158,7 @@ class GroupsAndCampaignsCard extends React.Component {
                                             </span>
                                         </Header.Content>
                                     </Header>
-                                    <Link className="lnkChange" route={`/${urlType}/${slug}`}>
+                                    <Link className="lnkChange" route={`/${urlType}/${slug}`} passHref>
                                         <Button className="btn-small-white-border">View</Button>
                                     </Link>
                                     {

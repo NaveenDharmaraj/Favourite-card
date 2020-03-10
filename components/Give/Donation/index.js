@@ -376,7 +376,6 @@ class Donation extends React.Component {
      * @return {JSX} JSX representing donation amount.
      */  
     renderDonationAmountField(amount, validity, formatMessage) {
-
       return (
           
           <Form.Field>
@@ -554,6 +553,22 @@ class Donation extends React.Component {
                       (!_.isEmpty(donationMatchedData)) && (
                           <Form.Field>
                               <div className="recurringMsg">
+                                {formatMessage(
+                                      'donationMatchPolicyNote', {
+                                          companyName:
+                                              donationMatchedData.attributes.companyName,
+                                          policyMax:
+                                              formatCurrency(
+                                                  donationMatchedData.attributes.policyMax,
+                                                  language,
+                                                  currency,
+                                              ),
+                                          policyPercentage:
+                                            formatCurrency((donationMatchedData.attributes.policyPercentage/100), language, currency),
+                                          policyPeriod: convertedPolicyPeriod,
+                                      },
+                                  )}
+                                  <br/>
                                   {formatMessage('donationMatchNote', {
                                       companyName:
                                           donationMatchedData.attributes.companyName,
@@ -571,22 +586,6 @@ class Donation extends React.Component {
                                               currency,
                                           ),
                                   })}
-                                  <br />
-                                  {formatMessage(
-                                      'donationMatchPolicyNote', {
-                                          companyName:
-                                              donationMatchedData.attributes.companyName,
-                                          policyMax:
-                                              formatCurrency(
-                                                  donationMatchedData.attributes.policyMax,
-                                                  language,
-                                                  currency,
-                                              ),
-                                          policyPercentage:
-                                              donationMatchedData.attributes.policyPercentage,
-                                          policyPeriod: convertedPolicyPeriod,
-                                      },
-                                  )}
                               </div>
                           </Form.Field>
                       )

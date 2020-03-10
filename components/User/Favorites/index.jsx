@@ -127,7 +127,7 @@ class Favorites extends React.Component {
                                         </Header.Content>
                                     </Header>
                                     <div>
-                                        <Link route="/search">
+                                        <Link route="/search" passHref>
                                             <Button className="white-btn-rounded-def">Find charities, groups, and causes</Button>
                                         </Link>
                                     </div>
@@ -198,8 +198,8 @@ class Favorites extends React.Component {
                                                         )}
 
                                                 </Header.Content>
-                                            </Header>
-                                            <Link className="lnkChange" route={`/${route}/${slug}`}>
+                                            </Header> 
+                                            <Link className="lnkChange" route={`/${route}/${slug}`} passHref>
                                                 <Button className="btn-small-white-border">View</Button>
                                             </Link>
                                         </div>

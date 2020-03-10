@@ -117,7 +117,7 @@ class TransactionDetails extends React.Component {
                     'Dec',
                 ];
                 const yyyy = date.getFullYear();
-                date = `${month[mm]} ${dd} ,${yyyy}`;
+                date = `${month[mm]} ${dd}, ${yyyy}`;
                 let rowClass = '';
                 let transactionSign = '';
                 const imageCls = 'ui image';
@@ -143,7 +143,7 @@ class TransactionDetails extends React.Component {
                                             <List.Header>
                                                 {transaction.attributes.description}
                                             </List.Header>
-                                            {(isChimpAdmin && transaction.attributes.canToggleName)
+                                            {(isChimpAdmin && transaction.attributes.canToggleName && !transaction.attributes.isOneTimeUser)
                                             && (
                                                 <Fragment>
                                                     <a id="name" onClick={() => this.toggleVisibility(event,transaction.id)} className="mr-1">
@@ -166,7 +166,7 @@ class TransactionDetails extends React.Component {
                                     : (
                                         'Hidden'
                                     )}
-                                {(isChimpAdmin && transaction.attributes.canToggleAmount)
+                                {(isChimpAdmin && transaction.attributes.canToggleAmount && !transaction.attributes.isOneTimeUser)
                                 && (
                                     <Fragment>
                                         <br />

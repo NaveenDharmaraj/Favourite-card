@@ -26,6 +26,7 @@ const ModalStatusMessage = dynamic(() => import('../../shared/ModalStatusMessage
 });
 import {
     formatAmount,
+    formatCurrency,
     isValidGivingGoalAmount,
 } from '../../../helpers/give/utils';
 import {
@@ -46,6 +47,7 @@ class EditBasicProfile extends React.Component {
                 }
             }
         } = props;
+        const givingGoalAmount = (!_.isEmpty(props.userData.giving_goal_amt) || typeof props.userData.giving_goal_amt !== 'undefined') ? formatAmount(Number(props.userData.giving_goal_amt)) : '';
         this.state = {
             buttonClicked: true,
             errorMessage: null,
@@ -58,14 +60,15 @@ class EditBasicProfile extends React.Component {
             userBasicDetails: {
                 about: (!_.isEmpty(props.userData)) ? props.userData.description : '',
                 firstName: (!_.isEmpty(props.userData)) ? props.userData.first_name : '',
-                givingGoal: (!_.isEmpty(props.userData.giving_goal_amt) || typeof props.userData.giving_goal_amt !== 'undefined') ? formatAmount(Number(props.userData.giving_goal_amt)) : '',
+                givingGoal: givingGoalAmount,
                 lastName: (!_.isEmpty(props.userData)) ? props.userData.last_name : '',
                 location: (!_.isEmpty(props.userData)) ? props.userData.location : '',
                 displayName: (!_.isEmpty(props.userData)) ? props.userData.display_name : '',
+                formatedGoalAmount: _.replace(formatCurrency(givingGoalAmount, 'en', 'USD'), '$', ''),
             },
             validity: this.intializeValidations(),
         };
-        
+
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleInputOnBlur = this.handleInputOnBlur.bind(this);
@@ -80,14 +83,16 @@ class EditBasicProfile extends React.Component {
             userData,
         } = this.props;        
         if (!_.isEqual(userData, prevProps.userData)) {
+            const givingGoalAmount = typeof userData.giving_goal_amt !== 'undefined' ? formatAmount(Number(userData.giving_goal_amt)) : '';
             this.setState({
                 userBasicDetails: {
                     about: userData.description,
                     firstName: userData.first_name,
-                    givingGoal: typeof userData.giving_goal_amt !== 'undefined' ? formatAmount(Number(userData.giving_goal_amt)) : '',
+                    givingGoal: givingGoalAmount,
                     lastName: userData.last_name,
                     location: userData.location,
                     displayName: userData.display_name,
+                    formatedGoalAmount: _.replace(formatCurrency(givingGoalAmount, 'en', 'USD'), '$', ''),
                 },
             });
         }
@@ -106,6 +111,7 @@ class EditBasicProfile extends React.Component {
             validity,
         } = this.state;
         userBasicDetails.givingGoal = formatAmount(amount);
+        userBasicDetails.formatedGoalAmount = _.replace(formatCurrency(userBasicDetails.givingGoal, 'en', 'USD'), '$', '');
         this.setState({
             buttonClicked: false,
             statusMessage: false,
@@ -141,7 +147,11 @@ class EditBasicProfile extends React.Component {
         } = this.state;
         const newValue = (!_.isEmpty(options)) ? _.find(options, { value }) : value;
         if (userBasicDetails[name] !== newValue) {
+            if (name === 'givingGoal') {
+                userBasicDetails.formatedGoalAmount = newValue;
+            }
             userBasicDetails[name] = newValue;
+
         }
         this.setState({
             buttonClicked: false,
@@ -163,10 +173,11 @@ class EditBasicProfile extends React.Component {
             validity,
         } = this.state;
         let inputValue = value;
-        const isNumber = /^\d+(\.\d*)?$/;
+        const isNumber = /^(?:[0-9]+,)*[0-9]+(?:\.[0-9]+)?$/;
         if ((name === 'givingGoal') && !_.isEmpty(value) && value.match(isNumber)) {
-            userBasicDetails[name] = formatAmount(value);
-            inputValue = formatAmount(value);
+            inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
+            userBasicDetails[name] = inputValue;
+            userBasicDetails.formatedGoalAmount = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
         }
         validity = this.validateUserProfileBasicForm(name, inputValue, validity);
         this.setState({
@@ -251,7 +262,7 @@ class EditBasicProfile extends React.Component {
                 });
             }).catch((err) => {
                 this.setState({
-                    errorMessage: 'Error in saving the Credit Card.',
+                    errorMessage: 'Error in saving the profile.',
                     statusMessage: true,
                     buttonClicked: true,
                 });
@@ -364,6 +375,7 @@ class EditBasicProfile extends React.Component {
                 location,
                 givingGoal,
                 displayName,
+                formatedGoalAmount,
             },
             uploadImagePreview,
             validity,
@@ -554,7 +566,7 @@ class EditBasicProfile extends React.Component {
                                         maxLength="11"
                                         onChange={this.handleInputChange}
                                         onBlur={this.handleInputOnBlur}
-                                        value={givingGoal}
+                                        value={formatedGoalAmount}
                                         error={!isValidGivingGoalAmount(validity)}
                                     />                                    
                                     <FormValidationErrorMessage
