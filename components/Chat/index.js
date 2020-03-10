@@ -49,7 +49,7 @@ class ChatWrapper extends React.Component {
             newGroupImageUrl: "",
             editGroupName: "",
             editGroupImageUrl: "",
-            isSmallerScreen: window.innerWidth <= 767,
+            // isSmallerScreen: window.innerWidth <= 767,
             smallerScreenSection: "convList",
             userInfo: userInfo,
             showMoreOptions: false,
@@ -340,15 +340,16 @@ class ChatWrapper extends React.Component {
             params["imageUrl"] = CHAT_GROUP_DEFAULT_AVATAR;
         }
         params["metadata"] = {
-            "CREATE_GROUP_MESSAGE": "",
-            "REMOVE_MEMBER_MESSAGE": "",
-            "ADD_MEMBER_MESSAGE": "",
-            "JOIN_MEMBER_MESSAGE": "",
-            "GROUP_NAME_CHANGE_MESSAGE": "",
-            "GROUP_ICON_CHANGE_MESSAGE": "",
-            "GROUP_LEFT_MESSAGE": "",
-            "DELETED_GROUP_MESSAGE": "",
-            "HIDE": "true"
+            "CREATE_GROUP_MESSAGE": ":adminName created group",
+            "REMOVE_MEMBER_MESSAGE": ":userName removed",
+            "ADD_MEMBER_MESSAGE": ":userName added",
+            "JOIN_MEMBER_MESSAGE": ":userName joined",
+            "GROUP_NAME_CHANGE_MESSAGE": "Group renamed to :groupName",
+            "GROUP_ICON_CHANGE_MESSAGE": ":groupName icon changed",
+            "GROUP_LEFT_MESSAGE": ":userName left",
+            "DELETED_GROUP_MESSAGE": ":groupName deleted",
+            "HIDE": "true",
+            "ALERT": "false",
         };
         self.setLoading(true);
         applozicApi.post("/group/v2/create", params).then(function (response) {
@@ -545,7 +546,9 @@ class ChatWrapper extends React.Component {
             if (conversation.groupId) {
                 params["clientGroupId"] = conversation.groupId;
             } else { params["to"] = conversation.contactIds; }
-            params['contentType'] = 3;
+            // CPP-5235 commenting this for mobile.
+            // params['contentType'] = 3;
+
             // params['_userId'] = this.state.userInfo.id;
             // params["_deviceKey"] = this.state.userInfo.applogicClientRegistration.deviceKey;
             // self.setLoading(true);
@@ -651,6 +654,7 @@ class ChatWrapper extends React.Component {
         window.addEventListener('onMessageEvent', this.onMessageEvent, false);
         window.addEventListener('onMessageReceived', this.onMessageReceived, false);
         window.addEventListener("resize", this.resize.bind(this));
+        this.setState({ isSmallerScreen: window.innerWidth <= 767 });
     }
     resize() {
         this.setState({ isSmallerScreen: window.innerWidth <= 767 });
@@ -1067,11 +1071,11 @@ class ChatWrapper extends React.Component {
                                                                     </Modal.Content>
                                                                 </Modal>
                                                                 <Modal size="tiny" open={self.state.groupAction == 'REMOVE_ADMIN'} onClose={() => self.setGroupAction("MEMBERS_LIST")} dimmer="inverted" className="chimp-modal" closeIcon centered={false}>
-                                                                    <Modal.Header>Remove group admin?</Modal.Header>
+                                                                    <Modal.Header>Remove admin status?</Modal.Header>
                                                                     <Modal.Content>
                                                                         <Modal.Description className="font-s-16">{self.state.groupUserName} will no longer be able to manage all the members of this group chat.</Modal.Description>
                                                                         <div className="btn-wraper pt-3 text-right">
-                                                                            <Button className="red-btn-rounded-def red" onClick={() => { self.updateGroupDetails(self.state.groupId, self.state.groupUserInfo); self.setGroupAction("MEMBERS_LIST") }}>Remove group admin</Button>
+                                                                            <Button className="red-btn-rounded-def red" onClick={() => { self.updateGroupDetails(self.state.groupId, self.state.groupUserInfo); self.setGroupAction("MEMBERS_LIST") }}>Remove admin status</Button>
                                                                             <Button className="blue-bordr-btn-round-def c-small" onClick={() => self.setGroupAction("MEMBERS_LIST")}>Cancel</Button>
                                                                         </div>
                                                                     </Modal.Content>
@@ -1117,7 +1121,7 @@ class ChatWrapper extends React.Component {
                                                                                                                                 {/* {user.userId != self.state.userInfo.id && currentUserInfo.role == "1" && user.role != "1" ? <List.Item as='a' onClick={() => self.updateGroupDetails(groupFeed.clientGroupId, [{ "userId": Number(user.userId), "role": "1" }])}>Make group admin</List.Item> : ""} */}
                                                                                                                                 {user.userId != self.state.userInfo.id && currentUserInfo.role == "1" && user.role != "1" ? <List.Item as='a' onClick={() => self.setGroupAction("MAKE_USER_ADMIN", false, { groupId: groupFeed.clientGroupId, groupUserInfo: [{ "userId": Number(user.userId), "role": "1" }], groupUserName: self.state.userDetails[user.userId].displayName || "User" })}>Make group admin</List.Item> : ""}
                                                                                                                                 {/* {user.userId != self.state.userInfo.id && currentUserInfo.role == "1" && user.role == "1" ? <List.Item as='a' onClick={() => self.updateGroupDetails(groupFeed.clientGroupId, [{ "userId": Number(user.userId), "role": "3" }])}>Remove group admin</List.Item> : ""} */}
-                                                                                                                                {user.userId != self.state.userInfo.id && currentUserInfo.role == "1" && user.role == "1" ? <List.Item as='a' onClick={() => self.setGroupAction("REMOVE_ADMIN", false, { groupId: groupFeed.clientGroupId, groupUserInfo: [{ "userId": Number(user.userId), "role": "3" }], groupUserName: self.state.userDetails[user.userId].displayName || "User" })}>Remove group admin</List.Item> : ""}
+                                                                                                                                {user.userId != self.state.userInfo.id && currentUserInfo.role == "1" && user.role == "1" ? <List.Item as='a' onClick={() => self.setGroupAction("REMOVE_ADMIN", false, { groupId: groupFeed.clientGroupId, groupUserInfo: [{ "userId": Number(user.userId), "role": "3" }], groupUserName: self.state.userDetails[user.userId].displayName || "User" })}>Remove admin status</List.Item> : ""}
                                                                                                                         {user.userId != self.state.userInfo.id && currentUserInfo.role == "1" && user.role != "1" ? <Divider /> : ""}
                                                                                                                                 {/* {user.userId != self.state.userInfo.id && currentUserInfo.role == "1" ? <List.Item as='a' className="red" onClick={() => self.removeUserFromGroup(groupFeed.clientGroupId, user.userId)}>Remove from conversation</List.Item> : ""} */}
                                                                                                                                 {user.userId != self.state.userInfo.id && currentUserInfo.role == "1" ? <List.Item as='a' className="red" onClick={() => self.setGroupAction("REMOVE_USER", false, { groupId: groupFeed.clientGroupId, userId: user.userId, groupUserName: self.state.userDetails[user.userId].displayName || "User" })}>Remove from conversation</List.Item> : ""}
@@ -1156,7 +1160,7 @@ class ChatWrapper extends React.Component {
                                                                                 <Dropdown
                                                                                     noResultsMessage={null}
                                                                                     options={self.state.groupAddMemberOptions}
-                                                                                    placeholder='Add members...'
+                                                                                    placeholder='Type a name or multiple names'
                                                                                     // search
                                                                                     selection
                                                                                     fluid
@@ -1207,7 +1211,7 @@ class ChatWrapper extends React.Component {
                                                                         </div>
                                                                     </Modal.Content>
                                                                 </Modal>
-                                                                <Modal size="tiny" open={self.state.groupAction == 'MUTE_NOTIFICATIONS'} onClose={() => self.setGroupAction(null)} dimmer="inverted" className="chimp-modal" closeIcon centered={false}>
+                                                                <Modal size="tiny" open={self.state.groupAction == 'MUTE_NOTIFICATIONS'} onClose={() => self.setGroupAction(null)} dimmer="inverted" className="chimp-modal" closeIcon centered={true}>
                                                                     <Modal.Header>Mute conversation?</Modal.Header>
                                                                     <Modal.Content>
                                                                         <Modal.Description className="font-s-16">You can unmute this conversation anytime.</Modal.Description>
@@ -1218,7 +1222,7 @@ class ChatWrapper extends React.Component {
                                                                     </Modal.Content>
                                                                 </Modal>
 
-                                                                <Modal size="tiny" open={self.state.groupAction == 'UNMUTE_NOTIFICATIONS'} onClose={() => self.setGroupAction(null)} dimmer="inverted" className="chimp-modal" closeIcon centered={false}>
+                                                                <Modal size="tiny" open={self.state.groupAction == 'UNMUTE_NOTIFICATIONS'} onClose={() => self.setGroupAction(null)} dimmer="inverted" className="chimp-modal" closeIcon centered={true}>
                                                                     <Modal.Header>Unmute conversation?</Modal.Header>
                                                                     <Modal.Content>
                                                                         <Modal.Description className="font-s-16">You can mute this conversation anytime.</Modal.Description>
@@ -1230,7 +1234,7 @@ class ChatWrapper extends React.Component {
                                                                 </Modal>
 
 
-                                                                <Modal size="tiny" open={self.state.groupAction == 'LEAVE_GROUP'} onClose={() => self.setGroupAction(null)} dimmer="inverted" className="chimp-modal" closeIcon centered={false}>
+                                                                <Modal size="tiny" open={self.state.groupAction == 'LEAVE_GROUP'} onClose={() => self.setGroupAction(null)} dimmer="inverted" className="chimp-modal" closeIcon centered={true}>
                                                                     <Modal.Header>Leave conversation?</Modal.Header>
                                                                     <Modal.Content>
                                                                         <Modal.Description className="font-s-16">You won't get messages from this group chat unless another member adds you back into the chat.</Modal.Description>
@@ -1241,7 +1245,7 @@ class ChatWrapper extends React.Component {
                                                                     </Modal.Content>
                                                                 </Modal>
 
-                                                                <Modal size="tiny" open={self.state.groupAction == 'DELETE_GROUP'} onClose={() => self.setGroupAction(null)} dimmer="inverted" className="chimp-modal" closeIcon centered={false}>
+                                                                <Modal size="tiny" open={self.state.groupAction == 'DELETE_GROUP'} onClose={() => self.setGroupAction(null)} dimmer="inverted" className="chimp-modal" closeIcon centered={true}>
                                                                     <Modal.Header>Delete group?</Modal.Header>
                                                                     <Modal.Content>
                                                                         <Modal.Description className="font-s-16">Cannot undo this action. All the messages in this group will be deleted permanentaly.</Modal.Description>
@@ -1252,7 +1256,7 @@ class ChatWrapper extends React.Component {
                                                                     </Modal.Content>
                                                                 </Modal>
 
-                                                                <Modal size="tiny" open={self.state.groupAction == 'REMOVE_GROUP_IMAGE'} onClose={() => self.setGroupAction(null)} dimmer="inverted" className="chimp-modal" closeIcon centered={false}>
+                                                                <Modal size="tiny" open={self.state.groupAction == 'REMOVE_GROUP_IMAGE'} onClose={() => self.setGroupAction(null)} dimmer="inverted" className="chimp-modal" closeIcon centered={true}>
                                                                     <Modal.Header>Remove group image?</Modal.Header>
                                                                     <Modal.Content>
                                                                         <Modal.Description className="font-s-16">Cannot undo this action. The image of the group will be removed for all members.</Modal.Description>
@@ -1354,7 +1358,7 @@ class ChatWrapper extends React.Component {
                                                             </div>
                                                             <div className="moreOption">
                                                                 {/* <Button className="moreOption-btn transparent" circular onClick={self.setShowMoreOptions}><Image src={moreIcon} ref={this.contextRef} /></Button> */}
-                                                                <Modal size="tiny" dimmer="inverted" className="chimp-modal" onClose={() => self.setState({ conversationAction: null })} closeIcon open={self.state.conversationAction == "MUTE"} centered={false}>
+                                                                <Modal size="tiny" dimmer="inverted" className="chimp-modal" onClose={() => self.setState({ conversationAction: null })} closeIcon open={self.state.conversationAction == "MUTE"} centered={true}>
                                                                     <Modal.Header>Mute conversation?</Modal.Header>
                                                                     <Modal.Content>
                                                                         <Modal.Description className="font-s-16">You can unmute this conversation anytime.</Modal.Description>
@@ -1364,7 +1368,7 @@ class ChatWrapper extends React.Component {
                                                                         </div>
                                                                     </Modal.Content>
                                                                 </Modal>
-                                                                <Modal size="tiny" dimmer="inverted" className="chimp-modal" onClose={() => self.setState({ conversationAction: null })} closeIcon open={self.state.conversationAction == "UNMUTE"} centered={false}>
+                                                                <Modal size="tiny" dimmer="inverted" className="chimp-modal" onClose={() => self.setState({ conversationAction: null })} closeIcon open={self.state.conversationAction == "UNMUTE"} centered={true}>
                                                                     <Modal.Header>Unmute conversation?</Modal.Header>
                                                                     <Modal.Content>
                                                                         <Modal.Description className="font-s-16">You can mute this conversation anytime.</Modal.Description>
@@ -1374,7 +1378,7 @@ class ChatWrapper extends React.Component {
                                                                         </div>
                                                                     </Modal.Content>
                                                                 </Modal>
-                                                                <Modal size="tiny" dimmer="inverted" className="chimp-modal" onClose={() => self.setState({ conversationAction: null })} closeIcon open={self.state.conversationAction == "DELETE"} centered={false}>
+                                                                <Modal size="tiny" dimmer="inverted" className="chimp-modal" onClose={() => self.setState({ conversationAction: null })} closeIcon open={self.state.conversationAction == "DELETE"} centered={true}>
                                                                     <Modal.Header>Delete conversation?</Modal.Header>
                                                                     <Modal.Content>
                                                                         <Modal.Description className="font-s-16">Deleting removes conversations from inbox, but no ones else’s inbox.</Modal.Description>

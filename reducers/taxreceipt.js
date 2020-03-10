@@ -102,6 +102,7 @@ const taxreceipt = (state = {}, action) => {
         case 'ISSUED_TAX_RECEIPIENT_YEARLY_DETAIL':
             newState = {
                 ...state,
+                currentIssuedTaxReceipt: action.payload.currentIssuedTaxReceipt,
                 issuedTaxReceiptYearlyDetail: action.payload.issuedTaxReceiptYearlyDetail,
                 yearLoader: action.payload.yearLoader,
             };

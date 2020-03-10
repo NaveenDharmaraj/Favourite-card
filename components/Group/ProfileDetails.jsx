@@ -76,12 +76,11 @@ const ProfileDetails = (props) => {
                                     )}
                                     {videoPlayerLink
                                         && (
-                                            <div className="mb-3">
+                                            <div className="mb-3 videoWrapper text-center">
                                                 <embed
                                                     title="video"
-                                                    // width="50%"
-                                                    // height="50%"
                                                     src={videoPlayerLink}
+                                                    className="responsiveVideo"
                                                 />
                                             </div>
                                         )}
