@@ -135,7 +135,6 @@ class Login extends React.Component {
             isPasswordLengthInLimit: true,
             isPasswordNull: true,
             isPasswordValid: true,
-            isValidCauses: true,
         };
         return this.validity;
     }

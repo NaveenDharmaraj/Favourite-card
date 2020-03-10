@@ -60,10 +60,6 @@ function CausesSelection(props) {
                         </Grid.Row>
                     </Grid>
                     <p className="causes-selection">Only you can see causes you care about unless you decide to share them on your personal profile. We don't share your selected causes with charities or anyone else.</p>
-                    <FormValidationErrorMessage
-                        condition={!validity.isValidCauses}
-                        errorMessage="Please select 3 or more causes"
-                    />
                     <div className="reg-btn-wraper">
                         <Button
                             className="blue-bordr-btn-round-def"
