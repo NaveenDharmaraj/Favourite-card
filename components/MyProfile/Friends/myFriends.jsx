@@ -108,6 +108,7 @@ class MyFriends extends React.Component {
                         avatar,
                         email,
                         firstName,
+                        displayName,
                     },
                 },
                 dispatch,
@@ -115,7 +116,7 @@ class MyFriends extends React.Component {
             const {
                 currentMyInvitaionsActivePage,
             } = this.state;
-            acceptFriendRequest(dispatch, id, email, avatar, firstName, destinationEmail, destinationUserId, currentMyInvitaionsActivePage, 'MYFRIENDS', null).then(() => {
+            acceptFriendRequest(dispatch, id, email, avatar, firstName, displayName, destinationEmail, destinationUserId, currentMyInvitaionsActivePage, 'MYFRIENDS', null).then(() => {
                 this.setState({
                     errorMessage: null,
                     successMessage: 'Friend request accepted successfully.',

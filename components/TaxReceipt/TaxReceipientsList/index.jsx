@@ -15,6 +15,9 @@ import PropTypes from 'prop-types';
 
 import TaxReceipientCard from '../TaxReceipientCard';
 import {
+    getUserDefaultTaxReceipt,
+} from '../../../actions/userProfile';
+import {
     getTaxReceiptProfilePaginated,
 } from '../../../actions/taxreceipt';
 import PlaceholderGrid from '../../shared/PlaceHolder';
@@ -38,6 +41,7 @@ class TaxReceipientsList extends React.Component {
             dispatch,
         } = this.props;
         getTaxReceiptProfilePaginated(dispatch, id, 1);
+        getUserDefaultTaxReceipt(dispatch, id);
     }
 
 
@@ -89,6 +93,7 @@ class TaxReceipientsList extends React.Component {
             loader,
             taxReceiptProfileList,
             taxReceiptProfilePageCount,
+            userDefaultTaxReceipt,
         } = this.props;
         const {
             loadMoreIncrementor,
@@ -96,18 +101,17 @@ class TaxReceipientsList extends React.Component {
         } = this.state;
         return (
             <Fragment>
-                {loader ? <PlaceholderGrid row={2} column={2} /> : (
+                {loader ? <PlaceholderGrid row={1} column={2} /> : (
                     <Fragment>
                         {(!_isEmpty(taxReceiptProfileList) && taxReceiptProfileList.length > 0)
                             ? (
                                 <Grid verticalAlign="middle" stackable>
                                     <Grid.Row>
-                                        {_map(taxReceiptProfileList.slice(0, 4), (taxReceipt) => (
-                                            <Grid.Column mobile={16} tablet={8} computer={8}>
-                                                <TaxReceipientCard taxReceipt={taxReceipt} id={id} dispatch={dispatch} />
+                                        {(!_isEmpty(userDefaultTaxReceipt) && !_isEmpty(userDefaultTaxReceipt.data)) && (
+                                            <Grid.Column mobile={16} tablet={16} computer={16}>
+                                                <TaxReceipientCard taxReceipt={userDefaultTaxReceipt.data} id={id} dispatch={dispatch} />
                                             </Grid.Column>
-                                        ))
-                                        }
+                                        )}
                                     </Grid.Row>
                                 </Grid>
 
@@ -121,7 +125,7 @@ class TaxReceipientsList extends React.Component {
                             )
                         }
 
-                        {(!_isEmpty(taxReceiptProfileList) && taxReceiptProfileList.length > 4)
+                        {(!_isEmpty(taxReceiptProfileList) && taxReceiptProfileList.length > 1)
                     && (
                         <div className="text-center mt-1 mb-1">
                             <Modal size="tiny" dimmer="inverted" className="chimp-modal" closeIcon trigger={<Button className="blue-bordr-btn-round-def c-small">Manage recipients</Button>}>
@@ -159,6 +163,7 @@ const mapStateToProps = (state) => ({
     loader: state.taxreceipt.loader,
     taxReceiptProfileList: state.taxreceipt.taxReceiptProfileList,
     taxReceiptProfilePageCount: state.taxreceipt.taxReceiptProfilePageCount,
+    userDefaultTaxReceipt: state.userProfile.userDefaultTaxReceipt,
 });
 
 TaxReceipientsList.propTypes = {

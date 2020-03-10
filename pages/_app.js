@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import getConfig from 'next/config';
 import TagManager from 'react-gtm-module';
 
+
 import withReduxStore from '../store/with-redux-store';
 import { appWithTranslation } from '../i18n';
 

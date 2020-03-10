@@ -1,6 +1,7 @@
 import React, {
     Fragment,
 } from 'react';
+import _ from 'lodash';
 import dynamic from 'next/dynamic';
 import getConfig from 'next/config';
 import _isEmpty from 'lodash/isEmpty';
@@ -532,10 +533,10 @@ class Charity extends React.Component {
             dispatch,
         } = this.props;
         let inputValue = value;
-        const isNumber = /^\d+(\.\d*)?$/;
+        const isNumber = /^(?:[0-9]+,)*[0-9]+(?:\.[0-9]+)?$/;
         if ((name === 'giveAmount' || name === 'donationAmount') && !_isEmpty(value) && value.match(isNumber)) {
-            giveData[name] = formatAmount(value);
-            inputValue = formatAmount(value);
+            inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
+            giveData[name] = inputValue;
         }
         const coverFeesAmount = Charity.getCoverFeesAmount(giveData, coverFeesData);
         if (Number(giveData.giveFrom.value) > 0 && Number(giveData.giveAmount) > 0) {		
@@ -549,10 +550,14 @@ class Charity extends React.Component {
         switch (name) {
             case 'giveAmount':
                 validity = validateGiveForm('donationAmount', giveData.donationAmount, validity, giveData, coverFeesAmount);
+                giveData['formatedCharityAmount'] = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
                 break;
             case 'giveFrom':
                 validity = validateGiveForm('giveAmount', giveData.giveAmount, validity, giveData, coverFeesAmount);
                 validity = validateGiveForm('donationAmount', giveData.donationAmount, validity, giveData, coverFeesAmount);
+                break;
+            case 'donationAmount':
+                    giveData['formatedDonationAmount'] = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
                 break;
             case 'inHonorOf':
             case 'inMemoryOf':
@@ -642,6 +647,9 @@ class Charity extends React.Component {
             giveData[name] = newValue;
             giveData.userInteracted = true;
             switch (name) {
+                case 'donationAmount':
+                        giveData['formatedDonationAmount'] =  newValue;
+                    break;
                 case 'giveFrom':
                     const {
                         modifiedDropDownOptions,
@@ -663,6 +671,8 @@ class Charity extends React.Component {
                     giveData = resetDataForGiftTypeChange(giveData, dropDownOptions, coverFeesData);
                     break;
                 case 'giveAmount':
+                    giveData[name]=formatAmount(parseFloat(newValue.replace(/,/g, '')));
+                    giveData['formatedCharityAmount'] = newValue;
                     giveData = resetDataForGiveAmountChange(
                         giveData, dropDownOptions, coverFeesData,
                     );
@@ -1009,6 +1019,8 @@ class Charity extends React.Component {
                     },
                     donationAmount,
                     donationMatch,
+                    formatedCharityAmount,
+                    formatedDonationAmount,
                     giftType,
                     giveTo,
                     giveAmount,
@@ -1056,7 +1068,7 @@ class Charity extends React.Component {
             accountTopUpComponent = (
                 <AccountTopUp
                     creditCard={creditCard}
-                    donationAmount={donationAmount}
+                    donationAmount={formatedDonationAmount}
                     donationMatch={donationMatch}
                     donationMatchList={donationMatchList}
                     formatMessage={formatMessage}
@@ -1094,7 +1106,6 @@ class Charity extends React.Component {
                 );
             }
         }
-
         return (
             <Form onSubmit={this.handleSubmit}>
                 { (Number(giveTo.value) > 0) && (
@@ -1173,7 +1184,7 @@ class Charity extends React.Component {
                                 onChange={this.handleInputChange}
                                 placeholder={formatMessage('giveCommon:amountPlaceHolder')}
                                 size="large"
-                                value={giveAmount}
+                                value={formatedCharityAmount}
                             />
                         </Form.Field>
                         <FormValidationErrorMessage

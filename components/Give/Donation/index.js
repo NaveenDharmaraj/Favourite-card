@@ -142,10 +142,12 @@ class Donation extends React.Component {
             validity,
         } = this.state;
         let inputValue = value;
-        const isNumber = /^\d+(\.\d*)?$/;
-        if ((name === 'donationAmount') && !_.isEmpty(value) && value.match(isNumber)) {
-            giveData[name] = formatAmount(value);
-            inputValue = formatAmount(value);
+        // const isNumber = /^\d+(\.\d*)?$/;
+        const isValidNumber = /^(?:[0-9]+,)*[0-9]+(?:\.[0-9]+)?$/;
+        if ((name === 'donationAmount') && !_.isEmpty(value) && value.match(isValidNumber)) {
+            inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
+            giveData[name] = inputValue;
+            giveData.formatedDonationAmount = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
         }
         if(name !== 'giveTo') {
             validity = validateDonationForm(name, inputValue, validity, giveData);
@@ -241,7 +243,10 @@ class Donation extends React.Component {
                 const inputValue  = target.checked;
                 giveData.automaticDonation = inputValue;
                 giveData.giftType.value = (inputValue) ? 1 : 0;
-                break;                                 
+                break;
+            case 'donationAmount' :
+                giveData.formatedDonationAmount = newValue;
+                break;
             default: break;
             }
             this.setState({
@@ -311,7 +316,6 @@ class Donation extends React.Component {
      * @return {JSX} JSX representing donation amount.
      */  
     renderDonationAmountField(amount, validity, formatMessage) {
-
       return (
           <Form.Field>
               <label htmlFor="donationAmount">
@@ -324,7 +328,7 @@ class Donation extends React.Component {
                   icon="dollar"
                   iconPosition="left"
                   name="donationAmount"
-                  maxLength="7"
+                  maxLength="8"
                   onBlur={this.handleInputOnBlur}
                   onChange={this.handleInputChange}
                   placeholder={formatMessage('giveCommon:amountPlaceHolder')}
@@ -466,6 +470,22 @@ class Donation extends React.Component {
                       (!_.isEmpty(donationMatchedData)) && (
                           <Form.Field>
                               <div className="recurringMsg">
+                                {formatMessage(
+                                      'donationMatchPolicyNote', {
+                                          companyName:
+                                              donationMatchedData.attributes.companyName,
+                                          policyMax:
+                                              formatCurrency(
+                                                  donationMatchedData.attributes.policyMax,
+                                                  language,
+                                                  currency,
+                                              ),
+                                          policyPercentage:
+                                            formatCurrency((donationMatchedData.attributes.policyPercentage/100), language, currency),
+                                          policyPeriod: convertedPolicyPeriod,
+                                      },
+                                  )}
+                                  <br/>
                                   {formatMessage('donationMatchNote', {
                                       companyName:
                                           donationMatchedData.attributes.companyName,
@@ -483,22 +503,6 @@ class Donation extends React.Component {
                                               currency,
                                           ),
                                   })}
-                                  <br />
-                                  {formatMessage(
-                                      'donationMatchPolicyNote', {
-                                          companyName:
-                                              donationMatchedData.attributes.companyName,
-                                          policyMax:
-                                              formatCurrency(
-                                                  donationMatchedData.attributes.policyMax,
-                                                  language,
-                                                  currency,
-                                              ),
-                                          policyPercentage:
-                                              donationMatchedData.attributes.policyPercentage,
-                                          policyPeriod: convertedPolicyPeriod,
-                                      },
-                                  )}
                               </div>
                           </Form.Field>
                       )
@@ -739,7 +743,7 @@ class Donation extends React.Component {
         return (
         <Fragment>
             <Form onSubmit={this.handleSubmit}>
-            { this.renderDonationAmountField(giveData.donationAmount, validity, formatMessage) }
+            { this.renderDonationAmountField(giveData.formatedDonationAmount, validity, formatMessage) }
             <DropDownAccountOptions
             formatMessage={formatMessage}
             type={type}

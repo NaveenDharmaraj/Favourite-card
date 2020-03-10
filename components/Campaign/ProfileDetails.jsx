@@ -94,12 +94,13 @@ function ProfileDetails(props) {
                                         <Grid>
                                             <Grid.Row>
                                                 <Grid.Column width={16}>
-                                                    <embed
-                                                        title="video"
-                                                        // width="50%"
-                                                        // height="50%"
-                                                        src={videoPlayerLink}
-                                                    />
+                                                    <div className="mb-3 videoWrapper text-center">
+                                                        <embed
+                                                            title="video"
+                                                            src={videoPlayerLink}
+                                                            className="responsiveVideo"
+                                                        />
+                                                    </div>
                                                 </Grid.Column>
                                             </Grid.Row>
                                         </Grid>
