@@ -122,9 +122,9 @@ class SearchCharitiesGroups extends React.Component {
                                     <Fragment>
                                         <div className="search-main-head charities">
                                             <Header as="h2">
-                                        Charities discovered for you
+                                                Charities discovered for you
                                                 <Header.Subheader>
-                                            Suggestions based on your interests.
+                                                    Suggestions based on your interests.
                                                     {
                                                         (!_isEmpty(charities) && !_isEmpty(charities.meta) && charities.meta.recordCount > 4)
                                                         && <div className="right-align"><Link route={`/search?${searchQueryParam}result_type=Beneficiary`}>&nbsp;&nbsp;View all</Link></div>
@@ -149,7 +149,7 @@ class SearchCharitiesGroups extends React.Component {
                                 <Fragment>
                                     <div className="search-main-head groups">
                                         <Header as="h2">
-                                    Giving Groups discovered for you
+                                            Giving Groups discovered for you
                                             <Header.Subheader>
                                                 Suggestions based on your interests.
                                                 {

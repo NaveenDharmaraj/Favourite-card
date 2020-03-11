@@ -228,7 +228,7 @@ class MyTags extends React.Component {
                         <strong>All topics</strong>
                     </div>
                     <div className="pt-1 mb-1">
-                    Topics represent specific areas of charitable interests.
+                        Topics represent specific areas of charitable interests.
                     </div>
                     <Grid>
                         <Grid.Row>
