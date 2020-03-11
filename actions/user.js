@@ -249,7 +249,7 @@ export const wpLogin = (token = null) => {
     return wpApi.post('/login', null, params);
 };
 
-export const chimpLogin = (token = null) => {
+export const chimpLogin = (token = null, options = null) => {
     let params = null;
     if (!_.isEmpty(token)) {
         params = {
@@ -258,7 +258,15 @@ export const chimpLogin = (token = null) => {
             },
         };
     }
-    return authRorApi.post('/auth/login', null, params);
+    if (options && typeof options === 'object'){
+        params = {
+            ...params,
+            params:{
+                ...options,
+            },
+        }
+    } 
+        return authRorApi.post(`/auth/login`, null, params);
 };
 
 const setDataToPayload = ({

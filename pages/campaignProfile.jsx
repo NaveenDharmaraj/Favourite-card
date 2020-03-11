@@ -1,11 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import {
+    array,
     func,
     PropTypes,
     string,
 } from 'prop-types';
 import _ from 'lodash';
+import getConfig from 'next/config';
 
 import { Router } from '../routes';
 import {
@@ -49,20 +51,38 @@ class CampaignProfile extends React.Component {
     }
 
     render() {
+        const { publicRuntimeConfig } = getConfig();
+
+        const {
+            APP_URL_ORIGIN,
+        } = publicRuntimeConfig;
+
         const {
             campaignDetails: {
                 attributes: {
                     about,
+                    avatar,
+                    causes,
                     name,
+                    slug,
                 },
             },
             slugApiErrorStats,
         } = this.props;
 
         const description = (!_.isEmpty(about)) ? about : name;
+        const causesList = (causes.length > 0) ? _.map(causes, _.property('name')) : [];
+        const keywords = (causesList.length > 0) ? _.join(_.slice(causesList, 0, 10), ', ') : '';
+        const url = `${APP_URL_ORIGIN}/charities/${slug}`;
         if (!slugApiErrorStats) {
             return (
-                <Layout title={name} description={description}>
+                <Layout
+                    avatar={avatar}
+                    keywords={keywords}
+                    title={name}
+                    description={description}
+                    url={url}
+                >
                     <CampaignProfileWrapper {...this.props} />
                 </Layout>
             );
@@ -75,7 +95,10 @@ CampaignProfile.defaultProps = {
     campaignDetails: {
         attributes: {
             about: '',
+            avatar: '',
+            causes: [],
             name: '',
+            slug: '',
         },
     },
     slug: '',
@@ -85,7 +108,10 @@ CampaignProfile.propTypes = {
     campaignDetails: {
         attributes: {
             about: string,
+            avatar: string,
+            causes: array,
             name: string,
+            slug: string,
         },
     },
     slug: string,

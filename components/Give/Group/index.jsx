@@ -15,6 +15,7 @@ import _every from 'lodash/every';
 import _map from 'lodash/map';
 import _merge from 'lodash/merge';
 import _replace from 'lodash/replace';
+import _ from 'lodash';
 import {
     Elements,
     StripeProvider,

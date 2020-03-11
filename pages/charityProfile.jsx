@@ -1,10 +1,16 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import {
+    array,
     bool,
     string,
 } from 'prop-types';
 import _isEmpty from 'lodash/isEmpty';
+import _join from 'lodash/join';
+import _slice from 'lodash/slice';
+import _map from 'lodash/map';
+import _property from 'lodash/property';
+import getConfig from 'next/config';
 
 import {
     getBeneficiaryFromSlug,
@@ -32,14 +38,22 @@ class CharityProfile extends React.Component {
     }
 
     render() {
+        const { publicRuntimeConfig } = getConfig();
+
+        const {
+            APP_URL_ORIGIN,
+        } = publicRuntimeConfig;
         const {
             charityDetails: {
                 charityDetails: {
                     attributes: {
+                        avatar,
+                        causes,
                         city,
                         description,
                         name,
                         province,
+                        slug,
                     },
                 },
             },
@@ -54,8 +68,17 @@ class CharityProfile extends React.Component {
             title = `${name} | ${province}`;
         }
         const charityDescription = !_isEmpty(description) ? description : title;
+        const causesList = (causes.length > 0) ? _map(causes, _property('name')) : [];
+        const keywords = (causesList.length > 0) ? _join(_slice(causesList, 0, 10), ', ') : '';
+        const url = `${APP_URL_ORIGIN}/charities/${slug}`;
         return (
-            <Layout title={title} description={charityDescription}>
+            <Layout
+                avatar={avatar}
+                keywords={keywords}
+                title={title}
+                description={charityDescription}
+                url={url}
+            >
                 {!redirectToDashboard
                     ? <CharityProfileWrapper {...this.props} />
                     : Router.push('/search')
@@ -69,6 +92,8 @@ CharityProfile.defaultProps = {
     charityDetails: {
         charityDetails: {
             attributes: {
+                avatar: '',
+                causes: [],
                 city: '',
                 description: '',
                 name: '',
@@ -85,9 +110,11 @@ CharityProfile.propTypes = {
     charityDetails: {
         charityDetails: {
             attributes: {
+                avatar: string,
+                causes: array,
                 city: string,
                 description: string,
-                name: '',
+                name: string,
                 province: string,
             },
             type: string,

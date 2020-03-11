@@ -47,6 +47,18 @@ const userProfile = (state = {}, action) => {
                 userCausesList: action.payload.userCausesList,
             };
             break;
+        case 'USER_PROFILE_LOCATION_SEARCH':
+            newState = {
+                ...state,
+                locationOptions: action.payload.data,
+            };
+            break;
+        case 'USER_PROFILE_LOCATION_SEARCH_LOADER':
+            newState = {
+                ...state,
+                locationLoader: action.payload.locationLoader,
+            };
+            break;
         case 'USER_PROFILE_FOLLOWED_TAGS':
             newState = {
                 ...state,
@@ -177,6 +189,31 @@ const userProfile = (state = {}, action) => {
                 loadedData: 0,
                 pageNumber: 1,
                 userFindTagsList: {},
+            };
+            break;
+        case 'USER_PROFILE_GET_EMAIL_LIST':
+            newState = {
+                ...state,
+                emailDetailList: action.payload.emailDetailList,
+            };
+            break;
+        case 'USER_PROFILE_ADD_DUPLICATE_EMAIL_ERROR':
+            newState = {
+                ...state,
+                errorMessageTitle: action.payload.errorMessageTitle,
+                showEmailError: action.payload.showEmailError,
+            };
+            break;
+        case 'USER_PROFILE_SHOW_EMAIL_LOADER':
+            newState = {
+                ...state,
+                showEmailLoader: action.payload.showEmailLoader,
+            };
+            break;
+        case 'USER_PROFILE_SHOW_ADD_BUTTON_LOADER':
+            newState = {
+                ...state,
+                showAddButtonLoader: action.payload.showAddButtonLoader,
             };
             break;
         default:

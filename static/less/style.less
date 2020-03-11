@@ -455,6 +455,9 @@ h4{
 .font-s-16{
   font-size: 1.143rem;
 }
+.font-s-17{
+  font-size: 17px;
+}
 .font-s-18{
   font-size: 1.286rem;
 }
@@ -5011,27 +5014,51 @@ body{
   line-height: 14/@rem;
   font-weight: 400;
 }
+.ui.attached.success.message, .ui.success.message{
+  border: none !important;
+}
+.statusMsgWraper{
+  position: fixed;
+  z-index: 9999;
+  right:19%;
+  @media only screen and (max-width:991px){
+    top: 85px;
+  }
+}
 .status-message-container{
-  text-align: center;
-  -webkit-box-pack: center;
-  -ms-flex-pack: center;
-  justify-content: center;
+  margin-bottom: 5px;
   .chimp-center-msg{
     &.ui{
       &.message{
-        margin-bottom: 1rem; 
+        margin-bottom: 1rem;
+        background-color: #fff;
+        height: 81px;
+        width: 335px !important;
+        box-shadow: 0 2px 7px 0 rgba(135,135,135,0.3);
+        border-radius: 10px;
       }
       &.icon{
         text-align: left;
         width: auto;
         padding: 15/@rem 40/@rem 15/@rem 30/@rem;
-        
+        &.status-icon{
+          color: #000;
+        }
+        .content{
+          color: #263238;
+          font-size: 14px;
+          line-height: 17px;
+        }
         .header{
           margin-bottom: 5/@rem;
         }
       }
     }
   }
+}
+i.check.circle.icon.status-icon {
+  font-size:17px !important;
+  color: #0CC965;
 }
 .error-message {
   color: #FF0000;
@@ -6150,6 +6177,11 @@ body{
                 margin-left: 0px;
                 margin-right: 30px;
                 margin-top: -4px;
+                &.user{
+                  &::before{
+                    content: url(../images/icons/user.svg);
+                  }
+                }
                 &.edit{
                   &::before{
                     content: url(../images/icons/edit.svg);
@@ -6351,6 +6383,41 @@ button.ui.button.blue-bordr-btn-round-def{
 }
 .userCardList{
   margin-top: 15px;
+  &.emailList{
+    .ui{
+      &.list{
+        &.celled{
+          .item{
+            .content{
+              padding-left: 0px;
+              .header{
+                padding-bottom: 7px;
+                .pending{
+                  display: inline-block;
+                  margin-left: 10px;
+                  color: #BBBBBB;
+                  text-transform: uppercase;
+                  font-size: 12px;
+                }
+              }
+              &.right{
+                &.floated{
+                  .ui{
+                    &.dropdown{
+                      padding: 0px 0px;
+                      .ellipsis{
+                        letter-spacing: 2px;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
   .ui{
     &.list{
       &.celled{
@@ -6447,7 +6514,8 @@ button.ui.button.blue-bordr-btn-round-def{
               padding-bottom: 7px;
               .primary{
                 display: inline-block;
-                margin-left: 10px;
+                margin-left: 15px;
+                letter-spacing: 1.2px;
                 color: #663387;
                 text-transform: uppercase;
                 font-size: 12px;

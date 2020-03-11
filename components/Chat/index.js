@@ -49,7 +49,7 @@ class ChatWrapper extends React.Component {
             newGroupImageUrl: "",
             editGroupName: "",
             editGroupImageUrl: "",
-            isSmallerScreen: window.innerWidth <= 767,
+            // isSmallerScreen: window.innerWidth <= 767,
             smallerScreenSection: "convList",
             userInfo: userInfo,
             showMoreOptions: false,
@@ -340,15 +340,16 @@ class ChatWrapper extends React.Component {
             params["imageUrl"] = CHAT_GROUP_DEFAULT_AVATAR;
         }
         params["metadata"] = {
-            "CREATE_GROUP_MESSAGE": "",
-            "REMOVE_MEMBER_MESSAGE": "",
-            "ADD_MEMBER_MESSAGE": "",
-            "JOIN_MEMBER_MESSAGE": "",
-            "GROUP_NAME_CHANGE_MESSAGE": "",
-            "GROUP_ICON_CHANGE_MESSAGE": "",
-            "GROUP_LEFT_MESSAGE": "",
-            "DELETED_GROUP_MESSAGE": "",
-            "HIDE": "true"
+            "CREATE_GROUP_MESSAGE": ":adminName created group",
+            "REMOVE_MEMBER_MESSAGE": ":userName removed",
+            "ADD_MEMBER_MESSAGE": ":userName added",
+            "JOIN_MEMBER_MESSAGE": ":userName joined",
+            "GROUP_NAME_CHANGE_MESSAGE": "Group renamed to :groupName",
+            "GROUP_ICON_CHANGE_MESSAGE": ":groupName icon changed",
+            "GROUP_LEFT_MESSAGE": ":userName left",
+            "DELETED_GROUP_MESSAGE": ":groupName deleted",
+            "HIDE": "true",
+            "ALERT": "false",
         };
         self.setLoading(true);
         applozicApi.post("/group/v2/create", params).then(function (response) {
@@ -545,7 +546,9 @@ class ChatWrapper extends React.Component {
             if (conversation.groupId) {
                 params["clientGroupId"] = conversation.groupId;
             } else { params["to"] = conversation.contactIds; }
-            params['contentType'] = 3;
+            // CPP-5235 commenting this for mobile.
+            // params['contentType'] = 3;
+
             // params['_userId'] = this.state.userInfo.id;
             // params["_deviceKey"] = this.state.userInfo.applogicClientRegistration.deviceKey;
             // self.setLoading(true);
@@ -651,6 +654,7 @@ class ChatWrapper extends React.Component {
         window.addEventListener('onMessageEvent', this.onMessageEvent, false);
         window.addEventListener('onMessageReceived', this.onMessageReceived, false);
         window.addEventListener("resize", this.resize.bind(this));
+        this.setState({ isSmallerScreen: window.innerWidth <= 767 });
     }
     resize() {
         this.setState({ isSmallerScreen: window.innerWidth <= 767 });
