@@ -19,7 +19,7 @@ import placeholderCharity from '../../../../../static/images/no-data-avatar-char
 import placeholderGroup from '../../../../../static/images/no-data-avatar-giving-group-profile.png';
 
 import PlaceholderGrid from '../../../../shared/PlaceHolder';
-import DiscoveredForYou from '../../../../shared/DiscoveredForYou';
+import DiscoveredForYouNoData from '../../../../shared/DiscoveredForYouNoData';
 
 
 class SearchResultSingleCharityGroups extends React.Component {
@@ -131,7 +131,7 @@ class SearchResultSingleCharityGroups extends React.Component {
             });
             return charitiesGroupsComponent;
         }
-        return <DiscoveredForYou />;
+        return <DiscoveredForYouNoData />;
     }
 
     render() {

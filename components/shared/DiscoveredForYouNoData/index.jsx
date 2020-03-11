@@ -11,7 +11,7 @@ import {
     Link,
 } from '../../../routes';
 
-const DiscoveredForYou = () => {
+const DiscoveredForYouNoData = () => {
     return (
         <div className="Discovered">
             <Container>
@@ -33,4 +33,4 @@ const DiscoveredForYou = () => {
         </div>
     );
 };
-export default DiscoveredForYou;
+export default DiscoveredForYouNoData;

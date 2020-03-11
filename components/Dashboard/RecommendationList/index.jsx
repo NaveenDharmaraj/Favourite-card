@@ -22,7 +22,7 @@ import placeholderCharity from '../../../static/images/no-data-avatar-charity-pr
 import placeholderGroup from '../../../static/images/no-data-avatar-giving-group-profile.png';
 import { Link } from '../../../routes';
 import PlaceholderGrid from '../../shared/PlaceHolder';
-import DiscoveredForYou from '../../shared/DiscoveredForYou';
+import DiscoveredForYouNoData from '../../shared/DiscoveredForYouNoData';
 import { renderTextByCharacter } from '../../../helpers/utils';
 
 class RecommendationList extends React.Component {
@@ -82,7 +82,7 @@ class RecommendationList extends React.Component {
         } = this.props;
         let recommendationList = (
             <div className="ml-1 mr-1 DiscoveredMargin">
-                <DiscoveredForYou />
+                <DiscoveredForYouNoData />
             </div>
         );
         if (recommendationData && recommendationData.data && _.size(recommendationData.data) > 0) {

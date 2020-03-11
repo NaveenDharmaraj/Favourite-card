@@ -10,7 +10,7 @@ import _isEmpty from 'lodash/isEmpty';
 import _map from 'lodash/map';
 
 import PlaceholderGrid from '../../../../shared/PlaceHolder';
-import DiscoveredForYou from '../../../../shared/DiscoveredForYou';
+import DiscoveredForYouNoData from '../../../../shared/DiscoveredForYouNoData';
 import { Link } from '../../../../../routes';
 import charityImg from '../../../../../static/images/no-data-avatar-charity-profile.png';
 import groupImg from '../../../../../static/images/no-data-avatar-giving-group-profile.png';
@@ -179,7 +179,7 @@ class SearchCharitiesGroups extends React.Component {
                                     <span className="small">Suggestions based on your interests. </span>
                                 </Header.Content>
                             </Header>
-                            <DiscoveredForYou />
+                            <DiscoveredForYouNoData />
                         </Fragment>
                     )}
             </Fragment>
