@@ -17,7 +17,9 @@ import {
 } from '../../../../../helpers/utils';
 import placeholderCharity from '../../../../../static/images/no-data-avatar-charity-profile.png';
 import placeholderGroup from '../../../../../static/images/no-data-avatar-giving-group-profile.png';
+
 import PlaceholderGrid from '../../../../shared/PlaceHolder';
+import DiscoveredForYouNoData from '../../../../shared/DiscoveredForYouNoData';
 
 
 class SearchResultSingleCharityGroups extends React.Component {
@@ -129,7 +131,7 @@ class SearchResultSingleCharityGroups extends React.Component {
             });
             return charitiesGroupsComponent;
         }
-        return 'No Data available';
+        return <DiscoveredForYouNoData />;
     }
 
     render() {

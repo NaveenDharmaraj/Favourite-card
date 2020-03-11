@@ -84,10 +84,26 @@ const userProfile = (state = {}, action) => {
             };
             break;
         case 'USER_PROFILE_FIND_TAGS':
-            newState = {
-                ...state,
-                userFindTagsList: Object.assign({}, action.payload),
-            };
+            if (state.userFindTagsList && state.userFindTagsList.data && !action.payload.isSearch) {
+                newState = {
+                    ...state,
+                    loadedData: action.payload.loadedData,
+                    pageNumber: action.payload.pageNumber,
+                    recordCount: action.payload.recordCount,
+                    userFindTagsList: {
+                        ...state.userFindTagsList,
+                        data: state.userFindTagsList.data.concat(action.payload.data),
+                    },
+                };
+            } else {
+                newState = {
+                    ...state,
+                    loadedData: action.payload.loadedData,
+                    pageNumber: action.payload.pageNumber,
+                    recordCount: action.payload.recordCount,
+                    userFindTagsList: action.payload,
+                };
+            }
             break;
         case 'USER_PROFILE_INVITATIONS':
             newState = {
@@ -165,6 +181,14 @@ const userProfile = (state = {}, action) => {
             newState = {
                 ...state,
                 userProfileCharitableInterestsLoadStatus: action.payload.userProfileCharitableInterestsLoadStatus,
+            };
+            break;
+        case 'USER_PROFILE_RESET_TAG_LIST':
+            newState = {
+                ...state,
+                loadedData: 0,
+                pageNumber: 1,
+                userFindTagsList: {},
             };
             break;
         case 'USER_PROFILE_GET_EMAIL_LIST':

@@ -57,11 +57,10 @@ class Layout extends React.Component {
         if  (!_.isEmpty(userInfo) && !addCauses) {
             const {
                 attributes: {
-                    causes,
+                    skipCauseSelection,
                 }
             } = userInfo;
-
-            if (_.isEmpty(causes)) {
+            if(!skipCauseSelection || skipCauseSelection === null) {
                 Router.pushRoute('/user/causes');
             }
         }
