@@ -16,8 +16,7 @@ import _ from 'lodash';
 import Layout from '../../components/shared/Layout';
 // import FormValidationErrorMessage from '../../components/shared/FormValidationErrorMessage';
 import { getUserCauses } from '../../actions/onBoarding';
-import { saveUserCauses,
-        } from '../../actions/user';
+import { saveUserCauses } from '../../actions/user';
 import SingleCause from '../../components/New/SingleCause';
 import { Router } from '../../routes';
 

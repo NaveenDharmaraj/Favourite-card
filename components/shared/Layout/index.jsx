@@ -53,7 +53,6 @@ class Layout extends React.Component {
         if  (!_.isEmpty(userInfo) && !addCauses) {
             const {
                 attributes: {
-                    causes,
                     skipCauseSelection,
                 }
             } = userInfo;
