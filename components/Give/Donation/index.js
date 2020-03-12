@@ -35,6 +35,11 @@ import {
     Elements,
     StripeProvider
 } from 'react-stripe-elements';
+import {
+    countryOptions,
+} from '../../../helpers/constants';
+import ModalComponent from '../../shared/Modal';
+
 const { publicRuntimeConfig } = getConfig();
 
 const {
@@ -81,6 +86,39 @@ const taxOptions = [
     },
   ]
 
+const messageList = {
+	taxReceiptDefault: {
+		defaultMessage: 'Add a new tax receipt recipient',
+		description: 'Message for adding new tax receipt',
+		id: 'taxReceiptProfile.taxReceiptDefault',
+	},
+	taxReceiptRecipientLabel: {
+		defaultMessage: 'Tax receipt recipient',
+		description: 'Message for the tax receipt dropdown label',
+		id: 'taxReceiptProfile.taxReceiptRecipientLabel',
+	},
+    }; 
+
+    const intializeFormData = {
+        attributes: {
+            addressOne: '',
+            addressTwo: '',
+            city: '',
+            country: countryOptions[0].value,
+            fullName: '',
+            postalCode: '',
+            province: '',
+        },
+        // relationships: {
+        //     accountHoldable: {
+        //         data: {
+        //             id: this.props.currentUser.id,
+        //             type: 'user',
+        //         },
+        //     },
+        // },
+        type: 'taxReceiptProfiles',
+    };
 class Donation extends React.Component {
     constructor(props) {
     super(props);
@@ -101,9 +139,16 @@ class Donation extends React.Component {
                     nextStep: props.step,
                 }
             }
+            const {
+                options,
+                taxSelected,
+                taxProfileData,
+            } = this.populateOptions(props.taxReceiptProfiles, props.flowObject.selectedTaxReceiptProfile);
+            let flowObject = _.cloneDeep(payload);
         this.state = {
             buttonClicked: false,
-            flowObject: _.cloneDeep(payload),
+            flowObject: {...flowObject,
+                            selectedTaxReceiptProfile: taxProfileData},
             disableButton: !props.userAccountsFetched,
             inValidCardNameValue: true,
             inValidCardNumber: true,
@@ -125,6 +170,7 @@ class Donation extends React.Component {
         this.validateCreditCardName = this.validateCreditCardName.bind(this);
         this.getStripeCreditCard = this.getStripeCreditCard.bind(this);
         this.handleCCAddClose = this.handleCCAddClose.bind(this);
+        this.handleModalOpen = this.handleModalOpen.bind(this);
         dismissAllUxCritialErrors(props.dispatch);
     }
 
@@ -140,6 +186,39 @@ class Donation extends React.Component {
         console.log(this.props.flowObject);
     }
 
+    populateOptions = (taxReceiptProfiles, selectedTaxReceiptProfile) => {
+		let options = [];
+		let taxProfileData = selectedTaxReceiptProfile;
+		if (!_.isEmpty(taxReceiptProfiles)) {
+			taxReceiptProfiles.map((item) => {
+				const {
+					attributes
+				} = item;
+				options.push({
+					text: `${attributes.fullName} - ${attributes.addressOne} ${attributes.city}`,
+					value: item.id,
+				});
+			});
+		}
+		options.push({
+			text: (messageList.taxReceiptDefault.defaultMessage),
+			value: 0,
+		});
+		let taxSelected = options[options.length - 1].value;
+		if (!_.isEmpty(selectedTaxReceiptProfile) &&
+			!!(selectedTaxReceiptProfile.id)) {
+			taxSelected = selectedTaxReceiptProfile.id;
+		} else if (_.isEmpty(selectedTaxReceiptProfile)) {
+			taxProfileData = _.merge({}, intializeFormData);
+		}
+		return {
+			options,
+			taxSelected,
+			taxProfileData,
+		};
+
+    }
+    
     intializeValidations() {
         this.validity = {
             doesAmountExist: true,
@@ -300,9 +379,7 @@ class Donation extends React.Component {
                 }  
             case 'taxReceipt' :
                 if(data.value == "0"){
-                    this.setState({open: true});
-                }else{
-                    this.setState({open: false});
+                    this.setState({isTaxReceiptModelOpen: true});
                 }
                 debugger
                 break;                        
@@ -435,69 +512,35 @@ class Donation extends React.Component {
             }
         });
     }
-    /**
-       * Render recurring donation option.
-       * @param {object} formData The state object representing form data.
-       * @param {function} formatMessage  I18 formatting.
-       * @param {string} language language
-       * @return {JSX} JSX representing the adding to source selection.
-       */
+  
     renderingRecurringDonationFields(formData, formatMessage, language) {
         return (
-            <Fragment>
+            <div className="mb-2">
                 <Form.Field>
-                    <label htmlFor="automaticDonation">
-                      {formatMessage('automaticDonationLabel')}
-                    </label>
-                    <Popup
-                        content={<div>{formatMessage('automaticDonationPopup')}</div>}
-                        position="top center"
-                        trigger={
-                            <Icon
-                                color="blue"
-                                name="question circle"
-                                size="large"
-                            />
-                        }
-                    />
-                    <br />
-                    <Form.Field
-                        checked={formData.automaticDonation }
-                        control={Checkbox}
-                        className="ui checkbox chkMarginBtm"
-                        id="automaticDonation"
-                        name="automaticDonation"
-                        onChange={this.handleInputChange}
-                        toggle
-                    />
-
+                    <label>Frequency</label>
                 </Form.Field>
-                {
-                    !!formData.automaticDonation && (
-                        <Form.Field>
-                            <label htmlFor="onWhatDay">
-                                {formatMessage('donationOnWhatDayLabel')}
-                            </label>
-                            <Form.Field
-                                control={Select}
-                                id="giftType"
-                                name="giftType"
-                                options={onWhatDayList(formatMessage)}
-                                onChange={this.handleInputChange}
-                                value={formData.giftType.value}
-                            />
-                            <div className="recurringMsg">
-                            {formatMessage(
-                                      'donationRecurringDateNote',
-                                      { 
-                                          recurringDate: setDateForRecurring(formData.giftType.value, formatMessage, language)
-                                      },
-                                  )}
-                            </div>
-                        </Form.Field>
-                    )
-                }
-            </Fragment>
+                <Form.Field>
+                    <Radio
+                        className="chimpRadio font-w-n"
+                        label='Add once'
+                        name='radioGroup'
+                        value='this'
+                        checked
+                        checked={this.state.value === 'this'}
+                        onChange={this.handleFrequencyChange}
+                    />
+                </Form.Field>
+                <Form.Field>
+                    <Radio
+                        className="chimpRadio font-w-n"
+                        label='Add monthly'
+                        name='radioGroup'
+                        value='that'
+                        checked={this.state.value === 'that'}
+                        onChange={this.handleFrequencyChange}
+                    />
+                </Form.Field>
+            </div>
         );
     }
   
@@ -852,13 +895,18 @@ class Donation extends React.Component {
             isCreditCardModalOpen: false
         });
     }
-
+    handleModalOpen(modalBool) {
+        this.setState({
+            isTaxReceiptModelOpen: modalBool,
+        });
+    }
 
     handleFrequencyChange = (e, { value }) => this.setState({ value })
 
     render() {
         const {
             buttonClicked,
+            dispatch,
             flowObject: {
                 currency,
                 giveData,
@@ -882,7 +930,8 @@ class Donation extends React.Component {
             },
             creditCardApiCall,
         } = this.props;
-        console.log(isCreditCardModalOpen);
+        console.log(isTaxReceiptModelOpen);
+
         const formatMessage = this.props.t;
         const donationMatchOptions = populateDonationMatch(donationMatchData, formatMessage, language);
         let paymentInstruments = paymentInstrumentsData;
@@ -904,33 +953,8 @@ class Donation extends React.Component {
                 parentInputChange={this.handleInputChange}
                 parentOnBlurChange={this.handleInputOnBlur}
             />
-            {/* { this.renderingRecurringDonationFields(giveData, formatMessage, language) } */}
-            <div className="mb-2">
-                <Form.Field>
-                    <label>Frequency</label>
-                </Form.Field>
-                <Form.Field>
-                    <Radio
-                        className="chimpRadio font-w-n"
-                        label='Add once'
-                        name='radioGroup'
-                        value='this'
-                        checked
-                        checked={this.state.value === 'this'}
-                        onChange={this.handleFrequencyChange}
-                    />
-                </Form.Field>
-                <Form.Field>
-                    <Radio
-                        className="chimpRadio font-w-n"
-                        label='Add monthly'
-                        name='radioGroup'
-                        value='that'
-                        checked={this.state.value === 'that'}
-                        onChange={this.handleFrequencyChange}
-                    />
-                </Form.Field>
-            </div>
+            { this.renderingRecurringDonationFields() }
+            
             {/* if no credit card added */}
             {/* <Form.Field className="mb-2">
                 <label>Payment method</label>
@@ -1022,16 +1046,34 @@ class Donation extends React.Component {
             <Form.Field className="mb-2">
                 <div className="paymentMethodDropdown">
                     <label htmlFor="">Tax receipt</label>
-                    <Dropdown
-                        button
-                        icon='cardExpress'
-                        floating
-                        fluid
-                        selection
-                        options={taxOptions}
-                        onChange={this.handleInputChange}
-                        placeholder='Select Tax Receipt'
-                    />
+                    {
+                        (taxOptions.length> 1) ? (
+                            <Dropdown
+                                button
+                                name="taxReceipt"
+                                icon='cardExpress'
+                                floating
+                                fluid
+                                selection
+                                options={taxOptions}
+                                onChange={this.handleInputChange}
+                                placeholder='Select Tax Receipt'
+                            />) : (null)
+                    }
+
+                    
+                    {
+                        isTaxReceiptModelOpen && (
+                            <ModalComponent
+                                name="Add new tax receipt recipient"
+                                isSelectPhotoModalOpen={isTaxReceiptModelOpen}
+                                dispatch={dispatch}
+                                taxReceipt={intializeFormData}
+                                handleModalOpen={this.handleModalOpen}
+                                action="add"
+                            />
+                        )
+                    }
                 </div>
             </Form.Field>
 
