@@ -410,16 +410,23 @@ const getFriendsByText = (dispatch, userId, searchText, pageNumber) => {
     });
 };
 
-const getTagsByText = (dispatch, userId, searchText) => {
+const getTagsByText = (dispatch, userId, searchText, isSearch, pageNumber = 1, loadedData = 0) => {
+    const bodyData = {
+        text: searchText,
+    };
     const fsa = {
         payload: {
         },
         type: actionTypes.USER_PROFILE_FIND_TAGS,
     };
-    return graphApi.get(`/recommend/searchtags?userid=${Number(userId)}&text=${searchText}&skip=&limit=10&sort=asc`).then(
+    return searchApi.post(`/tags?page[number]=${pageNumber}&page[size]=24`, bodyData).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
+                isSearch,
+                loadedData: loadedData + result.data.length,
+                pageNumber: pageNumber + 1,
+                recordCount: result.meta.record_count,
             };
         },
     ).catch((error) => {
