@@ -1271,6 +1271,7 @@ h4{
 .c-chkBox.ui.toggle.checkbox .box:after, .c-chkBox.ui.toggle.checkbox label:after{
   top: 3px;
   bottom: 3px;
+  left: 11px;
 }
 .c-chkBox.ui.toggle.checkbox input:focus:checked~.box:before, .c-chkBox.ui.toggle.checkbox input:focus:checked~label:before{
   background-color: #0CC965 !important;
@@ -1278,9 +1279,10 @@ h4{
 .c-chkBox.ui.toggle.checkbox .box:before, .c-chkBox.ui.toggle.checkbox label:before{
   background-color:#78909C !important;
 }
+/*
 .c-chkBox.ui.toggle.checkbox input~.box:after, .c-chkBox.ui.toggle.checkbox input~label:after{
   left: 11px;
-}
+}*/
 .c-chkBox{
   &.right{
     float: right;
@@ -2124,7 +2126,7 @@ h4{
     }
   }
   p{
-    margin-top: 32px;
+    margin-top: 17px;
   }
   .reg-header{
     +p{
@@ -2162,18 +2164,31 @@ h4{
                 border-radius: 4px;
                 padding-top: 22/@rem;
                 padding-bottom: 22/@rem;
+                -webkit-box-shadow:none;
+                box-shadow: none;
                 &::before{
                   content: '';
                   position: absolute;
-                  left: 1/@rem;
-                  top: 1/@rem;
-                  bottom: 1/@rem;
-                  width: 5px;    border-radius: 2.5px;
+                  left: 0px;
+                  top: 0px;
+                  bottom: 50%;
+                  width: 5px;    border-radius: 2.5px 0px 0px 0px;
                   opacity: 0;
                   transition: all 0.3s ease;
-                  background-color: #ccc;
+                  background-color: #90459A;
                 }
-                &.color_0{
+                &::after{
+                  content: '';
+                  position: absolute;
+                  left: 0px;
+                  top: 50%;
+                  bottom: 0px;
+                  width: 5px;    border-radius: 0px 0px 0px 2.5px;
+                  opacity: 0;
+                  transition: all 0.3s ease;
+                  background-color: #C39CCE;
+                }
+                /*&.color_0{
                   &::before{
                     background-color: #FF4242;
                   }
@@ -2232,22 +2247,34 @@ h4{
                   &::before{
                     background-color: #8583FD;
                   }
-                }
+                }*/
                 &.active{
                   background-color: #fff !important;
+                  border-color: #90459A;
                   &::before{
+                    opacity: 1;
+                  }
+                  &::after{
                     opacity: 1;
                   }
                 }
                 &:hover,&:active{
                   background-color: #fff !important;
+                  border-color: #90459A;
                   &::before{
+                    opacity: 1;
+                  }
+                  &::after{
                     opacity: 1;
                   }
                 }
                 &:active{
                   background-color: #fff !important;
+                  border-color: #90459A;
                   &::before{
+                    opacity: 1;
+                  }
+                  &::after{
                     opacity: 1;
                   }
                 }
@@ -2258,7 +2285,9 @@ h4{
       }
     }
   }
-  
+  .causes-selection{
+    font-size: 10px;
+  }
 }
 .colorChange(@color){
   .ui{
@@ -2528,6 +2557,7 @@ h4{
       &.input{
         >input{
           padding-right: 50px !important;
+          box-shadow: 0 2px 7px 0 rgba(135,135,135,0.3);
         }
       }
     }
@@ -2535,18 +2565,31 @@ h4{
   .search-btn{
     position: absolute;
     right: 10px;
-    top: 0;
-    padding: 11px 0rem 11px;
-    border-radius: 0px 40px 40px 0px;
+    top: 2px;
+    right: 3px;
+    height: 40px;
+    width: 40px;
+    padding: 8px;
+    border-radius: 100%;
+    background-color: #EEEEEE;
     cursor: pointer;
     .icon{
       color: @link;
       cursor: pointer;
       font-size: 24px;
       font-weight: 400;
+      margin-right: 0px;
       &.search{
         &::before{
-          content: url(../images/icons/icon-search.svg);
+          content: "";
+          background-image: url(../images/icons/icon-search.svg) !important;
+          background-repeat: no-repeat !important;
+          background-size: contain !important;
+          background-position: center !important;
+          height: 20px;
+          width: 20px;
+          display: block;
+          margin: auto !important;
         }
       }
     }
@@ -7790,66 +7833,131 @@ body .userEllips{
     }
   }
 }
-.hs-main-font-element{
-  display: none;
+.DiscoveredMargin{
+  @media only screen and (max-width: 768px) {
+    margin-left: -15px !important;
+    margin-right: -15px !important;
+  }
 }
-.no-list{
-  &.hs-error-msgs{
-    &.inputs-list{
-      li{
-        &:nth-child(2){
-          display: none !important;
+.Discovered-box{
+  box-sizing: border-box; width:100%; border: 1px solid #E6E5E5;  border-radius: 5px; /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#e8f2ff+0,e8f2ff+50,f5f8fc+50,f5f8fc+100 */
+  background: #E8F2FF; /* Old browsers */
+  background: -moz-linear-gradient(45deg,  #E8F2FF 0%, #E8F2FF 50%, #F5F8FC 50%, #F5F8FC 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(45deg,  #E8F2FF 0%,#E8F2FF 50%,#F5F8FC 50%,#F5F8FC 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(45deg,  #E8F2FF 0%,#E8F2FF 50%,#F5F8FC 50%,#F5F8FC 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#E8F2FF', endColorstr='#F5F8FC',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+    box-shadow: 0 1px 7px 0 rgba(0,0,0,0.17);
+    margin-bottom: 80px;
+    margin-top: 40px;
+    position: relative;
+    padding: 42px 38px;
+    .OrderMobile{
+      @media only screen and (max-width: 768px) {
+    width: 100%;
+    float: none;
+    text-align: center;
+    margin-top: 40%;
+    margin-bottom: 40px;
+      }
+      @media only screen and (max-width: 600px) {
+        margin-top: 50%;
+        margin-bottom: 20px;
+      }
+      @media only screen and (max-width: 475px) {
+        margin-top:260px;
+        margin-bottom: 20px;
+      }
+    }
+    @media only screen and (max-width: 992px) {
+      padding: 31px 38px;
+    }
+    @media only screen and (max-width: 768px) {
+      width: 100%;
+      text-align: center;
+      padding: 15px;
+    }
+    h4{
+      &.ui{
+        &.header{
+          font-size: 17px;
+          @media only screen and (max-width: 992px) {
+            width: 50%;
+          }
+          @media only screen and (max-width: 768px) {
+            width: 100%;
+            text-align: center;
+            order: 2;
+          }
         }
       }
     }
+.img_Discovered{
+  @media only screen and (max-width: 768px) {
+    width: 100%;
+    display: inline-block;
+    text-align: center;
   }
 }
-.ui.form.footer-subscribe .inline.field .hs-nested-form-fix .hs-form .hs_email .hs-error-msgs{
-  left: 2px !important;
 }
-.inviteForm.ui.form{
-  .field {
-    &.cpTagsInput{
-      .tag-item{
-        display: inline-block;
-        padding: 4px 12px;
-        font-size: 12px;
-        border-radius: 3px;
-        font-weight: bold;
-        line-height: 14px;
-        color: #fff;
-        text-shadow: 0 -1px 0 rgba(0,0,0,0.25);
-        white-space: nowrap;
-        vertical-align: baseline;
-        border-radius: 12px;	background-color: #009EA2;
-        margin-right: 5px;
-        margin-top: 3px;
-        margin-bottom: 2px;
-        >.button{
-          padding: 0px;
-          margin: -8px 0px -1px 6px;
-          box-shadow: none;
-          background-color:transparent;
-          border: none;
-          font-size: 20px;
-          color:#fff;
-          cursor: pointer;
-          opacity: 1;
-          font-weight: bold;
-          position: relative;
-          bottom: -3px;
-        }
-        +input{
-          border: none;
-          box-shadow: none;
-          background-color: transparent;
-          padding: 0;
-          margin: 0;
-          width: auto !important;
-          max-width: inherit;
-          height: auto;
-          min-height: 24px;
-          vertical-align: bottom;
+.discoverdNoDataImg{
+  position: absolute;
+  right: 25px;
+  top: 0px;
+  width: 194px;
+  @media only screen and (max-width: 768px) {
+    position: absolute;
+    flex: 0 0 100%;
+    height: 100px;
+    margin-top: 40px;
+    float: none !important;
+    width: 250px;
+    left: 0;
+    right: 0;
+    top: 30px;
+    margin: auto;
+  }
+  img.ui.right.floated.image {
+    width: auto;
+  }
+}
+
+.quickquestions{
+  margin-bottom:50px;
+  h3{
+    &.ui{
+      &.header{
+        font-size: 24px !important;
+        line-height: 29px;
+        color:#263238;
+      }
+    }
+  }
+  h4{
+    &.ui{
+      &.header{
+        font-size: 20px !important;
+        line-height: 24px;
+        color:#263238;
+        font-family: 'ProximaNova-Regular' !important;
+      }
+    }
+  }
+  .ui{
+    &.bulleted{
+      &.list{
+        font-size: 17px;
+        color: #263238;
+        line-height: 26px !important;
+        list-style: none;
+        .item{
+          &.profile{
+            margin-left: 12px;
+            &::before{
+             font-size:40px !important;
+             top:-1px;
+             left: -12px;
+            }
+          }
         }
       }
     }

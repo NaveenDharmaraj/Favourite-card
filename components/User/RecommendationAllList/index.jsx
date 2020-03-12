@@ -110,7 +110,7 @@ class RecommendationAllList extends React.Component {
                         charityGroups={(!_.isEmpty(recommendationData)) ? recommendationData.data : []}
                     />
                     {
-                        !_.isEmpty(recommendationData) && (
+                        (recommendationData && !_.isEmpty(recommendationData.data)) && (
                             <div className="paginationWraper">
                                 <div className="db-pagination right-align">
                                     <Pagination
