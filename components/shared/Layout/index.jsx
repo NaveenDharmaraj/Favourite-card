@@ -153,6 +153,7 @@ class Layout extends React.Component {
                     />
                     <script id="stripe-js" src="https://js.stripe.com/v3/" />
                     <script type="text/javascript" defer  src="https://cdn.applozic.com/applozic/applozic.chat-5.6.1.min.js"></script>
+                    <script defer type="text/javascript" src ='/static/branchio.js'></script>
                     <script type="text/javascript" defer>
                         window.APPLOZIC_BASE_URL= "{APPLOZIC_BASE_URL}";
                         window.APPLOZIC_WS_URL= "{APPLOZIC_WS_URL}";

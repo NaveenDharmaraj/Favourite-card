@@ -26,11 +26,13 @@ const validateAuth0Failure = (dispatch, auth0UserEmail, auth0UserId) => {
 };
 
 const logout = () => {
-
     authRorApi.get('/auth/logout', {
         credentials: 'include',
     })
         .then(() => {
+            if (branch) {
+                branch.logout();
+            }
             storage.unset('chimpUserId', 'cookie');
             auth0.empty();
             auth0.lock.logout({
