@@ -79,6 +79,7 @@ instance.interceptors.response.use(function (response) {
     }
     if (status === 403 && config.params && config.params.findBySlug) {
         statusMessageProps = {
+            heading: 'This page isn\'t available',
             message: 'The link you followed might have been archived, or you don\'t have permission to view the page.',
             type: 'error',
         };
