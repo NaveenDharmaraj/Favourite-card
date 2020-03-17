@@ -30,6 +30,7 @@ const {
     APPLOZIC_BASE_URL,
     APPLOZIC_WS_URL,
     APPLOZIC_APP_KEY,
+    BRANCH_IO_KEY,
     HELP_SCOUT_KEY
 } = publicRuntimeConfig;
 
@@ -52,6 +53,9 @@ class Layout extends React.Component {
         //re-route the app to /browser if browser version is unsupported
         if (window && isValidBrowser(window.navigator.userAgent)) {
             Router.pushRoute('/browser');
+        }
+        if (branch) {
+            branch.init(BRANCH_IO_KEY);
         }
         // if the user didnt setup any causes then redirect to causes selection page
         if  (!_.isEmpty(userInfo) && !addCauses) {
