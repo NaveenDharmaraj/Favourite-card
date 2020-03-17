@@ -94,6 +94,7 @@ export const getCampaignFromSlug = async (dispatch, slug, token = null) => {
     const fullParams = {
         params: {
             dispatch,
+            findBySlug: true,
             slug,
             uxCritical: true,
         },
