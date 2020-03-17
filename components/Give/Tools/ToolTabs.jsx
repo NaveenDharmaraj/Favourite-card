@@ -22,6 +22,9 @@ import { connect } from 'react-redux';
 import {validateGivingGoal} from '../../../helpers/users/utils';
 import { getUpcomingTransactions,deleteUpcomingTransaction } from '../../../actions/user';
 import { getUserGivingGoal, setUserGivingGoal } from '../../../actions/user';
+import {
+    formatCurrency,
+} from '../../../helpers/give/utils';
 const tabMenus = [
     '/user/recurring-donations',
     '/user/recurring-gifts',
@@ -34,22 +37,40 @@ class ToolTabs extends React.Component {
         this.state = {
             activePage:1,
             showModal: false,
-            givingGoal:'',
+            givingGoal: '',
             validity: this.intializeValidations()
         };
+
         this.onTabChangeFunc = this.onTabChangeFunc.bind(this);
         this.deleteTransaction = this.deleteTransaction.bind(this);
         this.onPageChange = this.onPageChange.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleInputOnBlurGivingGoal = this.handleInputOnBlurGivingGoal.bind(this);
+        this.setGivingGoal = this.setGivingGoal.bind(this);
+        if(!_.isEmpty(props.userGivingGoalDetails)){
+            this.state.givingGoal = this.setGivingGoal(props.userGivingGoalDetails);
+        }
         
     }
+
+    setGivingGoal(userGivingGoalDetails) {
+        const date = new Date();
+        const currentYear = date.getFullYear();
+        const currentYearData = _.find(userGivingGoalDetails, function(o) {return o.attributes.year === currentYear});
+        let formattedCurrentGoalAmount = '';
+        if(!_.isEmpty(currentYearData)){
+            formattedCurrentGoalAmount =  _.replace(formatCurrency(currentYearData.attributes.amount, 'en', 'USD'), '$', '');
+        }
+        return formattedCurrentGoalAmount;
+    }
+
     closeModal = () => {
         this.setState({ 
             showModal: false,
             validity: this.intializeValidations(),
         });
     }
+
     closeModalAndSave = () =>{
         const {
             givingGoal,
@@ -60,9 +81,10 @@ class ToolTabs extends React.Component {
                 id,
             }
         } = this.props;
-        if(this.validateForm()) {
+        const inputValue = formatAmount(parseFloat(givingGoal.replace(/,/g, '')));
+        if(this.validateForm(inputValue)) {
             this.setState({ showModal: false });
-            setUserGivingGoal(dispatch, givingGoal, id);
+            setUserGivingGoal(dispatch, inputValue, id);
         }
     }
     handleInputChange(event) {
@@ -75,19 +97,24 @@ class ToolTabs extends React.Component {
             givingGoal:value
         });
     }
+
     handleInputOnBlurGivingGoal(event) {
         const {
             target: {
                 name, value
             },
         } = event;
-        if(this.validateForm()){
-            let formattedValue = formatAmount(value)
+        let inputValue = value;
+        const isValidNumber = /^(?:[0-9]+,)*[0-9]+(?:\.[0-9]+)?$/;
+        if (!_.isEmpty(value) && value.match(isValidNumber)) {
+            inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
+        }
+        if(this.validateForm(inputValue)){
+            let formattedValue = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
             this.setState({
                 givingGoal:formattedValue
             });
         }
-
     }
     intializeValidations() {
         this.validity = {
@@ -99,14 +126,14 @@ class ToolTabs extends React.Component {
         };
         return this.validity;
     }
-    validateForm() {
+    validateForm(value) {
         const {
             givingGoal
         } = this.state;
         let {
             validity,
         } = this.state;
-        validity = validateGivingGoal(givingGoal, validity);
+        validity = validateGivingGoal(value, validity);
         this.setState({
             validity,
         })
@@ -174,7 +201,7 @@ class ToolTabs extends React.Component {
             render: () => {
                 const {
                     userGivingGoalDetails,
-                } = this.props
+                } = this.props;
                 const {
                     givingGoal,
                     validity
@@ -267,6 +294,21 @@ class ToolTabs extends React.Component {
             getUserGivingGoal(dispatch, id);
 
         }
+    }
+
+    componentDidUpdate(prevProps) {
+        if (!_.isEqual(this.props, prevProps)) {
+            const {
+                userGivingGoalDetails,
+            } = this.props;
+            if (!_.isEqual(userGivingGoalDetails, prevProps.userGivingGoalDetails)) {
+                const formattedCurrentGoalAmount = this.setGivingGoal(userGivingGoalDetails);
+                this.setState({
+                    givingGoal: formattedCurrentGoalAmount,
+                })
+            }
+        }
+
     }
 
     deleteTransaction(id, transactionType){

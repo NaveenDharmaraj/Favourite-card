@@ -100,12 +100,14 @@ const Success = (props) => {
     let recurringCreditCardMessage = null;
     if (!_.isEmpty(creditCard && creditCard.text)) {
         creditcardData = populateCardData(creditCard.text, null);
-        ccText = formatMessage('withoutAmountCard', {
-            displayName: creditcardData.displayName,
-            processor: _.capitalize(creditcardData.processor),
-            truncatedPaymentId: creditcardData.truncatedPaymentId,
-        });
+        // ccText = formatMessage('withoutAmountCard', {
+        //     displayName: creditcardData.displayName,
+        //     processor: _.capitalize(creditcardData.processor),
+        //     truncatedPaymentId: creditcardData.truncatedPaymentId,
+        // });
+        ccText = creditCard.text;
         creditCardMessage = formatMessage('creditCardMessage', {
+            amount: formatCurrency(formatAmount(donationAmount), language, currency),
             cardType: _.capitalize(creditcardData.processor),
             lastFourDigitCardNo: creditcardData.truncatedPaymentId,
             name: creditcardData.displayName,
@@ -264,9 +266,10 @@ const Success = (props) => {
                 }
             }
         }
-        if (creditCard.value > 0 && type !== 'doantions') {
+        if (creditCard.value > 0 && type !== 'donations') {
             secondParagraph = formatMessage('nonrecurringCCAllocationDetails',
                 {
+                    amount: formatCurrency(formatAmount(donationAmount), language, currency),
                     creditCard: ccText,
                 });
         }
@@ -431,7 +434,7 @@ const Success = (props) => {
                                             Or&nbsp;
                                             <Link className="paragraph-third" route={dashboardLink}>
                                                 {linkToDashboardText}
-                                            </Link>
+                                            </Link>.
                                         </span>
                                     </Fragment>
                                 ))}
@@ -442,10 +445,12 @@ const Success = (props) => {
                                 //   </GeminiLink>
                                 && (
                                     <Link className="paragraph-third" route={dashboardLink}>
-                                        {
-                                            linkToDashboardText.charAt(0).toUpperCase()
-                                            + linkToDashboardText.slice(1)
-                                        }
+                                        <Button className="blue-bordr-btn-round-def">
+                                            {
+                                                linkToDashboardText.charAt(0).toUpperCase()
+                                                + linkToDashboardText.slice(1)
+                                            }
+                                        </Button>
                                     </Link>
                                 )
                                 )}

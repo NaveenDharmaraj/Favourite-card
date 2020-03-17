@@ -52,7 +52,7 @@ const NoteTo = (props) => {
     return (
         <Fragment>
             <Form.Field>
-                <Header as="h3" className="f-weight-n">
+                <Header as="h3" className="f-weight-n mt-1">
                     {formatMessage('noteTo:includeMessageLabel')}
                 </Header>
             </Form.Field>

@@ -229,7 +229,7 @@ const createDonationMatchString = (attributes, formatMessage, language) => {
         default:
             break;
     }
-    return `${attributes.displayName} (${formatCurrency(attributes.policyMax, language, 'USD')} ${formatMessage('giveCommon:forPer')} ${policyPeriodText})`;
+    return `${attributes.displayName}: ${formatCurrency(attributes.policyMax, language, 'USD')} ${formatMessage('giveCommon:forPer')} ${policyPeriodText}`;
 
 };
 
@@ -829,6 +829,7 @@ const resetDataForGiveAmountChange = (giveData, dropDownOptions, coverFeesData) 
     if ((giveData.giveFrom.type === 'user' || giveData.giveFrom.type === 'companies')
     && giveData.giftType.value === 0) {
         giveData.donationAmount = setDonationAmount(giveData, coverFeesData);
+        giveData.formatedDonationAmount = _.replace(formatCurrency(giveData.donationAmount, 'en', 'USD'), '$', '');
         if (Number(giveData.donationAmount) > 0 && isCreditCardBlank(giveData)
         ) {
             giveData.creditCard = getDefaultCreditCard(
@@ -903,6 +904,7 @@ const resetDataForAccountChange = (giveData, dropDownOptions, props, type) => {
         giveData.creditCard = {
             value: null,
         };
+        giveData.formatedDonationAmount = _.replace(formatCurrency(giveData.donationAmount, 'en', 'USD'), '$', '');
         if (!_.isEmpty(companyDetails)
             && companyDetails.companyId === Number(giveData.giveFrom.id)) {
             dropDownOptions.paymentInstrumentList = populatePaymentInstrument(
@@ -923,6 +925,7 @@ const resetDataForAccountChange = (giveData, dropDownOptions, props, type) => {
         giveData.donationMatch = {
             value: null,
         };
+        giveData.formatedDonationAmount = _.replace(formatCurrency(giveData.donationAmount, 'en', 'USD'), '$', '');
         if (!_.isEmpty(dropDownOptions.donationMatchList)
             && (giveData.giftType.value > 0
                 || Number(giveData.giveAmount) > Number(giveData.giveFrom.balance))
@@ -1614,6 +1617,7 @@ const resetP2pDataForOnInputChange = (giveData, dropDownOptions) => {
     }
 
     giveData.donationAmount = setP2pDonationAmount(giveData);
+    giveData.formatedDonationAmount = _.replace(formatCurrency(giveData.donationAmount, 'en', 'USD'), '$', '');
 
     if (Number(giveData.donationAmount) > 0 && isCreditCardBlank(giveData)) {
         giveData.creditCard = getDefaultCreditCard(

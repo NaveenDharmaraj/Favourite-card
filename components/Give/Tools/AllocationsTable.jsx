@@ -61,7 +61,7 @@ function AllocationsTable(props) {
                     <Table.Header>
                         <Table.Row>
                             <Table.HeaderCell>Recipient </Table.HeaderCell>
-                            <Table.HeaderCell>Amount</Table.HeaderCell>
+                            <Table.HeaderCell textAlign="right">Amount</Table.HeaderCell>
                             <Table.HeaderCell>Day of month</Table.HeaderCell>
                             <Table.HeaderCell className="w-120">Created</Table.HeaderCell>
                             <Table.HeaderCell>Action</Table.HeaderCell>

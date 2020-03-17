@@ -103,20 +103,26 @@ const NavBarMobile = ({
                     </List>
                 </Menu.Item>
                 <Link route={logoUrl}>
-                    <Menu.Item as="a">
+                    <Menu.Item
+                        as="a"
+                        onClick={onPusherClick}
+                    >
                         Dashboard
                     </Menu.Item>
                 </Link>
                 <Link route='/search'>
-                    <Menu.Item as="a">
+                    <Menu.Item
+                        as="a"
+                        onClick={onPusherClick}
+                    >
                         Explore
                     </Menu.Item>
                 </Link>
-                {menuLinks.map((item) => <MainNavItem {...item} />)}
+                {menuLinks.map((item) => <MainNavItem {...item} onPusherClick={onPusherClick} />)}
                 {
                     (!isExternal) ? (
                         <Link route={accountUrl}>
-                            <Menu.Item as='a'><span className="mobMenuLeftIcon"><Image src={settingsIcon}/></span>{accountSettingsText}</Menu.Item>
+                            <Menu.Item as='a'><span className="mobMenuLeftIcon settingsIcon"><Image src={settingsIcon}/></span>{accountSettingsText}</Menu.Item>
                         </Link>
                     ) : (
                         <a href={accountUrl}>
@@ -139,11 +145,10 @@ const NavBarMobile = ({
                             <Image src={logo} />
                         </Link>
                     </Menu.Item>
-
                     <Menu.Menu position="right">
                         <Notifications />
                         <Chat />
-                        <Menu.Item>
+                        <Menu.Item className="mobSearchIcon">
                             <Link route="/search">
                                 <Image src={searchIcon}/>
                             </Link>
