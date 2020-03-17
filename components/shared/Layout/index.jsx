@@ -23,6 +23,7 @@ import _ from 'lodash';
 import '../../../static/less/header.less';
 import '../../../static/less/style.less';
 import { isValidBrowser } from '../../../helpers/utils';
+import registerAppLozic from '../../../static/initApplozic';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -63,6 +64,15 @@ class Layout extends React.Component {
             if(!skipCauseSelection || skipCauseSelection === null) {
                 Router.pushRoute('/user/causes');
             }
+        }
+
+        //SetAppLogicRegister is used for initializing  registerAppLozic once.
+        if(window !== 'undefined' &&  window.SetAppLogicRegister === undefined && isAuthenticated){
+            window.SetAppLogicRegister = 'SetAppLogicRegister';
+            let id = currentUser && currentUser.id ? currentUser.id : '';
+            window.onload = function () {
+                registerAppLozic(dispatch, id);
+            };
         }
         if (authRequired && !isAuthenticated) {
             let nextPathname;

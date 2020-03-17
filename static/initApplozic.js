@@ -1,8 +1,8 @@
-window.hasFocus = true;
-// too make it complete, also add onblur to document.
-// For browsers using tabs (like firefox)
-document.onblur = window.onblur;
-document.focus = window.focus;
+// window.hasFocus = true;
+// // too make it complete, also add onblur to document.
+// // For browsers using tabs (like firefox)
+// document.onblur = window.onblur;
+// document.focus = window.focus;
 
 var events = {
     'onConnectFailed': function (resp) {
@@ -77,91 +77,78 @@ var events = {
         // console.log(resp);
     }
 };
-function getCookie(name) {
-    var nameEQ = name + "=";
-    //alert(document.cookie);
-    var ca = document.cookie.split(';');
-    for (var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) == ' ') c = c.substring(1);
-        if (c.indexOf(nameEQ) != -1) return c.substring(nameEQ.length, c.length);
-    }
-    return null;
-}
-window.onblur = function () {
-    window.hasFocus = false;
-}
-window.onfocus = function () {
-    window.hasFocus = true;
-}
-// window.onload = function () {
-function registerAppLozic() {
-    if (undefined != window.Applozic) {
-    Applozic.ALApiService.login(
-        {
-            data: {
-                    baseUrl: window.APPLOZIC_BASE_URL,//'https://apps.applozic.com'
-                alUser:
-                {
-                    // userId: localStorage.getItem("userId"), //Logged in user's id, a unique identifier for user
-                    userId: getCookie("chimpUserId"),
-                    // password: '',//Enter password here for the userId passed above, read this if you want to add additional security by verifying password from your server https://www.applozic.com/docs/configuration.html#access-token-url
-                    imageLink: window.userAvatar, //User's profile picture url
-                    email: window.userEmail, //optional
-                    displayName: window.userFirstName + " " + userLastName,
-                    // contactNumber: '', //optional, pass with internationl code eg: +13109097458
-                    appVersionCode: 108,
-                    applicationId: window.APPLOZIC_APP_KEY, //Get your App ID from [Applozic Dashboard](https://console.applozic.com/settings/install)
-                }
-            },
-            success: function (response) {
-                var data = {};
-                data.token = response.token;
-                data.deviceKey = response.deviceKey;
-                data.websocketUrl = response.websocketUrl;
-                window.totalUnreadCount = response.totalUnreadCount;
-                //document.title = window.totalUnreadCount + " Unread Msgs";
-                // localStorage.setItem("_deviceKey", data.deviceKey);
-                // localStorage.setItem("_applozicToken", data.token);
-                // localStorage.setItem("_applozicWebsocketUrl", data.websocketUrl);
-                document.cookie = "_deviceKey=" + data.deviceKey + ";";
-                document.cookie = "_applozicToken=" + data.token + ";";
-                document.cookie = "_applozicWebsocketUrl=" + data.websocketUrl + ";";
-                //Get your App ID from [Applozic Dashboard](https://console.applozic.com/settings/install)
-                window.Applozic.ALSocket.init(window.APPLOZIC_APP_KEY, data, events);
-                // Notification.requestPermission();
-                window.dispatchEvent(new CustomEvent("applozicAppInitialized", { detail: { data: response, count: window.totalUnreadCount } }));
-                window.dispatchEvent(new CustomEvent("onUnreadMessageCountUpdate", { detail: { count: window.totalUnreadCount } }));
-                /*Applozic.ALApiService.getMessages({
-                    data:
-                    {
-                        startIndex: 0,
-                        mainPageSize: 5
-                    },
-                    success: function (response) {
-                        response.totalUnreadCount = window.totalUnreadCount;
-                        var onMessagesListLoad = new CustomEvent("onMessagesListLoad", { detail: response });
-                        window.dispatchEvent(onMessagesListLoad);
-                    },
-                    error: function () { }
-                });*/
-                // This method initializes socket connection
-            },
-            error: function () {
 
+// window.onblur = function () {
+//     window.hasFocus = false;
+// }
+// window.onfocus = function () {
+//     window.hasFocus = true;
+// }
+// window.onload = function () {
+function registerAppLozic(dispatch, id) {
+    if (undefined != window.Applozic) {
+        Applozic.ALApiService.login(
+            {
+                data: {
+                    baseUrl: window.APPLOZIC_BASE_URL,//'https://apps.applozic.com'
+                    alUser:
+                    {
+                        userId: id,
+                        // password: '',//Enter password here for the userId passed above, read this if you want to add additional security by verifying password from your server https://www.applozic.com/docs/configuration.html#access-token-url
+                        imageLink: window.userAvatar, //User's profile picture url
+                        email: window.userEmail, //optional
+                        displayName: window.userFirstName + " " + userLastName,
+                        // contactNumber: '', //optional, pass with internationl code eg: +13109097458
+                        appVersionCode: 108,
+                        applicationId: window.APPLOZIC_APP_KEY, //Get your App ID from [Applozic Dashboard](https://console.applozic.com/settings/install)
+                    }
+                },
+                success: function (response) {
+                    var data = {};
+                    data.token = response.token;
+                    data.deviceKey = response.deviceKey;
+                    data.websocketUrl = response.websocketUrl;
+                    window.totalUnreadCount = response.totalUnreadCount;
+
+                    //is this code requiredd????????
+                    document.cookie = "_deviceKey=" + data.deviceKey + ";";
+                    document.cookie = "_applozicToken=" + data.token + ";";
+                    document.cookie = "_applozicWebsocketUrl=" + data.websocketUrl + ";";
+                    //Get your App ID from [Applozic Dashboard](https://console.applozic.com/settings/install)
+                    window.Applozic.ALSocket.init(window.APPLOZIC_APP_KEY, data, events);
+                    // Notification.requestPermission();
+                    window.dispatchEvent(new CustomEvent("applozicAppInitialized", { detail: { data: response, count: window.totalUnreadCount } }));
+                    window.dispatchEvent(new CustomEvent("onUnreadMessageCountUpdate", { detail: { count: window.totalUnreadCount } }));
+                    /*Applozic.ALApiService.getMessages({
+                        data:
+                        {
+                            startIndex: 0,
+                            mainPageSize: 5
+                        },
+                        success: function (response) {
+                            response.totalUnreadCount = window.totalUnreadCount;
+                            var onMessagesListLoad = new CustomEvent("onMessagesListLoad", { detail: response });
+                            window.dispatchEvent(onMessagesListLoad);
+                        },
+                        error: function () { }
+                    });*/
+                    // This method initializes socket connection
+                },
+                error: function () {
+
+                }
             }
-        }
-    );
+        );
     } else {
-        setTimeout(function () {
-            registerAppLozic()
+        setTimeout(() => {
+            registerAppLozic();
         }, 2000);
     }
 }
-(function () { registerAppLozic() })();
-window.onload = function () {
-    registerAppLozic();
-};
+// (function () { registerAppLozic() })();
+// window.onload = function () {
+//     registerAppLozic();
+// };
 // };
 /*
 (function (d, m) {
@@ -175,3 +162,5 @@ window.onload = function () {
     window.Applozic = m;
     m.init = function (t) { m._globals = t; }
 })(document, window.Applozic || {});*/
+
+export default registerAppLozic;
