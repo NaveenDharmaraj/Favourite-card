@@ -53,6 +53,7 @@ const configVars = {
         SOCIAL_API_VERSION: process.env.SOCIAL_API_VERSION,
         STRIPE_KEY: process.env.STRIPE_KEY,
         STRIPE_URL: process.env.STRIPE_URL,
+        TOAST_MESSAGE_TIMEOUT: process.env.TOAST_MESSAGE_TIMEOUT,
         UTILITY_API_BASE: process.env.UTILITY_API_BASE,
         WP_API_VERSION: process.env.WP_API_VERSION,
         WP_DOMAIN_BASE: process.env.WP_DOMAIN_BASE,
