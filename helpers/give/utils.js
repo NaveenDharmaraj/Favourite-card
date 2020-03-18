@@ -1249,11 +1249,11 @@ const populateDonationReviewPage = (giveData, data, currency, formatMessage, lan
         selectedTaxReceiptProfile,
     } = data;
     const state = {
-        buttonText : formatMessage('reviewAddMoney'),
-        editUrl: "/donations/new",
+        buttonText: formatMessage('reviewAddMoney'),
+        editUrl: '/donations/new',
         headingText: formatMessage('donationHeadingText'),
         isRecurring: !(giftType.value === 0),
-        mainDisplayAmount:  formatCurrency(
+        mainDisplayAmount: formatCurrency(
             Number(donationAmount),
             language,
             currency,
@@ -1278,57 +1278,49 @@ const populateDonationReviewPage = (giveData, data, currency, formatMessage, lan
                 state.accountType = 'company';
             }
         }
+
+        let frequencyMessage = formatMessage('reviewAddOnce');
+        if (giftType.value === 1) {
+            frequencyMessage = `${formatMessage('reviewAddMonthly')} <br/> ${formatMessage('onFirstMessage')}`;
+        } else if (giftType.value === 15) {
+            frequencyMessage = `${formatMessage('reviewAddMonthly')} <br/> ${formatMessage('onFifteenthMessage')}`;
+        }
+
+        listingData.push({
+            name: 'reviewFrequency',
+            value: ReactHtmlParser(frequencyMessage),
+        });
+
         if (creditCard.value > 0) {
             listingData.push({
                 name: 'reviewPaymentMethod',
                 value: creditCard.text,
             });
         }
-        const taxData = `${attributes.fullName} <br/> ${attributes.addressOne},  ${(attributes.addressTwo)? attributes.addressTwo : ''} <br/> ${attributes.city}, ${attributes.province} ${attributes.postalCode}`;
+        const taxData = `${attributes.fullName} <br/> ${attributes.addressOne},  ${(attributes.addressTwo) ? attributes.addressTwo : ''} <br/> ${attributes.city}, ${attributes.province} ${attributes.postalCode}`;
         listingData.push({
             name: 'reviewTaxReceipt',
             value: ReactHtmlParser(taxData),
         });
 
+        let matchingDetails = formatMessage('reviewNoMatchingDetails');
         if (donationMatch.value > 0) {
-            let matchingDetails = '';
             const matchedData = getDonationMatchedData(donationMatch.id, donationAmount, donationMatchData);
             if (!_.isEmpty(matchedData)) {
-                matchingDetails = (giftType.value === 0) ?
-                    `${formatMessage('reviewMatchingDetails', {
-                        companyName: matchedData.displayName,
-                        matchedAmount: formatCurrency(
-                            Number(matchedData.amount),
-                            language,
-                            currency
-                        ),
-                    })}` :
-                    `${formatMessage('reviewRecurringMatchingDetails', {
-                        companyName: matchedData.displayName,
-                        maxMatch: formatCurrency(
-                            Number(matchedData.maxMatch),
-                            language,
-                            currency
-                        ),
-                        periodType: matchedData.periodType
-                    })}`
+                matchingDetails = `${formatMessage('reviewMatchingDetails', {
+                    companyName: matchedData.displayName,
+                    matchedAmount: formatCurrency(
+                        Number(matchedData.amount),
+                        language,
+                        currency,
+                    ),
+                    periodType: matchedData.periodType,
+                })}`;
             }
-            listingData.push({
-                name: 'reviewMatchingPartner',
-                value: matchingDetails,
-            });
         }
-
-        let frequencyMessage = formatMessage('reviewAddOnce');
-        if (giftType.value === 1) {
-            frequencyMessage = `${formatMessage('reviewAddMonthly')} <br/> ${formatMessage('onFirstMessage')}`;
-        } else if(giftType.value === 15) {
-            frequencyMessage = `${formatMessage('reviewAddMonthly')} <br/> ${formatMessage('onFifteenthMessage')}`;
-        }
-
         listingData.push({
-            name : 'reviewFrequency',
-            value: ReactHtmlParser(frequencyMessage)
+            name: 'reviewMatchingPartner',
+            value: matchingDetails,
         });
 
         listingData.push({
@@ -1337,7 +1329,6 @@ const populateDonationReviewPage = (giveData, data, currency, formatMessage, lan
         });
         state.listingData = listingData;
         return (state);
-
     }
 };
 
@@ -1374,10 +1365,10 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
     // Create this constant to not conflict with recipient constant.
     const state = {
         editUrl: toURL,
-        buttonText : formatMessage('reviewSendGift'),
+        buttonText: formatMessage('reviewSendGift'),
         headingText: `${formatMessage('reviewGiveToText')} ${ giveTo.name}`,
         isRecurring: !(giftType.value === 0),
-        mainDisplayAmount:  formatCurrency(
+        mainDisplayAmount: formatCurrency(
             Number(giveAmount),
             language,
             currency,
@@ -1388,20 +1379,20 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
     const listingData = [];
 
     if (!_.isEmpty(giveFrom)) {
-        listingData.push({
-            name: 'reviewGiveFrom',
-            value: giveFrom.text
-        });
-
         let frequencyMessage = formatMessage('reviewSendOnce');
         if (giftType.value === 1) {
             frequencyMessage = `${formatMessage('reviewSendMonthly')} <br/> ${formatMessage('onFirstMessage')}`;
-        } else if(giftType.value === 15) {
+        } else if (giftType.value === 15) {
             frequencyMessage = `${formatMessage('reviewSendMonthly')} <br/> ${formatMessage('onFifteenthMessage')}`;
         }
         listingData.push({
-            name : 'reviewFrequency',
-            value: ReactHtmlParser(frequencyMessage)
+            name: 'reviewFrequency',
+            value: ReactHtmlParser(frequencyMessage),
+        });
+
+        listingData.push({
+            name: 'reviewGiveFrom',
+            value: giveFrom.text,
         });
 
         if (!_.isEmpty(giveGroupDetails)) {
@@ -1427,13 +1418,13 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
                 });
             }
         }
-        if(type === 'give/to/charity'){
+        if (type === 'give/to/charity') {
             let infoToShareMessage = formatMessage('reviewGiveAnonymously');
-            if(infoToShare.value !== 'anonymous') {
+            if (infoToShare.value !== 'anonymous') {
                 infoToShareMessage = infoToShare.text;
             }
             listingData.push({
-                name : 'reviewInfoToCharity',
+                name: 'reviewInfoToCharity',
                 value: infoToShareMessage,
             });
         } else {
@@ -1459,36 +1450,37 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
             }
             const giveToType = (giveTo.isCampaign) ? 'Campaign' : 'Group';
             listingData.push({
-                name : `privacyShareGiving${giveToType}Label`,
-                value: ReactHtmlParser(privacyShareNameMessage)
+                name: `privacyShareGiving${giveToType}Label`,
+                value: ReactHtmlParser(privacyShareNameMessage),
             });
 
             listingData.push({
-                name : `privacyShareOrganizers${giveToType}Label`,
-                value: ReactHtmlParser(privacyShareEmailMessage)
+                name: `privacyShareOrganizers${giveToType}Label`,
+                value: ReactHtmlParser(privacyShareEmailMessage),
             });
         }
 
         const dedicatedDetails = {
             name: 'reviewGiftDedication',
-            value: formatMessage('reviewNoGift')
-        }
+            value: formatMessage('reviewNoGift'),
+        };
 
-        if(!_.isEmpty(dedicateGift) && !_.isEmpty(dedicateGift.dedicateType)){
-            dedicatedDetails.value = `${(dedicateGift.dedicateType === 'inHonorOf')? 'In honour of' : 'In memory of' } ${dedicateGift.dedicateValue}`;
+        if (!_.isEmpty(dedicateGift) && !_.isEmpty(dedicateGift.dedicateType)) {
+            dedicatedDetails.value = `${(dedicateGift.dedicateType === 'inHonorOf')
+                ? 'In honour of' : 'In memory of'} ${dedicateGift.dedicateValue}`;
         }
 
         listingData.push(dedicatedDetails);
 
         listingData.push({
-            name: (type == 'give/to/charity')? 'reviewMessageToCharityLabel' : 'reviewMessageToGroupLabel',
-            value: (!_.isEmpty(noteToCharity)) ? noteToCharity : formatMessage('reviewDefaultMessage')
+            name: (type === 'give/to/charity') ? 'reviewMessageToCharityLabel' : 'reviewMessageToGroupLabel',
+            value: (!_.isEmpty(noteToCharity)) ? noteToCharity : formatMessage('reviewDefaultMessage'),
         });
 
         listingData.push({
             name: 'reviewNoteToSelf',
-            value: (!_.isEmpty(noteToSelf)) ? noteToSelf : formatMessage('reviewEmptyNoteToSelf')
-        })
+            value: (!_.isEmpty(noteToSelf)) ? noteToSelf : formatMessage('reviewEmptyNoteToSelf'),
+        });
     }
 
     state.listingData = listingData;
