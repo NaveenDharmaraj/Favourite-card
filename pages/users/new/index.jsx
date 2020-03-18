@@ -135,7 +135,6 @@ class Login extends React.Component {
             isPasswordLengthInLimit: true,
             isPasswordNull: true,
             isPasswordValid: true,
-            isValidCauses: true,
         };
         return this.validity;
     }
@@ -150,7 +149,6 @@ class Login extends React.Component {
                 lastName,
                 emailId,
                 password,
-                userCauses,
             },
             stepIndex,
         } = this.state;
@@ -163,9 +161,6 @@ class Login extends React.Component {
             case 1:
                 validity = validateUserRegistrationForm('emailId', emailId, validity);
                 validity = validateUserRegistrationForm('password', password, validity);
-                break;
-            case 2:
-                validity.isValidCauses = (userCauses.length >= 3);
                 break;
             default:
                 break;

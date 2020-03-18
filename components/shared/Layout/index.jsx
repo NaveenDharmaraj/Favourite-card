@@ -57,11 +57,10 @@ class Layout extends React.Component {
         if  (!_.isEmpty(userInfo) && !addCauses) {
             const {
                 attributes: {
-                    causes,
+                    skipCauseSelection,
                 }
             } = userInfo;
-
-            if (_.isEmpty(causes)) {
+            if(!skipCauseSelection || skipCauseSelection === null) {
                 Router.pushRoute('/user/causes');
             }
         }
@@ -171,25 +170,27 @@ class Layout extends React.Component {
                     <ErrorBoundary>
                         <Responsive {...widthProp} minWidth={320} maxWidth={991}>
                             <MobileHeader isAuthenticated={isAuthenticated} onBoarding={onBoarding} isLogin={isLogin} showHeader={showHeader}>
-                                {!_.isEmpty(appErrors) &&
-                                    <Container
-                                        className="app-status-messages"
-                                    >
-                                        {_.map(appErrors, (err) => (
-                                            <StatusMessage
-                                                key={err.heading}
-                                                error={err}
-                                                dispatch={dispatch}
-                                                {...err}
-                                            />
-                                        ))}
-                                    </Container>
-                                }
                                 <div style={{minHeight:'60vh'}}>
                                     {children}
                                 </div>
                                 <Footer isAuthenticated={isAuthenticated}/>
                             </MobileHeader>
+                            {!_.isEmpty(appErrors) &&
+                                <Container
+                                    className="app-status-messages"
+                                >
+                                    <div className="statusMsgWraper">
+                                    {_.map(appErrors, (err) => (
+                                        <StatusMessage
+                                            key={err.heading}
+                                            error={err}
+                                            dispatch={dispatch}
+                                            {...err}
+                                        />
+                                    ))}
+                                    </div>
+                                </Container>
+                            }
                         </Responsive>
                         <Responsive {...widthProp} minWidth={992}>
                             <Header isAuthenticated={isAuthenticated} onBoarding={onBoarding} isLogin={isLogin} showHeader={showHeader}/>
@@ -197,6 +198,7 @@ class Layout extends React.Component {
                                     <Container
                                         className="app-status-messages"
                                     >
+                                        <div className="statusMsgWraper">
                                         {_.map(appErrors, (err) => (
                                             <StatusMessage
                                                 key={err.heading}
@@ -205,6 +207,7 @@ class Layout extends React.Component {
                                                 {...err}
                                             />
                                         ))}
+                                        </div>
                                     </Container>
                                 }
                                 <div style={{minHeight:'60vh'}}>
