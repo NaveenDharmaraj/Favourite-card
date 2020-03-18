@@ -74,9 +74,6 @@ instance.interceptors.response.use(function (response) {
         softLogout(config.dispatch);
         return null;
     }
-    if (config.uxCritical && config.dispatch && status !== 403) {
-        triggerUxCritialErrors(data.errors || data, config.dispatch);
-    }
     if (status === 403 && config.params && config.params.findBySlug) {
         statusMessageProps = {
             heading: 'This page isn\'t available',
@@ -84,6 +81,8 @@ instance.interceptors.response.use(function (response) {
             type: 'error',
         };
         triggerCustomUxCriticalError(statusMessageProps, config.dispatch);
+    } else if (config.uxCritical && config.dispatch) {
+        triggerUxCritialErrors(data.errors || data, config.dispatch);
     }
 
     return Promise.reject(error.response.data);
