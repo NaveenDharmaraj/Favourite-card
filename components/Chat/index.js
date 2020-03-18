@@ -49,7 +49,7 @@ class ChatWrapper extends React.Component {
             newGroupImageUrl: "",
             editGroupName: "",
             editGroupImageUrl: "",
-            isSmallerScreen: window.innerWidth <= 767,
+            // isSmallerScreen: window.innerWidth <= 767,
             smallerScreenSection: "convList",
             userInfo: userInfo,
             showMoreOptions: false,
@@ -545,7 +545,9 @@ class ChatWrapper extends React.Component {
             if (conversation.groupId) {
                 params["clientGroupId"] = conversation.groupId;
             } else { params["to"] = conversation.contactIds; }
-            params['contentType'] = 3;
+            // CPP-5235 commenting this for mobile.
+            // params['contentType'] = 3;
+
             // params['_userId'] = this.state.userInfo.id;
             // params["_deviceKey"] = this.state.userInfo.applogicClientRegistration.deviceKey;
             // self.setLoading(true);
@@ -651,6 +653,7 @@ class ChatWrapper extends React.Component {
         window.addEventListener('onMessageEvent', this.onMessageEvent, false);
         window.addEventListener('onMessageReceived', this.onMessageReceived, false);
         window.addEventListener("resize", this.resize.bind(this));
+        this.setState({ isSmallerScreen: window.innerWidth <= 767 });
     }
     resize() {
         this.setState({ isSmallerScreen: window.innerWidth <= 767 });

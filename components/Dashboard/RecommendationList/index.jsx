@@ -148,7 +148,7 @@ class RecommendationList extends React.Component {
                                                     {locationDetails}
                                                 </Header.Content>
                                             </Header>
-                                            <Link className="lnkChange" route={`/${urlEntity}/${data.attributes.slug}`}>
+                                            <Link className="lnkChange" route={`/${urlEntity}/${data.attributes.slug}`} passHref>
                                                 <Button
                                                     className="btn-small-white-border"
                                                     onClick={RecommendationList.changeButtonState}

@@ -65,7 +65,7 @@ class LeftImageCard extends React.Component {
                                                 </span>
                                             </Header.Content>
                                         </Header>
-                                        <Link className="lnkChange" route={url}>
+                                        <Link className="lnkChange" route={url} passHref>
                                             <Button
                                                 disabled={buttonState}
                                                 className="btn-small-white-border"

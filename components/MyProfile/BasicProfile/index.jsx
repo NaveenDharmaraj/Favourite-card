@@ -7,6 +7,7 @@ import {
     Icon,
     Grid,
 } from 'semantic-ui-react';
+import _ from 'lodash';
 
 import PrivacySetting from '../../shared/Privacy';
 import UserPlaceholder from '../../../static/images/no-data-avatar-user-profile.png';

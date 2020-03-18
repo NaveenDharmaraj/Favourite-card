@@ -262,7 +262,7 @@ class EditBasicProfile extends React.Component {
                 });
             }).catch((err) => {
                 this.setState({
-                    errorMessage: 'Error in saving the Credit Card.',
+                    errorMessage: 'Error in saving the profile.',
                     statusMessage: true,
                     buttonClicked: true,
                 });
