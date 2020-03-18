@@ -1,14 +1,14 @@
+import { actionTypes } from '../actions/chat';
+
 const chat = (state = {}, action) => {
     let newState = {
         ...state,
     };
     switch (action.type) {
-        case 'CHAT_MESSAGE_LIST_LOAD':
-            console.log("CHAT_MESSAGE_LIST_LOAD");
-            console.error(action.payload.messages);
+        case actionTypes.LOAD_MUTE_USER_LIST:
             newState = {
                 ...state,
-                messages: action.payload.messages,
+                muteUserList: action.payload.muteUserList,
             };
             break;
         default:
