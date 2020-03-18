@@ -80,13 +80,13 @@ class ShareDetails extends React.Component {
         switch (data.id) {
             case 'twitter':
                 url=encodedUrl;
-                title=encodeURIComponent(`Check out ${name} on @wearechimp.`);
-                window.open('https://twitter.com/share?url='+url+'&text='+title,'sharer','toolbar=0,location=0,status=0,width='+width+',height='+height+',top='+top+',left='+left);
+                title=encodeURIComponent(`Check out ${name} on @wearecharitable.`);
+                window.open('https://twitter.com/share?url='+url+'&text='+title,'_blank');
                 break;
             case 'facebook':
                 url=encodedUrl;
                 title = encodeURIComponent(`Give to any canadian ${type}`);
-                window.open('http://www.facebook.com/sharer.php?u='+url+'&t='+title,'sharer','toolbar=0,location=0,status=0,width='+width+',height='+height+',top='+top+',left='+left);
+                window.open('http://www.facebook.com/sharer.php?u='+url+'&t='+title,'_blank');
                 break;
             default:
                 break;

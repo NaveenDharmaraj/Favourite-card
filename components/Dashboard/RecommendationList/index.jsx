@@ -22,6 +22,7 @@ import placeholderCharity from '../../../static/images/no-data-avatar-charity-pr
 import placeholderGroup from '../../../static/images/no-data-avatar-giving-group-profile.png';
 import { Link } from '../../../routes';
 import PlaceholderGrid from '../../shared/PlaceHolder';
+import DiscoveredForYouNoData from '../../shared/DiscoveredForYouNoData';
 import { renderTextByCharacter } from '../../../helpers/utils';
 
 class RecommendationList extends React.Component {
@@ -79,7 +80,11 @@ class RecommendationList extends React.Component {
         const {
             recommendationData,
         } = this.props;
-        let recommendationList = 'No Data';
+        let recommendationList = (
+            <div className="ml-1 mr-1 DiscoveredMargin">
+                <DiscoveredForYouNoData />
+            </div>
+        );
         if (recommendationData && recommendationData.data && _.size(recommendationData.data) > 0) {
             const showData = _.slice(recommendationData.data, 0, 9);
             recommendationList = showData.map((data, index) => {
@@ -144,7 +149,7 @@ class RecommendationList extends React.Component {
                                                     {locationDetails}
                                                 </Header.Content>
                                             </Header>
-                                            <Link className="lnkChange" route={`/${urlEntity}/${data.attributes.slug}`}>
+                                            <Link className="lnkChange" route={`/${urlEntity}/${data.attributes.slug}`} passHref>
                                                 <Button className="btn-small-white-border">View</Button>
                                             </Link>
                                         </Grid.Column>

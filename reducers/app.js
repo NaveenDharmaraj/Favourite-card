@@ -31,6 +31,12 @@ const app = (state = {}, action) => {
                 errors: []
             };
             break;
+        case 'SET_SSR_IS_MOBILE':
+            newState = {
+                ...state,
+                isMobile: action.payload.isMobile,
+            };
+            break;
         default:
             break;
     }

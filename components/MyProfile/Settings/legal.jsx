@@ -19,7 +19,7 @@ class Legal extends React.Component {
                         <p>
                         See our
                             <Link route="/terms">
-                                <span className="link border"> Terms and Conditions.</span>
+                                <span className="link border rmLnk"> Terms and Conditions.</span>
                             </Link>
                         </p>
                     </div>
@@ -28,7 +28,7 @@ class Legal extends React.Component {
                         <p>
                         See our
                             <Link route="/privacy">
-                                <span className="link border"> Privacy Policy.</span>
+                                <span className="link border rmLnk"> Privacy Policy.</span>
                             </Link>
                         </p>
                     </div>
@@ -37,7 +37,7 @@ class Legal extends React.Component {
                         <p>
                         See our
                             <Link route="/account-agreement">
-                                <span className="link border"> Account Agreement.</span>
+                                <span className="link border rmLnk"> Account Agreement.</span>
                             </Link>
                         </p>
                     </div>

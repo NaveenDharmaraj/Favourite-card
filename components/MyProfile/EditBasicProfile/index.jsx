@@ -7,7 +7,8 @@ import {
     Grid,
     Popup,
     Icon,
-    Image
+    Image,
+    Select
 } from 'semantic-ui-react';
 import {
     connect,
@@ -18,7 +19,9 @@ import {
     saveUserBasicProfile,
     uploadUserImage,
     removeProfilePhoto,
+    searchLocationByUserInput,
 } from '../../../actions/userProfile';
+import { actionTypes } from '../../../actions/userProfile';
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 import PrivacySetting from '../../shared/Privacy';
 const ModalStatusMessage = dynamic(() => import('../../shared/ModalStatusMessage'), {
@@ -26,6 +29,7 @@ const ModalStatusMessage = dynamic(() => import('../../shared/ModalStatusMessage
 });
 import {
     formatAmount,
+    formatCurrency,
     isValidGivingGoalAmount,
 } from '../../../helpers/give/utils';
 import {
@@ -36,6 +40,7 @@ import {
 } from '../../../helpers/give/giving-form-validation';
 import UserPlaceholder from '../../../static/images/no-data-avatar-user-profile.png';
 
+let timeout = '';
 class EditBasicProfile extends React.Component {
     constructor(props) {
         super(props);
@@ -46,6 +51,10 @@ class EditBasicProfile extends React.Component {
                 }
             }
         } = props;
+        const givingGoalAmount = (!_.isEmpty(props.userData.giving_goal_amt) || typeof props.userData.giving_goal_amt !== 'undefined') ? formatAmount(Number(props.userData.giving_goal_amt)) : '';
+        const userDataProvince = props.userData.province ? `${props.userData.city ? ', ' : ''}${props.userData.province}` : '';
+        const locationString = `${props.userData.city ? props.userData.city : ''}${userDataProvince}`;
+        const location = locationString ? locationString.trim() : null;
         this.state = {
             buttonClicked: true,
             errorMessage: null,
@@ -53,41 +62,54 @@ class EditBasicProfile extends React.Component {
             isDefaultImage: logoFileName === null ? true : false,
             uploadImage: '',
             uploadImagePreview: '',
+            searchQuery: (!_.isEmpty(location)) ? location : null,
+            locationDropdownValue: '',
             statusMessage: false,
             successMessage: '',
             userBasicDetails: {
                 about: (!_.isEmpty(props.userData)) ? props.userData.description : '',
                 firstName: (!_.isEmpty(props.userData)) ? props.userData.first_name : '',
-                givingGoal: (!_.isEmpty(props.userData.giving_goal_amt) || typeof props.userData.giving_goal_amt !== 'undefined') ? formatAmount(Number(props.userData.giving_goal_amt)) : '',
+                givingGoal: givingGoalAmount,
                 lastName: (!_.isEmpty(props.userData)) ? props.userData.last_name : '',
-                location: (!_.isEmpty(props.userData)) ? props.userData.location : '',
                 displayName: (!_.isEmpty(props.userData)) ? props.userData.display_name : '',
+                formatedGoalAmount: _.replace(formatCurrency(givingGoalAmount, 'en', 'USD'), '$', ''),
+                location,
             },
             validity: this.intializeValidations(),
         };
-        
+
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleInputOnBlur = this.handleInputOnBlur.bind(this);
         this.handleUpload = this.handleUpload.bind(this);
         this.handleRemovePreview = this.handleRemovePreview.bind(this);
         this.handleRemoveProfilePhoto = this.handleRemoveProfilePhoto.bind(this);
+        this.handleLocationSearchChange = this.handleLocationSearchChange.bind(this);
+        this.handleLocationChange = this.handleLocationChange.bind(this);
+        this.handleCustomSearch = this.handleCustomSearch.bind(this);
     }
 
     componentDidUpdate(prevProps) {
         const {
             currentUser,
             userData,
-        } = this.props;        
+        } = this.props;
         if (!_.isEqual(userData, prevProps.userData)) {
+            const givingGoalAmount = typeof userData.giving_goal_amt !== 'undefined' ? formatAmount(Number(userData.giving_goal_amt)) : '';
+            const userDataProvince = userData.province ? `${userData.city ? ', ' : ''}${userData.province}` : '';
+            const locationString = `${userData.city ? userData.city : ''}${userDataProvince}`;
+            const location = locationString ? locationString.trim() : null;
             this.setState({
+                searchQuery: (!_.isEmpty(location)) ? location : null,
+                locationDropdownValue: '',
                 userBasicDetails: {
                     about: userData.description,
                     firstName: userData.first_name,
-                    givingGoal: typeof userData.giving_goal_amt !== 'undefined' ? formatAmount(Number(userData.giving_goal_amt)) : '',
+                    givingGoal: givingGoalAmount,
                     lastName: userData.last_name,
-                    location: userData.location,
                     displayName: userData.display_name,
+                    formatedGoalAmount: _.replace(formatCurrency(givingGoalAmount, 'en', 'USD'), '$', ''),
+                    location,
                 },
             });
         }
@@ -106,6 +128,7 @@ class EditBasicProfile extends React.Component {
             validity,
         } = this.state;
         userBasicDetails.givingGoal = formatAmount(amount);
+        userBasicDetails.formatedGoalAmount = _.replace(formatCurrency(userBasicDetails.givingGoal, 'en', 'USD'), '$', '');
         this.setState({
             buttonClicked: false,
             statusMessage: false,
@@ -141,7 +164,11 @@ class EditBasicProfile extends React.Component {
         } = this.state;
         const newValue = (!_.isEmpty(options)) ? _.find(options, { value }) : value;
         if (userBasicDetails[name] !== newValue) {
+            if (name === 'givingGoal') {
+                userBasicDetails.formatedGoalAmount = newValue;
+            }
             userBasicDetails[name] = newValue;
+
         }
         this.setState({
             buttonClicked: false,
@@ -163,10 +190,11 @@ class EditBasicProfile extends React.Component {
             validity,
         } = this.state;
         let inputValue = value;
-        const isNumber = /^\d+(\.\d*)?$/;
+        const isNumber = /^(?:[0-9]+,)*[0-9]+(?:\.[0-9]+)?$/;
         if ((name === 'givingGoal') && !_.isEmpty(value) && value.match(isNumber)) {
-            userBasicDetails[name] = formatAmount(value);
-            inputValue = formatAmount(value);
+            inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
+            userBasicDetails[name] = inputValue;
+            userBasicDetails.formatedGoalAmount = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
         }
         validity = this.validateUserProfileBasicForm(name, inputValue, validity);
         this.setState({
@@ -251,7 +279,7 @@ class EditBasicProfile extends React.Component {
                 });
             }).catch((err) => {
                 this.setState({
-                    errorMessage: 'Error in saving the Credit Card.',
+                    errorMessage: 'Error in saving the profile.',
                     statusMessage: true,
                     buttonClicked: true,
                 });
@@ -267,12 +295,12 @@ class EditBasicProfile extends React.Component {
                     uploadImage,
                 } = this.state;
                 uploadUserImage(dispatch, id, uploadImage).then(() => {
-                    this.setState({                       
+                    this.setState({
                         buttonClicked: true,
                         uploadImagePreview: '',
                     });
                 }).catch((err) => {
-                    this.setState({                        
+                    this.setState({
                         buttonClicked: true,
                         uploadImagePreview: '',
                     });
@@ -295,7 +323,7 @@ class EditBasicProfile extends React.Component {
             // console.log('Error: ', error);
         };
     }
-    
+
     handleUpload(event) {
         this.setState({
             uploadImagePreview: '',
@@ -349,7 +377,81 @@ class EditBasicProfile extends React.Component {
             });
         });
     }
+    handleLocationChange(event, data) {
+        const locationValue = event.target.innerText;
+        const {
+            name,
+            options,
+            value,
+        } = data;
+        const {
+            userBasicDetails,
+        } = this.state;
+        const newValue = (!_.isEmpty(options)) ? _.find(options, { value }) : locationValue;
+        userBasicDetails['city'] = newValue.city ? newValue.city : '';
+        userBasicDetails['province'] = newValue.province ? newValue.province : '';
+        this.setState({
+            buttonClicked: userBasicDetails[name] != locationValue ? false : true,
+            userBasicDetails: {
+                ...this.state.userBasicDetails,
+                ...userBasicDetails,
+            },
+            searchQuery: locationValue,
+            locationDropdownValue: value,
+        });
+    }
 
+    debounceFunction = ({dispatch, searchValue}, delay) => {
+        if(timeout){
+            clearTimeout(timeout);
+        }
+        timeout = setTimeout(function(){
+            dispatch(searchLocationByUserInput(searchValue));
+        },delay);
+    }
+
+    handleLocationSearchChange(event, { searchQuery }) {
+        const {
+            userBasicDetails,
+        } = this.state;
+        if (event.target.value.length >= 4) {
+            const {
+                dispatch,
+            } = this.props;
+        const params = { dispatch, searchValue: event.target.value};
+            this.debounceFunction(params, 300);
+        }
+        if (event.target.value.length === 0) {
+            const {
+                dispatch,
+                userData: {
+                    city,
+                }
+            } = this.props;
+            dispatch({
+                type: actionTypes.USER_PROFILE_LOCATION_SEARCH,
+                payload: {
+                    data : []
+                },
+            });
+            userBasicDetails['city'] = null;
+            userBasicDetails['province'] = null;
+            this.setState({
+                buttonClicked: city ? false : true,
+                userBasicDetails: {
+                    ...this.state.userBasicDetails,
+                    ...userBasicDetails,
+                },
+            });
+        }
+        this.setState({
+            searchQuery: event.target.value,
+            locationDropdownValue: '',
+        });
+    }
+    handleCustomSearch = (options) => {
+        return options
+    }
     render() {
         const {
             buttonClicked,
@@ -357,14 +459,16 @@ class EditBasicProfile extends React.Component {
             statusMessage,
             successMessage,
             isDefaultImage,
+            locationDropdownValue,
             userBasicDetails: {
                 firstName,
                 lastName,
                 about,
-                location,
                 givingGoal,
                 displayName,
+                formatedGoalAmount,
             },
+            searchQuery,
             uploadImagePreview,
             validity,
         } = this.state;
@@ -374,7 +478,9 @@ class EditBasicProfile extends React.Component {
                 attributes: {
                     avatar,
                 },
-            }
+            },
+            locationLoader,
+            locationOptions,
         } = this.props;
         const privacyColumn = 'giving_goal_visibility';
         let aboutCharCount = (!_.isEmpty(about)) ? Math.max(0, (1000 - Number(about.length))) : 1000;
@@ -387,9 +493,9 @@ class EditBasicProfile extends React.Component {
                     statusMessage && (
                         <Grid.Row>
                             <Grid.Column width={16}>
-                                <ModalStatusMessage 
-                                    message = {!_.isEmpty(successMessage) ? successMessage : null}
-                                    error = {!_.isEmpty(errorMessage) ? errorMessage : null}
+                                <ModalStatusMessage
+                                    message={!_.isEmpty(successMessage) ? successMessage : null}
+                                    error={!_.isEmpty(errorMessage) ? errorMessage : null}
                                 />
                             </Grid.Column>
                         </Grid.Row>
@@ -410,37 +516,37 @@ class EditBasicProfile extends React.Component {
                             </Form.Field>
                             <Form.Field>
                                 <div className="changeImageWraper removable">
-                                <div className="subHead">Profile photo</div>
-                                <div className="proPicWraper">
-                                    <Image src={imageView} height="125px" width="125px"/>
-                                    {
-                                        isPreview && (
-                                            <a
-                                                href="#"
-                                                className="removeBtn"
-                                                onClick={this.handleRemovePreview}
-                                            />
-                                        )
-                                    }
-                                    {
-                                        !isDefaultImage && (
-                                            <a
-                                                href="#"
-                                                className="removeBtn"
-                                                onClick={this.handleRemoveProfilePhoto}
-                                            />
-                                        )
-                                    }
-                                </div>
-                                <div className="rightBtnWraper">
-                                    <Button
-                                    as="a"
-                                        className="success-btn-rounded-def medium"
-                                        onClick={(e) => this.upload.click()}
-                                    >
-                                        Change profile photo
+                                    <div className="subHead">Profile photo</div>
+                                    <div className="proPicWraper">
+                                        <Image src={imageView} height="125px" width="125px" />
+                                        {
+                                            isPreview && (
+                                                <a
+                                                    href="#"
+                                                    className="removeBtn"
+                                                    onClick={this.handleRemovePreview}
+                                                />
+                                            )
+                                        }
+                                        {
+                                            !isDefaultImage && (
+                                                <a
+                                                    href="#"
+                                                    className="removeBtn"
+                                                    onClick={this.handleRemoveProfilePhoto}
+                                                />
+                                            )
+                                        }
+                                    </div>
+                                    <div className="rightBtnWraper">
+                                        <Button
+                                            as="a"
+                                            className="success-btn-rounded-def medium"
+                                            onClick={(e) => this.upload.click()}
+                                        >
+                                            Change profile photo
                                     </Button>
-                                </div>
+                                    </div>
                                 </div>
                             </Form.Field>
                             <Form.Group widths="equal">
@@ -512,17 +618,31 @@ class EditBasicProfile extends React.Component {
                                 />
                                 <div className="field-info mt--1-2 text-right">{aboutCharCount} of 1000 characters left</div>
                             </Form.Field>
-                            <Form.Input
-                                fluid
-                                label="Location (optional)"
-                                placeholder="Location"
-                                id="location"
-                                name="location"
-                                maxLength="150"
-                                onChange={this.handleInputChange}
-                                onBlur={this.handleInputOnBlur}
-                                value={location}
-                            />
+                            <Form.Field>
+                                <label htmlFor="location">
+                                    Location (optional)
+                                </label>
+                                <Form.Field
+                                    single
+                                    control={Select}
+                                    className="locationSearchDropdown"
+                                    style={{minHeight : 'auto'}}
+                                    id="location"
+                                    name="location"
+                                    onClick = {()=>{
+                                        document.querySelector('#location input').focus()
+                                    }}
+                                    onChange={this.handleLocationChange}
+                                    onSearchChange={this.handleLocationSearchChange}
+                                    options={locationOptions}
+                                    search={this.handleCustomSearch}
+                                    selection
+                                    searchQuery={searchQuery}
+                                    placeholder="Search location"
+                                    loading={locationLoader}
+                                    value={locationDropdownValue}
+                                />
+                            </Form.Field>
                             <Form.Field>
                                 <label>
                                     Giving Goal  (optional){' '}
@@ -554,9 +674,9 @@ class EditBasicProfile extends React.Component {
                                         maxLength="11"
                                         onChange={this.handleInputChange}
                                         onBlur={this.handleInputOnBlur}
-                                        value={givingGoal}
+                                        value={formatedGoalAmount}
                                         error={!isValidGivingGoalAmount(validity)}
-                                    />                                    
+                                    />
                                     <FormValidationErrorMessage
                                         condition={!validity.isAmountLessThanOneBillion}
                                         errorMessage="Please choose an amount less than one billion dollars"
@@ -568,7 +688,7 @@ class EditBasicProfile extends React.Component {
                                 <Button basic size="tiny" onClick={() => this.handleAmount(100)}>$100</Button>
                                 <Button basic size="tiny" onClick={() => this.handleAmount(500)}>$500</Button>
                                 <Button basic size="tiny" onClick={() => this.handleAmount(1000)}>$1,000</Button>
-                            </Form.Field>                            
+                            </Form.Field>
                             <div className="pt-2">
                                 <Button
                                     className="blue-btn-rounded-def w-140"
@@ -589,8 +709,13 @@ class EditBasicProfile extends React.Component {
 function mapStateToProps(state) {
     return {
         currentUser: state.user.info,
+        locationLoader: state.userProfile.locationLoader,
+        locationOptions: state.userProfile.locationOptions,
         userProfileBasicData: state.userProfile.userProfileBasicData,
     };
 }
 
+EditBasicProfile.defaultProps = {
+    locationOptions: [{ key: '0', value: "No record found", text: "No record found" }],
+}
 export default (connect(mapStateToProps)(EditBasicProfile));

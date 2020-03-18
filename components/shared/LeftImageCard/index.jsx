@@ -41,10 +41,12 @@ const LeftImageCard = (props) => {
                                             </Header.Subheader>
                                             {entityShortName}
                                             <br />
-                                            {location}
+                                            <span className="location">
+                                                {location}
+                                            </span>
                                         </Header.Content>
                                     </Header>
-                                    <Link className="lnkChange" route={url}>
+                                    <Link className="lnkChange" route={url} passHref>
                                         <Button className="btn-small-white-border">View</Button>
                                     </Link>
                                 </div>

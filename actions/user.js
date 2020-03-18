@@ -5,6 +5,7 @@ import _ from 'lodash';
 import coreApi from '../services/coreApi';
 import authRorApi from '../services/authRorApi';
 import graphApi from '../services/graphApi';
+import securityApi from '../services/securityApi';
 import wpApi from '../services/wpApi';
 import { Router } from '../routes';
 import {
@@ -248,7 +249,7 @@ export const wpLogin = (token = null) => {
     return wpApi.post('/login', null, params);
 };
 
-export const chimpLogin = (token = null) => {
+export const chimpLogin = (token = null, options = null) => {
     let params = null;
     if (!_.isEmpty(token)) {
         params = {
@@ -257,7 +258,15 @@ export const chimpLogin = (token = null) => {
             },
         };
     }
-    return authRorApi.post('/auth/login', null, params);
+    if (options && typeof options === 'object'){
+        params = {
+            ...params,
+            params:{
+                ...options,
+            },
+        }
+    } 
+        return authRorApi.post(`/auth/login`, null, params);
 };
 
 const setDataToPayload = ({
@@ -801,20 +810,14 @@ export const saveUserCauses = (dispatch, userId, userCauses, discoverValue) => {
     };
 
     const bodyData = {
-        data: {
-            attributes: {
-                preferences: {
-                    discoverability: discoverValue,
-                },
-            },
-            id: Number(userId),
-            type: 'users',
-        },
+        is_searchable: discoverValue,
+        skipCauseSelection: true,
+        user_id: Number(userId),
     };
 
     return graphApi.patch(`/user/updatecauses`, bodyDataCauses).then(
         () => {
-            coreApi.patch(`/users/${userId}`, bodyData).then(
+            securityApi.patch(`update/user`, bodyData).then(
                 () => {
                     getUserFund(dispatch, userId).then(() => {
                         Router.pushRoute('/dashboard');

@@ -22,6 +22,7 @@ import StatusMessage from '../StatusMessage';
 import _ from 'lodash';
 import '../../../static/less/header.less';
 import '../../../static/less/style.less';
+import { isValidBrowser } from '../../../helpers/utils';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -34,7 +35,7 @@ const {
 
 const getWidth = () => {
     const isSSR = typeof window === 'undefined';
-    return isSSR ? Responsive.onlyTablet.minWidth : window.innerWidth
+    return isSSR ? 1000 : window.innerWidth
 };
 
 
@@ -48,16 +49,18 @@ class Layout extends React.Component {
             isAuthenticated,
             userInfo
         } = this.props;
-
+        //re-route the app to /browser if browser version is unsupported
+        if (window && isValidBrowser(window.navigator.userAgent)) {
+            Router.pushRoute('/browser');
+        }
         // if the user didnt setup any causes then redirect to causes selection page
         if  (!_.isEmpty(userInfo) && !addCauses) {
             const {
                 attributes: {
-                    causes,
+                    skipCauseSelection,
                 }
             } = userInfo;
-
-            if (_.isEmpty(causes)) {
+            if(!skipCauseSelection || skipCauseSelection === null) {
                 Router.pushRoute('/user/causes');
             }
         }
@@ -86,8 +89,16 @@ class Layout extends React.Component {
             }
             Beacon('session-data', {
                 'currentPage': window.location.href,
-              })
+            })
+            if(document){
+                Beacon('event', {
+                    type: 'page-viewed',
+                    url: window.location.href,
+                    title: document.title,
+                })
+            }
               
+                
             Beacon('config', {
                 "labels": {
                     "suggestedForYou": "Answers to common questions",
@@ -104,14 +115,19 @@ class Layout extends React.Component {
             return null;
         }
         const{
+            avatar,
             title,
             description,
+            isMobile,
+            keywords,
+            url,
         } = this.props;
         const userEmail = this.props.userInfo ? this.props.userInfo.attributes.email : "";
         const userAvatar = this.props.userInfo ? this.props.userInfo.attributes.avatar : "";
         const userDisplayName = this.props.userInfo ? this.props.userInfo.attributes.displayName : "";
         const userFirstName = this.props.userInfo ? this.props.userInfo.attributes.firstName : "";
         const userLastName = this.props.userInfo ? this.props.userInfo.attributes.lastName : "";
+        const widthProp = (!isMobile) ? {getWidth: getWidth} : {};
         return (
             <Responsive getWidth={getWidth}>
                 <Head>
@@ -119,7 +135,12 @@ class Layout extends React.Component {
                        {title}
                     </title>
                     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-                    <meta name="description" content={description}/>
+                    <meta name="description" content={description.substring(0, 150)}/>
+                    <meta name="keywords" content={keywords} />
+                    <meta property="og:title" content={title} />
+                    <meta property="og:url" content={url} />
+                    <meta property="og:image" content={avatar} />
+                    <meta property="og:description" content={description.substring(0, 150)}/>
                     <link rel="icon" type="image/x-icon" href="https://d1wjn4fmcgu4dn.cloudfront.net/web/favicon.ico" />
                     <link rel="manifest" href="/static/Manifest.json" />
                     <link
@@ -147,34 +168,37 @@ class Layout extends React.Component {
                 </Head>
                 <div>
                     <ErrorBoundary>
-                        <Responsive minWidth={320} maxWidth={991}>
+                        <Responsive {...widthProp} minWidth={320} maxWidth={991}>
                             <MobileHeader isAuthenticated={isAuthenticated} onBoarding={onBoarding} isLogin={isLogin} showHeader={showHeader}>
-                                {!_.isEmpty(appErrors) &&
-                                    <Container
-                                        className="app-status-messages"
-                                    >
-                                        {_.map(appErrors, (err) => (
-                                            <StatusMessage
-                                                key={err.heading}
-                                                error={err}
-                                                dispatch={dispatch}
-                                                {...err}
-                                            />
-                                        ))}
-                                    </Container>
-                                }
                                 <div style={{minHeight:'60vh'}}>
                                     {children}
                                 </div>
                                 <Footer isAuthenticated={isAuthenticated}/>
                             </MobileHeader>
+                            {!_.isEmpty(appErrors) &&
+                                <Container
+                                    className="app-status-messages"
+                                >
+                                    <div className="statusMsgWraper">
+                                    {_.map(appErrors, (err) => (
+                                        <StatusMessage
+                                            key={err.heading}
+                                            error={err}
+                                            dispatch={dispatch}
+                                            {...err}
+                                        />
+                                    ))}
+                                    </div>
+                                </Container>
+                            }
                         </Responsive>
-                        <Responsive minWidth={992}>
+                        <Responsive {...widthProp} minWidth={992}>
                             <Header isAuthenticated={isAuthenticated} onBoarding={onBoarding} isLogin={isLogin} showHeader={showHeader}/>
                                 {!_.isEmpty(appErrors) &&
                                     <Container
                                         className="app-status-messages"
                                     >
+                                        <div className="statusMsgWraper">
                                         {_.map(appErrors, (err) => (
                                             <StatusMessage
                                                 key={err.heading}
@@ -183,6 +207,7 @@ class Layout extends React.Component {
                                                 {...err}
                                             />
                                         ))}
+                                        </div>
                                     </Container>
                                 }
                                 <div style={{minHeight:'60vh'}}>
@@ -230,6 +255,7 @@ Layout.propTypes = {
 function mapStateToProps(state) {
     return {
         isAuthenticated: state.auth.isAuthenticated,
+        isMobile: state.app.isMobile,
         userInfo: state.user.info,
         appErrors: state.app.errors,
         currentUser: state.user.info,

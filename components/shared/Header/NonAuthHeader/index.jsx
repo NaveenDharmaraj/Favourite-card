@@ -24,13 +24,11 @@ const NonAuthHeader = () => (
             <Menu.Item as="a" href={`${CORP_DOMAIN}/how-it-works/`}>
                 How it works
             </Menu.Item>
-            <Menu.Item as="a" href={`${CORP_DOMAIN}/fees/`}>
-                Fees
-            </Menu.Item>
             <Dropdown item text="About">
                 <Dropdown.Menu>
                     <Dropdown.Item as="a" href={`${CORP_DOMAIN}/who-we-are/`} text="Who we are"/>
                     <Dropdown.Item as="a" href={`${CORP_DOMAIN}/foundation/`} text="Charitable Impact Foundation" />
+                    <Dropdown.Item as="a" href={`${CORP_DOMAIN}/fees/`} text="Fees" />
                     <Dropdown.Item as="a" href={`${CORP_DOMAIN}/careers/`} text="Careers" />
                     <Dropdown.Item as="a" href={`${CORP_DOMAIN}/press/`} text="Press" />
                 </Dropdown.Menu>
