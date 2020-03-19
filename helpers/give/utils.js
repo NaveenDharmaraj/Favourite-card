@@ -1205,6 +1205,7 @@ const getDonationMatchedData = (donationMatchId, donationAmount, donationMatchDa
     if (!_.isEmpty(donationMatchedData)) {
         const {
             attributes: {
+                automaticMatching,
                 companyName,
                 policyMax,
                 policyPercentage,
@@ -1219,6 +1220,7 @@ const getDonationMatchedData = (donationMatchId, donationAmount, donationMatchDa
             totalMatched,
         });
         const matchedData = {
+            automaticMatching,
             accountId: id,
             amount: donationMatchedAmount,
             displayName: companyName,

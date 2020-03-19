@@ -1,6 +1,7 @@
 import React, {
     useEffect,
 } from 'react';
+import _isEmpty from 'lodash/isEmpty';
 import {
     Container, Grid, Image, Header,
 } from 'semantic-ui-react';
@@ -25,9 +26,12 @@ const Success = (props) => {
     const {
         attributes: {
             displayName,
+            firstName,
+            lastName,
         },
     } = currentUser;
-    const firstParagraph = successData.type === 'donations' ? formatMessage('addMoneyFirstText', { name: displayName }) : formatMessage('allocationFirstText', { name: displayName });
+    const thankName = (_isEmpty(displayName)) ? displayName : `${firstName} ${lastName}`;
+    const firstParagraph = successData.type === 'donations' ? formatMessage('addMoneyFirstText', { name: thankName }) : formatMessage('allocationFirstText', { name: displayName });
     useEffect(() => {
         if (flowObject) {
             reInitNextStep(dispatch, flowObject);
