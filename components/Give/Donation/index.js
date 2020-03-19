@@ -64,28 +64,6 @@ import {
 // import '../../../static/less/giveFlows.less';
 
 const CreditCard = dynamic(() => import('../../shared/CreditCard'));
-
-const taxOptions = [
-    {
-      text: ReactHtmlParser('<span>Tammy Tuba</span><span>121-4567 W Georgia Street Vancouver, BC V5T G5K</span>'),
-      value: 'Jenny Hess',
-    },
-    {
-        text: ReactHtmlParser('<span>Sophia Yakisoba</span><span>121-4567 W Georgia Street Vancouver, BC V5T G5K</span>'),
-        value: '22222',
-    },
-    {
-        text: ReactHtmlParser('<span>Sophia Yakisoba</span><span>121-4567 W Georgia Street Vancouver, BC V5T G5K</span>'),
-        value: '1111',
-    },
-    {
-      as:'a',
-      key: '+ Add new tax receipt',
-      text: '+ Add new tax receipt',
-      value: '0',
-    },
-  ]
-
 const messageList = {
 	taxReceiptDefault: {
 		defaultMessage: 'Add a new tax receipt recipient',
@@ -99,26 +77,7 @@ const messageList = {
 	},
     }; 
 
-    const intializeFormData = {
-        attributes: {
-            addressOne: '',
-            addressTwo: '',
-            city: '',
-            country: countryOptions[0].value,
-            fullName: '',
-            postalCode: '',
-            province: '',
-        },
-        // relationships: {
-        //     accountHoldable: {
-        //         data: {
-        //             id: this.props.currentUser.id,
-        //             type: 'user',
-        //         },
-        //     },
-        // },
-        type: 'taxReceiptProfiles',
-    };
+    
 class Donation extends React.Component {
     constructor(props) {
     super(props);
@@ -157,6 +116,8 @@ class Donation extends React.Component {
             inValidNameOnCard: true,
             isCreditCardModalOpen: false,
             isTaxReceiptModelOpen: false,
+            receiptOptions: options,
+			selectedValue: taxSelected,
             validity: this.intializeValidations(),
             dropDownOptions: {},
         }
@@ -171,8 +132,30 @@ class Donation extends React.Component {
         this.getStripeCreditCard = this.getStripeCreditCard.bind(this);
         this.handleCCAddClose = this.handleCCAddClose.bind(this);
         this.handleModalOpen = this.handleModalOpen.bind(this);
+        this.handleAddButtonClick= this.handleAddButtonClick.bind(this);
         dismissAllUxCritialErrors(props.dispatch);
     }
+
+    intializeFormData = {
+        attributes: {
+            addressOne: '',
+            addressTwo: '',
+            city: '',
+            country: countryOptions[0].value,
+            fullName: '',
+            postalCode: '',
+            province: '',
+        },
+        relationships: {
+            accountHoldable: {
+                data: {
+                    id: this.props.currentUser.id,
+                    type: 'user',
+                },
+            },
+        },
+        type: 'taxReceiptProfiles',
+    };
 
     componentDidMount() {
         const {
@@ -182,8 +165,6 @@ class Donation extends React.Component {
         }
     } = this.props;
         dispatch(getDonationMatchAndPaymentInstruments(id, 'donations'));
-
-        console.log(this.props.flowObject);
     }
 
     populateOptions = (taxReceiptProfiles, selectedTaxReceiptProfile) => {
@@ -209,7 +190,7 @@ class Donation extends React.Component {
 			!!(selectedTaxReceiptProfile.id)) {
 			taxSelected = selectedTaxReceiptProfile.id;
 		} else if (_.isEmpty(selectedTaxReceiptProfile)) {
-			taxProfileData = _.merge({}, intializeFormData);
+			taxProfileData = _.merge({}, this.intializeFormData);
 		}
 		return {
 			options,
@@ -256,7 +237,7 @@ class Donation extends React.Component {
         let inputValue = value;
         // const isNumber = /^\d+(\.\d*)?$/;
         const isValidNumber = /^(?:[0-9]+,)*[0-9]+(?:\.[0-9]+)?$/;
-        giveData[name] = formatAmount(value);
+        // giveData[name] = formatAmount(value);
         if ((name === 'donationAmount') && !_.isEmpty(value) && value.match(isValidNumber)) {
             inputValue = formatAmount(value);
             inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
@@ -340,10 +321,10 @@ class Donation extends React.Component {
         if (giveData[name] !== newValue) {
             giveData[name] = newValue;
             giveData.userInteracted = true;
-            debugger
         switch (name) {
             case 'giveTo':
                 if(giveData.giveTo.type === 'companies') {
+
                     setDisableFlag = true;
                     const {dispatch} = this.props;
                     getCompanyPaymentAndTax(dispatch, Number(giveData.giveTo.id));
@@ -378,13 +359,25 @@ class Donation extends React.Component {
                     })
                 }  
             case 'taxReceipt' :
-                if(data.value == "0"){
+                debugger
+                if(data.value === 0){
                     this.setState({isTaxReceiptModelOpen: true});
                 }
-                debugger
+                else {
+                    this.setState({
+                        flowObject: {
+                            ...this.state.flowObject,
+                            selectedTaxReceiptProfile: this.getChangedProfileData(value),
+                        },
+                        selectedValue: value,
+                        // showFormData: (value <= 0),
+                    });
+                }
+                
                 break;                        
             default: break;
             }
+            
             this.setState({
                 disableButton: setDisableFlag,
                 flowObject: {
@@ -396,7 +389,7 @@ class Donation extends React.Component {
                     validity,
                 },
             });
-            console.log(this.state)
+            // debugger
         }
     }  
   
@@ -499,7 +492,7 @@ class Donation extends React.Component {
         } = data;
         const inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
         const formatedDonationAmount = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
-        debugger
+        
         this.setState({
             ...this.state,
             flowObject:{
@@ -514,7 +507,8 @@ class Donation extends React.Component {
     }
   
     renderingRecurringDonationFields(formData, formatMessage, language) {
-        return (
+        let recurringFields = (
+            <>
             <div className="mb-2">
                 <Form.Field>
                     <label>Frequency</label>
@@ -524,10 +518,10 @@ class Donation extends React.Component {
                         className="chimpRadio font-w-n"
                         label='Add once'
                         name='radioGroup'
-                        value='this'
+                        value='once'
                         checked
-                        checked={this.state.value === 'this'}
-                        onChange={this.handleFrequencyChange}
+                        checked={!this.state.flowObject.giveData.automaticDonation}
+                        onChange={this.handleInputChange}
                     />
                 </Form.Field>
                 <Form.Field>
@@ -535,13 +529,46 @@ class Donation extends React.Component {
                         className="chimpRadio font-w-n"
                         label='Add monthly'
                         name='radioGroup'
-                        value='that'
-                        checked={this.state.value === 'that'}
-                        onChange={this.handleFrequencyChange}
+                        value='monthly'
+                        checked={!!this.state.flowObject.giveData.automaticDonation}
+                        onChange={this.handleInputChange}
                     />
                 </Form.Field>
             </div>
+            {
+                ((this.state.donationFrequency === 'monthly') ? (
+                    <>
+                    <Form.Field>
+                    <Radio
+                        className="chimpRadio font-w-n"
+                        label='First of every Month'
+                        name='radioGroup'
+                        value='this'
+                        checked
+                        checked={this.state.value === 'this'}
+                        onChange={this.handleChange}
+                    />
+                    {/* <Button className="btn-basic-outline" type="button" size="small" value="100" onClick={this.handlePresetAmountClick} >1st of every month</Button> */}
+                </Form.Field>
+                <Form.Field>
+                    <Radio
+                        className="chimpRadio font-w-n"
+                        label='15th of every month'
+                        name='radioGroup'
+                        value='that'
+                        checked={this.state.value === 'that'}
+                        onChange={this.handleChange}
+                    />
+                    {/* <Button className="btn-basic-outline" type="button" size="small" value="100" onClick={this.handlePresetAmountClick} >15th of every month</Button> */}
+                </Form.Field>
+                </>
+                ): null)
+            }
+            </>
         );
+       
+
+        return recurringFields;
     }
   
     renderdonationMatchOptions(
@@ -675,18 +702,49 @@ class Donation extends React.Component {
               language,
           },
       } = this.props;
+    //   let options = {};
+    //   let taxSelected = {};
       const formatMessage = this.props.t;
       let doSetState = false;
-
       if(this.props.userAccountsFetched !== oldProps.userAccountsFetched){
             doSetState = true;
       }
       if(giveData.giveTo.type === 'companies' && !_.isEqual(this.props.companyDetails, oldProps.companyDetails)) {
           giveData.creditCard = getDefaultCreditCard(populatePaymentInstrument(this.props.companyDetails.companyPaymentInstrumentsData, formatMessage));
+        
+        console.log(this.props.companyDetails);
+        const {
+            options,
+            taxSelected,
+            taxProfileData,
+        } = this.populateOptions(this.props.companyDetails.taxReceiptProfiles, this.state.flowObject.selectedTaxReceiptProfile);
+        console.log(taxProfileData, 'taxprofile selected');
+        this.setState({
+            flowObject: {
+				...this.state.flowObject,
+				selectedTaxReceiptProfile: taxProfileData,
+			},
+            receiptOptions: options,
+            selectedValue: taxSelected,
+        })
           doSetState = true;
       }
       if(giveData.giveTo.type === 'user' && !_.isEqual(this.props.paymentInstrumentsData, oldProps.paymentInstrumentsData)) {
             giveData.creditCard = getDefaultCreditCard(populatePaymentInstrument(this.props.paymentInstrumentsData, formatMessage));
+
+            const {
+                options,
+                taxSelected,
+                taxProfileData,
+            } = this.populateOptions(this.props.companyDetails.taxReceiptProfiles, this.props.flowObject.selectedTaxReceiptProfile);
+            this.setState({
+                flowObject: {
+                    ...this.state.flowObject,
+                    selectedTaxReceiptProfile: taxProfileData,
+                },
+                receiptOptions: options,
+                selectedValue: taxSelected,
+            })
             doSetState = true;
         }
       if((!_.isEqual(this.props.companiesAccountsData, oldProps.companiesAccountsData)
@@ -738,6 +796,39 @@ class Donation extends React.Component {
       }
     }
 
+    getChangedProfileData(value) {
+
+		let {
+			taxReceiptProfiles
+		} = this.props
+		taxReceiptProfiles = !_.isEmpty(taxReceiptProfiles) ? taxReceiptProfiles : [this.props.flowObject.selectedTaxReceiptProfile];
+
+		const {
+			flowObject: {
+				selectedTaxReceiptProfile,
+			},
+		} = this.props;
+		let data = null;
+		if (value > 0) {
+			data = _.merge({}, _.find(taxReceiptProfiles, {
+				id: value
+			}));
+			if (
+				!_.isEmpty(selectedTaxReceiptProfile) &&
+				!_.isEmpty(selectedTaxReceiptProfile.id) &&
+				selectedTaxReceiptProfile.id === value
+			) {
+				data = selectedTaxReceiptProfile;
+			}
+		} else if (
+			!_.isEmpty(selectedTaxReceiptProfile) &&
+			!(selectedTaxReceiptProfile.id)
+		) {
+			data = selectedTaxReceiptProfile;
+		}
+		return (_.isEmpty(data)) ? _.merge({}, this.intializeFormData) : data;
+    }
+    
     /**
      * validateStripeElements
      * @param {boolean} inValidCardNumber credit card number
@@ -889,7 +980,7 @@ class Donation extends React.Component {
         //     },
         //     type: 'ADD_NEW_CREDIT_CARD_STATUS',
         // });
-        debugger
+        
         this.setState({ 
             ...this.state,    
             isCreditCardModalOpen: false
@@ -901,7 +992,10 @@ class Donation extends React.Component {
         });
     }
 
-    handleFrequencyChange = (e, { value }) => this.setState({ value })
+    handleFrequencyChange = (e, { value }) =>{
+        this.setState({ 
+            donationFrequency:value })
+    }
 
     render() {
         const {
@@ -920,6 +1014,8 @@ class Donation extends React.Component {
             isCreditCardModalOpen,
             isTaxReceiptModelOpen,
             validity,
+            receiptOptions,
+            selectedValue,
         } = this.state;
         const {
             donationMatchData,
@@ -930,11 +1026,11 @@ class Donation extends React.Component {
             },
             creditCardApiCall,
         } = this.props;
-        console.log(isTaxReceiptModelOpen);
-
+        console.log(this.state.selectedTaxReceiptProfile, 'selected tacx');
         const formatMessage = this.props.t;
         const donationMatchOptions = populateDonationMatch(donationMatchData, formatMessage, language);
         let paymentInstruments = paymentInstrumentsData;
+
         if(giveData.giveTo.type === 'companies'){
             paymentInstruments = !_.isEmpty(companyDetails.companyPaymentInstrumentsData) ? companyDetails.companyPaymentInstrumentsData : [];
         }
@@ -1042,40 +1138,40 @@ class Donation extends React.Component {
                     </Modal.Content>
                 </Modal>
             }
-
-            <Form.Field className="mb-2">
-                <div className="paymentMethodDropdown">
-                    <label htmlFor="">Tax receipt</label>
-                    {
-                        (taxOptions.length> 1) ? (
-                            <Dropdown
-                                button
-                                name="taxReceipt"
-                                icon='cardExpress'
-                                floating
-                                fluid
-                                selection
-                                options={taxOptions}
-                                onChange={this.handleInputChange}
-                                placeholder='Select Tax Receipt'
-                            />) : (null)
-                    }
-
-                    
-                    {
-                        isTaxReceiptModelOpen && (
-                            <ModalComponent
-                                name="Add new tax receipt recipient"
-                                isSelectPhotoModalOpen={isTaxReceiptModelOpen}
-                                dispatch={dispatch}
-                                taxReceipt={intializeFormData}
-                                handleModalOpen={this.handleModalOpen}
-                                action="add"
-                            />
-                        )
-                    }
-                </div>
-            </Form.Field>
+            {
+            (receiptOptions.length> 1) ? (
+                <Form.Field className="mb-2">
+                    <div className="paymentMethodDropdown">
+                        <label htmlFor="">Tax receipt</label>            
+                        <Dropdown
+                            button
+                            name="taxReceipt"
+                            icon='cardExpress'
+                            floating
+                            fluid
+                            selection
+                            options={receiptOptions}
+                            onChange={this.handleInputChange}
+                            placeholder='Select Tax Receipt'
+                            value={selectedValue}
+                        />
+                    </div>
+                </Form.Field>
+                ) : (null)
+            }            
+            {
+                isTaxReceiptModelOpen && (
+                    <ModalComponent
+                        name="Add new tax receipt recipient"
+                        isSelectPhotoModalOpen={isTaxReceiptModelOpen}
+                        dispatch={dispatch}
+                        taxReceipt={this.intializeFormData}
+                        handleModalOpen={this.handleModalOpen}
+                        action="add"
+                    />
+                )
+            }
+                
 
             <Note
                 fieldName="noteToSelf"
@@ -1112,8 +1208,15 @@ Donation.defaultProps = {
     companyDetails: [],
 };
 
-const  mapStateToProps = (state) => {
+const  mapStateToProps = (state, props) => {
+
     return {
+        userTaxReceiptProfiles: state.user.taxReceiptProfiles,
+        userTaxReceiptGetApiStatus:state.user.taxReceiptGetApiStatus,
+        userTaxReceiptEditApiCall: state.give.taxReceiptEditApiCall,
+        // companyTaxReceiptProfiles: state.give.companyData.taxReceiptProfiles,
+		// companyTaxReceiptGetApiStatus:state.give.companyData.taxReceiptGetApiStatus,
+		companyTaxReceiptEditApiCall: state.give.taxReceiptEditApiCall,
         companyDetails: state.give.companyData,
         userAccountsFetched: state.user.userAccountsFetched,
         currentUser: state.user.info,
