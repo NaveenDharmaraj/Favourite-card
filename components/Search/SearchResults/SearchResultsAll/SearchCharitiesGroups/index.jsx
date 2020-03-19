@@ -30,8 +30,9 @@ class SearchCharitiesGroups extends React.Component {
         } = this.props;
         if (!_isEmpty(charities) && charities.data && charities.data.length > 0) {
             charitiesComponent = _map(charities.data, (charity, i) => (
-                <Link route={`/charities/${charity.attributes.slug}`} passHref>
-                    <Grid.Column mobile={16} tablet={8} computer={4}>
+                <Grid.Column mobile={16} tablet={8} computer={4}>
+                    <Link route={`/charities/${charity.attributes.slug}`} passHref>
+
                         <Card as="a" key={i}>
                             <div className="searchCardTopImg" style={{backgroundImage:`url(${!_isEmpty(charity.attributes.avatar) ? charity.attributes.avatar : charityImg})`}}>
                             </div>
@@ -47,8 +48,8 @@ class SearchCharitiesGroups extends React.Component {
                                 </Card.Meta>
                             </Card.Content>
                         </Card>
-                    </Grid.Column>
-                </Link>
+                    </Link>
+                </Grid.Column>
 
             ));
             return charitiesComponent;
@@ -66,8 +67,8 @@ class SearchCharitiesGroups extends React.Component {
             groupsComponent = _map(groups.data, (group, i) => {
                 const route = (!_isEmpty(group.attributes) && group.attributes.is_campaign === 1) ? `/campaigns/${group.attributes.slug}` : `/groups/${group.attributes.slug}`;
                 return (
-                    <Link route={route} passHref>
-                        <Grid.Column mobile={16} tablet={8} computer={4}>
+                    <Grid.Column mobile={16} tablet={8} computer={4}>
+                        <Link route={route} passHref>
                             <Card as="a" key={i}>
                                 <div className="searchCardTopImg" style={{backgroundImage:`url(${!_isEmpty(group.attributes.avatar) ? group.attributes.avatar : groupImg})`}}>
                                 </div>
@@ -83,8 +84,8 @@ class SearchCharitiesGroups extends React.Component {
                                     </Card.Meta>
                                 </Card.Content>
                             </Card>
-                        </Grid.Column>
-                    </Link>
+                        </Link>
+                    </Grid.Column>
                 );
             });
             return groupsComponent;
