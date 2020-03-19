@@ -5,6 +5,7 @@ import {
 } from 'prop-types';
 import {
     Breadcrumb,
+    Grid,
 } from 'semantic-ui-react';
 import React from 'react';
 import _ from 'lodash';
@@ -60,13 +61,22 @@ const FlowBreadcrumbs = ({
     };
 
     return (
-        <Breadcrumb size="mini">
-            {_.reduce(
-                steps,
-                (breadcrumbs, step, i) => _.concat(breadcrumbs, makeBreadcrumb(step, i)),
-                [],
-            )}
-        </Breadcrumb>
+        <Grid centered verticalAlign="middle">
+            <Grid.Row>
+                    <Grid.Column mobile={16} tablet={14} computer={12}>
+                            <div className="flowBreadcrumb flowPadding">
+                                <Breadcrumb size="mini">
+                                    {_.reduce(
+                                        steps,
+                                        (breadcrumbs, step, i) => _.concat(breadcrumbs, makeBreadcrumb(step, i)),
+                                        [],
+                                    )}
+                                </Breadcrumb>
+                            </div>
+                    </Grid.Column>
+            </Grid.Row>
+    </Grid>
+       
     );
 };
 FlowBreadcrumbs.propTypes = {
