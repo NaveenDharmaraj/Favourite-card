@@ -173,20 +173,11 @@ class Review extends React.Component {
                     </div>
                     <div className="flowReview">
                         <Container>
-                            <Grid centered verticalAlign="middle">
-                                <Grid.Row>
-                                    <Grid.Column mobile={16} tablet={14} computer={12}>
-                                        <div className="flowBreadcrumb flowPadding">
-                                            <FlowBreadcrumbs
-                                                currentStep={currentStep}
-                                                formatMessage={formatMessage}
-                                                steps={flowSteps}
-                                                flowType={type}
-                                            />
-                                        </div>
-                                    </Grid.Column>
-                                </Grid.Row>
-                            </Grid>
+                            <FlowBreadcrumbs
+                                currentStep={currentStep}
+                                formatMessage={formatMessage}
+                                steps={flowSteps}
+                                flowType={type}/>       
                             {
                                 (!!showP2pList) && (
                                     <div className="p2p-top-table">
@@ -253,24 +244,22 @@ class Review extends React.Component {
                                 )
                             }
                             <Grid centered verticalAlign="middle">
+
                                 <Grid.Row>
                                     <Grid.Column mobile={16} tablet={14} computer={12}>
                                         <div className="GiveTable">
                                             <Table basic='very' className="no_shadow_tbl_mob">
                                                 <Table.Body>
                                                     {this.renderListing(listingData)}
-                                                    <Table.Row className="mob_brdr_btm_none mob_shadow_btm_none">
-                                                        <Table.Cell className="transaction-text">{refundMessage}</Table.Cell>
-                                                        <Table.Cell></Table.Cell>
-                                                        <Table.Cell textAlign='right'>
-                                                            <Link route={editUrl}>
-                                                                <Button
-                                                                    className="blue-bordr-btn-round-def w-120 mob_btn_edit"
-                                                                    disabled={(this.state.buttonClicked)}
-                                                                >
-                                                                    {formatMessage('reviewEdit')}
-                                                                </Button>
-                                                            </Link>
+                                                </Table.Body>
+                                            </Table>
+                                            <div className="mob_brdr_btm_none mob_shadow_btm_none btn_border">
+                                                <Grid>
+                                                    <Grid.Row>
+                                                    <Grid.Column mobile={16} tablet={8} computer={9} className="mobile_text">
+                                                    {refundMessage}
+                                                    </Grid.Column>
+                                                    <Grid.Column mobile={16} tablet={8} computer={7} className="mobile_btn">
                                                             <Button
                                                                 className="blue-btn-rounded-def w-120 mob_btn_edit width-full-btn"
                                                                 primary
@@ -280,10 +269,18 @@ class Review extends React.Component {
                                                                 disabled={(this.state.buttonClicked)}
                                                                 onClick={this.handleSubmit}
                                                             />
-                                                        </Table.Cell>
-                                                    </Table.Row>
-                                                </Table.Body>
-                                            </Table>
+                                                         <Link route={editUrl}>
+                                                                <Button
+                                                                    className="blue-bordr-btn-round-def w-120 mob_btn_edit "
+                                                                    disabled={(this.state.buttonClicked)}
+                                                                >
+                                                                    {formatMessage('reviewEdit')}
+                                                                </Button>
+                                                            </Link>
+                                                    </Grid.Column>
+                                                    </Grid.Row>
+                                                </Grid>
+                                            </div>
                                         </div>
                                     </Grid.Column>
                                 </Grid.Row>
