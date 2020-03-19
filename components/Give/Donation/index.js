@@ -321,6 +321,7 @@ class Donation extends React.Component {
         if (giveData[name] !== newValue) {
             giveData[name] = newValue;
             giveData.userInteracted = true;
+            debugger
         switch (name) {
             case 'giveTo':
                 if(giveData.giveTo.type === 'companies') {
@@ -345,7 +346,8 @@ class Donation extends React.Component {
                 validity = validateDonationForm(name, newValue, validity, giveData);
                 break;
             case 'automaticDonation':
-                const inputValue  = target.checked;
+                debugger
+                const inputValue  = value;
                 giveData.automaticDonation = inputValue;
                 giveData.giftType.value = (inputValue) ? 1 : 0;
                 break;
@@ -517,9 +519,8 @@ class Donation extends React.Component {
                     <Radio
                         className="chimpRadio font-w-n"
                         label='Add once'
-                        name='radioGroup'
-                        value='once'
-                        checked
+                        name='automaticDonation'
+                        value={false}
                         checked={!this.state.flowObject.giveData.automaticDonation}
                         onChange={this.handleInputChange}
                     />
@@ -528,41 +529,41 @@ class Donation extends React.Component {
                     <Radio
                         className="chimpRadio font-w-n"
                         label='Add monthly'
-                        name='radioGroup'
-                        value='monthly'
+                        name='automaticDonation'
+                        value={true}
                         checked={!!this.state.flowObject.giveData.automaticDonation}
                         onChange={this.handleInputChange}
                     />
                 </Form.Field>
             </div>
             {
-                ((this.state.donationFrequency === 'monthly') ? (
+                ((!!this.state.flowObject.giveData.automaticDonation) && (
                     <>
-                    <Form.Field>
-                    <Radio
-                        className="chimpRadio font-w-n"
-                        label='First of every Month'
-                        name='radioGroup'
-                        value='this'
-                        checked
-                        checked={this.state.value === 'this'}
-                        onChange={this.handleChange}
-                    />
-                    {/* <Button className="btn-basic-outline" type="button" size="small" value="100" onClick={this.handlePresetAmountClick} >1st of every month</Button> */}
-                </Form.Field>
-                <Form.Field>
-                    <Radio
-                        className="chimpRadio font-w-n"
-                        label='15th of every month'
-                        name='radioGroup'
-                        value='that'
-                        checked={this.state.value === 'that'}
-                        onChange={this.handleChange}
-                    />
-                    {/* <Button className="btn-basic-outline" type="button" size="small" value="100" onClick={this.handlePresetAmountClick} >15th of every month</Button> */}
-                </Form.Field>
-                </>
-                ): null)
+                        <Form.Field>
+                            <Radio
+                                className="chimpRadio font-w-n"
+                                label='First of every Month'
+                                name='automaticDonation'
+                                value='this'
+                                checked
+                                checked={this.state.value === 'this'}
+                                onChange={this.handleInputChange}
+                            />
+                        {/* <Button className="btn-basic-outline" type="button" size="small" value="100" onClick={this.handlePresetAmountClick} >1st of every month</Button> */}
+                        </Form.Field>
+                        <Form.Field>
+                            <Radio
+                                className="chimpRadio font-w-n"
+                                label='15th of every month'
+                                name='radioGroup'
+                                value='that'
+                                checked={this.state.value === 'that'}
+                                onChange={this.handleChange}
+                            />
+                            {/* <Button className="btn-basic-outline" type="button" size="small" value="100" onClick={this.handlePresetAmountClick} >15th of every month</Button> */}
+                        </Form.Field>
+                    </>
+                ))
             }
             </>
         );
