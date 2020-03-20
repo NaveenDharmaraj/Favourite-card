@@ -18,10 +18,11 @@ import successImg from '../../../static/images/dashboard_gift.png';
 import AddMoneySuccess from './AddMoneySuccess';
 import CharitySuccess from './CharitySuccess';
 import P2PSuccess from './P2PSuccess';
+import FlowBreadcrumbs from '../FlowBreadcrumbs';
 
 const Success = (props) => {
     const {
-        currentUser, dispatch, donationMatchData, flowObject, successData, t: formatMessage,
+        currentStep, currentUser, dispatch, donationMatchData, flowObject, flowSteps, successData, t: formatMessage,
     } = props;
     const {
         attributes: {
@@ -68,6 +69,12 @@ const Success = (props) => {
     return (
         <div className="flowSuccess">
             <Container>
+                <FlowBreadcrumbs
+                    currentStep={currentStep}
+                    formatMessage={formatMessage}
+                    steps={flowSteps}
+                    flowType={flowObject.type}
+                />
                 <Grid centered verticalAlign="middle">
                     <Grid.Row>
                         <Grid.Column mobile={16} tablet={14} computer={12}>

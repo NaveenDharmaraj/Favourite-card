@@ -52,9 +52,11 @@ const renderChildWithProps = (props, stepIndex, flowSteps) => {
             break;
         case "success" :
             if(!_.isEmpty(props.flowObject)){
-                return (<Success 
+                return (<Success
+                    currentStep={props.step}
                     dispatch={props.dispatch}
                     flowObject={props.flowObject}
+                    flowSteps={flowSteps}
                 />);
             }
             else if (typeof window !== 'undefined'){
