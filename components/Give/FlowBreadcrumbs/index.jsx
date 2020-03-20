@@ -5,6 +5,7 @@ import {
 } from 'prop-types';
 import {
     Breadcrumb,
+    Grid,
 } from 'semantic-ui-react';
 import React from 'react';
 import _ from 'lodash';
@@ -13,15 +14,21 @@ import _ from 'lodash';
  * Wrapper/Generator for a flow's breadcrumbs (ex for making an allocation)
  * @param  {string}    props.currentStep - The route object for the current step.
  * @param  {array}     props.steps - An ordered list of the flow's steps.
- * @param  {array}   props.breadcrumbArray = True is flow is donation
+ * @param  {string}   props.flowStep = Type of the flow
  * @return {JSX} An SUIR BreadcrumbSection component with Breadcrumbs for each
  * step in the flow and a BreadcrumbDivider between each.
  */
 const FlowBreadcrumbs = ({
     currentStep,
+    formatMessage,
     steps,
-    breadcrumbArray,
+    flowType,
 }) => {
+    const breadcrumbArray = [
+        (flowType === 'donations') ? formatMessage('giveCommon:breadCrumb.new') : formatMessage('giveCommon:breadCrumb.give'),
+        formatMessage('giveCommon:breadCrumb.review'),
+        formatMessage('giveCommon:breadCrumb.success'),
+    ]
     const currentStepIndex = _.indexOf(steps, currentStep);
     const stepsCount = steps.length;
     const makeBreadcrumb = (step, i) => {
@@ -44,8 +51,7 @@ const FlowBreadcrumbs = ({
                 ? [
                     breadcrumb,
                     (<Breadcrumb.Divider
-                        color="black"
-                        icon="caret right"
+                        icon='right chevron'
                         key={i}
                     />),
                 ]
@@ -55,13 +61,22 @@ const FlowBreadcrumbs = ({
     };
 
     return (
-        <Breadcrumb size="mini">
-            {_.reduce(
-                steps,
-                (breadcrumbs, step, i) => _.concat(breadcrumbs, makeBreadcrumb(step, i)),
-                [],
-            )}
-        </Breadcrumb>
+        <Grid centered verticalAlign="middle">
+            <Grid.Row>
+                    <Grid.Column mobile={16} tablet={14} computer={12}>
+                            <div className="flowBreadcrumb flowPadding">
+                                <Breadcrumb size="mini">
+                                    {_.reduce(
+                                        steps,
+                                        (breadcrumbs, step, i) => _.concat(breadcrumbs, makeBreadcrumb(step, i)),
+                                        [],
+                                    )}
+                                </Breadcrumb>
+                            </div>
+                    </Grid.Column>
+            </Grid.Row>
+    </Grid>
+       
     );
 };
 FlowBreadcrumbs.propTypes = {

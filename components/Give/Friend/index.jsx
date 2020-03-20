@@ -127,6 +127,7 @@ class Friend extends React.Component {
         if(!_isEmpty(userFriendEmail) && this.state.flowObject.giveData.recipients.length === 0) {
             this.state.flowObject.giveData.recipients = [userFriendEmail.email];
             this.state.flowObject.giveData.recipientName = userFriendEmail.name;
+            this.state.flowObject.giveData.recipientImage = userFriendEmail.image;
             this.state.flowObject.giveData.emailMasked = true;
             dispatch({
                 payload: {
