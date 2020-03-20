@@ -8,6 +8,7 @@ import TagManager from 'react-gtm-module';
 
 import withReduxStore from '../store/with-redux-store';
 import { appWithTranslation } from '../i18n';
+import ErrorBoundary from '../components/shared/ErrorBoundary';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -37,7 +38,9 @@ class MainApp extends App {
         return (
             <Container>
                 <Provider store={reduxStore}>
-                    <Component {...pageProps} />
+                    <ErrorBoundary>
+                        <Component {...pageProps} />
+                    </ErrorBoundary>
                 </Provider>
             </Container>
         );

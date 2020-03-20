@@ -11,7 +11,10 @@ import _isEmpty from 'lodash/isEmpty';
 import { withTranslation } from '../../../../i18n';
 import '../../../../static/less/giveFlows.less';
 import {
-    getDonationMatchedData, formatCurrency, formatAmount,
+    getDonationMatchedData,
+    formatCurrency,
+    formatAmount,
+    setDateForRecurring,
 } from '../../../../helpers/give/utils';
 import { Link } from '../../../../routes';
 
@@ -35,28 +38,67 @@ const AddMoneySuccess = (props) => {
     } = successData;
     let donationMatchedData = null;
     let displayAmount = Number(donationAmount);
-    // donationmatch value exists it get added to displayamount
-    // if (!_isEmpty(donationMatch) && donationMatch.value > 0) {
-    //     donationMatchedData = getDonationMatchedData(
-    //         donationMatch.id,
-    //         donationAmount,
-    //         donationMatchData,
-    //     );
-    //     displayAmount += Number(donationMatchedData.amount);
-    // }
     const amount = formatCurrency(formatAmount(displayAmount), language, currency);
-    let secondParagraph = formatMessage('addMoneySecondText', { amount });
-    const thirdParagh = giftType && giftType.value === 0 ? formatMessage('addMoneyThirdText') : null;
+    let secondParagraph = null;
+    let thirdParagh = null;
+    let taxButtonText = null;
     let taxProfileLink = '/user/tax-receipts';
-    const taxButtonText = giftType && giftType.value === 0 ? formatMessage('addMoneyTaxButtonText') : null;
+    if(giftType && giftType.value === 0) {
+        if (giveTo.type === 'companies') {
+            secondParagraph = formatMessage('addMoneySecondTextCompany', {
+                amount,
+                companyName: giveTo.name,
+            });
+            taxButtonText = formatMessage('addMoneyCompanyTaxButtonText');
+        } else {
+            secondParagraph = formatMessage('addMoneySecondText', { amount });
+            thirdParagh = formatMessage('addMoneyThirdText');
+            taxButtonText = formatMessage('addMoneyTaxButtonText');
+        }
+    } else if (giftType && giftType.value !== 0){
+        const startsOn = setDateForRecurring(giftType.value, formatMessage, language);
+        secondParagraph = (giveTo.type === 'companies')
+            ? formatMessage('addMoneyRecurringCompanySecondText', {
+                amount,
+                companyName: giveTo.name,
+                startsOn,
+            })
+            : formatMessage('addMoneyRecurringSecondText', {
+                amount,
+                startsOn,
+            });
+    }
+
+    if (!_isEmpty(donationMatch) && donationMatch.value > 0) {
+        donationMatchedData = getDonationMatchedData(
+            donationMatch.id,
+            donationAmount,
+            donationMatchData,
+        );
+        if(giftType && giftType.value === 0) {
+            displayAmount += Number(donationMatchedData.amount);
+            const matchedAmount = formatCurrency(formatAmount(donationMatchedData.amount), language, currency);
+            const matchedText = (donationMatchedData.automaticMatching)
+                ? formatMessage('addMoneyDonationMatchedAutoText', {
+                    matchedAmount,
+                    donationCompany: donationMatchedData.displayName,
+                    totalAmount: formatCurrency(formatAmount(displayAmount), language, currency),
+                })
+                : formatMessage('addMoneyDonationMatchedManualText', {
+                    matchedAmount,
+                    donationCompany: donationMatchedData.displayName,
+                });
+            secondParagraph += matchedText;
+        } else if (giftType && giftType.value !== 0){
+            thirdParagh = formatMessage('addMoneyRecurringThirdText', {
+                donationCompany: donationMatchedData.displayName,
+            });
+        }
+    }
     let dashboardLink = '/dashboard';
     let dashBoardButtonText = formatMessage('goToYourDashboard');
 
     if (giveTo.type === 'companies') {
-        secondParagraph = formatMessage('addMoneySecondTextCompany', {
-            amount,
-            companyName: giveTo.name,
-        });
         taxProfileLink = `/companies/${giveTo.slug}/tax-receipts`;
         dashboardLink = `/companies/${giveTo.slug}`;
         dashBoardButtonText = formatMessage('goToCompanyDashboard', { companyName: giveTo.name });

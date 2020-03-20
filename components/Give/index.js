@@ -9,9 +9,9 @@ import {
     Container,
 } from 'semantic-ui-react';
 import {actionTypes} from '../../actions/give';
-import FlowBreadcrumbs from './FlowBreadcrumbs';
 import { withTranslation } from '../../i18n';
 import {Router} from '../../routes';
+import '../../static/less/giveFlows.less';
 // const TaxReceipt = dynamic(() => import('./TaxReceipt'));
 const Review = dynamic(() => import('./Review'));
 const Success = dynamic(() => import('../Give/Success/index'));
@@ -38,6 +38,7 @@ const renderChildWithProps = (props, stepIndex, flowSteps) => {
         case "review" :
             if(!_.isEmpty(props.flowObject)){
                 return (<Review
+                    currentStep={props.step}
                     dispatch={props.dispatch}
                     flowObject={props.flowObject}
                     flowSteps={flowSteps}
@@ -105,48 +106,8 @@ class Give extends React.Component {
     }
 
     render() {
-        const {
-            baseUrl,
-            step,
-        } = this.props;
-        const {
-            flowSteps,
-        } = this.state;
-        const formatMessage = this.props.t;
-        const breadcrumbArray = [
-            (baseUrl === '/donations') ? formatMessage('breadCrumb.new') : formatMessage('breadCrumb.give'),
-            formatMessage('breadCrumb.review'),
-            formatMessage('breadCrumb.success'),
-        ]
         return (
             <Fragment>
-                    <div className="flowReviewbanner">
-                        <Container>
-                            <div className="flowReviewbannerText">
-                                {(step !== 'error') &&
-                                    <Header as='h2'>
-                                        {breadcrumbArray[_.indexOf(flowSteps, step)]}
-                                    </Header>
-                                }
-                            </div>
-                        </Container>
-                    </div>
-                    <Container>
-                        <Grid centered verticalAlign="middle">
-                            <Grid.Row>
-                                <Grid.Column  mobile={16} tablet={14} computer={12}>
-                                    <div className="flowBreadcrumb flowPadding">
-                                        <FlowBreadcrumbs
-                                            currentStep={step}
-                                            formatMessage={formatMessage}
-                                            steps={flowSteps}
-                                            breadcrumbArray={breadcrumbArray}
-                                        />
-                                    </div>
-                                </Grid.Column>
-                            </Grid.Row>
-                        </Grid>
-                    </Container>
                 {renderChildWithProps(this.props, this.state.stepIndex, this.state.flowSteps)}
             </Fragment>
         );

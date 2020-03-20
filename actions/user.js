@@ -5,6 +5,7 @@ import _ from 'lodash';
 import coreApi from '../services/coreApi';
 import authRorApi from '../services/authRorApi';
 import graphApi from '../services/graphApi';
+import securityApi from '../services/securityApi';
 import wpApi from '../services/wpApi';
 import { Router } from '../routes';
 import {
@@ -809,20 +810,14 @@ export const saveUserCauses = (dispatch, userId, userCauses, discoverValue) => {
     };
 
     const bodyData = {
-        data: {
-            attributes: {
-                preferences: {
-                    discoverability: discoverValue,
-                },
-            },
-            id: Number(userId),
-            type: 'users',
-        },
+        is_searchable: discoverValue,
+        skipCauseSelection: true,
+        user_id: Number(userId),
     };
 
     return graphApi.patch(`/user/updatecauses`, bodyDataCauses).then(
         () => {
-            coreApi.patch(`/users/${userId}`, bodyData).then(
+            securityApi.patch(`update/user`, bodyData).then(
                 () => {
                     getUserFund(dispatch, userId).then(() => {
                         Router.pushRoute('/dashboard');

@@ -58,11 +58,11 @@ class FriendsList extends React.Component {
         }
     }
 
-    giveButtonClick(email, name) {
+    giveButtonClick(email, name, image) {
         const {
             dispatch,
         } = this.props;
-        storeEmailIdToGive(dispatch, email, name);
+        storeEmailIdToGive(dispatch, email, name, image);
     }
 
     // eslint-disable-next-line class-methods-use-this
@@ -122,7 +122,7 @@ class FriendsList extends React.Component {
                                 <Card.Header>{name}</Card.Header>
                                 <Card.Description>
                                     <Link className="lnkChange" route="/give/to/friend/new" passHref>
-                                        <Button className="give-frnds-btn" onClick={() => this.giveButtonClick(email, name)}>Give</Button>
+                                        <Button className="give-frnds-btn" onClick={() => this.giveButtonClick(email, name, data.attributes.avatar)}>Give</Button>
                                     </Link>
                                 </Card.Description>
                             </Card.Content>
