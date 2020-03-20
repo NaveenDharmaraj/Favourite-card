@@ -7,12 +7,14 @@ import getConfig from 'next/config';
 import _isEmpty from 'lodash/isEmpty';
 import _merge from 'lodash/merge';
 import {
+    Container,
     Button,
     Checkbox,
     Divider,
     Dropdown,
     Form,
     Grid,
+    Header,
     Icon,
     Input,
     Modal,
@@ -27,6 +29,7 @@ import ReactHtmlParser from 'react-html-parser';
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 import Note from '../../shared/Note';
 import DropDownAccountOptions from '../../shared/DropDownAccountOptions';
+import FlowBreadcrumbs from '../FlowBreadcrumbs';
 import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
 import { proceed, getCompanyPaymentAndTax } from '../../../actions/give';
 import { withTranslation } from '../../../i18n';
@@ -325,6 +328,7 @@ class Donation extends React.Component {
             giveData.userInteracted = true;
         switch (name) {
             case 'giveTo':
+                debugger
                 if(giveData.giveTo.type === 'companies') {
 
                     setDisableFlag = true;
@@ -336,6 +340,20 @@ class Donation extends React.Component {
                     giveData.donationMatch = {
                         value: null,
                     };
+                    const {
+                        options,
+                        taxSelected,
+                        taxProfileData,
+                    } = this.populateOptions(this.props.companyDetails.taxReceiptProfiles, this.state.flowObject.selectedTaxReceiptProfile);
+                    this.setState({
+                        flowObject: {
+                            ...this.state.flowObject,
+                            selectedTaxReceiptProfile: taxProfileData,
+                        },
+                        receiptOptions: options,
+                        selectedValue: taxSelected,
+                    })
+
                 } else {
                         giveData.creditCard = getDefaultCreditCard(populatePaymentInstrument(this.props.paymentInstrumentsData, formatMessage));
                         const [
@@ -343,6 +361,19 @@ class Donation extends React.Component {
                         ] = populateDonationMatch(this.props.donationMatchData,formatMessage, language);
                         giveData.donationMatch = defaultMatch;
                         setDisableFlag = false;
+                        const {
+                            options,
+                            taxSelected,
+                            taxProfileData,
+                        } = this.populateOptions(this.props.userTaxReceiptProfiles, this.props.flowObject.selectedTaxReceiptProfile);
+                        this.setState({
+                            flowObject: {
+                                ...this.state.flowObject,
+                                selectedTaxReceiptProfile: taxProfileData,
+                            },
+                            receiptOptions: options,
+                            selectedValue: taxSelected,
+                        })
                 }
                 validity = validateDonationForm(name, newValue, validity, giveData);
                 break;
@@ -378,7 +409,6 @@ class Donation extends React.Component {
                 break;                        
             default: break;
             }
-            
             this.setState({
                 disableButton: setDisableFlag,
                 flowObject: {
@@ -729,14 +759,16 @@ class Donation extends React.Component {
         })
           doSetState = true;
       }
+    //   debugger
       if(giveData.giveTo.type === 'user' && !_.isEqual(this.props.paymentInstrumentsData, oldProps.paymentInstrumentsData)) {
+
             giveData.creditCard = getDefaultCreditCard(populatePaymentInstrument(this.props.paymentInstrumentsData, formatMessage));
 
             const {
                 options,
                 taxSelected,
                 taxProfileData,
-            } = this.populateOptions(this.props.companyDetails.taxReceiptProfiles, this.props.flowObject.selectedTaxReceiptProfile);
+            } = this.populateOptions(this.props.userTaxReceiptProfiles, this.props.flowObject.selectedTaxReceiptProfile);
             this.setState({
                 flowObject: {
                     ...this.state.flowObject,
@@ -1027,7 +1059,9 @@ class Donation extends React.Component {
             selectedValue,
         } = this.state;
         const {
+            currentStep,
             donationMatchData,
+            flowSteps,
             paymentInstrumentsData,
             companyDetails,
             i18n:{
@@ -1047,175 +1081,196 @@ class Donation extends React.Component {
         const paymentInstrumenOptions  = populatePaymentInstrument(paymentInstruments, formatMessage);
         return (
         <Fragment>
-            <div className="flowFirst">
-
-                <Form onSubmit={this.handleSubmit}>
-                    <Grid>
-                        <Grid.Row>
-                            <Grid.Column mobile={16} tablet={12} computer={10}>
-                                { this.renderDonationAmountField(giveData.formatedDonationAmount, validity, formatMessage) }
-                                
-                                <DropDownAccountOptions
-                                    formatMessage={formatMessage}
-                                    type={type}
-                                    validity= {validity.isValidAddingToSource}
-                                    selectedValue={this.state.flowObject.giveData.giveTo.value}
-                                    name="giveTo"
-                                    parentInputChange={this.handleInputChange}
-                                    parentOnBlurChange={this.handleInputOnBlur}
-                                />
-                                { this.renderingRecurringDonationFields(giveData, formatMessage, language) }
-                                
-                                {/* if no credit card added */}
-                                {/* <Form.Field className="mb-2">
-                                    <label>Payment method</label>
-                                    <Modal size="tiny" dimmer="inverted" className="chimp-modal" closeIcon
-                                        trigger={<div className="addNewCardInput">+ Add new card</div>}>
-                                        <Modal.Header>Add new card</Modal.Header>
-                                        <Modal.Content>
-                                            <Modal.Description className="font-s-16">
-                                                <Form>
-                                                    <Form.Field>
-                                                        <Checkbox className="font-w-n tickCheckBox"
-                                                            label='Set as primary card' defaultChecked />
-                                                    </Form.Field>
-                                                </Form>
-                                            </Modal.Description>
-                                            <div className="btn-wraper pt-3 text-right">
-                                                <Button disabled
-                                                    className="blue-btn-rounded-def addCreditCardBtn">
-                                                    Done
-                                                </Button>
-                                            </div>
-                                        </Modal.Content>
-                                    </Modal>
-                                </Form.Field> */}
-                                {/* if no credit card added */}
-
-                                {
-                                    ((!_isEmpty(paymentInstrumenOptions) && parseFloat(giveData.donationAmount.replace(/,/g, ''))> 0) &&
-                                        this.renderpaymentInstrumentOptions(giveData, paymentInstrumenOptions, formatMessage)
-                                    )
-                                }
-                                {
-                                    <Modal
-                                        size="tiny"
-                                        dimmer="inverted"
-                                        className="chimp-modal"
-                                        closeIcon
-                                        open={isCreditCardModalOpen}
-                                        onClose={this.handleCCAddClose}
-                                            >
-                                        <Modal.Header>Add new card</Modal.Header>
-                                        <Modal.Content>
-                                            <Modal.Description className="font-s-16">
-                                                <Form>
-                                                    <StripeProvider apiKey={STRIPE_KEY}>
-                                                        <Elements>
-                                                            <CreditCard
-                                                                creditCardElement={this.getStripeCreditCard}
-                                                                creditCardValidate={inValidCardNumber}
-                                                                creditCardExpiryValidate={inValidExpirationDate}
-                                                                creditCardNameValidte={inValidNameOnCard}
-                                                                creditCardNameValueValidate={inValidCardNameValue}
-                                                                creditCardCvvValidate={inValidCvv}
-                                                                validateCCNo={this.validateStripeCreditCardNo}
-                                                                validateExpiraton={this.validateStripeExpirationDate}
-                                                                validateCvv={this.validateCreditCardCvv}
-                                                                validateCardName={this.validateCreditCardName}
-                                                                formatMessage = {formatMessage}
-                                                                // eslint-disable-next-line no-return-assign
-                                                                onRef={(ref) => (this.CreditCard = ref)}
-                                                            />
-                                                        </Elements>
-                                                    </StripeProvider>
-                                                    <Form.Field
-                                                        // checked={isDefaultCard}
-                                                        control={Checkbox}
-                                                        className="ui checkbox chkMarginBtm checkboxToRadio"
-                                                        id="isDefaultCard"
-                                                        label="Set as primary card"
-                                                        name="isDefaultCard"
-                                                        onChange={this.handleSetPrimaryClick}
-                                                        // readOnly={isDefaultCardReadOnly}
-                                                    />
-                                                </Form>
-                                            </Modal.Description>
-                                            <div className="btn-wraper pt-3 text-right">
-                                                <Button
-                                                    className="blue-btn-rounded-def sizeBig w-180"
-                                                    onClick={this.handleAddButtonClick}
-                                                    disabled={buttonClicked}
-                                                >
-                                                    Add
-                                                </Button>
-                                            </div>
-                                        </Modal.Content>
-                                    </Modal>
-                                }
-                                {
-                                (receiptOptions.length> 1) ? (
-                                    <Form.Field className="mb-2">
-                                        <div className="paymentMethodDropdown">
-                                            <label htmlFor="">Tax receipt</label>            
-                                            <Dropdown
-                                                button
-                                                name="taxReceipt"
-                                                icon='cardExpress'
-                                                floating
-                                                fluid
-                                                selection
-                                                options={receiptOptions}
-                                                onChange={this.handleInputChange}
-                                                placeholder='Select Tax Receipt'
-                                                value={selectedValue}
+            <div className="flowReviewbanner">
+                    <Container>
+                        <div className="flowReviewbannerText">
+                            <Header as='h2'>Add money</Header>
+                        </div>
+                    </Container>
+                </div>
+                <div className="flowReview">
+                    <Container>
+                        <FlowBreadcrumbs
+                            currentStep={currentStep}
+                            formatMessage={formatMessage}
+                            steps={flowSteps}
+                            flowType={type}/> 
+                        <div className="flowFirst">
+                            <Form onSubmit={this.handleSubmit}>
+                                <Grid>
+                                    <Grid.Row>
+                                        <Grid.Column mobile={16} tablet={12} computer={10}>
+                                            { this.renderDonationAmountField(giveData.formatedDonationAmount, validity, formatMessage) }
+                                            
+                                            <DropDownAccountOptions
+                                                formatMessage={formatMessage}
+                                                type={type}
+                                                validity= {validity.isValidAddingToSource}
+                                                selectedValue={this.state.flowObject.giveData.giveTo.value}
+                                                name="giveTo"
+                                                parentInputChange={this.handleInputChange}
+                                                parentOnBlurChange={this.handleInputOnBlur}
                                             />
-                                        </div>
-                                    </Form.Field>
-                                    ) : (null)
-                                }            
-                                {
-                                    isTaxReceiptModelOpen && (
-                                        <ModalComponent
-                                            name="Add new tax receipt recipient"
-                                            isSelectPhotoModalOpen={isTaxReceiptModelOpen}
-                                            dispatch={dispatch}
-                                            taxReceipt={this.intializeFormData}
-                                            handleModalOpen={this.handleModalOpen}
-                                            action="add"
-                                        />
-                                    )
-                                }
-                                    
+                                            { this.renderingRecurringDonationFields(giveData, formatMessage, language) }
+                                            
+                                            {/* if no credit card added */}
+                                            {/* <Form.Field className="mb-2">
+                                                <label>Payment method</label>
+                                                <Modal size="tiny" dimmer="inverted" className="chimp-modal" closeIcon
+                                                    trigger={<div className="addNewCardInput">+ Add new card</div>}>
+                                                    <Modal.Header>Add new card</Modal.Header>
+                                                    <Modal.Content>
+                                                        <Modal.Description className="font-s-16">
+                                                            <Form>
+                                                                <Form.Field>
+                                                                    <Checkbox className="font-w-n tickCheckBox"
+                                                                        label='Set as primary card' defaultChecked />
+                                                                </Form.Field>
+                                                            </Form>
+                                                        </Modal.Description>
+                                                        <div className="btn-wraper pt-3 text-right">
+                                                            <Button disabled
+                                                                className="blue-btn-rounded-def addCreditCardBtn">
+                                                                Done
+                                                            </Button>
+                                                        </div>
+                                                    </Modal.Content>
+                                                </Modal>
+                                            </Form.Field> */}
+                                            {
+                                                ((_isEmpty(paymentInstrumenOptions) && giveData.giveTo.value > 0) || giveData.creditCard.value === 0) && (
+                                                    <div className="addNewCardInput">+ Add new card</div>
+                                                    
+                                                )
+                                            }
+                                            {/* if no credit card added */}
 
-                                <Note
-                                    fieldName="noteToSelf"
-                                    handleOnInputChange={this.handleInputChange}
-                                    handleOnInputBlur={this.handleInputOnBlur}
-                                    formatMessage ={formatMessage}
-                                    labelText={formatMessage('noteToSelfLabel')}
-                                    popupText={formatMessage('donorNoteToSelfPopup')}
-                                    placeholderText={formatMessage('noteToSelfPlaceHolder')}
-                                    text={giveData.noteToSelf}
-                                />
-                                { this.renderdonationMatchOptions(giveData, donationMatchOptions, formatMessage, donationMatchData, language, currency)}
+                                            {
+                                                ((!_isEmpty(paymentInstrumenOptions) && parseFloat(giveData.donationAmount.replace(/,/g, ''))> 0) &&
+                                                    this.renderpaymentInstrumentOptions(giveData, paymentInstrumenOptions, formatMessage)
+                                                )
+                                            }
+                                            {
+                                                <Modal
+                                                    size="tiny"
+                                                    dimmer="inverted"
+                                                    className="chimp-modal"
+                                                    closeIcon
+                                                    open={isCreditCardModalOpen}
+                                                    onClose={this.handleCCAddClose}
+                                                        >
+                                                    <Modal.Header>Add new card</Modal.Header>
+                                                    <Modal.Content>
+                                                        <Modal.Description className="font-s-16">
+                                                            <Form>
+                                                                <StripeProvider apiKey={STRIPE_KEY}>
+                                                                    <Elements>
+                                                                        <CreditCard
+                                                                            creditCardElement={this.getStripeCreditCard}
+                                                                            creditCardValidate={inValidCardNumber}
+                                                                            creditCardExpiryValidate={inValidExpirationDate}
+                                                                            creditCardNameValidte={inValidNameOnCard}
+                                                                            creditCardNameValueValidate={inValidCardNameValue}
+                                                                            creditCardCvvValidate={inValidCvv}
+                                                                            validateCCNo={this.validateStripeCreditCardNo}
+                                                                            validateExpiraton={this.validateStripeExpirationDate}
+                                                                            validateCvv={this.validateCreditCardCvv}
+                                                                            validateCardName={this.validateCreditCardName}
+                                                                            formatMessage = {formatMessage}
+                                                                            // eslint-disable-next-line no-return-assign
+                                                                            onRef={(ref) => (this.CreditCard = ref)}
+                                                                        />
+                                                                    </Elements>
+                                                                </StripeProvider>
+                                                                <Form.Field
+                                                                    // checked={isDefaultCard}
+                                                                    control={Checkbox}
+                                                                    className="ui checkbox chkMarginBtm checkboxToRadio"
+                                                                    id="isDefaultCard"
+                                                                    label="Set as primary card"
+                                                                    name="isDefaultCard"
+                                                                    onChange={this.handleSetPrimaryClick}
+                                                                    // readOnly={isDefaultCardReadOnly}
+                                                                />
+                                                            </Form>
+                                                        </Modal.Description>
+                                                        <div className="btn-wraper pt-3 text-right">
+                                                            <Button
+                                                                className="blue-btn-rounded-def sizeBig w-180"
+                                                                onClick={this.handleAddButtonClick}
+                                                                disabled={buttonClicked}
+                                                            >
+                                                                Add
+                                                            </Button>
+                                                        </div>
+                                                    </Modal.Content>
+                                                </Modal>
+                                            }
+                                            {
+                                            (receiptOptions.length> 1) ? (
+                                                <Form.Field className="mb-2">
+                                                    <div className="paymentMethodDropdown">
+                                                        <label htmlFor="">Tax receipt</label>            
+                                                        <Dropdown
+                                                            button
+                                                            name="taxReceipt"
+                                                            icon='cardExpress'
+                                                            floating
+                                                            fluid
+                                                            selection
+                                                            options={receiptOptions}
+                                                            onChange={this.handleInputChange}
+                                                            placeholder='Select Tax Receipt'
+                                                            value={selectedValue}
+                                                        />
+                                                    </div>
+                                                </Form.Field>
+                                                ) : (null)
+                                            }            
+                                            {
+                                                isTaxReceiptModelOpen && (
+                                                    <ModalComponent
+                                                        name="Add new tax receipt recipient"
+                                                        isSelectPhotoModalOpen={isTaxReceiptModelOpen}
+                                                        dispatch={dispatch}
+                                                        taxReceipt={this.intializeFormData}
+                                                        handleModalOpen={this.handleModalOpen}
+                                                        action="add"
+                                                    />
+                                                )
+                                            }
+                                                
 
-                                <Divider hidden />
-                                <Form.Button
-                                    primary
-                                    className="blue-btn-rounded"
-                                    // className={isMobile ? 'mobBtnPadding' : 'btnPadding'}
-                                    content={(!creditCardApiCall) ? formatMessage('giveCommon:continueButton')
-                                        : formatMessage('giveCommon:submittingButton')}
-                                    disabled={(creditCardApiCall) || this.state.disableButton}
-                                    // fluid={isMobile}
-                                    type="submit"
-                                />
-                            </Grid.Column>
-                        </Grid.Row>
-                    </Grid>
-                </Form>
-            </div>
+                                            <Note
+                                                fieldName="noteToSelf"
+                                                handleOnInputChange={this.handleInputChange}
+                                                handleOnInputBlur={this.handleInputOnBlur}
+                                                formatMessage ={formatMessage}
+                                                labelText={formatMessage('noteToSelfLabel')}
+                                                popupText={formatMessage('donorNoteToSelfPopup')}
+                                                placeholderText={formatMessage('noteToSelfPlaceHolder')}
+                                                text={giveData.noteToSelf}
+                                            />
+                                            { this.renderdonationMatchOptions(giveData, donationMatchOptions, formatMessage, donationMatchData, language, currency)}
+
+                                            <Divider hidden />
+                                            <Form.Button
+                                                primary
+                                                className="blue-btn-rounded"
+                                                // className={isMobile ? 'mobBtnPadding' : 'btnPadding'}
+                                                content={(!creditCardApiCall) ? formatMessage('giveCommon:continueButton')
+                                                    : formatMessage('giveCommon:submittingButton')}
+                                                disabled={(creditCardApiCall) || this.state.disableButton}
+                                                // fluid={isMobile}
+                                                type="submit"
+                                            />
+                                        </Grid.Column>
+                                    </Grid.Row>
+                                </Grid>
+                            </Form>
+                        </div>
+                    </Container>
+                </div>
         </Fragment>
 
         )
