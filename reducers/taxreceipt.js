@@ -3,7 +3,7 @@ import _findIndex from 'lodash/findIndex';
 import _uniqBy from 'lodash/uniqBy';
 import _cloneDeep from 'lodash/cloneDeep';
 
-const taxreceipt = (state = {}, action) => {
+const taxreceipt = (state = { taxReceiptProfileList: [] }, action) => {
     let newState = {
         ...state,
     };
