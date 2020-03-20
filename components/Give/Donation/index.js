@@ -709,6 +709,7 @@ class Donation extends React.Component {
       if(giveData.giveTo.type === 'companies' && !_.isEqual(this.props.companyDetails, oldProps.companyDetails)) {
           debugger
           this.intializeFormData.relationships.accountHoldable.data = {
+              id: giveData.giveTo.id,
               type:'companies',
           };
           giveData.creditCard = getDefaultCreditCard(populatePaymentInstrument(this.props.companyDetails.companyPaymentInstrumentsData, formatMessage));        

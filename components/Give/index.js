@@ -6,6 +6,7 @@ import {
     Header,
     Grid,
     Breadcrumb,
+    Container,
 } from 'semantic-ui-react';
 import {actionTypes} from '../../actions/give';
 import FlowBreadcrumbs from './FlowBreadcrumbs';
@@ -119,29 +120,33 @@ class Give extends React.Component {
         ]
         return (
             <Fragment>
-                <div className="pageHeader">
-                    <Grid columns={2} verticalAlign='middle'>
-                        <Grid.Row>
-                            <Grid.Column >
+                    <div className="flowReviewbanner">
+                        <Container>
+                            <div className="flowReviewbannerText">
                                 {(step !== 'error') &&
                                     <Header as='h2'>
                                         {breadcrumbArray[_.indexOf(flowSteps, step)]}
                                     </Header>
                                 }
-                            </Grid.Column>
-                            <Grid.Column >
-                                <FlowBreadcrumbs
-                                    currentStep={step}
-                                    formatMessage={formatMessage}
-                                    steps={flowSteps}
-                                    breadcrumbArray={breadcrumbArray}
-
-                                />
-                            </Grid.Column>
-                        </Grid.Row>
-                    </Grid>
+                            </div>
+                        </Container>
                     </div>
-                    
+                    <Container>
+                        <Grid centered verticalAlign="middle">
+                            <Grid.Row>
+                                <Grid.Column  mobile={16} tablet={14} computer={12}>
+                                    <div className="flowBreadcrumb flowPadding">
+                                        <FlowBreadcrumbs
+                                            currentStep={step}
+                                            formatMessage={formatMessage}
+                                            steps={flowSteps}
+                                            breadcrumbArray={breadcrumbArray}
+                                        />
+                                    </div>
+                                </Grid.Column>
+                            </Grid.Row>
+                        </Grid>
+                    </Container>
                 {renderChildWithProps(this.props, this.state.stepIndex, this.state.flowSteps)}
             </Fragment>
         );
