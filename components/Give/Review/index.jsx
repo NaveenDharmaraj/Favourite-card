@@ -177,7 +177,8 @@ class Review extends React.Component {
                                 currentStep={currentStep}
                                 formatMessage={formatMessage}
                                 steps={flowSteps}
-                                flowType={type}/>       
+                                flowType={type}
+                            />
                             {
                                 (!!showP2pList) && (
                                     <div className="p2p-top-table">
