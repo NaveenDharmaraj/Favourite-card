@@ -143,7 +143,7 @@ const Footer = ({ isAuthenticated }) => (
                                                 <Header as="h5">Get the app</Header>
                                                 <Image
                                                     src={appimg}
-                                                    href="http://google.com"
+                                                    href="https://apps.apple.com/ca/app/impact-account/id411736916"
                                                     target="_blank"
                                                 />
                                             </div>
@@ -157,7 +157,7 @@ const Footer = ({ isAuthenticated }) => (
                 <div className="copy-right">
                     <List horizontal>
                         <List.Item disabled className="copyright-text" href="#">
-                        &copy; Copyright 2019 CHIMP Technology Inc. - All Rights Reserved.
+                        &copy; Copyright 2020 CHIMP Technology Inc. - All Rights Reserved.
                         </List.Item>
                     </List>
                     <List horizontal floated="right" className="social">
