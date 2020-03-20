@@ -13,7 +13,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from '../../../i18n';
 import { reInitNextStep } from '../../../actions/give';
 // This image is dummy image since we dont have a proper image
-import successImg from '../../../static/images/dashboard_gift.png';
+import successImg from '../../../static/images/give-success-screen-illustration.png';
 
 import AddMoneySuccess from './AddMoneySuccess';
 import CharitySuccess from './CharitySuccess';
@@ -74,10 +74,12 @@ const Success = (props) => {
                             <div className="flowSuccessImg">
                                 <Image src={successImg} centered />
                                 <div className="mt-2 flowSuccessImgHeading">
-                                    <Header as="h4" textAlign="center">
+                                    <Header as="h4" textAlign="center" >
                                         {firstParagraph}
                                     </Header>
+                                    <div className="sub">
                                     {renderSuccessPage()}
+                                    </div>
                                 </div>
                             </div>
                         </Grid.Column>
