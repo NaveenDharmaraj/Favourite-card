@@ -26,6 +26,7 @@ const renderChildWithProps = (props, stepIndex, flowSteps) => {
                 <div>
                 { cloneElement(props.children, {
                     ...props,
+                    currentStep: props.step,
                     flowSteps,
                     dispatch: props.dispatch,
                     flowObject: props.flowObject,
