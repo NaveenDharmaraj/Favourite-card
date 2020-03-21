@@ -138,6 +138,7 @@ class Donation extends React.Component {
         this.handleCCAddClose = this.handleCCAddClose.bind(this);
         this.handleModalOpen = this.handleModalOpen.bind(this);
         this.handleAddButtonClick= this.handleAddButtonClick.bind(this);
+        this.handleNewAddButtonClick = this.handleNewAddButtonClick.bind(this);
         dismissAllUxCritialErrors(props.dispatch);
     }
 
@@ -173,7 +174,7 @@ class Donation extends React.Component {
     }
 
     populateOptions = (taxReceiptProfiles, selectedTaxReceiptProfile) => {
-        debugger
+        
 		let options = [];
 		let taxProfileData = selectedTaxReceiptProfile;
 		if (!_.isEmpty(taxReceiptProfiles)) {
@@ -216,6 +217,7 @@ class Donation extends React.Component {
             isValidAddingToSource: true,
             isValidNoteSelfText: true,
             isValidPositiveNumber: true,
+            isTaxReceiptPresent:true
             };
         return this.validity;
     }
@@ -329,7 +331,7 @@ class Donation extends React.Component {
             giveData.userInteracted = true;
         switch (name) {
             case 'giveTo':
-                debugger
+                
                 if(giveData.giveTo.type === 'companies') {
 
                     setDisableFlag = true;
@@ -356,6 +358,7 @@ class Donation extends React.Component {
                     })
 
                 } else {
+                    
                         giveData.creditCard = getDefaultCreditCard(populatePaymentInstrument(this.props.paymentInstrumentsData, formatMessage));
                         const [
                             defaultMatch,
@@ -421,7 +424,7 @@ class Donation extends React.Component {
                     validity,
                 },
             });
-            // debugger
+            
         }
     }  
   
@@ -569,26 +572,36 @@ class Donation extends React.Component {
             </div>
             {
                 ((!!formData.automaticDonation) && (
-                    <div className="mt-1 mb-1-2">
-                        <Button 
-                            className={(formData.giftType.value ===1 ? 'btn-basic-outline selected-btn': 'btn-basic-outline' )}
-                            size="small"
-                            type="button"
-                            active={formData.giftType.value === 1}
-                            onClick={this.handlegiftTypeButtonClick}
-                            value={1}
-                            >1st of every month
-                        </Button>
-                        <Button
-                            className={(formData.giftType.value ===15 ? 'btn-basic-outline selected-btn': 'btn-basic-outline' )}
-                            active={formData.giftType.value === 15}
-                            type="button"
-                            size="small"
-                            onClick={this.handlegiftTypeButtonClick}
-                            value={15}
-                            >15th of every month
-                        </Button>
-                    </div>
+                    <>
+                        <div className="mt-1 mb-1-2">
+                            <Button 
+                                className={(formData.giftType.value ===1 ? 'btn-basic-outline selected-btn': 'btn-basic-outline' )}
+                                size="small"
+                                type="button"
+                                active={formData.giftType.value === 1}
+                                onClick={this.handlegiftTypeButtonClick}
+                                value={1}
+                                >1st of every month
+                            </Button>
+                            <Button
+                                className={(formData.giftType.value ===15 ? 'btn-basic-outline selected-btn': 'btn-basic-outline' )}
+                                active={formData.giftType.value === 15}
+                                type="button"
+                                size="small"
+                                onClick={this.handlegiftTypeButtonClick}
+                                value={15}
+                                >15th of every month
+                            </Button>
+                        </div>
+                        <div className="recurringMsg">
+                        {formatMessage(
+                                'donationRecurringDateNote',
+                                { 
+                                    recurringDate: setDateForRecurring(formData.giftType.value, formatMessage, language)
+                                },
+                            )}
+                        </div>
+                    </>
                 ))
             }
             </>
@@ -737,7 +750,7 @@ class Donation extends React.Component {
             doSetState = true;
       }
       if(giveData.giveTo.type === 'companies' && !_.isEqual(this.props.companyDetails, oldProps.companyDetails)) {
-          debugger
+          
           this.intializeFormData.relationships.accountHoldable.data = {
               id: giveData.giveTo.id,
               type:'companies',
@@ -759,7 +772,7 @@ class Donation extends React.Component {
         })
           doSetState = true;
       }
-    //   debugger
+      
       if(giveData.giveTo.type === 'user' && !_.isEqual(this.props.paymentInstrumentsData, oldProps.paymentInstrumentsData)) {
 
             giveData.creditCard = getDefaultCreditCard(populatePaymentInstrument(this.props.paymentInstrumentsData, formatMessage));
@@ -951,6 +964,20 @@ class Donation extends React.Component {
         return validCC;
     }
 
+    handleNewAddButtonClick(e, data) {
+        console.log(e.target)
+        if(e.target.id === "addNewCreditCard"){
+            this.setState({
+                isCreditCardModalOpen:true
+            })
+        } else if(e.target.id === "addNewTaxReceipt") {
+            this.setState({
+                isTaxReceiptModelOpen:true
+            })
+        }
+        
+    }
+
     handleAddButtonClick() {
         const {
             creditCard,
@@ -964,6 +991,7 @@ class Donation extends React.Component {
             cardHolderName,
             currentActivePage,
         } = this.state;
+        
         const validateCC = this.isValidCC(
             creditCard,
             inValidCardNumber,
@@ -1116,35 +1144,17 @@ class Donation extends React.Component {
                                                             parentOnBlurChange={this.handleInputOnBlur}
                                                         />
                                                         { this.renderingRecurringDonationFields(giveData, formatMessage, language) }
-                                                        
-                                                        {/* if no credit card added */}
-                                                        {/* <Form.Field className="mb-2">
-                                                            <label>Payment method</label>
-                                                            <Modal size="tiny" dimmer="inverted" className="chimp-modal" closeIcon
-                                                                trigger={<div className="addNewCardInput">+ Add new card</div>}>
-                                                                <Modal.Header>Add new card</Modal.Header>
-                                                                <Modal.Content>
-                                                                    <Modal.Description className="font-s-16">
-                                                                        <Form>
-                                                                            <Form.Field>
-                                                                                <Checkbox className="font-w-n tickCheckBox"
-                                                                                    label='Set as primary card' defaultChecked />
-                                                                            </Form.Field>
-                                                                        </Form>
-                                                                    </Modal.Description>
-                                                                    <div className="btn-wraper pt-3 text-right">
-                                                                        <Button disabled
-                                                                            className="blue-btn-rounded-def addCreditCardBtn">
-                                                                            Done
-                                                                        </Button>
-                                                                    </div>
-                                                                </Modal.Content>
-                                                            </Modal>
-                                                        </Form.Field> */}
                                                         {
                                                             ((_isEmpty(paymentInstrumenOptions) && giveData.giveTo.value > 0) || giveData.creditCard.value === 0) && (
-                                                                <div className="addNewCardInput">+ Add new card</div>
-                                                                
+                                                                <>
+                                                                <label>Payment method</label>
+                                                                <div 
+                                                                    className="addNewCardInput"
+                                                                    id="addNewCreditCard"
+                                                                    onClick={this.handleNewAddButtonClick}>
+                                                                         + Add new card
+                                                                </div>
+                                                                </>
                                                             )
                                                         }
                                                         {/* if no credit card added */}
@@ -1230,11 +1240,24 @@ class Donation extends React.Component {
                                                                 </div>
                                                             </Form.Field>
                                                             ) : (null)
+                                                        }
+                                                        {
+                                                            ((receiptOptions.length === 1) && (parseFloat(giveData.donationAmount.replace(/,/g, ''))> 0) ) ? (
+                                                                <>
+                                                                <label>Tax Receipt</label>
+                                                                <div 
+                                                                    className="addNewCardInput"
+                                                                    id="addNewTaxReceipt"
+                                                                    onClick={this.handleNewAddButtonClick}>
+                                                                         + Add new tax receipt
+                                                                </div>
+                                                                </>
+                                                            ) : (null)
                                                         }            
                                                         {
                                                             isTaxReceiptModelOpen && (
                                                                 <ModalComponent
-                                                                    name="+Add new tax receipt recipient"
+                                                                    name="Add new tax receipt recipient"
                                                                     isSelectPhotoModalOpen={isTaxReceiptModelOpen}
                                                                     dispatch={dispatch}
                                                                     taxReceipt={this.intializeFormData}
