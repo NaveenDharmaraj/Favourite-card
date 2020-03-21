@@ -107,7 +107,7 @@ class Donation extends React.Component {
                 options,
                 taxSelected,
                 taxProfileData,
-            } = this.populateOptions(props.taxReceiptProfiles, props.flowObject.selectedTaxReceiptProfile);
+            } = this.populateOptions(props.taxReceiptProfiles, props.defaultTaxReceiptProfile);
             let flowObject = _.cloneDeep(payload);
         this.state = {
             buttonClicked: false,
@@ -173,6 +173,7 @@ class Donation extends React.Component {
     }
 
     populateOptions = (taxReceiptProfiles, selectedTaxReceiptProfile) => {
+        debugger
 		let options = [];
 		let taxProfileData = selectedTaxReceiptProfile;
 		if (!_.isEmpty(taxReceiptProfiles)) {
@@ -365,7 +366,7 @@ class Donation extends React.Component {
                             options,
                             taxSelected,
                             taxProfileData,
-                        } = this.populateOptions(this.props.userTaxReceiptProfiles, this.props.flowObject.selectedTaxReceiptProfile);
+                        } = this.populateOptions(this.props.userTaxReceiptProfiles, this.props.defaultTaxReceiptProfile);
                         this.setState({
                             flowObject: {
                                 ...this.state.flowObject,
@@ -747,7 +748,7 @@ class Donation extends React.Component {
             options,
             taxSelected,
             taxProfileData,
-        } = this.populateOptions(this.props.companyDetails.taxReceiptProfiles, this.state.flowObject.selectedTaxReceiptProfile);
+        } = this.populateOptions(this.props.companyDetails.taxReceiptProfiles, this.props.companyDetails.companyDefaultTaxReceiptProfile);
         console.log(taxProfileData, 'taxprofile selected');
         this.setState({
             flowObject: {
@@ -1069,8 +1070,7 @@ class Donation extends React.Component {
             },
             creditCardApiCall,
         } = this.props;
-        console.log(paymentInstrumentsData);
-        console.log(this.intializeFormData);
+        console.log(this.props, 'props');
         const formatMessage = this.props.t;
         const donationMatchOptions = populateDonationMatch(donationMatchData, formatMessage, language);
         let paymentInstruments = paymentInstrumentsData;
