@@ -463,7 +463,6 @@ class Donation extends React.Component {
             inValidCvv,
             inValidCardNameValue,
         );
-        debugger
         if(this.validateForm() && validateCC){
             if (creditCard.value > 0) {
                 flowObject.selectedTaxReceiptProfile = (giveTo.type === 'companies') ?
@@ -795,7 +794,6 @@ class Donation extends React.Component {
             })
             doSetState = true;
         }
-        console.log(giveData.creditCard, 'before in did update');
       if((!_.isEqual(this.props.companiesAccountsData, oldProps.companiesAccountsData)
         || _.isEmpty(this.props.companiesAccountsData)) && giveData.giveTo.value === null){
           if(_.isEmpty(this.props.companiesAccountsData) && !_.isEmpty(this.props.fund)){
@@ -821,7 +819,6 @@ class Donation extends React.Component {
                   value: fund.id,
               };
               giveData.creditCard = getDefaultCreditCard(populatePaymentInstrument(this.props.paymentInstrumentsData, formatMessage));
-              console.log(giveData.creditCard, 'after in did update');
 
               if(!_.isEmpty(this.props.donationMatchData)){
                   const [
@@ -832,7 +829,6 @@ class Donation extends React.Component {
               doSetState = true;
           }
       }
-      console.log(giveData.creditCard, 'after 2 in did update');
 
       if(doSetState) {
           this.setState({
@@ -1002,7 +998,6 @@ class Donation extends React.Component {
             isDefaultCard,
             currentActivePage,
         } = this.state;
-        debugger
         const validateCC = this.isValidCC(
             creditCard,
             inValidCardNumber,
