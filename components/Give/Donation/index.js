@@ -326,6 +326,7 @@ class Donation extends React.Component {
                 language,
             },
         } = this.props;
+        let doSetState = true;
         const formatMessage = this.props.t;
         let newValue = (!_.isEmpty(options)) ? _.find(options, { value }) : value;
         let setDisableFlag = this.state.disableButton;
@@ -397,10 +398,13 @@ class Donation extends React.Component {
                     this.setState({
                         isCreditCardModalOpen:true
                     })
-                }  
+                    doSetState = false;
+                }
+                break
             case 'taxReceipt' :
                 if(data.value === 0){
                     this.setState({isTaxReceiptModelOpen: true});
+                    doSetState=false;
                 }
                 else {
                     this.setState({
@@ -416,17 +420,19 @@ class Donation extends React.Component {
                 break;                        
             default: break;
             }
-            this.setState({
-                disableButton: setDisableFlag,
-                flowObject: {
-                    ...this.state.flowObject,
-                    giveData,
-                },
-                validity: {
-                    ...this.state.validity,
-                    validity,
-                },
-            });
+            if(doSetState) {
+                this.setState({
+                    disableButton: setDisableFlag,
+                    flowObject: {
+                        ...this.state.flowObject,
+                        giveData,
+                    },
+                    validity: {
+                        ...this.state.validity,
+                        validity,
+                    },
+                });
+            }
             
         }
     }  
@@ -1152,7 +1158,7 @@ class Donation extends React.Component {
                                                         />
                                                         { this.renderingRecurringDonationFields(giveData, formatMessage, language) }
                                                         {
-                                                            ((_isEmpty(paymentInstrumenOptions) && giveData.giveTo.value > 0) || giveData.creditCard.value === 0) && (
+                                                            ((_isEmpty(paymentInstrumenOptions) && giveData.giveTo.value > 0) ) && (
                                                                 <>
                                                                 <label>Payment method</label>
                                                                 <div 
