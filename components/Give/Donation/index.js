@@ -32,6 +32,9 @@ import DropDownAccountOptions from '../../shared/DropDownAccountOptions';
 import FlowBreadcrumbs from '../FlowBreadcrumbs';
 import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
 import { proceed, getCompanyPaymentAndTax } from '../../../actions/give';
+import {
+    saveNewCreditCard,
+} from '../../../actions/userProfile';
 import { withTranslation } from '../../../i18n';
 import { dismissAllUxCritialErrors } from '../../../actions/error';
 import '../../shared/style/styles.less';
@@ -460,6 +463,7 @@ class Donation extends React.Component {
             inValidCvv,
             inValidCardNameValue,
         );
+        debugger
         if(this.validateForm() && validateCC){
             if (creditCard.value > 0) {
                 flowObject.selectedTaxReceiptProfile = (giveTo.type === 'companies') ?
@@ -761,7 +765,6 @@ class Donation extends React.Component {
             taxSelected,
             taxProfileData,
         } = this.populateOptions(this.props.companyDetails.taxReceiptProfiles, this.props.companyDetails.companyDefaultTaxReceiptProfile);
-        console.log(taxProfileData, 'taxprofile selected');
         this.setState({
             flowObject: {
 				...this.state.flowObject,
@@ -792,6 +795,7 @@ class Donation extends React.Component {
             })
             doSetState = true;
         }
+        console.log(giveData.creditCard, 'before in did update');
       if((!_.isEqual(this.props.companiesAccountsData, oldProps.companiesAccountsData)
         || _.isEmpty(this.props.companiesAccountsData)) && giveData.giveTo.value === null){
           if(_.isEmpty(this.props.companiesAccountsData) && !_.isEmpty(this.props.fund)){
@@ -817,6 +821,8 @@ class Donation extends React.Component {
                   value: fund.id,
               };
               giveData.creditCard = getDefaultCreditCard(populatePaymentInstrument(this.props.paymentInstrumentsData, formatMessage));
+              console.log(giveData.creditCard, 'after in did update');
+
               if(!_.isEmpty(this.props.donationMatchData)){
                   const [
                       defaultMatch,
@@ -826,6 +832,8 @@ class Donation extends React.Component {
               doSetState = true;
           }
       }
+      console.log(giveData.creditCard, 'after 2 in did update');
+
       if(doSetState) {
           this.setState({
               buttonClicked: false,
@@ -965,7 +973,6 @@ class Donation extends React.Component {
     }
 
     handleNewAddButtonClick(e, data) {
-        console.log(e.target)
         if(e.target.id === "addNewCreditCard"){
             this.setState({
                 isCreditCardModalOpen:true
@@ -980,18 +987,22 @@ class Donation extends React.Component {
 
     handleAddButtonClick() {
         const {
-            creditCard,
+            flowObject:{
+                cardHolderName,
+                giveData:{
+                    creditCard,
+                },
+                stripeCreditCard
+            },
             inValidCardNumber,
             inValidExpirationDate,
             inValidNameOnCard,
             inValidCvv,
             inValidCardNameValue,
             isDefaultCard,
-            stripeCreditCard,
-            cardHolderName,
             currentActivePage,
         } = this.state;
-        
+        debugger
         const validateCC = this.isValidCC(
             creditCard,
             inValidCardNumber,
@@ -1017,7 +1028,7 @@ class Donation extends React.Component {
                     errorMessage: null,
                     successMessage: 'Credit card saved.',
                     statusMessage: true,
-                    isAddModalOpen: false,
+                    isCreditCardModalOpen: false,
                 });
             }).catch((err) => {
                 this.setState({
@@ -1097,7 +1108,6 @@ class Donation extends React.Component {
             },
             creditCardApiCall,
         } = this.props;
-        console.log(this.props, 'props');
         const formatMessage = this.props.t;
         const donationMatchOptions = populateDonationMatch(donationMatchData, formatMessage, language);
         let paymentInstruments = paymentInstrumentsData;
