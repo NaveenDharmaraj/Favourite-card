@@ -1017,7 +1017,8 @@ class Donation extends React.Component {
                 },
                 dispatch,
             } = this.props;
-            saveNewCreditCard(dispatch, stripeCreditCard, cardHolderName, id, isDefaultCard, currentActivePage).then(() => {
+            saveNewCreditCard(dispatch, stripeCreditCard, cardHolderName, id, isDefaultCard, currentActivePage).then((result) => {
+                console.log(result)
                 this.setState({
                     buttonClicked: false,
                     errorMessage: null,
@@ -1025,6 +1026,7 @@ class Donation extends React.Component {
                     statusMessage: true,
                     isCreditCardModalOpen: false,
                 });
+                
             }).catch((err) => {
                 this.setState({
                     buttonClicked: false,
