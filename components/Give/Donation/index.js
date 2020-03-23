@@ -30,11 +30,13 @@ import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage'
 import Note from '../../shared/Note';
 import DropDownAccountOptions from '../../shared/DropDownAccountOptions';
 import FlowBreadcrumbs from '../FlowBreadcrumbs';
+import DonationAmountField from '../DonationAmountField';
 import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
 import { proceed, getCompanyPaymentAndTax } from '../../../actions/give';
 import {
     saveNewCreditCard,
 } from '../../../actions/userProfile';
+import DonationFrequency from '../DonationFrequency';
 import { withTranslation } from '../../../i18n';
 import { dismissAllUxCritialErrors } from '../../../actions/error';
 import '../../shared/style/styles.less';
@@ -62,29 +64,18 @@ import {
     onWhatDayList,
     populateDonationMatch,
     populatePaymentInstrument,
+    populateReceiptOptions,
+    populateTaxReceipts,
     formatAmount,
     getDefaultCreditCard,
+    getDefaultTaxReceipt,
     setDateForRecurring,
     validateDonationForm,
     fullMonthNames,
     formatCurrency,
 } from '../../../helpers/give/utils';
-// import '../../../static/less/giveFlows.less';
 
 const CreditCard = dynamic(() => import('../../shared/CreditCard'));
-const messageList = {
-	taxReceiptDefault: {
-		defaultMessage: 'Add a new tax receipt recipient',
-		description: 'Message for adding new tax receipt',
-		id: 'taxReceiptProfile.taxReceiptDefault',
-	},
-	taxReceiptRecipientLabel: {
-		defaultMessage: 'Tax receipt recipient',
-		description: 'Message for the tax receipt dropdown label',
-		id: 'taxReceiptProfile.taxReceiptRecipientLabel',
-	},
-    }; 
-
     
 class Donation extends React.Component {
     constructor(props) {
@@ -110,7 +101,7 @@ class Donation extends React.Component {
                 options,
                 taxSelected,
                 taxProfileData,
-            } = this.populateOptions(props.taxReceiptProfiles, props.defaultTaxReceiptProfile);
+            } = populateReceiptOptions(props.taxReceiptProfiles, props.defaultTaxReceiptProfile);
             let flowObject = _.cloneDeep(payload);
         this.state = {
             buttonClicked: false,
@@ -175,40 +166,6 @@ class Donation extends React.Component {
     } = this.props;
         dispatch(getDonationMatchAndPaymentInstruments(id, 'donations'));
     }
-
-    populateOptions = (taxReceiptProfiles, selectedTaxReceiptProfile) => {
-        
-		let options = [];
-		let taxProfileData = selectedTaxReceiptProfile;
-		if (!_.isEmpty(taxReceiptProfiles)) {
-			taxReceiptProfiles.map((item) => {
-				const {
-					attributes
-				} = item;
-				options.push({
-					text: `${attributes.fullName} - ${attributes.addressOne} ${attributes.city}`,
-					value: item.id,
-				});
-			});
-		}
-		options.push({
-			text: (messageList.taxReceiptDefault.defaultMessage),
-			value: 0,
-		});
-		let taxSelected = options[options.length - 1].value;
-		if (!_.isEmpty(selectedTaxReceiptProfile) &&
-			!!(selectedTaxReceiptProfile.id)) {
-			taxSelected = selectedTaxReceiptProfile.id;
-		} else if (_.isEmpty(selectedTaxReceiptProfile)) {
-			taxProfileData = _.merge({}, this.intializeFormData);
-		}
-		return {
-			options,
-			taxSelected,
-			taxProfileData,
-		};
-
-    }
     
     intializeValidations() {
         this.validity = {
@@ -250,6 +207,7 @@ class Donation extends React.Component {
         const isValidNumber = /^(?:[0-9]+,)*[0-9]+(?:\.[0-9]+)?$/;
         // giveData[name] = formatAmount(value);
         if ((name === 'donationAmount') && !_.isEmpty(value) && value.match(isValidNumber)) {
+            
             inputValue = formatAmount(value);
             inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
             giveData[name] = inputValue;
@@ -347,41 +305,19 @@ class Donation extends React.Component {
                     giveData.donationMatch = {
                         value: null,
                     };
-                    const {
-                        options,
-                        taxSelected,
-                        taxProfileData,
-                    } = this.populateOptions(this.props.companyDetails.taxReceiptProfiles, this.state.flowObject.selectedTaxReceiptProfile);
-                    this.setState({
-                        flowObject: {
-                            ...this.state.flowObject,
-                            selectedTaxReceiptProfile: taxProfileData,
-                        },
-                        receiptOptions: options,
-                        selectedValue: taxSelected,
-                    })
-
+                    
+                    // giveData.taxReceipt = getDefaultTaxReceipt(populateTaxReceipts(this.props.companyDetails.taxReceiptProfiles, formatMessage),this.state.defaultTaxReceiptProfile.id);
                 } else {
                     
                         giveData.creditCard = getDefaultCreditCard(populatePaymentInstrument(this.props.paymentInstrumentsData, formatMessage));
+
                         const [
                             defaultMatch,
                         ] = populateDonationMatch(this.props.donationMatchData,formatMessage, language);
                         giveData.donationMatch = defaultMatch;
                         setDisableFlag = false;
-                        const {
-                            options,
-                            taxSelected,
-                            taxProfileData,
-                        } = this.populateOptions(this.props.userTaxReceiptProfiles, this.props.defaultTaxReceiptProfile);
-                        this.setState({
-                            flowObject: {
-                                ...this.state.flowObject,
-                                selectedTaxReceiptProfile: taxProfileData,
-                            },
-                            receiptOptions: options,
-                            selectedValue: taxSelected,
-                        })
+
+                        giveData.taxReceipt = getDefaultTaxReceipt(populateTaxReceipts(this.props.userTaxReceiptProfiles, formatMessage),this.props.defaultTaxReceiptProfile.id);
                 }
                 validity = validateDonationForm(name, newValue, validity, giveData);
                 break;
@@ -407,6 +343,7 @@ class Donation extends React.Component {
                     doSetState=false;
                 }
                 else {
+                    giveData.taxReceipt = getDefaultTaxReceipt(populateTaxReceipts(this.props.userTaxReceiptProfiles, formatMessage),value);
                     this.setState({
                         flowObject: {
                             ...this.state.flowObject,
@@ -482,62 +419,19 @@ class Donation extends React.Component {
         }
     }
 
-    /**
-     * Renders the JSX for the donation amount field.
-     * @param {number} amount The donation amount.
-     * @param {object} validity The validity object.
-     * @param {function} formatMessage I18 formatting.
-     * @return {JSX} JSX representing donation amount.
-     */  
-    renderDonationAmountField(amount, validity, formatMessage) {
-      return (
-          
-          <Form.Field>
-              <label htmlFor="donationAmount">
-                {formatMessage('giveCommon:amountLabel')}
-              </label>
-              <Form.Field
-                  control={Input}
-                  id="donationAmount"
-                  error={!isValidGiftAmount(validity)}
-                  icon="dollar"
-                  iconPosition="left"
-                  name="donationAmount"
-                  maxLength="8"
-                  onBlur={this.handleInputOnBlur}
-                  onChange={this.handleInputChange}
-                  placeholder={formatMessage('giveCommon:amountPlaceHolder')}
-                  size="large"
-                  value={amount}
-              />
-                <FormValidationErrorMessage
-                    condition={!validity.doesAmountExist || !validity.isAmountMoreThanOneDollor
-                    || !validity.isValidPositiveNumber}
-                    errorMessage={formatMessage('giveCommon:errorMessages.amountLessOrInvalid', {
-                        minAmount: 5,
-                    })}
-                />
-                <FormValidationErrorMessage
-                    condition={!validity.isAmountLessThanOneBillion}
-                    errorMessage={ReactHtmlParser(formatMessage('giveCommon:errorMessages.invalidMaxAmountError'))}
-                />
-                <div className="mt-1">
-                    <Button className="btn-basic-outline" type="button" size="small" value="25" onClick={this.handlePresetAmountClick} >$25</Button>
-                    <Button className="btn-basic-outline" type="button" size="small" value="50" onClick={this.handlePresetAmountClick} >$50</Button>
-                    <Button className="btn-basic-outline" type="button" size="small" value="100" onClick={this.handlePresetAmountClick} >$100</Button>
-                    <Button className="btn-basic-outline" type="button" size="small" value="500" onClick={this.handlePresetAmountClick} >$500</Button>
-                </div>
-            </Form.Field>
-        );
-    }
-
     handlePresetAmountClick = (event, data) =>{
         const {
             value,
         } = data;
         const inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
         const formatedDonationAmount = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
-        
+        let {
+            validity,
+            giveData,
+        } = this.state
+
+        validity = validateDonationForm("donationAmount", inputValue, validity, giveData);
+
         this.setState({
             ...this.state,
             flowObject:{
@@ -547,77 +441,9 @@ class Donation extends React.Component {
                     donationAmount:inputValue,
                     formatedDonationAmount,
                 }
-            }
+            },
+            validity,
         });
-    }
-  
-    renderingRecurringDonationFields(formData, formatMessage, language) {
-        let recurringFields = (
-            <>
-            <div className="mb-2">
-                <Form.Field>
-                    <label>Frequency</label>
-                </Form.Field>
-                <Form.Field>
-                    <Radio
-                        className="chimpRadio font-w-n"
-                        label='Add once'
-                        name='automaticDonation'
-                        value={false}
-                        checked={!formData.automaticDonation}
-                        onChange={this.handleInputChange}
-                    />
-                </Form.Field>
-                <Form.Field>
-                    <Radio
-                        className="chimpRadio font-w-n"
-                        label='Add monthly'
-                        name='automaticDonation'
-                        value={true}
-                        checked={!!formData.automaticDonation}
-                        onChange={this.handleInputChange}
-                    />
-                </Form.Field>
-            </div>
-            {
-                ((!!formData.automaticDonation) && (
-                    <>
-                        <div className="mt-1 mb-1-2">
-                            <Button 
-                                className={(formData.giftType.value ===1 ? 'btn-basic-outline selected-btn': 'btn-basic-outline' )}
-                                size="small"
-                                type="button"
-                                active={formData.giftType.value === 1}
-                                onClick={this.handlegiftTypeButtonClick}
-                                value={1}
-                                >1st of every month
-                            </Button>
-                            <Button
-                                className={(formData.giftType.value ===15 ? 'btn-basic-outline selected-btn': 'btn-basic-outline' )}
-                                active={formData.giftType.value === 15}
-                                type="button"
-                                size="small"
-                                onClick={this.handlegiftTypeButtonClick}
-                                value={15}
-                                >15th of every month
-                            </Button>
-                        </div>
-                        <div className="recurringMsg">
-                        {formatMessage(
-                                'donationRecurringDateNote',
-                                { 
-                                    recurringDate: setDateForRecurring(formData.giftType.value, formatMessage, language)
-                                },
-                            )}
-                        </div>
-                    </>
-                ))
-            }
-            </>
-        );
-       
-
-        return recurringFields;
     }
   
     renderdonationMatchOptions(
@@ -726,6 +552,7 @@ class Donation extends React.Component {
                         control={Select}
                         id="creditCard"
                         name="creditCard"
+                        className="dropdownWithArrowParent"
                         onChange={this.handleInputChange}
                         options={options}
                         placeholder={formatMessage('creditCardPlaceholder')}
@@ -750,6 +577,7 @@ class Donation extends React.Component {
           i18n:{
               language,
           },
+          defaultTaxReceiptProfile,
       } = this.props;
     //   let options = {};
     //   let taxSelected = {};
@@ -758,48 +586,36 @@ class Donation extends React.Component {
       if(this.props.userAccountsFetched !== oldProps.userAccountsFetched){
             doSetState = true;
       }
+    //   if(_.isEmpty(selectedTaxReceiptProfile)){
+    //       selectedTaxReceiptProfile = this.props.userTa
+    //   }
       if(giveData.giveTo.type === 'companies' && !_.isEqual(this.props.companyDetails, oldProps.companyDetails)) {
           
           this.intializeFormData.relationships.accountHoldable.data = {
               id: giveData.giveTo.id,
               type:'companies',
           };
-          giveData.creditCard = getDefaultCreditCard(populatePaymentInstrument(this.props.companyDetails.companyPaymentInstrumentsData, formatMessage));        
-        const {
-            options,
-            taxSelected,
-            taxProfileData,
-        } = this.populateOptions(this.props.companyDetails.taxReceiptProfiles, this.props.companyDetails.companyDefaultTaxReceiptProfile);
-        this.setState({
-            flowObject: {
-				...this.state.flowObject,
-				selectedTaxReceiptProfile: taxProfileData,
-			},
-            receiptOptions: options,
-            selectedValue: taxSelected,
-        })
+          giveData.creditCard = getDefaultCreditCard(populatePaymentInstrument(this.props.companyDetails.companyPaymentInstrumentsData, formatMessage));
+          
+          giveData.taxReceipt = getDefaultTaxReceipt(populateTaxReceipts(this.props.companyDetails.taxReceiptProfiles, formatMessage),this.props.companyDetails.companyDefaultTaxReceiptProfile.id);
           doSetState = true;
       }
       
-      if(giveData.giveTo.type === 'user' && !_.isEqual(this.props.paymentInstrumentsData, oldProps.paymentInstrumentsData)) {
+      if(giveData.giveTo.type === 'user') {
+            
+            if( !_.isEqual(this.props.paymentInstrumentsData, oldProps.paymentInstrumentsData)) {
+                giveData.creditCard = getDefaultCreditCard(populatePaymentInstrument(this.props.paymentInstrumentsData, formatMessage));
+                doSetState = true;
 
-            giveData.creditCard = getDefaultCreditCard(populatePaymentInstrument(this.props.paymentInstrumentsData, formatMessage));
+            }
+            if(!_.isEqual(this.props.userTaxReceiptProfiles, oldProps.userTaxReceiptProfiles)) {
+                giveData.taxReceipt = getDefaultTaxReceipt(populateTaxReceipts(this.props.userTaxReceiptProfiles, formatMessage),defaultTaxReceiptProfile.id);
+                
+                doSetState = true;
+            }
 
-            const {
-                options,
-                taxSelected,
-                taxProfileData,
-            } = this.populateOptions(this.props.userTaxReceiptProfiles, this.props.flowObject.selectedTaxReceiptProfile);
-            this.setState({
-                flowObject: {
-                    ...this.state.flowObject,
-                    selectedTaxReceiptProfile: taxProfileData,
-                },
-                receiptOptions: options,
-                selectedValue: taxSelected,
-            })
-            doSetState = true;
         }
+
       if((!_.isEqual(this.props.companiesAccountsData, oldProps.companiesAccountsData)
         || _.isEmpty(this.props.companiesAccountsData)) && giveData.giveTo.value === null){
           if(_.isEmpty(this.props.companiesAccountsData) && !_.isEmpty(this.props.fund)){
@@ -825,7 +641,8 @@ class Donation extends React.Component {
                   value: fund.id,
               };
               giveData.creditCard = getDefaultCreditCard(populatePaymentInstrument(this.props.paymentInstrumentsData, formatMessage));
-
+              giveData.taxReceipt = getDefaultTaxReceipt(populateTaxReceipts(this.props.userTaxReceiptProfiles, formatMessage),defaultTaxReceiptProfile.id);
+              
               if(!_.isEmpty(this.props.donationMatchData)){
                   const [
                       defaultMatch,
@@ -835,7 +652,6 @@ class Donation extends React.Component {
               doSetState = true;
           }
       }
-
       if(doSetState) {
           this.setState({
               buttonClicked: false,
@@ -1024,7 +840,6 @@ class Donation extends React.Component {
                 dispatch,
             } = this.props;
             saveNewCreditCard(dispatch, stripeCreditCard, cardHolderName, id, isDefaultCard, currentActivePage).then((result) => {
-                console.log(result)
                 this.setState({
                     buttonClicked: false,
                     errorMessage: null,
@@ -1110,15 +925,19 @@ class Donation extends React.Component {
                 language,
             },
             creditCardApiCall,
+            userTaxReceiptProfiles,
         } = this.props;
         const formatMessage = this.props.t;
         const donationMatchOptions = populateDonationMatch(donationMatchData, formatMessage, language);
         let paymentInstruments = paymentInstrumentsData;
+        let taxReceiptList = userTaxReceiptProfiles;
 
         if(giveData.giveTo.type === 'companies'){
             paymentInstruments = !_.isEmpty(companyDetails.companyPaymentInstrumentsData) ? companyDetails.companyPaymentInstrumentsData : [];
+            taxReceiptList = !_.isEmpty(companyDetails.taxReceiptProfiles) ? companyDetails.taxReceiptProfiles : [];
         }
         const paymentInstrumenOptions  = populatePaymentInstrument(paymentInstruments, formatMessage);
+        const taxReceiptsOptions = populateTaxReceipts(taxReceiptList, formatMessage);
         return (
         <Fragment>
             <div className="flowReviewbanner">
@@ -1145,7 +964,16 @@ class Donation extends React.Component {
                                             <Grid>
                                                 <Grid.Row>
                                                     <Grid.Column mobile={16} tablet={12} computer={10}>
-                                                        { this.renderDonationAmountField(giveData.formatedDonationAmount, validity, formatMessage) }
+
+                                                        <DonationAmountField
+                                                            amount={giveData.formatedDonationAmount}
+                                                            formatMessage={formatMessage}
+                                                            handleInputChange={this.handleInputChange}
+                                                            handleInputOnBlur={this.handleInputOnBlur}
+                                                            handlePresetAmountClick={this.handlePresetAmountClick}
+                                                            validity={validity}
+                                                            
+                                                        />
                                                         
                                                         <DropDownAccountOptions
                                                             formatMessage={formatMessage}
@@ -1156,13 +984,21 @@ class Donation extends React.Component {
                                                             parentInputChange={this.handleInputChange}
                                                             parentOnBlurChange={this.handleInputOnBlur}
                                                         />
-                                                        { this.renderingRecurringDonationFields(giveData, formatMessage, language) }
+                                                        {/* { this.renderingRecurringDonationFields(giveData, formatMessage, language) } */}
+                                                        <DonationFrequency
+                                                            formatMessage={formatMessage}
+                                                            formData={giveData}
+                                                            handlegiftTypeButtonClick={this.handlegiftTypeButtonClick}
+                                                            handleInputChange={this.handleInputChange}
+                                                            language={language}
+                                                            
+                                                        />
                                                         {
                                                             ((_isEmpty(paymentInstrumenOptions) && giveData.giveTo.value > 0) ) && (
                                                                 <>
                                                                 <label>Payment method</label>
                                                                 <div 
-                                                                    className="addNewCardInput"
+                                                                    className="addNewCardInput mb-2"
                                                                     id="addNewCreditCard"
                                                                     onClick={this.handleNewAddButtonClick}>
                                                                          + Add new card
@@ -1173,7 +1009,7 @@ class Donation extends React.Component {
                                                         {/* if no credit card added */}
 
                                                         {
-                                                            ((!_isEmpty(paymentInstrumenOptions) && parseFloat(giveData.donationAmount.replace(/,/g, ''))> 0) &&
+                                                            ((!_isEmpty(paymentInstrumenOptions) &&  giveData.giveTo.value > 0) &&
                                                                 this.renderpaymentInstrumentOptions(giveData, paymentInstrumenOptions, formatMessage)
                                                             )
                                                         }
@@ -1234,7 +1070,7 @@ class Donation extends React.Component {
                                                             </Modal>
                                                         }
                                                         {
-                                                        (receiptOptions.length> 1) ? (
+                                                        (!_.isEmpty(taxReceiptsOptions) && taxReceiptsOptions.length> 1 && giveData.giveTo.value > 0 ) ? (
                                                             <Form.Field className="mb-2">
                                                                 <div className="paymentMethodDropdown">
                                                                     <label htmlFor="">Tax receipt</label>            
@@ -1245,17 +1081,17 @@ class Donation extends React.Component {
                                                                         floating
                                                                         fluid
                                                                         selection
-                                                                        options={receiptOptions}
+                                                                        options={taxReceiptsOptions}
                                                                         onChange={this.handleInputChange}
                                                                         placeholder='Select Tax Receipt'
-                                                                        value={selectedValue}
+                                                                        value={giveData.taxReceipt.value}
                                                                     />
                                                                 </div>
                                                             </Form.Field>
                                                             ) : (null)
                                                         }
                                                         {
-                                                            ((receiptOptions.length === 1) && (parseFloat(giveData.donationAmount.replace(/,/g, ''))> 0) ) ? (
+                                                            (_.isEmpty(taxReceiptsOptions) &&  giveData.giveTo.value > 0) ? (
                                                                 <>
                                                                 <label>Tax Receipt</label>
                                                                 <div 

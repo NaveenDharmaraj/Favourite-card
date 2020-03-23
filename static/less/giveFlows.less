@@ -712,3 +712,89 @@
     font-family: 'ProximaNova-Regular';
     border-radius: 5px;
 }
+.dropdownWithArrow {
+    position: relative;
+    &.active{
+        &::before{
+            filter: brightness(0) invert(1);
+            z-index: 99;
+            transform: rotate(180deg);
+        }
+        .menu{
+            .item{
+                &.selected{
+                    background-color: #055CE5;
+                    color: #fff;
+                    border-color: #055CE5;
+                    .image{
+                        &.ui{
+                            //filter: brightness(0) invert(1);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    &::before{
+        content: '';
+        background-image: url(../images/icons/icon-arrow-down.svg);
+        height: 15px;
+        width: 15px;
+        position: absolute;
+        right: 10px;
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
+        transition: all 0.3s ease-out;
+        z-index: 2;
+        top:14px;
+    }
+    i{
+        display: none;
+    }
+}
+.dropdownWithArrowParent{
+    position: relative;
+    .ui.selection.dropdown {
+        &.active{
+            &::after{
+                // filter: brightness(0) invert(1);
+                z-index: 99;
+                transform: rotate(180deg);
+            }
+            .menu{
+                .item{
+                    &.selected{
+                        background-color: #055CE5;
+                        color: #fff;
+                        border-color: #055CE5;
+                        .image{
+                            &.ui{
+                                //filter: brightness(0) invert(1);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        &::after{
+            content: '';
+            background-image: url(../images/icons/icon-arrow-down.svg);
+            height: 15px;
+            width: 15px;
+            position: absolute;
+            right: 10px;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            transition: all 0.3s ease-out;
+            z-index: 2;
+            top:14px;
+        }
+        i{
+            display: none;
+        }
+    }
+
+
+}
