@@ -178,7 +178,8 @@ class Login extends React.Component {
         return _.every(validity);
     }
 
-    handleSubmit() {
+    handleSubmit(e) {
+        e.preventDefault();
         const isValid = this.validateForm();
         if (isValid) {
             let {
