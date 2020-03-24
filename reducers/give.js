@@ -12,6 +12,12 @@ const give = (state = {}, action) => {
                 },
             };
             break;
+        case 'CLOSE_CREDIT_CARD_MODAL':
+            newState = {
+                ...state,
+                ...action.payload,
+            };
+            break;
         case 'COVER_FEES':
             const {
                 coverFees,

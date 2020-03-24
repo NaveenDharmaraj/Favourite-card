@@ -34,8 +34,8 @@ import DonationAmountField from '../DonationAmountField';
 import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
 import { proceed, getCompanyPaymentAndTax } from '../../../actions/give';
 import {
-    saveNewCreditCard,
-} from '../../../actions/userProfile';
+    addNewCardAndLoad,
+} from '../../../actions/give';
 import DonationFrequency from '../DonationFrequency';
 import { withTranslation } from '../../../i18n';
 import { dismissAllUxCritialErrors } from '../../../actions/error';
@@ -589,6 +589,15 @@ class Donation extends React.Component {
     //   if(_.isEmpty(selectedTaxReceiptProfile)){
     //       selectedTaxReceiptProfile = this.props.userTa
     //   }
+    if (!_.isEqual(this.props.closeCreditCardModal, oldProps.closeCreditCardModal)) {
+        const {
+            closeCreditCardModal,
+        } = this.props;
+        this.setState({
+            isCreditCardModalOpen:!closeCreditCardModal
+        })
+    }
+
       if(giveData.giveTo.type === 'companies' && !_.isEqual(this.props.companyDetails, oldProps.companyDetails)) {
           
           this.intializeFormData.relationships.accountHoldable.data = {
@@ -806,19 +815,18 @@ class Donation extends React.Component {
     handleAddButtonClick() {
         const {
             flowObject:{
-                cardHolderName,
                 giveData:{
                     creditCard,
                 },
-                stripeCreditCard
             },
             inValidCardNumber,
             inValidExpirationDate,
             inValidNameOnCard,
             inValidCvv,
             inValidCardNameValue,
-            isDefaultCard,
-            currentActivePage,
+        } = this.state;
+        const {
+            flowObject,
         } = this.state;
         const validateCC = this.isValidCC(
             creditCard,
@@ -834,28 +842,12 @@ class Donation extends React.Component {
                 statusMessage: false,
             });
             const {
-                currentUser: {
-                    id,
-                },
                 dispatch,
             } = this.props;
-            saveNewCreditCard(dispatch, stripeCreditCard, cardHolderName, id, isDefaultCard, currentActivePage).then((result) => {
-                this.setState({
-                    buttonClicked: false,
-                    errorMessage: null,
-                    successMessage: 'Credit card saved.',
-                    statusMessage: true,
-                    isCreditCardModalOpen: false,
-                });
-                
-            }).catch((err) => {
-                this.setState({
-                    buttonClicked: false,
-                    errorMessage: 'Error in saving the Credit Card.',
-                    statusMessage: true,
-                    isAddModalOpen: false,
-                });
-            });
+            dispatch(addNewCardAndLoad(flowObject));
+            // this.setState({
+            //     isCreditCardModalOpen:false
+            // });
         }
     }
 
@@ -1169,6 +1161,7 @@ const  mapStateToProps = (state, props) => {
         userTaxReceiptEditApiCall: state.give.taxReceiptEditApiCall,
         // companyTaxReceiptProfiles: state.give.companyData.taxReceiptProfiles,
 		// companyTaxReceiptGetApiStatus:state.give.companyData.taxReceiptGetApiStatus,
+        closeCreditCardModal:state.give.closeCreditCardModal,
 		companyTaxReceiptEditApiCall: state.give.taxReceiptEditApiCall,
         companyDetails: state.give.companyData,
         userAccountsFetched: state.user.userAccountsFetched,

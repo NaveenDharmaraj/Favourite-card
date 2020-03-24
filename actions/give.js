@@ -23,6 +23,7 @@ import {
 
 export const actionTypes = {
     ADD_NEW_CREDIT_CARD_STATUS: 'ADD_NEW_CREDIT_CARD_STATUS',
+    CLOSE_CREDIT_CARD_MODAL: 'CLOSE_CREDIT_CARD_MODAL',
     COVER_AMOUNT_DISPLAY: 'COVER_AMOUNT_DISPLAY',
     COVER_FEES: 'COVER_FEES',
     GET_BENEFICIARY_FROM_SLUG: 'GET_BENEFICIARY_FROM_SLUG',
@@ -545,6 +546,101 @@ const transformStripeErrorToJsonApi = (err) => {
     };
 };
 
+export const addNewCardAndLoad = (flowObject) => {
+    return (dispatch) => {
+        dispatch({
+            payload: {
+                creditCardApiCall: true,
+            },
+            type: actionTypes.ADD_NEW_CREDIT_CARD_STATUS,
+        });
+        
+        const {
+            giveData: {
+                giveFrom,
+                giveTo,
+            },
+        } = flowObject;
+        const accountDetails = {
+            id: (flowObject.type === 'donations') ? giveTo.id : giveFrom.id,
+            type: (flowObject.type === 'donations') ? giveTo.type : giveFrom.type,
+        };
+        return createToken(flowObject.stripeCreditCard, flowObject.cardHolderName).then((token) => {
+            const paymentInstrumentsData = {
+                attributes: {
+                    stripeToken: token.id,
+                },
+                relationships: {
+                    paymentable: {
+                        data: {
+                            id: accountDetails.id,
+                            type: accountDetails.type,
+                        },
+                    },
+                },
+                type: 'paymentInstruments',
+            };
+            return savePaymentInstrument(paymentInstrumentsData);
+        }).then((result) => {
+            const {
+                data: {
+                    attributes: {
+                        description,
+                    },
+                    id,
+                },
+            } = result;
+            flowObject.giveData.creditCard.id = id;
+            flowObject.giveData.creditCard.value = id;
+            flowObject.giveData.creditCard.text = description;
+            flowObject.giveData.newCreditCardId = id;
+            dispatch({
+                payload: flowObject,
+                type: actionTypes.SAVE_FLOW_OBJECT,
+            });
+
+            const statusMessageProps = {
+                message: 'New Credit Card Added',
+                type: 'success',
+            };
+            dispatch({
+                payload: {
+                    errors: [
+                        statusMessageProps,
+                    ],
+                },
+                type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
+            });
+            callApiAndDispatchData(dispatch, accountDetails);
+
+            dispatch({
+                payload: {
+                    closeCreditCardModal: true,
+                },
+                type: actionTypes.CLOSE_CREDIT_CARD_MODAL,
+            });
+
+            // dispatch({
+            //     payload: {
+            //         errors: [
+            //             statusMessageProps,
+            //         ],
+            //     },
+            //     type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
+            // });
+        }).catch((err) => {
+            triggerUxCritialErrors(err.errors || err, dispatch);
+        }).finally(() => {
+            dispatch({
+                payload: {
+                    creditCardApiCall: false,
+                },
+                type: actionTypes.ADD_NEW_CREDIT_CARD_STATUS,
+            });
+        });
+    };
+};
+
 export const proceed = (
     flowObject, nextStep, stepIndex, lastStep = false, currentUserId = null,
 ) => {
@@ -662,58 +758,60 @@ export const proceed = (
                     type: actionTypes.TAX_RECEIPT_API_CALL_STATUS,
                 });
             });
-        } else if (creditCard.value === 0 && stepIndex === 0) {
-            dispatch({
-                payload: {
-                    creditCardApiCall: true,
-                },
-                type: actionTypes.ADD_NEW_CREDIT_CARD_STATUS,
-            });
-            return createToken(flowObject.stripeCreditCard, flowObject.cardHolderName).then((token) => {
-                const paymentInstrumentsData = {
-                    attributes: {
-                        stripeToken: token.id,
-                    },
-                    relationships: {
-                        paymentable: {
-                            data: {
-                                id: accountDetails.id,
-                                type: accountDetails.type,
-                            },
-                        },
-                    },
-                    type: 'paymentInstruments',
-                };
-                return savePaymentInstrument(paymentInstrumentsData);
-            }).then((result) => {
-                const {
-                    data: {
-                        attributes: {
-                            description,
-                        },
-                        id,
-                    },
-                } = result;
-                flowObject.giveData.creditCard.id = id;
-                flowObject.giveData.creditCard.value = id;
-                flowObject.giveData.creditCard.text = description;
-                flowObject.giveData.newCreditCardId = id;
-                dispatch({
-                    payload: flowObject,
-                    type: actionTypes.SAVE_FLOW_OBJECT,
-                });
-                callApiAndDispatchData(dispatch, accountDetails);
-            }).catch((err) => {
-                triggerUxCritialErrors(err.errors || err, dispatch);
-            }).finally(() => {
-                dispatch({
-                    payload: {
-                        creditCardApiCall: false,
-                    },
-                    type: actionTypes.ADD_NEW_CREDIT_CARD_STATUS,
-                });
-            });
-        } else {
+        } 
+        // else if (creditCard.value === 0 && stepIndex === 0) {
+        //     dispatch({
+        //         payload: {
+        //             creditCardApiCall: true,
+        //         },
+        //         type: actionTypes.ADD_NEW_CREDIT_CARD_STATUS,
+        //     });
+        //     return createToken(flowObject.stripeCreditCard, flowObject.cardHolderName).then((token) => {
+        //         const paymentInstrumentsData = {
+        //             attributes: {
+        //                 stripeToken: token.id,
+        //             },
+        //             relationships: {
+        //                 paymentable: {
+        //                     data: {
+        //                         id: accountDetails.id,
+        //                         type: accountDetails.type,
+        //                     },
+        //                 },
+        //             },
+        //             type: 'paymentInstruments',
+        //         };
+        //         return savePaymentInstrument(paymentInstrumentsData);
+        //     }).then((result) => {
+        //         const {
+        //             data: {
+        //                 attributes: {
+        //                     description,
+        //                 },
+        //                 id,
+        //             },
+        //         } = result;
+        //         flowObject.giveData.creditCard.id = id;
+        //         flowObject.giveData.creditCard.value = id;
+        //         flowObject.giveData.creditCard.text = description;
+        //         flowObject.giveData.newCreditCardId = id;
+        //         dispatch({
+        //             payload: flowObject,
+        //             type: actionTypes.SAVE_FLOW_OBJECT,
+        //         });
+        //         callApiAndDispatchData(dispatch, accountDetails);
+        //     }).catch((err) => {
+        //         triggerUxCritialErrors(err.errors || err, dispatch);
+        //     }).finally(() => {
+        //         dispatch({
+        //             payload: {
+        //                 creditCardApiCall: false,
+        //             },
+        //             type: actionTypes.ADD_NEW_CREDIT_CARD_STATUS,
+        //         });
+        //     });
+        // }
+         else {
             dispatch({
                 payload: flowObject,
                 type: actionTypes.SAVE_FLOW_OBJECT,
