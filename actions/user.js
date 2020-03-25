@@ -16,6 +16,7 @@ import {
 } from './profile';
 
 export const actionTypes = {
+    GET_ALL_TAX_RECEIPT_PROFILES: 'GET_ALL_TAX_RECEIPT_PROFILES',
     GET_MATCH_POLICIES_PAYMENTINSTRUMENTS: 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS',
     GET_USERS_GROUPS: 'GET_USERS_GROUPS',
     GET_UPCOMING_TRANSACTIONS: 'GET_UPCOMING_TRANSACTIONS',
@@ -80,6 +81,73 @@ export const callApiAndGetData = (url, params) => getAllPaginationData(url, para
         return allData;
     },
 );
+
+
+// eslint-disable-next-line import/exports-last
+export const getAllTaxReceipts = (id, dispatch, type = "user") => {
+    
+    const accountType = (type === "user") ? "users" : "companies";
+    const fsa = {
+        payload: {
+            defaultTaxReceiptProfile: {},
+            taxReceiptProfiles: [],
+        },
+        type: actionTypes.GET_ALL_TAX_RECEIPT_PROFILES,
+    };
+    const fetchData = coreApi.get(
+        `/${accountType}/${id}?include=defaultTaxReceiptProfile,taxReceiptProfiles`,
+        {
+            params: {
+                dispatch,
+                uxCritical: true,
+            },
+        },
+    );
+    fetchData.then((resultData) => {
+        
+        if (!_.isEmpty(resultData.included)) {
+            const { included } = resultData;
+            
+            let defaultTaxReceiptId = null;
+            if (!_.isEmpty(resultData.data.relationships.defaultTaxReceiptProfile.data)) {
+                defaultTaxReceiptId = resultData.data.relationships.defaultTaxReceiptProfile.data.id;
+            }
+            included.map((item) => {
+                const {
+                    attributes,
+                    id,
+                    type,
+                } = item;
+                
+                if (type === 'taxReceiptProfiles') {
+                    if (id === defaultTaxReceiptId) {
+                        fsa.payload.defaultTaxReceiptProfile = {
+                            attributes,
+                            id,
+                            type,
+                        };
+                    }
+                    fsa.payload.taxReceiptProfiles.push({
+                        attributes,
+                        id,
+                        type,
+                    });
+                }
+            });
+        }
+    }).catch((error) => {
+        fsa.error = error;
+        dispatch({
+            payload: {
+                userAccountsFetched: true,
+            },
+            type: actionTypes.SET_USER_ACCOUNT_FETCHED,
+        });
+    }).finally(() => {
+        
+        dispatch(fsa);
+    });
+};
 
 // eslint-disable-next-line import/exports-last
 export const getDonationMatchAndPaymentInstruments = (userId, flowType) => {
@@ -563,8 +631,6 @@ export const getGroupsAndCampaigns = (dispatch, url, type, appendData = true, pr
         dispatch(fsa);
     });
 };
-
-
 
 export const leaveGroup = (dispatch, group, allData, type) => {
     const fsa = {

@@ -18,6 +18,12 @@ const give = (state = {}, action) => {
                 ...action.payload,
             };
             break;
+        case 'CLOSE_TAX_RECEIPT_MODAL':
+            newState = {
+                ...state,
+                ...action.payload,
+            };
+            break;
         case 'COVER_FEES':
             const {
                 coverFees,

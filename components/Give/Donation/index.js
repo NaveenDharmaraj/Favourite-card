@@ -25,7 +25,6 @@ import {
 import {
     connect,
 } from 'react-redux';
-import ReactHtmlParser from 'react-html-parser';
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 import Note from '../../shared/Note';
 import DropDownAccountOptions from '../../shared/DropDownAccountOptions';
@@ -48,7 +47,7 @@ import {
 import {
     countryOptions,
 } from '../../../helpers/constants';
-import ModalComponent from '../../shared/Modal';
+import TaxReceiptModal from '../../shared/TaxReceiptModal';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -344,6 +343,7 @@ class Donation extends React.Component {
                 }
                 else {
                     giveData.taxReceipt = getDefaultTaxReceipt(populateTaxReceipts(this.props.userTaxReceiptProfiles, formatMessage),value);
+                    console.log(this.getChangedProfileData(value));
                     this.setState({
                         flowObject: {
                             ...this.state.flowObject,
@@ -568,11 +568,12 @@ class Donation extends React.Component {
   
     componentDidUpdate(oldProps) {
       let {
-          flowObject:{
-              currency,
-              giveData,
-          }
+          flowObject,
       } = this.state;
+      let {
+        currency,
+        giveData,
+    } = flowObject
       const {
           i18n:{
               language,
@@ -597,6 +598,14 @@ class Donation extends React.Component {
             isCreditCardModalOpen:!closeCreditCardModal
         })
     }
+    if(!_.isEqual(this.props.closeTaxReceiptModal, oldProps.closeTaxReceiptModal)) {
+        const{
+            closeTaxReceiptModal,
+        } = this.props;
+        this.setState({
+            isTaxReceiptModelOpen:!closeTaxReceiptModal
+        })
+    }
 
       if(giveData.giveTo.type === 'companies' && !_.isEqual(this.props.companyDetails, oldProps.companyDetails)) {
           
@@ -612,10 +621,16 @@ class Donation extends React.Component {
       
       if(giveData.giveTo.type === 'user') {
             
-            if( !_.isEqual(this.props.paymentInstrumentsData, oldProps.paymentInstrumentsData)) {
+            if( !_.isEqual(this.props.paymentInstrumentsData, oldProps.paymentInstrumentsData) && !flowObject.isNewCreditCardAdded) {
+                
                 giveData.creditCard = getDefaultCreditCard(populatePaymentInstrument(this.props.paymentInstrumentsData, formatMessage));
                 doSetState = true;
 
+            }else if(!_.isEqual(this.props.paymentInstrumentsData, oldProps.paymentInstrumentsData) && !!flowObject.isNewCreditCardAdded) {
+                
+                giveData.creditCard=this.props.flowObject.giveData.creditCard;
+                flowObject.isNewCreditCardAdded = false;
+                doSetState = true;
             }
             if(!_.isEqual(this.props.userTaxReceiptProfiles, oldProps.userTaxReceiptProfiles)) {
                 giveData.taxReceipt = getDefaultTaxReceipt(populateTaxReceipts(this.props.userTaxReceiptProfiles, formatMessage),defaultTaxReceiptProfile.id);
@@ -844,7 +859,28 @@ class Donation extends React.Component {
             const {
                 dispatch,
             } = this.props;
-            dispatch(addNewCardAndLoad(flowObject));
+            addNewCardAndLoad(flowObject, dispatch).then((result)=>{
+                const {
+                    data: {
+                        attributes: {
+                            description,
+                        },
+                        id,
+                    },
+                } = result;
+                flowObject.giveData.creditCard.id = id;
+                flowObject.giveData.creditCard.value = id;
+                flowObject.giveData.creditCard.text = description;
+                flowObject.giveData.newCreditCardId = id;
+                flowObject.isNewCreditCardAdded = true;
+                this.setState({
+                    flowObject:{
+                        ...this.state.flowObject,
+                        ...flowObject
+                    },
+                    ...this.state,
+                });
+            }) ;
             // this.setState({
             //     isCreditCardModalOpen:false
             // });
@@ -891,11 +927,7 @@ class Donation extends React.Component {
         const {
             buttonClicked,
             dispatch,
-            flowObject: {
-                currency,
-                giveData,
-                type,
-            },
+            flowObject,
             inValidCardNumber,
             inValidExpirationDate,
             inValidNameOnCard,
@@ -907,6 +939,11 @@ class Donation extends React.Component {
             receiptOptions,
             selectedValue,
         } = this.state;
+        const {
+            currency,
+            giveData,
+            type,
+        }= flowObject;
         const {
             currentStep,
             donationMatchData,
@@ -923,7 +960,6 @@ class Donation extends React.Component {
         const donationMatchOptions = populateDonationMatch(donationMatchData, formatMessage, language);
         let paymentInstruments = paymentInstrumentsData;
         let taxReceiptList = userTaxReceiptProfiles;
-
         if(giveData.giveTo.type === 'companies'){
             paymentInstruments = !_.isEmpty(companyDetails.companyPaymentInstrumentsData) ? companyDetails.companyPaymentInstrumentsData : [];
             taxReceiptList = !_.isEmpty(companyDetails.taxReceiptProfiles) ? companyDetails.taxReceiptProfiles : [];
@@ -1097,10 +1133,11 @@ class Donation extends React.Component {
                                                         }            
                                                         {
                                                             isTaxReceiptModelOpen && (
-                                                                <ModalComponent
+                                                                <TaxReceiptModal
                                                                     name="Add new tax receipt recipient"
                                                                     isSelectPhotoModalOpen={isTaxReceiptModelOpen}
                                                                     dispatch={dispatch}
+                                                                    flowObject={flowObject}
                                                                     taxReceipt={this.intializeFormData}
                                                                     handleModalOpen={this.handleModalOpen}
                                                                     action="add"
@@ -1153,20 +1190,19 @@ Donation.defaultProps = {
     companyDetails: [],
 };
 
-const  mapStateToProps = (state, props) => {
-
+const  mapStateToProps = (state) => {
     return {
+        companyDetails: state.give.companyData,
+		companyTaxReceiptEditApiCall: state.give.taxReceiptEditApiCall,
+        closeCreditCardModal:state.give.closeCreditCardModal,
+        closeTaxReceiptModal:state.give.closeTaxReceiptModal,
+        creditCardApiCall: state.give.creditCardApiCall,
+        currentUser: state.user.info,
+        flowObject: state.give.flowObject,
         userTaxReceiptProfiles: state.user.taxReceiptProfiles,
         userTaxReceiptGetApiStatus:state.user.taxReceiptGetApiStatus,
         userTaxReceiptEditApiCall: state.give.taxReceiptEditApiCall,
-        // companyTaxReceiptProfiles: state.give.companyData.taxReceiptProfiles,
-		// companyTaxReceiptGetApiStatus:state.give.companyData.taxReceiptGetApiStatus,
-        closeCreditCardModal:state.give.closeCreditCardModal,
-		companyTaxReceiptEditApiCall: state.give.taxReceiptEditApiCall,
-        companyDetails: state.give.companyData,
         userAccountsFetched: state.user.userAccountsFetched,
-        currentUser: state.user.info,
-        creditCardApiCall: state.give.creditCardApiCall,
     };
 }
 export default withTranslation(['donation', 'giveCommon'])(connect(mapStateToProps)(Donation));
