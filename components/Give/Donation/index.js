@@ -859,7 +859,9 @@ class Donation extends React.Component {
             const {
                 dispatch,
             } = this.props;
-            addNewCardAndLoad(flowObject, dispatch).then((result)=>{
+            
+            dispatch(addNewCardAndLoad(flowObject)).then((result) => {
+                console.log('card creation api finished', result);
                 const {
                     data: {
                         attributes: {
@@ -871,16 +873,27 @@ class Donation extends React.Component {
                 flowObject.giveData.creditCard.id = id;
                 flowObject.giveData.creditCard.value = id;
                 flowObject.giveData.creditCard.text = description;
-                flowObject.giveData.newCreditCardId = id;
-                flowObject.isNewCreditCardAdded = true;
-                this.setState({
-                    flowObject:{
-                        ...this.state.flowObject,
-                        ...flowObject
+                const statusMessageProps = {
+                    message: 'New Credit Card Added',
+                    type: 'success',
+                };
+                dispatch({
+                    payload: {
+                        errors: [
+                            statusMessageProps,
+                        ],
                     },
-                    ...this.state,
+                    type: 'TRIGGER_UX_CRITICAL_ERROR',
                 });
-            }) ;
+                this.setState({
+                    isCreditCardModalOpen: false,
+                });
+                // flowObject.giveData.newCreditCardId = id;
+            }).catch(() => {
+                this.setState({
+                    buttonClicked: false,
+                });
+            });
             // this.setState({
             //     isCreditCardModalOpen:false
             // });

@@ -16,6 +16,7 @@ import {
     getDonationMatchAndPaymentInstruments,
     savePaymentInstrument,
     getUserFund,
+    getAllActivePaymentInstruments,
 } from './user';
 import {
     triggerUxCritialErrors,
@@ -34,6 +35,8 @@ export const actionTypes = {
     SAVE_FLOW_OBJECT: 'SAVE_FLOW_OBJECT',
     SAVE_SUCCESS_DATA: 'SAVE_SUCCESS_DATA',
     SET_COMPANY_ACCOUNT_FETCHED: 'SET_COMPANY_ACCOUNT_FETCHED',
+    SET_COMPANY_PAYMENT_ISTRUMENTS: 'SET_COMPANY_PAYMENT_ISTRUMENTS',
+    SET_USER_PAYMENT_INSTRUMENTS: 'SET_USER_PAYMENT_INSTRUMENTS',
     TAX_RECEIPT_API_CALL_STATUS: 'TAX_RECEIPT_API_CALL_STATUS',
     TRIGGER_UX_CRITICAL_ERROR: 'TRIGGER_UX_CRITICAL_ERROR',
 };
@@ -580,44 +583,51 @@ export const addNewCardAndLoad = (flowObject, dispatch) => {
             },
             type: 'paymentInstruments',
         };
-        return savePaymentInstrument(paymentInstrumentsData);
-    }).then((result) => {
-        const {
-            data: {
+        let addedCreditCard = null;
+        return createToken(flowObject.stripeCreditCard, flowObject.cardHolderName).then((token) => {
+            const paymentInstrumentsData = {
                 attributes: {
                     description,
                 },
-                id,
-            },
-        } = result;
-        // flowObject.giveData.creditCard.id = id;
-        // flowObject.giveData.creditCard.value = id;
-        // flowObject.giveData.creditCard.text = description;
-        // flowObject.giveData.newCreditCardId = id;
-        // dispatch({
-        //     payload: flowObject,
-        //     type: actionTypes.SAVE_FLOW_OBJECT,
-        // });
-
-        const statusMessageProps = {
-            message: 'New Credit Card Added',
-            type: 'success',
-        };
-        dispatch({
-            payload: {
-                errors: [
-                    statusMessageProps,
-                ],
-            },
-            type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
-        });
-        getPaymentInstruments(accountDetails.id, dispatch);
-
-        dispatch({
-            payload: {
-                closeCreditCardModal: true,
-            },
-            type: actionTypes.CLOSE_CREDIT_CARD_MODAL,
+                type: 'paymentInstruments',
+            };
+            return savePaymentInstrument(paymentInstrumentsData);
+        }).then((result) => {
+            addedCreditCard = result;
+            return getAllActivePaymentInstruments(accountDetails.id, dispatch, accountDetails.type);
+        }).then((res) => {
+            const userFsa = {
+                payload: {
+                    paymentInstrumentsData: [
+                        ...res.data,
+                    ],
+                },
+                type: actionTypes.SET_USER_PAYMENT_INSTRUMENTS,
+            };
+            const companyFsa = {
+                payload: {
+                    companyPaymentInstrumentsData: [
+                        ...res.data,
+                    ],
+                },
+                type: actionTypes.SET_COMPANY_PAYMENT_ISTRUMENTS,
+            };
+            if (accountDetails.type === 'companies') {
+                dispatch(companyFsa);
+            } else {
+                dispatch(userFsa);
+            }
+            return addedCreditCard;
+        }).catch((err) => {
+            triggerUxCritialErrors(err.errors || err, dispatch);
+            return Promise.reject(err);
+        }).finally(() => {
+            dispatch({
+                payload: {
+                    creditCardApiCall: false,
+                },
+                type: actionTypes.ADD_NEW_CREDIT_CARD_STATUS,
+            });
         });
         return result;
         // dispatch({

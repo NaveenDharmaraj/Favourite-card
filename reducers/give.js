@@ -111,6 +111,15 @@ const give = (state = {}, action) => {
                 creditCardApiCall: action.payload.creditCardApiCall,
             };
             break;
+        case 'SET_COMPANY_PAYMENT_ISTRUMENTS':
+            newState = {
+                ...state,
+                companyData: {
+                    ...state.companyData,
+                    companyPaymentInstrumentsData: action.payload.companyPaymentInstrumentsData,
+                },
+            };
+            break;
         default:
             break;
     }
