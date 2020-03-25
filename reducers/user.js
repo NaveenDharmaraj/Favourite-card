@@ -173,6 +173,12 @@ const user = (state = {}, action) => {
                 disableMigrationButtons: action.payload.continueButtonDisable,
             };
             break;
+        case 'SET_USER_PAYMENT_INSTRUMENTS':
+            newState = {
+                ...state,
+                paymentInstrumentsData: action.payload.paymentInstrumentsData,
+            };
+            break;
         default:
             break;
     }

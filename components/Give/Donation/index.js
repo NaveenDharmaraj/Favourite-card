@@ -844,7 +844,41 @@ class Donation extends React.Component {
             const {
                 dispatch,
             } = this.props;
-            dispatch(addNewCardAndLoad(flowObject));
+            
+            dispatch(addNewCardAndLoad(flowObject)).then((result) => {
+                console.log('card creation api finished', result);
+                const {
+                    data: {
+                        attributes: {
+                            description,
+                        },
+                        id,
+                    },
+                } = result;
+                flowObject.giveData.creditCard.id = id;
+                flowObject.giveData.creditCard.value = id;
+                flowObject.giveData.creditCard.text = description;
+                const statusMessageProps = {
+                    message: 'New Credit Card Added',
+                    type: 'success',
+                };
+                dispatch({
+                    payload: {
+                        errors: [
+                            statusMessageProps,
+                        ],
+                    },
+                    type: 'TRIGGER_UX_CRITICAL_ERROR',
+                });
+                this.setState({
+                    isCreditCardModalOpen: false,
+                });
+                // flowObject.giveData.newCreditCardId = id;
+            }).catch(() => {
+                this.setState({
+                    buttonClicked: false,
+                });
+            });
             // this.setState({
             //     isCreditCardModalOpen:false
             // });
