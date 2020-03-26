@@ -675,9 +675,7 @@ export const addNewTaxReceiptProfileAndLoad = (flowObject, selectedTaxReceiptPro
         };
         
         return addNewTaxReceiptProfile(selectedTaxReceiptProfile).then((result) => {
-            
             newTaxReceipt = result;
-            
             const {
                 id,
             } = result.data;
@@ -686,7 +684,6 @@ export const addNewTaxReceiptProfileAndLoad = (flowObject, selectedTaxReceiptPro
             }
             return null;
         }).then((response) => {
-            
             const {
                 attributes,
             } = newTaxReceipt.data;
@@ -742,36 +739,14 @@ export const addNewTaxReceiptProfileAndLoad = (flowObject, selectedTaxReceiptPro
                         });
                     }
                 });
-                dispatch(fsa);
-                
+                dispatch(fsa);     
                 return newTaxReceipt;
             }
         }).catch((err) => {
-            
             triggerUxCritialErrors(err.errors || err, dispatch);
             return Promise.reject(err);
         });
-          
-    }
-
-
-    //     // this.setState({
-    //     //     buttonClicked: true,
-    //     //     errorMessage: null,
-    //     //     statusMessage: true,
-    //     // });
-       
-    // }).then((result)=>{
-
-    //     //// set state here
-    // }).catch((err) => {
-        
-    //     this.setState({
-    //         buttonClicked: true,
-    //         errorMessage: 'Error in saving the profile.',
-    //         statusMessage: true,
-    //     })
-    // });
+    };
 };
 
 export const proceed = (

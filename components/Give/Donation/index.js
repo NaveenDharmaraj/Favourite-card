@@ -887,16 +887,6 @@ class Donation extends React.Component {
     }
 
     handleCCAddClose() {
-        // const {
-        //     dispatch
-        // } = this.props;
-        // dispatch({
-        //     payload: {
-        //         newCreditCardApiCall: false,
-        //     },
-        //     type: 'ADD_NEW_CREDIT_CARD_STATUS',
-        // });
-        
         this.setState({ 
             ...this.state,    
             isCreditCardModalOpen: false
