@@ -16,7 +16,6 @@ import {
     getDonationMatchAndPaymentInstruments,
     savePaymentInstrument,
     getUserFund,
-    getAllActivePaymentInstruments,
 } from './user';
 import {
     triggerUxCritialErrors,
@@ -523,7 +522,7 @@ export const getCompanyPaymentAndTax = (dispatch, companyId) => {
     });
 };
 
-export const callApiAndDispatchData = (dispatch, account) => {
+const callApiAndDispatchData = (dispatch, account) => {
     if (account.type === 'user') {
         dispatch(getDonationMatchAndPaymentInstruments(account.id));
     } else {
@@ -552,6 +551,21 @@ const transformStripeErrorToJsonApi = (err) => {
         ],
     };
 };
+
+const getAllActivePaymentInstruments = (id, dispatch, type = 'user') => {
+    const url = (type === 'companies') ?
+        `/companies/${id}/activePaymentInstruments?&sort=-default` :
+        `/users/${id}/activePaymentInstruments?sort=-default`
+    return coreApi.get(
+        url,
+        {
+            params: {
+                dispatch,
+                uxCritical: true,
+            },
+        },
+    );
+}
 
 export const addNewCardAndLoad = (flowObject) => {
     return (dispatch) => {
@@ -689,18 +703,6 @@ export const addNewTaxReceiptProfileAndLoad = (flowObject, selectedTaxReceiptPro
             attributes.isDefault = isDefaultChecked;
             return getAllTaxReceipts(Number(accountDetails.id), dispatch, accountDetails.type);
         }).then((resultData) => {
-            const statusMessageProps = {
-                message: 'New Tax receipt Added',
-                type: 'success',
-            };
-            dispatch({
-                payload: {
-                    errors: [
-                        statusMessageProps,
-                    ],
-                },
-                type: 'TRIGGER_UX_CRITICAL_ERROR',
-            });
             if (accountDetails.type === 'companies') {
                 fsa.type = actionTypes.GET_ALL_COMPANY_TAX_RECEIPT_PROFILES;
             }

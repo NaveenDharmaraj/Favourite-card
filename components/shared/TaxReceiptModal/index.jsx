@@ -3,8 +3,6 @@ import {
     Button,
     Checkbox,
     Form,
-    Icon,
-    Message,
     Modal,
 } from 'semantic-ui-react';
 import {
@@ -24,7 +22,6 @@ import {
     countryOptions,
 } from '../../../helpers/constants';
 const TaxReceiptFrom = dynamic(() => import('../../../components/Give/TaxReceipt/TaxReceiptProfileForm'));
-const ModalStatusMessage = dynamic(() => import('../ModalStatusMessage'));
 import { withTranslation } from '../../../i18n';
 
 export const actionTypes = {
@@ -37,15 +34,12 @@ class TaxReceiptModalComponent extends React.Component {
         super(props);
         this.state = {
             buttonClicked: true,
-            errorMessage: null,
             isDefaultChecked:false,
             selectedTaxReceiptProfile: this.intializeFormData,
             showFormData: true,
             showPopUp: false,
-            statusMessage: false,
             validity: this.intializeValidations(),
         };
-        this.handleDisplayForm = this.handleDisplayForm.bind(this);
         this.handleChildInputChange = this.handleChildInputChange.bind(this);
         this.handleChildOnBlurChange = this.handleChildOnBlurChange.bind(this);
         this.handlePopUpCancel = this.handlePopUpCancel.bind(this);
@@ -98,20 +92,12 @@ class TaxReceiptModalComponent extends React.Component {
         return this.validity;
     }
 
-    handleDisplayForm() {
-        this.setState({
-            showFormData: true,
-        });
-    }
-
-
     handleChildInputChange(name, value) {
         const {
-            selectedTaxReceiptProfile,
+            selectedTaxReceiptProfile:{
+                attributes,
+            },
         } = this.state;
-        const {
-            attributes,
-        } = selectedTaxReceiptProfile;
         if (name === 'country') {
             attributes.province = '';
         }
@@ -119,12 +105,11 @@ class TaxReceiptModalComponent extends React.Component {
         this.setState({
             buttonClicked: false,
             selectedTaxReceiptProfile: {
-                ...selectedTaxReceiptProfile,
+                ...this.state.selectedTaxReceiptProfile,
                 attributes: {
                     ...attributes,
                 },
             },
-            statusMessage: false,
         });
     }
 
@@ -182,8 +167,6 @@ class TaxReceiptModalComponent extends React.Component {
         const isValid = this.validateForm();
         if (isValid) {
             handleAddNewTaxReceipt(flowObject,selectedTaxReceiptProfile,isDefaultChecked);
-            
-        } else {
             this.setState({
                 buttonClicked: false,
             });
@@ -206,9 +189,6 @@ class TaxReceiptModalComponent extends React.Component {
         const {
             buttonClicked,
         } = this.state;
-        const {
-            action,
-        } = this.props;
         return (
             <Button primary disabled={buttonClicked} onClick={() => this.handleSubmit()} className="blue-btn-rounded w-120">Add</Button>
         );
@@ -269,31 +249,21 @@ class TaxReceiptModalComponent extends React.Component {
 
     render() {
         const {
-            errorMessage,
             selectedTaxReceiptProfile,
             showFormData,
             showPopUp,
-            statusMessage,
             validity,
         } = this.state;
         const {
-            action,
-            isSelectPhotoModalOpen,
+            isTaxReceiptModelOpen,
             name,
             t,
         } = this.props;
         const formatMessage = t;
         return (
             <Fragment>
-            <Modal size="tiny" dimmer="inverted" className="chimp-modal" closeIcon open={isSelectPhotoModalOpen} onClose={() => { this.renderPopUp(); }}>
+            <Modal size="tiny" dimmer="inverted" className="chimp-modal" closeIcon open={isTaxReceiptModelOpen} onClose={() => { this.renderPopUp(); }}>
                 <Modal.Header>{name}</Modal.Header>
-                {/* {statusMessage
-                && (
-                       <ModalStatusMessage 
-                       error = {!_isEmpty(errorMessage) ? errorMessage : null}
-                       />
-                )
-                } */}
                 <Modal.Content>
                     <Modal.Description className="font-s-16">
                         <Form>

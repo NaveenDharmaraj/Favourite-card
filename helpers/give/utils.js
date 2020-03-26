@@ -53,18 +53,6 @@ const formatCurrency = (value, language, currencyType) => {
     ).format(value), 'US', '');
 };
 
-const messageList = {
-	taxReceiptDefault: {
-		defaultMessage: 'Add a new tax receipt recipient',
-		description: 'Message for adding new tax receipt',
-		id: 'taxReceiptProfile.taxReceiptDefault',
-	},
-	taxReceiptRecipientLabel: {
-		defaultMessage: 'Tax receipt recipient',
-		description: 'Message for the tax receipt dropdown label',
-		id: 'taxReceiptProfile.taxReceiptRecipientLabel',
-	},
-    }; 
 /**
 * Determine whether the supplied field is valid.
 * @param  {String} field The tax receipt profile form field name
@@ -662,7 +650,7 @@ const populateTaxReceipts = (taxReceiptData, formatMessage) => {
     return null;
 };
 
-const getDefaultTaxReceipt = (taxReceiptProfiles, selectedTaxReceiptProfile) =>{
+const getTaxReceiptById = (taxReceiptProfiles, selectedTaxReceiptProfile) =>{
     const selectedProfile = _.find(taxReceiptProfiles, ['id', selectedTaxReceiptProfile]);
     return selectedProfile;
 };
@@ -1642,40 +1630,6 @@ const populateP2pReviewPage = (giveData, data, currency, formatMessage, language
     return (state);
 }
 
-
-const populateReceiptOptions = (taxReceiptProfiles, selectedTaxReceiptProfile) => {
-    const options = [];
-    // let taxProfileData = selectedTaxReceiptProfile;
-    if (!_.isEmpty(taxReceiptProfiles)) {
-        taxReceiptProfiles.map((item) => {
-            const {
-                attributes,
-            } = item;
-            options.push({
-                text: `${attributes.fullName} - ${attributes.addressOne} ${attributes.city}`,
-                value: item.id,
-            });
-        });
-    }
-    options.push({
-        text: (messageList.taxReceiptDefault.defaultMessage),
-        value: 0,
-    });
-    let taxSelected = options[options.length - 1].value;
-    if (!_.isEmpty(selectedTaxReceiptProfile) &&
-        !!(selectedTaxReceiptProfile.id)) {
-        taxSelected = selectedTaxReceiptProfile.id;
-    }
-    //  else if (_.isEmpty(selectedTaxReceiptProfile)) {
-    //     taxProfileData = _.merge({}, this.intializeFormData);
-    // }
-    return {
-        options,
-        taxSelected,
-        // taxProfileData,
-    };
-
-}
 /**
  * Calculates what we need to give in total to all of our recipients.
  * @param {number} numberOfRecipients The number of recipients.
@@ -1772,11 +1726,10 @@ export {
     populateP2pReviewPage,
     populateGiftType,
     populateInfoToShare,
-    populateReceiptOptions,
     populateTaxReceipts,
     formatAmount,
     getDefaultCreditCard,
-    getDefaultTaxReceipt,
+    getTaxReceiptById,
     getDonationMatchedData,
     getNextAllocationMonth,
     setDateForRecurring,
