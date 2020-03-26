@@ -112,8 +112,8 @@ class Donation extends React.Component {
         this.getStripeCreditCard = this.getStripeCreditCard.bind(this);
         this.handleCCAddClose = this.handleCCAddClose.bind(this);
         this.handleModalOpen = this.handleModalOpen.bind(this);
-        this.handleAddButtonClick= this.handleAddButtonClick.bind(this);
-        this.handleNewAddButtonClick = this.handleNewAddButtonClick.bind(this);
+        this.handleAddNewCreditCard= this.handleAddNewCreditCard.bind(this);
+        this.handleAddNewButtonClicked = this.handleAddNewButtonClicked.bind(this);
         this.handleAddNewTaxReceipt = this.handleAddNewTaxReceipt.bind(this);
         dismissAllUxCritialErrors(props.dispatch);
     }
@@ -721,7 +721,7 @@ class Donation extends React.Component {
         return validCC;
     }
 
-    handleNewAddButtonClick(e, data) {
+    handleAddNewButtonClicked(e, data) {
         if(e.target.id === "addNewCreditCard"){
             this.setState({
                 isCreditCardModalOpen:true
@@ -734,7 +734,7 @@ class Donation extends React.Component {
         
     }
 
-    handleAddButtonClick() {
+    handleAddNewCreditCard() {
         const {
             flowObject:{
                 giveData:{
@@ -974,7 +974,7 @@ class Donation extends React.Component {
                                                                 <div 
                                                                     className="addNewCardInput mb-2"
                                                                     id="addNewCreditCard"
-                                                                    onClick={this.handleNewAddButtonClick}>
+                                                                    onClick={this.handleAddNewButtonClicked}>
                                                                          + Add new card
                                                                 </div>
                                                                 </>
@@ -1033,7 +1033,7 @@ class Donation extends React.Component {
                                                                     <div className="btn-wraper pt-3 text-right">
                                                                         <Button
                                                                             className="blue-btn-rounded-def sizeBig w-180"
-                                                                            onClick={this.handleAddButtonClick}
+                                                                            onClick={this.handleAddNewCreditCard}
                                                                             disabled={buttonClicked}
                                                                         >
                                                                             Add
@@ -1071,7 +1071,7 @@ class Donation extends React.Component {
                                                                 <div 
                                                                     className="addNewCardInput"
                                                                     id="addNewTaxReceipt"
-                                                                    onClick={this.handleNewAddButtonClick}>
+                                                                    onClick={this.handleAddNewButtonClicked}>
                                                                          + Add new tax receipt
                                                                 </div>
                                                                 </>
