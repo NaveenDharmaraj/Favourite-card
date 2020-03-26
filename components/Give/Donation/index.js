@@ -471,6 +471,7 @@ class Donation extends React.Component {
                   />
                   <Form.Field
                       control={Select}
+                      className="dropdownWithArrowParent"
                       id="donationMatch"
                       name="donationMatch"
                       onChange={this.handleInputChange}
@@ -1072,11 +1073,11 @@ class Donation extends React.Component {
                                                         {
                                                         (!_.isEmpty(taxReceiptsOptions) && taxReceiptsOptions.length> 1 && giveData.giveTo.value > 0 ) ? (
                                                             <Form.Field className="mb-2">
-                                                                <div className="paymentMethodDropdown">
+                                                                <div className="paymentMethodDropdown add_space">
                                                                     <label htmlFor="">Tax receipt</label>            
                                                                     <Dropdown
                                                                         button
-                                                                        className="taxReceiptDropDown"
+                                                                        className="taxReceiptDropDown label_top"
                                                                         name="taxReceipt"
                                                                         icon='cardExpress'
                                                                         floating
@@ -1091,7 +1092,7 @@ class Donation extends React.Component {
                                                             </Form.Field>
                                                             ) : (null)
                                                         }
-                                                        {
+                                                        {/* {
                                                             (_.isEmpty(taxReceiptsOptions) &&  giveData.giveTo.value > 0) ? (
                                                                 <>
                                                                 <label>Tax Receipt</label>
@@ -1103,7 +1104,7 @@ class Donation extends React.Component {
                                                                 </div>
                                                                 </>
                                                             ) : (null)
-                                                        }            
+                                                        }             */}
                                                         {
                                                             isTaxReceiptModelOpen && (
                                                                 <TaxReceiptModal
@@ -1126,8 +1127,8 @@ class Donation extends React.Component {
                                                     </Grid.Column>
                                                 </Grid.Row>
                                             </Grid>
-                                            <Grid>
-                                                <Grid.Row>
+                                            <Grid className="to_space">
+                                                <Grid.Row className="to_space">
                                                 <Grid.Column mobile={16} tablet={16} computer={16}>
                                                     <Note
                                                         fieldName="noteToSelf"
@@ -1141,7 +1142,7 @@ class Donation extends React.Component {
                                                     />
                                                     <Form.Button
                                                         primary
-                                                        className="blue-btn-rounded"
+                                                        className="blue-btn-rounded btn_right"
                                                         // className={isMobile ? 'mobBtnPadding' : 'btnPadding'}
                                                         content={(!creditCardApiCall) ? formatMessage('giveCommon:continueButton')
                                                             : formatMessage('giveCommon:submittingButton')}
