@@ -28,6 +28,9 @@ import {
     groupDefaultProps,
     // p2pDefaultProps,
 } from '../../helpers/give/defaultProps';
+import visaIcon from '../../static/images/icons/icon-cc-visa-colour.png';
+import mastercardIcon from '../../static/images/icons/icon-cc-mastercard-colour.png';
+import expressCard from '../../static/images/icons/icon-cc-american-express-colour.png';
 
 /**
  * Checks if giveData contains any credit card information
@@ -596,20 +599,34 @@ const populatePaymentInstrument = (paymentInstrumentsData, formatMessage) => {
                 (attributes) => false,
                 [
                     {
+
                         getValue: (attributes) => {
+                            const returnObj = {
+                                avatar: false,
+                            };
                             const cardProcessors = {
-                                amex: 'amex',
-                                discover: 'discover',
-                                mastercard: 'cc mastercard',
-                                stripe: 'stripe',
-                                visa: 'cc visa',
-                                }; 
+                                amex: expressCard,
+                                discover: visaIcon,
+                                mastercard: mastercardIcon,
+                                stripe: visaIcon,
+                                visa: visaIcon,
+                            };
                             const {
                                 processor,
                             } = populateCardData(attributes.description, 0);
-                            return cardProcessors[processor];
+                            returnObj.src = cardProcessors[processor];
+                            return returnObj;
                         },
-                        key: 'icon',
+                        key: 'image',
+                    },
+                    {
+                        getValue: (attributes) => {
+                            const {
+                                processor,
+                            } = populateCardData(attributes.description, 0);
+                            return processor;
+                        },
+                        key: 'processor',
                     },
                 ],
             ),

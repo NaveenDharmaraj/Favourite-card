@@ -555,7 +555,14 @@ class Donation extends React.Component {
     }
   
     renderpaymentInstrumentOptions(formData, options, formatMessage){
-          const creditCardField = (
+        let iconClass = {
+            amex: 'cardExpress',
+            discover: "cardVisa",
+            mastercard: "cardMaster",
+            stripe: "cardVisa",
+            visa: "cardVisa",
+        };
+        const creditCardField = (
             <Fragment>
                 <Form.Field>
                     <label htmlFor="creditCard">
@@ -567,7 +574,7 @@ class Donation extends React.Component {
                             id="creditCard"
                             name="creditCard"
                             button
-                            icon={formData.creditCard.icon}
+                            icon={iconClass[formData.creditCard.processor]}
                             className="dropdownWithArrowParent icon creditCardDropDown"
                             selection
                             fluid
