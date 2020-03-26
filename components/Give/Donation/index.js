@@ -37,7 +37,6 @@ import DonationFrequency from '../DonationFrequency';
 import { withTranslation } from '../../../i18n';
 import { dismissAllUxCritialErrors } from '../../../actions/error';
 import '../../shared/style/styles.less';
-import '../../../static/less/giveFlows.less';
 import {
     Elements,
     StripeProvider
@@ -589,24 +588,6 @@ class Donation extends React.Component {
       if(this.props.userAccountsFetched !== oldProps.userAccountsFetched){
             doSetState = true;
       }
-    
-    if (!_.isEqual(this.props.closeCreditCardModal, oldProps.closeCreditCardModal)) {
-        const {
-            closeCreditCardModal,
-        } = this.props;
-        this.setState({
-            isCreditCardModalOpen:!closeCreditCardModal
-        })
-    }
-    if(!_.isEqual(this.props.closeTaxReceiptModal, oldProps.closeTaxReceiptModal)) {
-        const{
-            closeTaxReceiptModal,
-        } = this.props;
-        this.setState({
-            isTaxReceiptModelOpen:!closeTaxReceiptModal
-        })
-    }
-
       if(giveData.giveTo.type === 'companies' && !_.isEqual(this.props.companyDetails, oldProps.companyDetails)) {
           giveData.creditCard = getDefaultCreditCard(populatePaymentInstrument(this.props.companyDetails.companyPaymentInstrumentsData, formatMessage));
           
@@ -930,8 +911,6 @@ class Donation extends React.Component {
             isCreditCardModalOpen,
             isTaxReceiptModelOpen,
             validity,
-            receiptOptions,
-            selectedValue,
         } = this.state;
         const {
             currency,
@@ -1197,8 +1176,6 @@ const  mapStateToProps = (state) => {
     return {
         companyDetails: state.give.companyData,
 		companyTaxReceiptEditApiCall: state.give.taxReceiptEditApiCall,
-        closeCreditCardModal:state.give.closeCreditCardModal,
-        closeTaxReceiptModal:state.give.closeTaxReceiptModal,
         creditCardApiCall: state.give.creditCardApiCall,
         currentUser: state.user.info,
         flowObject: state.give.flowObject,

@@ -12,12 +12,6 @@ const give = (state = {}, action) => {
                 },
             };
             break;
-        case 'CLOSE_CREDIT_CARD_MODAL':
-            newState = {
-                ...state,
-                ...action.payload,
-            };
-            break;
         case 'CLOSE_TAX_RECEIPT_MODAL':
             newState = {
                 ...state,

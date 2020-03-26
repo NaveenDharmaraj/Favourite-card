@@ -26,7 +26,6 @@ import {
 } from './taxreceipt';
 export const actionTypes = {
     ADD_NEW_CREDIT_CARD_STATUS: 'ADD_NEW_CREDIT_CARD_STATUS',
-    CLOSE_CREDIT_CARD_MODAL: 'CLOSE_CREDIT_CARD_MODAL',
     COVER_AMOUNT_DISPLAY: 'COVER_AMOUNT_DISPLAY',
     COVER_FEES: 'COVER_FEES',
     GET_ALL_COMPANY_TAX_RECEIPT_PROFILES: 'GET_ALL_COMPANY_TAX_RECEIPT_PROFILES',
@@ -781,14 +780,6 @@ export const proceed = (
             ).then((results) => {
                 if (!_.isEmpty(results[0])) {
                     successData.result = results[0];
-                    //successData = _.merge({}, flowObject);
-                    // For p2p, we create an array of arrays, I'm not to clear on the
-                    // the correct syntax to make this more redable.
-                    // if (flowObject.type === 'give/to/friend') {
-                    //     successData.allocationData = results[0];
-                    // } else {
-                    //     successData.allocationData = results[0].data;
-                    // }
                 }
             }).catch((err) => {
                 if (checkForQuaziSuccess(err.errors)) {
@@ -866,60 +857,7 @@ export const proceed = (
                     type: actionTypes.TAX_RECEIPT_API_CALL_STATUS,
                 });
             });
-        } 
-        // else if (creditCard.value === 0 && stepIndex === 0) {
-        //     dispatch({
-        //         payload: {
-        //             creditCardApiCall: true,
-        //         },
-        //         type: actionTypes.ADD_NEW_CREDIT_CARD_STATUS,
-        //     });
-        //     return createToken(flowObject.stripeCreditCard, flowObject.cardHolderName).then((token) => {
-        //         const paymentInstrumentsData = {
-        //             attributes: {
-        //                 stripeToken: token.id,
-        //             },
-        //             relationships: {
-        //                 paymentable: {
-        //                     data: {
-        //                         id: accountDetails.id,
-        //                         type: accountDetails.type,
-        //                     },
-        //                 },
-        //             },
-        //             type: 'paymentInstruments',
-        //         };
-        //         return savePaymentInstrument(paymentInstrumentsData);
-        //     }).then((result) => {
-        //         const {
-        //             data: {
-        //                 attributes: {
-        //                     description,
-        //                 },
-        //                 id,
-        //             },
-        //         } = result;
-        //         flowObject.giveData.creditCard.id = id;
-        //         flowObject.giveData.creditCard.value = id;
-        //         flowObject.giveData.creditCard.text = description;
-        //         flowObject.giveData.newCreditCardId = id;
-        //         dispatch({
-        //             payload: flowObject,
-        //             type: actionTypes.SAVE_FLOW_OBJECT,
-        //         });
-        //         callApiAndDispatchData(dispatch, accountDetails);
-        //     }).catch((err) => {
-        //         triggerUxCritialErrors(err.errors || err, dispatch);
-        //     }).finally(() => {
-        //         dispatch({
-        //             payload: {
-        //                 creditCardApiCall: false,
-        //             },
-        //             type: actionTypes.ADD_NEW_CREDIT_CARD_STATUS,
-        //         });
-        //     });
-        // }
-         else {
+        } else {
             dispatch({
                 payload: flowObject,
                 type: actionTypes.SAVE_FLOW_OBJECT,

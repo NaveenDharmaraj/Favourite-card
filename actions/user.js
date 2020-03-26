@@ -480,7 +480,7 @@ export const getTaxReceiptProfile = (dispatch, userId) => {
     });
 };
 
-const updateTaxReceiptProfile = (taxReceiptProfile, action, dispatch) => {
+export const updateTaxReceiptProfile = (taxReceiptProfile, action, dispatch) => {
     if (action === 'update') {
         const data = {
             attributes: _.pick(

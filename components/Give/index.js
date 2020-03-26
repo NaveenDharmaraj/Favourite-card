@@ -2,16 +2,10 @@ import React, { cloneElement, Fragment } from 'react';
 import dynamic from 'next/dynamic';
 import {connect} from 'react-redux'
 import _ from 'lodash';
-import {
-    Header,
-    Grid,
-    Breadcrumb,
-    Container,
-} from 'semantic-ui-react';
-import {actionTypes} from '../../actions/give';
 import { withTranslation } from '../../i18n';
 import {Router} from '../../routes';
 import '../../static/less/giveFlows.less';
+
 // const TaxReceipt = dynamic(() => import('./TaxReceipt'));
 const Review = dynamic(() => import('./Review'));
 const Success = dynamic(() => import('../Give/Success/index'));
