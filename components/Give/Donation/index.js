@@ -548,16 +548,25 @@ class Donation extends React.Component {
                     <label htmlFor="creditCard">
                     Payment method
                     </label>
-                    <Form.Field
-                        control={Select}
-                        id="creditCard"
-                        name="creditCard"
-                        className="dropdownWithArrowParent"
-                        onChange={this.handleInputChange}
-                        options={options}
-                        placeholder={formatMessage('creditCardPlaceholder')}
-                        value={formData.creditCard.value}
-                    />
+                    <div className="paymentMethodDropdown">
+                        <Dropdown
+                            // control={Select}
+                            id="creditCard"
+                            name="creditCard"
+                            button
+                            icon={formData.creditCard.icon}
+                            className="dropdownWithArrowParent icon"
+                            selection
+                            fluid
+                            floating
+                            labeled
+                            onChange={this.handleInputChange}
+                            options={options}
+                            placeholder={formatMessage('creditCardPlaceholder')}
+                            value={formData.creditCard.value}
+                        />
+                    </div>
+                    
                 </Form.Field>
             </Fragment>
           );
@@ -861,7 +870,6 @@ class Donation extends React.Component {
             } = this.props;
             
             dispatch(addNewCardAndLoad(flowObject)).then((result) => {
-                console.log('card creation api finished', result);
                 const {
                     data: {
                         attributes: {

@@ -550,6 +550,27 @@ const populateGiftType = (formatMessage) => {
         },
     ];
 };
+
+const populateCardData = (selectCardDetails, cardAmount) => {
+    const isEnglishCard = selectCardDetails.indexOf(' ending ');
+    const cardData = {
+        amount: cardAmount,
+        type: 'card',
+    };
+    const selectedCardName = _.split(selectCardDetails, ' ');
+    if (isEnglishCard !== -1) {
+        const dispName = selectedCardName ? selectedCardName[0] : '';
+        cardData.displayName = _.replace(dispName, '\'s', '');
+        cardData.processor = selectedCardName[selectedCardName.indexOf('ending') - 1].toLowerCase().trim();
+        cardData.truncatedPaymentId = selectedCardName[selectedCardName.length - 1];
+    } else {
+        cardData.displayName = _.replace(selectedCardName[2], '\'s', '');
+        cardData.processor = selectedCardName[0].toLowerCase().trim();
+        cardData.truncatedPaymentId = selectedCardName[selectedCardName.length - 1];
+    }
+    return cardData;
+};
+
 /**
 * Populate payment instrument drop down options
 * @param  {object} paymentInstrumentsData API data
@@ -573,6 +594,24 @@ const populatePaymentInstrument = (paymentInstrumentsData, formatMessage) => {
                 (item) => item.id,
                 (attributes) => `${attributes.description}`,
                 (attributes) => false,
+                [
+                    {
+                        getValue: (attributes) => {
+                            const cardProcessors = {
+                                amex: 'amex',
+                                discover: 'discover',
+                                mastercard: 'cc mastercard',
+                                stripe: 'stripe',
+                                visa: 'cc visa',
+                                }; 
+                            const {
+                                processor,
+                            } = populateCardData(attributes.description, 0);
+                            return cardProcessors[processor];
+                        },
+                        key: 'icon',
+                    },
+                ],
             ),
             newCreditCard,
         );
@@ -1190,26 +1229,6 @@ const resetDataForGiftTypeChange = (giveData, dropDownOptions, coverFeesData) =>
         }
     }
     return giveData;
-};
-
-const populateCardData = (selectCardDetails, cardAmount) => {
-    const isEnglishCard = selectCardDetails.indexOf(' ending ');
-    const cardData = {
-        amount: cardAmount,
-        type: 'card',
-    };
-    const selectedCardName = _.split(selectCardDetails, ' ');
-    if (isEnglishCard !== -1) {
-        const dispName = selectedCardName ? selectedCardName[0] : '';
-        cardData.displayName = _.replace(dispName, '\'s', '');
-        cardData.processor = selectedCardName[selectedCardName.indexOf('ending') - 1].toLowerCase().trim();
-        cardData.truncatedPaymentId = selectedCardName[selectedCardName.length - 1];
-    } else {
-        cardData.displayName = _.replace(selectedCardName[2], '\'s', '');
-        cardData.processor = selectedCardName[0].toLowerCase().trim();
-        cardData.truncatedPaymentId = selectedCardName[selectedCardName.length - 1];
-    }
-    return cardData;
 };
 
 /**
