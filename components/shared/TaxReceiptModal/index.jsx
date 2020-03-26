@@ -21,8 +21,7 @@ import {
     validateTaxReceiptProfileForm,
 } from '../../../helpers/give/utils';
 import {
-    getAllTaxReceipts,
-    updateTaxReceiptProfile,
+    addNewTaxReceiptProfileAndLoad,
 } from '../../../actions/user';
 
 // import {
@@ -35,6 +34,10 @@ const TaxReceiptFrom = dynamic(() => import('../../../components/Give/TaxReceipt
 const ModalStatusMessage = dynamic(() => import('../ModalStatusMessage'));
 import { withTranslation } from '../../../i18n';
 
+export const actionTypes = {
+    GET_ALL_COMPANY_TAX_RECEIPT_PROFILES: 'GET_ALL_COMPANY_TAX_RECEIPT_PROFILES',
+    GET_ALL_USER_TAX_RECEIPT_PROFILES: 'GET_ALL_USER_TAX_RECEIPT_PROFILES',
+};
 
 class TaxReceiptModalComponent extends React.Component {
     constructor(props) {
@@ -154,83 +157,32 @@ class TaxReceiptModalComponent extends React.Component {
             buttonClicked: true,
         });
         const {
-            action,
             flowObject,
             dispatch,
             handleModalOpen,
         } = this.props;
-        const{
-            giveData:{
-                giveTo,
-                giveFrom,
-            }
-        } = flowObject;
         const {
             isDefaultChecked,
+            selectedTaxReceiptProfile,
+
         } = this.state;
         const isValid = this.validateForm();
         if (isValid) {
-            const {
-                selectedTaxReceiptProfile,
-            } = this.state;
-            
-            updateTaxReceiptProfile(selectedTaxReceiptProfile, action).then((result) => {
-                const accountDetails = {
-                    id: (flowObject.type === 'donations') ? giveTo.id : giveFrom.id,
-                    type: (flowObject.type === 'donations') ? giveTo.type : giveFrom.type,
-                };
-                console.log(result);
-                
+            console.log(flowObject.giveData.taxReceipt)
+            dispatch(addNewTaxReceiptProfileAndLoad(flowObject, selectedTaxReceiptProfile, isDefaultChecked)).then((result)=>{
                 const {
-                    id,
-                } = result.data;
-                if (isDefaultChecked) {
-                    getTaxReceiptProfileMakeDefault(id).then((response) => {
-                        const {
-                            attributes,
-                        } = response.data;
-                        attributes.isDefault = isDefaultChecked;
-                    })
-                } 
-                
-                // callApiAndDispatchData(dispatch, accountDetails);
-                getAllTaxReceipts(Number(accountDetails.id), dispatch)
-
-                dispatch({
-                    payload: {
-                        closeTaxReceiptModal: true,
+                    data: {
+                        attributes: {
+                            description,
+                        },
+                        id,
                     },
-                    type: 'CLOSE_TAX_RECEIPT_MODAL',
-                });
-                
-                const statusMessageProps = {
-                    message: 'New Tax receipt Added',
-                    type: 'success',
-                };
-                dispatch({
-                    payload: {
-                        errors: [
-                            statusMessageProps,
-                        ],
-                    },
-                    type:'TRIGGER_UX_CRITICAL_ERROR',
-                });
+                } = result;
+                debugger
+                handleModalOpen(false);
 
-                this.setState({
-                    buttonClicked: true,
-                    errorMessage: null,
-                    statusMessage: true,
-                });
-               
-            }).catch((err) => {
-                
-                handleModalOpen(true);
-                this.setState({
-                    buttonClicked: true,
-                    errorMessage: 'Error in saving the profile.',
-                    statusMessage: true,
-                })
-            });
+            })
+            
         } else {
             this.setState({
                 buttonClicked: false,

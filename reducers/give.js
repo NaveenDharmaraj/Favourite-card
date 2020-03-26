@@ -120,6 +120,20 @@ const give = (state = {}, action) => {
                 },
             };
             break;
+        case 'GET_ALL_COMPANY_TAX_RECEIPT_PROFILES':
+            newState = {
+                ...state,
+                companyData: {
+                    ...state.companyData,
+                    companyDefaultTaxReceiptProfile: {
+                        ...state.companyData.companyDefaultTaxReceiptProfile,
+                        ...action.payload.companyDefaultTaxReceiptProfile,
+                    },
+                    taxReceiptProfiles: action.payload.taxReceiptProfiles,
+                    
+                },
+            };
+            break;
         default:
             break;
     }

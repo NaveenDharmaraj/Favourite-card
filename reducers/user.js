@@ -20,21 +20,6 @@ const user = (state = {}, action) => {
                 info: Object.assign({}, action.payload.info),
             };
             break;
-        case 'GET_ALL_TAX_RECEIPT_PROFILES':
-            newState = {
-                ...state,
-                defaultTaxReceiptProfile: {
-                    ...state.defaultTaxReceiptProfile,
-                    ...action.payload.defaultTaxReceiptProfile,
-                },
-                taxReceiptProfiles: Object.assign(
-                    [],
-                    state.taxReceiptProfiles,
-                    action.payload.taxReceiptProfiles,
-                ),
-            };
-            
-            break;
         case 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS':
             const {
                 companiesAccountsData,
@@ -192,6 +177,20 @@ const user = (state = {}, action) => {
             newState = {
                 ...state,
                 paymentInstrumentsData: action.payload.paymentInstrumentsData,
+            };
+            break;
+        case 'GET_ALL_USER_TAX_RECEIPT_PROFILES':
+            newState = {
+                ...state,
+                defaultTaxReceiptProfile: {
+                    ...state.defaultTaxReceiptProfile,
+                    ...action.payload.defaultTaxReceiptProfile,
+                },
+                taxReceiptProfiles: Object.assign(
+                    [],
+                    state.taxReceiptProfiles,
+                    action.payload.taxReceiptProfiles,
+                ),
             };
             break;
         default:

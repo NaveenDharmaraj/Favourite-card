@@ -3,7 +3,9 @@ import React, {
 import {
     Form,
     Button,
+    Icon,
     label,
+    Popup,
     Radio,
 } from 'semantic-ui-react';
 
@@ -24,6 +26,17 @@ function DonationFrequency(props) {
             <div className="mb-1">
                 <Form.Field>
                     <label>Frequency</label>
+                    <Popup
+                        content={<div>{formatMessage('automaticDonationPopup')}</div>}
+                        position="top center"
+                        trigger={
+                            <Icon
+                                color="blue"
+                                name="question circle"
+                                size="large"
+                            />
+                        }
+                    />
                 </Form.Field>
                 <Form.Field>
                     <Radio
