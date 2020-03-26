@@ -805,11 +805,13 @@ class Donation extends React.Component {
         }
     }
 
-    handleCCAddClose(modalBool) {
+    handleCCAddClose() {
         this.setState({ 
-            isCreditCardModalOpen: modalBool
+            ...this.state,    
+            isCreditCardModalOpen: false
         });
     }
+
     handleModalOpen(modalBool) {
         this.setState({
             isTaxReceiptModelOpen: modalBool,
@@ -992,7 +994,7 @@ class Donation extends React.Component {
                                                                 className="chimp-modal"
                                                                 closeIcon
                                                                 open={isCreditCardModalOpen}
-                                                                onClose={this.handleCCAddClose(false)}
+                                                                onClose={this.handleCCAddClose}
                                                                     >
                                                                 <Modal.Header>Add new card</Modal.Header>
                                                                 <Modal.Content>
