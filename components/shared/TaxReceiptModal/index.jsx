@@ -158,8 +158,7 @@ class TaxReceiptModalComponent extends React.Component {
         });
         const {
             flowObject,
-            dispatch,
-            handleModalOpen,
+            handleAddNewTaxReceipt
         } = this.props;
         const {
             isDefaultChecked,
@@ -168,20 +167,7 @@ class TaxReceiptModalComponent extends React.Component {
         } = this.state;
         const isValid = this.validateForm();
         if (isValid) {
-            console.log(flowObject.giveData.taxReceipt)
-            dispatch(addNewTaxReceiptProfileAndLoad(flowObject, selectedTaxReceiptProfile, isDefaultChecked)).then((result)=>{
-                const {
-                    data: {
-                        attributes: {
-                            description,
-                        },
-                        id,
-                    },
-                } = result;
-                debugger
-                handleModalOpen(false);
-
-            })
+            handleAddNewTaxReceipt(flowObject,selectedTaxReceiptProfile,isDefaultChecked);
             
         } else {
             this.setState({

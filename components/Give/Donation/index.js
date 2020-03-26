@@ -25,15 +25,15 @@ import {
 import {
     connect,
 } from 'react-redux';
-import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 import Note from '../../shared/Note';
 import DropDownAccountOptions from '../../shared/DropDownAccountOptions';
 import FlowBreadcrumbs from '../FlowBreadcrumbs';
 import DonationAmountField from '../DonationAmountField';
-import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
+import { getDonationMatchAndPaymentInstruments, } from '../../../actions/user';
 import { proceed, getCompanyPaymentAndTax } from '../../../actions/give';
 import {
     addNewCardAndLoad,
+    addNewTaxReceiptProfileAndLoad,
 } from '../../../actions/give';
 import DonationFrequency from '../DonationFrequency';
 import { withTranslation } from '../../../i18n';
@@ -59,8 +59,6 @@ import {
     donationDefaultProps,
 } from '../../../helpers/give/defaultProps';
 import {
-    isValidGiftAmount,
-    onWhatDayList,
     populateDonationMatch,
     populatePaymentInstrument,
     populateReceiptOptions,
@@ -68,7 +66,6 @@ import {
     formatAmount,
     getDefaultCreditCard,
     getDefaultTaxReceipt,
-    setDateForRecurring,
     validateDonationForm,
     fullMonthNames,
     formatCurrency,
@@ -132,6 +129,7 @@ class Donation extends React.Component {
         this.handleModalOpen = this.handleModalOpen.bind(this);
         this.handleAddButtonClick= this.handleAddButtonClick.bind(this);
         this.handleNewAddButtonClick = this.handleNewAddButtonClick.bind(this);
+        this.handleAddNewTaxReceipt = this.handleAddNewTaxReceipt.bind(this);
         dismissAllUxCritialErrors(props.dispatch);
     }
 
@@ -342,12 +340,21 @@ class Donation extends React.Component {
                     doSetState=false;
                 }
                 else {
-                    giveData.taxReceipt = getDefaultTaxReceipt(populateTaxReceipts(this.props.userTaxReceiptProfiles, formatMessage),value);
-                    console.log(this.getChangedProfileData(value));
+                    let allTaxReceiptProfiles = [];
+                    if(giveData.giveTo.type === "user"){
+                        allTaxReceiptProfiles = this.props.userTaxReceiptProfiles;
+                    }
+                    else {
+                        allTaxReceiptProfiles = this.props.companyDetails.taxReceiptProfiles;
+                    }
+                    giveData.taxReceipt = getDefaultTaxReceipt(populateTaxReceipts(allTaxReceiptProfiles, formatMessage),value);
                     this.setState({
                         flowObject: {
                             ...this.state.flowObject,
-                            selectedTaxReceiptProfile: this.getChangedProfileData(value),
+                            giveData:{
+                                ...this.state.flowObject.giveData,
+                                ...giveData
+                            }
                         },
                         selectedValue: value,
                         // showFormData: (value <= 0),
@@ -396,6 +403,7 @@ class Donation extends React.Component {
             giveData: {
                 giveTo,
                 creditCard,
+                taxReceipt,
             },
         } = flowObject;
         const validateCC = this.isValidCC(
@@ -407,11 +415,14 @@ class Donation extends React.Component {
             inValidCardNameValue,
         );
         if(this.validateForm() && validateCC){
-            if (creditCard.value > 0) {
-                flowObject.selectedTaxReceiptProfile = (giveTo.type === 'companies') ?
-                    companyDefaultTaxReceiptProfile :
-                    defaultTaxReceiptProfile;
+            let allTaxReceiptProfiles = null
+            if(giveTo.type ==="user"){
+                allTaxReceiptProfiles = this.props.userTaxReceiptProfiles;
+            } else{
+                allTaxReceiptProfiles = this.props.companyDetails.taxReceiptProfiles
             }
+            flowObject.selectedTaxReceiptProfile =  _.find(allTaxReceiptProfiles, {
+                                'id': taxReceipt.id});
             flowObject.stepsCompleted = false;
             dismissAllUxCritialErrors(this.props.dispatch);
             dispatch(proceed({
@@ -495,7 +506,7 @@ class Donation extends React.Component {
                       value={formData.donationMatch.value}
                   />
                   {
-                      (!_.isEmpty(donationMatchedData)) && (
+                      (!_.isEmpty(donationMatchedData)) ? (
                           <Form.Field>
                               <div className="recurringMsg">
                                 {formatMessage(
@@ -533,10 +544,12 @@ class Donation extends React.Component {
                                   })}
                               </div>
                           </Form.Field>
-                      )
+                      ):(null)
                   }
               </Form.Field>
           );
+      } else if(formData.giveTo.type === 'user' && _.isEmpty(options)) {
+          donationMatchField =(<Form.Input fluid label="Matching Partner" placeholder="No matching partner available" disabled />)
       }
       return donationMatchField;
     }
@@ -555,7 +568,7 @@ class Donation extends React.Component {
                             name="creditCard"
                             button
                             icon={formData.creditCard.icon}
-                            className="dropdownWithArrowParent icon"
+                            className="dropdownWithArrowParent icon creditCardDropDown"
                             selection
                             fluid
                             floating
@@ -596,9 +609,7 @@ class Donation extends React.Component {
       if(this.props.userAccountsFetched !== oldProps.userAccountsFetched){
             doSetState = true;
       }
-    //   if(_.isEmpty(selectedTaxReceiptProfile)){
-    //       selectedTaxReceiptProfile = this.props.userTa
-    //   }
+    
     if (!_.isEqual(this.props.closeCreditCardModal, oldProps.closeCreditCardModal)) {
         const {
             closeCreditCardModal,
@@ -698,39 +709,6 @@ class Donation extends React.Component {
               },
           });
       }
-    }
-
-    getChangedProfileData(value) {
-
-		let {
-			taxReceiptProfiles
-		} = this.props
-		taxReceiptProfiles = !_.isEmpty(taxReceiptProfiles) ? taxReceiptProfiles : [this.props.flowObject.selectedTaxReceiptProfile];
-
-		const {
-			flowObject: {
-				selectedTaxReceiptProfile,
-			},
-		} = this.props;
-		let data = null;
-		if (value > 0) {
-			data = _.merge({}, _.find(taxReceiptProfiles, {
-				id: value
-			}));
-			if (
-				!_.isEmpty(selectedTaxReceiptProfile) &&
-				!_.isEmpty(selectedTaxReceiptProfile.id) &&
-				selectedTaxReceiptProfile.id === value
-			) {
-				data = selectedTaxReceiptProfile;
-			}
-		} else if (
-			!_.isEmpty(selectedTaxReceiptProfile) &&
-			!(selectedTaxReceiptProfile.id)
-		) {
-			data = selectedTaxReceiptProfile;
-		}
-		return (_.isEmpty(data)) ? _.merge({}, this.intializeFormData) : data;
     }
     
     /**
@@ -930,6 +908,36 @@ class Donation extends React.Component {
         });
     }
 
+    handleAddNewTaxReceipt(flowObject, newTaxReceiptProfile, isDefaultChecked){
+        const {
+            dispatch,
+        } = this.props;
+        const formatMessage = this.props.t;
+
+        dispatch(addNewTaxReceiptProfileAndLoad(flowObject, newTaxReceiptProfile, isDefaultChecked)).then((result)=>{
+            const {
+                data: {
+                    attributes: {
+                        
+                    },
+                    id,
+                },
+            } = result;
+            let newtaxReceipt = getDefaultTaxReceipt(populateTaxReceipts(this.props.userTaxReceiptProfiles, formatMessage),id);
+            this.setState({
+                ...this.state,
+                flowObject:{
+                    ...this.state.flowObject,
+                    giveData:{
+                        ...this.state.flowObject.giveData,
+                        taxReceipt:{...newtaxReceipt}
+                    }
+                }
+            })
+            this.handleModalOpen(false);
+
+        })
+    }
     handlegiftTypeButtonClick = (e, { value }) =>{
         this.setState({ 
             flowObject: {
@@ -1102,7 +1110,6 @@ class Donation extends React.Component {
                                                                                 label="Set as primary card"
                                                                                 name="isDefaultCard"
                                                                                 onChange={this.handleSetPrimaryClick}
-                                                                                // readOnly={isDefaultCardReadOnly}
                                                                             />
                                                                         </Form>
                                                                     </Modal.Description>
@@ -1125,6 +1132,7 @@ class Donation extends React.Component {
                                                                     <label htmlFor="">Tax receipt</label>            
                                                                     <Dropdown
                                                                         button
+                                                                        className="taxReceiptDropDown"
                                                                         name="taxReceipt"
                                                                         icon='cardExpress'
                                                                         floating
@@ -1160,6 +1168,7 @@ class Donation extends React.Component {
                                                                     dispatch={dispatch}
                                                                     flowObject={flowObject}
                                                                     taxReceipt={this.intializeFormData}
+                                                                    handleAddNewTaxReceipt={this.handleAddNewTaxReceipt}
                                                                     handleModalOpen={this.handleModalOpen}
                                                                     action="add"
                                                                 />
@@ -1167,32 +1176,42 @@ class Donation extends React.Component {
                                                         }
                                                             
 
-                                                        <Note
-                                                            fieldName="noteToSelf"
-                                                            handleOnInputChange={this.handleInputChange}
-                                                            handleOnInputBlur={this.handleInputOnBlur}
-                                                            formatMessage ={formatMessage}
-                                                            labelText={formatMessage('noteToSelfLabel')}
-                                                            popupText={formatMessage('donorNoteToSelfPopup')}
-                                                            placeholderText={formatMessage('noteToSelfPlaceHolder')}
-                                                            text={giveData.noteToSelf}
-                                                        />
+                                                        
                                                         { this.renderdonationMatchOptions(giveData, donationMatchOptions, formatMessage, donationMatchData, language, currency)}
 
                                                         <Divider hidden />
-                                                        <Form.Button
-                                                            primary
-                                                            className="blue-btn-rounded"
-                                                            // className={isMobile ? 'mobBtnPadding' : 'btnPadding'}
-                                                            content={(!creditCardApiCall) ? formatMessage('giveCommon:continueButton')
-                                                                : formatMessage('giveCommon:submittingButton')}
-                                                            disabled={(creditCardApiCall) || this.state.disableButton}
-                                                            // fluid={isMobile}
-                                                            type="submit"
-                                                        />
+                                                        
                                                     </Grid.Column>
                                                 </Grid.Row>
                                             </Grid>
+                                            <Grid>
+                                                <Grid.Row>
+                                                <Grid.Column mobile={16} tablet={16} computer={16}>
+                                                    <Note
+                                                        fieldName="noteToSelf"
+                                                        handleOnInputChange={this.handleInputChange}
+                                                        handleOnInputBlur={this.handleInputOnBlur}
+                                                        formatMessage ={formatMessage}
+                                                        labelText={formatMessage('noteToSelfLabel')}
+                                                        popupText={formatMessage('donorNoteToSelfPopup')}
+                                                        placeholderText={formatMessage('noteToSelfPlaceHolder')}
+                                                        text={giveData.noteToSelf}
+                                                    />
+                                                    <Form.Button
+                                                        primary
+                                                        className="blue-btn-rounded"
+                                                        // className={isMobile ? 'mobBtnPadding' : 'btnPadding'}
+                                                        content={(!creditCardApiCall) ? formatMessage('giveCommon:continueButton')
+                                                            : formatMessage('giveCommon:submittingButton')}
+                                                        disabled={(creditCardApiCall) || this.state.disableButton}
+                                                        // fluid={isMobile}
+                                                        type="submit"
+                                                    />
+                                                </Grid.Column>
+                                                </Grid.Row>
+                                                
+                                            </Grid>
+                                            
                                         </Form>
                                     </div>
                                 </Grid.Column>

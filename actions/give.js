@@ -21,12 +21,16 @@ import {
 import {
     triggerUxCritialErrors,
 } from './error';
-
+import {
+    getTaxReceiptProfileMakeDefault,
+} from './taxreceipt';
 export const actionTypes = {
     ADD_NEW_CREDIT_CARD_STATUS: 'ADD_NEW_CREDIT_CARD_STATUS',
     CLOSE_CREDIT_CARD_MODAL: 'CLOSE_CREDIT_CARD_MODAL',
     COVER_AMOUNT_DISPLAY: 'COVER_AMOUNT_DISPLAY',
     COVER_FEES: 'COVER_FEES',
+    GET_ALL_COMPANY_TAX_RECEIPT_PROFILES: 'GET_ALL_COMPANY_TAX_RECEIPT_PROFILES',
+    GET_ALL_USER_TAX_RECEIPT_PROFILES: 'GET_ALL_USER_TAX_RECEIPT_PROFILES',
     GET_BENEFICIARY_FROM_SLUG: 'GET_BENEFICIARY_FROM_SLUG',
     GET_BENIFICIARY_FOR_GROUP: 'GET_BENIFICIARY_FOR_GROUP',
     GET_COMPANY_PAYMENT_AND_TAXRECEIPT: 'GET_COMPANY_PAYMENT_AND_TAXRECEIPT',
@@ -613,6 +617,7 @@ export const addNewCardAndLoad = (flowObject) => {
             }
             return addedCreditCard;
         }).catch((err) => {
+            
             triggerUxCritialErrors(err.errors || err, dispatch);
             return Promise.reject(err);
         }).finally(() => {
@@ -624,6 +629,149 @@ export const addNewCardAndLoad = (flowObject) => {
             });
         });
     };
+};
+
+// eslint-disable-next-line import/exports-last
+export const getAllTaxReceipts = (id, dispatch, type = "user") => {
+    
+    const accountType = (type === "user") ? "users" : "companies";
+    return coreApi.get(
+        `/${accountType}/${id}?include=defaultTaxReceiptProfile,taxReceiptProfiles`,
+        {
+            params: {
+                dispatch,
+                uxCritical: true,
+            },
+        },
+    );
+};
+
+const addNewTaxReceiptProfile = (taxReceiptProfile) => {
+    return coreApi.post('/taxReceiptProfiles', {
+        data: taxReceiptProfile,
+    });
+};
+// eslint-disable-next-line max-len
+export const addNewTaxReceiptProfileAndLoad = (flowObject, selectedTaxReceiptProfile, isDefaultChecked) => {
+    return (dispatch) => {
+        const {
+            giveData: {
+                giveTo,
+                giveFrom,
+            },
+        } = flowObject;
+        const fsa = {
+            payload: {
+                companyDefaultTaxReceiptProfile: {},
+                defaultTaxReceiptProfile: {},
+                taxReceiptProfiles: [],
+            },
+            type: actionTypes.GET_ALL_USER_TAX_RECEIPT_PROFILES,
+        };
+        let newTaxReceipt = {};
+        const accountDetails = {
+            id: (flowObject.type === 'donations') ? giveTo.id : giveFrom.id,
+            type: (flowObject.type === 'donations') ? giveTo.type : giveFrom.type,
+        };
+        
+        return addNewTaxReceiptProfile(selectedTaxReceiptProfile).then((result) => {
+            
+            newTaxReceipt = result;
+            
+            const {
+                id,
+            } = result.data;
+            if (isDefaultChecked) {
+                return getTaxReceiptProfileMakeDefault(id);
+            }
+            return null;
+        }).then((response) => {
+            
+            const {
+                attributes,
+            } = newTaxReceipt.data;
+            attributes.isDefault = isDefaultChecked;
+            return getAllTaxReceipts(Number(accountDetails.id), dispatch, accountDetails.type);
+        }).then((resultData) => {
+            const statusMessageProps = {
+                message: 'New Tax receipt Added',
+                type: 'success',
+            };
+            dispatch({
+                payload: {
+                    errors: [
+                        statusMessageProps,
+                    ],
+                },
+                type: 'TRIGGER_UX_CRITICAL_ERROR',
+            });
+            if (accountDetails.type === 'companies') {
+                fsa.type = actionTypes.GET_ALL_COMPANY_TAX_RECEIPT_PROFILES;
+            }
+            if (!_.isEmpty(resultData.included)) {
+                const { included } = resultData;
+                let defaultTaxReceiptId = null;
+                if (!_.isEmpty(resultData.data.relationships.defaultTaxReceiptProfile.data)) {
+                    defaultTaxReceiptId = resultData.data.relationships.defaultTaxReceiptProfile.data.id;
+                }
+                included.map((item) => {
+                    const {
+                        attributes,
+                        id,
+                        type,
+                    } = item;
+                    if (type === 'taxReceiptProfiles') {
+                        if (id === defaultTaxReceiptId && accountDetails.type === 'companies') {
+                            fsa.payload.companyDefaultTaxReceiptProfile = {
+                                attributes,
+                                id,
+                                type,
+                            };
+                        }
+                        if (id === defaultTaxReceiptId && accountDetails.type === 'user') {
+                            fsa.payload.defaultTaxReceiptProfile = {
+                                attributes,
+                                id,
+                                type,
+                            };
+                        }
+                        fsa.payload.taxReceiptProfiles.push({
+                            attributes,
+                            id,
+                            type,
+                        });
+                    }
+                });
+                dispatch(fsa);
+                
+                return newTaxReceipt;
+            }
+        }).catch((err) => {
+            
+            triggerUxCritialErrors(err.errors || err, dispatch);
+            return Promise.reject(err);
+        });
+          
+    }
+
+
+    //     // this.setState({
+    //     //     buttonClicked: true,
+    //     //     errorMessage: null,
+    //     //     statusMessage: true,
+    //     // });
+       
+    // }).then((result)=>{
+
+    //     //// set state here
+    // }).catch((err) => {
+        
+    //     this.setState({
+    //         buttonClicked: true,
+    //         errorMessage: 'Error in saving the profile.',
+    //         statusMessage: true,
+    //     })
+    // });
 };
 
 export const proceed = (
