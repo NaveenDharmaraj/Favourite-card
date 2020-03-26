@@ -122,7 +122,7 @@ const AddMoneySuccess = (props) => {
                 && (
                     <div className="text-center">
                         <Link route={taxProfileLink}>
-                            <Button className="blue-bordr-btn-round-def flowConfirmBtn">
+                            <Button className="blue-bordr-btn-round-def flowConfirmBtn fast_btn">
                                 {taxButtonText}
                             </Button>
                         </Link>
@@ -132,7 +132,7 @@ const AddMoneySuccess = (props) => {
 
             <div className="text-center mt-1">
                 <Link route={dashboardLink}>
-                    <Button className="blue-btn-rounded-def flowConfirmBtn">
+                    <Button className="blue-btn-rounded-def flowConfirmBtn second_btn">
                         {dashBoardButtonText}
                     </Button>
                 </Link>
