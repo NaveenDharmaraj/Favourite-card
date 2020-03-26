@@ -10,7 +10,6 @@ import {
     Container,
     Button,
     Checkbox,
-    Divider,
     Dropdown,
     Form,
     Grid,
@@ -19,7 +18,6 @@ import {
     Input,
     Modal,
     Popup,
-    Radio,
     Select,
 } from 'semantic-ui-react';
 import {
@@ -44,9 +42,6 @@ import {
     Elements,
     StripeProvider
 } from 'react-stripe-elements';
-import {
-    countryOptions,
-} from '../../../helpers/constants';
 import TaxReceiptModal from '../../shared/TaxReceiptModal';
 
 const { publicRuntimeConfig } = getConfig();
@@ -132,28 +127,6 @@ class Donation extends React.Component {
         this.handleAddNewTaxReceipt = this.handleAddNewTaxReceipt.bind(this);
         dismissAllUxCritialErrors(props.dispatch);
     }
-
-    intializeFormData = {
-        attributes: {
-            addressOne: '',
-            addressTwo: '',
-            city: '',
-            country: countryOptions[0].value,
-            fullName: '',
-            postalCode: '',
-            province: '',
-        },
-        relationships: {
-            accountHoldable: {
-                data: {
-                    id: this.props.currentUser.id,
-                    type: 'user',
-                },
-            },
-        },
-        type: 'taxReceiptProfiles',
-    };
-
     componentDidMount() {
         const {
         dispatch,
@@ -636,11 +609,6 @@ class Donation extends React.Component {
     }
 
       if(giveData.giveTo.type === 'companies' && !_.isEqual(this.props.companyDetails, oldProps.companyDetails)) {
-          
-          this.intializeFormData.relationships.accountHoldable.data = {
-              id: giveData.giveTo.id,
-              type:'companies',
-          };
           giveData.creditCard = getDefaultCreditCard(populatePaymentInstrument(this.props.companyDetails.companyPaymentInstrumentsData, formatMessage));
           
           giveData.taxReceipt = getDefaultTaxReceipt(populateTaxReceipts(this.props.companyDetails.taxReceiptProfiles, formatMessage),this.props.companyDetails.companyDefaultTaxReceiptProfile.id);
@@ -1165,7 +1133,6 @@ class Donation extends React.Component {
                                                                     isSelectPhotoModalOpen={isTaxReceiptModelOpen}
                                                                     dispatch={dispatch}
                                                                     flowObject={flowObject}
-                                                                    taxReceipt={this.intializeFormData}
                                                                     handleAddNewTaxReceipt={this.handleAddNewTaxReceipt}
                                                                     handleModalOpen={this.handleModalOpen}
                                                                     action="add"
@@ -1177,7 +1144,6 @@ class Donation extends React.Component {
                                                         
                                                         { this.renderdonationMatchOptions(giveData, donationMatchOptions, formatMessage, donationMatchData, language, currency)}
 
-                                                        <Divider hidden />
                                                         
                                                     </Grid.Column>
                                                 </Grid.Row>

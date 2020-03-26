@@ -21,15 +21,8 @@ import {
     validateTaxReceiptProfileForm,
 } from '../../../helpers/give/utils';
 import {
-    addNewTaxReceiptProfileAndLoad,
-} from '../../../actions/user';
-
-// import {
-//     getUserDefaultTaxReceipt,
-// } from '../../../actions/userProfile';
-import {
-    getTaxReceiptProfileMakeDefault,
-} from '../../../actions/taxreceipt';
+    countryOptions,
+} from '../../../helpers/constants';
 const TaxReceiptFrom = dynamic(() => import('../../../components/Give/TaxReceipt/TaxReceiptProfileForm'));
 const ModalStatusMessage = dynamic(() => import('../ModalStatusMessage'));
 import { withTranslation } from '../../../i18n';
@@ -45,8 +38,8 @@ class TaxReceiptModalComponent extends React.Component {
         this.state = {
             buttonClicked: true,
             errorMessage: null,
-            isDefaultChecked: (!_isEmpty(props.taxReceipt) && !_isEmpty(props.taxReceipt.attributes))? props.taxReceipt.attributes.isDefault : false,
-            selectedTaxReceiptProfile: _cloneDeep(props.taxReceipt),
+            isDefaultChecked:false,
+            selectedTaxReceiptProfile: this.intializeFormData,
             showFormData: true,
             showPopUp: false,
             statusMessage: false,
@@ -59,6 +52,27 @@ class TaxReceiptModalComponent extends React.Component {
         this.renderCheckBox = this.renderCheckBox.bind(this);
         this.renderPopUp = this.renderPopUp.bind(this);
     }
+
+    intializeFormData = {
+        attributes: {
+            addressOne: '',
+            addressTwo: '',
+            city: '',
+            country: countryOptions[0].value,
+            fullName: '',
+            postalCode: '',
+            province: '',
+        },
+        relationships: {
+            accountHoldable: {
+                data: {
+                    id: this.props.flowObject.giveData.giveTo.id,
+                    type: this.props.flowObject.giveData.giveTo.type,
+                },
+            },
+        },
+        type: 'taxReceiptProfiles',
+    };
 
     intializeValidations() {
         this.validity = {
