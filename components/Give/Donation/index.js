@@ -64,7 +64,7 @@ import {
     formatCurrency,
 } from '../../../helpers/give/utils';
 
-const CreditCard = dynamic(() => import('../../shared/CreditCard'));
+import CreditCard from '../../shared/CreditCard';
     
 class Donation extends React.Component {
     constructor(props) {
@@ -230,7 +230,6 @@ class Donation extends React.Component {
                 language,
             },
         } = this.props;
-        let doSetState = true;
         const formatMessage = this.props.t;
         let newValue = (!_.isEmpty(options)) ? _.find(options, { value }) : value;
         let setDisableFlag = this.state.disableButton;
@@ -239,9 +238,7 @@ class Donation extends React.Component {
             giveData.userInteracted = true;
         switch (name) {
             case 'giveTo':
-                
                 if(giveData.giveTo.type === 'companies') {
-
                     setDisableFlag = true;
                     const {dispatch} = this.props;
                     getCompanyPaymentAndTax(dispatch, Number(giveData.giveTo.id));
@@ -272,16 +269,33 @@ class Donation extends React.Component {
                 break;
             case 'creditCard'  :
                 if(newValue.value === 0) {
+                    if(giveData.giveTo.type === "user") {
+                        giveData.creditCard = getDefaultCreditCard(populatePaymentInstrument(this.props.paymentInstrumentsData, formatMessage));
+                    } else if(giveData.giveTo.type === "companies") {
+                        giveData.creditCard = getDefaultCreditCard(
+                            populatePaymentInstrument(
+                              this.props.companyDetails.companyPaymentInstrumentsData,
+                              formatMessage
+                              ));   
+                    }
                     this.setState({
                         isCreditCardModalOpen:true
                     })
-                    doSetState = false;
                 }
                 break
             case 'taxReceipt' :
                 if(data.value === 0){
                     this.setState({isTaxReceiptModelOpen: true});
-                    doSetState=false;
+                    if(giveData.giveTo.type === "user") {
+                        giveData.taxReceipt = getTaxReceiptById(populateTaxReceipts(this.props.userTaxReceiptProfiles, formatMessage),defaultTaxReceiptProfile.id);
+                    } else if(giveData.giveTo.type === "companies") {
+                        giveData.taxReceipt = getTaxReceiptById(
+                            populateTaxReceipts(
+                                this.props.companyDetails.taxReceiptProfiles,
+                                formatMessage),
+                                this.props.companyDetails.companyDefaultTaxReceiptProfile.id
+                                );
+                    }
                 }
                 else {
                     let allTaxReceiptProfiles = [];
@@ -300,27 +314,22 @@ class Donation extends React.Component {
                                 ...giveData
                             }
                         },
-                        // showFormData: (value <= 0),
                     });
                 }
-                
                 break;                        
             default: break;
             }
-            if(doSetState) {
-                this.setState({
-                    disableButton: setDisableFlag,
-                    flowObject: {
-                        ...this.state.flowObject,
-                        giveData,
-                    },
-                    validity: {
-                        ...this.state.validity,
-                        validity,
-                    },
-                });
-            }
-            
+            this.setState({
+                disableButton: setDisableFlag,
+                flowObject: {
+                    ...this.state.flowObject,
+                    giveData,
+                },
+                validity: {
+                    ...this.state.validity,
+                    validity,
+                },
+            });            
         }
     }  
   
