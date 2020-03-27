@@ -4,9 +4,10 @@ class ChatMessagesHeader extends React.Component {
 
     render() {
         return (
-       <div>
+            
+       <Fragment>
            ChatMessagesHeader
-       </div>
+       </Fragment>
         );
     }
 }
