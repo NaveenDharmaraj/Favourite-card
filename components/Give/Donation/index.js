@@ -227,7 +227,6 @@ class Donation extends React.Component {
         let setDisableFlag = this.state.disableButton;
         if (giveData[name] !== newValue  ) {
             if((name !=="taxReceipt" || name !== "creditCard" ) && newValue.value !==0) {
-                debugger
                 giveData[name] = newValue;
                 giveData.userInteracted = true;
             }
