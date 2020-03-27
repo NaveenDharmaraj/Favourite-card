@@ -265,27 +265,8 @@ class Donation extends React.Component {
                 }
                 break
             case 'taxReceipt' :
-                if(data.value === 0){
+                if(newValue.value === 0){
                     this.setState({isTaxReceiptModelOpen: true});
-                }
-                else {
-                    let allTaxReceiptProfiles = [];
-                    if(giveData.giveTo.type === "user"){
-                        allTaxReceiptProfiles = this.props.userTaxReceiptProfiles;
-                    }
-                    else {
-                        allTaxReceiptProfiles = this.props.companyDetails.taxReceiptProfiles;
-                    }
-                    giveData.taxReceipt = getTaxReceiptById(populateTaxReceipts(allTaxReceiptProfiles, formatMessage),value);
-                    this.setState({
-                        flowObject: {
-                            ...this.state.flowObject,
-                            giveData:{
-                                ...this.state.flowObject.giveData,
-                                ...giveData
-                            }
-                        },
-                    });
                 }
                 break;                        
             default: break;
