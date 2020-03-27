@@ -239,8 +239,6 @@ export const getDonationMatchAndPaymentInstruments = (userId, flowType) => {
     };
 };
 
-
-
 export const wpLogin = (token = null) => {
     let params = null;
     if (!_.isEmpty(token)) {
