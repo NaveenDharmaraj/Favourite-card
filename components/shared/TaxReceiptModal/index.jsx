@@ -43,7 +43,6 @@ class TaxReceiptModalComponent extends React.Component {
         this.handleChildInputChange = this.handleChildInputChange.bind(this);
         this.handleChildOnBlurChange = this.handleChildOnBlurChange.bind(this);
         this.handlePopUpCancel = this.handlePopUpCancel.bind(this);
-        this.renderCheckBox = this.renderCheckBox.bind(this);
         this.renderPopUp = this.renderPopUp.bind(this);
     }
 
@@ -194,38 +193,6 @@ class TaxReceiptModalComponent extends React.Component {
         );
     }
 
-    renderCheckBox(selectedTaxReceiptProfile) {
-        const {
-            isDefaultChecked,
-        } = this.state;
-        if (!_isEmpty(selectedTaxReceiptProfile) && !_isEmpty(selectedTaxReceiptProfile.attributes) && selectedTaxReceiptProfile.attributes.isDefault) {
-            return (
-                <div className="checkboxToRadio">
-                    <Checkbox
-                        className=" f-weight-n"
-                        checked
-                        type="checkbox"
-                        id="checkbox"
-                        label="Set as default tax receipt recipient"
-                    />
-                </div>
-                
-            );
-        // eslint-disable-next-line no-else-return
-        } else {
-            return (
-                <div className="checkboxToRadio">
-                    <Checkbox
-                        className="checkboxToRadio f-weight-n"
-                        type="checkbox"
-                        id="checkbox"
-                        onClick={() => { this.setState({ buttonClicked: false, isDefaultChecked: !isDefaultChecked }); }}
-                        label="Set as default tax receipt recipient"
-                    />
-                </div>
-            );
-        }
-    }
     renderPopUp(){
         const {
             buttonClicked,
@@ -253,6 +220,7 @@ class TaxReceiptModalComponent extends React.Component {
             showFormData,
             showPopUp,
             validity,
+            isDefaultChecked,
         } = this.state;
         const {
             isTaxReceiptModelOpen,
@@ -278,7 +246,15 @@ class TaxReceiptModalComponent extends React.Component {
                                 />
                             </Form.Field>
                             <Form.Field className="mt-2">
-                                {this.renderCheckBox(selectedTaxReceiptProfile)}
+                            <div className="checkboxToRadio">
+                                <Checkbox
+                                    className="checkboxToRadio f-weight-n"
+                                    type="checkbox"
+                                    id="checkbox"
+                                    onClick={() => { this.setState({ buttonClicked: false, isDefaultChecked: !isDefaultChecked }); }}
+                                    label="Set as default tax receipt recipient"
+                                />
+                            </div>
                             </Form.Field>
                         </Form>
                     </Modal.Description>

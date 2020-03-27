@@ -1073,8 +1073,8 @@ class Donation extends React.Component {
                                                             </Form.Field>
                                                             ) : (null)
                                                         }
-                                                        {/* {
-                                                            (_.isEmpty(taxReceiptsOptions) &&  giveData.giveTo.value > 0) ? (
+                                                        {
+                                                            (taxReceiptsOptions.length ===1 &&  giveData.giveTo.value > 0) ? (
                                                                 <>
                                                                 <label>Tax Receipt</label>
                                                                 <div 
@@ -1085,7 +1085,7 @@ class Donation extends React.Component {
                                                                 </div>
                                                                 </>
                                                             ) : (null)
-                                                        }             */}
+                                                        }            
                                                         {
                                                             isTaxReceiptModelOpen && (
                                                                 <TaxReceiptModal
