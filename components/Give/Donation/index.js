@@ -255,11 +255,6 @@ class Donation extends React.Component {
                 }
                 validity = validateDonationForm(name, newValue, validity, giveData);
                 break;
-            case 'automaticDonation':
-                const inputValue  = value;
-                giveData.automaticDonation = inputValue;
-                giveData.giftType.value = (inputValue) ? 1 : 0;
-                break;
             case 'donationAmount' :
                 giveData.formatedDonationAmount = newValue;
                 break;

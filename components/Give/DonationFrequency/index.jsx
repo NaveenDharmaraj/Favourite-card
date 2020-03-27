@@ -17,7 +17,6 @@ function DonationFrequency(props) {
     const {
         formatMessage,
         formData,
-        handleInputChange,
         handlegiftTypeButtonClick,
         language,
     } = props;
@@ -44,8 +43,8 @@ function DonationFrequency(props) {
                         label='Add once'
                         name='automaticDonation'
                         value={0}
-                        checked={!formData.automaticDonation}
-                        onChange={handleInputChange}
+                        checked={!formData.giftType.value}
+                        onChange={handlegiftTypeButtonClick}
                     />
                 </Form.Field>
                 <Form.Field>
@@ -54,13 +53,13 @@ function DonationFrequency(props) {
                         label='Add monthly'
                         name='automaticDonation'
                         value={1}
-                        checked={!!formData.automaticDonation}
-                        onChange={handleInputChange}
+                        checked={!!formData.giftType.value}
+                        onChange={handlegiftTypeButtonClick}
                     />
                 </Form.Field>
             </div>
             {
-                ((!!formData.automaticDonation) && (
+                ((formData.giftType.value > 0) && (
                     <>
                         <div className="mb-1-2">
                             <Button
