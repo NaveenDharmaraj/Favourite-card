@@ -147,7 +147,6 @@ class TaxReceiptModalComponent extends React.Component {
     }
 
     handleSubmit() {
-        
         const {
             flowObject,
             handleAddNewTaxReceipt
@@ -155,16 +154,17 @@ class TaxReceiptModalComponent extends React.Component {
         const {
             isDefaultChecked,
             selectedTaxReceiptProfile,
-
         } = this.state;
         const isValid = this.validateForm();
         if (isValid) {
             this.setState({
                 buttonClicked: true,
             });
-            handleAddNewTaxReceipt(flowObject,selectedTaxReceiptProfile,isDefaultChecked);
-            this.setState({
-                buttonClicked: false,
+            handleAddNewTaxReceipt(flowObject,selectedTaxReceiptProfile,isDefaultChecked)
+            .then(()=>{
+                this.setState({
+                    buttonClicked: false,
+                });
             });
         }
     }
