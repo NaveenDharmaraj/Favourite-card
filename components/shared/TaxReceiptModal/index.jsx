@@ -36,7 +36,6 @@ class TaxReceiptModalComponent extends React.Component {
             buttonClicked: true,
             isDefaultChecked:false,
             selectedTaxReceiptProfile: this.intializeFormData,
-            showFormData: true,
             showPopUp: false,
             validity: this.intializeValidations(),
         };
@@ -151,9 +150,7 @@ class TaxReceiptModalComponent extends React.Component {
     }
 
     handleSubmit() {
-        this.setState({
-            buttonClicked: true,
-        });
+        
         const {
             flowObject,
             handleAddNewTaxReceipt
@@ -165,6 +162,9 @@ class TaxReceiptModalComponent extends React.Component {
         } = this.state;
         const isValid = this.validateForm();
         if (isValid) {
+            this.setState({
+                buttonClicked: true,
+            });
             handleAddNewTaxReceipt(flowObject,selectedTaxReceiptProfile,isDefaultChecked);
             this.setState({
                 buttonClicked: false,
@@ -217,7 +217,6 @@ class TaxReceiptModalComponent extends React.Component {
     render() {
         const {
             selectedTaxReceiptProfile,
-            showFormData,
             showPopUp,
             validity,
             isDefaultChecked,
@@ -238,7 +237,7 @@ class TaxReceiptModalComponent extends React.Component {
                             <Form.Field>
                                 <TaxReceiptFrom
                                     data={selectedTaxReceiptProfile}
-                                    showFormData={showFormData}
+                                    showFormData={true}
                                     formatMessage={formatMessage}
                                     parentInputChange={this.handleChildInputChange}
                                     parentOnBlurChange={this.handleChildOnBlurChange}

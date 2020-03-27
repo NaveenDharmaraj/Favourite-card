@@ -287,7 +287,12 @@ class Donation extends React.Component {
                 if(data.value === 0){
                     this.setState({isTaxReceiptModelOpen: true});
                     if(giveData.giveTo.type === "user") {
-                        giveData.taxReceipt = getTaxReceiptById(populateTaxReceipts(this.props.userTaxReceiptProfiles, formatMessage),defaultTaxReceiptProfile.id);
+                        giveData.taxReceipt = getTaxReceiptById(
+                            populateTaxReceipts(
+                                this.props.userTaxReceiptProfiles,
+                                formatMessage
+                                ),
+                                this.props.defaultTaxReceiptProfile.id);
                     } else if(giveData.giveTo.type === "companies") {
                         giveData.taxReceipt = getTaxReceiptById(
                             populateTaxReceipts(
@@ -1074,7 +1079,7 @@ class Donation extends React.Component {
                                                             ) : (null)
                                                         }
                                                         {
-                                                            (taxReceiptsOptions.length ===1 &&  giveData.giveTo.value > 0) ? (
+                                                            (!_.isEmpty(taxReceiptsOptions)  && taxReceiptsOptions.length ===1 &&  giveData.giveTo.value > 0) ? (
                                                                 <>
                                                                 <label>Tax Receipt</label>
                                                                 <div 
