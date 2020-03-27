@@ -36,13 +36,10 @@ class TaxReceiptModalComponent extends React.Component {
             buttonClicked: true,
             isDefaultChecked:false,
             selectedTaxReceiptProfile: this.intializeFormData,
-            showPopUp: false,
             validity: this.intializeValidations(),
         };
         this.handleChildInputChange = this.handleChildInputChange.bind(this);
         this.handleChildOnBlurChange = this.handleChildOnBlurChange.bind(this);
-        this.handlePopUpCancel = this.handlePopUpCancel.bind(this);
-        this.renderPopUp = this.renderPopUp.bind(this);
     }
 
     intializeFormData = {
@@ -172,18 +169,6 @@ class TaxReceiptModalComponent extends React.Component {
         }
     }
 
-    handlePopUpCancel(type){
-        const {
-            handleModalOpen,
-        } = this.props;
-        type === 'discard' ? handleModalOpen(false) :  handleModalOpen(true);
-        this.setState(()=>{
-            return{
-                showPopUp: false,
-            }
-        });
-    }
-
     renderContinueButton() {
         const {
             buttonClicked,
@@ -193,35 +178,14 @@ class TaxReceiptModalComponent extends React.Component {
         );
     }
 
-    renderPopUp(){
-        const {
-            buttonClicked,
-        } = this.state;
-        const {
-            handleModalOpen
-        } = this.props;
-        if(!buttonClicked){
-            this.setState((prevState)=>{
-                return{
-                    showPopUp: true,
-                }
-            });
-        } else {
-            handleModalOpen(false);
-        }
-        
-    }
-
-
-
     render() {
         const {
             selectedTaxReceiptProfile,
-            showPopUp,
             validity,
             isDefaultChecked,
         } = this.state;
         const {
+            handleModalClose,
             isTaxReceiptModelOpen,
             name,
             t,
@@ -229,7 +193,7 @@ class TaxReceiptModalComponent extends React.Component {
         const formatMessage = t;
         return (
             <Fragment>
-            <Modal size="tiny" dimmer="inverted" className="chimp-modal" closeIcon open={isTaxReceiptModelOpen} onClose={() => { this.renderPopUp(); }}>
+            <Modal size="tiny" dimmer="inverted" className="chimp-modal" closeIcon open={isTaxReceiptModelOpen} onClose={handleModalClose }>
                 <Modal.Header>{name}</Modal.Header>
                 <Modal.Content>
                     <Modal.Description className="font-s-16">
@@ -262,18 +226,6 @@ class TaxReceiptModalComponent extends React.Component {
                     </div>
                 </Modal.Content>
             </Modal>
-            {showPopUp
-                && <Modal size="tiny" dimmer="inverted" className="chimp-modal" closeIcon open={showPopUp} centered={false} onClose={() => { this.handlePopUpCancel('cancel') }}>
-                <Modal.Header>Discard edits?</Modal.Header>
-                <Modal.Content>
-                    <Modal.Description className="font-s-14">If you discard, you will lose your edits.</Modal.Description>
-                    <div className="btn-wraper pt-3 text-right">
-                    <Button className="blue-btn-rounded-def " onClick={()=>{ this.handlePopUpCancel('discard') }}>Discard</Button>
-                    <Button className="blue-bordr-btn-round-def" onClick={()=>{ this.handlePopUpCancel('cancel') }}>Cancel</Button>
-                    </div>
-                </Modal.Content>
-            </Modal>
-            } 
             </Fragment>
         );
     }

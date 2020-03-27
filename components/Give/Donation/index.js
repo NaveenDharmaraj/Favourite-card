@@ -111,7 +111,7 @@ class Donation extends React.Component {
         this.validateCreditCardName = this.validateCreditCardName.bind(this);
         this.getStripeCreditCard = this.getStripeCreditCard.bind(this);
         this.handleCCAddClose = this.handleCCAddClose.bind(this);
-        this.handleModalOpen = this.handleModalOpen.bind(this);
+        this.handleTaxReceiptModalClose = this.handleTaxReceiptModalClose.bind(this);
         this.handleAddNewCreditCard= this.handleAddNewCreditCard.bind(this);
         this.handleAddNewButtonClicked = this.handleAddNewButtonClicked.bind(this);
         this.handleAddNewTaxReceipt = this.handleAddNewTaxReceipt.bind(this);
@@ -812,14 +812,13 @@ class Donation extends React.Component {
 
     handleCCAddClose() {
         this.setState({ 
-            ...this.state,    
             isCreditCardModalOpen: false
         });
     }
 
-    handleModalOpen(modalBool) {
+    handleTaxReceiptModalClose() {
         this.setState({
-            isTaxReceiptModelOpen: modalBool,
+            isTaxReceiptModelOpen: false,
         });
     }
 
@@ -858,7 +857,7 @@ class Donation extends React.Component {
                     }
                 }
             })
-            this.handleModalOpen(false);
+            this.handleTaxReceiptModalClose();
 
         })
     }
@@ -1090,7 +1089,7 @@ class Donation extends React.Component {
                                                                     dispatch={dispatch}
                                                                     flowObject={flowObject}
                                                                     handleAddNewTaxReceipt={this.handleAddNewTaxReceipt}
-                                                                    handleModalOpen={this.handleModalOpen}
+                                                                    handleModalClose={this.handleTaxReceiptModalClose}
                                                                     action="add"
                                                                 />
                                                             )
