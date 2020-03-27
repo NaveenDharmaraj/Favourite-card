@@ -43,7 +43,7 @@ function DonationFrequency(props) {
                         className="chimpRadio font-w-n"
                         label='Add once'
                         name='automaticDonation'
-                        value={false}
+                        value={0}
                         checked={!formData.automaticDonation}
                         onChange={handleInputChange}
                     />
@@ -53,7 +53,7 @@ function DonationFrequency(props) {
                         className="chimpRadio font-w-n"
                         label='Add monthly'
                         name='automaticDonation'
-                        value={true}
+                        value={1}
                         checked={!!formData.automaticDonation}
                         onChange={handleInputChange}
                     />

@@ -211,18 +211,14 @@ class Donation extends React.Component {
             options,
             value,
         } = data;
-        const { target } = event;
         let {
             flowObject: {
                 giveData,
-                selectedCreditCard
             },
-            // dropDownOptions,
             validity,
         } = this.state;
         const {
             flowObject: {
-                type,
             },
         } = this.state;
         const {
