@@ -515,7 +515,7 @@ class Donation extends React.Component {
             <Fragment>
                 <Form.Field>
                     <label htmlFor="creditCard">
-                    Payment method
+                    {formatMessage('creditCardLabel')}
                     </label>
                     <div className="paymentMethodDropdown">
                         <Dropdown
