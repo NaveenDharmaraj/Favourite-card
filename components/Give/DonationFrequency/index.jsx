@@ -19,6 +19,7 @@ function DonationFrequency(props) {
         formData,
         handlegiftTypeButtonClick,
         language,
+        isCharityFrequency,
     } = props;
     return (
         <>
@@ -40,7 +41,7 @@ function DonationFrequency(props) {
                 <Form.Field>
                     <Radio
                         className="chimpRadio font-w-n"
-                        label='Add once'
+                        label={isCharityFrequency ? 'Send once' : 'Add once'}
                         name='automaticDonation'
                         value={0}
                         checked={!formData.giftType.value}
@@ -50,7 +51,7 @@ function DonationFrequency(props) {
                 <Form.Field>
                     <Radio
                         className="chimpRadio font-w-n"
-                        label='Add monthly'
+                        label={isCharityFrequency ? 'Send monthly' : 'Add monthly'}
                         name='automaticDonation'
                         value={1}
                         checked={!!formData.giftType.value}

@@ -14,6 +14,7 @@ import {
 
 function DonationAmountField(props) {
     const {
+        isGiveToCharity,
         amount,
         formatMessage,
         handleInputChange,
@@ -28,11 +29,11 @@ function DonationAmountField(props) {
             </label>
             <Form.Field
                 control={Input}
-                id="donationAmount"
+                id={isGiveToCharity ? "giveAmount" : "donationAmount"}
                 error={!isValidGiftAmount(validity)}
                 icon="dollar"
                 iconPosition="left"
-                name="donationAmount"
+                name={isGiveToCharity ? "giveAmount" : "donationAmount"}
                 maxLength="8"
                 onBlur={handleInputOnBlur}
                 onChange={handleInputChange}

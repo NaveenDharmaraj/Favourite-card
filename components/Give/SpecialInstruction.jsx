@@ -102,14 +102,7 @@ const SpecialInstruction = (props) => {
 
     return (
         <Fragment>
-            <Form.Field>
-                <Divider className="dividerMargin" />
-            </Form.Field>
-            <Form.Field>
-                <Header as="h3" className="f-weight-n">{formatMessage('specialInstruction:specialInstructionLabel')}</Header>
-            </Form.Field>
             {repeatGift}
-
             <Form.Field>
                 <label htmlFor="infoToShare">
                     {formatMessage('specialInstruction:infoToShareLabel')}
