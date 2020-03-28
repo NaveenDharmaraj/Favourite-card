@@ -7,23 +7,33 @@ import getConfig from 'next/config';
 import _isEmpty from 'lodash/isEmpty';
 import _merge from 'lodash/merge';
 import {
+    Container,
+    Button,
     Checkbox,
-    Divider,
+    Dropdown,
     Form,
+    Grid,
+    Header,
     Icon,
     Input,
+    Modal,
     Popup,
     Select,
 } from 'semantic-ui-react';
 import {
     connect,
 } from 'react-redux';
-import ReactHtmlParser from 'react-html-parser';
-import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 import Note from '../../shared/Note';
 import DropDownAccountOptions from '../../shared/DropDownAccountOptions';
-import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
+import FlowBreadcrumbs from '../FlowBreadcrumbs';
+import DonationAmountField from '../DonationAmountField';
+import { getDonationMatchAndPaymentInstruments, } from '../../../actions/user';
 import { proceed, getCompanyPaymentAndTax } from '../../../actions/give';
+import {
+    addNewCardAndLoad,
+    addNewTaxReceiptProfileAndLoad,
+} from '../../../actions/give';
+import DonationFrequency from '../DonationFrequency';
 import { withTranslation } from '../../../i18n';
 import { dismissAllUxCritialErrors } from '../../../actions/error';
 import '../../shared/style/styles.less';
@@ -31,6 +41,8 @@ import {
     Elements,
     StripeProvider
 } from 'react-stripe-elements';
+import TaxReceiptModal from '../../shared/TaxReceiptModal';
+
 const { publicRuntimeConfig } = getConfig();
 
 const {
@@ -41,19 +53,19 @@ import {
     donationDefaultProps,
 } from '../../../helpers/give/defaultProps';
 import {
-    isValidGiftAmount,
-    onWhatDayList,
     populateDonationMatch,
     populatePaymentInstrument,
+    populateTaxReceipts,
     formatAmount,
     getDefaultCreditCard,
-    setDateForRecurring,
+    getTaxReceiptById,
     validateDonationForm,
     fullMonthNames,
     formatCurrency,
 } from '../../../helpers/give/utils';
-const CreditCard = dynamic(() => import('../../shared/CreditCard'));
 
+import CreditCard from '../../shared/CreditCard';
+    
 class Donation extends React.Component {
     constructor(props) {
     super(props);
@@ -74,14 +86,18 @@ class Donation extends React.Component {
                     nextStep: props.step,
                 }
             }
+            let flowObject = _.cloneDeep(payload);
         this.state = {
-            flowObject: _.cloneDeep(payload),
+            buttonClicked: false,
+            flowObject: {...flowObject,},
             disableButton: !props.userAccountsFetched,
             inValidCardNameValue: true,
             inValidCardNumber: true,
             inValidCvv: true,
             inValidExpirationDate: true,
             inValidNameOnCard: true,
+            isCreditCardModalOpen: false,
+            isTaxReceiptModelOpen: false,
             validity: this.intializeValidations(),
             dropDownOptions: {},
         }
@@ -94,9 +110,13 @@ class Donation extends React.Component {
         this.validateCreditCardCvv = this.validateCreditCardCvv.bind(this);
         this.validateCreditCardName = this.validateCreditCardName.bind(this);
         this.getStripeCreditCard = this.getStripeCreditCard.bind(this);
+        this.handleCCAddClose = this.handleCCAddClose.bind(this);
+        this.handleTaxReceiptModalClose = this.handleTaxReceiptModalClose.bind(this);
+        this.handleAddNewCreditCard= this.handleAddNewCreditCard.bind(this);
+        this.handleAddNewButtonClicked = this.handleAddNewButtonClicked.bind(this);
+        this.handleAddNewTaxReceipt = this.handleAddNewTaxReceipt.bind(this);
         dismissAllUxCritialErrors(props.dispatch);
     }
-
     componentDidMount() {
         const {
         dispatch,
@@ -106,7 +126,7 @@ class Donation extends React.Component {
     } = this.props;
         dispatch(getDonationMatchAndPaymentInstruments(id, 'donations'));
     }
-
+    
     intializeValidations() {
         this.validity = {
             doesAmountExist: true,
@@ -142,7 +162,6 @@ class Donation extends React.Component {
             validity,
         } = this.state;
         let inputValue = value;
-        // const isNumber = /^\d+(\.\d*)?$/;
         const isValidNumber = /^(?:[0-9]+,)*[0-9]+(?:\.[0-9]+)?$/;
         if ((name === 'donationAmount') && !_.isEmpty(value) && value.match(isValidNumber)) {
             inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
@@ -185,26 +204,18 @@ class Donation extends React.Component {
         this.setState({ validity });
         return _.every(validity);
     }
-
+    
     handleInputChange = (event, data) =>  {
         const {
             name,
             options,
             value,
         } = data;
-        const { target } = event;
         let {
             flowObject: {
                 giveData,
-                selectedCreditCard
             },
-            // dropDownOptions,
             validity,
-        } = this.state;
-        const {
-            flowObject: {
-                type,
-            },
         } = this.state;
         const {
             i18n:{
@@ -214,9 +225,11 @@ class Donation extends React.Component {
         const formatMessage = this.props.t;
         let newValue = (!_.isEmpty(options)) ? _.find(options, { value }) : value;
         let setDisableFlag = this.state.disableButton;
-        if (giveData[name] !== newValue) {
-            giveData[name] = newValue;
-            giveData.userInteracted = true;
+        if (giveData[name] !== newValue  ) {
+            if((name !=="taxReceipt" || name !== "creditCard" ) && newValue.value !==0) {
+                giveData[name] = newValue;
+                giveData.userInteracted = true;
+            }
         switch (name) {
             case 'giveTo':
                 if(giveData.giveTo.type === 'companies') {
@@ -236,17 +249,25 @@ class Donation extends React.Component {
                         ] = populateDonationMatch(this.props.donationMatchData,formatMessage, language);
                         giveData.donationMatch = defaultMatch;
                         setDisableFlag = false;
+                        giveData.taxReceipt = getTaxReceiptById(populateTaxReceipts(this.props.userTaxReceiptProfiles, formatMessage),this.props.defaultTaxReceiptProfile.id);
                 }
                 validity = validateDonationForm(name, newValue, validity, giveData);
-                break;
-            case 'automaticDonation':
-                const inputValue  = target.checked;
-                giveData.automaticDonation = inputValue;
-                giveData.giftType.value = (inputValue) ? 1 : 0;
                 break;
             case 'donationAmount' :
                 giveData.formatedDonationAmount = newValue;
                 break;
+            case 'creditCard'  :
+                if(newValue.value === 0) {
+                    this.setState({
+                        isCreditCardModalOpen:true
+                    })
+                }
+                break
+            case 'taxReceipt' :
+                if(newValue.value === 0){
+                    this.setState({isTaxReceiptModelOpen: true});
+                }
+                break;                        
             default: break;
             }
             this.setState({
@@ -259,10 +280,10 @@ class Donation extends React.Component {
                     ...this.state.validity,
                     validity,
                 },
-            });
+            });            
         }
-    }  
-  
+    }
+
     handleSubmit = () => {
         const {
             dispatch,
@@ -285,6 +306,7 @@ class Donation extends React.Component {
             giveData: {
                 giveTo,
                 creditCard,
+                taxReceipt,
             },
         } = flowObject;
         const validateCC = this.isValidCC(
@@ -296,11 +318,14 @@ class Donation extends React.Component {
             inValidCardNameValue,
         );
         if(this.validateForm() && validateCC){
-            if (creditCard.value > 0) {
-                flowObject.selectedTaxReceiptProfile = (giveTo.type === 'companies') ?
-                    companyDefaultTaxReceiptProfile :
-                    defaultTaxReceiptProfile;
+            let allTaxReceiptProfiles = null
+            if(giveTo.type ==="user"){
+                allTaxReceiptProfiles = this.props.userTaxReceiptProfiles;
+            } else{
+                allTaxReceiptProfiles = this.props.companyDetails.taxReceiptProfiles
             }
+            flowObject.selectedTaxReceiptProfile =  _.find(allTaxReceiptProfiles, {
+                                'id': taxReceipt.id});
             flowObject.stepsCompleted = false;
             dismissAllUxCritialErrors(this.props.dispatch);
             dispatch(proceed({
@@ -308,114 +333,31 @@ class Donation extends React.Component {
         }
     }
 
-    /**
-     * Renders the JSX for the donation amount field.
-     * @param {number} amount The donation amount.
-     * @param {object} validity The validity object.
-     * @param {function} formatMessage I18 formatting.
-     * @return {JSX} JSX representing donation amount.
-     */  
-    renderDonationAmountField(amount, validity, formatMessage) {
-      return (
-          <Form.Field>
-              <label htmlFor="donationAmount">
-                {formatMessage('giveCommon:amountLabel')}
-              </label>
-              <Form.Field
-                  control={Input}
-                  id="donationAmount"
-                  error={!isValidGiftAmount(validity)}
-                  icon="dollar"
-                  iconPosition="left"
-                  name="donationAmount"
-                  maxLength="8"
-                  onBlur={this.handleInputOnBlur}
-                  onChange={this.handleInputChange}
-                  placeholder={formatMessage('giveCommon:amountPlaceHolder')}
-                  size="large"
-                  value={amount}
-              />
-                <FormValidationErrorMessage
-                    condition={!validity.doesAmountExist || !validity.isAmountMoreThanOneDollor
-                    || !validity.isValidPositiveNumber}
-                    errorMessage={formatMessage('giveCommon:errorMessages.amountLessOrInvalid', {
-                        minAmount: 5,
-                    })}
-                />
-                <FormValidationErrorMessage
-                    condition={!validity.isAmountLessThanOneBillion}
-                    errorMessage={ReactHtmlParser(formatMessage('giveCommon:errorMessages.invalidMaxAmountError'))}
-                />
-            </Form.Field>
-        );
-    }
-  
-    /**
-       * Render recurring donation option.
-       * @param {object} formData The state object representing form data.
-       * @param {function} formatMessage  I18 formatting.
-       * @param {string} language language
-       * @return {JSX} JSX representing the adding to source selection.
-       */
-    renderingRecurringDonationFields(formData, formatMessage, language) {
-        return (
-            <Fragment>
-                <Form.Field>
-                    <label htmlFor="automaticDonation">
-                      {formatMessage('automaticDonationLabel')}
-                    </label>
-                    <Popup
-                        content={<div>{formatMessage('automaticDonationPopup')}</div>}
-                        position="top center"
-                        trigger={
-                            <Icon
-                                color="blue"
-                                name="question circle"
-                                size="large"
-                            />
-                        }
-                    />
-                    <br />
-                    <Form.Field
-                        checked={formData.automaticDonation }
-                        control={Checkbox}
-                        className="ui checkbox chkMarginBtm"
-                        id="automaticDonation"
-                        name="automaticDonation"
-                        onChange={this.handleInputChange}
-                        toggle
-                    />
-                    <div>
-                      {formatMessage('recurringMontlyDonationLabel')}
-                    </div>
-                </Form.Field>
-                {
-                    !!formData.automaticDonation && (
-                        <Form.Field>
-                            <label htmlFor="onWhatDay">
-                                {formatMessage('donationOnWhatDayLabel')}
-                            </label>
-                            <Form.Field
-                                control={Select}
-                                id="giftType"
-                                name="giftType"
-                                options={onWhatDayList(formatMessage)}
-                                onChange={this.handleInputChange}
-                                value={formData.giftType.value}
-                            />
-                            <div className="recurringMsg">
-                            {formatMessage(
-                                      'donationRecurringDateNote',
-                                      { 
-                                          recurringDate: setDateForRecurring(formData.giftType.value, formatMessage, language)
-                                      },
-                                  )}
-                            </div>
-                        </Form.Field>
-                    )
+    handlePresetAmountClick = (event, data) =>{
+        const {
+            value,
+        } = data;
+        const inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
+        const formatedDonationAmount = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
+        let {
+            validity,
+            giveData,
+        } = this.state
+
+        validity = validateDonationForm("donationAmount", inputValue, validity, giveData);
+
+        this.setState({
+            ...this.state,
+            flowObject:{
+                ...this.state.flowObject,
+                giveData:{
+                    ...this.state.flowObject.giveData,
+                    donationAmount:inputValue,
+                    formatedDonationAmount,
                 }
-            </Fragment>
-        );
+            },
+            validity,
+        });
     }
   
     renderdonationMatchOptions(
@@ -426,197 +368,224 @@ class Donation extends React.Component {
           language,
           currency,
       ){
-      let donationMatchField = null;
-      if (formData.giveTo.type === 'user' && !_.isEmpty(options)) {
-          let donationMatchedData = {};
-          let convertedPolicyPeriod = formatMessage('policyPeriodYear');
-          const currentDate = new Date();
-          let donationMonth = currentDate.getFullYear();
-          if(formData.donationMatch.value > 0) {
-              donationMatchedData = _.find(
-                  donationMatchData, (item) => item.attributes.employeeRoleId == formData.donationMatch.value,
-              );
-              if (donationMatchedData.attributes.policyPeriod === 'month') {
-                  convertedPolicyPeriod = formatMessage('policyPeriodMonth');
-                  const months = fullMonthNames(formatMessage);
-                  donationMonth = months[currentDate.getMonth()];
-              }
-          }
-          donationMatchField = (
-              <Form.Field>
-                  <label htmlFor="donationMatch">
-                  {formatMessage('donationMatchLabel')}
-                  </label>
-                  <Popup
-                      content={<div>{formatMessage('donationsMatchPopup')}</div>}
-                      position="top center"
-                      trigger={
-                          <Icon
-                              color="blue"
-                              name="question circle"
-                              size="large"
-                          />
-                      }
-                  />
-                  <Form.Field
-                      control={Select}
-                      id="donationMatch"
-                      name="donationMatch"
-                      onChange={this.handleInputChange}
-                      options={options}
-                      value={formData.donationMatch.value}
-                  />
-                  {
-                      (!_.isEmpty(donationMatchedData)) && (
-                          <Form.Field>
-                              <div className="recurringMsg">
-                                {formatMessage(
-                                      'donationMatchPolicyNote', {
-                                          companyName:
-                                              donationMatchedData.attributes.companyName,
-                                          policyMax:
-                                              formatCurrency(
-                                                  donationMatchedData.attributes.policyMax,
-                                                  language,
-                                                  currency,
-                                              ),
-                                          policyPercentage:
-                                            formatCurrency((donationMatchedData.attributes.policyPercentage/100), language, currency),
-                                          policyPeriod: convertedPolicyPeriod,
-                                      },
-                                  )}
-                                  <br/>
-                                  {formatMessage('donationMatchNote', {
-                                      companyName:
-                                          donationMatchedData.attributes.companyName,
-                                      donationMonth: donationMonth,
-                                      totalMatched:
-                                          formatCurrency(
-                                              donationMatchedData.attributes.totalMatched,
-                                              language,
-                                              currency,
-                                          ),
-                                      totalRequested:
-                                          formatCurrency(
-                                              donationMatchedData.attributes.totalRequested,
-                                              language,
-                                              currency,
-                                          ),
-                                  })}
-                              </div>
-                          </Form.Field>
-                      )
-                  }
-              </Form.Field>
-          );
-      }
-      return donationMatchField;
+        let donationMatchField = null;
+        if (formData.giveTo.type === 'user' && !_.isEmpty(options)) {
+            let donationMatchedData = {};
+            let convertedPolicyPeriod = formatMessage('policyPeriodYear');
+            const currentDate = new Date();
+            let donationMonth = currentDate.getFullYear();
+            if(formData.donationMatch.value > 0) {
+                donationMatchedData = _.find(
+                    donationMatchData, (item) => item.attributes.employeeRoleId == formData.donationMatch.value,
+                );
+                if (donationMatchedData.attributes.policyPeriod === 'month') {
+                    convertedPolicyPeriod = formatMessage('policyPeriodMonth');
+                    const months = fullMonthNames(formatMessage);
+                    donationMonth = months[currentDate.getMonth()];
+                }
+            }
+            donationMatchField = (
+                <Form.Field>
+                    <label htmlFor="donationMatch">
+                    {formatMessage('donationMatchLabel')}
+                    </label>
+                    <Popup
+                        content={<div>{formatMessage('donationsMatchPopup')}</div>}
+                        position="top center"
+                        trigger={
+                            <Icon
+                                color="blue"
+                                name="question circle"
+                                size="large"
+                            />
+                        }
+                    />
+                    <Form.Field
+                        control={Select}
+                        className="dropdownWithArrowParent"
+                        id="donationMatch"
+                        name="donationMatch"
+                        onChange={this.handleInputChange}
+                        options={options}
+                        value={formData.donationMatch.value}
+                    />
+                    {
+                        (!_.isEmpty(donationMatchedData)) ? (
+                            <Form.Field>
+                                <div className="recurringMsg">
+                                    {formatMessage(
+                                        'donationMatchPolicyNote', {
+                                            companyName:
+                                                donationMatchedData.attributes.companyName,
+                                            policyMax:
+                                                formatCurrency(
+                                                    donationMatchedData.attributes.policyMax,
+                                                    language,
+                                                    currency,
+                                                ),
+                                            policyPercentage:
+                                                formatCurrency((donationMatchedData.attributes.policyPercentage/100), language, currency),
+                                            policyPeriod: convertedPolicyPeriod,
+                                        },
+                                    )}
+                                    <br/>
+                                    {formatMessage('donationMatchNote', {
+                                        companyName:
+                                            donationMatchedData.attributes.companyName,
+                                        donationMonth: donationMonth,
+                                        totalMatched:
+                                            formatCurrency(
+                                                donationMatchedData.attributes.totalMatched,
+                                                language,
+                                                currency,
+                                            ),
+                                        totalRequested:
+                                            formatCurrency(
+                                                donationMatchedData.attributes.totalRequested,
+                                                language,
+                                                currency,
+                                            ),
+                                    })}
+                                </div>
+                            </Form.Field>
+                        ):(null)
+                    }
+                </Form.Field>
+            );
+        } else if(formData.giveTo.type === 'user' && _.isEmpty(options)) {
+            donationMatchField =(<Form.Input fluid label="Matching Partner" placeholder="No matching partner available" disabled />)
+        }
+        return donationMatchField;
     }
   
     renderpaymentInstrumentOptions(formData, options, formatMessage){
-          const creditCardField = (
+        let iconClass = {
+            amex: 'cardExpress',
+            discover: "cardVisa",
+            mastercard: "cardMaster",
+            stripe: "cardVisa",
+            visa: "cardVisa",
+        };
+        const creditCardField = (
             <Fragment>
-                <Form.Field>
-                    <Divider className="dividerMargin" />
-                    <h3
-                        className='ui header'
-                    >Payment method
-                    </h3>
-                </Form.Field>
                 <Form.Field>
                     <label htmlFor="creditCard">
                     {formatMessage('creditCardLabel')}
                     </label>
-                    <Form.Field
-                        control={Select}
-                        id="creditCard"
-                        name="creditCard"
-                        onChange={this.handleInputChange}
-                        options={options}
-                        placeholder={formatMessage('creditCardPlaceholder')}
-                        value={formData.creditCard.value}
-                    />
+                    <div className="paymentMethodDropdown">
+                        <Dropdown
+                            id="creditCard"
+                            name="creditCard"
+                            button
+                            icon={iconClass[formData.creditCard.processor]}
+                            className="dropdownWithArrowParent icon creditCardDropDown"
+                            selection
+                            fluid
+                            floating
+                            labeled
+                            onChange={this.handleInputChange}
+                            options={options}
+                            placeholder={formatMessage('creditCardPlaceholder')}
+                            value={formData.creditCard.value}
+                        />
+                    </div>
+                    
                 </Form.Field>
             </Fragment>
-          );
-  
-          return creditCardField;
-  
+        );
+        return creditCardField;
     }
   
     componentDidUpdate(oldProps) {
-      let {
-          flowObject:{
-              currency,
-              giveData,
-          }
-      } = this.state;
-      const {
-          i18n:{
-              language,
-          },
-      } = this.props;
-      const formatMessage = this.props.t;
-      let doSetState = false;
-
-      if(this.props.userAccountsFetched !== oldProps.userAccountsFetched){
-            doSetState = true;
-      }
-      if(giveData.giveTo.type === 'companies' && !_.isEqual(this.props.companyDetails, oldProps.companyDetails)) {
-          giveData.creditCard = getDefaultCreditCard(populatePaymentInstrument(this.props.companyDetails.companyPaymentInstrumentsData, formatMessage));
-          doSetState = true;
-      }
-      if(giveData.giveTo.type === 'user' && !_.isEqual(this.props.paymentInstrumentsData, oldProps.paymentInstrumentsData)) {
-            giveData.creditCard = getDefaultCreditCard(populatePaymentInstrument(this.props.paymentInstrumentsData, formatMessage));
-            doSetState = true;
+        let {
+            flowObject,
+        } = this.state;
+        let {
+            currency,
+            giveData,
+        } = flowObject
+        const {
+            i18n:{
+                language,
+            },
+            defaultTaxReceiptProfile,
+        } = this.props;
+        const formatMessage = this.props.t;
+        let doSetState = false;
+        if(this.props.userAccountsFetched !== oldProps.userAccountsFetched){
+                doSetState = true;
         }
-      if((!_.isEqual(this.props.companiesAccountsData, oldProps.companiesAccountsData)
-        || _.isEmpty(this.props.companiesAccountsData)) && giveData.giveTo.value === null){
-          if(_.isEmpty(this.props.companiesAccountsData) && !_.isEmpty(this.props.fund)){
-              const {
-                  fund,
-                  currentUser: {
-                    id,
-                    attributes: {
-                        avatar,
-                        firstName,
-                        lastName,
-                    }
-                  },
-              } = this.props;
-              giveData.giveTo = {
-                  avatar,
-                  balance: fund.attributes.balance,
-                  disabled: false,
-                  id: id,
-                  name: `${firstName} ${lastName}`,
-                  text: `${fund.attributes.name} (${formatCurrency(fund.attributes.balance, language, currency)})`,
-                  type: 'user',
-                  value: fund.id,
-              };
-              giveData.creditCard = getDefaultCreditCard(populatePaymentInstrument(this.props.paymentInstrumentsData, formatMessage));
-              if(!_.isEmpty(this.props.donationMatchData)){
-                  const [
-                      defaultMatch,
-                  ] = populateDonationMatch(this.props.donationMatchData, formatMessage, language);
-                  giveData.donationMatch = defaultMatch;
-              }
-              doSetState = true;
-          }
-      }
-      if(doSetState) {
-          this.setState({
-              buttonClicked: false,
-              disableButton:false,
-              flowObject: {
-                  ...this.state.flowObject,
-                  giveData:{
-                      ...this.state.flowObject.giveData,
-                      ...giveData,
-                  },
-              },
-          });
-      }
+        if(giveData.giveTo.type === 'companies' && !_.isEqual(this.props.companyDetails, oldProps.companyDetails)) {
+            giveData.creditCard = getDefaultCreditCard(
+                populatePaymentInstrument(
+                    this.props.companyDetails.companyPaymentInstrumentsData,
+                    formatMessage
+                    ));
+            giveData.taxReceipt = getTaxReceiptById(
+                populateTaxReceipts(
+                    this.props.companyDetails.taxReceiptProfiles,
+                    formatMessage),
+                    this.props.companyDetails.companyDefaultTaxReceiptProfile.id
+                    );
+            doSetState = true;
+        }else if(giveData.giveTo.type === 'user') {
+                if( !_.isEqual(this.props.paymentInstrumentsData, oldProps.paymentInstrumentsData) ) {       
+                    giveData.creditCard = getDefaultCreditCard(populatePaymentInstrument(this.props.paymentInstrumentsData, formatMessage));
+                    doSetState = true;
+                }
+                if(!_.isEqual(this.props.userTaxReceiptProfiles, oldProps.userTaxReceiptProfiles)) {
+                    giveData.taxReceipt = getTaxReceiptById(populateTaxReceipts(this.props.userTaxReceiptProfiles, formatMessage),defaultTaxReceiptProfile.id);
+                    doSetState = true;
+                }
+            }
+        if((!_.isEqual(this.props.companiesAccountsData, oldProps.companiesAccountsData)
+            || _.isEmpty(this.props.companiesAccountsData)) && giveData.giveTo.value === null){
+            if(_.isEmpty(this.props.companiesAccountsData) && !_.isEmpty(this.props.fund)){
+                const {
+                    fund,
+                    currentUser: {
+                        id,
+                        attributes: {
+                            avatar,
+                            firstName,
+                            lastName,
+                        }
+                    },
+                } = this.props;
+                giveData.giveTo = {
+                    avatar,
+                    balance: fund.attributes.balance,
+                    disabled: false,
+                    id: id,
+                    name: `${firstName} ${lastName}`,
+                    text: `${fund.attributes.name} (${formatCurrency(fund.attributes.balance, language, currency)})`,
+                    type: 'user',
+                    value: fund.id,
+                };
+                giveData.creditCard = getDefaultCreditCard(populatePaymentInstrument(this.props.paymentInstrumentsData, formatMessage));
+                giveData.taxReceipt = getTaxReceiptById(populateTaxReceipts(this.props.userTaxReceiptProfiles, formatMessage),defaultTaxReceiptProfile.id);
+                if(!_.isEmpty(this.props.donationMatchData)){
+                    const [
+                        defaultMatch,
+                    ] = populateDonationMatch(this.props.donationMatchData, formatMessage, language);
+                    giveData.donationMatch = defaultMatch;
+                }
+                doSetState = true;
+            }
+        }
+        if(doSetState) {
+            this.setState({
+                buttonClicked: false,
+                disableButton:false,
+                flowObject: {
+                    ...this.state.flowObject,
+                    giveData:{
+                        ...this.state.flowObject.giveData,
+                        ...giveData,
+                    },
+                },
+            });
+        }
     }
 
     /**
@@ -705,109 +674,406 @@ class Donation extends React.Component {
                 !inValidCardNameValue
             );
         }
-
         return validCC;
-    }    
-    
-    render() {
+    }
+
+    handleAddNewButtonClicked(e, data) {
+        if(e.target.id === "addNewCreditCard"){
+            this.setState({
+                isCreditCardModalOpen:true
+            })
+        } else if(e.target.id === "addNewTaxReceipt") {
+            this.setState({
+                isTaxReceiptModelOpen:true
+            })
+        }
+    }
+
+    handleAddNewCreditCard() {
         const {
-            flowObject: {
-                currency,
-                giveData,
-                type,
+            flowObject:{
+                giveData:{
+                    creditCard,
+                },
             },
             inValidCardNumber,
             inValidExpirationDate,
             inValidNameOnCard,
             inValidCvv,
             inValidCardNameValue,
+        } = this.state;
+        const {
+            flowObject,
+        } = this.state;
+        const validateCC = this.isValidCC(
+            creditCard,
+            inValidCardNumber,
+            inValidExpirationDate,
+            inValidNameOnCard,
+            inValidCvv,
+            inValidCardNameValue,
+        );
+        if(validateCC) {
+            this.setState({
+                buttonClicked: true,
+            });
+            const {
+                dispatch,
+            } = this.props;
+
+            dispatch(addNewCardAndLoad(flowObject)).then((result) => {
+                const {
+                    data: {
+                        attributes: {
+                            description,
+                        },
+                        id,
+                    },
+                } = result;
+                flowObject.giveData.creditCard.id = id;
+                flowObject.giveData.creditCard.value = id;
+                flowObject.giveData.creditCard.text = description;
+                const statusMessageProps = {
+                    message: 'New Credit Card Added',
+                    type: 'success',
+                };
+                dispatch({
+                    payload: {
+                        errors: [
+                            statusMessageProps,
+                        ],
+                    },
+                    type: 'TRIGGER_UX_CRITICAL_ERROR',
+                });
+                this.setState({
+                    isCreditCardModalOpen: false,
+                });
+            }).catch(() => {
+                this.setState({
+                    buttonClicked: false,
+                });
+            });
+        }
+    }
+
+    handleCCAddClose() {
+        this.setState({ 
+            isCreditCardModalOpen: false
+        });
+    }
+
+    handleTaxReceiptModalClose() {
+        this.setState({
+            isTaxReceiptModelOpen: false,
+        });
+    }
+
+    handleAddNewTaxReceipt(flowObject, newTaxReceiptProfile, isDefaultChecked){
+        const {
+            dispatch,
+        } = this.props;
+        const formatMessage = this.props.t;
+
+        return dispatch(addNewTaxReceiptProfileAndLoad(flowObject, newTaxReceiptProfile, isDefaultChecked)).then((result)=>{
+            const {
+                data: {
+                    id,
+                },
+            } = result;
+            let newtaxReceipt = getTaxReceiptById(populateTaxReceipts(this.props.userTaxReceiptProfiles, formatMessage),id);
+            const statusMessageProps = {
+                message: 'New Tax receipt Added',
+                type: 'success',
+            };
+            dispatch({
+                payload: {
+                    errors: [
+                        statusMessageProps,
+                    ],
+                },
+                type:'TRIGGER_UX_CRITICAL_ERROR',
+            });
+            this.setState({
+                ...this.state,
+                flowObject:{
+                    ...this.state.flowObject,
+                    giveData:{
+                        ...this.state.flowObject.giveData,
+                        taxReceipt:{...newtaxReceipt}
+                    }
+                }
+            })
+            this.handleTaxReceiptModalClose();
+        }).then(()=>{
+            Promise.resolve('success')
+        })
+    }
+
+    handlegiftTypeButtonClick = (e, { value }) =>{
+        this.setState({ 
+            flowObject: {
+                ...this.state.flowObject,
+                giveData:{
+                    ...this.state.flowObject.giveData,
+                    giftType:{
+                        value:value
+                    },
+                },
+            },
+        })
+    }
+
+    render() {
+        const {
+            buttonClicked,
+            dispatch,
+            flowObject,
+            inValidCardNumber,
+            inValidExpirationDate,
+            inValidNameOnCard,
+            inValidCvv,
+            inValidCardNameValue,
+            isCreditCardModalOpen,
+            isTaxReceiptModelOpen,
             validity,
         } = this.state;
         const {
+            currency,
+            giveData,
+            type,
+        }= flowObject;
+        const {
+            currentStep,
             donationMatchData,
+            flowSteps,
             paymentInstrumentsData,
             companyDetails,
             i18n:{
                 language,
             },
-            creditCardApiCall,
+            userTaxReceiptProfiles,
         } = this.props;
         const formatMessage = this.props.t;
         const donationMatchOptions = populateDonationMatch(donationMatchData, formatMessage, language);
         let paymentInstruments = paymentInstrumentsData;
+        let taxReceiptList = userTaxReceiptProfiles;
         if(giveData.giveTo.type === 'companies'){
             paymentInstruments = !_.isEmpty(companyDetails.companyPaymentInstrumentsData) ? companyDetails.companyPaymentInstrumentsData : [];
+            taxReceiptList = !_.isEmpty(companyDetails.taxReceiptProfiles) ? companyDetails.taxReceiptProfiles : [];
         }
         const paymentInstrumenOptions  = populatePaymentInstrument(paymentInstruments, formatMessage);
-
+        const taxReceiptsOptions = populateTaxReceipts(taxReceiptList, formatMessage);
         return (
-        <Fragment>
-            <Form onSubmit={this.handleSubmit}>
-            { this.renderDonationAmountField(giveData.formatedDonationAmount, validity, formatMessage) }
-            <DropDownAccountOptions
-            formatMessage={formatMessage}
-            type={type}
-            validity= {validity.isValidAddingToSource}
-            selectedValue={this.state.flowObject.giveData.giveTo.value}
-            name="giveTo"
-            parentInputChange={this.handleInputChange}
-            parentOnBlurChange={this.handleInputOnBlur}
-            />
-            { this.renderingRecurringDonationFields(giveData, formatMessage, language) }
-            <Note
-                fieldName="noteToSelf"
-                handleOnInputChange={this.handleInputChange}
-                handleOnInputBlur={this.handleInputOnBlur}
-                formatMessage ={formatMessage}
-                labelText={formatMessage('noteToSelfLabel')}
-                popupText={formatMessage('donorNoteToSelfPopup')}
-                placeholderText={formatMessage('noteToSelfPlaceHolder')}
-                text={giveData.noteToSelf}
-            />
-            { this.renderdonationMatchOptions(giveData, donationMatchOptions, formatMessage, donationMatchData, language, currency)}
+            <Fragment>
+                <div className="flowReviewbanner">
+                        <Container>
+                            <div className="flowReviewbannerText">
+                                <Header as='h2'>Add money</Header>
+                            </div>
+                        </Container>
+                    </div>
+                    <div className="flowReview">
+                        <Container>
+                            <Grid centered verticalAlign="middle">
+                                <Grid.Row>
+                                    <Grid.Column mobile={16} tablet={14} computer={12}>
+                                        <div className="flowBreadcrumb flowPadding">
+                                            <FlowBreadcrumbs
+                                                currentStep={currentStep}
+                                                formatMessage={formatMessage}
+                                                steps={flowSteps}
+                                                flowType={type}/>
+                                        </div>
+                                        <div className="flowFirst">
+                                            <Form onSubmit={this.handleSubmit}>
+                                                <Grid>
+                                                    <Grid.Row>
+                                                        <Grid.Column mobile={16} tablet={12} computer={10}>
+                                                            <DonationAmountField
+                                                                amount={giveData.formatedDonationAmount}
+                                                                formatMessage={formatMessage}
+                                                                handleInputChange={this.handleInputChange}
+                                                                handleInputOnBlur={this.handleInputOnBlur}
+                                                                handlePresetAmountClick={this.handlePresetAmountClick}
+                                                                validity={validity}
+                                                            />
+                                                            
+                                                            <DropDownAccountOptions
+                                                                formatMessage={formatMessage}
+                                                                type={type}
+                                                                validity={validity.isValidAddingToSource}
+                                                                selectedValue={this.state.flowObject.giveData.giveTo.value}
+                                                                name="giveTo"
+                                                                parentInputChange={this.handleInputChange}
+                                                                parentOnBlurChange={this.handleInputOnBlur}
+                                                            />
+                                                            <DonationFrequency
+                                                                formatMessage={formatMessage}
+                                                                formData={giveData}
+                                                                handlegiftTypeButtonClick={this.handlegiftTypeButtonClick}
+                                                                handleInputChange={this.handleInputChange}
+                                                                language={language}
+                                                            />
+                                                            {
+                                                                ((_isEmpty(paymentInstrumenOptions) && giveData.giveTo.value > 0) ) && (
+                                                                    <>
+                                                                        <label>Payment method</label>
+                                                                        <div 
+                                                                            className="addNewCardInput mb-2"
+                                                                            id="addNewCreditCard"
+                                                                            onClick={this.handleAddNewButtonClicked}>
+                                                                                + Add new card
+                                                                        </div>
+                                                                    </>
+                                                                )
+                                                            }
+                                                            {/* if no credit card added */}
 
-            {
-                ((!_isEmpty(paymentInstrumenOptions) && giveData.giveTo.value > 0) &&
-                    this.renderpaymentInstrumentOptions(giveData, paymentInstrumenOptions, formatMessage)
-                )
-            }
-            {
-                ((_isEmpty(paymentInstrumenOptions) && giveData.giveTo.value > 0) || giveData.creditCard.value === 0) && (
-                    <StripeProvider apiKey={STRIPE_KEY}>
-                        <Elements>
-                            <CreditCard
-                                creditCardElement={this.getStripeCreditCard}
-                                creditCardValidate={inValidCardNumber}
-                                creditCardExpiryValidate={inValidExpirationDate}
-                                creditCardNameValidte={inValidNameOnCard}
-                                creditCardNameValueValidate={inValidCardNameValue}
-                                creditCardCvvValidate={inValidCvv}
-                                validateCCNo={this.validateStripeCreditCardNo}
-                                validateExpiraton={this.validateStripeExpirationDate}
-                                validateCvv={this.validateCreditCardCvv}
-                                validateCardName={this.validateCreditCardName}
-                                formatMessage = {formatMessage}
-                                // eslint-disable-next-line no-return-assign
-                                onRef={(ref) => (this.CreditCard = ref)}
-                            />
-                        </Elements>
-                    </StripeProvider>
-                )
-            }
-            <Divider hidden />
-                <Form.Button
-                    primary
-                    className="blue-btn-rounded"
-                    // className={isMobile ? 'mobBtnPadding' : 'btnPadding'}
-                    content={(!creditCardApiCall) ? formatMessage('giveCommon:continueButton')
-                        : formatMessage('giveCommon:submittingButton')}
-                    disabled={(creditCardApiCall) || this.state.disableButton}
-                    // fluid={isMobile}
-                    type="submit"
-                />
-            </Form>
-        </Fragment>
-
+                                                            {
+                                                                ((!_isEmpty(paymentInstrumenOptions) &&  giveData.giveTo.value > 0) &&
+                                                                    this.renderpaymentInstrumentOptions(giveData, paymentInstrumenOptions, formatMessage)
+                                                                )
+                                                            }
+                                                            {
+                                                                <Modal
+                                                                    size="tiny"
+                                                                    dimmer="inverted"
+                                                                    className="chimp-modal"
+                                                                    closeIcon
+                                                                    open={isCreditCardModalOpen}
+                                                                    onClose={this.handleCCAddClose}
+                                                                >
+                                                                    <Modal.Header>Add new card</Modal.Header>
+                                                                    <Modal.Content>
+                                                                        <Modal.Description className="font-s-16">
+                                                                            <Form>
+                                                                                <StripeProvider apiKey={STRIPE_KEY}>
+                                                                                    <Elements>
+                                                                                        <CreditCard
+                                                                                            creditCardElement={this.getStripeCreditCard}
+                                                                                            creditCardValidate={inValidCardNumber}
+                                                                                            creditCardExpiryValidate={inValidExpirationDate}
+                                                                                            creditCardNameValidte={inValidNameOnCard}
+                                                                                            creditCardNameValueValidate={inValidCardNameValue}
+                                                                                            creditCardCvvValidate={inValidCvv}
+                                                                                            validateCCNo={this.validateStripeCreditCardNo}
+                                                                                            validateExpiraton={this.validateStripeExpirationDate}
+                                                                                            validateCvv={this.validateCreditCardCvv}
+                                                                                            validateCardName={this.validateCreditCardName}
+                                                                                            formatMessage = {formatMessage}
+                                                                                            // eslint-disable-next-line no-return-assign
+                                                                                            onRef={(ref) => (this.CreditCard = ref)}
+                                                                                        />
+                                                                                    </Elements>
+                                                                                </StripeProvider>
+                                                                                <Form.Field
+                                                                                    // checked={isDefaultCard}
+                                                                                    control={Checkbox}
+                                                                                    className="ui checkbox chkMarginBtm checkboxToRadio"
+                                                                                    id="isDefaultCard"
+                                                                                    label="Set as primary card"
+                                                                                    name="isDefaultCard"
+                                                                                    onChange={this.handleSetPrimaryClick}
+                                                                                />
+                                                                            </Form>
+                                                                        </Modal.Description>
+                                                                        <div className="btn-wraper pt-3 text-right">
+                                                                            <Button
+                                                                                className="blue-btn-rounded-def sizeBig w-180"
+                                                                                onClick={this.handleAddNewCreditCard}
+                                                                                disabled={buttonClicked}
+                                                                            >
+                                                                                Add
+                                                                            </Button>
+                                                                        </div>
+                                                                    </Modal.Content>
+                                                                </Modal>
+                                                            }
+                                                            {
+                                                            (!_.isEmpty(taxReceiptsOptions) && taxReceiptsOptions.length> 1 && giveData.giveTo.value > 0 ) ? (
+                                                                <Form.Field className="mb-2">
+                                                                    <div className="paymentMethodDropdown add_space">
+                                                                        <label htmlFor="">Tax receipt</label>            
+                                                                        <Dropdown
+                                                                            button
+                                                                            className="taxReceiptDropDown label_top"
+                                                                            name="taxReceipt"
+                                                                            icon='cardExpress'
+                                                                            floating
+                                                                            fluid
+                                                                            selection
+                                                                            options={taxReceiptsOptions}
+                                                                            onChange={this.handleInputChange}
+                                                                            placeholder='Select Tax Receipt'
+                                                                            value={giveData.taxReceipt.value}
+                                                                        />
+                                                                    </div>
+                                                                </Form.Field>
+                                                                ) : (null)
+                                                            }
+                                                            {
+                                                                (!_.isEmpty(taxReceiptsOptions)  && taxReceiptsOptions.length ===1 &&  giveData.giveTo.value > 0) ? (
+                                                                    <>
+                                                                        <label>Tax Receipt</label>
+                                                                        <div 
+                                                                            className="addNewCardInput"
+                                                                            id="addNewTaxReceipt"
+                                                                            onClick={this.handleAddNewButtonClicked}>
+                                                                                + Add new tax receipt
+                                                                        </div>
+                                                                    </>
+                                                                ) : (null)
+                                                            }            
+                                                            {
+                                                                isTaxReceiptModelOpen && (
+                                                                    <TaxReceiptModal
+                                                                        name="Add new tax receipt recipient"
+                                                                        isTaxReceiptModelOpen={isTaxReceiptModelOpen}
+                                                                        dispatch={dispatch}
+                                                                        flowObject={flowObject}
+                                                                        handleAddNewTaxReceipt={this.handleAddNewTaxReceipt}
+                                                                        handleModalClose={this.handleTaxReceiptModalClose}
+                                                                        action="add"
+                                                                    />
+                                                                )
+                                                            }
+                                                            { this.renderdonationMatchOptions(giveData, donationMatchOptions, formatMessage, donationMatchData, language, currency)}
+                                                        </Grid.Column>
+                                                    </Grid.Row>
+                                                </Grid>
+                                                <Grid className="to_space">
+                                                    <Grid.Row className="to_space">
+                                                        <Grid.Column mobile={16} tablet={16} computer={16}>
+                                                            <Note
+                                                                fieldName="noteToSelf"
+                                                                handleOnInputChange={this.handleInputChange}
+                                                                handleOnInputBlur={this.handleInputOnBlur}
+                                                                formatMessage ={formatMessage}
+                                                                labelText={formatMessage('noteToSelfLabel')}
+                                                                popupText={formatMessage('donorNoteToSelfPopup')}
+                                                                placeholderText={formatMessage('noteToSelfPlaceHolder')}
+                                                                text={giveData.noteToSelf}
+                                                            />
+                                                            <Form.Button
+                                                                primary
+                                                                className="blue-btn-rounded btn_right"
+                                                                // className={isMobile ? 'mobBtnPadding' : 'btnPadding'}
+                                                                content={formatMessage('giveCommon:continueButton')}
+                                                                disabled={this.state.disableButton}
+                                                                // fluid={isMobile}
+                                                                type="submit"
+                                                            />
+                                                        </Grid.Column>
+                                                    </Grid.Row>
+                                                </Grid>
+                                            </Form>
+                                        </div>
+                                    </Grid.Column>
+                                </Grid.Row>
+                            </Grid>
+                        </Container>
+                    </div>
+            </Fragment>
         )
     }
 }
@@ -820,9 +1086,9 @@ Donation.defaultProps = {
 const  mapStateToProps = (state) => {
     return {
         companyDetails: state.give.companyData,
-        userAccountsFetched: state.user.userAccountsFetched,
         currentUser: state.user.info,
-        creditCardApiCall: state.give.creditCardApiCall,
+        userTaxReceiptProfiles: state.user.taxReceiptProfiles,
+        userAccountsFetched: state.user.userAccountsFetched,
     };
 }
 export default withTranslation(['donation', 'giveCommon'])(connect(mapStateToProps)(Donation));

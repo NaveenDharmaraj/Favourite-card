@@ -103,6 +103,7 @@ class DropDownAccountOptions extends React.Component {
         if (!_.isEmpty(dropDownData)) {
             fieldData = (
                 <Form.Field
+                    className="dropdownWithArrowParent"
                     control={Select}
                     error={!validity}
                     id={name}

@@ -2,15 +2,10 @@ import React, { cloneElement, Fragment } from 'react';
 import dynamic from 'next/dynamic';
 import {connect} from 'react-redux'
 import _ from 'lodash';
-import {
-    Header,
-    Grid,
-    Breadcrumb,
-} from 'semantic-ui-react';
-import {actionTypes} from '../../actions/give';
 import { withTranslation } from '../../i18n';
 import {Router} from '../../routes';
 import '../../static/less/giveFlows.less';
+
 // const TaxReceipt = dynamic(() => import('./TaxReceipt'));
 const Review = dynamic(() => import('./Review'));
 const Success = dynamic(() => import('../Give/Success/index'));
@@ -25,6 +20,7 @@ const renderChildWithProps = (props, stepIndex, flowSteps) => {
                 <div>
                 { cloneElement(props.children, {
                     ...props,
+                    currentStep: props.step,
                     flowSteps,
                     dispatch: props.dispatch,
                     flowObject: props.flowObject,
@@ -51,9 +47,11 @@ const renderChildWithProps = (props, stepIndex, flowSteps) => {
             break;
         case "success" :
             if(!_.isEmpty(props.flowObject)){
-                return (<Success 
+                return (<Success
+                    currentStep={props.step}
                     dispatch={props.dispatch}
                     flowObject={props.flowObject}
+                    flowSteps={flowSteps}
                 />);
             }
             else if (typeof window !== 'undefined'){

@@ -21,6 +21,9 @@ export const donationDefaultProps = {
             },
             newCreditCardId: null,
             noteToSelf: '',
+            taxReceipt: {
+                value: null,
+            },
             userInteracted: false,
         },
         selectedTaxReceiptProfile: {},

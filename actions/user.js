@@ -1,3 +1,4 @@
+/* eslint-disable import/exports-last */
 /* eslint-disable no-else-return */
 
 import _ from 'lodash';
@@ -14,6 +15,7 @@ import {
 import {
     generatePayloadBodyForFollowAndUnfollow,
 } from './profile';
+
 
 export const actionTypes = {
     GET_MATCH_POLICIES_PAYMENTINSTRUMENTS: 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS',
@@ -563,8 +565,6 @@ export const getGroupsAndCampaigns = (dispatch, url, type, appendData = true, pr
         dispatch(fsa);
     });
 };
-
-
 
 export const leaveGroup = (dispatch, group, allData, type) => {
     const fsa = {

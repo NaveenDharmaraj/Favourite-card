@@ -28,6 +28,9 @@ import {
     groupDefaultProps,
     // p2pDefaultProps,
 } from '../../helpers/give/defaultProps';
+import visaIcon from '../../static/images/icons/icon-cc-visa-colour.png';
+import mastercardIcon from '../../static/images/icons/icon-cc-mastercard-colour.png';
+import expressCard from '../../static/images/icons/icon-cc-american-express-colour.png';
 
 /**
  * Checks if giveData contains any credit card information
@@ -538,6 +541,27 @@ const populateGiftType = (formatMessage) => {
         },
     ];
 };
+
+const populateCardData = (selectCardDetails, cardAmount) => {
+    const isEnglishCard = selectCardDetails.indexOf(' ending ');
+    const cardData = {
+        amount: cardAmount,
+        type: 'card',
+    };
+    const selectedCardName = _.split(selectCardDetails, ' ');
+    if (isEnglishCard !== -1) {
+        const dispName = selectedCardName ? selectedCardName[0] : '';
+        cardData.displayName = _.replace(dispName, '\'s', '');
+        cardData.processor = selectedCardName[selectedCardName.indexOf('ending') - 1].toLowerCase().trim();
+        cardData.truncatedPaymentId = selectedCardName[selectedCardName.length - 1];
+    } else {
+        cardData.displayName = _.replace(selectedCardName[2], '\'s', '');
+        cardData.processor = selectedCardName[0].toLowerCase().trim();
+        cardData.truncatedPaymentId = selectedCardName[selectedCardName.length - 1];
+    }
+    return cardData;
+};
+
 /**
 * Populate payment instrument drop down options
 * @param  {object} paymentInstrumentsData API data
@@ -561,11 +585,74 @@ const populatePaymentInstrument = (paymentInstrumentsData, formatMessage) => {
                 (item) => item.id,
                 (attributes) => `${attributes.description}`,
                 (attributes) => false,
+                [
+                    {
+
+                        getValue: (attributes) => {
+                            const returnObj = {
+                                avatar: false,
+                            };
+                            const cardProcessors = {
+                                amex: expressCard,
+                                discover: visaIcon,
+                                mastercard: mastercardIcon,
+                                stripe: visaIcon,
+                                visa: visaIcon,
+                            };
+                            const {
+                                processor,
+                            } = populateCardData(attributes.description, 0);
+                            returnObj.src = cardProcessors[processor];
+                            return returnObj;
+                        },
+                        key: 'image',
+                    },
+                    {
+                        getValue: (attributes) => {
+                            const {
+                                processor,
+                            } = populateCardData(attributes.description, 0);
+                            return processor;
+                        },
+                        key: 'processor',
+                    },
+                ],
             ),
             newCreditCard,
         );
     }
     return null;
+};
+
+const populateTaxReceipts = (taxReceiptData, formatMessage) => {
+    if (!_.isEmpty(taxReceiptData)) {
+        const newTaxReceipt = [
+            {
+                disabled: false,
+                text: 'Add new tax receipt',
+                value: 0,
+            },
+        ];
+        return _.concat(
+            getDropDownOptionFromApiData(
+                taxReceiptData,
+                null,
+                (item) => item.id,
+                (attributes) => { return ReactHtmlParser(`<span class="attributes"><b>${attributes.fullName}</b></span>
+                                    <span class="attributes"> ${attributes.addressOne} ${attributes.addressTwo} </span>
+                                    <span class="attributes">${attributes.city}, ${attributes.province} ${attributes.postalCode}</span>`);
+                },
+                (attributes) => false,
+            ),
+            newTaxReceipt,
+        );
+    }
+    return null;
+};
+
+const getTaxReceiptById = (taxReceiptProfiles, selectedTaxReceiptProfile) =>{
+    const selectedProfile = _.find(taxReceiptProfiles, ['id', selectedTaxReceiptProfile]);
+    return selectedProfile;
 };
 
 /**
@@ -1149,26 +1236,6 @@ const resetDataForGiftTypeChange = (giveData, dropDownOptions, coverFeesData) =>
     return giveData;
 };
 
-const populateCardData = (selectCardDetails, cardAmount) => {
-    const isEnglishCard = selectCardDetails.indexOf(' ending ');
-    const cardData = {
-        amount: cardAmount,
-        type: 'card',
-    };
-    const selectedCardName = _.split(selectCardDetails, ' ');
-    if (isEnglishCard !== -1) {
-        const dispName = selectedCardName ? selectedCardName[0] : '';
-        cardData.displayName = _.replace(dispName, '\'s', '');
-        cardData.processor = selectedCardName[selectedCardName.indexOf('ending') - 1].toLowerCase().trim();
-        cardData.truncatedPaymentId = selectedCardName[selectedCardName.length - 1];
-    } else {
-        cardData.displayName = _.replace(selectedCardName[2], '\'s', '');
-        cardData.processor = selectedCardName[0].toLowerCase().trim();
-        cardData.truncatedPaymentId = selectedCardName[selectedCardName.length - 1];
-    }
-    return cardData;
-};
-
 /**
 * set date for recurring danations
 * @param  {Date}  date recurringDonation date
@@ -1659,8 +1726,10 @@ export {
     populateP2pReviewPage,
     populateGiftType,
     populateInfoToShare,
+    populateTaxReceipts,
     formatAmount,
     getDefaultCreditCard,
+    getTaxReceiptById,
     getDonationMatchedData,
     getNextAllocationMonth,
     setDateForRecurring,
