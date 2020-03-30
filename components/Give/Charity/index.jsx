@@ -69,6 +69,7 @@ import IconGroup from '../../../static/images/no-data-avatar-giving-group-profil
 import IconIndividual from '../../../static/images/no-data-avatar-group-chat-profile.png';
 import FlowBreadcrumbs from '../FlowBreadcrumbs';
 import CharityFrequency from '../DonationFrequency';
+import ReloadAddAmount from '../ReloadAddAmount';
 import { withTranslation } from '../../../i18n';
 import '../../shared/style/styles.less';
 import { dismissAllUxCritialErrors } from '../../../actions/error';
@@ -80,7 +81,6 @@ const DedicateType = dynamic(() => import('../DedicateGift'), { ssr: false });
 const SpecialInstruction = dynamic(() => import('../SpecialInstruction'));
 const AccountTopUp = dynamic(() => import('../AccountTopUp'));
 const DropDownAccountOptions = dynamic(() => import('../../shared/DropDownAccountOptions'));
-
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -160,6 +160,7 @@ class Charity extends React.Component {
                     formatMessage,
                 ),
                 paymentInstrumentList: populatePaymentInstrument(paymentInstruments, formatMessage),
+
             },
             findAnotherRecipientLabel: 'Find another recipient',
             flowObject: _.cloneDeep(payload),
@@ -523,7 +524,6 @@ class Charity extends React.Component {
      * @return {Void} { void } The return nothing.
      */
     handleInputOnBlur(event, data) {
-        debugger;
         const {
             name,
             value,
@@ -599,7 +599,6 @@ class Charity extends React.Component {
      * @return {Void} { void } The return nothing.
      */
     handleInputChange(event, data) {
-        debugger;
         const {
             name,
             newIndex,
@@ -675,6 +674,11 @@ class Charity extends React.Component {
                     if (giveData.giveFrom.type === 'companies') {
                         getCompanyPaymentAndTax(dispatch, Number(giveData.giveFrom.id));
                     }
+                    if (giveData.giveFrom.type === 'user' || giveData.giveFrom.type === 'companies') {
+                        if (Number(giveAmount.value) > Number(giveData.giveFrom.balance)) {
+                            return <ReloadAddAmount/>
+                        }
+                    }
                     break;
                 case 'giftType':
                     giveData = resetDataForGiftTypeChange(giveData, dropDownOptions, coverFeesData);
@@ -706,7 +710,6 @@ class Charity extends React.Component {
     }
 
     handlePresetAmountClick = (event, data) => {
-        debugger;
         const {
             value,
         } = data;
@@ -1036,7 +1039,6 @@ class Charity extends React.Component {
     }
 
     render() {
-        debugger;
         const {
             companyDetails,
             coverAmountDisplay,
@@ -1244,6 +1246,16 @@ class Charity extends React.Component {
                                                             handlePresetAmountClick={this.handlePresetAmountClick}
                                                             validity={validity}
                                                         />
+
+                                                        <FormValidationErrorMessage
+                                                            condition={!validity.isAmountLessThanOneBillion}
+                                                            errorMessage={ReactHtmlParser(formatMessage('giveCommon:errorMessages.invalidMaxAmountError'))}
+                                                        />
+                                                        <FormValidationErrorMessage
+                                                            condition={!validity.isAmountCoverGive}
+                                                            errorMessage={formatMessage('giveCommon:errorMessages.giveAmountGreaterThanBalance')}
+                                                        />
+
                                                         {
                                                             (!_isEmpty(coverAmountDisplay) && coverAmountDisplay > 0) &&
                                                             <p>
@@ -1285,8 +1297,16 @@ class Charity extends React.Component {
                                                             parentOnBlurChange={this.handleInputOnBlur}
                                                             formatMessage={formatMessage}
                                                         />
-                                                        
-                                                        {/* <div class="noteDefault"><div class="noteWraper"><span class="leftImg"><span class="notifyDefaultIcon"></span></span><span class="noteContent"><a href="#">Reload</a> your Impact Account to send this gift </span></div></div> */}
+
+                                                        {/* {this.state.isAmountGreater === true && giveFrom.type === "user" || giveFrom.type === "companies" ?
+                                                            <ReloadAddAmount
+                                                                type={giveFrom.type}
+                                                                balanceAmount={giveFrom.balance}
+                                                                amount={giveData.formatedCharityAmount}
+                                                            />
+                                                            :
+                                                            ''
+                                                        } */}
 
                                                         {this.renderSpecialInstructionComponent(
                                                             giveFrom,

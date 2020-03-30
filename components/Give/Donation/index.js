@@ -148,7 +148,6 @@ class Donation extends React.Component {
      * @return {Void} { void } The return nothing.
      */
     handleInputOnBlur = (event, data) => {
-        debugger;
         event.preventDefault();
         const {
             name,
@@ -207,7 +206,6 @@ class Donation extends React.Component {
     }
 
     handleInputChange = (event, data) => {
-        debugger;
         const {
             name,
             options,
@@ -338,7 +336,6 @@ class Donation extends React.Component {
     }
 
     handlePresetAmountClick = (event, data) => {
-        debugger;
         const {
             value,
         } = data;
@@ -829,7 +826,6 @@ class Donation extends React.Component {
     }
 
     render() {
-        debugger;
         const {
             buttonClicked,
             dispatch,
