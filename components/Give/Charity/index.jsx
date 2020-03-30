@@ -1285,34 +1285,14 @@ class Charity extends React.Component {
                                                             parentOnBlurChange={this.handleInputOnBlur}
                                                             formatMessage={formatMessage}
                                                         />
+                                                        
+                                                        {/* <div class="noteDefault"><div class="noteWraper"><span class="leftImg"><span class="notifyDefaultIcon"></span></span><span class="noteContent"><a href="#">Reload</a> your Impact Account to send this gift </span></div></div> */}
+
                                                         {this.renderSpecialInstructionComponent(
                                                             giveFrom,
                                                             giftType, giftTypeList, infoToShare, infoToShareList, formatMessage,
                                                             paymentInstrumentList, defaultTaxReceiptProfile, companyDetails, giveData, language
                                                         )}
-                                                        {/* <CharityFrequency
-                                                            isCharityFrequency={true}
-                                                            formatMessage={formatMessage}
-                                                            formData={giveData}
-                                                            handlegiftTypeButtonClick={this.handlegiftTypeButtonClick}
-                                                            handleInputChange={this.handleInputChange}
-                                                            language={language}
-                                                        />
-                                                        <SpecialInstruction
-                                                            giftType={giftType}
-                                                            giftTypeList={giftTypeList}
-                                                            giveFrom={giveFrom}
-                                                            handleInputChange={this.handleInputChange}
-                                                            infoToShare={infoToShare}
-                                                            infoToShareList={infoToShareList}
-                                                            formatMessage={formatMessage}
-                                                            paymentInstrumentList={paymentInstrumentList}
-                                                            defaultTaxReceiptProfile={defaultTaxReceiptProfile}
-                                                            companyDetails={companyDetails}
-                                                            companyAccountsFetched={this.props.companyAccountsFetched}
-                                                            userAccountsFetched={this.props.userAccountsFetched}
-                                                            slug={this.props.slug}
-                                                        /> */}
                                                         <DedicateType
                                                             handleInputChange={this.handleInputChange}
                                                             handleInputOnBlur={this.handleInputOnBlur}
@@ -1320,7 +1300,6 @@ class Charity extends React.Component {
                                                             dedicateValue={dedicateValue}
                                                             validity={validity}
                                                         />
-
 
                                                         {/*{accountTopUpComponent}
                                                              {stripeCardComponent}
