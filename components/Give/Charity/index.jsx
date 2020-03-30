@@ -917,32 +917,33 @@ class Charity extends React.Component {
      * @param {object[]} infoToShareList info to share options.
      * @return {JSX} JSX representing payment fields.
      */
-    // renderSpecialInstructionComponent(
-    //     giveFrom, giftType, giftTypeList, infoToShare, infoToShareList, formatMessage
-    //     , paymentInstrumentList, defaultTaxReceiptProfile, companyDetails
-    // ) {
-    //     if (!_isEmpty(giveFrom) && giveFrom.value > 0) {
-    //         return (
-    //             <SpecialInstruction
-    //                 giftType={giftType}
-    //                 giftTypeList={giftTypeList}
-    //                 giveFrom={giveFrom}
-    //                 handleInputChange={this.handleInputChange}
-    //                 infoToShare={infoToShare}
-    //                 infoToShareList={infoToShareList}
-    //                 formatMessage={formatMessage}
-    //                 paymentInstrumentList={paymentInstrumentList}
-    //                 defaultTaxReceiptProfile={defaultTaxReceiptProfile}
-    //                 companyDetails={companyDetails}
-    //                 companyAccountsFetched={this.props.companyAccountsFetched}
-    //                 userAccountsFetched={this.props.userAccountsFetched}
-    //                 slug={this.props.slug}
+    renderSpecialInstructionComponent(
+        giveFrom, giftType, giftTypeList, infoToShare, infoToShareList, formatMessage
+        , paymentInstrumentList, defaultTaxReceiptProfile, companyDetails, giveData
+    ) {
+        if (!_isEmpty(giveFrom) && giveFrom.value > 0) {
+            return (
+                <SpecialInstruction
+                    giftType={giftType}
+                    giftTypeList={giftTypeList}
+                    giveFrom={giveFrom}
+                    handleInputChange={this.handleInputChange}
+                    infoToShare={infoToShare}
+                    infoToShareList={infoToShareList}
+                    formatMessage={formatMessage}
+                    paymentInstrumentList={paymentInstrumentList}
+                    defaultTaxReceiptProfile={defaultTaxReceiptProfile}
+                    companyDetails={companyDetails}
+                    companyAccountsFetched={this.props.companyAccountsFetched}
+                    userAccountsFetched={this.props.userAccountsFetched}
+                    slug={this.props.slug}
+                    giveData={giveData}
 
-    //             />
-    //         );
-    //     }
-    //     return null;
-    // }
+                />
+            );
+        }
+        return null;
+    }
 
     /**
      * validateStripeElements
@@ -1284,7 +1285,12 @@ class Charity extends React.Component {
                                                             parentOnBlurChange={this.handleInputOnBlur}
                                                             formatMessage={formatMessage}
                                                         />
-                                                        <CharityFrequency
+                                                        {this.renderSpecialInstructionComponent(
+                                                            giveFrom,
+                                                            giftType, giftTypeList, infoToShare, infoToShareList, formatMessage,
+                                                            paymentInstrumentList, defaultTaxReceiptProfile, companyDetails, giveData, language
+                                                        )}
+                                                        {/* <CharityFrequency
                                                             isCharityFrequency={true}
                                                             formatMessage={formatMessage}
                                                             formData={giveData}
@@ -1306,7 +1312,7 @@ class Charity extends React.Component {
                                                             companyAccountsFetched={this.props.companyAccountsFetched}
                                                             userAccountsFetched={this.props.userAccountsFetched}
                                                             slug={this.props.slug}
-                                                        />
+                                                        /> */}
                                                         <DedicateType
                                                             handleInputChange={this.handleInputChange}
                                                             handleInputOnBlur={this.handleInputOnBlur}

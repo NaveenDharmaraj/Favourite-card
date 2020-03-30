@@ -62,13 +62,13 @@ class Charities extends React.Component {
         return (
             // eslint-disable-next-line react/jsx-filename-extension
             <Layout authRequired={true}>
-                <Container>
+                {/* <Container> */}
                     <div className="pageWraper">
                         <GiveWrapper {...this.props} baseUrl="/give/to/charity" flowSteps={(slug) ? flowSteps : null}>
                             <Charity />
                         </GiveWrapper>
                     </div>
-                </Container>
+                {/* </Container> */}
             </Layout>
         );
     }

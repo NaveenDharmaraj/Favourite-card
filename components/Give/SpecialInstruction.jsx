@@ -13,6 +13,7 @@ import {
 } from 'semantic-ui-react';
 import _isEmpty from 'lodash/isEmpty';
 import { Link } from '../../routes';
+import CharityFrequency from '../Give/DonationFrequency'
 
 const SpecialInstruction = (props) => {
     const {
@@ -28,9 +29,26 @@ const SpecialInstruction = (props) => {
         companyDetails,
         companyAccountsFetched,
         userAccountsFetched,
-        slug
+        slug,
+        giveData,
+        language,
     } = props;
     let repeatGift = null;
+
+    const handlegiftTypeButtonClick = (e, { value }) => {
+        this.setState({
+            flowObject: {
+                ...this.state.flowObject,
+                giveData: {
+                    ...this.state.flowObject.giveData,
+                    giftType: {
+                        value: value
+                    },
+                },
+            },
+        })
+    }
+
     const renderPaymentTaxErrorMsg = () => {
         if ((userAccountsFetched && giveFrom.type === 'user') || (companyAccountsFetched && giveFrom.type === 'companies')) {
             const taxProfile = (giveFrom.type === 'companies' && companyDetails && companyDetails.companyDefaultTaxReceiptProfile)
@@ -39,22 +57,22 @@ const SpecialInstruction = (props) => {
             if (_isEmpty(paymentInstrumentList) && _isEmpty(taxProfile)) {
                 const paymentLink = (giveFrom.type === 'companies')
                     ? <a href={`/companies/${slug}/payment-profiles`}>payment method</a>
-                    : <Link route = '/user/profile/settings/creditcard'>payment method</Link> ;
+                    : <Link route='/user/profile/settings/creditcard'>payment method</Link>;
                 const taxLink = (giveFrom.type === 'companies')
                     ? <a href={`/companies/${slug}/tax-receipt-profiles`}>tax receipt recipient</a>
-                    : <Link route = '/user/tax-receipts'>tax receipt recipient</Link>
+                    : <Link route='/user/tax-receipts'>tax receipt recipient</Link>
                 return (
                     <div className="mb-1">
                         <Icon color="red" name="warning circle" />
                         <span style={{ color: 'red' }}>
-                               To send a monthly gift, first add a {paymentLink} and {taxLink} to your account details. We won't charge your card without your permission.
+                            To send a monthly gift, first add a {paymentLink} and {taxLink} to your account details. We won't charge your card without your permission.
                         </span>
                     </div>
                 );
             } else if (_isEmpty(paymentInstrumentList)) {
                 const link = (giveFrom.type === 'companies')
                     ? <a href={`/companies/${slug}/payment-profiles`}>payment method</a>
-                    : <Link route = '/user/profile/settings/creditcard'>payment method</Link>
+                    : <Link route='/user/profile/settings/creditcard'>payment method</Link>
                 return (
                     <div className="mb-1">
                         <Icon color="red" name="warning circle" />
@@ -82,7 +100,15 @@ const SpecialInstruction = (props) => {
     if (giveFrom.type === 'user' || giveFrom.type === 'companies') {
         repeatGift = (
             <Fragment>
-                <Form.Field>
+                <CharityFrequency
+                    isCharityFrequency={true}
+                    formatMessage={formatMessage}
+                    formData={giveData}
+                    handlegiftTypeButtonClick={handlegiftTypeButtonClick}
+                    handleInputChange={handleInputChange}
+                    language={language}
+                />
+                {/* <Form.Field>
                     <label htmlFor="giftType">
                         {formatMessage('specialInstruction:repeatThisGiftLabel')}
                     </label>
@@ -95,7 +121,7 @@ const SpecialInstruction = (props) => {
                         value={giftType.value}
                     />
                 </Form.Field>
-                {giftType.value > 0 && renderPaymentTaxErrorMsg()}
+                {giftType.value > 0 && renderPaymentTaxErrorMsg()} */}
             </Fragment>
         );
     }
