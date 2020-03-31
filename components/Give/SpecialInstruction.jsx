@@ -108,20 +108,6 @@ const SpecialInstruction = (props) => {
                     handleInputChange={handleInputChange}
                     language={language}
                 />
-                {/* <Form.Field>
-                    <label htmlFor="giftType">
-                        {formatMessage('specialInstruction:repeatThisGiftLabel')}
-                    </label>
-                    <Form.Field
-                        control={Select}
-                        id="giftType"
-                        name="giftType"
-                        options={giftTypeList}
-                        onChange={handleInputChange}
-                        value={giftType.value}
-                    />
-                </Form.Field>
-                {giftType.value > 0 && renderPaymentTaxErrorMsg()} */}
             </Fragment>
         );
     }

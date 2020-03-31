@@ -68,7 +68,6 @@ import IconCharity from '../../../static/images/no-data-avatar-charity-profile.p
 import IconGroup from '../../../static/images/no-data-avatar-giving-group-profile.png';
 import IconIndividual from '../../../static/images/no-data-avatar-group-chat-profile.png';
 import FlowBreadcrumbs from '../FlowBreadcrumbs';
-import CharityFrequency from '../DonationFrequency';
 import ReloadAddAmount from '../ReloadAddAmount';
 import { withTranslation } from '../../../i18n';
 import '../../shared/style/styles.less';
@@ -171,6 +170,7 @@ class Charity extends React.Component {
             inValidNameOnCard: true,
             showAnotherRecipient: false,
             showModal: false,
+            reviewBtnFlag: false,
             validity: this.intializeValidations(),
         };
         if (this.state.flowObject.giveData.giveTo.value === null) {
@@ -674,11 +674,6 @@ class Charity extends React.Component {
                     if (giveData.giveFrom.type === 'companies') {
                         getCompanyPaymentAndTax(dispatch, Number(giveData.giveFrom.id));
                     }
-                    if (giveData.giveFrom.type === 'user' || giveData.giveFrom.type === 'companies') {
-                        if (Number(giveAmount.value) > Number(giveData.giveFrom.balance)) {
-                            return <ReloadAddAmount/>
-                        }
-                    }
                     break;
                 case 'giftType':
                     giveData = resetDataForGiftTypeChange(giveData, dropDownOptions, coverFeesData);
@@ -744,6 +739,7 @@ class Charity extends React.Component {
             inValidNameOnCard,
             inValidCvv,
             inValidCardNameValue,
+            reviewBtnFlag,
         } = this.state;
         const {
             dispatch,
@@ -758,8 +754,11 @@ class Charity extends React.Component {
             giveData: {
                 creditCard,
                 coverFees,
+                giveFrom,
+                giveAmount,
             },
         } = flowObject;
+        const { giveData } = flowObject;
         const validateCC = this.isValidCC(
             creditCard,
             inValidCardNumber,
@@ -768,17 +767,29 @@ class Charity extends React.Component {
             inValidCvv,
             inValidCardNameValue,
         );
-        if (this.validateForm() && validateCC) {
-            if (creditCard.value > 0) {
-                flowObject.selectedTaxReceiptProfile = (flowObject.giveData.giveFrom.type === 'companies') ?
-                    companyDetails.companyDefaultTaxReceiptProfile :
-                    defaultTaxReceiptProfile;
+        if (giveFrom.type === "user" || giveFrom.type === "companies") {
+            if (Number(giveData.giveAmount) > Number(giveFrom.balance)) {
+                this.setState({
+                    reviewBtnFlag: true
+                })
             }
-            flowObject.giveData.coverFeesAmount = (coverFees) ?
-                coverFeesData.giveAmountFees : null;
-            flowObject.stepsCompleted = false;
-            dismissAllUxCritialErrors(this.props.dispatch);
-            dispatch(proceed(flowObject, flowSteps[stepIndex + 1], stepIndex));
+            else {
+                this.setState({
+                    reviewBtnFlag: false
+                })
+                if (this.validateForm() && validateCC) {
+                    if (creditCard.value > 0) {
+                        flowObject.selectedTaxReceiptProfile = (flowObject.giveData.giveFrom.type === 'companies') ?
+                            companyDetails.companyDefaultTaxReceiptProfile :
+                            defaultTaxReceiptProfile;
+                    }
+                    flowObject.giveData.coverFeesAmount = (coverFees) ?
+                        coverFeesData.giveAmountFees : null;
+                    flowObject.stepsCompleted = false;
+                    dismissAllUxCritialErrors(this.props.dispatch);
+                    dispatch(proceed(flowObject, flowSteps[stepIndex + 1], stepIndex));
+                }
+            }
         }
     }
 
@@ -1101,6 +1112,7 @@ class Charity extends React.Component {
         const groupUrlEndpoint = Number(sourceAccountHolderId) > 0 ? `/give/to/group/new?source_account_holder_id=${sourceAccountHolderId}` : null;
         const friendUrlEndpoint = `/give/to/friend/new`;
         const formatMessage = this.props.t;
+        const { reviewBtnFlag } = this.state;
         const giveAmountWithCoverFees = (coverFees)
             ? Number(giveAmount) + Number(coverFeesData.giveAmountFees)
             : Number(giveAmount);
@@ -1156,7 +1168,7 @@ class Charity extends React.Component {
                 <div className="flowReviewbanner">
                     <Container>
                         <div className="flowReviewbannerText">
-                            <Header as='h2'>{giveTo.text}</Header>
+                            <Header as='h2'>Give To {giveTo.text}</Header>
                         </div>
                     </Container>
                 </div>
@@ -1174,66 +1186,6 @@ class Charity extends React.Component {
                                     </div>
                                     <div className="flowFirst">
                                         <Form onSubmit={this.handleSubmit}>
-                                            {/* {(Number(giveTo.value) > 0) && (
-                                                <Fragment>
-                                                    {
-                                                        !groupFromUrl && (
-                                                            <Fragment>
-                                                                <Form.Field>
-                                                                    <label htmlFor="giveTo">
-                                                                        {formatMessage('giveToLabel')}
-                                                                    </label>
-                                                                    <Form.Field
-                                                                        control={Input}
-                                                                        className="disabled-input"
-                                                                        disabled
-                                                                        id="giveTo"
-                                                                        name="giveTo"
-                                                                        size="large"
-                                                                        value={giveTo.text}
-                                                                    />
-                                                                </Form.Field>
-                                                                {
-                                                                    (groupUrlEndpoint)
-                                                                    && this.renderFindAnotherRecipient(
-                                                                        showAnotherRecipient,
-                                                                        friendUrlEndpoint,
-                                                                        groupUrlEndpoint,
-                                                                        findAnotherRecipientLabel,
-                                                                        formatMessage,
-                                                                    )
-                                                                }
-                                                            </Fragment>
-                                                        )
-                                                    }
-                                                    {
-                                                        !!groupFromUrl && (
-                                                            <Fragment>
-                                                                <Form.Field>
-                                                                    <label htmlFor="giveTo">
-                                                                        {formatMessage('giveToLabel')}
-                                                                    </label>
-                                                                    <Form.Field
-                                                                        control={Select}
-                                                                        error={!validity.isValidGiveFrom}
-                                                                        id="giveToList"
-                                                                        name="giveToList"
-                                                                        onChange={this.handleInputChangeGiveTo}
-                                                                        options={giveToList}
-                                                                        placeholder="Select a Group to Give"
-                                                                        value={giveTo.value}
-                                                                    />
-                                                                </Form.Field>
-                                                                {this.renderFindAnotherRecipient(
-                                                                    showAnotherRecipient,
-                                                                    friendUrlEndpoint,
-                                                                    groupUrlEndpoint,
-                                                                    findAnotherRecipientLabel,
-                                                                    formatMessage,
-                                                                )}
-                                                            </Fragment>
-                                                        )
-                                                    } */}
                                             <Grid>
                                                 <Grid.Row>
                                                     <Grid.Column mobile={16} tablet={12} computer={10}>
@@ -1298,21 +1250,20 @@ class Charity extends React.Component {
                                                             formatMessage={formatMessage}
                                                         />
 
-                                                        {/* {this.state.isAmountGreater === true && giveFrom.type === "user" || giveFrom.type === "companies" ?
-                                                            <ReloadAddAmount
-                                                                type={giveFrom.type}
-                                                                balanceAmount={giveFrom.balance}
-                                                                amount={giveData.formatedCharityAmount}
-                                                            />
-                                                            :
-                                                            ''
-                                                        } */}
+                                                        {giveFrom.type === "user" || giveFrom.type === "companies" ?
+                                                            Number(giveData.giveAmount) > Number(giveFrom.balance) ?
+                                                                reviewBtnFlag ? <p className="errorNote">There is not enough money in your account to send this gift.<a href="#"> Add money</a> to continue</p>
+                                                                    : <ReloadAddAmount />
+                                                                : ''
+                                                            : ''
+                                                        }
 
                                                         {this.renderSpecialInstructionComponent(
                                                             giveFrom,
                                                             giftType, giftTypeList, infoToShare, infoToShareList, formatMessage,
                                                             paymentInstrumentList, defaultTaxReceiptProfile, companyDetails, giveData, language
                                                         )}
+                                                        
                                                         <DedicateType
                                                             handleInputChange={this.handleInputChange}
                                                             handleInputOnBlur={this.handleInputOnBlur}
@@ -1321,9 +1272,6 @@ class Charity extends React.Component {
                                                             validity={validity}
                                                         />
 
-                                                        {/*{accountTopUpComponent}
-                                                             {stripeCardComponent}
-                                                            <Divider hidden /> */}
                                                     </Grid.Column>
                                                 </Grid.Row>
                                             </Grid>
@@ -1340,11 +1288,10 @@ class Charity extends React.Component {
                                                             noteToSelf={noteToSelf}
                                                             validity={validity}
                                                         />
-
                                                         <Form.Button
                                                             primary
                                                             className="blue-btn-rounded btn_right"
-                                                            content={(!creditCardApiCall) ? formatMessage('giveCommon:reviewButton') : formatMessage('giveCommon:submittingButton')}
+                                                            content={(!creditCardApiCall) ? reviewBtnFlag ? formatMessage('giveCommon:reviewButtonFlag') : formatMessage('giveCommon:reviewButton') : formatMessage('giveCommon:submittingButton')}
                                                             disabled={(creditCardApiCall) || !this.props.userAccountsFetched}
                                                             type="submit"
                                                         />
