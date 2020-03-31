@@ -32,22 +32,11 @@ const SpecialInstruction = (props) => {
         slug,
         giveData,
         language,
+        handlegiftTypeButtonClick,
     } = props;
     let repeatGift = null;
 
-    const handlegiftTypeButtonClick = (e, { value }) => {
-        this.setState({
-            flowObject: {
-                ...this.state.flowObject,
-                giveData: {
-                    ...this.state.flowObject.giveData,
-                    giftType: {
-                        value: value
-                    },
-                },
-            },
-        })
-    }
+    
 
     const renderPaymentTaxErrorMsg = () => {
         if ((userAccountsFetched && giveFrom.type === 'user') || (companyAccountsFetched && giveFrom.type === 'companies')) {

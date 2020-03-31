@@ -921,6 +921,21 @@ class Charity extends React.Component {
         );
     }
 
+    handlegiftTypeButtonClick = (e, { value }) => {
+        debugger;
+        this.setState({
+            flowObject: {
+                ...this.state.flowObject,
+                giveData: {
+                    ...this.state.flowObject.giveData,
+                    giftType: {
+                        value: value
+                    },
+                },
+            },
+        }, console.log('flowObject ', this.state.flowObject))
+    }
+
     /**
      * Render the SpecialInstruction component.
      * @param {object} giveFrom give from field data.
@@ -952,7 +967,7 @@ class Charity extends React.Component {
                     userAccountsFetched={this.props.userAccountsFetched}
                     slug={this.props.slug}
                     giveData={giveData}
-
+                    handlegiftTypeButtonClick={this.handlegiftTypeButtonClick}
                 />
             );
         }
@@ -1252,18 +1267,19 @@ class Charity extends React.Component {
 
                                                         {giveFrom.type === "user" || giveFrom.type === "companies" ?
                                                             Number(giveData.giveAmount) > Number(giveFrom.balance) ?
-                                                                reviewBtnFlag ? <p className="errorNote">There is not enough money in your account to send this gift.<a href="#"> Add money</a> to continue</p>
-                                                                    : <ReloadAddAmount />
+                                                                    reviewBtnFlag ? <p className="errorNote">There is not enough money in your account to send this gift.<a href="#"> Add money</a> to continue</p>
+                                                                        : <ReloadAddAmount />
+                                                                    : ''
                                                                 : ''
-                                                            : ''
                                                         }
+
 
                                                         {this.renderSpecialInstructionComponent(
                                                             giveFrom,
                                                             giftType, giftTypeList, infoToShare, infoToShareList, formatMessage,
                                                             paymentInstrumentList, defaultTaxReceiptProfile, companyDetails, giveData, language
                                                         )}
-                                                        
+
                                                         <DedicateType
                                                             handleInputChange={this.handleInputChange}
                                                             handleInputOnBlur={this.handleInputOnBlur}
