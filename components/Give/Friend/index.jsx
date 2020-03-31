@@ -448,6 +448,7 @@ class Friend extends React.Component {
             giveData.userInteracted = true;
             switch (name) {
                 case 'donationAmount':
+                        giveData[name]=formatAmount(parseFloat(newValue.replace(/,/g, '')));
                         giveData['formatedDonationAmount'] =  newValue;
                     break;
                 case 'giveFrom':

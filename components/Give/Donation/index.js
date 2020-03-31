@@ -142,11 +142,12 @@ class Donation extends React.Component {
             validity,
         } = this.state;
         let inputValue = value;
-        // const isNumber = /^\d+(\.\d*)?$/;
         const isValidNumber = /^(?:[0-9]+,)*[0-9]+(?:\.[0-9]+)?$/;
-        if ((name === 'donationAmount') && !_.isEmpty(value) && value.match(isValidNumber)) {
-            inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
-            giveData[name] = inputValue;
+        if ((name === 'donationAmount') && !_.isEmpty(value)){
+            if (value.match(isValidNumber)) {
+                inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
+                giveData[name] = inputValue;
+            }
             giveData.formatedDonationAmount = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
         }
         if(name !== 'giveTo') {
@@ -245,7 +246,8 @@ class Donation extends React.Component {
                 giveData.giftType.value = (inputValue) ? 1 : 0;
                 break;
             case 'donationAmount' :
-                giveData.formatedDonationAmount = newValue;
+                giveData[name]=formatAmount(parseFloat(newValue.replace(/,/g, '')));
+                giveData['formatedDonationAmount'] = newValue;
                 break;
             default: break;
             }
