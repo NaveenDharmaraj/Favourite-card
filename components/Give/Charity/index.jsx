@@ -922,7 +922,6 @@ class Charity extends React.Component {
     }
 
     handlegiftTypeButtonClick = (e, { value }) => {
-        debugger;
         this.setState({
             flowObject: {
                 ...this.state.flowObject,
@@ -933,7 +932,7 @@ class Charity extends React.Component {
                     },
                 },
             },
-        }, console.log('flowObject ', this.state.flowObject))
+        })
     }
 
     /**
@@ -1123,6 +1122,7 @@ class Charity extends React.Component {
         const { flowObject } = this.state;
         const { giveData } = flowObject;
         let accountTopUpComponent = null;
+        let reloadAddAmount = null;
         let stripeCardComponent = null;
         const groupUrlEndpoint = Number(sourceAccountHolderId) > 0 ? `/give/to/group/new?source_account_holder_id=${sourceAccountHolderId}` : null;
         const friendUrlEndpoint = `/give/to/friend/new`;
@@ -1131,6 +1131,18 @@ class Charity extends React.Component {
         const giveAmountWithCoverFees = (coverFees)
             ? Number(giveAmount) + Number(coverFeesData.giveAmountFees)
             : Number(giveAmount);
+
+        if ((giveFrom.type === 'user' || giveFrom.type === 'companies')
+            && Number(giveData.giveAmount) > Number(giveFrom.balance)
+            && (giftType.value === 0 && !reviewBtnFlag)) {
+            reloadAddAmount = (<ReloadAddAmount />)
+        }
+
+        if ((giveFrom.type === 'user' || giveFrom.type === 'companies')
+            && Number(giveData.giveAmount) > Number(giveFrom.balance) && reviewBtnFlag) {
+            reloadAddAmount = (<p className="errorNote">There is not enough money in your account to send this gift.<a href="#"> Add money</a> to continue</p>)
+        }
+
         if ((giveFrom.type === 'user' || giveFrom.type === 'companies')
             && (giftType.value === 0
                 && giveAmountWithCoverFees > Number(giveFrom.balance))
@@ -1264,15 +1276,7 @@ class Charity extends React.Component {
                                                             parentOnBlurChange={this.handleInputOnBlur}
                                                             formatMessage={formatMessage}
                                                         />
-
-                                                        {giveFrom.type === "user" || giveFrom.type === "companies" ?
-                                                            Number(giveData.giveAmount) > Number(giveFrom.balance) ?
-                                                                    reviewBtnFlag ? <p className="errorNote">There is not enough money in your account to send this gift.<a href="#"> Add money</a> to continue</p>
-                                                                        : <ReloadAddAmount />
-                                                                    : ''
-                                                                : ''
-                                                        }
-
+                                                        {reloadAddAmount}
 
                                                         {this.renderSpecialInstructionComponent(
                                                             giveFrom,
