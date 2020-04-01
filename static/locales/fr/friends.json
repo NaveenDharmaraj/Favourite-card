@@ -16,5 +16,6 @@
     "noteToSelfPlaceholderText": "Pourquoi faites-vous un don aujourd'hui?",
     "totalAmountLabel": "Montant total",
     "totalAmount": "{{totalP2pGiveAmount}} ({{giveAmount}} X {{numberOfRecipients}} destinataires)",
-    "giveAmount": "{{giveAmount}}"    
+    "giveAmount": "{{giveAmount}}",
+    "multipleFriendAmountFieldText": "For multiple friends, the amount you enter will be sent to each friend."
 }
