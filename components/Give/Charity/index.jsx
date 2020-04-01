@@ -732,7 +732,6 @@ class Charity extends React.Component {
     }
 
     handleSubmit() {
-        debugger;
         const {
             flowObject,
             inValidCardNumber,
