@@ -84,9 +84,11 @@ class ChatWrapper extends React.Component {
                                     />
                                 </Grid.Column>
                                 <Grid.Column className="remove-pad-left" mobile={16} tablet={10} computer={11}>
-                                    <ChatMessages
-                                        isSmallerScreen={isSmallerScreen}
-                                    />
+                                    <div className="chatSection">
+                                        <ChatMessages
+                                            isSmallerScreen={isSmallerScreen}
+                                        />
+                                    </div>
                                 </Grid.Column>
                             </Grid.Row>
                         </Grid>

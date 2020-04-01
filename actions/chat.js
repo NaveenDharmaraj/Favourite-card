@@ -13,7 +13,10 @@ const actionTypes = _keyBy([
     'FETCH_USER_DETAILS',
     'NEW_GROUP_DETAILS',
     'COMPOSE_SCREEN_SECTION',
-    'CURRENT_SELECTED_CONVERSATION',
+    'NEW_GROUP_FEEDS',
+    'SELECTED_CONVERSATION_MESSAGES',
+    'COMPOSE_SELECTED_CONVERSATION',
+    'LOAD_CONVERSATION_MESSAGES_ENDTIME',
 ]);
 
 const loadMuteUserList = () => (dispatch) => {
@@ -30,6 +33,48 @@ const loadMuteUserList = () => (dispatch) => {
         });
     });
 };
+const loadConversationMessages = (selectedConversation, endTime = new Date().getTime() + 2000, concatMessages = false, messages = []) => dispatch => {
+    if (selectedConversation) {
+        let params = { endTime: endTime, pageSize: 10 }; //{ startIndex: startIndex, mainPageSize: 100, pageSize: 50 };
+        if (selectedConversation.groupId) {
+            params["groupId"] = selectedConversation.groupId;
+        } else { params["userId"] = selectedConversation.contactIds; }
+        return applozicApi.get("/message/v2/list", { params: params }).then(response => {
+            let selectedConversationMessages = response.response.message;
+            dispatch({
+                payload: {
+                    selectedConversation: !_isEmpty(selectedConversation) ? selectedConversation : null,
+                    selectedConversationMessages,
+                    concatMessages,
+                },
+                type: actionTypes.SELECTED_CONVERSATION_MESSAGES,
+            });
+            const endTime = response.response.message && response.response.message.length >= 10 ?
+                response.response.message[response.response.message.length - 1].createdAtTime : null;
+            dispatch({
+                payload: {
+                    endTime
+                },
+                type: actionType.LOAD_CONVERSATION_MESSAGES_ENDTIME,
+            })
+            // if (concatMessages) {
+            //     window.dispatchEvent(new CustomEvent("onChatPageRefreshEvent", { detail: { data: messages } }));
+            // }
+        })
+            .catch(error => {
+                dispatch({
+                    payload: {
+                        selectedConversation: !_isEmpty(selectedConversation) ? selectedConversation : null,
+                        selectedConversationMessages: [],
+                        concatMessages,
+                    },
+                    type: actionTypes.SELECTED_CONVERSATION_MESSAGES,
+                });
+
+            })
+    }
+
+}
 /**
  * loadConversationThenBlock - recurssive calling of then block
  * @param {array} newMessgaeArr saves all the new messages from current resposne and old response from before then block
@@ -134,6 +179,7 @@ const loadConversationThenBlock = (response, msgId, userDetails, groupFeeds, sel
             },
             type: actionTypes.LOAD_CONVERSATION_LIST,
         });
+        dispatch(loadConversationMessages(selectedConversation, null, false, newMessgaeArr));
     }
 };
 
@@ -248,6 +294,12 @@ const addSelectedUsersToGroup = (params) => {
 const leaveGroup = (params) => {
     return applozicApi.post("/group/left", params);
 }
+const createGroup = (params) => {
+    return applozicApi.post("/group/v2/create", params)
+}
+const sendMessageToSelectedConversation = (params) => {
+    return applozicApi.post("/message/v2/send", params)
+}
 export {
     actionTypes,
     loadMuteUserList,
@@ -259,4 +311,7 @@ export {
     removeUserFromGroup,
     addSelectedUsersToGroup,
     leaveGroup,
+    createGroup,
+    sendMessageToSelectedConversation,
+    loadConversationMessages,
 };

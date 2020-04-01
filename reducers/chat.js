@@ -1,4 +1,5 @@
 import _isEmpty from 'lodash/isEmpty';
+import _uniqBy from 'lodash/uniqBy';
 
 import { actionTypes } from '../actions/chat';
 
@@ -70,6 +71,13 @@ const chat = (state = {}, action) => {
                 userDetails: action.payload.userDetails,
             };
             break;
+        case actionTypes.NEW_GROUP_FEEDS:
+            newState = {
+                ...state,
+                groupFeeds: (!_isEmpty(state.groupFeeds)
+                    && Object.keys(state.groupFeeds).length > 0) ? Object.assign(state.groupFeeds, action.payload.groupFeeds) : action.payload.groupFeeds,
+            }
+            break;
         case actionTypes.EDIT_GROUP_DETAILS:
             if (!_isEmpty(action.payload.editGroupName) && !_isEmpty(action.payload.editGroupImageUrl)) {
                 return {
@@ -93,15 +101,30 @@ const chat = (state = {}, action) => {
             newState = {
                 ...state,
                 filteredMessages: action.payload.filteredMessages,
-                selectedConversation: action.payload.selectedConversation,
             };
             break;
-        case actionTypes.CURRENT_SELECTED_CONVERSATION:
+        case actionTypes.SELECTED_CONVERSATION_MESSAGES:
+            let paginatedSelectedConversationMessages = action.payload.selectedConversationMessages;
+            if (action.payload.concatMessages && !_isEmpty(state.selectedConversationMessages) && state.selectedConversationMessages.length > 0) {
+                paginatedSelectedConversationMessages = action.payload.selectedConversationMessages.concat(state.selectedConversationMessages);
+            }
             newState = {
                 ...state,
                 selectedConversation: action.payload.selectedConversation,
-            };
+                selectedConversationMessages: _uniqBy(paginatedSelectedConversationMessages, 'key'),
+                concatMessages: action.payload.concatMessages,
+            }
             break;
+        case actionTypes.COMPOSE_SELECTED_CONVERSATION:
+            return {
+                ...state,
+                selectedConversation: action.payload.selectedConversation,
+            };
+        case actionTypes.LOAD_CONVERSATION_MESSAGES_ENDTIME:
+            return{
+                ...state,
+                endTime: action.payload.endTime,
+            }
         default:
             break;
     }

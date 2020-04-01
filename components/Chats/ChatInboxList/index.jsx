@@ -6,16 +6,16 @@ import _isEqual from 'lodash/isEqual';
 import _isEmpty from 'lodash/isEmpty';
 import getConfig from 'next/config';
 
-import { actionTypes } from '../../../actions/chat';
+import { actionTypes, loadConversationMessages } from '../../../actions/chat';
 import { placeholderGroup } from '../../../static/images/no-data-avatar-group-chat-profile.png';
 import { placeholderUser } from '../../../static/images/no-data-avatar-user-profile.png';
 import IndividualChatContact from './IndividualChatContact';
+import { debounceFunction } from '../../../helpers/chat/utils';
 const { publicRuntimeConfig } = getConfig();
 const {
     CHAT_GROUP_DEFAULT_AVATAR
 } = publicRuntimeConfig;
 class ChatInboxList extends React.Component {
-
 
     conversationHead = (msg) => {
         const {
@@ -26,7 +26,7 @@ class ChatInboxList extends React.Component {
         } = this.props;
         let currentUserId = userInfo.id;
         if (msg.groupId) {
-            let info = groupFeeds[msg.groupId];
+            let info = groupFeeds[msg.groupId] || {};
             let groupHead = {
                 type: "group",
                 title: info.name,
@@ -37,7 +37,7 @@ class ChatInboxList extends React.Component {
             groupHead["disabled"] = (info.removedMembersId && info.removedMembersId.indexOf(currentUserId) >= 0);
             return groupHead;
         } else {
-            let info = userDetails[msg.contactIds];
+            let info = userDetails[msg.contactIds] || {};
             const muteInfo = !_isEmpty(muteUserList) ? muteUserList[msg.contactIds] : {};
             let convHead = info ? {
                 type: 'user',
@@ -74,9 +74,10 @@ class ChatInboxList extends React.Component {
                 payload:{
                     selectedConversation: msg, 
                     selectedConversationMessages: [], 
+                    concatMessages : false,
                 },
-                type: actionTypes.CURRENT_SELECTED_CONVERSATION
-            })
+                type: actionTypes.SELECTED_CONVERSATION_MESSAGES
+            });
             dispatch({
                 payload:{
                     compose: false,
@@ -84,8 +85,8 @@ class ChatInboxList extends React.Component {
                 },
                 type: actionTypes.COMPOSE_SCREEN_SECTION,
             })
-            //////????????this.loadConversationMessages(msg, new Date().getTime(), true);
-        } else if (isSmallerScreen && !this.loading) {
+            dispatch(loadConversationMessages(msg, new Date().getTime(), false));
+        } else if (isSmallerScreen) {
             dispatch({
                 payload:{
                     smallerScreenSection: 'convMsgs',
@@ -99,6 +100,7 @@ class ChatInboxList extends React.Component {
     onConversationSearchChange = (event) => {
         const searchValue = event.target.value;
         const {
+            compose,
             groupFeeds,
             messages,
             dispatch,
@@ -134,10 +136,8 @@ class ChatInboxList extends React.Component {
             type: actionTypes.INBOX_FILTERED_MESSAGES,
             payload: {
                 filteredMessages: newList,
-                selectedConversation: newList.length > 0 ? newList[0] : null
             },
         });
-        // let selectedConversationMessages = [];
         // Set the filtered state based on what our rules added to newList
         let tempSelectedConversation = newList.length > 0 ? newList[0] : null
         if (tempSelectedConversation && tempSelectedConversation.groupId) {
@@ -149,15 +149,19 @@ class ChatInboxList extends React.Component {
                 }
             })
         }
-        this.loadConversationMessages(newList.length > 0 ? newList[0] : null, new Date().getTime(), true);
-    }
-
-    loadConversationMessages = () => {
-        console.log('loadConversationMessages')
+        if(compose){
+            dispatch({
+                payload:{
+                    compose: false
+                },
+                type: actionTypes.COMPOSE_SCREEN_SECTION,
+            })
+        }
+        const params = { dispatch, searchValue: newList.length > 0 ? newList[0] : null};
+        debounceFunction(params, 300);
     }
 
     renderIndividualContactList = () => {
-
         const {
             compose,
             filteredMessages,
@@ -172,7 +176,7 @@ class ChatInboxList extends React.Component {
                 const converstionInfo = this.conversationHead(msg);
                 return (
                     <IndividualChatContact
-                        onConversationSelect={() => this.onConversationSelect(msg)}
+                        onConversationSelect={this.onConversationSelect}
                         msg={msg}
                         selectedConversation={selectedConversation}
                         converstionInfo={converstionInfo}

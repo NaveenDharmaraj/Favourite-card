@@ -1,16 +1,16 @@
 import React, { Fragment } from 'react';
 import getConfig from 'next/config';
 import { connect } from 'react-redux';
-import { List, Input, Button, Icon, Dropdown, Popup, Divider, Image, Modal, Checkbox } from 'semantic-ui-react';
+import { List, Input, Button, Icon, Dropdown, Popup, Divider, Image, Modal, Checkbox, Form } from 'semantic-ui-react';
 import _isEqual from 'lodash/isEqual';
 import _forEach from 'lodash/forEach';
 import _isEmpty from 'lodash/isEmpty';
 
 import utilityApi from '../../../services/utilityApi';
 import applozicApi from '../../../services/applozicApi';
-import { actionTypes, loadConversations, loadMuteUserList, deleteConversation, muteOrUnmuteUserConversation, muteOrUnmuteGroupConversation, removeUserFromGroup, addSelectedUsersToGroup, leaveGroup } from '../../../actions/chat';
+import { actionTypes, loadConversations, loadMuteUserList, deleteConversation, muteOrUnmuteUserConversation, muteOrUnmuteGroupConversation, removeUserFromGroup, addSelectedUsersToGroup, leaveGroup, createGroup, sendMessageToSelectedConversation, loadConversationMessages } from '../../../actions/chat';
 import moreIcon from '../../../static/images/icons/ellipsis.svg';
-import { getBase64 } from '../../../helpers/chat/utils';
+import { getBase64, groupMessagesByDate, timeString } from '../../../helpers/chat/utils';
 import { placeholderGroup } from '../../../static/images/no-data-avatar-group-chat-profile.png';
 import { placeholderUser } from '../../../static/images/no-data-avatar-user-profile.png';
 import Link from '../../shared/Link';
@@ -21,7 +21,6 @@ const {
 
 
 // splitting the chat header based on compose flag
-
 class ChatMessages extends React.Component {
     constructor(props) {
         super(props);
@@ -38,12 +37,14 @@ class ChatMessages extends React.Component {
             newGroupNameState: props.newGroupName ? props.newGroupName : 'New Group',
             showMoreOptions: false,
             searchQuery: '',
-        }
+        };
     }
 
     componentDidUpdate(prevProps) {
         const {
-            editGroupName
+            editGroupName,
+            selectedConversationMessages,
+            concatMessages
         } = this.props;
         if (!_isEqual(this.props, prevProps)) {
             if (!_isEqual(editGroupName, prevProps.editGroupName)) {
@@ -51,14 +52,26 @@ class ChatMessages extends React.Component {
                     editGroupNameState: editGroupName
                 })
             }
+            if (!_isEqual(selectedConversationMessages, prevProps.selectedConversationMessages)) {
+                if (this.refs.scrollParentRef && !concatMessages) {
+                    this.refs.scrollParentRef.scrollTop = this.refs.scrollParentRef.scrollHeight;
+                }
+                else if (this.refs.scrollParentRef && concatMessages) {
+                    this.refs.scrollParentRef.scrollTop = 60;
+                }
+
+            }
         }
     }
+
     handleNewGroupEditDone = (event) => {
-        //??????is it required to dispatch newGroupName
-        if (event && event.target && event.target.value && event.target.value.trim() != "") {
+        const {
+            newGroupNameState,
+        } = this.state;
+        if (newGroupNameState.trim() != "") {
             this.setState({
                 editGroup: false,
-                newGroupNameState: event.target.value
+                newGroupNameState,
             });
         }
     }
@@ -131,7 +144,7 @@ class ChatMessages extends React.Component {
                                             value={this.state.newGroupNameState}
                                             onChange={(e) => { this.setState({ newGroupNameState: e.target.value }) }}
                                         />
-                                        <span className="charCount" ref="groupNameCharCount">
+                                        <span className="charCount">
                                             {this.state.newGroupNameState.length}/25
                                         </span>
                                         <Button
@@ -146,7 +159,7 @@ class ChatMessages extends React.Component {
                                         {this.state.newGroupNameState}
                                         <Button
                                             className="EditGrpName"
-                                            onClick={this.setState({ editGroup: true })}>
+                                            onClick={() => this.setState({ editGroup: true })}>
                                             <Icon name="pencil" />
                                         </Button>
                                     </Fragment>;
@@ -232,7 +245,6 @@ class ChatMessages extends React.Component {
     updateGroupDetails = (groupId, usersInfo, groupInfo, resetActionVar) => {
         const {
             dispatch,
-            editGroupImageUrl,
             groupFeeds,
             userDetails,
             selectedConversation,
@@ -253,7 +265,7 @@ class ChatMessages extends React.Component {
         }
 
         //dispatching editimageurl happens in onGroupImageChange function
-        if (!currentGroupInfo || currentGroupInfo.imageUrl != groupInfo['imageLink']) {
+        if (!currentGroupInfo || (groupInfo && currentGroupInfo.imageUrl != groupInfo['imageLink'])) {
             params["imageUrl"] = groupInfo['imageLink'];
         }
         if (groupInfo && groupInfo['imageLink'] != undefined && groupInfo["imageLink"] != null) {
@@ -467,8 +479,9 @@ class ChatMessages extends React.Component {
                     payload: {
                         selectedConversation: selectedConversation,
                         selectedConversationMessages: [],
+                        concatMessages: false,
                     },
-                    type: actionTypes.CURRENT_SELECTED_CONVERSATION
+                    type: actionTypes.SELECTED_CONVERSATION_MESSAGES
                 });
                 dispatch({
                     payload: {
@@ -476,15 +489,17 @@ class ChatMessages extends React.Component {
                     },
                     type: actionTypes.NEW_GROUP_DETAILS,
                 })
-                //this.loadConversationMessages(selectedConversation, new Date().getTime(), true);
+                dispatch(loadConversationMessages(selectedConversation, new Date().getTime(), false));
             }
         } else {
             //new group conversation
             dispatch({
                 payload: {
                     selectedConversation: null,
+                    selectedConversationMessages: [],
+                    concatMessages: false,
                 },
-                type: actionTypes.CURRENT_SELECTED_CONVERSATION
+                type: actionTypes.SELECTED_CONVERSATION_MESSAGES
             });
             dispatch({
                 payload: {
@@ -492,6 +507,118 @@ class ChatMessages extends React.Component {
                 },
                 type: actionTypes.NEW_GROUP_DETAILS,
             })
+        }
+    }
+    handlesendMessageToSelectedConversation = (conversation, message) => {
+        //send the message
+        const {
+            dispatch,
+            userDetails,
+            groupFeeds,
+            selectedConversation,
+        } = this.props;
+        if (conversation && message.replace(/(?:\r\n|\r|\n|\s)/g, '').length > 0) {
+            let params = { message: message.trim().replace(/(?:\r\n|\r|\n)/g, '<br/>') };
+            if (conversation.groupId) {
+                params["clientGroupId"] = conversation.groupId;
+            } else { params["to"] = conversation.contactIds; }
+            sendMessageToSelectedConversation(params).then((resp) => {
+                // handle success
+                //dispatch(loadConversations(null, userDetails, groupFeeds, selectedConversation));
+                dispatch({
+                    payload: {
+                        compose: false,
+                    },
+                    type: actionTypes.COMPOSE_SCREEN_SECTION
+                });
+                //self.setLoading(false);
+                // if (ignoreLoadingChatMsgs) {
+                //     //load messages again
+                //     self.loadConversationMessages(conversation, new Date().getTime() + 2000, true);
+                // }
+            });
+        }
+    }
+    handlecreateGroup(messageInfo) {
+        const {
+            dispatch,
+            newGroupMemberIds,
+            newGroupImageUrl,
+            groupFeeds,
+        } = this.props;
+        const {
+            newGroupNameState
+        } = this.state;
+        let params = {};
+        params["groupName"] = newGroupNameState;
+        params["groupMemberList"] = newGroupMemberIds,
+            params["imageUrl"] = newGroupImageUrl;
+        if (!params["imageUrl"] || params["imageUrl"] == "" || params["imageUrl"] == null) {
+            params["imageUrl"] = CHAT_GROUP_DEFAULT_AVATAR;
+        }
+        params["metadata"] = {
+            "CREATE_GROUP_MESSAGE": ":adminName created group",
+            "REMOVE_MEMBER_MESSAGE": ":userName removed",
+            "ADD_MEMBER_MESSAGE": ":userName added",
+            "JOIN_MEMBER_MESSAGE": ":userName joined",
+            "GROUP_NAME_CHANGE_MESSAGE": "Group renamed to :groupName",
+            "GROUP_ICON_CHANGE_MESSAGE": ":groupName icon changed",
+            "GROUP_LEFT_MESSAGE": ":userName left",
+            "DELETED_GROUP_MESSAGE": ":groupName deleted",
+            "HIDE": "true",
+            "ALERT": "false",
+        };
+        createGroup(params).then(response => {
+            let groupId = response.response.id;
+            dispatch({
+                payload: {
+                    groupFeeds: {
+                        [groupId]: response.response,
+                    }
+                },
+                type: actionTypes.NEW_GROUP_FEEDS,
+            });
+            dispatch({
+                payload: {
+                    compose: false,
+                },
+                type: actionTypes.COMPOSE_SCREEN_SECTION
+            });
+            if (messageInfo && messageInfo.send) {
+                this.handlesendMessageToSelectedConversation({ groupId: groupId }, messageInfo.message);
+            }
+        }).catch(error => {
+            // console.log(error);
+            //handle loader here
+        });
+    }
+    handleComposeMessageKeyDown = (e, newGroup = "") => {
+        const {
+            selectedConversation
+        } = this.props;
+        if (!e.shiftKey && e.key === 'Enter' && e.target.value.trim() != "") {
+            if (newGroup === "newConvMessageTextRef") {
+                this.handlecreateGroup({ send: true, message: e.target.value });
+                return;
+            }
+            this.handlesendMessageToSelectedConversation(selectedConversation, e.target.value);
+            e.target.value = "";
+            e.preventDefault();
+        }
+    }
+
+    onSendKeyClick = (refName) => {
+        const {
+            selectedConversation
+        } = this.props;
+
+        if (this.refs[refName] && this.refs[refName].value.trim() != "") {
+            if (refName == "currentConvMessageTextRef") {
+                this.handlesendMessageToSelectedConversation(selectedConversation, this.refs[refName].value, true);
+            } else if (refName == "newConvMessageTextRef") {
+                this.handlecreateGroup({ send: true, message: this.refs[refName].value });
+            }
+            this.refs[refName].value = "";
         }
     }
     renderChatSectionCompose = () => {
@@ -508,7 +635,6 @@ class ChatMessages extends React.Component {
                         </div>
                         <div className="inputWraper">
                             <Dropdown
-                                //ref="groupContactIds"
                                 clearable
                                 fluid
                                 multiple
@@ -524,6 +650,28 @@ class ChatMessages extends React.Component {
                 </div>
             </div>
         )
+    }
+
+    renderComposeFooter = () => {
+        return (<div className="chatFooter">
+            <Form>
+                <Form.Field>
+                    <textarea
+                        rows="1"
+                        placeholder='Type a message…'
+                        ref="newConvMessageTextRef"
+                        onKeyDown={(e) => this.handleComposeMessageKeyDown(e, "newConvMessageTextRef")}>
+                    </textarea>
+                    <Button
+                        circular
+                        icon='paper plane outline'
+                        className="sendMsgBtn"
+                        onClick={() => { this.onSendKeyClick("newConvMessageTextRef") }}>
+                    </Button>
+                </Form.Field>
+            </Form>
+        </div>
+        );
     }
     renderGroupImage = (conversationInfo) => {
         return (<Popup
@@ -673,10 +821,9 @@ class ChatMessages extends React.Component {
                             <Input
                                 maxLength="25"
                                 placeholder='Name this group chat'
-                                ref="groupName"
                                 value={editGroupNameState}
                                 onChange={(e) => { this.setState({ editGroupNameState: e.target.value }) }} />
-                            <span className="charCount" ref="groupNameCharCount">{editGroupNameState.length}/25</span>
+                            <span className="charCount">{editGroupNameState.length}/25</span>
                             <Button
                                 className="EditGrpName"
                                 onClick={() => {
@@ -1124,8 +1271,8 @@ class ChatMessages extends React.Component {
     renderChatMessage = () => {
         const {
             compose,
-            groupFeeds,
             isSmallerScreen,
+            newGroupMemberIds,
             smallerScreenSection,
             selectedConversation,
         } = this.props;
@@ -1139,6 +1286,9 @@ class ChatMessages extends React.Component {
                     <div className="chatContent">
                         {this.renderChatSectionCompose()}
                     </div>
+                    {(!selectedConversation && newGroupMemberIds.length > 0) &&
+                        this.renderComposeFooter()
+                    }
                 </Fragment>
 
             )
@@ -1156,6 +1306,7 @@ class ChatMessages extends React.Component {
                     </Fragment>
                 )
             }
+            //selected conversation is user and its header
             else if (selectedConversation && conversationInfo && conversationInfo.type == "user"
                 && (!isSmallerScreen || smallerScreenSection != "convList")) {
                 return (
@@ -1166,12 +1317,133 @@ class ChatMessages extends React.Component {
             }
         }
     }
+    handleOnscroll = (scroll) => {
+        // scroll variable is used to avoid calling handleOnscroll which gets triggered in componentdidupdate calling scrollTop
+        const {
+            dispatch,
+            endTime,
+            selectedConversation,
+        } = this.props;
+        if (this.refs && this.refs.scrollParentRef && this.refs.scrollParentRef.scrollTop === 0 && endTime && scroll === "scrolled") {
+            dispatch(loadConversationMessages(selectedConversation, endTime, true))
+        }
+    }
+    renderChatSectionFooter = () => {
+        const {
+            endTime,
+            selectedConversation,
+            isSmallerScreen,
+            smallerScreenSection,
+            selectedConversationMessages,
+            userDetails,
+            userInfo,
+        } = this.props;
+        if (!_isEmpty(selectedConversation) && (!isSmallerScreen || smallerScreenSection != "convList")) {
+            const conversationInfo = this.conversationHead(selectedConversation);
+            const msgsByDate = groupMessagesByDate(selectedConversationMessages);
+            return <Fragment>
+                <div className="chatContent">
+                    <div
+                        className="mesgs"
+                        onScroll={() => {
+                            if (this.refs && this.refs.scrollParentRef && this.refs.scrollParentRef.scrollTop === 0 && endTime) {
+                                this.handleOnscroll("scrolled")
+                            }
+                        }}
+                        ref="scrollParentRef"
+                    >
+                        <div className="msg_history">
+                            {
+                                Object.keys(msgsByDate).map(dateString => {
+                                    let msgs = msgsByDate[dateString];
+                                    return (
+                                        <Fragment key={"date_" + dateString}>
+                                            <div className="dateTime">{dateString}</div>
+                                            {msgs.map(function (msg) {
+                                                if (msg.metadata.action && ["0", "1", "2", "3", "4", "5", "6", "8"].indexOf(msg.metadata.action) >= 0) {
+                                                    return <div
+                                                        key={"msg_" + msg.key}
+                                                        className="dateTime">{msg.message}
+                                                        <span
+                                                            style={{ float: "right", fontSize: 10, color: "#aaa", marginBottom: 0, marginRight: 0 }}>
+                                                            {timeString(msg.createdAtTime)}
+                                                        </span></div>
+                                                }
+                                                else if (msg.type == 5) {
+                                                    return <div className="outgoing_msg" key={"msg_" + msg.key}>
+                                                        <div className="sent_msg">
+                                                            <p style={{ margin: 0 }}>{msg.message}</p>
+                                                            <div className="dateTime" style={{ textAlign: "right" }}>{timeString(msg.createdAtTime)}</div>
+                                                        </div>
+                                                    </div>
+                                                } else if (msg.type == 4) {
+                                                    //?????????doubt here
+                                                    return <div className="incoming_msg" key={"msg_" + msg.key}>
+                                                        {
+                                                            conversationInfo.type == "group" ?
+                                                                <div className="incoming_msg_img">
+                                                                    <Image avatar src={userDetails[msg.contactIds]["imageLink"] ?
+                                                                        userDetails[msg.contactIds]["imageLink"] : placeholderUser} alt="" />
+                                                                </div> :
+                                                                <div className="incoming_msg_img">
+                                                                    <Image avatar src={userDetails[msg.contactIds]["imageLink"] ?
+                                                                        userDetails[msg.contactIds]["imageLink"] : placeholderUser} alt="" />
+                                                                </div>
+                                                        }
+                                                        <div className="received_msg">
+                                                            <div className="received_withd_msg">
+                                                                {
+                                                                    conversationInfo.type == "group" ?
+                                                                        <div className="bold">{userDetails[msg.contactIds]["displayName"]}</div> : ""
+                                                                }
+                                                                <p style={{ margin: 0 }}>{msg.message}</p>
+                                                                <div className="dateTime" style={{ textAlign: "right" }}>{timeString(msg.createdAtTime)}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            })}
+                                        </Fragment>
+                                    );
+                                })}
+                        </div>
+                    </div>
+                </div>
+                <div className="chatFooter">
+                    {/* if it is group and currentuser have left the group disable it*/}
+                    {(!(conversationInfo.type == "group"
+                        && conversationInfo.info.removedMembersId.indexOf(userInfo.id) >= 0)) &&
+                        <Form>
+                            <Form.Field>
+                                <textarea
+                                    placeholder='Type a message…'
+                                    ref="currentConvMessageTextRef"
+                                    disabled={
+                                        conversationInfo.type == "group" &&
+                                        conversationInfo.info.removedMembersId.indexOf(userInfo.id) >= 0}
+                                    rows="1"
+                                    onKeyDown={(e) => { this.handleComposeMessageKeyDown(e, "currentConvMessageTextRef") }}>
+                                </textarea>
 
+                                <Button
+                                    circular
+                                    icon='paper plane outline'
+                                    className="sendMsgBtn"
+                                    disabled={conversationInfo.type == "group" && conversationInfo.info.removedMembersId.indexOf(userInfo.id) >= 0}
+                                    onClick={() => { this.onSendKeyClick("currentConvMessageTextRef") }}></Button>
+                            </Form.Field>
+                        </Form>
+                    }
+                </div>
+            </Fragment>
+        }
+    }
     render() {
         return (
 
             <Fragment>
                 {this.renderChatMessage()}
+                {this.renderChatSectionFooter()}
             </Fragment>
         );
     }
@@ -1179,8 +1451,10 @@ class ChatMessages extends React.Component {
 function mapStateToProps(state) {
     return {
         compose: state.chat.compose,
+        concatMessages: state.chat.concatMessages,
         editGroupName: state.chat.editGroupName,
         editGroupImageUrl: state.chat.editGroupImageUrl,
+        endTime: state.chat.endTime,
         groupFeeds: state.chat.groupFeeds,
         messages: state.chat.messages,
         muteUserList: state.chat.muteUserList,
@@ -1188,6 +1462,7 @@ function mapStateToProps(state) {
         newGroupMemberIds: state.chat.newGroupMemberIds,
         smallerScreenSection: state.chat.smallerScreenSection,
         selectedConversation: state.chat.selectedConversation,
+        selectedConversationMessages: state.chat.selectedConversationMessages,
         userDetails: state.chat.userDetails,
         userInfo: state.user.info,
     };
@@ -1195,6 +1470,8 @@ function mapStateToProps(state) {
 
 ChatMessages.defaultProps = {
     newGroupMemberIds: [],
+    selectedConversationMessages: [],
+    endTime: null
 }
 
 export default connect(mapStateToProps)(ChatMessages);

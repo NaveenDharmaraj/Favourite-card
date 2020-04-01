@@ -1,4 +1,6 @@
-
+ import _forEach from 'lodash/forEach';
+import { loadConversationMessages } from '../../actions/chat';
+ 
 const months = [
     'Jan',
     'Feb',
@@ -13,7 +15,7 @@ const months = [
     'Nov',
     'Dec',
 ];
-
+let chatTimeout = '';
 /**
  * Returns dateStr.
  *
@@ -59,8 +61,33 @@ const getBase64 = (file, cb) => {
     };
 }
 
+
+const groupMessagesByDate = (msgs, msgsByDate={}) => {
+    msgs = msgs.sort((a, b) => (a.createdAtTime - b.createdAtTime));
+
+    _forEach(msgs, function (msg) {
+        let dateStr = getDateString(msg.createdAtTime);
+
+        if (!msgsByDate[dateStr]) {
+            msgsByDate[dateStr] = [];
+        }
+        msgsByDate[dateStr].push(msg);
+    });
+    return msgsByDate;
+}
+
+const debounceFunction = ({dispatch, searchValue}, delay) => {
+    if(chatTimeout){
+        clearTimeout(chatTimeout);
+    }
+    chatTimeout = setTimeout(function(){
+        dispatch(loadConversationMessages(searchValue));
+    },delay);
+}
 export {
     getDateString,
     getBase64,
     timeString,
+    groupMessagesByDate,
+    debounceFunction,
 };

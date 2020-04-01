@@ -14,7 +14,7 @@ class ChatHeader extends React.Component {
             dispatch
         } = this.props;
         dispatch({
-            payload:{
+            payload: {
                 smallerScreenSection: 'convList',
             },
             type: actionTypes.COMPOSE_SCREEN_SECTION
@@ -29,30 +29,32 @@ class ChatHeader extends React.Component {
             selectedConversation,
         } = this.props;
         dispatch({
-            payload:{
-                newGroupMemberIds: [],
+            payload: {
                 newGroupName: "New Group",
                 newGroupImageUrl: null,
             },
             type: actionTypes.NEW_GROUP_DETAILS
         });
         dispatch({
-            payload:{
+            payload: {
                 compose: !compose,
                 smallerScreenSection: compose ? "convList" : "convMsgs",
             },
             type: actionTypes.COMPOSE_SCREEN_SECTION
         });
         const selectCurrentConversation =
-        (!compose ? null :
-            (selectedConversation && selectedConversation.key ?
-                selectedConversation : 
+            (!compose ? null :
+                (selectedConversation && selectedConversation.key ?
+                    selectedConversation :
                     (filteredMessages ? filteredMessages[0] : null)));
+
+        // COMPOSE_SELECTED_CONVERSATION is created to avoid overriding of selectedConversationMessages 
+        // inside SELECTED_CONVERSATION_MESSAGES actionType
         dispatch({
-            payload:{
+            payload: {
                 selectedConversation: selectCurrentConversation,
             },
-            type: actionTypes.CURRENT_SELECTED_CONVERSATION
+            type: actionTypes.COMPOSE_SELECTED_CONVERSATION
         })
     }
 
@@ -89,7 +91,7 @@ class ChatHeader extends React.Component {
                                     onClick={this.composeNew}
                                 >
                                     <Icon name={compose ? 'close icon' : 'edit icon'} />
-                                    {isSmallerScreen  ? '' : (compose ? 'Cancel' : 'Compose')}
+                                    {isSmallerScreen ? '' : (compose ? 'Cancel' : 'Compose')}
                                 </Button>
                             </div>
                         </Grid.Column>
