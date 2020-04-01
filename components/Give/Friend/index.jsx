@@ -337,10 +337,15 @@ class Friend extends React.Component {
             validity,
         } = this.state;
         let inputValue = value;
-        const isNumber = /^(?:[0-9]+,)*[0-9]+(?:\.[0-9]+)?$/;
+        const isNumber = /^(?:[0-9]+,)*[0-9]+(?:\.[0-9]*)?$/;
         if ((name === 'giveAmount' || name === 'donationAmount') && !_.isEmpty(value) && value.match(isNumber)) {
             inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
             giveData[name] = inputValue;
+            if(name === 'giveAmount') {
+                giveData['formatedP2PAmount'] = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
+            } else {
+                giveData['formatedDonationAmount'] = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
+            }
         }
         const coverFeesAmount = 0;
         if (name !== 'coverFees' && name !== 'giftType' && name !== 'giveFrom') {
@@ -348,7 +353,6 @@ class Friend extends React.Component {
         }
         switch (name) {
             case 'giveAmount':
-                giveData['formatedP2PAmount'] = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
                 validity = validateGiveForm(
                     'donationAmount',
                     giveData.donationAmount,
@@ -372,9 +376,6 @@ class Friend extends React.Component {
                     giveData,
                     coverFeesAmount,
                 );
-                break;
-            case 'donationAmount':
-                    giveData['formatedDonationAmount'] = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
                 break;
             case 'recipients':
                 validity = validateGiveForm(
@@ -448,7 +449,6 @@ class Friend extends React.Component {
             giveData.userInteracted = true;
             switch (name) {
                 case 'donationAmount':
-                        giveData[name]=formatAmount(parseFloat(newValue.replace(/,/g, '')));
                         giveData['formatedDonationAmount'] =  newValue;
                     break;
                 case 'giveFrom':
@@ -473,7 +473,6 @@ class Friend extends React.Component {
                     break;
                 case 'giveAmount':
                     giveData['formatedP2PAmount'] = newValue;
-                    giveData[name]=formatAmount(parseFloat(newValue.replace(/,/g, '')));
                     giveData = resetP2pDataForOnInputChange(giveData, dropDownOptions);
                     break;
                 case 'recipients':

@@ -383,21 +383,22 @@ class Group extends React.Component {
             validity,
         } = this.state;
         let inputValue = value;
-        const isNumber = /^(?:[0-9]+,)*[0-9]+(?:\.[0-9]+)?$/;
+        const isNumber = /^(?:[0-9]+,)*[0-9]+(?:\.[0-9]*)?$/;
         if ((name === 'giveAmount' || name === 'donationAmount') && !_isEmpty(value) && value.match(isNumber)) {
             inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
             giveData[name] = inputValue;
+            if(name === 'giveAmount') {
+                giveData['formatedGroupAmount'] = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
+            } else {
+                giveData['formatedDonationAmount'] = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
+            }
            
         }
         if (name !== 'giftType' && name !== 'giveFrom') {
             validity = validateGiveForm(name, inputValue, validity, giveData, 0);
         }
         switch (name) {
-            case 'donationAmount':
-                    giveData['formatedDonationAmount'] = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
-                break;
             case 'giveAmount':
-                giveData['formatedGroupAmount'] = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
                 validity = validateGiveForm('donationAmount', giveData.donationAmount, validity, giveData, 0);
                 break;
             case 'giveFrom':
@@ -572,7 +573,6 @@ class Group extends React.Component {
             giveData.userInteracted = true;
             switch (name) {
                 case 'donationAmount':
-                        giveData[name]=formatAmount(parseFloat(newValue.replace(/,/g, '')));
                         giveData['formatedDonationAmount'] =  newValue;
                     break;
                 case 'giveFrom':
@@ -595,7 +595,6 @@ class Group extends React.Component {
                     giveData = resetDataForGiftTypeChange(giveData, dropDownOptions, coverFeesData);
                     break;
                 case 'giveAmount':
-                    giveData[name]=formatAmount(parseFloat(newValue.replace(/,/g, '')));
                     giveData['formatedGroupAmount'] = newValue;
                     giveData = resetDataForGiveAmountChange(
                         giveData, dropDownOptions, coverFeesData,
