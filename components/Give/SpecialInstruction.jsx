@@ -13,7 +13,8 @@ import {
 } from 'semantic-ui-react';
 import _isEmpty from 'lodash/isEmpty';
 import { Link } from '../../routes';
-import CharityFrequency from '../Give/DonationFrequency'
+import CharityFrequency from '../Give/DonationFrequency';
+import '../../../static/less/giveFlows.less';
 
 const SpecialInstruction = (props) => {
     const {

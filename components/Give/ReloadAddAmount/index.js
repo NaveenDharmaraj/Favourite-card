@@ -1,5 +1,6 @@
 import React, { } from 'react'
 import _ from 'lodash';
+import '../../../static/less/giveFlows.less';
 
 function ReloadAddAmount(props) {
     return (
