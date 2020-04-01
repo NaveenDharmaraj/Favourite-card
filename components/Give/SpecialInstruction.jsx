@@ -14,7 +14,7 @@ import {
 import _isEmpty from 'lodash/isEmpty';
 import { Link } from '../../routes';
 import CharityFrequency from '../Give/DonationFrequency';
-import '../../../static/less/giveFlows.less';
+import '../../static/less/giveFlows.less';
 
 const SpecialInstruction = (props) => {
     const {
