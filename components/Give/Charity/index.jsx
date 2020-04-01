@@ -533,10 +533,15 @@ class Charity extends React.Component {
             dispatch,
         } = this.props;
         let inputValue = value;
-        const isNumber = /^(?:[0-9]+,)*[0-9]+(?:\.[0-9]+)?$/;
+        const isNumber = /^(?:[0-9]+,)*[0-9]+(?:\.[0-9]*)?$/;
         if ((name === 'giveAmount' || name === 'donationAmount') && !_isEmpty(value) && value.match(isNumber)) {
             inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
             giveData[name] = inputValue;
+            if(name === 'giveAmount') {
+                giveData['formatedCharityAmount'] = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
+            } else {
+                giveData['formatedDonationAmount'] = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
+            }
         }
         const coverFeesAmount = Charity.getCoverFeesAmount(giveData, coverFeesData);
         if (Number(giveData.giveFrom.value) > 0 && Number(giveData.giveAmount) > 0) {		
@@ -550,14 +555,10 @@ class Charity extends React.Component {
         switch (name) {
             case 'giveAmount':
                 validity = validateGiveForm('donationAmount', giveData.donationAmount, validity, giveData, coverFeesAmount);
-                giveData['formatedCharityAmount'] = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
                 break;
             case 'giveFrom':
                 validity = validateGiveForm('giveAmount', giveData.giveAmount, validity, giveData, coverFeesAmount);
                 validity = validateGiveForm('donationAmount', giveData.donationAmount, validity, giveData, coverFeesAmount);
-                break;
-            case 'donationAmount':
-                    giveData['formatedDonationAmount'] = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
                 break;
             case 'inHonorOf':
             case 'inMemoryOf':
@@ -648,7 +649,6 @@ class Charity extends React.Component {
             giveData.userInteracted = true;
             switch (name) {
                 case 'donationAmount':
-                        giveData[name]=formatAmount(parseFloat(newValue.replace(/,/g, '')));
                         giveData['formatedDonationAmount'] =  newValue;
                     break;
                 case 'giveFrom':
@@ -672,7 +672,6 @@ class Charity extends React.Component {
                     giveData = resetDataForGiftTypeChange(giveData, dropDownOptions, coverFeesData);
                     break;
                 case 'giveAmount':
-                    giveData[name]=formatAmount(parseFloat(newValue.replace(/,/g, '')));
                     giveData['formatedCharityAmount'] = newValue;
                     giveData = resetDataForGiveAmountChange(
                         giveData, dropDownOptions, coverFeesData,
