@@ -38,6 +38,10 @@ import noDataggFavourites from '../../../static/images/favourites_nodata_illustr
 import PrivacySetting from '../../shared/Privacy';
 
 class Favorites extends React.Component {
+    static changeButtonState(event) {
+        event.target.disabled = true;
+    }
+
     constructor(props) {
         super(props);
         this.state = {
@@ -198,9 +202,14 @@ class Favorites extends React.Component {
                                                         )}
 
                                                 </Header.Content>
-                                            </Header> 
+                                            </Header>
                                             <Link className="lnkChange" route={`/${route}/${slug}`} passHref>
-                                                <Button className="btn-small-white-border">View</Button>
+                                                <Button
+                                                    className="btn-small-white-border"
+                                                    onClick={Favorites.changeButtonState}
+                                                >
+                                                    View
+                                                </Button>
                                             </Link>
                                         </div>
                                     </Grid.Column>

@@ -6,7 +6,10 @@ import _isEmpty from 'lodash/isEmpty';
 import getConfig from 'next/config';
 
 import auth0 from '../services/auth';
-import { triggerUxCritialErrors } from '../actions/error';
+import {
+    triggerUxCritialErrors,
+    triggerCustomUxCriticalError,
+} from '../actions/error';
 import { softLogout } from '../actions/auth';
 import logger from '../helpers/logger';
 
@@ -63,6 +66,7 @@ instance.interceptors.response.use(function (response) {
         method: config.method,
         url: config.url,
     };
+    let statusMessageProps = {};
     logger.error(`[CORE] API failed: ${JSON.stringify(logDNAErrorObj)}`);
     if (status === 401 && !config.ignore401 && typeof window !== 'undefined') {
         window.location.href = '/users/logout';
@@ -70,7 +74,14 @@ instance.interceptors.response.use(function (response) {
         softLogout(config.dispatch);
         return null;
     }
-    if (config.uxCritical && config.dispatch) {
+    if (status === 403 && config.params && config.params.findBySlug) {
+        statusMessageProps = {
+            heading: 'This page isn\'t available',
+            message: 'The link you followed might have been archived, or you don\'t have permission to view the page.',
+            type: 'error',
+        };
+        triggerCustomUxCriticalError(statusMessageProps, config.dispatch);
+    } else if (config.uxCritical && config.dispatch) {
         triggerUxCritialErrors(data.errors || data, config.dispatch);
     }
 

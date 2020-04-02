@@ -51,6 +51,7 @@ export const getGroupFromSlug = async (dispatch, slug, token = null) => {
         const fullParams = {
             params: {
                 dispatch,
+                findBySlug: true,
                 slug,
                 uxCritical: true,
             },

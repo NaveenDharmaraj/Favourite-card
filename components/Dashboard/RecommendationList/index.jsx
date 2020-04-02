@@ -26,6 +26,10 @@ import DiscoveredForYouNoData from '../../shared/DiscoveredForYouNoData';
 import { renderTextByCharacter } from '../../../helpers/utils';
 
 class RecommendationList extends React.Component {
+    static changeButtonState(event) {
+        event.target.disabled = true;
+    }
+
     constructor(props) {
         super(props);
         this.state = {
@@ -150,7 +154,12 @@ class RecommendationList extends React.Component {
                                                 </Header.Content>
                                             </Header>
                                             <Link className="lnkChange" route={`/${urlEntity}/${data.attributes.slug}`} passHref>
-                                                <Button className="btn-small-white-border">View</Button>
+                                                <Button
+                                                    className="btn-small-white-border"
+                                                    onClick={RecommendationList.changeButtonState}
+                                                >
+                                                View
+                                                </Button>
                                             </Link>
                                         </Grid.Column>
                                     </Grid.Row>
