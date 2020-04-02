@@ -1,9 +1,6 @@
 import React from 'react';
-import {
-    Container,
-} from 'semantic-ui-react';
+import { Container, } from 'semantic-ui-react';
 import { connect } from 'react-redux';
-
 import { Router } from '../routes';
 import Charity from '../components/Give/Charity';
 import GiveWrapper from '../components/Give';
@@ -62,13 +59,11 @@ class Charities extends React.Component {
         return (
             // eslint-disable-next-line react/jsx-filename-extension
             <Layout authRequired={true}>
-                {/* <Container> */}
-                    <div className="pageWraper">
-                        <GiveWrapper {...this.props} baseUrl="/give/to/charity" flowSteps={(slug) ? flowSteps : null}>
-                            <Charity />
-                        </GiveWrapper>
-                    </div>
-                {/* </Container> */}
+                <div className="pageWraper">
+                    <GiveWrapper {...this.props} baseUrl="/give/to/charity" flowSteps={(slug) ? flowSteps : null}>
+                        <Charity />
+                    </GiveWrapper>
+                </div>
             </Layout>
         );
     }
