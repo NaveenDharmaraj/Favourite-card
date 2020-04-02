@@ -34,6 +34,16 @@ class SearchResultSingleCharityGroups extends React.Component {
     // eslint-disable-next-line class-methods-use-this
     handleRoute(type, slug, campaign, i) {
         let route = null;
+        route = this.generateRoute(type, slug, campaign);
+        this.setState({
+            [`loader${i}`]: true,
+        });
+        Router.pushRoute(route);
+    }
+
+    // eslint-disable-next-line class-methods-use-this
+    generateRoute(type, slug, campaign) {
+        let route = null;
         if (!_isEmpty(type)) {
             if (type.toLowerCase() === 'group' && campaign) {
                 route = `/campaigns/${slug}`;
@@ -43,10 +53,12 @@ class SearchResultSingleCharityGroups extends React.Component {
                 route = `/charities/${slug}`;
             }
         }
-        this.setState({
-            [`loader${i}`]: true,
-        });
-        Router.pushRoute(route);
+        return route;
+    }
+
+    // eslint-disable-next-line class-methods-use-this
+    handleAnchorClick(e) {
+        e.preventDefault();
     }
 
     // eslint-disable-next-line class-methods-use-this
@@ -87,6 +99,7 @@ class SearchResultSingleCharityGroups extends React.Component {
                 }
                 displayAvatar = (!_isEmpty(avatar)) ? avatar : displayAvatar;
                 const headingClass = (type.toLowerCase() === 'group') ? 'search-result-single groups' : 'search-result-single charities';
+                const anchorRoute = this.generateRoute(type, slug, is_campaign);
                 return (
                     <div className={headingClass}>
                         <Grid stackable>
@@ -116,9 +129,15 @@ class SearchResultSingleCharityGroups extends React.Component {
 
                                         { this.state[`loader${i}`] ? <Icon name="spinner" loading />
                                             : (
-                                                <Button className="view-btn" onClick={() => { this.handleRoute(type, slug, is_campaign, i); }}>
-                                                    {this.renderButton(type, is_campaign)}
-                                                </Button>
+                                                <a href={anchorRoute} onClick={() => { this.handleAnchorClick(e) }}>
+                                                    <Button
+                                                        className="view-btn" 
+                                                        onClick={() => { this.handleRoute(type, slug, is_campaign, i); }}
+                                                    >
+
+                                                        {this.renderButton(type, is_campaign)}
+                                                    </Button>
+                                                </a>
                                             )
                                         }
                                     </div>
