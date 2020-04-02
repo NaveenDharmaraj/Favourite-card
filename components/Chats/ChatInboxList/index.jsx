@@ -10,49 +10,14 @@ import { actionTypes, loadConversationMessages } from '../../../actions/chat';
 import { placeholderGroup } from '../../../static/images/no-data-avatar-group-chat-profile.png';
 import { placeholderUser } from '../../../static/images/no-data-avatar-user-profile.png';
 import IndividualChatContact from './IndividualChatContact';
-import { debounceFunction } from '../../../helpers/chat/utils';
+import { debounceFunction, conversationHead } from '../../../helpers/chat/utils';
 const { publicRuntimeConfig } = getConfig();
 const {
     CHAT_GROUP_DEFAULT_AVATAR
 } = publicRuntimeConfig;
 class ChatInboxList extends React.Component {
 
-    conversationHead = (msg) => {
-        const {
-            groupFeeds,
-            muteUserList,
-            userDetails,
-            userInfo,
-        } = this.props;
-        let currentUserId = userInfo.id;
-        if (msg.groupId) {
-            let info = groupFeeds[msg.groupId] || {};
-            let groupHead = {
-                type: "group",
-                title: info.name,
-                image: (info.imageUrl ? info.imageUrl : placeholderGroup),
-                imagePresent: (info.imageUrl && info.imageUrl != "" && info.imageUrl != null && info.imageUrl != CHAT_GROUP_DEFAULT_AVATAR ? true : false),
-                isMuted: (info.notificationAfterTime && info.notificationAfterTime > new Date().getTime()), info: info
-            };
-            groupHead["disabled"] = (info.removedMembersId && info.removedMembersId.indexOf(currentUserId) >= 0);
-            return groupHead;
-        } else {
-            let info = userDetails[msg.contactIds] || {};
-            const muteInfo = !_isEmpty(muteUserList) ? muteUserList[msg.contactIds] : {};
-            let convHead = info ? {
-                type: 'user',
-                title: info['displayName'],
-                image: (info.imageLink ? info.imageLink : placeholderUser),
-                imagePresent: (info.imageLink && info.imageLink != "" && info.imageLink != null ? true : false),
-                info: info,
-                isMuted: (muteInfo && muteInfo.notificationAfterTime && muteInfo.notificationAfterTime > new Date().getTime())
-            } : {};
-            return convHead;
-        }
-    }
-
     onConversationSelect = (msg) => {
-        // console.log(msg);
         const {
             dispatch,
             isSmallerScreen,
@@ -71,29 +36,21 @@ class ChatInboxList extends React.Component {
                 })
             }
             dispatch({
-                payload:{
-                    selectedConversation: msg, 
-                    selectedConversationMessages: [], 
-                    concatMessages : false,
+                payload: {
+                    selectedConversation: msg,
+                    selectedConversationMessages: [],
+                    concatMessages: false,
                 },
                 type: actionTypes.SELECTED_CONVERSATION_MESSAGES
             });
             dispatch({
-                payload:{
+                payload: {
                     compose: false,
-                    smallerScreenSection: 'convMsgs',
+                    smallerScreenSection: isSmallerScreen ? 'convMsgs' : 'convList',
                 },
                 type: actionTypes.COMPOSE_SCREEN_SECTION,
-            })
+            });
             dispatch(loadConversationMessages(msg, new Date().getTime(), false));
-        } else if (isSmallerScreen) {
-            dispatch({
-                payload:{
-                    smallerScreenSection: 'convMsgs',
-                },
-                type: actionTypes.COMPOSE_SCREEN_SECTION,
-            })
-            //????????this.loadConversationMessages(msg, new Date().getTime(), true);
         }
     }
 
@@ -104,6 +61,8 @@ class ChatInboxList extends React.Component {
             groupFeeds,
             messages,
             dispatch,
+            smallerScreenSection,
+            userDetails,
         } = this.props;
         // Variable to hold the original version of the list
         let currentList = [];
@@ -119,8 +78,18 @@ class ChatInboxList extends React.Component {
             // based on the search terms
             newList = currentList.filter(item => {
                 // change current item to lowercase
-                const convHead = this.conversationHead(item);
-                const lc = convHead && convHead.title ? convHead.title.toLowerCase() : "";
+                let convHead;
+                if (item && item.groupId) {
+                    convHead = (!_isEmpty(groupFeeds) && groupFeeds[item.groupId] && groupFeeds[item.groupId].name) ?
+                        groupFeeds[item.groupId].name : "";
+                }
+                else {
+                    if (item && item.contactIds) {
+                        convHead = (!_isEmpty(userDetails) && userDetails[item.contactIds] && userDetails[item.contactIds].displayName) ?
+                            userDetails[item.contactIds].displayName : "";
+                    }
+                }
+                const lc = convHead ? convHead.toLowerCase() : "";
                 // change search term to lowercase
                 const filter = searchValue.toLowerCase();
                 // check to see if the current list item includes the search term
@@ -149,15 +118,16 @@ class ChatInboxList extends React.Component {
                 }
             })
         }
-        if(compose){
+        if (compose) {
             dispatch({
-                payload:{
-                    compose: false
+                payload: {
+                    compose: false,
+                    smallerScreenSection,
                 },
                 type: actionTypes.COMPOSE_SCREEN_SECTION,
             })
         }
-        const params = { dispatch, searchValue: newList.length > 0 ? newList[0] : null};
+        const params = { dispatch, searchValue: newList.length > 0 ? newList[0] : null };
         debounceFunction(params, 300);
     }
 
@@ -165,15 +135,19 @@ class ChatInboxList extends React.Component {
         const {
             compose,
             filteredMessages,
+            groupFeeds,
             isSmallerScreen,
+            muteUserList,
             selectedConversation,
             smallerScreenSection,
+            userDetails,
+            userInfo,
         } = this.props;
         if (filteredMessages
             && filteredMessages.length > 0
             && (!isSmallerScreen || (smallerScreenSection === 'convList' && !compose))) {
             return filteredMessages.map((msg) => {
-                const converstionInfo = this.conversationHead(msg);
+                const converstionInfo = conversationHead(msg, groupFeeds, muteUserList, userDetails, userInfo);
                 return (
                     <IndividualChatContact
                         onConversationSelect={this.onConversationSelect}

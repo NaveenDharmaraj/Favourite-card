@@ -11,10 +11,12 @@ class ChatHeader extends React.Component {
 
     handleChatHeaderBackButton = () => {
         const {
+            compose,
             dispatch
         } = this.props;
         dispatch({
             payload: {
+                compose,
                 smallerScreenSection: 'convList',
             },
             type: actionTypes.COMPOSE_SCREEN_SECTION

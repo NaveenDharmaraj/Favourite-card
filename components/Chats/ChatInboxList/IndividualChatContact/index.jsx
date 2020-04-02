@@ -6,16 +6,12 @@ import PropTypes from 'prop-types';
 
 import { timeString } from '../../../../helpers/chat/utils';
 
-// eslint-disable-next-line react/prefer-stateless-function
-class IndividualChatContact extends React.Component {
-
-    render() {
-        const {
-            converstionInfo,
-            onConversationSelect,
-            msg,
-            selectedConversation,
-        } = this.props;
+const IndividualChatContact = ({
+    converstionInfo,
+    onConversationSelect,
+    msg,
+    selectedConversation,
+}) => {
         return (
             <List.Item
                 as="a"
@@ -43,7 +39,6 @@ class IndividualChatContact extends React.Component {
             </List.Item>
         );
     }
-}
 
 IndividualChatContact.defaultProps = {
     converstionInfo: {
@@ -56,7 +51,7 @@ IndividualChatContact.defaultProps = {
         key: '',
         message: '',
     },
-    onConversationSelect: () => {},
+    onConversationSelect: () => { },
     selectedConversation: {
         key: '',
     },

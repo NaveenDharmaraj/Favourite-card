@@ -17,6 +17,7 @@ const actionTypes = _keyBy([
     'SELECTED_CONVERSATION_MESSAGES',
     'COMPOSE_SELECTED_CONVERSATION',
     'LOAD_CONVERSATION_MESSAGES_ENDTIME',
+    'COMPOSE_HEADER_CONTACT_SELECTION',
 ]);
 
 const loadMuteUserList = () => (dispatch) => {
@@ -55,7 +56,7 @@ const loadConversationMessages = (selectedConversation, endTime = new Date().get
                 payload: {
                     endTime
                 },
-                type: actionType.LOAD_CONVERSATION_MESSAGES_ENDTIME,
+                type: actionTypes.LOAD_CONVERSATION_MESSAGES_ENDTIME,
             })
             // if (concatMessages) {
             //     window.dispatchEvent(new CustomEvent("onChatPageRefreshEvent", { detail: { data: messages } }));
@@ -277,7 +278,9 @@ const deleteConversation = (params) => {
 };
 
 const muteOrUnmuteUserConversation = (params) => {
-    return applozicApi.post("/user/chat/mute?userId=" + params.userId + "&notificationAfterTime=" + params.notificationAfterTime, params)
+    return applozicApi.post("/user/chat/mute", null,  {
+        params: params
+    })
 }
 const muteOrUnmuteGroupConversation = (params) => {
     return applozicApi.post("/group/user/update", params)

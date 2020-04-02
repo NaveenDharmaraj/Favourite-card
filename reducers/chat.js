@@ -9,43 +9,24 @@ const chat = (state = {}, action) => {
     };
     switch (action.type) {
         case actionTypes.COMPOSE_SCREEN_SECTION:
-            if ((typeof action.payload.compose === 'boolean') && !_isEmpty(action.payload.smallerScreenSection)) {
-                return {
-                    ...state,
-                    compose: action.payload.compose,
-                    smallerScreenSection: action.payload.smallerScreenSection,
-                };
-            } if (action.payload.compose === 'undefined') {
-                return {
-                    ...state,
-                    smallerScreenSection: action.payload.smallerScreenSection,
-                };
-            } if (_isEmpty(action.payload.smallerScreenSection)) {
-                return {
-                    ...state,
-                    compose: action.payload.compose,
-                };
-            }
+            newState = {
+                ...state,
+                compose: action.payload.compose,
+                smallerScreenSection: action.payload.smallerScreenSection,
+            };
             break;
         case actionTypes.NEW_GROUP_DETAILS:
-            if (_isEmpty(action.payload.newGroupImageUrl) && _isEmpty(action.payload.newGroupName)) {
-                newState = {
-                    ...state,
-                    newGroupMemberIds: action.payload.newGroupMemberIds,
-                };
-            } else if (_isEmpty(action.payload.newGroupMemberIds) && _isEmpty(action.payload.newGroupName)) {
-                newState = {
-                    ...state,
-                    newGroupImageUrl: action.payload.newGroupImageUrl,
-                };
-            } else {
-                newState = {
-                    ...state,
-                    newGroupImageUrl: action.payload.newGroupImageUrl,
-                    newGroupMemberIds: action.payload.newGroupMemberIds,
-                    newGroupName: action.payload.newGroupName,
-                };
-            }
+            newState = {
+                ...state,
+                newGroupImageUrl: action.payload.newGroupImageUrl,
+                newGroupName: action.payload.newGroupName,
+            };
+            break;
+        case actionTypes.COMPOSE_HEADER_CONTACT_SELECTION:
+            newState = {
+                ...state,
+                newGroupMemberIds: action.payload.newGroupMemberIds,
+            };
             break;
         case actionTypes.LOAD_MUTE_USER_LIST:
             newState = {
@@ -121,7 +102,7 @@ const chat = (state = {}, action) => {
                 selectedConversation: action.payload.selectedConversation,
             };
         case actionTypes.LOAD_CONVERSATION_MESSAGES_ENDTIME:
-            return{
+            return {
                 ...state,
                 endTime: action.payload.endTime,
             }
