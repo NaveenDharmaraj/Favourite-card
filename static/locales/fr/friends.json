@@ -7,7 +7,7 @@
     "maxEmail": "Le nombre de destinataires ne peut dépasser 25.",
     "recipientsLabel": "Donner à",
     "recipientsPopup": "Vous pouvez envoyer un don à plusieurs destinataires en même temps en séparant les adresses courriel avec des virgules.",
-    "recipientsPlaceholderText": "Entrez une ou plusieurs adresses courriel, séparées par des virgules",
+    "recipientsPlaceholderText": "Enter one or more email addresses. Separate multiple email addresses with a comma.",
     "noteToRecipientsLabel": "Pour le(s) destinataire(s)",
     "noteToRecipientsPopup": "Dites au(x) destinataire(s) pourquoi vous lui/leur envoyez ce don. Les gens sont plus susceptibles d'accepter des contribution s'ils lisent un message personnel de votre part.",
     "noteToRecipientsPlaceholderText": "Que voudriez-vous dire au(x) destinataire(s)?",
@@ -17,5 +17,6 @@
     "totalAmountLabel": "Montant total",
     "totalAmount": "{{totalP2pGiveAmount}} ({{giveAmount}} X {{numberOfRecipients}} destinataires)",
     "giveAmount": "{{giveAmount}}",
-    "multipleFriendAmountFieldText": "For multiple friends, the amount you enter will be sent to each friend."
+    "multipleFriendAmountFieldText": "For multiple friends, the amount you enter will be sent to each friend.",
+    "giveToEmailsText": "Or, enter your friend's email addresses"
 }

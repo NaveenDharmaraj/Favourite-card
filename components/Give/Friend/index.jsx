@@ -127,7 +127,8 @@ class Friend extends React.Component {
             inValidNameOnCard: true,
             userEmail: email,
             validity: this.initializeValidations(),
-            showReload: false,
+            showReload: true,
+            showGiveToEmail: false,
         };
         if(!_isEmpty(userFriendEmail) && this.state.flowObject.giveData.recipients.length === 0) {
             this.state.flowObject.giveData.recipients = [userFriendEmail.email];
@@ -152,6 +153,7 @@ class Friend extends React.Component {
         this.validateCreditCardName = this.validateCreditCardName.bind(this);
         this.getStripeCreditCard = this.getStripeCreditCard.bind(this);
         dismissAllUxCritialErrors(props.dispatch);
+        this.handleGiveToEmail = this.handleGiveToEmail.bind(this);
     }
 
 
@@ -711,6 +713,12 @@ class Friend extends React.Component {
     //     );
     // }
 
+    handleGiveToEmail() {
+        this.setState({
+            showGiveToEmail: true,
+        });
+    }
+
     render() {
         const {
             currentStep,
@@ -748,6 +756,7 @@ class Friend extends React.Component {
             },
             validity,
             showReload,
+            showGiveToEmail,
         } = this.state;
 
         let accountTopUpComponent = null;
@@ -827,17 +836,40 @@ class Friend extends React.Component {
                                                     {
                                                         (!emailMasked) &&
                                                         <Fragment>
-                                                            <Note
-                                                                enableCharacterCount={false}
-                                                                fieldName="recipients"
-                                                                formatMessage={formatMessage}
-                                                                handleOnInputChange={this.handleInputChange}
-                                                                handleOnInputBlur={this.handleOnInputBlur}
-                                                                labelText={formatMessage('friends:recipientsLabel')}
-                                                                popupText={formatMessage('friends:recipientsPopup')}
-                                                                placeholderText={formatMessage('friends:recipientsPlaceholderText')}
-                                                                text={recipients.join(',')}
+                                                            <label htmlFor="recipients">
+                                                                {formatMessage('friends:recipientsLabel')}
+                                                            </label>
+                                                            <Popup
+                                                                content={formatMessage('friends:recipientsPopup')}
+                                                                position="top center"
+                                                                trigger={
+                                                                    <Icon
+                                                                        color="blue"
+                                                                        name="question circle"
+                                                                        size="large"
+                                                                    />
+                                                                }
                                                             />
+                                                            <p>
+                                                                <a onClick={this.handleGiveToEmail}>
+                                                                    {formatMessage('friends:giveToEmailsText')}
+                                                                </a>
+                                                            </p>
+                                                            {showGiveToEmail
+                                                            && (
+                                                                <Note
+                                                                    enableCharacterCount={false}
+                                                                    fieldName="recipients"
+                                                                    formatMessage={formatMessage}
+                                                                    handleOnInputChange={this.handleInputChange}
+                                                                    handleOnInputBlur={this.handleOnInputBlur}
+                                                                    labelText={formatMessage('friends:recipientsLabel')}
+                                                                    popupText={formatMessage('friends:recipientsPopup')}
+                                                                    placeholderText={formatMessage('friends:recipientsPlaceholderText')}
+                                                                    text={recipients.join(',')}
+                                                                    hideLabel={true}
+                                                                />
+                                                            )}
                                                             <FormValidationErrorMessage
                                                                 condition={!validity.isValidEmailList}
                                                                 errorMessage={formatMessage('friends:invalidEmailError')}
@@ -872,7 +904,7 @@ class Friend extends React.Component {
                                                         formatMessage={formatMessage}
                                                         handleInputChange={this.handleInputChange}
                                                         handleInputOnBlur={this.handleOnInputBlur}
-                                                        handlePresetAmountClick={this.handlePresetAmountClick}
+                                                        // handlePresetAmountClick={this.handlePresetAmountClick}
                                                         validity={validity}
                                                     />
                                                     <p>
@@ -923,7 +955,8 @@ class Friend extends React.Component {
                                                     />
                                                     {showReload &&
                                                     <p>
-                                                        Reload your Impact Account to send this gift.
+                                                        <a>Reload</a>
+                                                        your Impact Account to send this gift.
                                                     </p>}
                                                 </Grid.Column>
                                             </Grid.Row>
