@@ -127,7 +127,6 @@ class Friend extends React.Component {
             inValidNameOnCard: true,
             userEmail: email,
             validity: this.initializeValidations(),
-            showReload: true,
             showGiveToEmail: false,
         };
         if(!_isEmpty(userFriendEmail) && this.state.flowObject.giveData.recipients.length === 0) {
@@ -755,40 +754,36 @@ class Friend extends React.Component {
                 paymentInstrumentList,
             },
             validity,
-            showReload,
             showGiveToEmail,
         } = this.state;
 
         let accountTopUpComponent = null;
         const recipientsList = recipients.join(',');
 
-        if (
-            (giveFrom.type === 'user' || giveFrom.type === 'companies')
-            && (totalP2pGiveAmount > Number(giveFrom.balance))
-        ) {
-            // const topupAmount = formatAmount((formatAmount(totalP2pGiveAmount)
-            // - formatAmount(giveFrom.balance)));
-            // accountTopUpComponent = (
-            //     <AccountTopUp
-            //         creditCard={creditCard}
-            //         donationAmount={formatedDonationAmount}
-            //         donationMatch={donationMatch}
-            //         donationMatchList={donationMatchList}
-            //         formatMessage={formatMessage}
-            //         getStripeCreditCard={this.getStripeCreditCard}
-            //         handleInputChange={this.handleInputChange}
-            //         handleInputOnBlur={this.handleOnInputBlur}
-            //         isAmountFieldVisible
-            //         isDonationMatchFieldVisible={giveFrom.type === 'user'}
-            //         paymentInstrumentList={paymentInstrumentList}
-            //         topupAmount={topupAmount}
-            //         validity={validity}
-            //     />
-            // );
-            this.setState({
-                showReload: true,
-            });
-        }
+        // if (
+        //     (giveFrom.type === 'user' || giveFrom.type === 'companies')
+        //     && (totalP2pGiveAmount > Number(giveFrom.balance))
+        // ) {
+        //     const topupAmount = formatAmount((formatAmount(totalP2pGiveAmount)
+        //     - formatAmount(giveFrom.balance)));
+        //     accountTopUpComponent = (
+        //         <AccountTopUp
+        //             creditCard={creditCard}
+        //             donationAmount={formatedDonationAmount}
+        //             donationMatch={donationMatch}
+        //             donationMatchList={donationMatchList}
+        //             formatMessage={formatMessage}
+        //             getStripeCreditCard={this.getStripeCreditCard}
+        //             handleInputChange={this.handleInputChange}
+        //             handleInputOnBlur={this.handleOnInputBlur}
+        //             isAmountFieldVisible
+        //             isDonationMatchFieldVisible={giveFrom.type === 'user'}
+        //             paymentInstrumentList={paymentInstrumentList}
+        //             topupAmount={topupAmount}
+        //             validity={validity}
+        //         />
+        //     );
+        // }
         return (
             <Fragment>
             {/* <div className="flowReviewbanner">
@@ -953,11 +948,6 @@ class Friend extends React.Component {
                                                         parentOnBlurChange={this.handleOnInputBlur}
                                                         formatMessage={formatMessage}
                                                     />
-                                                    {showReload &&
-                                                    <p>
-                                                        <a>Reload</a>
-                                                        your Impact Account to send this gift.
-                                                    </p>}
                                                 </Grid.Column>
                                             </Grid.Row>
                                         </Grid>
