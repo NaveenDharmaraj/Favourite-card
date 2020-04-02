@@ -143,7 +143,7 @@ const Footer = ({ isAuthenticated }) => (
                                                 <Header as="h5">Get the app</Header>
                                                 <Image
                                                     src={appimg}
-                                                    href="https://apps.apple.com/ca/app/impact-account/id411736916"
+                                                    href="https://charitableimpact.app.link/ios-corpweb"
                                                     target="_blank"
                                                 />
                                             </div>
