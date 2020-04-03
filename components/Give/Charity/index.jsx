@@ -498,8 +498,8 @@ class Charity extends React.Component {
         validity = validateGiveForm('noteToCharity', giveData.noteToCharity, validity, giveData, coverFeesAmount);
         validity = validateGiveForm('dedicateType', null, validity, giveData);
         validity = validateForReload(validity, giveData.giveFrom.type, giveData.giveAmount, giveData.giveFrom.balance);
-        !validity.isReloadRequired ? ( this.setState({ reviewBtnFlag: true })) : (this.setState({ reviewBtnFlag: false }) );
-        this.setState({ validity,
+        this.setState({
+            validity,
             reviewBtnFlag: !validity.isReloadRequired
         });
 
@@ -932,7 +932,7 @@ class Charity extends React.Component {
      */
     renderSpecialInstructionComponent(
         giveFrom, giftType, giftTypeList, infoToShare, infoToShareList, formatMessage
-        , paymentInstrumentList, defaultTaxReceiptProfile, companyDetails, giveData
+        , paymentInstrumentList, defaultTaxReceiptProfile, companyDetails,
     ) {
         if (!_isEmpty(giveFrom) && giveFrom.value > 0) {
             return (
@@ -950,7 +950,6 @@ class Charity extends React.Component {
                     companyAccountsFetched={this.props.companyAccountsFetched}
                     userAccountsFetched={this.props.userAccountsFetched}
                     slug={this.props.slug}
-                    giveData={giveData}
                     handlegiftTypeButtonClick={this.handlegiftTypeButtonClick}
                 />
             );
@@ -1048,6 +1047,18 @@ class Charity extends React.Component {
         return validCC;
     }
 
+    renderReloadAddAmount = (giveFromtype, giveamount, givebalance, gifttype, reviewBtnFlag) => {
+        debugger;
+        if ((giveFromtype === 'user' || giveFromtype === 'companies') && (Number(giveamount) > Number(givebalance))) {
+            return (
+                <ReloadAddAmount
+                    gifttype={gifttype}
+                    reviewBtnFlag={reviewBtnFlag}
+                />
+            )
+        }
+    }
+
     render() {
         const {
             companyDetails,
@@ -1104,8 +1115,6 @@ class Charity extends React.Component {
             showAnotherRecipient,
             validity,
         } = this.state;
-        const { flowObject } = this.state;
-        const { giveData } = flowObject;
         let accountTopUpComponent = null;
         let reloadAddAmount = null;
         let stripeCardComponent = null;
@@ -1117,16 +1126,18 @@ class Charity extends React.Component {
             ? Number(giveAmount) + Number(coverFeesData.giveAmountFees)
             : Number(giveAmount);
 
-        if ((giveFrom.type === 'user' || giveFrom.type === 'companies')
-            && Number(giveData.giveAmount) > Number(giveFrom.balance)
-            && (giftType.value === 0 && !reviewBtnFlag)) {
-            reloadAddAmount = (<ReloadAddAmount />)
-        }
+        // if ((giveFrom.type === 'user' || giveFrom.type === 'companies')
+        //     && Number(giveData.giveAmount) > Number(giveFrom.balance)
+        //     && (giftType.value === 0 && !reviewBtnFlag)) {
+        //     reloadAddAmount = (<ReloadAddAmount />)
+        // }
 
-        if ((giveFrom.type === 'user' || giveFrom.type === 'companies')
-            && Number(giveData.giveAmount) > Number(giveFrom.balance) && reviewBtnFlag) {
-            reloadAddAmount = (<p className="errorNote">There is not enough money in your account to send this gift.<a href="#"> Add money</a> to continue</p>)
-        }
+        // if ((giveFrom.type === 'user' || giveFrom.type === 'companies')
+        //     && Number(giveData.giveAmount) > Number(giveFrom.balance) && reviewBtnFlag) {
+        //     reloadAddAmount = (<p className="errorNote">There is not enough money in your account to send this gift.<a href="#"> Add money</a> to continue</p>)
+        // }
+
+
 
         if ((giveFrom.type === 'user' || giveFrom.type === 'companies')
             && (giftType.value === 0
@@ -1262,7 +1273,11 @@ class Charity extends React.Component {
                                                             parentOnBlurChange={this.handleInputOnBlur}
                                                             formatMessage={formatMessage}
                                                         />
-                                                        {reloadAddAmount}
+
+
+                                                        {/* {reloadAddAmount} */}
+
+                                                        {this.renderReloadAddAmount(giveFrom.type, giveData.giveAmount, giveFrom.balance, giftType.value, this.state.reviewBtnFlag)}
 
                                                         {this.renderSpecialInstructionComponent(
                                                             giveFrom,

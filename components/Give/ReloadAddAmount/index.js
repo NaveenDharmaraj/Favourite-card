@@ -3,17 +3,27 @@ import _ from 'lodash';
 import '../../../static/less/giveFlows.less';
 
 function ReloadAddAmount(props) {
-    return (
-        <div class="noteDefault">
-            <div class="noteWraper">
-                <span class="leftImg">
-                    <span class="notifyDefaultIcon">
+    debugger;
+    const { gifttype, reviewBtnFlag } = props;
+    if (gifttype === 0 && !reviewBtnFlag) {
+       return(
+            <div className="noteDefault">
+                <div className="noteWraper">
+                    <span className="leftImg">
+                        <span className="notifyDefaultIcon">
+                        </span>
                     </span>
-                </span>
-                <span class="noteContent"><a href="#">Reload</a> your Impact Account to send this gift </span>
+                    <span className="noteContent"><a href="#">Reload</a> your Impact Account to send this gift </span>
+                </div>
             </div>
-        </div>
-    )
+        )
+    }
+    else if (reviewBtnFlag) {
+       return(
+            <div><p className="errorNote">There is not enough money in your account to send this gift.<a href="#"> Add money</a> to continue</p></div>
+        )
+    }
+
 }
 
 export default ReloadAddAmount;

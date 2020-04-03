@@ -16,7 +16,7 @@ import {
 function DonationFrequency(props) {
     const {
         formatMessage,
-        formData,
+        giftType,
         handlegiftTypeButtonClick,
         language,
         isGiveFlow,
@@ -44,7 +44,7 @@ function DonationFrequency(props) {
                         label={isGiveFlow ? 'Send once' : 'Add once'}
                         name='automaticDonation'
                         value={0}
-                        checked={!formData.giftType.value}
+                        checked={!giftType.value}
                         onChange={handlegiftTypeButtonClick}
                     />
                 </Form.Field>
@@ -54,28 +54,28 @@ function DonationFrequency(props) {
                         label={isGiveFlow ? 'Send monthly' : 'Add monthly'}
                         name='automaticDonation'
                         value={1}
-                        checked={!!formData.giftType.value}
+                        checked={!!giftType.value}
                         onChange={handlegiftTypeButtonClick}
                     />
                 </Form.Field>
             </div>
             {
-                ((formData.giftType.value > 0) && (
+                ((giftType.value > 0) && (
                     <>
                         <div className="mb-1-2">
                             <Button
-                                className={(formData.giftType.value ===1 ? 'btn-basic-outline selected-btn': 'btn-basic-outline' )}
+                                className={(giftType.value ===1 ? 'btn-basic-outline selected-btn': 'btn-basic-outline' )}
                                 size="small"
                                 type="button"
-                                active={formData.giftType.value === 1}
+                                active={giftType.value === 1}
                                 onClick={handlegiftTypeButtonClick}
                                 value={1}
                             >
                                 1st of every month
                             </Button>
                             <Button
-                                className={(formData.giftType.value ===15 ? 'btn-basic-outline selected-btn': 'btn-basic-outline' )}
-                                active={formData.giftType.value === 15}
+                                className={(giftType.value ===15 ? 'btn-basic-outline selected-btn': 'btn-basic-outline' )}
+                                active={giftType.value === 15}
                                 type="button"
                                 size="small"
                                 onClick={handlegiftTypeButtonClick}
@@ -88,7 +88,7 @@ function DonationFrequency(props) {
                             {formatMessage(
                                 'donationRecurringDateNote',
                                 { 
-                                    recurringDate: setDateForRecurring(formData.giftType.value, formatMessage, language)
+                                    recurringDate: setDateForRecurring(giftType.value, formatMessage, language)
                                 },
                             )}
                         </div>

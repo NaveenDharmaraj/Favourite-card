@@ -1717,7 +1717,7 @@ const resetP2pDataForOnInputChange = (giveData, dropDownOptions) => {
 };
 
 const validateForReload = (validity, type, giveAmount, balance) => {
-    validity.isReloadRequired =  (type === 'user' || type === 'companies') && Number(giveAmount) > Number(balance) ? true : false; 
+    validity.isReloadRequired =  (type === 'user' || type === 'companies') && Number(giveAmount) > Number(balance) ? false : true; 
     return validity;
 }
 

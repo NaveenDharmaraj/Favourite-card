@@ -92,7 +92,7 @@ const SpecialInstruction = (props) => {
                 <CharityFrequency
                     isGiveFlow={true}
                     formatMessage={formatMessage}
-                    formData={giveData}
+                    giftType={giftType}
                     handlegiftTypeButtonClick={handlegiftTypeButtonClick}
                     handleInputChange={handleInputChange}
                     language={language}
