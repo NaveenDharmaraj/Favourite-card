@@ -1048,7 +1048,6 @@ class Charity extends React.Component {
     }
 
     renderReloadAddAmount = (giveFromtype, giveamount, givebalance, gifttype, reviewBtnFlag) => {
-        debugger;
         if ((giveFromtype === 'user' || giveFromtype === 'companies') && (Number(giveamount) > Number(givebalance))) {
             return (
                 <ReloadAddAmount
@@ -1115,6 +1114,8 @@ class Charity extends React.Component {
             showAnotherRecipient,
             validity,
         } = this.state;
+        const { flowObject } = this.state;
+        const { giveData } = flowObject;
         let accountTopUpComponent = null;
         let reloadAddAmount = null;
         let stripeCardComponent = null;
@@ -1125,19 +1126,6 @@ class Charity extends React.Component {
         const giveAmountWithCoverFees = (coverFees)
             ? Number(giveAmount) + Number(coverFeesData.giveAmountFees)
             : Number(giveAmount);
-
-        // if ((giveFrom.type === 'user' || giveFrom.type === 'companies')
-        //     && Number(giveData.giveAmount) > Number(giveFrom.balance)
-        //     && (giftType.value === 0 && !reviewBtnFlag)) {
-        //     reloadAddAmount = (<ReloadAddAmount />)
-        // }
-
-        // if ((giveFrom.type === 'user' || giveFrom.type === 'companies')
-        //     && Number(giveData.giveAmount) > Number(giveFrom.balance) && reviewBtnFlag) {
-        //     reloadAddAmount = (<p className="errorNote">There is not enough money in your account to send this gift.<a href="#"> Add money</a> to continue</p>)
-        // }
-
-
 
         if ((giveFrom.type === 'user' || giveFrom.type === 'companies')
             && (giftType.value === 0

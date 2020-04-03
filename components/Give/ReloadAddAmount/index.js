@@ -3,7 +3,6 @@ import _ from 'lodash';
 import '../../../static/less/giveFlows.less';
 
 function ReloadAddAmount(props) {
-    debugger;
     const { gifttype, reviewBtnFlag } = props;
     if (gifttype === 0 && !reviewBtnFlag) {
        return(
