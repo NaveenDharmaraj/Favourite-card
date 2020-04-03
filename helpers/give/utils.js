@@ -1716,6 +1716,11 @@ const resetP2pDataForOnInputChange = (giveData, dropDownOptions) => {
     return giveData;
 };
 
+const validateReviewBtnCondition = (validity, type, giveAmount, balance) => {
+    validity.doesReviewBtnConditionSatisfied =  (type === 'user' || type === 'companies') && Number(giveAmount) > Number(balance) ? false : true; 
+    return validity;
+}
+
 export {
     percentage,
     fullMonthNames,
@@ -1753,4 +1758,5 @@ export {
     formatDateForGivingTools,
     resetP2pDataForOnInputChange,
     calculateP2pTotalGiveAmount,
+    validateReviewBtnCondition,
 };

@@ -49,6 +49,7 @@ import {
     setDonationAmount,
     validateGiveForm,
     validateDonationForm,
+    validateReviewBtnCondition,
 } from '../../../helpers/give/utils';
 import {
     actionTypes,
@@ -466,6 +467,7 @@ class Charity extends React.Component {
             isValidNoteToCharityText: true,
             isValidNoteToSelf: true,
             isValidPositiveNumber: true,
+            doesReviewBtnConditionSatisfied: true,
         };
         return this.validity;
     }
@@ -498,6 +500,7 @@ class Charity extends React.Component {
         validity = validateGiveForm('noteToSelf', giveData.noteToSelf, validity, giveData, coverFeesAmount);
         validity = validateGiveForm('noteToCharity', giveData.noteToCharity, validity, giveData, coverFeesAmount);
         validity = validateGiveForm('dedicateType', null, validity, giveData);
+        validity = validateReviewBtnCondition(validity, giveData.giveFrom.type, giveData.giveAmount, giveData.giveFrom.balance);
         this.setState({ validity });
         let validateCC = true;
         if (giveData.creditCard.value === 0) {
@@ -725,7 +728,6 @@ class Charity extends React.Component {
     }
 
     handleSubmit() {
-        debugger;
         const {
             flowObject,
             inValidCardNumber,
@@ -733,7 +735,7 @@ class Charity extends React.Component {
             inValidNameOnCard,
             inValidCvv,
             inValidCardNameValue,
-
+            validity,
         } = this.state;
         const {
             dispatch,
@@ -760,29 +762,30 @@ class Charity extends React.Component {
             inValidCvv,
             inValidCardNameValue,
         );
-        if ((giveFrom.type === 'user' || giveFrom.type === 'companies') && Number(giveAmount) > Number(giveFrom.balance)) {
+
+        if (!validity.doesReviewBtnConditionSatisfied) {
             this.setState({
                 reviewBtnFlag: true
             })
         }
         else {
-            if (this.validateForm() && validateCC) {
-                if (creditCard.value > 0) {
-                    flowObject.selectedTaxReceiptProfile = (flowObject.giveData.giveFrom.type === 'companies') ?
-                        companyDetails.companyDefaultTaxReceiptProfile :
-                        defaultTaxReceiptProfile;
-                }
-                flowObject.giveData.coverFeesAmount = (coverFees) ?
-                    coverFeesData.giveAmountFees : null;
-                flowObject.stepsCompleted = false;
-                dismissAllUxCritialErrors(this.props.dispatch);
-                dispatch(proceed(flowObject, flowSteps[stepIndex + 1], stepIndex));
-            }
             this.setState({
                 reviewBtnFlag: false
             })
         }
 
+        if (this.validateForm() && validateCC) {
+            if (creditCard.value > 0) {
+                flowObject.selectedTaxReceiptProfile = (flowObject.giveData.giveFrom.type === 'companies') ?
+                    companyDetails.companyDefaultTaxReceiptProfile :
+                    defaultTaxReceiptProfile;
+            }
+            flowObject.giveData.coverFeesAmount = (coverFees) ?
+                coverFeesData.giveAmountFees : null;
+            flowObject.stepsCompleted = false;
+            dismissAllUxCritialErrors(this.props.dispatch);
+            dispatch(proceed(flowObject, flowSteps[stepIndex + 1], stepIndex));
+        }
     }
 
     handleInputChangeGiveTo(event, data) {
