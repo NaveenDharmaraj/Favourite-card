@@ -48,8 +48,7 @@ import {
     resetDataForGiftTypeChange,
     setDonationAmount,
     validateGiveForm,
-    validateDonationForm,
-    validateReviewBtnCondition,
+    validateForReload,
 } from '../../../helpers/give/utils';
 import {
     actionTypes,
@@ -66,7 +65,6 @@ import IconIndividual from '../../../static/images/no-data-avatar-group-chat-pro
 import FlowBreadcrumbs from '../FlowBreadcrumbs';
 import ReloadAddAmount from '../ReloadAddAmount';
 import { withTranslation } from '../../../i18n';
-import '../../shared/style/styles.less';
 import { dismissAllUxCritialErrors } from '../../../actions/error';
 import { Router } from '../../../routes';
 const CreditCard = dynamic(() => import('../../shared/CreditCard'));
@@ -467,7 +465,7 @@ class Charity extends React.Component {
             isValidNoteToCharityText: true,
             isValidNoteToSelf: true,
             isValidPositiveNumber: true,
-            doesReviewBtnConditionSatisfied: true,
+            isReloadRequired: true,
         };
         return this.validity;
     }
@@ -500,8 +498,12 @@ class Charity extends React.Component {
         validity = validateGiveForm('noteToSelf', giveData.noteToSelf, validity, giveData, coverFeesAmount);
         validity = validateGiveForm('noteToCharity', giveData.noteToCharity, validity, giveData, coverFeesAmount);
         validity = validateGiveForm('dedicateType', null, validity, giveData);
-        validity = validateReviewBtnCondition(validity, giveData.giveFrom.type, giveData.giveAmount, giveData.giveFrom.balance);
-        this.setState({ validity });
+        validity = validateForReload(validity, giveData.giveFrom.type, giveData.giveAmount, giveData.giveFrom.balance);
+        !validity.isReloadRequired ? ( this.setState({ reviewBtnFlag: true })) : (this.setState({ reviewBtnFlag: false }) );
+        this.setState({ validity,
+            reviewBtnFlag: !validity.isReloadRequired
+        });
+
         let validateCC = true;
         if (giveData.creditCard.value === 0) {
             this.CreditCard.handleOnLoad(
@@ -762,17 +764,6 @@ class Charity extends React.Component {
             inValidCvv,
             inValidCardNameValue,
         );
-
-        if (!validity.doesReviewBtnConditionSatisfied) {
-            this.setState({
-                reviewBtnFlag: true
-            })
-        }
-        else {
-            this.setState({
-                reviewBtnFlag: false
-            })
-        }
 
         if (this.validateForm() && validateCC) {
             if (creditCard.value > 0) {
@@ -1263,6 +1254,7 @@ class Charity extends React.Component {
                                                             </p>
                                                         }
                                                         <DropDownAccountOptions
+                                                            reviewBtnFlag={this.state.reviewBtnFlag}
                                                             type={type}
                                                             validity={validity.isValidGiveFrom}
                                                             selectedValue={this.state.flowObject.giveData.giveFrom.value}

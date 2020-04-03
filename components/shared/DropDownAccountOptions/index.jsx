@@ -1,3 +1,4 @@
+
 /* eslint-disable react/prop-types */
 import React, {
     Fragment,
@@ -38,6 +39,7 @@ class DropDownAccountOptions extends React.Component {
             parentOnBlurChange,
             name,
             type,
+            reviewBtnFlag,
         } = this.props;
         let dropDownData = null;
         const formatMessage = this.props.t;
@@ -105,7 +107,7 @@ class DropDownAccountOptions extends React.Component {
                 <Form.Field
                     className="dropdownWithArrowParent"
                     control={Select}
-                    error={!validity}
+                    error={!validity || reviewBtnFlag}
                     id={name}
                     name={name}
                     onBlur={parentOnBlurChange}

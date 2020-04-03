@@ -1716,8 +1716,8 @@ const resetP2pDataForOnInputChange = (giveData, dropDownOptions) => {
     return giveData;
 };
 
-const validateReviewBtnCondition = (validity, type, giveAmount, balance) => {
-    validity.doesReviewBtnConditionSatisfied =  (type === 'user' || type === 'companies') && Number(giveAmount) > Number(balance) ? false : true; 
+const validateForReload = (validity, type, giveAmount, balance) => {
+    validity.isReloadRequired =  (type === 'user' || type === 'companies') && Number(giveAmount) > Number(balance) ? true : false; 
     return validity;
 }
 
@@ -1758,5 +1758,5 @@ export {
     formatDateForGivingTools,
     resetP2pDataForOnInputChange,
     calculateP2pTotalGiveAmount,
-    validateReviewBtnCondition,
+    validateForReload,
 };
