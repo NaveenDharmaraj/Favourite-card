@@ -1,6 +1,5 @@
 import React, { } from 'react'
 import _ from 'lodash';
-import '../../../static/less/giveFlows.less';
 
 function ReloadAddAmount(props) {
     const { gifttype, reviewBtnFlag } = props;
