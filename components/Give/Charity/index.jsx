@@ -58,7 +58,6 @@ import {
     getBeneficiaryFromSlug,
     proceed,
 } from '../../../actions/give';
-import '../../../static/less/giveFlows.less';
 import IconCharity from '../../../static/images/no-data-avatar-charity-profile.png';
 import IconGroup from '../../../static/images/no-data-avatar-giving-group-profile.png';
 import IconIndividual from '../../../static/images/no-data-avatar-group-chat-profile.png';
