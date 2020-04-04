@@ -749,12 +749,6 @@ const validateDonationForm = (field, value, validity) => {
             validity.isAmountMoreThanOneDollor = isAmountMoreThanOneDollor(value);
             validity.isValidPositiveNumber = isValidPositiveNumber(value);
             break;
-        case 'giveAmount':
-            validity.doesAmountExist = !isInputBlank(value);
-            validity.isAmountLessThanOneBillion = isAmountLessThanOneBillion(value);
-            validity.isAmountMoreThanOneDollor = isAmountMoreThanOneDollor(value);
-            validity.isValidPositiveNumber = isValidPositiveNumber(value);
-            break;
         case 'noteToSelf':
             validity.isNoteToSelfInLimit = isInputLengthLessThanOneThousand(value);
             validity.isValidNoteSelfText = isValidNoteData(value);
