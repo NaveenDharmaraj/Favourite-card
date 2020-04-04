@@ -708,8 +708,10 @@ class Charity extends React.Component {
         const inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
         const formatedCharityAmount = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
         let {
+            flowObject: {
+                giveData 
+            },
             validity,
-            giveData,
         } = this.state
 
         validity = validateGiveForm("giveAmount", inputValue, validity, giveData);
@@ -1047,11 +1049,11 @@ class Charity extends React.Component {
         return validCC;
     }
 
-    renderReloadAddAmount = (giveFromtype, giveamount, givebalance, gifttype, reviewBtnFlag) => {
-        if ((giveFromtype === 'user' || giveFromtype === 'companies') && (Number(giveamount) > Number(givebalance))) {
+    renderReloadAddAmount = (giveFrom, giveAmount, giftType, reviewBtnFlag) => {
+        if ((giveFrom.type === 'user' || giveFrom.type === 'companies') && (Number(giveAmount) > Number(giveFrom.balance))) {
             return (
                 <ReloadAddAmount
-                    gifttype={gifttype}
+                    giftType={giftType.value}
                     reviewBtnFlag={reviewBtnFlag}
                 />
             )
@@ -1114,10 +1116,7 @@ class Charity extends React.Component {
             showAnotherRecipient,
             validity,
         } = this.state;
-        const { flowObject } = this.state;
-        const { giveData } = flowObject;
         let accountTopUpComponent = null;
-        let reloadAddAmount = null;
         let stripeCardComponent = null;
         const groupUrlEndpoint = Number(sourceAccountHolderId) > 0 ? `/give/to/group/new?source_account_holder_id=${sourceAccountHolderId}` : null;
         const friendUrlEndpoint = `/give/to/friend/new`;
@@ -1202,7 +1201,7 @@ class Charity extends React.Component {
                                                     <Grid.Column mobile={16} tablet={12} computer={10}>
                                                         <CharityAmountField
                                                             isGiveFlow={true}
-                                                            amount={giveData.formatedCharityAmount}
+                                                            amount={formatedCharityAmount}
                                                             formatMessage={formatMessage}
                                                             handleInputChange={this.handleInputChange}
                                                             handleInputOnBlur={this.handleInputOnBlur}
@@ -1255,22 +1254,19 @@ class Charity extends React.Component {
                                                             reviewBtnFlag={this.state.reviewBtnFlag}
                                                             type={type}
                                                             validity={validity.isValidGiveFrom}
-                                                            selectedValue={this.state.flowObject.giveData.giveFrom.value}
+                                                            selectedValue={giveFrom.value}
                                                             name="giveFrom"
                                                             parentInputChange={this.handleInputChange}
                                                             parentOnBlurChange={this.handleInputOnBlur}
                                                             formatMessage={formatMessage}
                                                         />
 
-
-                                                        {/* {reloadAddAmount} */}
-
-                                                        {this.renderReloadAddAmount(giveFrom.type, giveData.giveAmount, giveFrom.balance, giftType.value, this.state.reviewBtnFlag)}
+                                                        {this.renderReloadAddAmount(giveFrom, giveAmount, giftType, reviewBtnFlag)}
 
                                                         {this.renderSpecialInstructionComponent(
                                                             giveFrom,
                                                             giftType, giftTypeList, infoToShare, infoToShareList, formatMessage,
-                                                            paymentInstrumentList, defaultTaxReceiptProfile, companyDetails, giveData, language
+                                                            paymentInstrumentList, defaultTaxReceiptProfile, companyDetails,
                                                         )}
 
                                                         <DedicateType

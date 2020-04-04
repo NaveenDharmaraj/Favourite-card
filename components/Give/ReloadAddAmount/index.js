@@ -2,8 +2,8 @@ import React, { } from 'react'
 import _ from 'lodash';
 
 function ReloadAddAmount(props) {
-    const { gifttype, reviewBtnFlag } = props;
-    if (gifttype === 0 && !reviewBtnFlag) {
+    const {giftType, reviewBtnFlag} = props;
+    if (giftType === 0 && !reviewBtnFlag) {
        return(
             <div className="noteDefault">
                 <div className="noteWraper">
