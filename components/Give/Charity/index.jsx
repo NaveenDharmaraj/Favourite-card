@@ -3,7 +3,6 @@ import React, {
 } from 'react';
 import _ from 'lodash';
 import dynamic from 'next/dynamic';
-import getConfig from 'next/config';
 import _isEmpty from 'lodash/isEmpty';
 import _merge from 'lodash/merge';
 import _replace from 'lodash/replace';
@@ -11,7 +10,6 @@ import _replace from 'lodash/replace';
 /* eslint-disable react/prop-types */
 import PropTypes from 'prop-types';
 import {
-    Checkbox,
     Container,
     Divider,
     Form,
@@ -27,7 +25,6 @@ import {
 import _find from 'lodash/find';
 import _isEqual from 'lodash/isEqual';
 import _every from 'lodash/every';
-import { Elements, StripeProvider, } from 'react-stripe-elements';
 import { connect, } from 'react-redux';
 import ReactHtmlParser from 'react-html-parser';
 import { Link } from '../../../routes';
@@ -66,20 +63,11 @@ import ReloadAddAmount from '../ReloadAddAmount';
 import { withTranslation } from '../../../i18n';
 import { dismissAllUxCritialErrors } from '../../../actions/error';
 import { Router } from '../../../routes';
-const CreditCard = dynamic(() => import('../../shared/CreditCard'));
 const FormValidationErrorMessage = dynamic(() => import('../../shared/FormValidationErrorMessage'));
 const NoteTo = dynamic(() => import('../NoteTo'));
 const DedicateType = dynamic(() => import('../DedicateGift'), { ssr: false });
 const SpecialInstruction = dynamic(() => import('../SpecialInstruction'));
-const AccountTopUp = dynamic(() => import('../AccountTopUp'));
 const DropDownAccountOptions = dynamic(() => import('../../shared/DropDownAccountOptions'));
-
-const { publicRuntimeConfig } = getConfig();
-
-const {
-    STRIPE_KEY,
-} = publicRuntimeConfig;
-
 
 class Charity extends React.Component {
     constructor(props) {
@@ -156,11 +144,6 @@ class Charity extends React.Component {
             },
             findAnotherRecipientLabel: 'Find another recipient',
             flowObject: _.cloneDeep(payload),
-            inValidCardNameValue: true,
-            inValidCardNumber: true,
-            inValidCvv: true,
-            inValidExpirationDate: true,
-            inValidNameOnCard: true,
             showAnotherRecipient: false,
             showModal: false,
             reviewBtnFlag: false,
@@ -200,13 +183,6 @@ class Charity extends React.Component {
         this.handleFindAnotherRecipient = this.handleFindAnotherRecipient.bind(this);
         this.handleInputOnBlur = this.handleInputOnBlur.bind(this);
         this.validateForm = this.validateForm.bind(this);
-        this.getStripeCreditCard = this.getStripeCreditCard.bind(this);
-
-        this.validateStripeCreditCardNo = this.validateStripeCreditCardNo.bind(this);
-        this.validateStripeExpirationDate = this.validateStripeExpirationDate.bind(this);
-        this.validateCreditCardCvv = this.validateCreditCardCvv.bind(this);
-        this.validateCreditCardName = this.validateCreditCardName.bind(this);
-        this.getStripeCreditCard = this.getStripeCreditCard.bind(this);
         dismissAllUxCritialErrors(props.dispatch);
     }
 
@@ -478,11 +454,6 @@ class Charity extends React.Component {
             flowObject: {
                 giveData,
             },
-            inValidCardNumber,
-            inValidExpirationDate,
-            inValidNameOnCard,
-            inValidCvv,
-            inValidCardNameValue,
         } = this.state;
         let {
             validity,
@@ -502,17 +473,7 @@ class Charity extends React.Component {
             validity,
             reviewBtnFlag: !validity.isReloadRequired
         });
-
-        let validateCC = true;
-        if (giveData.creditCard.value === 0) {
-            this.CreditCard.handleOnLoad(
-                inValidCardNumber, inValidExpirationDate, inValidNameOnCard,
-                inValidCvv, inValidCardNameValue,
-            );
-            validateCC = (!inValidCardNumber && !inValidExpirationDate &&
-                !inValidNameOnCard && !inValidCvv && !inValidCardNameValue);
-        }
-        return _every(validity) && validateCC;
+        return _every(validity);
     }
 
     /**
@@ -607,6 +568,7 @@ class Charity extends React.Component {
                 giveData,
             },
             dropDownOptions,
+            reviewBtnFlag,
             selectedCreditCard,
             validity,
         } = this.state;
@@ -668,6 +630,7 @@ class Charity extends React.Component {
                     validity = validateGiveForm(
                         name, giveData[name], validity, giveData, coverFeesAmount,
                     );
+                    reviewBtnFlag = false;
                     if (giveData.giveFrom.type === 'companies') {
                         getCompanyPaymentAndTax(dispatch, Number(giveData.giveFrom.id));
                     }
@@ -681,6 +644,7 @@ class Charity extends React.Component {
                     giveData = resetDataForGiveAmountChange(
                         giveData, dropDownOptions, coverFeesData,
                     );
+                    reviewBtnFlag = false;
                     break;
                 default: break;
             }
@@ -693,6 +657,7 @@ class Charity extends React.Component {
                     ...this.state.flowObject,
                     giveData,
                 },
+                reviewBtnFlag,
                 validity: {
                     ...this.state.validity,
                     validity,
@@ -733,12 +698,6 @@ class Charity extends React.Component {
     handleSubmit() {
         const {
             flowObject,
-            inValidCardNumber,
-            inValidExpirationDate,
-            inValidNameOnCard,
-            inValidCvv,
-            inValidCardNameValue,
-            validity,
         } = this.state;
         const {
             dispatch,
@@ -757,16 +716,7 @@ class Charity extends React.Component {
                 giveAmount,
             },
         } = flowObject;
-        const validateCC = this.isValidCC(
-            creditCard,
-            inValidCardNumber,
-            inValidExpirationDate,
-            inValidNameOnCard,
-            inValidCvv,
-            inValidCardNameValue,
-        );
-
-        if (this.validateForm() && validateCC) {
+        if (this.validateForm()) {
             if (creditCard.value > 0) {
                 flowObject.selectedTaxReceiptProfile = (flowObject.giveData.giveFrom.type === 'companies') ?
                     companyDetails.companyDefaultTaxReceiptProfile :
@@ -959,96 +909,6 @@ class Charity extends React.Component {
         return null;
     }
 
-    /**
-     * validateStripeElements
-     * @param {boolean} inValidCardNumber credit card number
-     * @return {void}
-     */
-    validateStripeCreditCardNo(inValidCardNumber) {
-        this.setState({ inValidCardNumber });
-    }
-
-    /**
-     * validateStripeElements
-     * @param {boolean} inValidExpirationDate credit card expiry date
-     * @return {void}
-     */
-    validateStripeExpirationDate(inValidExpirationDate) {
-        this.setState({ inValidExpirationDate });
-    }
-
-    /**
-     * validateStripeElements
-     * @param {boolean} inValidCvv credit card CVV
-     * @return {void}
-     */
-    validateCreditCardCvv(inValidCvv) {
-        this.setState({ inValidCvv });
-    }
-
-    /**
-     * @param {boolean} inValidNameOnCard credit card Name
-     * @param {boolean} inValidCardNameValue credit card Name Value
-     * @param {string} cardHolderName credit card Name Data
-     * @return {void}
-     */
-    validateCreditCardName(inValidNameOnCard, inValidCardNameValue, cardHolderName) {
-        let cardNameValid = inValidNameOnCard;
-        if (cardHolderName.trim() === '' || cardHolderName.trim() === null) {
-            cardNameValid = true;
-        } else {
-            this.setState({
-                flowObject: {
-                    ...this.state.flowObject,
-                    cardHolderName,
-                },
-            });
-        }
-        this.setState({
-            inValidCardNameValue,
-            inValidNameOnCard: cardNameValid,
-        });
-    }
-
-    getStripeCreditCard(data, cardHolderName) {
-        this.setState({
-            flowObject: {
-                ...this.state.flowObject,
-                cardHolderName,
-                stripeCreditCard: data,
-            },
-        });
-    }
-
-    isValidCC(
-        creditCard,
-        inValidCardNumber,
-        inValidExpirationDate,
-        inValidNameOnCard,
-        inValidCvv,
-        inValidCardNameValue,
-    ) {
-        let validCC = true;
-        if (creditCard.value === 0) {
-            this.CreditCard.handleOnLoad(
-                inValidCardNumber,
-                inValidExpirationDate,
-                inValidNameOnCard,
-                inValidCvv,
-                inValidCardNameValue,
-            );
-            validCC = (
-                !inValidCardNumber &&
-                !inValidExpirationDate &&
-                !inValidNameOnCard &&
-                !inValidCvv &&
-                !inValidCardNameValue
-            );
-        }
-
-        return validCC;
-    }
-
     renderReloadAddAmount = (giveFrom, giveAmount, giftType, reviewBtnFlag) => {
         if ((giveFrom.type === 'user' || giveFrom.type === 'companies') && (Number(giveAmount) > Number(giveFrom.balance))) {
             return (
@@ -1065,7 +925,6 @@ class Charity extends React.Component {
             companyDetails,
             coverAmountDisplay,
             coverFeesData,
-            creditCardApiCall,
             defaultTaxReceiptProfile,
             currentStep,
             flowSteps,
@@ -1107,72 +966,12 @@ class Charity extends React.Component {
                 infoToShareList,
                 paymentInstrumentList,
             },
-            findAnotherRecipientLabel,
-            inValidCardNumber,
-            inValidExpirationDate,
-            inValidNameOnCard,
-            inValidCvv,
-            inValidCardNameValue,
-            showAnotherRecipient,
             validity,
         } = this.state;
-        let accountTopUpComponent = null;
-        let stripeCardComponent = null;
         const groupUrlEndpoint = Number(sourceAccountHolderId) > 0 ? `/give/to/group/new?source_account_holder_id=${sourceAccountHolderId}` : null;
         const friendUrlEndpoint = `/give/to/friend/new`;
         const formatMessage = this.props.t;
         const { reviewBtnFlag } = this.state;
-        const giveAmountWithCoverFees = (coverFees)
-            ? Number(giveAmount) + Number(coverFeesData.giveAmountFees)
-            : Number(giveAmount);
-
-        if ((giveFrom.type === 'user' || giveFrom.type === 'companies')
-            && (giftType.value === 0
-                && giveAmountWithCoverFees > Number(giveFrom.balance))
-        ) {
-            const topupAmount = formatAmount((formatAmount(giveAmountWithCoverFees)
-                - formatAmount(giveFrom.balance)));
-            accountTopUpComponent = (
-                <AccountTopUp
-                    creditCard={creditCard}
-                    donationAmount={formatedDonationAmount}
-                    donationMatch={donationMatch}
-                    donationMatchList={donationMatchList}
-                    formatMessage={formatMessage}
-                    getStripeCreditCard={this.getStripeCreditCard}
-                    handleInputChange={this.handleInputChange}
-                    handleInputOnBlur={this.handleInputOnBlur}
-                    isAmountFieldVisible={giftType.value === 0}
-                    isDonationMatchFieldVisible={giveFrom.type === 'user'}
-                    paymentInstrumentList={paymentInstrumentList}
-                    topupAmount={topupAmount}
-                    validity={validity}
-                />
-            );
-            if ((_isEmpty(paymentInstrumentList) && giveFrom.value) || creditCard.value === 0) {
-                stripeCardComponent = (
-                    <StripeProvider apiKey={STRIPE_KEY}>
-                        <Elements>
-                            <CreditCard
-                                creditCardElement={this.getStripeCreditCard}
-                                creditCardValidate={inValidCardNumber}
-                                creditCardExpiryValidate={inValidExpirationDate}
-                                creditCardNameValidte={inValidNameOnCard}
-                                creditCardNameValueValidate={inValidCardNameValue}
-                                creditCardCvvValidate={inValidCvv}
-                                validateCCNo={this.validateStripeCreditCardNo}
-                                validateExpiraton={this.validateStripeExpirationDate}
-                                validateCvv={this.validateCreditCardCvv}
-                                validateCardName={this.validateCreditCardName}
-                                formatMessage={formatMessage}
-                                // eslint-disable-next-line no-return-assign
-                                onRef={(ref) => (this.CreditCard = ref)}
-                            />
-                        </Elements>
-                    </StripeProvider>
-                );
-            }
-        }
         return (
             <Fragment>
                 <div className="flowReviewbanner">
@@ -1298,7 +1097,7 @@ class Charity extends React.Component {
                                                             className="blue-btn-rounded btn_right"
                                                             content={reviewBtnFlag ? formatMessage('giveCommon:reviewButtonFlag')
                                                                 : formatMessage('giveCommon:reviewButton')}
-                                                            disabled={(creditCardApiCall) || !this.props.userAccountsFetched}
+                                                            disabled={!this.props.userAccountsFetched}
                                                             type="submit"
                                                         />
                                                     </Grid.Column>
@@ -1336,7 +1135,6 @@ function mapStateToProps(state) {
         userAccountsFetched: state.user.userAccountsFetched,
         userCampaigns: state.user.userCampaigns,
         userGroups: state.user.userGroups,
-        creditCardApiCall: state.give.creditCardApiCall,
     };
 }
 export default withTranslation([
