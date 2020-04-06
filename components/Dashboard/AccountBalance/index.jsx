@@ -58,7 +58,7 @@ class AccountBalance extends React.Component {
                                                         </Header>
                                                     </Grid.Column>
                                                     <Grid.Column mobile={6} tablet={6} computer={5}>
-                                                        <Link className="lnkChange" route="/donations/new">
+                                                        <Link className="lnkChange" route="/donations/new" passHref>
                                                             <Button className="btn-small-white">Add money</Button>
                                                         </Link>
                                                     </Grid.Column>
@@ -84,7 +84,7 @@ class AccountBalance extends React.Component {
                                                         </Header>
                                                     </Grid.Column>
                                                     <Grid.Column mobile={6} tablet={5} computer={5}>
-                                                        <Link className="lnkChange" route="/search">
+                                                        <Link className="lnkChange" route="/search" passHref>
                                                             <Button className="btn-small-white">Create gift</Button>
                                                         </Link>
                                                     </Grid.Column>

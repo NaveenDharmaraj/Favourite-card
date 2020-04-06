@@ -199,9 +199,9 @@ class EmailList extends React.Component {
                                     <div className="pt-1">
                                         <Header as="h4">Email addresses </Header>
                                         <p>
-                                        Add multiple email addresses to your account
-                                        so that people can add you as a friend
-                                        and send you charitable dollars.
+                                            If you use multiple email addresses, you can add them here.
+                                            Friends will be able to give to you using any of the email addresses associated with your account.
+                                            Only the email address you set as primary can be used to log in.
                                         </p>
                                     </div>
                                 </Grid.Column>
