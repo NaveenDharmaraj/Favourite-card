@@ -18,7 +18,7 @@ import HubspotForm from 'react-hubspot-form';
 import { Link } from '../../../routes';
 import '../../../static/less/footer.less';
 import flogo from '../../../static/images/CharitableImpact.svg';
-import appimg from '../../../static/images/app_img.png';
+import appimg from '../../../static/images/Get-it-on-apple-store.png';
 import facebook from '../../../static/images/icons/facebook.png';
 import instagram from '../../../static/images/icons/instagram.png';
 import linkedin from '../../../static/images/icons/linkedin.png';
@@ -139,6 +139,14 @@ const Footer = ({ isAuthenticated }) => (
                                         </Grid.Column>
                                         <Grid.Column mobile={16} tablet={4} computer={4}>
                                             <Header as="h4"><a href={`${CORP_DOMAIN}/charities/`}>Charitable Impact for charities</a></Header>
+                                            <div className="app_logo">
+                                                <Header as="h5">Get the app</Header>
+                                                <Image
+                                                    src={appimg}
+                                                    href="https://charitableimpact.app.link/ios-corpweb"
+                                                    target="_blank"
+                                                />
+                                            </div>
                                         </Grid.Column>
                                     </Grid.Row>
                                 </Grid>
@@ -149,7 +157,7 @@ const Footer = ({ isAuthenticated }) => (
                 <div className="copy-right">
                     <List horizontal>
                         <List.Item disabled className="copyright-text" href="#">
-                        &copy; Copyright 2019 CHIMP Technology Inc. - All Rights Reserved.
+                        &copy; Copyright 2020 CHIMP Technology Inc. - All Rights Reserved.
                         </List.Item>
                     </List>
                     <List horizontal floated="right" className="social">

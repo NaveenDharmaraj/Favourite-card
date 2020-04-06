@@ -60,9 +60,21 @@ const dismissAllUxCritialErrors = (dispatch) => {
     });
 };
 
+const triggerCustomUxCriticalError = (messageProps, dispatch) => {
+    dispatch({
+        payload: {
+            errors: [
+                messageProps,
+            ],
+        },
+        type: types.TRIGGER_UX_CRITICAL_ERROR,
+    });
+};
+
 export {
     types as default,
     triggerUxCritialErrors,
     dismissUxCritialErrors,
     dismissAllUxCritialErrors,
+    triggerCustomUxCriticalError,
 };
