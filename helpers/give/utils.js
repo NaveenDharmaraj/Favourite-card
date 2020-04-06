@@ -292,14 +292,14 @@ const populateAccountOptions = (data, translate, giveToId = null, allocationType
     } = translate;
     const currency = 'USD';
     if ((!_.isEmpty(companiesAccountsData)
-    || !_.isEmpty(userCampaigns)
-    || !_.isEmpty(userGroups))
+        || !_.isEmpty(userCampaigns)
+        || !_.isEmpty(userGroups))
     ) {
         const personalAccount = [
             {
                 className: 'ddlGroup',
                 disabled: true,
-                text: formatMessage('personalAccountLabel' ),
+                text: formatMessage('personalAccountLabel'),
                 value: 'user',
             },
             {
@@ -337,7 +337,7 @@ const populateAccountOptions = (data, translate, giveToId = null, allocationType
             {
                 className: 'ddlGroup',
                 disabled: true,
-                text: formatMessage('campaignHeader' ),
+                text: formatMessage('campaignHeader'),
                 value: 'campaign',
             },
         ];
@@ -638,7 +638,8 @@ const populateTaxReceipts = (taxReceiptData, formatMessage) => {
                 taxReceiptData,
                 null,
                 (item) => item.id,
-                (attributes) => { return ReactHtmlParser(`<span class="attributes"><b>${attributes.fullName}</b></span>
+                (attributes) => {
+                    return ReactHtmlParser(`<span class="attributes"><b>${attributes.fullName}</b></span>
                                     <span class="attributes"> ${attributes.addressOne} ${attributes.addressTwo} </span>
                                     <span class="attributes">${attributes.city}, ${attributes.province} ${attributes.postalCode}</span>`);
                 },
@@ -650,7 +651,7 @@ const populateTaxReceipts = (taxReceiptData, formatMessage) => {
     return null;
 };
 
-const getTaxReceiptById = (taxReceiptProfiles, selectedTaxReceiptProfile) =>{
+const getTaxReceiptById = (taxReceiptProfiles, selectedTaxReceiptProfile) => {
     const selectedProfile = _.find(taxReceiptProfiles, ['id', selectedTaxReceiptProfile]);
     return selectedProfile;
 };
@@ -706,11 +707,11 @@ const getFirstThirdTuesday = (currentDateUTC, monthNames) => {
     }
     // Checking Condition for 3rd week Tuesday
     if (currentDateUTC.getDate() >= tuesdays[0].getDate() &&
-                currentDateUTC.getDate() < tuesdays[2].getDate()) {
+        currentDateUTC.getDate() < tuesdays[2].getDate()) {
         return setDateFormat(tuesdays[2], monthNames);
     }
     const nextMonthTuesday = new Date(tuesdays[tuesdays.length - 1].getTime()
-                                        + (7 * 24 * 60 * 60 * 1000));
+        + (7 * 24 * 60 * 60 * 1000));
     return setDateFormat(nextMonthTuesday, monthNames);
 };
 
@@ -723,7 +724,7 @@ const getFirstThirdTuesday = (currentDateUTC, monthNames) => {
 const getNextAllocationMonth = (formatMessage, eftEnabled) => {
     const currentDate = new Date();
     const currentDateUTC = new Date(currentDate.getTime() +
-                                (currentDate.getTimezoneOffset() * 60000));
+        (currentDate.getTimezoneOffset() * 60000));
     currentDateUTC.setHours(currentDateUTC.getHours() - 8);
     const monthNames = fullMonthNames(formatMessage);
     if (eftEnabled) {
@@ -842,7 +843,7 @@ const populateInfoToShare = (taxReceiptProfile,
             infoToShareList = [
                 {
                     disabled: false,
-                    text: formatMessage('giveCommon:infoToShareAnonymous' ),
+                    text: formatMessage('giveCommon:infoToShareAnonymous'),
                     value: 'anonymous',
                 },
                 {
@@ -885,14 +886,14 @@ const populateInfoToShare = (taxReceiptProfile,
 const setDonationAmount = (giveData, coverFeesData) => {
     let donationAmount = '';
     const coverFeesGreaterThan0 = (!_.isEmpty(coverFeesData)
-    && !_.isEmpty(coverFeesData.coverFees)
-    && Number(coverFeesData.coverFees.giveAmountFees) > 0
+        && !_.isEmpty(coverFeesData.coverFees)
+        && Number(coverFeesData.coverFees.giveAmountFees) > 0
     );
     const giveAmount = (giveData.coverFees && coverFeesGreaterThan0)
         ? (Number(giveData.giveAmount) + Number(coverFeesData.coverFees.giveAmountFees))
         : Number(giveData.giveAmount);
     if (Number(giveAmount) > Number(giveData.giveFrom.balance)
-    && giveData.giftType.value === 0
+        && giveData.giftType.value === 0
     ) {
         donationAmount = (formatAmount(giveData.giveAmount) - formatAmount(giveData.giveFrom.balance));
         donationAmount = formatAmount(donationAmount);
@@ -914,7 +915,7 @@ const setDonationAmount = (giveData, coverFeesData) => {
 const resetDataForGiveAmountChange = (giveData, dropDownOptions, coverFeesData) => {
     giveData.coverFees = false;
     if ((giveData.giveFrom.type === 'user' || giveData.giveFrom.type === 'companies')
-    && giveData.giftType.value === 0) {
+        && giveData.giftType.value === 0) {
         giveData.donationAmount = setDonationAmount(giveData, coverFeesData);
         giveData.formatedDonationAmount = _.replace(formatCurrency(giveData.donationAmount, 'en', 'USD'), '$', '');
         if (Number(giveData.donationAmount) > 0 && isCreditCardBlank(giveData)
@@ -931,7 +932,7 @@ const resetDataForGiveAmountChange = (giveData, dropDownOptions, coverFeesData) 
             && !_.isEmpty(dropDownOptions.donationMatchList)
             && (_.isEmpty(giveData.donationMatch)
                 || giveData.donationMatch.value === null)
-                && giveData.donationAmount > 0
+            && giveData.donationAmount > 0
         ) {
             const [
                 defaultMatch,
@@ -996,7 +997,7 @@ const resetDataForAccountChange = (giveData, dropDownOptions, props, type) => {
             && companyDetails.companyId === Number(giveData.giveFrom.id)) {
             dropDownOptions.paymentInstrumentList = populatePaymentInstrument(
                 (!_.isEmpty(companyDetails)
-                && !_.isEmpty(companyDetails.companyPaymentInstrumentsData))
+                    && !_.isEmpty(companyDetails.companyPaymentInstrumentsData))
                     ? companyDetails.companyPaymentInstrumentsData : null,
                 formatMessage,
             );
@@ -1083,7 +1084,7 @@ const validateGiveForm = (field, value, validity, giveData, coverFeesAmount = nu
                 ? isAmountMoreThanOneDollor(value) : isAmountMoreOrEqualToOneDollor(value);
             validity.isValidPositiveNumber = isValidPositiveNumber(value);
             validity.isAmountCoverGive = (giveData.giveFrom.type === 'groups'
-                    || giveData.giveFrom.type === 'campaigns')
+                || giveData.giveFrom.type === 'campaigns')
                 ? isAmountCoverGive(
                     0,
                     giveData.coverFees,
@@ -1105,7 +1106,7 @@ const validateGiveForm = (field, value, validity, giveData, coverFeesAmount = nu
         case 'giveFrom':
             validity.isValidGiveFrom = !isInputBlank(value);
             validity.isValidGiveTo = !((value.type === giveData.giveTo.type)
-                    && (giveData.giveTo.value === value.value));
+                && (giveData.giveTo.value === value.value));
             break;
         case 'dedicateType':
             if (giveData.dedicateGift && !_.isEmpty(giveData.dedicateGift.dedicateType)) {
@@ -1138,12 +1139,12 @@ const validateGiveForm = (field, value, validity, giveData, coverFeesAmount = nu
         case 'donationAmount':
             const isDonationAmountApplicable = (
                 Number(giveAmount) > Number(giveData.giveFrom.balance)
-                    || (giveData.coverFees
-                        && (Number(giveAmount) + Number(coverFeesAmount))
-                        > Number(giveData.giveFrom.balance))
+                || (giveData.coverFees
+                    && (Number(giveAmount) + Number(coverFeesAmount))
+                    > Number(giveData.giveFrom.balance))
             );
             const eligibleForTopup = ((giveData.giveFrom.type === 'user' || giveData.giveFrom.type === 'companies')
-                    && giveData.giftType.value === 0 && isDonationAmountApplicable
+                && giveData.giftType.value === 0 && isDonationAmountApplicable
             );
             validity.isDonationAmountBlank = (eligibleForTopup) ? !isInputBlank(value) : true;
             validity.isDonationAmountLessThan1Billion = (eligibleForTopup)
@@ -1263,7 +1264,7 @@ const formatDateForGivingTools = (date) => {
     const day = unformattedDate.getDate();
     const month = monthNamesForGivingTools(unformattedDate.getMonth() + 1);
     const year = unformattedDate.getFullYear();
-    
+
     return `${month} ${day}, ${year}`;
 };
 
@@ -1435,7 +1436,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
     const state = {
         editUrl: toURL,
         buttonText: formatMessage('reviewSendGift'),
-        headingText: `${formatMessage('reviewGiveToText')} ${ giveTo.name}`,
+        headingText: `${formatMessage('reviewGiveToText')} ${giveTo.name}`,
         isRecurring: !(giftType.value === 0),
         mainDisplayAmount: formatCurrency(
             Number(giveAmount),
@@ -1443,7 +1444,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
             currency,
         ),
         mainDisplayImage: giveTo.avatar,
-        mainDisplayText: `${formatMessage('reviewGiveToText')} ${ giveTo.name}`,
+        mainDisplayText: `${formatMessage('reviewGiveToText')} ${giveTo.name}`,
     };
     const listingData = [];
 
@@ -1482,7 +1483,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
                 const activeMatchedAmount = (Number(giveAmount) > maxMatchedAmount) ?
                     maxMatchedAmount : Number(giveAmount);
                 listingData.push({
-                    name : 'giftToGroupMatchedBy',
+                    name: 'giftToGroupMatchedBy',
                     value: `${company} (${formatCurrency(activeMatchedAmount, language, currency)})`
                 });
             }
@@ -1582,11 +1583,11 @@ const populateP2pReviewPage = (giveData, data, currency, formatMessage, language
 
     const emails = giveData.recipients;
     const state = {
-        buttonText : formatMessage('reviewP2pGive'),
+        buttonText: formatMessage('reviewP2pGive'),
         editUrl: toURL,
         headingText: formatMessage('reviewP2pText'),
         isRecurring: false,
-        mainDisplayAmount:  formatCurrency(
+        mainDisplayAmount: formatCurrency(
             Number(totalP2pGiveAmount),
             language,
             currency,
@@ -1602,7 +1603,7 @@ const populateP2pReviewPage = (giveData, data, currency, formatMessage, language
     if (emails) {
         if (emails.length === 1) {
             state.mainDisplayImage = (recipientImage) || placeholderUser;
-            state.mainDisplayText = `${formatMessage('reviewGiveToText')} ${ (recipientName) || emails[0]}`;
+            state.mainDisplayText = `${formatMessage('reviewGiveToText')} ${(recipientName) || emails[0]}`;
 
         } else {
             state.recipients = [];
@@ -1650,7 +1651,7 @@ const setP2pDonationAmount = (giveData) => {
 
     if (Number(giveData.totalP2pGiveAmount) > Number(giveData.giveFrom.balance)) {
         donationAmount = (formatAmount(giveData.totalP2pGiveAmount)
-        - formatAmount(giveData.giveFrom.balance));
+            - formatAmount(giveData.giveFrom.balance));
 
         donationAmount = formatAmount(donationAmount);
 
@@ -1693,7 +1694,7 @@ const resetP2pDataForOnInputChange = (giveData, dropDownOptions) => {
     if (giveData.giveFrom.type === 'user'
         && !_.isEmpty(dropDownOptions.donationMatchList)
         && (_.isEmpty(giveData.donationMatch)
-        || giveData.donationMatch.value === null)
+            || giveData.donationMatch.value === null)
         && giveData.donationAmount > 0
     ) {
         const [
@@ -1727,6 +1728,10 @@ const populateFriendsList = (friendsList) => {
     });
     return formattedFriendsList;
 };
+const validateForReload = (validity, type, giveAmount, balance) => {
+    validity.isReloadRequired =  (type === 'user' || type === 'companies') && Number(giveAmount) > Number(balance) ? false : true; 
+    return validity;
+}
 
 export {
     percentage,
@@ -1766,4 +1771,5 @@ export {
     resetP2pDataForOnInputChange,
     calculateP2pTotalGiveAmount,
     populateFriendsList,
+    validateForReload,
 };

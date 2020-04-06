@@ -1,12 +1,12 @@
 {
-    "fortheCharityLabel": "For the recipient",
-    "includeMessageLabel": "Include a message (optional)",
+    "fortheCharityLabel": "The charity will receive this message with your gift",
+    "includeMessageLabel": "Message for the charity (optional)",
     "allocationsForthCharityPopup": "You can tell the recipient why you're giving to them, provide recommendations for how you'd prefer your gift is spent, or offer words of encouragement.",
-    "generalInputPlaceHolder": "What would you like to say to the recipient?",
+    "generalInputPlaceHolder": "Why are you giving today?",
     "invalidLengthError": "is too long (maximum is 1000 characters)",
     "invalidNoteTextError":  "Only standard letters and numbers are allowed here",
     "givingNoteToSelfPopup": "Write a note to yourself for later—for example, a reminder of why you gave this gift. This will only be visible to you on your Dashboard.",
-    "noteToSelfPlaceHolder": "Write a note to yourself for later",
+    "noteToSelfPlaceHolder": "Write a note to yourself.",
     "noteToSelfLabelReview" : "Note to self",
     "noteToCompanyLabel": "Note to company",
     "noteToGroupLabel": "Note to group"

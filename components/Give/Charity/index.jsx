@@ -12,8 +12,11 @@ import _replace from 'lodash/replace';
 import PropTypes from 'prop-types';
 import {
     Checkbox,
+    Container,
     Divider,
     Form,
+    Grid,
+    Header,
     Icon,
     Image,
     Input,
@@ -24,15 +27,11 @@ import {
 import _find from 'lodash/find';
 import _isEqual from 'lodash/isEqual';
 import _every from 'lodash/every';
-import {
-    Elements,
-    StripeProvider,
-} from 'react-stripe-elements';
-import {
-    connect,
-} from 'react-redux';
+import { Elements, StripeProvider, } from 'react-stripe-elements';
+import { connect, } from 'react-redux';
 import ReactHtmlParser from 'react-html-parser';
 import { Link } from '../../../routes';
+import CharityAmountField from '../DonationAmountField';
 import { beneficiaryDefaultProps } from '../../../helpers/give/defaultProps';
 import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
 import {
@@ -49,6 +48,7 @@ import {
     resetDataForGiftTypeChange,
     setDonationAmount,
     validateGiveForm,
+    validateForReload,
 } from '../../../helpers/give/utils';
 import {
     actionTypes,
@@ -61,9 +61,9 @@ import {
 import IconCharity from '../../../static/images/no-data-avatar-charity-profile.png';
 import IconGroup from '../../../static/images/no-data-avatar-giving-group-profile.png';
 import IconIndividual from '../../../static/images/no-data-avatar-group-chat-profile.png';
-
+import FlowBreadcrumbs from '../FlowBreadcrumbs';
+import ReloadAddAmount from '../ReloadAddAmount';
 import { withTranslation } from '../../../i18n';
-import '../../shared/style/styles.less';
 import { dismissAllUxCritialErrors } from '../../../actions/error';
 import { Router } from '../../../routes';
 const CreditCard = dynamic(() => import('../../shared/CreditCard'));
@@ -73,7 +73,6 @@ const DedicateType = dynamic(() => import('../DedicateGift'), { ssr: false });
 const SpecialInstruction = dynamic(() => import('../SpecialInstruction'));
 const AccountTopUp = dynamic(() => import('../AccountTopUp'));
 const DropDownAccountOptions = dynamic(() => import('../../shared/DropDownAccountOptions'));
-
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -114,11 +113,11 @@ class Charity extends React.Component {
         let currentSourceAccountHolderId = null;
         let currentGroupId = null;
         if (!_isEmpty(sourceAccountHolderId)
-                && Number(sourceAccountHolderId) > 0) {
+            && Number(sourceAccountHolderId) > 0) {
             currentSourceAccountHolderId = sourceAccountHolderId;
         }
         if (!_isEmpty(groupId)
-                && Number(groupId) > 0) {
+            && Number(groupId) > 0) {
             currentGroupId = groupId;
         }
         const paymentInstruments = (!_isEmpty(props.flowObject.giveData.giveFrom) && props.flowObject.giveData.giveFrom.type === 'companies') ? companyDetails.companyPaymentInstrumentsData : paymentInstrumentsData;
@@ -133,9 +132,9 @@ class Charity extends React.Component {
                 nextStep: props.step,
             };
         }
-        else{
-                payload =  _merge({}, props.flowObject);
-            }
+        else {
+            payload = _merge({}, props.flowObject);
+        }
         this.state = {
             benificiaryIndex: 0,
             dropDownOptions: {
@@ -153,6 +152,7 @@ class Charity extends React.Component {
                     formatMessage,
                 ),
                 paymentInstrumentList: populatePaymentInstrument(paymentInstruments, formatMessage),
+
             },
             findAnotherRecipientLabel: 'Find another recipient',
             flowObject: _.cloneDeep(payload),
@@ -163,6 +163,7 @@ class Charity extends React.Component {
             inValidNameOnCard: true,
             showAnotherRecipient: false,
             showModal: false,
+            reviewBtnFlag: false,
             validity: this.intializeValidations(),
         };
         if (this.state.flowObject.giveData.giveTo.value === null) {
@@ -180,13 +181,13 @@ class Charity extends React.Component {
                 const benIndex = this.state.benificiaryIndex;
                 this.state.flowObject.giveData.giveTo = {
                     eftEnabled:
-                            giveGroupBenificairyDetails.benificiaryDetails[benIndex].attributes.eftEnabled,
+                        giveGroupBenificairyDetails.benificiaryDetails[benIndex].attributes.eftEnabled,
                     id: giveGroupBenificairyDetails.benificiaryDetails[benIndex].attributes.fundId,
                     name: giveGroupBenificairyDetails.benificiaryDetails[benIndex].attributes.name,
                     text: giveGroupBenificairyDetails.benificiaryDetails[benIndex].attributes.name,
                     type: 'beneficiaries',
                     value:
-                            giveGroupBenificairyDetails.benificiaryDetails[benIndex].attributes.fundId,
+                        giveGroupBenificairyDetails.benificiaryDetails[benIndex].attributes.fundId,
                 };
                 this.state.flowObject.groupFromUrl = true;
             }
@@ -209,7 +210,7 @@ class Charity extends React.Component {
         dismissAllUxCritialErrors(props.dispatch);
     }
 
-    componentDidMount() { 
+    componentDidMount() {
         const {
             currentUser: {
                 id,
@@ -223,14 +224,14 @@ class Charity extends React.Component {
                 giveData,
             },
         } = this.state;
-        if ( !_isEmpty(giveData) && !_isEmpty(giveData.giveFrom) && 
-                _isEmpty(giveData.giveFrom.value)) {	
-                    dispatch( {
-                        payload: {
-                            coverAmountDisplay: 0,
-                        },
-                        type: 'COVER_AMOUNT_DISPLAY',
-                    });	
+        if (!_isEmpty(giveData) && !_isEmpty(giveData.giveFrom) &&
+            _isEmpty(giveData.giveFrom.value)) {
+            dispatch({
+                payload: {
+                    coverAmountDisplay: 0,
+                },
+                type: 'COVER_AMOUNT_DISPLAY',
+            });
         }
         if (Number(groupId) > 0) {
             getBeneficiariesForGroup(dispatch, Number(groupId));
@@ -287,8 +288,8 @@ class Charity extends React.Component {
             let companyPaymentInstrumentChanged = false;
             if (giveData.giveFrom.type === 'companies' && !_isEmpty(companyDetails)) {
                 if (_isEmpty(prevProps.companyDetails)
-                     || !_isEqual(companyDetails.companyPaymentInstrumentsData,
-                         prevProps.companyDetails.companyPaymentInstrumentsData)
+                    || !_isEqual(companyDetails.companyPaymentInstrumentsData,
+                        prevProps.companyDetails.companyPaymentInstrumentsData)
                 ) {
                     companyPaymentInstrumentChanged = true;
                 }
@@ -323,9 +324,9 @@ class Charity extends React.Component {
                     type: 'beneficiaries',
                     value: giveGroupBenificairyDetails.benificiaryDetails[benificiaryIndex].attributes.fundId,
                 };
-            } else if( !_isEqual(giveGroupBenificairyDetails, prevProps.giveGroupBenificairyDetails)){   
-                if(_isEmpty(giveGroupBenificairyDetails))
-                Router.pushRoute('/dashboard');
+            } else if (!_isEqual(giveGroupBenificairyDetails, prevProps.giveGroupBenificairyDetails)) {
+                if (_isEmpty(giveGroupBenificairyDetails))
+                    Router.pushRoute('/dashboard');
             }
             if (!_isEmpty(fund)) {
                 giveData = Charity.initFields(
@@ -378,13 +379,13 @@ class Charity extends React.Component {
      */
 
     // eslint-disable-next-line react/sort-comp
-    static initFields(giveData, fund, id, avatar,paymentInstrumentOptions,
+    static initFields(giveData, fund, id, avatar, paymentInstrumentOptions,
         companyPaymentInstrumentChanged, name, companiesAccountsData, userGroups, userCampaigns, giveGroupBenificairyDetails, groupId) {
         if (
             (giveData.giveFrom.type === 'user' || giveData.giveFrom.type === 'companies')
             && (giveData.creditCard.value === null || companyPaymentInstrumentChanged)
             && (giveData.giftType.value > 0
-            || Number(giveData.giveAmount) > Number(giveData.giveFrom.balance))
+                || Number(giveData.giveAmount) > Number(giveData.giveFrom.balance))
         ) {
             giveData.creditCard = getDefaultCreditCard(
                 paymentInstrumentOptions,
@@ -392,7 +393,7 @@ class Charity extends React.Component {
         }
         if (_isEmpty(companiesAccountsData) && _isEmpty(userGroups) && _isEmpty(userCampaigns) && !giveData.userInteracted) {
             giveData.giveFrom.avatar = avatar,
-            giveData.giveFrom.id = id;
+                giveData.giveFrom.id = id;
             giveData.giveFrom.value = fund.id;
             giveData.giveFrom.type = 'user';
             giveData.giveFrom.text = `${fund.attributes.name} ($${fund.attributes.balance})`;
@@ -401,23 +402,23 @@ class Charity extends React.Component {
         } else if (!_isEmpty(companiesAccountsData) && !_isEmpty(userGroups) && !_isEmpty(userCampaigns) && !giveData.userInteracted) {
             if (!_isEmpty(giveGroupBenificairyDetails) && !_isEmpty(giveGroupBenificairyDetails.benificiaryDetails)) {
                 const defaultGroupFrom = userGroups.find((userGroup) => userGroup.id === groupId);
-                if(!_isEmpty(defaultGroupFrom)){
-                giveData.giveFrom.value = defaultGroupFrom.attributes.fundId;
-                giveData.giveFrom.name = defaultGroupFrom.attributes.name;
-                giveData.giveFrom.avatar = defaultGroupFrom.attributes.avatar,
-                giveData.giveFrom.id = defaultGroupFrom.id;
-                giveData.giveFrom.type = defaultGroupFrom.type;
-                giveData.giveFrom.text = `${defaultGroupFrom.attributes.name} ($${defaultGroupFrom.attributes.balance})`;
-                giveData.giveFrom.balance = defaultGroupFrom.attributes.balance;
-                giveData.giveFrom.slug = defaultGroupFrom.attributes.slug;
-             }
+                if (!_isEmpty(defaultGroupFrom)) {
+                    giveData.giveFrom.value = defaultGroupFrom.attributes.fundId;
+                    giveData.giveFrom.name = defaultGroupFrom.attributes.name;
+                    giveData.giveFrom.avatar = defaultGroupFrom.attributes.avatar;
+                    giveData.giveFrom.id = defaultGroupFrom.id;
+                    giveData.giveFrom.type = defaultGroupFrom.type;
+                    giveData.giveFrom.text = `${defaultGroupFrom.attributes.name} ($${defaultGroupFrom.attributes.balance})`;
+                    giveData.giveFrom.balance = defaultGroupFrom.attributes.balance;
+                    giveData.giveFrom.slug = defaultGroupFrom.attributes.slug;
+                }
             }
-            else{
+            else {
                 giveData.giveFrom = {
                     value: '',
                 };
             }
-         
+
         }
         return giveData;
     }
@@ -463,6 +464,7 @@ class Charity extends React.Component {
             isValidNoteToCharityText: true,
             isValidNoteToSelf: true,
             isValidPositiveNumber: true,
+            isReloadRequired: true,
         };
         return this.validity;
     }
@@ -495,7 +497,12 @@ class Charity extends React.Component {
         validity = validateGiveForm('noteToSelf', giveData.noteToSelf, validity, giveData, coverFeesAmount);
         validity = validateGiveForm('noteToCharity', giveData.noteToCharity, validity, giveData, coverFeesAmount);
         validity = validateGiveForm('dedicateType', null, validity, giveData);
-        this.setState({ validity });
+        validity = validateForReload(validity, giveData.giveFrom.type, giveData.giveAmount, giveData.giveFrom.balance);
+        this.setState({
+            validity,
+            reviewBtnFlag: !validity.isReloadRequired
+        });
+
         let validateCC = true;
         if (giveData.creditCard.value === 0) {
             this.CreditCard.handleOnLoad(
@@ -515,7 +522,7 @@ class Charity extends React.Component {
      * @param  {object} data The Options of event
      * @return {Void} { void } The return nothing.
      */
-     handleInputOnBlur(event, data) {
+    handleInputOnBlur(event, data) {
         const {
             name,
             value,
@@ -539,10 +546,10 @@ class Charity extends React.Component {
             giveData[name] = inputValue;
         }
         const coverFeesAmount = Charity.getCoverFeesAmount(giveData, coverFeesData);
-        if (Number(giveData.giveFrom.value) > 0 && Number(giveData.giveAmount) > 0) {		
-             getCoverAmount(giveData.giveFrom.value, giveData.giveAmount, dispatch);	
+        if (Number(giveData.giveFrom.value) > 0 && Number(giveData.giveAmount) > 0) {
+            getCoverAmount(giveData.giveFrom.value, giveData.giveAmount, dispatch);
         } else {
-             getCoverAmount(giveData.giveFrom.value, 0, dispatch);
+            getCoverAmount(giveData.giveFrom.value, 0, dispatch);
         }
         if (name !== 'giftType' && name !== 'giveFrom') {
             validity = validateGiveForm(name, inputValue, validity, giveData, coverFeesAmount);
@@ -557,16 +564,16 @@ class Charity extends React.Component {
                 validity = validateGiveForm('donationAmount', giveData.donationAmount, validity, giveData, coverFeesAmount);
                 break;
             case 'donationAmount':
-                    giveData['formatedDonationAmount'] = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
+                giveData['formatedDonationAmount'] = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
                 break;
             case 'inHonorOf':
             case 'inMemoryOf':
                 validity = validateGiveForm('dedicateType', null, validity, giveData);
-            break;
+                break;
             case 'noteToCharity':
                 giveData[name] = inputValue.trim();
                 validity = validateGiveForm('noteToCharity', giveData.noteToCharity, validity, giveData, coverFeesAmount);
-            break;
+                break;
             case 'noteToSelf':
                 giveData[name] = inputValue.trim();
                 validity = validateGiveForm('noteToSelf', giveData.noteToSelf, validity, giveData, coverFeesAmount);
@@ -582,14 +589,12 @@ class Charity extends React.Component {
         });
     }
 
-
-
     /**
-     * Synchronise form data with React state
-     * @param  {Event} event The Event instance object.
-     * @param  {object} data The Options of event
-     * @return {Void} { void } The return nothing.
-     */
+    * Synchronise form data with React state
+    * @param  {Event} event The Event instance object.
+    * @param  {object} data The Options of event
+    * @return {Void} { void } The return nothing.
+    */
     handleInputChange(event, data) {
         const {
             name,
@@ -621,18 +626,18 @@ class Charity extends React.Component {
             } = event;
             newValue = target.checked;
         }
-        if(name === 'inHonorOf' || name ==='inMemoryOf'){
-            if(newIndex === -1){
+        if (name === 'inHonorOf' || name === 'inMemoryOf') {
+            if (newIndex === -1) {
                 giveData.dedicateGift.dedicateType = '';
                 giveData.dedicateGift.dedicateValue = '';
             }
-            else{
+            else {
                 giveData.dedicateGift.dedicateType = name;
                 giveData.dedicateGift.dedicateValue = value;
             }
             validity.isDedicateGiftEmpty = true;
             this.setState({
-       
+
                 flowObject: {
                     ...this.state.flowObject,
                     giveData,
@@ -643,12 +648,12 @@ class Charity extends React.Component {
                 },
             });
         }
-        if (name !== 'inHonorOf' && name !=='inMemoryOf') {
+        if (name !== 'inHonorOf' && name !== 'inMemoryOf') {
             giveData[name] = newValue;
             giveData.userInteracted = true;
             switch (name) {
                 case 'donationAmount':
-                        giveData['formatedDonationAmount'] =  newValue;
+                    giveData['formatedDonationAmount'] = newValue;
                     break;
                 case 'giveFrom':
                     const {
@@ -671,7 +676,7 @@ class Charity extends React.Component {
                     giveData = resetDataForGiftTypeChange(giveData, dropDownOptions, coverFeesData);
                     break;
                 case 'giveAmount':
-                    giveData[name]=formatAmount(parseFloat(newValue.replace(/,/g, '')));
+                    giveData[name] = formatAmount(parseFloat(newValue.replace(/,/g, '')));
                     giveData['formatedCharityAmount'] = newValue;
                     giveData = resetDataForGiveAmountChange(
                         giveData, dropDownOptions, coverFeesData,
@@ -693,7 +698,36 @@ class Charity extends React.Component {
                     validity,
                 },
             });
-        } 
+        }
+    }
+
+    handlePresetAmountClick = (event, data) => {
+        const {
+            value,
+        } = data;
+        const inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
+        const formatedCharityAmount = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
+        let {
+            flowObject: {
+                giveData 
+            },
+            validity,
+        } = this.state
+
+        validity = validateGiveForm("giveAmount", inputValue, validity, giveData);
+
+        this.setState({
+            ...this.state,
+            flowObject: {
+                ...this.state.flowObject,
+                giveData: {
+                    ...this.state.flowObject.giveData,
+                    giveAmount: inputValue,
+                    formatedCharityAmount,
+                }
+            },
+            validity,
+        });
     }
 
     handleSubmit() {
@@ -704,6 +738,7 @@ class Charity extends React.Component {
             inValidNameOnCard,
             inValidCvv,
             inValidCardNameValue,
+            validity,
         } = this.state;
         const {
             dispatch,
@@ -718,6 +753,8 @@ class Charity extends React.Component {
             giveData: {
                 creditCard,
                 coverFees,
+                giveFrom,
+                giveAmount,
             },
         } = flowObject;
         const validateCC = this.isValidCC(
@@ -728,6 +765,7 @@ class Charity extends React.Component {
             inValidCvv,
             inValidCardNameValue,
         );
+
         if (this.validateForm() && validateCC) {
             if (creditCard.value > 0) {
                 flowObject.selectedTaxReceiptProfile = (flowObject.giveData.giveFrom.type === 'companies') ?
@@ -820,54 +858,68 @@ class Charity extends React.Component {
                         {findAnotherRecipientLabel}
                     </div>
                 </Form.Field>
-                { !!showAnotherRecipient && (
+                {!!showAnotherRecipient && (
                     <Form.Field className="lnk-FindAnother">
                         <List className="lstRecipient" verticalAlign="middle" horizontal>
-                        <Link route = '/give'>
-                            <List.Item className="lstitm">
-                                <Image
-                                    className="imgCls lst-img"
-                                    src={IconCharity}
-                                />
-                                <List.Content className="lst-cnt">
-                                    {formatMessage('goToCharityFirstLabel')}
-                                    <br />
-                                    {formatMessage('goToCharitySecondLabel')}
-                                </List.Content>
-                            </List.Item>
-                        </Link>
-                        <Link route = {friendUrlEndpoint}>
-                            <List.Item className="lstitm">
-                                <Image
-                                    className="imgCls"
-                                    src={IconIndividual}
-                                />
-                                <List.Content className="lst-cnt">
-                                    {formatMessage('goToFriendsFirstLabel')}
-                                    <br />
-                                    {formatMessage('goToFriendsSecondLabel')}
-                                </List.Content>
-                            </List.Item>
-                        </Link>
-                        <Link route ={groupUrlEndpoint}>
-                            <List.Item className="lstitm">
-                                <Image
-                                    className="imgCls"
-                                    src={IconGroup}
-                                />
-                                <List.Content className="lst-cnt">
-                                    {formatMessage('goToGroupFirstLabel')}
-                                    <br />
-                                    {formatMessage('goToGroupSecondLabel')}
-                                </List.Content>
-                            </List.Item>
-                        </Link>
+                            <Link route='/give'>
+                                <List.Item className="lstitm">
+                                    <Image
+                                        className="imgCls lst-img"
+                                        src={IconCharity}
+                                    />
+                                    <List.Content className="lst-cnt">
+                                        {formatMessage('goToCharityFirstLabel')}
+                                        <br />
+                                        {formatMessage('goToCharitySecondLabel')}
+                                    </List.Content>
+                                </List.Item>
+                            </Link>
+                            <Link route={friendUrlEndpoint}>
+                                <List.Item className="lstitm">
+                                    <Image
+                                        className="imgCls"
+                                        src={IconIndividual}
+                                    />
+                                    <List.Content className="lst-cnt">
+                                        {formatMessage('goToFriendsFirstLabel')}
+                                        <br />
+                                        {formatMessage('goToFriendsSecondLabel')}
+                                    </List.Content>
+                                </List.Item>
+                            </Link>
+                            <Link route={groupUrlEndpoint}>
+                                <List.Item className="lstitm">
+                                    <Image
+                                        className="imgCls"
+                                        src={IconGroup}
+                                    />
+                                    <List.Content className="lst-cnt">
+                                        {formatMessage('goToGroupFirstLabel')}
+                                        <br />
+                                        {formatMessage('goToGroupSecondLabel')}
+                                    </List.Content>
+                                </List.Item>
+                            </Link>
                         </List>
                     </Form.Field>
                 )
                 }
             </Fragment>
         );
+    }
+
+    handlegiftTypeButtonClick = (e, { value }) => {
+        this.setState({
+            flowObject: {
+                ...this.state.flowObject,
+                giveData: {
+                    ...this.state.flowObject.giveData,
+                    giftType: {
+                        value: value
+                    },
+                },
+            },
+        })
     }
 
     /**
@@ -882,7 +934,7 @@ class Charity extends React.Component {
      */
     renderSpecialInstructionComponent(
         giveFrom, giftType, giftTypeList, infoToShare, infoToShareList, formatMessage
-        ,paymentInstrumentList, defaultTaxReceiptProfile, companyDetails
+        , paymentInstrumentList, defaultTaxReceiptProfile, companyDetails,
     ) {
         if (!_isEmpty(giveFrom) && giveFrom.value > 0) {
             return (
@@ -900,7 +952,7 @@ class Charity extends React.Component {
                     companyAccountsFetched={this.props.companyAccountsFetched}
                     userAccountsFetched={this.props.userAccountsFetched}
                     slug={this.props.slug}
-
+                    handlegiftTypeButtonClick={this.handlegiftTypeButtonClick}
                 />
             );
         }
@@ -997,6 +1049,17 @@ class Charity extends React.Component {
         return validCC;
     }
 
+    renderReloadAddAmount = (giveFrom, giveAmount, giftType, reviewBtnFlag) => {
+        if ((giveFrom.type === 'user' || giveFrom.type === 'companies') && (Number(giveAmount) > Number(giveFrom.balance))) {
+            return (
+                <ReloadAddAmount
+                    giftType={giftType.value}
+                    reviewBtnFlag={reviewBtnFlag}
+                />
+            )
+        }
+    }
+
     render() {
         const {
             companyDetails,
@@ -1004,6 +1067,8 @@ class Charity extends React.Component {
             coverFeesData,
             creditCardApiCall,
             defaultTaxReceiptProfile,
+            currentStep,
+            flowSteps,
             i18n: {
                 language,
             }
@@ -1056,15 +1121,17 @@ class Charity extends React.Component {
         const groupUrlEndpoint = Number(sourceAccountHolderId) > 0 ? `/give/to/group/new?source_account_holder_id=${sourceAccountHolderId}` : null;
         const friendUrlEndpoint = `/give/to/friend/new`;
         const formatMessage = this.props.t;
+        const { reviewBtnFlag } = this.state;
         const giveAmountWithCoverFees = (coverFees)
             ? Number(giveAmount) + Number(coverFeesData.giveAmountFees)
             : Number(giveAmount);
+
         if ((giveFrom.type === 'user' || giveFrom.type === 'companies')
-    && (giftType.value === 0
-        && giveAmountWithCoverFees > Number(giveFrom.balance))
+            && (giftType.value === 0
+                && giveAmountWithCoverFees > Number(giveFrom.balance))
         ) {
             const topupAmount = formatAmount((formatAmount(giveAmountWithCoverFees)
-            - formatAmount(giveFrom.balance)));
+                - formatAmount(giveFrom.balance)));
             accountTopUpComponent = (
                 <AccountTopUp
                     creditCard={creditCard}
@@ -1107,183 +1174,144 @@ class Charity extends React.Component {
             }
         }
         return (
-            <Form onSubmit={this.handleSubmit}>
-                { (Number(giveTo.value) > 0) && (
-                    <Fragment>
-                        {
-                            !groupFromUrl && (
-                                <Fragment>
-                                    <Form.Field>
-                                        <label htmlFor="giveTo">
-                                            {formatMessage('giveToLabel')}
-                                        </label>
-                                        <Form.Field
-                                            control={Input}
-                                            className="disabled-input"
-                                            disabled
-                                            id="giveTo"
-                                            name="giveTo"
-                                            size="large"
-                                            value={giveTo.text}
-                                        />
-                                    </Form.Field>
-                                    {
-                                        (groupUrlEndpoint)
-                                            && this.renderFindAnotherRecipient(
-                                                showAnotherRecipient,
-                                                friendUrlEndpoint,
-                                                groupUrlEndpoint,
-                                                findAnotherRecipientLabel,
-                                                formatMessage,
-                                            )
-                                    }
-                                </Fragment>
-                            )
-                        }
-                        {
-                            !!groupFromUrl && (
-                                <Fragment>
-                                    <Form.Field>
-                                        <label htmlFor="giveTo">
-                                            {formatMessage('giveToLabel')}
-                                        </label>
-                                        <Form.Field
-                                            control={Select}
-                                            error={!validity.isValidGiveFrom}
-                                            id="giveToList"
-                                            name="giveToList"
-                                            onChange={this.handleInputChangeGiveTo}
-                                            options={giveToList}
-                                            placeholder="Select a Group to Give"
-                                            value={giveTo.value}
-                                        />
-                                    </Form.Field>
-                                    {this.renderFindAnotherRecipient(
-                                        showAnotherRecipient,
-                                        friendUrlEndpoint,
-                                        groupUrlEndpoint,
-                                        findAnotherRecipientLabel,
-                                        formatMessage,
-                                    )}
-                                </Fragment>
-                            )
-                        }
-                        <Form.Field>
-                            <label htmlFor="giveAmount">
-                                {formatMessage('giveCommon:amountLabel')}
-                            </label>
-                            <Form.Field
-                                control={Input}
-                                error={!validity.isValidGiveAmount}
-                                icon="dollar"
-                                iconPosition="left"
-                                id="giveAmount"
-                                maxLength="20"
-                                name="giveAmount"
-                                onBlur={this.handleInputOnBlur}
-                                onChange={this.handleInputChange}
-                                placeholder={formatMessage('giveCommon:amountPlaceHolder')}
-                                size="large"
-                                value={formatedCharityAmount}
-                            />
-                        </Form.Field>
-                        <FormValidationErrorMessage
-                            condition={!validity.doesAmountExist || !validity.isAmountMoreThanOneDollor
-                        || !validity.isValidPositiveNumber}
-                            errorMessage={formatMessage('giveCommon:errorMessages.amountLessOrInvalid', {
-                                minAmount: 5,
-                            })}
-                        />
-                        <FormValidationErrorMessage
-                            condition={!validity.isAmountLessThanOneBillion}
-                            errorMessage={ReactHtmlParser(formatMessage('giveCommon:errorMessages.invalidMaxAmountError'))}
-                        />
-                        <FormValidationErrorMessage
-                            condition={!validity.isAmountCoverGive}
-                            errorMessage={formatMessage('giveCommon:errorMessages.giveAmountGreaterThanBalance')}
-                        />
-                        {
-                            (!_isEmpty(coverAmountDisplay) && coverAmountDisplay > 0)&&
-                            <p>
-                                {formatMessage('coverFeeLabel', {
-                                    amount: formatCurrency(coverAmountDisplay, language, 'USD'),
-                                })}
-                                    <Modal
-                                        size="tiny"
-                                        dimmer="inverted"
-                                        closeIcon
-                                        className="chimp-modal"
-                                        open={this.state.showModal}
-                                        onClose={()=>{this.setState({showModal: false})}}
-                                        trigger={
-                                            <a
-                                                onClick={() => this.setState({ showModal: true })}
-                                                className="link border bold"
-                                            >
-                                                &nbsp;{formatMessage('learnMore')}
-                                            </a>
-                                        }
-                                    >
-                                <Modal.Header>{formatMessage('coverFeeModalHeader')}</Modal.Header>
-                                <Modal.Content className="pb-2">
-                                {formatMessage('coverFeeModalContentFirst')}
-                                    <br/><br/>
-                                    {formatMessage('coverFeeModalContentSecond')}
-                                    <br/><br/>
-                                    </Modal.Content>
-                                </Modal>
-                            </p>
-                              
-                        }
-                        <DropDownAccountOptions
-                            type={type}
-                            validity={validity.isValidGiveFrom}
-                            selectedValue={this.state.flowObject.giveData.giveFrom.value}
-                            name="giveFrom"
-                            parentInputChange={this.handleInputChange}
-                            parentOnBlurChange={this.handleInputOnBlur}
-                            formatMessage={formatMessage}
-                        />
-                        {this.renderSpecialInstructionComponent(
-                            giveFrom,
-                            giftType, giftTypeList, infoToShare, infoToShareList, formatMessage,
-                            paymentInstrumentList, defaultTaxReceiptProfile, companyDetails
-                        )}
-                        <Form.Field>
-                            <Divider className="dividerMargin" />
-                        </Form.Field>
-                        <DedicateType 
-                            handleInputChange={this.handleInputChange}
-                            handleInputOnBlur={this.handleInputOnBlur}
-                            dedicateType={dedicateType}
-                            dedicateValue={dedicateValue}
-                            validity={validity}
-                        />
-                         <Divider hidden />
-                        <NoteTo
-                            allocationType={type}
-                            formatMessage={formatMessage}
-                            giveFrom={giveFrom}
-                            noteToCharity={noteToCharity}
-                            handleInputChange={this.handleInputChange}
-                            handleInputOnBlur={this.handleInputOnBlur}
-                            noteToSelf={noteToSelf}
-                            validity={validity}
-                        />
-                        {accountTopUpComponent}
-                        {stripeCardComponent}
-                        <Divider hidden />
-                        {/* { !stepsCompleted && */}
-                        <Form.Button
-                            className="blue-btn-rounded-def"
-                            content={(!creditCardApiCall) ? formatMessage('giveCommon:continueButton') : formatMessage('giveCommon:submittingButton')}
-                            disabled={(creditCardApiCall) || !this.props.userAccountsFetched}
-                            type="submit"
-                        />
-                        {/* } */}
-                    </Fragment>
-                )}
-            </Form>
+            <Fragment>
+                <div className="flowReviewbanner">
+                    <Container>
+                        <div className="flowReviewbannerText">
+                            <Header as='h2'>Give To {giveTo.text}</Header>
+                        </div>
+                    </Container>
+                </div>
+                <div className="flowReview">
+                    <Container>
+                        <Grid centered verticalAlign="middle">
+                            <Grid.Row>
+                                <Grid.Column mobile={16} tablet={14} computer={12}>
+                                    <div className="flowBreadcrumb flowPadding">
+                                        <FlowBreadcrumbs
+                                            currentStep={currentStep}
+                                            formatMessage={formatMessage}
+                                            steps={flowSteps}
+                                            flowType={type} />
+                                    </div>
+                                    <div className="flowFirst">
+                                        <Form onSubmit={this.handleSubmit}>
+                                            <Grid>
+                                                <Grid.Row>
+                                                    <Grid.Column mobile={16} tablet={12} computer={10}>
+                                                        <CharityAmountField
+                                                            isGiveFlow={true}
+                                                            amount={formatedCharityAmount}
+                                                            formatMessage={formatMessage}
+                                                            handleInputChange={this.handleInputChange}
+                                                            handleInputOnBlur={this.handleInputOnBlur}
+                                                            handlePresetAmountClick={this.handlePresetAmountClick}
+                                                            validity={validity}
+                                                        />
+
+                                                        <FormValidationErrorMessage
+                                                            condition={!validity.isAmountLessThanOneBillion}
+                                                            errorMessage={ReactHtmlParser(formatMessage('giveCommon:errorMessages.invalidMaxAmountError'))}
+                                                        />
+                                                        <FormValidationErrorMessage
+                                                            condition={!validity.isAmountCoverGive}
+                                                            errorMessage={formatMessage('giveCommon:errorMessages.giveAmountGreaterThanBalance')}
+                                                        />
+
+                                                        {
+                                                            (!_isEmpty(coverAmountDisplay) && coverAmountDisplay > 0) &&
+                                                            <p>
+                                                                {formatMessage('coverFeeLabel', {
+                                                                    amount: formatCurrency(coverAmountDisplay, language, 'USD'),
+                                                                })}
+                                                                <Modal
+                                                                    size="tiny"
+                                                                    dimmer="inverted"
+                                                                    closeIcon
+                                                                    className="chimp-modal"
+                                                                    open={this.state.showModal}
+                                                                    onClose={() => { this.setState({ showModal: false }) }}
+                                                                    trigger={
+                                                                        <a
+                                                                            onClick={() => this.setState({ showModal: true })}
+                                                                            className="link border bold"
+                                                                        >
+                                                                            &nbsp;{formatMessage('learnMore')}
+                                                                        </a>
+                                                                    }
+                                                                >
+                                                                    <Modal.Header>{formatMessage('coverFeeModalHeader')}</Modal.Header>
+                                                                    <Modal.Content className="pb-2">
+                                                                        {formatMessage('coverFeeModalContentFirst')}
+                                                                        <br /><br />
+                                                                        {formatMessage('coverFeeModalContentSecond')}
+                                                                        <br /><br />
+                                                                    </Modal.Content>
+                                                                </Modal>
+                                                            </p>
+                                                        }
+                                                        <DropDownAccountOptions
+                                                            reviewBtnFlag={this.state.reviewBtnFlag}
+                                                            type={type}
+                                                            validity={validity.isValidGiveFrom}
+                                                            selectedValue={giveFrom.value}
+                                                            name="giveFrom"
+                                                            parentInputChange={this.handleInputChange}
+                                                            parentOnBlurChange={this.handleInputOnBlur}
+                                                            formatMessage={formatMessage}
+                                                        />
+
+                                                        {this.renderReloadAddAmount(giveFrom, giveAmount, giftType, reviewBtnFlag)}
+
+                                                        {this.renderSpecialInstructionComponent(
+                                                            giveFrom,
+                                                            giftType, giftTypeList, infoToShare, infoToShareList, formatMessage,
+                                                            paymentInstrumentList, defaultTaxReceiptProfile, companyDetails,
+                                                        )}
+
+                                                        <DedicateType
+                                                            handleInputChange={this.handleInputChange}
+                                                            handleInputOnBlur={this.handleInputOnBlur}
+                                                            dedicateType={dedicateType}
+                                                            dedicateValue={dedicateValue}
+                                                            validity={validity}
+                                                        />
+
+                                                    </Grid.Column>
+                                                </Grid.Row>
+                                            </Grid>
+                                            <Grid className="to_space">
+                                                <Grid.Row className="to_space">
+                                                    <Grid.Column mobile={16} tablet={16} computer={16}>
+                                                        <NoteTo
+                                                            allocationType={type}
+                                                            formatMessage={formatMessage}
+                                                            giveFrom={giveFrom}
+                                                            noteToCharity={noteToCharity}
+                                                            handleInputChange={this.handleInputChange}
+                                                            handleInputOnBlur={this.handleInputOnBlur}
+                                                            noteToSelf={noteToSelf}
+                                                            validity={validity}
+                                                        />
+                                                        <Form.Button
+                                                            primary
+                                                            className="blue-btn-rounded btn_right"
+                                                            content={reviewBtnFlag ? formatMessage('giveCommon:reviewButtonFlag')
+                                                                : formatMessage('giveCommon:reviewButton')}
+                                                            disabled={(creditCardApiCall) || !this.props.userAccountsFetched}
+                                                            type="submit"
+                                                        />
+                                                    </Grid.Column>
+                                                </Grid.Row>
+                                            </Grid>
+                                        </Form>
+                                    </div>
+                                </Grid.Column>
+                            </Grid.Row>
+                        </Grid>
+                    </Container>
+                </div>
+            </Fragment>
         );
     }
 }
