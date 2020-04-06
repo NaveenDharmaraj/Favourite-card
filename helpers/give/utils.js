@@ -1709,6 +1709,25 @@ const resetP2pDataForOnInputChange = (giveData, dropDownOptions) => {
     return giveData;
 };
 
+const populateFriendsList = (friendsList) => {
+    const formattedFriendsList = [];
+    let singleObject = {};
+    debugger;
+    friendsList.map((friend) => {
+        singleObject = {
+            image: {
+                avatar: true,
+                src: friend.attributes.avatar,
+            },
+            key: friend.attributes.user_id,
+            text: ReactHtmlParser(`<span class="textFirst">${friend.attributes.display_name}</span><span class="secondFirst">Vancouver, BC</span>`),
+            value: friend.attributes.display_name,
+        };
+        formattedFriendsList.push(singleObject);
+    });
+    return formattedFriendsList;
+};
+
 export {
     percentage,
     fullMonthNames,
@@ -1746,4 +1765,5 @@ export {
     formatDateForGivingTools,
     resetP2pDataForOnInputChange,
     calculateP2pTotalGiveAmount,
+    populateFriendsList,
 };

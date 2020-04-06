@@ -38,9 +38,11 @@ import {
     populatePaymentInstrument,
     resetDataForAccountChange,
     getDefaultCreditCard,
+    populateFriendsList,
 } from '../../../helpers/give/utils';
 import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
 import {
+    getFriendsList,
     getCompanyPaymentAndTax,
     proceed,
 } from '../../../actions/give';
@@ -59,6 +61,7 @@ const { publicRuntimeConfig } = getConfig();
 import '../../shared/style/styles.less';
 import FlowBreadcrumbs from '../FlowBreadcrumbs';
 import DonationAmountField from '../DonationAmountField';
+import MultiDropDown from '../../shared/MultiDropDown';
 const {
     STRIPE_KEY
 } = publicRuntimeConfig;
@@ -184,10 +187,14 @@ class Friend extends React.Component {
     componentDidMount() {
         const {
             currentUser: {
+                attributes: {
+                    email: userEmailId,
+                },
                 id,
             },
             dispatch,
         } = this.props;
+        dispatch(getFriendsList(userEmailId));
         dispatch(getDonationMatchAndPaymentInstruments(id));
     }
 
@@ -723,6 +730,7 @@ class Friend extends React.Component {
             currentStep,
             creditCardApiCall,
             flowSteps,
+            friendsList,
             i18n:{
                 language,
             },
@@ -759,6 +767,7 @@ class Friend extends React.Component {
 
         let accountTopUpComponent = null;
         const recipientsList = recipients.join(',');
+        let FriendsDropdown = [];
 
         // if (
         //     (giveFrom.type === 'user' || giveFrom.type === 'companies')
@@ -784,15 +793,19 @@ class Friend extends React.Component {
         //         />
         //     );
         // }
+        if (!_.isEmpty(friendsList)) {
+            debugger;
+            FriendsDropdown = populateFriendsList(friendsList);
+        }
         return (
             <Fragment>
-            {/* <div className="flowReviewbanner">
+            <div className="flowReviewbanner">
                 <Container>
                     <div className="flowReviewbannerText">
                         <Header as='h2'>Give to a friend</Header>
                     </div>
                 </Container>
-            </div> */}
+            </div>
             <div className="flowReview">
                 <Container>
                     <Grid centered verticalAlign="middle">
@@ -845,6 +858,7 @@ class Friend extends React.Component {
                                                                     />
                                                                 }
                                                             />
+                                                            <MultiDropDown friends={FriendsDropdown}/>
                                                             <p>
                                                                 <a onClick={this.handleGiveToEmail}>
                                                                     {formatMessage('friends:giveToEmailsText')}
@@ -1015,6 +1029,7 @@ function mapStateToProps(state) {
         userGroups: state.user.userGroups,
         creditCardApiCall: state.give.creditCardApiCall,
         userFriendEmail: state.dashboard.userFriendEmail,
+        friendsList: state.app.friendsList,
     };
 }
 

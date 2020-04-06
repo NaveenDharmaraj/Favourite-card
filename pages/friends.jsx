@@ -24,13 +24,11 @@ class Friends extends React.Component {
     render() {
         return (
             <Layout authRequired={true} >
-                <Container>
-                    <div className="pageWraper">
-                        <GiveWrapper {...this.props} baseUrl='/give/to/friend'>
-                            <Friend />
-                        </GiveWrapper>
-                    </div>
-                </Container>
+                <div className="pageWraper">
+                    <GiveWrapper {...this.props} baseUrl='/give/to/friend'>
+                        <Friend />
+                    </GiveWrapper>
+                </div>
             </Layout>
         );
     }

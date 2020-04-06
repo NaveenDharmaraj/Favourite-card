@@ -37,6 +37,12 @@ const app = (state = {}, action) => {
                 isMobile: action.payload.isMobile,
             };
             break;
+        case 'GET_FRIENDS_LIST':
+            newState = {
+                ...state,
+                friendsList: action.payload.friendsList,
+            };
+            break;
         default:
             break;
     }
