@@ -57,7 +57,7 @@ const chat = (state = {}, action) => {
                 ...state,
                 groupFeeds: (!_isEmpty(state.groupFeeds)
                     && Object.keys(state.groupFeeds).length > 0) ? Object.assign(state.groupFeeds, action.payload.groupFeeds) : action.payload.groupFeeds,
-            }
+            };
             break;
         case actionTypes.EDIT_GROUP_DETAILS:
             if (!_isEmpty(action.payload.editGroupName) && !_isEmpty(action.payload.editGroupImageUrl)) {
@@ -91,9 +91,9 @@ const chat = (state = {}, action) => {
             }
             newState = {
                 ...state,
+                concatMessages: action.payload.concatMessages,
                 selectedConversation: action.payload.selectedConversation,
                 selectedConversationMessages: _uniqBy(paginatedSelectedConversationMessages, 'key'),
-                concatMessages: action.payload.concatMessages,
             }
             break;
         case actionTypes.COMPOSE_SELECTED_CONVERSATION:

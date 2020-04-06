@@ -4,17 +4,11 @@ import PropTypes from 'prop-types';
 import { Input, List } from 'semantic-ui-react';
 import _isEqual from 'lodash/isEqual';
 import _isEmpty from 'lodash/isEmpty';
-import getConfig from 'next/config';
 
 import { actionTypes, loadConversationMessages } from '../../../actions/chat';
-import { placeholderGroup } from '../../../static/images/no-data-avatar-group-chat-profile.png';
-import { placeholderUser } from '../../../static/images/no-data-avatar-user-profile.png';
 import IndividualChatContact from './IndividualChatContact';
 import { debounceFunction, conversationHead } from '../../../helpers/chat/utils';
-const { publicRuntimeConfig } = getConfig();
-const {
-    CHAT_GROUP_DEFAULT_AVATAR
-} = publicRuntimeConfig;
+
 class ChatInboxList extends React.Component {
 
     onConversationSelect = (msg) => {

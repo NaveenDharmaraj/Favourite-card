@@ -6,7 +6,7 @@ import _isEqual from 'lodash/isEqual';
 import { connect } from 'react-redux';
 
 import { actionTypes } from '../../../actions/chat';
-// eslint-disable-next-line react/prefer-stateless-function
+
 class ChatHeader extends React.Component {
 
     handleChatHeaderBackButton = () => {

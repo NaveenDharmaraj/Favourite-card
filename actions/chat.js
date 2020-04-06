@@ -2,6 +2,7 @@ import _keyBy from 'lodash/keyBy';
 import _forEach from 'lodash/forEach';
 import _isEmpty from 'lodash/isEmpty';
 
+import utilityApi from '../services/utilityApi';
 import graphApi from '../services/graphApi';
 import applozicApi from '../services/applozicApi';
 
@@ -38,9 +39,9 @@ const loadConversationMessages = (selectedConversation, endTime = new Date().get
     if (selectedConversation) {
         let params = { endTime: endTime, pageSize: 10 }; //{ startIndex: startIndex, mainPageSize: 100, pageSize: 50 };
         if (selectedConversation.groupId) {
-            params["groupId"] = selectedConversation.groupId;
-        } else { params["userId"] = selectedConversation.contactIds; }
-        return applozicApi.get("/message/v2/list", { params: params }).then(response => {
+            params.groupId = selectedConversation.groupId;
+        } else { params.userId = selectedConversation.contactIds; }
+        return applozicApi.get('/message/v2/list', { params: params }).then(response => {
             let selectedConversationMessages = response.response.message;
             dispatch({
                 payload: {
@@ -57,7 +58,7 @@ const loadConversationMessages = (selectedConversation, endTime = new Date().get
                     endTime
                 },
                 type: actionTypes.LOAD_CONVERSATION_MESSAGES_ENDTIME,
-            })
+            });
             // if (concatMessages) {
             //     window.dispatchEvent(new CustomEvent("onChatPageRefreshEvent", { detail: { data: messages } }));
             // }
@@ -72,10 +73,10 @@ const loadConversationMessages = (selectedConversation, endTime = new Date().get
                     type: actionTypes.SELECTED_CONVERSATION_MESSAGES,
                 });
 
-            })
+            });
     }
 
-}
+};
 /**
  * loadConversationThenBlock - recurssive calling of then block
  * @param {array} newMessgaeArr saves all the new messages from current resposne and old response from before then block
@@ -94,7 +95,7 @@ const loadConversationThenBlock = (response, msgId, userDetails, groupFeeds, sel
 
     // dispatach the groupFeeds from response.response.groupDetails
 
-    //can we dispatch it straightl
+    // can we dispatch it straightl
     _forEach(response.response.groupFeeds, (groupFeed) => {
         groupFeeds[groupFeed.id] = groupFeed;
     });
@@ -209,7 +210,7 @@ const loadConversations = (msgId, userDetails = {}, groupFeeds = {}, selectedCon
                 type: actionTypes.LOAD_CONVERSATION_LIST,
             })
         ));
-}
+};
 const loadFriendsList = (userInfo, msgId) => (dispatch) => {
     const pageSize = 999;
     const pageNumber = 1;
@@ -269,52 +270,66 @@ const loadFriendsList = (userInfo, msgId) => (dispatch) => {
 };
 
 const deleteConversation = (params) => {
-    return applozicApi.get("/message/delete/conversation", {
+    return applozicApi.get('/message/delete/conversation', {
         params: params,
         headers: {
             'Accept': 'text/plain'
         }
-    })
+    });
 };
 
 const muteOrUnmuteUserConversation = (params) => {
-    return applozicApi.post("/user/chat/mute", null,  {
-        params: params
-    })
-}
+    return applozicApi.post('/user/chat/mute', null, {
+        params,
+    });
+};
+
 const muteOrUnmuteGroupConversation = (params) => {
-    return applozicApi.post("/group/user/update", params)
-}
+    return applozicApi.post('/group/user/update', params);
+};
 const removeUserFromGroup = (groupId, userId) => {
-    let params = { clientGroupId: groupId };
-    params["userId"] = userId;
-    return applozicApi.post("/group/remove/member", params);
+    const params = { clientGroupId: groupId };
+    params.userId = userId;
+    return applozicApi.post('/group/remove/member', params);
 };
 
 const addSelectedUsersToGroup = (params) => {
-    return applozicApi.post("/group/add/users", params)
-}
+    return applozicApi.post('/group/add/users', params);
+};
 const leaveGroup = (params) => {
-    return applozicApi.post("/group/left", params);
-}
+    return applozicApi.post('/group/left', params);
+};
 const createGroup = (params) => {
-    return applozicApi.post("/group/v2/create", params)
-}
+    return applozicApi.post('/group/v2/create', params);
+};
 const sendMessageToSelectedConversation = (params) => {
-    return applozicApi.post("/message/v2/send", params)
-}
+    return applozicApi.post('/message/v2/send', params);
+};
+const updateGroupDetails = (params) => {
+    return applozicApi.post('/group/update', params);
+};
+const storeGroupImage = (isForNewGroup, conversationInfo, data) => {
+    utilityApi.post(`/image/upload/${isForNewGroup ? new Date().getTime() : conversationInfo.info.id}`, data, {
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+        },
+    });
+};
 export {
     actionTypes,
+    addSelectedUsersToGroup,
+    createGroup,
+    deleteConversation,
+    leaveGroup,
+    loadConversationMessages,
     loadMuteUserList,
     loadFriendsList,
     loadConversations,
-    deleteConversation,
     muteOrUnmuteUserConversation,
     muteOrUnmuteGroupConversation,
     removeUserFromGroup,
-    addSelectedUsersToGroup,
-    leaveGroup,
-    createGroup,
     sendMessageToSelectedConversation,
-    loadConversationMessages,
+    storeGroupImage,
+    updateGroupDetails,
 };
