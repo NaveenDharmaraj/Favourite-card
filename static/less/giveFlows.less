@@ -879,3 +879,97 @@ span.attributes {
     display: block;
     line-height: 17px !important;
 }
+
+
+
+/*******multyDropDown***********/
+.multyDropDownFilter{
+    margin-top:50px;
+    .ui.default.dropdown:not(.button)>.text, .ui.dropdown:not(.button)>.default.text {
+        line-height: 32px;
+    }
+    .ui.multiple.dropdown>.label {
+        background-color:#90459A;
+        color: #fff;
+        border-radius:30px;
+        box-shadow: none;
+        position: relative;
+    }
+    .ui.selection.dropdown .menu>.item {
+        border-bottom: 1px solid #DDDDDD;
+        padding: 18px !important;
+    }
+    .textFirst{
+        display: block;
+        font-weight: 600; 
+    }
+    .secondFirst{
+        display: block; 
+    }
+    span.text {
+        display: inline-block;
+        line-height: 17px;
+    }
+    img.ui.avatar.image {
+        width: 38px !important;
+        min-height: 38px !important;
+        margin-top: -3px !important;
+    }
+    .ui.selection.dropdown.active, .ui.selection.dropdown.visible {
+        .ui{
+            &.label{
+                .textFirst{
+                    display: inline-block !important;
+                }
+                .secondFirst{
+                    display: none !important;
+                }
+            }
+        } 
+    }
+    .ui.fluid.multiple.selection.dropdown{
+        .ui{
+            &.label{
+                .textFirst{
+                    display: inline-block !important;
+                }
+                .secondFirst{
+                    display: none !important;
+                }
+            }
+        } 
+        
+    }
+    .ui.selection.dropdown {
+        &.active{
+            &::after{
+                z-index: 99;
+                transform: rotate(180deg);
+            }
+     
+        }
+        &::after{
+            content: '';
+            background-image: url(../images/icons/icon-arrow-down.svg);
+            height: 15px;
+            width: 15px;
+            position: absolute;
+            right: 10px;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            transition: all 0.3s ease-out;
+            z-index: 2;
+            top:15px;
+        }
+    }
+    .ui.multiple.dropdown{
+        padding: 8px 15px;
+    }
+    .ui.dropdown>.dropdown.icon:before {
+        content: '' !important;
+    }
+    
+}
+
+/*****multyDropDown*************/
