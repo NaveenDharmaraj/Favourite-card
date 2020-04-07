@@ -43,7 +43,7 @@ const AddMoneySuccess = (props) => {
     let thirdParagh = null;
     let taxButtonText = null;
     let taxProfileLink = '/user/tax-receipts';
-    if(giftType && giftType.value === 0) {
+    if (giftType && giftType.value === 0) {
         if (giveTo.type === 'companies') {
             secondParagraph = formatMessage('addMoneySecondTextCompany', {
                 amount,
@@ -55,7 +55,7 @@ const AddMoneySuccess = (props) => {
             thirdParagh = formatMessage('addMoneyThirdText');
             taxButtonText = formatMessage('addMoneyTaxButtonText');
         }
-    } else if (giftType && giftType.value !== 0){
+    } else if (giftType && giftType.value !== 0) {
         const startsOn = setDateForRecurring(giftType.value, formatMessage, language);
         secondParagraph = (giveTo.type === 'companies')
             ? formatMessage('addMoneyRecurringCompanySecondText', {
@@ -89,7 +89,7 @@ const AddMoneySuccess = (props) => {
                     donationCompany: donationMatchedData.displayName,
                 });
             secondParagraph += matchedText;
-        } else if (giftType && giftType.value !== 0){
+        } else if (giftType && giftType.value !== 0) {
             thirdParagh = formatMessage('addMoneyRecurringThirdText', {
                 donationCompany: donationMatchedData.displayName,
             });
@@ -143,7 +143,6 @@ const AddMoneySuccess = (props) => {
 };
 
 AddMoneySuccess.propTypes = {
-    currency: PropTypes.string,
     donationMatchData: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.any,
         value: PropTypes.string,
@@ -152,6 +151,7 @@ AddMoneySuccess.propTypes = {
         language: PropTypes.string,
     }),
     successData: PropTypes.shape({
+        currency: PropTypes.string,
         giveData: PropTypes.shape({
             donationAmount: PropTypes.string,
             donationMatch: PropTypes.shape({
@@ -175,12 +175,12 @@ AddMoneySuccess.propTypes = {
     t: PropTypes.func,
 };
 AddMoneySuccess.defaultProps = {
-    currency: 'USD',
     donationMatchData: [],
     i18n: {
         language: 'en',
     },
     successData: {
+        currency: 'USD',
         giveData: {
             donationAmount: '',
             donationMatch: {

@@ -31,8 +31,9 @@ const Success = (props) => {
             lastName,
         },
     } = currentUser;
+    console.log(currentUser);
     const thankName = (_isEmpty(displayName)) ? displayName : `${firstName} ${lastName}`;
-    const firstParagraph = successData.type === 'donations' ? formatMessage('addMoneyFirstText', { name: thankName }) : formatMessage('allocationFirstText', { name: displayName });
+    const firstParagraph = successData.type === 'donations' ? formatMessage('addMoneyFirstText', { name: thankName }) : formatMessage('allocationFirstText', { name: thankName });
     useEffect(() => {
         if (flowObject) {
             reInitNextStep(dispatch, flowObject);

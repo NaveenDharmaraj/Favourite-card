@@ -23,5 +23,6 @@ function ReloadAddAmount(props) {
             <div><p className="errorNote">There is not enough money in your account to send this gift.<a href="#"> Add money</a> to continue</p></div>
         );
     }
+    return null;
 }
 export default ReloadAddAmount;
