@@ -15,13 +15,6 @@ const chat = (state = {}, action) => {
                 smallerScreenSection: action.payload.smallerScreenSection,
             };
             break;
-        case actionTypes.NEW_GROUP_DETAILS:
-            newState = {
-                ...state,
-                newGroupImageUrl: action.payload.newGroupImageUrl,
-                newGroupName: action.payload.newGroupName,
-            };
-            break;
         case actionTypes.COMPOSE_HEADER_CONTACT_SELECTION:
             newState = {
                 ...state,
@@ -59,25 +52,6 @@ const chat = (state = {}, action) => {
                     && Object.keys(state.groupFeeds).length > 0) ? Object.assign(state.groupFeeds, action.payload.groupFeeds) : action.payload.groupFeeds,
             };
             break;
-        case actionTypes.EDIT_GROUP_DETAILS:
-            if (!_isEmpty(action.payload.editGroupName) && !_isEmpty(action.payload.editGroupImageUrl)) {
-                return {
-                    ...state,
-                    editGroupImageUrl: action.payload.editGroupImageUrl,
-                    editGroupName: action.payload.editGroupName,
-                };
-            }
-            if (_isEmpty(action.payload.editGroupName)) {
-                return {
-                    ...state,
-                    editGroupImageUrl: action.payload.editGroupImageUrl,
-                };
-            }
-            newState = {
-                ...state,
-                editGroupName: action.payload.editGroupName,
-            };
-            break;
         case actionTypes.INBOX_FILTERED_MESSAGES:
             newState = {
                 ...state,
@@ -86,26 +60,25 @@ const chat = (state = {}, action) => {
             break;
         case actionTypes.SELECTED_CONVERSATION_MESSAGES:
             let paginatedSelectedConversationMessages = action.payload.selectedConversationMessages;
-            if (action.payload.concatMessages && !_isEmpty(state.selectedConversationMessages) && state.selectedConversationMessages.length > 0) {
+            if (!_isEmpty(state.selectedConversationMessages) && state.selectedConversationMessages.length > 0) {
                 paginatedSelectedConversationMessages = action.payload.selectedConversationMessages.concat(state.selectedConversationMessages);
             }
             newState = {
                 ...state,
-                concatMessages: action.payload.concatMessages,
-                selectedConversation: action.payload.selectedConversation,
                 selectedConversationMessages: _uniqBy(paginatedSelectedConversationMessages, 'key'),
-            }
+            };
             break;
-        case actionTypes.COMPOSE_SELECTED_CONVERSATION:
+        case actionTypes.CURRENT_SELECTED_CONVERSATION:
             return {
                 ...state,
                 selectedConversation: action.payload.selectedConversation,
+                selectedConversationMessages: [],
             };
         case actionTypes.LOAD_CONVERSATION_MESSAGES_ENDTIME:
             return {
                 ...state,
                 endTime: action.payload.endTime,
-            }
+            };
         default:
             break;
     }

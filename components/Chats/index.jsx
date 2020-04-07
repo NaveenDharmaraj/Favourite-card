@@ -19,14 +19,14 @@ class ChatWrapper extends React.Component {
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         const {
             dispatch,
             userInfo,
             msgId,
             friendListLoaded,
         } = this.props;
-        dispatch(loadMuteUserList());
+        await dispatch(loadMuteUserList());
         //This conidition make sure this is called once even when redux state gets changes and dom rebuilds once again.
         if (!friendListLoaded) {
             dispatch({
@@ -35,8 +35,8 @@ class ChatWrapper extends React.Component {
                     smallerScreenSection: 'convList',
                 },
                 type: actionTypes.COMPOSE_SCREEN_SECTION
-            })
-            dispatch(loadFriendsList(userInfo, msgId));
+            });
+            dispatch(loadFriendsList(userInfo, msgId, this.props.muteUserList));
         }
         //dispatch(loadConversations(msgId));
         window.addEventListener("resize", this.resize);
@@ -65,9 +65,6 @@ class ChatWrapper extends React.Component {
         const {
             isSmallerScreen,
         } = this.state;
-        const {
-            userInfo
-        } = this.props;
         return (
             <div className="messageMainWraper">
                 <Container>
@@ -80,7 +77,6 @@ class ChatWrapper extends React.Component {
                                 <Grid.Column className="remove-pad-right" mobile={16} tablet={6} computer={5}>
                                     <ChatInboxList
                                         isSmallerScreen={isSmallerScreen}
-                                        userInfo={userInfo}
                                     />
                                 </Grid.Column>
                                 <Grid.Column className="remove-pad-left" mobile={16} tablet={10} computer={11}>
@@ -101,8 +97,7 @@ class ChatWrapper extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        userDetails: state.chat.userDetails,
-        auth: state.user.auth,
+        muteUserList: state.chat.muteUserList,
         userInfo: state.user.info,
         friendListLoaded: state.chat.friendListLoaded
     };

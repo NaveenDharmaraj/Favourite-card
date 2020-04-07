@@ -5,7 +5,7 @@ import {
 import _isEqual from 'lodash/isEqual';
 import { connect } from 'react-redux';
 
-import { actionTypes } from '../../../actions/chat';
+import { actionTypes, setSelectedConversation } from '../../../actions/chat';
 
 class ChatHeader extends React.Component {
 
@@ -32,13 +32,6 @@ class ChatHeader extends React.Component {
         } = this.props;
         dispatch({
             payload: {
-                newGroupName: "New Group",
-                newGroupImageUrl: null,
-            },
-            type: actionTypes.NEW_GROUP_DETAILS
-        });
-        dispatch({
-            payload: {
                 compose: !compose,
                 smallerScreenSection: compose ? "convList" : "convMsgs",
             },
@@ -48,16 +41,8 @@ class ChatHeader extends React.Component {
             (!compose ? null :
                 (selectedConversation && selectedConversation.key ?
                     selectedConversation :
-                    (filteredMessages ? filteredMessages[0] : null)));
-
-        // COMPOSE_SELECTED_CONVERSATION is created to avoid overriding of selectedConversationMessages 
-        // inside SELECTED_CONVERSATION_MESSAGES actionType
-        dispatch({
-            payload: {
-                selectedConversation: selectCurrentConversation,
-            },
-            type: actionTypes.COMPOSE_SELECTED_CONVERSATION
-        })
+                    (filteredMessages ? filteredMessages[0] : {})));
+        dispatch(setSelectedConversation(selectCurrentConversation));
     }
 
     render() {

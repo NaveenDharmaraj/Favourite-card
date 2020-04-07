@@ -5,9 +5,9 @@ import { Input, List } from 'semantic-ui-react';
 import _isEqual from 'lodash/isEqual';
 import _isEmpty from 'lodash/isEmpty';
 
-import { actionTypes, loadConversationMessages } from '../../../actions/chat';
+import { actionTypes, loadConversationMessages, setSelectedConversation } from '../../../actions/chat';
 import IndividualChatContact from './IndividualChatContact';
-import { debounceFunction, conversationHead } from '../../../helpers/chat/utils';
+import { debounceFunction } from '../../../helpers/chat/utils';
 
 class ChatInboxList extends React.Component {
 
@@ -20,23 +20,7 @@ class ChatInboxList extends React.Component {
         } = this.props;
         //if already conversation selected and new one clicked is different then enter into this condition
         if (!selectedConversation || selectedConversation.key != msg.key) {
-            if (msg.groupId) {
-                dispatch({
-                    payload: {
-                        editGroupName: groupFeeds[msg.groupId]["name"],
-                        editGroupImageUrl: groupFeeds[msg.groupId]["imageUrl"],
-                    },
-                    type: actionTypes.EDIT_GROUP_DETAILS,
-                })
-            }
-            dispatch({
-                payload: {
-                    selectedConversation: msg,
-                    selectedConversationMessages: [],
-                    concatMessages: false,
-                },
-                type: actionTypes.SELECTED_CONVERSATION_MESSAGES
-            });
+            dispatch(setSelectedConversation(msg));
             dispatch({
                 payload: {
                     compose: false,
@@ -44,7 +28,7 @@ class ChatInboxList extends React.Component {
                 },
                 type: actionTypes.COMPOSE_SCREEN_SECTION,
             });
-            dispatch(loadConversationMessages(msg, new Date().getTime(), false));
+            dispatch(loadConversationMessages(msg, new Date().getTime()));
         }
     }
 
@@ -52,9 +36,9 @@ class ChatInboxList extends React.Component {
         const searchValue = event.target.value;
         const {
             compose,
+            dispatch,
             groupFeeds,
             messages,
-            dispatch,
             smallerScreenSection,
             userDetails,
         } = this.props;
@@ -101,17 +85,8 @@ class ChatInboxList extends React.Component {
                 filteredMessages: newList,
             },
         });
-        // Set the filtered state based on what our rules added to newList
-        let tempSelectedConversation = newList.length > 0 ? newList[0] : null
-        if (tempSelectedConversation && tempSelectedConversation.groupId) {
-            dispatch({
-                type: actionTypes.EDIT_GROUP_DETAILS,
-                payload: {
-                    editGroupName: groupFeeds[tempSelectedConversation.groupId]["name"],
-                    editGroupImageUrl: groupFeeds[tempSelectedConversation.groupId]["imageUrl"],
-                }
-            })
-        }
+        const msg = newList.length > 0 ? newList[0] : null;
+        dispatch(setSelectedConversation(msg));
         if (compose) {
             dispatch({
                 payload: {
@@ -121,7 +96,7 @@ class ChatInboxList extends React.Component {
                 type: actionTypes.COMPOSE_SCREEN_SECTION,
             })
         }
-        const params = { dispatch, searchValue: newList.length > 0 ? newList[0] : null };
+        const params = { dispatch, selecetedConversation: msg};
         debounceFunction(params, 300);
     }
 
@@ -129,25 +104,19 @@ class ChatInboxList extends React.Component {
         const {
             compose,
             filteredMessages,
-            groupFeeds,
             isSmallerScreen,
-            muteUserList,
             selectedConversation,
             smallerScreenSection,
-            userDetails,
-            userInfo,
         } = this.props;
         if (filteredMessages
             && filteredMessages.length > 0
             && (!isSmallerScreen || (smallerScreenSection === 'convList' && !compose))) {
             return filteredMessages.map((msg) => {
-                const converstionInfo = conversationHead(msg, groupFeeds, muteUserList, userDetails, userInfo);
                 return (
                     <IndividualChatContact
                         onConversationSelect={this.onConversationSelect}
                         msg={msg}
                         selectedConversation={selectedConversation}
-                        converstionInfo={converstionInfo}
                     />
                 )
             });
@@ -196,7 +165,6 @@ const mapStateToProps = (state) => ({
     messages: state.chat.messages,
     selectedConversation: state.chat.selectedConversation,
     filteredMessages: state.chat.filteredMessages,
-    muteUserList: state.chat.muteUserList,
 });
 
 ChatInboxList.defaultProps = {

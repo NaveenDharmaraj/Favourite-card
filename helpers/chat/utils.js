@@ -7,7 +7,7 @@ import { placeholderGroup } from '../../static/images/no-data-avatar-group-chat-
 import { placeholderUser } from '../../static/images/no-data-avatar-user-profile.png';
 const { publicRuntimeConfig } = getConfig();
 const {
-    CHAT_GROUP_DEFAULT_AVATAR
+    CHAT_GROUP_DEFAULT_AVATAR,
 } = publicRuntimeConfig;
 const months = [
     'Jan',
@@ -90,12 +90,15 @@ const groupMessagesByDate = (msgs, msgsByDate = {}) => {
     return msgsByDate;
 }
 
-const debounceFunction = ({ dispatch, searchValue }, delay) => {
+const debounceFunction = ({
+    dispatch,
+    selecetedConversation,
+}, delay) => {
     if (chatTimeout) {
         clearTimeout(chatTimeout);
     }
-    chatTimeout = setTimeout(function () {
-        dispatch(loadConversationMessages(searchValue));
+    chatTimeout = setTimeout(() => {
+        dispatch(loadConversationMessages(selecetedConversation));
     }, delay);
 };
 
@@ -110,32 +113,34 @@ const debounceFunction = ({ dispatch, searchValue }, delay) => {
  * @return {object} returns convHead | groupHead an object contains info about the selected users.
  */
 const conversationHead = (msg, groupFeeds, muteUserList, userDetails, userInfo) => {
-    let currentUserId = !_isEmpty(userInfo) ? userInfo.id :  null;
+    const currentUserId = !_isEmpty(userInfo) ? userInfo.id : null;
     if (msg && msg.groupId) {
-        let info = !_isEmpty(groupFeeds) ? groupFeeds[msg.groupId] : {};
-        let groupHead = {
-            type: "group",
-            title: info.name,
+        const info = !_isEmpty(groupFeeds) ? groupFeeds[msg.groupId] : {};
+        const groupHead = {
             image: (info.imageUrl ? info.imageUrl : placeholderGroup),
-            imagePresent: (info.imageUrl && info.imageUrl != "" && info.imageUrl != null && info.imageUrl != CHAT_GROUP_DEFAULT_AVATAR ? true : false),
+            imagePresent: (info.imageUrl && info.imageUrl !== '' && info.imageUrl != null && info.imageUrl !== CHAT_GROUP_DEFAULT_AVATAR ? true : false),
+            info,
             isMuted: (info.notificationAfterTime && info.notificationAfterTime > new Date().getTime()),
-            info: info
+            title: info.name,
+            type: 'group',
         };
-        groupHead["disabled"] = (info.removedMembersId && info.removedMembersId.indexOf(currentUserId) >= 0);
+        groupHead.disabled = (info.removedMembersId && info.removedMembersId.indexOf(currentUserId) >= 0);
         return groupHead;
-    } else if (msg && msg.contactIds) {
-        let info = !_isEmpty(userDetails) ? userDetails[msg.contactIds] : {};
+    } if (msg && msg.contactIds) {
+        const info = !_isEmpty(userDetails) ? userDetails[msg.contactIds] : {};
         const muteInfo = !_isEmpty(muteUserList) ? muteUserList[msg.contactIds] : {};
-        let convHead = info ? {
-            type: 'user',
-            title: info['displayName'],
+        const convHead = info ? {
             image: (info.imageLink ? info.imageLink : placeholderUser),
-            imagePresent: (info.imageLink && info.imageLink != "" && info.imageLink != null ? true : false),
-            info: info,
-            isMuted: (muteInfo && muteInfo.notificationAfterTime && muteInfo.notificationAfterTime > new Date().getTime())
+            imagePresent: (info.imageLink && info.imageLink !== '' && info.imageLink != null ? true : false),
+            info,
+            isMuted: (muteInfo && muteInfo.notificationAfterTime && muteInfo.notificationAfterTime > new Date().getTime()),
+            title: info.displayName,
+            type: 'user',
+
         } : {};
         return convHead;
     }
+    return {};
 };
 
 export {

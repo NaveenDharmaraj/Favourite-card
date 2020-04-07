@@ -5,25 +5,24 @@ import _isEmpty from 'lodash/isEmpty';
 import utilityApi from '../services/utilityApi';
 import graphApi from '../services/graphApi';
 import applozicApi from '../services/applozicApi';
+import { conversationHead } from '../helpers/chat/utils';
 
 const actionTypes = _keyBy([
     'LOAD_MUTE_USER_LIST',
     'LOAD_CONVERSATION_LIST',
-    'EDIT_GROUP_DETAILS',
     'INBOX_FILTERED_MESSAGES',
     'FETCH_USER_DETAILS',
-    'NEW_GROUP_DETAILS',
     'COMPOSE_SCREEN_SECTION',
     'NEW_GROUP_FEEDS',
     'SELECTED_CONVERSATION_MESSAGES',
-    'COMPOSE_SELECTED_CONVERSATION',
+    'CURRENT_SELECTED_CONVERSATION',
     'LOAD_CONVERSATION_MESSAGES_ENDTIME',
     'COMPOSE_HEADER_CONTACT_SELECTION',
 ]);
 
-const loadMuteUserList = () => (dispatch) => {
+const loadMuteUserList = () => async (dispatch) => {
     const muteUserList = {};
-    applozicApi.get('/user/chat/mute/list', {}).then((response) => {
+    await applozicApi.get('/user/chat/mute/list', {}).then((response) => {
         _forEach(response, (muteUser) => {
             muteUserList[muteUser.userId] = muteUser;
         });
@@ -35,19 +34,20 @@ const loadMuteUserList = () => (dispatch) => {
         });
     });
 };
-const loadConversationMessages = (selectedConversation, endTime = new Date().getTime() + 2000, concatMessages = false, messages = []) => dispatch => {
+const loadConversationMessages = (selectedConversation, endTime = new Date().getTime() + 2000) => (dispatch) => {
     if (selectedConversation) {
-        let params = { endTime: endTime, pageSize: 10 }; //{ startIndex: startIndex, mainPageSize: 100, pageSize: 50 };
+        const params = {
+            endTime,
+            pageSize: 10,
+        };
         if (selectedConversation.groupId) {
             params.groupId = selectedConversation.groupId;
         } else { params.userId = selectedConversation.contactIds; }
-        return applozicApi.get('/message/v2/list', { params: params }).then(response => {
-            let selectedConversationMessages = response.response.message;
+        return applozicApi.get('/message/v2/list', { params: params }).then((response) => {
+            const selectedConversationMessages = response.response.message;
             dispatch({
                 payload: {
-                    selectedConversation: !_isEmpty(selectedConversation) ? selectedConversation : null,
                     selectedConversationMessages,
-                    concatMessages,
                 },
                 type: actionTypes.SELECTED_CONVERSATION_MESSAGES,
             });
@@ -63,16 +63,13 @@ const loadConversationMessages = (selectedConversation, endTime = new Date().get
             //     window.dispatchEvent(new CustomEvent("onChatPageRefreshEvent", { detail: { data: messages } }));
             // }
         })
-            .catch(error => {
+            .catch((error) => {
                 dispatch({
                     payload: {
                         selectedConversation: !_isEmpty(selectedConversation) ? selectedConversation : null,
-                        selectedConversationMessages: [],
-                        concatMessages,
                     },
-                    type: actionTypes.SELECTED_CONVERSATION_MESSAGES,
+                    type: actionTypes.CURRENT_SELECTED_CONVERSATION,
                 });
-
             });
     }
 
@@ -83,22 +80,23 @@ const loadConversationMessages = (selectedConversation, endTime = new Date().get
  * @return {void}
  */
 
-const loadConversationThenBlock = (response, msgId, userDetails, groupFeeds, selectedConversation, dispatch, messagesArr) => {
+const loadConversationThenBlock = (response, msgId, userDetails, groupFeeds, selectedConversation, dispatch, messagesArr, muteUserList, userInfo) => {
     let compose = null;
     let newMessgaeArr = [];
     // dispatach the userDetails from response.response.userDetails based on graphApi userdetails
+    userDetails = !_isEmpty(userDetails) ? userDetails : {};
     _forEach(response.response.userDetails, (userDetail) => {
         if (!userDetails[userDetail.userId]) {
             userDetails[userDetail.userId] = userDetail;
         }
     });
-
     // dispatach the groupFeeds from response.response.groupDetails
-
     // can we dispatch it straightl
+    groupFeeds = !_isEmpty(groupFeeds) ? groupFeeds : {};
     _forEach(response.response.groupFeeds, (groupFeed) => {
         groupFeeds[groupFeed.id] = groupFeed;
     });
+
     newMessgaeArr = !_isEmpty(response.response.message) ? response.response.message : [];
     if (!_isEmpty(messagesArr) && messagesArr.length > 0) {
         if (!_isEmpty(response.response.message)) {
@@ -111,6 +109,14 @@ const loadConversationThenBlock = (response, msgId, userDetails, groupFeeds, sel
                 ...messagesArr,
             ];
         }
+    }
+    if (newMessgaeArr && newMessgaeArr.length > 0) {
+        newMessgaeArr.forEach((msg) => {
+            const converstionDetails = {
+                conversationInfo: msg ? conversationHead(msg, groupFeeds, muteUserList, userDetails, userInfo) : null,
+            };
+            Object.assign(msg, converstionDetails);
+        });
     }
     // select the conversation based in groupid or contact id
     if (msgId && newMessgaeArr && newMessgaeArr.length > 0) {
@@ -125,7 +131,7 @@ const loadConversationThenBlock = (response, msgId, userDetails, groupFeeds, sel
         });
     }
     // userdetails is thr group details is thr but no message then select the msgId from url and the compose as true.
-    if (_isEmpty(selectedConversation) && msgId) {
+    if (_isEmpty(selectedConversation) && Number(msgId)) {
         if (userDetails[msgId]) {
             compose = true;
             // newState.newGroupMemberIds = [contactId];
@@ -143,32 +149,20 @@ const loadConversationThenBlock = (response, msgId, userDetails, groupFeeds, sel
     if (newMessgaeArr && newMessgaeArr.length <= 0) {
         compose = true;
     }
-    // if defautl or any msgId match are selected and its a group dispatch edit group details
-    if (!_isEmpty(selectedConversation) && selectedConversation.groupId) {
-        const editGroupName = (groupFeeds && groupFeeds[selectedConversation.groupId]) ? groupFeeds[selectedConversation.groupId].name : '';
-        const editGroupImageUrl = (groupFeeds && groupFeeds[selectedConversation.groupId]) ? groupFeeds[selectedConversation.groupId].imageUrl : '';
-        dispatch({
-            payload: {
-                editGroupImageUrl,
-                editGroupName,
-            },
-            type: actionTypes.EDIT_GROUP_DETAILS,
-        });
-    }
     if (!_isEmpty(response.response.message) && response.response.message.length > 0) {
         const endTime = response.response.message[response.response.message.length - 1].createdAtTime;
         recurrsiveLoadConversation(endTime)
             .then((res) => {
-                loadConversationThenBlock(res, msgId, userDetails, groupFeeds, selectedConversation, dispatch, newMessgaeArr);
+                loadConversationThenBlock(res, msgId, userDetails, groupFeeds, selectedConversation, dispatch, newMessgaeArr, muteUserList, userInfo);
             })
-            .catch(() => (
+            .catch((error) => {
                 dispatch({
                     payload: {
                         messages: [],
                     },
                     type: actionTypes.LOAD_CONVERSATION_LIST,
-                })
-            ));
+                });
+            });
     } else {
         dispatch({
             payload: {
@@ -196,22 +190,22 @@ const recurrsiveLoadConversation = (endTime = new Date().getTime() + 2000) => {
 };
 
 // eslint-disable-next-line max-len
-const loadConversations = (msgId, userDetails = {}, groupFeeds = {}, selectedConversationParam = {}) => async (dispatch) => {
+const loadConversations = (msgId, userDetails = {}, groupFeeds = {}, selectedConversationParam = {}, muteUserList = {}, userId = {}) => async (dispatch) => {
     recurrsiveLoadConversation()
         .then((response) => {
             //conditosn
-            loadConversationThenBlock(response, msgId, userDetails, groupFeeds, selectedConversationParam, dispatch);
+            loadConversationThenBlock(response, msgId, userDetails, groupFeeds, selectedConversationParam, dispatch, null, muteUserList, userId);
         })
-        .catch(() => (
+        .catch((error) => {
             dispatch({
                 payload: {
                     messages: [],
                 },
                 type: actionTypes.LOAD_CONVERSATION_LIST,
             })
-        ));
+        });
 };
-const loadFriendsList = (userInfo, msgId) => (dispatch) => {
+const loadFriendsList = (userInfo, msgId, muteUserList) => (dispatch) => {
     const pageSize = 999;
     const pageNumber = 1;
     const email = userInfo.attributes.email;
@@ -255,18 +249,27 @@ const loadFriendsList = (userInfo, msgId) => (dispatch) => {
             // if (!friendsList || friendsList.length <= 0) {
             //     newState["loading"] = false;
             // }
-            dispatch(loadConversations(msgId, userDetails));
+            dispatch(loadConversations(msgId, userDetails, {}, null, muteUserList, userInfo));
         })
         .catch((error) => {
+
             dispatch({
                 payload: {
                     friendListLoaded: false,
-                    userDetails,
                 },
                 type: actionTypes.FETCH_USER_DETAILS,
             });
             //self.setState({ loading: false, compose: true, smallerScreenSection: 'convMsgs' });
         });
+};
+
+const setSelectedConversation = (msg) => (dispatch) => {
+    dispatch({
+        payload: {
+            selectedConversation: msg,
+        },
+        type: actionTypes.CURRENT_SELECTED_CONVERSATION,
+    });
 };
 
 const deleteConversation = (params) => {
@@ -309,7 +312,7 @@ const updateGroupDetails = (params) => {
     return applozicApi.post('/group/update', params);
 };
 const storeGroupImage = (isForNewGroup, conversationInfo, data) => {
-    utilityApi.post(`/image/upload/${isForNewGroup ? new Date().getTime() : conversationInfo.info.id}`, data, {
+    return utilityApi.post(`/image/upload/${isForNewGroup ? new Date().getTime() : conversationInfo.info.id}`, data, {
         headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
@@ -330,6 +333,7 @@ export {
     muteOrUnmuteGroupConversation,
     removeUserFromGroup,
     sendMessageToSelectedConversation,
+    setSelectedConversation,
     storeGroupImage,
     updateGroupDetails,
 };
