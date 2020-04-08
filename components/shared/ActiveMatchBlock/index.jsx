@@ -5,14 +5,16 @@ import {
     Button,
 } from 'semantic-ui-react';
 import {
-    formatAmount,
+    formatCurrency,
 } from '../../../helpers/give/utils';
 
 const ActiveMatchBlock = (props) => {
     const {
         entityDetails,
     } = props;
-    const formattedBalance = formatAmount(entityDetails.attributes.activeMatch.balance);
+    const currency = 'USD';
+    const language = 'en';
+    const formattedBalance = formatCurrency(entityDetails.attributes.activeMatch.balance, language, currency);
     return (
         <div className="active-match-message mt-3">
             <Message>
@@ -40,7 +42,7 @@ const ActiveMatchBlock = (props) => {
                                 <p>
                                     {entityDetails.attributes.activeMatch.company} will match 100% for each $1.00 you give to this group, until matching funds run out or expire.
                                 </p>
-                                <p><span className="active-match-dollar"><b>${formattedBalance}</b></span> matching funds left.</p>
+                                <p><span className="active-match-dollar"><b>{formattedBalance}</b></span> matching funds left.</p>
                             </div>
                         </Grid.Column>
                         <Grid.Column computer={3} tablet={4} mobile={0}>

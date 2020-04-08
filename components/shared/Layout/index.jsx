@@ -54,7 +54,7 @@ class Layout extends React.Component {
         if (window && isValidBrowser(window.navigator.userAgent)) {
             Router.pushRoute('/browser');
         }
-        if (branch) {
+        if (typeof branch !== 'undefined') {
             branch.init(BRANCH_IO_KEY);
         }
         // if the user didnt setup any causes then redirect to causes selection page
