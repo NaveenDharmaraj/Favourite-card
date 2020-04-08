@@ -1737,7 +1737,7 @@ const populateFriendsList = (friendsList) => {
                     src: friend.attributes.avatar,
                 },
                 key: friend.attributes.user_id,
-                text: ReactHtmlParser(`<span class="textFirst">${friend.attributes.display_name}</span><span class="secondFirst">Vancouver, BC</span>`),
+                text: ReactHtmlParser(`<span class="textFirst">${friend.attributes.display_name}</span><span class="secondFirst"></span>`),
                 type: friend.type,
                 value: friend.attributes.user_id,
             };

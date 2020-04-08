@@ -3,7 +3,6 @@ import _ from 'lodash';
 
 import { Router } from '../routes';
 import coreApi from '../services/coreApi';
-import graphApi from '../services/graphApi';
 import {
     beneficiaryDefaultProps,
     donationDefaultProps,

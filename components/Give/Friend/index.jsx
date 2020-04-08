@@ -187,9 +187,6 @@ class Friend extends React.Component {
     componentDidMount() {
         const {
             currentUser: {
-                attributes: {
-                    email: userEmailId,
-                },
                 id,
             },
             dispatch,
@@ -830,220 +827,186 @@ class Friend extends React.Component {
 
         return (
             <Fragment>
-            <div className="flowReviewbanner">
-                <Container>
-                    <div className="flowReviewbannerText">
-                        <Header as='h2'>Give to a friend</Header>
-                    </div>
-                </Container>
-            </div>
-            <div className="flowReview">
-                <Container>
-                    <Grid centered verticalAlign="middle">
-                        <Grid.Row>
-                            <Grid.Column mobile={16} tablet={14} computer={12}>
-                                <div className="flowBreadcrumb flowPadding">
-                                    <FlowBreadcrumbs
-                                        currentStep={currentStep}
-                                        formatMessage={formatMessage}
-                                        steps={flowSteps}
-                                        flowType={type}
-                                    />
-                                </div>
-                                <div className="flowFirst">
-                                    <Form onSubmit={this.handleSubmit}>
-                                        <Grid>
-                                            <Grid.Row>
-                                                <Grid.Column mobile={16} tablet={12} computer={10}>
-                                                    {
-                                                        (emailMasked) &&
-                                                        <Form.Field>
-                                                            <label htmlFor="recipientName">
-                                                                {formatMessage('friends:recipientsLabel')}
-                                                            </label>
-                                                            <Form.Field
-                                                                control={Input}
-                                                                disabled
-                                                                id="recipientName"
-                                                                maxLength="20"
-                                                                name="recipientName"
-                                                                size="large"
-                                                                value={recipientName}
-                                                            />
-                                                        </Form.Field>
-                                                    }
-                                                    {
-                                                        (!emailMasked) &&
-                                                        <Fragment>
-                                                            <label htmlFor="recipients">
-                                                                {formatMessage('friends:recipientsLabel')}
-                                                            </label>
-                                                            <Popup
-                                                                content={formatMessage('friends:recipientsPopup')}
-                                                                position="top center"
-                                                                trigger={
-                                                                    <Icon
-                                                                        color="blue"
-                                                                        name="question circle"
-                                                                        size="large"
-                                                                    />
-                                                                }
-                                                            />
-                                                            <FriendsDropDown
-                                                                handleOnInputChange={this.handleInputChange}
-                                                                values={friendsList}
-                                                            />
-                                                            <p>
-                                                                <a onClick={this.handleGiveToEmail}>
-                                                                    {formatMessage('friends:giveToEmailsText')}
-                                                                </a>
-                                                            </p>
-                                                            {(showGiveToEmail || !_.isEmpty(recipients))
-                                                            && (
-                                                                <Note
-                                                                    enableCharacterCount={false}
-                                                                    fieldName="recipients"
-                                                                    formatMessage={formatMessage}
-                                                                    handleOnInputChange={this.handleInputChange}
-                                                                    handleOnInputBlur={this.handleOnInputBlur}
-                                                                    labelText={formatMessage('friends:recipientsLabel')}
-                                                                    popupText={formatMessage('friends:recipientsPopup')}
-                                                                    placeholderText={formatMessage('friends:recipientsPlaceholderText')}
-                                                                    text={recipients.join(',')}
-                                                                    hideLabel={true}
+                <div className="flowReviewbanner">
+                    <Container>
+                        <div className="flowReviewbannerText">
+                            <Header as='h2'>{formatMessage('friends:giveToFriendText')}</Header>
+                        </div>
+                    </Container>
+                </div>
+                <div className="flowReview">
+                    <Container>
+                        <Grid centered verticalAlign="middle">
+                            <Grid.Row>
+                                <Grid.Column mobile={16} tablet={14} computer={12}>
+                                    <div className="flowBreadcrumb flowPadding">
+                                        <FlowBreadcrumbs
+                                            currentStep={currentStep}
+                                            formatMessage={formatMessage}
+                                            steps={flowSteps}
+                                            flowType={type}
+                                        />
+                                    </div>
+                                    <div className="flowFirst">
+                                        <Form onSubmit={this.handleSubmit}>
+                                            <Grid>
+                                                <Grid.Row>
+                                                    <Grid.Column mobile={16} tablet={12} computer={10}>
+                                                        {
+                                                            (emailMasked) &&
+                                                            <Form.Field>
+                                                                <label htmlFor="recipientName">
+                                                                    {formatMessage('friends:recipientsLabel')}
+                                                                </label>
+                                                                <Form.Field
+                                                                    control={Input}
+                                                                    disabled
+                                                                    id="recipientName"
+                                                                    maxLength="20"
+                                                                    name="recipientName"
+                                                                    size="large"
+                                                                    value={recipientName}
                                                                 />
-                                                            )}
-                                                            <FormValidationErrorMessage
-                                                                condition={!validity.isValidEmailList}
-                                                                errorMessage={formatMessage('friends:invalidEmailError')}
-                                                            />
-                                                            <FormValidationErrorMessage
-                                                                condition={!validity.isRecipientListUnique}
-                                                                errorMessage={formatMessage('friends:duplicateEmail')}
-                                                            />
-                                                            <FormValidationErrorMessage
-                                                                condition={!validity.isRecipientHaveSenderEmail}
-                                                                errorMessage={formatMessage('friends:haveSenderEmail')}
-                                                            />
-                                                            <FormValidationErrorMessage
-                                                                condition={!validity.isNumberOfEmailsLessThanMax}
-                                                                errorMessage={formatMessage('friends:maxEmail')}
-                                                            />
-                                                        </Fragment>
-                                                    }
-                                                    {/* {
-                                                        Friend.renderTotalP2pGiveAmount(
-                                                            totalP2pGiveAmount,
-                                                            giveAmount,
-                                                            parseEmails(recipients).length,
-                                                            formatMessage,
-                                                            language,
-                                                            currency,
-                                                            formatCurrency,
-                                                        )
-                                                    } */}
-                                                    <DonationAmountField
-                                                        amount={formatedP2PAmount}
-                                                        formatMessage={formatMessage}
-                                                        handleInputChange={this.handleInputChange}
-                                                        handleInputOnBlur={this.handleOnInputBlur}
-                                                        handlePresetAmountClick={this.handlePresetAmountClick}
-                                                        validity={validity}
-                                                        isGiveFlow
-                                                    />
-                                                    <p>
-                                                        {formatMessage('friends:multipleFriendAmountFieldText')}
-                                                    </p>
-                                                    {/* <Form.Field>
-                                                        <label htmlFor="giveAmount">
-                                                            {formatMessage('giveCommon:amountLabel')}
-                                                        </label>
-                                                        <Form.Field
-                                                            control={Input}
-                                                            error={!validity.isValidGiveAmount}
-                                                            icon="dollar"
-                                                            iconPosition="left"
-                                                            id="giveAmount"
-                                                            maxLength="20"
-                                                            name="giveAmount"
-                                                            onBlur={this.handleOnInputBlur}
-                                                            onChange={this.handleInputChange}
-                                                            placeholder={formatMessage('giveCommon:amountPlaceHolder')}
-                                                            size="large"
-                                                            value={formatedP2PAmount}
+                                                            </Form.Field>
+                                                        }
+                                                        {
+                                                            (!emailMasked) &&
+                                                            <Fragment>
+                                                                <label htmlFor="recipients">
+                                                                    {formatMessage('friends:recipientsLabel')}
+                                                                </label>
+                                                                <Popup
+                                                                    content={formatMessage('friends:recipientsPopup')}
+                                                                    position="top center"
+                                                                    trigger={
+                                                                        <Icon
+                                                                            color="blue"
+                                                                            name="question circle"
+                                                                            size="large"
+                                                                        />
+                                                                    }
+                                                                />
+                                                                <FriendsDropDown
+                                                                    handleOnInputChange={this.handleInputChange}
+                                                                    values={friendsList}
+                                                                />
+                                                                <p>
+                                                                    <a onClick={this.handleGiveToEmail}>
+                                                                        {formatMessage('friends:giveToEmailsText')}
+                                                                    </a>
+                                                                </p>
+                                                                {(showGiveToEmail || !_.isEmpty(recipients))
+                                                                && (
+                                                                    <Note
+                                                                        enableCharacterCount={false}
+                                                                        fieldName="recipients"
+                                                                        formatMessage={formatMessage}
+                                                                        handleOnInputChange={this.handleInputChange}
+                                                                        handleOnInputBlur={this.handleOnInputBlur}
+                                                                        labelText={formatMessage('friends:recipientsLabel')}
+                                                                        popupText={formatMessage('friends:recipientsPopup')}
+                                                                        placeholderText={formatMessage('friends:recipientsPlaceholderText')}
+                                                                        text={recipients.join(',')}
+                                                                        hideLabel={true}
+                                                                    />
+                                                                )}
+                                                                <FormValidationErrorMessage
+                                                                    condition={!validity.isValidEmailList}
+                                                                    errorMessage={formatMessage('friends:invalidEmailError')}
+                                                                />
+                                                                <FormValidationErrorMessage
+                                                                    condition={!validity.isRecipientListUnique}
+                                                                    errorMessage={formatMessage('friends:duplicateEmail')}
+                                                                />
+                                                                <FormValidationErrorMessage
+                                                                    condition={!validity.isRecipientHaveSenderEmail}
+                                                                    errorMessage={formatMessage('friends:haveSenderEmail')}
+                                                                />
+                                                                <FormValidationErrorMessage
+                                                                    condition={!validity.isNumberOfEmailsLessThanMax}
+                                                                    errorMessage={formatMessage('friends:maxEmail')}
+                                                                />
+                                                            </Fragment>
+                                                        }
+                                                        {/* {
+                                                            Friend.renderTotalP2pGiveAmount(
+                                                                totalP2pGiveAmount,
+                                                                giveAmount,
+                                                                parseEmails(recipients).length,
+                                                                formatMessage,
+                                                                language,
+                                                                currency,
+                                                                formatCurrency,
+                                                            )
+                                                        } */}
+                                                        <DonationAmountField
+                                                            amount={formatedP2PAmount}
+                                                            formatMessage={formatMessage}
+                                                            handleInputChange={this.handleInputChange}
+                                                            handleInputOnBlur={this.handleOnInputBlur}
+                                                            handlePresetAmountClick={this.handlePresetAmountClick}
+                                                            validity={validity}
+                                                            isGiveFlow
                                                         />
-                                                    </Form.Field>
-                                                    <FormValidationErrorMessage
-                                                        condition={!validity.doesAmountExist || !validity.isAmountMoreThanOneDollor
-                                                        || !validity.isValidPositiveNumber}
-                                                        errorMessage={formatMessage('giveCommon:errorMessages.amountLessOrInvalid', {
-                                                            minAmount: 1,
-                                                        })}
-                                                    />
-                                                    <FormValidationErrorMessage
-                                                        condition={!validity.isAmountLessThanOneBillion}
-                                                        errorMessage={ReactHtmlParser(formatMessage('giveCommon:errorMessages.invalidMaxAmountError'))}
-                                                    />
-                                                    <FormValidationErrorMessage
-                                                        condition={!validity.isAmountCoverGive}
-                                                        errorMessage={formatMessage('giveCommon:errorMessages.giveAmountGreaterThanBalance')}
-                                                    /> */}
-                                                    <DropDownAccountOptions
-                                                        type={type}
-                                                        validity={validity.isValidGiveFrom}
-                                                        selectedValue={this.state.flowObject.giveData.giveFrom.value}
-                                                        name="giveFrom"
-                                                        parentInputChange={this.handleInputChange}
-                                                        parentOnBlurChange={this.handleOnInputBlur}
-                                                        formatMessage={formatMessage}
-                                                    />
-                                                </Grid.Column>
-                                            </Grid.Row>
-                                        </Grid>
-                                        <Grid className="to_space">
-                                            <Grid.Row className="to_space">
-                                                <Grid.Column mobile={16} tablet={16} computer={16}>
-                                                    <Note
-                                                        fieldName="noteToRecipients"
-                                                        formatMessage={formatMessage}
-                                                        handleOnInputChange={this.handleInputChange}
-                                                        handleOnInputBlur={this.handleOnInputBlur}
-                                                        labelText={formatMessage('friends:noteToRecipientsLabel')}
-                                                        popupText={formatMessage('friends:noteToRecipientsPopup')}
-                                                        placeholderText={formatMessage('friends:noteToRecipientsPlaceholderText')}
-                                                        text={noteToRecipients}
-                                                    />
-                                                    <Note
-                                                        fieldName="noteToSelf"
-                                                        formatMessage={formatMessage}
-                                                        handleOnInputChange={this.handleInputChange}
-                                                        handleOnInputBlur={this.handleOnInputBlur}
-                                                        labelText={formatMessage('friends:noteToSelfLabel')}
-                                                        popupText={formatMessage('friends:noteToSelfPopup')}
-                                                        placeholderText={formatMessage('friends:noteToSelfPlaceholderText')}
-                                                        text={noteToSelf}
-                                                    />
-                                                    {/* {accountTopUpComponent}
-                                                    {stripeCardComponent} */}
-                                                    <Form.Button
-                                                        primary
-                                                        className="blue-btn-rounded btn_right"// {isMobile ? 'mobBtnPadding' : 'btnPadding'}
-                                                        // content={(!creditCardApiCall) ? formatMessage('giveCommon:continueButton')
-                                                        //     : formatMessage('giveCommon:submittingButton')}
-                                                        content="Review"
-                                                        disabled={(creditCardApiCall) || !this.props.userAccountsFetched}
-                                                        type="submit"
-                                                    />       
-                                                </Grid.Column>
-                                            </Grid.Row>
-                                        </Grid>
-                                    </Form>
-                                </div>
-                            </Grid.Column>
-                        </Grid.Row>
-                    </Grid>
-                </Container>
-            </div>
+                                                        <p>
+                                                            {formatMessage('friends:multipleFriendAmountFieldText')}
+                                                        </p>
+                                                        <DropDownAccountOptions
+                                                            type={type}
+                                                            validity={validity.isValidGiveFrom}
+                                                            selectedValue={this.state.flowObject.giveData.giveFrom.value}
+                                                            name="giveFrom"
+                                                            parentInputChange={this.handleInputChange}
+                                                            parentOnBlurChange={this.handleOnInputBlur}
+                                                            formatMessage={formatMessage}
+                                                        />
+                                                    </Grid.Column>
+                                                </Grid.Row>
+                                            </Grid>
+                                            <Grid className="to_space">
+                                                <Grid.Row className="to_space">
+                                                    <Grid.Column mobile={16} tablet={16} computer={16}>
+                                                        <Note
+                                                            fieldName="noteToRecipients"
+                                                            formatMessage={formatMessage}
+                                                            handleOnInputChange={this.handleInputChange}
+                                                            handleOnInputBlur={this.handleOnInputBlur}
+                                                            labelText={formatMessage('friends:noteToRecipientsLabel')}
+                                                            popupText={formatMessage('friends:noteToRecipientsPopup')}
+                                                            placeholderText={formatMessage('friends:noteToRecipientsPlaceholderText')}
+                                                            text={noteToRecipients}
+                                                        />
+                                                        <Note
+                                                            fieldName="noteToSelf"
+                                                            formatMessage={formatMessage}
+                                                            handleOnInputChange={this.handleInputChange}
+                                                            handleOnInputBlur={this.handleOnInputBlur}
+                                                            labelText={formatMessage('friends:noteToSelfLabel')}
+                                                            popupText={formatMessage('friends:noteToSelfPopup')}
+                                                            placeholderText={formatMessage('friends:noteToSelfPlaceholderText')}
+                                                            text={noteToSelf}
+                                                        />
+                                                        {/* {accountTopUpComponent}
+                                                        {stripeCardComponent} */}
+                                                        <Form.Button
+                                                            primary
+                                                            className="blue-btn-rounded btn_right"// {isMobile ? 'mobBtnPadding' : 'btnPadding'}
+                                                            // content={(!creditCardApiCall) ? formatMessage('giveCommon:continueButton')
+                                                            //     : formatMessage('giveCommon:submittingButton')}
+                                                            content="Review"
+                                                            disabled={(creditCardApiCall) || !this.props.userAccountsFetched}
+                                                            type="submit"
+                                                        />
+                                                    </Grid.Column>
+                                                </Grid.Row>
+                                            </Grid>
+                                        </Form>
+                                    </div>
+                                </Grid.Column>
+                            </Grid.Row>
+                        </Grid>
+                    </Container>
+                </div>
             </Fragment>
         );
     }

@@ -18,5 +18,6 @@
     "totalAmount": "{{totalP2pGiveAmount}} ({{giveAmount}} X {{numberOfRecipients}} recipients)",
     "giveAmount": "{{giveAmount}}",
     "multipleFriendAmountFieldText": "For multiple friends, the amount you enter will be sent to each friend.",
-    "giveToEmailsText": "Or, enter your friend's email addresses"
+    "giveToEmailsText": "Or, enter your friend's email addresses",
+    "giveToFriendText": "Give to a friend"
 }
