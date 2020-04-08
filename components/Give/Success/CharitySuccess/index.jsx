@@ -6,68 +6,85 @@ import {
     Button,
 } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
-import _isEmpty from 'lodash/isEmpty';
 
 import { withTranslation } from '../../../../i18n';
 import '../../../../static/less/giveFlows.less';
 import {
     getNextAllocationMonth,
+    formatCurrency,
+    formatAmount,
 } from '../../../../helpers/give/utils';
 import { Link } from '../../../../routes';
 
 const CharitySuccess = (props) => {
     const {
+        i18n: {
+            language,
+        },
         successData,
         t: formatMessage,
     } = props;
     const {
+        currency,
         giveData: {
+            giveFrom,
             giveTo,
             giftType,
+            giveAmount,
         },
     } = successData;
     const {
         eftEnabled,
         name,
     } = giveTo;
+    const dashboardLink = (!_.isEmpty(giveFrom) && giveFrom.type === 'companies')
+        ? `/${giveFrom.type}/${giveFrom.slug}`
+        : `/dashboard`;
     const month = getNextAllocationMonth(formatMessage, eftEnabled);
-    const secondParagraph = formatMessage('charityTimeForSending', {
+    const isRecurring = !!(giftType && giftType.value === 0);
+    const secondParagraph = giftType && giftType.value > 0 ? formatMessage('charityTimeForSendingRecurring', {
+        amount: formatCurrency(formatAmount(giveAmount), language, currency),
+        charityName: name,
+        month,
+    }) : formatMessage('charityTimeForSending', {
         charityName: name,
         month,
     });
-    const thirdParagh = giftType && giftType.value > 0 ? formatMessage('charityRecurringThirdText') : null;
-    const monthlyDepositButtonText = giftType && giftType.value > 0 ? formatMessage('charityMonthlyDepositButtonText') : null;
-    const monthlyDepositLink = '/user/recurring-donations';
     const doneButtonText = formatMessage('doneText');
     return (
         <Fragment>
             <p className="text-center">
                 {secondParagraph}
+                {(!!isRecurring) && (
+                    <Fragment>
+                    &nbsp;
+                        <a
+                            href="https://help.chimp.net/article/74-how-charities-receive-money"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            Learn more
+                        </a>
+                        .
+                    </Fragment>
+                )}
             </p>
             {
-                !_isEmpty(thirdParagh)
+                (!isRecurring)
                 && (
                     <p className="text-center">
-                        {thirdParagh}
+                        If you like, you can also
+                        {' '}
+                        <Link route={`/user/recurring-donations`}>set up a monthly deposit</Link>
+                        {' '}
+                        into your account to cover this monthly gift.
                     </p>
-                )
-            }
-            {
-                !_isEmpty(monthlyDepositButtonText)
-                && (
-                    <div className="text-center">
-                        <Link route={monthlyDepositLink}>
-                            <Button className="blue-bordr-btn-round-def flowConfirmBtn">
-                                {monthlyDepositButtonText}
-                            </Button>
-                        </Link>
-                    </div>
                 )
             }
 
             <div className="text-center mt-1">
                 {/* route have been assumed for done here */}
-                <Link route={'/dashboard'}>
+                <Link route={dashboardLink}>
                     <Button className="blue-btn-rounded-def flowConfirmBtn">
                         {doneButtonText}
                     </Button>
@@ -79,13 +96,23 @@ const CharitySuccess = (props) => {
 };
 
 CharitySuccess.propTypes = {
+    i18n: PropTypes.shape({
+        language: PropTypes.string,
+    }),
     successData: PropTypes.shape({
+        currency: PropTypes.string,
         giveData: PropTypes.shape({
+            currency: PropTypes.string,
             giftType: PropTypes.shape({
                 value: PropTypes.oneOfType([
                     PropTypes.number,
                     PropTypes.string,
                 ]),
+            }),
+            giveAmount: PropTypes.string,
+            giveFrom: PropTypes.shape({
+                slug: PropTypes.string,
+                type: PropTypes.string,
             }),
             giveTo: PropTypes.shape({
                 eftEnabled: PropTypes.bool,
@@ -97,10 +124,19 @@ CharitySuccess.propTypes = {
     t: PropTypes.func,
 };
 CharitySuccess.defaultProps = {
+    i18n: {
+        language: 'en',
+    },
     successData: {
+        currency: 'USD',
         giveData: {
             giftType: {
                 value: null,
+            },
+            giveAmount: '',
+            giveFrom: {
+                slug: '',
+                type: '',
             },
             giveTo: {
                 eftEnabled: false,
