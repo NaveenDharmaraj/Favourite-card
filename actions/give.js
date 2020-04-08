@@ -34,7 +34,6 @@ export const actionTypes = {
     GET_BENIFICIARY_FOR_GROUP: 'GET_BENIFICIARY_FOR_GROUP',
     GET_COMPANY_PAYMENT_AND_TAXRECEIPT: 'GET_COMPANY_PAYMENT_AND_TAXRECEIPT',
     GET_COMPANY_TAXRECEIPTS: 'GET_COMPANY_TAXRECEIPTS',
-    GET_FRIENDS_LIST: 'GET_FRIENDS_LIST',
     GET_GROUP_FROM_SLUG: 'GET_GROUP_FROM_SLUG',
     SAVE_FLOW_OBJECT: 'SAVE_FLOW_OBJECT',
     SAVE_SUCCESS_DATA: 'SAVE_SUCCESS_DATA',
@@ -1052,48 +1051,6 @@ export const getGroupsFromSlug = (dispatch, slug) => {
     ).catch(() => {
         Router.pushRoute('/give/error');
     });
-};
-
-export const getAllFriendsList = async (userId, pageNumber = 1) => {
-    const result = await graphApi.get(`user/myfriends?page[number]=${pageNumber}&page[size]=2&status=accepted&userid=${userId}`);
-    const dataArray = result.data;
-    if (pageNumber < result.meta.pageCount) {
-        return dataArray.concat(await getAllFriendsList(userId, pageNumber + 1));
-    }
-    return dataArray;
-};
-
-export const getFriendsListFromApi = (userId) => getAllFriendsList(userId).then(
-    (result) => {
-        const allFriendsData = [];
-        if (result && !_.isEmpty(result)) {
-            result.map((friend) => {
-                allFriendsData.push(friend);
-            });
-        }
-        return allFriendsData;
-    },
-);
-
-export const getFriendsList = (userId) => {
-    return async (dispatch) => {
-        const fsa = {
-            payload: {
-                friendsList: {},
-            },
-            type: actionTypes.GET_FRIENDS_LIST,
-        };
-        let friendsList = null;
-        friendsList = getFriendsListFromApi(userId);
-        Promise.all([
-            friendsList,
-        ]).then((data) => {
-            if (data && !_.isEmpty(data)) {
-                fsa.payload.friendsList = data[0];
-                dispatch(fsa);
-            }
-        });
-    };
 };
 
 export {

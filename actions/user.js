@@ -18,6 +18,7 @@ import {
 
 
 export const actionTypes = {
+    GET_FRIENDS_LIST: 'GET_FRIENDS_LIST',
     GET_MATCH_POLICIES_PAYMENTINSTRUMENTS: 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS',
     GET_USERS_GROUPS: 'GET_USERS_GROUPS',
     GET_UPCOMING_TRANSACTIONS: 'GET_UPCOMING_TRANSACTIONS',
@@ -834,4 +835,46 @@ export const saveUserCauses = (dispatch, userId, userCauses, discoverValue) => {
         });
         triggerUxCritialErrors(err.errors || err, dispatch);
     });
+};
+
+export const getAllFriendsList = async (userId, pageNumber = 1) => {
+    const result = await graphApi.get(`user/myfriends?page[number]=${pageNumber}&page[size]=100&status=accepted&userid=${userId}`);
+    const dataArray = result.data;
+    if (pageNumber < result.meta.pageCount) {
+        return dataArray.concat(await getAllFriendsList(userId, pageNumber + 1));
+    }
+    return dataArray;
+};
+
+export const getFriendsListFromApi = (userId) => getAllFriendsList(userId).then(
+    (result) => {
+        const allFriendsData = [];
+        if (result && !_.isEmpty(result)) {
+            result.map((friend) => {
+                allFriendsData.push(friend);
+            });
+        }
+        return allFriendsData;
+    },
+);
+
+export const getFriendsList = (userId) => {
+    return async (dispatch) => {
+        const fsa = {
+            payload: {
+                friendsList: {},
+            },
+            type: actionTypes.GET_FRIENDS_LIST,
+        };
+        let friendsList = null;
+        friendsList = getFriendsListFromApi(userId);
+        Promise.all([
+            friendsList,
+        ]).then((data) => {
+            if (data && !_.isEmpty(data)) {
+                fsa.payload.friendsList = data[0];
+                dispatch(fsa);
+            }
+        });
+    };
 };

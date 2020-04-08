@@ -1075,6 +1075,17 @@ const validateGiveForm = (field, value, validity, giveData, coverFeesAmount = nu
     const giveAmount = giveData.totalP2pGiveAmount
         ? giveData.totalP2pGiveAmount
         : giveData.giveAmount;
+    // const allRecepients = [];
+    // if (giveData.selectedFriendsList && !_.isEmpty(giveData.selectedFriendsList)) {
+    //     giveData.selectedFriendsList.map((friend) => {
+    //         allRecepients.push(friend.email);
+    //     });
+    // }
+    // if (giveData.recipients && !_.isEmpty(giveData.recipients)) {
+    //     giveData.recipients.map((friend) => {
+    //         allRecepients.push(friend);
+    //     });
+    // }
     switch (field) {
         case 'giveAmount':
             validity.doesAmountExist = !isInputBlank(value);
@@ -1172,6 +1183,10 @@ const validateGiveForm = (field, value, validity, giveData, coverFeesAmount = nu
             );
             break;
         case 'recipients':
+            // validity.isValidEmailList = isValidEmailList(allRecepients);
+            // validity.isRecipientListUnique = isUniqueArray(allRecepients);
+            // validity.isRecipientHaveSenderEmail = isEmailListContainsSenderEmail(allRecepients, senderEmail);
+            // validity.isNumberOfEmailsLessThanMax = isNumberOfEmailsLessThanMax(allRecepients, 25);
             validity.isValidEmailList = isValidEmailList(giveData.recipients);
             validity.isRecipientListUnique = isUniqueArray(giveData.recipients);
             validity.isRecipientHaveSenderEmail = isEmailListContainsSenderEmail(giveData.recipients, senderEmail);
@@ -1713,25 +1728,50 @@ const resetP2pDataForOnInputChange = (giveData, dropDownOptions) => {
 const populateFriendsList = (friendsList) => {
     const formattedFriendsList = [];
     let singleObject = {};
-    debugger;
-    friendsList.map((friend) => {
-        singleObject = {
-            image: {
-                avatar: true,
-                src: friend.attributes.avatar,
-            },
-            key: friend.attributes.user_id,
-            text: ReactHtmlParser(`<span class="textFirst">${friend.attributes.display_name}</span><span class="secondFirst">Vancouver, BC</span>`),
-            value: friend.attributes.display_name,
-        };
-        formattedFriendsList.push(singleObject);
-    });
-    return formattedFriendsList;
+    if (!_.isEmpty(friendsList)) {
+        friendsList.map((friend) => {
+            singleObject = {
+                id: friend.attributes.user_id,
+                image: {
+                    avatar: true,
+                    src: friend.attributes.avatar,
+                },
+                key: friend.attributes.user_id,
+                text: ReactHtmlParser(`<span class="textFirst">${friend.attributes.display_name}</span><span class="secondFirst">Vancouver, BC</span>`),
+                type: friend.type,
+                value: friend.attributes.user_id,
+            };
+            formattedFriendsList.push(singleObject);
+        });
+        return formattedFriendsList;
+    }
+    return null;
 };
+
 const validateForReload = (validity, type, giveAmount, balance) => {
     validity.isReloadRequired =  (type === 'user' || type === 'companies') && Number(giveAmount) > Number(balance) ? false : true; 
     return validity;
-}
+};
+
+const getSelectedFriendList = (options, values) => {
+    const selectedFriendsList = [];
+    let index = null;
+    let preparedFriendList = {};
+    values.map((value) => {
+        index = _.findIndex(options, (opt) => {
+            return opt.attributes.user_id === value;
+        });
+        preparedFriendList = {
+            avatar: options[index].attributes.avatar,
+            displayName: options[index].attributes.display_name,
+            email: Buffer.from(options[index].attributes.email_hash, 'base64').toString('ascii'),
+            type: 'users',
+            userId: options[index].attributes.user_id,
+        };
+        selectedFriendsList.push(preparedFriendList);
+    });
+    return selectedFriendsList;
+};
 
 export {
     percentage,
@@ -1772,4 +1812,5 @@ export {
     calculateP2pTotalGiveAmount,
     populateFriendsList,
     validateForReload,
+    getSelectedFriendList,
 };

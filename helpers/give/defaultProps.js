@@ -146,6 +146,7 @@ export const p2pDefaultProps = {
             },
             formatedDonationAmount: '',
             formatedP2PAmount: '',
+            friendsList: [],
             // P2P gift type is always 0
             giftType: {
                 value: 0,
@@ -169,6 +170,7 @@ export const p2pDefaultProps = {
             emailMasked: false,
             recipientName: '',
             recipientImage: '',
+            selectedFriendsList: [],
         },
         nextSteptoProceed: {},
         selectedTaxReceiptProfile: {},

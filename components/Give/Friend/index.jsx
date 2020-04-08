@@ -38,11 +38,11 @@ import {
     populatePaymentInstrument,
     resetDataForAccountChange,
     getDefaultCreditCard,
-    populateFriendsList,
+    getSelectedFriendList,
+    validateDonationForm,
 } from '../../../helpers/give/utils';
 import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
 import {
-    getFriendsList,
     getCompanyPaymentAndTax,
     proceed,
 } from '../../../actions/give';
@@ -61,7 +61,7 @@ const { publicRuntimeConfig } = getConfig();
 import '../../shared/style/styles.less';
 import FlowBreadcrumbs from '../FlowBreadcrumbs';
 import DonationAmountField from '../DonationAmountField';
-import MultiDropDown from '../../shared/MultiDropDown';
+import FriendsDropDown from '../../shared/FriendsDropDown';
 const {
     STRIPE_KEY
 } = publicRuntimeConfig;
@@ -194,7 +194,6 @@ class Friend extends React.Component {
             },
             dispatch,
         } = this.props;
-        dispatch(getFriendsList(userEmailId));
         dispatch(getDonationMatchAndPaymentInstruments(id));
     }
 
@@ -456,7 +455,7 @@ class Friend extends React.Component {
         const {
             dispatch,
         } = this.props;
-        const newValue = (!_.isEmpty(options)) ? _.find(options, { value }) : value;
+        const newValue = (name !== 'friendsList' && !_.isEmpty(options)) ? _.find(options, { value }) : value;
         if (giveData[name] !== newValue) {
             giveData[name] = newValue;
             giveData.userInteracted = true;
@@ -537,11 +536,13 @@ class Friend extends React.Component {
             defaultTaxReceiptProfile,
             flowSteps,
             stepIndex,
+            friendsListData,
         } = this.props;
         // let { forceContinue } = this.state;
         const {
             giveData: {
                 creditCard,
+                friendsList,
             },
         } = flowObject;
         const validateCC = this.isValidCC(
@@ -552,6 +553,11 @@ class Friend extends React.Component {
             inValidCvv,
             inValidCardNameValue,
         );
+        let selectedValue = [];
+        if(!_.isEmpty(friendsList)) {
+            selectedValue = getSelectedFriendList(friendsListData, friendsList);
+            flowObject.giveData.selectedFriendsList = selectedValue;
+        }
         if (this.validateForm() && validateCC) {
             if (creditCard.value > 0) {
                 flowObject.selectedTaxReceiptProfile = (flowObject.giveData.giveFrom.type === 'companies') ?
@@ -725,12 +731,40 @@ class Friend extends React.Component {
         });
     }
 
+    handlePresetAmountClick = (event, data) => {
+        const {
+            value,
+        } = data;
+        const inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
+        const formatedP2PAmount = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
+        let {
+            validity,
+            flowObject: {
+                giveData,
+            },
+        } = this.state
+
+        validity = validateDonationForm("giveAmount", inputValue, validity, giveData);
+
+        this.setState({
+            ...this.state,
+            flowObject: {
+                ...this.state.flowObject,
+                giveData: {
+                    ...this.state.flowObject.giveData,
+                    giveAmount: inputValue,
+                    formatedP2PAmount,
+                }
+            },
+            validity,
+        });
+    }
+
     render() {
         const {
             currentStep,
             creditCardApiCall,
             flowSteps,
-            friendsList,
             i18n:{
                 language,
             },
@@ -746,6 +780,7 @@ class Friend extends React.Component {
                     emailMasked,
                     formatedDonationAmount,
                     formatedP2PAmount,
+                    friendsList,
                     giveAmount,
                     giveFrom,
                     noteToRecipients,
@@ -767,7 +802,6 @@ class Friend extends React.Component {
 
         let accountTopUpComponent = null;
         const recipientsList = recipients.join(',');
-        let FriendsDropdown = [];
 
         // if (
         //     (giveFrom.type === 'user' || giveFrom.type === 'companies')
@@ -793,10 +827,7 @@ class Friend extends React.Component {
         //         />
         //     );
         // }
-        if (!_.isEmpty(friendsList)) {
-            debugger;
-            FriendsDropdown = populateFriendsList(friendsList);
-        }
+
         return (
             <Fragment>
             <div className="flowReviewbanner">
@@ -858,13 +889,16 @@ class Friend extends React.Component {
                                                                     />
                                                                 }
                                                             />
-                                                            <MultiDropDown friends={FriendsDropdown}/>
+                                                            <FriendsDropDown
+                                                                handleOnInputChange={this.handleInputChange}
+                                                                values={friendsList}
+                                                            />
                                                             <p>
                                                                 <a onClick={this.handleGiveToEmail}>
                                                                     {formatMessage('friends:giveToEmailsText')}
                                                                 </a>
                                                             </p>
-                                                            {showGiveToEmail
+                                                            {(showGiveToEmail || !_.isEmpty(recipients))
                                                             && (
                                                                 <Note
                                                                     enableCharacterCount={false}
@@ -913,8 +947,9 @@ class Friend extends React.Component {
                                                         formatMessage={formatMessage}
                                                         handleInputChange={this.handleInputChange}
                                                         handleInputOnBlur={this.handleOnInputBlur}
-                                                        // handlePresetAmountClick={this.handlePresetAmountClick}
+                                                        handlePresetAmountClick={this.handlePresetAmountClick}
                                                         validity={validity}
+                                                        isGiveFlow
                                                     />
                                                     <p>
                                                         {formatMessage('friends:multipleFriendAmountFieldText')}
@@ -1002,7 +1037,7 @@ class Friend extends React.Component {
                                                 </Grid.Column>
                                             </Grid.Row>
                                         </Grid>
-                    </Form>
+                                    </Form>
                                 </div>
                             </Grid.Column>
                         </Grid.Row>
@@ -1029,7 +1064,7 @@ function mapStateToProps(state) {
         userGroups: state.user.userGroups,
         creditCardApiCall: state.give.creditCardApiCall,
         userFriendEmail: state.dashboard.userFriendEmail,
-        friendsList: state.app.friendsList,
+        friendsListData: state.user.friendsList,
     };
 }
 
