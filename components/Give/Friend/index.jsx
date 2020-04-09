@@ -891,7 +891,7 @@ class Friend extends React.Component {
                                                                     values={friendsList}
                                                                 />
                                                                 <p>
-                                                                    <a onClick={this.handleGiveToEmail}>
+                                                                    <a className="giveToEmailsText" onClick={this.handleGiveToEmail}>
                                                                         {formatMessage('friends:giveToEmailsText')}
                                                                     </a>
                                                                 </p>
@@ -948,7 +948,7 @@ class Friend extends React.Component {
                                                             validity={validity}
                                                             isGiveFlow
                                                         />
-                                                        <p>
+                                                        <p className="multipleFriendAmountFieldText">
                                                             {formatMessage('friends:multipleFriendAmountFieldText')}
                                                         </p>
                                                         <DropDownAccountOptions
