@@ -14,15 +14,16 @@ import { withTranslation } from '../../../i18n';
 import { reInitNextStep } from '../../../actions/give';
 // This image is dummy image since we dont have a proper image
 import successImg from '../../../static/images/give-success-screen-illustration.png';
+import FlowBreadcrumbs from '../FlowBreadcrumbs';
 
 import AddMoneySuccess from './AddMoneySuccess';
 import CharitySuccess from './CharitySuccess';
+import GroupSuccess from './GroupSuccess';
 import P2PSuccess from './P2PSuccess';
-import FlowBreadcrumbs from '../FlowBreadcrumbs';
 
 const Success = (props) => {
     const {
-        currentStep, currentUser, dispatch, donationMatchData, flowObject, flowSteps, successData, t: formatMessage,
+        currentStep, currentUser, dispatch, donationMatchData, flowObject, flowSteps, giveGroupDetails, successData, t: formatMessage,
     } = props;
     const {
         attributes: {
@@ -41,6 +42,7 @@ const Success = (props) => {
             window.scrollTo(0, 0);
         }
     }, []);
+
     const renderSuccessPage = () => {
         switch (flowObject.type) {
             case 'donations':
@@ -54,6 +56,13 @@ const Success = (props) => {
                 return (
                     <CharitySuccess
                         successData={successData}
+                    />
+                );
+            case 'give/to/group':
+                return (
+                    <GroupSuccess
+                        successData={successData}
+                        giveGroupDetails={giveGroupDetails}
                     />
                 );
             case 'give/to/friend':
@@ -85,7 +94,7 @@ const Success = (props) => {
                                         {firstParagraph}
                                     </Header>
                                     <div className="sub">
-                                    {renderSuccessPage()}
+                                        {renderSuccessPage()}
                                     </div>
                                 </div>
                             </div>
@@ -189,6 +198,7 @@ Success.defaultProps = {
 const mapStateToProps = (state) => ({
     currentUser: state.user.info,
     donationMatchData: state.user.donationMatchData,
+    giveGroupDetails: state.give.groupSlugDetails,
     successData: state.give.successData,
 });
 
