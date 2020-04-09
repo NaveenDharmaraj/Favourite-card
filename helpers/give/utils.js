@@ -804,22 +804,28 @@ const populateInfoToShare = (taxReceiptProfile,
             } = userDetails;
             const userTaxProfileData = !_.isEmpty(taxReceiptProfile)
                 ? getDropDownOptionFromApiData(taxReceiptProfile, null, (item) => `name_address_email|${item.id}`,
-                    (attributes) => `${attributes.fullName} (${email}), ${attributes.addressOne}, ${attributes.city}, ${attributes.province}, ${attributes.postalCode}`,
+                    (attributes) => {
+                        return ReactHtmlParser(`<span class="attributes"><b>${attributes.fullName}</b></span>
+                        <span class="attributes">${email}</span>
+                        <span class="attributes"> ${attributes.addressOne} ${attributes.addressTwo} </span>
+                        <span class="attributes">${attributes.city}, ${attributes.province} ${attributes.postalCode}</span>`);
+                    },
                     (attributes) => false) : null;
             infoToShareList = [
                 {
                     disabled: false,
-                    text: formatMessage('giveCommon:infoToShareAnonymous'),
+                    text: ReactHtmlParser(`<span class="attributes">${formatMessage('giveCommon:infoToShareAnonymous')}</span>`),
                     value: 'anonymous',
                 },
                 {
                     disabled: false,
-                    text: `${displayName}`,
+                    text: ReactHtmlParser(`<span class="attributes"><b>${displayName}</b></span>`),
                     value: 'name',
                 },
                 {
                     disabled: false,
-                    text: `${displayName} (${email})`,
+                    text: ReactHtmlParser(`<span class="attributes"><b>${displayName}</b></span>
+                           <span class="attributes">${email}</span>`),
                     value: 'name_email',
                 },
             ];
@@ -837,18 +843,22 @@ const populateInfoToShare = (taxReceiptProfile,
                     companyDetails.taxReceiptProfiles,
                     null,
                     (item) => `name_address_email|${item.id}`,
-                    (attributes) => `${attributes.fullName}, ${attributes.addressOne}, ${attributes.city}, ${attributes.province}, ${attributes.postalCode}`,
+                    (attributes) => {
+                        return ReactHtmlParser(`<span class="attributes"><b>${attributes.fullName}</b></span>
+                        <span class="attributes"> ${attributes.addressOne} ${attributes.addressTwo} </span>
+                        <span class="attributes">${attributes.city}, ${attributes.province} ${attributes.postalCode}</span>`);
+                    },
                     (attributes) => false,
                 ) : null;
             infoToShareList = [
                 {
                     disabled: false,
-                    text: formatMessage('giveCommon:infoToShareAnonymous'),
+                    text: ReactHtmlParser(`<span class="attributes">${formatMessage('giveCommon:infoToShareAnonymous')}</span>`),
                     value: 'anonymous',
                 },
                 {
                     disabled: false,
-                    text: giveFrom.name,
+                    text: ReactHtmlParser(`<span class="attributes"><b>${giveFrom.name}</b></span>`),
                     value: 'name',
                 },
             ];
@@ -863,12 +873,12 @@ const populateInfoToShare = (taxReceiptProfile,
             infoToShareList = [
                 {
                     disabled: false,
-                    text: formatMessage('giveCommon:infoToShareAnonymous'),
+                    text: ReactHtmlParser(`<span class="attributes">${formatMessage('giveCommon:infoToShareAnonymous')}</span>`),
                     value: 'anonymous',
                 },
                 {
                     disabled: false,
-                    text: giveFrom.name,
+                    text: ReactHtmlParser(`<span class="attributes"><b>${giveFrom.name}</b></span>`),
                     value: 'name',
                 },
             ];

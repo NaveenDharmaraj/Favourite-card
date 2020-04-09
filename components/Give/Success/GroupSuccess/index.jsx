@@ -5,6 +5,7 @@ import React, {
 import {
     Button,
 } from 'semantic-ui-react';
+import _isEmpty from 'lodash/isEmpty';
 import PropTypes from 'prop-types';
 
 import { withTranslation } from '../../../../i18n';
@@ -16,11 +17,12 @@ import {
 } from '../../../../helpers/give/utils';
 import { Link } from '../../../../routes';
 
-const CharitySuccess = (props) => {
+const GroupSuccess = (props) => {
     const {
         i18n: {
             language,
         },
+        giveGroupDetails,
         successData,
         t: formatMessage,
     } = props;
@@ -37,17 +39,46 @@ const CharitySuccess = (props) => {
         eftEnabled,
         name,
     } = giveTo;
+    let thirdParagh = null;
+    const isNonRecurring = !!(giftType && giftType.value === 0);
+    if (!_isEmpty(giveGroupDetails)) {
+        const {
+            attributes: {
+                activeMatch,
+                hasActiveMatch,
+            },
+        } = giveGroupDetails;
+        if (!_isEmpty(activeMatch) && hasActiveMatch) {
+            const {
+                company,
+                maxMatchAmount,
+                balance,
+            } = activeMatch;
+            const maxMatchedAmount = (Number(maxMatchAmount) <= Number(balance))
+                ? Number(maxMatchAmount) : Number(balance);
+            const activeMatchedAmount = (Number(giveAmount) > maxMatchedAmount)
+                ? maxMatchedAmount : Number(giveAmount);
+            const totalAmount = Number(giveAmount) + activeMatchedAmount;
+            thirdParagh = (isNonRecurring)
+                ? formatMessage('groupMatchByText', {
+                    groupName: name,
+                    matchedAmount: formatCurrency(activeMatchedAmount, language, currency),
+                    matchedCompany: company,
+                    totalAmount: formatCurrency(formatAmount(totalAmount), language, currency),
+                })
+                : formatMessage('groupMatchByRecurringText');
+        }
+    }
     const dashboardLink = (!_.isEmpty(giveFrom) && giveFrom.type === 'companies')
         ? `/${giveFrom.type}/${giveFrom.slug}`
         : `/dashboard`;
     const month = getNextAllocationMonth(formatMessage, eftEnabled);
-    const isNonRecurring = !!(giftType && giftType.value === 0);
-    const secondParagraph = giftType && giftType.value > 0 ? formatMessage('charityTimeForSendingRecurring', {
+    const secondParagraph = giftType && giftType.value > 0 ? formatMessage('groupTimeForSendingRecurring', {
         amount: formatCurrency(formatAmount(giveAmount), language, currency),
-        charityName: name,
+        groupName: name,
         month,
-    }) : formatMessage('charityTimeForSending', {
-        charityName: name,
+    }) : formatMessage('groupTimeForSending', {
+        groupName: name,
         month,
     });
     const doneButtonText = formatMessage('doneText');
@@ -55,20 +86,16 @@ const CharitySuccess = (props) => {
         <Fragment>
             <p className="text-center">
                 {secondParagraph}
-                {(!!isNonRecurring) && (
-                    <Fragment>
-                    &nbsp;
-                        <a
-                            href="https://help.chimp.net/article/74-how-charities-receive-money"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            Learn more
-                        </a>
-                        .
-                    </Fragment>
-                )}
             </p>
+            {
+                !_isEmpty(thirdParagh)
+                && (
+                    <p className="text-center">
+                        {thirdParagh}
+
+                    </p>
+                )
+            }
             {
                 (!isNonRecurring)
                 && (
@@ -95,7 +122,17 @@ const CharitySuccess = (props) => {
     );
 };
 
-CharitySuccess.propTypes = {
+GroupSuccess.propTypes = {
+    giveGroupDetails: PropTypes.shape({
+        attributes: PropTypes.shape({
+            activeMatch: PropTypes.shape({
+                balance: PropTypes.string,
+                company: PropTypes.string,
+                maxMatchAmount: PropTypes.string,
+            }),
+            hasActiveMatch: PropTypes.bool,
+        }),
+    }),
     i18n: PropTypes.shape({
         language: PropTypes.string,
     }),
@@ -123,7 +160,17 @@ CharitySuccess.propTypes = {
     }),
     t: PropTypes.func,
 };
-CharitySuccess.defaultProps = {
+GroupSuccess.defaultProps = {
+    giveGroupDetails: {
+        attributes: {
+            activeMatch: {
+                balance: '',
+                company: '',
+                maxMatchAmount: '',
+            },
+            hasActiveMatch: false,
+        },
+    },
     i18n: {
         language: 'en',
     },
@@ -148,8 +195,8 @@ CharitySuccess.defaultProps = {
     t: () => { },
 };
 
-const memoCharitySuccess = React.memo(CharitySuccess);
-export { CharitySuccess };
+const memoGroupSuccess = React.memo(GroupSuccess);
+export { GroupSuccess };
 export default withTranslation([
     'success',
-])(memoCharitySuccess);
+])(memoGroupSuccess);

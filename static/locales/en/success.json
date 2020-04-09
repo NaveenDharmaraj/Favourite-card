@@ -12,10 +12,15 @@
     "addMoneyRecurringThirdText": "Any match requests approved by {{donationCompany}} will also be added to your account according to their matching policy.",
     "addMoneyTaxButtonText": "View tax receipt ",
     "addMoneyCompanyTaxButtonText": "View tax receipt",
-    "allocationFirstText": "Thank you for giving, {name}}.",
+    "allocationFirstText": "Thank you for giving, {{name}}.",
     "charityTimeForSending": "Your gift will be sent to {{charityName}} on {{month}}.",
     "charityRecurringThirdText": "Because this gift will be coming from your Impact Account, please make sure there are enough funds in your account before each monthly processing date If you'd like, you can also set up a monthly deposit to make sure you always have enough money in your Impact Account to cover your monthly gifts.",
     "charityMonthlyDepositButtonText": "Set up a monthly deposit ",
-    "doneText": "Done",
-    "fromToRecipient": "Your gift of charitable dollars has been sent to {{name}}."
+    "doneText": "Go back to your dashboard",
+    "fromToRecipient": "Your gift of charitable dollars has been sent to {{name}}.",
+    "charityTimeForSendingRecurring": "You scheduled {{amount}} to be sent to {{charityName}} each month, starting on {{month}}.",
+    "groupTimeForSending": "Your gift has been sent to {{groupName}}",
+    "groupTimeForSendingRecurring": "You scheduled {{amount}} to be sent to {{groupName}} each month, starting on {{month}}.",
+    "groupMatchByText": "In addition, {{matchedAmount}} was matched by {{matchedCompany}}, for a total of {{totalAmount}} sent to {{groupName}}.",
+    "groupMatchByRecurringText": "Any matching funds available will also be added to your gift."
 }
