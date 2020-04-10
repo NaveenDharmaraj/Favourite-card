@@ -39,7 +39,6 @@ import {
     resetDataForAccountChange,
     getDefaultCreditCard,
     getSelectedFriendList,
-    validateDonationForm,
 } from '../../../helpers/give/utils';
 import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
 import {
@@ -741,7 +740,7 @@ class Friend extends React.Component {
             },
         } = this.state
 
-        validity = validateDonationForm("giveAmount", inputValue, validity, giveData);
+        validity = validateGiveForm("giveAmount", inputValue, validity, giveData);
 
         this.setState({
             ...this.state,
