@@ -1,17 +1,23 @@
 import React, {
+    Fragment,
     useEffect,
 } from 'react';
 import _isEmpty from 'lodash/isEmpty';
 import {
-    Container, Grid, Image, Header,
+    Container, Grid, Image, Header, Button,
 } from 'semantic-ui-react';
 import {
     connect,
 } from 'react-redux';
 import PropTypes from 'prop-types';
 
+import {
+    formatCurrency,
+    formatAmount,
+} from '../../../helpers/give/utils';
 import { withTranslation } from '../../../i18n';
 import { reInitNextStep } from '../../../actions/give';
+import { Link } from '../../../routes';
 // This image is dummy image since we dont have a proper image
 import successImg from '../../../static/images/give-success-screen-illustration.png';
 import FlowBreadcrumbs from '../FlowBreadcrumbs';
@@ -23,7 +29,18 @@ import P2PSuccess from './P2PSuccess';
 
 const Success = (props) => {
     const {
-        currentStep, currentUser, dispatch, donationMatchData, flowObject, flowSteps, giveGroupDetails, successData, t: formatMessage,
+        currentStep,
+        currentUser,
+        dispatch,
+        donationMatchData,
+        flowObject,
+        flowSteps,
+        giveGroupDetails,
+        successData,
+        t: formatMessage,
+        i18n: {
+            language,
+        },
     } = props;
     const {
         attributes: {
@@ -32,8 +49,20 @@ const Success = (props) => {
             lastName,
         },
     } = currentUser;
+    const {
+        quaziSuccessStatus,
+    } = successData;
     const thankName = (_isEmpty(displayName)) ? displayName : `${firstName} ${lastName}`;
-    const firstParagraph = successData.type === 'donations' ? formatMessage('addMoneyFirstText', { name: thankName }) : formatMessage('allocationFirstText', { name: thankName });
+    let firstParagraph = null;
+    if (quaziSuccessStatus && successData.type === 'donations') {
+        firstParagraph = formatMessage('quaziDonationSuccessMessage', {
+            name: thankName,
+        });
+    } else {
+        firstParagraph = successData.type === 'donations'
+            ? formatMessage('addMoneyFirstText', { name: thankName })
+            : formatMessage('allocationFirstText', { name: thankName });
+    }
     useEffect(() => {
         if (flowObject) {
             reInitNextStep(dispatch, flowObject);
@@ -43,7 +72,39 @@ const Success = (props) => {
         }
     }, []);
 
+    const renderQuaziSuccess = () => {
+        const {
+            currency,
+            giveData: {
+                donationAmount,
+            },
+        } = successData;
+        const dashboardLink = '/dashboard';
+        const dashBoardButtonText = formatMessage('goToYourDashboard');
+        const secondParagraph = formatMessage('quaziDonationSuccessMessageTwo', {
+            amount: formatCurrency(formatAmount(Number(donationAmount)), language, currency),
+        });
+        return (
+            <Fragment>
+                <p className="text-center">
+                    {secondParagraph}
+                </p>
+                <div className="text-center mt-1">
+                    <Link route={dashboardLink}>
+                        <Button className="blue-btn-rounded-def flowConfirmBtn second_btn">
+                            {dashBoardButtonText}
+                        </Button>
+                    </Link>
+                </div>
+            </Fragment>
+        );
+    };
+
     const renderSuccessPage = () => {
+        if (successData.quaziSuccessStatus) {
+            return renderQuaziSuccess();
+        }
+
         switch (flowObject.type) {
             case 'donations':
                 return (
@@ -149,6 +210,7 @@ Success.propTypes = {
             }),
             recipients: PropTypes.arrayOf(PropTypes.element),
         }),
+        quaziSuccessStatus: PropTypes.bool,
         type: PropTypes.string,
     }),
     t: PropTypes.func,
@@ -190,6 +252,7 @@ Success.defaultProps = {
             },
             recipients: [],
         },
+        quaziSuccessStatus: false,
         stepsCompleted: false,
         type: null,
     },

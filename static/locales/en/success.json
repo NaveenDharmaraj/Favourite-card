@@ -22,5 +22,7 @@
     "groupTimeForSending": "Your gift has been sent to {{groupName}}",
     "groupTimeForSendingRecurring": "You scheduled {{amount}} to be sent to {{groupName}} each month, starting on {{month}}.",
     "groupMatchByText": "In addition, {{matchedAmount}} was matched by {{matchedCompany}}, for a total of {{totalAmount}} sent to {{groupName}}.",
-    "groupMatchByRecurringText": "Any matching funds available will also be added to your gift."
+    "groupMatchByRecurringText": "Any matching funds available will also be added to your gift.",
+    "quaziDonationSuccessMessage": "Thank you, {{name}}.",
+    "quaziDonationSuccessMessageTwo": " We're processing your transaction and will add {{amount}} to your Impact Account shortly. We'll send you an email within 24 hours confirming that the amount has been added."
 }
