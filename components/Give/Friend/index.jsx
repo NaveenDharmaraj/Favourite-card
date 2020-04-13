@@ -696,31 +696,6 @@ class Friend extends React.Component {
         return _.every(validity) && validateCC;
     }
 
-    // static renderTotalP2pGiveAmount(totalP2pGiveAmount, giveAmount, length, formatMessage, language, currency, formatCurrency) {
-    //     return (totalP2pGiveAmount > 0 && (
-    //         <Form.Field>
-    //             <label>
-    //                 {formatMessage('friends:totalAmountLabel')}
-    //             </label>
-    //             {(length > 1) && (
-    //                 formatMessage('friends:totalAmount',
-    //                     {
-    //                         giveAmount: formatCurrency(giveAmount, language, currency),
-    //                         numberOfRecipients: length,
-    //                         totalP2pGiveAmount: formatCurrency(totalP2pGiveAmount, language, currency),
-    //                     })
-    //             )}
-    //             {(length === 1) && (
-    //                 formatMessage('friends:giveAmount',
-    //                     {
-    //                         giveAmount: formatCurrency(giveAmount, language, currency),
-    //                     })
-    //             )}
-    //         </Form.Field>
-    //     )
-    //     );
-    // }
-
     handleGiveToEmail() {
         this.setState({
             showGiveToEmail: true,
@@ -798,31 +773,6 @@ class Friend extends React.Component {
 
         let accountTopUpComponent = null;
         const recipientsList = recipients.join(',');
-
-        // if (
-        //     (giveFrom.type === 'user' || giveFrom.type === 'companies')
-        //     && (totalP2pGiveAmount > Number(giveFrom.balance))
-        // ) {
-        //     const topupAmount = formatAmount((formatAmount(totalP2pGiveAmount)
-        //     - formatAmount(giveFrom.balance)));
-        //     accountTopUpComponent = (
-        //         <AccountTopUp
-        //             creditCard={creditCard}
-        //             donationAmount={formatedDonationAmount}
-        //             donationMatch={donationMatch}
-        //             donationMatchList={donationMatchList}
-        //             formatMessage={formatMessage}
-        //             getStripeCreditCard={this.getStripeCreditCard}
-        //             handleInputChange={this.handleInputChange}
-        //             handleInputOnBlur={this.handleOnInputBlur}
-        //             isAmountFieldVisible
-        //             isDonationMatchFieldVisible={giveFrom.type === 'user'}
-        //             paymentInstrumentList={paymentInstrumentList}
-        //             topupAmount={topupAmount}
-        //             validity={validity}
-        //         />
-        //     );
-        // }
 
         return (
             <Fragment>
@@ -927,17 +877,6 @@ class Friend extends React.Component {
                                                                 />
                                                             </Fragment>
                                                         }
-                                                        {/* {
-                                                            Friend.renderTotalP2pGiveAmount(
-                                                                totalP2pGiveAmount,
-                                                                giveAmount,
-                                                                parseEmails(recipients).length,
-                                                                formatMessage,
-                                                                language,
-                                                                currency,
-                                                                formatCurrency,
-                                                            )
-                                                        } */}
                                                         <DonationAmountField
                                                             amount={formatedP2PAmount}
                                                             formatMessage={formatMessage}
