@@ -771,7 +771,6 @@ class Friend extends React.Component {
             showGiveToEmail,
         } = this.state;
 
-        let accountTopUpComponent = null;
         const recipientsList = recipients.join(',');
 
         return (
@@ -924,8 +923,6 @@ class Friend extends React.Component {
                                                             placeholderText={formatMessage('friends:noteToSelfPlaceholderText')}
                                                             text={noteToSelf}
                                                         />
-                                                        {/* {accountTopUpComponent}
-                                                        {stripeCardComponent} */}
                                                         <Form.Button
                                                             primary
                                                             className="blue-btn-rounded btn_right"// {isMobile ? 'mobBtnPadding' : 'btnPadding'}
