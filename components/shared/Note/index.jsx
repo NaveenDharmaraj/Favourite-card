@@ -73,23 +73,32 @@ const Note = ({
     placeholderText,
     popupText,
     text,
+    hideLabel,
 }) => (
     <Fragment>
         <Form.Field>
-            <label htmlFor={fieldName}>
-                {labelText}
-            </label>
-            <Popup
-                content={popupText}
-                position="top center"
-                trigger={
-                    <Icon
-                        color="blue"
-                        name="question circle"
-                        size="large"
+            {!hideLabel
+            && (
+                <Fragment>
+                    <label htmlFor={fieldName}>
+                        {labelText}
+                    </label>
+                    <Popup
+                        content={popupText}
+                        position="top center"
+                        trigger={
+                            (
+                                <Icon
+                                    color="blue"
+                                    name="question circle"
+                                    size="large"
+                                />
+                            )
+                        }
                     />
-                }
-            />
+                </Fragment>
+            )
+            }
             <Form.Field
                 className="with-info"
                 control={TextAreaWithInfo}

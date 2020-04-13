@@ -7,14 +7,17 @@
     "maxEmail": "Number of recipients cannot exceed 25.",
     "recipientsLabel": "Give to",
     "recipientsPopup": "You can give a gift to multiple recipients at the same time, just separate email addresses with a comma.",
-    "recipientsPlaceholderText": "Enter one or more email addresses, separated by commas",
-    "noteToRecipientsLabel": "For the recipient(s)",
+    "recipientsPlaceholderText": "Enter one or more email addresses. Separate multiple email addresses with a comma.",
+    "noteToRecipientsLabel": "Message (optional)",
     "noteToRecipientsPopup": "Tell the recipient why you're sending them this gift. They're more likely to accept the gift if they read a personal message from you.",
-    "noteToRecipientsPlaceholderText": "What would you like to say to the recipient(s)?",
-    "noteToSelfLabel": "Note to self",
+    "noteToRecipientsPlaceholderText": "Send a message with your gift.",
+    "noteToSelfLabel": "Note to self (optional)",
     "noteToSelfPopup": "Write a note to yourself for later—for example, a reminder of why you gave this gift. This will only be visible to you on your Dashboard.",
-    "noteToSelfPlaceholderText": "Why are you giving today?",
+    "noteToSelfPlaceholderText": "Write a note to yourself.",
     "totalAmountLabel": "Total amount",
     "totalAmount": "{{totalP2pGiveAmount}} ({{giveAmount}} X {{numberOfRecipients}} recipients)",
-    "giveAmount": "{{giveAmount}}"
+    "giveAmount": "{{giveAmount}}",
+    "multipleFriendAmountFieldText": "For multiple friends, the amount you enter will be sent to each friend.",
+    "giveToEmailsText": "Or, enter your friend's email addresses",
+    "giveToFriendText": "Give to a friend"
 }
