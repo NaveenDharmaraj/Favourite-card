@@ -550,15 +550,15 @@ class Friend extends React.Component {
             inValidCardNameValue,
         );
         let selectedValue = [];
-        if(!_.isEmpty(friendsList)) {
-            selectedValue = getSelectedFriendList(friendsListData, friendsList);
-            flowObject.giveData.selectedFriendsList = selectedValue;
-        }
         if (this.validateForm() && validateCC) {
             if (creditCard.value > 0) {
                 flowObject.selectedTaxReceiptProfile = (flowObject.giveData.giveFrom.type === 'companies') ?
                     companyDetails.companyDefaultTaxReceiptProfile
                     : defaultTaxReceiptProfile;
+            }
+            if(!_.isEmpty(friendsList)) {
+                selectedValue = getSelectedFriendList(friendsListData, friendsList);
+                flowObject.giveData.selectedFriendsList = selectedValue;
             }
             // Emails need to be prepared for API call
             flowObject.giveData.recipients = parseEmails(
