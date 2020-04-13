@@ -31,6 +31,7 @@ const {
     APPLOZIC_BASE_URL,
     APPLOZIC_WS_URL,
     APPLOZIC_APP_KEY,
+    BRANCH_IO_KEY,
     HELP_SCOUT_KEY
 } = publicRuntimeConfig;
 
@@ -53,6 +54,9 @@ class Layout extends React.Component {
         //re-route the app to /browser if browser version is unsupported
         if (window && isValidBrowser(window.navigator.userAgent)) {
             Router.pushRoute('/browser');
+        }
+        if (typeof branch !== 'undefined') {
+            branch.init(BRANCH_IO_KEY);
         }
         // if the user didnt setup any causes then redirect to causes selection page
         if  (!_.isEmpty(userInfo) && !addCauses) {
@@ -163,6 +167,7 @@ class Layout extends React.Component {
                     />
                     <script id="stripe-js" src="https://js.stripe.com/v3/" />
                     <script type="text/javascript" defer  src="https://cdn.applozic.com/applozic/applozic.chat-5.6.1.min.js"></script>
+                    <script defer type="text/javascript" src ='/static/branchio.js'></script>
                     <script type="text/javascript" defer>
                         window.APPLOZIC_BASE_URL= "{APPLOZIC_BASE_URL}";
                         window.APPLOZIC_WS_URL= "{APPLOZIC_WS_URL}";

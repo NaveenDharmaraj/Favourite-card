@@ -65,7 +65,7 @@ const CampaignSupports = (props) => {
                                             }
                                         />
                                     ) : (
-                                        <Link route={`/campaigns/${slug}`}>
+                                        <Link route={`/campaigns/${slug}`} passHref>
                                             <List.Item as="a">
                                                 {campaignDetails}
                                             </List.Item>

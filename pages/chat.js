@@ -1,6 +1,6 @@
-import React, { cloneElement } from 'react';
+import React from 'react';
+
 import ChatWrapper from '../components/Chats';
-// import TaxReceipt from '../components/give/TaxReceipt'
 import Layout from '../components/shared/Layout';
 
 class Chats extends React.Component {
@@ -20,7 +20,7 @@ class Chats extends React.Component {
         return (
             <Layout authRequired>
                 {/* Move below to Wrapper before git commit */}
-                <ChatWrapper {...this.props} baseUrl="/chats" />
+                <ChatWrapper {...this.props} />
             </Layout>
         );
     }
