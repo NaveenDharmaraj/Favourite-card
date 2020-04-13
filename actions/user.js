@@ -846,35 +846,16 @@ export const getAllFriendsList = async (userId, pageNumber = 1) => {
     return dataArray;
 };
 
-export const getFriendsListFromApi = (userId) => getAllFriendsList(userId).then(
-    (result) => {
-        const allFriendsData = [];
-        if (result && !_.isEmpty(result)) {
-            result.map((friend) => {
-                allFriendsData.push(friend);
-            });
-        }
-        return allFriendsData;
-    },
-);
-
 export const getFriendsList = (userId) => {
     return async (dispatch) => {
         const fsa = {
             payload: {
-                friendsList: {},
+                friendsList: [],
             },
             type: actionTypes.GET_FRIENDS_LIST,
         };
-        let friendsList = null;
-        friendsList = getFriendsListFromApi(userId);
-        Promise.all([
-            friendsList,
-        ]).then((data) => {
-            if (data && !_.isEmpty(data)) {
-                fsa.payload.friendsList = data[0];
-                dispatch(fsa);
-            }
-        });
+        const friendsList = await (getAllFriendsList(userId));
+        fsa.payload.friendsList = friendsList;
+        dispatch(fsa);
     };
 };
