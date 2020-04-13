@@ -36,6 +36,7 @@ const labelTextIds = {
 
 const NoteTo = (props) => {
     const {
+        allocationType,
         formatMessage,
         giveFrom,
         handleInputOnBlur,
@@ -52,25 +53,25 @@ const NoteTo = (props) => {
     return (
         <Fragment>
             <Form.Field>
-                <Header as="h3" className="f-weight-n mt-1">
-                    {formatMessage('noteTo:includeMessageLabel')}
-                </Header>
-            </Form.Field>
-            <Form.Field>
-                <label htmlFor="noteToCharity">
-                    {formatMessage('noteTo:fortheCharityLabel')}
+                <label htmlFor="noteToCharity" className="f-weight-n mt-1">
+                    {formatMessage(`noteTo:include${allocationType}MessageLabel`)}
                 </label>
-                <Popup
-                    content={formatMessage('noteTo:allocationsForthCharityPopup')}
-                    position="top center"
-                    trigger={(
-                        <Icon
-                            color="blue"
-                            name="question circle"
-                            size="large"
-                        />
-                    )}
-                />
+                <span className="givingInfoText">
+                    {formatMessage(`noteTo:forthe${allocationType}Label`)}
+                    <Popup
+                        content={formatMessage('noteTo:allocationsForthCharityPopup')}
+                        position="top center"
+                        trigger={(
+                            <Icon
+                                color="blue"
+                                name="question circle"
+                                size="large"
+                                className="popupMargin-6"
+                            />
+                        )}
+                    />
+                </span>
+
                 <Form.Field
                     className="with-info"
                     control={TextAreaWithInfo}

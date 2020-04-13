@@ -1007,16 +1007,6 @@ class Charity extends React.Component {
                                                             handlePresetAmountClick={this.handlePresetAmountClick}
                                                             validity={validity}
                                                         />
-
-                                                        <FormValidationErrorMessage
-                                                            condition={!validity.isAmountLessThanOneBillion}
-                                                            errorMessage={ReactHtmlParser(formatMessage('giveCommon:errorMessages.invalidMaxAmountError'))}
-                                                        />
-                                                        <FormValidationErrorMessage
-                                                            condition={!validity.isAmountCoverGive}
-                                                            errorMessage={formatMessage('giveCommon:errorMessages.giveAmountGreaterThanBalance')}
-                                                        />
-
                                                         {
                                                             (!_isEmpty(coverAmountDisplay) && coverAmountDisplay > 0) &&
                                                             <p>
@@ -1083,7 +1073,7 @@ class Charity extends React.Component {
                                                 <Grid.Row className="to_space">
                                                     <Grid.Column mobile={16} tablet={16} computer={16}>
                                                         <NoteTo
-                                                            allocationType={type}
+                                                            allocationType="Charity"
                                                             formatMessage={formatMessage}
                                                             giveFrom={giveFrom}
                                                             noteToCharity={noteToCharity}

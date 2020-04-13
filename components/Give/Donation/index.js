@@ -911,9 +911,8 @@ class Donation extends React.Component {
                                                         />
                                                         <DonationFrequency
                                                             formatMessage={formatMessage}
-                                                            formData={giveData}
+                                                            giftType={giveData.giftType}
                                                             handlegiftTypeButtonClick={this.handlegiftTypeButtonClick}
-                                                            handleInputChange={this.handleInputChange}
                                                             language={language}
                                                         />
                                                         {

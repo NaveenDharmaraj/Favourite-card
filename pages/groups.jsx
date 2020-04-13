@@ -55,13 +55,11 @@ class Groups extends React.Component {
         }
         return (
             <Layout authRequired={true}>
-                <Container>
-                    <div className="pageWraper">
-                        <GiveWrapper {...this.props} baseUrl="/give/to/group" flowSteps={(slug) ? flowSteps : null}>
-                            <Group />
-                        </GiveWrapper>
-                    </div>
-                </Container>
+                <div className="pageWraper">
+                    <GiveWrapper {...this.props} baseUrl="/give/to/group" flowSteps={(slug) ? flowSteps : null}>
+                        <Group />
+                    </GiveWrapper>
+                </div>
             </Layout>
         );
     }

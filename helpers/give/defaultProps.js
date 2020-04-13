@@ -113,6 +113,9 @@ export const groupDefaultProps = {
             infoToShare: {
                 value: null,
             },
+            nameToShare: {
+                value: 0,
+            },
             noteToCharity: '',
             noteToSelf: '',
             privacyShareAddress: false,

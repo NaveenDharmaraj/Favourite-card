@@ -20,6 +20,7 @@ function DonationFrequency(props) {
         handlegiftTypeButtonClick,
         language,
         isGiveFlow,
+        recurringDisabled,
     } = props;
     return (
         <>
@@ -29,13 +30,13 @@ function DonationFrequency(props) {
                     <Popup
                         content={<div>{formatMessage('automaticDonationPopup')}</div>}
                         position="top center"
-                        trigger={
+                        trigger={(
                             <Icon
                                 color="blue"
                                 name="question circle"
                                 size="large"
                             />
-                        }
+                        )}
                     />
                 </Form.Field>
                 <Form.Field>
@@ -54,10 +55,16 @@ function DonationFrequency(props) {
                         label={isGiveFlow ? 'Send monthly' : 'Add monthly'}
                         name='automaticDonation'
                         value={1}
+                        disabled={recurringDisabled}
                         checked={!!giftType.value}
                         onChange={handlegiftTypeButtonClick}
                     />
                 </Form.Field>
+                {
+                    (recurringDisabled && (
+                        <span className="givingInfoText">This Giving group does not accept monthly gifts.</span>
+                    ))
+                }
             </div>
             {
                 ((giftType.value > 0) && (
@@ -84,14 +91,18 @@ function DonationFrequency(props) {
                                 15th of every month
                             </Button>
                         </div>
-                        <div className="recurringMsg  mt-1 mb-2">
-                            {formatMessage(
-                                'donationRecurringDateNote',
-                                { 
-                                    recurringDate: setDateForRecurring(giftType.value, formatMessage, language)
-                                },
-                            )}
-                        </div>
+                        {(!isGiveFlow) && (
+                            <div className="recurringMsg  mt-1 mb-2">
+                                {formatMessage(
+                                    'donationRecurringDateNote',
+                                    { 
+                                        recurringDate: setDateForRecurring(giftType.value, formatMessage, language)
+                                    },
+                                )}
+                            </div>
+                        )
+                        }
+                        
                     </>
                 ))
             }

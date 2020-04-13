@@ -52,6 +52,12 @@ function DonationAmountField(props) {
                 condition={!validity.isAmountLessThanOneBillion}
                 errorMessage={ReactHtmlParser(formatMessage('giveCommon:errorMessages.invalidMaxAmountError'))}
             />
+            {isGiveFlow && (
+                <FormValidationErrorMessage
+                    condition={!validity.isAmountCoverGive}
+                    errorMessage={formatMessage('giveCommon:errorMessages.giveAmountGreaterThanBalance')}
+                />
+            )}
             <div className="mt-1">
                 <Button className="btn-basic-outline" type="button" size="small" value="25" onClick={handlePresetAmountClick} >$25</Button>
                 <Button className="btn-basic-outline" type="button" size="small" value="50" onClick={handlePresetAmountClick} >$50</Button>

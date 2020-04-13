@@ -1,6 +1,8 @@
 {
     "fortheCharityLabel": "The charity will receive this message with your gift",
-    "includeMessageLabel": "Message for the charity (optional)",
+    "fortheGroupLabel":"The Giving group will receive this message with your gift",
+    "includeCharityMessageLabel": "Message for the charity (optional)",
+    "includeGroupMessageLabel": "Message for the Giving Group (optional)",
     "allocationsForthCharityPopup": "You can tell the recipient why you're giving to them, provide recommendations for how you'd prefer your gift is spent, or offer words of encouragement.",
     "generalInputPlaceHolder": "Why are you giving today?",
     "invalidLengthError": "is too long (maximum is 1000 characters)",
