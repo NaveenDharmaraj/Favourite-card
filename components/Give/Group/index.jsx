@@ -228,11 +228,12 @@ class Group extends React.Component {
                     },
                     formatMessage
                 );
+                let privacyNameOptions = Group.populateShareName(displayName);                
                 giveData = Group.initFields(
                     giveData, fund, id, paymentInstrumentOptions,
                     companyPaymentInstrumentChanged,
                     `${firstName} ${lastName}`, companiesAccountsData, userGroups, userCampaigns,
-                    addressToShareList
+                    addressToShareList, privacyNameOptions
                 );
             }
 
@@ -336,7 +337,7 @@ class Group extends React.Component {
      */
     // eslint-disable-next-line react/sort-comp
     static initFields(giveData, fund, id, paymentInstrumentOptions,
-        companyPaymentInstrumentChanged, name, companiesAccountsData, userGroups, userCampaigns, addressToShareList) {
+        companyPaymentInstrumentChanged, name, companiesAccountsData, userGroups, userCampaigns, addressToShareList, privacyNameOptions) {
         if (
             (giveData.giveFrom.type === 'user' || giveData.giveFrom.type === 'companies')
             && (giveData.creditCard.value === null || companyPaymentInstrumentChanged)
@@ -366,6 +367,13 @@ class Group extends React.Component {
                 defaultAddress,
             ] = addressToShareList;
             giveData.infoToShare = defaultAddress;
+        }
+        if (!_isEmpty(privacyNameOptions) && privacyNameOptions.length > 0
+        && !giveData.userInteracted) {
+        const [
+            defaultName,
+        ] = privacyNameOptions
+        giveData.nameToShare = defaultName;
         }
         return giveData;
     }
@@ -543,12 +551,17 @@ class Group extends React.Component {
                 }
             } else{
                 flowObject.giveData.privacyShareEmail = false;
+                flowObject.giveData.privacyShareAddress = false;
             }
             if(nameToShare.value !== 0) {
                 flowObject.giveData.privacyShareName = true;
             } else{
                 flowObject.giveData.privacyShareName = false;
-    
+            }
+            if(flowObject.giveData.giveFrom.type !== 'user') {
+                flowObject.giveData.infoToShare = {
+                    value: null,
+                };
             }
             flowObject.stepsCompleted = false;
             flowObject.nextSteptoProceed = nextStep;
