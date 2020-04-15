@@ -59,14 +59,15 @@ class CharityProfile extends React.Component {
             },
             redirectToDashboard,
         } = this.props;
-        let title = `${name}`;
+        const title = `${name} | Canadian charity | Charitable Impact`;
+        /* Commenting line number from 63 to 70 with reference to PM-462
         if (!_isEmpty(city) && !_isEmpty(province)) {
             title = `${name} | ${city}, ${province}`;
         } else if (!_isEmpty(city) && _isEmpty(province)) {
             title = `${name} | ${city}`;
         } else if (_isEmpty(city) && !_isEmpty(province)) {
             title = `${name} | ${province}`;
-        }
+        } */
         const charityDescription = !_isEmpty(description) ? description : title;
         const causesList = (causes.length > 0) ? _map(causes, _property('name')) : [];
         const keywords = (causesList.length > 0) ? _join(_slice(causesList, 0, 10), ', ') : '';
