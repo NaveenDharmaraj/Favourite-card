@@ -129,7 +129,7 @@ class SearchResultSingleCharityGroups extends React.Component {
 
                                         { this.state[`loader${i}`] ? <Icon name="spinner" loading />
                                             : (
-                                                <a href={anchorRoute} onClick={() => { this.handleAnchorClick(e) }}>
+                                                <a href={anchorRoute} onClick={(e) => { this.handleAnchorClick(e) }}>
                                                     <Button
                                                         className="view-btn" 
                                                         onClick={() => { this.handleRoute(type, slug, is_campaign, i); }}
