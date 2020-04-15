@@ -1449,6 +1449,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
         giveAmount,
         giveFrom,
         giveTo,
+        nameToShare,
         noteToCharity,
         noteToSelf,
         privacyShareAddress,
@@ -1509,7 +1510,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
                     maxMatchedAmount : Number(giveAmount);
                 listingData.push({
                     name: 'giftToGroupMatchedBy',
-                    value: `${company} (${formatCurrency(activeMatchedAmount, language, currency)})`
+                    value: `${company}: ${formatCurrency(activeMatchedAmount, language, currency)}`,
                 });
             }
         }
@@ -1523,26 +1524,16 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
                 value: infoToShareMessage,
             });
         } else {
-            let privacyShareNameMessage = '';
-            if (privacyShareAmount && privacyShareName) {
-                privacyShareNameMessage = formatMessage('givingGroups.privacyShareGiftAndName');
-            } else if (!privacyShareAmount && privacyShareName) {
-                privacyShareNameMessage = formatMessage('givingGroups.privacyShareNameHideGift');
-            } else if (privacyShareAmount && !privacyShareName) {
-                privacyShareNameMessage = formatMessage('givingGroups.privacyShareGiftHideName');
-            } else {
-                privacyShareNameMessage = formatMessage('givingGroups.privacyHideGiftAndName');
+            let privacyShareNameMessage = (nameToShare.value === 0) ? formatMessage('reviewGiveAnonymously') : nameToShare.text;
+            if (privacyShareAmount) {
+                privacyShareNameMessage = `${privacyShareNameMessage} <br/> ${formatMessage('reviewGiftAmount')} ${state.mainDisplayAmount}`;
             }
-            let privacyShareEmailMessage = '';
-            if (privacyShareEmail && privacyShareAddress) {
-                privacyShareEmailMessage = formatMessage('givingGroups.privacyShareEmailAndPostal');
-            } else if (!privacyShareEmail && privacyShareAddress) {
-                privacyShareEmailMessage = formatMessage('givingGroups.privacySharePostal');
-            } else if (privacyShareEmail && !privacyShareAddress) {
-                privacyShareEmailMessage = formatMessage('givingGroups.privacyShareEmail');
-            } else {
-                privacyShareEmailMessage = formatMessage('givingGroups.privacyHideEmailAndPostal');
+
+            let privacyShareEmailMessage = formatMessage("notApplicable");
+            if(giveFrom.type === 'user') {
+                privacyShareEmailMessage = infoToShare.text;
             }
+
             const giveToType = (giveTo.isCampaign) ? 'Campaign' : 'Group';
             listingData.push({
                 name: `privacyShareGiving${giveToType}Label`,
@@ -1551,7 +1542,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
 
             listingData.push({
                 name: `privacyShareOrganizers${giveToType}Label`,
-                value: ReactHtmlParser(privacyShareEmailMessage),
+                value: privacyShareEmailMessage,
             });
         }
 
