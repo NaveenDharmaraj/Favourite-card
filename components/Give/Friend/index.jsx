@@ -562,7 +562,6 @@ class Friend extends React.Component {
                 friendsList,
             },
         } = flowObject;
-        let selectedValue = [];
         if (this.validateForm()) {
             if (creditCard.value > 0) {
                 flowObject.selectedTaxReceiptProfile = (flowObject.giveData.giveFrom.type === 'companies') ?
@@ -570,8 +569,7 @@ class Friend extends React.Component {
                     : defaultTaxReceiptProfile;
             }
             if(!_.isEmpty(friendsList)) {
-                selectedValue = getSelectedFriendList(friendsListData, friendsList);
-                flowObject.giveData.selectedFriendsList = selectedValue;
+                flowObject.giveData.selectedFriendsList = getSelectedFriendList(friendsListData, friendsList);
             }
             // Emails need to be prepared for API call
             flowObject.giveData.recipients = parseEmails(
