@@ -37,6 +37,15 @@ class CharityProfile extends React.Component {
         };
     }
 
+    componentDidMount() {
+        const {
+            redirectToDashboard,
+        } = this.props;
+        if (redirectToDashboard) {
+            Router.push('/search');
+        }
+    }
+
     render() {
         const { publicRuntimeConfig } = getConfig();
 
@@ -80,8 +89,7 @@ class CharityProfile extends React.Component {
                 url={url}
             >
                 {!redirectToDashboard
-                    ? <CharityProfileWrapper {...this.props} />
-                    : Router.push('/search')
+                    && <CharityProfileWrapper {...this.props} />
                 }
             </Layout>
         );
