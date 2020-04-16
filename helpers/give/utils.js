@@ -1182,17 +1182,13 @@ const validateGiveForm = (field, value, validity, giveData, coverFeesAmount = nu
             );
             break;
         case 'recipients':
-            if (!_.isEmpty(giveData.recipients)) {
-                validity.isValidEmailList = isValidEmailList(giveData.recipients);
+            if (!_.isEmpty(value)) {
+                validity.isValidEmailList = isValidEmailList(value);
             }
-            if (_.isEmpty(giveData.recipients) && _.isEmpty(giveData.friendsList)) {
-                validity.isRecepientSelected = false;
-            } else {
-                validity.isRecepientSelected = true;
-            }
-            validity.isRecipientListUnique = isUniqueArray(giveData.recipients);
-            validity.isRecipientHaveSenderEmail = isEmailListContainsSenderEmail(giveData.recipients, senderEmail);
-            validity.isNumberOfEmailsLessThanMax = ((giveData.recipients.length + giveData.friendsList.length) <= 25);
+            validity.isRecepientSelected = !(_.isEmpty(value) && _.isEmpty(giveData.friendsList));
+            validity.isRecipientListUnique = isUniqueArray(value);
+            validity.isRecipientHaveSenderEmail = isEmailListContainsSenderEmail(value, senderEmail);
+            validity.isNumberOfEmailsLessThanMax = ((value.length + giveData.friendsList.length) <= 25);
             break;
         default: break;
     }
