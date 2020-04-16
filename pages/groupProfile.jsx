@@ -49,9 +49,13 @@ class GroupProfile extends React.Component {
                     isCampaign,
                 },
             },
+            redirectToDashboard,
         } = this.props;
         if (isCampaign === true) {
             Router.pushRoute(`/campaigns/${slug}`);
+        }
+        if (redirectToDashboard) {
+            Router.push('/search');
         }
         getGroupFromSlug(dispatch, slug);
     }
@@ -96,8 +100,8 @@ class GroupProfile extends React.Component {
                     url={url}
                 >
                     {!redirectToDashboard
-                        ? <GroupProfileWrapper {...this.props} />
-                        : Router.push('/search')}
+                        && <GroupProfileWrapper {...this.props} />
+                    }
                 </Layout>
             );
         }
