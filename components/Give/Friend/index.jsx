@@ -325,7 +325,8 @@ class Friend extends React.Component {
             isValidNoteToRecipients: true,
             isValidNoteToSelf: true,
             isValidPositiveNumber: true,
-            isReloadRequired:true
+            isReloadRequired:true,
+            isRecepientSelected: true,
         };
         return this.validity;
     }
@@ -509,6 +510,14 @@ class Friend extends React.Component {
                     giveData = resetP2pDataForOnInputChange(giveData, dropDownOptions);
                     validity = validateGiveForm(
                         'donationAmount',
+                        giveData.donationAmount,
+                        validity,
+                        giveData,
+                        0,
+                        userEmail,
+                    );
+                    validity = validateGiveForm(
+                        'recipients',
                         giveData.donationAmount,
                         validity,
                         giveData,
@@ -894,6 +903,10 @@ class Friend extends React.Component {
                                                                 <FormValidationErrorMessage
                                                                     condition={!validity.isNumberOfEmailsLessThanMax}
                                                                     errorMessage={formatMessage('friends:maxEmail')}
+                                                                />
+                                                                <FormValidationErrorMessage
+                                                                    condition={!validity.isRecepientSelected}
+                                                                    errorMessage="Select friends or enter emailaddress separated by comma"
                                                                 />
                                                             </Fragment>
                                                         }

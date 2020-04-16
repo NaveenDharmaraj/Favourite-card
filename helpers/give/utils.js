@@ -1185,6 +1185,11 @@ const validateGiveForm = (field, value, validity, giveData, coverFeesAmount = nu
             if (!_.isEmpty(giveData.recipients)) {
                 validity.isValidEmailList = isValidEmailList(giveData.recipients);
             }
+            if (_.isEmpty(giveData.recipients) && _.isEmpty(giveData.friendsList)) {
+                validity.isRecepientSelected = false;
+            } else {
+                validity.isRecepientSelected = true;
+            }
             validity.isRecipientListUnique = isUniqueArray(giveData.recipients);
             validity.isRecipientHaveSenderEmail = isEmailListContainsSenderEmail(giveData.recipients, senderEmail);
             validity.isNumberOfEmailsLessThanMax = ((giveData.recipients.length + giveData.friendsList.length) <= 25);
