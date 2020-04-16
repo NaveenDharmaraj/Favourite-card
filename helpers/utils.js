@@ -137,9 +137,9 @@ const getMainNavItems = (accountType, slug) => {
  * @return {boolean} isvalid which checks version of the browser
  */
 const isValidBrowser = (userAgent) => {
-    if (isFalsy(userAgent)) {
-        return true;
-    }
+    // if (isFalsy(userAgent)) {
+    //     return true;
+    // }
     const browser = Bowser.getParser(userAgent);
     const browserversionList = {
         desktop: {
