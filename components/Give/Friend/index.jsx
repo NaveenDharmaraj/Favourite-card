@@ -351,7 +351,7 @@ class Friend extends React.Component {
             giveData[name] = inputValue;
         }
         const coverFeesAmount = 0;
-        if (name !== 'coverFees' && name !== 'giftType' && name != 'friendsList' && name != 'giveFrom') {
+        if (name !== 'coverFees' && name !== 'giftType' && name !== 'friendsList' && name !== 'giveFrom' && name !== 'recipients') {
             validity = validateGiveForm(name, inputValue, validity, giveData, coverFeesAmount);
         }
         switch (name) {
@@ -365,6 +365,16 @@ class Friend extends React.Component {
                     validity,
                     giveData,
                     coverFeesAmount,
+                );
+                break;
+            case 'recipients':
+                validity = validateGiveForm(
+                    'recipients',
+                    giveData.recipients,
+                    validity,
+                    giveData,
+                    coverFeesAmount,
+                    userEmail,
                 );
                 break;
             case 'friendsList':
@@ -451,13 +461,16 @@ class Friend extends React.Component {
                 case 'giveAmount':
                     reviewBtnFlag = false;
                     giveData['formatedP2PAmount'] = newValue;
+                    giveData['totalP2pGiveAmount'] = calculateP2pTotalGiveAmount((giveData.friendsList.length + giveData.recipients.length),giveData.giveAmount);
                     break;
                 case 'recipients':
                     reviewBtnFlag = false;
                     giveData[name] = Friend.parseRecipients(newValue);
+                    giveData['totalP2pGiveAmount'] = calculateP2pTotalGiveAmount((giveData.friendsList.length + giveData.recipients.length),giveData.giveAmount);
                     break;
                 case 'friendsList':
                     reviewBtnFlag = false;
+                    giveData['totalP2pGiveAmount'] = calculateP2pTotalGiveAmount((giveData.friendsList.length + giveData.recipients.length),giveData.giveAmount);
                     break;
                 default: break;
             }
@@ -669,6 +682,7 @@ class Friend extends React.Component {
             },
             reviewBtnFlag,
         } = this.state
+        giveData.totalP2pGiveAmount = calculateP2pTotalGiveAmount((giveData.friendsList.length + giveData.recipients.length), inputValue);
         validity = validateGiveForm("giveAmount", inputValue, validity, giveData);
         reviewBtnFlag = false;
         this.setState({
@@ -676,7 +690,7 @@ class Friend extends React.Component {
             flowObject: {
                 ...this.state.flowObject,
                 giveData: {
-                    ...this.state.flowObject.giveData,
+                    ...giveData,
                     giveAmount: inputValue,
                     formatedP2PAmount,
                 }
