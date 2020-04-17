@@ -1683,7 +1683,7 @@ const setP2pDonationAmount = (giveData) => {
 */
 const resetP2pDataForOnInputChange = (giveData, dropDownOptions) => {
     giveData.totalP2pGiveAmount = calculateP2pTotalGiveAmount(
-        (parseEmails(giveData.recipients).length + giveData.friendsList.length),
+        parseEmails(giveData.recipients).length,
         giveData.giveAmount,
     );
 
