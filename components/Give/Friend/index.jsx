@@ -352,12 +352,21 @@ class Friend extends React.Component {
             giveData[name] = inputValue;
         }
         const coverFeesAmount = 0;
-        if (name !== 'coverFees' && name !== 'giftType' && name != 'friendsList') {
+        if (name !== 'coverFees' && name !== 'giftType' && name != 'friendsList' && name != 'giveFrom') {
             validity = validateGiveForm(name, inputValue, validity, giveData, coverFeesAmount);
         }
         switch (name) {
             case 'giveAmount':
                 giveData['formatedP2PAmount'] = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
+                break;
+            case 'giveFrom':
+                validity = validateGiveForm(
+                    'giveAmount',
+                    giveData.giveAmount,
+                    validity,
+                    giveData,
+                    coverFeesAmount,
+                );
                 break;
             case 'friendsList':
                 validity = validateGiveForm(
@@ -444,6 +453,7 @@ class Friend extends React.Component {
                     break;
                 case 'giveAmount':
                     reviewBtnFlag = false;
+                    giveData['formatedP2PAmount'] = newValue;
                     giveData = resetP2pDataForOnInputChange(giveData, dropDownOptions);
                     break;
                 case 'recipients':
