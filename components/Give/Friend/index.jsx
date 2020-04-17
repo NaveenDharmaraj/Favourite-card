@@ -39,6 +39,8 @@ import {
     resetDataForAccountChange,
     getDefaultCreditCard,
     getSelectedFriendList,
+    validateForReload,
+    calculateP2pTotalGiveAmount,
 } from '../../../helpers/give/utils';
 import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
 import {
@@ -61,6 +63,7 @@ import '../../shared/style/styles.less';
 import FlowBreadcrumbs from '../FlowBreadcrumbs';
 import DonationAmountField from '../DonationAmountField';
 import FriendsDropDown from '../../shared/FriendsDropDown';
+import ReloadAddAmount from '../ReloadAddAmount';
 const {
     STRIPE_KEY
 } = publicRuntimeConfig;
@@ -130,6 +133,7 @@ class Friend extends React.Component {
             userEmail: email,
             validity: this.initializeValidations(),
             showGiveToEmail: false,
+            reviewBtnFlag: false,
         };
         if(!_isEmpty(userFriendEmail) && this.state.flowObject.giveData.recipients.length === 0) {
             this.state.flowObject.giveData.recipients = [userFriendEmail.email];
@@ -300,19 +304,12 @@ class Friend extends React.Component {
             isAmountCoverGive: true,
             isAmountLessThanOneBillion: true,
             isAmountMoreThanOneDollor: true,
-            isDonationAmountBlank: true,
-            isDonationAmountCoverGive: true,
-            isDonationAmountLessThan1Billion: true,
-            isDonationAmountMoreThan1Dollor: true,
-            isDonationAmountPositive: true,
             isNoteToCharityInLimit: true,
             isNoteToSelfInLimit: true,
             isNumberOfEmailsLessThanMax: true,
             isRecipientHaveSenderEmail: true,
             isRecipientListUnique: true,
             isValidDecimalAmount: true,
-            isValidDecimalDonationAmount: true,
-            isValidDonationAmount: true,
             isValidEmailList: true,
             isValidGiveAmount: true,
             isValidGiveFrom: true,
@@ -321,6 +318,8 @@ class Friend extends React.Component {
             isValidNoteToRecipients: true,
             isValidNoteToSelf: true,
             isValidPositiveNumber: true,
+            isReloadRequired:true,
+            isRecepientSelected: true,
         };
         return this.validity;
     }
@@ -347,24 +346,17 @@ class Friend extends React.Component {
         } = this.state;
         let inputValue = value;
         const isNumber = /^(?:[0-9]+,)*[0-9]+(?:\.[0-9]+)?$/;
-        if ((name === 'giveAmount' || name === 'donationAmount') && !_.isEmpty(value) && value.match(isNumber)) {
+        if ((name === 'giveAmount') && !_.isEmpty(value) && value.match(isNumber)) {
             inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
             giveData[name] = inputValue;
         }
         const coverFeesAmount = 0;
-        if (name !== 'coverFees' && name !== 'giftType' && name !== 'giveFrom') {
+        if (name !== 'coverFees' && name !== 'giftType' && name !== 'friendsList' && name !== 'giveFrom' && name !== 'recipients') {
             validity = validateGiveForm(name, inputValue, validity, giveData, coverFeesAmount);
         }
         switch (name) {
             case 'giveAmount':
                 giveData['formatedP2PAmount'] = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
-                validity = validateGiveForm(
-                    'donationAmount',
-                    giveData.donationAmount,
-                    validity,
-                    giveData,
-                    coverFeesAmount,
-                );
                 break;
             case 'giveFrom':
                 validity = validateGiveForm(
@@ -374,28 +366,21 @@ class Friend extends React.Component {
                     giveData,
                     coverFeesAmount,
                 );
-                validity = validateGiveForm(
-                    'donationAmount',
-                    giveData.donationAmount,
-                    validity,
-                    giveData,
-                    coverFeesAmount,
-                );
-                break;
-            case 'donationAmount':
-                    giveData['formatedDonationAmount'] = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
                 break;
             case 'recipients':
                 validity = validateGiveForm(
-                    'donationAmount',
-                    giveData.donationAmount,
+                    'recipients',
+                    giveData.recipients,
                     validity,
                     giveData,
                     coverFeesAmount,
+                    userEmail,
                 );
+                break;
+            case 'friendsList':
                 validity = validateGiveForm(
                     'recipients',
-                    giveData.donationAmount,
+                    giveData.recipients,
                     validity,
                     giveData,
                     coverFeesAmount,
@@ -444,6 +429,7 @@ class Friend extends React.Component {
             },
             dropDownOptions,
             validity,
+            reviewBtnFlag,
         } = this.state;
         const {
             userEmail,
@@ -456,9 +442,6 @@ class Friend extends React.Component {
             giveData[name] = newValue;
             giveData.userInteracted = true;
             switch (name) {
-                case 'donationAmount':
-                        giveData['formatedDonationAmount'] =  newValue;
-                    break;
                 case 'giveFrom':
                     const {
                         modifiedDropDownOptions,
@@ -469,32 +452,25 @@ class Friend extends React.Component {
                         this.props,
                         type,
                     );
-
-                    giveData = resetP2pDataForOnInputChange(modifiedGiveData, dropDownOptions);
+                    reviewBtnFlag = false;
                     dropDownOptions = modifiedDropDownOptions;
-                    validity = validateGiveForm(
-                        name, giveData[name], validity, giveData, 0,
-                    );
                     if (giveData.giveFrom.type === 'companies') {
                         getCompanyPaymentAndTax(dispatch, Number(giveData.giveFrom.id));
                     }
                     break;
                 case 'giveAmount':
+                    reviewBtnFlag = false;
                     giveData['formatedP2PAmount'] = newValue;
-                    giveData[name]=formatAmount(parseFloat(newValue.replace(/,/g, '')));
-                    giveData = resetP2pDataForOnInputChange(giveData, dropDownOptions);
+                    giveData['totalP2pGiveAmount'] = calculateP2pTotalGiveAmount((giveData.friendsList.length + giveData.recipients.length),giveData.giveAmount);
                     break;
                 case 'recipients':
+                    reviewBtnFlag = false;
                     giveData[name] = Friend.parseRecipients(newValue);
-                    giveData = resetP2pDataForOnInputChange(giveData, dropDownOptions);
-                    validity = validateGiveForm(
-                        'donationAmount',
-                        giveData.donationAmount,
-                        validity,
-                        giveData,
-                        0,
-                        userEmail,
-                    );
+                    giveData['totalP2pGiveAmount'] = calculateP2pTotalGiveAmount((giveData.friendsList.length + giveData.recipients.length),giveData.giveAmount);
+                    break;
+                case 'friendsList':
+                    reviewBtnFlag = false;
+                    giveData['totalP2pGiveAmount'] = calculateP2pTotalGiveAmount((giveData.friendsList.length + giveData.recipients.length),giveData.giveAmount);
                     break;
                 default: break;
             }
@@ -512,6 +488,7 @@ class Friend extends React.Component {
                     ...this.state.validity,
                     validity,
                 },
+                reviewBtnFlag,
             });
         }
     }
@@ -541,25 +518,23 @@ class Friend extends React.Component {
                 friendsList,
             },
         } = flowObject;
-        const validateCC = this.isValidCC(
-            creditCard,
-            inValidCardNumber,
-            inValidExpirationDate,
-            inValidNameOnCard,
-            inValidCvv,
-            inValidCardNameValue,
-        );
-        let selectedValue = [];
-        if (this.validateForm() && validateCC) {
+        if (this.validateForm()) {
             if (creditCard.value > 0) {
                 flowObject.selectedTaxReceiptProfile = (flowObject.giveData.giveFrom.type === 'companies') ?
                     companyDetails.companyDefaultTaxReceiptProfile
                     : defaultTaxReceiptProfile;
             }
             if(!_.isEmpty(friendsList)) {
-                selectedValue = getSelectedFriendList(friendsListData, friendsList);
-                flowObject.giveData.selectedFriendsList = selectedValue;
+                flowObject.giveData.selectedFriendsList = getSelectedFriendList(friendsListData, friendsList);
             }
+            flowObject.giveData.selectedFriendsList.map((friendData) => {
+            _.remove(flowObject.giveData.recipients,(recepientData) => {
+                    return recepientData == friendData.email;
+                });
+            })
+            flowObject.giveData.totalP2pGiveAmount = calculateP2pTotalGiveAmount(
+                (flowObject.giveData.selectedFriendsList.length + flowObject.giveData.recipients.length),
+                flowObject.giveData.giveAmount);
             // Emails need to be prepared for API call
             flowObject.giveData.recipients = parseEmails(
                 flowObject.giveData.recipients,
@@ -666,34 +641,22 @@ class Friend extends React.Component {
                 giveData,
             },
             userEmail,
-            inValidCardNumber,
-            inValidExpirationDate,
-            inValidNameOnCard,
-            inValidCvv,
-            inValidCardNameValue,
         } = this.state;
         let {
             validity,
         } = this.state;
         const coverFeesAmount = 0;
-        validity = validateGiveForm('donationAmount', giveData.donationAmount, validity, giveData, coverFeesAmount);
         validity = validateGiveForm('giveAmount', giveData.giveAmount, validity, giveData, coverFeesAmount);
         validity = validateGiveForm('giveFrom', giveData.giveFrom.value, validity, giveData, coverFeesAmount);
         validity = validateGiveForm('noteToSelf', giveData.noteToSelf, validity, giveData, coverFeesAmount);
         validity = validateGiveForm('noteToRecipients', giveData.noteToRecipients, validity, giveData, coverFeesAmount);
-        validity = validateGiveForm('recipients', giveData.noteToRecipients, validity, giveData, coverFeesAmount, userEmail);
-
-        this.setState({ validity });
-        let validateCC = true;
-        // if (giveData.creditCard.value === 0) {
-        //     this.StripeCreditCard.handleOnLoad(
-        //         inValidCardNumber, inValidExpirationDate, inValidNameOnCard,
-        //         inValidCvv, inValidCardNameValue,
-        //     );
-        //     validateCC = (!inValidCardNumber && !inValidExpirationDate &&
-        //         !inValidNameOnCard && !inValidCvv && !inValidCardNameValue);
-        // }
-        return _.every(validity) && validateCC;
+        validity = validateGiveForm('recipients', giveData.recipients, validity, giveData, coverFeesAmount, userEmail);
+        validity = validateForReload(validity,giveData.giveFrom.type,giveData.totalP2pGiveAmount,giveData.giveFrom.balance);
+        this.setState({
+            validity,
+            reviewBtnFlag: !validity.isReloadRequired,
+        });
+        return _.every(validity);
     }
 
     handleGiveToEmail() {
@@ -713,22 +676,38 @@ class Friend extends React.Component {
             flowObject: {
                 giveData,
             },
+            reviewBtnFlag,
         } = this.state
-
+        giveData.totalP2pGiveAmount = calculateP2pTotalGiveAmount((giveData.friendsList.length + giveData.recipients.length), inputValue);
         validity = validateGiveForm("giveAmount", inputValue, validity, giveData);
-
+        reviewBtnFlag = false;
         this.setState({
             ...this.state,
             flowObject: {
                 ...this.state.flowObject,
                 giveData: {
-                    ...this.state.flowObject.giveData,
+                    ...giveData,
                     giveAmount: inputValue,
                     formatedP2PAmount,
                 }
             },
             validity,
+            reviewBtnFlag,
         });
+    }
+
+    renderReloadAddAmount = (giveFrom, totalP2pGiveAmount, giftType, reviewBtnFlag) => {
+        if (
+            (giveFrom.type === 'user' || giveFrom.type === 'companies')
+            && (totalP2pGiveAmount > Number(giveFrom.balance))
+        ) {
+            return (
+                <ReloadAddAmount
+                    giftType={giftType.value}
+                    reviewBtnFlag={reviewBtnFlag}
+                />
+            );
+        }
     }
 
     render() {
@@ -752,6 +731,7 @@ class Friend extends React.Component {
                     formatedDonationAmount,
                     formatedP2PAmount,
                     friendsList,
+                    giftType,
                     giveAmount,
                     giveFrom,
                     noteToRecipients,
@@ -769,10 +749,10 @@ class Friend extends React.Component {
             },
             validity,
             showGiveToEmail,
+            reviewBtnFlag,
         } = this.state;
 
         const recipientsList = recipients.join(',');
-
         return (
             <Fragment>
                 <div className="flowReviewbanner">
@@ -835,6 +815,7 @@ class Friend extends React.Component {
                                                                     }
                                                                 />
                                                                 <FriendsDropDown
+                                                                    handleOnInputBlur={this.handleOnInputBlur}
                                                                     handleOnInputChange={this.handleInputChange}
                                                                     values={friendsList}
                                                                 />
@@ -874,6 +855,10 @@ class Friend extends React.Component {
                                                                     condition={!validity.isNumberOfEmailsLessThanMax}
                                                                     errorMessage={formatMessage('friends:maxEmail')}
                                                                 />
+                                                                <FormValidationErrorMessage
+                                                                    condition={!validity.isRecepientSelected}
+                                                                    errorMessage="Select friends or enter emailaddress separated by comma"
+                                                                />
                                                             </Fragment>
                                                         }
                                                         <DonationAmountField
@@ -897,6 +882,7 @@ class Friend extends React.Component {
                                                             parentOnBlurChange={this.handleOnInputBlur}
                                                             formatMessage={formatMessage}
                                                         />
+                                                        {this.renderReloadAddAmount(giveFrom, totalP2pGiveAmount, giftType, reviewBtnFlag)}
                                                     </Grid.Column>
                                                 </Grid.Row>
                                             </Grid>
@@ -926,9 +912,8 @@ class Friend extends React.Component {
                                                         <Form.Button
                                                             primary
                                                             className="blue-btn-rounded btn_right"// {isMobile ? 'mobBtnPadding' : 'btnPadding'}
-                                                            // content={(!creditCardApiCall) ? formatMessage('giveCommon:continueButton')
-                                                            //     : formatMessage('giveCommon:submittingButton')}
-                                                            content="Review"
+                                                            content={reviewBtnFlag ? formatMessage('giveCommon:reviewButtonFlag')
+                                                            : formatMessage('giveCommon:reviewButton')}
                                                             disabled={(creditCardApiCall) || !this.props.userAccountsFetched}
                                                             type="submit"
                                                         />

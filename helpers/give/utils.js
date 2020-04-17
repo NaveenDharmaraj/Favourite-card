@@ -1085,17 +1085,6 @@ const validateGiveForm = (field, value, validity, giveData, coverFeesAmount = nu
     const giveAmount = giveData.totalP2pGiveAmount
         ? giveData.totalP2pGiveAmount
         : giveData.giveAmount;
-    // const allRecepients = [];
-    // if (giveData.selectedFriendsList && !_.isEmpty(giveData.selectedFriendsList)) {
-    //     giveData.selectedFriendsList.map((friend) => {
-    //         allRecepients.push(friend.email);
-    //     });
-    // }
-    // if (giveData.recipients && !_.isEmpty(giveData.recipients)) {
-    //     giveData.recipients.map((friend) => {
-    //         allRecepients.push(friend);
-    //     });
-    // }
     switch (field) {
         case 'giveAmount':
             validity.doesAmountExist = !isInputBlank(value);
@@ -1193,14 +1182,13 @@ const validateGiveForm = (field, value, validity, giveData, coverFeesAmount = nu
             );
             break;
         case 'recipients':
-            // validity.isValidEmailList = isValidEmailList(allRecepients);
-            // validity.isRecipientListUnique = isUniqueArray(allRecepients);
-            // validity.isRecipientHaveSenderEmail = isEmailListContainsSenderEmail(allRecepients, senderEmail);
-            // validity.isNumberOfEmailsLessThanMax = isNumberOfEmailsLessThanMax(allRecepients, 25);
-            validity.isValidEmailList = isValidEmailList(giveData.recipients);
-            validity.isRecipientListUnique = isUniqueArray(giveData.recipients);
-            validity.isRecipientHaveSenderEmail = isEmailListContainsSenderEmail(giveData.recipients, senderEmail);
-            validity.isNumberOfEmailsLessThanMax = isNumberOfEmailsLessThanMax(giveData.recipients, 25);
+            if (!_.isEmpty(value)) {
+                validity.isValidEmailList = isValidEmailList(value);
+            }
+            validity.isRecepientSelected = !(_.isEmpty(value) && _.isEmpty(giveData.friendsList));
+            validity.isRecipientListUnique = isUniqueArray(value);
+            validity.isRecipientHaveSenderEmail = isEmailListContainsSenderEmail(value, senderEmail);
+            validity.isNumberOfEmailsLessThanMax = ((value.length + giveData.friendsList.length) <= 25);
             break;
         default: break;
     }

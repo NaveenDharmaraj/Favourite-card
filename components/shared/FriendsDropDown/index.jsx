@@ -54,6 +54,7 @@ class FriendsDropDown extends React.Component {
     render() {
         const {
             handleOnInputChange,
+            handleOnInputBlur,
             values,
         } = this.props;
         const {
@@ -65,6 +66,7 @@ class FriendsDropDown extends React.Component {
             <div className="multyDropDownFilter">
                 <Dropdown
                     onChange={handleOnInputChange}
+                    onBlur={handleOnInputBlur}
                     placeholder="Select friends on Charitable Impact"
                     fluid
                     multiple
@@ -86,6 +88,7 @@ FriendsDropDown.defaultProps = {
     },
     dispatch: () => {},
     friendsListData: [],
+    handleOnInputBlur: () => {},
     handleOnInputChange: () => {},
     values: [],
 };
@@ -98,6 +101,7 @@ FriendsDropDown.propTypes = {
     }),
     dispatch: PropTypes.func,
     friendsListData: arrayOf(PropTypes.element),
+    handleOnInputBlur: PropTypes.func,
     handleOnInputChange: PropTypes.func,
     values: arrayOf(PropTypes.element),
 };
