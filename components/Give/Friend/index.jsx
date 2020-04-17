@@ -343,7 +343,6 @@ class Friend extends React.Component {
         } = this.state;
         let {
             validity,
-            reviewBtnFlag,
         } = this.state;
         let inputValue = value;
         const isNumber = /^(?:[0-9]+,)*[0-9]+(?:\.[0-9]+)?$/;
@@ -386,7 +385,6 @@ class Friend extends React.Component {
                 giveData,
             },
             validity,
-            reviewBtnFlag,
         });
     }
 
@@ -445,7 +443,6 @@ class Friend extends React.Component {
                         type,
                     );
                     reviewBtnFlag = false;
-                    giveData = resetP2pDataForOnInputChange(modifiedGiveData, dropDownOptions);
                     dropDownOptions = modifiedDropDownOptions;
                     if (giveData.giveFrom.type === 'companies') {
                         getCompanyPaymentAndTax(dispatch, Number(giveData.giveFrom.id));
@@ -454,16 +451,13 @@ class Friend extends React.Component {
                 case 'giveAmount':
                     reviewBtnFlag = false;
                     giveData['formatedP2PAmount'] = newValue;
-                    giveData = resetP2pDataForOnInputChange(giveData, dropDownOptions);
                     break;
                 case 'recipients':
                     reviewBtnFlag = false;
                     giveData[name] = Friend.parseRecipients(newValue);
-                    giveData = resetP2pDataForOnInputChange(giveData, dropDownOptions);
                     break;
                 case 'friendsList':
                     reviewBtnFlag = false;
-                    giveData = resetP2pDataForOnInputChange(giveData, dropDownOptions);
                     break;
                 default: break;
             }
