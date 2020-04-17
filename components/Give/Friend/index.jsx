@@ -646,16 +646,12 @@ class Friend extends React.Component {
             validity,
         } = this.state;
         const coverFeesAmount = 0;
-        const totalP2pGiveAmount = calculateP2pTotalGiveAmount(
-            (parseEmails(giveData.recipients).length + giveData.friendsList.length),
-            giveData.giveAmount,
-        );
         validity = validateGiveForm('giveAmount', giveData.giveAmount, validity, giveData, coverFeesAmount);
         validity = validateGiveForm('giveFrom', giveData.giveFrom.value, validity, giveData, coverFeesAmount);
         validity = validateGiveForm('noteToSelf', giveData.noteToSelf, validity, giveData, coverFeesAmount);
         validity = validateGiveForm('noteToRecipients', giveData.noteToRecipients, validity, giveData, coverFeesAmount);
         validity = validateGiveForm('recipients', giveData.recipients, validity, giveData, coverFeesAmount, userEmail);
-        validity = validateForReload(validity,giveData.giveFrom.type,totalP2pGiveAmount,giveData.giveFrom.balance);
+        validity = validateForReload(validity,giveData.giveFrom.type,giveData.totalP2pGiveAmount,giveData.giveFrom.balance);
         this.setState({
             validity,
             reviewBtnFlag: !validity.isReloadRequired,
@@ -757,10 +753,6 @@ class Friend extends React.Component {
         } = this.state;
 
         const recipientsList = recipients.join(',');
-        const totalAmount = calculateP2pTotalGiveAmount(
-            (parseEmails(recipients).length + friendsList.length),
-            giveAmount,
-        );
         return (
             <Fragment>
                 <div className="flowReviewbanner">
@@ -890,7 +882,7 @@ class Friend extends React.Component {
                                                             parentOnBlurChange={this.handleOnInputBlur}
                                                             formatMessage={formatMessage}
                                                         />
-                                                        {this.renderReloadAddAmount(giveFrom, totalAmount, giftType, reviewBtnFlag)}
+                                                        {this.renderReloadAddAmount(giveFrom, totalP2pGiveAmount, giftType, reviewBtnFlag)}
                                                     </Grid.Column>
                                                 </Grid.Row>
                                             </Grid>
