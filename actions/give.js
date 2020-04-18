@@ -375,6 +375,7 @@ const saveP2pAllocations = (allocation) => {
             noteToRecipients,
             noteToSelf,
             recipients,
+            selectedFriendsList,
         },
         selectedTaxReceiptProfile,
     } = allocation;
@@ -402,8 +403,9 @@ const saveP2pAllocations = (allocation) => {
             return postP2pAllocations(allocations);
         });
     }
+    const emailArray = _.concat(selectedFriendsList.map((friend) => friend.email), recipients);
     const allocations = initializeP2pAllocations(
-        recipients,
+        emailArray,
         giveAmount,
         noteToRecipients,
         noteToSelf,

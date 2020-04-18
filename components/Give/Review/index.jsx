@@ -131,7 +131,7 @@ class Review extends React.Component {
                     language,
                 );
             } else if(type === 'give/to/friend'){
-                reviewData = populateP2pReviewPage(giveData,{
+                reviewData = populateP2pReviewPage(giveData, {
                         toURL,
                         type,
                     },

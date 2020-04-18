@@ -524,9 +524,9 @@ class Friend extends React.Component {
                     companyDetails.companyDefaultTaxReceiptProfile
                     : defaultTaxReceiptProfile;
             }
-            if(!_.isEmpty(friendsList)) {
-                flowObject.giveData.selectedFriendsList = getSelectedFriendList(friendsListData, friendsList);
-            }
+            flowObject.giveData.selectedFriendsList = (!_.isEmpty(friendsList))
+                ? getSelectedFriendList(friendsListData, friendsList)
+                : [];
             flowObject.giveData.selectedFriendsList.map((friendData) => {
             _.remove(flowObject.giveData.recipients,(recepientData) => {
                     return recepientData == friendData.email;

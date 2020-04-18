@@ -1582,6 +1582,7 @@ const populateP2pReviewPage = (giveData, data, currency, formatMessage, language
         noteToSelf,
         recipientImage,
         recipientName,
+        selectedFriendsList,
         totalP2pGiveAmount,
     } = giveData;
 
@@ -1604,19 +1605,31 @@ const populateP2pReviewPage = (giveData, data, currency, formatMessage, language
         value: giveFrom.text
     });
 
-    if (emails) {
-        if (emails.length === 1) {
+    if (emails || selectedFriendsList) {
+        if (emails.length === 1 && _.isEmpty(selectedFriendsList)) {
             state.mainDisplayImage = (recipientImage) || placeholderUser;
             state.mainDisplayText = `${formatMessage('reviewGiveToText')} ${(recipientName) || emails[0]}`;
 
+        } else if(selectedFriendsList.length === 1 &&  _.isEmpty(emails)) {
+            state.mainDisplayImage = (selectedFriendsList[0].avatar) || placeholderUser;
+            state.mainDisplayText = `${formatMessage('reviewGiveToText')} ${(selectedFriendsList[0].displayName)}`;
         } else {
             state.recipients = [];
             state.showP2pList = true;
+            const fomatedAmount = formatCurrency(Number(giveAmount), language, currency);
+            _.each(selectedFriendsList, (friend) => {
+                const recipientData = {
+                    displayName: friend.displayName,
+                    type: 'user',
+                    amount: fomatedAmount,
+                };
+                state.recipients.push(recipientData);
+            });
             _.each(emails, (email) => {
                 const recipientData = {
                     displayName: email,
                     type: 'email',
-                    amount: formatCurrency(Number(giveAmount), language, currency)
+                    amount: fomatedAmount,
                 };
                 state.recipients.push(recipientData);
             });

@@ -6,6 +6,7 @@ import {
     Button,
 } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
+import _concat from 'lodash/concat';
 
 import { withTranslation } from '../../../../i18n';
 import '../../../../static/less/giveFlows.less';
@@ -16,18 +17,21 @@ const P2PSuccess = (props) => {
         successData,
         t: formatMessage,
     } = props;
-
+    const {
+        giveData,
+    } = successData;
     let name;
-    if (successData && successData.giveData && successData.giveData.recipients.length > 0) {
-        let receipientsArr = successData.giveData.recipients;
+    if (giveData) {
+        let receipientsArr = _.concat(giveData.selectedFriendsList.map((friend) => friend.displayName), giveData.recipients);
         name = receipientsArr.join();
         if (receipientsArr.length > 1) {
-            const index = receipientsArr.length - 1;
-            receipientsArr.splice(index, 0, 'and');
-            name = receipientsArr.join(' ');
+            const last = receipientsArr.pop();
+            name = `${receipientsArr.join(', ')} and ${last}`;
         }
     }
-
+    const dashboardLink = (!_.isEmpty(giveData.giveFrom) && giveData.giveFrom.type === 'companies')
+        ? `/${giveData.giveFrom.type}/${giveData.giveFrom.slug}`
+        : `/dashboard`;
     const secondParagraph = formatMessage('fromToRecipient', { name });
     const doneButtonText = formatMessage('doneText');
     return (
@@ -38,7 +42,7 @@ const P2PSuccess = (props) => {
 
             <div className="text-center mt-1">
                 {/* route have been assumed for done here */}
-                <Link route={'/dashboard'}>
+                <Link route={dashboardLink}>
                     <Button className="blue-btn-rounded-def flowConfirmBtn">
                         {doneButtonText}
                     </Button>
