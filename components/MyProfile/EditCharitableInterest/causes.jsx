@@ -114,7 +114,7 @@ class MyCauses extends React.Component {
                     />
                 </p>
                 <p className="mb-1-2 mt-1">
-                    Select causes, tags, or both to discover charities and Giving Groups that might interest you.
+                    Select causes, topics, or both to discover charities and Giving Groups that might interest you.
                 </p>
                 <div className="font-s-10">
                     Only you can see causes and topics you care about unless you decide to share them on your personal profile. We don’t share your selected causes and topics with charities or anyone else.
