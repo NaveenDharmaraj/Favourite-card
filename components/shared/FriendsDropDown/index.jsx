@@ -4,7 +4,6 @@ import {
     Dropdown,
 } from 'semantic-ui-react';
 import _isEqual from 'lodash/isEqual';
-import _ from 'lodash';
 import {
     arrayOf,
     PropTypes,
@@ -70,7 +69,7 @@ class FriendsDropDown extends React.Component {
         } = this.state;
         const filteredOptions = [];
         friendsDropdownOptions.map((option) => {
-            if (_.toLower(option.displayName).includes(_.toLower(searchQuery))) {
+            if (option.displayName.toLowerCase().includes(searchQuery.toLowerCase())) {
                 filteredOptions.push(option);
             }
         });
