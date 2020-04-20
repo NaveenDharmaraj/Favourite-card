@@ -838,7 +838,14 @@ export const saveUserCauses = (dispatch, userId, userCauses, discoverValue) => {
 };
 
 export const getAllFriendsList = async (userId, pageNumber = 1) => {
-    const result = await graphApi.get(`user/myfriends?page[number]=${pageNumber}&page[size]=100&status=accepted&userid=${userId}`);
+    const result = await graphApi.get(`user/myfriends`, {
+        params: {
+            'page[number]': pageNumber,
+            'page[size]': 100,
+            status: 'accepted',
+            userid: userId,
+        },
+    });
     const dataArray = result.data;
     if (pageNumber < result.meta.pageCount) {
         return dataArray.concat(await getAllFriendsList(userId, pageNumber + 1));

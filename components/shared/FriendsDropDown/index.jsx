@@ -4,6 +4,7 @@ import {
     Dropdown,
 } from 'semantic-ui-react';
 import _isEqual from 'lodash/isEqual';
+import _ from 'lodash';
 import {
     arrayOf,
     PropTypes,
@@ -22,7 +23,10 @@ class FriendsDropDown extends React.Component {
             dropDownOptions: {
                 friendsDropdownOptions: populateFriendsList(friendsListData),
             },
+            searchQuery: null,
         };
+        this.onSearchChange = this.onSearchChange.bind(this);
+        this.modifySearch = this.modifySearch.bind(this);
     }
 
     componentDidMount() {
@@ -51,6 +55,28 @@ class FriendsDropDown extends React.Component {
         }
     }
 
+    onSearchChange(event, { searchQuery }) {
+        this.setState({
+            searchQuery,
+        });
+    }
+
+    modifySearch() {
+        const {
+            searchQuery,
+            dropDownOptions: {
+                friendsDropdownOptions,
+            },
+        } = this.state;
+        const filteredOptions = [];
+        _.filter(friendsDropdownOptions, (option) => {
+            if (_.toLower(option.displayName).includes(_.toLower(searchQuery))) {
+                filteredOptions.push(option);
+            }
+        });
+        return filteredOptions;
+    }
+
     render() {
         const {
             handleOnInputChange,
@@ -67,6 +93,7 @@ class FriendsDropDown extends React.Component {
                 <Dropdown
                     onChange={handleOnInputChange}
                     onBlur={handleOnInputBlur}
+                    onSearchChange={this.onSearchChange}
                     placeholder="Select friends on Charitable Impact"
                     fluid
                     multiple
@@ -74,6 +101,7 @@ class FriendsDropDown extends React.Component {
                     options={friendsDropdownOptions}
                     name="friendsList"
                     value={values}
+                    search={this.modifySearch}
                 />
             </div>
         );
