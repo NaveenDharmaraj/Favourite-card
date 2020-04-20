@@ -201,16 +201,16 @@ class Review extends React.Component {
                                                             </Grid.Column>
                                                         </Grid.Row>
                                                     </Grid>
-                                                    <div className="totalAmount">
+                                                    <div className="totalAmount dottedBorderline">
                                                         <Grid>
-                                                            <Grid.Row>
-                                                                <Grid.Column mobile={8} tablet={8} computer={8}>
+                                                            <Grid.Row className="reviewP2ptext">
+                                                                <Grid.Column mobile={8} tablet={8} computer={8} >
                                                                     <div className="">
                                                                     <b>{formatMessage('reviewP2pAmount')}</b>
                                                                     </div>
                                                                 </Grid.Column>
-                                                                <Grid.Column mobile={8} tablet={8} computer={8} textAlign="right">
-                                                                    <div className="amount-table" textAlign="right">
+                                                                <Grid.Column mobile={8} tablet={8} computer={8} textAlign="right" >
+                                                                    <div className="amount-table amount-table_text" textAlign="right">
                                                                         {mainDisplayAmount}
                                                                     </div>
                                                                 </Grid.Column>
