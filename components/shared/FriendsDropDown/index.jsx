@@ -69,7 +69,7 @@ class FriendsDropDown extends React.Component {
             },
         } = this.state;
         const filteredOptions = [];
-        _.filter(friendsDropdownOptions, (option) => {
+        friendsDropdownOptions.map((option) => {
             if (_.toLower(option.displayName).includes(_.toLower(searchQuery))) {
                 filteredOptions.push(option);
             }
