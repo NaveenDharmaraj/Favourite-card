@@ -19,7 +19,6 @@ class Chats extends React.Component {
     render() {
         return (
             <Layout authRequired>
-                {/* Move below to Wrapper before git commit */}
                 <ChatWrapper {...this.props} />
             </Layout>
         );

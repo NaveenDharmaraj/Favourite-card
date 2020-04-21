@@ -276,7 +276,7 @@ const deleteConversation = (params) => {
     return applozicApi.get('/message/delete/conversation', {
         params: params,
         headers: {
-            'Accept': 'text/plain'
+            Accept: 'text/plain'
         }
     });
 };
@@ -303,7 +303,24 @@ const leaveGroup = (params) => {
     return applozicApi.post('/group/left', params);
 };
 const createGroup = (params) => {
-    return applozicApi.post('/group/v2/create', params);
+    const additionalParams = {
+        ...params,
+        metadata: {
+            ADD_MEMBER_MESSAGE: ':userName added',
+            ALERT: 'false',
+            CREATE_GROUP_MESSAGE: ':adminName created group',
+            DELETED_GROUP_MESSAGE: ':groupName deleted',
+            GROUP_ICON_CHANGE_MESSAGE: ':groupName icon changed',
+            GROUP_LEFT_MESSAGE: ':userName left',
+            GROUP_NAME_CHANGE_MESSAGE: 'Group renamed to :groupName',
+            HIDE: 'true',
+            JOIN_MEMBER_MESSAGE: ':userName joined',
+            REMOVE_MEMBER_MESSAGE: ':userName removed',
+
+        },
+    };
+
+    return applozicApi.post('/group/v2/create', additionalParams);
 };
 const sendMessageToSelectedConversation = (params) => {
     return applozicApi.post('/message/v2/send', params);

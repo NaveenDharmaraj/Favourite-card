@@ -1,10 +1,13 @@
 import getConfig from 'next/config';
 
 import _forEach from 'lodash/forEach';
+import _find from 'lodash/find';
 import _isEmpty from 'lodash/isEmpty';
+
 import { loadConversationMessages } from '../../actions/chat';
 import { placeholderGroup } from '../../static/images/no-data-avatar-group-chat-profile.png';
 import { placeholderUser } from '../../static/images/no-data-avatar-user-profile.png';
+
 const { publicRuntimeConfig } = getConfig();
 const {
     CHAT_GROUP_DEFAULT_AVATAR,
@@ -65,7 +68,7 @@ const timeString = (timestamp, isForLeftConvList) => {
  * @return {string} return a string which contain binary data of image with base 64 encoding.
  */
 const getBase64 = (file, cb) => {
-    let reader = new FileReader();
+    const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = function () {
         cb(reader.result);
@@ -80,7 +83,7 @@ const groupMessagesByDate = (msgs, msgsByDate = {}) => {
     msgs = msgs.sort((a, b) => (a.createdAtTime - b.createdAtTime));
 
     _forEach(msgs, function (msg) {
-        let dateStr = getDateString(msg.createdAtTime);
+        const dateStr = getDateString(msg.createdAtTime);
 
         if (!msgsByDate[dateStr]) {
             msgsByDate[dateStr] = [];
@@ -143,10 +146,23 @@ const conversationHead = (msg, groupFeeds, muteUserList, userDetails, userInfo) 
     return {};
 };
 
+const getCurrentUserRoleInGroup = (groupFeed, userId) => {
+    const { groupUsers } = groupFeed;
+    let userInfo = {};
+    _find(groupUsers, (user) => {
+        if (user.userId == userId) {
+            // console.log(user);
+            userInfo = user;
+        }
+    });
+    return userInfo;
+};
+
 export {
     conversationHead,
     debounceFunction,
     getBase64,
+    getCurrentUserRoleInGroup,
     getDateString,
     groupMessagesByDate,
     timeString,
