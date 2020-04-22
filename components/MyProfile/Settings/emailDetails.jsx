@@ -25,6 +25,7 @@ class EmailDetails extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            setPrimaryEmailClicked: false,
             showDeleteEmailModalState: false,
             showSetPrimaryEmailModal: false,
         };
@@ -57,6 +58,9 @@ class EmailDetails extends React.Component {
                 id: userId,
             },
         } = this.props;
+        this.setState({
+            setPrimaryEmailClicked: true,
+        });
         setPrimaryUserEmailAddress(dispatch, id, userId);
     }
 
@@ -105,6 +109,7 @@ class EmailDetails extends React.Component {
         const {
             showDeleteEmailModalState,
             showSetPrimaryEmailModal,
+            setPrimaryEmailClicked,
         } = this.state;
         const emailData = (
             <Fragment>
@@ -195,7 +200,12 @@ class EmailDetails extends React.Component {
                         You’ll be asked to log in again with your new primary email address.
                         </Modal.Description>
                         <div className="btn-wraper pt-3 text-right">
-                            <Button className="danger-btn-rounded-def c-small" onClick={this.setPrimaryEmail}>OK</Button>
+                            <Button
+                                className="danger-btn-rounded-def c-small"
+                                onClick={this.setPrimaryEmail}
+                                content={setPrimaryEmailClicked ? 'saving' : 'OK'}
+                                disabled={setPrimaryEmailClicked}
+                            />
                             <Button className="blue-bordr-btn-round-def c-small" onClick={this.closeSetPrimaryModal}>Cancel</Button>
                         </div>
                     </Modal.Content>
