@@ -107,6 +107,7 @@ class NotificationWrapper extends React.Component {
     }
 
     async onNotificationCTA(ctaKey, ctaOptions, msg) {
+        event.target.disabled = true;
         let ctaActionId = ctaKey;//cta.actionId;
         switch (ctaActionId) {
             case "setNewGivingGoal": {

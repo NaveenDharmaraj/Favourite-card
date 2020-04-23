@@ -49,9 +49,13 @@ class GroupProfile extends React.Component {
                     isCampaign,
                 },
             },
+            redirectToDashboard,
         } = this.props;
         if (isCampaign === true) {
             Router.pushRoute(`/campaigns/${slug}`);
+        }
+        if (redirectToDashboard) {
+            Router.push('/search');
         }
         getGroupFromSlug(dispatch, slug);
     }
@@ -84,7 +88,7 @@ class GroupProfile extends React.Component {
         const desc = (!_.isEmpty(description)) ? description : title;
         const causesList = (causes.length > 0) ? _.map(causes, _.property('name')) : [];
         const keywords = (causesList.length > 0) ? _.join(_.slice(causesList, 0, 10), ', ') : '';
-        const url = `${APP_URL_ORIGIN}/charities/${slug}`;
+        const url = `${APP_URL_ORIGIN}/groups/${slug}`;
 
         if (isCampaign !== true) {
             return (
@@ -96,8 +100,8 @@ class GroupProfile extends React.Component {
                     url={url}
                 >
                     {!redirectToDashboard
-                        ? <GroupProfileWrapper {...this.props} />
-                        : Router.push('/search')}
+                        && <GroupProfileWrapper {...this.props} />
+                    }
                 </Layout>
             );
         }

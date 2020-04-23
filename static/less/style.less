@@ -3205,12 +3205,13 @@ body{
     &.card{
       box-shadow: 0 13px 40px 0 rgba(0,0,0,0.13);
       padding: 35px;
-      button{
+      button,a{
         &.btn-small-white{
           &.button{
             height: 40px;
+            padding-top: 12px;
             @media only screen and (max-width:1199px)  and (min-width:991px){
-              padding: 6px 17px;
+              padding: 12px 17px;
             }
           }
         }
@@ -3619,6 +3620,8 @@ body{
                 padding-left: 0px;
                 .btn-small-white-border{
                   position: absolute;
+                  padding-top: 3px;
+                  padding-bottom: 3px;
                   bottom: 25px;
                 }
                 .chimp-lbl{
@@ -3693,6 +3696,8 @@ body{
               padding-left: 0px;
               .btn-small-white-border{
                 position: absolute;
+                padding-top: 3px;
+                padding-bottom: 3px;
                 bottom: 15px;
                 @media only screen and (max-width:1199px) and (min-width:992px) {
                   right: auto;
@@ -7965,4 +7970,29 @@ body .userEllips{
 }
 .error_page{
   margin-top:100px;
+}
+.app_logo{
+  border-top: 1px solid #C0C3D4;
+  margin-top: 5px;
+  padding-top: 20px;
+  h5{
+    &.ui{
+      &.header{
+        font-size: 16px !important;
+      font-weight: 700 !important;
+      font-family: 'ProximaNova-Regular' !important;
+      line-height: 22px !important;
+      color: #393939 !important;
+      }
+    }
+    }
+  img{
+    width: 130px;
+      @media only screen and (max-width: 768px) {
+        width: 150px !important;
+        padding: 0px;
+        margin: auto;
+        text-align: center;
+      }
+  }
 }
