@@ -331,7 +331,6 @@ class ModalComponent extends React.Component {
                                 <TaxReceiptFrom
                                     data={selectedTaxReceiptProfile}
                                     showFormData={showFormData}
-                                    formatMessage={formatMessage}
                                     parentInputChange={this.handleChildInputChange}
                                     parentOnBlurChange={this.handleChildOnBlurChange}
                                     validity={validity}

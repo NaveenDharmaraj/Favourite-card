@@ -34,6 +34,8 @@ import {
     addNewTaxReceiptProfileAndLoad,
 } from '../../../actions/give';
 import DonationFrequency from '../DonationFrequency';
+import PaymentOptions from '../../shared/PaymentInstruments';
+import TaxReceiptDropDown from '../../shared/TaxReceiptDropDown'
 import { withTranslation } from '../../../i18n';
 import { dismissAllUxCritialErrors } from '../../../actions/error';
 import '../../shared/style/styles.less';
@@ -460,44 +462,6 @@ class Donation extends React.Component {
         return donationMatchField;
     }
 
-    renderpaymentInstrumentOptions(formData, options, formatMessage) {
-        let iconClass = {
-            amex: 'cardExpress',
-            discover: "cardVisa",
-            mastercard: "cardMaster",
-            stripe: "cardVisa",
-            visa: "cardVisa",
-        };
-        const creditCardField = (
-            <Fragment>
-                <Form.Field>
-                    <label htmlFor="creditCard">
-                        {formatMessage('creditCardLabel')}
-                    </label>
-                    <div className="paymentMethodDropdown">
-                        <Dropdown
-                            id="creditCard"
-                            name="creditCard"
-                            button
-                            icon={iconClass[formData.creditCard.processor]}
-                            className="dropdownWithArrowParent icon creditCardDropDown"
-                            selection
-                            fluid
-                            floating
-                            labeled
-                            onChange={this.handleInputChange}
-                            options={options}
-                            placeholder={formatMessage('creditCardPlaceholder')}
-                            value={formData.creditCard.value}
-                        />
-                    </div>
-
-                </Form.Field>
-            </Fragment>
-        );
-        return creditCardField;
-    }
-
     componentDidUpdate(oldProps) {
         let {
             flowObject,
@@ -915,26 +879,14 @@ class Donation extends React.Component {
                                                             handlegiftTypeButtonClick={this.handlegiftTypeButtonClick}
                                                             language={language}
                                                         />
-                                                        {
-                                                            ((_isEmpty(paymentInstrumenOptions) && giveData.giveTo.value > 0)) && (
-                                                                <>
-                                                                    <label>Payment method</label>
-                                                                    <div
-                                                                        className="addNewCardInput mb-2"
-                                                                        id="addNewCreditCard"
-                                                                        onClick={this.handleAddNewButtonClicked}>
-                                                                        + Add new card
-                                                                        </div>
-                                                                </>
-                                                            )
-                                                        }
-                                                        {/* if no credit card added */}
-
-                                                        {
-                                                            ((!_isEmpty(paymentInstrumenOptions) && giveData.giveTo.value > 0) &&
-                                                                this.renderpaymentInstrumentOptions(giveData, paymentInstrumenOptions, formatMessage)
-                                                            )
-                                                        }
+                                                        <PaymentOptions
+                                                            creditCard={giveData.creditCard}
+                                                            giveTo={giveData.giveTo}
+                                                            formatMessage={formatMessage}
+                                                            handleAddNewButtonClicked={this.handleAddNewButtonClicked}
+                                                            handleInputChange={this.handleInputChange}
+                                                            options={paymentInstrumenOptions}
+                                                        />
                                                         {
                                                             <Modal
                                                                 size="tiny"
@@ -990,41 +942,15 @@ class Donation extends React.Component {
                                                                 </Modal.Content>
                                                             </Modal>
                                                         }
-                                                        {
-                                                            (!_.isEmpty(taxReceiptsOptions) && taxReceiptsOptions.length > 1 && giveData.giveTo.value > 0) ? (
-                                                                <Form.Field className="mb-2">
-                                                                    <div className="paymentMethodDropdown add_space">
-                                                                        <label htmlFor="">Tax receipt</label>
-                                                                        <Dropdown
-                                                                            button
-                                                                            className="taxReceiptDropDown label_top"
-                                                                            name="taxReceipt"
-                                                                            icon='cardExpress'
-                                                                            floating
-                                                                            fluid
-                                                                            selection
-                                                                            options={taxReceiptsOptions}
-                                                                            onChange={this.handleInputChange}
-                                                                            placeholder='Select Tax Receipt'
-                                                                            value={giveData.taxReceipt.value}
-                                                                        />
-                                                                    </div>
-                                                                </Form.Field>
-                                                            ) : (null)
-                                                        }
-                                                        {
-                                                            (!_.isEmpty(taxReceiptsOptions) && taxReceiptsOptions.length === 1 && giveData.giveTo.value > 0) ? (
-                                                                <>
-                                                                    <label>Tax Receipt</label>
-                                                                    <div
-                                                                        className="addNewCardInput"
-                                                                        id="addNewTaxReceipt"
-                                                                        onClick={this.handleAddNewButtonClicked}>
-                                                                        + Add new tax receipt
-                                                                        </div>
-                                                                </>
-                                                            ) : (null)
-                                                        }
+                                                        
+                                                        <TaxReceiptDropDown
+                                                            giveTo={giveData.giveTo}
+                                                            formatMessage={formatMessage}
+                                                            handleAddNewButtonClicked={this.handleAddNewButtonClicked}
+                                                            handleInputChange={this.handleInputChange}
+                                                            taxReceipt={giveData.taxReceipt}
+                                                            taxReceiptsOptions={taxReceiptsOptions}
+                                                        />    
                                                         {
                                                             isTaxReceiptModelOpen && (
                                                                 <TaxReceiptModal

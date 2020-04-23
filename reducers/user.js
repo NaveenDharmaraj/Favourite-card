@@ -193,6 +193,18 @@ const user = (state = {}, action) => {
                 ),
             };
             break;
+        case 'UPDATE_COMPANY_BALANCE':
+            const updatedCompanyDetails = action.payload.companyDetails;
+            const oldCompanyDataTobeUpdated = _.cloneDeep(state.companiesAccountsData) || [];
+            const companyIndex = _.findIndex(oldCompanyDataTobeUpdated, {'id': updatedCompanyDetails.id});
+            oldCompanyDataTobeUpdated[companyIndex].attributes.balance = updatedCompanyDetails.attributes.balance;
+            newState = {
+                ...state,
+                companiesAccountsData: Object.assign([],
+                    state.companiesAccountsData,
+                    oldCompanyDataTobeUpdated),
+            };
+            break;
         case 'GET_FRIENDS_LIST':
             newState = {
                 ...state,

@@ -11,6 +11,7 @@ import {
     Form,
     Icon,
     Input,
+    Placeholder,
     Popup,
     Select,
 } from 'semantic-ui-react';
@@ -91,16 +92,12 @@ class DropDownAccountOptions extends React.Component {
         }
         dropDownData = !_.isEmpty(dropDownData) ? dropDownData : null;
         let fieldData = (
-            <Form.Field
-                className="field-loader"
-                control={Input}
-                disabled
-                id={name}
-                icon={<Icon name="spinner" loading />}
-                iconPosition="left"
-                name={name}
-                placeholder={formatMessage('preloadedAccountPlaceHolder')}
-            />
+            <Placeholder>
+                <Placeholder.Header>
+                    <Placeholder.Line />
+                    <Placeholder.Line />
+                </Placeholder.Header>
+            </Placeholder>
         );
         if (!_.isEmpty(dropDownData)) {
             fieldData = (

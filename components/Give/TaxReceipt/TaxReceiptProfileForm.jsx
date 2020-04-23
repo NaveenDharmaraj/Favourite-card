@@ -18,6 +18,7 @@ import {
     usStateOptions,
 } from '../../../helpers/constants';
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
+import { withTranslation } from '../../../i18n';
 
 function TaxReceiptProfileForm(props) {
     const handleInputChange = (e, {
@@ -51,7 +52,6 @@ function TaxReceiptProfileForm(props) {
 
     const displayForm = () => {
         const {
-            formatMessage,
             showFormData,
             data: {
                 attributes: {
@@ -64,8 +64,10 @@ function TaxReceiptProfileForm(props) {
                     province,
                 },
             },
+            t,
             validity,
         } = props;
+        const formatMessage = t;
         let provinceOptions = canadaProvinceOptions;
         let showUSNote = false;
         let provinceMessage = 'province';
@@ -311,4 +313,4 @@ function TaxReceiptProfileForm(props) {
         displayForm()
     );
 }
-export default TaxReceiptProfileForm;
+export default withTranslation('taxReceipt')(TaxReceiptProfileForm);

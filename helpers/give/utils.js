@@ -908,7 +908,7 @@ const setDonationAmount = (giveData, coverFeesData) => {
         donationAmount = (formatAmount(giveData.giveAmount) - formatAmount(giveData.giveFrom.balance));
         donationAmount = formatAmount(donationAmount);
         if (Number(donationAmount) < 5) {
-            donationAmount = 5;
+            donationAmount = formatAmount(5);
         }
     }
     return donationAmount;
@@ -1755,6 +1755,11 @@ const validateForReload = (validity, type, giveAmount, balance) => {
     return validity;
 };
 
+const validateForMinReload = (donationAmount, minReload, validity) => {
+    validity.isAmountEnoughForAllocation = (Number(donationAmount) >= Number(minReload));
+    return validity;
+};
+
 const getSelectedFriendList = (options, values) => {
     const selectedFriendsList = [];
     let index = null;
@@ -1814,5 +1819,6 @@ export {
     calculateP2pTotalGiveAmount,
     populateFriendsList,
     validateForReload,
+    validateForMinReload,
     getSelectedFriendList,
 };

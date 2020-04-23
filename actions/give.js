@@ -1,3 +1,4 @@
+/* eslint-disable no-else-return */
 /* eslint-disable import/exports-last */
 import _ from 'lodash';
 
@@ -40,6 +41,7 @@ export const actionTypes = {
     SET_COMPANY_PAYMENT_ISTRUMENTS: 'SET_COMPANY_PAYMENT_ISTRUMENTS',
     SET_USER_PAYMENT_INSTRUMENTS: 'SET_USER_PAYMENT_INSTRUMENTS',
     TAX_RECEIPT_API_CALL_STATUS: 'TAX_RECEIPT_API_CALL_STATUS',
+    UPDATE_COMPANY_BALANCE: 'UPDATE_COMPANY_BALANCE',
 };
 
 const setDonationData = (donation) => {
@@ -566,9 +568,13 @@ const getAllActivePaymentInstruments = (id, dispatch, type = 'user') => {
             },
         },
     );
-}
+};
 
-export const addNewCardAndLoad = (flowObject) => {
+const setUserDefaultCreditCard = (paymentInstrumentId) => {
+    return coreApi.patch(`/paymentInstruments/${Number(paymentInstrumentId)}/set_as_default`);
+};
+
+export const addNewCardAndLoad = (flowObject, isDefaultCard) => {
     return (dispatch) => {
         dispatch({
             payload: {
@@ -576,7 +582,6 @@ export const addNewCardAndLoad = (flowObject) => {
             },
             type: actionTypes.ADD_NEW_CREDIT_CARD_STATUS,
         });
-        
         const {
             giveData: {
                 giveFrom,
@@ -606,6 +611,11 @@ export const addNewCardAndLoad = (flowObject) => {
             return savePaymentInstrument(paymentInstrumentsData);
         }).then((result) => {
             addedCreditCard = result;
+            if (isDefaultCard) {
+                return setUserDefaultCreditCard(Number(result.data.id));
+            }
+            return null;
+        }).then((response) => {
             return getAllActivePaymentInstruments(accountDetails.id, dispatch, accountDetails.type);
         }).then((res) => {
             const userFsa = {
@@ -631,7 +641,6 @@ export const addNewCardAndLoad = (flowObject) => {
             }
             return addedCreditCard;
         }).catch((err) => {
-            
             triggerUxCritialErrors(err.errors || err, dispatch);
             return Promise.reject(err);
         }).finally(() => {
@@ -1056,4 +1065,56 @@ export const getGroupsFromSlug = (dispatch, slug) => {
 
 export {
     createToken,
+};
+const fetchCompanyDetails = (dispatch, companyId) => {
+    return coreApi.get(
+        `/companies/${companyId}`,
+        {
+            params: {
+                dispatch,
+                uxCritical: true,
+            },
+        },
+    ).then((result) => {
+        const payload = {
+            companyDetails: result.data,
+        };
+        dispatch({
+            payload,
+            type: actionTypes.UPDATE_COMPANY_BALANCE,
+        });
+    });
+};
+
+
+export const walletTopUp = (reloadObject) => {
+    const accountDetails = {
+        id: reloadObject.giveData.giveTo.id,
+        type: reloadObject.giveData.giveTo.type,
+    };
+    return (dispatch) => {
+        return saveDonations(reloadObject).then((result) => {
+            if (accountDetails.type === 'user') {
+                return getUserFund(dispatch, accountDetails.id);
+            } else if (accountDetails.type === 'companies') {
+                return fetchCompanyDetails(dispatch, accountDetails.id);
+            }
+        }).then(() => {
+            const statusMessageProps = {
+                message: 'Wallet reloaded',
+                type: 'success',
+            };
+            dispatch({
+                payload: {
+                    errors: [
+                        statusMessageProps,
+                    ],
+                },
+                type: 'TRIGGER_UX_CRITICAL_ERROR',
+            });
+        }).catch((error) => {
+            triggerUxCritialErrors(error);
+            return Promise.reject(error);
+        });
+    };
 };

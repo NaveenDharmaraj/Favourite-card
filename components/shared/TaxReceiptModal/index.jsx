@@ -202,7 +202,6 @@ class TaxReceiptModalComponent extends React.Component {
                                 <TaxReceiptFrom
                                     data={selectedTaxReceiptProfile}
                                     showFormData={true}
-                                    formatMessage={formatMessage}
                                     parentInputChange={this.handleChildInputChange}
                                     parentOnBlurChange={this.handleChildOnBlurChange}
                                     validity={validity}

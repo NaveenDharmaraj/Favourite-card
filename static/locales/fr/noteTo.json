@@ -10,6 +10,8 @@
     "givingNoteToSelfPopup": "Laissez-vous une note personnelle pour plus tard, par exemple, un rappel des raisons qui vous ont motivé à faire ce don de charité. Ce message ne sera visible que sur votre Tableau de bord.",
     "noteToSelfPlaceHolder": "Laissez-vous une note personnelle pour plus tard",
     "noteToSelfLabelReview" : "Note à votre intention",
+    "noteToSelfLabel": "Note à votre intention (optionnel)",
+    "donorNoteToSelfPopup": "Write a note to yourself for later—for example, a reminder of why you added this money to your account. This will only be visible to you on your Dashboard.",
     "noteToCompanyLabel": "Note pour l'entreprise",
     "noteToGroupLabel": "Note pour le groupe"
 }

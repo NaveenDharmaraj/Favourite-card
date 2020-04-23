@@ -994,6 +994,69 @@ p{
 
 
 /*****multyDropDown*************/
+
+/*******close*********/
+.closebtn{
+    top: 15px !important;
+    right: 15px !important;
+    height: 17px;
+    width: 17px;
+    cursor: pointer;
+    position: absolute;
+    z-index: 1;
+    opacity: .8;
+    padding: .625rem 0 0 0;
+    background-image: url('../images/icons/close.svg') !important;
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+}
+/*****close**********/
+.noteDefault-bg{
+    background-color: #E3E8F0;
+    padding: 21px 35px 21px;
+    .noteWraper{
+        display: list-item;
+        table-layout: fixed;
+        list-style-type: none;
+        list-style-position: outside;
+        .leftImg{
+            display: inline-block;
+            vertical-align: middle!important;
+            height: 24px;
+            .notifyDefaultIcon{
+                display: inline-block;
+                width: 28px;
+                height: 28px;
+                background-color: #fff;
+                border-radius: 100%;
+                position: relative;
+                &::before{
+                    content: '';
+                    position: absolute;
+                    left: 0px;
+                    right: 0px;
+                    top: 3px;
+                    bottom: 3px;
+                    margin: auto;
+                    background-image: url(../images/icons/exclamation.svg);
+                    background-repeat: no-repeat;
+                    background-position: center;
+                    background-size: contain;
+                }
+            }
+        }
+        .noteContent{
+            display: inline-block;
+            vertical-align: middle!important;
+            padding-left: 17px;
+            width: calc(100% - 45px);
+            line-height: 17px;
+            .amount-give{
+                font-weight: bold;
+            }
+        }
+    }
+}
 .dottedBorderline{
     border-top: 1px dashed #E7E7F0;
     margin-top: 30px;
@@ -1018,4 +1081,8 @@ p{
     @media only screen and (max-width:767px) {
         margin-right:0px !important;
     }
+}
+.hyperLinks-style{
+    color: #055CE5;
+    cursor: pointer;
 }

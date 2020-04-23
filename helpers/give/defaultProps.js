@@ -34,6 +34,37 @@ export const donationDefaultProps = {
     },
 };
 
+export const reloadDefaultProps = {
+    reloadObject: {
+        cardHolderName: '',
+        currency: 'USD',
+        giveData: {
+            creditCard: {
+                value: null,
+            },
+            donationAmount: '',
+            donationMatch: {
+                value: null,
+            },
+            formatedDonationAmount: '',
+            giftType: {
+                value: 0,
+            },
+            giveTo: {
+                value: null,
+            },
+            newCreditCardId: null,
+            noteToSelf: '',
+            taxReceipt: {
+                value: null,
+            },
+            userInteracted: false,
+        },
+        selectedTaxReceiptProfile: {},
+        stripeCreditCard: {},
+        type: 'donations',
+    },
+};
 
 export const beneficiaryDefaultProps = {
     flowObject: {
