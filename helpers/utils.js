@@ -137,6 +137,9 @@ const getMainNavItems = (accountType, slug) => {
  * @return {boolean} isvalid which checks version of the browser
  */
 const isValidBrowser = (userAgent) => {
+    // if (isFalsy(userAgent)) {
+    //     return true;
+    // }
     const browser = Bowser.getParser(userAgent);
     const browserversionList = {
         desktop: {
@@ -144,6 +147,7 @@ const isValidBrowser = (userAgent) => {
                 Chrome: '>67',
                 Chromium: '>67',
                 Firefox: '>58',
+                'Internet Explorer': '>15',
                 'Microsoft Edge': '>17',
                 safari: '>11',
             },
@@ -151,6 +155,7 @@ const isValidBrowser = (userAgent) => {
                 Chrome: '>67',
                 Chromium: '>67',
                 Firefox: '>58',
+                'Internet Explorer': '>15',
                 'Microsoft Edge': '>17',
                 safari: '>11',
             },
@@ -158,6 +163,7 @@ const isValidBrowser = (userAgent) => {
                 Chrome: '>67',
                 Chromium: '>67',
                 Firefox: '>58',
+                'Internet Explorer': '>15',
                 'Microsoft Edge': '>17',
             },
         },
@@ -167,12 +173,14 @@ const isValidBrowser = (userAgent) => {
                 Chrome: '>67',
                 Chromium: '>67',
                 Firefox: '>58',
+                'Internet Explorer': '>15',
                 'Microsoft Edge': '>17',
             },
             iOS: {
                 Chrome: '>67',
                 Chromium: '>67',
                 Firefox: '>58',
+                'Internet Explorer': '>15',
                 'Microsoft Edge': '>17',
                 safari: '>10',
             },
@@ -182,12 +190,14 @@ const isValidBrowser = (userAgent) => {
                 Chrome: '>67',
                 Chromium: '>67',
                 Firefox: '>58',
+                'Internet Explorer': '>15',
                 'Microsoft Edge': '>17',
             },
             iOS: {
                 Chrome: '>67',
                 Chromium: '>67',
                 Firefox: '>58',
+                'Internet Explorer': '>15',
                 'Microsoft Edge': '>17',
                 safari: '>10',
             },
@@ -200,6 +210,9 @@ const isValidBrowser = (userAgent) => {
     let browserCheck;
     let isvalid = true;
     if (browser.parsedResult) {
+        if (browser.parsedResult.browser && isFalsy(browser.parsedResult.browser.version)) {
+            return false;
+        }
         platform = browser.parsedResult.platform.type;
         currentBrowser = browser.parsedResult.browser.name;
         os = browser.parsedResult.os.name;

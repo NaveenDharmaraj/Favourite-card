@@ -169,7 +169,7 @@ class Privacy extends React.Component {
                 <div className="userSettingsContainer">
                         <div className="settingsDetailWraper">
                             <Header as="h4">Discoverability </Header>
-                             <p>Choose whether people can see your name and find you on Charitable Impact.</p>
+                             <p>Choose whether people can search for your personal profile on Charitable Impact.</p>
                         </div>
                         <div className="settingsDetailWraper">
                             <List divided verticalAlign="middle" className="userList">

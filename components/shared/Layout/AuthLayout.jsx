@@ -27,6 +27,7 @@ const AuthLayout = (props) => {
                     rel="stylesheet"
                     href="//cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css"
                 />
+                <script defer type="text/javascript" src="/static/branchio.js" />
             </Head>
             <div>
                 {/** Segment is used to support Routes, routes does not work without segment */}

@@ -42,10 +42,6 @@ class StatusMessage extends Component {
         }, TOAST_MESSAGE_TIMEOUT);
     }
 
-    componentWillUnmount() {
-        clearTimeout(timer);
-    }
-
     handleDismiss() {
         dismissUxCritialErrors(this.props.error, this.props.dispatch);
     }
