@@ -390,11 +390,13 @@ class ReloadAddAmount extends React.Component {
             minReloadAmount,
         } = this.state;
         let inputValue = value;
-        const isValidNumber = /^(?:[0-9]+,)*[0-9]+(?:\.[0-9]+)?$/;
-        if ((name === 'donationAmount') && !_.isEmpty(value) && value.match(isValidNumber)) {
-            inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
-            giveData[name] = inputValue;
-            giveData.formatedDonationAmount = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
+        const isValidNumber = /^(?:[0-9]+,)*[0-9]+(?:\.[0-9]*)?$/;
+        if (name === 'donationAmount') {
+            if (!_.isEmpty(value) && value.match(isValidNumber)) {
+                inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
+                giveData[name] = inputValue;
+                giveData.formatedDonationAmount = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
+            }
             validity = validateDonationForm('donationAmount', inputValue, validity, giveData);
             validity = validateForMinReload(inputValue, minReloadAmount, validity)
         }

@@ -345,19 +345,17 @@ class Friend extends React.Component {
             validity,
         } = this.state;
         let inputValue = value;
-        const isNumber = /^(?:[0-9]+,)*[0-9]+(?:\.[0-9]+)?$/;
+        const isNumber = /^(?:[0-9]+,)*[0-9]+(?:\.[0-9]*)?$/;
         if ((name === 'giveAmount') && !_.isEmpty(value) && value.match(isNumber)) {
             inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
             giveData[name] = inputValue;
+            giveData['formatedP2PAmount'] = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
         }
         const coverFeesAmount = 0;
         if (name !== 'coverFees' && name !== 'giftType' && name !== 'friendsList' && name !== 'giveFrom' && name !== 'recipients') {
             validity = validateGiveForm(name, inputValue, validity, giveData, coverFeesAmount);
         }
         switch (name) {
-            case 'giveAmount':
-                giveData['formatedP2PAmount'] = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
-                break;
             case 'giveFrom':
                 validity = validateGiveForm(
                     'giveAmount',
