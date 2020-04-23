@@ -1733,6 +1733,7 @@ const populateFriendsList = (friendsList) => {
     if (!_.isEmpty(friendsList)) {
         friendsList.map((friend) => {
             singleObject = {
+                displayName: friend.attributes.display_name,
                 id: friend.attributes.user_id,
                 image: {
                     avatar: true,
