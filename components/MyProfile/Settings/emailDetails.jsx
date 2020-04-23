@@ -203,7 +203,7 @@ class EmailDetails extends React.Component {
                             <Button
                                 className="danger-btn-rounded-def c-small"
                                 onClick={this.setPrimaryEmail}
-                                content={setPrimaryEmailClicked ? 'saving' : 'OK'}
+                                content={setPrimaryEmailClicked ? 'Saving...' : 'OK'}
                                 disabled={setPrimaryEmailClicked}
                             />
                             <Button className="blue-bordr-btn-round-def c-small" onClick={this.closeSetPrimaryModal}>Cancel</Button>
