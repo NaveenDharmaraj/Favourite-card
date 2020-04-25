@@ -28,6 +28,7 @@ export const actionTypes = {
     SAVE_DEEP_LINK: 'SAVE_DEEP_LINK',
     SET_USER_INFO: 'SET_USER_INFO',
     SET_USER_ACCOUNT_FETCHED: 'SET_USER_ACCOUNT_FETCHED',
+    SHOW_FRIENDS_DROPDOWN: 'SHOW_FRIENDS_DROPDOWN',
     UPDATE_USER_FUND: 'UPDATE_USER_FUND',
     GIVING_GROUPS_AND_CAMPAIGNS: 'GIVING_GROUPS_AND_CAMPAIGNS',
     DISABLE_GROUP_SEE_MORE: 'DISABLE_GROUP_SEE_MORE',
@@ -862,7 +863,16 @@ export const getFriendsList = (userId) => {
             type: actionTypes.GET_FRIENDS_LIST,
         };
         const friendsList = await (getAllFriendsList(userId));
-        fsa.payload.friendsList = friendsList;
-        dispatch(fsa);
+        if (!_.isEmpty(friendsList)) {
+            fsa.payload.friendsList = friendsList;
+            dispatch(fsa);
+        } else {
+            dispatch({
+                payload: {
+                    showFriendDropDown: false,
+                },
+                type: actionTypes.SHOW_FRIENDS_DROPDOWN,
+            });
+        }
     };
 };

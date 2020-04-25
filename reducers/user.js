@@ -211,6 +211,12 @@ const user = (state = {}, action) => {
                 friendsList: action.payload.friendsList,
             };
             break;
+        case 'SHOW_FRIENDS_DROPDOWN':
+            newState = {
+                ...state,
+                showFriendDropDown: action.payload.showFriendDropDown,
+            };
+            break;
         default:
             break;
     }

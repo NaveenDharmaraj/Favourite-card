@@ -72,6 +72,10 @@ const CreditCard = dynamic(() => import('../../shared/CreditCard'), {
     ssr: false
 });
 
+const actionTypes = {
+    SHOW_FRIENDS_DROPDOWN: 'SHOW_FRIENDS_DROPDOWN',
+};
+
 class Friend extends React.Component {
     constructor(props) {
         super(props);
@@ -146,6 +150,12 @@ class Friend extends React.Component {
                 type: 'USER_FRIEND_EMAIL',
             });
         }
+        dispatch({
+            payload: {
+                showFriendDropDown: true,
+            },
+            type: actionTypes.SHOW_FRIENDS_DROPDOWN,
+        });
         
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleOnInputBlur = this.handleOnInputBlur.bind(this);
@@ -717,6 +727,7 @@ class Friend extends React.Component {
                 language,
             },
             t: formatMessage,
+            showDropDown,
         } = this.props;
         const {
             flowObject: {
@@ -812,7 +823,10 @@ class Friend extends React.Component {
                                                                         />
                                                                     }
                                                                 />
-                                                                <FriendsDropDown
+                                                                {showDropDown
+                                                                && (
+                                                                    <Fragment>
+                                                                        <FriendsDropDown
                                                                     handleOnInputBlur={this.handleOnInputBlur}
                                                                     handleOnInputChange={this.handleInputChange}
                                                                     values={friendsList}
@@ -822,7 +836,10 @@ class Friend extends React.Component {
                                                                         {formatMessage('friends:giveToEmailsText')}
                                                                     </a>
                                                                 </p>
-                                                                {(showGiveToEmail || !_.isEmpty(recipients))
+                                                                    </Fragment>
+                                                                )
+                                                                }
+                                                                {(showGiveToEmail || !_.isEmpty(recipients) || (typeof showDropDown !== 'undefined' && !showDropDown))
                                                                 && (
                                                                     <Note
                                                                         enableCharacterCount={false}
@@ -946,6 +963,7 @@ function mapStateToProps(state) {
         creditCardApiCall: state.give.creditCardApiCall,
         userFriendEmail: state.dashboard.userFriendEmail,
         friendsListData: state.user.friendsList,
+        showDropDown: state.user.showFriendDropDown,
     };
 }
 
