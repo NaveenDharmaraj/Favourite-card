@@ -63,7 +63,6 @@ import IconIndividual from '../../../static/images/no-data-avatar-group-chat-pro
 import FlowBreadcrumbs from '../FlowBreadcrumbs';
 import ReloadAddAmount from '../ReloadAddAmount';
 import { withTranslation } from '../../../i18n';
-import { dismissAllUxCritialErrors } from '../../../actions/error';
 import { Router } from '../../../routes';
 const FormValidationErrorMessage = dynamic(() => import('../../shared/FormValidationErrorMessage'));
 const NoteTo = dynamic(() => import('../NoteTo'));
@@ -188,7 +187,6 @@ class Charity extends React.Component {
         this.validateForm = this.validateForm.bind(this);
         this.handleAddMoneyModal = this.handleAddMoneyModal.bind(this);
         this.renderReloadAddAmount = this.renderReloadAddAmount.bind(this);
-        dismissAllUxCritialErrors(props.dispatch);
     }
 
     componentDidMount() {
@@ -373,16 +371,6 @@ class Charity extends React.Component {
     // eslint-disable-next-line react/sort-comp
     static initFields(giveData, fund, id, avatar, paymentInstrumentOptions,
         companyPaymentInstrumentChanged, name, companiesAccountsData, userGroups, userCampaigns, giveGroupBenificairyDetails, groupId) {
-        if (
-            (giveData.giveFrom.type === 'user' || giveData.giveFrom.type === 'companies')
-            && (giveData.creditCard.value === null || companyPaymentInstrumentChanged)
-            && (giveData.giftType.value > 0
-                || Number(giveData.giveAmount) > Number(giveData.giveFrom.balance))
-        ) {
-            giveData.creditCard = getDefaultCreditCard(
-                paymentInstrumentOptions,
-            );
-        }
         if (_isEmpty(companiesAccountsData) && _isEmpty(userGroups) && _isEmpty(userCampaigns) && !giveData.userInteracted) {
             giveData.giveFrom.avatar = avatar,
                 giveData.giveFrom.id = id;
@@ -438,17 +426,10 @@ class Charity extends React.Component {
             isAmountLessThanOneBillion: true,
             isAmountMoreThanOneDollor: true,
             isDedicateGiftEmpty: true,
-            isDonationAmountBlank: true,
-            isDonationAmountCoverGive: true,
-            isDonationAmountLessThan1Billion: true,
-            isDonationAmountMoreThan1Dollor: true,
-            isDonationAmountPositive: true,
             isNoteToCharityInLimit: true,
             isNoteToSelfInLimit: true,
             isValidAddingToSource: true,
             isValidDecimalAmount: true,
-            isValidDecimalDonationAmount: true,
-            isValidDonationAmount: true,
             isValidGiveAmount: true,
             isValidGiveFrom: true,
             isValidNoteSelfText: true,
@@ -478,7 +459,6 @@ class Charity extends React.Component {
             coverFeesData,
         } = this.props;
         const coverFeesAmount = Charity.getCoverFeesAmount(giveData, coverFeesData);
-        validity = validateGiveForm('donationAmount', giveData.donationAmount, validity, giveData, coverFeesAmount);
         validity = validateGiveForm('giveAmount', giveData.giveAmount, validity, giveData, coverFeesAmount);
         validity = validateGiveForm('giveFrom', giveData.giveFrom.value, validity, giveData, coverFeesAmount);
         validity = validateGiveForm('noteToSelf', giveData.noteToSelf, validity, giveData, coverFeesAmount);
@@ -533,12 +513,8 @@ class Charity extends React.Component {
             validity = validateGiveForm(name, inputValue, validity, giveData, coverFeesAmount);
         }
         switch (name) {
-            case 'giveAmount':
-                validity = validateGiveForm('donationAmount', giveData.donationAmount, validity, giveData, coverFeesAmount);
-                break;
             case 'giveFrom':
                 validity = validateGiveForm('giveAmount', giveData.giveAmount, validity, giveData, coverFeesAmount);
-                validity = validateGiveForm('donationAmount', giveData.donationAmount, validity, giveData, coverFeesAmount);
                 break;
             case 'inHonorOf':
             case 'inMemoryOf':
@@ -583,7 +559,6 @@ class Charity extends React.Component {
             dropDownOptions,
             reloadModalOpen,
             reviewBtnFlag,
-            selectedCreditCard,
             validity,
         } = this.state;
         const {
@@ -647,14 +622,8 @@ class Charity extends React.Component {
                         getCompanyPaymentAndTax(dispatch, Number(giveData.giveFrom.id));
                     }
                     break;
-                case 'giftType':
-                    giveData = resetDataForGiftTypeChange(giveData, dropDownOptions, coverFeesData);
-                    break;
                 case 'giveAmount':
                     giveData['formatedCharityAmount'] = newValue;
-                    giveData = resetDataForGiveAmountChange(
-                        giveData, dropDownOptions, coverFeesData,
-                    );
                     reviewBtnFlag = false;
                     reloadModalOpen = 0;
                     break;
@@ -723,23 +692,15 @@ class Charity extends React.Component {
         } = this.props;
         const {
             giveData: {
-                creditCard,
                 coverFees,
                 giveFrom,
                 giveAmount,
             },
         } = flowObject;
         if (this.validateForm()) {
-            if (creditCard.value > 0) {
-                flowObject.selectedTaxReceiptProfile = (flowObject.giveData.giveFrom.type === 'companies') ?
-                    companyDetails.companyDefaultTaxReceiptProfile :
-                    defaultTaxReceiptProfile;
-            }
             flowObject.giveData.coverFeesAmount = (coverFees) ?
                 coverFeesData.giveAmountFees : null;
             flowObject.stepsCompleted = false;
-            delete flowObject.giveData.donationAmount
-            dismissAllUxCritialErrors(this.props.dispatch);
             dispatch(proceed(flowObject, flowSteps[stepIndex + 1], stepIndex));
         }
     }
@@ -1015,7 +976,6 @@ class Charity extends React.Component {
             flowObject: {
                 giveData: {
                     coverFees,
-                    creditCard,
                     dedicateGift: {
                         dedicateType,
                         dedicateValue,

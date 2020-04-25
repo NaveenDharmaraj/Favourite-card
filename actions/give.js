@@ -140,13 +140,9 @@ const postAllocation = async (allocationData) => {
 const initializeAndCallAllocation = (allocation, attributes, type) => {
     const {
         giveData,
-        selectedTaxReceiptProfile,
     } = allocation;
 
     const {
-        creditCard,
-        donationAmount,
-        donationMatch,
         giftType,
         giveFrom,
         giveTo,
@@ -172,46 +168,10 @@ const initializeAndCallAllocation = (allocation, attributes, type) => {
     if (giftType.value === 0) {
         allocationData.type = (type === 'charity')
             ? 'allocations' : 'groupAllocations';
-        if (donationAmount) {
-            return saveDonations({
-                selectedTaxReceiptProfile,
-                giveData: {
-                    automaticDonation: false,
-                    creditCard,
-                    donationAmount,
-                    donationMatch,
-                    giveTo : giveFrom,
-                    noteToSelf: '',
-                },
-            }).then((result) => {
-                allocationData.relationships.donation = {
-                    data: {
-                        id: result.data.id,
-                        type: 'donations',
-                    },
-                };
-                return postAllocation(allocationData);
-            });
-        }
     } else {
-        allocationData.type = 'recurringAllocations';
         allocationData.type = (type === 'charity')
             ? 'recurringAllocations' : 'recurringGroupAllocations';
         allocationData.attributes.dayOfMonth = giftType.value;
-        if (donationMatch.value > 0) {
-            allocationData.relationships.employeeRole = {
-                data: {
-                    id: donationMatch.value,
-                    type: 'roles',
-                },
-            };
-        }
-        allocationData.relationships.paymentInstrument = {
-            data: {
-                id: creditCard.value,
-                type: 'paymentInstruments',
-            },
-        };
     }
     return postAllocation(allocationData);
 };
@@ -830,51 +790,10 @@ export const proceed = (
     }
     return (dispatch) => {
         flowObject.nextStep = nextStep;
-        const {
-            giveData: {
-                giveFrom,
-                giveTo,
-                creditCard,
-            },
-        } = flowObject;
-        const accountDetails = {
-            id: (flowObject.type === 'donations') ? giveTo.id : giveFrom.id,
-            type: (flowObject.type === 'donations') ? giveTo.type : giveFrom.type,
-        };
-        if (flowObject.taxReceiptProfileAction !== 'no_change' && stepIndex === 1) {
-            dispatch({
-                payload: {
-                    taxReceiptApiCall: true,
-                },
-                type: actionTypes.TAX_RECEIPT_API_CALL_STATUS,
-            });
-            updateTaxReceiptProfile(
-                flowObject.selectedTaxReceiptProfile,
-                flowObject.taxReceiptProfileAction, dispatch,
-            ).then((result) => {
-                flowObject.selectedTaxReceiptProfile = result.data;
-                dispatch({
-                    payload: flowObject,
-                    type: actionTypes.SAVE_FLOW_OBJECT,
-                });
-                callApiAndDispatchData(dispatch, accountDetails);
-            }).catch((err) => {
-                triggerUxCritialErrors(err.errors || err, dispatch);
-                // console.log(err);
-            }).finally(() => {
-                dispatch({
-                    payload: {
-                        taxReceiptApiCall: false,
-                    },
-                    type: actionTypes.TAX_RECEIPT_API_CALL_STATUS,
-                });
-            });
-        } else {
-            dispatch({
-                payload: flowObject,
-                type: actionTypes.SAVE_FLOW_OBJECT,
-            });
-        }
+        dispatch({
+            payload: flowObject,
+            type: actionTypes.SAVE_FLOW_OBJECT,
+        });
     };
 };
 

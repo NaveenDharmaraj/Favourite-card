@@ -522,7 +522,6 @@ const populateDonationMatch = (donationMatchData, formatMessage, language) => {
 */
 
 const populateGiftType = (formatMessage) => {
-    //const { formatMessage } = intl;
     return [
         {
             disabled: false,
@@ -968,10 +967,8 @@ const resetDataForGiveAmountChange = (giveData, dropDownOptions, coverFeesData) 
 const resetDataForAccountChange = (giveData, dropDownOptions, props, type) => {
     const {
         companyDetails,
-        coverFeesData,
         currentUser: {
             attributes: {
-                displayName,
                 firstName,
                 email,
                 lastName,
@@ -987,22 +984,7 @@ const resetDataForAccountChange = (giveData, dropDownOptions, props, type) => {
         giveData.giftType = {
             value: 0,
         };
-        giveData.donationAmount = '';
-        giveData.donationMatch = {
-            value: null,
-        };
-        giveData.creditCard = {
-            value: null,
-        };
     } else if (giveData.giveFrom.type === 'companies') {
-        giveData.donationAmount = setDonationAmount(giveData, coverFeesData);
-        giveData.donationMatch = {
-            value: null,
-        };
-        giveData.creditCard = {
-            value: null,
-        };
-        giveData.formatedDonationAmount = _.replace(formatCurrency(giveData.donationAmount, 'en', 'USD'), '$', '');
         if (!_.isEmpty(companyDetails)
             && companyDetails.companyId === Number(giveData.giveFrom.id)) {
             dropDownOptions.paymentInstrumentList = populatePaymentInstrument(
@@ -1011,41 +993,12 @@ const resetDataForAccountChange = (giveData, dropDownOptions, props, type) => {
                     ? companyDetails.companyPaymentInstrumentsData : null,
                 formatMessage,
             );
-            if ((giveData.giftType.value > 0
-                || Number(giveData.giveAmount) > Number(giveData.giveFrom.balance))) {
-                giveData.creditCard = getDefaultCreditCard(
-                    dropDownOptions.paymentInstrumentList,
-                );
-            }
         }
     } else if (giveData.giveFrom.type === 'user') {
-        giveData.donationAmount = setDonationAmount(giveData, coverFeesData);
-        giveData.donationMatch = {
-            value: null,
-        };
-        giveData.formatedDonationAmount = _.replace(formatCurrency(giveData.donationAmount, 'en', 'USD'), '$', '');
-        if (!_.isEmpty(dropDownOptions.donationMatchList)
-            && (giveData.giftType.value > 0
-                || Number(giveData.giveAmount) > Number(giveData.giveFrom.balance))
-        ) {
-            const [
-                defaultMatch,
-            ] = dropDownOptions.donationMatchList;
-            giveData.donationMatch = defaultMatch;
-        }
-        giveData.creditCard = {
-            value: null,
-        };
         dropDownOptions.paymentInstrumentList = populatePaymentInstrument(
             paymentInstrumentsData,
             formatMessage,
         );
-        if ((giveData.giftType.value > 0
-            || Number(giveData.giveAmount) > Number(giveData.giveFrom.balance))) {
-            giveData.creditCard = getDefaultCreditCard(
-                dropDownOptions.paymentInstrumentList,
-            );
-        }
     }
     if (type === 'give/to/charity') {
         giveData.infoToShare = {
@@ -1272,12 +1225,11 @@ const setDateForRecurring = (date, formatMessage, lang = 'en') => {
 };
 
 const formatDateForGivingTools = (date) => {
-    let unformattedDate = new Date(date);
+    const unformattedDate = new Date(date);
     // Need to use the original function, using this now as we need to integrate translaction for that
     const day = unformattedDate.getDate();
     const month = monthNamesForGivingTools(unformattedDate.getMonth() + 1);
     const year = unformattedDate.getFullYear();
-
     return `${month} ${day}, ${year}`;
 };
 

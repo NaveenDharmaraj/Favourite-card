@@ -72,19 +72,11 @@ export const beneficiaryDefaultProps = {
         giveData: {
             coverFees: false,
             coverFeesAmount: null,
-            creditCard: {
-                value: null,
-            },
             dedicateGift: {
                 dedicateType: '',
                 dedicateValue: '',
             },
-            donationAmount: '',
-            donationMatch: {
-                value: null,
-            },
             formatedCharityAmount: '',
-            formatedDonationAmount: '',
             giftType: {
                 value: 0,
             },
@@ -109,7 +101,6 @@ export const beneficiaryDefaultProps = {
         selectedTaxReceiptProfile: {},
         sourceAccountHolderId: null,
         stepsCompleted: false,
-        taxReceiptProfileAction: 'no_change',
         type: 'give/to/charity',
     },
 };
