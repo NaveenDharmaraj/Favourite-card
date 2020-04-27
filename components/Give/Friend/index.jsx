@@ -139,17 +139,6 @@ class Friend extends React.Component {
             showGiveToEmail: false,
             reviewBtnFlag: false,
         };
-        if(!_isEmpty(userFriendEmail) && this.state.flowObject.giveData.recipients.length === 0) {
-            this.state.flowObject.giveData.recipients = [userFriendEmail.email];
-            this.state.flowObject.giveData.recipientName = userFriendEmail.name;
-            this.state.flowObject.giveData.recipientImage = userFriendEmail.image;
-            this.state.flowObject.giveData.emailMasked = true;
-            dispatch({
-                payload: {
-                },
-                type: 'USER_FRIEND_EMAIL',
-            });
-        }
         dispatch({
             payload: {
                 showFriendDropDown: true,
@@ -202,8 +191,30 @@ class Friend extends React.Component {
             currentUser: {
                 id,
             },
+            userFriendEmail,
             dispatch,
         } = this.props;
+        if(!_isEmpty(userFriendEmail)) {
+            this.setState({
+                flowObject: {
+                    ...this.state.flowObject,
+                    giveData:{
+                        ...this.state.flowObject.giveData,
+                        emailMasked: true,
+                        friendsList: [],
+                        recipients: [userFriendEmail.email],
+                        recipientName: userFriendEmail.name,
+                        recipientImage: userFriendEmail.image,
+                        selectedFriendsList: [],
+                    }
+                },
+            })
+            dispatch({
+                payload: {
+                },
+                type: 'USER_FRIEND_EMAIL',
+            });
+        }
         dispatch(getDonationMatchAndPaymentInstruments(id));
     }
 
