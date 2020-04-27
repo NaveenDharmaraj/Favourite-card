@@ -7993,3 +7993,125 @@ body .userEllips{
       }
   }
 }
+/*********NOAvailable******************/
+.NotAvailable{
+    position: relative;
+    overflow: hidden;
+    min-height: 67vh;
+    &::before{
+      position: absolute;
+      right: 0px;
+      background-image: url(../images/error_bg.png) !important;
+      background-size: contain !important;
+      background-repeat: no-repeat !important;
+      background-position: center !important;
+      content: "";
+      height: 714px;
+      width: 733px;
+      top: 100px;
+      @media only screen and (max-width:1330px) {
+      height: 644px;
+      width: 673px;
+      }
+      @media only screen and (max-width:1199px) {
+      height: 534px;
+      width: 513px;
+    }
+    @media only screen and (max-width:991px) {
+    height: 364px;
+    width: 343px;
+  }
+  @media only screen and (max-width:890px) {
+    height: 364px;
+    width: 293px;
+  }
+  @media only screen and (max-width:767px) {
+    top:56%;
+    height: 346px;
+    width: 350px;
+  }
+  @media only screen and (max-width:480px) {
+    height: 396px;
+    width: 292px;
+  }
+    }
+    .ImgAvailable {
+        margin-top:58%;
+        float: right;
+        @media only screen and (max-width:1400px) {
+          float: none;
+        }
+        @media only screen and (max-width:1199px) {
+          float: right;
+        }
+        @media only screen and (max-width:1199px) {
+          margin-top:200px;
+        }
+        @media only screen and (max-width:767px) {
+        margin-top: 70px;
+        margin-bottom: 35px;
+      }
+    }
+    .AvailableText{
+      max-width:525px;
+      width: 100%;
+      margin-top: 190px;
+      margin-left:100px;
+      @media only screen and (max-width:1199px) {
+        margin-left:20px;
+      }
+      @media only screen and (max-width:992px) {
+        margin-top: 130px;
+        margin-left: 0px;
+        max-width:435px;
+      }
+      @media only screen and (max-width:767px) {
+        margin: 80px auto auto auto;
+        max-width: 550px;
+      }
+      @media only screen and (max-width:500px) {
+        max-width:380px;
+      }
+    }
+    h1{
+      &.ui{
+        &.header{
+          font-size: 42px;
+          line-height: 52px;
+          color: @grey-darken-5;
+          font-family: 'ProximaNova-Regular';
+          font-weight: bold;
+          @media only screen and (max-width:992px) {
+            font-size:36px;
+            line-height: 44px;
+          }
+        }
+      }
+    }
+    h4{
+      &.ui{
+        &.header{
+          font-size:24px;
+          line-height:29px;
+          font-family: 'ProximaNova-medium';
+          color:@font-color;
+        }
+      }
+    }
+    .ui{
+      &.list{
+        .item{
+          font-size: 16px;
+          line-height: 20px;
+          font-family: 'ProximaNova-Regular';
+          color: @grey-darken-5;
+          a{
+            color:#0057E9;
+            text-decoration: underline;
+            font-family: 'ProximaNova-medium';
+          }
+        }
+      }
+    }
+  }
+  /*********NOAvailable******************/
