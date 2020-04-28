@@ -10,6 +10,7 @@ import {
     Header,
     Icon,
     Input,
+    Placeholder,
     Popup,
     Select,
     Container,
@@ -36,11 +37,13 @@ import {
     validateGiveForm,
     populateDonationMatch,
     populatePaymentInstrument,
+    populateTaxReceipts,
     resetDataForAccountChange,
     getDefaultCreditCard,
     getSelectedFriendList,
     validateForReload,
     calculateP2pTotalGiveAmount,
+    setDonationAmount,
 } from '../../../helpers/give/utils';
 import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
 import {
@@ -137,8 +140,20 @@ class Friend extends React.Component {
             userEmail: email,
             validity: this.initializeValidations(),
             showGiveToEmail: false,
+            reloadModalOpen:0,
             reviewBtnFlag: false,
         };
+        if(!_isEmpty(userFriendEmail) && this.state.flowObject.giveData.recipients.length === 0) {
+            this.state.flowObject.giveData.recipients = [userFriendEmail.email];
+            this.state.flowObject.giveData.recipientName = userFriendEmail.name;
+            this.state.flowObject.giveData.recipientImage = userFriendEmail.image;
+            this.state.flowObject.giveData.emailMasked = true;
+            dispatch({
+                payload: {
+                },
+                type: 'USER_FRIEND_EMAIL',
+            });
+        }
         dispatch({
             payload: {
                 showFriendDropDown: true,
@@ -158,6 +173,8 @@ class Friend extends React.Component {
         this.getStripeCreditCard = this.getStripeCreditCard.bind(this);
         dismissAllUxCritialErrors(props.dispatch);
         this.handleGiveToEmail = this.handleGiveToEmail.bind(this);
+        this.renderReloadAddAmount = this.renderReloadAddAmount.bind(this);
+        this.handleAddMoneyModal = this.handleAddMoneyModal.bind(this); 
     }
 
 
@@ -191,33 +208,15 @@ class Friend extends React.Component {
             currentUser: {
                 id,
             },
-            userFriendEmail,
             dispatch,
         } = this.props;
-        if(!_isEmpty(userFriendEmail)) {
-            this.setState({
-                flowObject: {
-                    ...this.state.flowObject,
-                    giveData:{
-                        ...this.state.flowObject.giveData,
-                        emailMasked: true,
-                        friendsList: [],
-                        recipients: [userFriendEmail.email],
-                        recipientName: userFriendEmail.name,
-                        recipientImage: userFriendEmail.image,
-                        selectedFriendsList: [],
-                    }
-                },
-            })
-            dispatch({
-                payload: {
-                },
-                type: 'USER_FRIEND_EMAIL',
-            });
-        }
         dispatch(getDonationMatchAndPaymentInstruments(id));
     }
-
+    handleAddMoneyModal() {
+        this.setState({
+            reloadModalOpen:1,
+        })
+    }
     componentDidUpdate(prevProps) {
         if (!_isEqual(this.props, prevProps)) {
             const {
@@ -225,8 +224,11 @@ class Friend extends React.Component {
             } = this.state;
             let {
                 flowObject: {
+                    currency,
                     giveData,
                 },
+                reviewBtnFlag,
+                reloadModalOpen,
             } = this.state;
 
             const {
@@ -256,6 +258,9 @@ class Friend extends React.Component {
             let paymentInstruments = paymentInstrumentsData;
             let companyPaymentInstrumentChanged = false;
             if (giveData.giveFrom.type === 'companies' && !_isEmpty(companyDetails)) {
+                const companyIndex = _.findIndex(companiesAccountsData, {'id': giveData.giveFrom.id});
+                giveData.giveFrom.balance = companiesAccountsData[companyIndex].attributes.balance;
+                giveData.giveFrom.text = `${companiesAccountsData[companyIndex].attributes.companyFundName}: ${formatCurrency(companiesAccountsData[companyIndex].attributes.balance, language, currency)}`;
                 if (_isEmpty(prevProps.companyDetails)
                      || !_isEqual(companyDetails.companyPaymentInstrumentsData,
                          prevProps.companyDetails.companyPaymentInstrumentsData)
@@ -264,11 +269,17 @@ class Friend extends React.Component {
                 }
                 paymentInstruments = companyDetails.companyPaymentInstrumentsData;
             } else if (giveData.giveFrom.type === 'user') {
+                giveData.giveFrom.balance = fund.attributes.balance;
+                giveData.giveFrom.text = `${fund.attributes.name}: ${formatCurrency(fund.attributes.balance, language, currency)}`
                 paymentInstruments = paymentInstrumentsData;
             }
             const paymentInstrumentOptions = populatePaymentInstrument(
                 paymentInstruments, formatMessage,
             );
+            if(reviewBtnFlag && (giveData.giveFrom.balance >= giveData.giveAmount)) {
+                reviewBtnFlag = false;
+                reloadModalOpen = 0;
+            }
             const donationMatchOptions = populateDonationMatch(donationMatchData, formatMessage);
             if (!_isEmpty(fund)) {
                 giveData = Friend.initFields(
@@ -287,6 +298,8 @@ class Friend extends React.Component {
                     ...this.state.flowObject,
                     giveData,
                 },
+                reloadModalOpen,
+                reviewBtnFlag,
             });
         }
     }
@@ -448,6 +461,7 @@ class Friend extends React.Component {
             },
             dropDownOptions,
             validity,
+            reloadModalOpen,
             reviewBtnFlag,
         } = this.state;
         const {
@@ -479,16 +493,19 @@ class Friend extends React.Component {
                     break;
                 case 'giveAmount':
                     reviewBtnFlag = false;
+                    reloadModalOpen = 0;
                     giveData['formatedP2PAmount'] = newValue;
                     giveData['totalP2pGiveAmount'] = calculateP2pTotalGiveAmount((giveData.friendsList.length + giveData.recipients.length),giveData.giveAmount);
                     break;
                 case 'recipients':
                     reviewBtnFlag = false;
+                    reloadModalOpen = 0;
                     giveData[name] = Friend.parseRecipients(newValue);
                     giveData['totalP2pGiveAmount'] = calculateP2pTotalGiveAmount((giveData.friendsList.length + giveData.recipients.length),giveData.giveAmount);
                     break;
                 case 'friendsList':
                     reviewBtnFlag = false;
+                    reloadModalOpen = 0;
                     giveData['totalP2pGiveAmount'] = calculateP2pTotalGiveAmount((giveData.friendsList.length + giveData.recipients.length),giveData.giveAmount);
                     break;
                 default: break;
@@ -688,15 +705,16 @@ class Friend extends React.Component {
         const {
             value,
         } = data;
-        const inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
-        const formatedP2PAmount = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
         let {
             validity,
             flowObject: {
                 giveData,
             },
             reviewBtnFlag,
-        } = this.state
+        } = this.state;
+        const inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
+        const formatedP2PAmount = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
+
         giveData.totalP2pGiveAmount = calculateP2pTotalGiveAmount((giveData.friendsList.length + giveData.recipients.length), inputValue);
         validity = validateGiveForm("giveAmount", inputValue, validity, giveData);
         reviewBtnFlag = false;
@@ -715,19 +733,78 @@ class Friend extends React.Component {
         });
     }
 
-    renderReloadAddAmount = (giveFrom, totalP2pGiveAmount, giftType, reviewBtnFlag) => {
-        if (
-            (giveFrom.type === 'user' || giveFrom.type === 'companies')
-            && (totalP2pGiveAmount > Number(giveFrom.balance))
-        ) {
+    renderReloadAddAmount = () => {
+        let {
+            defaultTaxReceiptProfile,
+            dispatch,
+            donationMatchData,
+            taxReceiptProfiles,
+            companyDetails,
+            i18n: {
+                language,
+            },
+            userAccountsFetched,
+            companyAccountsFetched,
+        } = this.props
+        const {
+            dropDownOptions:{
+                paymentInstrumentList,
+            },
+            flowObject: {
+                giveData,
+            },
+            reloadModalOpen,
+            reviewBtnFlag,
+        } = this.state;
+        let {
+            giveFrom,
+            totalP2pGiveAmount,
+            giftType,
+        } = giveData
+        const formatMessage = this.props.t;
+        console.log(giveAmount);
+        console.log(this.state.flowObject);
+        if ((giveFrom.type === 'user' || giveFrom.type === 'companies') && (Number(totalP2pGiveAmount) > Number(giveFrom.balance))) {
+            if ((userAccountsFetched && giveFrom.type === 'user') || (companyAccountsFetched && giveFrom.type === 'companies')) {
+            let taxReceiptList = taxReceiptProfiles;
+            let defaultTaxReceiptProfileForReload = defaultTaxReceiptProfile;
+            if (giveFrom.type === 'companies' && companyDetails) {
+                taxReceiptList = !_.isEmpty(companyDetails.taxReceiptProfiles) ? companyDetails.taxReceiptProfiles : [];
+                defaultTaxReceiptProfileForReload = companyDetails.companyDefaultTaxReceiptProfile;
+            }
+            let AmountToDonate = formatAmount((formatAmount(totalP2pGiveAmount)
+            - formatAmount(giveFrom.balance)));
+            const taxReceiptsOptions = populateTaxReceipts(taxReceiptList, formatMessage);
             return (
                 <ReloadAddAmount
-                    giftType={giftType.value}
+                    defaultTaxReceiptProfile={defaultTaxReceiptProfileForReload}
+                    dispatch={dispatch}
+                    donationMatchData={donationMatchData}
+                    formatedDonationAmount={AmountToDonate}
+                    formatMessage={formatMessage}
+                    allocationGiftType={giftType.value}
+                    giveTo={giveFrom}
+                    language={language}
+                    paymentInstrumentOptions={paymentInstrumentList}
+                    reloadModalOpen={reloadModalOpen}
                     reviewBtnFlag={reviewBtnFlag}
+                    taxReceiptsOptions={taxReceiptsOptions}
                 />
-            );
+            )
+            } else{
+                return (
+                    <Placeholder>
+                    <Placeholder.Header>
+                      <Placeholder.Line />
+                      <Placeholder.Line />
+                    </Placeholder.Header>
+                  </Placeholder>
+                );
+            }
+
         }
     }
+
 
     render() {
         const {
@@ -773,6 +850,21 @@ class Friend extends React.Component {
         } = this.state;
 
         const recipientsList = recipients.join(',');
+        let submtBtn = (reviewBtnFlag)?(
+            <Form.Button
+                primary
+                className="blue-btn-rounded btn_right"
+                content={formatMessage('giveCommon:reviewButtonFlag')}
+                disabled={!this.props.userAccountsFetched}
+                onClick={this.handleAddMoneyModal}
+                type="button"
+            />) : (<Form.Button
+                primary
+                className="blue-btn-rounded btn_right"
+                content={formatMessage('giveCommon:reviewButton')}
+                disabled={!this.props.userAccountsFetched}
+                type="submit"
+            />)
         return (
             <Fragment>
                 <div className="flowReviewbanner">
@@ -908,7 +1000,7 @@ class Friend extends React.Component {
                                                             parentOnBlurChange={this.handleOnInputBlur}
                                                             formatMessage={formatMessage}
                                                         />
-                                                        {this.renderReloadAddAmount(giveFrom, totalP2pGiveAmount, giftType, reviewBtnFlag)}
+                                                        {this.renderReloadAddAmount()}
                                                     </Grid.Column>
                                                 </Grid.Row>
                                             </Grid>
@@ -935,14 +1027,7 @@ class Friend extends React.Component {
                                                             placeholderText={formatMessage('friends:noteToSelfPlaceholderText')}
                                                             text={noteToSelf}
                                                         />
-                                                        <Form.Button
-                                                            primary
-                                                            className="blue-btn-rounded btn_right"// {isMobile ? 'mobBtnPadding' : 'btnPadding'}
-                                                            content={reviewBtnFlag ? formatMessage('giveCommon:reviewButtonFlag')
-                                                            : formatMessage('giveCommon:reviewButton')}
-                                                            disabled={(creditCardApiCall) || !this.props.userAccountsFetched}
-                                                            type="submit"
-                                                        />
+                                                        {submtBtn}
                                                     </Grid.Column>
                                                 </Grid.Row>
                                             </Grid>
@@ -964,6 +1049,7 @@ function mapStateToProps(state) {
     return {
         companiesAccountsData: state.user.companiesAccountsData,
         companyDetails: state.give.companyData,
+        companyAccountsFetched: state.give.companyAccountsFetched,
         currentUser: state.user.info,
         donationMatchData: state.user.donationMatchData,
         fund: state.user.fund,
