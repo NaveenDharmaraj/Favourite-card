@@ -231,6 +231,7 @@ class Charity extends React.Component {
             } = this.state;
             let {
                 flowObject: {
+                    currency,
                     giveData,
                 },
                 groupFromUrl,
@@ -270,6 +271,7 @@ class Charity extends React.Component {
             if (giveData.giveFrom.type === 'companies' && !_isEmpty(companyDetails)) {
                 const companyIndex = _.findIndex(companiesAccountsData, {'id': giveData.giveFrom.id});
                 giveData.giveFrom.balance = companiesAccountsData[companyIndex].attributes.balance;
+                giveData.giveFrom.text = `${companiesAccountsData[companyIndex].attributes.companyFundName}: ${formatCurrency(companiesAccountsData[companyIndex].attributes.balance, language, currency)}`;
                 if (_isEmpty(prevProps.companyDetails)
                     || !_isEqual(companyDetails.companyPaymentInstrumentsData,
                         prevProps.companyDetails.companyPaymentInstrumentsData)
@@ -279,6 +281,7 @@ class Charity extends React.Component {
                 paymentInstruments = companyDetails.companyPaymentInstrumentsData;
             } else if (giveData.giveFrom.type === 'user') {
                 giveData.giveFrom.balance = fund.attributes.balance;
+                giveData.giveFrom.text = `${fund.attributes.name}: ${formatCurrency(fund.attributes.balance, language, currency)}`
                 paymentInstruments = paymentInstrumentsData;
             }
             if(reviewBtnFlag && (giveData.giveFrom.balance >= giveData.giveAmount)) {
