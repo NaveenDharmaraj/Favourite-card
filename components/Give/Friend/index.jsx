@@ -714,7 +714,7 @@ class Friend extends React.Component {
         } = this.state;
         const inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
         const formatedP2PAmount = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
-
+        giveData.giveAmount = inputValue;
         giveData.totalP2pGiveAmount = calculateP2pTotalGiveAmount((giveData.friendsList.length + giveData.recipients.length), inputValue);
         validity = validateGiveForm("giveAmount", inputValue, validity, giveData);
         reviewBtnFlag = false;
@@ -724,7 +724,6 @@ class Friend extends React.Component {
                 ...this.state.flowObject,
                 giveData: {
                     ...giveData,
-                    giveAmount: inputValue,
                     formatedP2PAmount,
                 }
             },
