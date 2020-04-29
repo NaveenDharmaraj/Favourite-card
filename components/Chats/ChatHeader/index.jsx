@@ -58,7 +58,7 @@ class ChatHeader extends React.Component {
                         <Grid.Column mobile={8} tablet={12} computer={13}>
                             <div className="pt-1 pb-1">
                                 <Header as="h2">
-                                    {(isSmallerScreen && !compose && smallerScreenSection === 'convList') && (
+                                    {(isSmallerScreen && !compose && smallerScreenSection !== 'convList') && (
                                         <Button
                                             className="back-btn-messages"
                                             onClick={this.handleChatHeaderBackButton}

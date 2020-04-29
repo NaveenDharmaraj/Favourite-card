@@ -1,5 +1,6 @@
 import _isEmpty from 'lodash/isEmpty';
 import _uniqBy from 'lodash/uniqBy';
+import _cloneDeep from 'lodash/cloneDeep';
 
 import { actionTypes } from '../actions/chat';
 
@@ -52,10 +53,10 @@ const chat = (state = {}, action) => {
                     && Object.keys(state.groupFeeds).length > 0) ? Object.assign(state.groupFeeds, action.payload.groupFeeds) : action.payload.groupFeeds,
             };
             break;
-        case actionTypes.INBOX_FILTERED_MESSAGES:
+        case actionTypes.INBOX_LIST_MESSAGES:
             newState = {
                 ...state,
-                filteredMessages: action.payload.filteredMessages,
+                messages: action.payload.messages,
             };
             break;
         case actionTypes.SELECTED_CONVERSATION_MESSAGES:

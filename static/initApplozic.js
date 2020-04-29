@@ -33,10 +33,16 @@ var events = {
         // console.log(resp);
     },
     'onMessageReceived': function (resp) {
+        // type: 5 - Sent Message, 4 - Received Message
+        //contentType: 0 - Standard Chat Message
+        //contentType = 10 is for action haapend in groups likee adding meembers
         //called when a new message is received
-        if (resp.message.contentType !== 10 && resp.message.contentType !== 102) {
+        if (resp.message.contentType !== 102) {
             window.totalUnreadCount++;
-            window.dispatchEvent(new CustomEvent("onUnreadMessageCountUpdate", { detail: { count: window.totalUnreadCount } }));
+
+            // Incrementing unread count expect for group action
+            resp.message.contentType !== 10 ? window.dispatchEvent(new CustomEvent("onUnreadMessageCountUpdate", { detail: { count: window.totalUnreadCount } }))
+                : null;
             // document.title = window.totalUnreadCount + " Unread Msgs";
             /*if (!window.hasFocus) {
                 Notification.requestPermission(function (permission) {
@@ -49,7 +55,7 @@ var events = {
             } else {
 
             }*/
-            var onMessageReceived = new CustomEvent("onMessageReceived", { detail: resp });
+            var onMessageReceived = new CustomEvent("onMessageReceived", { detail: {resp, received: 'received'} });
             window.dispatchEvent(onMessageReceived);
         }
     },
@@ -58,7 +64,7 @@ var events = {
     },
     'onMessageSent': function (resp) {
         //called when the message is sent
-        var onMessageSent = new CustomEvent("onMessageSent", { detail: resp });
+        let onMessageSent = new CustomEvent("onMessageSent", { detail: {resp, sent : 'sent'} });
         window.dispatchEvent(onMessageSent);
     },
     'onUserBlocked': function (resp) { },

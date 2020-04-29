@@ -4,7 +4,7 @@ import { groupMessagesByDate } from '../../../../helpers/chat/utils';
 
 import ChatMessageContent from './ChatMessageContent';
 
-function ChatConversationsFooter({
+function ChatConversationsParent({
     conversationInfo,
     selectedConversationMessages,
     userDetails,
@@ -34,4 +34,4 @@ function ChatConversationsFooter({
         renderChatConversation()
     );
 }
-export default React.memo(ChatConversationsFooter);
+export default React.memo(ChatConversationsParent);

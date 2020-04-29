@@ -145,7 +145,7 @@ class ChatMessages extends React.Component {
             if (resetActionVar) {
                 this.setGroupAction(null);
             }
-            dispatch(loadConversations(groupId, userDetails, groupFeeds, selectedConversation));
+            //dispatch(loadConversations(groupId, userDetails, groupFeeds, selectedConversation));
         });
     }
 
@@ -184,7 +184,7 @@ class ChatMessages extends React.Component {
                 .then(response => {
                     this.setState({ conversationAction: null, groupAction: null });
                     dispatch(loadMuteUserList());
-                    dispatch(loadConversations(conversationInfo.groupId, userDetails, groupFeeds, selectedConversation));
+                    //dispatch(loadConversations(conversationInfo.groupId, userDetails, groupFeeds, selectedConversation));
                 });
         } else if (conversationInfo.contactIds) {
             params["userId"] = conversationInfo.contactIds;
@@ -237,7 +237,7 @@ class ChatMessages extends React.Component {
         const params = { "userIds": groupAddMemberValues, "clientGroupIds": [groupId] };
         addSelectedUsersToGroup(params)
             .then(() => {
-                dispatch(loadConversations(groupId, userDetails, groupFeeds, selectedConversation));
+                //dispatch(loadConversations(groupId, userDetails, groupFeeds, selectedConversation));
                 this.setState({ groupAddMemberValues: [], groupAddMemberOptions: [], groupAction: null });
             });
     }
@@ -250,7 +250,7 @@ class ChatMessages extends React.Component {
         removeUserFromGroup(groupId, userId)
             .then(() => {
                 this.setGroupAction(null);
-                dispatch(loadConversations(groupId, userDetails, groupFeeds));
+                //dispatch(loadConversations(groupId, userDetails, groupFeeds));
             });
     }
 
@@ -261,9 +261,9 @@ class ChatMessages extends React.Component {
             groupFeeds,
         } = this.props;
         deleteConversation(params)
-            .then(() => {
+            .then((result) => {
                 this.setState({ groupAction: null, conversationAction: null });
-                dispatch(loadConversations(null, userDetails, groupFeeds, null));
+                //dispatch(loadConversations(null, userDetails, groupFeeds, null));
             }).catch(error => {
                 this.setState({ groupAction: null, conversationAction: null });
                 //??????????his.loadConversations();
@@ -281,7 +281,7 @@ class ChatMessages extends React.Component {
         let params = { clientGroupId: groupId };
         leaveGroup(params).then(() => {
             this.setGroupAction(null);
-            dispatch(loadConversations(groupId, userDetails, groupFeeds, selectedConversation));
+            //dispatch(loadConversations(groupId, userDetails, groupFeeds, selectedConversation));
         });
     }
     handleContactSelection = (e, dropdownEl) => {
@@ -293,11 +293,11 @@ class ChatMessages extends React.Component {
             //open selected contact's conversation
             let userId = dropdownEl.value[0];
             let selectedConversation = null;
-            messages.find((msg) => {
+            messages && messages.length > 0 ? messages.find((msg) => {
                 if (userId == msg.contactIds && !msg.groupId) {
                     return selectedConversation = msg;
                 }
-            });
+            }) : null;
             if (!selectedConversation || selectedConversation == null) {
                 selectedConversation = { contactIds: userId };
             }
@@ -856,7 +856,7 @@ class ChatMessages extends React.Component {
             selectedConversation,
             userInfo,
         } = this.props;
-        const groupFeed = groupFeeds[selectedConversation.groupId];
+        const groupFeed = groupFeeds[selectedConversation.groupId] || {};
         const currentUserInfo = getCurrentUserRoleInGroup(groupFeed, userInfo.id);
         return (
             <div className="chatHeader">
@@ -1106,15 +1106,14 @@ class ChatMessages extends React.Component {
                 return;
             }
             else if (selectedConversation && (!isSmallerScreen || smallerScreenSection != "convList")) {
-                if (selectedConversation.conversationInfo && selectedConversation.conversationInfo.type == "group" &&
-                    selectedConversation.groupId) {
+                if (selectedConversation.conversationInfo && selectedConversation.conversationInfo.type == "group") {
                     //selected conversation is group and its header
                     return (
                         <Fragment>
                             {this.renderGroupSelectedHeader(selectedConversation.conversationInfo)}
                         </Fragment>
                     )
-                } else {
+                } else if(selectedConversation.conversationInfo){
                     //selected conversation is user and its header
                     return (
                         <Fragment>

@@ -5,11 +5,45 @@ import { Input, List } from 'semantic-ui-react';
 import _isEqual from 'lodash/isEqual';
 import _isEmpty from 'lodash/isEmpty';
 
-import { actionTypes, loadConversationMessages, setSelectedConversation } from '../../../actions/chat';
+import { actionTypes, loadConversationMessages, setSelectedConversation, loadInboxList, deleteInboxList } from '../../../actions/chat';
 import IndividualChatContact from './IndividualChatContact';
 import { debounceFunction } from '../../../helpers/chat/utils';
 
 class ChatInboxList extends React.Component {
+    constructor(props) {
+        super(props);
+        this.onMessageEvent = this.onMessageEvent.bind(this);
+        this.state = {
+            searchValue: "",
+            filteredMessagesState: (!_isEmpty(props.messages) && props.messages.length > 0) && props.messages,
+        }
+    }
+    componentDidMount() {
+        window.addEventListener('onMessageSent', this.onMessageEvent, false);
+        window.addEventListener('onMessageReceived', this.onMessageEvent, false);
+    }
+    componentDidUpdate(prevProps) {
+        if (!_isEqual(this.props, prevProps)) {
+            if (!_isEqual(this.props.messages, prevProps.messages)) {
+                this.onFilterListUpdate(this.state.searchValue);
+            }
+        }
+    }
+    componentWillUnmount() {
+        window.removeEventListener('onMessageSent', this.onMessageEvent, false);
+        window.removeEventListener('onMessageReceived', this.onMessageEvent, false);
+    }
+    async onMessageEvent({ detail }) {
+        const {
+            dispatch,
+            messages,
+            userDetails,
+            userInfo,
+        } = this.props;
+        detail.resp && detail.resp.message ?
+            await dispatch(loadInboxList(detail, messages, userDetails, userInfo)) :
+            null;
+    }
 
     onConversationSelect = (msg) => {
         const {
@@ -31,15 +65,10 @@ class ChatInboxList extends React.Component {
             dispatch(loadConversationMessages(msg, new Date().getTime()));
         }
     }
-
-    onConversationSearchChange = (event) => {
-        const searchValue = event.target.value;
+    onFilterListUpdate = (searchValue) => {
         const {
-            compose,
-            dispatch,
             groupFeeds,
             messages,
-            smallerScreenSection,
             userDetails,
         } = this.props;
         // Variable to hold the original version of the list
@@ -79,12 +108,21 @@ class ChatInboxList extends React.Component {
             // If the search bar is empty, set newList to original task list
             newList = [...messages];
         }
-        dispatch({
-            type: actionTypes.INBOX_FILTERED_MESSAGES,
-            payload: {
-                filteredMessages: newList,
-            },
+        this.setState({
+            filteredMessagesState: newList,
+            searchValue,
         });
+        return newList;
+    }
+    onConversationSearchChange = (event) => {
+        const searchValue = event.target.value;
+        const {
+            compose,
+            dispatch,
+            smallerScreenSection,
+        } = this.props;
+
+        const newList = this.onFilterListUpdate(searchValue);
         const msg = newList.length > 0 ? newList[0] : null;
         dispatch(setSelectedConversation(msg));
         if (compose) {
@@ -96,22 +134,24 @@ class ChatInboxList extends React.Component {
                 type: actionTypes.COMPOSE_SCREEN_SECTION,
             })
         }
-        const params = { dispatch, selecetedConversation: msg};
+        const params = { dispatch, selecetedConversation: msg };
         debounceFunction(params, 300);
     }
 
     renderIndividualContactList = () => {
         const {
             compose,
-            filteredMessages,
             isSmallerScreen,
             selectedConversation,
             smallerScreenSection,
         } = this.props;
-        if (filteredMessages
-            && filteredMessages.length > 0
+        const {
+            filteredMessagesState
+        } = this.state;
+        if (filteredMessagesState
+            && filteredMessagesState.length > 0
             && (!isSmallerScreen || (smallerScreenSection === 'convList' && !compose))) {
-            return filteredMessages.map((msg) => {
+            return filteredMessagesState.map((msg) => {
                 return (
                     <IndividualChatContact
                         onConversationSelect={this.onConversationSelect}
@@ -164,7 +204,7 @@ const mapStateToProps = (state) => ({
     groupFeeds: state.chat.groupFeeds,
     messages: state.chat.messages,
     selectedConversation: state.chat.selectedConversation,
-    filteredMessages: state.chat.filteredMessages,
+    userInfo: state.user.info,
 });
 
 ChatInboxList.defaultProps = {
