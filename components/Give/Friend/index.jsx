@@ -762,8 +762,6 @@ class Friend extends React.Component {
             giftType,
         } = giveData
         const formatMessage = this.props.t;
-        console.log(giveAmount);
-        console.log(this.state.flowObject);
         if ((giveFrom.type === 'user' || giveFrom.type === 'companies') && (Number(totalP2pGiveAmount) > Number(giveFrom.balance))) {
             if ((userAccountsFetched && giveFrom.type === 'user') || (companyAccountsFetched && giveFrom.type === 'companies')) {
             let taxReceiptList = taxReceiptProfiles;
@@ -1061,6 +1059,7 @@ function mapStateToProps(state) {
         userFriendEmail: state.dashboard.userFriendEmail,
         friendsListData: state.user.friendsList,
         showDropDown: state.user.showFriendDropDown,
+        taxReceiptProfiles: state.user.taxReceiptProfiles,
     };
 }
 
