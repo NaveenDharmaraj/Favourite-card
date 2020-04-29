@@ -1068,4 +1068,5 @@ export default withTranslation([
     'friends',
     'accountTopUp',
     'dropDownAccountOptions',
+    'noteTo',
 ])(connect(mapStateToProps)(Friend));
