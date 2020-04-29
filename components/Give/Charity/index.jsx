@@ -655,15 +655,15 @@ class Charity extends React.Component {
         const {
             value,
         } = data;
-        const inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
-        const formatedCharityAmount = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
         let {
             flowObject: {
                 giveData 
             },
             validity,
         } = this.state
-
+        const inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
+        giveData.giveAmount = inputValue;
+        giveData.formatedCharityAmount = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
         validity = validateGiveForm("giveAmount", inputValue, validity, giveData);
 
         this.setState({
@@ -672,8 +672,7 @@ class Charity extends React.Component {
                 ...this.state.flowObject,
                 giveData: {
                     ...this.state.flowObject.giveData,
-                    giveAmount: inputValue,
-                    formatedCharityAmount,
+                    ...giveData,
                 }
             },
             validity,
