@@ -956,6 +956,22 @@ const resetDataForGiveAmountChange = (giveData, dropDownOptions, coverFeesData) 
     return giveData;
 };
 
+const populateShareName = (displayName) => {
+    const privacyNameOptions = [
+        {
+            key: 'give_anonymously',
+            text: 'Give anonymously',
+            value: 0,
+        },
+        {
+            key: 'give_name',
+            text: `${displayName}`,
+            value: 1,
+        },
+    ];
+    return privacyNameOptions;
+};
+
 /**
 * Reset give page data for account change
 * @param {object} giveData state object for give page
@@ -966,9 +982,11 @@ const resetDataForGiveAmountChange = (giveData, dropDownOptions, coverFeesData) 
 
 const resetDataForAccountChange = (giveData, dropDownOptions, props, type) => {
     const {
+        companiesAccountsData,
         companyDetails,
         currentUser: {
             attributes: {
+                displayName,
                 firstName,
                 email,
                 lastName,
@@ -1015,6 +1033,13 @@ const resetDataForAccountChange = (giveData, dropDownOptions, props, type) => {
             formatMessage,
         );
     } else if (type === 'give/to/group') {
+        giveData.nameToShare = {
+            value: 0,
+        };
+        giveData.infoToShare = {
+            value: 'anonymous',
+        };
+        dropDownOptions.privacyNameOptions = populateShareName(giveData.giveFrom.name);
         giveData.privacyShareEmail = false;
         giveData.privacyShareAddress = false;
     }
@@ -1750,6 +1775,7 @@ export {
     populateP2pReviewPage,
     populateGiftType,
     populateInfoToShare,
+    populateShareName,
     populateTaxReceipts,
     formatAmount,
     getDefaultCreditCard,

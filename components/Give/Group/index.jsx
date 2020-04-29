@@ -20,6 +20,7 @@ import {
   Form,
   Grid,
   Header,
+  Placeholder,
   Select,
 } from 'semantic-ui-react';
 import ReactHtmlParser from 'react-html-parser';
@@ -42,13 +43,16 @@ import {
     getDropDownOptionFromApiData,
     populateGroupsOfUser,
     populatePaymentInstrument,
+    populateTaxReceipts,
     populateInfoToShare,
+    populateShareName,
     resetDataForGiveAmountChange,
     resetDataForAccountChange,
     resetDataForGiftTypeChange,
     validateGiveForm,
     formatCurrency,
-    validateForReload
+    setDonationAmount,
+    validateForReload,
 } from '../../../helpers/give/utils';
 import {
     getCompanyPaymentAndTax,
@@ -66,8 +70,10 @@ class Group extends React.Component {
         const {
             companyDetails,
             currentUser: {
-                displayName,
-                email,
+                attributes:{
+                    displayName,
+                    email,
+                },
             },
             paymentInstrumentsData,
             taxReceiptProfiles,
@@ -92,7 +98,7 @@ class Group extends React.Component {
             benificiaryIndex: 0,
             buttonClicked: false,
             dropDownOptions: {
-                privacyNameOptions:Group.populateShareName(displayName),
+                privacyNameOptions:populateShareName(displayName),
                 infoToShareList: populateInfoToShare(
                     taxReceiptProfiles,
                     companyDetails,
@@ -110,6 +116,7 @@ class Group extends React.Component {
             inValidCvv: true,
             inValidExpirationDate: true,
             inValidNameOnCard: true,
+            reloadModalOpen:0,
             reviewBtnFlag: false,
             validity: this.intializeValidations(),
         };
@@ -120,6 +127,7 @@ class Group extends React.Component {
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleInputOnBlur = this.handleInputOnBlur.bind(this)
         this.handleInputChangeGiveTo = this.handleInputChangeGiveTo.bind(this);
+        this.handleAddMoneyModal = this.handleAddMoneyModal.bind(this);
         dismissAllUxCritialErrors(props.dispatch);
     }
 
@@ -149,9 +157,12 @@ class Group extends React.Component {
             } = this.state;
             let {
                 flowObject: {
+                    currency,
                     giveData,
                 },
                 groupFromUrl,
+                reviewBtnFlag,
+                reloadModalOpen,
             } = this.state;
             const {
                 companyDetails,
@@ -166,6 +177,9 @@ class Group extends React.Component {
                     },
                     id,
                 },
+                i18n: {
+                    language,
+                },
                 fund,
                 paymentInstrumentsData,
                 userCampaigns,
@@ -178,6 +192,9 @@ class Group extends React.Component {
             let companyPaymentInstrumentChanged = false;
             const formatMessage = this.props.t;
             if (giveData.giveFrom.type === 'companies' && !_isEmpty(companyDetails)) {
+                const companyIndex = _.findIndex(companiesAccountsData, {'id': giveData.giveFrom.id});
+                giveData.giveFrom.balance = companiesAccountsData[companyIndex].attributes.balance;
+                giveData.giveFrom.text = `${companiesAccountsData[companyIndex].attributes.companyFundName}: ${formatCurrency(companiesAccountsData[companyIndex].attributes.balance, language, currency)}`;
                 if (_isEmpty(prevProps.companyDetails)
                      || !_isEqual(companyDetails.companyPaymentInstrumentsData,
                          prevProps.companyDetails.companyPaymentInstrumentsData)
@@ -186,7 +203,13 @@ class Group extends React.Component {
                 }
                 paymentInstruments = companyDetails.companyPaymentInstrumentsData;
             } else if (giveData.giveFrom.type === 'user') {
+                giveData.giveFrom.balance = fund.attributes.balance;
                 paymentInstruments = paymentInstrumentsData;
+                giveData.giveFrom.text = `${fund.attributes.name}: ${formatCurrency(fund.attributes.balance, language, currency)}`
+            }
+            if(reviewBtnFlag && (giveData.giveFrom.balance >= giveData.giveAmount)) {
+                reviewBtnFlag = false;
+                reloadModalOpen = 0;
             }
             const paymentInstrumentOptions = populatePaymentInstrument(
                 paymentInstruments, formatMessage,
@@ -228,7 +251,7 @@ class Group extends React.Component {
                     },
                     formatMessage
                 );
-                let privacyNameOptions = Group.populateShareName(displayName);                
+                let privacyNameOptions = populateShareName(giveData.giveFrom.name);                
                 giveData = Group.initFields(
                     giveData, fund, id, paymentInstrumentOptions,
                     companyPaymentInstrumentChanged,
@@ -242,7 +265,7 @@ class Group extends React.Component {
                 dropDownOptions: {
                     ...dropDownOptions,
                     giveToList: giveToOptions,
-                    privacyNameOptions:Group.populateShareName(displayName),
+                    privacyNameOptions : populateShareName(giveData.giveFrom.name),
                     infoToShareList: Group.populateShareAddress(
                         taxReceiptProfiles,
                         {
@@ -260,7 +283,9 @@ class Group extends React.Component {
                         ...giveData,
                     },
                     groupFromUrl,
-                }
+                },
+                reloadModalOpen,
+                reviewBtnFlag,
             });        
         }        
     }
@@ -307,22 +332,6 @@ class Group extends React.Component {
                 );
             }
             return infoToShareList
-    }
-
-    static populateShareName(displayName){
-        const privacyNameOptions = [
-            {
-                key: 'give_anonymously',
-                text: 'Give anonymously',
-                value: 0,
-            },
-            {
-                key: 'give_name',
-                text: `${displayName}`,
-                value: 1,
-            },
-        ];
-        return privacyNameOptions
     }
 
     /**
@@ -496,14 +505,15 @@ class Group extends React.Component {
         const {
             value,
         } = data;
-        const inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
-        const formatedGroupAmount = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
         let {
             flowObject: {
                 giveData 
             },
             validity,
-        } = this.state
+        } = this.state;
+        const inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
+        giveData.giveAmount = inputValue;
+        giveData.formatedGroupAmount = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
         validity = validateGiveForm("giveAmount", inputValue, validity, giveData);
         this.setState({
             ...this.state,
@@ -511,8 +521,7 @@ class Group extends React.Component {
                 ...this.state.flowObject,
                 giveData: {
                     ...this.state.flowObject.giveData,
-                    giveAmount: inputValue,
-                    formatedGroupAmount,
+                    ...giveData,
                 }
             },
             validity,
@@ -562,6 +571,7 @@ class Group extends React.Component {
             }
             flowObject.stepsCompleted = false;
             flowObject.nextSteptoProceed = nextStep;
+            delete flowObject.giveData.donationAmount
             dismissAllUxCritialErrors(this.props.dispatch);
             dispatch(proceed(flowObject, flowSteps[stepIndex + 1], stepIndex));
         } else {
@@ -597,6 +607,7 @@ class Group extends React.Component {
                 giveData,
             },
             dropDownOptions,
+            reloadModalOpen,
             reviewBtnFlag,
             validity,
         } = this.state;
@@ -662,6 +673,7 @@ class Group extends React.Component {
                         name, giveData[name], validity, giveData, 0,
                     );
                     reviewBtnFlag = false;
+                    reloadModalOpen = 0;
                     if (giveData.giveFrom.type === 'companies') {
                         getCompanyPaymentAndTax(dispatch,Number(giveData.giveFrom.id));
                     }
@@ -675,6 +687,7 @@ class Group extends React.Component {
                         giveData, dropDownOptions, coverFeesData,
                     );
                     reviewBtnFlag = false;
+                    reloadModalOpen = 0;
                     break;
                 default: break;
             }
@@ -687,6 +700,7 @@ class Group extends React.Component {
                     ...this.state.dropDownOptions,
                     dropDownOptions,
                 },
+                reloadModalOpen,
                 reviewBtnFlag,
                 validity: {
                     ...this.state.validity,
@@ -742,14 +756,79 @@ class Group extends React.Component {
         });
     }
 
-    renderReloadAddAmount = (giveFrom, giveAmount, giftType, reviewBtnFlag) => {
+    handleAddMoneyModal() {
+        this.setState({
+            reloadModalOpen:1,
+        })
+    }
+
+    renderReloadAddAmount = () => {
+        let {
+            defaultTaxReceiptProfile,
+            dispatch,
+            donationMatchData,
+            taxReceiptProfiles,
+            companyDetails,
+            i18n: {
+                language,
+            },
+            userAccountsFetched,
+            companyAccountsFetched,
+        } = this.props
+        const {
+            dropDownOptions:{
+                paymentInstrumentList,
+            },
+            flowObject: {
+                giveData,
+            },
+            reloadModalOpen,
+            reviewBtnFlag,
+        } = this.state;
+        let {
+            giveFrom,
+            giveAmount,
+            giftType,
+        } = giveData
+        const formatMessage = this.props.t;
         if ((giveFrom.type === 'user' || giveFrom.type === 'companies') && (Number(giveAmount) > Number(giveFrom.balance))) {
+            if ((userAccountsFetched && giveFrom.type === 'user') || (companyAccountsFetched && giveFrom.type === 'companies')) {
+            let taxReceiptList = taxReceiptProfiles;
+            let defaultTaxReceiptProfileForReload = defaultTaxReceiptProfile;
+            if (giveFrom.type === 'companies' && companyDetails) {
+                taxReceiptList = !_.isEmpty(companyDetails.taxReceiptProfiles) ? companyDetails.taxReceiptProfiles : [];
+                defaultTaxReceiptProfileForReload = companyDetails.companyDefaultTaxReceiptProfile;
+            }
+            let coverFeesData = {};
+            let AmountToDonate = setDonationAmount(giveData, coverFeesData);
+            const taxReceiptsOptions = populateTaxReceipts(taxReceiptList, formatMessage);
             return (
                 <ReloadAddAmount
-                    giftType={giftType.value}
+                    defaultTaxReceiptProfile={defaultTaxReceiptProfileForReload}
+                    dispatch={dispatch}
+                    donationMatchData={donationMatchData}
+                    formatedDonationAmount={AmountToDonate}
+                    formatMessage={formatMessage}
+                    allocationGiftType={giftType.value}
+                    giveTo={giveData.giveFrom}
+                    language={language}
+                    paymentInstrumentOptions={paymentInstrumentList}
+                    reloadModalOpen={reloadModalOpen}
                     reviewBtnFlag={reviewBtnFlag}
+                    taxReceiptsOptions={taxReceiptsOptions}
                 />
             )
+            } else{
+                return (
+                    <Placeholder>
+                    <Placeholder.Header>
+                      <Placeholder.Line />
+                      <Placeholder.Line />
+                    </Placeholder.Header>
+                  </Placeholder>
+                );
+            }
+
         }
     }
 
@@ -838,6 +917,21 @@ class Group extends React.Component {
                 />
             );
         }
+        let submtBtn = (reviewBtnFlag)?(
+            <Form.Button
+                primary
+                className="blue-btn-rounded btn_right"
+                content={formatMessage('giveCommon:reviewButtonFlag')}
+                disabled={!this.props.userAccountsFetched}
+                onClick={this.handleAddMoneyModal}
+                type="button"
+            />) : (<Form.Button
+                primary
+                className="blue-btn-rounded btn_right"
+                content={formatMessage('giveCommon:reviewButton')}
+                disabled={!this.props.userAccountsFetched}
+                type="submit"
+            />)
         return (
             <Fragment>
             <div className="flowReviewbanner">
@@ -916,7 +1010,7 @@ class Group extends React.Component {
                                                             reviewBtnFlag={reviewBtnFlag}
                                                         />
                                                         )}
-                                                        {this.renderReloadAddAmount(giveFrom, giveAmount, giftType, reviewBtnFlag)}
+                                                        {this.renderReloadAddAmount()}
                                                         {this.renderRepeatGift(giveTo, giftType, giveFrom, formatMessage, language)}
                                                         {privacyOptionComponent}
                                                         <Form.Field>
@@ -947,15 +1041,7 @@ class Group extends React.Component {
                                                             validity={validity}
                                                         />
 
-                                                        {/* { !stepsCompleted && */}
-                                                        <Form.Button
-                                                            primary
-                                                            className='blue-btn-rounded btn_right' // {isMobile ? 'mobBtnPadding' : 'btnPadding'}
-                                                            content={reviewBtnFlag ? formatMessage('giveCommon:reviewButtonFlag')
-                                                            : formatMessage('giveCommon:reviewButton')}
-                                                            type="submit"
-                                                        />
-                                                        {/* } */}
+                                                        {submtBtn}
                                                     </Grid.Column>
                                                 </Grid.Row>
                                             </Grid>
