@@ -99,6 +99,7 @@ class Donation extends React.Component {
             inValidExpirationDate: true,
             inValidNameOnCard: true,
             isCreditCardModalOpen: false,
+            isDefaultCard: false,
             isTaxReceiptModelOpen: false,
             validity: this.intializeValidations(),
             dropDownOptions: {},
@@ -117,6 +118,7 @@ class Donation extends React.Component {
         this.handleAddNewCreditCard = this.handleAddNewCreditCard.bind(this);
         this.handleAddNewButtonClicked = this.handleAddNewButtonClicked.bind(this);
         this.handleAddNewTaxReceipt = this.handleAddNewTaxReceipt.bind(this);
+        this.handleSetPrimaryClick = this.handleSetPrimaryClick.bind(this);
         dismissAllUxCritialErrors(props.dispatch);
     }
     componentDidMount() {
@@ -228,7 +230,7 @@ class Donation extends React.Component {
         let newValue = (!_.isEmpty(options)) ? _.find(options, { value }) : value;
         let setDisableFlag = this.state.disableButton;
         if (giveData[name] !== newValue) {
-            if ((name !== "taxReceipt" || name !== "creditCard") && newValue.value !== 0) {
+            if (!((name === "taxReceipt" || name === "creditCard") && newValue.value === 0)) {
                 giveData[name] = newValue;
                 giveData.userInteracted = true;
             }
@@ -655,6 +657,14 @@ class Donation extends React.Component {
         }
     }
 
+    handleSetPrimaryClick(event, data) {   
+        let {
+            isDefaultCard,
+        } = this.state;      
+        isDefaultCard = data.checked;
+        this.setState({ isDefaultCard });
+    }
+
     handleAddNewCreditCard() {
         const {
             flowObject: {
@@ -667,6 +677,7 @@ class Donation extends React.Component {
             inValidNameOnCard,
             inValidCvv,
             inValidCardNameValue,
+            isDefaultCard,
         } = this.state;
         const {
             flowObject,
@@ -687,7 +698,7 @@ class Donation extends React.Component {
                 dispatch,
             } = this.props;
 
-            dispatch(addNewCardAndLoad(flowObject)).then((result) => {
+            dispatch(addNewCardAndLoad(flowObject, isDefaultCard)).then((result) => {
                 const {
                     data: {
                         attributes: {
@@ -792,6 +803,7 @@ class Donation extends React.Component {
     render() {
         const {
             buttonClicked,
+            disableButton,
             dispatch,
             flowObject,
             inValidCardNumber,
@@ -800,6 +812,7 @@ class Donation extends React.Component {
             inValidCvv,
             inValidCardNameValue,
             isCreditCardModalOpen,
+            isDefaultCard,
             isTaxReceiptModelOpen,
             validity,
         } = this.state;
@@ -883,6 +896,7 @@ class Donation extends React.Component {
                                                             creditCard={giveData.creditCard}
                                                             giveTo={giveData.giveTo}
                                                             formatMessage={formatMessage}
+                                                            disableField={disableButton}
                                                             handleAddNewButtonClicked={this.handleAddNewButtonClicked}
                                                             handleInputChange={this.handleInputChange}
                                                             options={paymentInstrumenOptions}
@@ -920,7 +934,7 @@ class Donation extends React.Component {
                                                                                 </Elements>
                                                                             </StripeProvider>
                                                                             <Form.Field
-                                                                                // checked={isDefaultCard}
+                                                                                checked={isDefaultCard}
                                                                                 control={Checkbox}
                                                                                 className="ui checkbox chkMarginBtm checkboxToRadio"
                                                                                 id="isDefaultCard"
@@ -946,6 +960,7 @@ class Donation extends React.Component {
                                                         <TaxReceiptDropDown
                                                             giveTo={giveData.giveTo}
                                                             formatMessage={formatMessage}
+                                                            disableField={disableButton}
                                                             handleAddNewButtonClicked={this.handleAddNewButtonClicked}
                                                             handleInputChange={this.handleInputChange}
                                                             taxReceipt={giveData.taxReceipt}
@@ -986,7 +1001,7 @@ class Donation extends React.Component {
                                                             className="blue-btn-rounded btn_right"
                                                             // className={isMobile ? 'mobBtnPadding' : 'btnPadding'}
                                                             content={formatMessage('giveCommon:continueButton')}
-                                                            disabled={this.state.disableButton}
+                                                            disabled={disableButton}
                                                             // fluid={isMobile}
                                                             type="submit"
                                                         />
