@@ -3,6 +3,7 @@ import _ from 'lodash';
 
 import coreApi from '../services/coreApi';
 import graphApi from '../services/graphApi';
+import { Router } from '../routes';
 
 
 export const actionTypes = {
@@ -84,14 +85,17 @@ export const getGroupFromSlug = async (dispatch, slug, token = null) => {
                     }
                 }
             },
-        ).catch(() => {
-            dispatch({
-                payload: {
-                    redirectToDashboard: true,
-                },
-                type: actionTypes.GROUP_REDIRECT_TO_DASHBOARD,
-            });
-            return null;
+        ).catch((error) => {
+            if (error[0].status !== 403) {
+                dispatch({
+                    payload: {
+                        redirectToDashboard: true,
+                    },
+                    type: actionTypes.GROUP_REDIRECT_TO_DASHBOARD,
+                });
+            } else {
+                Router.pushRoute('/group/error');
+            }
         });
     } else {
         // redirect('/dashboard');

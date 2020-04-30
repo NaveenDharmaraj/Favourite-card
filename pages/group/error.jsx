@@ -10,9 +10,7 @@ import {
 
 import { Link } from '../../routes';
 import AvailableImg from '../../static/images/noresults.png';
-
 import Layout from '../../components/shared/Layout';
-import '../../static/less/style.less';
 
 function ErrorPage() {
     return (
