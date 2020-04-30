@@ -3,8 +3,6 @@ import _ from 'lodash';
 
 import coreApi from '../services/coreApi';
 import graphApi from '../services/graphApi';
-import { Router } from '../routes';
-
 
 export const actionTypes = {
     ACTIVITY_LIKE_STATUS: 'ACTIVITY_LIKE_STATUS',
@@ -19,6 +17,7 @@ export const actionTypes = {
     GET_GROUP_GALLERY_IMAGES: 'GET_GROUP_GALLERY_IMAGES',
     GET_GROUP_MEMBERS_DETAILS: 'GET_GROUP_MEMBERS_DETAILS',
     GET_GROUP_TRANSACTION_DETAILS: 'GET_GROUP_TRANSACTION_DETAILS',
+    GROUP_REDIRECT_TO_ERROR_PAGE: 'GROUP_REDIRECT_TO_ERROR_PAGE',
     MEMBER_PLACEHOLDER_STATUS: 'MEMBER_PLACEHOLDER_STATUS',
     GROUP_PLACEHOLDER_STATUS: 'GROUP_PLACEHOLDER_STATUS',
     POST_NEW_ACTIVITY: 'POST_NEW_ACTIVITY',
@@ -48,6 +47,12 @@ export const getGroupFromSlug = async (dispatch, slug, token = null) => {
                 redirectToDashboard: false,
             },
             type: actionTypes.GROUP_REDIRECT_TO_DASHBOARD,
+        });
+        dispatch({
+            payload: {
+                redirectToErrorPage: false,
+            },
+            type: actionTypes.GROUP_REDIRECT_TO_ERROR_PAGE,
         });
         const fullParams = {
             params: {
@@ -86,15 +91,20 @@ export const getGroupFromSlug = async (dispatch, slug, token = null) => {
                 }
             },
         ).catch((error) => {
-            if (error[0].status !== 403) {
+            if (error[0] && error[0].status === 403) {
+                dispatch({
+                    payload: {
+                        redirectToErrorPage: true,
+                    },
+                    type: actionTypes.GROUP_REDIRECT_TO_ERROR_PAGE,
+                });
+            } else {
                 dispatch({
                     payload: {
                         redirectToDashboard: true,
                     },
                     type: actionTypes.GROUP_REDIRECT_TO_DASHBOARD,
                 });
-            } else {
-                Router.pushRoute('/group/error');
             }
         });
     } else {
