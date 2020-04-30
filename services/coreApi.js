@@ -73,7 +73,7 @@ instance.interceptors.response.use(function (response) {
         softLogout(config.dispatch);
         return null;
     }
-    if (status === 403 && config.params && config.params.findBySlug && typeof window !== 'undefined') {
+    if (status === 403 && config.params && config.params.findBySlug) {
         data[0].status = 403;
     } else if (config.uxCritical && config.dispatch) {
         triggerUxCritialErrors(data.errors || data, config.dispatch);
