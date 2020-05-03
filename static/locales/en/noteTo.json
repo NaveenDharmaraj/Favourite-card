@@ -11,7 +11,7 @@
     "noteToSelfPlaceHolder": "Write a note to yourself.",
     "noteToSelfLabelReview" : "Note to self",
     "noteToSelfLabel": "Note to self (optional)",
-    "donorNoteToSelfPopup": "Laissez-vous une note personnelle pour plus tard, par exemple, un rappel des raisons qui vous ont motivé à ajouter cet argent à votre compte. Ce message ne sera visible que sur votre Tableau de bord.",
+    "donorNoteToSelfPopup": "Write a note to yourself for later—for example, a reminder of why you added this money to your account. This will only be visible to you on your Dashboard.",
     "noteToCompanyLabel": "Note to company",
     "noteToGroupLabel": "Note to group"
 }
