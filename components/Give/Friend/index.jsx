@@ -18,10 +18,6 @@ import {
 } from 'semantic-ui-react';
 import dynamic from 'next/dynamic';
 import getConfig from 'next/config';
-import {
-    Elements,
-    StripeProvider,
-} from 'react-stripe-elements';
 import _isEqual from 'lodash/isEqual';
 import _isEmpty from 'lodash/isEmpty';
 import _merge from 'lodash/merge';
@@ -32,48 +28,32 @@ import _ from 'lodash';
 
 import {
     formatCurrency,
-    resetP2pDataForOnInputChange,
     formatAmount,
     validateGiveForm,
     populateDonationMatch,
     populatePaymentInstrument,
     populateTaxReceipts,
     resetDataForAccountChange,
-    getDefaultCreditCard,
     getSelectedFriendList,
     validateForReload,
     calculateP2pTotalGiveAmount,
-    setDonationAmount,
 } from '../../../helpers/give/utils';
 import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
 import {
     getCompanyPaymentAndTax,
     proceed,
 } from '../../../actions/give';
-import {
-    storeEmailIdToGive,
-} from '../../../actions/dashboard';
 import { withTranslation } from '../../../i18n';
 import { parseEmails } from '../../../helpers/give/giving-form-validation';
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 import DropDownAccountOptions from '../../shared/DropDownAccountOptions';
 import Note from '../../shared/Note';
-import AccountTopUp from '../AccountTopUp';
 import { p2pDefaultProps } from '../../../helpers/give/defaultProps';
-import { dismissAllUxCritialErrors } from '../../../actions/error';
-const { publicRuntimeConfig } = getConfig();
 import '../../shared/style/styles.less';
 import FlowBreadcrumbs from '../FlowBreadcrumbs';
 import DonationAmountField from '../DonationAmountField';
 import FriendsDropDown from '../../shared/FriendsDropDown';
 import ReloadAddAmount from '../ReloadAddAmount';
-const {
-    STRIPE_KEY
-} = publicRuntimeConfig;
-
-const CreditCard = dynamic(() => import('../../shared/CreditCard'), {
-    ssr: false
-});
 
 const actionTypes = {
     SHOW_FRIENDS_DROPDOWN: 'SHOW_FRIENDS_DROPDOWN',
@@ -131,12 +111,6 @@ class Friend extends React.Component {
                 paymentInstrumentList: populatePaymentInstrument(paymentInstruments, formatMessage),
             },
             flowObject: _cloneDeep(payload),
-            // forceContinue: props.forceContinue,
-            inValidCardNameValue: true,
-            inValidCardNumber: true,
-            inValidCvv: true,
-            inValidExpirationDate: true,
-            inValidNameOnCard: true,
             userEmail: email,
             validity: this.initializeValidations(),
             showGiveToEmail: false,
@@ -155,12 +129,6 @@ class Friend extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.validateForm = this.validateForm.bind(this);
 
-        this.validateStripeCreditCardNo = this.validateStripeCreditCardNo.bind(this);
-        this.validateStripeExpirationDate = this.validateStripeExpirationDate.bind(this);
-        this.validateCreditCardCvv = this.validateCreditCardCvv.bind(this);
-        this.validateCreditCardName = this.validateCreditCardName.bind(this);
-        this.getStripeCreditCard = this.getStripeCreditCard.bind(this);
-        dismissAllUxCritialErrors(props.dispatch);
         this.handleGiveToEmail = this.handleGiveToEmail.bind(this);
         this.renderReloadAddAmount = this.renderReloadAddAmount.bind(this);
         this.handleAddMoneyModal = this.handleAddMoneyModal.bind(this); 
@@ -294,8 +262,7 @@ class Friend extends React.Component {
             const donationMatchOptions = populateDonationMatch(donationMatchData, formatMessage);
             if (!_isEmpty(fund)) {
                 giveData = Friend.initFields(
-                    giveData, fund, id, avatar, paymentInstrumentOptions,
-                    companyPaymentInstrumentChanged,
+                    giveData, fund, id, avatar,
                     `${firstName} ${lastName}`, companiesAccountsData, userGroups, userCampaigns,
                 );
             }
@@ -315,18 +282,8 @@ class Friend extends React.Component {
         }
     }
 
-    static initFields(giveData, fund, id, avatar,paymentInstrumentOptions,
-        companyPaymentInstrumentChanged, name, companiesAccountsData, userGroups, userCampaigns) {
-        if (
-            (giveData.giveFrom.type === 'user' || giveData.giveFrom.type === 'companies')
-            && (giveData.creditCard.value === null || companyPaymentInstrumentChanged)
-            && (giveData.giftType.value > 0
-            || Number(giveData.giveAmount) > Number(giveData.giveFrom.balance))
-        ) {
-            giveData.creditCard = getDefaultCreditCard(
-                paymentInstrumentOptions,
-            );
-        }
+    static initFields(giveData, fund, id, avatar,
+        name, companiesAccountsData, userGroups, userCampaigns) {
         if (_isEmpty(companiesAccountsData) && _isEmpty(userGroups) && _isEmpty(userCampaigns) && !giveData.userInteracted) {
             giveData.giveFrom.avatar = avatar,
             giveData.giveFrom.id = id;
@@ -543,34 +500,19 @@ class Friend extends React.Component {
     handleSubmit() {
         const {
             flowObject,
-            inValidCardNumber,
-            inValidExpirationDate,
-            inValidNameOnCard,
-            inValidCvv,
-            inValidCardNameValue,
         } = this.state;
         const {
             dispatch,
-            nextStep,
-            companyDetails,
-            defaultTaxReceiptProfile,
             flowSteps,
             stepIndex,
             friendsListData,
         } = this.props;
-        // let { forceContinue } = this.state;
         const {
             giveData: {
-                creditCard,
                 friendsList,
             },
         } = flowObject;
         if (this.validateForm()) {
-            if (creditCard.value > 0) {
-                flowObject.selectedTaxReceiptProfile = (flowObject.giveData.giveFrom.type === 'companies') ?
-                    companyDetails.companyDefaultTaxReceiptProfile
-                    : defaultTaxReceiptProfile;
-            }
             flowObject.giveData.selectedFriendsList = (!_.isEmpty(friendsList))
                 ? getSelectedFriendList(friendsListData, friendsList)
                 : [];
@@ -587,99 +529,8 @@ class Friend extends React.Component {
                 flowObject.giveData.recipients,
             );
             flowObject.stepsCompleted = false;
-            dismissAllUxCritialErrors(this.props.dispatch);
             dispatch(proceed(flowObject, flowSteps[stepIndex + 1], stepIndex));
         }
-    }
-
-    /**
-     * validateStripeElements
-     * @param {boolean} inValidCardNumber credit card number
-     * @return {void}
-     */
-    validateStripeCreditCardNo(inValidCardNumber) {
-        this.setState({ inValidCardNumber });
-    }
-
-    /**
-     * validateStripeElements
-     * @param {boolean} inValidExpirationDate credit card expiry date
-     * @return {void}
-     */
-    validateStripeExpirationDate(inValidExpirationDate) {
-        this.setState({ inValidExpirationDate });
-    }
-
-    /**
-     * validateStripeElements
-     * @param {boolean} inValidCvv credit card CVV
-     * @return {void}
-     */
-    validateCreditCardCvv(inValidCvv) {
-        this.setState({ inValidCvv });
-    }
-
-    /**
-     * @param {boolean} inValidNameOnCard credit card Name
-     * @param {boolean} inValidCardNameValue credit card Name Value
-     * @param {string} cardHolderName credit card Name Data
-     * @return {void}
-     */
-    validateCreditCardName(inValidNameOnCard, inValidCardNameValue, cardHolderName) {
-        let cardNameValid = inValidNameOnCard;
-        if (cardHolderName.trim() === '' || cardHolderName.trim() === null) {
-            cardNameValid = true;
-        } else {
-            this.setState({
-                flowObject: {
-                    ...this.state.flowObject,
-                    cardHolderName,
-                },
-            });
-        }
-        this.setState({
-            inValidCardNameValue,
-            inValidNameOnCard: cardNameValid,
-        });
-    }
-
-    getStripeCreditCard(data, cardHolderName) {
-        this.setState({
-            flowObject: {
-                ...this.state.flowObject,
-                cardHolderName,
-                stripeCreditCard: data,
-            },
-        });
-    }
-
-    isValidCC(
-        creditCard,
-        inValidCardNumber,
-        inValidExpirationDate,
-        inValidNameOnCard,
-        inValidCvv,
-        inValidCardNameValue,
-    ) {
-        let validCC = true;
-        if (creditCard.value === 0) {
-            this.CreditCard.handleOnLoad(
-                inValidCardNumber,
-                inValidExpirationDate,
-                inValidNameOnCard,
-                inValidCvv,
-                inValidCardNameValue,
-            );
-            validCC = (
-                !inValidCardNumber &&
-                !inValidExpirationDate &&
-                !inValidNameOnCard &&
-                !inValidCvv &&
-                !inValidCardNameValue
-            );
-        }
-
-        return validCC;
     }
 
     validateForm() {
@@ -817,7 +668,6 @@ class Friend extends React.Component {
     render() {
         const {
             currentStep,
-            creditCardApiCall,
             flowSteps,
             i18n:{
                 language,
@@ -829,11 +679,7 @@ class Friend extends React.Component {
             flowObject: {
                 currency,
                 giveData: {
-                    creditCard,
-                    donationAmount,
-                    donationMatch,
                     emailMasked,
-                    formatedDonationAmount,
                     formatedP2PAmount,
                     friendsList,
                     giftType,

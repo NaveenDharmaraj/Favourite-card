@@ -285,7 +285,6 @@ const initializeP2pAllocations = (
     noteToRecipients,
     noteToSelf,
     giveFrom,
-    donationId,
 ) => {
     const allocations = [];
     // _.each(recipients, (recipient) => {
@@ -306,15 +305,6 @@ const initializeP2pAllocations = (
             },
         },
     };
-
-    if (donationId > 0) {
-        allocationData.relationships.donation = {
-            data: {
-                id: donationId,
-                type: 'donations',
-            },
-        };
-    }
     allocationData.type = 'fundAllocations';
     allocations.push(allocationData);
     // });
@@ -329,9 +319,6 @@ const initializeP2pAllocations = (
 const saveP2pAllocations = (allocation) => {
     const {
         giveData: {
-            creditCard,
-            donationAmount,
-            donationMatch,
             giveAmount,
             giveFrom,
             noteToRecipients,
@@ -339,32 +326,7 @@ const saveP2pAllocations = (allocation) => {
             recipients,
             selectedFriendsList,
         },
-        selectedTaxReceiptProfile,
     } = allocation;
-
-    if (donationAmount) {
-        return saveDonations({
-            selectedTaxReceiptProfile,
-            giveData: {
-                automaticDonation: false,
-                creditCard,
-                donationAmount,
-                donationMatch,
-                giveTo: giveFrom,
-                noteToSelf: '',
-            },
-        }).then((result) => {
-            const allocations = initializeP2pAllocations(
-                recipients,
-                giveAmount,
-                noteToRecipients,
-                noteToSelf,
-                giveFrom,
-                result.data.id,
-            );
-            return postP2pAllocations(allocations);
-        });
-    }
     const emailArray = _.concat(selectedFriendsList.map((friend) => friend.email), recipients);
     const allocations = initializeP2pAllocations(
         emailArray,

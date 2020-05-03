@@ -151,14 +151,6 @@ export const p2pDefaultProps = {
     flowObject: {
         currency: 'USD',
         giveData: {
-            creditCard: {
-                value: null,
-            },
-            donationAmount: '',
-            donationMatch: {
-                value: null,
-            },
-            formatedDonationAmount: '',
             formatedP2PAmount: '',
             friendsList: [],
             // P2P gift type is always 0
@@ -175,7 +167,6 @@ export const p2pDefaultProps = {
             infoToShare: {
                 value: 'anonymous',
             },
-            newCreditCardId: null,
             noteToRecipients: '',
             noteToSelf: '',
             recipients: [],
@@ -187,9 +178,7 @@ export const p2pDefaultProps = {
             selectedFriendsList: [],
         },
         nextSteptoProceed: {},
-        selectedTaxReceiptProfile: {},
         stepsCompleted: false,
-        taxReceiptProfileAction: 'no_change',
         type: 'give/to/friend',
     },
 };
