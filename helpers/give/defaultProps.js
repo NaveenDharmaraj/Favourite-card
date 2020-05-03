@@ -98,7 +98,6 @@ export const beneficiaryDefaultProps = {
         groupFromUrl: false,
         groupId: null,
         nextSteptoProceed: {},
-        selectedTaxReceiptProfile: {},
         sourceAccountHolderId: null,
         stepsCompleted: false,
         type: 'give/to/charity',
@@ -109,18 +108,10 @@ export const groupDefaultProps = {
     flowObject: {
         currency: 'USD',
         giveData: {
-            creditCard: {
-                value: null,
-            },
             dedicateGift: {
                 dedicateType: '',
                 dedicateValue: '',
             },
-            donationAmount: '',
-            donationMatch: {
-                value: null,
-            },
-            formatedDonationAmount: '',
             formatedGroupAmount: '',
             giftType: {
                 value: 0,
@@ -149,11 +140,9 @@ export const groupDefaultProps = {
         groupFromUrl: false,
         groupIndex: 0,
         nextSteptoProceed: {},
-        selectedTaxReceiptProfile: {},
         slugValue: null,
         sourceAccountHolderId: null,
         stepsCompleted: false,
-        taxReceiptProfileAction: 'no_change',
         type: 'give/to/group',
     },
 };

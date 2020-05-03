@@ -30,7 +30,6 @@ import ReloadAddAmount from '../ReloadAddAmount';
 import FlowBreadcrumbs from '../FlowBreadcrumbs';
 import DonationFrequency from '../DonationFrequency';
 import GroupAmountField from '../DonationAmountField';
-// import CreditCard from '../../shared/CreditCard';
 import PrivacyOptions from '../PrivacyOptions';
 import DropDownAccountOptions from '../../shared/DropDownAccountOptions';
 import { 
@@ -39,16 +38,13 @@ import {
  } from '../../../actions/user';
 import {
     formatAmount,
-    getDefaultCreditCard,
     getDropDownOptionFromApiData,
     populateGroupsOfUser,
     populatePaymentInstrument,
     populateTaxReceipts,
     populateInfoToShare,
     populateShareName,
-    resetDataForGiveAmountChange,
     resetDataForAccountChange,
-    resetDataForGiftTypeChange,
     validateGiveForm,
     formatCurrency,
     setDonationAmount,
@@ -60,7 +56,6 @@ import {
     proceed,
 } from '../../../actions/give';
 import { groupDefaultProps } from '../../../helpers/give/defaultProps';
-import { dismissAllUxCritialErrors } from '../../../actions/error';
 
 const DedicateType = dynamic(() => import('../DedicateGift'), { ssr: false });
 
@@ -128,7 +123,6 @@ class Group extends React.Component {
         this.handleInputOnBlur = this.handleInputOnBlur.bind(this)
         this.handleInputChangeGiveTo = this.handleInputChangeGiveTo.bind(this);
         this.handleAddMoneyModal = this.handleAddMoneyModal.bind(this);
-        dismissAllUxCritialErrors(props.dispatch);
     }
 
     componentDidMount() {
@@ -253,8 +247,7 @@ class Group extends React.Component {
                 );
                 let privacyNameOptions = populateShareName(giveData.giveFrom.name);                
                 giveData = Group.initFields(
-                    giveData, fund, id, paymentInstrumentOptions,
-                    companyPaymentInstrumentChanged,
+                    giveData, fund, id,
                     `${firstName} ${lastName}`, companiesAccountsData, userGroups, userCampaigns,
                     addressToShareList, privacyNameOptions
                 );
@@ -339,24 +332,12 @@ class Group extends React.Component {
      * @param {object} giveData full form data.
      * @param {object} fund user fund details from API.
      * @param {String} id user id from API.
-     * @param {object[]} paymentInstrumentOptions creditcard list.
-     * @param {boolean} companyPaymentInstrumentChanged creditcard changed or not.
      * @param {String} name user name from API.
      * @return {object} full form data.
      */
     // eslint-disable-next-line react/sort-comp
-    static initFields(giveData, fund, id, paymentInstrumentOptions,
-        companyPaymentInstrumentChanged, name, companiesAccountsData, userGroups, userCampaigns, addressToShareList, privacyNameOptions) {
-        if (
-            (giveData.giveFrom.type === 'user' || giveData.giveFrom.type === 'companies')
-            && (giveData.creditCard.value === null || companyPaymentInstrumentChanged)
-            && (giveData.giftType.value > 0
-            || Number(giveData.giveAmount) > Number(giveData.giveFrom.balance))
-        ) {
-            giveData.creditCard = getDefaultCreditCard(
-                paymentInstrumentOptions,
-            );
-        }
+    static initFields(giveData, fund, id,
+        name, companiesAccountsData, userGroups, userCampaigns, addressToShareList, privacyNameOptions) {
         if (_isEmpty(companiesAccountsData) && _isEmpty(userGroups) && _isEmpty(userCampaigns) && !giveData.userInteracted) {
             giveData.giveFrom.id = id;
             giveData.giveFrom.value = fund.id;
@@ -397,7 +378,6 @@ class Group extends React.Component {
             validity,
         } = this.state;
 
-        validity = validateGiveForm('donationAmount', giveData.donationAmount, validity, giveData, 0);
         validity = validateGiveForm('giveAmount', giveData.giveAmount, validity, giveData, 0);
         validity = validateGiveForm('giveFrom', giveData.giveFrom.value, validity, giveData, 0);
         validity = validateGiveForm('noteToSelf', giveData.noteToSelf, validity, giveData, 0);
@@ -441,12 +421,8 @@ class Group extends React.Component {
             validity = validateGiveForm(name, inputValue, validity, giveData, 0);
         }
         switch (name) {
-            case 'giveAmount':
-                validity = validateGiveForm('donationAmount', giveData.donationAmount, validity, giveData, 0);
-                break;
             case 'giveFrom':
                 validity = validateGiveForm('giveAmount', giveData.giveAmount, validity, giveData, 0);
-                validity = validateGiveForm('donationAmount', giveData.donationAmount, validity, giveData, 0);
                 break;
             case 'inHonorOf':
             case 'inMemoryOf':
@@ -478,16 +454,9 @@ class Group extends React.Component {
             isAmountLessThanOneBillion: true,
             isAmountMoreThanOneDollor: true,
             isDedicateGiftEmpty: true,
-            isDonationAmountBlank: true,
-            isDonationAmountCoverGive: true,
-            isDonationAmountLessThan1Billion: true,
-            isDonationAmountMoreThan1Dollor: true,
-            isDonationAmountPositive: true,
             isNoteToCharityInLimit: true,
             isNoteToSelfInLimit: true,
             isValidDecimalAmount: true,
-            isValidDecimalDonationAmount: true,
-            isValidDonationAmount: true,
             isValidGiveAmount: true,
             isValidGiveFrom: true,
             isValidGiveTo:true,
@@ -571,8 +540,6 @@ class Group extends React.Component {
             }
             flowObject.stepsCompleted = false;
             flowObject.nextSteptoProceed = nextStep;
-            delete flowObject.giveData.donationAmount
-            dismissAllUxCritialErrors(this.props.dispatch);
             dispatch(proceed(flowObject, flowSteps[stepIndex + 1], stepIndex));
         } else {
             this.setState({
@@ -678,14 +645,8 @@ class Group extends React.Component {
                         getCompanyPaymentAndTax(dispatch,Number(giveData.giveFrom.id));
                     }
                     break;
-                case 'giftType':
-                    giveData = resetDataForGiftTypeChange(giveData, dropDownOptions, coverFeesData);
-                    break;
                 case 'giveAmount':
                     giveData['formatedGroupAmount'] = newValue;
-                    giveData = resetDataForGiveAmountChange(
-                        giveData, dropDownOptions, coverFeesData,
-                    );
                     reviewBtnFlag = false;
                     reloadModalOpen = 0;
                     break;

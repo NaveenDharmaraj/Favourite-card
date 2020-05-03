@@ -1494,9 +1494,10 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
                 privacyShareNameMessage = `${privacyShareNameMessage} <br/> ${formatMessage('reviewGiftAmount')} ${state.mainDisplayAmount}`;
             }
 
-            let privacyShareEmailMessage = formatMessage("notApplicable");
-            if(giveFrom.type === 'user') {
-                privacyShareEmailMessage = infoToShare.text;
+            let privacyShareEmailMessage = formatMessage('notApplicable');
+            if (giveFrom.type === 'user') {
+                privacyShareEmailMessage = (infoToShare.value === 'anonymous')
+                    ? formatMessage('reviewGiveAnonymously') : infoToShare.text;
             }
 
             const giveToType = (giveTo.isCampaign) ? 'Campaign' : 'Group';

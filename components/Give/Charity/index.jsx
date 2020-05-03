@@ -321,8 +321,7 @@ class Charity extends React.Component {
             }
             if (!_isEmpty(fund)) {
                 giveData = Charity.initFields(
-                    giveData, fund, id, avatar, paymentInstrumentOptions,
-                    companyPaymentInstrumentChanged,
+                    giveData, fund, id, avatar,
                     `${firstName} ${lastName}`, companiesAccountsData, userGroups, userCampaigns,
                     giveGroupBenificairyDetails, groupId
                 );
@@ -365,15 +364,13 @@ class Charity extends React.Component {
      * @param {object} giveData full form data.
      * @param {object} fund user fund details from API.
      * @param {String} id user id from API.
-     * @param {object[]} paymentInstrumentOptions creditcard list.
-     * @param {boolean} companyPaymentInstrumentChanged creditcard changed or not.
      * @param {String} name user name from API.
      * @return {object} full form data.
      */
 
     // eslint-disable-next-line react/sort-comp
-    static initFields(giveData, fund, id, avatar, paymentInstrumentOptions,
-        companyPaymentInstrumentChanged, name, companiesAccountsData, userGroups, userCampaigns, giveGroupBenificairyDetails, groupId) {
+    static initFields(giveData, fund, id, avatar,
+        name, companiesAccountsData, userGroups, userCampaigns, giveGroupBenificairyDetails, groupId) {
         if (_isEmpty(companiesAccountsData) && _isEmpty(userGroups) && _isEmpty(userCampaigns) && !giveData.userInteracted) {
             giveData.giveFrom.avatar = avatar,
                 giveData.giveFrom.id = id;
