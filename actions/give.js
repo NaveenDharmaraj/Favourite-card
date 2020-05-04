@@ -1032,7 +1032,7 @@ export const walletTopUp = (reloadObject) => {
                 type: 'TRIGGER_UX_CRITICAL_ERROR',
             });
         }).catch((error) => {
-            triggerUxCritialErrors(error);
+            triggerUxCritialErrors(error.errors || error, dispatch);
             return Promise.reject(error);
         });
     };

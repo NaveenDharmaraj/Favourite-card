@@ -489,6 +489,7 @@ class ReloadAddAmount extends React.Component {
             inValidNameOnCard,
             inValidCvv,
             inValidCardNameValue,
+            isDefaultCard,
         } = this.state;
         const {
             reloadObject,
@@ -509,7 +510,7 @@ class ReloadAddAmount extends React.Component {
             const {
                 dispatch,
             } = this.props;
-            dispatch(addNewCardAndLoad(reloadObject)).then((result) => {
+            dispatch(addNewCardAndLoad(reloadObject, isDefaultCard)).then((result) => {
                 const {
                     data: {
                         attributes: {
