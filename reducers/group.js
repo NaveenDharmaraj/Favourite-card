@@ -303,6 +303,12 @@ const group = (state = {}, action) => {
                 };
             }
             break;
+        case 'GROUP_REDIRECT_TO_ERROR_PAGE':
+            newState = {
+                ...state,
+                redirectToPrivateGroupErrorPage: action.payload.redirectToErrorPage,
+            };
+            break;
         default:
             break;
     }
