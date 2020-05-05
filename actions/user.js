@@ -305,7 +305,7 @@ export const getUser = async (dispatch, userId, token = null) => {
         };
     }
     await coreApi.get(`/users/${userId}?include=activeRole`, params).then((result) => {
-    isAuthenticated = true;
+        isAuthenticated = true;
         const { data } = result;
         const dataMap = {
             BeneficiaryAdminRole: 'charity',
@@ -353,25 +353,16 @@ export const getUser = async (dispatch, userId, token = null) => {
     });
 };
 
-export const getUser1 = (dispatch, userId, token = null) => {
+export const getUserAllDetails = (dispatch, userId) => {
     const fsa = {
         payload: {},
         type: actionTypes.SET_USER_INFO,
     };
-    let isAuthenticated = false;
-    let params = null;
-    if (!_.isEmpty(token)) {
-        params = {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        };
-    }
-    const userDetails = coreApi.get(`/users/${userId}?include=chimpAdminRole,donorRole`, params);
-    const administeredCompanies = callApiAndGetData(`/users/${userId}/administeredCompanies?page[size]=50&sort=-id`, params);
-    const administeredBeneficiaries = callApiAndGetData(`/users/${userId}/administeredBeneficiaries?page[size]=50&sort=-id`, params);
-    const beneficiaryAdminRoles = callApiAndGetData(`/users/${userId}/beneficiaryAdminRoles?page[size]=50&sort=-id`, params);
-    const companyAdminRoles = callApiAndGetData(`/users/${userId}/companyAdminRoles?page[size]=50&sort=-id`, params);
+    const userDetails = coreApi.get(`/users/${userId}?include=chimpAdminRole,donorRole`);
+    const administeredCompanies = callApiAndGetData(`/users/${userId}/administeredCompanies?page[size]=50&sort=-id`);
+    const administeredBeneficiaries = callApiAndGetData(`/users/${userId}/administeredBeneficiaries?page[size]=50&sort=-id`);
+    const beneficiaryAdminRoles = callApiAndGetData(`/users/${userId}/beneficiaryAdminRoles?page[size]=50&sort=-id`);
+    const companyAdminRoles = callApiAndGetData(`/users/${userId}/companyAdminRoles?page[size]=50&sort=-id`);
     return Promise.all([
         userDetails,
         administeredCompanies,
@@ -381,7 +372,6 @@ export const getUser1 = (dispatch, userId, token = null) => {
     ])
         .then(
             (allData) => {
-                isAuthenticated = true;
                 const userData = allData[0];
                 const { data } = userData;
                 const {
@@ -462,14 +452,7 @@ export const getUser1 = (dispatch, userId, token = null) => {
             },
         ).catch((error) => {
             // console.log(JSON.stringify(error));
-            isAuthenticated = false;
         }).finally(() => {
-            dispatch({
-                payload: {
-                    isAuthenticated,
-                },
-                type: 'SET_AUTH',
-            });
             dispatch(fsa);
         });
 };
