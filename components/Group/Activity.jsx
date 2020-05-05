@@ -30,7 +30,7 @@ import PlaceholderGrid from '../shared/PlaceHolder';
 import ActivityDetails from './ActivityDetails';
 
 const actionTypes = {
-    PLACEHOLDER_STATUS: 'PLACEHOLDER_STATUS',
+    GROUP_PLACEHOLDER_STATUS: 'GROUP_PLACEHOLDER_STATUS',
 };
 
 class Activity extends React.Component {
@@ -58,7 +58,7 @@ class Activity extends React.Component {
                 payload: {
                     showPlaceholder: true,
                 },
-                type: actionTypes.PLACEHOLDER_STATUS,
+                type: actionTypes.GROUP_PLACEHOLDER_STATUS,
             });
             getGroupActivities(dispatch, id);
         }
@@ -70,9 +70,14 @@ class Activity extends React.Component {
             groupActivities: {
                 data,
             },
+            groupDetails: {
+                attributes: {
+                    isMember,
+                },
+            },
             userInfo: {
                 id: userId,
-            }
+            },
         } = this.props;
         return (
             data.map((activity) => (
@@ -87,7 +92,7 @@ class Activity extends React.Component {
                     createdAt={activity.attributes.createdAt}
                     commentsCount={activity.attributes.commentsCount}
                     commentsLink={activity.relationships.comments.links.related}
-                    canReply
+                    canReply={isMember}
                     type={activity.type}
                     userId={userId}
                 />
@@ -134,57 +139,64 @@ class Activity extends React.Component {
                 data,
                 nextLink: activitiesLink,
             },
+            groupDetails: {
+                attributes: {
+                    isMember,
+                },
+            },
         } = this.props;
         const {
             commentText,
-
         } = this.state;
-        let viewData = 'NO DATA';
+        let viewData = '';
         if (!_isEmpty(data)) {
             viewData = (
-                <Grid centered>
-                    <Grid.Row>
-                        <Grid.Column mobile={16} tablet={14} computer={14}>
-                            <Grid>
-                                <Grid.Row>
-                                    <Grid.Column mobile={16} tablet={14} computer={14}>
-                                        <div className="two-icon-brdr-btm-input">
-                                            <Input
-                                                value={commentText}
-                                                onChange={this.updateInputValue}
-                                                type="text"
-                                                placeholder="Write a post..."
-                                                action
-                                                fluid
-                                            />
-                                        </div>
-                                    </Grid.Column>
-                                    <Grid.Column mobile={16} tablet={2} computer={2}>
-                                        <Button
-                                            onClick={this.postComment}
-                                            className="blue-bordr-btn-round-def c-small"
-                                        >
-                                        Post
-                                        </Button>
-                                    </Grid.Column>
-                                </Grid.Row>
-                            </Grid>
-                            <div className="c-comment">
-                                <Comment.Group fluid>
-                                    {this.getComments()}
-                                </Comment.Group>
-                            </div>
-                        </Grid.Column>
-                    </Grid.Row>
-                </Grid>
+                <div className="c-comment">
+                    <Comment.Group fluid>
+                        {this.getComments()}
+                    </Comment.Group>
+                </div>
             );
         }
+        const actionData = (
+            <Grid centered>
+                <Grid.Row>
+                    <Grid.Column mobile={16} tablet={14} computer={14}>
+                        {isMember
+                        && (
+                            <div className="postInputMainWraper">
+                                <div className="postInputWraper">
+                                    <Input
+                                        value={commentText}
+                                        onChange={this.updateInputValue}
+                                        type="text"
+                                        placeholder="Write a post..."
+                                        fluid
+                                    />
+                                </div>
+                                <div className="postBtnWraper">
+                                    <Button
+                                        fluid
+                                        onClick={this.postComment}
+                                        className="blue-bordr-btn-round-def postButton"
+                                    >
+                                    Post
+                                    </Button>
+                                </div>
+                            </div>
+                        )
+                        }
+                        {viewData}
+                    </Grid.Column>
+                </Grid.Row>
+            </Grid>
+        );
 
         return (
             <Fragment>
                 {commentsLoader
                     ? <PlaceholderGrid row={1} column={1} />
-                    : viewData
+                    : actionData
                 }
                 {(activitiesLink)
                 && (
@@ -230,6 +242,7 @@ function mapStateToProps(state) {
     return {
         commentsLoader: state.group.showPlaceholder,
         groupActivities: state.group.groupActivities,
+        groupDetails: state.group.groupDetails,
         userInfo: state.user.info,
     };
 }

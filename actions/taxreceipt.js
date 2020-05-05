@@ -1,16 +1,16 @@
-/* eslint-disable no-else-return */
-
-import _ from 'lodash';
+import _isEmpty from 'lodash/isEmpty';
 
 import coreApi from '../services/coreApi';
 
 export const actionTypes = {
-    DOWNLOAD_TAX_RECEIPT_DONATION_DETAIL: 'DOWNLOAD_TAX_RECEIPT_DONATION_DETAIL',
+    DOWNLOAD_TAX_RECEIPT_DONATION_DETAIL_LOADER: 'DOWNLOAD_TAX_RECEIPT_DONATION_DETAIL_LOADER',
+    GET_INITIAL_TAX_RECEIPT_PROFILE: 'GET_INITIAL_TAX_RECEIPT_PROFILE',
     GET_PAGINATED_TAX_RECEIPT_PROFILE: 'GET_PAGINATED_TAX_RECEIPT_PROFILE',
     GET_PAGINATED_TAX_RECEIPT_PROFILE_LOADER: 'GET_PAGINATED_TAX_RECEIPT_PROFILE_LOADER',
     ISSUED_TAX_RECEIPIENT_DONATIONS_DETAIL: 'ISSUED_TAX_RECEIPIENT_DONATIONS_DETAIL',
     ISSUED_TAX_RECEIPIENT_YEARLY_DETAIL: 'ISSUED_TAX_RECEIPIENT_YEARLY_DETAIL',
     ISSUED_TAX_RECEIPTS_LIST: 'ISSUED_TAX_RECEIPTS_LIST',
+    ISSUED_TAX_RECEIPTS_LIST_LOADER: 'ISSUED_TAX_RECEIPTS_LIST_LOADER',
 };
 
 export const getTaxReceiptProfilePaginated = (dispatch, userId, pageNumber, loadMore) => {
@@ -30,8 +30,10 @@ export const getTaxReceiptProfilePaginated = (dispatch, userId, pageNumber, load
         fsa.payload.taxReceiptProfileList = result.data;
         fsa.payload.taxReceiptProfilePageCount = result.meta.pageCount;
     }).catch((error) => {
-        console.log(error);
+        // console.log(error);
     }).finally(() => {
+        const type = pageNumber === 1 ? actionTypes.GET_INITIAL_TAX_RECEIPT_PROFILE : actionTypes.GET_PAGINATED_TAX_RECEIPT_PROFILE;
+        fsa.type = type;
         dispatch(fsa);
         dispatch({
             payload: {
@@ -44,20 +46,21 @@ export const getTaxReceiptProfilePaginated = (dispatch, userId, pageNumber, load
 export const getTaxReceiptProfileMakeDefault = (taxRecptProfileId) => {
     return coreApi.patch(`taxReceiptProfiles/${taxRecptProfileId}/set_as_default`);
 };
-export const getIssuedTaxreceipts = (dispatch) => {
+export const getIssuedTaxreceipts = (dispatch, url, viewMore = false) => {
     const fsa = {
         payload: {
-            issuedTaxReceiptList: null,
+            issuedTaxReceiptList: [],
         },
         type: actionTypes.ISSUED_TAX_RECEIPTS_LIST,
     };
     dispatch({
         payload: {
-            issuedTaxLloader: true,
+            issuedTaxLloader: !viewMore,
+            viewMoreLoader: !!viewMore,
         },
-        type: actionTypes.ISSUED_TAX_RECEIPTS_LIST,
+        type: actionTypes.ISSUED_TAX_RECEIPTS_LIST_LOADER,
     });
-    coreApi.get('/taxReceipts',
+    coreApi.get(url,
         {
             params: {
                 dispatch,
@@ -66,11 +69,19 @@ export const getIssuedTaxreceipts = (dispatch) => {
         }).then((result) => {
         fsa.payload.issuedTaxReceiptList = result.data;
         fsa.payload.issuedTaxLloader = false;
+        fsa.payload.nextLink = !_isEmpty(result.links.next) ? result.links.next : null;
+        fsa.payload.recordCount = result.recordCount;
     }).catch((err) => {
-        console.error(err);
-        fsa.payload.issuedTaxLloader = false;
+        //console.error(err);
     }).finally(() => {
         dispatch(fsa);
+        dispatch({
+            payload: {
+                issuedTaxLloader: false,
+                viewMoreLoader: false,
+            },
+            type: actionTypes.ISSUED_TAX_RECEIPTS_LIST_LOADER,
+        });
     });
 };
 export const getIssuedTaxreceiptYearlyDetail = (dispatch, id,) => {
@@ -93,10 +104,11 @@ export const getIssuedTaxreceiptYearlyDetail = (dispatch, id,) => {
                 uxCritical: true,
             },
         }).then((result) => {
+        fsa.payload.currentIssuedTaxReceipt = result.trp_data;
         fsa.payload.issuedTaxReceiptYearlyDetail = result.data;
         fsa.payload.yearLoader = false;
     }).catch((err) => {
-        console.error(err);
+        //console.error(err);
         fsa.payload.yearLoader = false;
     }).finally(() => {
         dispatch(fsa);
@@ -110,6 +122,7 @@ export const getIssuedTaxreceiptDonationsDetail = (dispatch, id, year, pageNumbe
         },
         type: actionTypes.ISSUED_TAX_RECEIPIENT_DONATIONS_DETAIL,
     };
+    
     coreApi.get(`/taxReceipts/${id}?year=${year}&page[number]=${pageNumber}&page[size]=10`,
         {
             params: {
@@ -117,48 +130,35 @@ export const getIssuedTaxreceiptDonationsDetail = (dispatch, id, year, pageNumbe
                 uxCritical: true,
             },
         }).then((result) => {
-        fsa.payload.issuedTaxReceiptDonationsDetail = result.data;
-        fsa.payload.issuedTaxReceiptYearlyDetailPageCount = result.pageCount;
+        fsa.payload.issuedTaxReceiptDonationsDetail = {
+            [year]:{
+                data: result.data,
+                pageCount: result.pageCount,
+                recordCount: result.recordCount,
+            }
+        };
+        fsa.payload.currentDonationYear = year;
     }).catch((err) => {
-        console.error(err);
+        //console.error(err);
     }).finally(() => {
         dispatch(fsa);
     });
 };
 
 export const downloadTaxreceiptDonationsDetail = (dispatch, id, year) => {
-    const fsa = {
-        payload: {
-            url: null,
-        },
-        type: actionTypes.DOWNLOAD_TAX_RECEIPT_DONATION_DETAIL,
-    };
     dispatch({
         payload: {
             downloadloader: true,
-            urlChange: false,
+            currentYear: year,
         },
-        type: actionTypes.DOWNLOAD_TAX_RECEIPT_DONATION_DETAIL,
+        type: actionTypes.DOWNLOAD_TAX_RECEIPT_DONATION_DETAIL_LOADER,
     });
-    coreApi.get(`/taxReceipts/${id}?format=pdf&year=${year}`,
+    return coreApi.get(`/taxReceipts/${id}?format=pdf&year=${year}`,
         {
             params: {
                 dispatch,
                 uxCritical: true,
             },
-        }).then((result) => {
-        const blob = new Blob([
-            result,
-        ], { type: 'application/pdf' });
-        const url = window.URL.createObjectURL(blob);
-        fsa.payload.url = url;
-        fsa.payload.urlChange = true;
-        fsa.payload.year = year;
-        fsa.payload.downloadloader = false;
-    }).catch((err) => {
-        console.error(err);
-        fsa.payload.downloadloader = false;
-    }).finally(() => {
-        dispatch(fsa);
-    });
+            responseType: 'blob',
+        });
 };

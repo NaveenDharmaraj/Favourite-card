@@ -1,15 +1,17 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, {
+    Fragment,
+} from 'react';
 import _ from 'lodash';
 import {
+    Card,
     Container,
     Table,
     Image,
     List,
     Grid,
-    Icon,
     Header,
-    Popup,
+    Modal,
 } from 'semantic-ui-react';
 import {
     connect,
@@ -19,13 +21,21 @@ import {
     getDashBoardData,
 } from '../../../actions/dashboard';
 import Pagination from '../../shared/Pagination';
-
+import noDataImg from '../../../static/images/noresults.png';
+import iconsRight from '../../../static/images/icons/icon-document.svg';
+import PlaceHolderGrid from '../../shared/PlaceHolder';
+import { withTranslation } from '../../../i18n';
+import {
+    formatCurrency,
+} from '../../../helpers/give/utils';
+import DashboardTransactionDetails from '../DashboardTransactionDetails';
 
 class DashboradList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             currentActivePage: 1,
+            dashboardListLoader: !props.dataList,
         };
         this.onPageChanged = this.onPageChanged.bind(this);
     }
@@ -40,7 +50,24 @@ class DashboradList extends React.Component {
         getDashBoardData(dispatch, 'all', id, 1);
     }
 
-    onPageChanged(e, data) {
+    componentDidUpdate(prevProps) {
+        const {
+            dataList,
+        } = this.props;
+        let {
+            dashboardListLoader,
+        } = this.state;
+        if (!_.isEqual(this.props, prevProps)) {
+            if (!_.isEqual(dataList, prevProps.dataList)) {
+                dashboardListLoader = false;
+            }
+            this.setState({
+                dashboardListLoader,
+            });
+        }
+    }
+
+    onPageChanged(event, data) {
         const {
             currentUser: {
                 id,
@@ -53,80 +80,160 @@ class DashboradList extends React.Component {
         });
     }
 
+    // eslint-disable-next-line class-methods-use-this
+    nodataCard() {
+        return (
+            <Card fluid className="noDataCard rightImg noHeader">
+                <Card.Content>
+                    <Image
+                        floated="right"
+                        src={noDataImg}
+                    />
+                    <Card.Header className="font-s-14">
+                        <Header as="h4">
+                            <Header.Subheader>
+                                <Header.Content>
+                                    No transactions yet.
+                                </Header.Content>
+                            </Header.Subheader>
+                        </Header>
+                    </Card.Header>
+                </Card.Content>
+            </Card>
+        );
+    }
+
     listItem() {
         const {
             currentUser: {
                 id,
             },
             dataList,
+            i18n: {
+                language,
+            },
         } = this.props;
-        let accordianHead = 'No Data';
+        let accordianHead = this.nodataCard();
         let compareDate = '';
         if (dataList && dataList.data && _.size(dataList.data) > 0) {
             accordianHead = dataList.data.map((data, index) => {
                 let date = new Date(data.attributes.createdAt);
                 const dd = date.getDate();
                 const mm = date.getMonth();
-                const month = [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec' ];
+                const month = [ 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December' ];
                 const yyyy = date.getFullYear();
-                date = `${month[mm]} ${dd} ,${yyyy}`;
+                date = `${month[mm]} ${dd}, ${yyyy}`;
+                const modalDate = `${month[mm]} ${dd}, ${yyyy}`;
+                let dateClass = 'date boderBottom';
                 if (date !== compareDate) {
                     compareDate = date;
                 } else {
+                    dateClass = 'date';
                     date = '';
                 }
-                let givingType = ''; let rowClass = ''; let givingTypeClass = ''; let descriptionType = ''; let entity = ''; let transactionSign = '';
+                if (date) {
+                    dateClass += ' mobBrdrBtm';
+                }
+                let givingType = ''; let rowClass = ''; let givingTypeClass = ''; let descriptionType = ''; let entity = ''; let transactionSign = ''; let profileUrl = '';
+                let informationSharedEntity = '';
                 let imageCls = 'ui image';
-                if (data.attributes.destination !== null) {
+                let transactionTypeDisplay = '';
+                if (!_.isEmpty(data.attributes.destination)) {
                     if (data.attributes.destination.type.toLowerCase() === 'group') {
                         givingType = 'giving group';
                         rowClass = 'm-allocation';
                         givingTypeClass = 'grp-color';
-                        data.attributes.transactionType = 'Allocation';
+                        transactionTypeDisplay = 'Gift given';
                         descriptionType = 'Given to ';
                         entity = data.attributes.destination.name;
                         transactionSign = '-';
+                        profileUrl = `groups/${data.attributes.destination.slug}`;
+                        informationSharedEntity = 'Giving Group admin';
                     } else if (data.attributes.destination.type.toLowerCase() === 'beneficiary') {
                         givingType = 'charity';
                         rowClass = 'allocation';
                         givingTypeClass = 'charity-color';
+                        transactionTypeDisplay = 'Gift given';
                         descriptionType = 'Given to ';
                         entity = data.attributes.destination.name;
                         transactionSign = '-';
-                    } else if (data.attributes.transactionType.toLowerCase() === 'fundallocation' && data.attributes.destination.id !== Number(id)) {
-                        givingType = '';
-                        rowClass = 'gift';
-                        data.attributes.transactionType = 'Gift';
+                        profileUrl = `charities/${data.attributes.destination.slug}`;
+                        informationSharedEntity = 'charity';
+                    } else if (data.attributes.destination.type.toLowerCase() === 'campaign') {
+                        givingType = 'campaign';
+                        rowClass = 'allocation';
+                        givingTypeClass = 'grp-color';
+                        transactionTypeDisplay = 'Gift given';
                         descriptionType = 'Given to ';
                         entity = data.attributes.destination.name;
                         transactionSign = '-';
+                        profileUrl = `campaigns/${data.attributes.destination.slug}`;
+                        informationSharedEntity = 'campaign';
                     } else if (data.attributes.transactionType.toLowerCase() === 'donation') {
                         givingType = '';
                         rowClass = 'donation';
                         descriptionType = 'Added to ';
-                        entity = 'Your account';
+                        entity = 'your Impact Account';
                         transactionSign = '+';
                         imageCls = 'ui avatar image';
+                    } else if (data.attributes.transactionType.toLowerCase() === 'matchallocation') {
+                        givingType = '';
+                        rowClass = 'gift';
+                        descriptionType = 'Matched by ';
+                        transactionTypeDisplay = 'Matched';
+                        entity = data.attributes.source.name;
+                        transactionSign = '+';
                     } else if (data.attributes.destination.id === Number(id)) {
                         givingType = '';
                         rowClass = 'gift';
                         descriptionType = 'Received a gift from ';
-                        data.attributes.transactionType = 'Gift';
-                        entity = data.attributes.source.name;
+                        transactionTypeDisplay = 'Gift received';
                         transactionSign = '+';
+                        if (!_.isEmpty(data.attributes.source)) {
+                            entity = data.attributes.source.name;
+                            if (data.attributes.source.type === 'User') {
+                                profileUrl = `users/profile/${data.attributes.source.id}`;
+                            } else if (data.attributes.source.type.toLowerCase() === 'campaign') {
+                                profileUrl = `campaigns/${data.attributes.source.slug}`;
+                            } else if (data.attributes.source.type.toLowerCase() === 'group') {
+                                profileUrl = `groups/${data.attributes.source.slug}`;
+                            }
+                        } else {
+                            // fall back to description InvestmentTransfer, Dispostion
+                            descriptionType = data.attributes.description;
+                        }
+                    } else if ((data.attributes.source.id === Number(id) && data.attributes.transactionType.toLowerCase() === 'fundallocation')) {
+                        givingType = '';
+                        rowClass = 'gift';
+                        transactionTypeDisplay = 'Gift given';
+                        descriptionType = 'Given to ';
+                        entity = data.attributes.destination.name;
+                        transactionSign = '-';
+                        profileUrl = `users/profile/${data.attributes.destination.id}`;
                     }
-                } else if (data.attributes.transactionType.toLowerCase() === 'fundallocation') {
+                } else if (data.attributes.source.id === Number(id) && data.attributes.transactionType.toLowerCase() === 'fundallocation') {
                     givingType = '';
                     rowClass = 'gift';
-                    data.attributes.transactionType = 'Gift';
+                    transactionTypeDisplay = 'Gift given';
                     descriptionType = 'Given to ';
                     entity = data.attributes.recipientEmail;
                     transactionSign = '-';
+                } else if (data.attributes.source.id === Number(id)) {
+                    // last catch block to handle all other senarios
+                    transactionTypeDisplay = 'Gift given';
+                    descriptionType = data.attributes.description;
+                    transactionSign = '-';
+                    // for catransfer destination is blank but it is a deposit
+                    if (data.attributes.transactionType.toLowerCase() === 'catransfer') {
+                        transactionSign = '+';
+                        transactionTypeDisplay = 'Deposit';
+                    }
                 }
-
+                const amount = formatCurrency(data.attributes.amount, language, 'USD');
+                const transactionType = data.attributes.transactionType.toLowerCase() === 'donation' ? 'Deposit' : transactionTypeDisplay;
                 return (
                     <Table.Row className={rowClass} key={index}>
-                        <Table.Cell className="date">{date}</Table.Cell>
+                        <Table.Cell className={dateClass}>{date}</Table.Cell>
                         <Table.Cell>
                             <List verticalAlign="middle">
                                 <List.Item>
@@ -134,9 +241,51 @@ class DashboradList extends React.Component {
                                     <List.Content>
                                         <List.Header>
                                             {descriptionType}
-                                            <b>
-                                                {entity}
-                                            </b>
+                                            {(profileUrl) ? (
+                                                <b>
+                                                    <a href={profileUrl} className="bolder blackText" target="_blank">
+                                                        {entity}
+                                                    </a>
+                                                </b>
+                                            ) : (
+                                                <b>
+                                                    {entity}
+                                                </b>
+                                            )}
+                                            <Modal size="tiny" dimmer="inverted" className="chimp-modal acntActivityModel" closeIcon trigger={<span className="descriptionRight"><Image className="icons-right-page" src={iconsRight}/></span>}>
+                                                <Modal.Header>{modalDate}</Modal.Header>
+                                                <Modal.Content>
+                                                    <div className="acntActivityHeader">
+                                                        <Header as="h2" icon>
+                                                            <Image className={imageCls} size="tiny" src={data.attributes.imageUrl} />
+                                                            {transactionSign}
+                                                            {amount}
+                                                            <Header.Subheader>
+                                                                {descriptionType}
+                                                                {(profileUrl) ? (
+                                                                    <span>
+                                                                        {entity}
+                                                                    </span>
+                                                                ) : (
+                                                                    <span>
+                                                                        {entity}
+                                                                    </span>
+                                                                )}
+                                                            </Header.Subheader>
+                                                        </Header>
+                                                    </div>
+                                                    {
+                                                        !_.isEmpty(data.attributes.metaValues) && (
+                                                            <DashboardTransactionDetails
+                                                                data={data}
+                                                                modalDate={modalDate}
+                                                                informationSharedEntity={informationSharedEntity}
+                                                                sourceUserId={id}
+                                                            />
+                                                        )
+                                                    }
+                                                </Modal.Content>
+                                            </Modal>
                                         </List.Header>
                                         <List.Description className={givingTypeClass}>
                                             {givingType}
@@ -145,11 +294,10 @@ class DashboradList extends React.Component {
                                 </List.Item>
                             </List>
                         </Table.Cell>
-                        <Table.Cell className="reason">{data.attributes.transactionType}</Table.Cell>
+                        <Table.Cell className="reason">{transactionType}</Table.Cell>
                         <Table.Cell className="amount">
                             {transactionSign}
-                            $
-                            {data.attributes.amount}
+                            {amount}
                         </Table.Cell>
                     </Table.Row>
                 );
@@ -170,6 +318,7 @@ class DashboradList extends React.Component {
         } = this.props;
         const {
             currentActivePage,
+            dashboardListLoader,
         } = this.state;
         return (
             <div className="pt-2 pb-2">
@@ -183,31 +332,16 @@ class DashboradList extends React.Component {
                                     </Header.Content>
                                 </Header>
                             </Grid.Column>
-                            {/* <Grid.Column mobile={16} tablet={4} computer={4}>
-                                <div className="text-right">
-                                    <Popup
-                                        basic
-                                        className="filterPopup"
-                                        on="click"
-                                        pinned
-                                        position="bottom right"
-                                        trigger={<a><Icon name="filter" />Filter</a>}>
-                                        <div className="filterPanel">
-                                            <div className="filterPanelContent">
-                                                <div className="filterPanelItem">
-                                                    <div className="filter-header font-18 font-bold">All</div>
-                                                    <div className="filter-header font-18 font-bold">Money In</div>
-                                                    <div className="filter-header font-18 font-bold">Money Out</div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </Popup>
-                                </div>
-                            </Grid.Column> */}
                         </Grid.Row>
                     </Grid>
                     <div className="pt-2">
-                        {this.listItem()}
+                        { dashboardListLoader ? (
+                            <Table padded unstackable className="no-border-table">
+                                <PlaceHolderGrid row={4} column={4} placeholderType="table" />
+                            </Table>
+                        ) : (
+                            this.listItem()
+                        )}
                     </div>
                     <div className="paginationWraper">
                         <div className="db-pagination right-align pt-2">
@@ -235,4 +369,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default (connect(mapStateToProps)(DashboradList));
+export default withTranslation(['giveCommon'])(connect(mapStateToProps)(DashboradList));

@@ -39,6 +39,7 @@
 button,a{
   &.ui{
     &.button{
+      font-size: 14px;
       &.sizeBig{
         padding: 18px;
       }
@@ -50,7 +51,7 @@ button,a{
         font-size: 12/@rem;
         display: inline-block;
         &.medium{
-          height: 31px;	min-width: 95px;
+          height: 31px;	min-width: 80px;
           padding: 0.5rem 1rem;
         }
         &.active{
@@ -75,6 +76,7 @@ button,a{
         background-color: @link;
         border-radius: 2rem;
         border: 1px solid @link;
+        font-size: 14px;
         +.button{
           margin-left: 5px;
         }
@@ -92,6 +94,9 @@ button,a{
         border: 1px solid @success;
         +.button{
           margin-left: 5px;
+        }
+        &.medium{
+          padding: 7px 20px; 
         }
         &.c-small{
           padding: .5rem 1.5rem
@@ -134,7 +139,7 @@ button,a{
         border: 1px solid @link;
         background: transparent;
         color: @link;
-        border-radius: 2rem;
+        border-radius: 2rem !important;
         +.button{
           margin-left: 5px;
         }
@@ -148,7 +153,25 @@ button,a{
     }
   }
 }
-button{
+a{
+  &.ui{
+    &.button{
+      display: inline-block;
+      &.btn-small-white-border{
+        height: 20px;	width: 51.85px;
+        border-radius: 24/@rem;	
+        background-color: #FFFFFF;
+        font-size: 12px;
+        padding: 0px;
+        color: @link;
+        border:1px solid @primary-color;
+        padding-top: 2px;
+        padding-bottom: 2px;
+      }
+    }
+  }
+}
+button,a{
   &.ui{
     &.primary{
       &.button{
@@ -170,11 +193,11 @@ button{
     &.button{
       &.blue-bordr-btn-round{
         padding: 11/@rem 40/@rem;	
-        border: 1/@rem solid @blueButton;	
-        border-radius: 20.5/@rem;
+        border: 1px solid @blueButton;	
+        border-radius: 2rem;
         background-color: #fff;
         color: @blueButton;
-        font-size: 18/@rem;
+        font-size: 14px;
         font-weight: 400;
         min-height: 40px;
       }
@@ -186,7 +209,7 @@ button{
         border-radius: 20.5/@rem;
         background-color: #fff;
         color: @blueButton;
-        font-size: 18/@rem;
+        font-size: 14px;
         font-weight: 400;
       }
       &.rounded-btn{
@@ -254,7 +277,7 @@ button{
   &.ui{
     &.button{
       &.primary{
-        .btn-function(@defaultButton,@defaultButton-hover);
+        .btn-function(@blueButton,@blueButton-hover);
       }
     }
   }

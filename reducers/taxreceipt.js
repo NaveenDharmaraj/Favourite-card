@@ -8,6 +8,14 @@ const taxreceipt = (state = {}, action) => {
         ...state,
     };
     switch (action.type) {
+        case 'GET_INITIAL_TAX_RECEIPT_PROFILE':
+            newState = {
+                ...state,
+                loader: action.payload.loader,
+                taxReceiptProfileList: action.payload.taxReceiptProfileList,
+                taxReceiptProfilePageCount: action.payload.taxReceiptProfilePageCount,
+            };
+            break;
         case 'GET_PAGINATED_TAX_RECEIPT_PROFILE':
             const taxReceiptProfileListUnique = !_isEmpty(state.taxReceiptProfileList) ? [
                 ...state.taxReceiptProfileList,
@@ -61,7 +69,7 @@ const taxreceipt = (state = {}, action) => {
             state.taxReceiptProfileList.push(AddTaxProfile);
             newState = {
                 ...state,
-                taxReceiptProfileList: state.taxReceiptProfileList,
+                taxReceiptProfileList: Object.assign([], state.taxReceiptProfileList),
             };
             break;
         case 'DEFAULT_TAX_RECEIPT_PROFILE_ID':
@@ -71,33 +79,67 @@ const taxreceipt = (state = {}, action) => {
             };
             break;
         case 'ISSUED_TAX_RECEIPTS_LIST':
+            const uniqueIssuedTaxReceiptList = !_isEmpty(state.issuedTaxReceiptList) ? [
+                ...state.issuedTaxReceiptList,
+                ...action.payload.issuedTaxReceiptList,
+            ]
+                : action.payload.issuedTaxReceiptList;
             newState = {
                 ...state,
                 issuedTaxLloader: action.payload.issuedTaxLloader,
-                issuedTaxReceiptList: action.payload.issuedTaxReceiptList,
+                issuedTaxReceiptList: _uniqBy(uniqueIssuedTaxReceiptList, 'id'),
+                nextLink: action.payload.nextLink,
+                recordCount: action.payload.recordCount,
+            };
+            break;
+        case 'ISSUED_TAX_RECEIPTS_LIST_LOADER':
+            newState = {
+                ...state,
+                issuedTaxLloader: action.payload.issuedTaxLloader,
+                viewMoreLoader: action.payload.viewMoreLoader,
             };
             break;
         case 'ISSUED_TAX_RECEIPIENT_YEARLY_DETAIL':
             newState = {
                 ...state,
+                currentIssuedTaxReceipt: action.payload.currentIssuedTaxReceipt,
                 issuedTaxReceiptYearlyDetail: action.payload.issuedTaxReceiptYearlyDetail,
                 yearLoader: action.payload.yearLoader,
             };
             break;
         case 'ISSUED_TAX_RECEIPIENT_DONATIONS_DETAIL':
-            newState = {
-                ...state,
-                issuedTaxReceiptDonationsDetail: action.payload.issuedTaxReceiptDonationsDetail,
-                issuedTaxReceiptYearlyDetailPageCount: action.payload.issuedTaxReceiptYearlyDetailPageCount,
-            };
+            let newIssuedTaxReceiptDonationsDetail = action.payload.issuedTaxReceiptDonationsDetail;
+            let yr = action.payload.currentDonationYear;
+            if(!_isEmpty(state.issuedTaxReceiptDonationsDetail) && !_isEmpty( action.payload.issuedTaxReceiptDonationsDetail ) ){
+                newIssuedTaxReceiptDonationsDetail = {
+                    ...state.issuedTaxReceiptDonationsDetail,
+                    ...action.payload.issuedTaxReceiptDonationsDetail,
+                }
+                if(Object.keys(state.issuedTaxReceiptDonationsDetail).indexOf(yr) !== -1){
+                    newIssuedTaxReceiptDonationsDetail = {
+                        ...state.issuedTaxReceiptDonationsDetail,
+                        [yr]:{
+                        data: 
+                            state.issuedTaxReceiptDonationsDetail[yr].data.concat( action.payload.issuedTaxReceiptDonationsDetail[yr].data),
+                        pageCount: 
+                            action.payload.issuedTaxReceiptDonationsDetail[yr].pageCount,
+                        recordCount:
+                            action.payload.recordCount,
+                        }
+                    }
+                }
+            }
+                newState = {
+                    ...state,
+                    issuedTaxReceiptDonationsDetail: newIssuedTaxReceiptDonationsDetail,
+                } 
+           
             break;
-        case 'DOWNLOAD_TAX_RECEIPT_DONATION_DETAIL':
+        case 'DOWNLOAD_TAX_RECEIPT_DONATION_DETAIL_LOADER':
             newState = {
                 ...state,
+                currentYear: action.payload.currentYear,
                 downloadloader: action.payload.downloadloader,
-                url: action.payload.url,
-                urlChange: action.payload.urlChange,
-                year: action.payload.year,
             };
             break;
         default:

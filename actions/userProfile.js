@@ -5,6 +5,8 @@ import searchApi from '../services/searchApi';
 import securityApi from '../services/securityApi';
 import coreApi from '../services/coreApi';
 import eventApi from '../services/eventApi';
+import utilityApi from '../services/utilityApi';
+import { Router } from '../routes';
 
 import {
     createToken,
@@ -14,14 +16,15 @@ import {
     savePaymentInstrument,
 } from './user';
 import {
-    logout,
-} from './auth';
+    triggerUxCritialErrors,
+} from './error';
 
 // eslint-disable-next-line import/exports-last
 export const actionTypes = {
-    ADD_NEW_CREDIT_CARD_STATUS: 'ADD_NEW_CREDIT_CARD_STATUS',
+    
     ADD_USER_CREDIT_CARD: 'ADD_USER_CREDIT_CARD',
     DELETE_USER_CREDIT_CARD: 'DELETE_USER_CREDIT_CARD',
+    TRIGGER_UX_CRITICAL_ERROR: 'TRIGGER_UX_CRITICAL_ERROR',
     UPDATE_USER_BASIC_PROFILE: 'UPDATE_USER_BASIC_PROFILE',
     UPDATE_USER_CHARITY_CAUSES: 'UPDATE_USER_CHARITY_CAUSES',
     UPDATE_USER_CHARITY_TAGS: 'UPDATE_USER_CHARITY_TAGS',
@@ -30,24 +33,46 @@ export const actionTypes = {
     UPDATE_USER_PASSWORD: 'UPDATE_USER_PASSWORD',
     UPDATE_USER_PREFERENCES: 'UPDATE_USER_PREFERENCES',
     UPDATE_USER_PRIVACY_SETTING: 'UPDATE_USER_PRIVACY_SETTING',
+    USER_PROFILE_ACCEPT_FRIEND: 'USER_PROFILE_ACCEPT_FRIEND',
+    USER_PROFILE_ADD_DUPLICATE_EMAIL_ERROR: 'USER_PROFILE_ADD_DUPLICATE_EMAIL_ERROR',
+    USER_PROFILE_ADD_FRIEND: 'USER_PROFILE_ADD_FRIEND',
+    USER_PROFILE_ADD_NEW_CREDIT_CARD_STATUS: 'USER_PROFILE_ADD_NEW_CREDIT_CARD_STATUS',
     USER_PROFILE_ADMIN_GROUP: 'USER_PROFILE_ADMIN_GROUP',
+    USER_PROFILE_ADMIN_GROUP_LOAD_STATUS: 'USER_PROFILE_ADMIN_GROUP_LOAD_STATUS',
     USER_PROFILE_BASIC: 'USER_PROFILE_BASIC',
     USER_PROFILE_BASIC_FRIEND: 'USER_PROFILE_BASIC_FRIEND',
+    USER_PROFILE_BLOCK_USER: 'USER_PROFILE_BLOCK_USER',
     USER_PROFILE_BLOCKED_FRIENDS: 'USER_PROFILE_BLOCKED_FRIENDS',
     USER_PROFILE_CAUSES: 'USER_PROFILE_CAUSES',
     USER_PROFILE_CHARITABLE_INTERESTS: 'USER_PROFILE_CHARITABLE_INTERESTS',
+    USER_PROFILE_CHARITABLE_INTERESTS_LOAD_STATUS: 'USER_PROFILE_CHARITABLE_INTERESTS_LOAD_STATUS',
     USER_PROFILE_CREDIT_CARDS: 'USER_PROFILE_CREDIT_CARDS',
+    USER_PROFILE_DEFAULT_TAX_RECEIPT: 'USER_PROFILE_DEFAULT_TAX_RECEIPT',
     USER_PROFILE_FAVOURITES: 'USER_PROFILE_FAVOURITES',
+    USER_PROFILE_FAVOURITES_LOAD_STATUS: 'USER_PROFILE_FAVOURITES_LOAD_STATUS',
     USER_PROFILE_FIND_FRIENDS: 'USER_PROFILE_FIND_FRIENDS',
     USER_PROFILE_FIND_TAGS: 'USER_PROFILE_FIND_TAGS',
     USER_PROFILE_FOLLOWED_TAGS: 'USER_PROFILE_FOLLOWED_TAGS',
     USER_PROFILE_FRIEND_ACCEPT: 'USER_PROFILE_FRIEND_ACCEPT',
     USER_PROFILE_FRIEND_REQUEST: 'USER_PROFILE_FRIEND_REQUEST',
+    USER_PROFILE_GET_EMAIL_LIST: 'USER_PROFILE_GET_EMAIL_LIST',
     USER_PROFILE_INVITATIONS: 'USER_PROFILE_INVITATIONS',
+    USER_PROFILE_INVITE_FRIENDS: 'USER_PROFILE_INVITE_FRIENDS',
+    USER_PROFILE_LOCATION_SEARCH: 'USER_PROFILE_LOCATION_SEARCH',
+    USER_PROFILE_LOCATION_SEARCH_LOADER: 'USER_PROFILE_LOCATION_SEARCH_LOADER',
     USER_PROFILE_MEMBER_GROUP: 'USER_PROFILE_MEMBER_GROUP',
+    USER_PROFILE_MEMBER_GROUP_LOAD_STATUS: 'USER_PROFILE_MEMBER_GROUP_LOAD_STATUS',
     USER_PROFILE_MY_FRIENDS: 'USER_PROFILE_MY_FRIENDS',
     USER_PROFILE_RECOMMENDED_TAGS: 'USER_PROFILE_RECOMMENDED_TAGS',
+    USER_PROFILE_REMOVE_FRIEND: 'USER_PROFILE_REMOVE_FRIEND',
+    USER_PROFILE_REMOVE_PHOTO: 'USER_PROFILE_REMOVE_PHOTO',
+    USER_PROFILE_SHOW_ADD_BUTTON_LOADER: 'USER_PROFILE_SHOW_ADD_BUTTON_LOADER',
+    USER_PROFILE_SHOW_EMAIL_LOADER: 'USER_PROFILE_SHOW_EMAIL_LOADER',
+    USER_PROFILE_SIGNUP_DEEPLINK: 'USER_PROFILE_SIGNUP_DEEPLINK',
+    USER_PROFILE_TAX_RECEIPTS: 'USER_PROFILE_TAX_RECEIPTS',
     USER_PROFILE_UNBLOCK_FRIEND: 'USER_PROFILE_UNBLOCK_FRIEND',
+    USER_PROFILE_UPLOAD_IMAGE: 'USER_PROFILE_UPLOAD_IMAGE',
+    USER_PROFILE_USERPROFILE_DEEPLINK: 'USER_PROFILE_USERPROFILE_DEEPLINK',
 };
 
 const getUserProfileBasic = (dispatch, email, userId, loggedInUserId) => {
@@ -57,7 +82,11 @@ const getUserProfileBasic = (dispatch, email, userId, loggedInUserId) => {
         },
         type: actionTypes.USER_PROFILE_BASIC,
     };
-    graphApi.get(`/recommendation/withProfileType/user?emailid=${email}&targetId=${Number(loggedInUserId)}&sourceId=${Number(userId)}&limit=&sort=`).then(
+    graphApi.get(`/recommendation/withProfileType/user`, { params: {
+        emailid: email,
+        sourceId: Number(userId),
+        targetId: Number(loggedInUserId),
+    } }).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -77,13 +106,20 @@ const getUserFriendProfile = (dispatch, email, userId, loggedInUserId) => {
         },
         type: actionTypes.USER_PROFILE_BASIC_FRIEND,
     };
-    graphApi.get(`/recommendation/withProfileType/user?emailid=${email}&targetId=${Number(userId)}&sourceId=${Number(loggedInUserId)}&limit=&sort=`).then(
+    graphApi.get(`/recommendation/withProfileType/user`, { params: {
+        dispatch,
+        emailid: email,
+        sourceId: Number(loggedInUserId),
+        targetId: Number(userId),
+        uxCritical: true,
+    } }).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
             };
         },
     ).catch((error) => {
+        Router.back();
         fsa.error = error;
     }).finally(() => {
         dispatch(fsa);
@@ -97,6 +133,12 @@ const getUserCharitableInterests = (dispatch, userId) => {
         },
         type: actionTypes.USER_PROFILE_CHARITABLE_INTERESTS,
     };
+    dispatch({
+        payload: {
+            userProfileCharitableInterestsLoadStatus: true,
+        },
+        type: actionTypes.USER_PROFILE_CHARITABLE_INTERESTS_LOAD_STATUS,
+    });
     graphApi.get(`/get/user/causetags?userid=${Number(userId)}`).then(
         (result) => {
             fsa.payload = {
@@ -106,18 +148,30 @@ const getUserCharitableInterests = (dispatch, userId) => {
     ).catch((error) => {
         fsa.error = error;
     }).finally(() => {
+        dispatch({
+            payload: {
+                userProfileCharitableInterestsLoadStatus: false,
+            },
+            type: actionTypes.USER_PROFILE_CHARITABLE_INTERESTS_LOAD_STATUS,
+        });
         dispatch(fsa);
     });
 };
 
-const getUserMemberGroup = (dispatch, userId) => {
+const getUserMemberGroup = (dispatch, userId, sourceUserId) => {
     const fsa = {
         payload: {
             userId,
         },
         type: actionTypes.USER_PROFILE_MEMBER_GROUP,
     };
-    graphApi.get(`/user/groupbyrelationship?type=member&userid=${Number(userId)}&limit=9`).then(
+    dispatch({
+        payload: {
+            userProfileMemberGroupsLoadStatus: true,
+        },
+        type: actionTypes.USER_PROFILE_MEMBER_GROUP_LOAD_STATUS,
+    });
+    coreApi.get(`/users/${Number(sourceUserId)}/friendGroups?friend_id=${Number(userId)}&fields[groups]=name,city,province,slug,avatar,groupType&page[number]=1&page[size]=9`).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -126,18 +180,31 @@ const getUserMemberGroup = (dispatch, userId) => {
     ).catch((error) => {
         fsa.error = error;
     }).finally(() => {
+        dispatch({
+            payload: {
+                userProfileMemberGroupsLoadStatus: false,
+            },
+            type: actionTypes.USER_PROFILE_MEMBER_GROUP_LOAD_STATUS,
+        });
         dispatch(fsa);
     });
 };
 
-const getUserAdminGroup = (dispatch, userId) => {
+const getUserAdminGroup = (dispatch, userId, sourceUserId) => {
     const fsa = {
         payload: {
             userId,
         },
         type: actionTypes.USER_PROFILE_ADMIN_GROUP,
     };
-    graphApi.get(`/user/groupbyrelationship?type=admin&userid=${Number(userId)}&limit=9`).then(
+    dispatch({
+        payload: {
+            userProfileAdminGroupsLoadStatus: true,
+        },
+        type: actionTypes.USER_PROFILE_ADMIN_GROUP_LOAD_STATUS,
+    });
+
+    coreApi.get(`users/${Number(sourceUserId)}/friendAdministeredGroups?friend_id=${Number(userId)}&fields[groups]=name,city,province,slug,avatar,groupType&page[number]=1&page[size]=9`).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -146,6 +213,12 @@ const getUserAdminGroup = (dispatch, userId) => {
     ).catch((error) => {
         fsa.error = error;
     }).finally(() => {
+        dispatch({
+            payload: {
+                userProfileAdminGroupsLoadStatus: false,
+            },
+            type: actionTypes.USER_PROFILE_ADMIN_GROUP_LOAD_STATUS,
+        });
         dispatch(fsa);
     });
 };
@@ -157,6 +230,12 @@ const getUserFavourites = (dispatch, userId) => {
         },
         type: actionTypes.USER_PROFILE_FAVOURITES,
     };
+    dispatch({
+        payload: {
+            userProfileFavouritesLoadStatus: true,
+        },
+        type: actionTypes.USER_PROFILE_FAVOURITES_LOAD_STATUS,
+    });
     graphApi.get(`/user/favourites?userid=${Number(userId)}`).then(
         (result) => {
             fsa.payload = {
@@ -166,6 +245,12 @@ const getUserFavourites = (dispatch, userId) => {
     ).catch((error) => {
         fsa.error = error;
     }).finally(() => {
+        dispatch({
+            payload: {
+                userProfileFavouritesLoadStatus: false,
+            },
+            type: actionTypes.USER_PROFILE_FAVOURITES_LOAD_STATUS,
+        });
         dispatch(fsa);
     });
 };
@@ -192,7 +277,7 @@ const getUserTagsFollowed = (dispatch, userId) => {
         },
         type: actionTypes.USER_PROFILE_FOLLOWED_TAGS,
     };
-    return graphApi.get(`/get/tags/user?id=${Number(userId)}&page[number]=1&page[size]=10&sort=asc`).then(
+    return graphApi.get(`/get/tags/user?id=${Number(userId)}&page[number]=1&page[size]=15&sort=asc`).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -211,7 +296,7 @@ const getUserTagsRecommended = (dispatch, userId, pageNumber) => {
         },
         type: actionTypes.USER_PROFILE_RECOMMENDED_TAGS,
     };
-    return graphApi.get(`/get/tags/recommended?id=${Number(userId)}&page[number]=${pageNumber}&page[size]=10&sort=asc`).then(
+    return graphApi.get(`/get/tags/recommended?id=${Number(userId)}&page[number]=${pageNumber}&page[size]=15&sort=asc`).then(
         (result) => {
             fsa.payload = {
                 count: result.meta.recordCount,
@@ -232,7 +317,12 @@ const getMyFriendsList = (dispatch, email, pageNumber) => {
         },
         type: actionTypes.USER_PROFILE_MY_FRIENDS,
     };
-    return graphApi.get(`/user/myfriends?userid=${email}&page[number]=${pageNumber}&page[size]=10&status=accepted`).then(
+    return graphApi.get(`/user/myfriends`, { params: {
+        'page[number]': pageNumber,
+        'page[size]': 10,
+        status: 'accepted',
+        userid: email,
+    } }).then(
         (result) => {
             fsa.payload = {
                 count: result.meta.recordCount,
@@ -253,7 +343,13 @@ const getFriendsInvitations = (dispatch, email, pageNumber) => {
         },
         type: actionTypes.USER_PROFILE_INVITATIONS,
     };
-    return graphApi.get(`/user/myfriends?userid=${email}&page[number]=${pageNumber}&page[size]=10&status=pending&direction=in`).then(
+    return graphApi.get(`/user/myfriends`, { params: {
+        direction: 'in',
+        'page[number]': pageNumber,
+        'page[size]': 10,
+        status: 'pending',
+        userid: email,
+    } }).then(
         (result) => {
             fsa.payload = {
                 count: result.meta.recordCount,
@@ -294,6 +390,10 @@ const getFriendsByText = (dispatch, userId, searchText, pageNumber) => {
         type: actionTypes.USER_PROFILE_FIND_FRIENDS,
     };
     const bodyData = {
+        // sort: {
+        //     field: 'first_name',
+        //     order: 'asc',
+        // },
         text: searchText,
     };
     return searchApi.post(`/users?page[number]=${pageNumber}&page[size]=10&user_id=${Number(userId)}`, bodyData).then(
@@ -310,16 +410,23 @@ const getFriendsByText = (dispatch, userId, searchText, pageNumber) => {
     });
 };
 
-const getTagsByText = (dispatch, userId, searchText) => {
+const getTagsByText = (dispatch, userId, searchText, isSearch, pageNumber = 1, loadedData = 0) => {
+    const bodyData = {
+        text: searchText,
+    };
     const fsa = {
         payload: {
         },
         type: actionTypes.USER_PROFILE_FIND_TAGS,
     };
-    return graphApi.get(`/recommend/searchtags?userid=${Number(userId)}&text=${searchText}&skip=&limit=10&sort=asc`).then(
+    return searchApi.post(`/tags?page[number]=${pageNumber}&page[size]=24`, bodyData).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
+                isSearch,
+                loadedData: loadedData + result.data.length,
+                pageNumber: pageNumber + 1,
+                recordCount: result.meta.record_count,
             };
         },
     ).catch((error) => {
@@ -335,10 +442,10 @@ const getMyCreditCards = (dispatch, userId, pageNumber) => {
         },
         type: actionTypes.USER_PROFILE_CREDIT_CARDS,
     };
-    return coreApi.get(`/users/${Number(userId)}/activePaymentInstruments?page[number]=${pageNumber}&page[size]=10`).then(
+    return coreApi.get(`/users/${Number(userId)}/activePaymentInstruments?page[number]=${pageNumber}&page[size]=10&sort=-default`).then(
         (result) => {
             fsa.payload = {
-                count: result.meta.pageCount,
+                count: result.meta.recordCount,
                 data: result.data,
                 pageCount: result.meta.pageCount,
             };
@@ -356,72 +463,93 @@ const saveUserBasicProfile = (dispatch, userData, userId, email) => {
         },
         type: actionTypes.UPDATE_USER_BASIC_PROFILE,
     };
+    const givingAmount = Number(userData.givingGoal) === 0 ? null : Number(userData.givingGoal);
     const bodyData = {
-        data: {
-            description: userData.about,
-            first_name: userData.firstName,
-            giving_goal_amt: userData.givingGoal,
-            last_name: userData.lastName,
-            location: userData.location,
-        },
-        filters: {
-            user_id: Number(userId),
-        },
+        city: userData.city,
+        description: userData.about,
+        family_name: userData.lastName,
+        given_name: userData.firstName,
+        giving_goal_amt: givingAmount,
+        province: userData.province,
+        user_id: Number(userId),
     };
-    return graphApi.patch(`/core/update/user/property`, bodyData).then(
+    if (userData.displayName !== '') {
+        bodyData.display_name = userData.displayName;
+    }
+    const basicResponse = securityApi.patch(`/update/user`, bodyData);
+    basicResponse.then(
         (result) => {
             fsa.payload = {
                 data: result.data,
             };
             getUserProfileBasic(dispatch, email, userId, userId);
+            getUser(dispatch, userId, null);
         },
     ).catch((error) => {
         fsa.error = error;
     }).finally(() => {
         dispatch(fsa);
     });
+    return basicResponse;
 };
 
-const sendFriendRequest = (dispatch, sourceUserId, destinationEmailId, searchWord, pageNumber) => {
+function searchFriendsObj(friendList, toSearch) {
+    for (var i = 0; i < friendList.data.length; i++) {
+        if (friendList.data[i].attributes.user_id === toSearch) {
+            friendList.data[i].attributes.friend_status = 'PENDING_OUT';
+        }
+    }
+    return friendList;
+}
+
+const sendFriendRequest = (dispatch, sourceUserId, sourceEmail, avatar, firstName, displayName, userData, searchWord, pageNumber, userFindFriendsList) => {
     const fsa = {
         payload: {
         },
         type: actionTypes.USER_PROFILE_FRIEND_REQUEST,
     };
-    sourceUserId = Number(sourceUserId);
     const bodyData = {
         data: {
             attributes: {
-                category: 'social',
-                eventName: 'friendRequest',
-                payload: {
-                    deepLink: 'https://testLink.com',
-                    destinationEmailId,
-                    message: 'Friend Request',
-                    sourceUserId,
-                },
-                source: 'socialapi',
-                subCategory: 'friend',
+                recipient_email_id: Buffer.from(userData.attributes.email_hash, 'base64').toString('ascii'),
+                recipient_user_id: Number(userData.attributes.user_id),
+                requester_avatar_link: avatar,
+                requester_display_name: displayName,
+                requester_email_id: sourceEmail,
+                requester_first_name: firstName,
+                requester_user_id: Number(sourceUserId),
+                source: 'web',
             },
-            type: 'event',
         },
     };
-    return eventApi.post(`/event`, bodyData).then(
+    const sendFriendRequestResponse = eventApi.post(`/friend/request`, bodyData);
+    sendFriendRequestResponse.then(
         (result) => {
-            console.log(result);
             fsa.payload = {
                 data: result.data,
             };
-            getFriendsByText(dispatch, sourceUserId, searchWord, pageNumber);
+            const newFriendList = searchFriendsObj(userFindFriendsList, Number(userData.attributes.user_id));
+            const friendListFsa = {
+                payload: {
+                },
+                type: actionTypes.USER_PROFILE_FIND_FRIENDS,
+            };
+            friendListFsa.payload = {
+                count: newFriendList.record_count,
+                data: newFriendList.data,
+            };
+            dispatch(friendListFsa);
+            // getFriendsByText(dispatch, sourceUserId, searchWord, pageNumber);
         },
     ).catch((error) => {
         fsa.error = error;
     }).finally(() => {
         dispatch(fsa);
     });
+    return sendFriendRequestResponse;
 };
 
-const acceptFriendRequest = (dispatch, sourceUserId, destinationEmailId, pageNumber, sourceEmailId, pageName, searchWord) => {
+const acceptFriendRequest = (dispatch, sourceUserId, sourceEmailId, sourceAvatar, sourceFirstName, sourceDisplayName, destinationEmailId, destinationUserId, pageNumber, pageName, searchWord) => {
     const fsa = {
         payload: {
         },
@@ -430,22 +558,19 @@ const acceptFriendRequest = (dispatch, sourceUserId, destinationEmailId, pageNum
     const bodyData = {
         data: {
             attributes: {
-                category: 'social',
-                eventName: 'friendAccept',
-                payload: {
-                    deepLink: 'https://testLink.com',
-                    destinationEmailId,
-                    linkedEventId: '1563362089449:venkata-Latitude-5580:12091:jy75dh74:10000',
-                    message: 'Hi, I would like to add you to my friend list',
-                    sourceUserId: Number(sourceUserId),
-                },
-                source: 'socialapi',
-                subCategory: 'friend',
+                acceptor_avatar_link: sourceAvatar,
+                acceptor_display_name: sourceDisplayName,
+                acceptor_email_id: sourceEmailId,
+                acceptor_first_name: sourceFirstName,
+                acceptor_user_id: Number(sourceUserId),
+                requester_email_id: Buffer.from(destinationEmailId, 'base64').toString('ascii'),
+                requester_user_id: Number(destinationUserId),
+                source: 'web',
             },
-            type: 'event',
         },
     };
-    return eventApi.post(`/event`, bodyData).then(
+    const acceptFriendRequestResponse = eventApi.post(`/friend/accept`, bodyData);
+    acceptFriendRequestResponse.then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -462,6 +587,33 @@ const acceptFriendRequest = (dispatch, sourceUserId, destinationEmailId, pageNum
     }).finally(() => {
         dispatch(fsa);
     });
+    return acceptFriendRequestResponse;
+};
+
+const blockUser = (dispatch, sourceUserId, sourceEmailId, destinationUserId) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.USER_PROFILE_BLOCK_USER,
+    };
+    const blockUsers = [];
+    blockUsers.push(Number(destinationUserId));
+    const bodyData = {
+        block_user_ids: blockUsers,
+        source_user_id: Number(sourceUserId),
+    };
+    return graphApi.post(`/core/blockUser`, bodyData).then(
+        (result) => {
+            fsa.payload = {
+                data: result.data,
+            };
+            getUserFriendProfile(dispatch, sourceEmailId, destinationUserId, sourceUserId);
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    });
 };
 
 const unblockFriend = (dispatch, sourceUserId, destinationUserId) => {
@@ -471,12 +623,13 @@ const unblockFriend = (dispatch, sourceUserId, destinationUserId) => {
         type: actionTypes.USER_PROFILE_UNBLOCK_FRIEND,
     };
     const blockUsers = [];
-    blockUsers.push(destinationUserId);
+    blockUsers.push(Number(destinationUserId));
     const bodyData = {
         source_user_id: Number(sourceUserId),
         unblock_user_ids: blockUsers,
     };
-    return graphApi.post(`/core/unblockUser`, bodyData).then(
+    const unblockFriendResponse = graphApi.post(`/core/unblockUser`, bodyData);
+    unblockFriendResponse.then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -488,28 +641,21 @@ const unblockFriend = (dispatch, sourceUserId, destinationUserId) => {
     }).finally(() => {
         dispatch(fsa);
     });
+    return unblockFriendResponse;
 };
 
-const saveCharitableInterests = (dispatch, userId, userCauses, userTags) => {
+const saveCharitableCauses = (dispatch, userId, userCauses) => {
     const fsaCauses = {
         payload: {
         },
         type: actionTypes.UPDATE_USER_CHARITY_CAUSES,
     };
-    const fsaTags = {
-        payload: {
-        },
-        type: actionTypes.UPDATE_USER_CHARITY_TAGS,
-    };
     const bodyDataCauses = {
         causes: userCauses,
         userid: Number(userId),
     };
-    const bodyDataTags = {
-        tags: userTags,
-        userid: Number(userId),
-    };
-    graphApi.patch(`/user/updatecauses`, bodyDataCauses).then(
+    const causesResponse = graphApi.patch(`/user/updatecauses`, bodyDataCauses);
+    causesResponse.then(
         (result) => {
             fsaCauses.payload = {
                 data: result.data,
@@ -521,7 +667,21 @@ const saveCharitableInterests = (dispatch, userId, userCauses, userTags) => {
     }).finally(() => {
         dispatch(fsaCauses);
     });
-    graphApi.patch(`/user/updatetags`, bodyDataTags).then(
+    return causesResponse;
+};
+
+const saveCharitableTags = (dispatch, userId, userTags) => {
+    const fsaTags = {
+        payload: {
+        },
+        type: actionTypes.UPDATE_USER_CHARITY_TAGS,
+    };
+    const bodyDataTags = {
+        tags: userTags,
+        userid: Number(userId),
+    };
+    const tagsResponse = graphApi.patch(`/user/updatetags`, bodyDataTags);
+    tagsResponse.then(
         (result) => {
             fsaTags.payload = {
                 data: result.data,
@@ -534,6 +694,7 @@ const saveCharitableInterests = (dispatch, userId, userCauses, userTags) => {
     }).finally(() => {
         dispatch(fsaTags);
     });
+    return tagsResponse;
 };
 
 const editUserCreditCard = (dispatch, instrumentDetails) => {
@@ -542,17 +703,19 @@ const editUserCreditCard = (dispatch, instrumentDetails) => {
         },
         type: actionTypes.UPDATE_USER_CREDIT_CARD,
     };
+    const expiryDate = instrumentDetails.expiry.split('/');
     const bodyData = {
         data: {
             attributes: {
-                expMonth: instrumentDetails.editMonth,
-                expYear: instrumentDetails.editYear,
+                expMonth: expiryDate[0],
+                expYear: expiryDate[1],
             },
             id: instrumentDetails.editPaymetInstrumentId,
             type: 'paymentInstruments',
         },
     };
-    return coreApi.patch(`/paymentInstruments/${Number(instrumentDetails.editPaymetInstrumentId)}`, bodyData).then(
+    const editCreditCardResponse = coreApi.patch(`/paymentInstruments/${Number(instrumentDetails.editPaymetInstrumentId)}`, bodyData);
+    editCreditCardResponse.then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -563,6 +726,7 @@ const editUserCreditCard = (dispatch, instrumentDetails) => {
     }).finally(() => {
         dispatch(fsa);
     });
+    return editCreditCardResponse;
 };
 
 const deleteUserCreditCard = (dispatch, paymentInstrumentId, userId, pageNumber) => {
@@ -571,7 +735,8 @@ const deleteUserCreditCard = (dispatch, paymentInstrumentId, userId, pageNumber)
         },
         type: actionTypes.DELETE_USER_CREDIT_CARD,
     };
-    return coreApi.delete(`/paymentInstruments/${Number(paymentInstrumentId)}`).then(
+    const deleteCreditCardResponse = coreApi.delete(`/paymentInstruments/${Number(paymentInstrumentId)}`);
+    deleteCreditCardResponse.then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -583,6 +748,7 @@ const deleteUserCreditCard = (dispatch, paymentInstrumentId, userId, pageNumber)
     }).finally(() => {
         dispatch(fsa);
     });
+    return deleteCreditCardResponse;
 };
 
 const setUserDefaultCard = (dispatch, paymentInstrumentId, userId, pageNumber) => {
@@ -615,7 +781,7 @@ const saveNewCreditCard = async (dispatch, stripeCreditCard, cardHolderName, use
         payload: {
             newCreditCardApiCall: true,
         },
-        type: actionTypes.ADD_NEW_CREDIT_CARD_STATUS,
+        type: actionTypes.USER_PROFILE_ADD_NEW_CREDIT_CARD_STATUS,
     });
     const token = await createToken(stripeCreditCard, cardHolderName);
     const paymentInstrumentsData = {
@@ -632,7 +798,8 @@ const saveNewCreditCard = async (dispatch, stripeCreditCard, cardHolderName, use
         },
         type: 'paymentInstruments',
     };
-    return savePaymentInstrument(paymentInstrumentsData).then(
+    const creditCardResponse = savePaymentInstrument(paymentInstrumentsData);
+    creditCardResponse.then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -650,10 +817,11 @@ const saveNewCreditCard = async (dispatch, stripeCreditCard, cardHolderName, use
             payload: {
                 newCreditCardApiCall: false,
             },
-            type: actionTypes.ADD_NEW_CREDIT_CARD_STATUS,
+            type: actionTypes.USER_PROFILE_ADD_NEW_CREDIT_CARD_STATUS,
         });
         dispatch(fsa);
     });
+    return creditCardResponse;
 };
 
 const userResetPassword = (dispatch, userData) => {
@@ -666,22 +834,20 @@ const userResetPassword = (dispatch, userData) => {
         auth_user_id: userData.authId,
         password: userData.password,
     };
-    let isPasswordChanged = true;
-    return securityApi.post('/user/changepassword', bodyData).then(
+    const resetPasswordResponse = securityApi.post('/user/changepassword', bodyData);
+    resetPasswordResponse.then(
         (result) => {
             fsa.payload = {
                 data: result,
             };
         },
     ).catch((error) => {
-        isPasswordChanged = false;
         fsa.error = error;
+        triggerUxCritialErrors(error.errors || error, dispatch);
     }).finally(() => {
         dispatch(fsa);
-        if(isPasswordChanged) {
-            logout();
-        }
     });
+    return resetPasswordResponse;
 };
 
 const savePrivacySetting = (dispatch, userId, email, columnName, columnValue) => {
@@ -712,14 +878,37 @@ const savePrivacySetting = (dispatch, userId, email, columnName, columnValue) =>
     });
 };
 
-const updateUserPreferences = (dispatch, userId, preferenceColumn, preferenceValue) => {
+const updateUserPreferences = (dispatch, userId, preferenceColumn, preferenceValue, selectedTaxReceipt) => {
     const fsa = {
         payload: {
         },
         type: actionTypes.UPDATE_USER_PREFERENCES,
     };
     const dataName = {};
-    dataName[preferenceColumn] = preferenceValue;
+    if (preferenceColumn === 'charities_share_my_name') {
+        dataName.charities_share_my_name_address = false;
+        dataName.charities_share_my_name_email = false;
+        dataName[preferenceColumn] = preferenceValue;
+    } else if (preferenceColumn === 'charities_share_my_name_address') {
+        dataName.charities_share_my_name = false;
+        dataName.charities_share_my_name_email = false;
+        dataName[preferenceColumn] = preferenceValue;
+        dataName.address = Number(selectedTaxReceipt);
+    } else if (preferenceColumn === 'charities_share_my_name_email') {
+        dataName.charities_share_my_name_address = false;
+        dataName.charities_share_my_name = false;
+        dataName[preferenceColumn] = preferenceValue;
+    } else if (preferenceColumn === 'charities_dont_share' && preferenceValue === false) {
+        dataName.charities_share_my_name_address = false;
+        dataName.charities_share_my_name = false;
+        dataName.charities_share_my_name_email = false;
+    } else if (preferenceColumn === 'charities_dont_share' && preferenceValue === true) {
+        dataName.charities_share_my_name_address = false;
+        dataName.charities_share_my_name = true;
+        dataName.charities_share_my_name_email = false;
+    } else {
+        dataName[preferenceColumn] = preferenceValue;
+    }
     const bodyData = {
         data: {
             attributes: {
@@ -743,6 +932,473 @@ const updateUserPreferences = (dispatch, userId, preferenceColumn, preferenceVal
     });
 };
 
+const getUserDefaultTaxReceipt = (dispatch, userid) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.USER_PROFILE_DEFAULT_TAX_RECEIPT,
+    };
+    return coreApi.get(`/users/${Number(userid)}/defaultTaxReceiptProfile`).then(
+        (result) => {
+            fsa.payload = {
+                data: result.data,
+            };
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    });
+};
+
+const addToFriend = (dispatch, sourceUserId, sourceEmail, sourceAvatar, sourceFirstName, destinationUserId, destinationEmailId) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.USER_PROFILE_ADD_FRIEND,
+    };
+    const bodyData = {
+        data: {
+            attributes: {
+                recipient_email_id: destinationEmailId,
+                recipient_user_id: Number(destinationUserId),
+                requester_avatar_link: sourceAvatar,
+                requester_email_id: sourceEmail,
+                requester_first_name: sourceFirstName,
+                requester_user_id: Number(sourceUserId),
+                source: 'web',
+            },
+        },
+    };
+    const addToFriendResponse = eventApi.post(`/friend/request`, bodyData);
+    addToFriendResponse.then(
+        (result) => {
+            fsa.payload = {
+                data: result.data,
+            };
+            getUserFriendProfile(dispatch, sourceEmail, destinationUserId, sourceUserId);
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    });
+    return addToFriendResponse;
+};
+
+const acceptFriend = (dispatch, sourceUserId, sourceEmail, sourceAvatar, sourceFirstName, destinationUserId, destinationEmailId) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.USER_PROFILE_ACCEPT_FRIEND,
+    };
+    const bodyData = {
+        data: {
+            attributes: {
+                requester_email_id: destinationEmailId,
+                requester_user_id: Number(destinationUserId),
+                acceptor_avatar_link: sourceAvatar,
+                acceptor_email_id: sourceEmail,
+                acceptor_first_name: sourceFirstName,
+                acceptor_user_id: Number(sourceUserId),
+                source: 'web',
+            },
+        },
+    };
+    const acceptFriendResponse = eventApi.post(`/friend/accept`, bodyData);
+    acceptFriendResponse.then(
+        (result) => {
+            fsa.payload = {
+                data: result.data,
+            };
+            getUserFriendProfile(dispatch, sourceEmail, destinationUserId, sourceUserId);
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    });
+    return acceptFriendResponse;
+};
+
+const inviteFriends = (dispatch, inviteEmailIds) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.USER_PROFILE_INVITE_FRIENDS,
+    };
+    const bodyData = {
+        data: {
+            attributes: {
+                email: inviteEmailIds,
+                notification_type: 'inviteFriends',
+            },
+            type: 'users',
+        },
+    };
+    const inviteFriendsResponse = coreApi.post(`/users/friend_mail_notifications`, bodyData);
+    inviteFriendsResponse.then(
+        (result) => {
+            fsa.payload = {
+                data: result.data,
+            };
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    });
+    return inviteFriendsResponse;
+};
+
+const generateDeeplinkSignup = (dispatch, profileType) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.USER_PROFILE_SIGNUP_DEEPLINK,
+    };
+    return utilityApi.get(`/deeplink?profileType=${profileType}&webLink=true`).then(
+        (result) => {
+            fsa.payload = {
+                data: result.data,
+            };
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    });
+};
+
+const uploadUserImage = (dispatch, sourceUserId, imageData) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.USER_PROFILE_UPLOAD_IMAGE,
+    };
+    const bodyData = {
+        data: {
+            attributes: {
+                logo: imageData,
+            },
+            id: sourceUserId,
+            type: 'users',
+        },
+    };
+    return coreApi.patch(`/users/${Number(sourceUserId)}`, bodyData).then(
+        (result) => {
+            fsa.payload = {
+                data: result.data,
+            };
+            getUser(dispatch, sourceUserId, null);
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    });
+};
+
+const removeFriend = (dispatch, sourceUserId, sourceEmail, destinationUserId) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.USER_PROFILE_REMOVE_FRIEND,
+    };
+    const bodyData = {
+        data: {
+            attributes: {
+                recipient_user_id: Number(destinationUserId),
+                requester_user_id: Number(sourceUserId),
+                source: 'web',
+            },
+        },
+    };
+    return eventApi.post(`/friend/remove`, bodyData).then(
+        (result) => {
+            fsa.payload = {
+                data: result.data,
+            };
+            getUserFriendProfile(dispatch, sourceEmail, destinationUserId, sourceUserId);
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    });
+};
+
+const searchLocationByUserInput = (searchText) => (dispatch) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.USER_PROFILE_LOCATION_SEARCH,
+    };
+    dispatch({
+        payload: {
+            locationLoader: true,
+        },
+        type: actionTypes.USER_PROFILE_LOCATION_SEARCH_LOADER,
+    });
+    const cityArr = [];
+    const config = {
+        params: {
+            'page[number]': 1,
+            'page[size]': 999,
+            query: searchText,
+        },
+    };
+    return searchApi.get('/autocomplete/uniquecities', config).then(
+        (result) => {
+            if (result.data && result.data.length >= 1) {
+                const {
+                    data,
+                } = result;
+                for (let i = 0; i < data.length; i++) {
+                    if (data[i].attributes && data[i].attributes.city) {
+                        const dataObj = {
+                            id: i,
+                            text: `${data[i].attributes.city}${data[i].attributes.province_name ? ', ' : ''}${data[i].attributes.province_name}`,
+                            value: `${data[i].attributes.city}${i}`,
+                            city: `${data[i].attributes.city}`,
+                            province: `${data[i].attributes.province_name}`,
+                        };
+                        cityArr.push(dataObj);
+                    }
+                }
+            }
+            fsa.payload = {
+                data: cityArr,
+            };
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch({
+            payload: {
+                locationLoader: false,
+            },
+            type: actionTypes.USER_PROFILE_LOCATION_SEARCH_LOADER,
+        });
+        dispatch(fsa);
+    });
+};
+
+const generateDeeplinkUserProfile = (dispatch, sourceUserId, destinationUserId) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.USER_PROFILE_USERPROFILE_DEEPLINK,
+    };
+    return utilityApi.get(`/deeplink`, { params: {
+        profileId: destinationUserId,
+        profileType: 'userprofile',
+        sourceId: sourceUserId,
+        webLink: true,
+    } }).then(
+        (result) => {
+            fsa.payload = {
+                data: result.data,
+            };
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    });
+};
+
+const removeProfilePhoto = (dispatch, sourceUserId) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.USER_PROFILE_REMOVE_PHOTO,
+    };
+    const removeProfilePhotoResponse = coreApi.delete(`/users/${Number(sourceUserId)}/deleteLogo`);
+    removeProfilePhotoResponse.then(
+        (result) => {
+            fsa.payload = {
+                data: result,
+            };
+            getUser(dispatch, sourceUserId, null);
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    });
+    return removeProfilePhotoResponse;
+};
+
+const getEmailList = (dispatch, userId) => {
+    const fsa = {
+        payload: {
+            emailDetailList: [],
+        },
+        type: actionTypes.USER_PROFILE_GET_EMAIL_LIST,
+    };
+    coreApi.get(`users/${userId}/emailAddresses?sort=-isPrimary,-verified`, {
+        params: {
+            dispatch,
+            uxCritical: true,
+        },
+    }).then((result) => {
+        if (result && !_.isEmpty(result.data)) {
+            fsa.payload.emailDetailList = result.data;
+            dispatch(fsa);
+        }
+    }).catch().finally();
+};
+
+const createUserEmailAddress = (dispatch, emailId, userId) => {
+    const bodyData = {
+        data: {
+            attributes: {
+                email: emailId,
+            },
+            type: 'emailAddresses',
+        },
+        params: {
+            dispatch,
+            uxCritical: true,
+        },
+    };
+    const statusMessageProps = {
+        message: 'Email address added',
+        type: 'success',
+    };
+    dispatch({
+        payload: {
+            showAddButtonLoader: true,
+        },
+        type: actionTypes.USER_PROFILE_SHOW_ADD_BUTTON_LOADER,
+    });
+    dispatch({
+        payload: {
+            showEmailLoader: true,
+        },
+        type: actionTypes.USER_PROFILE_SHOW_EMAIL_LOADER,
+    });
+    coreApi.post(`emailAddresses`, bodyData).then((result) => {
+        if (result && !_.isEmpty(result.data)) {
+            getEmailList(dispatch, userId);
+            dispatch({
+                payload: {
+                    errors: [
+                        statusMessageProps,
+                    ],
+                },
+                type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
+            });
+            dispatch({
+                payload: {
+                    showEmailError: false,
+                },
+                type: actionTypes.USER_PROFILE_ADD_DUPLICATE_EMAIL_ERROR,
+            });
+        }
+    }).catch((error) => {
+        if (error.errors[0]) {
+            dispatch({
+                payload: {
+                    errorMessageTitle: error.errors[0].title,
+                    showEmailError: true,
+                },
+                type: actionTypes.USER_PROFILE_ADD_DUPLICATE_EMAIL_ERROR,
+            });
+        }
+    }).finally(() => {
+        dispatch({
+            payload: {
+                showAddButtonLoader: false,
+            },
+            type: actionTypes.USER_PROFILE_SHOW_ADD_BUTTON_LOADER,
+        });
+        dispatch({
+            payload: {
+                showEmailLoader: false,
+            },
+            type: actionTypes.USER_PROFILE_SHOW_EMAIL_LOADER,
+        });
+    });
+};
+
+const deleteUserEmailAddress = (dispatch, userEmailId, userId) => {
+    const statusMessageProps = {
+        message: 'Email address removed',
+        type: 'success',
+    };
+    dispatch({
+        payload: {
+            showEmailLoader: true,
+        },
+        type: actionTypes.USER_PROFILE_SHOW_EMAIL_LOADER,
+    });
+    coreApi.delete(`emailAddresses/${userEmailId}`, {
+        params: {
+            dispatch,
+            uxCritical: true,
+        },
+    }).then((result) => {
+        if (result && (result.status === 200)) {
+            getEmailList(dispatch, userId);
+            dispatch({
+                payload: {
+                    errors: [
+                        statusMessageProps,
+                    ],
+                },
+                type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
+            });
+        }
+    }).catch().finally(() => {
+        dispatch({
+            payload: {
+                showEmailLoader: false,
+            },
+            type: actionTypes.USER_PROFILE_SHOW_EMAIL_LOADER,
+        });
+    });
+};
+
+const setPrimaryUserEmailAddress = (dispatch, userEmailId, userId) => {
+    coreApi.patch(`emailAddresses/${userEmailId}/setPrimaryEmail`, {
+        params: {
+            dispatch,
+            uxCritical: true,
+        },
+    }).then((result) => {
+        if (result && (result.status === 200)) {
+            Router.pushRoute('/users/logout');
+        }
+    }).catch().finally();
+};
+
+const resendUserVerifyEmail = (dispatch, userEmailId, userId) => {
+    const statusMessageProps = {
+        message: 'Verification email sent',
+        type: 'success',
+    };
+    coreApi.get(`emailAddresses/${userEmailId}/resendVerify`, {
+        params: {
+            dispatch,
+            uxCritical: true,
+        },
+    }).then((result) => {
+        if (result && (result.status === 200)) {
+            getEmailList(dispatch, userId);
+            dispatch({
+                payload: {
+                    errors: [
+                        statusMessageProps,
+                    ],
+                },
+                type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
+            });
+        }
+    }).catch().finally();
+};
+
 export {
     getUserProfileBasic,
     getUserFriendProfile,
@@ -760,9 +1416,11 @@ export {
     getMyCreditCards,
     getTagsByText,
     saveUserBasicProfile,
-    saveCharitableInterests,
+    saveCharitableCauses,
+    saveCharitableTags,
     sendFriendRequest,
     acceptFriendRequest,
+    blockUser,
     unblockFriend,
     editUserCreditCard,
     deleteUserCreditCard,
@@ -771,4 +1429,19 @@ export {
     userResetPassword,
     savePrivacySetting,
     updateUserPreferences,
+    getUserDefaultTaxReceipt,
+    addToFriend,
+    acceptFriend,
+    inviteFriends,
+    generateDeeplinkSignup,
+    uploadUserImage,
+    removeFriend,
+    generateDeeplinkUserProfile,
+    removeProfilePhoto,
+    getEmailList,
+    createUserEmailAddress,
+    deleteUserEmailAddress,
+    setPrimaryUserEmailAddress,
+    resendUserVerifyEmail,
+    searchLocationByUserInput,
 };

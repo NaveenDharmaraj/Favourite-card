@@ -1,27 +1,34 @@
 import React, { cloneElement } from 'react';
-import Layout from '../../shared/Layout';
 import {
-  List,
-  Image,
-} from 'semantic-ui-react'
-import docIcon from '../../../static/images/icons/icon-document.svg?next-images-ignore=true';
+    Card,
+    Header,
+    Image,
+} from 'semantic-ui-react';
+
+import noDataImg from '../../../static/images/noresults.png';
+
+// eslint-disable-next-line react/prefer-stateless-function
 class NoTaxReceipts extends React.Component {
     render() {
         return (
-            <div className="noDataReceipts">
-                <List verticalAlign='middle' className="receiptList">
-                    <List.Item>
-                        <Image className="greyIcon mr-1" src={docIcon} />
-                        <List.Content>
-                            <List.Header className="font-s-18 mb-1-2">No tax receipts yet</List.Header>
-                            When you add money to your Impact Account, it’s considered a donation. Tax receipts for donations will appear here.
-                        </List.Content>
-                    </List.Item>
-                </List>
-            </div>
+            <Card fluid className="noDataCard rightImg">
+                <Card.Content>
+                    <Image
+                        floated="right"
+                        src={noDataImg}
+                    />
+                    <Card.Header className="font-s-14">
+                        <Header as="h4">
+                            <Header.Content>
+                                No recipients yet
+                                <Header.Subheader>When you add tax receipt recipients to your account, you’ll be able to manage them here.</Header.Subheader>
+                            </Header.Content>
+                        </Header>
+                    </Card.Header>
+                </Card.Content>
+            </Card>
         );
     }
-    
 }
-    
+
 export default NoTaxReceipts;

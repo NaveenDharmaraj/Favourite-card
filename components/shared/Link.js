@@ -12,7 +12,12 @@ const ActiveLink = ({
     const child = Children.only(children);
 
     let className = child.props.className || '';
-    if (router.pathname === (props.href || props.route) && props.activeClassName) {
+    const toolsArr = ['/user/recurring-gifts', '/user/giving-goals'];
+    if ((child.props.children === 'Tools' && toolsArr.includes(router.asPath)) ||
+        (child.props.children === 'Tax receipts' && router.asPath.includes('/user/tax-receipts'))) {
+        className = 'active';
+    }
+    if (router.asPath === (props.href || props.route) && props.activeClassName) {
         className = `${className} ${props.activeClassName}`.trim();
     }
 

@@ -13,6 +13,8 @@ import {
     Icon,
     Message,
 } from 'semantic-ui-react';
+import getConfig from 'next/config';
+
 import { dismissUxCritialErrors } from '../../actions/error';
 
 const iconMap = {
@@ -22,6 +24,11 @@ const iconMap = {
     warning: 'exclamation',
 };
 const types = Object.keys(iconMap);
+let timer = null;
+const { publicRuntimeConfig } = getConfig();
+const {
+    TOAST_MESSAGE_TIMEOUT,
+} = publicRuntimeConfig;
 
 class StatusMessage extends Component {
     constructor(props) {
@@ -29,9 +36,15 @@ class StatusMessage extends Component {
         this.handleDismiss = this.handleDismiss.bind(this);
     }
 
+    componentDidMount() {
+        timer = setTimeout(() => {
+            this.handleDismiss();
+        }, TOAST_MESSAGE_TIMEOUT);
+    }
+
     handleDismiss() {
         dismissUxCritialErrors(this.props.error, this.props.dispatch);
-    };
+    }
 
     render() {
         const {
@@ -47,7 +60,6 @@ class StatusMessage extends Component {
         const props = {
             className: 'status-message',
             compact,
-            onDismiss: this.handleDismiss,
             [type]: true,
         };
         if (hasList) {

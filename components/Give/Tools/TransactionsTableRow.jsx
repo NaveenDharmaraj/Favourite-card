@@ -37,6 +37,7 @@ class TransactionTableRow extends React.Component {
             thirdColoumn,
             fourthColoumn,
             fifthColoumn,
+            modalHeader,
         } = this.props;
         const {
             showModal
@@ -44,13 +45,16 @@ class TransactionTableRow extends React.Component {
 
         return (
             <Table.Row>
-                <Table.Cell>{firstColoumn}</Table.Cell>
-                <Table.Cell>{secondColoumn}</Table.Cell>
-                <Table.Cell>{thirdColoumn}</Table.Cell>
-                <Table.Cell>{fourthColoumn}</Table.Cell>
-                <Table.Cell>{fifthColoumn}</Table.Cell>
+                {(firstColoumn) && (<Table.Cell>{firstColoumn}</Table.Cell>)}
+                {(secondColoumn) && (<Table.Cell className="text-right">{secondColoumn}</Table.Cell>)}
+                {(thirdColoumn) && (<Table.Cell>{thirdColoumn}</Table.Cell>)}
+                {(fourthColoumn) && (<Table.Cell>{fourthColoumn}</Table.Cell>)}
+                {(fifthColoumn) && (<Table.Cell>{fifthColoumn}</Table.Cell>)}
                 <Table.Cell>
                     <Modal 
+                      size="tiny"
+                dimmer="inverted"
+                className="chimp-modal"
                         closeIcon
                         onClose={this.closeModal}
                         open={showModal}
@@ -63,21 +67,28 @@ class TransactionTableRow extends React.Component {
                             </Button>
                         }
                     >
-                        <Modal.Header>Are you sure you want to cancel the transaction?</Modal.Header>
+                        <Modal.Header>{modalHeader}</Modal.Header>
                         <Modal.Content>
+                        <Modal.Description className="font-s-16">
+                            Are you sure you want to delete the transaction?
+                        </Modal.Description>
+                        <div className="btn-wraper pt-3 text-right">
                             <Modal.Actions>
                                 <Button
+                                    className="danger-btn-rounded-def c-small"
                                     color='red'
                                     onClick={this.closeModalAndDelete}
                                 >
-                                    Yes
+                                    Delete
                                 </Button>
                                 <Button
+                                    className="blue-bordr-btn-round-def c-small"
                                     onClick={() => this.setState({ showModal: false })}
                                 >
-                                    No
+                                    Cancel
                                 </Button>
                             </Modal.Actions>
+                            </div>
                         </Modal.Content>
                     </Modal>
 

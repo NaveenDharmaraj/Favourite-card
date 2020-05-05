@@ -1,8 +1,11 @@
-import React from 'react';
+import React, {
+    Fragment,
+} from 'react';
 import { connect } from 'react-redux';
 import {
     number,
     string,
+    bool,
 } from 'prop-types';
 import {
     Container,
@@ -17,6 +20,9 @@ import {
 import {
     distanceOfTimeInWords,
 } from '../../helpers/utils';
+import ActiveMatchBlock from '../shared/ActiveMatchBlock';
+
+import CampaignSupports from './CampaignSupports';
 
 const DonationDetails = (props) => {
     const {
@@ -24,6 +30,7 @@ const DonationDetails = (props) => {
         language,
         groupDetails: {
             attributes: {
+                campaignId,
                 totalMoneyRaised,
                 goal,
                 fundraisingPercentage,
@@ -31,71 +38,91 @@ const DonationDetails = (props) => {
                 balance,
                 fundraisingDaysRemaining,
                 lastDonationAt,
+                goalAmountRaised,
             },
         },
     } = props;
-    const lastDonationDay = distanceOfTimeInWords(lastDonationAt);
-    const daysText = (fundraisingDaysRemaining && fundraisingDaysRemaining > 1) ? ' days left' : ' day left';
+    let lastDonationDay = '';
+    if (lastDonationAt !== null) {
+        lastDonationDay = distanceOfTimeInWords(lastDonationAt);
+    }
+    let fundRaisingDuration = '';
+    const daysText = (fundraisingDaysRemaining && fundraisingDaysRemaining === 1) ? ' day left' : ' days left';
+    if (fundraisingDaysRemaining !== null) {
+        fundRaisingDuration = (
+            <span className="badge white right">
+                {fundraisingDaysRemaining}
+                {daysText}
+            </span>
+        );
+    }
     return (
         <Container>
             <div className="profile-info-card giving">
                 <Grid stackable>
-                    <Grid.Row>
-                        <Grid.Column mobile={16} tablet={6} computer={6}>
-                            <Header as="h2">
-                                {formatCurrency(totalMoneyRaised, language, currency)}
-                                {fundraisingDaysRemaining
+                    <Grid.Row verticalAlign="middle">
+                        <Grid.Column mobile={16} tablet={11} computer={11}>
+                            {(fundraisingDaysRemaining !== null && fundraisingDaysRemaining > 0)
+                            && (
+                                <Fragment>
+                                    <Header as="h2" className="font-s-34">
+                                        {formatCurrency(goalAmountRaised, language, currency)}
+                                        {fundRaisingDuration}
+                                        <Header.Subheader className="small font-s-14" style={{ marginTop: '.7rem' }}>
+                                            {`raised of
+                                            ${formatCurrency(goal, language, currency)}
+                                            goal`}
+                                        </Header.Subheader>
+                                    </Header>
+                                    <Progress className="mb-0 c-green" percent={fundraisingPercentage} size="tiny" />
+                                    {lastDonationDay
                                     && (
-                                        <span className="badge white right">
-                                            {fundraisingDaysRemaining}
-                                            {daysText}
-                                        </span>
-                                    )}
-                                <Header.Subheader className="small" style={{ marginTop: '.7rem' }}>
-                                    {`raised of 
-                                    ${formatCurrency(goal, language, currency)}
-                                    goal`}
-                                </Header.Subheader>
-                                
-                            </Header>
-                            <Progress className="mb-0 c-green" percent={fundraisingPercentage} size="tiny" />
-                            <div className="small-font">
-                                {`Last donation 
-                                ${lastDonationAt && lastDonationDay}`}
-                            </div>
-                        </Grid.Column>
-                        <Grid.Column mobile={16} tablet={10} computer={10}>
-                            <Header as="h3">
-                                Milestones
-                            </Header>
+                                        <div className="small-font">
+                                            {`Last donation
+                                            ${lastDonationDay}`}
+                                        </div>
+                                    )
+                                    }
+                                </Fragment>
+                            )}
                             <div className="pt-1 campaign-amount">
                                 <Grid stackable columns={3}>
                                     <Grid.Row>
                                         <Grid.Column>
                                             <Header as="h2">
-                                                {formatCurrency(totalMoneyRaised, language, currency)}
-                                                <Header.Subheader className="small">All time total raised</Header.Subheader>
+                                                {formatCurrency(totalMoneyGiven, language, currency)}
+                                                <Header.Subheader className="small font-s-14">All time total given</Header.Subheader>
                                             </Header>
                                         </Grid.Column>
                                         <Grid.Column>
                                             <Header as="h2">
-                                                {formatCurrency(totalMoneyGiven, language, currency)}
-                                                <Header.Subheader className="small">All time total given</Header.Subheader>
+                                                {formatCurrency(totalMoneyRaised, language, currency)}
+                                                <Header.Subheader className="small font-s-14">All time total raised</Header.Subheader>
                                             </Header>
                                         </Grid.Column>
                                         <Grid.Column>
                                             <Header as="h2">
                                                 {formatCurrency(balance, language, currency)}
-                                                <Header.Subheader className="small">Current balance</Header.Subheader>
+                                                <Header.Subheader className="small font-s-14">Current balance</Header.Subheader>
                                             </Header>
                                         </Grid.Column>
                                     </Grid.Row>
                                 </Grid>
                             </div>
                         </Grid.Column>
+                        {campaignId && <CampaignSupports />}
                     </Grid.Row>
                 </Grid>
             </div>
+            {
+                (props.groupDetails.attributes.hasActiveMatch)
+                    ? (
+                        <ActiveMatchBlock
+                            entityDetails={props.groupDetails}
+                        />
+                    )
+                    : null
+            }
         </Container>
     );
 };
@@ -132,7 +159,10 @@ DonationDetails.propTypes = {
 
 function mapStateToProps(state) {
     return {
+        currentUser: state.user.info,
+        deepLinkUrl: state.profile.deepLinkUrl,
         groupDetails: state.group.groupDetails,
+        isAuthenticated: state.auth.isAuthenticated,
     };
 }
 

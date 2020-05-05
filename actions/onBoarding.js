@@ -5,6 +5,10 @@ import getConfig from 'next/config';
 import securityApi from '../services/securityApi';
 import graphApi from '../services/graphApi';
 
+import {
+    triggerUxCritialErrors,
+} from './error';
+
 const { publicRuntimeConfig } = getConfig();
 
 const {
@@ -39,6 +43,8 @@ export const saveUser = (dispatch, userDetails) => {
             },
             type: actionTypes.CREATE_USER,
         });
+    }).catch((error) => {
+        triggerUxCritialErrors(error.errors || error, dispatch);
     });
 };
 
@@ -49,7 +55,14 @@ export const validateNewUser = (dispatch, emailId) => {
         },
         type: actionTypes.USER_API_VALIDATING,
     });
-    return securityApi.get(`/verify/useremailid?emailid=${emailId}`, BASIC_AUTH_HEADER).then((result) => {
+    return securityApi.get(`/verify/useremailid`, {
+        headers: {
+            Authorization: `Basic ${BASIC_AUTH_KEY}`,
+        },
+        params: {
+            emailid: emailId,
+        },
+    }).then((result) => {
         dispatch({
             payload: {
                 apiValidating: false,
@@ -63,7 +76,7 @@ export const validateNewUser = (dispatch, emailId) => {
             type: actionTypes.USER_EXISTS,
         });
     }).catch((error) => {
-        console.log(error);
+        // console.log(error);
     });
 };
 
@@ -78,14 +91,7 @@ export const resendVerificationEmail = (userId, dispatch) => {
             },
             type: actionTypes.USER_EMAIL_RESEND,
         });
-        setTimeout(() => {
-            dispatch({
-                payload: {
-                    apiResendEmail: false,
-                },
-                type: actionTypes.USER_EMAIL_RESEND,
-            });
-        }, 3000);
+
     });
 };
 
@@ -99,7 +105,8 @@ export const getUserCauses = (dispatch) => {
     return graphApi.get(`/user/causes`, BASIC_AUTH_HEADER).then((result) => {
         fsa.payload.causesList = result.data;
     }).catch((error) => {
-        console.log(error);
+        // console.log(error);
+        triggerUxCritialErrors(error.errors || error, dispatch);
     }).finally(() => {
         dispatch(fsa);
     });

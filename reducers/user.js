@@ -28,7 +28,6 @@ const user = (state = {}, action) => {
                 defaultTaxReceiptProfile,
                 fund,
                 taxReceiptProfiles,
-                userAccountsFetched,
                 userCampaigns,
                 userGroups,
             } = action.payload;
@@ -44,14 +43,18 @@ const user = (state = {}, action) => {
                     ...state.fund,
                     ...fund,
                 },
-                paymentInstrumentsData: Object.assign([], state.paymentInstrumentsData, paymentInstrumentsData),
+                // For ticket CPP-3387
+                //paymentInstrumentsData: Object.assign([], state.paymentInstrumentsData, paymentInstrumentsData),
+                paymentInstrumentsData,
                 taxReceiptProfiles: Object.assign([], state.taxReceiptProfiles, taxReceiptProfiles),
-                userAccountsFetched: {
-                    ...state.userAccountsFetched,
-                    ...userAccountsFetched,
-                },
                 userCampaigns: Object.assign([], state.userCampaigns, userCampaigns),
                 userGroups: Object.assign([], state.userGroups, userGroups),
+            };
+            break;
+        case 'SET_USER_ACCOUNT_FETCHED':
+            newState = {
+                ...state,
+                userAccountsFetched: action.payload.userAccountsFetched,
             };
             break;
         case 'TAX_RECEIPT_PROFILES':
@@ -93,6 +96,13 @@ const user = (state = {}, action) => {
                 groupsWithMemberships: Object.assign({}, state.groupsWithMemberships, action.payload.groupsWithMemberships),
             };
             break;
+        case 'GIVING_GROUPS_lEAVE_MODAL':
+            newState = {
+                ...state,
+                closeLeaveModal: action.payload.closeModal,
+                leaveButtonLoader: action.payload.buttonLoading,
+            };
+            break;
         case 'LEAVE_GROUP_ERROR_MESSAGE':
             newState = {
                 ...state,
@@ -116,6 +126,13 @@ const user = (state = {}, action) => {
             newState = {
                 ...state,
                 monthlyTransactionApiCall: action.payload.apiCallStats,
+            };
+            break;
+        case 'USER_INITIAL_FAVORITES':
+            newState = {
+                ...state,
+                //favorites: _.merge({}, action.payload.favorites),
+                favorites: action.payload.favorites,
             };
             break;
         case 'USER_FAVORITES':
@@ -148,6 +165,12 @@ const user = (state = {}, action) => {
             newState = {
                 ...state,
                 disableFavorites: false,
+            };
+            break;
+        case 'DISABLE_BUTTON_IN_USER_MIGRATION':
+            newState = {
+                ...state,
+                disableMigrationButtons: action.payload.continueButtonDisable,
             };
             break;
         default:

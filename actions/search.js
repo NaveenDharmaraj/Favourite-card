@@ -62,7 +62,7 @@ export const fetchInitialCharitiesGroups = (isAuthenticated, userId) => (dispatc
         }).catch((err) => {
             fsa.payload.charityFlag = true;
             fsa.payload.groupFlag = true;
-            console.log(err);
+            // console.log(err);
         }).finally(() => {
             return dispatch(fsa);
         });
@@ -105,7 +105,7 @@ export const fetchInitialCharities = (pageNumber, isAuthenticated, userId) => (d
             fsa.payload.pageCount = result.meta.pageCount;
             fsa.payload.charityFlag = true;
         }).catch((err) => {
-            console.log(err);
+            // console.log(err);
             fsa.payload.charityFlag = true;
         }).finally(() => {
             return dispatch(fsa);
@@ -148,7 +148,7 @@ export const fetchInitialGroups = (pageNumber, isAuthenticated, userId) => (disp
             fsa.payload.groupFlag = true;
         }).catch((err) => {
             fsa.payload.groupFlag = true;
-            console.log(err);
+            // console.log(err);
         }).finally(() => {
             return dispatch(fsa);
         });
@@ -162,7 +162,7 @@ export const fetchInitialGroups = (pageNumber, isAuthenticated, userId) => (disp
     }
 };
 
-export const fetchTextSearchCharitiesGroups = (searchWord, pageNumber, filterData) => (dispatch) => {
+export const fetchTextSearchCharitiesGroups = (searchWord, pageNumber, filterData, isAuthenticated = false, id = null) => (dispatch) => {
     const fsa = {
         payload: {
             charityFlag: null,
@@ -177,7 +177,10 @@ export const fetchTextSearchCharitiesGroups = (searchWord, pageNumber, filterDat
         type: 'GET_API_DATA_FECHED_FLAG',
     });
    
-    const textSearchUrl = `/public/charities-groups?page[number]=${pageNumber}&page[size]=10`;
+    let textSearchUrl = `/public/charities-groups?page[number]=${pageNumber}&page[size]=10`;
+    if (isAuthenticated) {
+        textSearchUrl = `/charities-groups?user_id=${id}&page[size]=10&page[number]=${pageNumber}`;
+    }
     let textSearchCharitiesGroups = null;
     if (!_isEmpty(filterData)) {
         textSearchCharitiesGroups = searchApi.post(textSearchUrl, {
@@ -191,7 +194,7 @@ export const fetchTextSearchCharitiesGroups = (searchWord, pageNumber, filterDat
     }
     textSearchCharitiesGroups.then((result) => {
         fsa.payload.TextSearchedCharitiesGroups = result;
-        fsa.payload.pageCount = result.meta.page_count;
+        fsa.payload.pageCount = result.meta.pageCount;
         fsa.payload.charityFlag = true;
     }).catch((err) => {
         fsa.payload.charityFlag = true;
@@ -201,7 +204,7 @@ export const fetchTextSearchCharitiesGroups = (searchWord, pageNumber, filterDat
     });
 };
 
-export const fetchTextSearchCharities = (searchWord, pageNumber, filterData) => (dispatch) => {
+export const fetchTextSearchCharities = (searchWord, pageNumber, filterData, isAuthenticated = false, id = null) => (dispatch) => {
     const fsa = {
         payload: {
             TextSearchedCharities: null,
@@ -214,7 +217,10 @@ export const fetchTextSearchCharities = (searchWord, pageNumber, filterData) => 
         },
         type: 'GET_API_DATA_FECHED_FLAG',
     });
-    const textSearchUrl = `/public/charities?page[size]=10&page[number]=${pageNumber}`;
+    let textSearchUrl = `/public/charities?page[size]=10&page[number]=${pageNumber}`;
+    if (isAuthenticated) {
+        textSearchUrl = `/charities?user_id=${id}&page[size]=10&page[number]=${pageNumber}`;
+    }
     let textSearchCharities = null;
     if (!_isEmpty(filterData)) {
         textSearchCharities = searchApi.post(textSearchUrl, {
@@ -229,7 +235,7 @@ export const fetchTextSearchCharities = (searchWord, pageNumber, filterData) => 
     textSearchCharities.then((result) => {
         fsa.payload.charityFlag = true;
         fsa.payload.TextSearchedCharities = result;
-        fsa.payload.pageCount = result.meta.page_count;
+        fsa.payload.pageCount = result.meta.pageCount;
     }).catch((err) => {
         fsa.payload.charityFlag = true;
         triggerUxCritialErrors(err.errors || err, dispatch);
@@ -238,7 +244,7 @@ export const fetchTextSearchCharities = (searchWord, pageNumber, filterData) => 
     });
 };
 
-export const fetchTextSearchGroups = (searchWord, pageNumber, filterData) => (dispatch) => {
+export const fetchTextSearchGroups = (searchWord, pageNumber, filterData, isAuthenticated = false, id = null) => (dispatch) => {
     const fsa = {
         payload: {
             TextSearchedCharities: null,
@@ -251,7 +257,10 @@ export const fetchTextSearchGroups = (searchWord, pageNumber, filterData) => (di
         },
         type: 'GET_API_DATA_FECHED_FLAG',
     });
-    const textSearchUrl = `/public/groups?page[size]=10&page[number]=${pageNumber}`;
+    let textSearchUrl = `/public/groups?page[size]=10&page[number]=${pageNumber}`;
+    if (isAuthenticated) {
+        textSearchUrl = `/groups?user_id=${id}&page[size]=10&page[number]=${pageNumber}`;
+    }
     let textSearchGroups = null;
     if (!_isEmpty(filterData)) {
         textSearchGroups = searchApi.post(textSearchUrl, {
@@ -266,7 +275,7 @@ export const fetchTextSearchGroups = (searchWord, pageNumber, filterData) => (di
     textSearchGroups.then((result) => {
         fsa.payload.groupFlag = true;
         fsa.payload.TextSearchedGroups = result;
-        fsa.payload.pageCount = result.meta.page_count;
+        fsa.payload.pageCount = result.meta.pageCount;
     }).catch((err) => {
         fsa.payload.groupFlag = true;
         triggerUxCritialErrors(err.errors || err, dispatch);

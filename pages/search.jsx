@@ -24,6 +24,7 @@ import {
     fetchTextSearchCharities,
     fetchTextSearchGroups,
 } from '../actions/search';
+import { Router } from '../routes';
 import PaginationComponent from '../components/shared/Pagination';
 
 class Search extends React.Component {
@@ -62,6 +63,9 @@ class Search extends React.Component {
         const {
             currentPageClicked,
         } = this.state;
+        if (_isEmpty(searchWord) && isAuthenticated === false) {
+            Router.pushRoute('/search?search=charitable impact&result_type=All');
+        }
         if (_isEmpty(searchWord) && searchType === 'All') {
             dispatch(fetchInitialCharitiesGroups(isAuthenticated, id));
         } else if (_isEmpty(searchWord) && searchType === 'Beneficiary') {
@@ -69,11 +73,11 @@ class Search extends React.Component {
         } else if (_isEmpty(searchWord) && searchType === 'Group') {
             dispatch(fetchInitialGroups(currentPageClicked, isAuthenticated, id));
         } else if (!_isEmpty(searchWord) && searchType === 'All') {
-            dispatch(fetchTextSearchCharitiesGroups(decodeURI(searchWord), currentPageClicked));
+            dispatch(fetchTextSearchCharitiesGroups(decodeURI(searchWord), currentPageClicked, null, isAuthenticated, id));
         } else if (!_isEmpty(searchWord) && searchType === 'Beneficiary') {
-            dispatch(fetchTextSearchCharities(decodeURI(searchWord), currentPageClicked));
+            dispatch(fetchTextSearchCharities(decodeURI(searchWord), currentPageClicked, null, isAuthenticated, id));
         } else {
-            dispatch(fetchTextSearchGroups(decodeURI(searchWord), currentPageClicked));
+            dispatch(fetchTextSearchGroups(decodeURI(searchWord), currentPageClicked, null, isAuthenticated, id));
         }
     }
 
@@ -105,7 +109,7 @@ class Search extends React.Component {
                     type: 'DISPATCH_FILTER_DATA',
                 });
             }
-            if (!_isEmpty(textSearchedCharitiesGroups) && !_isEmpty(textSearchedCharitiesGroups.data) && !_isEmpty(textSearchedCharitiesGroups.meta)) {
+            if (!_isEmpty(textSearchedCharitiesGroups) && !_isEmpty(textSearchedCharitiesGroups.meta) && !_isEmpty(textSearchedCharitiesGroups.meta.aggregations) && searchType === 'All') {
                 dispatch({
                     payload: {
                         filterValuesShowed: textSearchedCharitiesGroups.meta.aggregations,
@@ -114,7 +118,7 @@ class Search extends React.Component {
                 });
             }
 
-            if (!_isEmpty(textSearchedCharities) && !_isEmpty(textSearchedCharities.data) && !_isEmpty(textSearchedCharities.meta)) {
+            if (!_isEmpty(textSearchedCharities) && !_isEmpty(textSearchedCharities.meta) && !_isEmpty(textSearchedCharities.meta.aggregations) && searchType === 'Beneficiary') {
                 dispatch({
                     payload: {
                         filterValuesShowed: textSearchedCharities.meta.aggregations,
@@ -123,7 +127,7 @@ class Search extends React.Component {
                 });
             }
 
-            if (!_isEmpty(textSearchedGroups) && !_isEmpty(textSearchedGroups.data) && !_isEmpty(textSearchedGroups.meta)) {
+            if (!_isEmpty(textSearchedGroups) && !_isEmpty(textSearchedGroups.meta) && !_isEmpty(textSearchedGroups.meta.aggregations) && searchType === 'Group') {
                 dispatch({
                     payload: {
                         filterValuesShowed: textSearchedGroups.meta.aggregations,
@@ -131,7 +135,10 @@ class Search extends React.Component {
                     type: 'DISPATCH_FILTER_VALUE_SHOWED',
                 });
             }
-            
+            // Changing the state to intial everytime there is a change in result type
+            if (!_isEqual(searchType, prevProps.searchType) || !_isEqual(searchWord, prevProps.searchWord)) {
+                currentPageClicked = 1;
+            }
             if (!_isEqual(searchType, prevProps.searchType) || !_isEqual(searchWord, prevProps.searchWord)
                 || !_isEqual(currentPageClicked, prevState.currentPageClicked) || !_isEqual(filterData, prevProps.filterData)) {
                 switch (searchType) {
@@ -139,29 +146,26 @@ class Search extends React.Component {
                         if (_isEmpty(searchWord)) {
                             dispatch(fetchInitialCharitiesGroups(isAuthenticated, id));
                         } else {
-                            dispatch(fetchTextSearchCharitiesGroups(decodeURI(searchWord), currentPageClicked, filterData));
+                            dispatch(fetchTextSearchCharitiesGroups(decodeURI(searchWord), currentPageClicked, filterData, isAuthenticated, id));
                         }
                         break;
                     case 'Beneficiary':
                         if (_isEmpty(searchWord)) {
                             dispatch(fetchInitialCharities(currentPageClicked, isAuthenticated, id));
                         } else {
-                            dispatch(fetchTextSearchCharities(decodeURI(searchWord), currentPageClicked, filterData));
+                            dispatch(fetchTextSearchCharities(decodeURI(searchWord), currentPageClicked, filterData, isAuthenticated, id));
                         }
                         break;
                     case 'Group':
                         if (_isEmpty(searchWord)) {
                             dispatch(fetchInitialGroups(currentPageClicked, isAuthenticated, id));
                         } else {
-                            dispatch(fetchTextSearchGroups(decodeURI(searchWord), currentPageClicked, filterData));
+                            dispatch(fetchTextSearchGroups(decodeURI(searchWord), currentPageClicked, filterData, isAuthenticated, id));
                         }
                         break;
                     default: break;
                 }
-                // Changing the state to intial everytime there is a change in result type
-                if (!_isEqual(searchType, prevProps.searchType) || !_isEqual(searchWord, prevProps.searchWord)) {
-                    currentPageClicked = 1;
-                }
+
                 currentTab = searchType;
             }
             this.setState({

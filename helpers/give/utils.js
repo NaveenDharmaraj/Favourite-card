@@ -24,7 +24,7 @@ import {
     beneficiaryDefaultProps,
     donationDefaultProps,
     groupDefaultProps,
-   // p2pDefaultProps,
+    // p2pDefaultProps,
 } from '../../helpers/give/defaultProps';
 
 /**
@@ -169,6 +169,14 @@ const isValidGiftAmount = (validity) => {
     return _.every(giftAmountValidity);
 };
 
+const isValidGivingGoalAmount = (validity) => {
+    const giftAmountValidity = _.pick(validity, [
+        'isAmountLessThanOneBillion',
+    ]);
+
+    return _.every(giftAmountValidity);
+};
+
 const getDefaultCreditCard = (paymentInstrumentList) => {
     let creditCard = {
         value: 0,
@@ -219,7 +227,7 @@ const createDonationMatchString = (attributes, formatMessage, language) => {
         default:
             break;
     }
-    return `${attributes.displayName} (${formatCurrency(attributes.policyMax, language, 'USD')} ${formatMessage('giveCommon:forPer')} ${policyPeriodText})`;
+    return `${attributes.displayName}: ${formatCurrency(attributes.policyMax, language, 'USD')} ${formatMessage('giveCommon:forPer')} ${policyPeriodText}`;
 
 };
 
@@ -299,7 +307,7 @@ const populateAccountOptions = (data, translate, giveToId = null, allocationType
                 disabled: false,
                 id,
                 name: `${firstName} ${lastName}`,
-                text: `${fund.attributes.name} (${formatCurrency(fund.attributes.balance, language, currency)})`,
+                text: `${fund.attributes.name}: ${formatCurrency(fund.attributes.balance, language, currency)}`,
                 type: 'user',
                 value: fund.id,
             },
@@ -353,7 +361,7 @@ const populateAccountOptions = (data, translate, giveToId = null, allocationType
                     userGroups,
                     null,
                     (item) => item.attributes.fundId,
-                    (attributes) => `${attributes.fundName} (${formatCurrency(attributes.balance, language, currency)})`,
+                    (attributes) => `${attributes.fundName}: ${formatCurrency(attributes.balance, language, currency)}`,
                     (attributes) => false,
                     [
                         {
@@ -397,7 +405,7 @@ const populateAccountOptions = (data, translate, giveToId = null, allocationType
                     userCampaigns,
                     null,
                     (item) => item.attributes.fundId,
-                    (attributes) => `${attributes.fundName} (${formatCurrency(attributes.balance, language, currency)})`,
+                    (attributes) => `${attributes.fundName}: ${formatCurrency(attributes.balance, language, currency)}`,
                     (attributes) => false,
                     [
                         {
@@ -425,7 +433,7 @@ const populateAccountOptions = (data, translate, giveToId = null, allocationType
                     companiesAccountsData,
                     null,
                     (item) => item.attributes.companyFundId,
-                    (attributes) => `${attributes.companyFundName} (${formatCurrency(attributes.balance, language, currency)})`,
+                    (attributes) => `${attributes.companyFundName}: ${formatCurrency(attributes.balance, language, currency)}`,
                     (attributes) => false,
                     [
                         {
@@ -540,7 +548,7 @@ const populatePaymentInstrument = (paymentInstrumentsData, formatMessage) => {
         const newCreditCard = [
             {
                 disabled: false,
-                text: 'Use new Credit Card',
+                text: 'Add new card',
                 value: 0,
             },
         ];
@@ -706,7 +714,7 @@ const populateInfoToShare = (taxReceiptProfile,
             } = userDetails;
             const userTaxProfileData = !_.isEmpty(taxReceiptProfile)
                 ? getDropDownOptionFromApiData(taxReceiptProfile, null, (item) => `name_address_email|${item.id}`,
-                    (attributes) => `${attributes.fullName}, ${attributes.addressOne}, ${attributes.city}, ${attributes.province}, ${attributes.postalCode}`,
+                    (attributes) => `${attributes.fullName} (${email}), ${attributes.addressOne}, ${attributes.city}, ${attributes.province}, ${attributes.postalCode}`,
                     (attributes) => false) : null;
             infoToShareList = [
                 {
@@ -819,6 +827,7 @@ const resetDataForGiveAmountChange = (giveData, dropDownOptions, coverFeesData) 
     if ((giveData.giveFrom.type === 'user' || giveData.giveFrom.type === 'companies')
     && giveData.giftType.value === 0) {
         giveData.donationAmount = setDonationAmount(giveData, coverFeesData);
+        giveData.formatedDonationAmount = _.replace(formatCurrency(giveData.donationAmount, 'en', 'USD'), '$', '');
         if (Number(giveData.donationAmount) > 0 && isCreditCardBlank(giveData)
         ) {
             giveData.creditCard = getDefaultCreditCard(
@@ -863,7 +872,9 @@ const resetDataForAccountChange = (giveData, dropDownOptions, props, type) => {
         currentUser: {
             attributes: {
                 displayName,
+                firstName,
                 email,
+                lastName,
             },
         },
         paymentInstrumentsData,
@@ -891,6 +902,7 @@ const resetDataForAccountChange = (giveData, dropDownOptions, props, type) => {
         giveData.creditCard = {
             value: null,
         };
+        giveData.formatedDonationAmount = _.replace(formatCurrency(giveData.donationAmount, 'en', 'USD'), '$', '');
         if (!_.isEmpty(companyDetails)
             && companyDetails.companyId === Number(giveData.giveFrom.id)) {
             dropDownOptions.paymentInstrumentList = populatePaymentInstrument(
@@ -911,6 +923,7 @@ const resetDataForAccountChange = (giveData, dropDownOptions, props, type) => {
         giveData.donationMatch = {
             value: null,
         };
+        giveData.formatedDonationAmount = _.replace(formatCurrency(giveData.donationAmount, 'en', 'USD'), '$', '');
         if (!_.isEmpty(dropDownOptions.donationMatchList)
             && (giveData.giftType.value > 0
                 || Number(giveData.giveAmount) > Number(giveData.giveFrom.balance))
@@ -943,7 +956,7 @@ const resetDataForAccountChange = (giveData, dropDownOptions, props, type) => {
             companyDetails,
             giveData.giveFrom,
             {
-                displayName,
+                displayName: `${firstName} ${lastName}`,
                 email,
             },
             formatMessage,
@@ -968,7 +981,7 @@ const resetDataForAccountChange = (giveData, dropDownOptions, props, type) => {
  * @param {String} senderEmail email of the sender
  * @return {object}  validity Return the validity object.
  */
-const validateGiveForm = (field, value, validity, giveData, coverFeesAmount, senderEmail = null) => {
+const validateGiveForm = (field, value, validity, giveData, coverFeesAmount = null, senderEmail = null) => {
     const giveAmount = giveData.totalP2pGiveAmount
         ? giveData.totalP2pGiveAmount
         : giveData.giveAmount;
@@ -1004,6 +1017,13 @@ const validateGiveForm = (field, value, validity, giveData, coverFeesAmount, sen
             validity.isValidGiveFrom = !isInputBlank(value);
             validity.isValidGiveTo = !((value.type === giveData.giveTo.type)
                     && (giveData.giveTo.value === value.value));
+            break;
+        case 'dedicateType':
+            if (giveData.dedicateGift && !_.isEmpty(giveData.dedicateGift.dedicateType)) {
+                if (_.isEmpty(giveData.dedicateGift.dedicateValue)) {
+                    validity.isDedicateGiftEmpty = false;
+                }
+            }
             break;
         case 'noteToSelf':
             validity.isNoteToSelfInLimit = isInputLengthLessThanOneThousand(value);
@@ -1135,7 +1155,8 @@ const populateCardData = (selectCardDetails, cardAmount) => {
     };
     const selectedCardName = _.split(selectCardDetails, ' ');
     if (isEnglishCard !== -1) {
-        cardData.displayName = _.replace(selectedCardName[0], '\'s', '');
+        const dispName = selectedCardName ? selectedCardName[0] : '';
+        cardData.displayName = _.replace(dispName, '\'s', '');
         cardData.processor = selectedCardName[selectedCardName.indexOf('ending') - 1].toLowerCase().trim();
         cardData.truncatedPaymentId = selectedCardName[selectedCardName.length - 1];
     } else {
@@ -1171,7 +1192,7 @@ const formatDateForGivingTools = (date) => {
     let unformattedDate = new Date(date);
     // Need to use the original function, using this now as we need to integrate translaction for that
     const day = unformattedDate.getDate();
-    const month = monthNamesForGivingTools(unformattedDate.getMonth());
+    const month = monthNamesForGivingTools(unformattedDate.getMonth() + 1);
     const year = unformattedDate.getFullYear();
     
     return `${month} ${day}, ${year}`;
@@ -1246,7 +1267,7 @@ const populateDonationReviewPage = (giveData, data, currency, formatMessage, lan
                 giveToData = {
                     accountId: selectedData.id,
                     avatar: giveTo.avatar,
-                    displayName: selectedData.attributes.name,
+                    displayName: selectedData.attributes.companyFundName,
                     type: 'company',
                 };
             }
@@ -1319,6 +1340,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
         creditCard,
         donationAmount,
         donationMatch,
+        emailMasked,
         giftType,
         giveAmount,
         giveFrom,
@@ -1328,6 +1350,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
         privacyShareEmail,
         privacyShareName,
         newCreditCardId,
+        recipientName,
         totalP2pGiveAmount,
     } = giveData;
 
@@ -1405,7 +1428,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
                 `${fromData.displayName}${displayAmount}`,
             );
         }
-        if (creditCard.value > 0) {
+        if (creditCard.value > 0 && (giftType.value === 0 || giftType.value === null)) {
             const creditCardData = _.find(data[paymentMap[giveFrom.type]],
                 { id: creditCard.id });
             if (!_.isEmpty(creditCardData)) {
@@ -1423,7 +1446,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
                 );
             }
         }
-        if (donationMatch.value > 0) {
+        if (donationMatch.value > 0 && (giftType.value === 0 || giftType.value === null)) {
             const matchedData = getDonationMatchedData(donationMatch.id, donationAmount, donationMatchData);
             if (!_.isEmpty(matchedData)) {
                 sources.push(matchedData);
@@ -1456,7 +1479,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
         }
         const buildAccounts = (item) => {
             const val = item.amount;
-            if (val >= 0) {
+            if (val > 0 && val !== null) {
                 return {
                     ...item,
                     amount: formatCurrency(
@@ -1493,19 +1516,30 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
             } = giftType;
 
             if (emails) {
-                // build recipients images
-                _.each(emails, (email) => {
-                    const recipientData = {
-                        displayName: email,
-                        type: 'email',
+                if (emailMasked && emails.length === 1) {
+                    const resData = {
+                        displayName: (recipientName) || emails[0],
+                        type: 'user',
                     };
-                    recipients.push(recipientData);
 
-                    const displayAmount = (recipientData.amount) ? ` (${formatCurrency(recipientData.amount, language, currency)})` : ``;
+                    recipients.push(resData);
                     state.toList.push(
-                        `${recipientData.displayName}${displayAmount}`,
+                        `${resData.displayName}`,
                     );
-                });
+                } else {
+                    _.each(emails, (email) => {
+                        const recipientData = {
+                            displayName: email,
+                            type: 'email',
+                        };
+                        recipients.push(recipientData);
+                        const displayAmount = (recipientData.amount) ? ` (${formatCurrency(recipientData.amount, language, currency)})` : ``;
+                        state.toList.push(
+                            `${recipientData.displayName}${displayAmount}`,
+                        );
+                    });
+                }
+                // build recipients images
             } else {
                 const recipientData = {
                     accountId: giveTo.id,
@@ -1617,6 +1651,7 @@ const resetP2pDataForOnInputChange = (giveData, dropDownOptions) => {
     }
 
     giveData.donationAmount = setP2pDonationAmount(giveData);
+    giveData.formatedDonationAmount = _.replace(formatCurrency(giveData.donationAmount, 'en', 'USD'), '$', '');
 
     if (Number(giveData.donationAmount) > 0 && isCreditCardBlank(giveData)) {
         giveData.creditCard = getDefaultCreditCard(
@@ -1654,6 +1689,7 @@ export {
     validateTaxReceiptProfileForm,
     onWhatDayList,
     isValidGiftAmount,
+    isValidGivingGoalAmount,
     getDropDownOptionFromApiData,
     populateAccountOptions,
     populateDonationMatch,

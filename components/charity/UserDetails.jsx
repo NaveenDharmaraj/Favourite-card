@@ -14,7 +14,9 @@ import {
     List,
     Header,
     Container,
+    Button,
 } from 'semantic-ui-react';
+import getConfig from 'next/config';
 
 import {
     generateDeepLink,
@@ -24,57 +26,66 @@ import {
 } from '../../actions/charity';
 import ShareDetails from '../shared/ShareSectionProfilePage';
 
+const { publicRuntimeConfig } = getConfig();
+const {
+    CLAIM_CHARITY_URL,
+} = publicRuntimeConfig;
+
 const createUserDetails = (valuesObject) => {
-    const data = [
-        {
-            Content: valuesObject.contactName,
+    const data = [];
+    if (!_isEmpty(valuesObject.contactName)) {
+        data.push({
+            Content: `Contact: ${valuesObject.contactName}`,
             name: 'user',
-        },
-        {
-            Content: valuesObject.contactPhone,
+        });
+    }
+    if (!_isEmpty(valuesObject.phone)) {
+        data.push({
+            Content: valuesObject.phone,
             name: 'phone',
-        },
-        {
+        });
+    }
+    if (!_isEmpty(valuesObject.email)) {
+        data.push({
             Content: valuesObject.email,
             link: `mailto:${valuesObject.email}`,
             name: 'mail',
-        },
-        {
+        });
+    }
+    if (!_isEmpty(valuesObject.website)) {
+        data.push({
             Content: valuesObject.website,
             link: valuesObject.website,
             name: 'linkify',
-        },
-        {
+        });
+    }
+    if (!_isEmpty(valuesObject.staffCount) && valuesObject.staffCount > 0) {
+        data.push({
             Content: valuesObject.staffCount,
             name: 'users',
-        },
-        {
+        });
+    }
+    if (!_isEmpty(valuesObject.businessNumber)) {
+        data.push({
             Content: valuesObject.businessNumber,
             name: 'briefcase',
-        },
-        {
-            Content: valuesObject.address,
+        });
+    }
+    if (!_isEmpty(valuesObject.headQuarterAddress)) {
+        data.push({
+            Content: valuesObject.headQuarterAddress,
             name: 'map marker alternate',
-        },
-
-    ];
+        });
+    }
     return data;
 };
 
 const detailsView = (valuesObject) => {
-    let address = '';
-    if (valuesObject.primaryAddress && valuesObject.primaryAddress.address_one) {
-        address = `${valuesObject.primaryAddress.address_one}, ${valuesObject.primaryAddress.city}, ${valuesObject.primaryAddress.province}, ${valuesObject.primaryAddress.country}`;
-        valuesObject = {
-            ...valuesObject,
-            address,
-        };
-    }
     const values = createUserDetails(valuesObject);
     return (
         <Grid.Row>
-            <Grid.Column>
-                <List>
+            <Grid.Column mobile={16} tablet={8} computer={8}>
+                <List className="charityDetailsList">
                     {values.map((value, index) => (
                         (value.Content && index <= 3
                         && (
@@ -82,7 +93,7 @@ const detailsView = (valuesObject) => {
                                 <List.Icon name={value.name} />
                                 {value.link && (
                                     <List.Content>
-                                        <a href={value.link}>
+                                        <a href={value.link} target={value.name === 'linkify' ? '_blank' : '_self'}>
                                             {value.Content}
                                         </a>
                                     </List.Content>
@@ -99,8 +110,8 @@ const detailsView = (valuesObject) => {
                     ))}
                 </List>
             </Grid.Column>
-            <Grid.Column>
-                <List>
+            <Grid.Column mobile={16} tablet={8} computer={8}>
+                <List className="charityDetailsList mobMarginBtm-2">
                     {values.map((value, index) => (
                         (value.Content && index >= 4
                             && (
@@ -148,9 +159,12 @@ class UserDetails extends React.Component {
             },
         } = this.props;
         getBeneficiaryFromSlug(dispatch, slug);
-        if (isAUthenticated && _isEmpty(deepLinkUrl)) {
-            generateDeepLink(`deeplink?profileType=charityprofile&sourceId=${userId}&profileId=${charityId}`, dispatch);
+        let deepLinkApiUrl = `deeplink?profileType=charityprofile&profileId=${charityId}`;
+        if (isAUthenticated) {
+            deepLinkApiUrl += `&sourceId=${userId}`;
         }
+        generateDeepLink(deepLinkApiUrl, dispatch);
+
     }
 
     render() {
@@ -169,29 +183,34 @@ class UserDetails extends React.Component {
                         <Header as="h3">
                             Charity information
                         </Header>
-                        <Grid divided stackable>
+                        <Grid stackable>
                             <Grid.Row>
                                 <Grid.Column mobile={16} tablet={10} computer={10}>
-                                    <Grid columns={2}>
+                                    <Grid>
                                         {((!_isEmpty(charityDetails.charityDetails.attributes))
                                         && detailsView(charityDetails.charityDetails.attributes))}
                                     </Grid>
                                 </Grid.Column>
-                                {isAUthenticated
-                                && (
-                                    <ShareDetails
-                                        deepLinkUrl={deepLinkUrl}
-                                        profileDetails={this.props.charityDetails.charityDetails}
-                                        userId={userId}
-                                    />
-                                )}
+
+                                <ShareDetails
+                                    deepLinkUrl={deepLinkUrl}
+                                    isAuthenticated={isAUthenticated}
+                                    profileDetails={this.props.charityDetails.charityDetails}
+                                    userId={userId}
+                                />
 
                             </Grid.Row>
                         </Grid>
-                        <p className="mt-1">
-                        *Is this your chariy? You can claim your free profile page on your platform
-                            <a href="https://help.chimp.net/article/83-claiming-and-accessing-your-chimp-charity-account"> by following these steps</a>
-                        </p>
+                        {(!_isEmpty(charityDetails.charityDetails.attributes) && !charityDetails.charityDetails.attributes.isClaimed)
+                            && (
+                                <p className="mt-1">
+                                Is this your charity? Claim your charity page on Charitable Impact.
+                                    <a href={CLAIM_CHARITY_URL}>
+                                        <Button className="ml-1 blue-bordr-btn-round-def c-small">Claim charity</Button>
+                                    </a>
+                                </p>
+                            )
+                        }
                     </div>
                 </Container>
             </div>

@@ -1,7 +1,7 @@
 {
     "fortheCharityLabel": "For the recipient",
     "includeMessageLabel": "Include a message (optional)",
-    "allocationsForthCharityPopup": "You can tell the recipient why you're giving to them, provide recommendations on how you'd prefer your gift is spent, let them know if you're giving in honour of someone, or just tell them to keep up the good work.",
+    "allocationsForthCharityPopup": "You can tell the recipient why you're giving to them, provide recommendations for how you'd prefer your gift is spent, or offer words of encouragement.",
     "generalInputPlaceHolder": "What would you like to say to the recipient?",
     "invalidLengthError": "is too long (maximum is 1000 characters)",
     "invalidNoteTextError":  "Only standard letters and numbers are allowed here",

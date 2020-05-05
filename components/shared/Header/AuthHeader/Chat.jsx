@@ -2,7 +2,11 @@ import React, { cloneElement, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { Icon, Image, Label, List, Menu, Popup } from 'semantic-ui-react';
 import _ from 'lodash';
-import applozicApi from "./../../../../services/applozicApi"
+import applozicApi from "./../../../../services/applozicApi";
+import graphApi from "./../../../../services/graphApi";
+import placeholderUser from './../../../../static/images/no-data-avatar-user-profile.png';
+import placeholderGroup from './../../../../static/images/no-data-avatar-group-chat-profile.png';
+import { Link } from '../../../../routes';
 
 class Chat extends React.Component {
     months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -14,14 +18,21 @@ class Chat extends React.Component {
             totalUnreadCount: props.totalUnreadCount || 0,
             messagesList: props.messagesList || [],
             userDetails: {},
-            groupFeeds: {}
+            groupFeeds: {},
+            showBackImage: false
         }
         // this.onMessagesListLoad.bind(this);
+        this.loadFriendsList.bind(this);
+        this.applozicAppInitialized.bind(this);
+        this.onUnreadMessageCountUpdate.bind(this);
         this.onMessageReceived.bind(this);
+        this.onMessageSent.bind(this);
         this.conversationHead.bind(this);
         this.getDateString.bind(this);
         this.timeString.bind(this);
         this.loadRecentMessages.bind(this);
+        this.onChatPageRefreshEvent.bind(this);
+        this.renderbackImage = this.renderbackImage.bind(this);
     }
 
     /*onMessagesListLoad = (e) => {
@@ -42,21 +53,60 @@ class Chat extends React.Component {
         this.setState({ totalUnreadCount: e.detail.totalUnreadCount, messagesList: messagesList, userDetails: usersInfoById, groupFeeds: groupFeedsById });
     }
 */
+    loadFriendsList = () => {
+        let self = this;
+        const pageSize = 999;
+        const pageNumber = 1;
+        const email = this.state.userInfo.attributes.email;
+        graphApi.get(`/user/myfriends`, { params: {
+            'page[number]': pageNumber,
+            'page[size]': pageSize,
+            status: 'accepted',
+            userid: email,
+        } }).then(
+            (result) => {
+                let userDetails = self.state.userDetails;
+                let friendsList = result.data;
+                _.forEach(friendsList, function (userDetailObj) {
+                    if (userDetailObj.type == "users") {
+                        const userDetail = userDetailObj.attributes;
+                        userDetails[Number(userDetail.user_id)] = { userId: userDetail.user_id, displayName: userDetail.display_name, email: userDetail.email_hash, imageLink: userDetail.avatar };
+                    }
+                });
+                self.setState({ userDetails: userDetails });
+            },
+        );
+    };
 
+    applozicAppInitialized = (e) => {
+        this.setState({ totalUnreadCount: e.detail.count });
+        this.loadRecentMessages();
+    }
+    onUnreadMessageCountUpdate = (e) => {
+        this.setState({ totalUnreadCount: e.detail.count });
+    }
+
+    onMessageSent = (e) => {
+        this.loadRecentMessages();
+    };
+    onChatPageRefreshEvent = (e) => {
+        this.loadRecentMessages();
+    }
     onMessageReceived = (e) => {
-        console.log("onMessageReceived");
-        this.setState({ totalUnreadCount: this.state.totalUnreadCount + 1 });
-        console.log(e);
+        this.loadRecentMessages();
+        // console.log("onMessageReceived");
+        // this.setState({ totalUnreadCount: this.state.totalUnreadCount + 1 });
+        // console.log(e);
     }
 
     async loadRecentMessages() {
         let self = this;
         applozicApi.get("/message/v2/list", { params: { startIndex: 0, mainPageSize: 5, pageSize: 5 } }).then(function (response) {
-            // handle success
-            console.log(response);
             let userDetails = self.state.userDetails;
             _.forEach(response.response.userDetails, function (userDetail) {
-                userDetails[userDetail.userId] = userDetail;
+                if (!userDetails[userDetail.userId]) {
+                    userDetails[userDetail.userId] = userDetail;
+                }
             });
             let groupFeeds = self.state.groupFeeds;
             _.forEach(response.response.groupFeeds, function (groupFeed) {
@@ -78,13 +128,22 @@ class Chat extends React.Component {
 
     async componentDidMount() {
         // window.addEventListener('onMessagesListLoad', this.onMessagesListLoad, false);
+        this.loadFriendsList();
+        window.addEventListener('onChatPageRefreshEvent', this.onChatPageRefreshEvent, false);
         window.addEventListener('onMessageReceived', this.onMessageReceived, false);
+        window.addEventListener('onMessageSent', this.onMessageSent, false);
+        window.addEventListener('applozicAppInitialized', this.applozicAppInitialized, false);
+        window.addEventListener('onUnreadMessageCountUpdate', this.onUnreadMessageCountUpdate, false);
         await this.loadRecentMessages();
     }
 
     componentWillUnmount() {
         // window.removeEventListener('onMessagesListLoad', this.onMessagesListLoad, false);
+        window.removeEventListener('onChatPageRefreshEvent', this.onChatPageRefreshEvent, false);
+        window.removeEventListener('applozicAppInitialized', this.applozicAppInitialized, false);
         window.removeEventListener('onMessageReceived', this.onMessageReceived, false);
+        window.removeEventListener('onMessageSent', this.onMessageSent, false);
+        window.removeEventListener('onUnreadMessageCountUpdate', this.onUnreadMessageCountUpdate, false);
     }
     getDateString(timeInMs, todayStr) {
         let self = this;
@@ -114,65 +173,86 @@ class Chat extends React.Component {
     conversationHead(msg) {
         if (msg.groupId) {
             let info = this.state.groupFeeds[msg.groupId];
-            let groupHead = { type: "group", title: info.name, image: (info.imageUrl ? info.imageUrl : "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTMus31dApHDyvHuFOx1CM6bS6-RhuzlAb5oL0aaf37Di54iIUf"), info: info };
+            let groupHead = { type: "group", title: info.name, image: (info.imageUrl ? info.imageUrl : placeholderGroup), info: info };
             return groupHead;
         } else {
             let info = this.state.userDetails[msg.contactIds];
-            let convHead = { type: 'user', title: info['displayName'], image: (info.imageLink ? info.imageLink : "https://banner2.kisspng.com/20180802/icj/kisspng-user-profile-default-computer-icons-network-video-the-foot-problems-of-the-disinall-foot-care-founde-5b6346121ec769.0929994515332326581261.jpg"), info: info };
+            let convHead = { type: 'user', title: info['displayName'], image: (info.imageLink ? info.imageLink : placeholderUser), info: info };
             return convHead;
         }
     }
+    renderIconColor() {
+        const {
+            dispatch,
+        } = this.props;
+        this.setState({
+            showBackImage: true,
+        });
+    }
 
+    renderbackImage() {
+        this.setState({
+            showBackImage: false,
+        });
+    }
     render() {
         let self = this;
+        const {
+            showBackImage,
+        } = this.state;
+        const activeClass = (showBackImage) ? 'menuActive' : '';
         return (
             <Popup
                 position="bottom right"
                 basic
                 on='click'
                 className="chat-popup"
-                    trigger={
-                        (
-                            <Menu.Item as="a" className="chatNav">
-                                {/* {userInfo.applogicClientRegistration ? (userInfo.applogicClientRegistration.totalUnreadCount > 0 ? <Label color="red" floating circular>4</Label> : '') : ''} */}
-                                {this.state.totalUnreadCount > 0 ? <Label color="red" floating circular className="chat-launcher-icon">{this.state.totalUnreadCount}</Label> : ""}
-                                <Icon name="chat new" />
-                            </Menu.Item>
-                        )
-                    }
-                    flowing>
-                    <Popup.Header>
-                        {self.state.messagesList && self.state.messagesList.length > 0 ? "Recent Messages" : "No Recent Messages"} <a className="newChatIcon"><Icon name="chatIcon" /></a>
-                    </Popup.Header>
-                    <Popup.Content>
-                        <List relaxed="very" verticalAlign='middle'>
-                            {(() => {
+                onOpen={() => this.renderIconColor()}
+                onClose={() => this.renderbackImage()}
+                trigger={
+                    (
+                        <Menu.Item as="a" className={`chatNav xs-d-none ${activeClass}`}>
+                            {/* {userInfo.applogicClientRegistration ? (userInfo.applogicClientRegistration.totalUnreadCount > 0 ? <Label color="red" floating circular>4</Label> : '') : ''} */}
+                            {/* {this.state.totalUnreadCount > 0 ? <Label color="red" floating circular className="chat-launcher-icon">{this.state.totalUnreadCount}</Label> : ""} */}
+                            <Icon name={"chat" + (this.state.totalUnreadCount > 0 ? " new" : "")} />
+                        </Menu.Item>
+                    )
+                }
+                flowing>
+                <Popup.Header>
+                    {self.state.messagesList && self.state.messagesList.length > 0 ? "Messages" : "No Messages"} <Link route={`/chats/new`}><a className="newChatIcon"><Icon name="chatIcon" /></a></Link>
+                </Popup.Header>
+                <Popup.Content>
+                    <List relaxed="very" verticalAlign='middle'>
+                        {(() => {
 
-                                if (self.state.messagesList && self.state.messagesList.length > 0) {
-                                    return self.state.messagesList.map(function (msg) {
-                                        let conversationHead = self.conversationHead(msg);
-                                        return (<List.Item key={"chat_head_" + msg.key} className="new">
+                            if (self.state.messagesList && self.state.messagesList.length > 0) {
+                                return self.state.messagesList.map(function (msg) {
+                                    let conversationHead = self.conversationHead(msg);
+                                    return (<List.Item key={"chat_head_" + msg.key} className={!msg.sent && !msg.read}>
                                         <Image avatar src={conversationHead.image} />
                                         <List.Content>
                                             <List.Header>
-                                                <a className="header"><span className="name">{conversationHead.title}</span> <span className="time">{self.timeString(msg.createdAtTime, true)}</span></a>
+                                                <Link route={`/chats/` + (msg.groupId ? msg.groupId : msg.contactIds)}>
+                                                    <a className="header"><span className={"name " + (conversationHead.info.unreadCount > 0 ? " newMessage" : "")}>{conversationHead.title}</span> <span className="time">{self.timeString(msg.createdAtTime, true)}</span></a>
+                                                </Link>
                                             </List.Header>
                                             <List.Description>
-                                            {msg.message}
+                                                <Link route={`/chats/` + (msg.groupId ? msg.groupId : msg.contactIds)}><span dangerouslySetInnerHTML={{ __html: msg.message.replace(/(<([^>]+)>)/ig, '') }}></span></Link>
                                             </List.Description>
                                         </List.Content>
                                     </List.Item>)
-                                    });
-                                }
-                            })()}
+                                });
+                            }
+                        })()}
 
 
-                        </List>
-                    </Popup.Content>
-                    <div className="popup-footer text-center">
-                        <a href="/chats/all">{self.state.messagesList && self.state.messagesList.length > 0 ? "See All Conversations" : "Start Conversation"}</a>
-                    </div>
-                </Popup>
+                    </List>
+                </Popup.Content>
+                <div className="popup-footer text-center">
+                    <Link route={`/chats/all`}><a>{"See All Messages"}</a></Link>
+                </div>
+            </Popup>
         );
     }
 
@@ -183,6 +263,7 @@ function mapStateToProps(state) {
     return {
         userInfo: state.user.info,
         messageList: state.chat.messages,
+        totalUnreadCount: 0
     };
 }
 export default connect(mapStateToProps)(Chat);

@@ -19,6 +19,7 @@ class ModalStatusMessage extends React.Component {
             visible,
         } = this.state;
         const {
+            message,
             error,
         } = this.props;
         return (
@@ -27,7 +28,7 @@ class ModalStatusMessage extends React.Component {
                     visible && (
                         <Fragment>
                             {!_isEmpty(error) ? (
-                                <Message negative icon className="mdlMessage" onDismiss={() => { this.setState({ visible: false }); }}>
+                                <Message negative icon className="mdlMessage center" onDismiss={() => { this.setState({ visible: false }); }}>
                                     <Icon name="warning sign" />
                                     <Message.Content>
                                         <Message.Header>{error}</Message.Header>
@@ -35,10 +36,10 @@ class ModalStatusMessage extends React.Component {
                                 </Message>
 
                             ) : (
-                                <Message positive icon className="mdlMessage" onDismiss={() => { this.setState({ visible: false }); }}>
+                                <Message positive icon className="mdlMessage center" onDismiss={() => { this.setState({ visible: false }); }}>
                                     <Icon name="check" />
                                     <Message.Content>
-                                        <Message.Header>Your profile have been saved successfully.</Message.Header>
+                                        <Message.Header>{message}</Message.Header>
                                     </Message.Content>
                                 </Message>
                             )}
@@ -52,10 +53,12 @@ class ModalStatusMessage extends React.Component {
 
 ModalStatusMessage.propTypes = {
     error: PropTypes.string,
+    message: PropTypes.string,
 };
 
 ModalStatusMessage.defaultProps = {
     error: '',
+    message: 'Information saved',
 };
 
 export default ModalStatusMessage;

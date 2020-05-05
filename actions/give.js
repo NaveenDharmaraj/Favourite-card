@@ -23,6 +23,7 @@ import {
 
 export const actionTypes = {
     ADD_NEW_CREDIT_CARD_STATUS: 'ADD_NEW_CREDIT_CARD_STATUS',
+    COVER_AMOUNT_DISPLAY: 'COVER_AMOUNT_DISPLAY',
     COVER_FEES: 'COVER_FEES',
     GET_BENEFICIARY_FROM_SLUG: 'GET_BENEFICIARY_FROM_SLUG',
     GET_BENIFICIARY_FOR_GROUP: 'GET_BENIFICIARY_FOR_GROUP',
@@ -31,6 +32,7 @@ export const actionTypes = {
     GET_GROUP_FROM_SLUG: 'GET_GROUP_FROM_SLUG',
     SAVE_FLOW_OBJECT: 'SAVE_FLOW_OBJECT',
     SAVE_SUCCESS_DATA: 'SAVE_SUCCESS_DATA',
+    SET_COMPANY_ACCOUNT_FETCHED: 'SET_COMPANY_ACCOUNT_FETCHED',
     TAX_RECEIPT_API_CALL_STATUS: 'TAX_RECEIPT_API_CALL_STATUS',
 };
 
@@ -210,16 +212,15 @@ const saveCharityAllocation = (allocation) => {
     const {
         giveData,
     } = allocation;
-
     const {
         coverFees,
+        dedicateGift,
         giveAmount,
         infoToShare,
         noteToCharity,
         noteToSelf,
     } = giveData;
-
-    const attributes = {
+    let attributes = {
         amount: giveAmount,
         coverFees,
         noteToCharity,
@@ -227,8 +228,14 @@ const saveCharityAllocation = (allocation) => {
         privacyData: (infoToShare.id) ? infoToShare.id : null,
         privacySetting: _.split(infoToShare.value, '|')[0],
     };
+    if (!_.isEmpty(dedicateGift.dedicateType)) {
+        attributes = {
+            ...attributes,
+            [dedicateGift.dedicateType]: dedicateGift.dedicateValue,
+        };
+    }
     return initializeAndCallAllocation(allocation, attributes, 'charity');
-}
+};
 
 const saveGroupAllocation = (allocation) => {
     const {
@@ -236,6 +243,7 @@ const saveGroupAllocation = (allocation) => {
     } = allocation;
 
     const {
+        dedicateGift,
         giveAmount,
         infoToShare,
         noteToCharity,
@@ -246,7 +254,7 @@ const saveGroupAllocation = (allocation) => {
         privacyShareName,
     } = giveData;
 
-    const attributes = {
+    let attributes = {
         amount: giveAmount,
         noteToGroup: noteToCharity,
         noteToSelf,
@@ -256,6 +264,12 @@ const saveGroupAllocation = (allocation) => {
         privacyShareName,
         privacyTrpId: privacyShareAddress ? infoToShare.id : null,
     };
+    if (!_.isEmpty(dedicateGift.dedicateType)) {
+        attributes = {
+            ...attributes,
+            [dedicateGift.dedicateType]: dedicateGift.dedicateValue,
+        };
+    }
     return initializeAndCallAllocation(allocation, attributes, 'group');
 };
 
@@ -269,13 +283,13 @@ const postP2pAllocations = async (allocations) => {
                 relationships: {
                     parentAllocation: {
                         data: {
-                          type: 'fundAllocations',
-                          id: parentAllocationId ,
+                            type: 'fundAllocations',
+                            id: parentAllocationId ,
                         },
                     },
                 },
-            }
-            data = _.merge({}, allocationData, parent)
+            };
+            data = _.merge({}, allocationData, parent);
         } else {
             data = allocationData;
         }
@@ -286,7 +300,7 @@ const postP2pAllocations = async (allocations) => {
         const result = await coreApi.post(`/${allocationData.type}`, {
             data : {
                 ...data,
-            }
+            },
         });
         if  (result && result.data) {
             parentAllocationId = result.data.id;
@@ -427,36 +441,50 @@ export const getCompanyPaymentAndTax = (dispatch, companyId) => {
         },
         type: actionTypes.GET_COMPANY_PAYMENT_AND_TAXRECEIPT,
     };
-
-    return coreApi.get(
-        `/companies/${companyId}?include=defaultTaxReceiptProfile,activePaymentInstruments,taxReceiptProfiles`,
+    dispatch({
+        payload: {
+            companyAccountsFetched: false,
+        },
+        type: actionTypes.SET_COMPANY_ACCOUNT_FETCHED,
+    });
+    const fetchData = coreApi.get(
+        `/companies/${companyId}?include=defaultTaxReceiptProfile,taxReceiptProfiles`,
         {
             params: {
                 dispatch,
                 uxCritical: true,
             },
         },
-    ).then((result) => {
-        const { data } = result;
+    );
+    const paymentInstruments = coreApi.get(
+        `/companies/${companyId}/activePaymentInstruments?&sort=-default`,
+        {
+            params: {
+                dispatch,
+                uxCritical: true,
+            },
+        },
+    );
+    
+    Promise.all([
+        fetchData,
+        paymentInstruments,
+    ]).then((result) => {
+        const { data } = result[0];
         let defaultTaxReceiptId = null;
         if (!_.isEmpty(data.relationships.defaultTaxReceiptProfile.data)) {
             defaultTaxReceiptId = data.relationships.defaultTaxReceiptProfile.data.id;
         }
-        if (!_.isEmpty(result.included)) {
-            const { included } = result;
+        if (!_.isEmpty(result[0].included)) {
+            const { included } = result[0];
             included.map((item) => {
                 const {
                     attributes,
                     id,
                     type,
                 } = item;
-                if (type === 'paymentInstruments') {
-                    fsa.payload.companyPaymentInstrumentsData.push({
-                        attributes,
-                        id,
-                        type,
-                    });
-                } else if (type === 'taxReceiptProfiles') {
+
+                if (type === 'taxReceiptProfiles') {
                     if (id === defaultTaxReceiptId) {
                         fsa.payload.companyDefaultTaxReceiptProfile = {
                             attributes,
@@ -470,11 +498,20 @@ export const getCompanyPaymentAndTax = (dispatch, companyId) => {
                         type,
                     });
                 }
+                fsa.payload.companyPaymentInstrumentsData = [
+                    ...result[1].data,
+                ];
             });
         }
+        dispatch({
+            payload: {
+                companyAccountsFetched: true,
+            },
+            type: actionTypes.SET_COMPANY_ACCOUNT_FETCHED,
+        });
         return dispatch(fsa);
     }).catch((error) => {
-        console.log(error);
+        // console.log(error);
     });
 };
 
@@ -550,7 +587,6 @@ export const proceed = (
                     // }
                 }
             }).catch((err) => {
-                // logger.error(err);
                 if (checkForQuaziSuccess(err.errors)) {
                     successData.quaziSuccessStatus = true;
                 } else {
@@ -570,7 +606,7 @@ export const proceed = (
                     'give/to/friend': p2pDefaultProps,
                     'give/to/group': groupDefaultProps,
                 };
-                const defaultPropsData = _.merge({}, defaultProps[flowObject.type]);
+                const defaultPropsData = _.cloneDeep(defaultProps[flowObject.type]);
                 const payload = {
                     ...defaultPropsData.flowObject,
                 };
@@ -617,7 +653,7 @@ export const proceed = (
                 callApiAndDispatchData(dispatch, accountDetails);
             }).catch((err) => {
                 triggerUxCritialErrors(err.errors || err, dispatch);
-                console.log(err);
+                // console.log(err);
             }).finally(() => {
                 dispatch({
                     payload: {
@@ -716,14 +752,12 @@ export const getBeneficiariesForGroup = (dispatch, groupId) => {
                     }
                 },
             ).catch(() => {
-                //Router.pushRoutes('/error');
-                console.log('error page');
+                Router.pushRoute('/give/error');
             }).finally(() => {
                 dispatch(fsa);
             });
     } else {
-        //Router.pushRoutes('/dashboard');
-        console.log('dashboard');
+        Router.pushRoute('/dashboard');
     }
 };
 
@@ -751,16 +785,13 @@ export const getBeneficiaryFromSlug = (dispatch, slug) => {
                 return dispatch(fsa);
             },
         ).catch(() => {
-            //redirect('/give/error');
-            console.log('redirect to error');
-        }).finally(() => {
-            return dispatch(fsa);
-        });
+            Router.pushRoute('/give/error');
+        }).finally(() => dispatch(fsa));
     } else {
-        //redirect('/dashboard');
-        console.log('dashboard');
+        Router.pushRoute('/dashboard');
     }
 };
+
 const getCoverFeesApi = async (amount, fundId) => {
     const params = {
         attributes: {
@@ -815,6 +846,29 @@ export const getCoverFees = async (feeData, fundId, giveAmount, dispatch) => {
     // hence no need to fetch the fees for balance
     dispatch(fsa);
 };
+
+export const getCoverAmount = async (fundId, giveAmount, dispatch) => {
+    const fsa = {
+        payload: {
+            coverAmountDisplay: 0,
+        },
+        type: actionTypes.COVER_AMOUNT_DISPLAY,
+    };
+    if (giveAmount >= 5) {
+        await getCoverFeesApi(giveAmount, fundId).then((result) => {
+            const {
+                data: {
+                    attributes: {
+                        feeAmount,
+                    },
+                },
+            } = result;
+            fsa.payload.coverAmountDisplay = feeAmount;
+        });
+    }
+    dispatch(fsa);
+};
+
 export const getCompanyTaxReceiptProfile = (dispatch, companyId) => {
     return callApiAndGetData(`/companies/${companyId}/taxReceiptProfiles?page[size]=50&sort=-id`).then((result) => {
         // return dispatch(setTaxReceiptProfile(result, type = ''));
@@ -827,7 +881,7 @@ export const getCompanyTaxReceiptProfile = (dispatch, companyId) => {
         };
         return dispatch(fsa);
     }).catch((error) => {
-        console.log(error);
+        // console.log(error);
     });
 };
 
@@ -848,8 +902,7 @@ export const getGroupsFromSlug = (dispatch, slug) => {
                 type: actionTypes.GET_GROUP_FROM_SLUG,
             });
         },
-    ).catch((error) => {
-        console.log(error);
+    ).catch(() => {
         Router.pushRoute('/give/error');
     });
 };

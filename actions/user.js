@@ -5,6 +5,8 @@ import _ from 'lodash';
 import coreApi from '../services/coreApi';
 import authRorApi from '../services/authRorApi';
 import graphApi from '../services/graphApi';
+import securityApi from '../services/securityApi';
+import wpApi from '../services/wpApi';
 import { Router } from '../routes';
 import {
     triggerUxCritialErrors,
@@ -17,15 +19,18 @@ export const actionTypes = {
     GET_MATCH_POLICIES_PAYMENTINSTRUMENTS: 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS',
     GET_USERS_GROUPS: 'GET_USERS_GROUPS',
     GET_UPCOMING_TRANSACTIONS: 'GET_UPCOMING_TRANSACTIONS',
+    GIVING_GROUPS_lEAVE_MODAL: 'GIVING_GROUPS_lEAVE_MODAL',
     MONTHLY_TRANSACTION_API_CALL: 'MONTHLY_TRANSACTION_API_CALL',
     TAX_RECEIPT_PROFILES:'TAX_RECEIPT_PROFILES',
     SAVE_DEEP_LINK: 'SAVE_DEEP_LINK',
     SET_USER_INFO: 'SET_USER_INFO',
+    SET_USER_ACCOUNT_FETCHED: 'SET_USER_ACCOUNT_FETCHED',
     UPDATE_USER_FUND: 'UPDATE_USER_FUND',
     GIVING_GROUPS_AND_CAMPAIGNS: 'GIVING_GROUPS_AND_CAMPAIGNS',
     DISABLE_GROUP_SEE_MORE: 'DISABLE_GROUP_SEE_MORE',
     LEAVE_GROUP_ERROR_MESSAGE: 'LEAVE_GROUP_ERROR_MESSAGE',
     USER_GIVING_GOAL_DETAILS: 'USER_GIVING_GOAL_DETAILS',
+    USER_INITIAL_FAVORITES: 'USER_INITIAL_FAVORITES',
     USER_FAVORITES:'USER_FAVORITES',
     UPDATE_FAVORITES: 'UPDATE_FAVORITES',
     ENABLE_FAVORITES_BUTTON: 'ENABLE_FAVORITES_BUTTON',
@@ -76,6 +81,7 @@ export const callApiAndGetData = (url, params) => getAllPaginationData(url, para
     },
 );
 
+// eslint-disable-next-line import/exports-last
 export const getDonationMatchAndPaymentInstruments = (userId, flowType) => {
 
     return async (dispatch) => {
@@ -93,8 +99,14 @@ export const getDonationMatchAndPaymentInstruments = (userId, flowType) => {
             },
             type: actionTypes.GET_MATCH_POLICIES_PAYMENTINSTRUMENTS,
         };
+        dispatch({
+            payload: {
+                userAccountsFetched: false,
+            },
+            type: actionTypes.SET_USER_ACCOUNT_FETCHED,
+        });
         const fetchData = coreApi.get(
-            `/users/${userId}?include=donationMatchPolicies,activePaymentInstruments,defaultTaxReceiptProfile,taxReceiptProfiles,fund`,
+            `/users/${userId}?include=donationMatchPolicies,defaultTaxReceiptProfile,taxReceiptProfiles,fund`,
             {
                 params: {
                     dispatch,
@@ -124,6 +136,15 @@ export const getDonationMatchAndPaymentInstruments = (userId, flowType) => {
                 },
             );
         }
+        const paymentInstruments = coreApi.get(
+            `/users/${userId}/activePaymentInstruments?sort=-default`,
+            {
+                params: {
+                    dispatch,
+                    uxCritical: true,
+                },
+            },
+        );
         const companiesData = callApiAndGetData(
             `/users/${userId}/administeredCompanies?page[size]=50&sort=-id`,
             {
@@ -138,6 +159,7 @@ export const getDonationMatchAndPaymentInstruments = (userId, flowType) => {
             groupData,
             campaignsData,
             companiesData,
+            paymentInstruments,
         ])
             .then(
                 (data) => {
@@ -149,7 +171,6 @@ export const getDonationMatchAndPaymentInstruments = (userId, flowType) => {
                             companies: 'companiesAccountsData',
                             donationMatches: 'donationMatchData',
                             groups: 'userGroups',
-                            paymentInstruments: 'paymentInstrumentsData',
                         };
                         let defaultTaxReceiptId = null;
                         if (!_.isEmpty(userData.data.relationships.defaultTaxReceiptProfile.data)) {
@@ -192,18 +213,31 @@ export const getDonationMatchAndPaymentInstruments = (userId, flowType) => {
                     fsa.payload.userGroups = data[1];
                     fsa.payload.userCampaigns = data[2];
                     fsa.payload.companiesAccountsData = data[3];
-                    fsa.payload.userAccountsFetched = true;
+                    fsa.payload.paymentInstrumentsData = [
+                        ...data[4].data,
+                    ];
+                    dispatch({
+                        payload: {
+                            userAccountsFetched: true,
+                        },
+                        type: actionTypes.SET_USER_ACCOUNT_FETCHED,
+                    });
                 },
             ).catch((error) => {
                 fsa.error = error;
-                fsa.payload.userAccountsFetched = true;
+                dispatch({
+                    payload: {
+                        userAccountsFetched: true,
+                    },
+                    type: actionTypes.SET_USER_ACCOUNT_FETCHED,
+                });
             }).finally(() => {
                 dispatch(fsa);
             });
     };
 };
 
-export const chimpLogin = (token = null) => {
+export const wpLogin = (token = null) => {
     let params = null;
     if (!_.isEmpty(token)) {
         params = {
@@ -212,7 +246,27 @@ export const chimpLogin = (token = null) => {
             },
         };
     }
-    return authRorApi.post('/auth/login', null, params);
+    return wpApi.post('/login', null, params);
+};
+
+export const chimpLogin = (token = null, options = null) => {
+    let params = null;
+    if (!_.isEmpty(token)) {
+        params = {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        };
+    }
+    if (options && typeof options === 'object'){
+        params = {
+            ...params,
+            params:{
+                ...options,
+            },
+        }
+    } 
+        return authRorApi.post(`/auth/login`, null, params);
 };
 
 const setDataToPayload = ({
@@ -332,6 +386,8 @@ export const getUser1 = (dispatch, userId, token = null) => {
                 const { data } = userData;
                 const {
                     activeRoleId,
+                    hasAdminAccess,
+                    donorAccount,
                 } = data.attributes;
                 let adminRoleId = null;
                 _.merge(fsa.payload, {
@@ -342,8 +398,11 @@ export const getUser1 = (dispatch, userId, token = null) => {
                     otherAccounts: [],
                 });
                 if (!_.isEmpty(data.relationships.chimpAdminRole.data)) {
-                    fsa.payload.isAdmin = true;
+                    // fsa.payload.isAdmin = true;
                     adminRoleId = data.relationships.chimpAdminRole.data.id;
+                }
+                if (hasAdminAccess) {
+                    fsa.payload.isAdmin = true;
                 }
                 const includedData = _.concat(
                     userData.included, allData[1], allData[2], allData[3], allData[4],
@@ -374,8 +433,7 @@ export const getUser1 = (dispatch, userId, token = null) => {
                                     location: `/contexts/${id}`,
                                     name: data.attributes.displayName,
                                 };
-                                if (id == activeRoleId
-                        || adminRoleId == activeRoleId) {
+                                if (id == activeRoleId || donorAccount) {
                                     fsa.payload.currentAccount = donor;
                                 } else {
                                     fsa.payload.otherAccounts.unshift(donor);
@@ -403,7 +461,7 @@ export const getUser1 = (dispatch, userId, token = null) => {
                 }
             },
         ).catch((error) => {
-            console.log(JSON.stringify(error));
+            // console.log(JSON.stringify(error));
             isAuthenticated = false;
         }).finally(() => {
             dispatch({
@@ -446,7 +504,7 @@ export const getUserFund = (dispatch, userId) => {
             type: actionTypes.UPDATE_USER_FUND,
         });
     }).catch((error) => {
-        console.log(error);
+        // console.log(error);
     });
 };
 
@@ -464,7 +522,7 @@ export const getTaxReceiptProfile = (dispatch, userId) => {
     return coreApi.get(`/users/${userId}/taxReceiptProfiles`).then((result) => {
         return dispatch(setTaxReceiptProfile(result.data));
     }).catch((error) => {
-        console.log(error);
+        // console.log(error);
     });
 };
 
@@ -519,8 +577,7 @@ export const getGroupsForUser = (dispatch, userId) => {
                 }
                 dispatch(fsa);
             },
-        ).catch((error) => {
-            console.log(error);
+        ).catch(() => {
             Router.pushRoute('/give/error');
         });
 };
@@ -580,6 +637,10 @@ export const leaveGroup = (dispatch, group, allData, type) => {
     };
     const dataArray = _.merge([], allData.data);
     const currentpath = allData.currentLink;
+    dispatch({
+        payload: { buttonLoading: true },
+        type: actionTypes.GIVING_GROUPS_lEAVE_MODAL,
+    });
     coreApi.patch(`/groups/leave?slug=${group.attributes.slug}`, {
     }).then(
         async () => {
@@ -591,10 +652,21 @@ export const leaveGroup = (dispatch, group, allData, type) => {
                 nextLink: (currentData.links.next) ? currentData.links.next : null,
                 dataCount: currentData.meta.recordCount,
             };
-
+            
             dispatch(fsa);
+            dispatch({
+                payload: {
+                    buttonLoading: false,
+                    closeModal: true,
+                },
+                type: actionTypes.GIVING_GROUPS_lEAVE_MODAL,
+            });
         },
     ).catch((error) => {
+        dispatch({
+            payload: { buttonLoading: false },
+            type: actionTypes.GIVING_GROUPS_lEAVE_MODAL,
+        });
         const errorFsa = {
             payload: {
                 type,
@@ -628,7 +700,7 @@ export const getUserGivingGoal = (dispatch, userId) => {
                 type: actionTypes.USER_GIVING_GOAL_DETAILS,
             });
         }).catch((error) => {
-            console.log(error);
+            // console.log(error);
         });
 };
 export const setUserGivingGoal = (dispatch, goalAmount, userId) => {
@@ -640,7 +712,7 @@ export const setUserGivingGoal = (dispatch, goalAmount, userId) => {
     };
     return coreApi.post('givingGoals', {
         data: payload,
-    }).then((result)=> {
+    }).then((result) => {
         getUserGivingGoal(dispatch, userId);
     });
 };
@@ -669,7 +741,7 @@ export const getUpcomingTransactions = (dispatch, url) => {
             });
         },
     ).catch((error) => {
-        console.log(error);
+        // console.log(error);
         // Router.pushRoute('/give/error');
     });
 };
@@ -706,7 +778,7 @@ export const deleteUpcomingTransaction = (dispatch, id, transactionType, activeP
             getUpcomingTransactions(dispatch, activepageUrl);
         },
     ).catch((error) => {
-        console.log(error);
+        // console.log(error);
     });
 };
 
@@ -719,6 +791,9 @@ export const getFavoritesList = (dispatch, userId, pageNumber, pageSize) => {
         },
         type: actionTypes.USER_FAVORITES,
     };
+    if(pageNumber === 1) {
+        fsa.type = actionTypes.USER_INITIAL_FAVORITES;
+    }
     const url = `user/favourites?userid=${Number(userId)}&page[number]=${pageNumber}&page[size]=${pageSize}`;
     return graphApi.get(
         url,
@@ -738,7 +813,7 @@ export const getFavoritesList = (dispatch, userId, pageNumber, pageSize) => {
             };
         },
     ).catch((error) => {
-        console.log(error);
+        // console.log(error);
     }).finally(() => {
         dispatch(fsa);
     });
@@ -788,5 +863,38 @@ export const removeFavorite = (dispatch, favId, userId, favorites, type, dataCou
             },
             type: actionTypes.ENABLE_FAVORITES_BUTTON,
         });
+    });
+};
+
+export const saveUserCauses = (dispatch, userId, userCauses, discoverValue) => {
+    const bodyDataCauses = {
+        causes: userCauses,
+        userid: Number(userId),
+    };
+
+    const bodyData = {
+        is_searchable: discoverValue,
+        skipCauseSelection: true,
+        user_id: Number(userId),
+    };
+
+    return graphApi.patch(`/user/updatecauses`, bodyDataCauses).then(
+        () => {
+            securityApi.patch(`update/user`, bodyData).then(
+                () => {
+                    getUserFund(dispatch, userId).then(() => {
+                        Router.pushRoute('/dashboard');
+                    });
+                },
+            );
+        },
+    ).catch((err) => {
+        dispatch({
+            payload: {
+                continueButtonDisable: false,
+            },
+            type: 'DISABLE_BUTTON_IN_USER_MIGRATION'
+        });
+        triggerUxCritialErrors(err.errors || err, dispatch);
     });
 };

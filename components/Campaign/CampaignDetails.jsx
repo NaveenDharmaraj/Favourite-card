@@ -7,16 +7,22 @@ import {
     Container,
 } from 'semantic-ui-react';
 
+import { formatCurrency } from '../../helpers/give/utils';
 import ShareDetails from '../shared/ShareSectionProfilePage';
+import ActiveMatchBlock from '../shared/ActiveMatchBlock';
 
 const detailsView = (valuesObject) => {
+
+    const currency = 'USD';
+    const language = 'en';
+    const formattedAmount = formatCurrency(valuesObject.amountRaised, language, currency);
     return (
         <div className="pt-2 campaign-amount">
             <Grid stackable columns={3}>
                 <Grid.Row>
                     <Grid.Column>
                         <Header as='h2'>
-                            {`$${valuesObject.amountRaised}`}
+                            {formattedAmount.slice(0, -3)}
                             <Header.Subheader className="small">All time total raised</Header.Subheader>
                         </Header>
                     </Grid.Column>
@@ -29,7 +35,7 @@ const detailsView = (valuesObject) => {
                     <Grid.Column>
                         <Header as='h2'>
                             {valuesObject.groupsCount}
-                            <Header.Subheader className="small">Campaign Giving Groups</Header.Subheader>
+                            <Header.Subheader className="small">Groups supporting this campaign</Header.Subheader>
                         </Header>
                     </Grid.Column>
                 </Grid.Row>
@@ -53,28 +59,34 @@ const CampaignDetails = (props) => {
                     <Header as="h3">
                         Campaign information
                     </Header>
-                    <Grid divided stackable>
+                    <Grid stackable>
                         <Grid.Row>
                             <Grid.Column mobile={16} tablet={10} computer={10}>
                                 {((!_isEmpty(campaignDetails.attributes))
                                 && detailsView(campaignDetails.attributes))}
                             </Grid.Column>
-                            {(isAuthenticated
-                            && (
-                                <ShareDetails
-                                    profileDetails={campaignDetails}
-                                    deepLinkUrl={deepLinkUrl}
-                                    dispatch={dispatch}
-                                    userId={userId}
-                                />
-                            )
-                            )
-                            }
+                        
+                            <ShareDetails
+                                isAuthenticated={isAuthenticated}
+                                profileDetails={campaignDetails}
+                                deepLinkUrl={deepLinkUrl}
+                                dispatch={dispatch}
+                                userId={userId}
+                            />
+                        
 
                         </Grid.Row>
                     </Grid>
-                    
                 </div>
+                {
+                    (campaignDetails.attributes.hasActiveMatch) ? 
+                        (
+                            <ActiveMatchBlock
+                                entityDetails={campaignDetails}
+                            />
+                        )
+                        : null
+                }
             </Container>
         </div>
     );

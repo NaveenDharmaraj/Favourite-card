@@ -2,10 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import {
+    array,
     string,
     bool,
     func,
 } from 'prop-types';
+import getConfig from 'next/config';
 
 import {
     getGroupFromSlug,
@@ -13,13 +15,26 @@ import {
 import Layout from '../components/shared/Layout';
 import GroupProfileWrapper from '../components/Group';
 import { Router } from '../routes';
+import storage from '../helpers/storage';
+
+const actionTypes = {
+    RESET_GROUP_STATES: 'RESET_GROUP_STATES',
+};
 
 class GroupProfile extends React.Component {
     static async getInitialProps({
         reduxStore,
+        req,
         query,
     }) {
-        await getGroupFromSlug(reduxStore.dispatch, query.slug);
+        reduxStore.dispatch({
+            type: actionTypes.RESET_GROUP_STATES,
+        });
+        let auth0AccessToken = null;
+        if (typeof window === 'undefined') {
+            auth0AccessToken = storage.get('auth0AccessToken', 'cookie', req.headers.cookie);
+        }
+        await getGroupFromSlug(reduxStore.dispatch, query.slug, auth0AccessToken);
         return {
             slug: query.slug,
         };
@@ -28,30 +43,85 @@ class GroupProfile extends React.Component {
     componentDidMount() {
         const {
             dispatch,
-            isAUthenticated,
             slug,
+            groupDetails: {
+                attributes: {
+                    isCampaign,
+                },
+            },
+            redirectToDashboard,
         } = this.props;
-        (isAUthenticated
-            && getGroupFromSlug(dispatch, slug)
-        );
+        if (isCampaign === true) {
+            Router.pushRoute(`/campaigns/${slug}`);
+        }
+        if (redirectToDashboard) {
+            Router.push('/search');
+        }
+        getGroupFromSlug(dispatch, slug);
     }
 
     render() {
+        const { publicRuntimeConfig } = getConfig();
+
         const {
+            APP_URL_ORIGIN,
+        } = publicRuntimeConfig;
+
+        const {
+            groupDetails: {
+                attributes: {
+                    avatar,
+                    causes,
+                    description,
+                    location,
+                    name,
+                    isCampaign,
+                    slug,
+                },
+            },
             redirectToDashboard,
         } = this.props;
-        return (
-            <Layout>
-                {!redirectToDashboard
-                    ? <GroupProfileWrapper {...this.props} />
-                    : Router.push('/dashboard')}
-            </Layout>
-        );
+        let title = name;
+        if (!_.isEmpty(location)) {
+            title = `${name} | ${location}`;
+        }
+        const desc = (!_.isEmpty(description)) ? description : title;
+        const causesList = (causes.length > 0) ? _.map(causes, _.property('name')) : [];
+        const keywords = (causesList.length > 0) ? _.join(_.slice(causesList, 0, 10), ', ') : '';
+        const url = `${APP_URL_ORIGIN}/groups/${slug}`;
+
+        if (isCampaign !== true) {
+            return (
+                <Layout
+                    avatar={avatar}
+                    keywords={keywords}
+                    title={title}
+                    description={desc}
+                    url={url}
+                >
+                    {!redirectToDashboard
+                        && <GroupProfileWrapper {...this.props} />
+                    }
+                </Layout>
+            );
+        }
+        return null;
     }
 }
 
 GroupProfile.defaultProps = {
     dispatch: func,
+    groupDetails: {
+        attributes: {
+            avatar: '',
+            causes: [],
+            description: '',
+            isCampaign: true,
+            location: '',
+            name: '',
+            slug: '',
+        },
+    },
     isAUthenticated: false,
     redirectToDashboard: false,
     slug: '',
@@ -59,6 +129,17 @@ GroupProfile.defaultProps = {
 
 GroupProfile.propTypes = {
     dispatch: _.noop,
+    groupDetails: {
+        attributes: {
+            avatar: string,
+            causes: array,
+            description: string,
+            isCampaign: bool,
+            location: string,
+            name: string,
+            slug: string,
+        },
+    },
     isAUthenticated: bool,
     redirectToDashboard: bool,
     slug: string,
@@ -66,6 +147,7 @@ GroupProfile.propTypes = {
 
 function mapStateToProps(state) {
     return {
+        groupDetails: state.group.groupDetails,
         isAUthenticated: state.auth.isAuthenticated,
         redirectToDashboard: state.group.redirectToDashboard,
     };

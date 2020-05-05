@@ -22,17 +22,19 @@ function FirstStep(props) {
     } = props;
 
     return (
-        <Grid.Row>
-            <Grid.Column className="left-bg"></Grid.Column>
+        <Grid.Row stretched>
+            <Grid.Column className="left-bg">
+                <div></div>
+            </Grid.Column>
             <Grid.Column>
                 <div className="login-form-wraper">
                     <div className="reg-header">
-                        <Header as="h3">Create the change you want to see in the world.</Header>
+                        <Header as="h3">Create the change you want to see in the world</Header>
                         <Header as="h4"> Tell us about yourself. </Header>
                     </div>
                     <Form>
                         <Form.Field>
-                            <label>First Name</label>
+                            <label>First name</label>
                             <Form.Field
                                 control={Input}
                                 id="firstName"
@@ -45,7 +47,7 @@ function FirstStep(props) {
                             />
                             <FormValidationErrorMessage
                                 condition={!validity.isFirstNameNotNull}
-                                errorMessage="Please input your first name"
+                                errorMessage="Please enter your first name"
                             />
                             <FormValidationErrorMessage
                                 condition={!validity.doesFirstNameHave2 && validity.isFirstNameNotNull}
@@ -53,12 +55,12 @@ function FirstStep(props) {
                             />
                             <FormValidationErrorMessage
                                 condition={!validity.isFirstnameLengthInLimit && validity.isFirstNameNotNull}
-                                errorMessage="First Name cannot have more than 150 characters"
+                                errorMessage="First Name cannot have more than 30 characters"
                             />
                         </Form.Field>
                         <Form.Field>
                             <label>
-                                Last Name
+                                Last name
                             </label>
                             <Form.Field
                                 control={Input}
@@ -72,11 +74,11 @@ function FirstStep(props) {
                             />
                             <FormValidationErrorMessage
                                 condition={!validity.isLastNameNotNull}
-                                errorMessage="Please input your last name"
+                                errorMessage="Please enter your last name"
                             />
                             <FormValidationErrorMessage
                                 condition={!validity.isLastnameLengthInLimit && validity.isLastNameNotNull}
-                                errorMessage="Last Name cannot have more than 150 characters"
+                                errorMessage="Last Name cannot have more than 30 characters"
                             />
                         </Form.Field>
                         <div className="reg-btn-wraper">

@@ -1,4 +1,5 @@
 import React from 'react';
+import MobileDetect from 'mobile-detect';
 
 import storage from '../helpers/storage';
 import _isEmpty from 'lodash/isEmpty';
@@ -9,6 +10,7 @@ import {
 import {
     initializeStore,
 } from './store';
+import { addToDataLayer } from '../helpers/users/googleTagManager';
 
 const isServer = typeof window === 'undefined';
 const __NEXT_REDUX_STORE__ = '__NEXT_REDUX_STORE__';
@@ -39,7 +41,7 @@ export default (App) => {
             // const { auth0AccessToken } = cookies(appContext.ctx)
             let auth0AccessToken = null;
             let userId = null;
-            if (typeof window === 'undefined') {
+            if (isServer) {
                 auth0AccessToken = storage.get('auth0AccessToken', 'cookie', appContext.ctx.req.headers.cookie);
                 userId = storage.get('chimpUserId', 'cookie', appContext.ctx.req.headers.cookie);
             }
@@ -48,7 +50,7 @@ export default (App) => {
             if (typeof App.getInitialProps === 'function') {
                 appProps = await App.getInitialProps(appContext)
             }
-            if (typeof window === 'undefined') {
+            if (isServer) {
                 reduxStore.dispatch({
                     type: 'SET_AUTH',
                     payload: {
@@ -58,6 +60,16 @@ export default (App) => {
                 if (!_isEmpty(auth0AccessToken) && !_isEmpty(userId)) {
                     await getUser(reduxStore.dispatch, userId, auth0AccessToken);
                 }
+            }
+            if (isServer) {
+                const result = new MobileDetect(appContext.ctx.req.headers['user-agent']);
+                const isMobile = !!result.mobile();
+                reduxStore.dispatch({
+                    payload: {
+                        isMobile,
+                    },
+                    type: 'SET_SSR_IS_MOBILE',
+                });
             }
 
             return {
@@ -72,6 +84,15 @@ export default (App) => {
         }
 
         render() {
+            if (typeof window !== 'undefined') {
+                const tagManagerArgs = {
+                    dataLayer: {
+                        page: window.location.pathname,
+                    },
+                    dataLayerName: 'dataLayer',
+                };
+                addToDataLayer(tagManagerArgs);
+            }
             return <App {...this.props} reduxStore={this.reduxStore} />
         }
     };

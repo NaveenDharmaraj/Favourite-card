@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import {
     Container,
@@ -9,12 +10,14 @@ import _ from 'lodash';
 import {
     connect,
 } from 'react-redux';
+import ReactHtmlParser from 'react-html-parser';
 
 import {
     getStoriesList,
 } from '../../../actions/dashboard';
 import PlaceholderGrid from '../../shared/PlaceHolder';
 import { Link } from '../../../routes';
+import logger from '../../../helpers/logger'
 
 class StoriesList extends React.Component {
     constructor(props) {
@@ -32,9 +35,9 @@ class StoriesList extends React.Component {
         getStoriesList(dispatch, url);
     }
 
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         const {
-            storiesData
+            storiesData,
         } = this.props;
         let {
             storiesListLoader,
@@ -57,11 +60,18 @@ class StoriesList extends React.Component {
         if (storiesData && storiesData.data && _.size(storiesData.data) > 0) {
             const showData = _.slice(storiesData.data, 0, 7);
             storiesList = showData.map((data, index) => {
+                let blogTitle = data.blog_title;
+                try {
+                    blogTitle = decodeURI(blogTitle);
+                } catch (e) {
+                    logger.error(`[StoriesList] - decodeURI: ${JSON.stringify(e)}`);
+                }
+
                 return (
                     <Grid.Column key={index}>
                         <Card as="a" href={data.blog_URL} target="_blank" className="tips-card" style={{ backgroundImage: `url(${data.blog_image_URL})` }}>
                             <Card.Content>
-                                <Card.Header>{data.blog_title}</Card.Header>
+                                <Card.Header>{ ReactHtmlParser(blogTitle) }</Card.Header>
                             </Card.Content>
                         </Card>
                     </Grid.Column>
@@ -90,7 +100,7 @@ class StoriesList extends React.Component {
         if (storiesData && storiesData.count > 7) {
             viewAllDiv = (
                 <Link route={`/user/stories`}>
-                    <a>
+                    <a className="viewAll">
                         View all
                         {/* (
                         {storiesData.count}

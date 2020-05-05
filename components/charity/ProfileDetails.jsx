@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
 import {
     PropTypes,
@@ -7,6 +7,8 @@ import {
 import {
     Tab, Container,
 } from 'semantic-ui-react';
+import _isEmpty from 'lodash/isEmpty';
+import ReactHtmlParser from 'react-html-parser';
 
 import {
     getBeneficiaryDoneeList,
@@ -15,17 +17,34 @@ import {
 import Chart from './Charts';
 import Maps from './Maps';
 import ReceivingOrganisations from './ReceivingOrganisations';
+import CharityNoDataState from './CharityNoDataState';
+
 
 const ProfileDetails = (props) => {
     const {
-        charityDetails,
+        charityDetails: {
+            charityDetails: {
+                attributes: {
+                    formattedDescription,
+                    formattedDescriptionNew,
+                },
+            },
+        },
     } = props;
     const panes = [
         {
             menuItem: 'About',
             render: () => (
                 <Tab.Pane attached={false}>
-                    <p>{charityDetails.charityDetails.attributes.description}</p>
+                    {(_isEmpty(formattedDescription) && _isEmpty(formattedDescriptionNew))
+                        ? <CharityNoDataState />
+                        : (
+                            <Fragment>
+                                {!_isEmpty(formattedDescription) && <p>{ReactHtmlParser(formattedDescription)}</p>}
+                                {!_isEmpty(formattedDescriptionNew) && <p>{ReactHtmlParser(formattedDescriptionNew)}</p>}
+                            </Fragment>
+                        )
+                    }
                 </Tab.Pane>
             ),
         },
@@ -39,7 +58,7 @@ const ProfileDetails = (props) => {
         },
         {
             menuItem: 'Receiving organizations',
-            render: () => <Tab.Pane attached={false}><ReceivingOrganisations /></Tab.Pane>,
+            render: () => <Tab.Pane className="no-border-bottom" attached={false}><ReceivingOrganisations /></Tab.Pane>,
         },
     ];
     return (
@@ -64,7 +83,8 @@ ProfileDetails.defaultProps = {
     charityDetails: {
         charityDetails: {
             attributes: {
-                description: '',
+                formattedDescription: '',
+                formattedDescriptionNew: '',
             },
         },
     },
@@ -74,7 +94,8 @@ ProfileDetails.propTypes = {
     charityDetails: {
         charityDetails: {
             attributes: PropTypes.shape({
-                description: string,
+                formattedDescription: string,
+                formattedDescriptionNew: string,
             }),
         },
     },

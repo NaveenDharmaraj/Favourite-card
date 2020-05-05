@@ -7,11 +7,15 @@ import {
     Message,
     Modal,
 } from 'semantic-ui-react';
+import {
+    connect,
+} from 'react-redux';
 import _every from 'lodash/every';
 import _merge from 'lodash/merge';
 import _isEmpty from 'lodash/isEmpty';
 import dynamic from 'next/dynamic';
 import _cloneDeep from 'lodash/cloneDeep';
+import PropTypes from 'prop-types';
 
 import {
     validateTaxReceiptProfileForm,
@@ -19,6 +23,9 @@ import {
 import {
     updateTaxReceiptProfile,
 } from '../../../actions/user';
+import {
+    getUserDefaultTaxReceipt,
+} from '../../../actions/userProfile';
 import {
     getTaxReceiptProfileMakeDefault,
 } from '../../../actions/taxreceipt';
@@ -168,6 +175,7 @@ class ModalComponent extends React.Component {
                             attributes,
                         } = response.data;
                         attributes.isDefault = isDefaultChecked;
+                        getUserDefaultTaxReceipt(dispatch, this.props.currentUser.id);
                         dispatch({
                             payload: {
                                 editedTaxProfile: response.data,
@@ -236,24 +244,29 @@ class ModalComponent extends React.Component {
         } = this.state;
         if (!_isEmpty(selectedTaxReceiptProfile) && !_isEmpty(selectedTaxReceiptProfile.attributes) && selectedTaxReceiptProfile.attributes.isDefault) {
             return (
-                <Checkbox
-                    className="cp_chkbx f-weight-n"
-                    checked
-                    type="checkbox"
-                    id="checkbox"
-                    label="Set as default tax receipt recipient"
-                />
+                <div className="checkboxToRadio">
+                    <Checkbox
+                        className=" f-weight-n"
+                        checked
+                        type="checkbox"
+                        id="checkbox"
+                        label="Set as default tax receipt recipient"
+                    />
+                </div>
+                
             );
         // eslint-disable-next-line no-else-return
         } else {
             return (
-                <Checkbox
-                className="cp_chkbx f-weight-n"
-                    type="checkbox"
-                    id="checkbox"
-                    onClick={() => { this.setState({ buttonClicked: false, isDefaultChecked: !isDefaultChecked }); }}
-                    label="Set as default tax receipt recipient"
-                />
+                <div className="checkboxToRadio">
+                    <Checkbox
+                        className="checkboxToRadio f-weight-n"
+                        type="checkbox"
+                        id="checkbox"
+                        onClick={() => { this.setState({ buttonClicked: false, isDefaultChecked: !isDefaultChecked }); }}
+                        label="Set as default tax receipt recipient"
+                    />
+                </div>
             );
         }
     }
@@ -338,7 +351,7 @@ class ModalComponent extends React.Component {
                 && <Modal size="tiny" dimmer="inverted" className="chimp-modal" closeIcon open={showPopUp} centered={false} onClose={() => { this.handlePopUpCancel('cancel') }}>
                 <Modal.Header>Discard edits?</Modal.Header>
                 <Modal.Content>
-                    <Modal.Description className="font-s-14">if you discard, you will lose your edits.</Modal.Description>
+                    <Modal.Description className="font-s-14">If you discard, you will lose your edits.</Modal.Description>
                     <div className="btn-wraper pt-3 text-right">
                     <Button className="blue-btn-rounded-def " onClick={()=>{ this.handlePopUpCancel('discard') }}>Discard</Button>
                     <Button className="blue-bordr-btn-round-def" onClick={()=>{ this.handlePopUpCancel('cancel') }}>Cancel</Button>
@@ -350,4 +363,18 @@ class ModalComponent extends React.Component {
         );
     }
 }
-export default withTranslation('taxReceipt')(ModalComponent);
+ModalComponent.propTypes = {
+    currentUser: PropTypes.shape({
+        id: PropTypes.string,
+    }),
+};
+
+ModalComponent.defaultProps = {
+    currentUser: {
+        id: null,
+    },
+};
+const mapStateToProps = (state) => ({
+    currentUser: state.user.info,
+});
+export default withTranslation(['taxReceipt'])(connect(mapStateToProps)(ModalComponent));

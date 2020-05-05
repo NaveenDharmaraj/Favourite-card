@@ -9,13 +9,13 @@ const charity = (state = {}, action) => {
                 donationDetails: Object.assign({}, state.donationDetails, action.payload),
             };
             break;
-        case 'SAVE_DEEP_LINK':
+        case 'CHARITY_SAVE_DEEP_LINK':
             newState = {
                 ...state,
                 charityDeepLink: action.payload.deepLink,
             };
             break;
-        case 'GET_BENEFICIARY_FROM_SLUG':
+        case 'GET_CHARITY_DETAILS_FROM_SLUG':
             newState = {
                 ...state,
                 charityDetails: Object.assign({}, state.charityDetails, action.payload),
@@ -38,16 +38,37 @@ const charity = (state = {}, action) => {
                 // disableFollow: false,
             };
             break;
-        case 'REDIRECT_TO_DASHBOARD':
+        case 'CHARITY_REDIRECT_TO_DASHBOARD':
             newState = {
                 ...state,
                 redirectToDashboard: action.payload.redirectToDashboard,
             };
             break;
-        case 'PLACEHOLDER_STATUS':
+        case 'CHARITY_PLACEHOLDER_STATUS':
             newState = {
                 ...state,
                 showPlaceholder: action.payload.showPlaceholder,
+            };
+            break;
+        case 'SET_HEADQUARTER_GEOCODE':
+            newState = {
+                ...state,
+                headQuarterData: action.payload.city,
+            };
+            break;
+        case 'SET_COUNTRIES_GEOCODE':
+            newState = {
+                ...state,
+                countriesData: action.payload.city,
+            };
+            break;
+        case 'RESET_CHARITY_STATES':
+            newState = {};
+            break;
+        case 'CHARITY_LOADER_STATUS':
+            newState = {
+                ...state,
+                mapLoader: action.payload.mapLoader,
             };
             break;
         default:

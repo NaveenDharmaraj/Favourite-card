@@ -15,7 +15,7 @@
     },
     "errorMessages": {
         "amountLessOrInvalid": "Veuillez choisir un montant de {{minAmount}} $ ou plus",
-        "invalidMaxAmountError": "9 999 $ est le maximum que nous pouvons traiter ici. Pour des montants plus importants, veuillez nous contacter: hello@chimp.net ou 1-877-531-0580.",
+        "invalidMaxAmountError": "9 999 $ est le maximum que nous pouvons traiter ici. Pour des montants plus importants, veuillez nous contacter: &nbsp <a href = \"mailto: hello@charitableimpact.com\">hello@charitableimpact.com</a> &nbsp ou 1-877-531-0580.",
         "invalidLengthError": "est trop long (maximum de 1000 caractères)",
         "invalidNoteTextError":  "Seuls les lettres et les chiffres standard sont autorisés ici",
         "giveAmountGreaterThanBalance": "Désolé, vous ne pouvez pas envoyer plus d'argent qu'il n'y en a dans votre compte."
@@ -31,8 +31,9 @@
     },
     "creditCard": {
         "testCreditCardListMessage": "More information on test accounts can be found at Stripe.",
-        "cardNumberLabel": "Credit card number",
-        "nameOnCardLabel": "Name on Card",
+        "cardNumberLabel": "Card number",
+        "nameOnCardLabel": "Name on card",
+        "nameOnCardPlaceholder": "Your name",
         "expiryDateLabel": "Date d'expiration",
         "cvvLabel": "CVV"
     },

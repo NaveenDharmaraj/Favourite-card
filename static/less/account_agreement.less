@@ -1,0 +1,160 @@
+@import "_mixins.less";
+//@import "../fonts/proximanova/font.css";
+
+.chimp_account_banner{
+  background-color: #F2F7FE;
+  background-image: url(../images/legalpages.svg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 100%;
+  min-height: 309px;
+  margin: auto;
+  .banner-heading{
+    text-align: center;
+    .ui{
+      &.header{
+        text-align: center;
+        padding-top: 130px;
+        color: #263238;
+        font-size: 24px;
+        font-weight: 600;
+        line-height: 29px;	
+        font-family: 'ProximaNova-Regular';
+      }
+    }
+  }
+}
+.chimp_account_full{
+  width: 100%;
+  padding: 50px 0px 0px 0px;
+  p{
+    color: #333333;font-family: 'ProximaNova-Regular';	font-size: 14px;	line-height: 21px; font-weight: 300;
+    padding: 10px 0px 30px 0px;
+    width: 100%;
+  }
+}
+.chimp_account_box_full{
+  .chimp_account_box{
+    margin-top: 15px;
+    border: 1px solid #663387;
+    padding: 50px;
+    min-height: 130px;
+    margin-bottom: 40px;
+    p{
+      color: #333333;font-family: 'ProximaNova-Regular';	font-size: 14px;	line-height: 21px; font-weight: 300;
+   
+    }
+  }
+}
+.blue-bg-section{
+  background-color: #F5F8FC;	
+  padding: 60px 0px;
+  .ui{
+    &.header{
+      color: #263238;
+      font-size: 20px;	font-weight: 600;	line-height: 24px;font-family: 'ProximaNova-Regular';margin-bottom: 20px;
+    }
+  }
+  p{
+    color: #263238;		font-size: 14px;	line-height: 21px; color: #263238;font-family: 'ProximaNova-Regular';
+  }
+  .five-privacy-principles{
+    margin-left: 60px;
+    margin-top: 30px;
+    .ui{
+      &.list{
+        li{
+          &.Principles_list{
+            color: #263238;	font-family: 'ProximaNova-Regular';	font-size: 14px;	line-height: 25px;
+          }
+        }
+      }
+    } 
+  }
+  .site-licence{
+    margin-left: 60px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    .ul{
+      &.list{
+        li{
+          &.Principles_list{
+            color: #263238;	font-family: 'ProximaNova-Regular';	font-size: 14px;	line-height: 25px;
+          }
+        }
+      }
+    }
+  }
+ 
+}
+.white-bg{
+  padding: 40px 0px ;
+    h1{
+      &.ui{
+        &.header{
+          color: #263238;	font-family: 'ProximaNova-Regular';	font-size: 20px;	font-weight: 600;	line-height: 24px;padding: 0px !important;margin-bottom: 20px;
+          margin-top: 20px;
+        }
+      }
+    }
+    p{
+      color: #263238;		font-size: 14px;	line-height: 21px; color: #263238;font-family: 'ProximaNova-Regular';
+    }
+    .information-privacy{
+      margin-left: 60px;
+      margin-top: 40px;
+      margin-bottom: 40px;
+      .ul{
+        &.list{
+          li{
+            &.Principles_list{
+              color: #263238;	font-family: 'ProximaNova-Regular';	font-size: 14px;	line-height: 25px;
+            }
+          }
+        }
+      }
+      .account-privacy{
+        margin-left: 40px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+      .ul{
+        &.list{
+          li{
+            &.Principles_list{
+              color: #263238;	font-family: 'ProximaNova-Regular';	font-size: 14px;	line-height: 25px;
+            }
+          }
+        }
+      }
+      }
+    }
+}
+.alphabetList{
+  &.ui{
+    &.list{
+      counter-reset: list;
+      >li{
+        list-style: none;
+        position: relative;
+        &::before{
+          counter-increment: list;
+          content: "("counter(list,lower-alpha)")";
+        }
+      }
+      ul{
+        counter-reset: list1;
+        >li{
+          list-style: none;
+          position: relative;
+          &::before{
+            counter-increment: list1;
+            content: "("counter(list1,lower-roman)")";
+            position: absolute;
+            left: -5px;
+          }
+        }
+      }
+    }
+  }
+}

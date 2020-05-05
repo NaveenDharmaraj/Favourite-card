@@ -5,17 +5,20 @@ import jwt from 'jwt-decode';
 import getConfig from 'next/config';
 import _isEmpty from 'lodash/isEmpty';
 
+import logger from '../helpers/logger';
 import { Router } from '../routes';
 import storage from '../helpers/storage';
 import chimpLogo from '../static/images/chimp-logo-new.png';
 import {
     validateAuth0Failure,
 } from '../actions/auth';
+
 import {
     chimpLogin,
     getUser,
-} from '../actions/user'
+} from '../actions/user';
 import isUndefinedOrEmpty from '../helpers/object';
+import { addToDataLayer } from '../helpers/users/googleTagManager';
 
 import coreApi from './coreApi';
 
@@ -23,9 +26,11 @@ const { publicRuntimeConfig } = getConfig();
 
 const {
     APP_URL_ORIGIN,
+    AUTH0_CONFIGURATION_BASE_URL,
     AUTH0_DOMAIN,
     AUTH0_WEB_CLIENT_ID,
     AUTH0_WEB_AUDIENCE,
+    BRANCH_IO_KEY,
 } = publicRuntimeConfig;
 
 /**
@@ -42,8 +47,10 @@ const _auth0lockConfig = {
         scope: 'openid',
     },
     avatar: null,
+    configurationBaseUrl: AUTH0_CONFIGURATION_BASE_URL,
     container: 'auth0-lock-container',
     languageDictionary: {
+        emailInputPlaceholder: 'Enter your email',
         error: {
             forgotPassword: {
                 'lock.fallback': [
@@ -76,8 +83,14 @@ const _auth0lockConfig = {
                 user_exists: 'An account with that email already exists.',
             },
         },
+        forgotPasswordAction: 'Forgot your password?',
+        forgotPasswordInstructions: '',
+        forgotPasswordSubmitLabel: 'Reset password',
+        forgotPasswordTitle: 'Forgot your password?',
+        loginSubmitLabel: 'Log in',
+        passwordInputPlaceholder: 'Enter your password',
         success: {
-            forgotPassword: 'Check your email—we’ve sent instructions for changing your password.',
+            forgotPassword: 'Check your inbox—we’ve sent instructions to reset your password.',
         },
         title: '',
     },
@@ -130,6 +143,14 @@ const auth0 = {
         return token ? storage.set('auth0AccessToken', token, 'cookie', this.getRemainingSessionTime(token) / 1000) : storage.unset('auth0AccessToken', 'cookie');
     },
 
+    set wpAccessToken(token) {
+        document.cookie = "wpAccessToken" +"=" + token + ";expires=" + this.getRemainingSessionTime(token) / 1000 + ";domain=.charitableimpact.com;path=/";
+    },
+
+    set wpUserId(userId) {
+        document.cookie = "wpUserId" +"=" + userId + ";domain=.charitableimpact.com;path=/";
+    },
+
     /**
      * Erase Auth0 data from local
      * @method empty
@@ -139,6 +160,7 @@ const auth0 = {
         this.accessToken = null;
         this.userEmail = null;
         this.userId = null;
+        this.wpAccessToken = null;
 
         return null;
     },
@@ -401,13 +423,33 @@ const _handleLockSuccess = async ({
     } = returnProps;
     if (!accessToken || !idToken) { return null(); }
     // Sets access token and expiry time in cookies
-    chimpLogin(accessToken).then(async ({ currentUser }) => {
+    chimpLogin(accessToken, returnProps).then(async ({ currentUser }) => {
         const userId = parseInt(currentUser, 10);
+        if (document) {
+            // console.log('setting wp access token');
+            await (auth0.wpAccessToken = accessToken);
+            await (auth0.wpUserId = userId);
+        }
+        // Intializing Branch io functionalities to window object
+        if (branch) {
+            branch.init(BRANCH_IO_KEY, (_err, data) => {
+                if (data) {
+                    branch.setIdentity(userId);
+                }
+            });
+        }
         await (auth0.returnProps = null);
         await (auth0.accessToken = accessToken);
         await (storage.set('chimpUserId', userId, 'cookie'));
         const dispatch = auth0.storeDispatch;
         await (getUser(dispatch, userId));
+        const tagManagerArgs = {
+            dataLayer: {
+                userId,
+            },
+            dataLayerName: 'dataLayer',
+        };
+        addToDataLayer(tagManagerArgs);
         Router.pushRoute(returnTo);
     }).catch(() => {
         let route = '/users/login';
@@ -427,7 +469,13 @@ const _handleLockSuccess = async ({
  * added to the Location header's URL as a query string.
  * @return {void}
  */
-const _handleLockFailure = async ({ errorDescription }) => {
+const _handleLockFailure = async (result) => {
+    const {
+        errorDescription,
+    } = result;
+    if (errorDescription) {
+        logger.error(`[Auth0] Login failed: ${JSON.stringify(errorDescription)}`);
+    }
     if (!_.includes(errorDescription, 'Please verify your email before logging in')) {
         if (errorDescription) {
             console.error(errorDescription);
@@ -457,7 +505,7 @@ const _handleLockFailure = async ({ errorDescription }) => {
  * @return {auth0lock} - The auth0lock instance.
  */
 function _makeLock() {
-    _auth0lock = new Auth0Lock(AUTH0_WEB_CLIENT_ID, AUTH0_DOMAIN, _auth0lockConfig, _.merge(_auth0lockConfig, {
+    _auth0lock = new Auth0Lock(AUTH0_WEB_CLIENT_ID, AUTH0_DOMAIN, _.merge(_auth0lockConfig, {
         auth: {
             audience: `${AUTH0_WEB_AUDIENCE}`,
             redirectUrl: `${APP_URL_ORIGIN}/auth/callback`,
@@ -465,7 +513,6 @@ function _makeLock() {
     }))
         .on('authenticated', _handleLockSuccess)
         .on('authorization_error', _handleLockFailure);
-
     return _auth0lock;
 }
 

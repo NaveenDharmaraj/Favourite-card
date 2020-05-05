@@ -18,6 +18,7 @@ import {
 import {
     connect,
 } from 'react-redux';
+import ReactHtmlParser from 'react-html-parser';
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 import Note from '../../shared/Note';
 import DropDownAccountOptions from '../../shared/DropDownAccountOptions';
@@ -60,21 +61,21 @@ class Donation extends React.Component {
     let payload = null;
             //Initialize the flowObject to default value when got switched from other flows
             if (props.flowObject.type !== flowType) {
-                const defaultPropsData = _.merge({}, donationDefaultProps);
+                const defaultPropsData =  _merge({}, donationDefaultProps);
                 payload = {
                     ...defaultPropsData.flowObject,
                     nextStep: props.step,
                 };
             }
             else{
-                const defaultPropsData =  _merge({}, props.flowObject);
+                const defaultPropsData = _merge({}, props.flowObject);
                 payload = {
                     ...defaultPropsData,
                     nextStep: props.step,
                 }
-            }  
+            }
         this.state = {
-            flowObject: payload,
+            flowObject: _.cloneDeep(payload),
             disableButton: !props.userAccountsFetched,
             inValidCardNameValue: true,
             inValidCardNumber: true,
@@ -141,13 +142,17 @@ class Donation extends React.Component {
             validity,
         } = this.state;
         let inputValue = value;
-        const isNumber = /^\d+(\.\d*)?$/;
-        if ((name === 'donationAmount') && !_.isEmpty(value) && value.match(isNumber)) {
-            giveData[name] = formatAmount(value);
-            inputValue = formatAmount(value);
+        const isValidNumber = /^(?:[0-9]+,)*[0-9]+(?:\.[0-9]*)?$/;
+        if ((name === 'donationAmount') && !_.isEmpty(value) && value.match(isValidNumber)) {
+                inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
+                giveData[name] = inputValue;
+                giveData.formatedDonationAmount = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
         }
         if(name !== 'giveTo') {
             validity = validateDonationForm(name, inputValue, validity, giveData);
+        }
+        if(name === 'noteToSelf'){
+            giveData[name] = inputValue.trim();
         }
         this.setState({
             flowObject: {
@@ -237,7 +242,10 @@ class Donation extends React.Component {
                 const inputValue  = target.checked;
                 giveData.automaticDonation = inputValue;
                 giveData.giftType.value = (inputValue) ? 1 : 0;
-                break;                                 
+                break;
+            case 'donationAmount' :
+                giveData.formatedDonationAmount = newValue;
+                break;
             default: break;
             }
             this.setState({
@@ -277,7 +285,7 @@ class Donation extends React.Component {
                 giveTo,
                 creditCard,
             },
-        } = flowObject;        
+        } = flowObject;
         const validateCC = this.isValidCC(
             creditCard,
             inValidCardNumber,
@@ -319,7 +327,7 @@ class Donation extends React.Component {
                   icon="dollar"
                   iconPosition="left"
                   name="donationAmount"
-                  maxLength="7"
+                  maxLength="8"
                   onBlur={this.handleInputOnBlur}
                   onChange={this.handleInputChange}
                   placeholder={formatMessage('giveCommon:amountPlaceHolder')}
@@ -335,7 +343,7 @@ class Donation extends React.Component {
                 />
                 <FormValidationErrorMessage
                     condition={!validity.isAmountLessThanOneBillion}
-                    errorMessage={formatMessage('giveCommon:errorMessages.invalidMaxAmountError')}
+                    errorMessage={ReactHtmlParser(formatMessage('giveCommon:errorMessages.invalidMaxAmountError'))}
                 />
             </Form.Field>
         );
@@ -461,6 +469,22 @@ class Donation extends React.Component {
                       (!_.isEmpty(donationMatchedData)) && (
                           <Form.Field>
                               <div className="recurringMsg">
+                                {formatMessage(
+                                      'donationMatchPolicyNote', {
+                                          companyName:
+                                              donationMatchedData.attributes.companyName,
+                                          policyMax:
+                                              formatCurrency(
+                                                  donationMatchedData.attributes.policyMax,
+                                                  language,
+                                                  currency,
+                                              ),
+                                          policyPercentage:
+                                            formatCurrency((donationMatchedData.attributes.policyPercentage/100), language, currency),
+                                          policyPeriod: convertedPolicyPeriod,
+                                      },
+                                  )}
+                                  <br/>
                                   {formatMessage('donationMatchNote', {
                                       companyName:
                                           donationMatchedData.attributes.companyName,
@@ -478,22 +502,6 @@ class Donation extends React.Component {
                                               currency,
                                           ),
                                   })}
-                                  <br />
-                                  {formatMessage(
-                                      'donationMatchPolicyNote', {
-                                          companyName:
-                                              donationMatchedData.attributes.companyName,
-                                          policyMax:
-                                              formatCurrency(
-                                                  donationMatchedData.attributes.policyMax,
-                                                  language,
-                                                  currency,
-                                              ),
-                                          policyPercentage:
-                                              donationMatchedData.attributes.policyPercentage,
-                                          policyPeriod: convertedPolicyPeriod,
-                                      },
-                                  )}
                               </div>
                           </Form.Field>
                       )
@@ -511,7 +519,7 @@ class Donation extends React.Component {
                     <Divider className="dividerMargin" />
                     <h3
                         className='ui header'
-                    >Payment
+                    >Payment method
                     </h3>
                 </Form.Field>
                 <Form.Field>
@@ -549,6 +557,7 @@ class Donation extends React.Component {
       } = this.props;
       const formatMessage = this.props.t;
       let doSetState = false;
+
       if(this.props.userAccountsFetched !== oldProps.userAccountsFetched){
             doSetState = true;
       }
@@ -556,6 +565,10 @@ class Donation extends React.Component {
           giveData.creditCard = getDefaultCreditCard(populatePaymentInstrument(this.props.companyDetails.companyPaymentInstrumentsData, formatMessage));
           doSetState = true;
       }
+      if(giveData.giveTo.type === 'user' && !_.isEqual(this.props.paymentInstrumentsData, oldProps.paymentInstrumentsData)) {
+            giveData.creditCard = getDefaultCreditCard(populatePaymentInstrument(this.props.paymentInstrumentsData, formatMessage));
+            doSetState = true;
+        }
       if((!_.isEqual(this.props.companiesAccountsData, oldProps.companiesAccountsData)
         || _.isEmpty(this.props.companiesAccountsData)) && giveData.giveTo.value === null){
           if(_.isEmpty(this.props.companiesAccountsData) && !_.isEmpty(this.props.fund)){
@@ -729,7 +742,7 @@ class Donation extends React.Component {
         return (
         <Fragment>
             <Form onSubmit={this.handleSubmit}>
-            { this.renderDonationAmountField(giveData.donationAmount, validity, formatMessage) }
+            { this.renderDonationAmountField(giveData.formatedDonationAmount, validity, formatMessage) }
             <DropDownAccountOptions
             formatMessage={formatMessage}
             type={type}

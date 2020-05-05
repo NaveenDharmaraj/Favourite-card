@@ -20,6 +20,8 @@ import {
 } from '../../actions/charity';
 import PlaceholderGrid from '../shared/PlaceHolder';
 
+import CharityNoDataState from './CharityNoDataState';
+
 class ReceivingOrganisations extends React.Component {
     componentDidMount() {
         const {
@@ -79,21 +81,25 @@ class ReceivingOrganisations extends React.Component {
             transactionsLoader,
         } = this.props;
         let remainingOrganisation = null;
-        if (totalElements && size) {
+        if (totalElements && (totalElements > 20) && size) {
             remainingOrganisation = totalElements - size;
         }
-        let listData = 'NO DATA';
+        let listData = <CharityNoDataState />;
         let totalData = '';
         if (!_isEmpty(doneeList)) {
             listData = (
                 <Table.Body>
                     {this.showList()}
-                    <Table.Row>
-                        <Table.Cell>{`${remainingOrganisation} other organizations`}</Table.Cell>
-                        <Table.Cell className="bold">
-                            {formatCurrency(remainingAmount, language, currency)}
-                        </Table.Cell>
-                    </Table.Row>
+                    {remainingOrganisation
+                        && (
+                            <Table.Row>
+                                <Table.Cell>{`${remainingOrganisation} other organizations`}</Table.Cell>
+                                <Table.Cell className="bold">
+                                    {formatCurrency(remainingAmount, language, currency)}
+                                </Table.Cell>
+                            </Table.Row>
+                        )
+                    }
                 </Table.Body>
             );
             totalData = (

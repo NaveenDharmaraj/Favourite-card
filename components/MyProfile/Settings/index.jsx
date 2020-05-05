@@ -1,9 +1,12 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
+import _ from 'lodash';
 import {
     Responsive,
     Tab,
 } from 'semantic-ui-react';
 
+import { Router } from '../../../routes';
 
 import ManagePassword from './managePassword';
 import ManageGiving from './manageGiving';
@@ -12,14 +15,28 @@ import CreditCard from './creditCard';
 import Notifications from './notifications';
 import Support from './support';
 import Legal from './legal';
+import EmailList from './emailList';
 
 const panes1 = [
     {
         menuItem: {
-            content: 'Manage password',
-            icon: 'privacy',
+            content: 'Email',
+            icon: 'user',
             iconPosition: 'left',
-            key: 'Manage password',
+            key: 'Email',
+        },
+        render: () => (
+            <Tab.Pane attached={false}>
+                <EmailList />
+            </Tab.Pane>
+        ),
+    },
+    {
+        menuItem: {
+            content: 'Change password',
+            icon: 'edit',
+            iconPosition: 'left',
+            key: 'Change password',
         },
         render: () => {
             return (
@@ -31,10 +48,10 @@ const panes1 = [
     },
     {
         menuItem: {
-            content: 'Manage Giving',
+            content: 'Information to share',
             icon: 'group',
             iconPosition: 'left',
-            key: 'Manage Giving',
+            key: 'Information to share',
         },
         render: () => (
             <Tab.Pane>
@@ -44,10 +61,10 @@ const panes1 = [
     },
     {
         menuItem: {
-            content: 'Privacy & Security',
+            content: 'Privacy and security',
             icon: 'privacy',
             iconPosition: 'left',
-            key: 'Privacy & Security',
+            key: 'Privacy and security',
         },
         render: () => (
             <Tab.Pane>
@@ -57,10 +74,10 @@ const panes1 = [
     },
     {
         menuItem: {
-            content: 'Credit Cards',
-            icon: 'credit card outline',
+            content: 'Payment methods',
+            icon: 'credit',
             iconPosition: 'left',
-            key: 'Credit Cards',
+            key: 'Payment methods',
         },
         render: () => (
             <Tab.Pane>
@@ -71,7 +88,7 @@ const panes1 = [
     {
         menuItem: {
             content: 'Notifications',
-            icon: 'bell outline',
+            icon: 'bell',
             iconPosition: 'left',
             key: 'Notifications',
         },
@@ -84,7 +101,7 @@ const panes1 = [
     {
         menuItem: {
             content: 'Support',
-            icon: 'question circle outline',
+            icon: 'support',
             iconPosition: 'left',
             key: 'Support',
         },
@@ -111,7 +128,81 @@ const panes1 = [
 
 // eslint-disable-next-line react/prefer-stateless-function
 class UserSettings extends React.Component {
+    constructor(props) {
+        super(props);
+        const {
+            settingName,
+        } = props;
+        const activeTabIndex = _.isEmpty(settingName) ? 0 : this.getPageIndexByName(settingName);
+        this.state = {
+            activeTabIndex,
+        };
+        this.handleTab = this.handleTab.bind(this);
+    }
+
+    // eslint-disable-next-line react/sort-comp
+    handleTab(event, data) {
+        switch (data.activeIndex) {
+            case 0:
+                Router.pushRoute('/user/profile/settings/email');
+                break;
+            case 1:
+                Router.pushRoute('/user/profile/settings/managepassword');
+                break;
+            case 2:
+                Router.pushRoute('/user/profile/settings/managegiving');
+                break;
+            case 3:
+                Router.pushRoute('/user/profile/settings/privacy');
+                break;
+            case 4:
+                Router.pushRoute('/user/profile/settings/creditcard');
+                break;
+            case 5:
+                Router.pushRoute('/user/profile/settings/notifications');
+                break;
+            case 6:
+                Router.pushRoute('/user/profile/settings/support');
+                break;
+            case 7:
+                Router.pushRoute('/user/profile/settings/legal');
+                break;
+            default:
+                break;
+        }
+        this.setState({
+            activeTabIndex: data.activeIndex,
+        });
+    }
+
+    // eslint-disable-next-line class-methods-use-this
+    getPageIndexByName(pageName) {
+        switch (pageName) {
+            case 'email':
+                return 0;
+            case 'managepassword':
+                return 1;
+            case 'managegiving':
+                return 2;
+            case 'privacy':
+                return 3;
+            case 'creditcard':
+                return 4;
+            case 'notifications':
+                return 5;
+            case 'support':
+                return 6;
+            case 'legal':
+                return 7;
+            default:
+                break;
+        }
+    }
+
     render() {
+        const {
+            activeTabIndex,
+        } = this.state;
         return (
             <div>
                 <Responsive minWidth={768}>
@@ -127,10 +218,12 @@ class UserSettings extends React.Component {
                                 vertical: true,
                             }}
                             panes={panes1}
+                            activeIndex={activeTabIndex}
+                            onTabChange={this.handleTab}
                         />
                     </div>
                 </Responsive>
-                <Responsive maxWidth={768}>
+                <Responsive maxWidth={767}>
                     <div className="charityTab n-border">
                         <Tab
                             menu={{
@@ -138,6 +231,8 @@ class UserSettings extends React.Component {
                                 secondary: true,
                             }}
                             panes={panes1}
+                            activeIndex={activeTabIndex}
+                            onTabChange={this.handleTab}
                         />
                     </div>
                 </Responsive>

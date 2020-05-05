@@ -2,6 +2,7 @@ import React from 'react';
 import {
     Header,
 } from 'semantic-ui-react';
+
 import { Link } from '../../../routes';
 
 // eslint-disable-next-line react/prefer-stateless-function
@@ -14,20 +15,29 @@ class Legal extends React.Component {
                         <Header as="h4">Legal </Header>
                     </div>
                     <div className="settingsDetailWraper brdr-btm pb-2">
-                        <p className="bold">Terms and Conditions of use</p>
+                        <p className="bold">Terms and conditions</p>
                         <p>
-                            Check out the
-                            <Link route='/terms' >
-                                <span className="link border"> Terms and Conditions of use.</span>
+                        See our
+                            <Link route="/terms">
+                                <span className="link border rmLnk"> Terms and Conditions.</span>
                             </Link>
                         </p>
                     </div>
                     <div className="settingsDetailWraper brdr-btm pb-2">
                         <p className="bold">Privacy policy</p>
                         <p>
-                            Check out the
-                            <Link route='/privacy' >
-                                <span className="link border"> Privacy Policy.</span>
+                        See our
+                            <Link route="/privacy">
+                                <span className="link border rmLnk"> Privacy Policy.</span>
+                            </Link>
+                        </p>
+                    </div>
+                    <div className="settingsDetailWraper brdr-btm pb-2">
+                        <p className="bold">Account agreement</p>
+                        <p>
+                        See our
+                            <Link route="/account-agreement">
+                                <span className="link border rmLnk"> Account Agreement.</span>
                             </Link>
                         </p>
                     </div>

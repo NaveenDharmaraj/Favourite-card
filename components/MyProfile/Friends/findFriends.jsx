@@ -9,6 +9,7 @@ import {
     List,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
+import dynamic from 'next/dynamic';
 
 import {
     acceptFriendRequest,
@@ -18,14 +19,22 @@ import {
 import { Link } from '../../../routes';
 import Pagination from '../../shared/Pagination';
 import NoFriendAvatar from '../../../static/images/no-data-avatar-user-profile.png';
+const ModalStatusMessage = dynamic(() => import('../../shared/ModalStatusMessage'), {
+    ssr: false
+});
+import { Router } from '../../../routes';
 
 class FindFriends extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             currentActivePage: 1,
+            buttonClicked: false,
+            errorMessage: null,
             paginationCount: 1,
             searchWord: '',
+            statusMessage: false,
+            successMessage: '',
         };
         this.handleFriendSearch = this.handleFriendSearch.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -103,21 +112,59 @@ class FindFriends extends React.Component {
     }
 
     handleAddFriendClick(userData, btnData) {
+        this.setState({
+            buttonClicked: true,
+            statusMessage: false,
+        });
         const {
             currentUser: {
                 id,
-                attributes,
+                attributes: {
+                    avatar,
+                    displayName,
+                    email,
+                    firstName,
+                },
             },
             dispatch,
+            userFindFriendsList,
         } = this.props;
         const {
             currentActivePage,
             searchWord,
         } = this.state;
         if (btnData === 'addfriend') {
-            sendFriendRequest(dispatch, id, userData.attributes.email_hash, searchWord, currentActivePage);
+            sendFriendRequest(dispatch, id, email, avatar, firstName, displayName, userData, searchWord, currentActivePage, userFindFriendsList).then(() => {
+                this.setState({
+                    errorMessage: null,
+                    successMessage: 'Add Friend request sent successfully.',
+                    statusMessage: true,
+                    buttonClicked: false,
+                });
+            }).catch((err) => {
+                this.setState({
+                    errorMessage: 'Error in sending the friend request.',
+                    statusMessage: true,
+                    buttonClicked: false,
+                });
+            });
         } else if (btnData === 'accept') {
-            acceptFriendRequest(dispatch, id, userData.attributes.email_hash, currentActivePage, attributes.email, 'FINDFRIENDS', searchWord);
+            acceptFriendRequest(dispatch, id, email, avatar, firstName, displayName, userData.attributes.email_hash, userData.attributes.user_id, currentActivePage, 'FINDFRIENDS', searchWord).then(() => {
+                this.setState({
+                    errorMessage: null,
+                    successMessage: 'Friend request accepted successfully.',
+                    statusMessage: true,
+                    buttonClicked: false,
+                });
+            }).catch((err) => {
+                this.setState({
+                    errorMessage: 'Error in accepting friend request.',
+                    statusMessage: true,
+                    buttonClicked: false,
+                });
+            });
+        } else if(btnData === 'message') {
+            Router.pushRoute(`/chats/${userData.attributes.user_id}`);
         }
     }
 
@@ -125,16 +172,28 @@ class FindFriends extends React.Component {
         const {
             userFindFriendsList,
         } = this.props;
-        let friendsList = 'No Data';
+        const {
+            buttonClicked,
+        } = this.state;
+        let friendsList = '';
         if (!_.isEmpty(userFindFriendsList)) {
             friendsList = userFindFriendsList.data.map((data) => {
                 const name = `${data.attributes.first_name} ${data.attributes.last_name}`;
                 const avatar = ((typeof data.attributes.avatar) === 'undefined' || data.attributes.avatar === null) ? NoFriendAvatar : data.attributes.avatar;
-                const email = Buffer.from(data.attributes.email_hash, 'base64').toString('ascii');
-                const location = (typeof data.attributes.city === 'undefined' || data.attributes.province === '') ? email : `${data.attributes.city}, ${data.attributes.province}`;
+                let locationDetails = '';
+                const locationDetailsCity = (!_.isEmpty(data.attributes.city)) && data.attributes.city !== 'null' ? data.attributes.city : '';
+                const locationDetailsProvince = (!_.isEmpty(data.attributes.province)) && data.attributes.province !== 'null' ? data.attributes.province : '';
+                if (locationDetailsCity === '' && locationDetailsProvince !== '') {
+                    locationDetails = locationDetailsProvince;
+                } else if (locationDetailsCity !== '' && locationDetailsProvince === '') {
+                    locationDetails = locationDetailsCity;
+                } else if (locationDetailsCity !== '' && locationDetailsProvince !== '') {
+                    locationDetails = `${data.attributes.city}, ${data.attributes.province}`;
+                }                
                 let btnClass = 'blue-bordr-btn-round-def c-small';
                 let friendStatus = '';
                 let btnData = '';
+                let isButtonDisabled = false;
                 if (data.attributes.friend_status === '') {
                     friendStatus = 'Add Friend';
                     btnData = 'addfriend';
@@ -142,6 +201,14 @@ class FindFriends extends React.Component {
                     friendStatus = 'Message';
                     btnData = 'message';
                     btnClass = 'blue-btn-rounded-def c-small';
+                } else if (data.attributes.friend_status.toLowerCase() === 'pending_out') {
+                    friendStatus = 'Pending';
+                    btnData = 'pendingout';
+                    isButtonDisabled = true;
+                } else if (data.attributes.friend_status.toLowerCase() === 'blocked') {
+                    friendStatus = 'Blocked';
+                    btnData = 'blocked';
+                    isButtonDisabled = true;
                 } else {
                     friendStatus = 'Accept';
                     btnData = 'accept';
@@ -152,6 +219,7 @@ class FindFriends extends React.Component {
                             <Button
                                 className={btnClass}
                                 onClick={() => this.handleAddFriendClick(data, btnData)}
+                                disabled={buttonClicked || isButtonDisabled}
                             >
                                 {friendStatus}
                             </Button>
@@ -163,7 +231,7 @@ class FindFriends extends React.Component {
                                     {name}
                                 </Link>
                             </List.Header>
-                            <List.Description>{location}</List.Description>
+                            <List.Description>{locationDetails}</List.Description>
                         </List.Content>
                     </List.Item>
                 );
@@ -179,6 +247,9 @@ class FindFriends extends React.Component {
 
     render() {
         const {
+            errorMessage,
+            statusMessage,
+            successMessage,
             searchWord,
             currentActivePage,
             paginationCount,
@@ -193,7 +264,7 @@ class FindFriends extends React.Component {
                         <div className="searchbox no-padd">
                             <Input
                                 fluid
-                                placeholder="Find friends on Charitable Impact..."
+                                placeholder="Find friends already on Charitable Impact"
                                 onChange={this.handleInputChange}
                                 value={searchWord}
                                 onKeyPress={(event) => { (event.keyCode || event.which) === 13 ? this.handleFriendSearch() : null; }}
@@ -207,6 +278,16 @@ class FindFriends extends React.Component {
                                 />
                             </a>
                         </div>
+                        {
+                            statusMessage && (
+                                <div className="mt-1">
+                                    <ModalStatusMessage 
+                                        message = {!_.isEmpty(successMessage) ? successMessage : null}
+                                        error = {!_.isEmpty(errorMessage) ? errorMessage : null}
+                                    />
+                                </div>
+                            )
+                        }
                         {this.renderFriendList()}
                         <div className="db-pagination right-align pt-2">
                             {

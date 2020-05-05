@@ -11,7 +11,7 @@ const group = (state = {}, action) => {
             };
             break;
         case 'GET_GROUP_MEMBERS_DETAILS':
-            if (state.groupMembersDetails && state.groupMembersDetails.data) {
+            if (state.groupMembersDetails && state.groupMembersDetails.data && action.payload.isViewMore) {
                 newState = {
                     ...state,
                     groupMembersDetails: {
@@ -32,7 +32,7 @@ const group = (state = {}, action) => {
             }
             break;
         case 'GET_GROUP_ADMIN_DETAILS':
-            if (state.groupAdminsDetails && state.groupAdminsDetails.data) {
+            if (state.groupAdminsDetails && state.groupAdminsDetails.data && action.payload.isViewMore) {
                 newState = {
                     ...state,
                     groupAdminsDetails: {
@@ -138,7 +138,7 @@ const group = (state = {}, action) => {
                 if (state.groupComments && state.groupComments[action.payload.activityId]) {
                     newState = {
                         ...state,
-                        groupComments : {
+                        groupComments: {
                             ...state.groupComments,
                             [action.payload.activityId]: action.payload.groupComments.concat(state.groupComments[action.payload.activityId]),
                             loadComments: true,
@@ -217,22 +217,91 @@ const group = (state = {}, action) => {
                     ...state.groupDetails,
                     attributes: {
                         ...state.groupDetails.attributes,
-                        following: action.payload.followStatus,
+                        liked: action.payload.followStatus,
                     },
                 },
             };
             break;
-        case 'REDIRECT_TO_DASHBOARD':
+        case 'GROUP_REDIRECT_TO_DASHBOARD':
             newState = {
                 ...state,
                 redirectToDashboard: action.payload.redirectToDashboard,
             };
             break;
-        case 'PLACEHOLDER_STATUS':
+        case 'GROUP_PLACEHOLDER_STATUS':
             newState = {
                 ...state,
                 showPlaceholder: action.payload.showPlaceholder,
             };
+            break;
+        case 'ADMIN_PLACEHOLDER_STATUS':
+            newState = {
+                ...state,
+                adminsLoader: action.payload.adminPlaceholder,
+            };
+            break;
+        case 'MEMBER_PLACEHOLDER_STATUS':
+            newState = {
+                ...state,
+                membersLoader: action.payload.memberPlaceholder,
+            };
+            break;
+        case 'GET_GROUP_GALLERY_IMAGES':
+            newState = {
+                ...state,
+                galleryImageData: action.payload.galleryImages,
+            };
+            break;
+        case 'GET_BENEFICIARIES_COUNT':
+            newState = {
+                ...state,
+                beneficiariesCount: action.payload.groupBeneficiariesCount,
+            };
+            break;
+        case 'LEAVE_GROUP_MODAL_ERROR_MESSAGE':
+            newState = {
+                ...state,
+                errorMessage: action.payload,
+            };
+            break;
+        case 'LEAVE_GROUP_MODAL_BUTTON_LOADER':
+            newState = {
+                ...state,
+                closeLeaveModal: action.payload.closeModal,
+                leaveButtonLoader: action.payload.buttonLoading,
+            };
+            break;
+        case 'RESET_GROUP_STATES':
+            newState = {};
+            break;
+        case 'TOGGLE_TRANSACTION_VISIBILITY':
+            const transactionIndex = _.findIndex(state.groupTransactions.data, (data) => data.id === action.payload.transactionId);
+            const transactionArray = state.groupTransactions.data;
+            transactionArray[transactionIndex] = action.payload.data;
+            if (state.groupActivities && !_.isEmpty(state.groupActivities.data)) {
+                const NewActivityIndex = _.findIndex(state.groupActivities.data, (data) => data.id === action.payload.transactionId);
+                const NewActivityArray = state.groupActivities.data;
+                NewActivityArray[NewActivityIndex] = action.payload.data;
+                newState = {
+                    ...state,
+                    groupActivities: {
+                        ...state.groupActivities,
+                        data: NewActivityArray,
+                    },
+                    groupTransactions: {
+                        ...state.groupTransactions,
+                        data: transactionArray,
+                    },
+                };
+            } else {
+                newState = {
+                    ...state,
+                    groupTransactions: {
+                        ...state.groupTransactions,
+                        data: transactionArray,
+                    },
+                };
+            }
             break;
         default:
             break;

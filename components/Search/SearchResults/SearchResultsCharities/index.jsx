@@ -9,6 +9,8 @@ import _isEmpty from 'lodash/isEmpty';
 import {
     connect,
 } from 'react-redux';
+
+import NodataState from '../../../shared/NoDataState';
 import SearchResultSingleCharityGroups from '../common/SearchResultSingleCharityGroups';
 import PlaceholderGrid from '../../../shared/PlaceHolder';
 import FilterComponent from '../../../shared/Filter/index';
@@ -27,9 +29,9 @@ class SearchResultsCharities extends React.Component {
         } = this.props;
         if (!_isEmpty(charities) && !_isEmpty(charities.meta)) {
             if (charities.meta.record_count) {
-                return charities.meta.record_count;
+                return charities.meta.record_count.toLocaleString('en-CA');
             } else if (charities.meta.recordCount) {
-                return charities.meta.recordCount;
+                return charities.meta.recordCount.toLocaleString('en-CA');
             } else {
                 return null;
             }
@@ -47,6 +49,8 @@ class SearchResultsCharities extends React.Component {
             searchWord,
         } = this.props;
         let filterobj = {};
+        const contentData = `Sorry, there are no results under ${searchWord}.`;
+        const subHeaderData = 'Try a new search with more general words.';
         if (!_isEmpty(filterValuesShowed)) {
             Object.entries(filterValuesShowed).map(([
                 key,
@@ -79,8 +83,8 @@ class SearchResultsCharities extends React.Component {
                     }}
                     >
                         {(_isEmpty(searchWord) && !isAuthenticated) ? null : (
-                            <Grid.Column mobile={11} tablet={12} computer={12}>
-                                <Header as="h2">
+                            <Grid.Column mobile={11} tablet={12} computer={12} className="charities exploreHeader">
+                                <Header as="h2" className="searchResultTabHeader">
                                     <Header.Content>
                                         CHARITIES
                                         <span className="num-result font-s-20">
@@ -94,7 +98,7 @@ class SearchResultsCharities extends React.Component {
                         }
                         <Grid.Column>
                             {
-                                (!_isEmpty(charities) && !_isEmpty(charities.meta) && !_isEmpty(charities.meta.aggregations)) && (
+                                (!_isEmpty(charities) && !_isEmpty(charities.data) && charities.data.length > 0) && (
                                     <FilterComponent
                                         dispatch={dispatch}
                                         FilterHeaders={(!_isEmpty(filterValuesShowed)) ? Object.keys(filterobj) : null}
@@ -106,7 +110,7 @@ class SearchResultsCharities extends React.Component {
                 </Grid>
                 {(charities && charities.data && charities.data.length > 0)
                     ? <SearchResultSingleCharityGroups charityGroups={charities.data} />
-                    : 'No Charities Available'
+                    : <NodataState contentData={contentData} subHeaderData={subHeaderData} />
                 }
             </Fragment>
 

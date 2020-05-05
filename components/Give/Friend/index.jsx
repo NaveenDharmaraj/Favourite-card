@@ -23,6 +23,9 @@ import _isEqual from 'lodash/isEqual';
 import _isEmpty from 'lodash/isEmpty';
 import _merge from 'lodash/merge';
 import _replace from 'lodash/replace';
+import _cloneDeep from 'lodash/cloneDeep';
+import ReactHtmlParser from 'react-html-parser';
+import _ from 'lodash';
 
 import {
     formatCurrency,
@@ -84,7 +87,9 @@ class Friend extends React.Component {
             t:formatMessage,
             i18n: {
                 language,
-            }
+            },
+            userFriendEmail,
+            dispatch,
         } = props;
         const paymentInstruments = Friend.constructPaymentInstruments(
             props,
@@ -109,7 +114,7 @@ class Friend extends React.Component {
                 // giveFromList: accountOptions,
                 paymentInstrumentList: populatePaymentInstrument(paymentInstruments, formatMessage),
             },
-            flowObject: payload,
+            flowObject: _cloneDeep(payload),
             // forceContinue: props.forceContinue,
             inValidCardNameValue: true,
             inValidCardNumber: true,
@@ -119,20 +124,16 @@ class Friend extends React.Component {
             userEmail: email,
             validity: this.initializeValidations(),
         };
-        // if (userAccountsFetched) {
-        //     const giveData = Friend.setGiveFrom(
-        //         this.state.flowObject.giveData,
-        //         fund,
-        //         id,
-        //         // accountOptions,
-        //         `${firstName} ${lastName}`,
-        //         // props.intl,
-        //         formatNumber,
-        //     );
-        //     this.state.flowObject.giveData.giveFrom = giveData.giveFrom;
-        // }
-
-        // this.dimissErrors();
+        if(!_isEmpty(userFriendEmail) && this.state.flowObject.giveData.recipients.length === 0) {
+            this.state.flowObject.giveData.recipients = [userFriendEmail.email];
+            this.state.flowObject.giveData.recipientName = userFriendEmail.name;
+            this.state.flowObject.giveData.emailMasked = true;
+            dispatch({
+                payload: {
+                },
+                type: 'USER_FRIEND_EMAIL',
+            });
+        }
         
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleOnInputBlur = this.handleOnInputBlur.bind(this);
@@ -215,10 +216,10 @@ class Friend extends React.Component {
                 slug,
                 i18n: {
                     language,
-                }
+                },
             } = this.props;
             const formatMessage = this.props.t;
-            let paymentInstruments = null;
+            let paymentInstruments = paymentInstrumentsData;
             let companyPaymentInstrumentChanged = false;
             if (giveData.giveFrom.type === 'companies' && !_isEmpty(companyDetails)) {
                 if (_isEmpty(prevProps.companyDetails)
@@ -241,7 +242,7 @@ class Friend extends React.Component {
                     companyPaymentInstrumentChanged,
                     `${firstName} ${lastName}`, companiesAccountsData, userGroups, userCampaigns,
                 );
-            }            
+            }
             this.setState({
                 dropDownOptions: {
                     ...dropDownOptions,
@@ -336,10 +337,15 @@ class Friend extends React.Component {
             validity,
         } = this.state;
         let inputValue = value;
-        const isNumber = /^\d+(\.\d*)?$/;
+        const isNumber = /^(?:[0-9]+,)*[0-9]+(?:\.[0-9]*)?$/;
         if ((name === 'giveAmount' || name === 'donationAmount') && !_.isEmpty(value) && value.match(isNumber)) {
-            giveData[name] = formatAmount(value);
-            inputValue = formatAmount(value);
+            inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
+            giveData[name] = inputValue;
+            if(name === 'giveAmount') {
+                giveData['formatedP2PAmount'] = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
+            } else {
+                giveData['formatedDonationAmount'] = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
+            }
         }
         const coverFeesAmount = 0;
         if (name !== 'coverFees' && name !== 'giftType' && name !== 'giveFrom') {
@@ -442,6 +448,9 @@ class Friend extends React.Component {
             giveData[name] = newValue;
             giveData.userInteracted = true;
             switch (name) {
+                case 'donationAmount':
+                        giveData['formatedDonationAmount'] =  newValue;
+                    break;
                 case 'giveFrom':
                     const {
                         modifiedDropDownOptions,
@@ -463,6 +472,7 @@ class Friend extends React.Component {
                     }
                     break;
                 case 'giveAmount':
+                    giveData['formatedP2PAmount'] = newValue;
                     giveData = resetP2pDataForOnInputChange(giveData, dropDownOptions);
                     break;
                 case 'recipients':
@@ -538,6 +548,7 @@ class Friend extends React.Component {
             flowObject.giveData.recipients = parseEmails(
                 flowObject.giveData.recipients,
             );
+            flowObject.stepsCompleted = false;
             dismissAllUxCritialErrors(this.props.dispatch);
             dispatch(proceed(flowObject, flowSteps[stepIndex + 1], stepIndex));
         }
@@ -709,11 +720,15 @@ class Friend extends React.Component {
                     creditCard,
                     donationAmount,
                     donationMatch,
+                    emailMasked,
+                    formatedDonationAmount,
+                    formatedP2PAmount,
                     giveAmount,
                     giveFrom,
                     noteToRecipients,
                     noteToSelf,
                     recipients,
+                    recipientName,
                     totalP2pGiveAmount,
                 },
                 type,
@@ -744,13 +759,13 @@ class Friend extends React.Component {
             accountTopUpComponent = (
                 <AccountTopUp
                     creditCard={creditCard}
-                    donationAmount={donationAmount}
+                    donationAmount={formatedDonationAmount}
                     donationMatch={donationMatch}
                     donationMatchList={donationMatchList}
                     formatMessage={formatMessage}
                     getStripeCreditCard={this.getStripeCreditCard}
                     handleInputChange={this.handleInputChange}
-                    handleOnInputBlur={this.handleOnInputBlur}
+                    handleInputOnBlur={this.handleOnInputBlur}
                     isAmountFieldVisible
                     isDonationMatchFieldVisible={giveFrom.type === 'user'}
                     paymentInstrumentList={paymentInstrumentList}
@@ -801,7 +816,7 @@ class Friend extends React.Component {
                             onChange={this.handleInputChange}
                             placeholder={formatMessage('giveCommon:amountPlaceHolder')}
                             size="large"
-                            value={giveAmount}
+                            value={formatedP2PAmount}
                         />
                     </Form.Field>
                     <FormValidationErrorMessage
@@ -813,7 +828,7 @@ class Friend extends React.Component {
                     />
                     <FormValidationErrorMessage
                         condition={!validity.isAmountLessThanOneBillion}
-                        errorMessage={formatMessage('giveCommon:errorMessages.invalidMaxAmountError')}
+                        errorMessage={ReactHtmlParser(formatMessage('giveCommon:errorMessages.invalidMaxAmountError'))}
                     />
                     <FormValidationErrorMessage
                         condition={!validity.isAmountCoverGive}
@@ -829,33 +844,55 @@ class Friend extends React.Component {
                         parentOnBlurChange={this.handleOnInputBlur}
                         formatMessage={formatMessage}
                     />
-                    <Note
-                        enableCharacterCount={false}
-                        fieldName="recipients"
-                        formatMessage={formatMessage}
-                        handleOnInputChange={this.handleInputChange}
-                        handleOnInputBlur={this.handleOnInputBlur}
-                        labelText={formatMessage('friends:recipientsLabel')}
-                        popupText={formatMessage('friends:recipientsPopup')}
-                        placeholderText={formatMessage('friends:recipientsPlaceholderText')}
-                        text={recipients.join(',')}
-                    />
-                    <FormValidationErrorMessage
-                        condition={!validity.isValidEmailList}
-                        errorMessage={formatMessage('friends:invalidEmailError')}
-                    />
-                    <FormValidationErrorMessage
-                        condition={!validity.isRecipientListUnique}
-                        errorMessage={formatMessage('friends:duplicateEmail')}
-                    />
-                    <FormValidationErrorMessage
-                        condition={!validity.isRecipientHaveSenderEmail}
-                        errorMessage={formatMessage('friends:haveSenderEmail')}
-                    />
-                    <FormValidationErrorMessage
-                        condition={!validity.isNumberOfEmailsLessThanMax}
-                        errorMessage={formatMessage('friends:maxEmail')}
-                    />
+                    {
+                        (emailMasked) &&
+                        <Form.Field>
+                            <label htmlFor="recipientName">
+                                {formatMessage('friends:recipientsLabel')}
+                            </label>
+                            <Form.Field
+                                control={Input}
+                                disabled
+                                id="recipientName"
+                                maxLength="20"
+                                name="recipientName"
+                                size="large"
+                                value={recipientName}
+                            />
+                        </Form.Field>
+                    }
+                    {
+                        (!emailMasked) &&
+                        <Fragment>
+                            <Note
+                                enableCharacterCount={false}
+                                fieldName="recipients"
+                                formatMessage={formatMessage}
+                                handleOnInputChange={this.handleInputChange}
+                                handleOnInputBlur={this.handleOnInputBlur}
+                                labelText={formatMessage('friends:recipientsLabel')}
+                                popupText={formatMessage('friends:recipientsPopup')}
+                                placeholderText={formatMessage('friends:recipientsPlaceholderText')}
+                                text={recipients.join(',')}
+                            />
+                            <FormValidationErrorMessage
+                                condition={!validity.isValidEmailList}
+                                errorMessage={formatMessage('friends:invalidEmailError')}
+                            />
+                            <FormValidationErrorMessage
+                                condition={!validity.isRecipientListUnique}
+                                errorMessage={formatMessage('friends:duplicateEmail')}
+                            />
+                            <FormValidationErrorMessage
+                                condition={!validity.isRecipientHaveSenderEmail}
+                                errorMessage={formatMessage('friends:haveSenderEmail')}
+                            />
+                            <FormValidationErrorMessage
+                                condition={!validity.isNumberOfEmailsLessThanMax}
+                                errorMessage={formatMessage('friends:maxEmail')}
+                            />
+                        </Fragment>
+                    }
                     {
                         Friend.renderTotalP2pGiveAmount(
                             totalP2pGiveAmount,
@@ -867,9 +904,6 @@ class Friend extends React.Component {
                             formatCurrency,
                         )
                     }
-
-                    {accountTopUpComponent}
-                    {stripeCardComponent}
                     <Form.Field>
                         <Divider className="dividerMargin" />
                     </Form.Field>
@@ -896,6 +930,8 @@ class Friend extends React.Component {
                         placeholderText={formatMessage('friends:noteToSelfPlaceholderText')}
                         text={noteToSelf}
                     />
+                    {accountTopUpComponent}
+                    {stripeCardComponent}
                     <Divider hidden />
                     <Form.Button
                         primary
@@ -925,6 +961,7 @@ function mapStateToProps(state) {
         userCampaigns: state.user.userCampaigns,
         userGroups: state.user.userGroups,
         creditCardApiCall: state.give.creditCardApiCall,
+        userFriendEmail: state.dashboard.userFriendEmail,
     };
 }
 

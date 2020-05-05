@@ -66,6 +66,8 @@ const Success = (props) => {
             giveFrom,
             giftType,
             recipients,
+            emailMasked,
+            recipientName,
         },
         quaziSuccessStatus,
         type,
@@ -98,12 +100,14 @@ const Success = (props) => {
     let recurringCreditCardMessage = null;
     if (!_.isEmpty(creditCard && creditCard.text)) {
         creditcardData = populateCardData(creditCard.text, null);
-        ccText = formatMessage('withoutAmountCard', {
-            displayName: creditcardData.displayName,
-            processor: _.capitalize(creditcardData.processor),
-            truncatedPaymentId: creditcardData.truncatedPaymentId,
-        });
+        // ccText = formatMessage('withoutAmountCard', {
+        //     displayName: creditcardData.displayName,
+        //     processor: _.capitalize(creditcardData.processor),
+        //     truncatedPaymentId: creditcardData.truncatedPaymentId,
+        // });
+        ccText = creditCard.text;
         creditCardMessage = formatMessage('creditCardMessage', {
+            amount: formatCurrency(formatAmount(donationAmount), language, currency),
             cardType: _.capitalize(creditcardData.processor),
             lastFourDigitCardNo: creditcardData.truncatedPaymentId,
             name: creditcardData.displayName,
@@ -234,7 +238,7 @@ const Success = (props) => {
                 const p2pTotalGiveAmount = calculateP2pTotalGiveAmount(recipients.length, successData.giveData.giveAmount);
                 const numberOfRecipient = recipients.length;
                 const p2pGiveAmount = successData.giveData.giveAmount;
-                const recipientEmail = successData.giveData.recipients[0];
+                let recipientEmail = successData.giveData.recipients[0];
 
                 if (numberOfRecipient > 1) {
                     amount = formatCurrency(
@@ -250,6 +254,9 @@ const Success = (props) => {
                         total,
                     });
                 } else {
+                    if (emailMasked && recipientName) {
+                        recipientEmail = recipientName;
+                    }
                     amount = formatCurrency(p2pGiveAmount, language, currency);
                     firstParagraph = formatMessage('fromToSingleRecipient', {
                         amount,
@@ -259,22 +266,26 @@ const Success = (props) => {
                 }
             }
         }
-        if (creditCard.value > 0 && type !== 'doantions') {
+        if (creditCard.value > 0 && type !== 'donations') {
             secondParagraph = formatMessage('nonrecurringCCAllocationDetails',
                 {
+                    amount: formatCurrency(formatAmount(donationAmount), language, currency),
                     creditCard: ccText,
                 });
         }
         if (donationMatch.value > 0 && !_.isEmpty(donationMatchedData)) {
             const donationMessage = formatMessage('nonrecurringDonationDetails', {
                 amount: formatCurrency(formatAmount(donationMatchedData.amount),language, currency),
-                matchingParty: giveTo.name,
+                matchingParty: donationMatchedData.displayName,
                 to: donationDetails.name,
             });
             secondParagraph = `${secondParagraph} ${donationMessage}`;
         }
         thirdParagraph = (type === charityLink)
-            ? formatMessage('timeForSendingCharity', { month }) : null;
+            ? formatMessage('timeForSendingCharity', {
+                charityName: giveTo.name,
+                month,
+            }) : null;
         if (!_.isEmpty(thirdParagraph)) {
             needLearnmore = true;
         }
@@ -285,7 +296,7 @@ const Success = (props) => {
                 ? formatMessage('userRecurringAllocation', {
                     amount: formatCurrency(formatAmount(giveAmount), language, currency),
                     name: donationDetails.name,
-                    to: giveTo.text,
+                    Recipient: giveTo.text,
                 })
                 : formatMessage('nonUserRecurringAllocation', {
                     amount: formatCurrency(formatAmount(giveAmount), language, currency),
@@ -298,10 +309,19 @@ const Success = (props) => {
                 fromName,
                 startsOn,
             });
-            thirdParagraph = formatMessage('recurringAllocationNotes', {
-                creditCard: creditCard.text,
-            });
+            thirdParagraph = (
+                <Fragment>
+                    {formatMessage('recurringAllocationNotesPart1')}
+                    &nbsp;
+                    <Link route={recurringDonationsLink}>
+                        {formatMessage('recurringAllocationNotesLink')}
+                    </Link>
+                    &nbsp;
+                    {formatMessage('recurringAllocationNotesPart2')}
+                </Fragment>
+            );
         } else if (giveTo.type === 'companies') {
+            // This condition can be placed inside if(type=== 'donations) block
             firstParagraph = formatMessage('companyRecurringDonation', {
                 amount: donationDetails.amount,
                 companyName: giveTo.name,
@@ -310,6 +330,7 @@ const Success = (props) => {
             thirdParagraph = formatMessage('companyRecurringTaxReceiptMessage', { companyName: giveTo.name});
             recurringDonationsLink = `/companies/${giveTo.slug}/recurring-donations`;
         } else if (giveTo.type === 'user') {
+            // This condition can be placed inside if(type=== 'donations) block
             firstParagraph = formatMessage('recurringDonation', {
                 amount: donationDetails.amount,
                 name: donationDetails.name,
@@ -327,6 +348,7 @@ const Success = (props) => {
                 </Link>
             );
         } else if (!_.isEmpty(creditCard) && creditCard.value > 0 && giftType.value === 0) {
+            // This else if block can be removed because giftType.value === 0 will never happen here
             taxProfileLink = (giveFrom.type !== 'user')
                 ? `/${giveFrom.type}/${giveFrom.slug}/tax-receipts` : taxProfileLink;
             fourthButton = (
@@ -409,10 +431,10 @@ const Success = (props) => {
                                 {(!!fourthButton && (
                                     <Fragment>
                                         <span>
-                                            or &nbsp;
+                                            Or&nbsp;
                                             <Link className="paragraph-third" route={dashboardLink}>
                                                 {linkToDashboardText}
-                                            </Link>
+                                            </Link>.
                                         </span>
                                     </Fragment>
                                 ))}
@@ -423,10 +445,12 @@ const Success = (props) => {
                                 //   </GeminiLink>
                                 && (
                                     <Link className="paragraph-third" route={dashboardLink}>
-                                        {
-                                            linkToDashboardText.charAt(0).toUpperCase()
-                                            + linkToDashboardText.slice(1)
-                                        }
+                                        <Button className="blue-bordr-btn-round-def">
+                                            {
+                                                linkToDashboardText.charAt(0).toUpperCase()
+                                                + linkToDashboardText.slice(1)
+                                            }
+                                        </Button>
                                     </Link>
                                 )
                                 )}

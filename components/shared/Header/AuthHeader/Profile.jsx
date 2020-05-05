@@ -19,6 +19,7 @@ import {
     func,
     bool,
 } from 'prop-types';
+import { withRouter } from 'next/router';
 import getConfig from 'next/config';
 
 import { withTranslation } from '../../../../i18n';
@@ -65,15 +66,16 @@ class Profile extends React.Component {
                 slug,
             },
             isAdmin,
+            router,
         } = this.props;
         const formatMessage = this.props.t;
         let accountSettingsText = formatMessage('accountSettings');
-        let accountUrl = `/user/profile`;
+        let accountUrl = `/user/profile/basic`;
         if (accountType === 'company') {
             accountSettingsText = formatMessage('companyAccountSettings');
             accountUrl = `${RAILS_APP_URL_ORIGIN}/companies/${slug}/edit`;
         } else if (accountType === 'charity') {
-            accountUrl = `${RAILS_APP_URL_ORIGIN}/beneficiaries/${slug}/info`;
+            accountUrl = `${RAILS_APP_URL_ORIGIN}/admin/beneficiaries/${slug}/info`;
         }
         return (
             <Fragment>
@@ -87,8 +89,8 @@ class Profile extends React.Component {
                     onOpen={() => { this.setState({popupOpen: !this.state.popupOpen}); }}
                     onClose={() => { this.setState({popupOpen: !this.state.popupOpen}); }}
                     trigger={(
-                        <Menu.Item as="a" className="user-img">
-                            <Image src={(avatar) ? avatar : IconIndividual } style={{ width: '35px' }} circular />
+                        <Menu.Item as="a" className={router.asPath.search('/user/profile') !== -1 ? 'user-img active' : 'user-img'}>
+                            <Image src={avatar} style={{ width: '35px' }} circular />
                         </Menu.Item>
                     )}
                 >
@@ -97,9 +99,7 @@ class Profile extends React.Component {
                             <Table.Row>
                                 <Table.Cell><Image src={(avatar) ? avatar : IconIndividual} style={{ width: '80px' }} circular /></Table.Cell>
                                 <Table.Cell>
-                                    {formatMessage('name', {
-                                        name,
-                                    })}
+                                    {name}
                                     <List link>
                                         <Link route={accountUrl}>
                                             <List.Item as="a">
@@ -167,6 +167,9 @@ Profile.defaultProps = {
         name: '',
     },
     isAdmin: false,
+    router: {
+        asPath: '',
+    },
     t: _noop,
 };
 
@@ -176,6 +179,9 @@ Profile.propTypes = {
         name: string,
     },
     isAdmin: bool,
+    router: {
+        asPath: string,
+    },
     t: func,
 };
 
@@ -186,4 +192,4 @@ const mapStateToProps = (state) => ({
     userInfo: state.user,
 });
 
-export default withTranslation('authHeader')(connect(mapStateToProps)(Profile));
+export default withRouter(withTranslation('authHeader')(connect(mapStateToProps)(Profile)));

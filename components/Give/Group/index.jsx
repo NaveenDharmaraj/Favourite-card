@@ -15,6 +15,7 @@ import _every from 'lodash/every';
 import _map from 'lodash/map';
 import _merge from 'lodash/merge';
 import _replace from 'lodash/replace';
+import _ from 'lodash';
 import {
     Elements,
     StripeProvider,
@@ -27,6 +28,8 @@ import {
   Popup,
   Select,
 } from 'semantic-ui-react';
+import ReactHtmlParser from 'react-html-parser';
+import { Link } from '../../../routes';
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 import NoteTo from '../NoteTo';
 import AccountTopUp from '../AccountTopUp';
@@ -50,7 +53,8 @@ import {
     resetDataForGiveAmountChange,
     resetDataForAccountChange,
     resetDataForGiftTypeChange,
-    validateGiveForm
+    validateGiveForm,
+    formatCurrency
 } from '../../../helpers/give/utils';
 import {
     getCompanyPaymentAndTax,
@@ -65,7 +69,7 @@ const { publicRuntimeConfig } = getConfig();
 const {
     STRIPE_KEY
 } = publicRuntimeConfig;
-
+const DedicateType = dynamic(() => import('../DedicateGift'), { ssr: false });
 const CreditCard = dynamic(() => import('../../shared/CreditCard'), {
     ssr: false
 });
@@ -100,7 +104,7 @@ class Group extends React.Component {
                 payload =  _merge({}, props.flowObject)
             }
         this.state = {
-            flowObject:payload,
+            flowObject:_.cloneDeep(payload),
             benificiaryIndex: 0,
             buttonClicked: false,
             dropDownOptions: {
@@ -109,7 +113,7 @@ class Group extends React.Component {
                 infoToShareList: populateInfoToShare(
                     taxReceiptProfiles,
                     companyDetails,
-                    props.flowObject.giveData.giveFrom,
+                    payload.giveData.giveFrom,
                     {
                         displayName,
                         email,
@@ -191,7 +195,7 @@ class Group extends React.Component {
                 giveGroupDetails,
                 userMembershipGroups
             } = this.props;
-            let paymentInstruments = null;
+            let paymentInstruments = paymentInstrumentsData;
             let companyPaymentInstrumentChanged = false;
             const formatMessage = this.props.t;
             if (giveData.giveFrom.type === 'companies' && !_isEmpty(companyDetails)) {
@@ -346,6 +350,7 @@ class Group extends React.Component {
         validity = validateGiveForm('giveFrom', giveData.giveFrom.value, validity, giveData, 0);
         validity = validateGiveForm('noteToSelf', giveData.noteToSelf, validity, giveData, 0);
         validity = validateGiveForm('noteToCharity', giveData.noteToCharity, validity, giveData, 0);
+        validity = validateGiveForm('dedicateType', null, validity, giveData);
         if (giveData.giveTo.value === giveData.giveFrom.value) {
             validity.isValidGiveTo = false;
         } else {
@@ -378,10 +383,16 @@ class Group extends React.Component {
             validity,
         } = this.state;
         let inputValue = value;
-        const isNumber = /^\d+(\.\d*)?$/;
+        const isNumber = /^(?:[0-9]+,)*[0-9]+(?:\.[0-9]*)?$/;
         if ((name === 'giveAmount' || name === 'donationAmount') && !_isEmpty(value) && value.match(isNumber)) {
-            giveData[name] = formatAmount(value);
-            inputValue = formatAmount(value);
+            inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
+            giveData[name] = inputValue;
+            if(name === 'giveAmount') {
+                giveData['formatedGroupAmount'] = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
+            } else {
+                giveData['formatedDonationAmount'] = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
+            }
+           
         }
         if (name !== 'giftType' && name !== 'giveFrom') {
             validity = validateGiveForm(name, inputValue, validity, giveData, 0);
@@ -394,6 +405,18 @@ class Group extends React.Component {
                 validity = validateGiveForm('giveAmount', giveData.giveAmount, validity, giveData, 0);
                 validity = validateGiveForm('donationAmount', giveData.donationAmount, validity, giveData, 0);
                 break;
+            case 'inHonorOf':
+            case 'inMemoryOf':
+                validity = validateGiveForm('dedicateType', null, validity, giveData);
+            break;
+            case 'noteToCharity':
+                giveData[name] = inputValue.trim();
+                validity = validateGiveForm('noteToCharity', giveData.noteToCharity, validity, giveData);
+            break;
+            case 'noteToSelf':
+                giveData[name] = inputValue.trim();
+                validity = validateGiveForm('noteToSelf', giveData.noteToSelf, validity, giveData);
+            break;
             default: break;
         }
         this.setState({
@@ -411,6 +434,7 @@ class Group extends React.Component {
             isAmountCoverGive: true,
             isAmountLessThanOneBillion: true,
             isAmountMoreThanOneDollor: true,
+            isDedicateGiftEmpty: true,
             isDonationAmountBlank: true,
             isDonationAmountCoverGive: true,
             isDonationAmountLessThan1Billion: true,
@@ -490,6 +514,7 @@ class Group extends React.Component {
             name,
             options,
             value,
+            newIndex
         } = data;
         let {
             flowObject: {
@@ -521,10 +546,35 @@ class Group extends React.Component {
             } = event;
             newValue = target.checked;
         }
-        if (giveData[name] !== newValue) {
+        if(name === 'inHonorOf' || name ==='inMemoryOf'){
+            if(newIndex === -1){
+                giveData.dedicateGift.dedicateType = '';
+                giveData.dedicateGift.dedicateValue = '';
+            }
+            else{
+                giveData.dedicateGift.dedicateType = name;
+                giveData.dedicateGift.dedicateValue = value;
+            }
+            validity.isDedicateGiftEmpty = true;
+            this.setState({
+       
+                flowObject: {
+                    ...this.state.flowObject,
+                    giveData,
+                },
+                validity: {
+                    ...this.state.validity,
+                    validity,
+                },
+            });
+        }
+        if (name !== 'inHonorOf' && name !=='inMemoryOf') {
             giveData[name] = newValue;
             giveData.userInteracted = true;
             switch (name) {
+                case 'donationAmount':
+                        giveData['formatedDonationAmount'] =  newValue;
+                    break;
                 case 'giveFrom':
                     const {
                         modifiedDropDownOptions,
@@ -545,6 +595,7 @@ class Group extends React.Component {
                     giveData = resetDataForGiftTypeChange(giveData, dropDownOptions, coverFeesData);
                     break;
                 case 'giveAmount':
+                    giveData['formatedGroupAmount'] = newValue;
                     giveData = resetDataForGiveAmountChange(
                         giveData, dropDownOptions, coverFeesData,
                     );
@@ -704,14 +755,79 @@ class Group extends React.Component {
         return validCC;
     }
 
+
+    renderPaymentTaxErrorMsg(paymentInstrumentList, defaultTaxReceiptProfile, giveFrom, companyDetails, giftType){
+        const{
+            companyAccountsFetched,
+            slug,
+            userAccountsFetched
+        } = this.props;
+        if(giftType > 0){
+            if(userAccountsFetched && giveFrom.type === 'user' || companyAccountsFetched && giveFrom.type === 'companies'){
+                let taxProfile = (giveFrom.type === 'companies' && companyDetails && companyDetails.companyDefaultTaxReceiptProfile) ?
+                companyDetails.companyDefaultTaxReceiptProfile :
+                defaultTaxReceiptProfile;
+                    if(_isEmpty(paymentInstrumentList) && _isEmpty(taxProfile)){
+                        const paymentLink = (giveFrom.type === 'companies')
+                            ? <a href={`/companies/${slug}/payment-profiles`}>payment method</a>
+                            : <Link route = '/user/profile/settings/creditcard'>payment method</Link> ;
+                        const taxLink = (giveFrom.type === 'companies')
+                            ? <a href={`/companies/${slug}/tax-receipt-profiles`}>tax receipt recipient</a>
+                            : <Link route = '/user/tax-receipts'>tax receipt recipient</Link>
+                        return(
+                            <div className="mb-1">
+                                <Icon color="red" name="warning circle" />
+                                <span style={{ color: 'red' }}>
+                                    To send a monthly gift, first add a {paymentLink} and {taxLink} to your account details. We won't charge your card without your permission.
+                                </span>
+                            </div>
+                        ) 
+                    }
+                    else if(_isEmpty(paymentInstrumentList)){
+                        const link = (giveFrom.type === 'companies')
+                            ? <a href={`/companies/${slug}/payment-profiles`}>payment method</a>
+                            : <Link route = '/user/profile/settings/creditcard'>payment method</Link>
+                        return(
+                            <div className="mb-1">
+                                <Icon color="red" name="warning circle" />
+                                <span style={{ color: 'red' }}>
+                                    To send a monthly gift, first add a {link} to your account details. We won't charge your card without your permission.
+                                </span>
+                            </div>
+                        ) 
+                    }
+                    else if( _isEmpty(taxProfile)){
+                        const link = (giveFrom.type === 'companies')
+                            ? <a href={`/companies/${slug}/tax-receipt-profiles`}>tax receipt recipient</a>
+                            : <Link route="/user/tax-receipts">tax receipt recipient</Link>
+                        return(
+                            <div className="mb-1">
+                                    <Icon color="red" name="warning circle" />
+                                    <span style={{ color: 'red' }}>
+                                        To send a monthly gift, first add a {link} to your account details.
+                                </span>
+                            </div>
+                        ) 
+                    }
+                 }
+            }
+        return null;
+    }
+
     render() {
         let {
             flowObject: {
                 giveData:{
                     creditCard,
+                    dedicateGift: {
+                        dedicateType,
+                        dedicateValue, 
+                    },
                     donationAmount,
                     donationMatch,
                     giftType,
+                    formatedDonationAmount,
+                    formatedGroupAmount,
                     giveAmount,
                     giveTo,
                     giveFrom,
@@ -739,21 +855,30 @@ class Group extends React.Component {
                 infoToShareList
             },
         } = this.state;
+        const {
+            companyDetails,
+            giveGroupDetails,
+            defaultTaxReceiptProfile,
+        } = this.props;
         const formatMessage = this.props.t;
+        let showGroupSupport = false;
+        if(!_.isEmpty(giveGroupDetails)){
+            showGroupSupport = (giveGroupDetails.attributes.campaignId) ? true : false ;
+        }
         const giveToType = (giveTo.isCampaign) ? 'Campaign' : 'Group';
         let accountTopUpComponent = null;
         let stripeCardComponent = null;
         let privacyOptionComponent = null;
         if ((giveFrom.type === 'user' || giveFrom.type === 'companies')
-        && (giftType.value > 0 || (giftType.value === 0 &&
-            Number(giveAmount) > Number(giveFrom.balance)))
+        &&  (giftType.value === 0 &&
+            Number(giveAmount) > Number(giveFrom.balance))
         ) {
             const topupAmount = formatAmount((formatAmount(giveAmount) -
                 formatAmount(giveFrom.balance)));
             accountTopUpComponent = (
                 <AccountTopUp
                     creditCard={creditCard}
-                    donationAmount={donationAmount}
+                    donationAmount={formatedDonationAmount}
                     donationMatch={donationMatch}
                     donationMatchList={donationMatchList}
                     formatMessage={formatMessage}
@@ -805,6 +930,7 @@ class Group extends React.Component {
                     privacyShareAmount={privacyShareAmount}
                     privacyShareEmail={privacyShareEmail}
                     privacyShareName={privacyShareName}
+                    showSupportMessage={showGroupSupport}
                 />
             );
         }
@@ -895,7 +1021,7 @@ class Group extends React.Component {
                                 onChange={this.handleInputChange}
                                 placeholder={formatMessage('amountPlaceHolder')}
                                 size="large"
-                                value={giveAmount}
+                                value={formatedGroupAmount}
                             />
                         </Form.Field>
                         
@@ -908,11 +1034,11 @@ class Group extends React.Component {
                         />
                         <FormValidationErrorMessage
                             condition={!validity.isAmountLessThanOneBillion}
-                            errorMessage={formatMessage('invalidMaxAmountError')}
+                            errorMessage={ReactHtmlParser(formatMessage('invalidMaxAmountError'))}
                         />
                         <FormValidationErrorMessage
                             condition={!validity.isAmountCoverGive}
-                            errorMessage={formatMessage('giveAmountGreaterThanBalance')}
+                            errorMessage={formatMessage('giveCommon:errorMessages.giveAmountGreaterThanBalance')}
                         />
                         { (!this.props.currentUser.userAccountsFetched || !_isEmpty(giveFromList)) && (
                         <DropDownAccountOptions
@@ -928,11 +1054,19 @@ class Group extends React.Component {
                         />
                         )}
                         {repeatGift}
-                        {accountTopUpComponent}
-                        {stripeCardComponent}
+                        { 
+                            this.renderPaymentTaxErrorMsg(paymentInstrumentList, defaultTaxReceiptProfile, giveFrom,companyDetails, giftType.value)
+                        }
                         <Form.Field>
                             <Divider className="dividerMargin" />
                         </Form.Field>
+                        <DedicateType 
+                            handleInputChange={this.handleInputChange}
+                            handleInputOnBlur={this.handleInputOnBlur}
+                            dedicateType={dedicateType}
+                            dedicateValue={dedicateValue}
+                            validity={validity}
+                        />
                         <NoteTo
                             allocationType=""// {type}
                             formatMessage={formatMessage}
@@ -945,6 +1079,8 @@ class Group extends React.Component {
                             validity={validity}
                         />
                         {privacyOptionComponent}
+                        {accountTopUpComponent}
+                        {stripeCardComponent}
                         <Divider hidden />
                         {/* { !stepsCompleted && */}
                             <Form.Button
@@ -971,6 +1107,7 @@ const  mapStateToProps = (state, props) => {
     giveGroupDetails: state.give.groupSlugDetails,
     companiesAccountsData: state.user.companiesAccountsData,
     companyDetails: state.give.companyData,
+    companyAccountsFetched: state.give.companyAccountsFetched,
     currentUser: state.user.info,
     giveGroupBenificairyDetails: state.give.benificiaryForGroupDetails,
     taxReceiptProfiles: state.user.taxReceiptProfiles,

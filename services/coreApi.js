@@ -1,10 +1,17 @@
+/* eslint-disable prefer-arrow-callback */
+/* eslint-disable func-names */
 import axios from 'axios';
 import _omit from 'lodash/omit';
 import _isEmpty from 'lodash/isEmpty';
 import getConfig from 'next/config';
 
 import auth0 from '../services/auth';
-import { triggerUxCritialErrors } from '../actions/error';
+import {
+    triggerUxCritialErrors,
+    triggerCustomUxCriticalError,
+} from '../actions/error';
+import { softLogout } from '../actions/auth';
+import logger from '../helpers/logger';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -29,10 +36,15 @@ instance.interceptors.request.use(function (config) {
             config.headers.Authorization = `Bearer ${token}`;
         }
     }
-    if(config.params) {
+    if (config.params) {
         config.uxCritical = (config.params.uxCritical);
         config.dispatch = (config.params.dispatch) ? config.params.dispatch : null;
-        config.params = _omit(config.params, ['uxCritical', 'dispatch']);
+        config.ignore401 = (config.params.ignore401);
+        config.params = _omit(config.params, [
+            'uxCritical',
+            'dispatch',
+            'ignore401',
+        ]);
     }
     return config;
 }, function (error) {
@@ -42,15 +54,38 @@ instance.interceptors.request.use(function (config) {
 instance.interceptors.response.use(function (response) {
     // Do something with response data
     return response.data;
-  }, function (error) {
-        const {
-            config,
-            data,
-        } = error.response;
-        if(config.uxCritical && config.dispatch) {
-            triggerUxCritialErrors(data.errors || data, config.dispatch);
-        }
-        return Promise.reject(error.response.data);
-  });
+}, function (error) {
+    const {
+        config,
+        data,
+        status,
+    } = error.response;
+    const logDNAErrorObj = {
+        data: config.data ? JSON.parse(config.data) : null,
+        error: error.response.data,
+        method: config.method,
+        url: config.url,
+    };
+    let statusMessageProps = {};
+    logger.error(`[CORE] API failed: ${JSON.stringify(logDNAErrorObj)}`);
+    if (status === 401 && !config.ignore401 && typeof window !== 'undefined') {
+        window.location.href = '/users/logout';
+    } else if (status === 401) {
+        softLogout(config.dispatch);
+        return null;
+    }
+    if (status === 403 && config.params && config.params.findBySlug) {
+        statusMessageProps = {
+            heading: 'This page isn\'t available',
+            message: 'The link you followed might have been archived, or you don\'t have permission to view the page.',
+            type: 'error',
+        };
+        triggerCustomUxCriticalError(statusMessageProps, config.dispatch);
+    } else if (config.uxCritical && config.dispatch) {
+        triggerUxCritialErrors(data.errors || data, config.dispatch);
+    }
+
+    return Promise.reject(error.response.data);
+});
 
 export default instance;

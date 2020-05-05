@@ -4,6 +4,7 @@ import getConfig from 'next/config';
 import base64 from "base-64";
 import auth0 from './auth';
 import storage from '../helpers/storage';
+import logger from '../helpers/logger';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -11,7 +12,6 @@ const {
     APPLOZIC_WS_URL,
     APPLOZIC_APP_KEY
 } = publicRuntimeConfig;
-console.log(publicRuntimeConfig);
 const instance = axios.create({
     baseURL: `${APPLOZIC_WS_URL}`,
     headers: {
@@ -29,12 +29,13 @@ instance.interceptors.request.use(function (config) {
         }
         config.headers.Authorization = `Bearer ${token}`;
     }
-    console.log("Reuqetsadds Confug");
-    console.log(config);
-    //config.headers.Authorization = "Basic " + base64.encode(config.data._userId + ":" + config.data._deviceKey);
-    // console.log("_deviceKey == " + storage.get("_deviceKey", 'cookie'));
+    const deviceKey = storage.get("_deviceKey", 'cookie');
+    if (!deviceKey || deviceKey == "") {
+        if (registerAppLozic) {
+            registerAppLozic();
+        }
+    }
     config.headers.Authorization = "Basic " + base64.encode(storage.get('chimpUserId', 'cookie') + ":" + storage.get("_deviceKey", 'cookie'));
-    console.log(config);
     return config;
 }, function (error) {
     return Promise.reject(error);
@@ -44,6 +45,16 @@ instance.interceptors.response.use(function (response) {
     // Do something with response data
     return response.data;
 }, function (error) {
+    const {
+        config,
+    } = error.response;
+    const logDNAErrorObj = {
+        data: config.data ? JSON.parse(config.data) : null,
+        error: error.response.data,
+        method: config.method,
+        url: config.url,
+    };
+    logger.error(`[APPLOZIC] API failed: ${JSON.stringify(logDNAErrorObj)}`);
     return Promise.reject(error.response.data);
 });
 instance.APPLOZIC_APP_KEY = APPLOZIC_APP_KEY;

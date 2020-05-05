@@ -21,13 +21,27 @@ const give = (state = {}, action) => {
                 coverFeesData: Object.assign({}, state.coverFees, coverFees),
             };
             break;
+        case 'COVER_AMOUNT_DISPLAY':
+            const {
+                coverAmountDisplay,
+            } = action.payload;
+            newState = {
+                ...state,
+                coverAmountDisplay,
+            };
+            break;
         case 'GET_COMPANY_PAYMENT_AND_TAXRECEIPT':
             newState = {
                 ...state,
                 companyData: Object.assign({}, state.companyData, action.payload),
             };
             break;
-
+        case 'SET_COMPANY_ACCOUNT_FETCHED':
+            newState = {
+                ...state,
+                companyAccountsFetched: action.payload.companyAccountsFetched,
+            };
+            break;
         case 'GET_BENIFICIARY_FOR_GROUP':
             newState = {
                 ...state,

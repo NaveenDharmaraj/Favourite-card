@@ -1,3 +1,4 @@
+/* eslint-disable import/exports-last */
 import _ from 'lodash';
 
 import coreApi from '../services/coreApi';
@@ -6,20 +7,28 @@ import graphApi from '../services/graphApi';
 
 export const actionTypes = {
     ACTIVITY_LIKE_STATUS: 'ACTIVITY_LIKE_STATUS',
+    ADMIN_PLACEHOLDER_STATUS: 'ADMIN_PLACEHOLDER_STATUS',
+    GET_BENEFICIARIES_COUNT: 'GET_BENEFICIARIES_COUNT',
+    GET_CAMPAIGN_SUPPORTING_GROUP: 'GET_CAMPAIGN_SUPPORTING_GROUP',
     GET_GROUP_ACTIVITY_DETAILS: 'GET_GROUP_ACTIVITY_DETAILS',
     GET_GROUP_ADMIN_DETAILS: 'GET_GROUP_ADMIN_DETAILS',
     GET_GROUP_BENEFICIARIES: 'GET_GROUP_BENEFICIARIES',
     GET_GROUP_COMMENTS: 'GET_GROUP_COMMENTS',
     GET_GROUP_DETAILS_FROM_SLUG: 'GET_GROUP_DETAILS_FROM_SLUG',
+    GET_GROUP_GALLERY_IMAGES: 'GET_GROUP_GALLERY_IMAGES',
     GET_GROUP_MEMBERS_DETAILS: 'GET_GROUP_MEMBERS_DETAILS',
     GET_GROUP_TRANSACTION_DETAILS: 'GET_GROUP_TRANSACTION_DETAILS',
-    PLACEHOLDER_STATUS: 'PLACEHOLDER_STATUS',
+    MEMBER_PLACEHOLDER_STATUS: 'MEMBER_PLACEHOLDER_STATUS',
+    GROUP_PLACEHOLDER_STATUS: 'GROUP_PLACEHOLDER_STATUS',
     POST_NEW_ACTIVITY: 'POST_NEW_ACTIVITY',
-    REDIRECT_TO_DASHBOARD: 'REDIRECT_TO_DASHBOARD',
+    GROUP_REDIRECT_TO_DASHBOARD: 'GROUP_REDIRECT_TO_DASHBOARD',
     // COMMENT_LIKE_STATUS: 'COMMENT_LIKE_STATUS',
+    LEAVE_GROUP_MODAL_ERROR_MESSAGE: 'LEAVE_GROUP_MODAL_ERROR_MESSAGE',
+    LEAVE_GROUP_MODAL_BUTTON_LOADER: 'LEAVE_GROUP_MODAL_BUTTON_LOADER',
+    TOGGLE_TRANSACTION_VISIBILITY: 'TOGGLE_TRANSACTION_VISIBILITY',
 };
 
-export const getGroupFromSlug = async (dispatch, slug) => {
+export const getGroupFromSlug = async (dispatch, slug, token = null) => {
     if (slug !== ':slug') {
         const fsa = {
             payload: {
@@ -27,22 +36,52 @@ export const getGroupFromSlug = async (dispatch, slug) => {
             },
             type: actionTypes.GET_GROUP_DETAILS_FROM_SLUG,
         };
+        const galleryfsa = {
+            payload: {
+                galleryImages: [],
+            },
+            type: actionTypes.GET_GROUP_GALLERY_IMAGES,
+        };
         dispatch({
             payload: {
                 redirectToDashboard: false,
             },
-            type: actionTypes.REDIRECT_TO_DASHBOARD,
+            type: actionTypes.GROUP_REDIRECT_TO_DASHBOARD,
         });
-        await coreApi.get(`/groups/find_by_slug?load_full_profile=true`, {
+        const fullParams = {
             params: {
                 dispatch,
+                findBySlug: true,
                 slug,
                 uxCritical: true,
             },
+        };
+        if (!_.isEmpty(token)) {
+            fullParams.headers = {
+                Authorization: `Bearer ${token}`,
+            };
+        }
+        await coreApi.get(`/groups/find_by_slug?load_full_profile=true`, {
+            ...fullParams,
         }).then(
             (result) => {
                 if (result && !_.isEmpty(result.data)) {
                     fsa.payload.groupDetails = result.data;
+                    dispatch(fsa);
+                    if (result.data.relationships && result.data.relationships.galleryImages) {
+                        coreApi.get(result.data.relationships.galleryImages.links.related, {
+                            params: {
+                                dispatch,
+                                ignore401: true,
+                            },
+                        })
+                            .then((galleryResult) => {
+                                if (galleryResult && !_.isEmpty(galleryResult.data)) {
+                                    galleryfsa.payload.galleryImages = galleryResult.data;
+                                    dispatch(galleryfsa);
+                                }
+                            }).catch().finally();
+                    }
                 }
             },
         ).catch(() => {
@@ -50,11 +89,9 @@ export const getGroupFromSlug = async (dispatch, slug) => {
                 payload: {
                     redirectToDashboard: true,
                 },
-                type: actionTypes.REDIRECT_TO_DASHBOARD,
+                type: actionTypes.GROUP_REDIRECT_TO_DASHBOARD,
             });
             return null;
-        }).finally(() => {
-            dispatch(fsa);
         });
     } else {
         // redirect('/dashboard');
@@ -66,25 +103,39 @@ export const getDetails = async (dispatch, id, type, url) => {
         payload: {},
     };
     let newUrl = '';
+    const isViewMore = !_.isEmpty(url);
+    const placeholderfsa = {
+        payload: {},
+    };
     switch (type) {
         case 'members':
             fsa.type = actionTypes.GET_GROUP_MEMBERS_DETAILS;
             newUrl = !_.isEmpty(url) ? url : `/groups/${id}/groupMembers?page[size]=7`;
+            fsa.payload.isViewMore = isViewMore;
+            placeholderfsa.payload.memberPlaceholder = true;
+            placeholderfsa.type = actionTypes.MEMBER_PLACEHOLDER_STATUS;
             break;
         case 'admins':
             fsa.type = actionTypes.GET_GROUP_ADMIN_DETAILS;
             newUrl = !_.isEmpty(url) ? url : `/groups/${id}/groupAdmins?page[size]=7`;
+            fsa.payload.isViewMore = isViewMore;
+            placeholderfsa.payload.adminPlaceholder = true;
+            placeholderfsa.type = actionTypes.ADMIN_PLACEHOLDER_STATUS;
             break;
         case 'charitySupport':
             fsa.type = actionTypes.GET_GROUP_BENEFICIARIES;
             newUrl = !_.isEmpty(url) ? url : `groups/${id}/groupBeneficiaries?page[size]=3`;
+            placeholderfsa.payload.showPlaceholder = true;
+            placeholderfsa.type = actionTypes.GROUP_PLACEHOLDER_STATUS;
             break;
         default:
             break;
     }
+    dispatch(placeholderfsa);
     coreApi.get(newUrl, {
         params: {
             dispatch,
+            ignore401: true,
             uxCritical: true,
         },
     }).then((result) => {
@@ -93,7 +144,25 @@ export const getDetails = async (dispatch, id, type, url) => {
             fsa.payload.nextLink = (result.links.next) ? result.links.next : null;
             dispatch(fsa);
         }
-    }).catch().finally();
+    }).catch().finally(() => {
+        switch (type) {
+            case 'members':
+                placeholderfsa.payload.memberPlaceholder = false;
+                placeholderfsa.type = actionTypes.MEMBER_PLACEHOLDER_STATUS;
+                break;
+            case 'admins':
+                placeholderfsa.payload.adminPlaceholder = false;
+                placeholderfsa.type = actionTypes.ADMIN_PLACEHOLDER_STATUS;
+                break;
+            case 'charitySupport':
+                placeholderfsa.payload.showPlaceholder = false;
+                placeholderfsa.type = actionTypes.GROUP_PLACEHOLDER_STATUS;
+                break;
+            default:
+                break;
+        }
+        dispatch(placeholderfsa);
+    });
 };
 
 export const getTransactionDetails = async (dispatch, id, url) => {
@@ -107,12 +176,13 @@ export const getTransactionDetails = async (dispatch, id, url) => {
         payload: {
             showPlaceholder: true,
         },
-        type: actionTypes.PLACEHOLDER_STATUS,
+        type: actionTypes.GROUP_PLACEHOLDER_STATUS,
     });
     const newUrl = !_.isEmpty(url) ? url : `groups/${id}/activities?filter[moneyItems]=all&page[size]=10`;
     await coreApi.get(newUrl, {
         params: {
             dispatch,
+            ignore401: true,
             uxCritical: true,
         },
     }).then((result) => {
@@ -125,7 +195,7 @@ export const getTransactionDetails = async (dispatch, id, url) => {
             payload: {
                 showPlaceholder: false,
             },
-            type: actionTypes.PLACEHOLDER_STATUS,
+            type: actionTypes.GROUP_PLACEHOLDER_STATUS,
         });
     });
 };
@@ -141,6 +211,7 @@ export const getGroupActivities = async (dispatch, id, url, isPostActivity) => {
     coreApi.get(newUrl, {
         params: {
             dispatch,
+            ignore401: true,
             uxCritical: true,
         },
     }).then((result) => {
@@ -157,7 +228,7 @@ export const getGroupActivities = async (dispatch, id, url, isPostActivity) => {
             payload: {
                 showPlaceholder: false,
             },
-            type: actionTypes.PLACEHOLDER_STATUS,
+            type: actionTypes.GROUP_PLACEHOLDER_STATUS,
         });
     });
 };
@@ -173,6 +244,7 @@ export const getCommentFromActivityId = async (dispatch, id, url, isReply) => {
     coreApi.get(url, {
         params: {
             dispatch,
+            ignore401: true,
             uxCritical: true,
         },
     }).then((result) => {
@@ -197,6 +269,11 @@ export const postActivity = async (dispatch, id, msg) => {
                 },
                 type: 'comments',
             },
+        }, {
+            params: {
+                dispatch,
+                ignore401: true,
+            },
         }).then((result) => {
         if (result && !_.isEmpty(result.data)) {
             getGroupActivities(dispatch, id, url, true);
@@ -204,8 +281,14 @@ export const postActivity = async (dispatch, id, msg) => {
     }).catch().finally();
 };
 
-export const postComment = async (dispatch, groupId, eventId, msg) => {
+export const postComment = async (dispatch, groupId, eventId, msg, user) => {
     const url = `events/${eventId}/comments?page[size]=1`;
+    const fsa = {
+        payload: {
+            groupComments: [],
+        },
+        type: actionTypes.GET_GROUP_COMMENTS,
+    };
     coreApi.post(`/comments`,
         {
             data: {
@@ -216,9 +299,31 @@ export const postComment = async (dispatch, groupId, eventId, msg) => {
                 },
                 type: 'comments',
             },
+        }, {
+            params: {
+                dispatch,
+                ignore401: true,
+            },
         }).then((result) => {
         if (result && !_.isEmpty(result.data)) {
-            getCommentFromActivityId(dispatch, eventId, url, true);
+            fsa.payload.groupComments = [
+                {
+                    attributes: {
+                        avatar: user.avatar,
+                        comment: result.data.body,
+                        createdAt: result.data.created_at,
+                        creator: user.displayName,
+                        groupId,
+                        isLiked: false,
+                        likesCount: 0,
+                    },
+                    id: result.data.id,
+                    type: 'comments',
+                },
+            ];
+            fsa.payload.activityId = eventId;
+            fsa.payload.isReply = true;
+            dispatch(fsa);
         }
     }).catch().finally();
 };
@@ -238,13 +343,20 @@ export const likeActivity = async (dispatch, eventId, groupId, userId) => {
                 target: 'EVENT',
                 user_id: Number(userId),
             },
+        }, {
+            params: {
+                dispatch,
+                ignore401: true,
+            },
         }).then((result) => {
         if (result && !_.isEmpty(result.data)) {
             fsa.payload.activityStatus = true;
             fsa.payload.eventId = eventId;
         }
-    }).catch().finally(() => {
         dispatch(fsa);
+    }).catch(() => {
+        // console.log('like activity catch block');
+    }).finally(() => {
     });
 };
 
@@ -265,13 +377,18 @@ export const unlikeActivity = async (dispatch, eventId, groupId, userId) => {
                     user_id: Number(userId),
                 },
             },
+        }, {
+            params: {
+                dispatch,
+                ignore401: true,
+            },
         }).then((result) => {
         if (result && !_.isEmpty(result.data)) {
             fsa.payload.activityStatus = false;
             fsa.payload.eventId = eventId;
         }
-    }).catch().finally(() => {
         dispatch(fsa);
+    }).catch().finally(() => {
     });
 };
 
@@ -327,7 +444,7 @@ export const unlikeActivity = async (dispatch, eventId, groupId, userId) => {
 //     });
 // };
 
-export const joinGroup = async (dispatch, groupSlug) => {
+export const joinGroup = async (dispatch, groupSlug, groupId, loadMembers) => {
     const fsa = {
         payload: {
             groupDetails: {},
@@ -336,10 +453,17 @@ export const joinGroup = async (dispatch, groupSlug) => {
     };
     await coreApi.post(`/groups/join?load_full_profile=true`, {
         slug: groupSlug,
+    }, {
+        params: {
+            dispatch,
+            ignore401: true,
+        },
     }).then(
         (result) => {
             if (result && !_.isEmpty(result.data)) {
                 fsa.payload.groupDetails = result.data;
+                getDetails(dispatch, groupId, 'members');
+                getDetails(dispatch, groupId, 'admins');
             }
         },
     ).catch(() => {
@@ -347,4 +471,116 @@ export const joinGroup = async (dispatch, groupSlug) => {
     }).finally(() => {
         dispatch(fsa);
     });
+};
+
+export const getGroupBeneficiariesCount = async (dispatch, url) => {
+    const fsa = {
+        payload: {
+            groupBeneficiariesCount: {},
+        },
+        type: actionTypes.GET_BENEFICIARIES_COUNT,
+    };
+    coreApi.get(url,
+        {
+            params: {
+                dispatch,
+                ignore401: true,
+                uxCritical: true,
+            },
+        }).then((result) => {
+        if (result && !_.isEmpty(result.data)) {
+            fsa.payload.groupBeneficiariesCount = result.data;
+        }
+    }).catch().finally(() => {
+        dispatch(fsa);
+    });
+};
+
+const checkForOnlyOneAdmin = (error) => {
+    if (!_.isEmpty(error) && error.length === 1) {
+        const checkForAdminError = error[0];
+        if (!_.isEmpty(checkForAdminError.meta)
+            && !_.isEmpty(checkForAdminError.meta.validationCode)
+            && (checkForAdminError.meta.validationCode === '1329'
+            || checkForAdminError.meta.validationCode === 1329)) {
+            return true;
+        }
+    }
+    return false;
+};
+
+export const leaveGroup = async (dispatch, slug, groupId, loadMembers) => {
+    dispatch({
+        payload: { buttonLoading: true },
+        type: actionTypes.LEAVE_GROUP_MODAL_BUTTON_LOADER,
+    });
+    coreApi.patch(`/groups/leave?slug=${slug}`, {
+    }).then((result) => {
+        if (result && result.status === 'SUCCESS') {
+            getGroupFromSlug(dispatch, slug);
+            dispatch({
+                payload: {
+                    buttonLoading: false,
+                    closeModal: true,
+                },
+                type: actionTypes.LEAVE_GROUP_MODAL_BUTTON_LOADER,
+            });
+            getDetails(dispatch, groupId, 'members');
+            getDetails(dispatch, groupId, 'admins');
+        }
+    }).catch((error) => {
+        dispatch({
+            payload: {
+                buttonLoading: false,
+            },
+            type: actionTypes.LEAVE_GROUP_MODAL_BUTTON_LOADER,
+        });
+        const errorFsa = {
+            payload: {
+                adminError: 0,
+                id: groupId,
+                message: error.errors[0].detail,
+            },
+            type: actionTypes.LEAVE_GROUP_MODAL_ERROR_MESSAGE,
+        };
+        if (checkForOnlyOneAdmin(error.errors)) {
+            errorFsa.payload.message = 'You are the only admin in this Group. In order to leave, please appoint another Group member as admin.';
+            errorFsa.payload.adminError = 1;
+        }
+        dispatch(errorFsa);
+    });
+};
+
+export const toggleTransactionVisibility = async (dispatch, transactionId, type) => {
+    const fsa = {
+        payload: {},
+        type: actionTypes.TOGGLE_TRANSACTION_VISIBILITY,
+    };
+    let url = '';
+    switch (type) {
+        case 'name':
+            url = `events/${transactionId}/toggleNameVisibility`;
+            break;
+        case 'amount':
+            url = `events/${transactionId}/toggleMoneyVisibility`;
+            break;
+        default:
+            break;
+    }
+    coreApi.patch(url,
+        {
+            params: {
+                dispatch,
+                ignore401: true,
+                uxCritical: true,
+            },
+        }).then(
+        (result) => {
+            if (result && !_.isEmpty(result.data)) {
+                fsa.payload.data = result.data;
+                fsa.payload.transactionId = transactionId;
+                dispatch(fsa);
+            }
+        },
+    ).catch().finally();
 };

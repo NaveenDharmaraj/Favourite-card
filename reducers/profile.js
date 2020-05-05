@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 const profile = (state = {}, action) => {
     let newState = {
         ...state,
@@ -9,11 +11,20 @@ const profile = (state = {}, action) => {
                 campaignDetails: Object.assign({}, action.payload.campaignDetails),
             };
             break;
+        case 'CLEAR_DATA_FOR_CAMPAIGNS':
+            newState = {
+                ...state,
+                campaignSubGroupDetails: action.payload.campaignSubGroupDetails,
+                campaignSubGroupsShowMoreUrl: null,
+            };
+            break;
         case 'GET_SUB_GROUPS_FOR_CAMPAIGN':
-            if (state.campaignSubGroupDetails) {
+            // isViewMore used to ignore the initial componentDidMount call - duplicate groups
+            if (state.campaignSubGroupDetails && state.campaignSubGroupDetails.length > 0 && action.payload.isViewMore) {
+                const uniqueArray = _.uniqBy(_.concat(state.campaignSubGroupDetails, action.payload.campaignSubGroupDetails.data), 'id');
                 newState = {
                     ...state,
-                    campaignSubGroupDetails: state.campaignSubGroupDetails.concat(action.payload.campaignSubGroupDetails.data),
+                    campaignSubGroupDetails:[...uniqueArray],
                     campaignSubGroupsShowMoreUrl: action.payload.campaignSubGroupDetails.links.next,
                 };
             } else {
@@ -61,7 +72,7 @@ const profile = (state = {}, action) => {
                     ...state.campaignDetails,
                     attributes: {
                         ...state.campaignDetails.attributes,
-                        following: action.payload.followStatus,
+                        liked: action.payload.followStatus,
                     },
                 },
                 // disableFollow: false,

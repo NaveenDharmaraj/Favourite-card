@@ -74,11 +74,21 @@ class ActivityDetails extends React.Component {
             groupId,
             dispatch,
             id: eventId,
+            userInfo: {
+                attributes: {
+                    avatar,
+                    displayName,
+                },
+            },
         } = this.props;
         const {
             commentText: msg,
         } = this.state;
-        postComment(dispatch, groupId, eventId, msg);
+        const userDetails = {
+            avatar,
+            displayName,
+        };
+        postComment(dispatch, groupId, eventId, msg, userDetails);
         this.setState({
             commentText: '',
         });
@@ -176,7 +186,7 @@ class ActivityDetails extends React.Component {
         const cls = (isLiked) ? 'heart' : 'heart outline';
         return (
             <Comment>
-                {type === 'events'
+                {type === 'events' && canReply
                 && (
                     <Feed.Meta className="cmntLike">
                         <Feed.Like>
@@ -220,32 +230,28 @@ class ActivityDetails extends React.Component {
                         )}
 
 
-                        {doReply
+                        {doReply && canReply
                             && (
-                                <Grid>
-                                    <Grid.Row>
-                                        <Grid.Column mobile={16} tablet={14} computer={14}>
-                                            <div className="two-icon-brdr-btm-input replayInput">
-                                                <Input
-                                                    value={commentText}
-                                                    onChange={this.updateInputValue}
-                                                    type="text"
-                                                    placeholder="Write a post..."
-                                                    action
-                                                    fluid
-                                                />
-                                            </div>
-                                        </Grid.Column>
-                                        <Grid.Column mobile={16} tablet={2} computer={2}>
-                                            <Button
-                                                onClick={this.postReplyComment}
-                                                className="blue-bordr-btn-round-def c-small"
-                                            >
-                                                Reply
-                                            </Button>
-                                        </Grid.Column>
-                                    </Grid.Row>
-                                </Grid>
+                                <div className="postInputMainWraper">
+                                    <div className="postInputWraper">
+                                        <Input
+                                            value={commentText}
+                                            onChange={this.updateInputValue}
+                                            type="text"
+                                            placeholder="Write a post..."
+                                            fluid
+                                        />
+                                    </div>
+                                    <div className="postBtnWraper">
+                                        <Button
+                                            fluid
+                                            onClick={this.postReplyComment}
+                                            className="blue-bordr-btn-round-def postButton"
+                                        >
+                                            Reply
+                                        </Button>
+                                    </div>
+                                </div>
                             )}
 
                     </Comment.Actions>
@@ -275,6 +281,12 @@ ActivityDetails.defaultProps = {
     name: '',
     type: '',
     userId: null,
+    userInfo: {
+        attributes: {
+            avatar: '',
+            displayName: '',
+        },
+    },
 };
 
 ActivityDetails.propTypes = {
@@ -297,12 +309,19 @@ ActivityDetails.propTypes = {
     name: string,
     type: string,
     userId: number,
+    userInfo: {
+        attributes: {
+            avatar: string,
+            displayName: string,
+        },
+    },
 };
 
 function mapStateToProps(state) {
     return {
         disableLike: state.group.disableLike,
         groupComments: state.group.groupComments,
+        groupDetails: state.group.groupDetails,
         userInfo: state.user.info,
     };
 }

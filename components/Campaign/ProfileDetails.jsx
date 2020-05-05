@@ -1,12 +1,17 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { Fragment } from 'react';
 import {
+    Card,
     Container,
     Grid,
+    Image,
+    Header,
     Tab,
 } from 'semantic-ui-react';
+import ReactHtmlParser from 'react-html-parser';
 
 import ImageGallery from '../shared/ImageGallery';
+import noDataImg from '../../static/images/noresults.png';
 
 import SupportingGroups from './SupportingGroups';
 
@@ -19,8 +24,9 @@ function ProfileDetails(props) {
                     campaignDetails: {
                         attributes: {
                             about,
-                            videoDirectLink,
-                            short,
+                            videoPlayerLink,
+                            formattedShort,
+                            formattedImpact,
                         },
                     },
                     campaignImageGallery,
@@ -29,50 +35,99 @@ function ProfileDetails(props) {
                 if (campaignImageGallery) {
                     campaignImageGallery.forEach((singleImage) => {
                         const singleImagePropObj = {};
-                        singleImagePropObj.src = singleImage.attributes.assetUrl;
+                        singleImagePropObj.src = singleImage.attributes.originalUrl;
                         singleImagePropObj.thumbnail = singleImage.attributes.assetUrl;
-                        singleImagePropObj.thumbnailHeight = 174;
-                        singleImagePropObj.thumbnailWidth = 320;
+                        singleImagePropObj.thumbnailHeight = 196;
+                        singleImagePropObj.thumbnailWidth = 196;
                         imageArray.push(singleImagePropObj);
                     });
                 }
+                const noDataState = () => {
+                    return (
+                        <Card fluid className="noDataCard rightImg">
+                            <Card.Content>
+                                <Image
+                                    floated="right"
+                                    src={noDataImg}
+                                />
+                                <Card.Header className="font-s-14">
+                                    <Header as="h4">
+                                        <Header.Content>
+                                        Please check back later
+                                            <Header.Subheader>It looks like we haven’t yet received this information.</Header.Subheader>
+                                        </Header.Content>
+                                    </Header>
+                                </Card.Header>
+                            </Card.Content>
+                        </Card>
+                    );
+                };
                 return (
                     <Tab.Pane attached={false}>
                         <Container>
-                            <Grid>
-                                {short}
-                            </Grid>
-                            <Grid>
-                                <div className="mt-1">
-                                    <embed
-                                        title="video"
-                                        // width="50%"
-                                        // height="50%"
-                                        src={videoDirectLink}
-                                    />
-                                </div>
-                            </Grid>
-                            <Grid>
-                                {/* <div className="mt-1"> */}
-                                <ImageGallery
-                                    imagesArray={imageArray}
-                                    enableImageSelection={false}
-                                />
-                                {/* </div> */}
-                                
-                            </Grid>
+
+                            {
+                                (!videoPlayerLink && !formattedShort && !formattedImpact && imageArray.length === 0) ? (
+                                    <Grid>
+                                        <Grid.Row>
+                                            <Grid.Column width={16}>
+                                                {noDataState()}
+                                            </Grid.Column>
+                                        </Grid.Row>
+                                    </Grid>
+                                ) : (
+                                    <Fragment>
+                                        <Grid>
+                                            <Grid.Row>
+                                                <Grid.Column width={16}>
+                                                    { ReactHtmlParser(formattedShort) }
+                                                </Grid.Column>
+                                            </Grid.Row>
+                                        </Grid>
+                                        <Grid>
+                                            <Grid.Row>
+                                                <Grid.Column width={16}>
+                                                    { ReactHtmlParser(formattedImpact) }
+                                                </Grid.Column>
+                                            </Grid.Row>
+                                        </Grid>
+                                        <Grid>
+                                            <Grid.Row>
+                                                <Grid.Column width={16}>
+                                                    <div className="mb-3 videoWrapper text-center">
+                                                        <embed
+                                                            title="video"
+                                                            src={videoPlayerLink}
+                                                            className="responsiveVideo"
+                                                        />
+                                                    </div>
+                                                </Grid.Column>
+                                            </Grid.Row>
+                                        </Grid>
+                                        <Grid>
+                                            <Grid.Row>
+                                                <Grid.Column width={16}>
+                                                    <ImageGallery
+                                                        imagesArray={imageArray}
+                                                        enableImageSelection={false}
+                                                    />
+                                                </Grid.Column>
+                                            </Grid.Row>
+                                        </Grid>
+                                    </Fragment>
+                                )
+                            }
                         </Container>
 
                     </Tab.Pane>
                 );
             },
         },
-    ];
-    if (props.isAuthenticated) {
-        panes.push({
+        {
             menuItem: 'Giving Groups supporting this Campaign',
             render: () => {
                 const {
+                    campaignDetails,
                     campaignSubGroupDetails,
                     campaignSubGroupsShowMoreUrl,
                     seeMoreLoaderStatus,
@@ -82,6 +137,7 @@ function ProfileDetails(props) {
                 return (
                     <Tab.Pane attached={false}>
                         <SupportingGroups
+                            campaignDetails={campaignDetails}
                             campaignSubGroupDetails={campaignSubGroupDetails}
                             campaignSubGroupsShowMoreUrl={campaignSubGroupsShowMoreUrl}
                             seeMoreLoaderStatus={seeMoreLoaderStatus}
@@ -91,8 +147,8 @@ function ProfileDetails(props) {
                     </Tab.Pane>
                 );
             },
-        });
-    }
+        },
+    ];
     return (
         <Container>
             <div className="charityTab">

@@ -1,3 +1,4 @@
+/* eslint-disable import/exports-last */
 import _ from 'lodash';
 
 import coreApi from '../services/coreApi';
@@ -7,10 +8,11 @@ import logger from '../helpers/logger';
 
 export const actionTypes = {
     USER_DASHBOARD: 'USER_DASHBOARD',
+    USER_FRIEND_EMAIL: 'USER_FRIEND_EMAIL',
     USER_FRIENDS: 'USER_FRIENDS',
+    USER_HIDE_RECOMMENDATION: 'USER_HIDE_RECOMMENDATION',
     USER_RECOMMENDATIONS: 'USER_RECOMMENDATIONS',
     USER_STORIES: 'USER_STORIES',
-    USER_FRIEND_EMAIL: 'USER_FRIEND_EMAIL',
 };
 
 const getPaginatedData = (url, type, dispatch) => {
@@ -58,8 +60,12 @@ const getFriendsList = (dispatch, email) => {
         type: actionTypes.USER_FRIENDS,
     };
 
-    graphApi.get(`/user/myfriends?userid=${email}&page[number]=1&page[size]=6&status=accepted`, { params: {
+    graphApi.get(`/user/myfriends`, { params: {
         dispatch,
+        'page[number]': 1,
+        'page[size]': 6,
+        status: 'accepted',
+        userid: email,
         uxCritical: true,
     } }).then(
         (result) => {
@@ -70,9 +76,7 @@ const getFriendsList = (dispatch, email) => {
         },
     ).catch((error) => {
         fsa.error = error;
-        logger.error(' ->>>> getFriendsList API failed');
     }).finally(() => {
-        logger.debug('[Debug] -> getFriendsList API finally block and dispatching');
         dispatch(fsa);
     });
 };
@@ -99,9 +103,7 @@ const getRecommendationList = (dispatch, url) => {
         },
     ).catch((error) => {
         fsa.error = error;
-        logger.error('->>>> getRecommendationList API failed');
     }).finally(() => {
-        logger.debug('[Debug] -> getRecommendationList API finally block and dispatching');
         dispatch(fsa);
     });
 };
@@ -124,21 +126,47 @@ const getStoriesList = (dispatch, url) => {
         },
     ).catch((error) => {
         fsa.error = error;
-        logger.error(' ->>>> getStoriesList API failed');
     }).finally(() => {
-        logger.debug('[Debug] -> getStoriesList API finally block and dispatching');
         dispatch(fsa);
     });
 };
 
-const storeEmailIdToGive = (dispatch, email) => {
+const storeEmailIdToGive = (dispatch, email, name) => {
     const fsa = {
         payload: {
             email,
+            name,
         },
         type: actionTypes.USER_FRIEND_EMAIL,
     };
     dispatch(fsa);
+};
+
+const hideRecommendations = (dispatch, sourceUserId, hideEntityId, type) => {
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.USER_HIDE_RECOMMENDATION,
+    };
+    const hideEntities = [];
+    hideEntities.push(hideEntityId);
+    const bodyData = {
+        hide_entity_ids: hideEntities,
+        user_id: Number(sourceUserId),
+    };
+    return graphApi.post(`/core/updateUser/hide/${type}`, bodyData).then(
+        (result) => {
+            fsa.payload = {
+                data: result.data,
+            };
+            const url = `/recommend/all?userid=${Number(sourceUserId)}&page[number]=1&page[size]=9`;
+            getRecommendationList(dispatch, url);
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    });
 };
 
 export {
@@ -148,4 +176,5 @@ export {
     getRecommendationList,
     getStoriesList,
     storeEmailIdToGive,
+    hideRecommendations,
 };

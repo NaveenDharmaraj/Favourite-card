@@ -4,44 +4,57 @@ import {
     Dropdown,
     Icon,
     Menu,
+    Image,
 } from 'semantic-ui-react';
+import getConfig from 'next/config';
 
 import { Link } from '../../../../routes';
+import searchIcon from '../../../../static/images/icons/icon-search.svg';
+
+const { publicRuntimeConfig } = getConfig();
+
+const {
+    CORP_DOMAIN,
+    HELP_CENTRE_URL,
+} = publicRuntimeConfig;
 
 const NonAuthHeader = () => (
     <Fragment>
         <Menu.Menu className="left-menu">
-            <Menu.Item as="a" to="https://github.com">
+            <Menu.Item as="a" href={`${CORP_DOMAIN}/how-it-works/`}>
                 How it works
             </Menu.Item>
-            <Dropdown item text='About'>
+            <Dropdown item text="About">
                 <Dropdown.Menu>
-                    <Dropdown.Item text='Press'/>
-                    <Dropdown.Item text='Charitable Impact ' />
-                    <Dropdown.Item text='Careers' />
-                    <Dropdown.Item text='Foundation' />
+                    <Dropdown.Item as="a" href={`${CORP_DOMAIN}/who-we-are/`} text="Who we are"/>
+                    <Dropdown.Item as="a" href={`${CORP_DOMAIN}/foundation/`} text="Charitable Impact Foundation" />
+                    <Dropdown.Item as="a" href={`${CORP_DOMAIN}/fees/`} text="Fees" />
+                    <Dropdown.Item as="a" href={`${CORP_DOMAIN}/careers/`} text="Careers" />
+                    <Dropdown.Item as="a" href={`${CORP_DOMAIN}/press/`} text="Press" />
                 </Dropdown.Menu>
             </Dropdown>
-            <Menu.Item as="a" to="https://github.com">
-                Support
-            </Menu.Item>
-            <Menu.Item as="a" to="https://github.com">
+            <Dropdown item text="Support">
+                <Dropdown.Menu>
+                    <Dropdown.Item as="a" href={`${HELP_CENTRE_URL}`} text="Help Centre"/>
+                    <Dropdown.Item as="a" href={`${CORP_DOMAIN}/contact/`} text="Contact us" />
+                </Dropdown.Menu>
+            </Dropdown>
+            <Menu.Item as="a" href="/blog">
                 Blog
             </Menu.Item>
         </Menu.Menu>
         <Menu.Menu position="right btn-wraper">
-            <Link route='/search'>
-                <Menu.Item as="a" to="" className="login-btn">
-                    <Icon name='search'/>
-                    Explore
+            <Link route="/search">
+                <Menu.Item as="a" to="" className="login-btn searchImg">
+                    <Image src={searchIcon} />
                 </Menu.Item>
             </Link>
-            <Link route='/users/login'>
+            <Link route="/users/login">
                 <Menu.Item as="a" to="" className="login-btn">
                     Login
                 </Menu.Item>
             </Link>
-            <Link route='/users/new'>
+            <Link route="/users/new">
                 <Menu.Item className="signup">
                     <Button primary>Sign Up</Button>
                 </Menu.Item>

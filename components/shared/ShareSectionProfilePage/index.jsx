@@ -50,11 +50,10 @@ class ShareDetails extends React.Component {
         } else {
             targetId = profileDetails.id
         }
-        if (profileDetails.attributes.following) {
-            unfollowProfile(dispatch, userId, targetId, profileDetails.type);
-        } else {
-            followProfile(dispatch, userId, targetId, profileDetails.type);
-        }
+        const likeFlag = (profileDetails.type === 'beneficiaries') ? profileDetails.attributes.following : profileDetails.attributes.liked;
+
+        (likeFlag) ? unfollowProfile(dispatch, userId, targetId, profileDetails.type) : followProfile(dispatch, userId, targetId, profileDetails.type);
+
     }
 
     handleOnClick(event, data) {
@@ -81,13 +80,13 @@ class ShareDetails extends React.Component {
         switch (data.id) {
             case 'twitter':
                 url=encodedUrl;
-                title=encodeURIComponent(`Check out ${name} on @wearechimp.`);
-                window.open('https://twitter.com/share?url='+url+'&text='+title,'sharer','toolbar=0,location=0,status=0,width='+width+',height='+height+',top='+top+',left='+left);
+                title=encodeURIComponent(`Check out ${name} on @wearecharitable.`);
+                window.open('https://twitter.com/share?url='+url+'&text='+title,'_blank');
                 break;
             case 'facebook':
                 url=encodedUrl;
                 title = encodeURIComponent(`Give to any canadian ${type}`);
-                window.open('http://www.facebook.com/sharer.php?u='+url+'&t='+title,'sharer','toolbar=0,location=0,status=0,width='+width+',height='+height+',top='+top+',left='+left);
+                window.open('http://www.facebook.com/sharer.php?u='+url+'&t='+title,'_blank');
                 break;
             default:
                 break;
@@ -104,22 +103,34 @@ class ShareDetails extends React.Component {
         const {
             profileDetails,
             deepLinkUrl,
+            isAuthenticated,
         } = this.props;
-        const inputValue = (!_.isEmpty(deepLinkUrl)) ? deepLinkUrl.attributes["short-link"] : '';
+        const inputValue = (!_.isEmpty(deepLinkUrl)) ? deepLinkUrl.attributes["short-link"] : '';0.
+
         return (
-            <Grid.Column mobile={16} tablet={6} computer={6}>
+            <Grid.Column mobile={16} tablet={4} computer={5}>
                 <div className="profile-social-wraper">
                     <div className="profile-social-links">
                         <List horizontal>
-                            <List.Item as="a">
+                            { isAuthenticated && (<List.Item as="a">
+                                {(profileDetails.type ==='beneficiaries') ? (
                                 <Icon
                                     id="follow"
-                                    color={(profileDetails && profileDetails && profileDetails.attributes.following) ? "red" : "blue"}
-                                    name={(profileDetails && profileDetails && profileDetails.attributes.following) ? "heart outline" : "heart"}
+                                    color={(profileDetails && profileDetails && profileDetails.attributes.following) ? "red" : "outline"}
+                                    name={(profileDetails && profileDetails && profileDetails.attributes.following) ? "heart" : "heart"}
                                     onClick={this.handleFollow}
                                     disabled={this.props.disableFollow}
                                 />
-                            </List.Item>
+                                ) : (
+                                    <Icon
+                                    id="follow"
+                                    color={(profileDetails && profileDetails && profileDetails.attributes.liked) ? "red" : "outline"}
+                                    name={(profileDetails && profileDetails && profileDetails.attributes.liked) ? "heart" : "heart"}
+                                    onClick={this.handleFollow}
+                                    disabled={this.props.disableFollow}
+                                />
+                                )}
+                            </List.Item>)}
                             <List.Item as="a">
                                 <Icon
                                     id="twitter"
@@ -139,18 +150,18 @@ class ShareDetails extends React.Component {
                     <div className="share-link">
                         <Form>
                             <Form.Field>
-                                <label>Or share link</label>
+                                <label>Share link</label>
                                 <input
                                     value={inputValue}
                                     ref={(textarea) => this.textArea = textarea}
                                 />
                             </Form.Field>
-                            <Button
+                            {/* <Button
                                 className="transparent-btn-round small"
                                 onClick={this.handleCopyLink}
                             >
                                 Copy link
-                            </Button>
+                            </Button> */}
                         </Form>
                     </div>
                 </div>

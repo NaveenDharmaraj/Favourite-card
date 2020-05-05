@@ -1,10 +1,25 @@
 /* eslint-disable no-else-return */
 import _ from 'lodash';
+import getConfig from 'next/config';
 
 import coreApi from '../services/coreApi';
 import utilityApi from '../services/utilityApi';
 import graphApi from '../services/graphApi';
 
+const { publicRuntimeConfig } = getConfig();
+
+const {
+    BASIC_AUTH_KEY,
+} = publicRuntimeConfig;
+
+let BASIC_AUTH_HEADER = null;
+if (!_.isEmpty(BASIC_AUTH_KEY)) {
+    BASIC_AUTH_HEADER = {
+        headers: {
+            Authorization: `Basic ${BASIC_AUTH_KEY}`,
+        },
+    };
+}
 export const generatePayloadBodyForFollowAndUnfollow = (userId, id, type) => {
 
     let filterObj = {};
@@ -49,6 +64,7 @@ export const generatePayloadBodyForFollowAndUnfollow = (userId, id, type) => {
 };
 
 export const actionTypes = {
+    CLEAR_DATA_FOR_CAMPAIGNS: 'CLEAR_DATA_FOR_CAMPAIGNS',
     DEEP_LINK_URL: 'DEEP_LINK_URL',
     DISABLE_FOLLOW_BUTTON: 'DISABLE_FOLLOW_BUTTON',
     GET_CAMPAIGN_FROM_SLUG: 'GET_CAMPAIGN_FROM_SLUG',
@@ -62,20 +78,35 @@ export const actionTypes = {
     SUB_GROUP_LIST_LOADER: 'SUB_GROUP_LIST_LOADER',
 };
 
-export const getCampaignFromSlug = async (dispatch, slug) => {
+export const getCampaignFromSlug = async (dispatch, slug, token = null) => {
     dispatch({
         payload: {
             slugApiErrorStats: false,
         },
         type: actionTypes.SLUG_API_ERROR_STATUS,
     });
-    // return coreApi.get(`campaign/find_by_slug`, {
-    await coreApi.get(`campaigns/find_by_slug`, {
+    dispatch({
+        payload: {
+            campaignSubGroupDetails: [],
+        },
+        type: actionTypes.CLEAR_DATA_FOR_CAMPAIGNS,
+    });
+    const fullParams = {
         params: {
             dispatch,
+            findBySlug: true,
             slug,
             uxCritical: true,
         },
+    };
+    if (!_.isEmpty(token)) {
+        fullParams.headers = {
+            Authorization: `Bearer ${token}`,
+        };
+    }
+    // return coreApi.get(`campaign/find_by_slug`, {
+    await coreApi.get(`campaigns/find_by_slug`, {
+        ...fullParams,
     }).then(
         (result) => {
             dispatch({
@@ -90,9 +121,24 @@ export const getCampaignFromSlug = async (dispatch, slug) => {
                 },
                 type: actionTypes.GET_CAMPAIGN_FROM_SLUG,
             });
+            const fullParams = {
+                params: {
+                    dispatch,
+                    ignore401: true,
+                    uxCritical: true,
+                },
+            };
+            if (!_.isEmpty(token)) {
+                fullParams.headers = {
+                    Authorization: `Bearer ${token}`,
+                };
+            }
             // API call for subgroups
             if (result.data) {
-                coreApi.get(`${result.data.relationships.subGroups.links.related}?page[size]=9`).then(
+                coreApi.get(`${result.data.relationships.subGroups.links.related}?page[size]=9`,
+                    {
+                        ...fullParams,
+                    }).then(
                     (subGroupResult) => {
                         dispatch({
                             payload: {
@@ -108,12 +154,15 @@ export const getCampaignFromSlug = async (dispatch, slug) => {
                         });
                     },
                 ).catch((error) => {
-                    console.log(error);
+                    // console.log(error);
                 });
             }
             // API call for images
             if (result.data) {
-                coreApi.get(result.data.relationships.galleryImages.links.related).then(
+                coreApi.get(result.data.relationships.galleryImages.links.related,
+                    {
+                        ...fullParams,
+                    }).then(
                     (galleryImagesResult) => {
                         dispatch({
                             payload: {
@@ -123,12 +172,12 @@ export const getCampaignFromSlug = async (dispatch, slug) => {
                         });
                     },
                 ).catch((error) => {
-                    console.log(error);
+                    // console.log(error);
                 });
             }
         },
     ).catch((error) => {
-        console.log(error);
+        // console.log(error);
         dispatch({
             payload: {
                 slugApiErrorStats: true,
@@ -146,12 +195,18 @@ export const generateDeepLink = (url, dispatch) => {
         },
         type: actionTypes.DEEP_LINK_URL,
     };
-    utilityApi.get(url).then(
+    utilityApi.get(url, BASIC_AUTH_HEADER, {
+        params: {
+            dispatch,
+            ignore401: true,
+            uxCritical: true,
+        },
+    }).then(
         (result) => {
             fsa.payload.deepLink = result.data;
         },
     ).catch((error) => {
-        console.log(error);
+        // console.log(error);
     }).finally(() => dispatch(fsa));
 };
 
@@ -182,12 +237,17 @@ export const followProfile = (dispatch, userId, entityId, type) => {
             break;
     }
     const payloadObj = generatePayloadBodyForFollowAndUnfollow(userId, entityId, type);
-    graphApi.post(`core/create/relationship`, payloadObj).then(
+    graphApi.post(`core/create/relationship`, payloadObj, {
+        params: {
+            dispatch,
+            ignore401: true,
+        },
+    }).then(
         (result) => {
             fsa.payload.followStatus = true;
         },
     ).catch((error) => {
-        console.log(error);
+        // console.log(error);
     }).finally(() => {
         dispatch(fsa);
         dispatch(iconStatusFsa);
@@ -222,12 +282,17 @@ export const unfollowProfile = (dispatch, userId, entityId, type) => {
             break;
     }
     const payloadObj = generatePayloadBodyForFollowAndUnfollow(userId, entityId, type);
-    graphApi.post(`/users/deleterelationship`, payloadObj).then(
+    graphApi.post(`/users/deleterelationship`, payloadObj, {
+        params: {
+            dispatch,
+            ignore401: true,
+        },
+    }).then(
         (result) => {
             fsa.payload.followStatus = false;
         },
     ).catch((error) => {
-        console.log(error);
+        // console.log(error);
     }).finally(() => {
         dispatch(fsa);
         dispatch(iconStatusFsa);
@@ -235,8 +300,14 @@ export const unfollowProfile = (dispatch, userId, entityId, type) => {
     });
 };
 
-export const campaignSubGroupSeeMore = (url, dispatch) => {
-    return coreApi.get(url).then(
+export const campaignSubGroupSeeMore = (url, dispatch, isViewMore) => {
+    return coreApi.get(url, {
+        params: {
+            dispatch,
+            ignore401: true,
+            uxCritical: true,
+        },
+    }).then(
         (subGroupResult) => {
             dispatch({
                 payload: {
@@ -247,11 +318,12 @@ export const campaignSubGroupSeeMore = (url, dispatch) => {
             dispatch({
                 payload: {
                     campaignSubGroupDetails: subGroupResult,
+                    isViewMore,
                 },
                 type: actionTypes.GET_SUB_GROUPS_FOR_CAMPAIGN,
             });
         },
     ).catch((error) => {
-        console.log(error);
+        // console.log(error);
     });
 };

@@ -47,6 +47,18 @@ const userProfile = (state = {}, action) => {
                 userCausesList: action.payload.userCausesList,
             };
             break;
+        case 'USER_PROFILE_LOCATION_SEARCH':
+            newState = {
+                ...state,
+                locationOptions: action.payload.data,
+            };
+            break;
+        case 'USER_PROFILE_LOCATION_SEARCH_LOADER':
+            newState = {
+                ...state,
+                locationLoader: action.payload.locationLoader,
+            };
+            break;
         case 'USER_PROFILE_FOLLOWED_TAGS':
             newState = {
                 ...state,
@@ -72,10 +84,26 @@ const userProfile = (state = {}, action) => {
             };
             break;
         case 'USER_PROFILE_FIND_TAGS':
-            newState = {
-                ...state,
-                userFindTagsList: Object.assign({}, action.payload),
-            };
+            if (state.userFindTagsList && state.userFindTagsList.data && !action.payload.isSearch) {
+                newState = {
+                    ...state,
+                    loadedData: action.payload.loadedData,
+                    pageNumber: action.payload.pageNumber,
+                    recordCount: action.payload.recordCount,
+                    userFindTagsList: {
+                        ...state.userFindTagsList,
+                        data: state.userFindTagsList.data.concat(action.payload.data),
+                    },
+                };
+            } else {
+                newState = {
+                    ...state,
+                    loadedData: action.payload.loadedData,
+                    pageNumber: action.payload.pageNumber,
+                    recordCount: action.payload.recordCount,
+                    userFindTagsList: action.payload,
+                };
+            }
             break;
         case 'USER_PROFILE_INVITATIONS':
             newState = {
@@ -107,10 +135,85 @@ const userProfile = (state = {}, action) => {
                 userAcceptFriendRequestData: Object.assign({}, action.payload),
             };
             break;
-        case 'ADD_NEW_CREDIT_CARD_STATUS':
+        case 'USER_PROFILE_ADD_NEW_CREDIT_CARD_STATUS':
             newState = {
                 ...state,
                 newCreditCardApiCall: action.payload.newCreditCardApiCall,
+            };
+            break;
+        case 'USER_PROFILE_DEFAULT_TAX_RECEIPT':
+            newState = {
+                ...state,
+                userDefaultTaxReceipt: Object.assign({}, action.payload),
+            };
+            break;
+        case 'USER_PROFILE_SIGNUP_DEEPLINK':
+            newState = {
+                ...state,
+                userProfileSignUpDeeplink: Object.assign({}, action.payload),
+            };
+            break;
+        case 'USER_PROFILE_USERPROFILE_DEEPLINK':
+            newState = {
+                ...state,
+                userProfileProfilelink: Object.assign({}, action.payload),
+            };
+            break;
+        case 'USER_PROFILE_ADMIN_GROUP_LOAD_STATUS':
+            newState = {
+                ...state,
+                userProfileAdminGroupsLoadStatus: action.payload.userProfileAdminGroupsLoadStatus,
+            };
+            break;
+        case 'USER_PROFILE_MEMBER_GROUP_LOAD_STATUS':
+            newState = {
+                ...state,
+                userProfileMemberGroupsLoadStatus: action.payload.userProfileMemberGroupsLoadStatus,
+            };
+            break;
+        case 'USER_PROFILE_FAVOURITES_LOAD_STATUS':
+            newState = {
+                ...state,
+                userProfileFavouritesLoadStatus: action.payload.userProfileFavouritesLoadStatus,
+            };
+            break;
+        case 'USER_PROFILE_CHARITABLE_INTERESTS_LOAD_STATUS':
+            newState = {
+                ...state,
+                userProfileCharitableInterestsLoadStatus: action.payload.userProfileCharitableInterestsLoadStatus,
+            };
+            break;
+        case 'USER_PROFILE_RESET_TAG_LIST':
+            newState = {
+                ...state,
+                loadedData: 0,
+                pageNumber: 1,
+                userFindTagsList: {},
+            };
+            break;
+        case 'USER_PROFILE_GET_EMAIL_LIST':
+            newState = {
+                ...state,
+                emailDetailList: action.payload.emailDetailList,
+            };
+            break;
+        case 'USER_PROFILE_ADD_DUPLICATE_EMAIL_ERROR':
+            newState = {
+                ...state,
+                errorMessageTitle: action.payload.errorMessageTitle,
+                showEmailError: action.payload.showEmailError,
+            };
+            break;
+        case 'USER_PROFILE_SHOW_EMAIL_LOADER':
+            newState = {
+                ...state,
+                showEmailLoader: action.payload.showEmailLoader,
+            };
+            break;
+        case 'USER_PROFILE_SHOW_ADD_BUTTON_LOADER':
+            newState = {
+                ...state,
+                showAddButtonLoader: action.payload.showAddButtonLoader,
             };
             break;
         default:

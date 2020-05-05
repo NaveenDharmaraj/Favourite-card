@@ -4,13 +4,13 @@
     "giveGroupToEqualGiveFrom": "The source and destination group cannot be the same",
     "amountLabel": "Amount",
     "giveFromLabel": "Give from",
-    "donorGiveFromPopup": "We’re asking you to select an account because you administer more than one CHARITABLE IMPACT Account.  Note that Group accounts with a Matching Campaign are not listed because they can only give directly to a charity.",
+    "donorGiveFromPopup": "You can give from your personal account or those that you administer.  Note that Group accounts with a Matching Campaign are not listed because they can only give directly to a charity.",
     "groupToGive":"Select a Group to Give",
     "amountPlaceHolder": "Enter amount",
     "preloadedAccountPlaceHolder": "Your list of accounts is loading. This may take a moment",
     "accountPlaceHolder": "Select a source account",
     "amountLessOrInvalid": "Please choose an amount of ${{minAmount}} or more",
-    "invalidMaxAmountError":  "$9,999 is the maximum we can process here. For larger amounts, please get in touch with us: hello@chimp.net or 1-877-531-0580.",
+    "invalidMaxAmountError":  "$9,999.00 is the maximum we can process here per transaction. For larger amounts, please get in touch with us: &nbsp <a href = \"mailto: hello@charitableimpact.com\">hello@charitableimpact.com</a> &nbsp or 1-877-531-0580.",
     "blankError":  "Can't be blank",
     "giftTypeSingle": "This is a one time gift"
 

@@ -16,7 +16,7 @@ import ProfileDetails from './ProfileDetails';
 const actionTypes = {
     SEE_MORE_LOADER: 'SEE_MORE_LOADER',
 };
-class CharityProfileWrapper extends React.Component {
+class CampaignProfileWrapper extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -50,9 +50,11 @@ class CharityProfileWrapper extends React.Component {
                 campaignDetails,
                 dispatch,
             } = this.props;
+            let deepLinkApiUrl = `deeplink?profileType=campaignprofile&profileId=${campaignDetails.attributes.groupId}`;
             if (currentUser && currentUser.id) {
-                generateDeepLink(`deeplink?profileType=groupprofile&sourceId=${currentUser.id}&profileId=${campaignDetails.id}`, dispatch);
+                deepLinkApiUrl += `sourceId=${currentUser.id}`;
             }
+            generateDeepLink(deepLinkApiUrl, dispatch);
         }
     }
 
@@ -68,7 +70,7 @@ class CharityProfileWrapper extends React.Component {
                 },
                 type: actionTypes.SEE_MORE_LOADER,
             });
-            campaignSubGroupSeeMore(campaignSubGroupsShowMoreUrl, dispatch);
+            campaignSubGroupSeeMore(campaignSubGroupsShowMoreUrl, dispatch, true);
         }
     }
 
@@ -89,6 +91,12 @@ class CharityProfileWrapper extends React.Component {
             subGroupListLoader,
             isAuthenticated,
         } = this.props;
+        let bannerStyle = {
+            minHeight: '390px',
+        };
+        if (campaignDetails.attributes.banner) {
+            bannerStyle.backgroundImage = `url( ${campaignDetails.attributes.banner})`;
+        }
         return (
             <React.Fragment>
                 <div className="top-breadcrumb">
@@ -96,8 +104,7 @@ class CharityProfileWrapper extends React.Component {
                         pathDetails={pathDetails}
                     />
                 </div>
-                <div className="profile-header-image campaign" />
-
+                <div className="profile-header-image campaign" style={bannerStyle} />
                 {campaignDetails && (
                     <ProfilePageHead
                         pageDetails={campaignDetails}
@@ -135,4 +142,4 @@ class CharityProfileWrapper extends React.Component {
     }
 }
 
-export default CharityProfileWrapper;
+export default CampaignProfileWrapper;

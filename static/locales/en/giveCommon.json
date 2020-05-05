@@ -15,12 +15,11 @@
     },
     "errorMessages": {
         "amountLessOrInvalid": "Please choose an amount of ${{minAmount}} or more",
-        "invalidMaxAmountError":  "$9,999 is the maximum we can process here. For larger amounts, please get in touch with us: hello@chimp.net or 1-877-531-0580.",
+        "invalidMaxAmountError":  "$9,999.00 is the maximum we can process here per transaction. For larger amounts, please get in touch with us: &nbsp <a href = \"mailto: hello@charitableimpact.com\">hello@charitableimpact.com</a> &nbsp or 1-877-531-0580.",
         "invalidLengthError": "is too long (maximum is 1000 characters)",
         "invalidNoteTextError":  "Only standard letters and numbers are allowed here",
         "isAmountCoverGive": "Sorry, you can't give more money than what is in your account.",
         "giveAmountGreaterThanBalance": "Sorry, you can't give more money than what is in your account."
-
     },
     "breadCrumb" : {
         "new" : "Add money",
@@ -31,9 +30,10 @@
     },
     "creditCard": {
         "testCreditCardListMessage": "More information on test accounts can be found at Stripe.",
-        "cardNumberLabel": "Credit card number",
-        "nameOnCardLabel": "Name on Card",
-        "expiryDateLabel": "Expiration date",
+        "cardNumberLabel": "Card number",
+        "nameOnCardLabel": "Name on card",
+        "nameOnCardPlaceholder": "Your name",
+        "expiryDateLabel": "Expiry",
         "cvvLabel": "CVV"
     },
     "creditCardErrorMessages": {
@@ -55,10 +55,10 @@
     "useNewCreditCardLabel": "Use a new credit card",
     "infoToShareAnonymous": "Give anonymously",
     "change":"Change ",
-    "startsOn": "Starts On",
+    "startsOn": "Starts on",
     "emptyMessage" : "No content ",
     "commonOr": "or ",
-    "commonMakeChanges" : "make changes ",
+    "commonMakeChanges" : "make changes. ",
     "doNotMatchLabel": "Do not match "
 
 

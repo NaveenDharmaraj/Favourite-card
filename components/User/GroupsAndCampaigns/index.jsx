@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import {
     Container,
     Grid,
@@ -16,6 +16,9 @@ import getConfig from 'next/config';
 import {
     getInitalGivingGroupsAndCampaigns,
 } from '../../../actions/user';
+import {
+    getUserProfileBasic,
+} from '../../../actions/userProfile';
 import { Link } from '../../../routes';
 import PlaceholderGrid from '../../shared/PlaceHolder';
 import noDataImgCampain from '../../../static/images/campaignprofile_nodata_illustration.png';
@@ -23,10 +26,12 @@ import noDataggManage from '../../../static/images/givinggroupsyoumanage_nodata_
 import noDataggJoin from '../../../static/images/givinggroupsyoujoined_nodata_illustration.png';
 
 import GroupsAndCampaignsList from './GroupsAndCampaignsList';
+import PrivacySetting from '../../shared/Privacy';
 
 const { publicRuntimeConfig } = getConfig();
 
 const {
+    HELP_CENTRE_URL,
     RAILS_APP_URL_ORIGIN,
 } = publicRuntimeConfig;
 
@@ -38,6 +43,7 @@ class GroupsAndCampaigns extends React.Component {
             showloaderForAdministeredGroups: !props.administeredGroups,
             showloaderForCampaigns: !props.administeredCampaigns,
             showloaderForMemberGroups: !props.groupsWithMemberships,
+            showInitialButton: (_.isEmpty(props.administeredGroups) || (!_.isEmpty(props.administeredGroups) && _.isEmpty(props.administeredGroups.data))),
         };
     }
 
@@ -47,6 +53,7 @@ class GroupsAndCampaigns extends React.Component {
             dispatch,
         } = this.props;
         getInitalGivingGroupsAndCampaigns(dispatch, currentUser.id);
+        getUserProfileBasic(dispatch, currentUser.attributes.email, currentUser.id, currentUser.id);
     }
 
     componentDidUpdate(prevProps) {
@@ -59,12 +66,14 @@ class GroupsAndCampaigns extends React.Component {
             showloaderForAdministeredGroups,
             showloaderForCampaigns,
             showloaderForMemberGroups,
+            showInitialButton,
         } = this.state;
         if (!_.isEqual(this.props, prevProps)) {
             if (!_.isEqual(administeredCampaigns, prevProps.administeredCampaigns)) {
                 showloaderForCampaigns = false;
             }
             if (!_.isEqual(administeredGroups, prevProps.administeredGroups)) {
+                showInitialButton = !(!_.isEmpty(administeredGroups) && !_.isEmpty(administeredGroups.data));
                 showloaderForAdministeredGroups = false;
             }
             if (!_.isEqual(groupsWithMemberships, prevProps.groupsWithMemberships)) {
@@ -74,6 +83,7 @@ class GroupsAndCampaigns extends React.Component {
                 showloaderForAdministeredGroups,
                 showloaderForCampaigns,
                 showloaderForMemberGroups,
+                showInitialButton,
             });
         }
     }
@@ -82,6 +92,8 @@ class GroupsAndCampaigns extends React.Component {
         const {
             dispatch,
             displayError,
+            leaveButtonLoader,
+            closeLeaveModal,
         } = this.props;
         if (showLoader) {
             return (
@@ -95,6 +107,8 @@ class GroupsAndCampaigns extends React.Component {
                     displayData={typeData}
                     dispatch={dispatch}
                     errorMessage={displayError}
+                    closeLeaveModal={closeLeaveModal}
+                    leaveButtonLoader={leaveButtonLoader}
                 />
             );
         } if (!_.isEmpty(typeData) && _.isEmpty(typeData.data)) {
@@ -143,7 +157,7 @@ class GroupsAndCampaigns extends React.Component {
                                                 </Header.Content>
                                             </Header>
                                             <div>
-                                                <Link route="/search">
+                                                <Link route="/search?result_type=Group" passHref>
                                                     <Button className="white-btn-rounded-def">Find a Giving Group</Button>
                                                 </Link>
                                             </div>
@@ -197,12 +211,22 @@ class GroupsAndCampaigns extends React.Component {
             showloaderForCampaigns,
             showloaderForAdministeredGroups,
             showloaderForMemberGroups,
+            showInitialButton,
         } = this.state;
         const {
             administeredGroups,
             administeredCampaigns,
             groupsWithMemberships,
+            userProfileBasicData,
         } = this.props;
+        let givingGroupsMemberVisible = 0;
+        let givingGroupsManageVisible = 0;
+        if (!_.isEmpty(userProfileBasicData)) {
+            givingGroupsMemberVisible = userProfileBasicData.data[0].attributes.giving_group_member_visibility;
+            givingGroupsManageVisible = userProfileBasicData.data[0].attributes.giving_group_manage_visibility;
+        }
+        const memberPrivacyColumn = 'giving_group_member_visibility';
+        const managePrivacyColumn = 'giving_group_manage_visibility';
         return (
             <Container>
                 <div className="grpcampHeader">
@@ -210,14 +234,24 @@ class GroupsAndCampaigns extends React.Component {
                         <div className="grpcampBannerContainer">
                             <div className="grpcampBannerTxt">
                                 <Header as="h3" icon>
-                                    Giving Groups & Campaigns
+                                    Give together
                                     <Header.Subheader>
-                                    You can give more as a part of group, and you can raise more when it’s easy to manage.
+                                        With a Giving Group, multiple people can combine forces, pool or raise money, and support one or more charities together.
                                     </Header.Subheader>
                                 </Header>
-                                <a href={`${RAILS_APP_URL_ORIGIN}/groups/new`}>
-                                    <Button fluid className="success-btn-rounded-def">Create a new Group</Button>
-                                </a>
+                                <Fragment>
+                                    { showInitialButton ? (
+                                        <a href={`${HELP_CENTRE_URL}article/147-what-is-a-giving-group`}>
+                                            <Button fluid className="success-btn-rounded-def">Learn how to start a Giving Group</Button>
+                                        </a>
+                                        ) : (
+                                        <a href={`${RAILS_APP_URL_ORIGIN}/groups/new`}>
+                                            <Button fluid className="success-btn-rounded-def">Create a new Giving Group</Button>
+                                        </a>
+                                    )
+                                    }
+                                </Fragment>
+
                             </div>
                         </div>
                     </div>
@@ -228,25 +262,51 @@ class GroupsAndCampaigns extends React.Component {
                     </div> */}
                 </div>
                 <div className="pt-2 pb-2">
-                    <p className="bold font-s-16">Giving Groups you manage</p>
+                    <p
+                        className="bold font-s-16"
+                    >
+                        Giving Groups you manage
+                        <span className="font-w-normal">
+                            <PrivacySetting
+                                columnName={managePrivacyColumn}
+                                columnValue={givingGroupsManageVisible}
+                            />
+                        </span>
+                    </p>
                 </div>
                 <div className="pt-1 pb-3">
                     {this.renderList(showloaderForAdministeredGroups, 'administeredGroups', administeredGroups)}
                 </div>
                 <Divider />
                 <div className="pt-2 pb-2">
-                    <p className="bold font-s-16">Giving Groups you have joined</p>
+                    <p
+                        className="bold font-s-16"
+                    >
+                        Giving Groups you have joined
+                        <span className="font-w-normal">
+                            <PrivacySetting
+                                columnName={memberPrivacyColumn}
+                                columnValue={givingGroupsMemberVisible}
+                            />
+                        </span>
+                    </p>
                 </div>
                 <div className="pt-1 pb-3">
                     {this.renderList(showloaderForMemberGroups, 'groupsWithMemberships', groupsWithMemberships)}
                 </div>
                 <Divider />
-                <div className="pt-2 pb-2">
-                    <p className="bold font-s-16">Campaigns you manage</p>
-                </div>
-                <div className="pt-1 pb-3">
-                    {this.renderList(showloaderForCampaigns, 'administeredCampaigns', administeredCampaigns)}
-                </div>
+                {administeredCampaigns && administeredCampaigns.data && (administeredCampaigns.data.length > 0 ?
+                    (
+                        <Fragment>
+                            <div className="pt-2 pb-2">
+                                <p className="bold font-s-16">Campaigns you manage</p>
+                            </div>
+                            <div className="pt-1 pb-3">
+                                {this.renderList(showloaderForCampaigns, 'administeredCampaigns', administeredCampaigns)}
+                            </div>
+                        </Fragment>
+                    ) : null)
+                }
             </Container>
         );
     }
@@ -256,9 +316,12 @@ function mapStateToProps(state) {
     return {
         administeredCampaigns: state.user.administeredCampaigns,
         administeredGroups: state.user.administeredGroups,
+        closeLeaveModal: state.user.closeLeaveModal,
         currentUser: state.user.info,
         displayError: state.user.leaveErrorMessage,
         groupsWithMemberships: state.user.groupsWithMemberships,
+        leaveButtonLoader: state.user.leaveButtonLoader,
+        userProfileBasicData: state.userProfile.userProfileBasicData,
     };
 }
 

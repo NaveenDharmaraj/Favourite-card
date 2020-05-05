@@ -11,6 +11,7 @@ export const donationDefaultProps = {
             donationMatch: {
                 value: null,
             },
+            formatedDonationAmount: '',
             giftType: {
                 value: 0,
             },
@@ -40,10 +41,16 @@ export const beneficiaryDefaultProps = {
             creditCard: {
                 value: null,
             },
+            dedicateGift: {
+                dedicateType: '',
+                dedicateValue: '',
+            },
             donationAmount: '',
             donationMatch: {
                 value: null,
             },
+            formatedCharityAmount: '',
+            formatedDonationAmount: '',
             giftType: {
                 value: 0,
             },
@@ -80,10 +87,16 @@ export const groupDefaultProps = {
             creditCard: {
                 value: null,
             },
+            dedicateGift: {
+                dedicateType: '',
+                dedicateValue: '',
+            },
             donationAmount: '',
             donationMatch: {
                 value: null,
             },
+            formatedDonationAmount: '',
+            formatedGroupAmount: '',
             giftType: {
                 value: 0,
             },
@@ -128,6 +141,8 @@ export const p2pDefaultProps = {
             donationMatch: {
                 value: null,
             },
+            formatedDonationAmount: '',
+            formatedP2PAmount: '',
             // P2P gift type is always 0
             giftType: {
                 value: 0,
@@ -148,6 +163,8 @@ export const p2pDefaultProps = {
             recipients: [],
             totalP2pGiveAmount: 0,
             userInteracted: false,
+            emailMasked: false,
+            recipientName: '',
         },
         nextSteptoProceed: {},
         selectedTaxReceiptProfile: {},

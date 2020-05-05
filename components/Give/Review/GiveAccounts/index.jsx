@@ -38,7 +38,7 @@ const i18n = {
 const cardProcessors = {
     amex: 'amex',
     discover: 'discover',
-    mastercard: 'mastercard',
+    mastercard: 'cc mastercard',
     stripe: 'stripe',
     visa: 'cc visa',
 };

@@ -1,4 +1,5 @@
 import _isEmpty from 'lodash/isEmpty';
+import Bowser from 'bowser';
 
 const isFalsy = (val) => {
     const falsyArray = [
@@ -18,17 +19,17 @@ const distanceOfTimeInWords = (from) => {
     let distanceInMinutes = Math.floor(distanceInSeconds / 60);
     const tense = distanceInSeconds < 0 ? ' from now' : ' ago';
     distanceInMinutes = Math.abs(distanceInMinutes);
-    if (distanceInMinutes === 0) { return `less than a minute${tense}`; }
-    if (distanceInMinutes === 1) { return `a minute${tense}`; }
+    if (distanceInMinutes === 0) { return `Less than a minute${tense}`; }
+    if (distanceInMinutes === 1) { return `A minute${tense}`; }
     if (distanceInMinutes < 45) { return `${distanceInMinutes} minutes${tense}`; }
-    if (distanceInMinutes < 90) { return `about an hour${tense}`; }
-    if (distanceInMinutes < 1440) { return `about ${Math.floor(distanceInMinutes / 60)} hours${tense}`; }
-    if (distanceInMinutes < 2880) { return `a day${tense}`; }
+    if (distanceInMinutes < 90) { return `About an hour${tense}`; }
+    if (distanceInMinutes < 1440) { return `About ${Math.floor(distanceInMinutes / 60)} hours${tense}`; }
+    if (distanceInMinutes < 2880) { return `A day${tense}`; }
     if (distanceInMinutes < 43200) { return `${Math.floor(distanceInMinutes / 1440)} days${tense}`; }
-    if (distanceInMinutes < 86400) { return `about a month${tense}`; }
+    if (distanceInMinutes < 86400) { return `About a month${tense}`; }
     if (distanceInMinutes < 525960) { return `${Math.floor(distanceInMinutes / 43200)} months${tense}`; }
-    if (distanceInMinutes < 1051199) { return `about a year${tense}`; }
-    return `over ${Math.floor(distanceInMinutes / 525960)} years`;
+    if (distanceInMinutes < 1051199) { return `About a year${tense}`; }
+    return `Over ${Math.floor(distanceInMinutes / 525960)} years`;
 };
 
 /**
@@ -52,14 +53,32 @@ const renderText = (wordGroup, wordCount = 20) => {
     return null;
 };
 
+const renderTextByCharacter = (string, charCount = 100) => {
+    let str;
+    if (!_isEmpty(string)) {
+        str = string.split('');
+        if (!_isEmpty(str) && str.length > 0) {
+            if (str.length > charCount) {
+                return `${str.slice(0, charCount).join('')}...`;
+            }
+            return string;
+        }
+    }
+    return null;
+};
+const redirectIfNotUSer = (currentAccount, railAppOrgin) => {
+    if (!_isEmpty(currentAccount) && currentAccount.accountType !== 'personal' && typeof window !== 'undefined') {
+        const typeMap = {
+            charity: `admin/beneficiaries/${currentAccount.slug}`,
+            company: `companies/${currentAccount.slug}`,
+        };
+        window.location.href = `${railAppOrgin}/${typeMap[currentAccount.accountType]}`;
+    }
+};
+
 const getMainNavItems = (accountType, slug) => {
     const menuLinks = [];
     if (accountType === 'company') {
-        menuLinks.push({
-            location: `/companies/${slug}`,
-            name: 'Dashboard',
-            isExternal: true,
-        });
         menuLinks.push({
             location: `/companies/${slug}/match-requests/new`,
             name: 'Match Requests',
@@ -71,11 +90,6 @@ const getMainNavItems = (accountType, slug) => {
             isExternal: true,
         });
     } else if (accountType === 'charity') {
-        menuLinks.push({
-            location: `/admin/beneficiaries/${slug}`,
-            name: 'Dashboard',
-            isExternal: true,
-        });
         menuLinks.push({
             location: `/admin/beneficiaries/${slug}/eft`,
             name: 'Direct Deposit',
@@ -98,8 +112,8 @@ const getMainNavItems = (accountType, slug) => {
             isExternal: false,
         });
         menuLinks.push({
-            location: '/user/favorites',
-            name: 'Favorites',
+            location: '/user/favourites',
+            name: 'Favourites',
             isExternal: false,
         });
         menuLinks.push({
@@ -114,11 +128,116 @@ const getMainNavItems = (accountType, slug) => {
         });
     }
     return menuLinks;
-}
+};
+
+/**
+ * Returns isvalid which checks version of the browser.
+ *
+ * @param {object} userAgent gives details about browser.
+ * @return {boolean} isvalid which checks version of the browser
+ */
+const isValidBrowser = (userAgent) => {
+    // if (isFalsy(userAgent)) {
+    //     return true;
+    // }
+    const browser = Bowser.getParser(userAgent);
+    const browserversionList = {
+        desktop: {
+            Linux: {
+                Chrome: '>67',
+                Chromium: '>67',
+                Firefox: '>58',
+                'Internet Explorer': '>15',
+                'Microsoft Edge': '>17',
+                safari: '>11',
+            },
+            macos: {
+                Chrome: '>67',
+                Chromium: '>67',
+                Firefox: '>58',
+                'Internet Explorer': '>15',
+                'Microsoft Edge': '>17',
+                safari: '>11',
+            },
+            Windows: {
+                Chrome: '>67',
+                Chromium: '>67',
+                Firefox: '>58',
+                'Internet Explorer': '>15',
+                'Microsoft Edge': '>17',
+            },
+        },
+
+        mobile: {
+            android: {
+                Chrome: '>67',
+                Chromium: '>67',
+                Firefox: '>58',
+                'Internet Explorer': '>15',
+                'Microsoft Edge': '>17',
+            },
+            iOS: {
+                Chrome: '>67',
+                Chromium: '>67',
+                Firefox: '>58',
+                'Internet Explorer': '>15',
+                'Microsoft Edge': '>17',
+                safari: '>10',
+            },
+        },
+        tablet: {
+            android: {
+                Chrome: '>67',
+                Chromium: '>67',
+                Firefox: '>58',
+                'Internet Explorer': '>15',
+                'Microsoft Edge': '>17',
+            },
+            iOS: {
+                Chrome: '>67',
+                Chromium: '>67',
+                Firefox: '>58',
+                'Internet Explorer': '>15',
+                'Microsoft Edge': '>17',
+                safari: '>10',
+            },
+        },
+
+    };
+    let platform;
+    let os;
+    let currentBrowser;
+    let browserCheck;
+    let isvalid = true;
+    if (browser.parsedResult) {
+        if (browser.parsedResult.browser && isFalsy(browser.parsedResult.browser.version)) {
+            return false;
+        }
+        platform = browser.parsedResult.platform.type;
+        currentBrowser = browser.parsedResult.browser.name;
+        os = browser.parsedResult.os.name;
+    }
+    if (browserversionList[platform] && Object.keys(browserversionList[platform]) && Object.keys(browserversionList[platform]).length > 0) {
+        Object.keys(browserversionList[platform]).forEach((individualOs) => {
+            if (individualOs.toLowerCase().includes(os.toLowerCase())) {
+                browserCheck = Object.keys(browserversionList[platform][individualOs]).find((individualBrowser) => {
+                    return individualBrowser.toLowerCase().includes(currentBrowser.toLowerCase());
+                });
+            }
+        });
+        if (browserCheck) {
+            isvalid = browser.satisfies(browserversionList);
+        }
+    }
+    return !isvalid;
+};
 
 export {
     getMainNavItems,
     isFalsy,
     distanceOfTimeInWords,
     renderText,
+    renderTextByCharacter,
+    redirectIfNotUSer,
+    isValidBrowser,
 };

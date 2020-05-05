@@ -19,7 +19,7 @@ const notificationColumnName = {
     emailRemindersCompanyMatch: 'email_reminders_amount_within_company_match',
     inAppFriendsActivity: 'in_app_friends_activity_update_and_giving_goals',
     inAppGivingGroupActivity: 'in_app_giving_group_activity',
-    inAppGivingGroupMessagesLikes: 'in_app_giving_group_messages_likes_for_you',
+    // inAppGivingGroupMessagesLikes: 'in_app_giving_group_messages_likes_for_you',
     inAppNewsAndStories: 'in_app_news_and_stories_from_charitable_impact',
 };
 
@@ -33,7 +33,7 @@ class Notifications extends React.Component {
             emailRemindersCompanyMatch: (!_.isEmpty(props.currentUser)) ? props.currentUser.attributes.preferences.email_reminders_amount_within_company_match : false,
             inAppFriendsActivity: (!_.isEmpty(props.currentUser)) ? props.currentUser.attributes.preferences.in_app_friends_activity_update_and_giving_goals : false,
             inAppGivingGroupActivity: (!_.isEmpty(props.currentUser)) ? props.currentUser.attributes.preferences.in_app_giving_group_activity : false,
-            inAppGivingGroupMessagesLikes: (!_.isEmpty(props.currentUser)) ? props.currentUser.attributes.preferences.in_app_giving_group_messages_likes_for_you : false,
+            // inAppGivingGroupMessagesLikes: (!_.isEmpty(props.currentUser)) ? props.currentUser.attributes.preferences.in_app_giving_group_messages_likes_for_you : false,
             inAppNewsAndStories: (!_.isEmpty(props.currentUser)) ? props.currentUser.attributes.preferences.in_app_news_and_stories_from_charitable_impact : false,
         };
         this.handleUserPreferenceChange = this.handleUserPreferenceChange.bind(this);
@@ -50,7 +50,7 @@ class Notifications extends React.Component {
         } = this.props;
         this.setState({ [name]: checked });
         const columnName = notificationColumnName[name];
-        updateUserPreferences(dispatch, currentUser.id, columnName, checked);
+        updateUserPreferences(dispatch, currentUser.id, columnName, checked, null);
     }
 
     render() {
@@ -58,7 +58,7 @@ class Notifications extends React.Component {
             inAppNewsAndStories,
             inAppFriendsActivity,
             inAppGivingGroupActivity,
-            inAppGivingGroupMessagesLikes,
+            // inAppGivingGroupMessagesLikes,
             emailGivingGroupActivity,
             emailGivingGroupAdminUpdates,
             emailNewsAndStories,
@@ -67,13 +67,8 @@ class Notifications extends React.Component {
         return (
             <div className="remove-gutter">
                 <div className="userSettingsContainer">
-                    <div className="settingsDetailWraper no-border heading">
-                        <Header as="h4">Notifications </Header>
-                        <p>
-                            We’ll send you notifications about your CHIMP Giving Account
-                            and updates from your CHIMP network,
-                            so you can make the most of your CHIMP account.
-                        </p>
+                    <div className="settingsDetailWraper heading">
+                        <Header as="h4" className="mb-0">Notifications </Header>
                     </div>
                     <div className="settingsDetailWraper">
                         <p className="bold">On Charitable Impact</p>
@@ -128,7 +123,8 @@ class Notifications extends React.Component {
                                     <List.Description>Giving Group activity</List.Description>
                                 </List.Content>
                             </List.Item>
-                            <List.Item>
+                            {/* Bugherd-204_hide this option in notification settings until P3 notifications are implemented. */}
+                            {/* <List.Item>
                                 <List.Content floated="right">
                                     <Checkbox
                                         toggle
@@ -144,10 +140,10 @@ class Notifications extends React.Component {
                                         Giving Group messages and likes for you
                                     </List.Description>
                                 </List.Content>
-                            </List.Item>
+                            </List.Item> */}
                         </List>
                         <p className="bold mt-2">Email</p>
-                        <p>Updates send to your primary email address</p>
+                        <p>Updates sent to your primary email address.</p>
                         <List divided verticalAlign="middle" className="userList">
                             <List.Item>
                                 <List.Content floated="right">

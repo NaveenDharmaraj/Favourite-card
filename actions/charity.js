@@ -1,16 +1,33 @@
 import _ from 'lodash';
+import getConfig from 'next/config';
 
 import utilityApi from '../services/utilityApi';
 import graphApi from '../services/graphApi';
 import coreApi from '../services/coreApi';
 
+const { publicRuntimeConfig } = getConfig();
+const {
+    BASIC_AUTH_KEY,
+} = publicRuntimeConfig;
+let BASIC_AUTH_HEADER = null;
+if (!_.isEmpty(BASIC_AUTH_KEY)) {
+    BASIC_AUTH_HEADER = {
+        headers: {
+            Authorization: `Basic ${BASIC_AUTH_KEY}`,
+        },
+    };
+}
+
 export const actionTypes = {
+    CHARITY_LOADER_STATUS: 'CHARITY_LOADER_STATUS',
+    CHARITY_PLACEHOLDER_STATUS: 'CHARITY_PLACEHOLDER_STATUS',
+    CHARITY_REDIRECT_TO_DASHBOARD: 'CHARITY_REDIRECT_TO_DASHBOARD',
+    CHARITY_SAVE_DEEP_LINK: 'CHARITY_SAVE_DEEP_LINK',
     GET_BENEFICIARY_DONEE_LIST: 'GET_BENEFICIARY_DONEE_LIST',
-    GET_BENEFICIARY_FROM_SLUG: 'GET_BENEFICIARY_FROM_SLUG',
-    PLACEHOLDER_STATUS: 'PLACEHOLDER_STATUS',
-    REDIRECT_TO_DASHBOARD: 'REDIRECT_TO_DASHBOARD',
-    SAVE_DEEP_LINK: 'SAVE_DEEP_LINK',
+    GET_CHARITY_DETAILS_FROM_SLUG: 'GET_CHARITY_DETAILS_FROM_SLUG',
     SAVE_FOLLOW_STATUS: 'SAVE_FOLLOW_STATUS',
+    SET_COUNTRIES_GEOCODE: 'SET_COUNTRIES_GEOCODE',
+    SET_HEADQUARTER_GEOCODE: 'SET_HEADQUARTER_GEOCODE',
 };
 
 export const getBeneficiaryDoneeList = (dispatch, charityId) => {
@@ -24,7 +41,7 @@ export const getBeneficiaryDoneeList = (dispatch, charityId) => {
         payload: {
             showPlaceholder: true,
         },
-        type: actionTypes.PLACEHOLDER_STATUS,
+        type: actionTypes.CHARITY_PLACEHOLDER_STATUS,
     });
     utilityApi.get(`/beneficiaryDoneeList/${charityId}?locale=en_ca&tenant_name=chimp&page=1&size=20`, {
         params: {
@@ -43,7 +60,7 @@ export const getBeneficiaryDoneeList = (dispatch, charityId) => {
             payload: {
                 showPlaceholder: false,
             },
-            type: actionTypes.PLACEHOLDER_STATUS,
+            type: actionTypes.CHARITY_PLACEHOLDER_STATUS,
         });
     });
 };
@@ -114,7 +131,7 @@ export const copyDeepLink = (url, dispatch) => {
         payload: {
             deepLink: {},
         },
-        type: actionTypes.SAVE_DEEP_LINK,
+        type: actionTypes.CHARITY_SAVE_DEEP_LINK,
     };
     utilityApi.get(url).then(
         (result) => {
@@ -131,13 +148,13 @@ export const getBeneficiaryFromSlug = async (dispatch, slug) => {
             payload: {
                 charityDetails: {},
             },
-            type: actionTypes.GET_BENEFICIARY_FROM_SLUG,
+            type: actionTypes.GET_CHARITY_DETAILS_FROM_SLUG,
         };
         dispatch({
             payload: {
                 redirectToDashboard: false,
             },
-            type: actionTypes.REDIRECT_TO_DASHBOARD,
+            type: actionTypes.CHARITY_REDIRECT_TO_DASHBOARD,
         });
         await coreApi.get(`/beneficiaries/find_by_slug?load_full_profile=true`, {
             params: {
@@ -149,6 +166,7 @@ export const getBeneficiaryFromSlug = async (dispatch, slug) => {
             (result) => {
                 if (result && !_.isEmpty(result.data)) {
                     fsa.payload.charityDetails = result.data;
+                    dispatch(fsa);
                 }
             },
         ).catch(() => {
@@ -156,13 +174,39 @@ export const getBeneficiaryFromSlug = async (dispatch, slug) => {
                 payload: {
                     redirectToDashboard: true,
                 },
-                type: actionTypes.REDIRECT_TO_DASHBOARD,
+                type: actionTypes.CHARITY_REDIRECT_TO_DASHBOARD,
             });
             return null;
-        }).finally(() => {
-            dispatch(fsa);
         });
     } else {
         //redirect('/dashboard');
     }
+};
+
+export const getGeoCoding = async (dispatch, city, isHeadQuarter) => {
+    const fsa = {
+        payload: {
+            city: [],
+        },
+    };
+    await utilityApi.post('/getZipcode', {
+        address: city,
+    }, BASIC_AUTH_HEADER).then((result) => {
+        if (result && !_.isEmpty(result.data)) {
+            fsa.payload.city = result.data;
+            if (isHeadQuarter) {
+                fsa.type = actionTypes.SET_HEADQUARTER_GEOCODE;
+            } else {
+                fsa.type = actionTypes.SET_COUNTRIES_GEOCODE;
+            }
+            dispatch(fsa);
+        }
+    }).catch().finally(() => {
+        dispatch({
+            payload: {
+                mapLoader: false,
+            },
+            type: actionTypes.CHARITY_LOADER_STATUS,
+        });
+    });
 };

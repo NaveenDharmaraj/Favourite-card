@@ -4,6 +4,7 @@ import React, {
 import _ from 'lodash';
 import _isEmpty from 'lodash/isEmpty';
 import {
+    Button,
     Table,
     Image,
     List,
@@ -20,9 +21,18 @@ import {
     connect,
 } from 'react-redux';
 
-import { getTransactionDetails } from '../../actions/group';
+import {
+    getTransactionDetails,
+    toggleTransactionVisibility,
+} from '../../actions/group';
+import {
+    formatCurrency,
+} from '../../helpers/give/utils';
 import PaginationComponent from '../shared/Pagination';
 import PlaceholderGrid from '../shared/PlaceHolder';
+import downloadIcon from '../../static/images/icons/icon-download.svg';
+
+import GroupNoDataState from './GroupNoDataState';
 
 class TransactionDetails extends React.Component {
     constructor(props) {
@@ -53,20 +63,40 @@ class TransactionDetails extends React.Component {
         });
     }
 
+    toggleVisibility(event, transactionId) {
+        const {
+            dispatch,
+        } = this.props;
+        toggleTransactionVisibility(dispatch, transactionId, event.target.id);
+    }
+
     render() {
         const {
+            currency,
+            groupDetails: {
+                attributes: {
+                    isAdmin,
+                    slug,
+                }
+            },
             groupTransactions: {
                 data: groupData,
                 meta: {
                     pageCount,
                 },
             },
+            isChimpAdmin,
+            language,
             tableListLoader,
         } = this.props;
         const {
             activePage,
         } = this.state;
-        let transactionData = 'No Data';
+        let transactionData = (
+            <GroupNoDataState
+                type="transactions"
+            />
+        );
         if (!_isEmpty(groupData)) {
             transactionData = groupData.map((transaction) => {
                 let date = new Date(transaction.attributes.createdAt);
@@ -87,10 +117,11 @@ class TransactionDetails extends React.Component {
                     'Dec',
                 ];
                 const yyyy = date.getFullYear();
-                date = `${month[mm]} ${dd} ,${yyyy}`;
+                date = `${month[mm]} ${dd}, ${yyyy}`;
                 let rowClass = '';
                 let transactionSign = '';
                 const imageCls = 'ui image';
+                const amountStatus = transaction.attributes.showAmount ? 'hide' : 'unhide';
 
                 // TODO after Api Changes to show + or -
                 if (transaction.attributes.transactionType === 'GroupReceivedAllocationEvent') {
@@ -112,14 +143,38 @@ class TransactionDetails extends React.Component {
                                             <List.Header>
                                                 {transaction.attributes.description}
                                             </List.Header>
+                                            {(isChimpAdmin && transaction.attributes.canToggleName && !transaction.attributes.isOneTimeUser)
+                                            && (
+                                                <Fragment>
+                                                    <a id="name" onClick={() => this.toggleVisibility(event,transaction.id)} className="mr-1">
+                                                                toggle display of name
+                                                    </a>
+                                                </Fragment>
+                                            )}
                                         </List.Content>
                                     </List.Item>
                                 </List>
                             </Table.Cell>
                             <Table.Cell className="amount">
-                                {transactionSign}
-                                $
-                                {transaction.attributes.amount}
+                                {transaction.attributes.showAmount
+                                    ? (
+                                        <Fragment>
+                                            {transactionSign}
+                                            {formatCurrency(transaction.attributes.totalAmount, language, currency)}
+                                        </Fragment>
+                                    )
+                                    : (
+                                        'Hidden'
+                                    )}
+                                {(isChimpAdmin && transaction.attributes.canToggleAmount && !transaction.attributes.isOneTimeUser)
+                                && (
+                                    <Fragment>
+                                        <br />
+                                        <a className="font-w-normal font-s-14 pointer" id="amount" onClick={() => this.toggleVisibility(event,transaction.id)}>
+                                            {amountStatus}
+                                        </a>
+                                    </Fragment>
+                                )}
                             </Table.Cell>
                         </Table.Row>
                     </Fragment>
@@ -128,7 +183,18 @@ class TransactionDetails extends React.Component {
         }
 
         return (
-            <div className="pt-2">
+            <div>
+                {!_isEmpty(groupData) && isAdmin && (
+                    <a href={`/groups/${slug}.csv`} target="_blank">
+                        <Button
+                            className="blue-bordr-btn-round"
+                        >
+                            Download transaction data <div className="btn-icon-line"><Image src={downloadIcon} /></div>
+                        </Button>
+                    </a>
+
+                )
+                }
                 <Table basic="very" className="brdr-top-btm db-activity-tbl">
                     {!tableListLoader ? (
                         <Table.Body>
@@ -137,23 +203,28 @@ class TransactionDetails extends React.Component {
                     ) : (<PlaceholderGrid row={3} column={3} placeholderType="table" />)
                     }
                 </Table>
-                <div className="db-pagination right-align pt-2">
-                    <PaginationComponent
-                        activePage={activePage}
-                        onPageChanged={this.onPageChange}
-                        totalPages={pageCount}
-                        firstItem={(activePage === 1) ? null : undefined}
-                        lastItem={(activePage === pageCount) ? null : undefined}
-                        prevItem={(activePage === 1) ? null : undefined}
-                        nextItem={(activePage === pageCount) ? null : undefined}
-                    />
-                </div>
+                {!_isEmpty(groupData) && pageCount > 1
+                    && (
+                        <div className="db-pagination right-align pt-2">
+                            <PaginationComponent
+                                activePage={activePage}
+                                onPageChanged={this.onPageChange}
+                                totalPages={pageCount}
+                                firstItem={(activePage === 1) ? null : undefined}
+                                lastItem={(activePage === pageCount) ? null : undefined}
+                                prevItem={(activePage === 1) ? null : undefined}
+                                nextItem={(activePage === pageCount) ? null : undefined}
+                            />
+                        </div>
+                    )
+                }
             </div>
         );
     }
 }
 
 TransactionDetails.defaultProps = {
+    currency: 'USD',
     dispatch: func,
     groupTransactions: {
         data: [],
@@ -165,10 +236,13 @@ TransactionDetails.defaultProps = {
         },
     },
     id: null,
+    isChimpAdmin: false,
+    language: 'en',
     tableListLoader: true,
 };
 
 TransactionDetails.propTypes = {
+    currency: string,
     dispatch: _.noop,
     groupTransactions: {
         data: arrayOf(PropTypes.element),
@@ -180,14 +254,17 @@ TransactionDetails.propTypes = {
         }),
     },
     id: number,
+    isChimpAdmin: bool,
+    language: string,
     tableListLoader: bool,
 };
 
 
 function mapStateToProps(state) {
     return {
-        currentUser: state.user.info,
+        groupDetails: state.group.groupDetails,
         groupTransactions: state.group.groupTransactions,
+        isChimpAdmin: state.user.isAdmin,
         tableListLoader: state.group.showPlaceholder,
     };
 }

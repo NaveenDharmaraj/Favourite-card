@@ -52,9 +52,12 @@ class Login extends React.Component {
 
     componentDidUpdate(prevProps) {
         if (!_.isEqual(this.props, prevProps)) {
-            if (!_.isEmpty(this.props.newUserDetails)) {
-                storage.set('newUserDetails', this.props.newUserDetails, 'local', null);
-                Router.pushRoute('/users/email-verification');
+            if (!_.isEmpty(this.props.newUserDetails) && this.state.stepIndex >= 3) {
+                if(this.props.newUserDetails && this.props.newUserDetails.email && this.props.newUserDetails.identities && this.props.newUserDetails.identities[0] && this.props.newUserDetails.identities[0].user_id){
+                    storage.set('auth0UserEmail', this.props.newUserDetails.email, 'local', null);
+                    storage.set('auth0UserId', this.props.newUserDetails.identities[0].user_id, 'local', null);
+                    Router.pushRoute('/users/email-verification');    
+                }
             }
         }
     }
@@ -132,7 +135,6 @@ class Login extends React.Component {
             isPasswordLengthInLimit: true,
             isPasswordNull: true,
             isPasswordValid: true,
-            isValidCauses: true,
         };
         return this.validity;
     }
@@ -147,10 +149,10 @@ class Login extends React.Component {
                 lastName,
                 emailId,
                 password,
-                userCauses,
             },
             stepIndex,
         } = this.state;
+        validity = this.intializeValidations();
         switch (stepIndex) {
             case 0:
                 validity = validateUserRegistrationForm('firstName', firstName, validity);
@@ -159,9 +161,6 @@ class Login extends React.Component {
             case 1:
                 validity = validateUserRegistrationForm('emailId', emailId, validity);
                 validity = validateUserRegistrationForm('password', password, validity);
-                break;
-            case 2:
-                validity.isValidCauses = (userCauses.length >= 3);
                 break;
             default:
                 break;
@@ -174,7 +173,8 @@ class Login extends React.Component {
         return _.every(validity);
     }
 
-    handleSubmit() {
+    handleSubmit(e) {
+        e.preventDefault();
         const isValid = this.validateForm();
         if (isValid) {
             let {
@@ -196,7 +196,7 @@ class Login extends React.Component {
                     buttonClicked: true,
                 });
                 const userDetails = {};
-                userDetails.name = (firstName) ? `${firstName} ${lastName}` : '';
+                // userDetails.name = (firstName) ? `${firstName} ${lastName}` : '';
                 userDetails.given_name = firstName;
                 userDetails.family_name = lastName;
                 userDetails.email = emailId;
@@ -214,8 +214,17 @@ class Login extends React.Component {
                 });
             }
         } else {
-            console.log('invalid');
+            // console.log('invalid');
         }
+    }
+
+    handleBack = () => {
+        let {
+            stepIndex
+        } = this.state;
+        this.setState({
+            stepIndex:stepIndex-1,
+        });
     }
 
     handleCauses(event, data) {
@@ -279,7 +288,7 @@ class Login extends React.Component {
                 <div className="pageWraper">
                     <Container>
                         <div className="linebg">
-                            <Grid columns={2} verticalAlign="middle">
+                            <Grid columns={2} doubling>
                                 {
                                     (stepIndex === 0) && (
                                         <FirstStep
@@ -299,6 +308,7 @@ class Login extends React.Component {
                                             apiValidating={apiValidating}
                                             parentInputChange={this.handleInputChange}
                                             handleSubmit={this.handleSubmit}
+                                            handleBack={this.handleBack}
                                             emailId={emailId}
                                             handleInputOnBlur={this.handleInputOnBlur}
                                             userExists={userExists}
@@ -315,6 +325,7 @@ class Login extends React.Component {
                                             parentInputChange={this.handleInputChange}
                                             parentHandleCauses={this.handleCauses}
                                             handleSubmit={this.handleSubmit}
+                                            handleBack={this.handleBack}
                                             userCauses={userCauses}
                                             causesList={causesList}
                                             validity={validity}
@@ -324,7 +335,7 @@ class Login extends React.Component {
                             }
                             {
                                 (stepIndex === 3) && (
-                                    <Grid columns={2} centered>
+                                    <Grid columns={2} centered doubling>
                                         <Grid.Row>
                                             <FinalStep
                                                 handleSubmit={this.handleSubmit}

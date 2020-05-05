@@ -17,24 +17,33 @@ const hasUpperCase = (str) => {
 };
 
 const hasSpecialChar = (str) => {
-    return (/[!@#$%^&]/.test(str));
+    return (/[!@#$%^*&]/.test(str));
 };
 
-const hasLengthLessthan150 = (str) => {
-    return (str && str.length <= 150);
+const hasLengthLessthan30 = (str) => {
+    return (str && str.length <= 30);
+};
+
+const hasLengthLessthan100 = (str) => {
+    return (str && str.length <= 100);
 };
 
 const hasTwoChar = (value) => {
     return (value && value.length >= 2);
 };
 
-const validateUserRegistrationForm = (field, value, validity) => {
-    const emailRegex = new RegExp(/^[A-Z0-9a-z._%+-]+@[^-][A-Za-z0-9.-]+[^-]\.[A-Za-z]{2,64}$/i);
+const validateUserRegistrationForm = (field, untrimmedValue, validity) => {
+    const emailRegex = new RegExp(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i);
+    let value;
+    if (untrimmedValue) {
+        value = untrimmedValue.trim();
+    }
+
     switch (field) {
         case 'firstName':
             validity.isFirstNameNotNull = !(!value || value.length === 0);
             validity.doesFirstNameHave2 = hasTwoChar(value);
-            validity.isFirstnameLengthInLimit = hasLengthLessthan150(value);
+            validity.isFirstnameLengthInLimit = hasLengthLessthan30(value);
             validity.isFirstNameValid = _.every(
                 _.pick(validity, [
                     'isFirstNameNotNull',
@@ -45,7 +54,7 @@ const validateUserRegistrationForm = (field, value, validity) => {
             break;
         case 'lastName':
             validity.isLastNameNotNull = !(!value || value.length === 0);
-            validity.isLastnameLengthInLimit = hasLengthLessthan150(value);
+            validity.isLastnameLengthInLimit = hasLengthLessthan30(value);
             validity.isLastNameValid = _.every(
                 _.pick(validity, [
                     'isLastNameNotNull',
@@ -56,7 +65,7 @@ const validateUserRegistrationForm = (field, value, validity) => {
         case 'emailId':
             const emailValue = value;
             validity.isEmailIdNotNull = !(!value || value.length === 0);
-            validity.isEmailLengthInLimit = hasLengthLessthan150(value);
+            validity.isEmailLengthInLimit = hasLengthLessthan100(value);
             validity.isEmailValidFormat = !_.isEmpty(emailValue) ? (emailRegex).test(emailValue) : true;
             validity.isEmailIdValid = _.every(
                 _.pick(validity, [
@@ -73,7 +82,7 @@ const validateUserRegistrationForm = (field, value, validity) => {
             validity.doesPwdhaveLowerCase = !_.isEmpty(value) ? hasLowerCase(value) : false;
             validity.doesPwdhaveUpperCase = !_.isEmpty(value) ? hasUpperCase(value) : false;
             validity.doesPwdhaveSpecialChars = !_.isEmpty(value) ? hasSpecialChar(value) : false;
-            validity.isPasswordLengthInLimit = hasLengthLessthan150(value);
+            validity.isPasswordLengthInLimit = hasLengthLessthan30(value);
             validity.isPasswordValid = _.every(
                 _.pick(validity, [
                     // 'isPasswordNotNull',
