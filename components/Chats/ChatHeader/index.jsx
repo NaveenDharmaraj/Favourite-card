@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 
 import { actionTypes, setSelectedConversation } from '../../../actions/chat';
 
+const newGroupName = "New Group";
 class ChatHeader extends React.Component {
 
     handleChatHeaderBackButton = () => {
@@ -36,6 +37,19 @@ class ChatHeader extends React.Component {
                 smallerScreenSection: compose ? "convList" : "convMsgs",
             },
             type: actionTypes.COMPOSE_SCREEN_SECTION
+        });
+        dispatch({
+            payload: {
+                newGroupMemberIds: [],
+            },
+            type: actionTypes.COMPOSE_HEADER_CONTACT_SELECTION,
+        });
+        dispatch({
+            payload:{
+                newGroupName,
+                newGroupImageUrl: null,
+            },
+            type: actionTypes.NEW_GROUP_DETAILS,
         });
         const selectCurrentConversation =
             (!compose ? null :

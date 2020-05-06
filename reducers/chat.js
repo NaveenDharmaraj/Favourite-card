@@ -22,6 +22,13 @@ const chat = (state = {}, action) => {
                 newGroupMemberIds: action.payload.newGroupMemberIds,
             };
             break;
+        case actionTypes.NEW_GROUP_DETAILS:
+            newState = {
+                ...state,
+                newGroupImageUrl: action.payload.newGroupImageUrl,
+                newGroupName: action.payload.newGroupName,
+            };
+            break;
         case actionTypes.LOAD_MUTE_USER_LIST:
             newState = {
                 ...state,

@@ -38,7 +38,6 @@ class ChatWrapper extends React.Component {
             });
             dispatch(loadFriendsList(userInfo, msgId, this.props.muteUserList));
         }
-        //dispatch(loadConversations(msgId));
         window.addEventListener("resize", this.resize);
         this.setState({ isSmallerScreen: window.innerWidth <= 767 });
     }

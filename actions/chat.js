@@ -20,6 +20,7 @@ const actionTypes = _keyBy([
     'CURRENT_SELECTED_CONVERSATION',
     'LOAD_CONVERSATION_MESSAGES_ENDTIME',
     'COMPOSE_HEADER_CONTACT_SELECTION',
+    'NEW_GROUP_DETAILS',
 ]);
 
 const loadMuteUserList = () => async (dispatch) => {
@@ -363,18 +364,24 @@ const deleteConversation = (params) => {
     });
 };
 
-const muteOrUnmuteUserConversation = (params) => {
-    return applozicApi.post('/user/chat/mute', null, {
-        params,
-    });
+const muteOrUnmuteConversation = ({
+    selectedConversation, isMute,
+}) => {
+    const params = {};
+    params.notificationAfterTime = new Date().getTime() + (isMute ? (1000 * 60 * 60 * 24 * 365) : -5000);
+    if (selectedConversation.groupId) {
+        params.clientGroupId = selectedConversation.groupId;
+        return applozicApi.post('/group/user/update', params);
+    }
+    if (selectedConversation.contactIds) {
+        params.userId = selectedConversation.contactIds;
+        return applozicApi.post('/user/chat/mute', null, {
+            params,
+        });
+    }
 };
 
-const muteOrUnmuteGroupConversation = (params) => {
-    return applozicApi.post('/group/user/update', params);
-};
-const removeUserFromGroup = (groupId, userId) => {
-    const params = { clientGroupId: groupId };
-    params.userId = userId;
+const removeUserFromGroup = (params) => {
     return applozicApi.post('/group/remove/member', params);
 };
 
@@ -418,20 +425,67 @@ const storeGroupImage = (isForNewGroup, conversationInfo, data) => {
         },
     });
 };
+
+const handleUserModalAction = (params, modalAction) => {
+    switch (modalAction) {
+        case 'MUTE':
+        case 'UNMUTE':
+            return muteOrUnmuteConversation(params);
+        case 'DELETE':
+            return deleteConversation(params);
+        default:
+            return null;
+    }
+};
+
+const handleGroupModalAction = (params, groupAction) => {
+    switch (groupAction) {
+        case 'MUTE_NOTIFICATIONS':
+        case 'UNMUTE_NOTIFICATIONS':
+            return muteOrUnmuteConversation(params);
+        case 'LEAVE_GROUP':
+            return leaveGroup(params);
+        case 'DELETE_GROUP':
+            return deleteConversation(params);
+        case 'UPDATE_GROUP':
+        case 'REMOVE_GROUP_IMAGE':
+        case 'MAKE_USER_ADMIN':
+        case 'REMOVE_ADMIN':
+            params.groupId = params.groupId;
+            if (params.newName) {
+                params.newName = params.newName;
+            }
+            if (params.imageUrl) {
+                params.imageUrl = params.imageUrl;
+            }
+            if (params.users) {
+                params.clientGroupId = params.clientGroupId;
+                params.users = params.users;
+            }
+            return updateGroupDetails(params);
+        case 'REMOVE_USER':
+            return removeUserFromGroup(params);
+        case 'MEMBERS_ADD':
+            return addSelectedUsersToGroup(params);
+        default:
+            break;
+    }
+};
 export {
     actionTypes,
     addSelectedUsersToGroup,
     createGroup,
     deleteConversation,
     deleteInboxList,
+    handleGroupModalAction,
+    handleUserModalAction,
     leaveGroup,
     loadConversationMessages,
     loadInboxList,
     loadMuteUserList,
     loadFriendsList,
     loadConversations,
-    muteOrUnmuteUserConversation,
-    muteOrUnmuteGroupConversation,
+    muteOrUnmuteConversation,
     removeUserFromGroup,
     sendMessageToSelectedConversation,
     setSelectedConversation,

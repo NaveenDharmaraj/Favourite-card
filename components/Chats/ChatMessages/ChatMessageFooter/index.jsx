@@ -19,9 +19,6 @@ class ChatMessageFooter extends React.Component {
         //send the message
         const {
             dispatch,
-            userDetails,
-            groupFeeds,
-            selectedConversation,
             smallerScreenSection,
         } = this.props;
         if (conversation && message.replace(/(?:\r\n|\r|\n|\s)/g, '').length > 0) {
@@ -30,8 +27,6 @@ class ChatMessageFooter extends React.Component {
                 params["clientGroupId"] = conversation.groupId;
             } else { params["to"] = conversation.contactIds; }
             sendMessageToSelectedConversation(params).then((resp) => {
-                // handle success
-                //dispatch(loadConversations(null, userDetails, groupFeeds, selectedConversation));
                 dispatch({
                     payload: {
                         compose: false,
@@ -61,7 +56,7 @@ class ChatMessageFooter extends React.Component {
         let params = {};
         params["groupName"] = newGroupName;
         params["groupMemberList"] = newGroupMemberIds,
-            params["imageUrl"] = newGroupImageUrl;
+        params["imageUrl"] = newGroupImageUrl;
         if (!params["imageUrl"] || params["imageUrl"] == "" || params["imageUrl"] == null) {
             params["imageUrl"] = CHAT_GROUP_DEFAULT_AVATAR;
         }
@@ -159,7 +154,9 @@ function mapStateToProps(state) {
     return {
         groupFeeds: state.chat.groupFeeds,
         muteUserList: state.chat.muteUserList,
+        newGroupImageUrl: state.chat.newGroupImageUrl,
         newGroupMemberIds: state.chat.newGroupMemberIds,
+        newGroupName: state.chat.newGroupName,
         selectedConversation: state.chat.selectedConversation,
         smallerScreenSection: state.chat.smallerScreenSection,
         userDetails: state.chat.userDetails,
