@@ -7998,6 +7998,12 @@ body .userEllips{
     position: relative;
     overflow: hidden;
     min-height: 67vh;
+    @media only screen and (max-width:991px) and (min-width:768px){
+      min-height: 39vh;
+    }
+    @media only screen and (max-width:1366px) and (min-width:992px){
+      min-height: 43vh;
+    }
     &::before{
       position: absolute;
       right: 0px;
@@ -8009,30 +8015,31 @@ body .userEllips{
       height: 714px;
       width: 733px;
       top: 100px;
-      @media only screen and (max-width:1330px) {
+      @media only screen and (max-width:1366px) and (min-width:1200px){
       height: 644px;
-      width: 673px;
+      width: 434px !important;
       }
-      @media only screen and (max-width:1199px) {
+      @media only screen and (max-width:1199px) and (min-width:992px){
       height: 534px;
-      width: 513px;
+      width: 442px !important;
     }
-    @media only screen and (max-width:991px) {
+    @media only screen and (max-width:991px) and (min-width:891px){
     height: 364px;
-    width: 343px;
+    width: 343px !important;
   }
-  @media only screen and (max-width:890px) {
+  @media only screen and (max-width:890px) and (min-width:768px){
     height: 364px;
-    width: 293px;
+    width: 246px !important;
   }
-  @media only screen and (max-width:767px) {
+  @media only screen and (max-width:767px) and (min-width:481px){
     top:56%;
     height: 346px;
-    width: 350px;
+    width: 350px !important;
   }
-  @media only screen and (max-width:480px) {
+  @media only screen and (max-width:480px) and (min-width:320px){
+    top:56%;
     height: 396px;
-    width: 292px;
+    width: 292px !important;
   }
     }
     .ImgAvailable {
@@ -8115,3 +8122,6 @@ body .userEllips{
     }
   }
   /*********NOAvailable******************/
+  .chimpLayout{
+  min-height: 60vh;
+}
