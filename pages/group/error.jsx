@@ -20,7 +20,7 @@ const {
 
 function ErrorPage() {
     return (
-        <Layout>
+        <Layout disableMinHeight>
             <div className="NotAvailable">
                 <Container>
                     <Grid>
