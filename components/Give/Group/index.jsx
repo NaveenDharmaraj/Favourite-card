@@ -895,7 +895,7 @@ class Group extends React.Component {
             />)
         return (
             <Fragment>
-            <div className="flowReviewbanner">
+            <div className="givinggroupbanner">
                     <Container>
                         <div className="flowReviewbannerText">
                             <Header as='h2'>{_.isEmpty(giveTo.text) ? '' : `Give to ${giveTo.text}`}</Header>

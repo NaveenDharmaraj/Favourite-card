@@ -31,7 +31,7 @@ const labelTextIds = {
     campaigns: 'noteToSelfLabelReview',
     companies: 'noteToCompanyLabel',
     groups: 'noteToGroupLabel',
-    user: 'noteToSelfLabelReview',
+    user: 'noteToSelfLabel',
 };
 
 const NoteTo = (props) => {
@@ -53,7 +53,7 @@ const NoteTo = (props) => {
     return (
         <Fragment>
             <Form.Field>
-                <label htmlFor="noteToCharity" className="f-weight-n mt-1">
+                <label htmlFor="noteToCharity" className="mt-1">
                     {formatMessage(`noteTo:include${allocationType}MessageLabel`)}
                 </label>
                 <span className="givingInfoText">

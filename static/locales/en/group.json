@@ -8,7 +8,7 @@
     "groupToGive":"Select a Group to Give",
     "amountPlaceHolder": "Enter amount",
     "preloadedAccountPlaceHolder": "Your list of accounts is loading. This may take a moment",
-    "accountPlaceHolder": "Select a source account",
+    "accountPlaceHolder": "Enter a custom amount",
     "amountLessOrInvalid": "Please choose an amount of ${{minAmount}} or more",
     "invalidMaxAmountError":  "$9,999.00 is the maximum we can process here per transaction. For larger amounts, please get in touch with us: &nbsp <a href = \"mailto: hello@charitableimpact.com\">hello@charitableimpact.com</a> &nbsp or 1-877-531-0580.",
     "blankError":  "Can't be blank",

@@ -711,7 +711,7 @@ class Donation extends React.Component {
                 flowObject.giveData.creditCard.value = id;
                 flowObject.giveData.creditCard.text = description;
                 const statusMessageProps = {
-                    message: 'New Credit Card Added',
+                    message: 'Payment method added',
                     type: 'success',
                 };
                 dispatch({
@@ -950,7 +950,7 @@ class Donation extends React.Component {
                                                                             onClick={this.handleAddNewCreditCard}
                                                                             disabled={buttonClicked}
                                                                         >
-                                                                            Add
+                                                                            Done
                                                                             </Button>
                                                                     </div>
                                                                 </Modal.Content>
@@ -1000,7 +1000,7 @@ class Donation extends React.Component {
                                                             primary
                                                             className="blue-btn-rounded btn_right"
                                                             // className={isMobile ? 'mobBtnPadding' : 'btnPadding'}
-                                                            content={formatMessage('giveCommon:continueButton')}
+                                                            content={formatMessage('giveCommon:reviewButton')}
                                                             disabled={disableButton}
                                                             // fluid={isMobile}
                                                             type="submit"

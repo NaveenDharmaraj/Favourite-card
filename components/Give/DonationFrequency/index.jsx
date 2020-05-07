@@ -25,7 +25,7 @@ function DonationFrequency(props) {
     return (
         <>
             <div className="mb-1">
-                <Form.Field>
+                <Form.Field className="Frequencybottom">
                     <label>Frequency</label>
                     <Popup
                         content={<div>{formatMessage('automaticDonationPopup')}</div>}
@@ -92,7 +92,7 @@ function DonationFrequency(props) {
                             </Button>
                         </div>
                         {(!isGiveFlow) && (
-                            <div className="recurringMsg  mt-1 mb-2">
+                            <div className="recurringMsg  mt-1 mb-1">
                                 {formatMessage(
                                     'donationRecurringDateNote',
                                     { 
