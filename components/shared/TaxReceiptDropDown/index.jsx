@@ -7,19 +7,24 @@ import {
     Form,
     Placeholder,
 } from 'semantic-ui-react';
+import ReactHtmlParser from 'react-html-parser';
+
+import FormValidationErrorMessage from '../FormValidationErrorMessage';
 
 function TaxReceiptDropDown(props) {
     const {
         disableField,
+        formatMessage,
         giveTo,
         handleAddNewButtonClicked,
         handleInputChange,
         taxReceipt,
         taxReceiptsOptions,
+        validity,
     } = props;
     let taxReceiptField = null;
     if (!disableField) {
-        if (!_.isEmpty(taxReceiptsOptions) && taxReceiptsOptions.length > 1 && giveTo.value > 0) {
+        if (!_.isEmpty(taxReceiptsOptions) && taxReceiptsOptions.length > 1 && giveTo.value > 0 && taxReceipt) {
             taxReceiptField = (
                 <Form.Field className="mb-2">
                     <div className="paymentMethodDropdown add_space">
@@ -40,17 +45,21 @@ function TaxReceiptDropDown(props) {
                     </div>
                 </Form.Field>
             );
-        } else if (!_.isEmpty(taxReceiptsOptions) && taxReceiptsOptions.length === 1 && giveTo.value > 0) {
+        } else if (_.isEmpty(taxReceiptsOptions) && giveTo.value > 0) {
             taxReceiptField = (
-                <Fragment>
+                <div className="mb-2">
                     <label>Tax Receipt</label>
                     <div
-                        className="addNewCardInput mb-3"
+                        className="addNewCardInput mb-1"
                         id="addNewTaxReceipt"
                         onClick={handleAddNewButtonClicked}>
                         + Add new tax receipt
                     </div>
-                </Fragment>
+                    <FormValidationErrorMessage
+                        condition={!validity.isTaxReceiptSelected}
+                        errorMessage={ReactHtmlParser(formatMessage('giveCommon:errorMessages.taxReceiptNotAdded'))}
+                    />
+                </div>
             );
         }
     } else {

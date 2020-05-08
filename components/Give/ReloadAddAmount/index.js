@@ -83,6 +83,7 @@ class ReloadAddAmount extends React.Component {
             reloadButtonClicked: false,
             selectedTaxReceiptProfile: this.intializeTRFormData,
             validity: this.intializeValidations(),
+            tRFormValidity:this.initializeTRFormValidations()
         };
         if (!_.isEmpty(this.props.donationMatchData)) {
             const [
@@ -199,6 +200,14 @@ class ReloadAddAmount extends React.Component {
             isAmountMoreThanOneDollor: true,
             isValidPositiveNumber: true,
             isAmountEnoughForAllocation: true,
+            isTaxReceiptSelected: true,
+            isCreditCardSelected: true,
+        };
+        return this.validity;
+    }
+    
+    initializeTRFormValidations() {
+        this.tRFormValidity = {
             isAddressHas2: true,
             isAddressLessThan128: true,
             isCityHas2Chars: true,
@@ -217,8 +226,8 @@ class ReloadAddAmount extends React.Component {
             isValidPostalCodeFormat: true,
             isValidProvince: true,
             isValidSecondAddress: true,
-        };
-        return this.validity;
+        }
+        return this.tRFormValidity;
     }
 
     /**
@@ -544,6 +553,10 @@ class ReloadAddAmount extends React.Component {
                             ...this.state.reloadObject.giveData,
                             creditCard: creditCard,
                         }
+                    },
+                    validity: {
+                        ...this.state.validity,
+                        isCreditCardSelected: true,
                     }
                 });
             }).catch(() => {
@@ -556,7 +569,7 @@ class ReloadAddAmount extends React.Component {
 
     validateTRForm() {
         let {
-            validity
+            tRFormValidity,
         } = this.state;
         const {
             selectedTaxReceiptProfile: {
@@ -569,24 +582,26 @@ class ReloadAddAmount extends React.Component {
                 },
             },
         } = this.state;
-        validity = validateTaxReceiptProfileForm('fullName', fullName, validity);
-        validity = validateTaxReceiptProfileForm('addressOne', addressOne, validity);
-        validity = validateTaxReceiptProfileForm('city', city, validity);
-        validity = validateTaxReceiptProfileForm('postalCode', postalCode, validity);
-        validity = validateTaxReceiptProfileForm('province', province, validity);
+        tRFormValidity = validateTaxReceiptProfileForm('fullName', fullName, tRFormValidity);
+        tRFormValidity = validateTaxReceiptProfileForm('addressOne', addressOne, tRFormValidity);
+        tRFormValidity = validateTaxReceiptProfileForm('city', city, tRFormValidity);
+        tRFormValidity = validateTaxReceiptProfileForm('postalCode', postalCode, tRFormValidity);
+        tRFormValidity = validateTaxReceiptProfileForm('province', province, tRFormValidity);
         this.setState({
-            validity,
+            tRFormValidity,
         });
 
-        return _.every(validity);
+        return _.every(tRFormValidity);
     }
 
     validateReloadAccountForm() {
         const {
             reloadObject: {
                 giveData: {
+                    creditCard,
                     donationAmount,
                     noteToSelf,
+                    taxReceipt,
                 },
             },
             minReloadAmount,
@@ -596,7 +611,9 @@ class ReloadAddAmount extends React.Component {
         } = this.state;
         validity = validateDonationForm('donationAmount', donationAmount, validity);
         validity = validateDonationForm('noteToSelf', noteToSelf, validity);
-        validity = validateForMinReload(donationAmount, minReloadAmount, validity)
+        validity = validateForMinReload(donationAmount, minReloadAmount, validity);
+        validity = validateDonationForm('taxReceipt', taxReceipt, validity );
+        validity = validateDonationForm('creditCard', creditCard, validity);
         this.setState({ validity });
         return _.every(validity);
     }
@@ -646,7 +663,10 @@ class ReloadAddAmount extends React.Component {
                     },
                     currentModalStep: 1,
                     addNewTRButtonClicked: false,
-
+                    validity: {
+                        ...this.state.validity,
+                        isTaxReceiptSelected: true,
+                    }
                 });
             })
             .catch((error)=>{
@@ -705,11 +725,11 @@ class ReloadAddAmount extends React.Component {
 
     handleChildOnBlurChange(name, value) {
         let {
-            validity,
+            tRFormValidity,
         } = this.state;
-        validity = validateTaxReceiptProfileForm(name, value, validity);
+        tRFormValidity = validateTaxReceiptProfileForm(name, value, tRFormValidity);
         this.setState({
-            validity,
+            tRFormValidity,
         });
     }
 
@@ -816,7 +836,7 @@ class ReloadAddAmount extends React.Component {
             addNewTRButtonClicked,
             isDefaultTaxReceiptChecked,
             selectedTaxReceiptProfile,
-            validity,
+            tRFormValidity,
         } = this.state;
         let { formatMessage } = this.props;
         return (
@@ -828,7 +848,7 @@ class ReloadAddAmount extends React.Component {
                             showFormData={true}
                             parentInputChange={this.handleChildInputChange}
                             parentOnBlurChange={this.handleChildOnBlurChange}
-                            validity={validity}
+                            validity={tRFormValidity}
                         />
                     </Form.Field>
                     <Form.Field className="mt-2">
@@ -954,20 +974,14 @@ class ReloadAddAmount extends React.Component {
                             />
                             <FormValidationErrorMessage
                                 condition={!validity.doesAmountExist || !validity.isAmountMoreThanOneDollor
-                                || !validity.isValidPositiveNumber}
+                                || !validity.isValidPositiveNumber || !validity.isAmountEnoughForAllocation}
                                 errorMessage={formatMessage('giveCommon:errorMessages.amountLessOrInvalid', {
-                                    minAmount: 5,
+                                    minAmount: minReloadAmount,
                                 })}
                             />
                             <FormValidationErrorMessage
                                 condition={!validity.isAmountLessThanOneBillion}
                                 errorMessage={ReactHtmlParser(formatMessage('giveCommon:errorMessages.invalidMaxAmountError'))}
-                            />
-                            <FormValidationErrorMessage
-                                condition={!validity.isAmountEnoughForAllocation}
-                                errorMessage={formatMessage('giveCommon:errorMessages.amountLessOrInvalid', {
-                                    minAmount: minReloadAmount,
-                                })}
                             />
                         </Form.Field>
                         <PaymentOptions
@@ -977,6 +991,7 @@ class ReloadAddAmount extends React.Component {
                             handleAddNewButtonClicked={this.handleAddNewButtonClicked}
                             handleInputChange={this.handleInputChange}
                             options={paymentInstrumentOptions}
+                            validity={validity}
                         />
                         <TaxReceiptDropDown
                             giveTo={giveData.giveTo}
@@ -985,6 +1000,7 @@ class ReloadAddAmount extends React.Component {
                             handleInputChange={this.handleInputChange}
                             taxReceipt={giveData.taxReceipt}
                             taxReceiptsOptions={taxReceiptsOptions}
+                            validity={validity}
                         />
                         {this.renderdonationMatchOptions(giveData, donationMatchOptions, formatMessage, donationMatchData, language, currency)}
                         <Note

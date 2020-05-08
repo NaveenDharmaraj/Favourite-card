@@ -7,6 +7,9 @@ import {
     Form,
     Placeholder,
 } from 'semantic-ui-react';
+import ReactHtmlParser from 'react-html-parser';
+
+import FormValidationErrorMessage from '../FormValidationErrorMessage';
 
 function PaymentInstruments(props) {
     const {
@@ -17,6 +20,7 @@ function PaymentInstruments(props) {
         handleAddNewButtonClicked,
         handleInputChange,
         options,
+        validity,
     } = props;
     let iconClass = {
         amex: 'cardExpress',
@@ -37,6 +41,10 @@ function PaymentInstruments(props) {
                     onClick={handleAddNewButtonClicked}>
                         + Add new card
                     </div>
+                    <FormValidationErrorMessage
+                        condition={!validity.isCreditCardSelected}
+                        errorMessage={ReactHtmlParser(formatMessage('giveCommon:errorMessages.creditCardNotAdded'))}
+                    />
                 </Fragment>
             );
         } else if (!_.isEmpty(options) && giveTo.value > 0) {
@@ -63,7 +71,6 @@ function PaymentInstruments(props) {
                                 value={creditCard.value}
                             />
                         </div>
-
                     </Form.Field>
                 </Fragment>
             );

@@ -41,6 +41,10 @@ const isCreditCardBlank = (giveData) => {
     return (_.isEmpty(giveData.creditCard) || giveData.creditCard.value === null);
 };
 
+const isFieldBlank = (field) => {
+    return (_.isEmpty(field) || field.value === null || field.value === 0);
+};
+
 const formatCurrency = (value, language, currencyType) => {
     const currencyFormat = {
         currency: currencyType,
@@ -760,6 +764,12 @@ const validateDonationForm = (field, value, validity) => {
             break;
         case 'giveTo':
             validity.isValidAddingToSource = !isInputBlank(value);
+            break;
+        case 'taxReceipt':
+            validity.isTaxReceiptSelected = !isFieldBlank(value);
+            break;
+        case 'creditCard':
+            validity.isCreditCardSelected = !isFieldBlank(value);
             break;
         default: break;
     }
