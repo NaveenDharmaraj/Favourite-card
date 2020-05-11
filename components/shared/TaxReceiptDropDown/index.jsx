@@ -9,8 +9,6 @@ import {
 } from 'semantic-ui-react';
 import ReactHtmlParser from 'react-html-parser';
 
-import FormValidationErrorMessage from '../FormValidationErrorMessage';
-
 function TaxReceiptDropDown(props) {
     const {
         disableField,
@@ -57,7 +55,7 @@ function TaxReceiptDropDown(props) {
                     </div>
                     <FormValidationErrorMessage
                         condition={!validity.isTaxReceiptSelected}
-                        errorMessage={ReactHtmlParser(formatMessage('giveCommon:errorMessages.taxReceiptNotAdded'))}
+                        errorMessage={formatMessage('giveCommon:errorMessages.taxReceiptNotAdded')}
                     />
                 </div>
             );

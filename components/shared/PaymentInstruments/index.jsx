@@ -7,7 +7,6 @@ import {
     Form,
     Placeholder,
 } from 'semantic-ui-react';
-import ReactHtmlParser from 'react-html-parser';
 
 import FormValidationErrorMessage from '../FormValidationErrorMessage';
 
@@ -43,7 +42,7 @@ function PaymentInstruments(props) {
                     </div>
                     <FormValidationErrorMessage
                         condition={!validity.isCreditCardSelected}
-                        errorMessage={ReactHtmlParser(formatMessage('giveCommon:errorMessages.creditCardNotAdded'))}
+                        errorMessage={formatMessage('giveCommon:errorMessages.creditCardNotAdded')}
                     />
                 </Fragment>
             );
