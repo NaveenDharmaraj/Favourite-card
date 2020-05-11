@@ -344,8 +344,6 @@ class Donation extends React.Component {
                     ...flowObject
                 }, flowSteps[stepIndex + 1], stepIndex));
             }
-        }else {
-
         }
     }
 
