@@ -661,7 +661,7 @@ class Donation extends React.Component {
                 isTaxReceiptModelOpen: true
             })
         }
-    }    
+    }
 
     handleSetPrimaryClick(event, data) {   
         let {
