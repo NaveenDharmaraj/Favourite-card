@@ -6,7 +6,7 @@
     "giveFromLabel": "Donner de la part de",
     "donorGiveFromPopup": "Nous vous demandons de sélectionner un compte puisque vous administrez plus d'un Compte CHARITABLE IMPACT.",
     "groupToGive":"Select a Group to Give",
-    "amountPlaceHolder": "Enter a custom amount",
+    "amountPlaceHolder": "Inscrivez le montant",
     "preloadedAccountPlaceHolder": "Votre liste de comptes est en cours de chargement. Cela peut prendre un instant.",
     "accountPlaceHolder": "Sélectionnez un compte source",
     "amountLessOrInvalid": "Veuillez choisir un montant de {{minAmount}} $ ou plus",
