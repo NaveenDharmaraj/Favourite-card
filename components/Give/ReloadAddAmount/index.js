@@ -674,7 +674,7 @@ class ReloadAddAmount extends React.Component {
                         </span>
                         <span className="noteContent">
                             <span onClick={()=> {this.modalContentChange(1)}} className="hyperLinks-style">Reload </span>
-                            your Impact Account to send this gift
+                            your Impact Account to send this gift.
                         </span>
                     </div>
                 </div>
@@ -682,7 +682,7 @@ class ReloadAddAmount extends React.Component {
         }
         if (reviewBtnFlag) {
             return (
-                <div><p className="errorNote">There is not enough money in your account to send this gift.<span onClick={()=> {this.modalContentChange(1)}} className="hyperLinks-style"> Add money</span> to continue</p></div>
+                <div><p className="errorNote">There's not enough money in your account to send this gift.<span onClick={()=> {this.modalContentChange(1)}} className="hyperLinks-style"> Add money</span> to continue</p></div>
             );
         }
         return null;
