@@ -110,7 +110,7 @@ function ClaimCharity() {
                                                             <Input className="inputBox" placeholder=' eg.:123A-456B-789C-012D' />
                                                         </Grid.Column>
                                                         <Grid.Column mobile={16} tablet={12} computer={6}>
-                                                            <Button className="ui button primary blue-btn-rounded mt-2" ><b>Claim your charity</b></Button>
+                                                            <Button className="primary blue-btn-rounded mt-2" ><b>Claim your charity</b></Button>
                                                         </Grid.Column>
                                                     </Grid.Row>
                                                 </Grid>

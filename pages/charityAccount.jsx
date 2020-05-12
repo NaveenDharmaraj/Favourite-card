@@ -23,7 +23,7 @@ function Accessing() {
                     <div className="bannerHeading">
                         <Header as='h3'> Display_name, you’ve claimed your charity </Header>
                         <p>Now you have access to your charity charity_name’s account.</p>
-                        <Button className="blue-btn-rounded mt-1"><b>Go to my Charity Account</b></Button>
+                        <Button className=" primary blue-btn-rounded mt-1"><b>Go to my Charity Account</b></Button>
                     </div>
                 </Container>
             </div>
