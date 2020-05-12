@@ -682,7 +682,7 @@ class ReloadAddAmount extends React.Component {
         }
         if (reviewBtnFlag) {
             return (
-                <div><p className="errorNote">There's not enough money in your account to send this gift.<span onClick={()=> {this.modalContentChange(1)}} className="hyperLinks-style"> Add money</span> to continue</p></div>
+                <div><p className="errorNote"><Icon name="exclamation circle" />There's not enough money in your account to send this gift.<span onClick={()=> {this.modalContentChange(1)}} className="hyperLinks-style"> Add money</span> to continue.</p></div>
             );
         }
         return null;
@@ -1011,7 +1011,7 @@ class ReloadAddAmount extends React.Component {
                             primary
                             className="blue-btn-rounded btn_right mb-2"
                             // className={isMobile ? 'mobBtnPadding' : 'btnPadding'}
-                            content="Add Money"
+                            content="Add money"
                             disabled={this.state.reloadButtonClicked}
                             // fluid={isMobile}
                             onClick = {this.handleReloadSubmit}
@@ -1037,7 +1037,7 @@ class ReloadAddAmount extends React.Component {
             allocationGiftType,
             reviewBtnFlag,
         } = this.props;
-        let modalHeaderText = 'Add Money';
+        let modalHeaderText = 'Add money';
         if (currentModalStep === 2) {
             modalHeaderText = 'Add new Credit Card';
         } else if (currentModalStep === 3) {
