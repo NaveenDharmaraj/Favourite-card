@@ -37,11 +37,6 @@ class ChatMessageFooter extends React.Component {
                 this.setState({
                     textAreaContent: ""
                 })  
-                //self.setLoading(false);
-                // if (ignoreLoadingChatMsgs) {
-                //     //load messages again
-                //     self.loadConversationMessages(conversation, new Date().getTime() + 2000, true);
-                // }
             });
         }
     }
@@ -63,14 +58,6 @@ class ChatMessageFooter extends React.Component {
        
         createGroup(params).then(response => {
             let groupId = response.response.id;
-            dispatch({
-                payload: {
-                    groupFeeds: {
-                        [groupId]: response.response,
-                    }
-                },
-                type: actionTypes.NEW_GROUP_FEEDS,
-            });
             dispatch({
                 payload: {
                     compose: false,
@@ -153,7 +140,6 @@ class ChatMessageFooter extends React.Component {
 function mapStateToProps(state) {
     return {
         groupFeeds: state.chat.groupFeeds,
-        muteUserList: state.chat.muteUserList,
         newGroupImageUrl: state.chat.newGroupImageUrl,
         newGroupMemberIds: state.chat.newGroupMemberIds,
         newGroupName: state.chat.newGroupName,

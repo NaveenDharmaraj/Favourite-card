@@ -38,7 +38,7 @@ const ChatMessageContent = ({
                 </span>
             </div>
         );
-    } if (msg.type == 5) {
+    } if (msg.type == 5 || msg.type === 'outbox') {
         return (
             <div className="outgoing_msg" key={`msg_${msg.key}`}>
                 <div className="sent_msg">
@@ -47,13 +47,13 @@ const ChatMessageContent = ({
                 </div>
             </div>
         );
-    } if (msg.type == 4) {
+    } if (msg.type == 4 || msg.type === 'inbox') {
         return (
             <div className="incoming_msg" key={`msg_${msg.key}`}>
                 <div className="incoming_msg_img">
                     <Image
                         avatar
-                        src={userDetails[msg.contactIds].imageLink
+                        src={userDetails[msg.contactIds] && userDetails[msg.contactIds].imageLink
                             ? userDetails[msg.contactIds].imageLink : placeholderUser}
                         alt=""
                     />

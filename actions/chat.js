@@ -21,6 +21,10 @@ const actionTypes = _keyBy([
     'LOAD_CONVERSATION_MESSAGES_ENDTIME',
     'COMPOSE_HEADER_CONTACT_SELECTION',
     'NEW_GROUP_DETAILS',
+    'UPDATE_MESSAGES_SELECTED_CONVERSATION',
+    'UPDATE_MESSAGES_SELECTED_CONVERSATION_MUTE_UNMUTE',
+    'DELETE_SELECTED_CONVERSATION',
+    'NEW_CHAT_MESSAGE',
 ]);
 
 const loadMuteUserList = () => async (dispatch) => {
@@ -45,9 +49,9 @@ const loadnewUserGroupInboxMessage = async (queryParam) => {
 };
 
 const loadrecentMessage = (resp, msg, messagesRef, index) => (dispatch) => {
-    delete resp.message.to;
-    delete resp.message.type;
     resp.message.createdAtTime = resp.message.timeStamp;
+    // based on msg key we are highlighting inbox list hence msg key needs to be preserved
+    resp.message.key = msg.key;
     messagesRef.splice(index, 1);
     messagesRef.unshift({
         ...msg,
@@ -96,12 +100,21 @@ const loadInboxList = (detail, messages, userDetails, userInfo) => async (dispat
         try {
             const id = !isFalsy(resp.message.to) ? resp.message.to : resp.message.from;
             const param = resp.message && resp.message.metadata
-                && resp.message.metadata.action == 0 ? { groupId: id } : { userId: id };
+                && (resp.message.metadata.action == 0 || resp.message.metadata.action == 1) ? { groupId: id } : { userId: id };
             const { response } = await loadnewUserGroupInboxMessage(param);
-            const groupFeed = response.groupFeeds && response.groupFeeds.length > 0 ?
-                {
+            let groupFeed = {};
+            if (response.groupFeeds && response.groupFeeds.length > 0) {
+                groupFeed = {
                     [id]: response.groupFeeds[0],
-                } : {};
+                };
+                dispatch({
+                    payload: {
+                        groupFeeds: groupFeed,
+                    },
+                    type: actionTypes.NEW_GROUP_FEEDS,
+                });
+            }
+
             if (!_isEmpty(response.message) && response.message.length > 0) {
                 const converstionDetails = {
                     conversationInfo: !_isEmpty(response.message) ? conversationHead(response.message[0], groupFeed, null, userDetails, userInfo) : null,
@@ -122,22 +135,14 @@ const loadInboxList = (detail, messages, userDetails, userInfo) => async (dispat
     }
 };
 
-const deleteInboxList = (detail, messages) => async (dispatch) => {
-    // action 3 indicates conversation delete
-    if ((detail.message && detail.message.metadata && detail.message.metadata.action == 3) || detail.type == 'APPLOZIC_27') {
-        const messagesRef = _cloneDeep(messages);
-        const id = !isFalsy(detail.message.to) ? detail.message.to : detail.message.from;
-        const index = messagesRef.indexOf(id);
-        messagesRef.splice(index, 1);
-        dispatch({
-            payload: {
-                messages: messagesRef,
-            },
-            type: actionTypes.INBOX_LIST_MESSAGES,
-        });
-    }
+const deleteSelectedConversation = (selectedConversation) => (dispatch) => {
+    dispatch({
+        payload: {
+            selectedConversation,
+        },
+        type: actionTypes.DELETE_SELECTED_CONVERSATION,
+    });
 };
-
 const loadConversationMessages = (selectedConversation, endTime = new Date().getTime() + 2000) => (dispatch) => {
     if (selectedConversation) {
         const params = {
@@ -425,7 +430,23 @@ const storeGroupImage = (isForNewGroup, conversationInfo, data) => {
         },
     });
 };
-
+const updateSelectedConversationMuteUnmute = (selectedConversation, isMute) => (dispatch) => {
+    selectedConversation.conversationInfo.isMuted = isMute;
+    dispatch({
+        payload: {
+            selectedConversation,
+        },
+        type: actionTypes.UPDATE_MESSAGES_SELECTED_CONVERSATION_MUTE_UNMUTE,
+    });
+};
+const addNewChatMessage = (msgDetail) => (dispatch) => {
+    dispatch({
+        payload: {
+            msgDetail,
+        },
+        type: actionTypes.NEW_CHAT_MESSAGE,
+    });
+};
 const handleUserModalAction = (params, modalAction) => {
     switch (modalAction) {
         case 'MUTE':
@@ -473,16 +494,18 @@ const handleGroupModalAction = (params, groupAction) => {
 };
 export {
     actionTypes,
+    addNewChatMessage,
     addSelectedUsersToGroup,
     createGroup,
     deleteConversation,
-    deleteInboxList,
+    deleteSelectedConversation,
     handleGroupModalAction,
     handleUserModalAction,
     leaveGroup,
     loadConversationMessages,
     loadInboxList,
     loadMuteUserList,
+    loadnewUserGroupInboxMessage,
     loadFriendsList,
     loadConversations,
     muteOrUnmuteConversation,
@@ -491,4 +514,5 @@ export {
     setSelectedConversation,
     storeGroupImage,
     updateGroupDetails,
+    updateSelectedConversationMuteUnmute,
 };

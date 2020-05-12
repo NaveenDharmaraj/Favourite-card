@@ -9,7 +9,7 @@ import { placeholderUser } from '../../../../static/images/no-data-avatar-user-p
 import { placeholderGroup } from '../../../../static/images/no-data-avatar-group-chat-profile.png';
 import moreIcon from '../../../../static/images/icons/ellipsis.svg';
 import { getCurrentUserRoleInGroup, getBase64 } from '../../../../helpers/chat/utils';
-import { storeGroupImage, handleGroupModalAction } from '../../../../actions/chat';
+import { storeGroupImage, handleGroupModalAction, updateSelectedConversationMuteUnmute, deleteSelectedConversation } from '../../../../actions/chat';
 import ChatModal from '../../../shared/ChatModal';
 import { actionTypes } from '../../../../actions/chat';
 
@@ -117,15 +117,29 @@ class ChatConversationGroupHeader extends React.Component {
         this.setState(newState);
     }
     handleModalClick = (param, modalAction) => {
+        const {
+            dispatch,
+            selectedConversation,
+            userInfo,
+        } = this.props;
         handleGroupModalAction(param, modalAction)
             .then(() => {
-                if (modalAction === 'MEMBER_ADD') {
+                if (modalAction === "MUTE_NOTIFICATIONS" || modalAction === "UNMUTE_NOTIFICATIONS") {
+                    dispatch(updateSelectedConversationMuteUnmute(selectedConversation, param.isMute));
+                    this.setState({ groupAction: null});
+                }
+                else if (modalAction === "DELETE_GROUP") {
+                    dispatch(deleteSelectedConversation(selectedConversation));
+                    this.setState({ groupAction: null});
+                }
+                else if (modalAction === "MAKE_USER_ADMIN" || modalAction === "REMOVE_ADMIN" || modalAction === "REMOVE_USER") {
+                    this.setState({ groupAction: 'MEMBERS_LIST' });
+                    return;
+                }
+                else if (modalAction === 'MEMBER_ADD') {
                     this.setState({ groupAction: null, groupAddMemberValues: [], groupAddMemberOptions: [] });
                 } else {
                     this.setState({ groupAction: null });
-                }
-                if (modalAction === "MUTE_NOTIFICATIONS" || modalAction === "UNMUTE_NOTIFICATIONS") {
-                    dispatch(loadMuteUserList());
                 }
             })
             .catch(() => {
@@ -172,7 +186,7 @@ class ChatConversationGroupHeader extends React.Component {
             userDetails,
             userInfo,
         } = this.props;
-        const GroupModal = !_isEmpty(selectedConversation) ? {
+        const groupModal = !_isEmpty(selectedConversation) ? {
             "MUTE_NOTIFICATIONS": {
                 header: "Mute conversation?",
                 description: "You can unmute this conversation anytime.",
@@ -297,7 +311,7 @@ class ChatConversationGroupHeader extends React.Component {
                                                         </List.Content>
                                                         <Image avatar src={userDetails[user.userId] && userDetails[user.userId].imageLink ? userDetails[user.userId].imageLink : placeholderUser} />
                                                         <List.Content>
-                                                            <List.Header as='a'>{userDetails[user.userId].displayName || "User"} {(Number(user.userId) == Number(userInfo.id) ? "(You)" : "")} {user.role == "1" ? " (Admin)" : ""}</List.Header>
+                                                            <List.Header as='a'>{userDetails[user.userId] ? userDetails[user.userId].displayName : "User"} {(Number(user.userId) == Number(userInfo.id) ? "(You)" : "")} {user.role == "1" ? " (Admin)" : ""}</List.Header>
                                                         </List.Content>
                                                     </List.Item>
                                                 )
@@ -322,7 +336,7 @@ class ChatConversationGroupHeader extends React.Component {
             case 'REMOVE_USER':
                 return (
                     <ChatModal
-                        modalDetails={GroupModal[groupAction]}
+                        modalDetails={groupModal[groupAction]}
                         handleModalClick={this.handleModalClick}
                         modalAction={groupAction}
                         handleHideModal={this.setGroupAction}
@@ -379,7 +393,7 @@ class ChatConversationGroupHeader extends React.Component {
                             </div>
                         </Modal.Description>
                         <div className="btn-wraper pt-3 text-right">
-                            <Button className="blue-btn-rounded-def c-small" onClick={() => handleGroupModalAction({ "userIds": groupAddMemberValues, "clientGroupIds": [selectedConversation.groupId] }, groupAction)}>Add</Button>
+                            <Button className="blue-btn-rounded-def c-small" onClick={() => this.handleModalClick({ "userIds": groupAddMemberValues, "clientGroupIds": [selectedConversation.groupId] }, groupAction)}>Add</Button>
                         </div>
                     </Modal.Content>
                 </Modal>

@@ -3,6 +3,8 @@ import _uniqBy from 'lodash/uniqBy';
 import _cloneDeep from 'lodash/cloneDeep';
 
 import { actionTypes } from '../actions/chat';
+import { conversationHead } from '../helpers/chat/utils';
+import { isFalsy } from '../helpers/utils';
 
 const chat = (state = {}, action) => {
     let newState = {
@@ -54,10 +56,11 @@ const chat = (state = {}, action) => {
             };
             break;
         case actionTypes.NEW_GROUP_FEEDS:
+            const groupFeedsClone = _cloneDeep(state.groupFeeds);
             newState = {
                 ...state,
-                groupFeeds: (!_isEmpty(state.groupFeeds)
-                    && Object.keys(state.groupFeeds).length > 0) ? Object.assign(state.groupFeeds, action.payload.groupFeeds) : action.payload.groupFeeds,
+                groupFeeds: (!_isEmpty(groupFeedsClone)
+                    && Object.keys(groupFeedsClone).length > 0) ? Object.assign(groupFeedsClone, action.payload.groupFeeds) : action.payload.groupFeeds,
             };
             break;
         case actionTypes.INBOX_LIST_MESSAGES:
@@ -81,6 +84,98 @@ const chat = (state = {}, action) => {
                 ...state,
                 selectedConversation: action.payload.selectedConversation,
                 selectedConversationMessages: [],
+            };
+        case actionTypes.UPDATE_MESSAGES_SELECTED_CONVERSATION:
+            const messagesUpdate = _cloneDeep(state.messages);
+            const selectedConversationUpdate = _cloneDeep(state.selectedConversation);
+            messagesUpdate.find((msg) => {
+                if (msg.groupId) {
+                    if (msg.groupId == action.payload.groupId) {
+                        const conversationInfo = {
+                            conversationInfo: conversationHead(msg, action.payload.groupFeed, null, null, action.payload.userInfo),
+                        };
+                        Object.assign(msg, conversationInfo);
+                        if (selectedConversationUpdate.groupId == action.payload.groupId) {
+                            Object.assign(selectedConversationUpdate, conversationInfo);
+                        }
+                        return true;
+                    }
+                }
+            });
+            return {
+                ...state,
+                messages: [
+                    ...messagesUpdate,
+                ],
+                selectedConversation: selectedConversationUpdate,
+            };
+        case actionTypes.UPDATE_MESSAGES_SELECTED_CONVERSATION_MUTE_UNMUTE:
+            const messagesMuteUnmuteUpdate = _cloneDeep(state.messages);
+            messagesMuteUnmuteUpdate.find((msg) => {
+                if (msg.groupId || action.payload.selectedConversation.groupId) {
+                    if (msg.groupId == action.payload.selectedConversation.groupId) {
+                        Object.assign(msg, action.payload.selectedConversation);
+                        return true;
+                    }
+                    return false;
+                }
+                if (msg.contactIds == action.payload.selectedConversation.contactIds) {
+                    Object.assign(msg, action.payload.selectedConversation);
+                    return true;
+                }
+            });
+            return {
+                ...state,
+                messages: [
+                    ...messagesMuteUnmuteUpdate,
+                ],
+                selectedConversation: action.payload.selectedConversation,
+            };
+        case actionTypes.DELETE_SELECTED_CONVERSATION:
+            const messagesDelete = _cloneDeep(state.messages);
+            messagesDelete.find((msg, index) => {
+                if (msg.groupId || action.payload.selectedConversation.groupId) {
+                    if (msg.groupId == action.payload.selectedConversation.groupId) {
+                        messagesDelete.splice(index, 1);
+
+                        return true;
+                    }
+                    return false;
+                }
+                if (msg.contactIds == action.payload.selectedConversation.contactIds) {
+                    messagesDelete.splice(index, 1);
+                    return true;
+                }
+            });
+            const defaultSelectConversation = messagesDelete && messagesDelete.length > 0 ? messagesDelete[0] : null;
+            return {
+                ...state,
+                messages: [
+                    ...messagesDelete,
+                ],
+                selectedConversation: defaultSelectConversation,
+            };
+        case actionTypes.NEW_CHAT_MESSAGE:
+            const selectedConversationMessagesArray = _cloneDeep(state.selectedConversationMessages) || [];
+            const selectedConversationClone = _cloneDeep(state.selectedConversation) || {};
+            const {
+                msgDetail,
+            } = action.payload;
+            if (selectedConversationClone) {
+                if ((selectedConversationClone.groupId && (selectedConversationClone.groupId == msgDetail.to))
+                    || (isFalsy(selectedConversationClone.groupId) && (selectedConversationClone.contactIds == msgDetail.to || selectedConversationClone.contactIds == msgDetail.from))
+                ) {
+                    selectedConversationClone.createdAtTime = msgDetail.timeStamp;
+                    const msgAdded = Object.assign(selectedConversationClone, msgDetail);
+                    selectedConversationMessagesArray.unshift(msgAdded);
+                    return {
+                        ...state,
+                        selectedConversationMessages: [...selectedConversationMessagesArray],
+                    };
+                }
+            }
+            return {
+                ...state,
             };
         case actionTypes.LOAD_CONVERSATION_MESSAGES_ENDTIME:
             return {

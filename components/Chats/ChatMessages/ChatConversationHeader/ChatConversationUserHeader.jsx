@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import Link from '../../../shared/Link';
 import moreIcon from '../../../../static/images/icons/ellipsis.svg';
-import { handleUserModalAction, loadMuteUserList } from '../../../../actions/chat';
+import { handleUserModalAction, loadMuteUserList, updateSelectedConversationMuteUnmute, deleteSelectedConversation } from '../../../../actions/chat';
 import ChatModal from '../../../shared/ChatModal';
 import { Popup, Button, Image, List } from 'semantic-ui-react';
 class ChatConversationUserHeader extends React.Component {
@@ -19,10 +19,15 @@ class ChatConversationUserHeader extends React.Component {
         const {
             conversationAction
         } = this.state;
+        const {
+            dispatch,
+            selectedConversation
+        } = this.props;
         handleUserModalAction(param, modalAction)
             .then(() => {
                 this.setState({ conversationAction: null });
-                conversationAction !== "DELETE" ? dispatch(loadMuteUserList()) : null;
+                conversationAction !== "DELETE" ? dispatch(updateSelectedConversationMuteUnmute(selectedConversation, param.isMute))
+                    : dispatch(deleteSelectedConversation(selectedConversation));
             })
             .catch(() => {
                 this.setState({ conversationAction: null });

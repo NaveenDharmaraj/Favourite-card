@@ -5,9 +5,10 @@ import { Input, List } from 'semantic-ui-react';
 import _isEqual from 'lodash/isEqual';
 import _isEmpty from 'lodash/isEmpty';
 
-import { actionTypes, loadConversationMessages, setSelectedConversation, loadInboxList, deleteInboxList } from '../../../actions/chat';
+import { actionTypes, loadConversationMessages, setSelectedConversation, loadInboxList, loadnewUserGroupInboxMessage, addNewChatMessage } from '../../../actions/chat';
 import IndividualChatContact from './IndividualChatContact';
 import { debounceFunction } from '../../../helpers/chat/utils';
+import { isFalsy } from '../../../helpers/utils';
 
 class ChatInboxList extends React.Component {
     constructor(props) {
@@ -37,12 +38,76 @@ class ChatInboxList extends React.Component {
         const {
             dispatch,
             messages,
+            selectedConversation,
             userDetails,
             userInfo,
         } = this.props;
-        detail.resp && detail.resp.message ?
-            await dispatch(loadInboxList(detail, messages, userDetails, userInfo)) :
-            null;
+        if (detail.resp && detail.resp.message) {
+            if (detail.resp.message.metadata && detail.resp.message.metadata.action && [
+                //'0',
+                '1',
+                '2',
+                '3',
+                //'4',
+                '5',
+                '6',
+                '8',
+            ].indexOf(detail.resp.message.metadata.action) >= 0) {
+                const param = { groupId: detail.resp.message.to };
+                loadnewUserGroupInboxMessage(param)
+                    .then(({ response }) => {
+                        const groupId = param.groupId;
+                        if (response.groupFeeds && response.groupFeeds.length > 0) {
+                            const groupFeed = response.groupFeeds && response.groupFeeds.length > 0 ?
+                                {
+                                    [groupId]: response.groupFeeds[0],
+                                } : {};
+                            // 3- leave conversation
+                            // 5 and 6 change title and change image
+                            // these 3 action requires change in slected conversation conversation info value
+                            ['3', '5', '6'].indexOf(detail.resp.message.metadata.action) >= 0 ? dispatch({
+                                payload: {
+                                    groupId,
+                                    groupFeed,
+                                    userInfo,
+                                },
+                                type: actionTypes.UPDATE_MESSAGES_SELECTED_CONVERSATION,
+                            }) : null;
+                            dispatch({
+                                payload: {
+
+                                    groupFeeds: {
+                                        [groupId]: response.groupFeeds[0],
+                                    }
+                                },
+                                type: actionTypes.NEW_GROUP_FEEDS,
+                            })
+                        }
+                    });
+            };
+            // newMsg varibale find whether the incoming event is for the current select conversation
+            let newMsg = false;
+            if (selectedConversation) {
+                if (!isFalsy(detail.sent) && ((selectedConversation.groupId == detail.resp.message.to)
+                    || (isFalsy(selectedConversation.groupId) && (selectedConversation.contactIds == detail.resp.message.to)))) {
+                    newMsg = true;
+                }
+                else {
+                    // checking group
+                    if (selectedConversation.groupId || detail.resp.message.to) {
+                        if (selectedConversation.groupId == detail.resp.message.to) {
+                            newMsg = true;
+                        }
+                    }
+                    // check for user
+                    else if(selectedConversation.contactIds == detail.resp.message.from) {
+                        newMsg = true;
+                    }
+                }
+            }
+            newMsg && dispatch(addNewChatMessage(detail.resp.message));
+            await dispatch(loadInboxList(detail, messages, userDetails, userInfo));
+        }
     }
 
     onConversationSelect = (msg) => {
