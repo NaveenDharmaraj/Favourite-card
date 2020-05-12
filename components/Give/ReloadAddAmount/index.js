@@ -1011,7 +1011,7 @@ class ReloadAddAmount extends React.Component {
                             primary
                             className="blue-btn-rounded btn_right mb-2"
                             // className={isMobile ? 'mobBtnPadding' : 'btnPadding'}
-                            content="Add Money"
+                            content="Add money"
                             disabled={this.state.reloadButtonClicked}
                             // fluid={isMobile}
                             onClick = {this.handleReloadSubmit}
@@ -1037,7 +1037,7 @@ class ReloadAddAmount extends React.Component {
             allocationGiftType,
             reviewBtnFlag,
         } = this.props;
-        let modalHeaderText = 'Add Money';
+        let modalHeaderText = 'Add money';
         if (currentModalStep === 2) {
             modalHeaderText = 'Add new Credit Card';
         } else if (currentModalStep === 3) {

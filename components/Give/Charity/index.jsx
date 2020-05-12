@@ -1030,7 +1030,7 @@ class Charity extends React.Component {
                 <div className="flowReviewbanner">
                     <Container>
                         <div className="flowReviewbannerText">
-                            <Header as='h2'>Give To {giveTo.text}</Header>
+                            <Header as='h2'>Give to {giveTo.text}</Header>
                         </div>
                     </Container>
                 </div>
