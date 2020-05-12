@@ -1027,7 +1027,7 @@ class Charity extends React.Component {
         />)
         return (
             <Fragment>
-                <div className="flowReviewbanner">
+                <div className="charityallocationbanner">
                     <Container>
                         <div className="flowReviewbannerText">
                             <Header as='h2'>Give To {giveTo.text}</Header>
