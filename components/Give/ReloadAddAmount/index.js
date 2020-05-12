@@ -314,7 +314,13 @@ class ReloadAddAmount extends React.Component {
         if (e.target.id === "addNewCreditCard") {
             this.setState({
                 currentModalStep: 2,
-            });
+                isDefaultCard:false,
+            })
+        } else if (e.target.id === "addFirstCreditCard") {
+            this.setState({
+                currentModalStep: 2,
+                isDefaultCard: true,
+            })
         } else if (e.target.id === "addNewTaxReceipt") {
             this.setState({
                 currentModalStep: 3,
@@ -668,7 +674,7 @@ class ReloadAddAmount extends React.Component {
                         </span>
                         <span className="noteContent">
                             <span onClick={()=> {this.modalContentChange(1)}} className="hyperLinks-style">Reload </span>
-                            your Impact Account to send this gift
+                            your Impact Account to send this gift.
                         </span>
                     </div>
                 </div>
@@ -676,7 +682,7 @@ class ReloadAddAmount extends React.Component {
         }
         if (reviewBtnFlag) {
             return (
-                <div><p className="errorNote">There is not enough money in your account to send this gift.<span onClick={()=> {this.modalContentChange(1)}} className="hyperLinks-style"> Add money</span> to continue</p></div>
+                <div><p className="errorNote">There's not enough money in your account to send this gift.<span onClick={()=> {this.modalContentChange(1)}} className="hyperLinks-style"> Add money</span> to continue</p></div>
             );
         }
         return null;
@@ -865,7 +871,10 @@ class ReloadAddAmount extends React.Component {
             inValidCardNameValue,
             isDefaultCard,
         } = this.state;
-        let { formatMessage } = this.props;
+        let { 
+            formatMessage,
+            paymentInstrumenOptions,
+        } = this.props;
         return(
             <Fragment>
                 <Form>
@@ -892,6 +901,7 @@ class ReloadAddAmount extends React.Component {
                         checked={isDefaultCard}
                         control={Checkbox}
                         className="ui checkbox chkMarginBtm checkboxToRadio"
+                        disabled={!paymentInstrumenOptions}
                         id="isDefaultCard"
                         label="Set as primary card"
                         name="isDefaultCard"

@@ -648,7 +648,13 @@ class Donation extends React.Component {
     handleAddNewButtonClicked(e, data) {
         if (e.target.id === "addNewCreditCard") {
             this.setState({
-                isCreditCardModalOpen: true
+                isCreditCardModalOpen: true,
+                isDefaultCard:false,
+            })
+        } else if (e.target.id === "addFirstCreditCard") {
+            this.setState({
+                isCreditCardModalOpen: true,
+                isDefaultCard: true,
             })
         } else if (e.target.id === "addNewTaxReceipt") {
             this.setState({
@@ -937,6 +943,7 @@ class Donation extends React.Component {
                                                                                 checked={isDefaultCard}
                                                                                 control={Checkbox}
                                                                                 className="ui checkbox chkMarginBtm checkboxToRadio"
+                                                                                disabled={!paymentInstrumenOptions}
                                                                                 id="isDefaultCard"
                                                                                 label="Set as primary card"
                                                                                 name="isDefaultCard"

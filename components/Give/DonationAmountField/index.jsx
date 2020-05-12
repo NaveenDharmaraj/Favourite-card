@@ -31,7 +31,7 @@ function DonationAmountField(props) {
                 control={Input}
                 id={isGiveFlow ? "giveAmount" : "donationAmount"}
                 error={!isValidGiftAmount(validity)}
-                icon="dollar"
+                icon={(amount)? "dollar": null}
                 iconPosition="left"
                 name={isGiveFlow ? "giveAmount" : "donationAmount"}
                 maxLength="8"

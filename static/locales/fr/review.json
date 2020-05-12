@@ -21,7 +21,7 @@
     "givingAllocationSingleCoverFeesText": "Couvrez {{amount}} de frais tiers de traitement afin que le destinataire reçoive votre don à 100%",
     "givingAllocationRecurringingCoverFeesText": "Vous avez choisi de couvrir les frais tiers de traitement au lieu du destinataire. Les frais de tiers seront calculés au moment de la transaction du don afin d’assurer que le destinataire puisse recevoir votre contribution envisagée complète. Si le montant total du don est effectué par carte de crédit, les frais de tiers de {amount} seront couverts et facturés sur votre carte.",
     "donationStartsOnMessage": "Votre carte de crédit sera facturée chaque mois à partir de cette date et apparaîtra sous la forme de \"CHIMP FNDN * DONATION\".\" Un nouveau reçu fiscal sera automatiquement ajouté dans votre Compte CHARITABLE IMPACT pour chaque transaction.",
-    "noteToSelfLabel": "Note to self",
+    "noteToSelfLabel": "Note à votre intention",
     "donationsAddMoney": "Ajouter de l'argent",
     "donationsScheduleMonthlyTransaction": "Activer une transaction mensuelle",
     "commonNonrefundable": "Les dons ne sont pas remboursables.",
