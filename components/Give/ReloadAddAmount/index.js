@@ -1046,7 +1046,7 @@ class ReloadAddAmount extends React.Component {
         return (
             <Fragment>
                 {this.renderReloadComponent(allocationGiftType, reviewBtnFlag)}
-                <Modal size="tiny" dimmer="inverted" className="chimp-modal" open={currentModalStep >0} onClose={this.handleModalClose}>
+                <Modal size="tiny" dimmer="inverted" className="chimp-modal popbox" open={currentModalStep >0} onClose={this.handleModalClose}>
                     <Modal.Header>{modalHeaderText} 
                         <span className="closebtn" onClick={() =>{this.handleModalClose(currentModalStep)}}>
                         </span>
