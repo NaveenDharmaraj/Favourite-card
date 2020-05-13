@@ -625,3 +625,131 @@
     font-family: 'ProximaNova-Regular';
   }
 }
+/***********/
+.OneLastStepBanner{
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  height: 700px;
+  @media only screen and (max-width:1024px)  {
+    height: auto;
+  }
+  &::before{
+    position: absolute;
+    background-image: url(../images/icons/shape-1@3x.svg);
+    background-size: contain;
+    background-position:center;
+    background-repeat: no-repeat;
+    width: 216px;
+    height: 286px;
+    left: -6px;
+    top:-3px;
+    content: "";
+    @media only screen and (max-width:1400px)  {
+      width: 186px;
+      height: 242px;
+      left: -23px;
+      top: 0px;
+    }
+    @media only screen and (max-width:1024px)  {
+     display: none;
+    }
+  }
+  &::after{
+    position: absolute;
+    background-image: url(../images/icons/shape-4.png);
+    background-size: contain;
+    background-position:center;
+    background-repeat: no-repeat;
+    width: 275px;
+    height: 257px;
+    right: -30px;
+    top:0px;
+    content: "";
+    @media only screen and (max-width:1400px) {
+      width: 205px;
+      height: 217px;
+      right: -40px;
+      top: 20px;
+    }
+    @media only screen and (max-width:1024px)  {
+      display: none;
+    }
+   
+  }
+  .lefttopicon{
+    background-image: url(../images/icons/shape-2@3x.svg);
+    background-size: contain;
+    background-position:center;
+    background-repeat: no-repeat;
+    width: 257px;
+    height: 240px;
+    position: absolute;
+    top: -70px;
+    overflow: hidden;
+    @media only screen and (max-width:1400px) {
+      width: 197px;
+      height: 210px;
+      position: absolute;
+      top: -69px;
+      overflow: hidden;
+      left: 210px;
+    }
+    @media only screen and (max-width:1024px)  {
+     display: none;
+    }
+  }
+  .onelaststepwapper{
+    width: 480px;
+    margin:100px auto auto auto;
+    @media only screen and (max-width:650px)  {
+      width:90%;
+    }
+    .OneLastStepHeading{
+      text-align: center;
+      h3{
+        &.ui{
+          &.header{
+            font-size: 20px !important;
+            line-height: 24px;
+            font-family: 'ProximaNova-Regular';
+            font-weight: bold;
+            color: @font-color;
+          }
+        }
+      }
+      
+    }
+    .Onelaststepsubhesding{
+      text-align: center;
+      margin-top: 30px;
+      margin-bottom: 50px;
+      p{
+        font-size: 14px;
+        line-height: 22px;
+        color: @font-color;
+        font-family: 'ProximaNova-Regular';
+      }
+    }
+    input{
+      &.OneLastfield{
+        height: 41px !important;
+        &::placeholder{
+          color: #7F7F7F;
+        }
+      }
+    }
+    .OneLastbtn{
+      text-align: center;
+      margin-top: 28px;
+      margin-bottom: 150px;
+      p{
+        margin-top: 50px;
+        font-size: 14px;
+        line-height: 22px;
+        color: @font-color;
+        font-family: 'ProximaNova-Regular';
+      }
+    }
+  }
+}
