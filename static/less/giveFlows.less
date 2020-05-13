@@ -418,7 +418,7 @@
             border: 1px solid #ddd;
             border-radius: 5px;
             &.small{
-                height: 31px;
+                height: 30px;
                 padding-top: 8px;
                 padding-bottom: 8px;
             }
@@ -492,6 +492,23 @@
                 font-family: 'ProximaNova-Regular';
             }
         }
+    }
+    textarea {
+        
+        &::placeholder{
+            color: #7F7F7F !important;
+        }
+    }
+    .ui[class*="left icon"].input>input{
+        padding-left: 1.8em!important;
+        padding-right: 1em!important;
+    }
+    .ui[class*="left icon"].input>i.icon {
+        right: auto;
+        left: 5px;
+        border-radius: .28571429rem 0 0 .28571429rem;
+        font-size: 14px;
+        top: -1px;
     }
 }
 .Frequencybottom{
