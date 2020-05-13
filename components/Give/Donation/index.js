@@ -648,7 +648,13 @@ class Donation extends React.Component {
     handleAddNewButtonClicked(e, data) {
         if (e.target.id === "addNewCreditCard") {
             this.setState({
-                isCreditCardModalOpen: true
+                isCreditCardModalOpen: true,
+                isDefaultCard:false,
+            })
+        } else if (e.target.id === "addFirstCreditCard") {
+            this.setState({
+                isCreditCardModalOpen: true,
+                isDefaultCard: true,
             })
         } else if (e.target.id === "addNewTaxReceipt") {
             this.setState({
@@ -711,7 +717,7 @@ class Donation extends React.Component {
                 flowObject.giveData.creditCard.value = id;
                 flowObject.giveData.creditCard.text = description;
                 const statusMessageProps = {
-                    message: 'New Credit Card Added',
+                    message: 'Payment method added',
                     type: 'success',
                 };
                 dispatch({
@@ -937,6 +943,7 @@ class Donation extends React.Component {
                                                                                 checked={isDefaultCard}
                                                                                 control={Checkbox}
                                                                                 className="ui checkbox chkMarginBtm checkboxToRadio"
+                                                                                disabled={!paymentInstrumenOptions}
                                                                                 id="isDefaultCard"
                                                                                 label="Set as primary card"
                                                                                 name="isDefaultCard"
@@ -950,7 +957,7 @@ class Donation extends React.Component {
                                                                             onClick={this.handleAddNewCreditCard}
                                                                             disabled={buttonClicked}
                                                                         >
-                                                                            Add
+                                                                            Done
                                                                             </Button>
                                                                     </div>
                                                                 </Modal.Content>
@@ -1000,7 +1007,7 @@ class Donation extends React.Component {
                                                             primary
                                                             className="blue-btn-rounded btn_right"
                                                             // className={isMobile ? 'mobBtnPadding' : 'btnPadding'}
-                                                            content={formatMessage('giveCommon:continueButton')}
+                                                            content={formatMessage('giveCommon:reviewButton')}
                                                             disabled={disableButton}
                                                             // fluid={isMobile}
                                                             type="submit"

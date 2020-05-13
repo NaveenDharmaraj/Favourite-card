@@ -46,7 +46,7 @@ const PrivacyOptions = (props) => {
                 <br />
                 <Form.Field
                     checked={privacyShareAmount}
-                    className="ui checkbox checkbox-text f-weight-n"
+                    className="ui checkbox checkbox-text f-weight-n cp_chkbx"
                     control={Checkbox}
                     id="privacyShareAmount"
                     label={privacyShareAmountLabel}

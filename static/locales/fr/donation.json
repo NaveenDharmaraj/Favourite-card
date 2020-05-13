@@ -7,7 +7,7 @@
     "recurringMonthlyFifteenLabel": "Ajouter de l'argent le 15e chaque mois.",
     "noteToSelfLabel": "Note à votre intention (optionnel)",
     "donorNoteToSelfPopup": "Laissez-vous une note personnelle pour plus tard, par exemple, un rappel des raisons qui vous ont motivé à ajouter cet argent à votre compte. Ce message ne sera visible que sur votre Tableau de bord.",
-    "noteToSelfPlaceHolder": "Laissez-vous une note personnelle pour plus tard",
+    "noteToSelfPlaceHolder": "Why did you add money today?",
     "donationOnWhatDayLabel": "Quel jour?",
     "donationMatchLabel": "Don apparié",
     "donationsMatchPopup": "S'il y a une occasion d’appariement de dons, elle apparaîtra ici. Une demande sera envoyée à la partie correspondante, comme votre employeur, par exemple, qui pourra ensuite choisir d'apparier votre don selon sa politique mise en place.",

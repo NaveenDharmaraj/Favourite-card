@@ -45,7 +45,7 @@
     },
     "blankError":  "Can't be blank",
     "amountLabel": "Amount",
-    "amountPlaceHolder": "Enter amount",
+    "amountPlaceHolder": "Enter a custom amount",
     "noteRemainingChars1000": "{{currentCount}} of {{maximum}} characters left ",
     "forMonth": "month",
     "forYear": "year",

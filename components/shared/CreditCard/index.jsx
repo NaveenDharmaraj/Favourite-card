@@ -274,6 +274,7 @@ class CreditCard extends React.Component {
                         className="field fieldCC"
                         id="card-number"
                         name="card-number"
+                        placeholder="0000 0000 0000 0000"
                         onChange={this.handleCCNoChange}
                         onBlur={this.handleCCNoBlur}
                         {...createOptions()}
@@ -342,7 +343,7 @@ class CreditCard extends React.Component {
                             className="field fieldCC"
                             id="card-cvv"
                             onChange={this.handleCvvChange}
-                            placeholder="Security code"
+                            placeholder="123"
                             {...createOptions()}
                         />
                         <FormValidationErrorMessage
