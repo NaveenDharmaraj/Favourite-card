@@ -1041,7 +1041,7 @@ class ReloadAddAmount extends React.Component {
         if (currentModalStep === 2) {
             modalHeaderText = 'Add new Credit Card';
         } else if (currentModalStep === 3) {
-            modalHeaderText = 'Add new Tax Receipient';
+            modalHeaderText = 'Add new Tax Recipient';
         }
         return (
             <Fragment>
