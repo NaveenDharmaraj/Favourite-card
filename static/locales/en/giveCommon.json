@@ -19,7 +19,9 @@
         "invalidLengthError": "is too long (maximum is 1000 characters)",
         "invalidNoteTextError":  "Only standard letters and numbers are allowed here",
         "isAmountCoverGive": "Sorry, you can't give more money than what is in your account.",
-        "giveAmountGreaterThanBalance": "Sorry, you can't give more money than what is in your account."
+        "giveAmountGreaterThanBalance": "Sorry, you can't give more money than what is in your account.",
+        "creditCardNotAdded": "Please add a Payment method",
+        "taxReceiptNotAdded": "Please add a Tax receipt"
     },
     "breadCrumb" : {
         "new" : "Add money",

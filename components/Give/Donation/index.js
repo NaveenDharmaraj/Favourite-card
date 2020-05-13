@@ -141,6 +141,8 @@ class Donation extends React.Component {
             isValidAddingToSource: true,
             isValidNoteSelfText: true,
             isValidPositiveNumber: true,
+            isTaxReceiptSelected: true,
+            isCreditCardSelected: true,
         };
         return this.validity;
     }
@@ -195,9 +197,11 @@ class Donation extends React.Component {
         const {
             flowObject: {
                 giveData: {
+                    creditCard,
                     giveTo,
                     donationAmount,
-                    noteToSelf
+                    noteToSelf,
+                    taxReceipt,
                 },
             },
         } = this.state;
@@ -205,6 +209,8 @@ class Donation extends React.Component {
         validity = validateDonationForm('donationAmount', donationAmount, validity);
         validity = validateDonationForm('noteToSelf', noteToSelf, validity);
         validity = validateDonationForm('giveTo', giveTo.value, validity);
+        validity = validateDonationForm('taxReceipt', taxReceipt, validity );
+        validity = validateDonationForm('creditCard', creditCard, validity);
         this.setState({ validity });
         return _.every(validity);
     }
@@ -313,29 +319,31 @@ class Donation extends React.Component {
                 taxReceipt,
             },
         } = flowObject;
-        const validateCC = this.isValidCC(
-            creditCard,
-            inValidCardNumber,
-            inValidExpirationDate,
-            inValidNameOnCard,
-            inValidCvv,
-            inValidCardNameValue,
-        );
-        if (this.validateForm() && validateCC) {
-            let allTaxReceiptProfiles = null
-            if (giveTo.type === "user") {
-                allTaxReceiptProfiles = this.props.userTaxReceiptProfiles;
-            } else {
-                allTaxReceiptProfiles = this.props.companyDetails.taxReceiptProfiles
+        if(this.validateForm()) {
+            const validateCC = this.isValidCC(
+                creditCard,
+                inValidCardNumber,
+                inValidExpirationDate,
+                inValidNameOnCard,
+                inValidCvv,
+                inValidCardNameValue,
+            );
+            if (validateCC) {
+                let allTaxReceiptProfiles = null
+                if (giveTo.type === "user") {
+                    allTaxReceiptProfiles = this.props.userTaxReceiptProfiles;
+                } else {
+                    allTaxReceiptProfiles = this.props.companyDetails.taxReceiptProfiles
+                }
+                flowObject.selectedTaxReceiptProfile = _.find(allTaxReceiptProfiles, {
+                    'id': taxReceipt.id
+                });
+                flowObject.stepsCompleted = false;
+                dismissAllUxCritialErrors(this.props.dispatch);
+                dispatch(proceed({
+                    ...flowObject
+                }, flowSteps[stepIndex + 1], stepIndex));
             }
-            flowObject.selectedTaxReceiptProfile = _.find(allTaxReceiptProfiles, {
-                'id': taxReceipt.id
-            });
-            flowObject.stepsCompleted = false;
-            dismissAllUxCritialErrors(this.props.dispatch);
-            dispatch(proceed({
-                ...flowObject
-            }, flowSteps[stepIndex + 1], stepIndex));
         }
     }
 
@@ -703,7 +711,7 @@ class Donation extends React.Component {
             const {
                 dispatch,
             } = this.props;
-
+            let newCreditCard = {};
             dispatch(addNewCardAndLoad(flowObject, isDefaultCard)).then((result) => {
                 const {
                     data: {
@@ -713,9 +721,9 @@ class Donation extends React.Component {
                         id,
                     },
                 } = result;
-                flowObject.giveData.creditCard.id = id;
-                flowObject.giveData.creditCard.value = id;
-                flowObject.giveData.creditCard.text = description;
+                newCreditCard.id = id;
+                newCreditCard.value = id;
+                newCreditCard.text = description;
                 const statusMessageProps = {
                     message: 'Payment method added',
                     type: 'success',
@@ -730,8 +738,19 @@ class Donation extends React.Component {
                 });
                 this.setState({
                     isCreditCardModalOpen: false,
+                    flowObject: {
+                        ...this.state.flowObject,
+                        giveData: {
+                            ...this.state.flowObject.giveData,
+                            creditCard: newCreditCard,
+                        }
+                    },
+                    validity:{
+                        ...this.state.validity,
+                        isCreditCardSelected:true,
+                    }
                 });
-            }).catch(() => {
+            }).catch((error) => {
                 this.setState({
                     buttonClicked: false,
                 });
@@ -776,6 +795,7 @@ class Donation extends React.Component {
                 },
                 type: 'TRIGGER_UX_CRITICAL_ERROR',
             });
+
             this.setState({
                 ...this.state,
                 flowObject: {
@@ -784,6 +804,10 @@ class Donation extends React.Component {
                         ...this.state.flowObject.giveData,
                         taxReceipt: { ...newtaxReceipt }
                     }
+                },
+                validity:{
+                    ...this.state.validity,
+                    isTaxReceiptSelected:true,
                 }
             })
             this.handleTaxReceiptModalClose();
@@ -906,6 +930,7 @@ class Donation extends React.Component {
                                                             handleAddNewButtonClicked={this.handleAddNewButtonClicked}
                                                             handleInputChange={this.handleInputChange}
                                                             options={paymentInstrumenOptions}
+                                                            validity={validity}
                                                         />
                                                         {
                                                             <Modal
@@ -972,6 +997,7 @@ class Donation extends React.Component {
                                                             handleInputChange={this.handleInputChange}
                                                             taxReceipt={giveData.taxReceipt}
                                                             taxReceiptsOptions={taxReceiptsOptions}
+                                                            validity={validity}
                                                         />    
                                                         {
                                                             isTaxReceiptModelOpen && (
