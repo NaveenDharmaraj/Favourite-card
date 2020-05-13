@@ -48,7 +48,7 @@
     },
     "blankError":  "Doit être rempli",
     "amountLabel": "Montant",
-    "amountPlaceHolder": "Inscrivez le montant",
+    "amountPlaceHolder": "Enter a custom amount",
     "noteRemainingChars1000": "{{currentCount}} sur {{maximum}} caractères restants",
     "forMonth": "mois",
     "forYear": "année",

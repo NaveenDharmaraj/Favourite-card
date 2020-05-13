@@ -36,7 +36,7 @@ function PaymentInstruments(props) {
                     <label>Payment method</label>
                     <div
                     className="addNewCardInput mb-2"
-                    id="addNewCreditCard"
+                    id="addFirstCreditCard"
                     onClick={handleAddNewButtonClicked}>
                         + Add new card
                     </div>

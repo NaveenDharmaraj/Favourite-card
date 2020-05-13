@@ -31,7 +31,7 @@ function DonationAmountField(props) {
                 control={Input}
                 id={isGiveFlow ? "giveAmount" : "donationAmount"}
                 error={!isValidGiftAmount(validity)}
-                icon="dollar"
+                icon={(amount)? "dollar": null}
                 iconPosition="left"
                 name={isGiveFlow ? "giveAmount" : "donationAmount"}
                 maxLength="8"
@@ -59,10 +59,10 @@ function DonationAmountField(props) {
                 />
             )}
             <div className="mt-1">
-                <Button className="btn-basic-outline" type="button" size="small" value="25" onClick={handlePresetAmountClick} >$25</Button>
-                <Button className="btn-basic-outline" type="button" size="small" value="50" onClick={handlePresetAmountClick} >$50</Button>
-                <Button className="btn-basic-outline" type="button" size="small" value="100" onClick={handlePresetAmountClick} >$100</Button>
-                <Button className="btn-basic-outline" type="button" size="small" value="500" onClick={handlePresetAmountClick} >$500</Button>
+                <Button className="btn-basic-outline btntext" type="button" size="small" value="25" onClick={handlePresetAmountClick} >$25</Button>
+                <Button className="btn-basic-outline btntext" type="button" size="small" value="50" onClick={handlePresetAmountClick} >$50</Button>
+                <Button className="btn-basic-outline btntext" type="button" size="small" value="100" onClick={handlePresetAmountClick} >$100</Button>
+                <Button className="btn-basic-outline btntext" type="button" size="small" value="500" onClick={handlePresetAmountClick} >$500</Button>
             </div>
         </Form.Field>
     );

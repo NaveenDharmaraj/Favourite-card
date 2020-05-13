@@ -1,6 +1,6 @@
 {
     "amountLabel": "Montant",
-    "amountPlaceHolder": "Inscrivez le montant",
+    "amountPlaceHolder": "Enter a custom amount",
     "amountLessOrInvalid": "Veuillez choisir un montant de {{minAmount}} $ ou plus",
     "invalidMaxAmountError": "9 999 $ est le maximum que nous pouvons traiter ici. Pour des montants plus importants, veuillez nous contacter: &nbsp <a href = \"mailto: hello@charitableimpact.com\">hello@charitableimpact.com</a> &nbsp ou 1-877-531-0580.",
     "donationAmountIsLess": "Augmentez le solde de votre compte de {{topupAmount}} $ ou plus pour envoyer ce cadeau.",

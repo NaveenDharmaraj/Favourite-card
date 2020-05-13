@@ -577,7 +577,7 @@ const populatePaymentInstrument = (paymentInstrumentsData, formatMessage) => {
         const newCreditCard = [
             {
                 disabled: false,
-                text: 'Add new card',
+                text: ReactHtmlParser('<span class="hyperLinks-style">+ Add new card</span>'),
                 value: 0,
             },
         ];
@@ -632,7 +632,7 @@ const populateTaxReceipts = (taxReceiptData, formatMessage) => {
         const newTaxReceipt = [
             {
                 disabled: false,
-                text: 'Add new tax receipt',
+                text: ReactHtmlParser('<span class="hyperLinks-style">+ Add new tax receipt</span>'),
                 value: 0,
             },
         ];

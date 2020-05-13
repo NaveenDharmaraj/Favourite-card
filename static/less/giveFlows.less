@@ -179,8 +179,86 @@
     }
 }
 /***********flowReviewbanner********/
+.givinggroupbanner{
+    background-image: url(../images/banner-add_money_give_flows-green.png)!important;
+    background-size:cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    width: 100%;
+    height: 152px;
+    margin-top: 3px;
+    vertical-align: middle;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    @media only screen and (max-width:768px) {
+        height: 55px;
+        margin-top:1px;
+    }
+    .flowReviewbannerText{
+        @media only screen and (min-width:768px) {
+            text-align: left;
+        }
+        @media only screen and (max-width:767px) {
+            text-align: center !important;
+        }
+        h2{
+            &.ui{
+                &.header{
+                  font-size: 24px;
+                  color: #263238;
+                  font-family: 'ProximaNova-Regular';
+                  font-weight: 600;
+                  @media only screen and (max-width:768px) {
+                    font-size: 17px;  
+                  }
+                }
+            }
+        } 
+    }
+}
+/*******/
+.charityallocationbanner{
+    background-image: url(../images/banner-add_money_give_flows-yellow.png)!important;
+    background-size:cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    width: 100%;
+    height: 152px;
+    margin-top: 3px;
+    vertical-align: middle;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    @media only screen and (max-width:768px) {
+        height: 55px;
+        margin-top:1px;
+    }
+    .flowReviewbannerText{
+        @media only screen and (min-width:768px) {
+            text-align: left;
+        }
+        @media only screen and (max-width:767px) {
+            text-align: center !important;
+        }
+        h2{
+            &.ui{
+                &.header{
+                  font-size: 24px;
+                  color: #263238;
+                  font-family: 'ProximaNova-Regular';
+                  font-weight: 600;
+                  @media only screen and (max-width:768px) {
+                    font-size: 17px;  
+                  }
+                }
+            }
+        } 
+    }
+}
+/*****/
 .flowReviewbanner{
-    background-image: url(../images/giving_and_campaign_group_profile_bg.png)!important;
+    background-image: url(../images/banner-add_money_give_flows-blue.png)!important;
     background-size:cover !important;
     background-position: center !important;
     background-repeat: no-repeat !important;
@@ -321,6 +399,7 @@
         font-family: 'ProximaNova-Regular';
         padding-left: 5px;
         padding-right: 5px;
+        color: #7F7F7F !important;
     }
 }
 .ui.breadcrumb .active.section{
@@ -339,7 +418,7 @@
             border: 1px solid #ddd;
             border-radius: 5px;
             &.small{
-                height: 31px;
+                height: 30px;
                 padding-top: 8px;
                 padding-bottom: 8px;
             }
@@ -392,9 +471,48 @@
         &.form{
             >.grid{
                 width: 100%;
+                label{
+                    font-size: 14px !important;
+                }
             }
         }
     }
+    .btn-basic-outline{
+        &.btntext{
+            color: #263238;
+        }
+    }
+    h3{
+        &.ui{
+            &.header{
+                font-size: 14px !important;
+                line-height: 17px;
+                color:#263238;
+                font-weight: 600 !important;
+                font-family: 'ProximaNova-Regular';
+            }
+        }
+    }
+    textarea {
+        
+        &::placeholder{
+            color: #7F7F7F !important;
+        }
+    }
+    .ui[class*="left icon"].input>input{
+        padding-left: 1.8em!important;
+        padding-right: 1em!important;
+    }
+    .ui[class*="left icon"].input>i.icon {
+        right: auto;
+        left: 5px;
+        border-radius: .28571429rem 0 0 .28571429rem;
+        font-size: 14px;
+        top: -1px;
+    }
+}
+.Frequencybottom{
+    margin-bottom: 0px !important;
 }
 .addCreditCardBtn{
     width: 126px;
@@ -463,8 +581,8 @@
                 &::before{
                     content: '';
                     background-image: url(../images/icons/icon-arrow-down.svg);
-                    height: 15px;
-                    width: 15px;
+                    height: 7px;
+                    width: 13.5px;
                     position: absolute;
                     right: 10px;
                     background-size: contain;
@@ -472,6 +590,7 @@
                     background-repeat: no-repeat;
                     transition: all 0.3s ease-out;
                     top:40%;
+                    filter: invert(79%) sepia(0%) saturate(1%) hue-rotate(277deg) brightness(97%) contrast(87%);
                 }
                 .default{
                     &.text{
@@ -796,8 +915,8 @@
         &::after{
             content: '';
             background-image: url(../images/icons/icon-arrow-down.svg);
-            height: 15px;
-            width: 15px;
+            height: 7px;
+            width: 13.5px;
             position: absolute;
             right: 10px;
             background-size: contain;
@@ -805,7 +924,8 @@
             background-repeat: no-repeat;
             transition: all 0.3s ease-out;
             z-index: 2;
-            top:14px;
+            top:17px;
+            filter: invert(79%) sepia(0%) saturate(1%) hue-rotate(277deg) brightness(97%) contrast(87%);
         }
         i{
             display: none;
@@ -1086,3 +1206,9 @@ p{
     color: #055CE5;
     cursor: pointer;
 }
+
+.popbox{
+    @media only screen and (min-width: 992px){
+        Width:562px !important;
+    }
+} 
