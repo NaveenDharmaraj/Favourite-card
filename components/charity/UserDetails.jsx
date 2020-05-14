@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
 import {
     bool,
@@ -10,14 +10,15 @@ import {
 import _ from 'lodash';
 import _isEmpty from 'lodash/isEmpty';
 import {
-    Grid,
+    Divider,
     List,
     Header,
-    Container,
+    Responsive,
     Button,
 } from 'semantic-ui-react';
 import getConfig from 'next/config';
 
+import { Link } from '../../routes';
 import {
     generateDeepLink,
 } from '../../actions/profile';
@@ -29,6 +30,7 @@ import ShareDetails from '../shared/ShareSectionProfilePage';
 const { publicRuntimeConfig } = getConfig();
 const {
     CLAIM_CHARITY_URL,
+    RAILS_APP_URL_ORIGIN,
 } = publicRuntimeConfig;
 
 const createUserDetails = (valuesObject) => {
@@ -74,7 +76,7 @@ const createUserDetails = (valuesObject) => {
     if (!_isEmpty(valuesObject.headQuarterAddress)) {
         data.push({
             Content: valuesObject.headQuarterAddress,
-            name: 'map marker alternate',
+            name: 'marker',
         });
     }
     return data;
@@ -83,60 +85,28 @@ const createUserDetails = (valuesObject) => {
 const detailsView = (valuesObject) => {
     const values = createUserDetails(valuesObject);
     return (
-        <Grid.Row>
-            <Grid.Column mobile={16} tablet={8} computer={8}>
-                <List className="charityDetailsList">
-                    {values.map((value, index) => (
-                        (value.Content && index <= 3
+        <Fragment>
+            <List>
+                {values.map((value) => (
+                    <List.Item>
+                        <List.Icon name={value.name} />
+                        {value.link && (
+                            <List.Content>
+                                <a href={value.link} target={value.name === 'linkify' ? '_blank' : '_self'}>
+                                    {value.Content}
+                                </a>
+                            </List.Content>
+                        )}
+                        {!value.link
                         && (
-                            <List.Item>
-                                <List.Icon name={value.name} />
-                                {value.link && (
-                                    <List.Content>
-                                        <a href={value.link} target={value.name === 'linkify' ? '_blank' : '_self'}>
-                                            {value.Content}
-                                        </a>
-                                    </List.Content>
-                                )}
-                                {!value.link
-                                && (
-                                    <List.Content>
-                                        {value.Content}
-                                    </List.Content>
-                                )}
-                            </List.Item>
-                        )
-                        )
-                    ))}
-                </List>
-            </Grid.Column>
-            <Grid.Column mobile={16} tablet={8} computer={8}>
-                <List className="charityDetailsList mobMarginBtm-2">
-                    {values.map((value, index) => (
-                        (value.Content && index >= 4
-                            && (
-                                <List.Item>
-                                    <List.Icon name={value.name} />
-                                    {value.link && (
-                                        <List.Content>
-                                            <a href={value.link}>
-                                                {value.Content}
-                                            </a>
-                                        </List.Content>
-                                    )}
-                                    {!value.link
-                                    && (
-                                        <List.Content>
-                                            {value.Content}
-                                        </List.Content>
-                                    )}
-                                </List.Item>
-                            )
-                        )
-                    ))}
-                </List>
-            </Grid.Column>
-        </Grid.Row>
+                            <List.Content>
+                                {value.Content}
+                            </List.Content>
+                        )}
+                    </List.Item>
+                ))}
+            </List>
+        </Fragment>
     );
 };
 
@@ -176,43 +146,66 @@ class UserDetails extends React.Component {
                 id: userId,
             },
         } = this.props;
+        let buttonLink = null;
+        if (charityDetails.charityDetails.attributes && !charityDetails.charityDetails.attributes.hideGive) {
+            if (isAUthenticated) {
+                buttonLink = (
+                    <Link route={(`/give/to/charity/${charityDetails.charityDetails.attributes.slug}/gift/new`)}>
+                        <Button className="blue-btn-rounded-def">Give</Button>
+                    </Link>
+                );
+            } else {
+                buttonLink = (
+                    <a href={(`${RAILS_APP_URL_ORIGIN}/send/to/charity/${charityDetails.charityDetails.attributes.slug}/gift/new`)}>
+                        <Button className="blue-btn-rounded-def">Give</Button>
+                    </a>
+                );
+            }
+        }
         return (
-            <div className="profile-info-wraper pb-3">
-                <Container>
-                    <div className="profile-info-card charity">
-                        <Header as="h3">
-                            Charity information
-                        </Header>
-                        <Grid stackable>
-                            <Grid.Row>
-                                <Grid.Column mobile={16} tablet={10} computer={10}>
-                                    <Grid>
-                                        {((!_isEmpty(charityDetails.charityDetails.attributes))
-                                        && detailsView(charityDetails.charityDetails.attributes))}
-                                    </Grid>
-                                </Grid.Column>
+            <div className="charityInfowrap">
+                <div className="charityInfo">
+                    <Header as="h4">
+                        Charity information
+                    </Header>
+                    {((!_isEmpty(charityDetails.charityDetails.attributes))
+                                    && detailsView(charityDetails.charityDetails.attributes))}
+                    <Responsive minWidth={768}>
+                        {buttonLink}
+                    </Responsive>
+                </div>
+                {/* <Grid stackable>
+                    <Grid.Row>
+                        <Grid.Column mobile={16} tablet={10} computer={10}>
+                            <Grid>
+                                {((!_isEmpty(charityDetails.charityDetails.attributes))
+                                && detailsView(charityDetails.charityDetails.attributes))}
+                            </Grid>
+                        </Grid.Column>
 
-                                <ShareDetails
-                                    deepLinkUrl={deepLinkUrl}
-                                    isAuthenticated={isAUthenticated}
-                                    profileDetails={this.props.charityDetails.charityDetails}
-                                    userId={userId}
-                                />
+                        <ShareDetails
+                            deepLinkUrl={deepLinkUrl}
+                            isAuthenticated={isAUthenticated}
+                            profileDetails={this.props.charityDetails.charityDetails}
+                            userId={userId}
+                        />
 
-                            </Grid.Row>
-                        </Grid>
-                        {(!_isEmpty(charityDetails.charityDetails.attributes) && !charityDetails.charityDetails.attributes.isClaimed)
-                            && (
-                                <p className="mt-1">
-                                Is this your charity? Claim your charity page on Charitable Impact.
-                                    <a href={CLAIM_CHARITY_URL}>
-                                        <Button className="ml-1 blue-bordr-btn-round-def c-small">Claim charity</Button>
-                                    </a>
-                                </p>
-                            )
-                        }
-                    </div>
-                </Container>
+                    </Grid.Row>
+                </Grid> */}
+                
+                
+                {(!_isEmpty(charityDetails.charityDetails.attributes) && !charityDetails.charityDetails.attributes.isClaimed)
+                    && (
+                        <div className="charityInfoClaim">
+                            <p>
+                            *Is this your charity? You can claim your free profile page on our platfrom.
+                                <a href={CLAIM_CHARITY_URL}>
+                                    <Button className="blue-bordr-btn-round-def">Claim charity</Button>
+                                </a>
+                            </p>
+                        </div>
+                    )
+                }
             </div>
         );
     }

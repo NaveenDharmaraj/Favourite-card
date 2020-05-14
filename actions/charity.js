@@ -4,6 +4,7 @@ import getConfig from 'next/config';
 import utilityApi from '../services/utilityApi';
 import graphApi from '../services/graphApi';
 import coreApi from '../services/coreApi';
+import Data from '../components/charity/Data';
 
 const { publicRuntimeConfig } = getConfig();
 const {
@@ -24,6 +25,7 @@ export const actionTypes = {
     CHARITY_REDIRECT_TO_DASHBOARD: 'CHARITY_REDIRECT_TO_DASHBOARD',
     CHARITY_SAVE_DEEP_LINK: 'CHARITY_SAVE_DEEP_LINK',
     GET_BENEFICIARY_DONEE_LIST: 'GET_BENEFICIARY_DONEE_LIST',
+    GET_BENEFICIARY_FINANCE_DETAILS: 'GET_BENEFICIARY_FINANCE_DETAILS',
     GET_CHARITY_DETAILS_FROM_SLUG: 'GET_CHARITY_DETAILS_FROM_SLUG',
     SAVE_FOLLOW_STATUS: 'SAVE_FOLLOW_STATUS',
     SET_COUNTRIES_GEOCODE: 'SET_COUNTRIES_GEOCODE',
@@ -208,5 +210,25 @@ export const getGeoCoding = async (dispatch, city, isHeadQuarter) => {
             },
             type: actionTypes.CHARITY_LOADER_STATUS,
         });
+    });
+};
+
+export const getBeneficiaryFinance = async (dispatch, id) => {
+    const fsa = {
+        payload: {
+            beneficiaryFinance: [],
+        },
+        type: actionTypes.GET_BENEFICIARY_FINANCE_DETAILS,
+    };
+    await utilityApi.get(`/beneficiaryfinance/${id}`, {
+        params: {
+            dispatch,
+            locale: 'en_ca',
+            tenant_name: 'chimp',
+            uxCritical: true,
+        },
+    }).then().catch().finally(() => {
+        fsa.payload.beneficiaryFinance = Data.beneficiaryFinanceList;
+        dispatch(fsa);
     });
 };

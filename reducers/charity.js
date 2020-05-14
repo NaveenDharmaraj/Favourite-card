@@ -71,6 +71,12 @@ const charity = (state = {}, action) => {
                 mapLoader: action.payload.mapLoader,
             };
             break;
+        case 'GET_BENEFICIARY_FINANCE_DETAILS':
+            newState = {
+                ...state,
+                beneficiaryFinance: action.payload.beneficiaryFinance,
+            };
+            break;
         default:
             break;
     }

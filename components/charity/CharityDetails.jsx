@@ -11,10 +11,15 @@ import {
     Image,
     Button,
     Header,
+    Responsive,
+    Divider,
 } from 'semantic-ui-react';
 import getConfig from 'next/config';
+import ReactHtmlParser from 'react-html-parser';
 
 import { Link } from '../../routes';
+
+import UserDetails from './UserDetails';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -55,42 +60,60 @@ const CharityDetails = (props) => {
     }
 
     return (
-        <div className="profile-header">
-            <Container>
+        <Grid.Row>
+            <Grid.Column mobile={16} tablet={11} computer={11} className="charity_profileWrap">
                 <Grid>
                     <Grid.Row>
-                        <Grid.Column mobile={16} tablet={3} computer={2}>
-                            <div className="profile-img-rounded">
-                                <div className="pro-pic-wraper">
-                                    <Image
-                                        circular
-                                        src={charityDetails.charityDetails.attributes.avatar}
-                                    />
-                                </div>
+                        <Grid.Column mobile={16} tablet={4} computer={4} className="ch_profileWrap">
+                            <div className="ch_profileImage">
+                                <Image
+                                    src={charityDetails.charityDetails.attributes.avatar}
+                                />
                             </div>
                         </Grid.Column>
-                        <Grid.Column mobile={16} tablet={10} computer={12}>
-                            <div className="ProfileHeaderWraper">
+                        <Grid.Column mobile={16} tablet={11} computer={11} className="">
+                            <div className="ch_profileDetails">
+                                <Header as="h5">
+                                    {charityDetails.charityDetails.attributes.beneficiaryType}
+                                </Header>
                                 <Header as="h3">
                                     {charityDetails.charityDetails.attributes.name}
-                                    <Header.Subheader>
-                                        {charityDetails.charityDetails.attributes.location}
-                                    </Header.Subheader>
+                                    <br />
+                                    <span>
+                                        WHAT TO SHOW
+                                    </span>
                                 </Header>
-                                <div className="badge-group">
+                                <Header as="p">
+                                    {charityDetails.charityDetails.attributes.location}
+                                </Header>
+                                <div className="ch_badge-group">
                                     {getCauses}
                                 </div>
+                                {/* SHARE DETAILS*/}
                             </div>
                         </Grid.Column>
-                        <Grid.Column mobile={16} tablet={3} computer={2}>
-                            <div className="buttonWraper">
-                                {buttonLink}
-                            </div>
+                        <Grid.Column mobile={16} tablet={5} computer={5}>
+                            <Responsive minWidth={320} maxWidth={767}>
+                                <UserDetails />
+                            </Responsive>
+                        </Grid.Column>
+                    </Grid.Row>
+                    <Divider className="mobHideDivider" />
+                    <Grid.Row>
+                        <Grid.Column mobile={16} tablet={16} computer={16} className="ch_paragraph mt-1 mb-2">
+                            {!_isEmpty(charityDetails.charityDetails.attributes.formattedDescription) && <p>{ReactHtmlParser(charityDetails.charityDetails.attributes.formattedDescription)}</p>}
+                            {!_isEmpty(charityDetails.charityDetails.attributes.formattedDescriptionNew) && <p>{ReactHtmlParser(charityDetails.charityDetails.attributes.formattedDescriptionNew)}</p>}
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
-            </Container>
-        </div>
+                <Divider />
+            </Grid.Column>
+            <Grid.Column mobile={16} tablet={5} computer={5}>
+                <Responsive minWidth={768}>
+                    <UserDetails />
+                </Responsive>
+            </Grid.Column>
+        </Grid.Row>
     );
 };
 
