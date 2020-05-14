@@ -219,12 +219,12 @@ class Charts extends React.Component {
                     total_expense: year.expenses[0].value,
                 });
                 revenueData.push(year.revenues[0].value);
-                firstData.push(year.expenses[1].value);
-                secondData.push(year.expenses[2].value);
-                thirdData.push(year.expenses[3].value);
-                fourthData.push(year.expenses[4].value);
-                fifthData.push(year.expenses[5].value);
                 if (year.expenses.find((o) => o.name === 'total_expense').value > 100000) {
+                    firstData.push(year.expenses.find((o) => o.name === 'charitable_activities_programs').value);
+                    secondData.push(year.expenses.find((o) => o.name === 'management_admin').value);
+                    thirdData.push(year.expenses.find((o) => o.name === 'fundraising').value);
+                    fourthData.push(year.expenses.find((o) => o.name === 'poilitical_activities').value);
+                    fifthData.push(year.expenses.find((o) => o.name === 'other').value);
                     yearData.push([
                         {
                             color: '#C995D3',
@@ -259,6 +259,11 @@ class Charts extends React.Component {
                         },
                     ]);
                 } else {
+                    firstData.push(year.expenses.find((o) => o.name === 'prof_consult_fees').value);
+                    secondData.push(year.expenses.find((o) => o.name === 'travel_vehicle_expense').value);
+                    thirdData.push(year.expenses.find((o) => o.name === 'expenditure_charity_activites').value);
+                    fourthData.push(year.expenses.find((o) => o.name === 'management_admin').value);
+                    fifthData.push(year.expenses.find((o) => o.name === 'other').value);
                     yearData.push([
                         {
                             color: '#C995D3',
