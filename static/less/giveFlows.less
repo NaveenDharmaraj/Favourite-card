@@ -509,6 +509,8 @@
         border-radius: .28571429rem 0 0 .28571429rem;
         font-size: 14px;
         top: -1px;
+        color: #000 !important;
+        font-weight: normal !important;
     }
 }
 .Frequencybottom{
@@ -1006,9 +1008,6 @@ span.attributes {
 /*******multyDropDown***********/
 .multyDropDownFilter{
     margin-bottom: 10px;
-    .ui.default.dropdown:not(.button)>.text, .ui.dropdown:not(.button)>.default.text {
-        line-height: 32px;
-    }
     .ui.multiple.dropdown>.label {
         background-color:#90459A;
         color: #fff;
@@ -1264,3 +1263,24 @@ p{
         Width:562px !important;
     }
 } 
+.ui.modal>.content>.description {
+textarea {  
+    &::placeholder{
+        color: #7F7F7F !important;
+    }
+}
+.ui[class*="left icon"].input>input{
+    padding-left: 1.8em!important;
+    padding-right: 1em!important;
+    padding-top: 11px !important;
+}
+.ui[class*="left icon"].input>i.icon {
+    right: auto;
+    left: 5px;
+    border-radius: .28571429rem 0 0 .28571429rem;
+    font-size: 14px;
+    top: -1px;
+    color: #000 !important;
+    font-weight: normal !important;
+}
+}
