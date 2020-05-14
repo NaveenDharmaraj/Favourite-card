@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import {
     Container,
     Header,
@@ -8,15 +8,15 @@ import {
     Segment,
 } from 'semantic-ui-react';
 
-import accessingleft from '../static/images/accessing2.png';
-import accessingfull from '../static/images/accessing1.png';
+import accessingleft from '../../static/images/accessing2.png';
+import accessingfull from '../../static/images/accessing1.png';
 
-import Layout from '../components/shared/Layout';
-import '../static/less/claimcharity.less';
+import Layout from '../shared/Layout';
+import '../../static/less/claimcharity.less';
 
 function Accessing() {
     return (
-        <Layout>
+        <Fragment>
             <div className="AccessingtopBanner">
                 <Container>
                     <div className="lefttopicon"></div>
@@ -70,7 +70,7 @@ function Accessing() {
                     </div>
                 </Container>
             </div>
-        </Layout>
+        </Fragment>
     );
 }
 
