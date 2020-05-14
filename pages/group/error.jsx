@@ -36,9 +36,7 @@ function ErrorPage() {
                                                 homepage
                                             </Link>
                                             , or find answers and
-                                        </List.Item>
-                                        <List.Item>
-                                            {`contact information in the `}
+                                            {` contact information in the `}
                                             <a href={HELP_CENTRE_URL}>
                                                 Help Centre
                                             </a>
