@@ -18,7 +18,6 @@ import getConfig from 'next/config';
 
 import {
     getBeneficiaryFromSlug,
-    // getBeneficiaryFinance,
 } from '../actions/charity';
 import Layout from '../components/shared/Layout';
 import CharityProfileWrapper from '../components/charity';
@@ -59,7 +58,6 @@ class CharityProfile extends React.Component {
         if (redirectToDashboard) {
             Router.push('/search');
         }
-        // getBeneficiaryFinance(dispatch, id);
     }
 
     render() {

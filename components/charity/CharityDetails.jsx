@@ -32,24 +32,7 @@ const CharityDetails = (props) => {
         charityDetails,
         isAUthenticated,
     } = props;
-    let buttonLink = null;
     let getCauses = null;
-
-    if (charityDetails.charityDetails.attributes && !charityDetails.charityDetails.attributes.hideGive) {
-        if (isAUthenticated) {
-            buttonLink = (
-                <Link route={(`/give/to/charity/${charityDetails.charityDetails.attributes.slug}/gift/new`)}>
-                    <Button primary fluid className="blue-btn-rounded">Give</Button>
-                </Link>
-            );
-        } else {
-            buttonLink = (
-                <a href={(`${RAILS_APP_URL_ORIGIN}/send/to/charity/${charityDetails.charityDetails.attributes.slug}/gift/new`)}>
-                    <Button primary fluid className="blue-btn-rounded">Give</Button>
-                </a>
-            );
-        }
-    }
 
     if (!_isEmpty(charityDetails.charityDetails.attributes.causes)) {
         getCauses = charityDetails.charityDetails.attributes.causes.map((cause) => (

@@ -32,7 +32,7 @@ export const actionTypes = {
     SET_HEADQUARTER_GEOCODE: 'SET_HEADQUARTER_GEOCODE',
 };
 
-export const getBeneficiaryDoneeList = (dispatch, charityId) => {
+export const getBeneficiaryDoneeList = (dispatch, charityId, year) => {
     const fsa = {
         payload: {
             donationDetails: {},
@@ -45,9 +45,14 @@ export const getBeneficiaryDoneeList = (dispatch, charityId) => {
         },
         type: actionTypes.CHARITY_PLACEHOLDER_STATUS,
     });
-    utilityApi.get(`/beneficiaryDoneeList/${charityId}?locale=en_ca&tenant_name=chimp&page=1&size=20`, {
+    utilityApi.get(`/beneficiaryDoneeList/${charityId}`, {
         params: {
             dispatch,
+            locale: 'en_ca',
+            page: 1,
+            returnsYear: year,
+            size: 20,
+            tenant_name: 'chimp',
             uxCritical: true,
         },
     }).then(
@@ -64,6 +69,8 @@ export const getBeneficiaryDoneeList = (dispatch, charityId) => {
             },
             type: actionTypes.CHARITY_PLACEHOLDER_STATUS,
         });
+        fsa.payload.donationDetails = Data.donationDetails;
+        dispatch(fsa);
     });
 };
 

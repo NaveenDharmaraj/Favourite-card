@@ -24,7 +24,6 @@ import TotalRevenue from '../../static/images/total_revenue.svg';
 import ToalExpense from '../../static/images/total_expenses.svg';
 import {
     formatCurrency,
-    formatAmount,
 } from '../../helpers/give/utils';
 import {
     getBeneficiaryFinance,
@@ -32,6 +31,7 @@ import {
 
 import CharityNoDataState from './CharityNoDataState';
 import ChartSummary from './ChartSummary';
+import ReceivingOrganisations from './ReceivingOrganisations';
 
 class Charts extends React.Component {
     constructor(props) {
@@ -84,7 +84,7 @@ class Charts extends React.Component {
         } = this.props;
         let selectedYear = null;
         beneficiaryFinance.some((year) => {
-            if (year.expenses[0].value > 0) {
+            if (year.expenses.find((o) => o.name === 'total_expense').value > 0) {
                 selectedYear = year.returns_year;
                 return true;
             }
@@ -107,46 +107,41 @@ class Charts extends React.Component {
         const data = {
             datasets: [
                 {
-                    label: 'Revenue',
-                    type: 'line',
-                    data: revenueData, // [10,20,30,40,50,60,70,80,90,15],
-                    fill: false,
-                    lineTension: 0,
-                    borderColor: '#055CE5',
                     backgroundColor: '#055CE5',
-                    pointBorderColor: '#055CE5',
-                    pointBackgroundColor: '#055CE5',
-                    pointHoverBackgroundColor: '#055CE5',
-                    pointHoverBorderColor: '#055CE5',
+                    borderColor: '#055CE5',
+                    data: revenueData,
+                    fill: false,
+                    label: 'Revenue',
+                    lineTension: 0,
+                    type: 'line',
+                    // pointBorderColor: '#055CE5',
+                    // pointBackgroundColor: '#055CE5',
+                    // pointHoverBackgroundColor: '#055CE5',
+                    // pointHoverBorderColor: '#055CE5',
                 },
                 {
                     backgroundColor: '#C995D370',
-                    barThickness: 6,
-                    data: firstData, // [15,25,35,45,55,65,75,85,95,105],
+                    data: firstData,
                     fill: false,
                 },
                 {
                     backgroundColor: '#DF005F70',
-                    barThickness: 6,
-                    data: secondData, // [10,20,30,40,50,60,70,80,90,100],
+                    data: secondData,
                     fill: false,
                 },
                 {
                     backgroundColor: '#FEC7A970',
-                    barThickness: 6,
-                    data: thirdData, // [20,40,60,80,100,20,40,60,80,100],
+                    data: thirdData,
                     fill: false,
                 },
                 {
                     backgroundColor: '#00CCD470',
-                    barThickness: 6,
-                    data: fourthData, // [12,24,36,48,60,72,84,96,108,120],
+                    data: fourthData,
                     fill: false,
                 },
                 {
                     backgroundColor: '#0D00FF70',
-                    barThickness: 6,
-                    data: fifthData, // [10,20,30,40,100,20,40,60,80,100],
+                    data: fifthData,
                     fill: false,
                 },
             ],
@@ -193,11 +188,11 @@ class Charts extends React.Component {
         const yearLabel = [];
         const yearData = [];
         const revenueData = [];
-        let firstData = [];
-        let secondData = [];
-        let thirdData = [];
-        let fourthData = [];
-        let fifthData = [];
+        const firstData = [];
+        const secondData = [];
+        const thirdData = [];
+        const fourthData = [];
+        const fifthData = [];
         let graphData = {};
         let selectedYear = null;
         if (!_.isEmpty(beneficiaryFinance)) {
@@ -229,38 +224,38 @@ class Charts extends React.Component {
                 thirdData.push(year.expenses[3].value);
                 fourthData.push(year.expenses[4].value);
                 fifthData.push(year.expenses[5].value);
-                if (year.expenses[0].value > 100000) {
+                if (year.expenses.find((o) => o.name === 'total_expense').value > 100000) {
                     yearData.push([
                         {
                             color: '#C995D3',
                             text: 'Charitable activities / programs',
-                            value: year.expenses[1].value,
+                            value: year.expenses.find((o) => o.name === 'charitable_activities_programs').value,
                         },
                         {
                             color: '#DF005F',
                             text: 'Management and administration',
-                            value: year.expenses[2].value,
+                            value: year.expenses.find((o) => o.name === 'management_admin').value,
                         },
                         {
                             color: '#FEC7A9',
                             text: 'Fundraising',
-                            value: year.expenses[3].value,
+                            value: year.expenses.find((o) => o.name === 'fundraising').value,
                         },
                         {
                             color: '#00CCD4',
                             text: 'Political activities',
-                            value: year.expenses[4].value,
+                            value: year.expenses.find((o) => o.name === 'poilitical_activities').value,
                         },
                         {
                             color: '#0D00FF',
                             text: 'Other',
-                            value: year.expenses[5].value,
+                            value: year.expenses.find((o) => o.name === 'other').value,
                         },
                         {
                             color: '#8DEDAE',
-                            hideGift: !(year.expenses[6].value > 0),
+                            hideGift: !(year.gifts_total > 0),
                             text: 'Gifts to other registered charities and qualified donees',
-                            value: year.expenses[6].value,
+                            value: year.expenses.find((o) => o.name === 'gifts_to_charities_donees').value,
                         },
                     ]);
                 } else {
@@ -268,33 +263,33 @@ class Charts extends React.Component {
                         {
                             color: '#C995D3',
                             text: 'Professional and consulting fees',
-                            value: year.expenses[1].value,
+                            value: year.expenses.find((o) => o.name === 'prof_consult_fees').value,
                         },
                         {
                             color: '#DF005F',
                             text: 'Travel and vehicle expenses',
-                            value: year.expenses[2].value,
+                            value: year.expenses.find((o) => o.name === 'travel_vehicle_expense').value,
                         },
                         {
                             color: '#FEC7A9',
                             text: 'Expenditures on charitable activities',
-                            value: year.expenses[3].value,
+                            value: year.expenses.find((o) => o.name === 'expenditure_charity_activites').value,
                         },
                         {
                             color: '#00CCD4',
                             text: 'Management and administration',
-                            value: year.expenses[4].value,
+                            value: year.expenses.find((o) => o.name === 'management_admin').value,
                         },
                         {
                             color: '#0D00FF',
                             text: 'Other',
-                            value: year.expenses[5].value,
+                            value: year.expenses.find((o) => o.name === 'other').value,
                         },
                         {
                             color: '#8DEDAE',
-                            hideGift: !(year.expenses[6].value > 0),
+                            hideGift: !(year.gifts_total > 0),
                             text: 'Gifts to other registered charities and qualified donees',
-                            value: year.expenses[6].value,
+                            value: year.expenses.find((o) => o.name === 'gifts_to_charities_donees').value,
                         },
                     ]);
                 }
@@ -304,15 +299,15 @@ class Charts extends React.Component {
                     revenueData,
                     yearData,
                 },
+                fifthData,
+                firstData,
+                fourthData,
                 revenueData,
+                secondData,
+                thirdData,
                 totalData,
                 yearData,
                 yearLabel,
-                firstData,
-                secondData,
-                thirdData,
-                fourthData,
-                fifthData,
             };
             this.setState({
                 chartIndex: yearLabel.indexOf(selectedYear),
@@ -339,7 +334,6 @@ class Charts extends React.Component {
             chartIndex,
         } = this.state;
         const selectedData = graphData.yearData[chartIndex];
-        debugger;
         return (
             selectedData.map((summary) => (
                 <ChartSummary
@@ -355,17 +349,12 @@ class Charts extends React.Component {
 
     render() {
         const {
-            beneficiaryFinance,
-            values,
-        } = this.props;
-        const {
             chartIndex,
             graphData,
             showDoneeListModal,
         } = this.state;
         const currency = 'USD';
         const language = 'en';
-        debugger;
         return (
             <Fragment>
                 <Header as="h3">Revenue and expenses</Header>
@@ -383,7 +372,7 @@ class Charts extends React.Component {
                                                     onElementsClick={this.handleClick}
                                                     ref={this.chartReference}
                                                     data={this.getChartData}
-                                                    width="759px"
+                                                    width="790px"
                                                     height="216px"
                                                     options={{
                                                         events: [
@@ -391,27 +380,15 @@ class Charts extends React.Component {
                                                         ],
                                                         legend: false,
                                                         maintainAspectRatio: false,
-                                                        // plugins: {
-                                                        //     datalabels: {
-                                                        //         align: 'end',
-                                                        //         anchor: 'end',
-                                                        //     },
-                                                        // },
                                                         scales: {
                                                             xAxes: [
                                                                 {
-                                                                    stacked: true,
+                                                                    categoryPercentage: 0.8,
                                                                     display: true,
-                                                                    // ticks: {
-                                                                    //     beginAtZero: true,
-                                                                    //     max: 100,
-                                                                    //     steps: 10,
-                                                                    //     stepValue: 5,
-                                                                    // },
                                                                     gridLines: {
                                                                         display: false,
                                                                     },
-                                                                    categoryPercentage: 0.5,
+                                                                    stacked: true,
                                                                 },
                                                             ],
                                                             yAxes: [
@@ -432,7 +409,7 @@ class Charts extends React.Component {
                                                                     //     callback: (value, index, values) => {
                                                                     //         return `$${value}K`;
                                                                     //     },
-                                                                    // }
+                                                                    // },
                                                                 },
                                                             ],
                                                         },
@@ -482,29 +459,21 @@ class Charts extends React.Component {
                                     </Grid.Column>
                                 </Grid.Row>
                                 {!_.isEmpty(graphData) && this.renderSummary()}
-                                {/* GIFT section and Modal */}
                             </Grid>
                             <p className="ch_footnote">* Information about revenue and expenses is provided by the Canada Revenue Agency approximately once each quarter.</p>
                             <Modal
                                 open={showDoneeListModal}
-                                onCLose={this.closeDoneeListModal}
+                                onClose={this.closeDoneeListModal}
                                 size="tiny"
                                 dimmer="inverted"
                                 className="chimp-modal"
                                 closeIcon
                             >
-                                <Modal.Header icon='archive' content='Gifts to qualified donees' />
+                                <Modal.Header icon="archive" content="Gifts to qualified donees" />
                                 <Modal.Content>
-                                    <div className='ch_giftPopcontent'>
-                                        <Header as='h6'>CHARITY</Header>
-                                        <Header as='h3'>Chilliwack Animal Safe Haven Society<span>$11,304.00</span></Header>
-                                        <Header as='h5'>Vancouver, BC  </Header>
-                                    </div>
-                                    <div className='ch_giftPopcontent'>
-                                        <Header as='h6'>CHARITY</Header>
-                                        <Header as='h3'>Chilliwack Animal Safe Haven Society<span>$11,304.00</span></Header>
-                                        <Header as='h5'>Vancouver, BC  </Header>
-                                    </div>
+                                    <ReceivingOrganisations
+                                        year={graphData.yearLabel[chartIndex]}
+                                    />
                                 </Modal.Content>
                             </Modal>
                         </Fragment>
@@ -526,6 +495,7 @@ Charts.propTypes = {
 function mapStateToProps(state) {
     return {
         beneficiaryFinance: state.charity.beneficiaryFinance,
+        donationDetails: state.charity.donationDetails,
         values: state.charity.charityDetails.charityDetails,
         // beneficiaryFinance: Data.beneficiaryFinanceList,
     };
