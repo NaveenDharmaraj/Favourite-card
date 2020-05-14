@@ -230,24 +230,15 @@ class GroupDetails extends React.Component {
                     </div>
                 )
             );
-            giveFromGroupButton = (
-                (
-                    <div className="buttonWraper">
-                        {!_isEmpty(beneficiariesCount)
-                            ? (
-                                <Link route={`/give/to/charity/new?group_id=${groupId}&source_account_holder_id=${fundId}`}>
-                                    <Button
-                                        className="blue-bordr-btn-round"
-                                    >
-                                    Give from this Group
-                                    </Button>
-                                </Link>
-                            )
-                            : <GiveFromGroupModal />
-                        }
-                    </div>
-                )
-            );
+            if (fundId) {
+                giveFromGroupButton = (
+                    <GiveFromGroupModal
+                        groupName={name}
+                        fundId={fundId}
+                        groupId={groupId}
+                    />
+                );
+            }
         } else {
             giveButton = (
                 <div className="buttonWraper">

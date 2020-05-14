@@ -21,6 +21,7 @@ const flowSteps = [
 class Groups extends React.Component {
     static async getInitialProps({ query }) {
         return {
+            groupId: query.group_id,
             namespacesRequired: [
                 'authHeader',
                 'group',

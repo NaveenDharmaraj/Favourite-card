@@ -4,75 +4,86 @@ import {
     Modal,
     Grid,
     Image,
-    Card,
+    Item,
 } from 'semantic-ui-react';
 
 import {
     Link,
 } from '../../routes';
-import noDataCharity from '../../static/images/no-data-avatar-charity-profile.png';
-import noDataGroup from '../../static/images/no-data-avatar-giving-group-profile.png';
+import '../../static/less/giveFlows.less';
+import leftmodelimg from '../../static/images/icons/leftmodelimg.png';
+import modelimg1 from '../../static/images/icons/rightmodelimg1.png';
+import modelimg2 from '../../static/images/icons/rightmodelimg2.png';
+import modelimg3 from '../../static/images/icons/rightmodelimg3.png';
 
-const GiveFromGroupModal = () => (
-    <Modal
-        className="chimp-modal likeToGiveModal"
-        closeIcon
-        size="tiny"
-        trigger={<Button className="blue-bordr-btn-round">Give from this Group</Button>}
-        centered
-        dimmer="inverted"
-    >
-        <Modal.Header>
-                    Who would you like to give to ?
-        </Modal.Header>
-        <Modal.Content>
-            <Modal.Description className="likeToGive">
-                <Grid stackable doubling centered columns={3}>
-                    <Grid.Row stretched>
-                        <Grid.Column>
-                            <Link route='/search?result_type=Beneficiary'>
-                                <Card className="likeToGiveCard">
-                                    <Image src={noDataCharity} circular />
-                                    <Card.Content>
-                                        <Card.Header>Find a Charity or Giving Groups</Card.Header>
-                                        <Card.Description>
-                                            Search for any registered Charity or Giving Group.
-                                        </Card.Description>
-                                    </Card.Content>
-                                </Card>
+const GiveFromGroupModal = (props) => {
+    const {
+        groupName,
+        groupId,
+        fundId,
+    } = props;
+    return (
+        <Modal
+            className="chimp-modal likeToGiveModal"
+            closeIcon
+            size="small"
+            trigger={<Button className="blue-bordr-btn-round">Give from this Group</Button>}
+            centered
+            dimmer="inverted"
+        >
+            <Modal.Header>Give from: {groupName}</Modal.Header>
+            <Modal.Content className="scrollContent">
+                <Grid divided className="fullboxmodel">
+                    <Grid.Row>
+                        <Grid.Column mobile={16} tablet={16} computer={6}>
+                            <Link route={`/give/to/charity/new?group_id=${groupId}&source_account_holder_id=${fundId}`}>
+                                {/* Should check for related beneficiary */}
+                                <div className="ModelLeftBox">
+                                    <Image src={leftmodelimg} />
+                                    <div className="descriptiontext">
+                                    A charity or Campaign your group supports
+                                    </div>
+                                </div>
                             </Link>
                         </Grid.Column>
-                        <Grid.Column>
-                            <Link route='/give/to/friend/new'>
-                                <Card className="likeToGiveCard">
-                                    <Image src={noDataCharity} circular />
-                                    <Card.Content>
-                                        <Card.Header>Your Friends and Family</Card.Header>
-                                        <Card.Description>
-                                            All you need is their email address.
-                                        </Card.Description>
-                                    </Card.Content>
-                                </Card>
-                            </Link>
-                        </Grid.Column>
-                        <Grid.Column>
-                            <Link route='/search?result_type=Group'>
-                                <Card className="likeToGiveCard">
-                                    <Image src={noDataGroup} circular />
-                                    <Card.Content>
-                                        <Card.Header>A Giving Group you belong to</Card.Header>
-                                        <Card.Description>
-                                            Give to one of the groups you belong to.
-                                        </Card.Description>
-                                    </Card.Content>
-                                </Card>
-                            </Link>
+                        <Grid.Column mobile={16} tablet={16} computer={10}>
+                            <div className="rightbox">
+                                <Item.Group>
+                                    <Link route={`/give/to/group/new?group_id=${groupId}&source_account_holder_id=${fundId}`}>
+                                        <Item>
+                                            <Image src={modelimg1} />
+                                            <Item.Content verticalAlign='middle'>
+                                                <Item.Description>
+                                                    <p>Another Giving Group that you're a member of </p>
+                                                </Item.Description>
+                                            </Item.Content>
+                                        </Item>
+                                    </Link>
+
+                                    <Item>
+                                        <Image src={modelimg2} />
+                                        <Item.Content verticalAlign='middle'>
+                                            <Item.Description>
+                                                <p> One of your friends on Charitable Impact</p>
+                                            </Item.Description>
+                                        </Item.Content>
+                                    </Item>
+                                    <Item>
+                                        <Image src={modelimg3} />
+                                        <Item.Content verticalAlign='middle'>
+                                            <Item.Description>
+                                                <p> A different charity, Giving Group, or Campaign that you want to search for</p>
+                                            </Item.Description>
+                                        </Item.Content>
+                                    </Item>
+                                </Item.Group>
+                            </div>
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
-            </Modal.Description>
-        </Modal.Content>
-    </Modal>
-);
+            </Modal.Content>
+        </Modal>
+    );
+}
 
 export default GiveFromGroupModal;

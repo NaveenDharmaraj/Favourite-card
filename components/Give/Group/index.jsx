@@ -225,6 +225,22 @@ class Group extends React.Component {
             else if (!_isEmpty(userMembershipGroups)) {
                 groupFromUrl = true;
                 const groupIndex = this.state.flowObject.groupIndex;
+                if (_isEmpty(giveData.giveFrom.value) && this.props.groupId){
+                    const giveFromGroup = _.find(userGroups, {'id': this.props.groupId});
+                    if(!_isEmpty(giveFromGroup)) {
+                        giveData.giveFrom = {
+                            avatar: giveFromGroup.attributes.avatar,
+                            balance: giveFromGroup.attributes.balance,
+                            id: giveFromGroup.id,
+                            name: giveFromGroup.attributes.name,
+                            slug: giveFromGroup.attributes.slug,
+                            text: `${giveFromGroup.attributes.fundName}: ${formatCurrency(giveFromGroup.attributes.balance, language, currency)}`,
+                            type: giveFromGroup.type,
+                            value: giveFromGroup.attributes.fundId,
+                        };
+                    }
+                }
+
                 giveData.giveTo = {
                     id: userMembershipGroups.userGroups[groupIndex].id,
                     isCampaign: userMembershipGroups.userGroups[groupIndex].attributes.isCampaign,
@@ -249,10 +265,9 @@ class Group extends React.Component {
                 giveData = Group.initFields(
                     giveData, fund, id,
                     `${firstName} ${lastName}`, companiesAccountsData, userGroups, userCampaigns,
-                    addressToShareList, privacyNameOptions
+                    addressToShareList, privacyNameOptions, this.props.groupId
                 );
             }
-
             this.setState({
                 buttonClicked: false,
                 dropDownOptions: {
@@ -272,7 +287,7 @@ class Group extends React.Component {
                 flowObject:{
                     ...this.state.flowObject,
                     giveData:{
-                        ...this.state.flowObject.giveData,
+                        // ...this.state.flowObject.giveData,
                         ...giveData,
                     },
                     groupFromUrl,
@@ -337,7 +352,7 @@ class Group extends React.Component {
      */
     // eslint-disable-next-line react/sort-comp
     static initFields(giveData, fund, id,
-        name, companiesAccountsData, userGroups, userCampaigns, addressToShareList, privacyNameOptions) {
+        name, companiesAccountsData, userGroups, userCampaigns, addressToShareList, privacyNameOptions, fromGroupId) {
         if (_isEmpty(companiesAccountsData) && _isEmpty(userGroups) && _isEmpty(userCampaigns) && !giveData.userInteracted) {
             giveData.giveFrom.id = id;
             giveData.giveFrom.value = fund.id;
@@ -346,7 +361,7 @@ class Group extends React.Component {
             giveData.giveFrom.text = `${fund.attributes.name} ($${fund.attributes.balance})`;
             giveData.giveFrom.balance = fund.attributes.balance;
             giveData.giveFrom.name = name;
-        } else if (!_isEmpty(companiesAccountsData) && !_isEmpty(userGroups) && !_isEmpty(userCampaigns) && !giveData.userInteracted) {
+        } else if (!_isEmpty(companiesAccountsData) && !_isEmpty(userGroups) && !_isEmpty(userCampaigns) && !giveData.userInteracted && _isEmpty(fromGroupId)) {
             giveData.giveFrom = {
                 value: '',
             };
@@ -893,12 +908,18 @@ class Group extends React.Component {
                 disabled={!this.props.userAccountsFetched}
                 type="submit"
             />)
+            let giveBannerHeader;
+            if(!!groupFromUrl) {
+                giveBannerHeader = (giveFrom.name) ? `Give From ${giveFrom.name}` : '';
+            } else {
+                giveBannerHeader = (giveTo.text) ? `Give to ${giveTo.text}` : '';
+            }
         return (
             <Fragment>
             <div className="givinggroupbanner">
                     <Container>
                         <div className="flowReviewbannerText">
-                            <Header as='h2'>{_.isEmpty(giveTo.text) ? '' : `Give to ${giveTo.text}`}</Header>
+                            <Header as='h2'>{giveBannerHeader}</Header>
                         </div>
                     </Container>
                 </div>
@@ -928,10 +949,12 @@ class Group extends React.Component {
                                                                             {formatMessage('giveToLabel')}
                                                                         </label>
                                                                         <Form.Field
+                                                                            className="dropdownWithArrowParent"
                                                                             control={Select}
                                                                             error={!validity.isValidGiveTo}
                                                                             id="giveToList"
                                                                             name="giveToList"
+                                                                            search
                                                                             onChange={this.handleInputChangeGiveTo}
                                                                             options={giveToList}
                                                                             placeholder={formatMessage('groupToGive')}
