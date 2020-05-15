@@ -1025,12 +1025,18 @@ class Charity extends React.Component {
             disabled={!this.props.userAccountsFetched}
             type="submit"
         />)
+        let giveBannerHeader;
+        if(!!groupFromUrl) {
+            giveBannerHeader = (giveFrom.name) ? `Give From ${giveFrom.name}` : '';
+        } else {
+            giveBannerHeader = (giveTo.text) ? `Give to ${giveTo.text}` : '';
+        }
         return (
             <Fragment>
                 <div className="charityallocationbanner">
                     <Container>
                         <div className="flowReviewbannerText">
-                            <Header as='h2'>Give to {giveTo.text}</Header>
+                            <Header as='h2'>{giveBannerHeader}</Header>
                         </div>
                     </Container>
                 </div>
@@ -1051,6 +1057,28 @@ class Charity extends React.Component {
                                             <Grid>
                                                 <Grid.Row>
                                                     <Grid.Column mobile={16} tablet={12} computer={10}>
+                                                    {
+                                                        !!groupFromUrl && (
+                                                            <Fragment>
+                                                                <Form.Field>
+                                                                    <label htmlFor="giveTo">
+                                                                        {formatMessage('giveToLabel')}
+                                                                    </label>
+                                                                    <Form.Field
+                                                                        className="dropdownWithArrowParent"
+                                                                        control={Select}
+                                                                        error={!validity.isValidGiveFrom}
+                                                                        id="giveToList"
+                                                                        name="giveToList"
+                                                                        onChange={this.handleInputChangeGiveTo}
+                                                                        options={giveToList}
+                                                                        placeholder="Select a Group to Give"
+                                                                        value={giveTo.value}
+                                                                    />
+                                                                </Form.Field>
+                                                            </Fragment>
+                                                        )
+                                                    }
                                                         <CharityAmountField
                                                             isGiveFlow={true}
                                                             amount={formatedCharityAmount}
