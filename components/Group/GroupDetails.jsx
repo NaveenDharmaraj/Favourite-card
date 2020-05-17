@@ -165,6 +165,7 @@ class GroupDetails extends React.Component {
                     slug,
                     isMember,
                     isAdmin,
+                    hasCampaignAccess,
                 },
                 id: groupId,
             },
@@ -233,9 +234,11 @@ class GroupDetails extends React.Component {
             if (fundId) {
                 giveFromGroupButton = (
                     <GiveFromGroupModal
+                        beneficiariesCount={beneficiariesCount}
                         groupName={name}
                         fundId={fundId}
                         groupId={groupId}
+                        hasCampaignAccess={hasCampaignAccess}
                     />
                 );
             }
