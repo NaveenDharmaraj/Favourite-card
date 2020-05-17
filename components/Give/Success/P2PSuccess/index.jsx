@@ -7,6 +7,7 @@ import {
 } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 import _concat from 'lodash/concat';
+import _isEmpty from 'lodash/isEmpty';
 
 import { withTranslation } from '../../../../i18n';
 import '../../../../static/less/giveFlows.less';
@@ -21,18 +22,24 @@ const P2PSuccess = (props) => {
         giveData,
     } = successData;
     let name;
+    let secondParagraph;
     if (giveData) {
-        let receipientsArr = _.concat(giveData.selectedFriendsList.map((friend) => friend.displayName), giveData.recipients);
+        const receipientsArr = _concat(giveData.selectedFriendsList.map((friend) => friend.displayName), giveData.recipients);
         name = receipientsArr.join();
         if (receipientsArr.length > 1) {
             const last = receipientsArr.pop();
             name = `${receipientsArr.join(', ')} and ${last}`;
         }
+        secondParagraph = (giveData.giveFrom.type === 'user')
+            ? formatMessage('fromToRecipient', { name })
+            : formatMessage('fromOtherToRecipient', {
+                fromName: giveData.giveFrom.name,
+                name,
+            });
     }
-    const dashboardLink = (!_.isEmpty(giveData.giveFrom) && giveData.giveFrom.type === 'companies')
+    const dashboardLink = (!_isEmpty(giveData.giveFrom) && giveData.giveFrom.type === 'companies')
         ? `/${giveData.giveFrom.type}/${giveData.giveFrom.slug}`
         : `/dashboard`;
-    const secondParagraph = formatMessage('fromToRecipient', { name });
     const doneButtonText = formatMessage('doneText');
     return (
         <Fragment>
@@ -62,10 +69,21 @@ P2PSuccess.propTypes = {
                     PropTypes.string,
                 ]),
             }),
+            giveFrom: PropTypes.shape({
+                name: PropTypes.string,
+                slug: PropTypes.string,
+                type: PropTypes.string,
+            }),
             giveTo: PropTypes.shape({
                 eftEnabled: PropTypes.bool,
                 name: PropTypes.string,
             }),
+            recipients: PropTypes.arrayOf(PropTypes.string),
+            selectedFriendsList: PropTypes.arrayOf(
+                PropTypes.shape({
+                    displayName: PropTypes.string,
+                }),
+            ),
         }),
         type: PropTypes.string,
     }),
@@ -76,6 +94,11 @@ P2PSuccess.defaultProps = {
         giveData: {
             giftType: {
                 value: null,
+            },
+            giveFrom: {
+                name: '',
+                slug: '',
+                type: '',
             },
             giveTo: {
                 eftEnabled: false,
