@@ -6,6 +6,7 @@ import {
     Image,
     Item,
 } from 'semantic-ui-react';
+import { connect } from 'react-redux';
 
 import {
     Link,
@@ -16,9 +17,10 @@ import modelimg1 from '../../static/images/icons/rightmodelimg1.png';
 import modelimg2 from '../../static/images/icons/rightmodelimg2.png';
 import modelimg3 from '../../static/images/icons/rightmodelimg3.png';
 
-const GiveFromGroupModal = (props) => {
+const GiveFromCampaignModal = (props) => {
     const {
         campaignName,
+        campaignRelatedBeneficiaries,
         fundId,
     } = props;
     return (
@@ -58,23 +60,26 @@ const GiveFromGroupModal = (props) => {
                                             </Item.Content>
                                         </Item>
                                     </Link>
-
-                                    <Item>
-                                        <Image src={modelimg2} />
-                                        <Item.Content verticalAlign='middle'>
-                                            <Item.Description>
-                                                <p> One of your friends on Charitable Impact</p>
-                                            </Item.Description>
-                                        </Item.Content>
-                                    </Item>
-                                    <Item>
-                                        <Image src={modelimg3} />
-                                        <Item.Content verticalAlign='middle'>
-                                            <Item.Description>
-                                                <p> A different charity, Giving Group, or Campaign that you want to search for</p>
-                                            </Item.Description>
-                                        </Item.Content>
-                                    </Item>
+                                    <Link route='/give/to/friend/new'>
+                                        <Item>
+                                            <Image src={modelimg2} />
+                                            <Item.Content verticalAlign='middle'>
+                                                <Item.Description>
+                                                    <p> One of your friends on Charitable Impact</p>
+                                                </Item.Description>
+                                            </Item.Content>
+                                        </Item>
+                                    </Link>
+                                    <Link route='/search'>
+                                        <Item>
+                                            <Image src={modelimg3} />
+                                            <Item.Content verticalAlign='middle'>
+                                                <Item.Description>
+                                                    <p> A different charity, Giving Group, or Campaign that you want to search for</p>
+                                                </Item.Description>
+                                            </Item.Content>
+                                        </Item>
+                                    </Link>
                                 </Item.Group>
                             </div>
                         </Grid.Column>
@@ -83,6 +88,10 @@ const GiveFromGroupModal = (props) => {
             </Modal.Content>
         </Modal>
     );
+};
+function mapStateToProps(state) {
+    return {
+        campaignRelatedBeneficiaries: state.profile.campaignRelatedBeneficiaries,
+    };
 }
-
-export default GiveFromGroupModal;
+export default connect(mapStateToProps)(GiveFromCampaignModal);

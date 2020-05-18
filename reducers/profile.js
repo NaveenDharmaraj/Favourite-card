@@ -65,6 +65,13 @@ const profile = (state = {}, action) => {
                 campaignImageGallery: Object.assign([], action.payload.campaignImageGallery),
             };
             break;
+        case 'GET_RELATED_BENEFICIARIES_FOR_CAMPAIGN':
+
+            newState = {
+                ...state,
+                campaignRelatedBeneficiaries: Object.assign([], action.payload.campaignRelatedBeneficiaries),
+            };
+            break;
         case 'SAVE_FOLLOW_STATUS_CAMPAIGN':
             newState = {
                 ...state,
