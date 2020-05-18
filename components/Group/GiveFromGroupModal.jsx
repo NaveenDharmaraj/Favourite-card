@@ -6,6 +6,7 @@ import {
     Image,
     Item,
 } from 'semantic-ui-react';
+import { connect } from 'react-redux';
 import _isEmpty from 'lodash/isEmpty';
 
 import {
@@ -20,13 +21,20 @@ import modelimg3 from '../../static/images/icons/rightmodelimg3.png';
 
 const GiveFromGroupModal = (props) => {
     const {
+        administeredGroups,
         beneficiariesCount,
+        groupDetails: {
+            attributes: {
+                campaignSlug: slug,
+            },
+        },
         groupName,
         groupId,
         fundId,
         hasCampaignAccess,
     } = props;
     let leftBox;
+    const relatedGroupsRoute = (administeredGroups && administeredGroups.data && administeredGroups.data.length > 0) ? (`/give/to/group/new?group_id=${groupId}&source_account_holder_id=${fundId}`) : '';
     if (!_isEmpty(beneficiariesCount) && hasCampaignAccess) {
         leftBox = (
             <Grid.Column mobile={16} tablet={16} computer={6}>
@@ -41,12 +49,14 @@ const GiveFromGroupModal = (props) => {
                             </div>
                         </div>
                     </Link>
-                    <div className="secondgivebox">
-                        <Image src={leftcampaigngroup} />
-                        <div className="Givegroup">
-                            <b>The campaign your group supports</b>
+                    <Link route={`/give/to/group/${slug}/new`}>
+                        <div className="secondgivebox">
+                            <Image src={leftcampaigngroup} />
+                            <div className="Givegroup">
+                                <b>The campaign your group supports</b>
+                            </div>
                         </div>
-                    </div>
+                    </Link>
                 </div>
             </Grid.Column>
         );
@@ -110,8 +120,8 @@ const GiveFromGroupModal = (props) => {
                         <Grid.Column mobile={16} tablet={16} computer={10}>
                             <div className="rightbox">
                                 <Item.Group>
-                                    <Link route={`/give/to/group/new?group_id=${groupId}&source_account_holder_id=${fundId}`}>
-                                        <Item>
+                                    <Link route={relatedGroupsRoute}>
+                                        <Item className={relatedGroupsRoute ? '' : 'graybox'}>
                                             <Image src={modelimg1} />
                                             <Item.Content verticalAlign='middle'>
                                                 <Item.Description>
@@ -148,6 +158,13 @@ const GiveFromGroupModal = (props) => {
             </Modal.Content>
         </Modal>
     );
-}
+};
+function mapStateToProps(state) {
+    return {
+        administeredGroups: state.user.administeredGroups,
+        groupDetails: state.group.groupDetails,
 
-export default GiveFromGroupModal;
+    };
+}
+export default connect(mapStateToProps)(GiveFromGroupModal);
+

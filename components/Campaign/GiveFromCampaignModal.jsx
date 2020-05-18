@@ -7,6 +7,7 @@ import {
     Item,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
+import _isEmpty from 'lodash';
 
 import {
     Link,
@@ -19,10 +20,15 @@ import modelimg3 from '../../static/images/icons/rightmodelimg3.png';
 
 const GiveFromCampaignModal = (props) => {
     const {
+        administeredGroups,
+        campaignId,
         campaignName,
         campaignRelatedBeneficiaries,
         fundId,
     } = props;
+    const relatedBeneficiaryRoute = (campaignRelatedBeneficiaries && campaignRelatedBeneficiaries.length > 0) ? (`/give/to/charity/new?campaign_id=${campaignId}&source_account_holder_id=${fundId}`) : '';
+    // URL getting redirected to dashboard
+    const relatedGroupsRoute = (administeredGroups && administeredGroups.data && administeredGroups.data.length > 0) ? (`/give/to/group/new?source_account_holder_id=${fundId}`) : '';
     return (
         <Modal
             className="chimp-modal likeToGiveModal"
@@ -34,12 +40,11 @@ const GiveFromCampaignModal = (props) => {
         >
             <Modal.Header>Give from: {campaignName}</Modal.Header>
             <Modal.Content className="scrollContent">
-                <Grid divided className="fullboxmodel">
+                <Grid divided className="fullboxmodelgiv">
                     <Grid.Row>
                         <Grid.Column mobile={16} tablet={16} computer={6}>
-                            <Link route={`/give/to/charity/new?source_account_holder_id=${fundId}`}>
-                                {/* Should check for related beneficiary */}
-                                <div className="ModelLeftBox">
+                            <Link route={relatedBeneficiaryRoute}>
+                                <div className={(relatedBeneficiaryRoute) ? "ModelLeftBox" : "ModelLeftBox graybox"}>
                                     <Image src={leftmodelimg} />
                                     <div className="descriptiontext">
                                     A charity your campaign supports
@@ -50,8 +55,8 @@ const GiveFromCampaignModal = (props) => {
                         <Grid.Column mobile={16} tablet={16} computer={10}>
                             <div className="rightbox">
                                 <Item.Group>
-                                    <Link route={`/give/to/group/new?source_account_holder_id=${fundId}`}>
-                                        <Item>
+                                    <Link route={relatedGroupsRoute}>
+                                        <Item className={(relatedGroupsRoute) ? '' : 'graybox'}>
                                             <Image src={modelimg1} />
                                             <Item.Content verticalAlign='middle'>
                                                 <Item.Description>
@@ -91,6 +96,7 @@ const GiveFromCampaignModal = (props) => {
 };
 function mapStateToProps(state) {
     return {
+        administeredGroups: state.user.administeredGroups,
         campaignRelatedBeneficiaries: state.profile.campaignRelatedBeneficiaries,
     };
 }

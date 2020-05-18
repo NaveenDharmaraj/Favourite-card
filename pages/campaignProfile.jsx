@@ -16,6 +16,9 @@ import {
 import Layout from '../components/shared/Layout';
 import CampaignProfileWrapper from '../components/Campaign';
 import storage from '../helpers/storage';
+import {
+    getGroupsAndCampaigns,
+} from '../actions/user';
 
 class CampaignProfile extends React.Component {
     static async getInitialProps({
@@ -39,6 +42,7 @@ class CampaignProfile extends React.Component {
 
     componentDidMount() {
         const {
+            currentUser,
             dispatch,
             slug,
             slugApiErrorStats,
@@ -47,6 +51,9 @@ class CampaignProfile extends React.Component {
             Router.pushRoute('/dashboard');
         } else {
             getCampaignFromSlug(dispatch, slug);
+            if (currentUser && currentUser.id) {
+                getGroupsAndCampaigns(dispatch, `/users/${currentUser.id}/administeredGroups?sort=-id`, 'administeredGroups', false);
+            }
         }
     }
 

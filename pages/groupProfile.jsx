@@ -16,6 +16,9 @@ import Layout from '../components/shared/Layout';
 import GroupProfileWrapper from '../components/Group';
 import { Router } from '../routes';
 import storage from '../helpers/storage';
+import {
+    getGroupsAndCampaigns,
+} from '../actions/user';
 
 const actionTypes = {
     RESET_GROUP_STATES: 'RESET_GROUP_STATES',
@@ -42,6 +45,7 @@ class GroupProfile extends React.Component {
 
     componentDidMount() {
         const {
+            currentUser,
             dispatch,
             slug,
             groupDetails: {
@@ -58,6 +62,9 @@ class GroupProfile extends React.Component {
             Router.push('/search');
         }
         getGroupFromSlug(dispatch, slug);
+        if (currentUser && currentUser.id) {
+            getGroupsAndCampaigns(dispatch, `/users/${currentUser.id}/administeredGroups?sort=-id`, 'administeredGroups', false);
+        }
     }
 
     render() {
@@ -147,6 +154,7 @@ GroupProfile.propTypes = {
 
 function mapStateToProps(state) {
     return {
+        currentUser: state.user.info,
         groupDetails: state.group.groupDetails,
         isAUthenticated: state.auth.isAuthenticated,
         redirectToDashboard: state.group.redirectToDashboard,

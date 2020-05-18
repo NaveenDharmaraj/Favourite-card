@@ -39,7 +39,8 @@ function ProfilePageHead(props) {
                         <Button primary className="blue-btn-rounded">Give</Button>
                     </Link>
                     { pageDetails.attributes.isAdmin && (
-                        <GiveFromCampaignModal 
+                        <GiveFromCampaignModal
+                            campaignId={pageDetails.id}
                             campaignName={pageDetails.attributes.name}
                             fundId={pageDetails.attributes.fundId}
                         />
