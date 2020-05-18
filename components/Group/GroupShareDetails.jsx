@@ -36,13 +36,16 @@ class GroupShareDetails extends React.Component {
                 id: userId,
             },
             dispatch,
-            groupDetails:{
-                attributes:{
-                    liked,
-                },
-                id: groupId,
-                type,
-            },
+            // groupDetails:{
+            //     attributes:{
+            //         liked,
+            //     },
+            //     id: groupId,
+            //     type,
+            // },
+            liked,
+            profileId,
+            type,
         } = this.props;
         dispatch({
             payload: {
@@ -50,20 +53,22 @@ class GroupShareDetails extends React.Component {
             },
             type: actionTypes.DISABLE_FOLLOW_BUTTON,
         });
-        (liked) ? unfollowProfile(dispatch, userId, groupId, type) : followProfile(dispatch, userId, groupId, type);
+        (liked) ? unfollowProfile(dispatch, userId, profileId, type) : followProfile(dispatch, userId, profileId, type);
 
     }
 
     handleOnClick(event, data) {
         const {
-            groupDetails:{
-                attributes:{
-                    slug,
-                    name,
-                },
-                type,
-            },
+            // groupDetails:{
+            //     attributes:{
+            //         slug,
+            //         name,
+            //     },
+            //     type,
+            // },
             deepLinkUrl,
+            name,
+            type,
         } = this.props;
         let title = '';
         let width = 626;
@@ -98,14 +103,15 @@ class GroupShareDetails extends React.Component {
 
     render() {
         const {
-            groupDetails: {
-                attributes: {
-                    liked,
-                }
-            },
+            // groupDetails: {
+            //     attributes: {
+            //         liked,
+            //     }
+            // },
             currentUser,
             deepLinkUrl,
             disableFollow,
+            liked,
         } = this.props;
         const {
             showShareModal,
@@ -177,7 +183,7 @@ function mapStateToProps(state) {
     return {
         currentUser: state.user.info,
         deepLinkUrl: state.profile.deepLinkUrl,
-        groupDetails: state.group.groupDetails,
+        // groupDetails: state.group.groupDetails,
         disableFollow: state.profile.disableFollow,
     }
 }

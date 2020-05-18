@@ -4,101 +4,144 @@ import _isEmpty from 'lodash/isEmpty';
 import {
     bool,
     string,
+    number,
+    func,
 } from 'prop-types';
 import {
     Grid,
-    Container,
     Image,
-    Button,
     Header,
     Responsive,
     Divider,
 } from 'semantic-ui-react';
-import getConfig from 'next/config';
 import ReactHtmlParser from 'react-html-parser';
 
-import { Link } from '../../routes';
+import {
+    generateDeepLink,
+} from '../../actions/profile';
+import GroupShareDetails from '../Group/GroupShareDetails';
+// import ShareDetails from '../shared/ShareSectionProfilePage';
 
 import UserDetails from './UserDetails';
 
-const { publicRuntimeConfig } = getConfig();
-
-const {
-    RAILS_APP_URL_ORIGIN,
-} = publicRuntimeConfig;
-
-const CharityDetails = (props) => {
-    const {
-        charityDetails,
-        isAUthenticated,
-    } = props;
-    let getCauses = null;
-
-    if (!_isEmpty(charityDetails.charityDetails.attributes.causes)) {
-        getCauses = charityDetails.charityDetails.attributes.causes.map((cause) => (
-            <span className="badge">
-                {cause.display_name}
-            </span>
-        ));
+class CharityDetails extends React.Component {
+    componentDidMount() {
+        const {
+            currentUser: {
+                id: userId,
+            },
+            charityDetails: {
+                charityDetails: {
+                    id: charityId,
+                },
+            },
+            dispatch,
+            isAUthenticated,
+        } = this.props;
+        let deepLinkApiUrl = `deeplink?profileType=charityprofile&profileId=${charityId}`;
+        if (isAUthenticated) {
+            deepLinkApiUrl += `&sourceId=${userId}`;
+        }
+        generateDeepLink(deepLinkApiUrl, dispatch);
     }
 
-    return (
-        <Grid.Row>
-            <Grid.Column mobile={16} tablet={11} computer={11} className="charity_profileWrap">
-                <Grid>
-                    <Grid.Row>
-                        <Grid.Column mobile={16} tablet={4} computer={4} className="ch_profileWrap">
-                            <div className="ch_profileImage">
-                                <Image
-                                    src={charityDetails.charityDetails.attributes.avatar}
-                                />
-                            </div>
-                        </Grid.Column>
-                        <Grid.Column mobile={16} tablet={11} computer={11} className="">
-                            <div className="ch_profileDetails">
-                                <Header as="h5">
-                                    {charityDetails.charityDetails.attributes.beneficiaryType}
-                                </Header>
-                                <Header as="h3">
-                                    {charityDetails.charityDetails.attributes.name}
-                                    <br />
-                                    <span>
-                                        WHAT TO SHOW
-                                    </span>
-                                </Header>
-                                <Header as="p">
-                                    {charityDetails.charityDetails.attributes.location}
-                                </Header>
-                                <div className="ch_badge-group">
-                                    {getCauses}
+    render() {
+        const {
+            charityDetails: {
+                charityDetails: {
+                    attributes: {
+                        avatar,
+                        beneficiaryType,
+                        causes,
+                        formattedDescription,
+                        formattedDescriptionNew,
+                        following,
+                        location,
+                        name,
+                    },
+                    id: profileId,
+                    type,
+                },
+            },
+            currentUser: {
+                id: userId,
+            },
+            deepLinkUrl,
+            isAUthenticated,
+        } = this.props;
+        let getCauses = null;
+
+        if (!_isEmpty(causes)) {
+            getCauses = causes.map((cause) => (
+                <span className="badge">
+                    {cause.display_name}
+                </span>
+            ));
+        }
+        return (
+            <Grid.Row>
+                <Grid.Column mobile={16} tablet={11} computer={11} className="charity_profileWrap">
+                    <Grid>
+                        <Grid.Row>
+                            <Grid.Column mobile={16} tablet={4} computer={4} className="ch_profileWrap">
+                                <div className="ch_profileImage">
+                                    <Image
+                                        src={avatar}
+                                    />
                                 </div>
-                                {/* SHARE DETAILS*/}
-                            </div>
-                        </Grid.Column>
-                        <Grid.Column mobile={16} tablet={5} computer={5}>
-                            <Responsive minWidth={320} maxWidth={767}>
-                                <UserDetails />
-                            </Responsive>
-                        </Grid.Column>
-                    </Grid.Row>
-                    <Divider className="mobHideDivider" />
-                    <Grid.Row>
-                        <Grid.Column mobile={16} tablet={16} computer={16} className="ch_paragraph mt-1 mb-2">
-                            {!_isEmpty(charityDetails.charityDetails.attributes.formattedDescription) && <p>{ReactHtmlParser(charityDetails.charityDetails.attributes.formattedDescription)}</p>}
-                            {!_isEmpty(charityDetails.charityDetails.attributes.formattedDescriptionNew) && <p>{ReactHtmlParser(charityDetails.charityDetails.attributes.formattedDescriptionNew)}</p>}
-                        </Grid.Column>
-                    </Grid.Row>
-                </Grid>
-                <Divider />
-            </Grid.Column>
-            <Grid.Column mobile={16} tablet={5} computer={5}>
-                <Responsive minWidth={768}>
-                    <UserDetails />
-                </Responsive>
-            </Grid.Column>
-        </Grid.Row>
-    );
-};
+                            </Grid.Column>
+                            <Grid.Column mobile={16} tablet={11} computer={11} className="">
+                                <div className="ch_profileDetails">
+                                    <Header as="h5">
+                                        {beneficiaryType}
+                                    </Header>
+                                    <Header as="h3">
+                                        {name}
+                                        <br />
+                                        <span>
+                                            WHAT TO SHOW
+                                        </span>
+                                    </Header>
+                                    <Header as="p">
+                                        {location}
+                                    </Header>
+                                    <div className="ch_badge-group">
+                                        {getCauses}
+                                    </div>
+                                    {/* SHARE DETAILS*/}
+                                    <GroupShareDetails
+                                        liked={following}
+                                        profileId={profileId}
+                                        type={type}
+                                        name={name}
+                                    />
+                                </div>
+                            </Grid.Column>
+                            <Grid.Column mobile={16} tablet={5} computer={5}>
+                                <Responsive minWidth={320} maxWidth={767}>
+                                    <UserDetails />
+                                </Responsive>
+                            </Grid.Column>
+                        </Grid.Row>
+                        <Divider className="mobHideDivider" />
+                        <Grid.Row>
+                            <Grid.Column mobile={16} tablet={16} computer={16} className="ch_paragraph mt-1 mb-2">
+                                {!_isEmpty(formattedDescription) && <p>{ReactHtmlParser(formattedDescription)}</p>}
+                                {!_isEmpty(formattedDescriptionNew) && <p>{ReactHtmlParser(formattedDescriptionNew)}</p>}
+                            </Grid.Column>
+                        </Grid.Row>
+                    </Grid>
+                    <Divider />
+                </Grid.Column>
+                <Grid.Column mobile={16} tablet={5} computer={5}>
+                    <Responsive minWidth={768}>
+                        <UserDetails />
+                    </Responsive>
+                </Grid.Column>
+            </Grid.Row>
+        );
+    }
+}
 
 CharityDetails.defaultProps = {
     charityDetails: {
@@ -111,6 +154,10 @@ CharityDetails.defaultProps = {
             },
         },
     },
+    currentUser: {
+        id: null,
+    },
+    dispatch: () => {},
     isAUthenticated: false,
 };
 
@@ -125,12 +172,17 @@ CharityDetails.propTypes = {
             },
         },
     },
+    currentUser: {
+        id: number,
+    },
+    dispatch: func,
     isAUthenticated: bool,
 };
 
 function mapStateToProps(state) {
     return {
         charityDetails: state.charity.charityDetails,
+        deepLinkUrl: state.profile.deepLinkUrl,
         isAUthenticated: state.auth.isAuthenticated,
     };
 }
