@@ -165,8 +165,10 @@ class GroupDetails extends React.Component {
                     slug,
                     isMember,
                     isAdmin,
+                    liked,
                 },
                 id: groupId,
+                type,
             },
             isAuthenticated,
             currentUser: {
@@ -327,7 +329,12 @@ class GroupDetails extends React.Component {
                                                 {!joinClicked && joinButton}
                                                 {joinClicked && permissionButtons}
                                                 {isAdmin && giveFromGroupButton }
-                                                <GroupShareDetails />
+                                                <GroupShareDetails
+                                                    liked={liked}
+                                                    profileId={groupId}
+                                                    type={type}
+                                                    name={name}
+                                                />
                                                 {(isMember || isAdmin)
                                                 && (
                                                     <Fragment>

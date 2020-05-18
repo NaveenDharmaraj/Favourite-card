@@ -42,11 +42,11 @@ const CharityProfileWrapper = (props) => {
     ];
     return (
         <Container>
-            {/* <div className="top-breadcrumb">
+            <div className="top-breadcrumb">
                 <BreadcrumbDetails
                     pathDetails={pathArr}
                 />
-            </div> */}
+            </div>
             {/* BREADCRUMB */}
             <div className="ch_headerImage" />
             <Grid className="mb-2">

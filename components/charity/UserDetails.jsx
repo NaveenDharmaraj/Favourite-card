@@ -4,13 +4,9 @@ import {
     bool,
     PropTypes,
     string,
-    func,
-    number,
 } from 'prop-types';
-import _ from 'lodash';
 import _isEmpty from 'lodash/isEmpty';
 import {
-    Divider,
     List,
     Header,
     Responsive,
@@ -19,13 +15,6 @@ import {
 import getConfig from 'next/config';
 
 import { Link } from '../../routes';
-import {
-    generateDeepLink,
-} from '../../actions/profile';
-import {
-    getBeneficiaryFromSlug,
-} from '../../actions/charity';
-import ShareDetails from '../shared/ShareSectionProfilePage';
 
 const { publicRuntimeConfig } = getConfig();
 const {
@@ -110,106 +99,62 @@ const detailsView = (valuesObject) => {
     );
 };
 
-class UserDetails extends React.Component {
-    componentDidMount() {
-        const {
-            dispatch,
-            deepLinkUrl,
-            isAUthenticated,
-            currentUser: {
-                id: userId,
-            },
+const UserDetails = (props) => {
+    const {
+        charityDetails: {
             charityDetails: {
-                charityDetails: {
-                    id: charityId,
-                    attributes: {
-                        slug,
-                    },
+                attributes: {
+                    hideGive,
+                    isClaimed,
+                    slug,
                 },
             },
-        } = this.props;
-        getBeneficiaryFromSlug(dispatch, slug);
-        let deepLinkApiUrl = `deeplink?profileType=charityprofile&profileId=${charityId}`;
+        },
+        isAUthenticated,
+    } = props;
+    let buttonLink = null;
+    if (!hideGive) {
         if (isAUthenticated) {
-            deepLinkApiUrl += `&sourceId=${userId}`;
+            buttonLink = (
+                <Link route={(`/give/to/charity/${slug}/gift/new`)}>
+                    <Button className="blue-btn-rounded-def">Give</Button>
+                </Link>
+            );
+        } else {
+            buttonLink = (
+                <a href={(`${RAILS_APP_URL_ORIGIN}/send/to/charity/${slug}/gift/new`)}>
+                    <Button className="blue-btn-rounded-def">Give</Button>
+                </a>
+            );
         }
-        generateDeepLink(deepLinkApiUrl, dispatch);
-
     }
-
-    render() {
-        const {
-            charityDetails,
-            isAUthenticated,
-            deepLinkUrl,
-            currentUser: {
-                id: userId,
-            },
-        } = this.props;
-        let buttonLink = null;
-        if (charityDetails.charityDetails.attributes && !charityDetails.charityDetails.attributes.hideGive) {
-            if (isAUthenticated) {
-                buttonLink = (
-                    <Link route={(`/give/to/charity/${charityDetails.charityDetails.attributes.slug}/gift/new`)}>
-                        <Button className="blue-btn-rounded-def">Give</Button>
-                    </Link>
-                );
-            } else {
-                buttonLink = (
-                    <a href={(`${RAILS_APP_URL_ORIGIN}/send/to/charity/${charityDetails.charityDetails.attributes.slug}/gift/new`)}>
-                        <Button className="blue-btn-rounded-def">Give</Button>
-                    </a>
-                );
-            }
-        }
-        return (
-            <div className="charityInfowrap">
-                <div className="charityInfo">
-                    <Header as="h4">
-                        Charity information
-                    </Header>
-                    {((!_isEmpty(charityDetails.charityDetails.attributes))
-                                    && detailsView(charityDetails.charityDetails.attributes))}
-                    <Responsive minWidth={768}>
-                        {buttonLink}
-                    </Responsive>
-                </div>
-                {/* <Grid stackable>
-                    <Grid.Row>
-                        <Grid.Column mobile={16} tablet={10} computer={10}>
-                            <Grid>
-                                {((!_isEmpty(charityDetails.charityDetails.attributes))
-                                && detailsView(charityDetails.charityDetails.attributes))}
-                            </Grid>
-                        </Grid.Column>
-
-                        <ShareDetails
-                            deepLinkUrl={deepLinkUrl}
-                            isAuthenticated={isAUthenticated}
-                            profileDetails={this.props.charityDetails.charityDetails}
-                            userId={userId}
-                        />
-
-                    </Grid.Row>
-                </Grid> */}
-                
-                
-                {(!_isEmpty(charityDetails.charityDetails.attributes) && !charityDetails.charityDetails.attributes.isClaimed)
-                    && (
-                        <div className="charityInfoClaim">
-                            <p>
-                            *Is this your charity? You can claim your free profile page on our platfrom.
-                                <a href={CLAIM_CHARITY_URL}>
-                                    <Button className="blue-bordr-btn-round-def">Claim charity</Button>
-                                </a>
-                            </p>
-                        </div>
-                    )
-                }
+    return (
+        <div className="charityInfowrap">
+            <div className="charityInfo">
+                <Header as="h4">
+                    Charity information
+                </Header>
+                {((!_isEmpty(props.charityDetails.charityDetails.attributes))
+                                && detailsView(props.charityDetails.charityDetails.attributes))}
+                <Responsive minWidth={768}>
+                    {buttonLink}
+                </Responsive>
             </div>
-        );
-    }
-}
+            {(!isClaimed)
+                && (
+                    <div className="charityInfoClaim">
+                        <p>
+                        *Is this your charity? You can claim your free profile page on our platfrom.
+                        </p>
+                        <a href={CLAIM_CHARITY_URL}>
+                            <Button className="blue-bordr-btn-round-def">Claim charity</Button>
+                        </a>
+                    </div>
+                )
+            }
+        </div>
+    );
+};
 
 UserDetails.defaultProps = {
     charityDetails: {
@@ -220,10 +165,6 @@ UserDetails.defaultProps = {
             },
         },
     },
-    currentUser: {
-        id: null,
-    },
-    dispatch: _.noop,
     isAUthenticated: false,
 };
 
@@ -236,10 +177,6 @@ UserDetails.propTypes = {
             }),
         },
     },
-    currentUser: {
-        id: number,
-    },
-    dispatch: func,
     isAUthenticated: bool,
 };
 

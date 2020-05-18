@@ -50,7 +50,9 @@ class CharityProfile extends React.Component {
             redirectToDashboard,
             charityDetails: {
                 charityDetails: {
-                    id,
+                    attributes: {
+                        slug,
+                    },
                 },
             },
             dispatch,
@@ -58,6 +60,7 @@ class CharityProfile extends React.Component {
         if (redirectToDashboard) {
             Router.push('/search');
         }
+        getBeneficiaryFromSlug(dispatch, slug);
     }
 
     render() {
