@@ -59,7 +59,7 @@ const Success = (props) => {
             name: thankName,
         });
     } else {
-        firstParagraph = successData.type === 'donations'
+        firstParagraph = (successData.type === 'donations' || successData.type === 'give/to/friend')
             ? formatMessage('addMoneyFirstText', { name: thankName })
             : formatMessage('allocationFirstText', { name: thankName });
     }

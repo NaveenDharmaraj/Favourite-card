@@ -829,7 +829,7 @@ class Friend extends React.Component {
                                                                 />
                                                                 <FormValidationErrorMessage
                                                                     condition={!validity.isRecepientSelected}
-                                                                    errorMessage="Select friends or enter emailaddress separated by comma"
+                                                                    errorMessage="Select friends or enter email address separated by comma"
                                                                 />
                                                             </Fragment>
                                                         }

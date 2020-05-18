@@ -1,7 +1,7 @@
 {
     "goToYourDashboard": "Go back to your dashboard",
     "goToCompanyDashboard": "Go to the {{companyName}} dashboard.",
-    "addMoneyFirstText": "Thank you, {{name}}.",
+    "addMoneyFirstText": "Thank you, {{name}}",
     "addMoneySecondText": "You added {{amount}} to your Impact Account.",
     "addMoneySecondTextCompany": "You added {{amount}} to the {{companyName}} Impact Account.",
     "addMoneyDonationMatchedAutoText": " In addition, {{matchedAmount}} was matched by {{donationCompany}}, for a total of {{totalAmount}} added to your Impact Account.",
@@ -12,7 +12,7 @@
     "addMoneyRecurringThirdText": "Any match requests approved by {{donationCompany}} will also be added to your account according to their matching policy.",
     "addMoneyTaxButtonText": "View tax receipt ",
     "addMoneyCompanyTaxButtonText": "View tax receipt",
-    "allocationFirstText": "Thank you for giving, {{name}}.",
+    "allocationFirstText": "Thank you for giving, {{name}}",
     "charityTimeForSending": "Your gift will be sent to {{charityName}} on {{month}}.",
     "charityRecurringThirdText": "Because this gift will be coming from your Impact Account, please make sure there are enough funds in your account before each monthly processing date If you'd like, you can also set up a monthly deposit to make sure you always have enough money in your Impact Account to cover your monthly gifts.",
     "charityMonthlyDepositButtonText": "Set up a monthly deposit ",
