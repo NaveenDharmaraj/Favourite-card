@@ -1,0 +1,812 @@
+@import "_mixins.less";
+
+.ch_breadcrumb {
+    padding: 20px 0;
+
+    .section {
+        font-size: 12px;
+        color    : #263238;
+    }
+
+    .icon.divider {
+        margin: 0 5px;
+    }
+
+    .active {
+        font-weight: 600;
+    }
+}
+
+.ch_headerImage {
+    background     : url(../images/charityProfile.svg) no-repeat;
+    min-height     : 70px;
+    height         : 70px;
+    background-size: cover;
+    margin-bottom  : 16px;
+    border-radius  : 5px;
+}
+
+.ch_profileWrap {
+    padding: 0 30px;
+
+    .ch_profileImage {
+        border       : 0.4rem solid #F5F8FC;
+        border-radius: 100%;
+        box-shadow   : 2px 2px 7px 0 rgba(105, 146, 203, 0.3);
+        overflow     : hidden;
+        margin       : -50px 0px 0 10px;
+        max-width    : 147px;
+    }
+}
+
+.ch_profileDetails {
+    h5 {
+        &.ui {
+            &.header {
+                color         : #ED803B;
+                font-size     : 10px;
+                text-transform: uppercase;
+                margin-bottom : 10px;
+                letter-spacing: 1px;
+            }
+        }
+
+    }
+
+    h3 {
+        &.ui {
+            &.header {
+                color    : #ED803B;
+                font-size: 24px !important;
+                margin   : 0px;
+                color    : #263238;
+
+                span {
+                    font-size : 20px;
+                    font-style: italic;
+                }
+            }
+        }
+
+    }
+
+    p {
+        &.ui {
+            &.header {
+                color      : #263238;
+                font-size  : 12px;
+                margin-top : 5px;
+                font-weight: normal;
+            }
+        }
+    }
+
+    .ch_badge-group {
+        .badge {
+            margin-right  : 1rem;
+            margin-bottom : 1rem;
+            text-align    : center;
+            text-transform: uppercase;
+            font-size     : 10px;
+            font-weight   : 600;
+            line-height   : 14px;
+        }
+    }
+
+    .ch_share {
+        margin: 1rem 0 0.5rem;
+
+        .ui {
+            &.list {
+                text-align: left;
+
+                .item {
+                    margin-right: 15px;
+
+                    .icon {
+                        &.heart {
+                            position  : relative;
+                            min-width : 24px;
+                            min-height: 24px;
+
+                            &::before {
+                                content            : '';
+                                position           : absolute;
+                                top                : -8px;
+                                left               : 0;
+                                bottom             : 0;
+                                right              : 0;
+                                background-image   : url(../images/icons/favourite.svg) !important;
+                                background-repeat  : no-repeat !important;
+                                background-size    : contain !important;
+                                background-position: center !important;
+                            }
+
+                            &.active {
+                                &::before {
+                                    background-image: url(../images/icons/favouriteActive.svg) !important;
+                                }
+                            }
+
+                            &:hover {
+                                color: #dc2928;
+                            }
+                        }
+
+                        &.share.alternate {
+                            position  : relative;
+                            min-width : 24px;
+                            min-height: 24px;
+
+                            &::before {
+                                content            : '';
+                                position           : absolute;
+                                top                : -8px;
+                                left               : 0;
+                                bottom             : 0;
+                                right              : 0;
+                                background-image   : url(../images/icons/share.svg) !important;
+                                background-repeat  : no-repeat !important;
+                                background-size    : contain !important;
+                                background-position: center !important;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.ch_paragraph {
+    p {
+        line-height: 22px;
+
+        span {
+            display   : block;
+            margin-top: 10px;
+        }
+    }
+}
+
+.ch_program {
+    .ui {
+        &.table {
+            margin: 1.5rem 0 0;
+
+            thead {
+                tr {
+                    th {
+                        background-color: transparent !important;
+                        border          : 0px;
+
+                        &:first-child {
+                            padding-left: 15px !important;
+                        }
+                    }
+
+                }
+            }
+
+            tbody {
+                tr {
+
+                    td {
+                        border: 0px;
+
+                        &:first-child {
+                            padding-left: 15px !important;
+                        }
+                    }
+
+                    &:nth-child(odd) {
+                        background-color: #F1F6FD;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.ch_footnote {
+    font-size : 10px;
+    margin-top: 20px;
+}
+
+.revenue {
+    .graph {
+        margin: 1rem 0 0;
+    }
+}
+
+.charityInfowrap {
+    background-color: #F6F6F6;
+    border-radius   : 5px;
+    max-width       : 280px;
+    float           : right;
+
+    .charityInfo {
+        padding: 25px 25px !important;
+
+        h4 {
+            &.ui {
+                &.header {
+                    font-size    : 17px;
+                    margin-bottom: 20px;
+                }
+            }
+        }
+
+        .ui {
+            &.list {
+                margin: 0px 0;
+
+                .item {
+                    display       : flex;
+                    align-items   : top;
+                    padding-bottom: 4px;
+
+                    .icon {
+                        position  : relative;
+                        min-width : 16px;
+                        min-height: 20px;
+
+                        &::before {
+                            content            : '';
+                            position           : absolute;
+                            top                : 0px;
+                            left               : 0;
+                            bottom             : 0;
+                            right              : 0;
+                            background-repeat  : no-repeat !important;
+                            background-position: center !important;
+                            margin             : auto;
+                        }
+
+                        &.user {
+                            &::before {
+                                background-image: url(../images/icons/user.svg) !important;
+                                background-size : contain !important;
+                                width           : 12px;
+                            }
+                        }
+
+                        &.phone {
+                            &::before {
+                                background-image: url(../images/icons/phone.svg) !important;
+                                background-size : contain !important;
+                                width           : 12px;
+                            }
+                        }
+
+                        &.mail {
+                            &::before {
+                                background-image: url(../images/icons/mail.svg) !important;
+                                background-size : contain !important;
+                                width           : 15px;
+                            }
+                        }
+
+                        &.linkify {
+                            &::before {
+                                background-image: url(../images/icons/website.svg) !important;
+                                background-size : contain !important;
+                                width           : 16px;
+                            }
+                        }
+
+                        &.users {
+                            &::before {
+                                background-image: url(../images/icons/group.svg) !important;
+                                background-size : contain !important;
+                                width           : 18px;
+                            }
+                        }
+
+                        &.briefcase {
+                            &::before {
+                                background-image: url(../images/icons/business.svg) !important;
+                                background-size : contain !important;
+                                width           : 14px;
+                            }
+                        }
+
+                        &.marker {
+                            &::before {
+                                background-image: url(../images/icons/location.svg) !important;
+                                background-size : contain !important;
+                                width           : 12px;
+                            }
+                        }
+
+                    }
+
+                    .content {
+                        padding    : 0 0 0px 15px;
+                        line-height: 22px;
+
+                        a {
+                            color: #263238;
+                        }
+                    }
+                }
+            }
+        }
+
+        .blue-btn-rounded-def {
+            width      : 100%;
+            font-size  : 17px !important;
+            font-weight: 600;
+            padding    : 15px 0;
+            margin     : 1.5rem 0 0;
+        }
+    }
+
+
+    .charityInfoClaim {
+        padding   : 25px 25px;
+        border-top: 1px solid #E3E3E3;
+
+        p {
+            line-height: 22px;
+        }
+
+        .blue-bordr-btn-round-def {
+            font-size  : 12px;
+            padding    : 3px 15px;
+            line-height: 16px;
+        }
+    }
+}
+
+.ch_Expenses {
+    padding-top   : 0px !important;
+    padding-bottom: 0px !important;
+
+    &:last-child {
+        margin-bottom: 10px;
+    }
+
+    .ui {
+        &.list {
+            .item {
+                display       : flex;
+                align-items   : flex-start;
+                position      : relative;
+                padding-bottom: 20px;
+
+                .box {
+                    width           : 15px;
+                    height          : 15px;
+                    background-color: grey;
+                    margin          : 0px 10px 0px 0;
+                }
+
+                .content {
+                    padding-top: 0;
+                }
+            }
+
+        }
+    }
+
+    &.expenseHeader {
+        padding-top   : 20px !important;
+        padding-bottom: 0 !important;
+
+        .ui.list .item {
+            padding-bottom: 0;
+
+        }
+    }
+
+    &.expenseRow {
+        padding-left: 7px !important;
+
+        &:nth-child(2) {
+            .ui.list .item {
+                padding-top: 20px !important;
+
+                .boxes .boxVLine::before {
+                    height: 28px;
+                    top   : -1px;
+                }
+            }
+
+            .column:last-child {
+                padding-top: 20px !important;
+            }
+
+        }
+
+        .column:first-child {
+            padding-right: 0 !important;
+        }
+
+        .ui {
+            &.list {
+                .item {
+                    .boxes {
+                        display    : flex;
+                        align-items: center;
+
+                        .boxVLine {
+                            width : 20px;
+                            height: 100%;
+
+                            &::before {
+                                content         : '';
+                                width           : 1px;
+                                height          : 7px;
+                                background-color: #DDDDDD;
+                                position        : absolute;
+                                top             : 0px;
+                                left            : 0;
+                                right           : 0;
+                            }
+
+                            &::after {
+                                content         : '';
+                                width           : 1px;
+                                height          : 100%;
+                                background-color: #DDDDDD;
+                                position        : absolute;
+                                bottom          : -7px;
+                                left            : 0;
+                                right           : 0;
+                            }
+                        }
+
+                        .box {
+                            margin  : 0px 20px 0px 0;
+                            position: relative;
+
+                            &::before {
+                                content         : '';
+                                width           : 20px;
+                                height          : 1px;
+                                background-color: #DDDDDD;
+                                position        : absolute;
+                                top             : 0px;
+                                left            : -20px;
+                                bottom          : 0;
+                                margin          : auto;
+                            }
+
+
+
+                        }
+
+
+                    }
+
+                    .content {
+                        font-weight: normal;
+
+                        span {
+                            margin-right: 10px;
+                        }
+
+                        .blue-bordr-btn-round-def {
+                            font-size  : 12px;
+                            padding    : 1px 15px;
+                            line-height: 16px;
+
+                        }
+                    }
+                }
+            }
+
+            &.header {
+                font-weight: normal;
+            }
+
+        }
+
+        &:last-child {
+            .ui.list .item {
+                padding-bottom: 0;
+
+                .boxVLine::after {
+                    background-color: transparent;
+                }
+            }
+        }
+
+    }
+}
+
+.expenseHeader {
+    padding-bottom: 20px !important;
+
+    .ui.list h5.item {
+        display    : flex;
+        align-items: center;
+        z-index    : 1;
+    }
+
+}
+
+.ch_profileNodata {
+    &.ui {
+        &.table {
+            border: 0px solid transparent;
+
+            .ui {
+                &.card {
+                    &.noData {
+                        border          : 1px solid #E6E5E5;
+                        border-radius   : 5px;
+                        background-color: #FFFFFF;
+                        box-shadow      : none;
+                        padding         : 15px 15px 15px 36px;
+                    }
+
+                    &.rightImg {
+                        >.content {
+                            padding        : 0px;
+                            font-size      : 14px;
+                            display        : flex;
+                            align-items    : center;
+                            justify-content: center;
+
+                            >.header {
+                                width: calc(100% - 150px);
+
+                                .ui {
+                                    &.header {
+                                        font-size: 14px;
+
+                                        .sub {
+                                            .content {
+                                                font-size : 14px;
+                                                margin-top: 10px;
+                                            }
+                                        }
+
+                                    }
+                                }
+                            }
+
+                            .ui {
+                                &.image {
+                                    height       : 107px;
+                                    width        : 126px;
+                                    margin-bottom: 0px;
+                                    margin-right : auto;
+                                    order        : 2;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+}
+
+.ch_giftPopcontent {
+    border-bottom : 1px solid #DADADA;
+    margin-bottom : 20px;
+    padding-bottom: 20px;
+
+    &:last-child {
+        margin-bottom: 10px;
+    }
+
+    h6 {
+        &.ui.header {
+            font-size     : 10px;
+            letter-spacing: 1px;
+            color         : #ED803B;
+            margin        : 0 0 7px 0;
+        }
+    }
+
+    h3 {
+        &.ui.header {
+            font-size      : 14px !important;
+            color          : #263238;
+            margin         : 0 0 5px 0;
+            display        : flex;
+            justify-content: space-between;
+
+            p {
+                margin-bottom: 0;
+                width        : 80%;
+            }
+
+            span {
+                font-weight: normal;
+            }
+        }
+    }
+
+    h5 {
+        &.ui.header {
+            font-size  : 14px;
+            color      : #263238;
+            margin     : 0;
+            font-weight: normal;
+
+        }
+    }
+}
+
+.ch_MobGive {
+    position        : fixed;
+    bottom          : 0;
+    width           : 100%;
+    padding         : 10px 20px;
+    background-color: #ffffff;
+
+    .button {
+        width      : 100%;
+        font-size  : 17px !important;
+        font-weight: 600;
+        padding    : 15px 0;
+    }
+}
+
+.ch_ModelContent {
+    max-height: 620px;
+    overflow-y: auto;
+
+    .ui.placeholder {
+        margin-bottom: 25px;
+    }
+}
+
+@media only screen and (max-width:991px) and (min-width:768px) {
+    .charity_profileWrap {
+        .ui {
+            &.grid {
+                margin-right: 10px;
+            }
+        }
+    }
+
+    .ch_profileWrap {
+        padding-right: 0 !important;
+
+        .ch_profileImage {
+            border: 0.3rem solid #F5F8FC;
+        }
+    }
+
+    .ch_profileDetails {
+        margin-left: 15px;
+    }
+}
+
+@media only screen and (max-width:767px) {
+    .ch_headerImage {
+        margin-left : -15px;
+        margin-right: -15px;
+    }
+
+    .ch_profileWrap {
+        .ch_profileImage {
+            margin: -50px auto 30px;
+        }
+    }
+
+    .ch_profileDetails {
+        margin : 0;
+        padding: 0 5px;
+
+        .ch_share {
+            margin: 1rem 5px 1rem;
+        }
+    }
+
+    .charityInfowrap {
+        max-width: 100%;
+        float    : none;
+    }
+
+    
+
+    .ch_program {
+        margin: 0 !important;
+        .ui {
+            &.table {
+                thead {
+                    tr {
+                        th:last-child {
+                            text-align: right;
+                        }
+                    }
+                }
+
+                tbody {
+                    tr {
+                        td:last-child {
+                            text-align   : right;
+                            padding-right: 15px !important;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .revenue{
+        margin: 0 !important;
+    }
+    .ch_Expenses.expenseRow .ui.list .item .boxes {
+        .boxVLine {
+            width: 10px;
+        }
+
+        .box {
+            margin: 0px 10px 0px 0;
+
+            &:before {
+                width: 10px;
+                left : -10px;
+            }
+        }
+    }
+
+    .ch_giftPopcontent {
+        margin        : 10px 10px 20px 10px;
+        padding-bottom: 15px;
+    }
+
+    .mobHideDivider {
+        display: none;
+    }
+}
+
+@media only screen and (max-width:420px) {
+
+    .ch_profileNodata {
+        &.ui {
+            &.table {
+                .ui {
+                    &.card {
+                        &.noData {
+                            padding: 15px 15px 15px 15px;
+                        }
+
+                        &.rightImg {
+                            >.content {
+                                -webkit-box-orient   : horizontal;
+                                -webkit-box-direction: normal;
+                                -ms-flex-direction   : column;
+                                flex-direction       : column;
+                                -ms-flex-wrap        : wrap;
+                                flex-wrap            : wrap;
+                                -webkit-box-pack     : inherit;
+                                -ms-flex-pack        : inherit;
+                                justify-content      : inherit;
+                                -webkit-box-align    : center;
+                                -ms-flex-align       : center;
+                                align-items          : center;
+                                text-align           : center;
+
+                                .header {
+                                    width: 100%;
+
+                                    .ui {
+                                        &.header {
+                                            margin: 10px 0 20px;
+
+                                        }
+                                    }
+
+                                }
+
+                                .ui.image {
+                                    margin: auto;
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+}
