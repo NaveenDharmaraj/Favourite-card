@@ -26,6 +26,7 @@ import {
     Link,
 } from '../routes';
 import '../static/less/charityProfile.less';
+import storage from '../helpers/storage';
 
 const actionTypes = {
     RESET_CHARITY_STATES: 'RESET_CHARITY_STATES',
@@ -34,12 +35,17 @@ const actionTypes = {
 class CharityProfile extends React.Component {
     static async getInitialProps({
         reduxStore,
+        req,
         query,
     }) {
         reduxStore.dispatch({
             type: actionTypes.RESET_CHARITY_STATES,
         });
-        await getBeneficiaryFromSlug(reduxStore.dispatch, query.slug);
+        let auth0AccessToken = null;
+        if (typeof window === 'undefined') {
+            auth0AccessToken = storage.get('auth0AccessToken', 'cookie', req.headers.cookie);
+        }
+        await getBeneficiaryFromSlug(reduxStore.dispatch, query.slug, auth0AccessToken);
         return {
             slug: query.slug,
         };
@@ -60,7 +66,7 @@ class CharityProfile extends React.Component {
         if (redirectToDashboard) {
             Router.push('/search');
         }
-        getBeneficiaryFromSlug(dispatch, slug);
+        // getBeneficiaryFromSlug(dispatch, slug);
     }
 
     render() {

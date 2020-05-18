@@ -5,6 +5,8 @@ import { connect } from 'react-redux';
 import {
     Table,
     Header,
+    Placeholder,
+    Divider,
 } from 'semantic-ui-react';
 import _isEmpty from 'lodash/isEmpty';
 import _ from 'lodash';
@@ -52,31 +54,66 @@ class ReceivingOrganisations extends React.Component {
             language,
             transactionsLoader,
         } = this.props;
+
+        
         return (
-            doneeList.map((donee) => {
-                let location = '';
-                if (donee.city === '' && donee.province !== '') {
-                    location = donee.province;
-                } else if (donee.city !== '' && donee.province === '') {
-                    location = donee.city;
-                } else if (donee.city !== '' && donee.province !== '') {
-                    location = `${donee.city}, ${donee.province}`;
-                }
-                return (
-                    <div className="ch_giftPopcontent">
-                        <Header as="h6">{!_.isEmpty(donee.donee_beneficiary_id) ? 'CHARITY' : ''}</Header>
-                        <Header as="h3">
-                            {donee.donee_name}
-                            <span>
-                                {formatCurrency(donee.gifts_total, language, currency)}
-                            </span>
-                        </Header>
-                        <Header as="h5">
-                            {location}
-                        </Header>
-                    </div>
-                );
-            })
+            transactionsLoader ? (
+                <Fragment>
+                    <Placeholder>
+                        <Placeholder.Line length='short' />
+                        <Placeholder.Line length='full' />
+                        <Placeholder.Line length='medium' />
+                    </Placeholder>
+                    <Divider />
+                    <Placeholder>
+                        <Placeholder.Line length='short' />
+                        <Placeholder.Line length='full' />
+                        <Placeholder.Line length='medium' />
+                    </Placeholder>
+                    <Divider />
+                    <Placeholder>
+                        <Placeholder.Line length='short' />
+                        <Placeholder.Line length='full' />
+                        <Placeholder.Line length='medium' />
+                    </Placeholder>
+                    <Divider />
+                    <Placeholder>
+                        <Placeholder.Line length='short' />
+                        <Placeholder.Line length='full' />
+                        <Placeholder.Line length='medium' />
+                    </Placeholder>
+                    <Divider />
+                </Fragment>
+
+            // <PlaceholderGrid row={3} column={1} placeholderType="multiLine" />
+            ) : (
+                doneeList.map((donee) => {
+                    let location = '';
+                    if (donee.city === '' && donee.province !== '') {
+                        location = donee.province;
+                    } else if (donee.city !== '' && donee.province === '') {
+                        location = donee.city;
+                    } else if (donee.city !== '' && donee.province !== '') {
+                        location = `${donee.city}, ${donee.province}`;
+                    }
+                    return (
+                        <div className="ch_giftPopcontent">
+                            <Header as="h6">CHARITY</Header>
+                            <Header as="h3">
+                                <p>
+                                    {donee.donee_name}
+                                </p>
+                                <span>
+                                    {formatCurrency(donee.gifts_total, language, currency)}
+                                </span>
+                            </Header>
+                            <Header as="h5">
+                                {location}
+                            </Header>
+                        </div>
+                    );
+                })
+            )
         );
     }
 }

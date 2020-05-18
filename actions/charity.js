@@ -20,6 +20,7 @@ if (!_.isEmpty(BASIC_AUTH_KEY)) {
 }
 
 export const actionTypes = {
+    CHARITY_CHART_LOADER: 'CHARITY_CHART_LOADER',
     CHARITY_LOADER_STATUS: 'CHARITY_LOADER_STATUS',
     CHARITY_PLACEHOLDER_STATUS: 'CHARITY_PLACEHOLDER_STATUS',
     CHARITY_REDIRECT_TO_DASHBOARD: 'CHARITY_REDIRECT_TO_DASHBOARD',
@@ -151,7 +152,7 @@ export const copyDeepLink = (url, dispatch) => {
     }).finally(() => dispatch(fsa));
 };
 
-export const getBeneficiaryFromSlug = async (dispatch, slug) => {
+export const getBeneficiaryFromSlug = async (dispatch, slug, token = null) => {
     if (slug !== ':slug') {
         const fsa = {
             payload: {
@@ -165,12 +166,20 @@ export const getBeneficiaryFromSlug = async (dispatch, slug) => {
             },
             type: actionTypes.CHARITY_REDIRECT_TO_DASHBOARD,
         });
-        await coreApi.get(`/beneficiaries/find_by_slug?load_full_profile=true`, {
+        const fullParams = {
             params: {
                 dispatch,
                 slug,
                 uxCritical: true,
             },
+        };
+        if (!_.isEmpty(token)) {
+            fullParams.headers = {
+                Authorization: `Bearer ${token}`,
+            };
+        }
+        await coreApi.get(`/beneficiaries/find_by_slug?load_full_profile=true`, {
+            ...fullParams,
         }).then(
             (result) => {
                 if (result && !_.isEmpty(result.data)) {
@@ -220,13 +229,19 @@ export const getGeoCoding = async (dispatch, city, isHeadQuarter) => {
     });
 };
 
-export const getBeneficiaryFinance = async (dispatch, id) => {
+export const getBeneficiaryFinance = (id) => async (dispatch) => {
     const fsa = {
         payload: {
             beneficiaryFinance: [],
         },
         type: actionTypes.GET_BENEFICIARY_FINANCE_DETAILS,
     };
+    dispatch({
+        payload: {
+            chartLoader: true,
+        },
+        type: actionTypes.CHARITY_CHART_LOADER,
+    });
     await utilityApi.get(`/beneficiaryfinance/${id}`, {
         params: {
             dispatch,
@@ -235,6 +250,12 @@ export const getBeneficiaryFinance = async (dispatch, id) => {
             uxCritical: true,
         },
     }).then().catch().finally(() => {
+        dispatch({
+            payload: {
+                chartLoader: false,
+            },
+            type: actionTypes.CHARITY_CHART_LOADER,
+        });
         fsa.payload.beneficiaryFinance = Data.beneficiaryFinanceList;
         dispatch(fsa);
     });

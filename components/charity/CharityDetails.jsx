@@ -20,8 +20,9 @@ import {
     generateDeepLink,
 } from '../../actions/profile';
 import GroupShareDetails from '../Group/GroupShareDetails';
-// import ShareDetails from '../shared/ShareSectionProfilePage';
 
+import ProgramAreas from './ProgramAreas';
+import Charts from './Charts';
 import UserDetails from './UserDetails';
 
 class CharityDetails extends React.Component {
@@ -108,7 +109,6 @@ class CharityDetails extends React.Component {
                                     <div className="ch_badge-group">
                                         {getCauses}
                                     </div>
-                                    {/* SHARE DETAILS*/}
                                     <GroupShareDetails
                                         liked={following}
                                         profileId={profileId}
@@ -125,13 +125,16 @@ class CharityDetails extends React.Component {
                         </Grid.Row>
                         <Divider className="mobHideDivider" />
                         <Grid.Row>
-                            <Grid.Column mobile={16} tablet={16} computer={16} className="ch_paragraph mt-1 mb-2">
+                            <Grid.Column mobile={16} tablet={16} computer={16} className="ch_paragraph">
                                 {!_isEmpty(formattedDescription) && <p>{ReactHtmlParser(formattedDescription)}</p>}
                                 {!_isEmpty(formattedDescriptionNew) && <p>{ReactHtmlParser(formattedDescriptionNew)}</p>}
                             </Grid.Column>
                         </Grid.Row>
+                        <Divider />
+                        <ProgramAreas />
+                        <Divider />
+                        <Charts />
                     </Grid>
-                    <Divider />
                 </Grid.Column>
                 <Grid.Column mobile={16} tablet={5} computer={5}>
                     <Responsive minWidth={768}>

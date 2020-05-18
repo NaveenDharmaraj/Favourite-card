@@ -47,19 +47,9 @@ const CharityProfileWrapper = (props) => {
                     pathDetails={pathArr}
                 />
             </div>
-            {/* BREADCRUMB */}
             <div className="ch_headerImage" />
             <Grid className="mb-2">
                 <CharityDetails />
-                <Grid.Row>
-                    <Grid.Column mobile={16} tablet={11} computer={11}>
-                        <Grid>
-                            <ProgramAreas />
-                            <Divider />
-                        </Grid>
-                        <Charts />
-                    </Grid.Column>
-                </Grid.Row>
             </Grid>
         </Container>
     );

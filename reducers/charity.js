@@ -77,6 +77,12 @@ const charity = (state = {}, action) => {
                 beneficiaryFinance: action.payload.beneficiaryFinance,
             };
             break;
+        case 'CHARITY_CHART_LOADER':
+            newState = {
+                ...state,
+                chartLoader: action.payload.chartLoader,
+            };
+            break;
         default:
             break;
     }

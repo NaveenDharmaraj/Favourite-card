@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import {
     arrayOf,
     PropTypes,
+    bool,
 } from 'prop-types';
 import _ from 'lodash';
 import _orderBy from 'lodash/orderBy';
@@ -18,6 +19,8 @@ import {
     Image,
     Divider,
     Modal,
+    Loader,
+    Placeholder,
 } from 'semantic-ui-react';
 
 import TotalRevenue from '../../static/images/total_revenue.svg';
@@ -58,7 +61,7 @@ class Charts extends React.Component {
                     id,
             },
         } = this.props;
-        getBeneficiaryFinance(dispatch, id);
+        dispatch(getBeneficiaryFinance(id));
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -67,12 +70,13 @@ class Charts extends React.Component {
         } = this.props;
         const {
             chartIndex,
+            graphData,
         } = this.state;
         if (!_.isEqual(prevProps.beneficiaryFinance, beneficiaryFinance)) {
             this.createGraphData();
         }
         if (!_.isEqual(prevState.chartIndex, chartIndex)) {
-            if (!_.isEmpty(beneficiaryFinance)) {
+            if (!_.isEmpty(graphData)) {
                 this.highlightBar();
             }
         }
@@ -354,136 +358,175 @@ class Charts extends React.Component {
 
     render() {
         const {
+            chartLoader,
+        } = this.props;
+        const {
             chartIndex,
             graphData,
             showDoneeListModal,
         } = this.state;
         const currency = 'USD';
         const language = 'en';
+        let chartView = <CharityNoDataState />;
+        if (!_.isEmpty(graphData)) {
+            chartView = (
+                <Fragment>
+                    <Grid>
+                        <Grid.Row>
+                            <Grid.Column mobile={16} tablet={16} computer={16}>
+                                {/* <div
+                                    className="graphLoader"
+                                    style={{
+                                        height: '260px',
+                                        position: 'absolute',
+                                        width: '100%',
+                                    }}
+                                >
+                                    <Loader active />
+                                </div> */}
+                                <div className="graph">
+                                    <Grid.Column>
+                                        <Bar
+                                            // onClick={this.getElementAtEvent}
+                                            // getDatasetAtEvent={this.handleClick}
+                                            onElementsClick={this.handleClick}
+                                            ref={this.chartReference}
+                                            data={this.getChartData}
+                                            width="790px"
+                                            height="216px"
+                                            options={{
+                                                events: [
+                                                    'click',
+                                                ],
+                                                legend: false,
+                                                maintainAspectRatio: false,
+                                                scales: {
+                                                    xAxes: [
+                                                        {
+                                                            categoryPercentage: 0.8,
+                                                            display: true,
+                                                            gridLines: {
+                                                                display: false,
+                                                            },
+                                                            stacked: true,
+                                                        },
+                                                    ],
+                                                    yAxes: [
+                                                        {
+                                                            stacked: true,
+                                                            // type: 'linear',
+                                                            // display: true,
+                                                            // position: 'left',
+                                                            // gridLines: {
+                                                            //     display: true,
+                                                            // },
+                                                            // labels: {
+                                                            //     show: true,
+                                                            // },
+
+                                                            // ticks: {
+                                                            //     // Include a dollar sign in the ticks
+                                                            //     callback: (value, index, values) => {
+                                                            //         return `$${value}K`;
+                                                            //     },
+                                                            // },
+                                                        },
+                                                    ],
+                                                },
+                                                tooltips: false,
+                                            }}
+                                        />
+                                    </Grid.Column>
+                                    <Header as="h4">{`${graphData.yearLabel[chartIndex]} total revenue and expenses summary `}</Header>
+                                </div>
+                            </Grid.Column>
+                        </Grid.Row>
+                        <Grid.Row className="expenseHeader">
+                            <Grid.Column mobile={11} tablet={12} computer={12}>
+                                <List>
+                                    <List.Item as="h5">
+                                        <Image src={TotalRevenue} />
+                                        <List.Content>
+                                            Total revenue
+                                        </List.Content>
+                                    </List.Item>
+                                </List>
+                            </Grid.Column>
+                            <Grid.Column mobile={5} tablet={4} computer={4} textAlign="right">
+                                <Header as="h5">
+                                    {formatCurrency(graphData.totalData[chartIndex].revenue_total, language, currency)}
+                                </Header>
+                            </Grid.Column>
+                        </Grid.Row>
+                    </Grid>
+                    <Divider />
+                    <Grid>
+                        <Grid.Row className="expenseHeader ch_Expenses">
+                            <Grid.Column mobile={11} tablet={12} computer={12}>
+                                <List>
+                                    <List.Item as="h5">
+                                        <Image src={ToalExpense} />
+                                        <List.Content>
+                                            Total expenses
+                                        </List.Content>
+                                    </List.Item>
+                                </List>
+                            </Grid.Column>
+                            <Grid.Column mobile={5} tablet={4} computer={4} textAlign="right">
+                                <Header as="h5">
+                                    {formatCurrency(graphData.totalData[chartIndex].total_expense, language, currency)}
+                                </Header>
+                            </Grid.Column>
+                        </Grid.Row>
+                        {!_.isEmpty(graphData) && this.renderSummary()}
+                    </Grid>
+                    <p className="ch_footnote">* Information about revenue and expenses is provided by the Canada Revenue Agency approximately once each quarter.</p>
+                    <Modal
+                        open={showDoneeListModal}
+                        onClose={this.closeDoneeListModal}
+                        size="tiny"
+                        dimmer="inverted"
+                        className="chimp-modal"
+                        closeIcon
+                    >
+                        <Modal.Header icon="archive" content="Gifts to qualified donees" />
+                        <Modal.Content className="ch_ModelContent">
+                            <ReceivingOrganisations
+                                year={graphData.yearLabel[chartIndex]}
+                            />
+                        </Modal.Content>
+                    </Modal>
+                </Fragment>
+            );
+        }
         return (
             <Fragment>
-                <Header as="h3">Revenue and expenses</Header>
-                {(!_.isEmpty(graphData))
-                    ? (
-                        <Fragment>
-                            <Grid>
-                                <Grid.Row>
-                                    <Grid.Column mobile={16} tablet={16} computer={16} className="revenue mt-1">
-                                        <div className="graph">
-                                            <Grid.Column>
-                                                <Bar
-                                                    // onClick={this.getElementAtEvent}
-                                                    // getDatasetAtEvent={this.handleClick}
-                                                    onElementsClick={this.handleClick}
-                                                    ref={this.chartReference}
-                                                    data={this.getChartData}
-                                                    width="790px"
-                                                    height="216px"
-                                                    options={{
-                                                        events: [
-                                                            'click',
-                                                        ],
-                                                        legend: false,
-                                                        maintainAspectRatio: false,
-                                                        scales: {
-                                                            xAxes: [
-                                                                {
-                                                                    categoryPercentage: 0.8,
-                                                                    display: true,
-                                                                    gridLines: {
-                                                                        display: false,
-                                                                    },
-                                                                    stacked: true,
-                                                                },
-                                                            ],
-                                                            yAxes: [
-                                                                {
-                                                                    stacked: true,
-                                                                    // type: 'linear',
-                                                                    // display: true,
-                                                                    // position: 'left',
-                                                                    // gridLines: {
-                                                                    //     display: true,
-                                                                    // },
-                                                                    // labels: {
-                                                                    //     show: true,
-                                                                    // },
-
-                                                                    // ticks: {
-                                                                    //     // Include a dollar sign in the ticks
-                                                                    //     callback: (value, index, values) => {
-                                                                    //         return `$${value}K`;
-                                                                    //     },
-                                                                    // },
-                                                                },
-                                                            ],
-                                                        },
-                                                        tooltips: false,
-                                                    }}
-                                                />
-                                            </Grid.Column>
-                                            <Header as="h4">{`${graphData.yearLabel[chartIndex]} total revenue and expenses summary `}</Header>
-                                        </div>
-                                    </Grid.Column>
-                                </Grid.Row>
-                                <Grid.Row className="expenseHeader">
-                                    <Grid.Column mobile={11} tablet={12} computer={12}>
-                                        <List>
-                                            <List.Item as="h5">
-                                                <Image src={TotalRevenue} />
-                                                <List.Content>
-                                                    Total revenue
-                                                </List.Content>
-                                            </List.Item>
-                                        </List>
-                                    </Grid.Column>
-                                    <Grid.Column mobile={5} tablet={4} computer={4} textAlign="right">
-                                        <Header as="h5">
-                                            {formatCurrency(graphData.totalData[chartIndex].revenue_total, language, currency)}
-                                        </Header>
-                                    </Grid.Column>
-                                </Grid.Row>
-                            </Grid>
-                            <Divider />
-                            <Grid>
-                                <Grid.Row className="expenseHeader ch_Expenses">
-                                    <Grid.Column mobile={11} tablet={12} computer={12}>
-                                        <List>
-                                            <List.Item as="h5">
-                                                <Image src={ToalExpense} />
-                                                <List.Content>
-                                                    Total expenses
-                                                </List.Content>
-                                            </List.Item>
-                                        </List>
-                                    </Grid.Column>
-                                    <Grid.Column mobile={5} tablet={4} computer={4} textAlign="right">
-                                        <Header as="h5">
-                                            {formatCurrency(graphData.totalData[chartIndex].total_expense, language, currency)}
-                                        </Header>
-                                    </Grid.Column>
-                                </Grid.Row>
-                                {!_.isEmpty(graphData) && this.renderSummary()}
-                            </Grid>
-                            <p className="ch_footnote">* Information about revenue and expenses is provided by the Canada Revenue Agency approximately once each quarter.</p>
-                            <Modal
-                                open={showDoneeListModal}
-                                onClose={this.closeDoneeListModal}
-                                size="tiny"
-                                dimmer="inverted"
-                                className="chimp-modal"
-                                closeIcon
-                            >
-                                <Modal.Header icon="archive" content="Gifts to qualified donees" />
-                                <Modal.Content>
-                                    <ReceivingOrganisations
-                                        year={graphData.yearLabel[chartIndex]}
-                                    />
-                                </Modal.Content>
-                            </Modal>
-                        </Fragment>
-                    ) : <CharityNoDataState />
-                }
+                <Grid.Row>
+                    <Grid.Column mobile={16} tablet={16} computer={16} className="revenue mt-1">
+                        <Header as="h3">Revenue and expenses</Header>
+                        {chartLoader
+                            ? (
+                                <Grid>
+                                    <Grid.Row>
+                                        <Grid.Column mobile={16} tablet={16} computer={16}>
+                                            <div
+                                                className="graphLoader"
+                                                style={{
+                                                    height: '260px',
+                                                    position: 'absolute',
+                                                    width: '100%',
+                                                }}
+                                            >
+                                                <Loader active />
+                                            </div>
+                                        </Grid.Column>
+                                    </Grid.Row>
+                                </Grid>
+                            )
+                            : (!_.isEmpty(graphData) && chartView)
+                        }
+                    </Grid.Column>
+                </Grid.Row>
             </Fragment>
         );
     }
@@ -491,15 +534,18 @@ class Charts extends React.Component {
 
 Charts.defaultProps = {
     beneficiaryFinance: [],
+    chartLoader: false,
 };
 
 Charts.propTypes = {
     beneficiaryFinance: arrayOf(PropTypes.element),
+    chartLoader: bool,
 };
 
 function mapStateToProps(state) {
     return {
         beneficiaryFinance: state.charity.beneficiaryFinance,
+        chartLoader: state.charity.chartLoader,
         donationDetails: state.charity.donationDetails,
         values: state.charity.charityDetails.charityDetails,
         // beneficiaryFinance: Data.beneficiaryFinanceList,

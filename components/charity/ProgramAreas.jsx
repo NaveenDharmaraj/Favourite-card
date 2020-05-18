@@ -28,7 +28,7 @@ const ProgramAreas = (props) => {
     }
     return (
         <Grid.Row>
-            <Grid.Column mobile={16} tablet={16} computer={16} className="ch_program">
+            <Grid.Column mobile={16} tablet={16} computer={16} className="ch_program mt-1 mb-1">
                 <Header as="h3">Program areas</Header>
                 <Table basic="very" unstackable>
                     <Table.Header>
