@@ -55,6 +55,12 @@ const generateFilterObj = (obj) => {
                     value,
                 });
             }
+            if (field === 'Language') {
+                finalObjects.push({
+                    field: 'language',
+                    value,
+                });
+            }
         }
     });
     return finalObjects;
@@ -90,6 +96,9 @@ class FilterComponent extends React.Component {
                 }
                 if (key === 'group_Type') {
                     key = 'Giving Group types';
+                }
+                if (key === 'language') {
+                    key = 'Language';
                 }
                 this.state.filterObj[key] = value;
             });
@@ -218,9 +227,9 @@ class FilterComponent extends React.Component {
     }
     handleOpen = () => {
         this.setState({ isOpen: true })
-      }
-    
-    
+    }
+
+
 
     render() {
         const {
