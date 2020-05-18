@@ -229,8 +229,6 @@ class FilterComponent extends React.Component {
         this.setState({ isOpen: true })
     }
 
-
-
     render() {
         const {
             FilterHeaders,
