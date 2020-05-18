@@ -838,42 +838,29 @@ export const saveUserCauses = (dispatch, userId, userCauses, discoverValue) => {
 };
 
 export const checkClaimCharityAccessCode = (accessCode) => (dispatch) => {
-    debugger;
-    // const fsa = {
-    //     payload: {
-    //     },
-    //     type: actionTypes.CHECK_CLAIM_CHARITY_ACCESS_CODE,
-    // };
-
-    return (dispatch) => {
-        dispatch({
-            payload: {},
-            type: actionTypes.CHECK_CLAIM_CHARITY_ACCESS_CODE,
-        });
-        const bodyData = {
-            data: {
-                type: "claimCharities",
-                attributes: {
-                    claimToken: accessCode
-                }
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.CHECK_CLAIM_CHARITY_ACCESS_CODE,
+    };
+    const bodyData = {
+        data: {
+            type: "claimCharities",
+            attributes: {
+                claimToken: accessCode
             }
-        };
-        return coreApi.post(`/claimCharities`, bodyData).then(
-            (result) => {
-                fsa.payload = {
-                    data: result.data,
-                };
-                // const fsa = {
-                //     payload: {
-                //         data: result.data,
-                //     },
-                //     type: actionTypes.CHECK_CLAIM_CHARITY_ACCESS_CODE,
-                // };
-            },
-        ).catch((error) => {
-            fsa.error = error;
-        }).finally(() => {
-            dispatch(fsa);
-        });
-    }
+        }
+    };
+    return coreApi.post(`/claimCharities`, bodyData).then(
+        (result) => {
+            fsa.payload = {
+                data: result.data,
+            };
+        },
+    ).catch((error) => {
+        fsa.error = error;
+    }).finally(() => {
+        dispatch(fsa);
+    });
+
 }

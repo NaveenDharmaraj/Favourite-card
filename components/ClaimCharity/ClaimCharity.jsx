@@ -17,7 +17,7 @@ import customizeIcons2 from '../../static/images/icons/icon-2@3x.svg';
 import customizeIcons3 from '../../static/images/icons/icon-2-1@3x.svg';
 import customizeIcons4 from '../../static/images/icons/processingfee@3x.svg';
 import '../../static/less/claimcharity.less';
-import checkClaimCharityAccessCode from '../../actions/user';
+import {checkClaimCharityAccessCode} from '../../actions/user';
 
 class ClaimCharity extends React.Component {
 
@@ -27,18 +27,16 @@ class ClaimCharity extends React.Component {
         this.state = {
             accessCode:''
         }
-        this.onClaimCharityClick = this.onClaimCharityClick.bind(this);
     }
     
-    handleInputChange = (data) => {
+    handleInputChange = (event,data) => {
         const {value} = data;
         this.setState({
             accessCode: value
         })
     }
 
-    onClaimCharityClick() {
-        debugger;
+    onClaimCharityClick = () => {
         const {dispatch} = this.props;
         const {accessCode} = this.state;
         dispatch(checkClaimCharityAccessCode(accessCode));
