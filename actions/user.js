@@ -21,7 +21,7 @@ export const actionTypes = {
     GET_UPCOMING_TRANSACTIONS: 'GET_UPCOMING_TRANSACTIONS',
     GIVING_GROUPS_lEAVE_MODAL: 'GIVING_GROUPS_lEAVE_MODAL',
     MONTHLY_TRANSACTION_API_CALL: 'MONTHLY_TRANSACTION_API_CALL',
-    TAX_RECEIPT_PROFILES:'TAX_RECEIPT_PROFILES',
+    TAX_RECEIPT_PROFILES: 'TAX_RECEIPT_PROFILES',
     SAVE_DEEP_LINK: 'SAVE_DEEP_LINK',
     SET_USER_INFO: 'SET_USER_INFO',
     SET_USER_ACCOUNT_FETCHED: 'SET_USER_ACCOUNT_FETCHED',
@@ -31,9 +31,10 @@ export const actionTypes = {
     LEAVE_GROUP_ERROR_MESSAGE: 'LEAVE_GROUP_ERROR_MESSAGE',
     USER_GIVING_GOAL_DETAILS: 'USER_GIVING_GOAL_DETAILS',
     USER_INITIAL_FAVORITES: 'USER_INITIAL_FAVORITES',
-    USER_FAVORITES:'USER_FAVORITES',
+    USER_FAVORITES: 'USER_FAVORITES',
     UPDATE_FAVORITES: 'UPDATE_FAVORITES',
     ENABLE_FAVORITES_BUTTON: 'ENABLE_FAVORITES_BUTTON',
+    CHECK_CLAIM_CHARITY_ACCESS_CODE: 'CHECK_CLAIM_CHARITY_ACCESS_CODE'
 };
 
 const getAllPaginationData = async (url, params = null) => {
@@ -53,7 +54,7 @@ const checkForOnlyOneAdmin = (error) => {
         if (!_.isEmpty(checkForAdminError.meta)
             && !_.isEmpty(checkForAdminError.meta.validationCode)
             && (checkForAdminError.meta.validationCode === '1329'
-            || checkForAdminError.meta.validationCode === 1329)) {
+                || checkForAdminError.meta.validationCode === 1329)) {
             return true;
         }
     }
@@ -258,15 +259,15 @@ export const chimpLogin = (token = null, options = null) => {
             },
         };
     }
-    if (options && typeof options === 'object'){
+    if (options && typeof options === 'object') {
         params = {
             ...params,
-            params:{
+            params: {
                 ...options,
             },
         }
-    } 
-        return authRorApi.post(`/auth/login`, null, params);
+    }
+    return authRorApi.post(`/auth/login`, null, params);
 };
 
 const setDataToPayload = ({
@@ -589,7 +590,7 @@ export const leaveGroup = (dispatch, group, allData, type) => {
                 nextLink: (currentData.links.next) ? currentData.links.next : null,
                 dataCount: currentData.meta.recordCount,
             };
-            
+
             dispatch(fsa);
             dispatch({
                 payload: {
@@ -609,7 +610,7 @@ export const leaveGroup = (dispatch, group, allData, type) => {
                 type,
                 id: group.id,
                 message: error.errors[0].detail,
-                adminError:0,
+                adminError: 0,
             },
             type: actionTypes.LEAVE_GROUP_ERROR_MESSAGE,
         };
@@ -672,7 +673,7 @@ export const getUpcomingTransactions = (dispatch, url) => {
                 payload: {
                     upcomingTransactions: result.data,
                     upcomingTransactionsMeta: result.meta,
-                    
+
                 },
                 type: actionTypes.GET_UPCOMING_TRANSACTIONS,
             });
@@ -728,7 +729,7 @@ export const getFavoritesList = (dispatch, userId, pageNumber, pageSize) => {
         },
         type: actionTypes.USER_FAVORITES,
     };
-    if(pageNumber === 1) {
+    if (pageNumber === 1) {
         fsa.type = actionTypes.USER_INITIAL_FAVORITES;
     }
     const url = `user/favourites?userid=${Number(userId)}&page[number]=${pageNumber}&page[size]=${pageSize}`;
@@ -835,3 +836,44 @@ export const saveUserCauses = (dispatch, userId, userCauses, discoverValue) => {
         triggerUxCritialErrors(err.errors || err, dispatch);
     });
 };
+
+export const checkClaimCharityAccessCode = (accessCode) => (dispatch) => {
+    debugger;
+    // const fsa = {
+    //     payload: {
+    //     },
+    //     type: actionTypes.CHECK_CLAIM_CHARITY_ACCESS_CODE,
+    // };
+
+    return (dispatch) => {
+        dispatch({
+            payload: {},
+            type: actionTypes.CHECK_CLAIM_CHARITY_ACCESS_CODE,
+        });
+        const bodyData = {
+            data: {
+                type: "claimCharities",
+                attributes: {
+                    claimToken: accessCode
+                }
+            }
+        };
+        return coreApi.post(`/claimCharities`, bodyData).then(
+            (result) => {
+                fsa.payload = {
+                    data: result.data,
+                };
+                // const fsa = {
+                //     payload: {
+                //         data: result.data,
+                //     },
+                //     type: actionTypes.CHECK_CLAIM_CHARITY_ACCESS_CODE,
+                // };
+            },
+        ).catch((error) => {
+            fsa.error = error;
+        }).finally(() => {
+            dispatch(fsa);
+        });
+    }
+}

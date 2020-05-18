@@ -140,8 +140,8 @@ const user = (state = {}, action) => {
                 ...state,
                 favorites: {
                     data: (!_.isEmpty(state.favorites) && !_.isEmpty(state.favorites.data)) ?
-                    _.uniqWith(_.concat(state.favorites.data, action.payload.favorites.data), _.isEqual)
-                    : action.payload.favorites.data,
+                        _.uniqWith(_.concat(state.favorites.data, action.payload.favorites.data), _.isEqual)
+                        : action.payload.favorites.data,
                     pageCount: action.payload.favorites.pageCount,
                     dataCount: action.payload.favorites.dataCount,
                     currentPageNumber: action.payload.favorites.currentPageNumber,
@@ -171,6 +171,12 @@ const user = (state = {}, action) => {
             newState = {
                 ...state,
                 disableMigrationButtons: action.payload.continueButtonDisable,
+            };
+            break;
+        case 'CHECK_CLAIM_CHARITY_ACCESS_CODE':
+            newState = {
+                ...state,
+                userAccesCodeData: Object.assign({}, action.payload),
             };
             break;
         default:

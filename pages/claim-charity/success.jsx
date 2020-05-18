@@ -13,7 +13,7 @@ class ClaimSuccess extends React.Component {
     render() {
         return (
             <Layout authRequired>
-                <ClaimCharitySuccess/>
+                <ClaimCharitySuccess {...this.props} />
             </Layout>
         )
     }

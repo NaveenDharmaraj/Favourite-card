@@ -10,8 +10,6 @@ import {
 
 import accessingleft from '../../static/images/accessing2.png';
 import accessingfull from '../../static/images/accessing1.png';
-
-import Layout from '../shared/Layout';
 import '../../static/less/claimcharity.less';
 
 function Accessing() {
