@@ -4,8 +4,6 @@ import {
     Container,
     Breadcrumb,
 } from 'semantic-ui-react';
-import _ from 'lodash';
-
 
 const BreadcrumbDetails = (props) => {
     const {

@@ -54,19 +54,10 @@ class CharityProfile extends React.Component {
     componentDidMount() {
         const {
             redirectToDashboard,
-            charityDetails: {
-                charityDetails: {
-                    attributes: {
-                        slug,
-                    },
-                },
-            },
-            dispatch,
         } = this.props;
         if (redirectToDashboard) {
             Router.push('/search');
         }
-        // getBeneficiaryFromSlug(dispatch, slug);
     }
 
     render() {
@@ -78,17 +69,15 @@ class CharityProfile extends React.Component {
         } = publicRuntimeConfig;
         const {
             charityDetails: {
-                charityDetails: {
-                    attributes: {
-                        avatar,
-                        causes,
-                        city,
-                        description,
-                        name,
-                        province,
-                        slug,
-                        hideGive,
-                    },
+                attributes: {
+                    avatar,
+                    causes,
+                    city,
+                    description,
+                    name,
+                    province,
+                    slug,
+                    hideGive,
                 },
             },
             isAUthenticated,
@@ -145,19 +134,19 @@ class CharityProfile extends React.Component {
 }
 
 CharityProfile.defaultProps = {
-    charityDetails: {
-        charityDetails: {
-            attributes: {
-                avatar: '',
-                causes: [],
-                city: '',
-                description: '',
-                name: '',
-                province: '',
-            },
-            type: '',
-        },
-    },
+    charityDetails: PropTypes.shape({
+        attributes: PropTypes.shape({
+            avatar: '',
+            causes: [],
+            city: '',
+            description: '',
+            hideGive: false,
+            name: '',
+            province: '',
+            slug: '',
+        }),
+        type: '',
+    }),
     dispatch: () => {},
     isAUthenticated: false,
     redirectToDashboard: false,
@@ -165,19 +154,19 @@ CharityProfile.defaultProps = {
 };
 
 CharityProfile.propTypes = {
-    charityDetails: {
-        charityDetails: {
-            attributes: {
-                avatar: string,
-                causes: array,
-                city: string,
-                description: string,
-                name: string,
-                province: string,
-            },
-            type: string,
-        },
-    },
+    charityDetails: PropTypes.shape({
+        attributes: PropTypes.shape({
+            avatar: string,
+            causes: array,
+            city: string,
+            description: string,
+            hideGive: bool,
+            name: string,
+            province: string,
+            slug: string,
+        }),
+        type: string,
+    }),
     dispatch: PropTypes.func,
     isAUthenticated: bool,
     redirectToDashboard: bool,

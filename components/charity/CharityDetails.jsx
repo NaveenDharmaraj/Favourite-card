@@ -2,10 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import _isEmpty from 'lodash/isEmpty';
 import {
+    array,
     bool,
     string,
     number,
     func,
+    PropTypes,
 } from 'prop-types';
 import {
     Grid,
@@ -32,9 +34,7 @@ class CharityDetails extends React.Component {
                 id: userId,
             },
             charityDetails: {
-                charityDetails: {
-                    id: charityId,
-                },
+                id: charityId,
             },
             dispatch,
             isAUthenticated,
@@ -49,26 +49,19 @@ class CharityDetails extends React.Component {
     render() {
         const {
             charityDetails: {
-                charityDetails: {
-                    attributes: {
-                        avatar,
-                        beneficiaryType,
-                        causes,
-                        formattedDescription,
-                        formattedDescriptionNew,
-                        following,
-                        location,
-                        name,
-                    },
-                    id: profileId,
-                    type,
+                attributes: {
+                    avatar,
+                    beneficiaryType,
+                    causes,
+                    formattedDescription,
+                    formattedDescriptionNew,
+                    following,
+                    location,
+                    name,
                 },
+                id: profileId,
+                type,
             },
-            currentUser: {
-                id: userId,
-            },
-            deepLinkUrl,
-            isAUthenticated,
         } = this.props;
         let getCauses = null;
 
@@ -99,9 +92,9 @@ class CharityDetails extends React.Component {
                                     <Header as="h3">
                                         {name}
                                         <br />
-                                        <span>
+                                        {/* <span>
                                             WHAT TO SHOW
-                                        </span>
+                                        </span> */}
                                     </Header>
                                     <Header as="p">
                                         {location}
@@ -126,8 +119,10 @@ class CharityDetails extends React.Component {
                         <Divider className="mobHideDivider" />
                         <Grid.Row>
                             <Grid.Column mobile={16} tablet={16} computer={16} className="ch_paragraph">
-                                {!_isEmpty(formattedDescription) && <p>{ReactHtmlParser(formattedDescription)}</p>}
-                                {!_isEmpty(formattedDescriptionNew) && <p>{ReactHtmlParser(formattedDescriptionNew)}</p>}
+                                {!_isEmpty(formattedDescription)
+                                    && <p>{ReactHtmlParser(formattedDescription)}</p>}
+                                {!_isEmpty(formattedDescriptionNew)
+                                    && <p>{ReactHtmlParser(formattedDescriptionNew)}</p>}
                             </Grid.Column>
                         </Grid.Row>
                         <Divider />
@@ -147,16 +142,21 @@ class CharityDetails extends React.Component {
 }
 
 CharityDetails.defaultProps = {
-    charityDetails: {
-        charityDetails: {
-            attributes: {
-                avatar: '',
-                location: '',
-                name: '',
-                slug: '',
-            },
-        },
-    },
+    charityDetails: PropTypes.shape({
+        attributes: PropTypes.shape({
+            avatar: '',
+            beneficiaryType: '',
+            causes: [],
+            following: false,
+            formattedDescription: '',
+            formattedDescriptionNew: '',
+            location: '',
+            name: '',
+            slug: '',
+        }),
+        id: '',
+        type: '',
+    }),
     currentUser: {
         id: null,
     },
@@ -165,16 +165,21 @@ CharityDetails.defaultProps = {
 };
 
 CharityDetails.propTypes = {
-    charityDetails: {
-        charityDetails: {
-            attributes: {
-                avatar: string,
-                location: string,
-                name: string,
-                slug: string,
-            },
-        },
-    },
+    charityDetails: PropTypes.shape({
+        attributes: PropTypes.shape({
+            avatar: string,
+            beneficiaryType: string,
+            causes: array,
+            following: bool,
+            formattedDescription: string,
+            formattedDescriptionNew: string,
+            location: string,
+            name: string,
+            slug: string,
+        }),
+        id: string,
+        type: string,
+    }),
     currentUser: {
         id: number,
     },

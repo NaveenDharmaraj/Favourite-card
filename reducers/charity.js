@@ -6,7 +6,7 @@ const charity = (state = {}, action) => {
         case 'GET_BENEFICIARY_DONEE_LIST':
             newState = {
                 ...state,
-                donationDetails: Object.assign({}, state.donationDetails, action.payload),
+                donationDetails: Object.assign({}, state.donationDetails, action.payload.donationDetails),
             };
             break;
         case 'CHARITY_SAVE_DEEP_LINK':
@@ -18,7 +18,7 @@ const charity = (state = {}, action) => {
         case 'GET_CHARITY_DETAILS_FROM_SLUG':
             newState = {
                 ...state,
-                charityDetails: Object.assign({}, state.charityDetails, action.payload),
+                charityDetails: Object.assign({}, state.charityDetails, action.payload.charityDetails),
             };
             break;
         case 'SAVE_FOLLOW_STATUS_CHARITY':
@@ -26,13 +26,10 @@ const charity = (state = {}, action) => {
                 ...state,
                 charityDetails: {
                     ...state.charityDetails,
-                    charityDetails: {
-                        ...state.charityDetails.charityDetails,
-                        attributes: {
-                            ...state.charityDetails.charityDetails.attributes,
-                            following: action.payload.followStatus,
+                    attributes: {
+                        ...state.charityDetails.attributes,
+                        following: action.payload.followStatus,
 
-                        },
                     },
                 },
                 // disableFollow: false,

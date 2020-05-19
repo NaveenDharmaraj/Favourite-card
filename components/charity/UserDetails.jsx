@@ -22,57 +22,70 @@ const {
     RAILS_APP_URL_ORIGIN,
 } = publicRuntimeConfig;
 
-const createUserDetails = (valuesObject) => {
+const createUserDetails = (props) => {
+    const {
+        charityDetails: {
+            attributes: {
+                businessNumber,
+                contactName,
+                phone,
+                email,
+                website,
+                staffCount,
+                headQuarterAddress,
+            },
+        },
+    } = props;
     const data = [];
-    if (!_isEmpty(valuesObject.contactName)) {
+    if (!_isEmpty(contactName)) {
         data.push({
-            Content: `Contact: ${valuesObject.contactName}`,
+            Content: `Contact: ${contactName}`,
             name: 'user',
         });
     }
-    if (!_isEmpty(valuesObject.phone)) {
+    if (!_isEmpty(phone)) {
         data.push({
-            Content: valuesObject.phone,
+            Content: phone,
             name: 'phone',
         });
     }
-    if (!_isEmpty(valuesObject.email)) {
+    if (!_isEmpty(email)) {
         data.push({
-            Content: valuesObject.email,
-            link: `mailto:${valuesObject.email}`,
+            Content: email,
+            link: `mailto:${email}`,
             name: 'mail',
         });
     }
-    if (!_isEmpty(valuesObject.website)) {
+    if (!_isEmpty(website)) {
         data.push({
-            Content: valuesObject.website,
-            link: valuesObject.website,
+            Content: website,
+            link: website,
             name: 'linkify',
         });
     }
-    if (!_isEmpty(valuesObject.staffCount) && valuesObject.staffCount > 0) {
+    if (!_isEmpty(staffCount) && staffCount > 0) {
         data.push({
-            Content: valuesObject.staffCount,
+            Content: staffCount,
             name: 'users',
         });
     }
-    if (!_isEmpty(valuesObject.businessNumber)) {
+    if (!_isEmpty(businessNumber)) {
         data.push({
-            Content: valuesObject.businessNumber,
+            Content: businessNumber,
             name: 'briefcase',
         });
     }
-    if (!_isEmpty(valuesObject.headQuarterAddress)) {
+    if (!_isEmpty(headQuarterAddress)) {
         data.push({
-            Content: valuesObject.headQuarterAddress,
+            Content: headQuarterAddress,
             name: 'marker',
         });
     }
     return data;
 };
 
-const detailsView = (valuesObject) => {
-    const values = createUserDetails(valuesObject);
+const detailsView = (props) => {
+    const values = createUserDetails(props);
     return (
         <Fragment>
             <List>
@@ -102,12 +115,10 @@ const detailsView = (valuesObject) => {
 const UserDetails = (props) => {
     const {
         charityDetails: {
-            charityDetails: {
-                attributes: {
-                    hideGive,
-                    isClaimed,
-                    slug,
-                },
+            attributes: {
+                hideGive,
+                isClaimed,
+                slug,
             },
         },
         isAUthenticated,
@@ -134,8 +145,7 @@ const UserDetails = (props) => {
                 <Header as="h4">
                     Charity information
                 </Header>
-                {((!_isEmpty(props.charityDetails.charityDetails.attributes))
-                                && detailsView(props.charityDetails.charityDetails.attributes))}
+                {detailsView(props)}
                 <Responsive minWidth={768}>
                     {buttonLink}
                 </Responsive>
@@ -158,11 +168,9 @@ const UserDetails = (props) => {
 
 UserDetails.defaultProps = {
     charityDetails: {
-        charityDetails: {
-            attributes: {
-                contactName: '',
-                slug: '',
-            },
+        attributes: {
+            contactName: '',
+            slug: '',
         },
     },
     isAUthenticated: false,
@@ -170,12 +178,10 @@ UserDetails.defaultProps = {
 
 UserDetails.propTypes = {
     charityDetails: {
-        charityDetails: {
-            attributes: PropTypes.shape({
-                contactName: string,
-                slug: string,
-            }),
-        },
+        attributes: PropTypes.shape({
+            contactName: string,
+            slug: string,
+        }),
     },
     isAUthenticated: bool,
 };

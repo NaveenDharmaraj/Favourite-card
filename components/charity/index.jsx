@@ -7,31 +7,17 @@ import {
 import {
     Container,
     Grid,
-    Divider,
-    List,
-    Header,
-    Image,
 } from 'semantic-ui-react';
 
 import BreadcrumbDetails from '../shared/BreadCrumbs';
-import TotalRevenue from '../../static/images/total_revenue.svg';
-import ToalExpense from '../../static/images/total_expenses.svg';
 
-import UserDetails from './UserDetails';
 import CharityDetails from './CharityDetails';
-import Charts from './Charts';
-import CharityNoDataState from './CharityNoDataState';
-import ProgramAreas from './ProgramAreas';
-import ChartSummary from './ChartSummary';
-import ProfileDetails from './ProfileDetails';
 
 const CharityProfileWrapper = (props) => {
     const {
         charityDetails: {
-            charityDetails: {
-                attributes: {
-                    name,
-                },
+            attributes: {
+                name,
             },
         },
     } = props;
@@ -58,20 +44,16 @@ const CharityProfileWrapper = (props) => {
 
 CharityProfileWrapper.defaultProps = {
     charityDetails: PropTypes.shape({
-        charityDetails: PropTypes.shape({
-            attributes: PropTypes.shape({
-                name: '',
-            }),
+        attributes: PropTypes.shape({
+            name: '',
         }),
     }),
 };
 
 CharityProfileWrapper.propTypes = {
     charityDetails: PropTypes.shape({
-        charityDetails: PropTypes.shape({
-            attributes: PropTypes.shape({
-                name: string,
-            }),
+        attributes: PropTypes.shape({
+            name: string,
         }),
     }),
 };

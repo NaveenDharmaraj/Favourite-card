@@ -32,9 +32,7 @@ class ReceivingOrganisations extends React.Component {
         const {
             dispatch,
             charityDetails: {
-                charityDetails: {
-                    id: charityId,
-                },
+                id: charityId,
             },
             year,
         } = this.props;
@@ -44,10 +42,8 @@ class ReceivingOrganisations extends React.Component {
     render() {
         const {
             donationDetails: {
-                donationDetails: {
-                    _embedded: {
-                        donee_list: doneeList,
-                    },
+                _embedded: {
+                    donee_list: doneeList,
                 },
             },
             currency,
@@ -120,25 +116,21 @@ class ReceivingOrganisations extends React.Component {
 
 ReceivingOrganisations.defaultProps = {
     charityDetails: {
-        charityDetails: {
-            id: null,
-        },
+        id: null,
     },
     currency: 'USD',
     dispatch: func,
     donationDetails: {
-        donationDetails: {
-            _embedded: {
-                donee_list: [],
-            },
-            page: {
-                size: null,
-                totalElements: null,
-            },
-            totalAmount: {
-                remainingAmount: null,
-                totalAmount: null,
-            },
+        _embedded: {
+            donee_list: [],
+        },
+        page: {
+            size: null,
+            totalElements: null,
+        },
+        totalAmount: {
+            remainingAmount: null,
+            totalAmount: null,
         },
     },
     language: 'en',
@@ -147,25 +139,21 @@ ReceivingOrganisations.defaultProps = {
 
 ReceivingOrganisations.propTypes = {
     charityDetails: PropTypes.shape({
-        charityDetails: PropTypes.shape({
-            id: number,
-        }),
+        id: number,
     }),
     currency: string,
     dispatch: _.noop,
     donationDetails: PropTypes.shape({
-        donationDetails: PropTypes.shape({
-            _embedded: PropTypes.shape({
-                donee_list: arrayOf(PropTypes.element),
-            }),
-            page: PropTypes.shape({
-                size: number,
-                totalElements: number,
-            }),
-            totalAmount: PropTypes.shape({
-                remainingAmount: number,
-                totalAmount: number,
-            }),
+        _embedded: PropTypes.shape({
+            donee_list: arrayOf(PropTypes.element),
+        }),
+        page: PropTypes.shape({
+            size: number,
+            totalElements: number,
+        }),
+        totalAmount: PropTypes.shape({
+            remainingAmount: number,
+            totalAmount: number,
         }),
     }),
     language: string,

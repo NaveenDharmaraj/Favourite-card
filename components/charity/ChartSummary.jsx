@@ -5,6 +5,13 @@ import {
     Header,
     Button,
 } from 'semantic-ui-react';
+import {
+    arrayOf,
+    PropTypes,
+    bool,
+    func,
+    string,
+} from 'prop-types';
 
 import {
     formatCurrency,
@@ -32,7 +39,7 @@ const ChartSummary = (props) => {
                                     <div className="boxVLine" />
                                     <div className="box" style={{ backgroundColor: color }} />
                                 </div>
-                                {(typeof (hideGift) !== 'undefined')
+                                {(typeof hideGift !== 'undefined')
                                     ? (
                                         <List.Content>
                                             <span>{text}</span>
@@ -61,6 +68,16 @@ const ChartSummary = (props) => {
             )}
         </Fragment>
     );
+};
+
+ChartSummary.defaultProps = {
+    color: '',
+    text: '',
+};
+
+ChartSummary.propTypes = {
+    color: string,
+    text: string,
 };
 
 export default ChartSummary;

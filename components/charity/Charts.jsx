@@ -6,9 +6,12 @@ import {
     arrayOf,
     PropTypes,
     bool,
+    func,
+    string,
 } from 'prop-types';
-import _ from 'lodash';
 import _orderBy from 'lodash/orderBy';
+import _isEmpty from 'lodash/isEmpty';
+import _isEqual from 'lodash/isEqual';
 import {
     Bar,
 } from 'react-chartjs-2';
@@ -20,7 +23,6 @@ import {
     Divider,
     Modal,
     Loader,
-    Placeholder,
 } from 'semantic-ui-react';
 
 import TotalRevenue from '../../static/images/total_revenue.svg';
@@ -57,8 +59,8 @@ class Charts extends React.Component {
     componentDidMount() {
         const {
             dispatch,
-            values: {
-                    id,
+            charityDetails: {
+                id,
             },
         } = this.props;
         dispatch(getBeneficiaryFinance(id));
@@ -72,11 +74,11 @@ class Charts extends React.Component {
             chartIndex,
             graphData,
         } = this.state;
-        if (!_.isEqual(prevProps.beneficiaryFinance, beneficiaryFinance)) {
+        if (!_isEqual(prevProps.beneficiaryFinance, beneficiaryFinance)) {
             this.createGraphData();
         }
-        if (!_.isEqual(prevState.chartIndex, chartIndex)) {
-            if (!_.isEmpty(graphData)) {
+        if (!_isEqual(prevState.chartIndex, chartIndex)) {
+            if (!_isEmpty(graphData)) {
                 this.highlightBar();
             }
         }
@@ -118,10 +120,6 @@ class Charts extends React.Component {
                     label: 'Revenue',
                     lineTension: 0,
                     type: 'line',
-                    // pointBorderColor: '#055CE5',
-                    // pointBackgroundColor: '#055CE5',
-                    // pointHoverBackgroundColor: '#055CE5',
-                    // pointHoverBorderColor: '#055CE5',
                 },
                 {
                     backgroundColor: '#C995D370',
@@ -155,7 +153,7 @@ class Charts extends React.Component {
     }
 
     handleClick(event) {
-        if (!_.isEmpty(event)) {
+        if (!_isEmpty(event)) {
             this.setState({
                 chartIndex: event[0]._index,
             });
@@ -172,7 +170,7 @@ class Charts extends React.Component {
             chartIndex,
             graphData,
         } = this.state;
-        if (!_.isEmpty(graphData)) {
+        if (!_isEmpty(graphData)) {
             chartInstance.reset();
             chartInstance.update();
 
@@ -199,7 +197,7 @@ class Charts extends React.Component {
         const fifthData = [];
         let graphData = {};
         let selectedYear = null;
-        if (!_.isEmpty(beneficiaryFinance)) {
+        if (!_isEmpty(beneficiaryFinance)) {
             selectedYear = this.getSelectedYear();
             const sortedData = _orderBy(beneficiaryFinance, [
                 (data) => data.returns_year,
@@ -368,7 +366,7 @@ class Charts extends React.Component {
         const currency = 'USD';
         const language = 'en';
         let chartView = <CharityNoDataState />;
-        if (!_.isEmpty(graphData)) {
+        if (!_isEmpty(graphData)) {
             chartView = (
                 <Fragment>
                     <Grid>
@@ -478,7 +476,7 @@ class Charts extends React.Component {
                                 </Header>
                             </Grid.Column>
                         </Grid.Row>
-                        {!_.isEmpty(graphData) && this.renderSummary()}
+                        {!_isEmpty(graphData) && this.renderSummary()}
                     </Grid>
                     <p className="ch_footnote">* Information about revenue and expenses is provided by the Canada Revenue Agency approximately once each quarter.</p>
                     <Modal
@@ -510,10 +508,9 @@ class Charts extends React.Component {
                                     <Grid.Row>
                                         <Grid.Column mobile={16} tablet={16} computer={16}>
                                             <div
-                                                className="graphLoader"
                                                 style={{
                                                     height: '260px',
-                                                    position: 'absolute',
+                                                    position: 'relative',
                                                     width: '100%',
                                                 }}
                                             >
@@ -523,7 +520,7 @@ class Charts extends React.Component {
                                     </Grid.Row>
                                 </Grid>
                             )
-                            : (!_.isEmpty(graphData) && chartView)
+                            : (!_isEmpty(graphData) && chartView)
                         }
                     </Grid.Column>
                 </Grid.Row>
@@ -534,21 +531,27 @@ class Charts extends React.Component {
 
 Charts.defaultProps = {
     beneficiaryFinance: [],
+    charityDetails: PropTypes.shape({
+        id: '',
+    }),
     chartLoader: false,
+    dispatch: () => {},
 };
 
 Charts.propTypes = {
     beneficiaryFinance: arrayOf(PropTypes.element),
+    charityDetails: PropTypes.shape({
+        id: string,
+    }),
     chartLoader: bool,
+    dispatch: func,
 };
 
 function mapStateToProps(state) {
     return {
         beneficiaryFinance: state.charity.beneficiaryFinance,
+        charityDetails: state.charity.charityDetails,
         chartLoader: state.charity.chartLoader,
-        donationDetails: state.charity.donationDetails,
-        values: state.charity.charityDetails.charityDetails,
-        // beneficiaryFinance: Data.beneficiaryFinanceList,
     };
 }
 

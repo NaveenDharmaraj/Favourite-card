@@ -6,6 +6,10 @@ import {
     Table,
 } from 'semantic-ui-react';
 import _isEmpty from 'lodash/isEmpty';
+import {
+    array,
+    PropTypes,
+} from 'prop-types';
 
 const ProgramAreas = (props) => {
     const {
@@ -17,14 +21,12 @@ const ProgramAreas = (props) => {
     } = props;
     let programs = null;
     if (!_isEmpty(charityPrograms)) {
-        programs = charityPrograms.map((program) => {
-            return (
-                <Table.Row>
-                    <Table.Cell>{program.name}</Table.Cell>
-                    <Table.Cell>{program.percentage}</Table.Cell>
-                </Table.Row>
-            );
-        });
+        programs = charityPrograms.map((program) => (
+            <Table.Row>
+                <Table.Cell>{program.name}</Table.Cell>
+                <Table.Cell>{program.percentage}</Table.Cell>
+            </Table.Row>
+        ));
     }
     return (
         <Grid.Row>
@@ -48,9 +50,25 @@ const ProgramAreas = (props) => {
     );
 };
 
+ProgramAreas.defaultProps = {
+    charityDetails: PropTypes.shape({
+        attributes: PropTypes.shape({
+            charityPrograms: [],
+        }),
+    }),
+};
+
+ProgramAreas.propTypes = {
+    charityDetails: PropTypes.shape({
+        attributes: PropTypes.shape({
+            charityPrograms: array,
+        }),
+    }),
+};
+
 function mapStateToProps(state) {
     return {
-        charityDetails: state.charity.charityDetails.charityDetails,
+        charityDetails: state.charity.charityDetails,
     };
 }
 
