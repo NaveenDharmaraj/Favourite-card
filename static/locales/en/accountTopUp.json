@@ -8,5 +8,7 @@
     "policyPeriodYear": "year",
     "creditCardLabel": "Credit card",
     "creditCardPlaceholder": "Select Credit Card ",
-    "accountTopUpHeaderLabel": "Top up your account balance to give this gift"
+    "accountTopUpHeaderLabel": "Top up your account balance to give this gift",
+    "noteToSelfPlaceHolder": "Why did you add money today?"
+
 }

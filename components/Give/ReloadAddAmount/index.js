@@ -1020,7 +1020,7 @@ class ReloadAddAmount extends React.Component {
                             formatMessage={formatMessage}
                             labelText={formatMessage('noteTo:noteToSelfLabel')}
                             popupText={formatMessage('noteTo:donorNoteToSelfPopup')}
-                            placeholderText={formatMessage('noteTo:noteToSelfPlaceHolder')}
+                            placeholderText={formatMessage('accountTopUp:noteToSelfPlaceHolder')}
                             text={giveData.noteToSelf}
                         />
                         <Button
