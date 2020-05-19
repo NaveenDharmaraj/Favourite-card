@@ -17,7 +17,9 @@ import customizeIcons2 from '../../static/images/icons/icon-2@3x.svg';
 import customizeIcons3 from '../../static/images/icons/icon-2-1@3x.svg';
 import customizeIcons4 from '../../static/images/icons/processingfee@3x.svg';
 import '../../static/less/claimcharity.less';
-import {checkClaimCharityAccessCode} from '../../actions/user';
+import { connect } from 'react-redux';
+import { checkClaimCharityAccessCode } from '../../actions/user';
+
 
 class ClaimCharity extends React.Component {
 
@@ -25,24 +27,28 @@ class ClaimCharity extends React.Component {
         super(props)
 
         this.state = {
-            accessCode:''
+            accessCode: ''
         }
     }
-    
-    handleInputChange = (event,data) => {
-        const {value} = data;
+
+    handleInputChange = (event, data) => {
+        const { value } = data;
         this.setState({
             accessCode: value
         })
     }
 
     onClaimCharityClick = () => {
-        const {dispatch} = this.props;
-        const {accessCode} = this.state;
+        const { dispatch } = this.props;
+        const { accessCode } = this.state;
         dispatch(checkClaimCharityAccessCode(accessCode));
     }
 
     render() {
+        debugger;
+        const { 
+            claimCharityErrorMessage 
+    } = this.props;
         return (
             <Fragment>
                 <div className="ClaimWepper">
@@ -140,9 +146,10 @@ class ClaimCharity extends React.Component {
                                                                         onChange={this.handleInputChange}
                                                                     />
                                                                 </Form.Field>
+                                                                {claimCharityErrorMessage}
                                                             </Grid.Column>
                                                             <Grid.Column mobile={16} tablet={12} computer={6}>
-                                                                <Button 
+                                                                <Button
                                                                     className="primary blue-btn-rounded mt-2"
                                                                     onClick={this.onClaimCharityClick}
                                                                 ><b>Claim your charity</b></Button>
@@ -184,4 +191,11 @@ class ClaimCharity extends React.Component {
     }
 }
 
-export default ClaimCharity;
+function mapStateToProps(state) {
+    debugger
+    return {
+        claimCharityErrorMessage: state.user.claimCharityErrorMessage
+    };
+}
+
+export default (connect(mapStateToProps)(ClaimCharity));

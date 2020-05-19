@@ -34,7 +34,8 @@ export const actionTypes = {
     USER_FAVORITES: 'USER_FAVORITES',
     UPDATE_FAVORITES: 'UPDATE_FAVORITES',
     ENABLE_FAVORITES_BUTTON: 'ENABLE_FAVORITES_BUTTON',
-    CHECK_CLAIM_CHARITY_ACCESS_CODE: 'CHECK_CLAIM_CHARITY_ACCESS_CODE'
+    CHECK_CLAIM_CHARITY_ACCESS_CODE: 'CHECK_CLAIM_CHARITY_ACCESS_CODE',
+    CLAIM_CHARITY_ERROR_MESSAGE: 'CLAIM_CHARITY_ERROR_MESSAGE',
 };
 
 const getAllPaginationData = async (url, params = null) => {
@@ -843,24 +844,32 @@ export const checkClaimCharityAccessCode = (accessCode) => (dispatch) => {
         },
         type: actionTypes.CHECK_CLAIM_CHARITY_ACCESS_CODE,
     };
-    const bodyData = {
+    
+    return coreApi.post(`/claimCharities`, {
         data: {
             type: "claimCharities",
             attributes: {
                 claimToken: accessCode
             }
         }
-    };
-    return coreApi.post(`/claimCharities`, bodyData).then(
+    }).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
             };
         },
     ).catch((error) => {
-        fsa.error = error;
+        // fsa.error = error;
+        const errorFsa = {
+            payload: {
+                message: "That code doesn't look right or it's expired. Try again or claim without a code below",
+            },
+            type: actionTypes.CLAIM_CHARITY_ERROR_MESSAGE,
+        };
+        dispatch(errorFsa);
     }).finally(() => {
         dispatch(fsa);
     });
 
+    
 }

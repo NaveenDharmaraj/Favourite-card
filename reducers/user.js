@@ -179,6 +179,12 @@ const user = (state = {}, action) => {
                 userAccesCodeData: Object.assign({}, action.payload),
             };
             break;
+        case 'CLAIM_CHARITY_ERROR_MESSAGE':
+            newState = {
+                ...state,
+                claimCharityErrorMessage: action.payload,
+            };
+            break;
         default:
             break;
     }
