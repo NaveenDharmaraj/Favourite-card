@@ -493,6 +493,7 @@ class Charts extends React.Component {
                                 year={graphData.yearLabel[chartIndex]}
                             />
                         </Modal.Content>
+
                     </Modal>
                 </Fragment>
             );
@@ -535,7 +536,7 @@ Charts.defaultProps = {
         id: '',
     }),
     chartLoader: false,
-    dispatch: () => {},
+    dispatch: () => { },
 };
 
 Charts.propTypes = {

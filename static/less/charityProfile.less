@@ -22,7 +22,7 @@
     min-height     : 70px;
     height         : 70px;
     background-size: cover;
-    margin-bottom  : 16px;
+    margin-bottom  : 20px;
     border-radius  : 5px;
 }
 
@@ -35,7 +35,12 @@
         box-shadow   : 2px 2px 7px 0 rgba(105, 146, 203, 0.3);
         overflow     : hidden;
         margin       : -50px 0px 0 10px;
-        max-width    : 147px;
+        width        : 147px;
+        height       : 147px;
+
+        .ui.image {
+            width: 100%;
+        }
     }
 }
 
@@ -94,7 +99,7 @@
     }
 
     .ch_share {
-        margin: 1rem 0 0.5rem;
+        padding: 1rem 0 0.5rem;
 
         .ui {
             &.list {
@@ -222,7 +227,7 @@
 .charityInfowrap {
     background-color: #F6F6F6;
     border-radius   : 5px;
-    max-width       : 280px;
+    max-width       : 295px;
     float           : right;
 
     .charityInfo {
@@ -326,7 +331,8 @@
                         line-height: 22px;
 
                         a {
-                            color: #263238;
+                            color     : #263238;
+                            word-break: break-all;
                         }
                     }
                 }
@@ -653,8 +659,19 @@
     max-height: 620px;
     overflow-y: auto;
 
-    .ui.placeholder {
-        margin-bottom: 25px;
+    .ui.grid>.row {
+        padding: 0;
+    }
+
+}
+
+@media only screen and (max-width: 1199px) and (min-width: 992px) {
+    .ch_profileWrap {
+
+        .ch_profileImage {
+            width : 125px;
+            height: 125px;
+        }
     }
 }
 
@@ -671,7 +688,9 @@
         padding-right: 0 !important;
 
         .ch_profileImage {
-            border: 0.3rem solid #F5F8FC;
+            border: 0.28rem solid #F5F8FC;
+            width : 100px;
+            height: 100px;
         }
     }
 
@@ -697,7 +716,7 @@
         padding: 0 5px;
 
         .ch_share {
-            margin: 1rem 5px 1rem;
+            padding: 0.5rem 5px 1rem;
         }
     }
 
@@ -706,10 +725,11 @@
         float    : none;
     }
 
-    
+
 
     .ch_program {
         margin: 0 !important;
+
         .ui {
             &.table {
                 thead {
@@ -731,9 +751,11 @@
             }
         }
     }
-    .revenue{
+
+    .revenue {
         margin: 0 !important;
     }
+
     .ch_Expenses.expenseRow .ui.list .item .boxes {
         .boxVLine {
             width: 10px;

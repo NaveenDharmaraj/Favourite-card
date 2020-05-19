@@ -74,7 +74,7 @@ class CharityDetails extends React.Component {
         }
         return (
             <Grid.Row>
-                <Grid.Column mobile={16} tablet={11} computer={11} className="charity_profileWrap">
+                <Grid.Column mobile={16} tablet={10} computer={11} className="charity_profileWrap">
                     <Grid>
                         <Grid.Row>
                             <Grid.Column mobile={16} tablet={4} computer={4} className="ch_profileWrap">
@@ -102,12 +102,14 @@ class CharityDetails extends React.Component {
                                     <div className="ch_badge-group">
                                         {getCauses}
                                     </div>
-                                    <GroupShareDetails
-                                        liked={following}
-                                        profileId={profileId}
-                                        type={type}
-                                        name={name}
-                                    />
+                                    <div className='ch_share'>
+                                        <GroupShareDetails
+                                            liked={following}
+                                            profileId={profileId}
+                                            type={type}
+                                            name={name}
+                                        />
+                                    </div>
                                 </div>
                             </Grid.Column>
                             <Grid.Column mobile={16} tablet={5} computer={5}>
@@ -131,7 +133,7 @@ class CharityDetails extends React.Component {
                         <Charts />
                     </Grid>
                 </Grid.Column>
-                <Grid.Column mobile={16} tablet={5} computer={5}>
+                <Grid.Column mobile={16} tablet={6} computer={5}>
                     <Responsive minWidth={768}>
                         <UserDetails />
                     </Responsive>
@@ -160,7 +162,7 @@ CharityDetails.defaultProps = {
     currentUser: {
         id: null,
     },
-    dispatch: () => {},
+    dispatch: () => { },
     isAUthenticated: false,
 };
 

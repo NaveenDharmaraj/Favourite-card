@@ -3,6 +3,7 @@ import React, {
 } from 'react';
 import { connect } from 'react-redux';
 import {
+    Grid,
     Table,
     Header,
     Placeholder,
@@ -51,65 +52,40 @@ class ReceivingOrganisations extends React.Component {
             transactionsLoader,
         } = this.props;
 
-        
+
         return (
             transactionsLoader ? (
-                <Fragment>
-                    <Placeholder>
-                        <Placeholder.Line length='short' />
-                        <Placeholder.Line length='full' />
-                        <Placeholder.Line length='medium' />
-                    </Placeholder>
-                    <Divider />
-                    <Placeholder>
-                        <Placeholder.Line length='short' />
-                        <Placeholder.Line length='full' />
-                        <Placeholder.Line length='medium' />
-                    </Placeholder>
-                    <Divider />
-                    <Placeholder>
-                        <Placeholder.Line length='short' />
-                        <Placeholder.Line length='full' />
-                        <Placeholder.Line length='medium' />
-                    </Placeholder>
-                    <Divider />
-                    <Placeholder>
-                        <Placeholder.Line length='short' />
-                        <Placeholder.Line length='full' />
-                        <Placeholder.Line length='medium' />
-                    </Placeholder>
-                    <Divider />
-                </Fragment>
 
-            // <PlaceholderGrid row={3} column={1} placeholderType="multiLine" />
+                <PlaceholderGrid row={6} column={1} placeholderType="multiLine" />
+
             ) : (
-                doneeList.map((donee) => {
-                    let location = '';
-                    if (donee.city === '' && donee.province !== '') {
-                        location = donee.province;
-                    } else if (donee.city !== '' && donee.province === '') {
-                        location = donee.city;
-                    } else if (donee.city !== '' && donee.province !== '') {
-                        location = `${donee.city}, ${donee.province}`;
-                    }
-                    return (
-                        <div className="ch_giftPopcontent">
-                            <Header as="h6">CHARITY</Header>
-                            <Header as="h3">
-                                <p>
-                                    {donee.donee_name}
-                                </p>
-                                <span>
-                                    {formatCurrency(donee.gifts_total, language, currency)}
-                                </span>
-                            </Header>
-                            <Header as="h5">
-                                {location}
-                            </Header>
-                        </div>
-                    );
-                })
-            )
+                    doneeList.map((donee) => {
+                        let location = '';
+                        if (donee.city === '' && donee.province !== '') {
+                            location = donee.province;
+                        } else if (donee.city !== '' && donee.province === '') {
+                            location = donee.city;
+                        } else if (donee.city !== '' && donee.province !== '') {
+                            location = `${donee.city}, ${donee.province}`;
+                        }
+                        return (
+                            <div className="ch_giftPopcontent">
+                                <Header as="h6">CHARITY</Header>
+                                <Header as="h3">
+                                    <p>
+                                        {donee.donee_name}
+                                    </p>
+                                    <span>
+                                        {formatCurrency(donee.gifts_total, language, currency)}
+                                    </span>
+                                </Header>
+                                <Header as="h5">
+                                    {location}
+                                </Header>
+                            </div>
+                        );
+                    })
+                )
         );
     }
 }
