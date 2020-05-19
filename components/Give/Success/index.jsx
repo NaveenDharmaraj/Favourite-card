@@ -52,7 +52,7 @@ const Success = (props) => {
     const {
         quaziSuccessStatus,
     } = successData;
-    const thankName = (_isEmpty(displayName)) ? displayName : `${firstName} ${lastName}`;
+    const thankName = (displayName) || `${firstName} ${lastName}`;
     let firstParagraph = null;
     if (quaziSuccessStatus && successData.type === 'donations') {
         firstParagraph = formatMessage('quaziDonationSuccessMessage', {
@@ -171,6 +171,8 @@ Success.propTypes = {
     currentUser: PropTypes.shape({
         attributes: PropTypes.shape({
             displayName: PropTypes.string,
+            firstName: PropTypes.string,
+            lastName: PropTypes.string,
         }),
     }),
     dispatch: PropTypes.func,
@@ -219,6 +221,8 @@ Success.defaultProps = {
     currentUser: {
         attributes: {
             displayName: '',
+            firstName: '',
+            lastName: '',
         },
     },
     dispatch: () => { },
