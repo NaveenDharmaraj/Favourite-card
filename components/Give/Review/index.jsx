@@ -176,12 +176,18 @@ class Review extends React.Component {
                     </div>
                     <div className="flowReview">
                         <Container>
+                        <Grid centered verticalAlign="middle">
+                            <Grid.Row>
+                                <Grid.Column mobile={16} tablet={14} computer={12}>
                             <FlowBreadcrumbs
                                 currentStep={currentStep}
                                 formatMessage={formatMessage}
                                 steps={flowSteps}
                                 flowType={type}
                             />
+                            </Grid.Column>
+                            </Grid.Row>
+                            </Grid>
                             {
                                 (!!showP2pList) && (
                                     <div className="p2p-top-table">
@@ -265,7 +271,7 @@ class Review extends React.Component {
                                                     </Grid.Column>
                                                     <Grid.Column mobile={16} tablet={8} computer={7} className="mobile_btn">
                                                             <Button
-                                                                className="blue-btn-rounded-def w-120 mob_btn_edit width-full-btn"
+                                                                className="blue-btn-rounded-def w-160 mob_btn_edit width-full-btn"
                                                                 primary
                                                                 content={(!this.state.buttonClicked)
                                                                     ? buttonText

@@ -139,12 +139,18 @@ const Success = (props) => {
     return (
         <div className="flowSuccess">
             <Container>
-                <FlowBreadcrumbs
-                    currentStep={currentStep}
-                    formatMessage={formatMessage}
-                    steps={flowSteps}
-                    flowType={flowObject.type}
-                />
+                <Grid centered verticalAlign="middle">
+                    <Grid.Row>
+                        <Grid.Column mobile={16} tablet={14} computer={12}>
+                            <FlowBreadcrumbs
+                                currentStep={currentStep}
+                                formatMessage={formatMessage}
+                                steps={flowSteps}
+                                flowType={flowObject.type}
+                            />
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
                 <Grid centered verticalAlign="middle">
                     <Grid.Row>
                         <Grid.Column mobile={16} tablet={14} computer={12}>
