@@ -1732,6 +1732,17 @@ const populateFriendsList = (friendsList) => {
     let singleObject = {};
     if (!_.isEmpty(friendsList)) {
         friendsList.map((friend) => {
+            let location = '';
+            if (friend.attributes.location_source && friend.attributes.location_source === 'Account_Settings'
+            && friend.attributes.location_visibility === 0) {
+                if (friend.attributes.city === '' && friend.attributes.province !== '') {
+                    location = friend.attributes.province;
+                } else if (friend.attributes.city !== '' && friend.attributes.province === '') {
+                    location = friend.attributes.city;
+                } else if (friend.attributes.city !== '' && friend.attributes.province !== '') {
+                    location = `${friend.attributes.city}, ${friend.attributes.province}`;
+                }
+            }
             singleObject = {
                 id: friend.attributes.user_id,
                 image: {
@@ -1739,7 +1750,7 @@ const populateFriendsList = (friendsList) => {
                     src: friend.attributes.avatar,
                 },
                 key: friend.attributes.user_id,
-                text: ReactHtmlParser(`<span class="textFirst">${friend.attributes.display_name}</span><span class="secondFirst"></span>`),
+                text: ReactHtmlParser(`<span class="textFirst">${friend.attributes.display_name}</span><span class="secondFirst">${location}</span>`),
                 type: friend.type,
                 value: friend.attributes.user_id,
             };
