@@ -75,18 +75,18 @@ const AddMoneySuccess = (props) => {
             donationAmount,
             donationMatchData,
         );
-        if(giftType && giftType.value === 0) {
+        if (giftType && giftType.value === 0) {
             displayAmount += Number(donationMatchedData.amount);
             const matchedAmount = formatCurrency(formatAmount(donationMatchedData.amount), language, currency);
             const matchedText = (donationMatchedData.automaticMatching)
                 ? formatMessage('addMoneyDonationMatchedAutoText', {
-                    matchedAmount,
                     donationCompany: donationMatchedData.displayName,
+                    matchedAmount,
                     totalAmount: formatCurrency(formatAmount(displayAmount), language, currency),
                 })
                 : formatMessage('addMoneyDonationMatchedManualText', {
-                    matchedAmount,
                     donationCompany: donationMatchedData.displayName,
+                    matchedAmount,
                 });
             secondParagraph += matchedText;
         } else if (giftType && giftType.value !== 0) {
