@@ -67,6 +67,7 @@ import {
 } from '../../../helpers/give/utils';
 
 import CreditCard from '../../shared/CreditCard';
+import PaymentInstruments from '../../shared/PaymentInstruments';
 
 class Donation extends React.Component {
     constructor(props) {
@@ -684,6 +685,7 @@ class Donation extends React.Component {
             flowObject: {
                 giveData: {
                     creditCard,
+                    giveTo
                 },
             },
             inValidCardNumber,
@@ -711,6 +713,7 @@ class Donation extends React.Component {
             const {
                 dispatch,
             } = this.props;
+            let formatMessage = this.props.t;
             let newCreditCard = {};
             dispatch(addNewCardAndLoad(flowObject, isDefaultCard)).then((result) => {
                 const {
@@ -721,9 +724,16 @@ class Donation extends React.Component {
                         id,
                     },
                 } = result;
-                newCreditCard.id = id;
-                newCreditCard.value = id;
-                newCreditCard.text = description;
+                let paymentInstruments;
+                if(giveData.giveTo.type === 'users') {
+                    paymentInstruments = this.props.paymentInstrumentsData;
+                } else if(giveData.giveTo.type === 'companies'){
+                    paymentInstruments = this.props.companyDetails.companyPaymentInstrumentsData
+                }
+                let paymentList = populatePaymentInstrument(paymentInstruments,formatMessage);
+                newCreditCard =  _.find(paymentList, {
+                    'id': id
+                });
                 const statusMessageProps = {
                     message: 'Payment method added',
                     type: 'success',

@@ -26,7 +26,7 @@ function TaxReceiptDropDown(props) {
             taxReceiptField = (
                 <Form.Field className="mb-2">
                     <div className="paymentMethodDropdown add_space">
-                        <label htmlFor="">Tax receipt</label>
+                        <label htmlFor="">Tax receipt recipient</label>
                         <Dropdown
                             button
                             className="taxReceiptDropDown label_top mb-3"
@@ -46,7 +46,7 @@ function TaxReceiptDropDown(props) {
         } else if (_.isEmpty(taxReceiptsOptions) && giveTo.value > 0) {
             taxReceiptField = (
                 <div className="mb-2">
-                    <label>Tax Receipt</label>
+                    <label>Tax receipt recipient</label>
                     <div
                         className="addNewCardInput mb-1"
                         id="addNewTaxReceipt"

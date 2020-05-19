@@ -534,9 +534,9 @@ class ReloadAddAmount extends React.Component {
                         id,
                     },
                 } = result;
-                creditCard.id = id;
-                creditCard.value = id;
-                creditCard.text = description;
+                creditCard =  _.find( this.props.paymentInstrumentOptions, {
+                    'id': id
+                });
                 const statusMessageProps = {
                     message: 'New Credit Card Added',
                     type: 'success',
@@ -893,7 +893,7 @@ class ReloadAddAmount extends React.Component {
         } = this.state;
         let { 
             formatMessage,
-            paymentInstrumenOptions,
+            paymentInstrumentOptions,
         } = this.props;
         return(
             <Fragment>
@@ -921,7 +921,7 @@ class ReloadAddAmount extends React.Component {
                         checked={isDefaultCard}
                         control={Checkbox}
                         className="ui checkbox chkMarginBtm checkboxToRadio"
-                        disabled={!paymentInstrumenOptions}
+                        disabled={!paymentInstrumentOptions}
                         id="isDefaultCard"
                         label="Set as primary card"
                         name="isDefaultCard"
