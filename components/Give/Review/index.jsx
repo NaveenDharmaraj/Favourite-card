@@ -102,6 +102,7 @@ class Review extends React.Component {
                     type,
                     sourceAccountHolderId,
                     groupId,
+                    campaignId,
                 },
                 flowSteps,
                 companiesAccountsData,
@@ -119,6 +120,8 @@ class Review extends React.Component {
             }
             if (groupId) {
                 toURL = `${toURL}&group_id=${groupId}`;
+            } else if(campaignId) {
+                toURL = `${toURL}&campaign_id=${campaignId}`;
             }
             if(type === 'donations'){
                 reviewData = populateDonationReviewPage(giveData, {

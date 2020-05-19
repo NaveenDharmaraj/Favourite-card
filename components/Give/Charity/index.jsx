@@ -11,14 +11,9 @@ import _replace from 'lodash/replace';
 import PropTypes from 'prop-types';
 import {
     Container,
-    Divider,
     Form,
     Grid,
     Header,
-    Icon,
-    Image,
-    Input,
-    List,
     Modal,
     Placeholder,
     Select,
@@ -27,7 +22,6 @@ import _find from 'lodash/find';
 import _isEqual from 'lodash/isEqual';
 import _every from 'lodash/every';
 import { connect, } from 'react-redux';
-import ReactHtmlParser from 'react-html-parser';
 import { Link } from '../../../routes';
 import CharityAmountField from '../DonationAmountField';
 import { beneficiaryDefaultProps } from '../../../helpers/give/defaultProps';
@@ -35,7 +29,6 @@ import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
 import {
     formatCurrency,
     formatAmount,
-    getDefaultCreditCard,
     populateDonationMatch,
     populateGiveToGroupsofUser,
     populateGiftType,
@@ -50,16 +43,12 @@ import {
     validateForReload,
 } from '../../../helpers/give/utils';
 import {
-    actionTypes,
     getCoverAmount,
     getCompanyPaymentAndTax,
     getBeneficiariesForGroup,
     getBeneficiaryFromSlug,
     proceed,
 } from '../../../actions/give';
-import IconCharity from '../../../static/images/no-data-avatar-charity-profile.png';
-import IconGroup from '../../../static/images/no-data-avatar-giving-group-profile.png';
-import IconIndividual from '../../../static/images/no-data-avatar-group-chat-profile.png';
 import FlowBreadcrumbs from '../FlowBreadcrumbs';
 import ReloadAddAmount from '../ReloadAddAmount';
 import { withTranslation } from '../../../i18n';
@@ -74,6 +63,7 @@ class Charity extends React.Component {
     constructor(props) {
         super(props);
         const {
+            campaignId,
             companyDetails,
             companiesAccountsData,
             currentUser: {
@@ -100,14 +90,9 @@ class Charity extends React.Component {
             }
         } = props;
         let currentSourceAccountHolderId = null;
-        let currentGroupId = null;
         if (!_isEmpty(sourceAccountHolderId)
             && Number(sourceAccountHolderId) > 0) {
             currentSourceAccountHolderId = sourceAccountHolderId;
-        }
-        if (!_isEmpty(groupId)
-            && Number(groupId) > 0) {
-            currentGroupId = groupId;
         }
         const paymentInstruments = (!_isEmpty(props.flowObject.giveData.giveFrom) && props.flowObject.giveData.giveFrom.type === 'companies') ? companyDetails.companyPaymentInstrumentsData : paymentInstrumentsData;
         const formatMessage = props.t;
@@ -145,7 +130,6 @@ class Charity extends React.Component {
             },
             findAnotherRecipientLabel: 'Find another recipient',
             flowObject: _.cloneDeep(payload),
-            showAnotherRecipient: false,
             showModal: false,
             reloadModalOpen:0,
             reviewBtnFlag: false,
@@ -177,12 +161,19 @@ class Charity extends React.Component {
                 this.state.flowObject.groupFromUrl = true;
             }
         }
+        if (!_isEmpty(groupId)
+            && Number(groupId) > 0) {
+                this.state.flowObject.groupId = groupId;
+                this.state.giveFromType = 'groups';
+        } else if (!_isEmpty(campaignId)
+            && Number(campaignId) > 0) {
+                this.state.flowObject.campaignId = campaignId;
+                this.state.giveFromType = 'campaigns'
+        }
         this.state.flowObject.sourceAccountHolderId = currentSourceAccountHolderId;
-        this.state.flowObject.groupId = currentGroupId;
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleInputChangeGiveTo = this.handleInputChangeGiveTo.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
-        this.handleFindAnotherRecipient = this.handleFindAnotherRecipient.bind(this);
         this.handleInputOnBlur = this.handleInputOnBlur.bind(this);
         this.validateForm = this.validateForm.bind(this);
         this.handleAddMoneyModal = this.handleAddMoneyModal.bind(this);
@@ -191,6 +182,7 @@ class Charity extends React.Component {
 
     componentDidMount() {
         const {
+            campaignId,
             currentUser: {
                 id,
             },
@@ -202,6 +194,7 @@ class Charity extends React.Component {
             flowObject: {
                 giveData,
             },
+            giveFromType,
         } = this.state;
         if (!_isEmpty(giveData) && !_isEmpty(giveData.giveFrom) &&
             _isEmpty(giveData.giveFrom.value)) {
@@ -212,8 +205,9 @@ class Charity extends React.Component {
                 type: 'COVER_AMOUNT_DISPLAY',
             });
         }
-        if (Number(groupId) > 0) {
-            getBeneficiariesForGroup(dispatch, Number(groupId));
+        if (Number(groupId) > 0 || Number(campaignId) > 0) {
+            const id = (campaignId) ? campaignId : groupId;
+            getBeneficiariesForGroup(dispatch, id, giveFromType);
         } else if (slug != null) {
             getBeneficiaryFromSlug(dispatch, slug);
         } else {
@@ -234,11 +228,13 @@ class Charity extends React.Component {
                     currency,
                     giveData,
                 },
+                giveFromType,
                 groupFromUrl,
                 reviewBtnFlag,
                 reloadModalOpen,
             } = this.state;
             const {
+                campaignId,
                 companyDetails,
                 companiesAccountsData,
                 currentUser: {
@@ -320,10 +316,11 @@ class Charity extends React.Component {
                     Router.pushRoute('/dashboard');
             }
             if (!_isEmpty(fund)) {
+                const giveFromId = (giveFromType === 'campaigns') ? campaignId : groupId;
                 giveData = Charity.initFields(
                     giveData, fund, id, avatar,
                     `${firstName} ${lastName}`, companiesAccountsData, userGroups, userCampaigns,
-                    giveGroupBenificairyDetails, groupId
+                    giveGroupBenificairyDetails, giveFromId, giveFromType,
                 );
             }
             this.setState({
@@ -370,7 +367,7 @@ class Charity extends React.Component {
 
     // eslint-disable-next-line react/sort-comp
     static initFields(giveData, fund, id, avatar,
-        name, companiesAccountsData, userGroups, userCampaigns, giveGroupBenificairyDetails, groupId) {
+        name, companiesAccountsData, userGroups, userCampaigns, giveGroupBenificairyDetails, groupId, giveFromType) {
         if (_isEmpty(companiesAccountsData) && _isEmpty(userGroups) && _isEmpty(userCampaigns) && !giveData.userInteracted) {
             giveData.giveFrom.avatar = avatar,
                 giveData.giveFrom.id = id;
@@ -381,7 +378,9 @@ class Charity extends React.Component {
             giveData.giveFrom.name = name;
         } else if (!_isEmpty(companiesAccountsData) && !_isEmpty(userGroups) && !_isEmpty(userCampaigns) && !giveData.userInteracted) {
             if (!_isEmpty(giveGroupBenificairyDetails) && !_isEmpty(giveGroupBenificairyDetails.benificiaryDetails)) {
-                const defaultGroupFrom = userGroups.find((userGroup) => userGroup.id === groupId);
+                const defaultGroupFrom = (giveFromType === 'campaigns')
+                    ? userCampaigns.find((userCampaign) => userCampaign.id === groupId)
+                    : userGroups.find((userGroup) => userGroup.id === groupId)
                 if (!_isEmpty(defaultGroupFrom)) {
                     giveData.giveFrom.value = defaultGroupFrom.attributes.fundId;
                     giveData.giveFrom.name = defaultGroupFrom.attributes.name;
@@ -741,95 +740,6 @@ class Charity extends React.Component {
             },
 
         });
-    }
-
-    handleFindAnotherRecipient() {
-        const {
-            showAnotherRecipient,
-        } = this.state;
-        const formatMessage = this.props.t;
-        this.setState({
-            findAnotherRecipientLabel: showAnotherRecipient
-                ? formatMessage('findAnotherRecipientMessage')
-                : formatMessage('findAnotherRecipientCancel'),
-            showAnotherRecipient: !showAnotherRecipient,
-        });
-    }
-
-    /**
-     * Render find another recipent.
-     * @param {boolean} showAnotherRecipient for toggling.
-     * @param {string} friendUrlEndpoint end point for user.
-     * @param {string} groupUrlEndpoint group end point.
-     * @param {function} formatMessage I18 formatting.
-     * @param {string} findAnotherRecipientLabel lable text.
-     * @return {JSX} JSX representing  find another recipent fields.
-     */
-    renderFindAnotherRecipient(
-        showAnotherRecipient,
-        friendUrlEndpoint,
-        groupUrlEndpoint,
-        findAnotherRecipientLabel,
-        formatMessage,
-    ) {
-        return (
-            <Fragment>
-                <Form.Field className="lnk-FindAnother">
-                    <div
-                        className="achPointer"
-                        onClick={this.handleFindAnotherRecipient}
-                    >
-                        {findAnotherRecipientLabel}
-                    </div>
-                </Form.Field>
-                {!!showAnotherRecipient && (
-                    <Form.Field className="lnk-FindAnother">
-                        <List className="lstRecipient" verticalAlign="middle" horizontal>
-                            <Link route='/give'>
-                                <List.Item className="lstitm">
-                                    <Image
-                                        className="imgCls lst-img"
-                                        src={IconCharity}
-                                    />
-                                    <List.Content className="lst-cnt">
-                                        {formatMessage('goToCharityFirstLabel')}
-                                        <br />
-                                        {formatMessage('goToCharitySecondLabel')}
-                                    </List.Content>
-                                </List.Item>
-                            </Link>
-                            <Link route={friendUrlEndpoint}>
-                                <List.Item className="lstitm">
-                                    <Image
-                                        className="imgCls"
-                                        src={IconIndividual}
-                                    />
-                                    <List.Content className="lst-cnt">
-                                        {formatMessage('goToFriendsFirstLabel')}
-                                        <br />
-                                        {formatMessage('goToFriendsSecondLabel')}
-                                    </List.Content>
-                                </List.Item>
-                            </Link>
-                            <Link route={groupUrlEndpoint}>
-                                <List.Item className="lstitm">
-                                    <Image
-                                        className="imgCls"
-                                        src={IconGroup}
-                                    />
-                                    <List.Content className="lst-cnt">
-                                        {formatMessage('goToGroupFirstLabel')}
-                                        <br />
-                                        {formatMessage('goToGroupSecondLabel')}
-                                    </List.Content>
-                                </List.Item>
-                            </Link>
-                        </List>
-                    </Form.Field>
-                )
-                }
-            </Fragment>
-        );
     }
 
     handlegiftTypeButtonClick = (e, { value }) => {
