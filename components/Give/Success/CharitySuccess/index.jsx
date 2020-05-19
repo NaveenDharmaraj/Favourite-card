@@ -104,7 +104,7 @@ const CharitySuccess = (props) => {
             <div className="text-center mt-1">
                 {/* route have been assumed for done here */}
                 <Link route={dashboardLink}>
-                    <Button className="blue-btn-rounded-def flowConfirmBtn">
+                    <Button className="blue-btn-rounded-def flowConfirmBtn second_btn">
                         {doneButtonText}
                     </Button>
                 </Link>

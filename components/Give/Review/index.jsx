@@ -198,7 +198,7 @@ class Review extends React.Component {
                                                         <Grid.Row>
                                                             <Grid.Column mobile={16} tablet={4} computer={4}>
                                                                 <div className="send-table">
-                                                                    {formatMessage('reviewP2pSendTo')}
+                                                                    <b>{formatMessage('reviewP2pSendTo')}</b>
                                                                 </div>
                                                             </Grid.Column>
                                                             <Grid.Column mobile={16} tablet={12} computer={12}>
