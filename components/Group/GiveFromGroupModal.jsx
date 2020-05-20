@@ -78,7 +78,7 @@ const GiveFromGroupModal = (props) => {
         divText = divTextForCharity;
         divClassName = 'ModelLeftBox';
     } else if (_isEmpty(beneficiariesCount) && hasCampaignAccess) {
-        giveUrl = `/give/to/group/${slug}/new`;
+        giveUrl = `/give/to/group/new?group_id=${groupId}&source_account_holder_id=${fundId}`;
         bgImage = leftcampaigngroup;
         divText = divTextForCampaign;
         divClassName = 'Givegroupimg';
