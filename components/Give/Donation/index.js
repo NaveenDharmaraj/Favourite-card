@@ -1019,6 +1019,7 @@ class Donation extends React.Component {
                                                                     handleAddNewTaxReceipt={this.handleAddNewTaxReceipt}
                                                                     handleModalClose={this.handleTaxReceiptModalClose}
                                                                     action="add"
+                                                                    isFirstTaxReciept={!taxReceiptsOptions}
                                                                 />
                                                             )
                                                         }

@@ -73,7 +73,7 @@ class ReloadAddAmount extends React.Component {
             addNewTRButtonClicked: false,
             currentModalStep: 0,
             isDefaultCard: false,
-            isDefaultTaxReceiptChecked:false,
+            isDefaultTaxReceiptChecked:!props.taxReceiptsOptions,
             inValidCardNameValue: true,
             inValidCardNumber: true,
             inValidCvv: true,
@@ -844,7 +844,8 @@ class ReloadAddAmount extends React.Component {
             selectedTaxReceiptProfile,
             tRFormValidity,
         } = this.state;
-        let { formatMessage } = this.props;
+        let { formatMessage,
+        taxReceiptsOptions } = this.props;
         return (
             <Fragment>
                 <Form>
@@ -863,6 +864,8 @@ class ReloadAddAmount extends React.Component {
                             className="checkboxToRadio f-weight-n"
                             type="checkbox"
                             id="checkbox"
+                            checked={isDefaultTaxReceiptChecked}
+                            disabled={!taxReceiptsOptions}
                             onClick={() => { this.setState({isDefaultTaxReceiptChecked: !isDefaultTaxReceiptChecked }); }}
                             label="Set as default tax receipt recipient"
                         />
