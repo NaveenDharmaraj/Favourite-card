@@ -707,14 +707,14 @@ class Friend extends React.Component {
         let submtBtn = (reviewBtnFlag)?(
             <Form.Button
                 primary
-                className="blue-btn-rounded btn_right"
+                className="blue-btn-rounded btn_right rivewbtnp2p"
                 content={formatMessage('giveCommon:reviewButtonFlag')}
                 disabled={!this.props.userAccountsFetched}
                 onClick={this.handleAddMoneyModal}
                 type="button"
             />) : (<Form.Button
                 primary
-                className="blue-btn-rounded btn_right"
+                className="blue-btn-rounded btn_right rivewbtnp2p"
                 content={formatMessage('giveCommon:reviewButton')}
                 disabled={!this.props.userAccountsFetched}
                 type="submit"
@@ -745,9 +745,9 @@ class Friend extends React.Component {
                                         <Form onSubmit={this.handleSubmit}>
                                             <Grid>
                                                 <Grid.Row>
-                                                    <Grid.Column mobile={16} tablet={12} computer={10}>
-                                                        {
-                                                            (emailMasked) &&
+                                                    {
+                                                        (emailMasked) &&
+                                                        <Grid.Column mobile={16} tablet={12} computer={10}>
                                                             <Form.Field>
                                                                 <label htmlFor="recipientName">
                                                                     {formatMessage('friends:recipientsLabel')}
@@ -762,10 +762,12 @@ class Friend extends React.Component {
                                                                     value={recipientName}
                                                                 />
                                                             </Form.Field>
-                                                        }
-                                                        {
-                                                            (!emailMasked) &&
-                                                            <Fragment>
+                                                        </Grid.Column>
+                                                    }
+                                                    {
+                                                        (!emailMasked) &&
+                                                        <Fragment>
+                                                            <Grid.Column mobile={16} tablet={12} computer={10}>
                                                                 <label htmlFor="recipients">
                                                                     {formatMessage('friends:recipientsLabel')}
                                                                 </label>
@@ -781,36 +783,38 @@ class Friend extends React.Component {
                                                                     }
                                                                 />
                                                                 {showDropDown
-                                                                && (
-                                                                    <Fragment>
+                                                                    && (
                                                                         <FriendsDropDown
-                                                                    handleOnInputBlur={this.handleOnInputBlur}
-                                                                    handleOnInputChange={this.handleInputChange}
-                                                                    values={friendsList}
-                                                                />
+                                                                            handleOnInputBlur={this.handleOnInputBlur}
+                                                                            handleOnInputChange={this.handleInputChange}
+                                                                            values={friendsList}
+                                                                        />
+                                                                    )
+                                                                }
+                                                            </Grid.Column>
+                                                            <Grid.Column mobile={16} tablet={16} computer={16}>
                                                                 <p>
                                                                     <a className="giveToEmailsText" onClick={this.handleGiveToEmail}>
                                                                         {formatMessage('friends:giveToEmailsText')}
                                                                     </a>
                                                                 </p>
-                                                                    </Fragment>
-                                                                )
-                                                                }
                                                                 {(showGiveToEmail || !_.isEmpty(recipients) || (typeof showDropDown !== 'undefined' && !showDropDown))
-                                                                && (
-                                                                    <Note
-                                                                        enableCharacterCount={false}
-                                                                        fieldName="recipients"
-                                                                        formatMessage={formatMessage}
-                                                                        handleOnInputChange={this.handleInputChange}
-                                                                        handleOnInputBlur={this.handleOnInputBlur}
-                                                                        labelText={formatMessage('friends:recipientsLabel')}
-                                                                        popupText={formatMessage('friends:recipientsPopup')}
-                                                                        placeholderText={formatMessage('friends:recipientsPlaceholderText')}
-                                                                        text={recipients.join(',')}
-                                                                        hideLabel={true}
-                                                                    />
-                                                                )}
+                                                                    && (
+                                                                        <div className="noteEmail">
+                                                                            <Note
+                                                                                enableCharacterCount={false}
+                                                                                fieldName="recipients"
+                                                                                formatMessage={formatMessage}
+                                                                                handleOnInputChange={this.handleInputChange}
+                                                                                handleOnInputBlur={this.handleOnInputBlur}
+                                                                                labelText={formatMessage('friends:recipientsLabel')}
+                                                                                popupText={formatMessage('friends:recipientsPopup')}
+                                                                                placeholderText={formatMessage('friends:recipientsPlaceholderText')}
+                                                                                text={recipients.join(',')}
+                                                                                hideLabel={true}
+                                                                            />
+                                                                        </div>
+                                                                    )}
                                                                 <FormValidationErrorMessage
                                                                     condition={!validity.isValidEmailList}
                                                                     errorMessage={formatMessage('friends:invalidEmailError')}
@@ -829,34 +833,36 @@ class Friend extends React.Component {
                                                                 />
                                                                 <FormValidationErrorMessage
                                                                     condition={!validity.isRecepientSelected}
-                                                                    errorMessage="Select friends or enter emailaddress separated by comma"
+                                                                    errorMessage="Select friends or enter email address separated by comma"
                                                                 />
-                                                            </Fragment>
-                                                        }
-                                                        <DonationAmountField
-                                                            amount={formatedP2PAmount}
-                                                            formatMessage={formatMessage}
-                                                            handleInputChange={this.handleInputChange}
-                                                            handleInputOnBlur={this.handleOnInputBlur}
-                                                            handlePresetAmountClick={this.handlePresetAmountClick}
-                                                            validity={validity}
-                                                            isGiveFlow
-                                                        />
-                                                        <p className="multipleFriendAmountFieldText">
-                                                            {formatMessage('friends:multipleFriendAmountFieldText')}
-                                                        </p>
-                                                        <DropDownAccountOptions
-                                                            type={type}
-                                                            validity={validity.isValidGiveFrom}
-                                                            selectedValue={this.state.flowObject.giveData.giveFrom.value}
-                                                            name="giveFrom"
-                                                            parentInputChange={this.handleInputChange}
-                                                            parentOnBlurChange={this.handleOnInputBlur}
-                                                            formatMessage={formatMessage}
-                                                            reviewBtnFlag={reviewBtnFlag}
-                                                        />
-                                                        {this.renderReloadAddAmount()}
-                                                    </Grid.Column>
+                                                            </Grid.Column>
+                                                        </Fragment>
+                                                    }
+                                                        <Grid.Column mobile={16} tablet={12} computer={10}>
+                                                            <DonationAmountField
+                                                                amount={formatedP2PAmount}
+                                                                formatMessage={formatMessage}
+                                                                handleInputChange={this.handleInputChange}
+                                                                handleInputOnBlur={this.handleOnInputBlur}
+                                                                handlePresetAmountClick={this.handlePresetAmountClick}
+                                                                validity={validity}
+                                                                isGiveFlow
+                                                            />
+                                                            <p className="multipleFriendAmountFieldText">
+                                                                {formatMessage('friends:multipleFriendAmountFieldText')}
+                                                            </p>
+                                                            <DropDownAccountOptions
+                                                                type={type}
+                                                                validity={validity.isValidGiveFrom}
+                                                                selectedValue={this.state.flowObject.giveData.giveFrom.value}
+                                                                name="giveFrom"
+                                                                parentInputChange={this.handleInputChange}
+                                                                parentOnBlurChange={this.handleOnInputBlur}
+                                                                formatMessage={formatMessage}
+                                                                reviewBtnFlag={reviewBtnFlag}
+                                                            />
+                                                            {this.renderReloadAddAmount()}
+                                                        </Grid.Column>
                                                 </Grid.Row>
                                             </Grid>
                                             <Grid className="to_space">

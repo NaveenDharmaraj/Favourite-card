@@ -19,6 +19,7 @@ const flowSteps = [
 class Charities extends React.Component {
     static async getInitialProps({ query }) {
         return {
+            campaignId: query.campaign_id,
             groupId: query.group_id,
             namespacesRequired: [
                 'authHeader',

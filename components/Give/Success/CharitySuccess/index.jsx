@@ -6,6 +6,7 @@ import {
     Button,
 } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
+import _isEmpty from 'lodash/isEmpty';
 
 import { withTranslation } from '../../../../i18n';
 import '../../../../static/less/giveFlows.less';
@@ -37,19 +38,37 @@ const CharitySuccess = (props) => {
         eftEnabled,
         name,
     } = giveTo;
-    const dashboardLink = (!_.isEmpty(giveFrom) && giveFrom.type === 'companies')
+    const dashboardLink = (!_isEmpty(giveFrom) && giveFrom.type === 'companies')
         ? `/${giveFrom.type}/${giveFrom.slug}`
         : `/dashboard`;
     const month = getNextAllocationMonth(formatMessage, eftEnabled);
     const isNonRecurring = !!(giftType && giftType.value === 0);
-    const secondParagraph = giftType && giftType.value > 0 ? formatMessage('charityTimeForSendingRecurring', {
-        amount: formatCurrency(formatAmount(giveAmount), language, currency),
-        charityName: name,
-        month,
-    }) : formatMessage('charityTimeForSending', {
-        charityName: name,
-        month,
-    });
+    let secondParagraph;
+    if (giftType && giftType.value > 0) {
+        secondParagraph = (giveFrom.type === 'user')
+            ? formatMessage('charityTimeForSendingRecurring', {
+                amount: formatCurrency(formatAmount(giveAmount), language, currency),
+                charityName: name,
+                month,
+            })
+            : formatMessage('charityTimeForSendingRecurringFromOther', {
+                amount: formatCurrency(formatAmount(giveAmount), language, currency),
+                charityName: name,
+                fromName: giveFrom.name,
+                month,
+            });
+    } else {
+        secondParagraph = (giveFrom.type === 'user')
+            ? formatMessage('charityTimeForSending', {
+                charityName: name,
+                month,
+            })
+            : formatMessage('charityTimeForSendingFromOther', {
+                charityName: name,
+                fromName: giveFrom.name,
+                month,
+            });
+    }
     const doneButtonText = formatMessage('doneText');
     return (
         <Fragment>
@@ -85,7 +104,7 @@ const CharitySuccess = (props) => {
             <div className="text-center mt-1">
                 {/* route have been assumed for done here */}
                 <Link route={dashboardLink}>
-                    <Button className="blue-btn-rounded-def flowConfirmBtn">
+                    <Button className="blue-btn-rounded-def flowConfirmBtn second_btn">
                         {doneButtonText}
                     </Button>
                 </Link>
@@ -111,6 +130,7 @@ CharitySuccess.propTypes = {
             }),
             giveAmount: PropTypes.string,
             giveFrom: PropTypes.shape({
+                name: PropTypes.string,
                 slug: PropTypes.string,
                 type: PropTypes.string,
             }),
@@ -135,6 +155,7 @@ CharitySuccess.defaultProps = {
             },
             giveAmount: '',
             giveFrom: {
+                name: '',
                 slug: '',
                 type: '',
             },

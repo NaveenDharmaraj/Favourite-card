@@ -767,15 +767,17 @@ export const reInitNextStep = (dispatch, flowObject) => {
     });
 };
 
-export const getBeneficiariesForGroup = (dispatch, groupId) => {
-    if (groupId !== null) {
+export const getBeneficiariesForGroup = (dispatch, id, type) => {
+    if (id !== null) {
         const fsa = {
             payload: {
                 benificiaryDetails: [],
+                fromType: type,
             },
             type: actionTypes.GET_BENIFICIARY_FOR_GROUP,
         };
-        callApiAndGetData(`/groups/${groupId}/groupBeneficiaries`,
+
+        callApiAndGetData(`/${type}/${id}/groupBeneficiaries`,
             {
                 params: {
                     dispatch,

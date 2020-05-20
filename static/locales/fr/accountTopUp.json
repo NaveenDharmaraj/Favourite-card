@@ -12,5 +12,7 @@
     "donationMatchNote": "So far, {{companyName}} has matched {{totalMatched}} in {{donationMonth}}.",
     "creditCardLabel": "Carte de crédit",
     "creditCardPlaceholder": "Sélectionnez la carte de crédit",
-    "accountTopUpHeaderLabel": "Augmentez le solde de votre compte pour envoyer ce don"
+    "accountTopUpHeaderLabel": "Augmentez le solde de votre compte pour envoyer ce don",
+    "noteToSelfPlaceHolder": "Why did you add money today?"
+
 }
