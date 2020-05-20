@@ -40,7 +40,6 @@ class ClaimCharity extends React.Component {
     }
 
     onClaimCharityClick = () => {
-        debugger;
         const { dispatch } = this.props;
         const { accessCode } = this.state;
         dispatch(checkClaimCharityAccessCode(accessCode));
@@ -195,7 +194,6 @@ class ClaimCharity extends React.Component {
 }
 
 function mapStateToProps(state) {
-    debugger
     return {
         claimCharityErrorMessage: state.user.claimCharityErrorMessage
     };
