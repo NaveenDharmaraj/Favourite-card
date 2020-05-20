@@ -63,7 +63,7 @@ class GroupProfile extends React.Component {
         }
         getGroupFromSlug(dispatch, slug);
         if (currentUser && currentUser.id) {
-            getGroupsAndCampaigns(dispatch, `/users/${currentUser.id}/administeredGroups?sort=-id`, 'administeredGroups', false);
+            getGroupsAndCampaigns(dispatch, `/users/${currentUser.id}/groupsWithOnlyMemberships?sort=-id`, 'groupsWithMemberships', false);
         }
     }
 

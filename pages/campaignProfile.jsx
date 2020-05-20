@@ -52,7 +52,7 @@ class CampaignProfile extends React.Component {
         } else {
             getCampaignFromSlug(dispatch, slug);
             if (currentUser && currentUser.id) {
-                getGroupsAndCampaigns(dispatch, `/users/${currentUser.id}/administeredGroups?sort=-id`, 'administeredGroups', false);
+                getGroupsAndCampaigns(dispatch, `/users/${currentUser.id}/groupsWithOnlyMemberships?sort=-id`, 'groupsWithMemberships', false);
             }
         }
     }

@@ -69,7 +69,7 @@ export const actionTypes = {
     DISABLE_FOLLOW_BUTTON: 'DISABLE_FOLLOW_BUTTON',
     GET_CAMPAIGN_FROM_SLUG: 'GET_CAMPAIGN_FROM_SLUG',
     GET_IMAGES_FOR_CAMPAIGN: 'GET_IMAGES_FOR_CAMPAIGN',
-    GET_RELATED_BENEFICIARIES_FOR_CAMPAIGN: 'GET_RELATED_BENEFICIARIES_FOR_CAMPAIGN',
+    GET_RELATED_BENEFICIARIES_COUNT_FOR_CAMPAIGN: 'GET_RELATED_BENEFICIARIES_COUNT_FOR_CAMPAIGN',
     GET_SUB_GROUPS_FOR_CAMPAIGN: 'GET_SUB_GROUPS_FOR_CAMPAIGN',
     SAVE_FOLLOW_STATUS_CAMPAIGN: 'SAVE_FOLLOW_STATUS_CAMPAIGN',
     SAVE_FOLLOW_STATUS_CHARITY: 'SAVE_FOLLOW_STATUS_CHARITY',
@@ -179,9 +179,9 @@ export const getCampaignFromSlug = async (dispatch, slug, token = null) => {
                 coreApi.get(result.data.relationships.groupBeneficiaries.links.related).then((campaignRelatedBeneficiaries) => {
                     dispatch({
                         payload: {
-                            campaignRelatedBeneficiaries: campaignRelatedBeneficiaries.data,
+                            campaignRelatedBeneficiariesCount: campaignRelatedBeneficiaries.data.length,
                         },
-                        type: actionTypes.GET_RELATED_BENEFICIARIES_FOR_CAMPAIGN,
+                        type: actionTypes.GET_RELATED_BENEFICIARIES_COUNT_FOR_CAMPAIGN,
                     });
                 }).catch((error) => {
                     // console.log(error);
