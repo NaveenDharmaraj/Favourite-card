@@ -13,7 +13,7 @@ class ChatConversationHeader extends React.Component {
             newGroupMemberIds,
             selectedConversation,
         } = this.props;
-        if (compose && newGroupMemberIds && newGroupMemberIds.length <= 0) {
+        if (compose && (isFalsy(newGroupMemberIds) || (newGroupMemberIds && newGroupMemberIds.length <=0))) {
             return <div className="chatWith">New Message</div>
         }
         else if ((selectedConversation  && isFalsy(selectedConversation.groupId)) || newGroupMemberIds && newGroupMemberIds.length == 1) {

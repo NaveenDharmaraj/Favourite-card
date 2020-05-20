@@ -25,8 +25,25 @@ const actionTypes = _keyBy([
     'UPDATE_MESSAGES_SELECTED_CONVERSATION_MUTE_UNMUTE',
     'DELETE_SELECTED_CONVERSATION',
     'NEW_CHAT_MESSAGE',
+    'CONVERSATION_MESSAGE_LOADER',
 ]);
 
+const setSelectedConversation = (msg, newgroupId = true) => (dispatch) => {
+    dispatch({
+        payload: {
+            selectedConversation: msg,
+        },
+        type: actionTypes.CURRENT_SELECTED_CONVERSATION,
+    });
+    if (newgroupId) {
+        dispatch({
+            payload: {
+                newGroupMemberIds: [],
+            },
+            type: actionTypes.COMPOSE_HEADER_CONTACT_SELECTION,
+        });
+    }
+};
 const loadMuteUserList = () => async (dispatch) => {
     const muteUserList = {};
     await applozicApi.get('/user/chat/mute/list', {}).then((response) => {
@@ -65,6 +82,60 @@ const loadrecentMessage = (resp, msg, messagesRef, index) => (dispatch) => {
     });
 };
 
+const loadConversationMessages = (selectedConversation, endTime = new Date().getTime() + 2000) => (dispatch) => {
+    if (selectedConversation) {
+        const params = {
+            endTime,
+            pageSize: 10,
+        };
+        if (selectedConversation.groupId) {
+            params.groupId = selectedConversation.groupId;
+        } else { params.userId = selectedConversation.contactIds; }
+        dispatch({
+            payload: {
+                conversationMessagesLoader: true,
+            },
+            type: actionTypes.CONVERSATION_MESSAGE_LOADER,
+        });
+        return applozicApi.get('/message/v2/list', { params: params }).then((response) => {
+            const selectedConversationMessages = response.response.message;
+            dispatch({
+                payload: {
+                    selectedConversationMessages,
+                },
+                type: actionTypes.SELECTED_CONVERSATION_MESSAGES,
+            });
+            const endTime = response.response.message && response.response.message.length >= 10 ?
+                response.response.message[response.response.message.length - 1].createdAtTime : null;
+            dispatch({
+                payload: {
+                    endTime
+                },
+                type: actionTypes.LOAD_CONVERSATION_MESSAGES_ENDTIME,
+            });
+            // if (concatMessages) {
+            //     window.dispatchEvent(new CustomEvent("onChatPageRefreshEvent", { detail: { data: messages } }));
+            // }
+        })
+            .catch((error) => {
+                dispatch({
+                    payload: {
+                        selectedConversation: !_isEmpty(selectedConversation) ? selectedConversation : null,
+                    },
+                    type: actionTypes.CURRENT_SELECTED_CONVERSATION,
+                });
+            })
+            .finally(() => {
+                dispatch({
+                    payload: {
+                        conversationMessagesLoader: false,
+                    },
+                    type: actionTypes.CONVERSATION_MESSAGE_LOADER,
+                });
+            });
+    }
+};
+
 const loadInboxList = (detail, messages, userDetails, userInfo) => async (dispatch) => {
     const messagesRef = _cloneDeep(messages);
     const {
@@ -99,8 +170,12 @@ const loadInboxList = (detail, messages, userDetails, userInfo) => async (dispat
     if (!matchFound) {
         try {
             const id = !isFalsy(resp.message.to) ? resp.message.to : resp.message.from;
-            const param = resp.message && resp.message.metadata
-                && (resp.message.metadata.action == 0 || resp.message.metadata.action == 1) ? { groupId: id } : { userId: id };
+            let param = { groupId: id };
+
+            // condition to check whether the event triggered for user
+            if ((detail.received && isFalsy(resp.message.to) && userDetails[resp.message.from]) || (detail.sent && userDetails[resp.message.to])) {
+                param = { userId: id };
+            }
             const { response } = await loadnewUserGroupInboxMessage(param);
             let groupFeed = {};
             if (response.groupFeeds && response.groupFeeds.length > 0) {
@@ -123,6 +198,10 @@ const loadInboxList = (detail, messages, userDetails, userInfo) => async (dispat
                 messagesRef.unshift({
                     ...newUserMsg,
                 });
+                if (detail.sent) {
+                    dispatch(setSelectedConversation(newUserMsg));
+                    dispatch(loadConversationMessages(newUserMsg));
+                }
                 dispatch({
                     payload: {
                         messages: messagesRef,
@@ -135,53 +214,33 @@ const loadInboxList = (detail, messages, userDetails, userInfo) => async (dispat
     }
 };
 
-const deleteSelectedConversation = (selectedConversation) => (dispatch) => {
+const deleteSelectedConversation = (selectedConversation, messages) => (dispatch) => {
+    const messagesDelete = _cloneDeep(messages);
+    messagesDelete.find((msg, index) => {
+        if (msg.groupId || selectedConversation.groupId) {
+            if (msg.groupId == selectedConversation.groupId) {
+                messagesDelete.splice(index, 1);
+
+                return true;
+            }
+            return false;
+        }
+        if (msg.contactIds == selectedConversation.contactIds) {
+            messagesDelete.splice(index, 1);
+            return true;
+        }
+    });
+    const defaultSelectConversation = messagesDelete && messagesDelete.length > 0 ? messagesDelete[0] : null;
     dispatch({
         payload: {
-            selectedConversation,
+            messagesDelete,
         },
         type: actionTypes.DELETE_SELECTED_CONVERSATION,
     });
+    dispatch(setSelectedConversation(defaultSelectConversation));
+    dispatch(loadConversationMessages(defaultSelectConversation));
 };
-const loadConversationMessages = (selectedConversation, endTime = new Date().getTime() + 2000) => (dispatch) => {
-    if (selectedConversation) {
-        const params = {
-            endTime,
-            pageSize: 10,
-        };
-        if (selectedConversation.groupId) {
-            params.groupId = selectedConversation.groupId;
-        } else { params.userId = selectedConversation.contactIds; }
-        return applozicApi.get('/message/v2/list', { params: params }).then((response) => {
-            const selectedConversationMessages = response.response.message;
-            dispatch({
-                payload: {
-                    selectedConversationMessages,
-                },
-                type: actionTypes.SELECTED_CONVERSATION_MESSAGES,
-            });
-            const endTime = response.response.message && response.response.message.length >= 10 ?
-                response.response.message[response.response.message.length - 1].createdAtTime : null;
-            dispatch({
-                payload: {
-                    endTime
-                },
-                type: actionTypes.LOAD_CONVERSATION_MESSAGES_ENDTIME,
-            });
-            // if (concatMessages) {
-            //     window.dispatchEvent(new CustomEvent("onChatPageRefreshEvent", { detail: { data: messages } }));
-            // }
-        })
-            .catch((error) => {
-                dispatch({
-                    payload: {
-                        selectedConversation: !_isEmpty(selectedConversation) ? selectedConversation : null,
-                    },
-                    type: actionTypes.CURRENT_SELECTED_CONVERSATION,
-                });
-            });
-    }
-};
+
 
 const recurrsiveLoadConversation = (endTime = new Date().getTime() + 2000) => {
     return applozicApi.get('/message/v2/list', {
@@ -209,6 +268,7 @@ const loadConversationThenBlock = (response, msgId, userDetails, groupFeeds, sel
         if (!userDetails[userDetail.userId]) {
             userDetails[userDetail.userId] = userDetail;
         }
+        userDetails[userDetail.userId].unreadCount = userDetail.unreadCount;
     });
     // dispatach the groupFeeds from response.response.groupDetails
     groupFeeds = !_isEmpty(groupFeeds) ? groupFeeds : {};
@@ -272,8 +332,8 @@ const loadConversationThenBlock = (response, msgId, userDetails, groupFeeds, sel
         dispatch({
             payload: {
                 compose,
-                filteredMessages: newMessgaeArr,
                 groupFeeds,
+                mesageListLoader: false,
                 messages: newMessgaeArr,
                 selectedConversation,
                 userDetails,
@@ -292,6 +352,7 @@ const loadConversations = (msgId, userDetails = {}, groupFeeds = {}, selectedCon
         .catch(() => {
             dispatch({
                 payload: {
+                    mesageListLoader: false,
                     messages: [],
                 },
                 type: actionTypes.LOAD_CONVERSATION_LIST,
@@ -351,14 +412,7 @@ const loadFriendsList = (userInfo, msgId, muteUserList) => (dispatch) => {
         });
 };
 
-const setSelectedConversation = (msg) => (dispatch) => {
-    dispatch({
-        payload: {
-            selectedConversation: msg,
-        },
-        type: actionTypes.CURRENT_SELECTED_CONVERSATION,
-    });
-};
+
 
 const deleteConversation = (params) => {
     return applozicApi.get('/message/delete/conversation', {
@@ -432,6 +486,7 @@ const storeGroupImage = (isForNewGroup, conversationInfo, data) => {
 };
 const updateSelectedConversationMuteUnmute = (selectedConversation, isMute) => (dispatch) => {
     selectedConversation.conversationInfo.isMuted = isMute;
+    dispatch(loadMuteUserList());
     dispatch({
         payload: {
             selectedConversation,

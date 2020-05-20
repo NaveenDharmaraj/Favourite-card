@@ -5,7 +5,7 @@ import {
 import { PropTypes } from 'prop-types';
 
 const ChatModal = ({
-    modalDetails, modalAction, handleModalClick, handleHideModal,
+    modalDetails, modalAction, handleModalClick, handleHideModal, buttonLoader,
 }) => {
     let action = null;
     if (modalAction === 'MAKE_USER_ADMIN' || modalAction === 'REMOVE_ADMIN' || modalAction === 'REMOVE_USER') {
@@ -27,6 +27,8 @@ const ChatModal = ({
                 <div className="btn-wraper pt-3 text-right">
                     {modalDetails.button && (
                         <Button
+                            loading={buttonLoader}
+                            disabled={buttonLoader}
                             className="blue-btn-rounded-def c-small"
                             onClick={() => handleModalClick(modalDetails.param, modalAction)}
                         >
@@ -46,6 +48,7 @@ const ChatModal = ({
 };
 
 ChatModal.defaultProps = {
+    buttonLoader: false,
     handleHideModal: () => { },
     handleModalClick: () => { },
     modalAction: '',
@@ -58,6 +61,7 @@ ChatModal.defaultProps = {
 };
 
 ChatModal.propTypes = {
+    buttonLoader: PropTypes.bool,
     handleHideModal: PropTypes.func,
     handleModalClick: PropTypes.func,
     modalAction: PropTypes.string,

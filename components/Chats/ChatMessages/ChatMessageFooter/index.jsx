@@ -1,5 +1,6 @@
 import React from 'react';
 import getConfig from 'next/config';
+import _isEmpty from 'lodash/isEmpty';
 import { Form, Button } from 'semantic-ui-react';
 import { sendMessageToSelectedConversation, createGroup } from '../../../../actions/chat';
 import { connect } from 'react-redux';
@@ -36,7 +37,7 @@ class ChatMessageFooter extends React.Component {
                 });
                 this.setState({
                     textAreaContent: ""
-                })  
+                })
             });
         }
     }
@@ -51,11 +52,11 @@ class ChatMessageFooter extends React.Component {
         let params = {};
         params["groupName"] = newGroupName;
         params["groupMemberList"] = newGroupMemberIds,
-        params["imageUrl"] = newGroupImageUrl;
+            params["imageUrl"] = newGroupImageUrl;
         if (!params["imageUrl"] || params["imageUrl"] == "" || params["imageUrl"] == null) {
             params["imageUrl"] = CHAT_GROUP_DEFAULT_AVATAR;
         }
-       
+
         createGroup(params).then(response => {
             let groupId = response.response.id;
             dispatch({
@@ -74,7 +75,7 @@ class ChatMessageFooter extends React.Component {
         });
     }
     handleComposeMessageKeyDown = (e, newGroup = "") => {
-        const{
+        const {
             selectedConversation
         } = this.props;
         if (!e.shiftKey && e.key === 'Enter' && e.target.value.trim() != "") {
@@ -85,7 +86,7 @@ class ChatMessageFooter extends React.Component {
             this.handlesendMessageToSelectedConversation(selectedConversation, e.target.value);
             this.setState({
                 textAreaContent: ""
-            });        
+            });
         }
     };
 
@@ -99,7 +100,7 @@ class ChatMessageFooter extends React.Component {
             refName,
             selectedConversation
         } = this.props;
-        const{
+        const {
             textAreaContent
         } = this.state;
         if (textAreaContent != "") {

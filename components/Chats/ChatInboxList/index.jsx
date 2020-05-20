@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Input, List } from 'semantic-ui-react';
@@ -9,6 +9,7 @@ import { actionTypes, loadConversationMessages, setSelectedConversation, loadInb
 import IndividualChatContact from './IndividualChatContact';
 import { debounceFunction } from '../../../helpers/chat/utils';
 import { isFalsy } from '../../../helpers/utils';
+import ChatInboxLoader from '../ChatInboxLoader';
 
 class ChatInboxList extends React.Component {
     constructor(props) {
@@ -75,7 +76,6 @@ class ChatInboxList extends React.Component {
                             }) : null;
                             dispatch({
                                 payload: {
-
                                     groupFeeds: {
                                         [groupId]: response.groupFeeds[0],
                                     }
@@ -232,31 +232,36 @@ class ChatInboxList extends React.Component {
             compose,
             isSmallerScreen,
             messages,
+            mesageListLoader,
             smallerScreenSection,
         } = this.props;
         return (
             <div className="messageLeftMenu">
-                <div className="messageLeftSearch">
-                    {((messages && messages.length > 0) &&
-                        (!isSmallerScreen || (smallerScreenSection === 'convList' && !compose)))
-                        && (
-                            <Input
-                                fluid
-                                iconPosition="left"
-                                icon="search"
-                                placeholder="Search..."
-                                onChange={(e) => this.onConversationSearchChange(e)}
-                            />
-                        )
-                    }
-                </div>
-                <div className="chatList">
-                    <List divided verticalAlign="middle">
-                        {
-                            this.renderIndividualContactList()
-                        }
-                    </List>
-                </div>
+                {mesageListLoader ? <ChatInboxLoader count={3} /> :
+                    <Fragment>
+                        <div className="messageLeftSearch">
+                            {((messages && messages.length > 0) &&
+                                (!isSmallerScreen || (smallerScreenSection === 'convList' && !compose)))
+                                && (
+                                    <Input
+                                        fluid
+                                        iconPosition="left"
+                                        icon="search"
+                                        placeholder="Search..."
+                                        onChange={(e) => this.onConversationSearchChange(e)}
+                                    />
+                                )
+                            }
+                        </div>
+                        <div className="chatList">
+                            <List divided verticalAlign="middle">
+                                {
+                                    this.renderIndividualContactList()
+                                }
+                            </List>
+                        </div>
+                    </Fragment>
+                }
             </div>
         );
     }
@@ -264,6 +269,7 @@ class ChatInboxList extends React.Component {
 
 const mapStateToProps = (state) => ({
     compose: state.chat.compose,
+    mesageListLoader: state.chat.mesageListLoader,
     smallerScreenSection: state.chat.smallerScreenSection,
     userDetails: state.chat.userDetails,
     groupFeeds: state.chat.groupFeeds,
@@ -274,6 +280,7 @@ const mapStateToProps = (state) => ({
 
 ChatInboxList.defaultProps = {
     messages: [],
+    mesageListLoader: true,
 };
 
 ChatInboxList.propTypes = {

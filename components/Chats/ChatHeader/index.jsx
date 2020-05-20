@@ -5,7 +5,7 @@ import {
 import _isEqual from 'lodash/isEqual';
 import { connect } from 'react-redux';
 
-import { actionTypes, setSelectedConversation } from '../../../actions/chat';
+import { actionTypes, setSelectedConversation, loadConversationMessages } from '../../../actions/chat';
 
 const newGroupName = "New Group";
 class ChatHeader extends React.Component {
@@ -28,7 +28,7 @@ class ChatHeader extends React.Component {
         const {
             compose,
             dispatch,
-            filteredMessages,
+            messages,
             selectedConversation,
         } = this.props;
         dispatch({
@@ -37,12 +37,6 @@ class ChatHeader extends React.Component {
                 smallerScreenSection: compose ? "convList" : "convMsgs",
             },
             type: actionTypes.COMPOSE_SCREEN_SECTION
-        });
-        dispatch({
-            payload: {
-                newGroupMemberIds: [],
-            },
-            type: actionTypes.COMPOSE_HEADER_CONTACT_SELECTION,
         });
         dispatch({
             payload:{
@@ -55,8 +49,9 @@ class ChatHeader extends React.Component {
             (!compose ? null :
                 (selectedConversation && selectedConversation.key ?
                     selectedConversation :
-                    (filteredMessages ? filteredMessages[0] : {})));
+                    (messages ? messages[0] : {})));
         dispatch(setSelectedConversation(selectCurrentConversation));
+        dispatch(loadConversationMessages(selectCurrentConversation, new Date().getTime()));
     }
 
     render() {
@@ -108,7 +103,7 @@ function mapStateToProps(state) {
         compose: state.chat.compose,
         smallerScreenSection: state.chat.smallerScreenSection,
         selectedConversation: state.chat.selectedConversation,
-        filteredMessages: state.chat.filteredMessages,
+        messages: state.chat.messages,
     };
 }
 

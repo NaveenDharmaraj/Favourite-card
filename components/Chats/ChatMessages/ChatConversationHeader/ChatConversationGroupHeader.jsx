@@ -22,6 +22,7 @@ class ChatConversationGroupHeader extends React.Component {
             selectedConversation
         } = props;
         this.state = {
+            buttonLoader: false,
             editGroup: false,
             groupAction: "",
             groupActionError: '',
@@ -119,21 +120,22 @@ class ChatConversationGroupHeader extends React.Component {
     handleModalClick = (param, modalAction) => {
         const {
             dispatch,
+            messages,
             selectedConversation,
-            userInfo,
         } = this.props;
+        this.setState({ buttonLoader: true });
         handleGroupModalAction(param, modalAction)
             .then(() => {
                 if (modalAction === "MUTE_NOTIFICATIONS" || modalAction === "UNMUTE_NOTIFICATIONS") {
                     dispatch(updateSelectedConversationMuteUnmute(selectedConversation, param.isMute));
-                    this.setState({ groupAction: null});
+                    this.setState({ groupAction: null });
                 }
                 else if (modalAction === "DELETE_GROUP") {
-                    dispatch(deleteSelectedConversation(selectedConversation));
-                    this.setState({ groupAction: null});
+                    dispatch(deleteSelectedConversation(selectedConversation, messages));
+                    this.setState({ groupAction: null });
                 }
                 else if (modalAction === "MAKE_USER_ADMIN" || modalAction === "REMOVE_ADMIN" || modalAction === "REMOVE_USER") {
-                    this.setState({ groupAction: 'MEMBERS_LIST' });
+                    this.setState({ buttonLoader: false, groupAction: 'MEMBERS_LIST' });
                     return;
                 }
                 else if (modalAction === 'MEMBER_ADD') {
@@ -141,9 +143,10 @@ class ChatConversationGroupHeader extends React.Component {
                 } else {
                     this.setState({ groupAction: null });
                 }
+                this.setState({ buttonLoader: false })
             })
             .catch(() => {
-                this.setState({ groupAction: null });
+                this.setState({ buttonLoader: false, groupAction: null });
             });
     }
     handleGroupAddMemberChange = (e, { value }) => {
@@ -309,9 +312,9 @@ class ChatConversationGroupHeader extends React.Component {
                                                                 }
                                                             })()}
                                                         </List.Content>
-                                                        <Image avatar src={userDetails[user.userId] && userDetails[user.userId].imageLink ? userDetails[user.userId].imageLink : placeholderUser} />
+                                                        <Image avatar src={(userDetails[user.userId] && userDetails[user.userId].imageLink) ? userDetails[user.userId].imageLink : placeholderUser} />
                                                         <List.Content>
-                                                            <List.Header as='a'>{userDetails[user.userId] ? userDetails[user.userId].displayName : "User"} {(Number(user.userId) == Number(userInfo.id) ? "(You)" : "")} {user.role == "1" ? " (Admin)" : ""}</List.Header>
+                                                            <List.Header as='a'>{(userDetails[user.userId] && userDetails[user.userId].displayName)? userDetails[user.userId].displayName : "User"} {(Number(user.userId) == Number(userInfo.id) ? "(You)" : "")} {user.role == "1" ? " (Admin)" : ""}</List.Header>
                                                         </List.Content>
                                                     </List.Item>
                                                 )
@@ -336,6 +339,7 @@ class ChatConversationGroupHeader extends React.Component {
             case 'REMOVE_USER':
                 return (
                     <ChatModal
+                        buttonLoader={this.state.buttonLoader}
                         modalDetails={groupModal[groupAction]}
                         handleModalClick={this.handleModalClick}
                         modalAction={groupAction}
@@ -393,7 +397,14 @@ class ChatConversationGroupHeader extends React.Component {
                             </div>
                         </Modal.Description>
                         <div className="btn-wraper pt-3 text-right">
-                            <Button className="blue-btn-rounded-def c-small" onClick={() => this.handleModalClick({ "userIds": groupAddMemberValues, "clientGroupIds": [selectedConversation.groupId] }, groupAction)}>Add</Button>
+                            <Button
+                                loading={this.state.buttonLoader}
+                                disabled={this.state.buttonLoader || _isEmpty(this.state.groupAddMemberValues)}
+                                className="blue-btn-rounded-def c-small"
+                                onClick={() => this.handleModalClick({ "userIds": groupAddMemberValues, "clientGroupIds": [selectedConversation.groupId] }, groupAction)}
+                            >
+                                Add
+                            </Button>
                         </div>
                     </Modal.Content>
                 </Modal>
@@ -631,6 +642,7 @@ function mapStateToProps(state) {
     return {
         compose: state.chat.compose,
         groupFeeds: state.chat.groupFeeds,
+        messages: state.chat.messages,
         selectedConversation: state.chat.selectedConversation,
         userDetails: state.chat.userDetails,
         userInfo: state.user.info,

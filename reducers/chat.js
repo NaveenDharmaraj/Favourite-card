@@ -44,12 +44,18 @@ const chat = (state = {}, action) => {
                 userDetails: action.payload.userDetails,
             };
             break;
+        case actionTypes.CONVERSATION_MESSAGE_LOADER:
+            newState = {
+                ...state,
+                conversationMessagesLoader: action.payload.conversationMessagesLoader,
+            };
+            break;
         case actionTypes.LOAD_CONVERSATION_LIST:
             newState = {
                 ...state,
                 compose: action.payload.compose ? action.payload.compose : null,
-                filteredMessages: action.payload.filteredMessages,
                 groupFeeds: action.payload.groupFeeds,
+                mesageListLoader: action.payload.mesageListLoader,
                 messages: action.payload.messages,
                 selectedConversation: action.payload.selectedConversation,
                 userDetails: action.payload.userDetails,
@@ -57,10 +63,14 @@ const chat = (state = {}, action) => {
             break;
         case actionTypes.NEW_GROUP_FEEDS:
             const groupFeedsClone = _cloneDeep(state.groupFeeds);
+            const groupdetail = action.payload.groupFeeds;
             newState = {
                 ...state,
                 groupFeeds: (!_isEmpty(groupFeedsClone)
-                    && Object.keys(groupFeedsClone).length > 0) ? Object.assign(groupFeedsClone, action.payload.groupFeeds) : action.payload.groupFeeds,
+                    && Object.keys(groupFeedsClone).length > 0) ? {
+                        ...groupFeedsClone,
+                        ...groupdetail,
+                    } : action.payload.groupFeeds,
             };
             break;
         case actionTypes.INBOX_LIST_MESSAGES:
@@ -132,28 +142,11 @@ const chat = (state = {}, action) => {
                 selectedConversation: action.payload.selectedConversation,
             };
         case actionTypes.DELETE_SELECTED_CONVERSATION:
-            const messagesDelete = _cloneDeep(state.messages);
-            messagesDelete.find((msg, index) => {
-                if (msg.groupId || action.payload.selectedConversation.groupId) {
-                    if (msg.groupId == action.payload.selectedConversation.groupId) {
-                        messagesDelete.splice(index, 1);
-
-                        return true;
-                    }
-                    return false;
-                }
-                if (msg.contactIds == action.payload.selectedConversation.contactIds) {
-                    messagesDelete.splice(index, 1);
-                    return true;
-                }
-            });
-            const defaultSelectConversation = messagesDelete && messagesDelete.length > 0 ? messagesDelete[0] : null;
             return {
                 ...state,
                 messages: [
-                    ...messagesDelete,
+                    ...action.payload.messagesDelete,
                 ],
-                selectedConversation: defaultSelectConversation,
             };
         case actionTypes.NEW_CHAT_MESSAGE:
             const selectedConversationMessagesArray = _cloneDeep(state.selectedConversationMessages) || [];

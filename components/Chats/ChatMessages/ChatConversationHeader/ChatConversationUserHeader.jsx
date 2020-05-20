@@ -3,13 +3,14 @@ import { connect } from 'react-redux';
 
 import Link from '../../../shared/Link';
 import moreIcon from '../../../../static/images/icons/ellipsis.svg';
-import { handleUserModalAction, loadMuteUserList, updateSelectedConversationMuteUnmute, deleteSelectedConversation } from '../../../../actions/chat';
+import { handleUserModalAction, updateSelectedConversationMuteUnmute, deleteSelectedConversation } from '../../../../actions/chat';
 import ChatModal from '../../../shared/ChatModal';
 import { Popup, Button, Image, List } from 'semantic-ui-react';
 class ChatConversationUserHeader extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            buttonLoader: false,
             conversationAction: "",
             showMoreOptions: false,
         }
@@ -21,16 +22,19 @@ class ChatConversationUserHeader extends React.Component {
         } = this.state;
         const {
             dispatch,
+            messages,
             selectedConversation
         } = this.props;
+        this.setState({ buttonLoader: true });
         handleUserModalAction(param, modalAction)
             .then(() => {
                 this.setState({ conversationAction: null });
                 conversationAction !== "DELETE" ? dispatch(updateSelectedConversationMuteUnmute(selectedConversation, param.isMute))
-                    : dispatch(deleteSelectedConversation(selectedConversation));
+                    : dispatch(deleteSelectedConversation(selectedConversation, messages));
+                this.setState({ buttonLoader: false });
             })
             .catch(() => {
-                this.setState({ conversationAction: null });
+                this.setState({ buttonLoader: false, conversationAction: null });
             });
     }
 
@@ -44,7 +48,7 @@ class ChatConversationUserHeader extends React.Component {
         const {
             selectedConversation
         } = this.props;
-        const header = conversationAction === "Delte" ? "Delete conversation?" :
+        const header = conversationAction === "DELETE" ? "Delete conversation?" :
             `${conversationAction === "MUTE" ? "Mute" : "Unmute"} conversation?`;
         const description = conversationAction === "DELETE" ? "Deleting removes conversations from inbox, but no ones else’s inbox."
             : `You can  ${conversationAction === "MUTE" ? "unmute" : "mute"} this conversation anytime. `;
@@ -54,6 +58,7 @@ class ChatConversationUserHeader extends React.Component {
         const userModalDetails = { header, description, button, param }
         return (
             <ChatModal
+                buttonLoader={this.state.buttonLoader}
                 modalDetails={userModalDetails}
                 handleModalClick={this.handleModalClick}
                 modalAction={conversationAction}
@@ -128,6 +133,7 @@ class ChatConversationUserHeader extends React.Component {
 function mapStateToProps(state) {
     return {
         compose: state.chat.compose,
+        messages: state.chat.messages,
         selectedConversation: state.chat.selectedConversation,
         userDetails: state.chat.userDetails,
     };

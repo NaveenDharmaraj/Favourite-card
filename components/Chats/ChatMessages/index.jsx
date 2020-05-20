@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
-import {  Dropdown } from 'semantic-ui-react';
+import { Dropdown, Loader } from 'semantic-ui-react';
 import _isEqual from 'lodash/isEqual';
 import _forEach from 'lodash/forEach';
 import _isEmpty from 'lodash/isEmpty';
@@ -18,19 +18,31 @@ class ChatMessages extends React.Component {
         };
     }
 
+    componentDidMount() {
+        const {
+            selectedConversationMessages,
+        } = this.props;
+        if (selectedConversationMessages && this.refs.scrollParentRef) {
+            this.refs.scrollParentRef.scrollTop = this.refs.scrollParentRef.scrollHeight;
+        }
+    }
+
     componentDidUpdate(prevProps) {
         const {
+            conversationMessagesLoader,
             selectedConversationMessages,
         } = this.props;
         const {
             scrollEffect
         } = this.state;
         if (!_isEqual(this.props, prevProps)) {
-            if (!_isEqual(selectedConversationMessages, prevProps.selectedConversationMessages)) {
-                if (this.refs.scrollParentRef && !scrollEffect) {
+            if (!_isEqual(selectedConversationMessages, prevProps.selectedConversationMessages) ||
+                !_isEqual(conversationMessagesLoader, prevProps.conversationMessagesLoader)
+            ) {
+                if (!conversationMessagesLoader && this.refs.scrollParentRef && !scrollEffect) {
                     this.refs.scrollParentRef.scrollTop = this.refs.scrollParentRef.scrollHeight;
                 }
-                else if (this.refs.scrollParentRef && scrollEffect) {
+                else if (!conversationMessagesLoader && this.refs.scrollParentRef && scrollEffect) {
                     this.refs.scrollParentRef.scrollTop = 60;
                     this.setState({
                         scrollEffect: false
@@ -79,7 +91,7 @@ class ChatMessages extends React.Component {
                 selectedConversation = { contactIds: userId };
             }
             if (selectedConversation) {
-                dispatch(setSelectedConversation(selectedConversation));
+                dispatch(setSelectedConversation(selectedConversation, false));
                 dispatch({
                     payload: {
                         newGroupMemberIds: dropdownEl.value
@@ -90,7 +102,7 @@ class ChatMessages extends React.Component {
             }
         } else {
             //new group conversation
-            dispatch(setSelectedConversation(null));
+            dispatch(setSelectedConversation(null, false));
             dispatch({
                 payload: {
                     newGroupMemberIds: dropdownEl.value
@@ -213,6 +225,10 @@ class ChatMessages extends React.Component {
                     }}
                     ref="scrollParentRef"
                 >
+                    {this.state.scrollEffect && <div style={{ position: "relative", marginTop: 40, marginBottom: 55 }}>
+                        <Loader active />
+                    </div>
+                    }
                     <div className="msg_history">
                         {
                             !_isEmpty(selectedConversationMessages) && <ChatConversationsParent
@@ -238,7 +254,10 @@ class ChatMessages extends React.Component {
 
     render() {
         const {
+            conversationMessagesLoader,
             isSmallerScreen,
+            messages,
+            mesageListLoader,
             selectedConversation,
             smallerScreenSection,
         } = this.props;
@@ -246,9 +265,15 @@ class ChatMessages extends React.Component {
 
             <Fragment>
                 {(!isSmallerScreen || smallerScreenSection != "convList") && this.renderChatMessage()}
-                {
+                {conversationMessagesLoader && !this.state.scrollEffect ?
+                    <div style={{ height: "50vh" }}>
+                        <Loader active />
+                    </div> :
                     !_isEmpty(selectedConversation) && (!isSmallerScreen || smallerScreenSection != "convList") &&
                     this.renderChatSectionAndFooter()
+                }
+                {(!mesageListLoader && _isEmpty(messages)) &&
+                  'No conversations to display. Click on compose to start new!'
                 }
             </Fragment>
         );
@@ -257,8 +282,10 @@ class ChatMessages extends React.Component {
 function mapStateToProps(state) {
     return {
         compose: state.chat.compose,
+        conversationMessagesLoader: state.chat.conversationMessagesLoader,
         endTime: state.chat.endTime,
         messages: state.chat.messages,
+        mesageListLoader: state.chat.mesageListLoader,
         newGroupMemberIds: state.chat.newGroupMemberIds,
         smallerScreenSection: state.chat.smallerScreenSection,
         selectedConversation: state.chat.selectedConversation,
@@ -269,6 +296,8 @@ function mapStateToProps(state) {
 }
 
 ChatMessages.defaultProps = {
+    conversationMessagesLoader: false,
+    mesageListLoader: true,
     newGroupMemberIds: [],
     selectedConversationMessages: [],
     endTime: null
