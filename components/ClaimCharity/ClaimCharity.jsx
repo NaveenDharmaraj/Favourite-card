@@ -9,6 +9,7 @@ import {
     Button,
     Item,
     List,
+    Icon
 } from 'semantic-ui-react';
 
 import claimrLeftImg from '../../static/images/illustration.png';
@@ -39,16 +40,16 @@ class ClaimCharity extends React.Component {
     }
 
     onClaimCharityClick = () => {
+        debugger;
         const { dispatch } = this.props;
         const { accessCode } = this.state;
         dispatch(checkClaimCharityAccessCode(accessCode));
     }
 
     render() {
-        debugger;
-        const { 
-            claimCharityErrorMessage 
-    } = this.props;
+        const {
+            claimCharityErrorMessage
+        } = this.props;
         return (
             <Fragment>
                 <div className="ClaimWepper">
@@ -145,8 +146,10 @@ class ClaimCharity extends React.Component {
                                                                         placeholder="eg.:123A-456B-789C-012D"
                                                                         onChange={this.handleInputChange}
                                                                     />
+                                                                    {claimCharityErrorMessage ?
+                                                                        <p className="error-message"><Icon name="exclamation circle" />{claimCharityErrorMessage.message}</p>
+                                                                        : ''}
                                                                 </Form.Field>
-                                                                {claimCharityErrorMessage}
                                                             </Grid.Column>
                                                             <Grid.Column mobile={16} tablet={12} computer={6}>
                                                                 <Button
