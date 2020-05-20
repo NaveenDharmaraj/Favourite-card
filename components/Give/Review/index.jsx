@@ -61,7 +61,7 @@ class Review extends React.Component {
                         return (
                                 <Table.Row>
                                     <Table.Cell className="tableOne" ><b>{formatMessage(data.name)}</b></Table.Cell>
-                                    <Table.Cell >{ data.value}</Table.Cell>
+                                    <Table.Cell className="tableOne" >{ data.value}</Table.Cell>
                                     <Table.Cell ></Table.Cell>
                                 </Table.Row>
                         )
@@ -198,7 +198,7 @@ class Review extends React.Component {
                                                         <Grid.Row>
                                                             <Grid.Column mobile={16} tablet={4} computer={4}>
                                                                 <div className="send-table">
-                                                                    <b>{formatMessage('reviewP2pSendTo')}</b>
+                                                                    {formatMessage('reviewP2pSendTo')}
                                                                 </div>
                                                             </Grid.Column>
                                                             <Grid.Column mobile={16} tablet={12} computer={12}>

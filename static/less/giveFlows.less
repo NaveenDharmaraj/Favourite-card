@@ -158,7 +158,7 @@
                                 &::before{
                                     content: '';
                                     position: absolute;
-                                    top: 0;
+                                    top: -2px;
                                     left: 0;
                                     right: 0;
                                     bottom: 0;
@@ -358,6 +358,7 @@
                                     @media only screen and (min-width:768px) {
                                         width: 220px !important;
                                         padding: 29px 4px 29px 0px;
+                                        vertical-align: top;
                                     }
                                 }
                                 &.transaction-text{
@@ -380,7 +381,7 @@
     &.flowPadding{
         .ui{
             &.breadcrumb{
-           
+            margin-right: -18px;
              a{
              
                 &.section{
@@ -399,7 +400,7 @@
         font-family: 'ProximaNova-Regular';
         padding-left: 8px;
         padding-right: 8px;
-        color: #7F7F7F !important;
+        color: #263238 !important;
     }
 }
 .ui.breadcrumb .active.section{
@@ -419,7 +420,7 @@
             border-radius: 5px;
             &.small{
                 height: 30px;
-                padding-top: 8px;
+                padding-top: 9px !important;
                 padding-bottom: 8px;
             }
             &:hover,&:focus{
@@ -1303,4 +1304,10 @@ textarea {
     color: #000 !important;
     font-weight: normal !important;
 }
+}
+.noteEmail {
+    margin-bottom: -45px !important;
+}
+.field.blue-btn-rounded.btn_right.rivewbtnp2p.blue-btn-rounded button.ui.primary.button {;
+    min-width:126px !important;
 }

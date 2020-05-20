@@ -923,14 +923,14 @@ class Charity extends React.Component {
         let submtBtn = (reviewBtnFlag)?(
         <Form.Button
             primary
-            className="blue-btn-rounded btn_right"
+            className="blue-btn-rounded btn_right rivewbtnp2p"
             content={formatMessage('giveCommon:reviewButtonFlag')}
             disabled={!this.props.userAccountsFetched}
             onClick={this.handleAddMoneyModal}
             type="button"
         />) : (<Form.Button
             primary
-            className="blue-btn-rounded btn_right"
+            className="blue-btn-rounded btn_right rivewbtnp2p"
             content={formatMessage('giveCommon:reviewButton')}
             disabled={!this.props.userAccountsFetched}
             type="submit"
