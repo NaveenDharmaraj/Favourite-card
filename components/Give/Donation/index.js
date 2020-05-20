@@ -67,7 +67,6 @@ import {
 } from '../../../helpers/give/utils';
 
 import CreditCard from '../../shared/CreditCard';
-import PaymentInstruments from '../../shared/PaymentInstruments';
 
 class Donation extends React.Component {
     constructor(props) {
