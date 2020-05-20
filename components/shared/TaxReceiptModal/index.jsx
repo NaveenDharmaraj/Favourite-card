@@ -174,7 +174,7 @@ class TaxReceiptModalComponent extends React.Component {
             buttonClicked,
         } = this.state;
         return (
-            <Button primary disabled={buttonClicked} onClick={() => this.handleSubmit()} className="blue-btn-rounded w-120">Add</Button>
+            <Button primary disabled={buttonClicked} onClick={() => this.handleSubmit()} className="blue-btn-rounded w-120">Done</Button>
         );
     }
 

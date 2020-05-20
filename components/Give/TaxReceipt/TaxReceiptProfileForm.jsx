@@ -209,6 +209,7 @@ function TaxReceiptProfileForm(props) {
                                             </label>
                                             <Form.Field
                                                 control={Select}
+                                                className="dropdownWithArrowParent"
                                                 id="country"
                                                 name="country"
                                                 onBlur={handleInputOnBlur}
@@ -263,6 +264,7 @@ function TaxReceiptProfileForm(props) {
                                     control={Select}
                                     id="province"
                                     name="province"
+                                    className="dropdownWithArrowParent"
                                     onBlur={handleInputOnBlur}
                                     options={provinceOptions}
                                     onChange={handleInputChange}

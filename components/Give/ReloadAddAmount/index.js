@@ -878,7 +878,7 @@ class ReloadAddAmount extends React.Component {
                     className="blue-btn-rounded w-120 mb-2 btn_right"
                     disabled={addNewTRButtonClicked}
                 >
-                    Add
+                    Done
                 </Button>
             </Fragment>
         );
@@ -937,7 +937,7 @@ class ReloadAddAmount extends React.Component {
                         onClick={this.handleAddNewCreditCard}
                         disabled={addNewCCButtonClicked}
                     >
-                        Add
+                        Done
                     </Button>
                 </div>
             </Fragment>
@@ -1060,7 +1060,7 @@ class ReloadAddAmount extends React.Component {
         if (currentModalStep === 2) {
             modalHeaderText = 'Add new Credit Card';
         } else if (currentModalStep === 3) {
-            modalHeaderText = 'Add new Tax Recipient';
+            modalHeaderText = 'Add new tax receipt recipient';
         }
         return (
             <Fragment>

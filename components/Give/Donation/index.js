@@ -794,7 +794,7 @@ class Donation extends React.Component {
             } = result;
             let newtaxReceipt = getTaxReceiptById(populateTaxReceipts(this.props.userTaxReceiptProfiles, formatMessage), id);
             const statusMessageProps = {
-                message: 'New Tax receipt Added',
+                message: 'Tax receipt recipient added',
                 type: 'success',
             };
             dispatch({
