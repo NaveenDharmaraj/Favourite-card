@@ -73,7 +73,7 @@ class ReloadAddAmount extends React.Component {
             addNewTRButtonClicked: false,
             currentModalStep: 0,
             isDefaultCard: false,
-            isDefaultTaxReceiptChecked:false,
+            isDefaultTaxReceiptChecked:!props.taxReceiptsOptions,
             inValidCardNameValue: true,
             inValidCardNumber: true,
             inValidCvv: true,
@@ -534,9 +534,9 @@ class ReloadAddAmount extends React.Component {
                         id,
                     },
                 } = result;
-                creditCard.id = id;
-                creditCard.value = id;
-                creditCard.text = description;
+                creditCard =  _.find( this.props.paymentInstrumentOptions, {
+                    'id': id
+                });
                 const statusMessageProps = {
                     message: 'New Credit Card Added',
                     type: 'success',
@@ -844,7 +844,8 @@ class ReloadAddAmount extends React.Component {
             selectedTaxReceiptProfile,
             tRFormValidity,
         } = this.state;
-        let { formatMessage } = this.props;
+        let { formatMessage,
+        taxReceiptsOptions } = this.props;
         return (
             <Fragment>
                 <Form>
@@ -863,6 +864,8 @@ class ReloadAddAmount extends React.Component {
                             className="checkboxToRadio f-weight-n"
                             type="checkbox"
                             id="checkbox"
+                            checked={isDefaultTaxReceiptChecked}
+                            disabled={!taxReceiptsOptions}
                             onClick={() => { this.setState({isDefaultTaxReceiptChecked: !isDefaultTaxReceiptChecked }); }}
                             label="Set as default tax receipt recipient"
                         />
@@ -875,7 +878,7 @@ class ReloadAddAmount extends React.Component {
                     className="blue-btn-rounded w-120 mb-2 btn_right"
                     disabled={addNewTRButtonClicked}
                 >
-                    Add
+                    Done
                 </Button>
             </Fragment>
         );
@@ -893,7 +896,7 @@ class ReloadAddAmount extends React.Component {
         } = this.state;
         let { 
             formatMessage,
-            paymentInstrumenOptions,
+            paymentInstrumentOptions,
         } = this.props;
         return(
             <Fragment>
@@ -921,7 +924,7 @@ class ReloadAddAmount extends React.Component {
                         checked={isDefaultCard}
                         control={Checkbox}
                         className="ui checkbox chkMarginBtm checkboxToRadio"
-                        disabled={!paymentInstrumenOptions}
+                        disabled={!paymentInstrumentOptions}
                         id="isDefaultCard"
                         label="Set as primary card"
                         name="isDefaultCard"
@@ -934,7 +937,7 @@ class ReloadAddAmount extends React.Component {
                         onClick={this.handleAddNewCreditCard}
                         disabled={addNewCCButtonClicked}
                     >
-                        Add
+                        Done
                     </Button>
                 </div>
             </Fragment>
@@ -1057,7 +1060,7 @@ class ReloadAddAmount extends React.Component {
         if (currentModalStep === 2) {
             modalHeaderText = 'Add new Credit Card';
         } else if (currentModalStep === 3) {
-            modalHeaderText = 'Add new Tax Recipient';
+            modalHeaderText = 'Add new tax receipt recipient';
         }
         return (
             <Fragment>

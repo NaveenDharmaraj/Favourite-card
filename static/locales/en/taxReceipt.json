@@ -21,7 +21,7 @@
     "invalidProvince": "Select your province or state",
     "addressPlaceHolder": "123 Street Road",
     "secondAddressPlaceHolder": "Apt/suite number",
-    "postalCodePlaceHolder": "Z1Z 1Z1",
+    "postalCodePlaceHolder": "V3Z3N5",
     "invalidInputFormat": "Please don't use brackets or slashes: ",
     "invalidFieldLength": "It looks like the {{fieldName}} you entered is too long (please use a maximum of {{length}} characters)." ,
     "state": "State" 

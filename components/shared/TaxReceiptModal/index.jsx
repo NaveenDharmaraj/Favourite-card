@@ -34,7 +34,7 @@ class TaxReceiptModalComponent extends React.Component {
         super(props);
         this.state = {
             buttonClicked: true,
-            isDefaultChecked:false,
+            isDefaultChecked:props.isFirstTaxReciept,
             selectedTaxReceiptProfile: this.intializeFormData,
             validity: this.intializeValidations(),
         };
@@ -174,7 +174,7 @@ class TaxReceiptModalComponent extends React.Component {
             buttonClicked,
         } = this.state;
         return (
-            <Button primary disabled={buttonClicked} onClick={() => this.handleSubmit()} className="blue-btn-rounded w-120">Add</Button>
+            <Button primary disabled={buttonClicked} onClick={() => this.handleSubmit()} className="blue-btn-rounded w-120">Done</Button>
         );
     }
 
@@ -213,6 +213,8 @@ class TaxReceiptModalComponent extends React.Component {
                                     className="checkboxToRadio f-weight-n"
                                     type="checkbox"
                                     id="checkbox"
+                                    checked={isDefaultChecked}
+                                    disabled={this.props.isFirstTaxReciept}
                                     onClick={() => { this.setState({ buttonClicked: false, isDefaultChecked: !isDefaultChecked }); }}
                                     label="Set as default tax receipt recipient"
                                 />

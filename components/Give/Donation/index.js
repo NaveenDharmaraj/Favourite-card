@@ -684,6 +684,7 @@ class Donation extends React.Component {
             flowObject: {
                 giveData: {
                     creditCard,
+                    giveTo
                 },
             },
             inValidCardNumber,
@@ -711,6 +712,7 @@ class Donation extends React.Component {
             const {
                 dispatch,
             } = this.props;
+            let formatMessage = this.props.t;
             let newCreditCard = {};
             dispatch(addNewCardAndLoad(flowObject, isDefaultCard)).then((result) => {
                 const {
@@ -721,9 +723,16 @@ class Donation extends React.Component {
                         id,
                     },
                 } = result;
-                newCreditCard.id = id;
-                newCreditCard.value = id;
-                newCreditCard.text = description;
+                let paymentInstruments;
+                if(giveData.giveTo.type === 'users') {
+                    paymentInstruments = this.props.paymentInstrumentsData;
+                } else if(giveData.giveTo.type === 'companies'){
+                    paymentInstruments = this.props.companyDetails.companyPaymentInstrumentsData
+                }
+                let paymentList = populatePaymentInstrument(paymentInstruments,formatMessage);
+                newCreditCard =  _.find(paymentList, {
+                    'id': id
+                });
                 const statusMessageProps = {
                     message: 'Payment method added',
                     type: 'success',
@@ -784,7 +793,7 @@ class Donation extends React.Component {
             } = result;
             let newtaxReceipt = getTaxReceiptById(populateTaxReceipts(this.props.userTaxReceiptProfiles, formatMessage), id);
             const statusMessageProps = {
-                message: 'New Tax receipt Added',
+                message: 'Tax receipt recipient added',
                 type: 'success',
             };
             dispatch({
@@ -967,7 +976,7 @@ class Donation extends React.Component {
                                                                             <Form.Field
                                                                                 checked={isDefaultCard}
                                                                                 control={Checkbox}
-                                                                                className="ui checkbox chkMarginBtm checkboxToRadio"
+                                                                                className="ui checkbox chkMarginBtm checkboxToRadio mt-2"
                                                                                 disabled={!paymentInstrumenOptions}
                                                                                 id="isDefaultCard"
                                                                                 label="Set as primary card"
@@ -976,9 +985,9 @@ class Donation extends React.Component {
                                                                             />
                                                                         </Form>
                                                                     </Modal.Description>
-                                                                    <div className="btn-wraper pt-3 text-right">
+                                                                    <div className="btn-wraper pt-1 text-right">
                                                                         <Button
-                                                                            className="blue-btn-rounded-def sizeBig w-180"
+                                                                            className="blue-btn-rounded-def w-140"
                                                                             onClick={this.handleAddNewCreditCard}
                                                                             disabled={buttonClicked}
                                                                         >
@@ -1009,6 +1018,7 @@ class Donation extends React.Component {
                                                                     handleAddNewTaxReceipt={this.handleAddNewTaxReceipt}
                                                                     handleModalClose={this.handleTaxReceiptModalClose}
                                                                     action="add"
+                                                                    isFirstTaxReciept={!taxReceiptsOptions}
                                                                 />
                                                             )
                                                         }
@@ -1031,7 +1041,7 @@ class Donation extends React.Component {
                                                         />
                                                         <Form.Button
                                                             primary
-                                                            className="blue-btn-rounded btn_right rivewbtnp2p"
+                                                            className="blue-btn-rounded btn_right"
                                                             // className={isMobile ? 'mobBtnPadding' : 'btnPadding'}
                                                             content={formatMessage('giveCommon:reviewButton')}
                                                             disabled={disableButton}
@@ -1067,3 +1077,4 @@ const mapStateToProps = (state) => {
     };
 }
 export default withTranslation(['donation', 'giveCommon'])(connect(mapStateToProps)(Donation));
+
