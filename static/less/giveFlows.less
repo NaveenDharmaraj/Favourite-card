@@ -42,7 +42,7 @@
          line-height: 20px;
          color: #333333;
          font-family: 'ProximaNova-Regular';
-         max-width: 500px;
+         max-width: 550px;
          width: 100%;
          margin:30px auto;
          text-align: center;
@@ -158,7 +158,7 @@
                                 &::before{
                                     content: '';
                                     position: absolute;
-                                    top: 0;
+                                    top: -2px;
                                     left: 0;
                                     right: 0;
                                     bottom: 0;
@@ -296,7 +296,7 @@
     }
 }
 .flowReview{
-    margin-bottom: 100px;
+    margin-bottom:20px;
     .ui.centered.grid > .row > .column:not(.aligned):not(.justified){
         @media only screen and (max-width:767px) {
             text-align: left !important;
@@ -314,7 +314,7 @@
         }
     }
     .GivingGroupIcons{
-        margin:20px auto 50px auto;
+        margin:20px auto 24px auto;
         text-align: center;
         img{
             &.Icon_Profile{
@@ -358,6 +358,7 @@
                                     @media only screen and (min-width:768px) {
                                         width: 220px !important;
                                         padding: 29px 4px 29px 0px;
+                                        vertical-align: top;
                                     }
                                 }
                                 &.transaction-text{
@@ -380,7 +381,7 @@
     &.flowPadding{
         .ui{
             &.breadcrumb{
-           
+            margin-right: -18px;
              a{
              
                 &.section{
@@ -399,7 +400,7 @@
         font-family: 'ProximaNova-Regular';
         padding-left: 8px;
         padding-right: 8px;
-        color: #7F7F7F !important;
+        color: #263238 !important;
     }
 }
 .ui.breadcrumb .active.section{
@@ -419,7 +420,7 @@
             border-radius: 5px;
             &.small{
                 height: 30px;
-                padding-top: 8px;
+                padding-top: 9px !important;
                 padding-bottom: 8px;
             }
             &:hover,&:focus{
@@ -473,6 +474,8 @@
                 width: 100%;
                 label{
                     font-size: 14px !important;
+                    margin-right: 6px;
+                    padding-right: 0.35714286em ! important;
                 }
             }
         }
@@ -492,6 +495,14 @@
                 font-family: 'ProximaNova-Regular';
             }
         }
+    }
+    input{
+        &::placeholder{
+            color: #7F7F7F !important;
+        }
+    }
+    .default.text{
+        color: #7F7F7F !important;
     }
     textarea {
         
@@ -830,6 +841,11 @@
          }
 }
 .mobile_text{
+    font-size: 12px;
+    color: #263238;
+    line-height: 15px;
+    padding-top: 12px;
+
     @media only screen and (max-width:767px) {
         text-align: center;
         margin-bottom: 20px;
@@ -840,6 +856,9 @@
         text-align: center;
         margin-top: 20px !important;
      } 
+     button{
+        font-weight: 600 !important;
+     }
 }
 .ui.small.button.btn-basic-outline.selected-btn{
     background-color:#F1F6FD;
@@ -849,9 +868,9 @@
     font-family: 'ProximaNova-Regular';
     border-radius: 5px;
 }
-.btn-basic-outline.ui.button.small{
-    width: 66px;
-    height: 31px;
+.invisionwidth {
+    width: 66px !important;
+    height: 31px !important;
 }
 .dropdownWithArrow {
     position: relative;
@@ -962,14 +981,12 @@ button.ui.button.blue-bordr-btn-round-def.flowConfirmBtn.fast_btn {
     margin-bottom: 40px !important;
     padding: 12px !important;
     font-size: 17px !important;
-    font-family: 'ProximaNova-Regular' !important;
-    font-weight: 600 !important;
+    font-family: 'ProximaNova-Medium' !important;
 }
 button.ui.button.blue-btn-rounded-def.flowConfirmBtn.second_btn{
     padding: 12px !important;
     font-size: 17px !important;
-    font-family: 'ProximaNova-Regular' !important;
-    font-weight: 600 !important;
+    font-family: 'ProximaNova-Medium' !important;
 }
 .recurringMsg{
     line-height: 12px;
@@ -1287,4 +1304,10 @@ textarea {
     color: #000 !important;
     font-weight: normal !important;
 }
+}
+.noteEmail {
+    margin-bottom: -45px !important;
+}
+.field.blue-btn-rounded.btn_right.rivewbtnp2p.blue-btn-rounded button.ui.primary.button {;
+    min-width:126px !important;
 }

@@ -52,7 +52,7 @@ const Success = (props) => {
     const {
         quaziSuccessStatus,
     } = successData;
-    const thankName = (_isEmpty(displayName)) ? displayName : `${firstName} ${lastName}`;
+    const thankName = (displayName) || `${firstName} ${lastName}`;
     let firstParagraph = null;
     if (quaziSuccessStatus && successData.type === 'donations') {
         firstParagraph = formatMessage('quaziDonationSuccessMessage', {
@@ -139,12 +139,18 @@ const Success = (props) => {
     return (
         <div className="flowSuccess">
             <Container>
-                <FlowBreadcrumbs
-                    currentStep={currentStep}
-                    formatMessage={formatMessage}
-                    steps={flowSteps}
-                    flowType={flowObject.type}
-                />
+                <Grid centered verticalAlign="middle">
+                    <Grid.Row>
+                        <Grid.Column mobile={16} tablet={14} computer={12}>
+                            <FlowBreadcrumbs
+                                currentStep={currentStep}
+                                formatMessage={formatMessage}
+                                steps={flowSteps}
+                                flowType={flowObject.type}
+                            />
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
                 <Grid centered verticalAlign="middle">
                     <Grid.Row>
                         <Grid.Column mobile={16} tablet={14} computer={12}>
@@ -171,6 +177,8 @@ Success.propTypes = {
     currentUser: PropTypes.shape({
         attributes: PropTypes.shape({
             displayName: PropTypes.string,
+            firstName: PropTypes.string,
+            lastName: PropTypes.string,
         }),
     }),
     dispatch: PropTypes.func,
@@ -219,6 +227,8 @@ Success.defaultProps = {
     currentUser: {
         attributes: {
             displayName: '',
+            firstName: '',
+            lastName: '',
         },
     },
     dispatch: () => { },

@@ -1041,7 +1041,7 @@ class Donation extends React.Component {
                                                         />
                                                         <Form.Button
                                                             primary
-                                                            className="blue-btn-rounded btn_right"
+                                                            className="blue-btn-rounded btn_right rivewbtnp2p"
                                                             // className={isMobile ? 'mobBtnPadding' : 'btnPadding'}
                                                             content={formatMessage('giveCommon:reviewButton')}
                                                             disabled={disableButton}

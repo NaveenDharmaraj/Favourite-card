@@ -39,6 +39,7 @@ const GroupSuccess = (props) => {
         eftEnabled,
         name,
     } = giveTo;
+    let secondParagraph = null;
     let thirdParagh = null;
     const isNonRecurring = !!(giftType && giftType.value === 0);
     if (!_isEmpty(giveGroupDetails)) {
@@ -69,18 +70,36 @@ const GroupSuccess = (props) => {
                 : formatMessage('groupMatchByRecurringText');
         }
     }
-    const dashboardLink = (!_.isEmpty(giveFrom) && giveFrom.type === 'companies')
+    const dashboardLink = (!_isEmpty(giveFrom) && giveFrom.type === 'companies')
         ? `/${giveFrom.type}/${giveFrom.slug}`
         : `/dashboard`;
     const month = getNextAllocationMonth(formatMessage, eftEnabled);
-    const secondParagraph = giftType && giftType.value > 0 ? formatMessage('groupTimeForSendingRecurring', {
-        amount: formatCurrency(formatAmount(giveAmount), language, currency),
-        groupName: name,
-        month,
-    }) : formatMessage('groupTimeForSending', {
-        groupName: name,
-        month,
-    });
+    if (giftType && giftType.value > 0) {
+        secondParagraph = (giveFrom.type === 'user')
+            ? formatMessage('groupTimeForSendingRecurring', {
+                amount: formatCurrency(formatAmount(giveAmount), language, currency),
+                groupName: name,
+                month,
+            })
+            : formatMessage('groupTimeForSendingRecurringFromOther', {
+                amount: formatCurrency(formatAmount(giveAmount), language, currency),
+                fromName: giveFrom.name,
+                groupName: name,
+                month,
+            });
+    } else {
+        secondParagraph = (giveFrom.type === 'user')
+            ? formatMessage('groupTimeForSending', {
+                groupName: name,
+                month,
+            })
+            : formatMessage('groupTimeForSendingFromOther', {
+                fromName: giveFrom.name,
+                groupName: name,
+                month,
+            });
+
+    }
     const doneButtonText = formatMessage('doneText');
     return (
         <Fragment>
@@ -112,7 +131,7 @@ const GroupSuccess = (props) => {
             <div className="text-center mt-1">
                 {/* route have been assumed for done here */}
                 <Link route={dashboardLink}>
-                    <Button className="blue-btn-rounded-def flowConfirmBtn">
+                    <Button className="blue-btn-rounded-def flowConfirmBtn second_btn">
                         {doneButtonText}
                     </Button>
                 </Link>
@@ -148,6 +167,7 @@ GroupSuccess.propTypes = {
             }),
             giveAmount: PropTypes.string,
             giveFrom: PropTypes.shape({
+                name: PropTypes.string,
                 slug: PropTypes.string,
                 type: PropTypes.string,
             }),
@@ -182,6 +202,7 @@ GroupSuccess.defaultProps = {
             },
             giveAmount: '',
             giveFrom: {
+                name: '',
                 slug: '',
                 type: '',
             },
