@@ -10,6 +10,7 @@ import {
 import getConfig from 'next/config';
 
 import { Link } from '../../../routes';
+import GiveFromCampaignModal from '../../Campaign/GiveFromCampaignModal';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -37,6 +38,14 @@ function ProfilePageHead(props) {
                     <Link route={(`/give/to/${profileType}/${pageDetails.attributes.slug}/new`)}>
                         <Button primary className="blue-btn-rounded">Give</Button>
                     </Link>
+                    { pageDetails.attributes.isAdmin && (
+                        <GiveFromCampaignModal
+                            campaignId={pageDetails.id}
+                            campaignName={pageDetails.attributes.name}
+                            fundId={pageDetails.attributes.fundId}
+                        />
+                    )
+                    }
                     <a href={`${RAILS_APP_URL_ORIGIN}/campaigns/${pageDetails.attributes.slug}/step/one`}>
                         <Button className="blue-bordr-btn-round">Create Group</Button>
                     </a>

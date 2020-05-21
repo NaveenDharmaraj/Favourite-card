@@ -1229,11 +1229,148 @@ p{
 }
 
 /*****Modal for give From group*************/
-.fullboxmodel{
+.popbox{
+    @media only screen and (min-width: 992px){
+        Width:562px !important;
+    }
+} 
+.ui.modal>.content>.description {
+textarea {  
+    &::placeholder{
+        color: #7F7F7F !important;
+    }
+}
+.ui[class*="left icon"].input>input{
+    padding-left: 1.8em!important;
+    padding-right: 1em!important;
+    padding-top: 11px !important;
+}
+.ui[class*="left icon"].input>i.icon {
+    right: auto;
+    left: 5px;
+    border-radius: .28571429rem 0 0 .28571429rem;
+    font-size: 14px;
+    top: -1px;
+    color: #000 !important;
+    font-weight: normal !important;
+}
+}
+.fullboxmodelgiv{
     margin-bottom: 8px !important;
+    margin-top:-15px !important;
+    .graybox{
+        background-color: #F8F8F8;
+        cursor: default !important;
+        box-shadow: 0 2px 7px 0 rgba(135,135,135,0.3);
+        img{
+            filter: grayscale(1);
+        }
+     }
+    .giveboxheding{
+        padding-bottom: 20px;
+        margin: 0px;
+        p{
+            font-size: 14px;
+            line-height: 22px;
+            font-family: 'ProximaNova-Regular';
+            color: @font-color;
+            font-weight: 700;
+        }
+    }
+    .twogivebox{
+        width: 100%;
+        position: relative;
+        &::before{
+            position: absolute;
+            content: "";
+            right: -15px;
+            border: 1px solid #EAEAEA
+;
+            height: 308px;
+            @media only screen and (max-width:991px) {
+               height: 0px;
+               right:opx;
+            }
+        }
+        .firstgivebox{
+            background-color:#F1F6FD;
+            box-shadow: 0 2px 7px 0 rgba(135, 135, 135, 0.3);
+            width: 100%;
+            margin-bottom: 15px;
+            img{
+                padding:20px  88px 12px 88px;
+                @media only screen and (max-width:991px) {
+                    margin: auto;
+                    width: 60%;
+                }
+                @media only screen and (max-width:767px) {
+                    margin: auto;
+                    width: 50%;
+                }
+                @media only screen and (max-width:500px) {
+                    margin: auto;
+                    width: 100%;
+                }
+              }
+              .Givegroup{
+                padding: 0px 24px 16px 24px;
+                text-align: center;
+                font-family: 'ProximaNova-Regular';
+                font-weight: 600;
+              }
+              &:hover{
+                cursor: pointer;
+            }
+        }
+        .secondgivebox{
+            background-color:#F1F6FD;
+            box-shadow: 0 2px 7px 0 rgba(135, 135, 135, 0.3);
+            width: 100%;
+            img{
+                padding:20px  78px 12px 78px;
+                @media only screen and (max-width:991px) {
+                    margin: auto;
+                    width: 60%;
+                }
+                @media only screen and (max-width:767px) {
+                    margin: auto;
+                    width: 50%;
+                }
+                @media only screen and (max-width:500px) {
+                    margin: auto;
+                    width: 100%;
+                }
+              }
+              .Givegroup{
+                padding: 0px 20px 16px 20px;
+                text-align: center;
+                font-family: 'ProximaNova-Regular';
+                font-weight: 600;
+              }
+              @media only screen and (max-width:991px) {
+                  margin-bottom: 20px;
+              }
+              &:hover{
+                cursor: pointer;
+            }
+        }
+    }
     .ModelLeftBox{
         background-color:#F1F6FD;
+        box-shadow: 0 2px 7px 0 rgba(135, 135, 135, 0.3);
         width: 100%;
+        position: relative;
+        &::before{
+            position: absolute;
+            content: "";
+            right: -15px;
+            border: 1px solid #EAEAEA;
+            height: 308px;
+            @media only screen and (max-width:991px) {
+               height: 0px;
+               right:opx;
+            }
+        }
         @media only screen and (max-width:991px) {
             margin-bottom: 20px;
         }
@@ -1248,6 +1385,43 @@ p{
           text-align: center;
           font-family: 'ProximaNova-Regular';
           font-weight: 600;
+        }
+        &:hover{
+            cursor: pointer;
+        }      }
+      .Givegroupimg{
+        background-color:#F1F6FD;
+        box-shadow: 0 2px 7px 0 rgba(135, 135, 135, 0.3);
+        width: 100%;
+        position: relative;
+        &::before{
+            position: absolute;
+            content: "";
+            right: -15px;
+            border: 1px solid #EAEAEA;
+            height: 308px;
+            @media only screen and (max-width:991px) {
+               height: 0px;
+               right:opx;
+            }
+        }
+        @media only screen and (max-width:991px) {
+            margin-bottom: 20px;
+        }
+        img{
+          padding:58px  48px 30px 48px;
+          @media only screen and (max-width:991px) {
+              margin: auto;
+          }
+        }
+        .Givegroup{
+          padding: 16px 37px 58px 37px;
+          text-align: center;
+          font-family: 'ProximaNova-Regular';
+          font-weight: 600;
+        }
+        &:hover{
+            cursor: pointer;
         }
       }
       .rightbox{
@@ -1277,34 +1451,12 @@ p{
               }
             }
           }
+          &:hover{
+            cursor: pointer;
+        }
         }
       }
-}
-.popbox{
-    @media only screen and (min-width: 992px){
-        Width:562px !important;
-    }
-} 
-.ui.modal>.content>.description {
-textarea {  
-    &::placeholder{
-        color: #7F7F7F !important;
-    }
-}
-.ui[class*="left icon"].input>input{
-    padding-left: 1.8em!important;
-    padding-right: 1em!important;
-    padding-top: 11px !important;
-}
-.ui[class*="left icon"].input>i.icon {
-    right: auto;
-    left: 5px;
-    border-radius: .28571429rem 0 0 .28571429rem;
-    font-size: 14px;
-    top: -1px;
-    color: #000 !important;
-    font-weight: normal !important;
-}
+      
 }
 .noteEmail {
     margin-bottom: -45px !important;
