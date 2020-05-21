@@ -1736,11 +1736,11 @@ const populateFriendsList = (friendsList) => {
             const city = friend.attributes.city ? friend.attributes.city : '';
             const province = friend.attributes.province ? friend.attributes.province : '';
 
-            if (city === '' && province !== '') {
+            if (_.isEmpty(city) && !_.isEmpty(province)) {
                 location = province;
-            } else if (city !== '' && province === '') {
+            } else if (!_.isEmpty(city) && _.isEmpty(province)) {
                 location = city;
-            } else if (city !== '' && province !== '') {
+            } else if (!_.isEmpty(city) && !_.isEmpty(province)) {
                 location = `${city}, ${province}`;
             }
             singleObject = {
