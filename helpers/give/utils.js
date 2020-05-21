@@ -677,17 +677,39 @@ const percentage = (donationMatch) => {
     return matchAmount;
 };
 
+/**
+* set date for recurring danations
+* @param  {Date}  date recurringDonation date
+* @param {function} formatMessage react-intl
+* @param {object} lang language
+* @return {string} recurring full date format
+*/
+const setDateForRecurring = (date, formatMessage, lang = 'en') => {
+    const currentDate = new Date();
+    const monthNames = fullMonthNames(formatMessage);
+    let month = currentDate.getDate() < date
+        ? monthNames[currentDate.getMonth()] : monthNames[currentDate.getMonth() + 1];
+    let year = currentDate.getFullYear();
+    if (!month) {
+        month = monthNames[0];
+        year = currentDate.getFullYear() + 1;
+    }
+    // Now considering french only.
+    return (lang === 'fr') ? `${date}er ${month} ${year}` : `${month} ${date}, ${year}`;
+};
+
 const setDateFormat = (nextTuesday, monthNames) => `${monthNames[nextTuesday.getMonth()]} ${nextTuesday.getDate()}`;
 
-const getNextTuesday = (currentDateUTC, monthNames) => {
+const getNextTuesday = (currentDateUTC, monthNames, formatMessage, lang) => {
     const day = currentDateUTC.getDay();
     const normalizedDay = (day + 5) % 7;
     const daysForward = 7 - normalizedDay;
     const nextTuesday = new Date(+currentDateUTC + (daysForward * 24 * 60 * 60 * 1000));
-    return setDateFormat(nextTuesday, monthNames);
+    // return setDateFormat(nextTuesday, monthNames);
+    return setDateForRecurring(nextTuesday.getDate(), formatMessage, lang);
 };
 
-const getFirstThirdTuesday = (currentDateUTC, monthNames) => {
+const getFirstThirdTuesday = (currentDateUTC, monthNames, formatMessage, lang) => {
     // To Find 1st and 3rd Tuesdays
     const tuesdays = [];
     const refDate = new Date();
@@ -706,16 +728,19 @@ const getFirstThirdTuesday = (currentDateUTC, monthNames) => {
     }
 
     if (currentDateUTC.getDate() >= 1 && currentDateUTC.getDate() < tuesdays[0].getDate()) {
-        return setDateFormat(tuesdays[0], monthNames);
+        // return setDateFormat(tuesdays[0], monthNames);
+        return setDateForRecurring(tuesdays[0].getDate(), formatMessage, lang);
     }
     // Checking Condition for 3rd week Tuesday
     if (currentDateUTC.getDate() >= tuesdays[0].getDate() &&
         currentDateUTC.getDate() < tuesdays[2].getDate()) {
-        return setDateFormat(tuesdays[2], monthNames);
+        // return setDateFormat(tuesdays[2], monthNames);
+        return setDateForRecurring(tuesdays[2].getDate(), formatMessage, lang);
     }
     const nextMonthTuesday = new Date(tuesdays[tuesdays.length - 1].getTime()
         + (7 * 24 * 60 * 60 * 1000));
-    return setDateFormat(nextMonthTuesday, monthNames);
+    // return setDateFormat(nextMonthTuesday, monthNames);
+    return setDateForRecurring(nextMonthTuesday.getDate(), formatMessage, lang);
 };
 
 /**
@@ -724,16 +749,16 @@ const getFirstThirdTuesday = (currentDateUTC, monthNames) => {
 * @return {string} recurring full date format
 */
 
-const getNextAllocationMonth = (formatMessage, eftEnabled) => {
+const getNextAllocationMonth = (formatMessage, eftEnabled, lang) => {
     const currentDate = new Date();
     const currentDateUTC = new Date(currentDate.getTime() +
         (currentDate.getTimezoneOffset() * 60000));
     currentDateUTC.setHours(currentDateUTC.getHours() - 8);
     const monthNames = fullMonthNames(formatMessage);
     if (eftEnabled) {
-        return getNextTuesday(currentDateUTC, monthNames);
+        return getNextTuesday(currentDateUTC, monthNames, formatMessage, lang);
     }
-    return getFirstThirdTuesday(currentDateUTC, monthNames);
+    return getFirstThirdTuesday(currentDateUTC, monthNames, formatMessage, lang);
 };
 
 
@@ -1236,27 +1261,6 @@ const resetDataForGiftTypeChange = (giveData, dropDownOptions, coverFeesData) =>
         }
     }
     return giveData;
-};
-
-/**
-* set date for recurring danations
-* @param  {Date}  date recurringDonation date
-* @param {function} formatMessage react-intl
-* @param {object} lang language
-* @return {string} recurring full date format
-*/
-const setDateForRecurring = (date, formatMessage, lang = 'en') => {
-    const currentDate = new Date();
-    const monthNames = fullMonthNames(formatMessage);
-    let month = currentDate.getDate() < date
-        ? monthNames[currentDate.getMonth()] : monthNames[currentDate.getMonth() + 1];
-    let year = currentDate.getFullYear();
-    if (!month) {
-        month = monthNames[0];
-        year = currentDate.getFullYear() + 1;
-    }
-    // Now considering french only.
-    return (lang === 'fr') ? `${date}er ${month} ${year}` : `${month} ${date}, ${year}`;
 };
 
 const formatDateForGivingTools = (date) => {

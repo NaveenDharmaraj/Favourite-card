@@ -11,9 +11,9 @@ import PropTypes from 'prop-types';
 import { withTranslation } from '../../../../i18n';
 import '../../../../static/less/giveFlows.less';
 import {
-    getNextAllocationMonth,
     formatCurrency,
     formatAmount,
+    setDateForRecurring,
 } from '../../../../helpers/give/utils';
 import { Link } from '../../../../routes';
 
@@ -73,30 +73,28 @@ const GroupSuccess = (props) => {
     const dashboardLink = (!_isEmpty(giveFrom) && giveFrom.type === 'companies')
         ? `/${giveFrom.type}/${giveFrom.slug}`
         : `/dashboard`;
-    const month = getNextAllocationMonth(formatMessage, eftEnabled);
+    const startsOn = setDateForRecurring(giftType.value, formatMessage, language);
     if (giftType && giftType.value > 0) {
         secondParagraph = (giveFrom.type === 'user')
             ? formatMessage('groupTimeForSendingRecurring', {
                 amount: formatCurrency(formatAmount(giveAmount), language, currency),
                 groupName: name,
-                month,
+                startsOn,
             })
             : formatMessage('groupTimeForSendingRecurringFromOther', {
                 amount: formatCurrency(formatAmount(giveAmount), language, currency),
                 fromName: giveFrom.name,
                 groupName: name,
-                month,
+                startsOn,
             });
     } else {
         secondParagraph = (giveFrom.type === 'user')
             ? formatMessage('groupTimeForSending', {
                 groupName: name,
-                month,
             })
             : formatMessage('groupTimeForSendingFromOther', {
                 fromName: giveFrom.name,
                 groupName: name,
-                month,
             });
 
     }

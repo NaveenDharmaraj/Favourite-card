@@ -14,6 +14,7 @@ import {
     getNextAllocationMonth,
     formatCurrency,
     formatAmount,
+    setDateForRecurring,
 } from '../../../../helpers/give/utils';
 import { Link } from '../../../../routes';
 
@@ -41,10 +42,10 @@ const CharitySuccess = (props) => {
     const dashboardLink = (!_isEmpty(giveFrom) && giveFrom.type === 'companies')
         ? `/${giveFrom.type}/${giveFrom.slug}`
         : `/dashboard`;
-    const month = getNextAllocationMonth(formatMessage, eftEnabled);
     const isNonRecurring = !!(giftType && giftType.value === 0);
     let secondParagraph;
     if (giftType && giftType.value > 0) {
+        const month = setDateForRecurring(giftType.value, formatMessage, language);
         secondParagraph = (giveFrom.type === 'user')
             ? formatMessage('charityTimeForSendingRecurring', {
                 amount: formatCurrency(formatAmount(giveAmount), language, currency),
@@ -58,6 +59,7 @@ const CharitySuccess = (props) => {
                 month,
             });
     } else {
+        const month = getNextAllocationMonth(formatMessage, eftEnabled, language);
         secondParagraph = (giveFrom.type === 'user')
             ? formatMessage('charityTimeForSending', {
                 charityName: name,
