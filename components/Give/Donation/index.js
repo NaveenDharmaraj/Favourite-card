@@ -976,7 +976,7 @@ class Donation extends React.Component {
                                                                             <Form.Field
                                                                                 checked={isDefaultCard}
                                                                                 control={Checkbox}
-                                                                                className="ui checkbox chkMarginBtm checkboxToRadio"
+                                                                                className="ui checkbox chkMarginBtm checkboxToRadio mt-2"
                                                                                 disabled={!paymentInstrumenOptions}
                                                                                 id="isDefaultCard"
                                                                                 label="Set as primary card"
@@ -985,9 +985,9 @@ class Donation extends React.Component {
                                                                             />
                                                                         </Form>
                                                                     </Modal.Description>
-                                                                    <div className="btn-wraper pt-3 text-right">
+                                                                    <div className="btn-wraper pt-1 text-right">
                                                                         <Button
-                                                                            className="blue-btn-rounded-def sizeBig w-180"
+                                                                            className="blue-btn-rounded-def w-140"
                                                                             onClick={this.handleAddNewCreditCard}
                                                                             disabled={buttonClicked}
                                                                         >
@@ -1041,7 +1041,7 @@ class Donation extends React.Component {
                                                         />
                                                         <Form.Button
                                                             primary
-                                                            className="blue-btn-rounded btn_right rivewbtnp2p"
+                                                            className="blue-btn-rounded btn_right"
                                                             // className={isMobile ? 'mobBtnPadding' : 'btnPadding'}
                                                             content={formatMessage('giveCommon:reviewButton')}
                                                             disabled={disableButton}
@@ -1077,3 +1077,4 @@ const mapStateToProps = (state) => {
     };
 }
 export default withTranslation(['donation', 'giveCommon'])(connect(mapStateToProps)(Donation));
+
