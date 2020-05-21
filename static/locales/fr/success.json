@@ -22,7 +22,7 @@
     "fromOtherToRecipient": "Your gift of charitable dollars from {{fromName}} has been sent to {{name}}.",
     "charityTimeForSendingRecurring": "You scheduled {{amount}} to be sent to {{charityName}} each month, starting on {{month}}.",
     "charityTimeForSendingRecurringFromOther": "You scheduled {{amount}} from {{fromName}} to be sent to {{charityName}} each month, starting on {{month}}.",
-    "groupTimeForSending": "Your gift has been sent to {{groupName}}",
+    "groupTimeForSending": "Your gift has been sent to {{groupName}}.",
     "groupTimeForSendingFromOther": "Your gift from {{fromName}} has been sent to {{groupName}}",
     "groupTimeForSendingRecurring": "You scheduled {{amount}} to be sent to {{groupName}} each month, starting on {{month}}.",
     "groupTimeForSendingRecurringFromOther": "You scheduled {{amount}} from {{fromName}} to be sent to {{groupName}} each month, starting on {{month}}.",

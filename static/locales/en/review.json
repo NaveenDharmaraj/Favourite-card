@@ -36,7 +36,7 @@
     "taxReceiptRecipientLabel": "Tax receipt recipient",
 
     "reviewPaymentMethod": "Payment method",
-    "reviewTaxReceipt": "Tax Receipt",
+    "reviewTaxReceipt": "Tax receipt recipient",
     "reviewMatchingPartner": "Matching partner",
     "reviewMatchingDetails": "{{companyName}}: {{matchedAmount}} per {{periodType}}",
     "reviewNoMatchingDetails": "No matching partner available",
