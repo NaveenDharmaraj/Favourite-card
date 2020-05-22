@@ -152,9 +152,9 @@ class ClaimCharity extends React.Component {
                                                             </Grid.Column>
                                                             <Grid.Column mobile={16} tablet={12} computer={6}>
                                                                 <Button
-                                                                    className="primary blue-btn-rounded mt-2"
+                                                                    className="primary blue-btn-rounded btnTextsize mt-2"
                                                                     onClick={this.onClaimCharityClick}
-                                                                ><b>Claim your charity</b></Button>
+                                                                >Claim your charity</Button>
                                                             </Grid.Column>
                                                         </Grid.Row>
                                                     </Grid>
