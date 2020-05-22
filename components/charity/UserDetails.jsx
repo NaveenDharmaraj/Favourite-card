@@ -22,10 +22,13 @@ const {
     RAILS_APP_URL_ORIGIN,
 } = publicRuntimeConfig;
 
-const createUserDetails = (props) => {
+const UserDetails = (props) => {
     const {
         charityDetails: {
             attributes: {
+                hideGive,
+                isClaimed,
+                slug,
                 businessNumber,
                 contactName,
                 phone,
@@ -35,95 +38,80 @@ const createUserDetails = (props) => {
                 headQuarterAddress,
             },
         },
-    } = props;
-    const data = [];
-    if (!_isEmpty(contactName)) {
-        data.push({
-            Content: `Contact: ${contactName}`,
-            name: 'user',
-        });
-    }
-    if (!_isEmpty(phone)) {
-        data.push({
-            Content: phone,
-            name: 'phone',
-        });
-    }
-    if (!_isEmpty(email)) {
-        data.push({
-            Content: email,
-            link: `mailto:${email}`,
-            name: 'mail',
-        });
-    }
-    if (!_isEmpty(website)) {
-        data.push({
-            Content: website,
-            link: website,
-            name: 'linkify',
-        });
-    }
-    if (!_isEmpty(staffCount) && staffCount > 0) {
-        data.push({
-            Content: staffCount,
-            name: 'users',
-        });
-    }
-    if (!_isEmpty(businessNumber)) {
-        data.push({
-            Content: businessNumber,
-            name: 'briefcase',
-        });
-    }
-    if (!_isEmpty(headQuarterAddress)) {
-        data.push({
-            Content: headQuarterAddress,
-            name: 'marker',
-        });
-    }
-    return data;
-};
-
-const detailsView = (props) => {
-    const values = createUserDetails(props);
-    return (
-        <Fragment>
-            <List>
-                {values.map((value) => (
-                    <List.Item>
-                        <List.Icon name={value.name} />
-                        {value.link && (
-                            <List.Content>
-                                <a href={value.link} target={value.name === 'linkify' ? '_blank' : '_self'}>
-                                    {value.Content}
-                                </a>
-                            </List.Content>
-                        )}
-                        {!value.link
-                        && (
-                            <List.Content>
-                                {value.Content}
-                            </List.Content>
-                        )}
-                    </List.Item>
-                ))}
-            </List>
-        </Fragment>
-    );
-};
-
-const UserDetails = (props) => {
-    const {
-        charityDetails: {
-            attributes: {
-                hideGive,
-                isClaimed,
-                slug,
-            },
-        },
         isAUthenticated,
     } = props;
     let buttonLink = null;
+    const charityDetails = [];
+        if (!_isEmpty(contactName)) {
+            charityDetails.push({
+                Content: `Contact: ${contactName}`,
+                name: 'user',
+            });
+        }
+        if (!_isEmpty(phone)) {
+            charityDetails.push({
+                Content: phone,
+                name: 'phone',
+            });
+        }
+        if (!_isEmpty(email)) {
+            charityDetails.push({
+                Content: email,
+                link: `mailto:${email}`,
+                name: 'mail',
+            });
+        }
+        if (!_isEmpty(website)) {
+            charityDetails.push({
+                Content: website,
+                link: website,
+                name: 'linkify',
+            });
+        }
+        if (!_isEmpty(staffCount) && staffCount > 0) {
+            charityDetails.push({
+                Content: staffCount,
+                name: 'users',
+            });
+        }
+        if (!_isEmpty(businessNumber)) {
+            charityDetails.push({
+                Content: businessNumber,
+                name: 'briefcase',
+            });
+        }
+        if (!_isEmpty(headQuarterAddress)) {
+            charityDetails.push({
+                Content: headQuarterAddress,
+                name: 'marker',
+            });
+        }
+
+    const viewData = (
+        <Fragment>
+                <List>
+                    {charityDetails.map((value) => (
+                        <List.Item>
+                            <List.Icon name={value.name} />
+                            {value.link && (
+                                <List.Content>
+                                    <a href={value.link} target={value.name === 'linkify' ? '_blank' : '_self'}>
+                                        {value.Content}
+                                    </a>
+                                </List.Content>
+                            )}
+                            {!value.link
+                            && (
+                                <List.Content>
+                                    {value.Content}
+                                </List.Content>
+                            )}
+                        </List.Item>
+                    ))}
+                </List>
+            </Fragment>
+    );
+
     if (!hideGive) {
         if (isAUthenticated) {
             buttonLink = (
@@ -145,7 +133,7 @@ const UserDetails = (props) => {
                 <Header as="h4">
                     Charity information
                 </Header>
-                {detailsView(props)}
+                {viewData}
                 <Responsive minWidth={768}>
                     {buttonLink}
                 </Responsive>

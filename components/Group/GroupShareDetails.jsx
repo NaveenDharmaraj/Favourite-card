@@ -36,13 +36,6 @@ class GroupShareDetails extends React.Component {
                 id: userId,
             },
             dispatch,
-            // groupDetails:{
-            //     attributes:{
-            //         liked,
-            //     },
-            //     id: groupId,
-            //     type,
-            // },
             liked,
             profileId,
             type,
@@ -59,13 +52,6 @@ class GroupShareDetails extends React.Component {
 
     handleOnClick(event, data) {
         const {
-            // groupDetails:{
-            //     attributes:{
-            //         slug,
-            //         name,
-            //     },
-            //     type,
-            // },
             deepLinkUrl,
             name,
             type,
@@ -103,11 +89,6 @@ class GroupShareDetails extends React.Component {
 
     render() {
         const {
-            // groupDetails: {
-            //     attributes: {
-            //         liked,
-            //     }
-            // },
             currentUser,
             deepLinkUrl,
             disableFollow,
@@ -183,7 +164,6 @@ function mapStateToProps(state) {
     return {
         currentUser: state.user.info,
         deepLinkUrl: state.profile.deepLinkUrl,
-        // groupDetails: state.group.groupDetails,
         disableFollow: state.profile.disableFollow,
     }
 }
