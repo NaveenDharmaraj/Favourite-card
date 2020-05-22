@@ -45,7 +45,7 @@ class CharityProfile extends React.Component {
         if (typeof window === 'undefined') {
             auth0AccessToken = storage.get('auth0AccessToken', 'cookie', req.headers.cookie);
         }
-        await getBeneficiaryFromSlug(reduxStore.dispatch, query.slug, auth0AccessToken);
+        await reduxStore.dispatch(getBeneficiaryFromSlug(query.slug, auth0AccessToken));
         return {
             slug: query.slug,
         };

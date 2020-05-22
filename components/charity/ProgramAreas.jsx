@@ -1,4 +1,6 @@
-import React from 'react';
+import React, {
+    Fragment,
+} from 'react';
 import { connect } from 'react-redux';
 import {
     Grid,
@@ -11,6 +13,8 @@ import {
     PropTypes,
 } from 'prop-types';
 
+import CharityNoDataState from './CharityNoDataState';
+
 const ProgramAreas = (props) => {
     const {
         charityDetails: {
@@ -19,6 +23,7 @@ const ProgramAreas = (props) => {
             },
         },
     } = props;
+    let viewData = <CharityNoDataState />;
     let programs = null;
     if (!_isEmpty(charityPrograms)) {
         programs = charityPrograms.map((program) => (
@@ -27,11 +32,8 @@ const ProgramAreas = (props) => {
                 <Table.Cell>{program.percentage}</Table.Cell>
             </Table.Row>
         ));
-    }
-    return (
-        <Grid.Row>
-            <Grid.Column mobile={16} tablet={16} computer={16} className="ch_program mt-1 mb-1">
-                <Header as="h3">Program areas</Header>
+        viewData = (
+            <Fragment>
                 <Table basic="very" unstackable>
                     <Table.Header>
                         <Table.Row>
@@ -39,12 +41,19 @@ const ProgramAreas = (props) => {
                             <Table.HeaderCell width={8}>% of emphasis</Table.HeaderCell>
                         </Table.Row>
                     </Table.Header>
-
                     <Table.Body>
                         {programs}
                     </Table.Body>
                 </Table>
                 <p className="ch_footnote">*% of emphasis is reported by the charity and does not necessarily reflect money spent.</p>
+            </Fragment>
+        );
+    }
+    return (
+        <Grid.Row>
+            <Grid.Column mobile={16} tablet={16} computer={16} className="ch_program mt-1 mb-1">
+                <Header as="h3">Program areas</Header>
+                {viewData}
             </Grid.Column>
         </Grid.Row>
     );

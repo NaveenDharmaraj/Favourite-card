@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import _isEmpty from 'lodash/isEmpty';
 import getConfig from 'next/config';
 
 import utilityApi from '../services/utilityApi';
@@ -11,7 +11,7 @@ const {
     BASIC_AUTH_KEY,
 } = publicRuntimeConfig;
 let BASIC_AUTH_HEADER = null;
-if (!_.isEmpty(BASIC_AUTH_KEY)) {
+if (!_isEmpty(BASIC_AUTH_KEY)) {
     BASIC_AUTH_HEADER = {
         headers: {
             Authorization: `Basic ${BASIC_AUTH_KEY}`,
@@ -60,7 +60,7 @@ export const getBeneficiaryDoneeList = (charityId, year, pageNumber = 1, isSeeMo
         },
     }).then(
         (result) => {
-            if (result && result._embedded && result._embedded.donee_list && !_.isEmpty(result._embedded.donee_list)) {
+            if (result && result._embedded && result._embedded.donee_list && !_isEmpty(result._embedded.donee_list)) {
                 fsa.payload.donationDetails = result._embedded.donee_list;
                 fsa.payload.totalPages = result.page.totalPages;
                 fsa.payload.currentPage = result.page.number;
@@ -160,7 +160,7 @@ export const copyDeepLink = (url, dispatch) => {
     }).finally(() => dispatch(fsa));
 };
 
-export const getBeneficiaryFromSlug = async (dispatch, slug, token = null) => {
+export const getBeneficiaryFromSlug = (slug, token = null) => async (dispatch) => {
     if (slug !== ':slug') {
         const fsa = {
             payload: {
@@ -181,7 +181,7 @@ export const getBeneficiaryFromSlug = async (dispatch, slug, token = null) => {
                 uxCritical: true,
             },
         };
-        if (!_.isEmpty(token)) {
+        if (!_isEmpty(token)) {
             fullParams.headers = {
                 Authorization: `Bearer ${token}`,
             };
@@ -190,7 +190,7 @@ export const getBeneficiaryFromSlug = async (dispatch, slug, token = null) => {
             ...fullParams,
         }).then(
             (result) => {
-                if (result && !_.isEmpty(result.data)) {
+                if (result && !_isEmpty(result.data)) {
                     fsa.payload.charityDetails = result.data;
                     dispatch(fsa);
                 }
@@ -218,7 +218,7 @@ export const getGeoCoding = async (dispatch, city, isHeadQuarter) => {
     await utilityApi.post('/getZipcode', {
         address: city,
     }, BASIC_AUTH_HEADER).then((result) => {
-        if (result && !_.isEmpty(result.data)) {
+        if (result && !_isEmpty(result.data)) {
             fsa.payload.city = result.data;
             if (isHeadQuarter) {
                 fsa.type = actionTypes.SET_HEADQUARTER_GEOCODE;
@@ -257,7 +257,12 @@ export const getBeneficiaryFinance = (id) => async (dispatch) => {
             tenant_name: 'chimp',
             uxCritical: true,
         },
-    }).then().catch().finally(() => {
+    }).then((result) => {
+        if(result.beneficiaryFinanceList && !_isEmpty(result.beneficiaryFinanceList)) {
+            fsa.payload.beneficiaryFinance = result.beneficiaryFinanceList;
+            dispatch(fsa);
+        }
+    }).catch().finally(() => {
         dispatch({
             payload: {
                 chartLoader: false,
