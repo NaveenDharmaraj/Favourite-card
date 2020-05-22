@@ -78,9 +78,7 @@ class Charts extends React.Component {
             this.createGraphData();
         }
         if (!_isEqual(prevState.chartIndex, chartIndex)) {
-            if (!_isEmpty(graphData)) {
                 this.highlightBar();
-            }
         }
     }
 
@@ -302,10 +300,6 @@ class Charts extends React.Component {
                 }
             });
             graphData = {
-                expenseData: {
-                    revenueData,
-                    yearData,
-                },
                 fifthData,
                 firstData,
                 fourthData,
@@ -365,28 +359,16 @@ class Charts extends React.Component {
         } = this.state;
         const currency = 'USD';
         const language = 'en';
-        let chartView = <CharityNoDataState />;
-        if (!_isEmpty(graphData)) {
+        let chartView = '';
+        if (!chartLoader && !_isEmpty(graphData)) {
             chartView = (
                 <Fragment>
                     <Grid>
                         <Grid.Row>
                             <Grid.Column mobile={16} tablet={16} computer={16}>
-                                {/* <div
-                                    className="graphLoader"
-                                    style={{
-                                        height: '260px',
-                                        position: 'absolute',
-                                        width: '100%',
-                                    }}
-                                >
-                                    <Loader active />
-                                </div> */}
                                 <div className="graph">
                                     <Grid.Column>
                                         <Bar
-                                            // onClick={this.getElementAtEvent}
-                                            // getDatasetAtEvent={this.handleClick}
                                             onElementsClick={this.handleClick}
                                             ref={this.chartReference}
                                             data={this.getChartData}
@@ -412,22 +394,6 @@ class Charts extends React.Component {
                                                     yAxes: [
                                                         {
                                                             stacked: true,
-                                                            // type: 'linear',
-                                                            // display: true,
-                                                            // position: 'left',
-                                                            // gridLines: {
-                                                            //     display: true,
-                                                            // },
-                                                            // labels: {
-                                                            //     show: true,
-                                                            // },
-
-                                                            // ticks: {
-                                                            //     // Include a dollar sign in the ticks
-                                                            //     callback: (value, index, values) => {
-                                                            //         return `$${value}K`;
-                                                            //     },
-                                                            // },
                                                         },
                                                     ],
                                                 },
@@ -496,6 +462,8 @@ class Charts extends React.Component {
                     </Modal>
                 </Fragment>
             );
+        } else {
+            chartView = <CharityNoDataState />
         }
         return (
             <Fragment>
@@ -520,7 +488,7 @@ class Charts extends React.Component {
                                     </Grid.Row>
                                 </Grid>
                             )
-                            : (!_isEmpty(graphData) && chartView)
+                            : (chartView)
                         }
                     </Grid.Column>
                 </Grid.Row>
@@ -534,7 +502,7 @@ Charts.defaultProps = {
     charityDetails: PropTypes.shape({
         id: '',
     }),
-    chartLoader: false,
+    chartLoader: true,
     dispatch: () => {},
 };
 

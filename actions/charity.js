@@ -4,7 +4,6 @@ import getConfig from 'next/config';
 import utilityApi from '../services/utilityApi';
 import graphApi from '../services/graphApi';
 import coreApi from '../services/coreApi';
-import Data from '../components/charity/Data';
 
 const { publicRuntimeConfig } = getConfig();
 const {
@@ -75,11 +74,6 @@ export const getBeneficiaryDoneeList = (charityId, year, pageNumber = 1, isSeeMo
             },
             type: actionTypes.CHARITY_PLACEHOLDER_STATUS,
         });
-        fsa.payload.donationDetails = Data.donationDetails._embedded.donee_list;
-        fsa.payload.totalPages = Data.donationDetails.page.totalPages;
-        fsa.payload.currentPage = Data.donationDetails.page.number;
-        fsa.payload.isSeeMore = isSeeMore;
-        dispatch(fsa);
     });
 };
 
@@ -269,7 +263,5 @@ export const getBeneficiaryFinance = (id) => async (dispatch) => {
             },
             type: actionTypes.CHARITY_CHART_LOADER,
         });
-        fsa.payload.beneficiaryFinance = Data.beneficiaryFinanceList;
-        dispatch(fsa);
     });
 };

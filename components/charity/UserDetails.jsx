@@ -42,6 +42,7 @@ const UserDetails = (props) => {
     } = props;
     let buttonLink = null;
     const charityDetails = [];
+    const viewData = '';
         if (!_isEmpty(contactName)) {
             charityDetails.push({
                 Content: `Contact: ${contactName}`,
@@ -87,30 +88,32 @@ const UserDetails = (props) => {
             });
         }
 
-    const viewData = (
-        <Fragment>
-                <List>
-                    {charityDetails.map((value) => (
-                        <List.Item>
-                            <List.Icon name={value.name} />
-                            {value.link && (
-                                <List.Content>
-                                    <a href={value.link} target={value.name === 'linkify' ? '_blank' : '_self'}>
+    if(!_isEmpty(charityDetails)) {
+        viewData = (
+            <Fragment>
+                    <List>
+                        {charityDetails.map((value) => (
+                            <List.Item>
+                                <List.Icon name={value.name} />
+                                {value.link && (
+                                    <List.Content>
+                                        <a href={value.link} target={value.name === 'linkify' ? '_blank' : '_self'}>
+                                            {value.Content}
+                                        </a>
+                                    </List.Content>
+                                )}
+                                {!value.link
+                                && (
+                                    <List.Content>
                                         {value.Content}
-                                    </a>
-                                </List.Content>
-                            )}
-                            {!value.link
-                            && (
-                                <List.Content>
-                                    {value.Content}
-                                </List.Content>
-                            )}
-                        </List.Item>
-                    ))}
-                </List>
-            </Fragment>
-    );
+                                    </List.Content>
+                                )}
+                            </List.Item>
+                        ))}
+                    </List>
+                </Fragment>
+        );
+    }
 
     if (!hideGive) {
         if (isAUthenticated) {

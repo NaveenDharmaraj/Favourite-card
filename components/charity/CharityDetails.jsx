@@ -192,7 +192,6 @@ CharityDetails.propTypes = {
 function mapStateToProps(state) {
     return {
         charityDetails: state.charity.charityDetails,
-        deepLinkUrl: state.profile.deepLinkUrl,
         isAUthenticated: state.auth.isAuthenticated,
     };
 }

@@ -31,12 +31,15 @@ class ReceivingOrganisations extends React.Component {
     componentDidMount() {
         const {
             dispatch,
+            donationDetails: doneeList,
             charityDetails: {
                 id: charityId,
             },
             year,
         } = this.props;
-        dispatch(getBeneficiaryDoneeList(charityId, year));
+        if (_isEmpty(doneeList)) {
+            dispatch(getBeneficiaryDoneeList(charityId, year));
+        }
     }
 
     handleSeeMore() {
