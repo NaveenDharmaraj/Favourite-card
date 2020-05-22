@@ -10,10 +10,6 @@ import {
 import _isEmpty from 'lodash/isEmpty';
 import ReactHtmlParser from 'react-html-parser';
 
-import {
-    getBeneficiaryDoneeList,
-} from '../../actions/charity';
-
 import Chart from './Charts';
 import Maps from './Maps';
 import ReceivingOrganisations from './ReceivingOrganisations';
@@ -104,7 +100,6 @@ ProfileDetails.propTypes = {
 function mapStateToProps(state) {
     return {
         charityDetails: state.charity.charityDetails,
-        donationDetails: state.charity.donationDetails,
     };
 }
 

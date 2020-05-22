@@ -33,10 +33,12 @@ export const actionTypes = {
     SET_HEADQUARTER_GEOCODE: 'SET_HEADQUARTER_GEOCODE',
 };
 
-export const getBeneficiaryDoneeList = (dispatch, charityId, year) => {
+export const getBeneficiaryDoneeList = (charityId, year, pageNumber = 1, isSeeMore = false) => (dispatch) => {
     const fsa = {
         payload: {
-            donationDetails: {},
+            donationDetails: [],
+            totalPages: null,
+            currentPage: null,
         },
         type: actionTypes.GET_BENEFICIARY_DONEE_LIST,
     };
@@ -50,7 +52,7 @@ export const getBeneficiaryDoneeList = (dispatch, charityId, year) => {
         params: {
             dispatch,
             locale: 'en_ca',
-            page: 1,
+            page: pageNumber,
             returnsYear: year,
             size: 20,
             tenant_name: 'chimp',
@@ -59,7 +61,10 @@ export const getBeneficiaryDoneeList = (dispatch, charityId, year) => {
     }).then(
         (result) => {
             if (result && result._embedded && result._embedded.donee_list && !_.isEmpty(result._embedded.donee_list)) {
-                fsa.payload.donationDetails = result;
+                fsa.payload.donationDetails = result._embedded.donee_list;
+                fsa.payload.totalPages = result.page.totalPages;
+                fsa.payload.currentPage = result.page.number;
+                fsa.payload.isSeeMore = isSeeMore;
                 dispatch(fsa);
             }
         },
@@ -70,7 +75,10 @@ export const getBeneficiaryDoneeList = (dispatch, charityId, year) => {
             },
             type: actionTypes.CHARITY_PLACEHOLDER_STATUS,
         });
-        fsa.payload.donationDetails = Data.donationDetails;
+        fsa.payload.donationDetails = Data.donationDetails._embedded.donee_list;
+        fsa.payload.totalPages = Data.donationDetails.page.totalPages;
+        fsa.payload.currentPage = Data.donationDetails.page.number;
+        fsa.payload.isSeeMore = isSeeMore;
         dispatch(fsa);
     });
 };

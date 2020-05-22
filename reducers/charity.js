@@ -4,10 +4,21 @@ const charity = (state = {}, action) => {
     };
     switch (action.type) {
         case 'GET_BENEFICIARY_DONEE_LIST':
-            newState = {
-                ...state,
-                donationDetails: Object.assign({}, state.donationDetails, action.payload.donationDetails),
-            };
+            if (!action.payload.isSeeMore) {
+                newState = {
+                    ...state,
+                    donationDetails: Object.assign([], action.payload.donationDetails),
+                    totalPages: action.payload.totalPages,
+                    currentPage: action.payload.currentPage,
+                };
+            } else {
+                newState = {
+                    ...state,
+                    donationDetails: state.donationDetails.concat(action.payload.donationDetails),
+                    totalPages: action.payload.totalPages,
+                    currentPage: action.payload.currentPage,
+                }
+            }
             break;
         case 'CHARITY_SAVE_DEEP_LINK':
             newState = {
