@@ -42,7 +42,7 @@ const UserDetails = (props) => {
     } = props;
     let buttonLink = null;
     const charityDetails = [];
-    const viewData = '';
+    let viewData = '';
         if (!_isEmpty(contactName)) {
             charityDetails.push({
                 Content: `Contact: ${contactName}`,
