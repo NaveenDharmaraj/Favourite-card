@@ -19,6 +19,7 @@ if (!_isEmpty(BASIC_AUTH_KEY)) {
 }
 
 export const actionTypes = {
+    CHARITY_BUTTON_LOADER_STATUS: 'CHARITY_BUTTON_LOADER_STATUS',
     CHARITY_CHART_LOADER: 'CHARITY_CHART_LOADER',
     CHARITY_LOADER_STATUS: 'CHARITY_LOADER_STATUS',
     CHARITY_PLACEHOLDER_STATUS: 'CHARITY_PLACEHOLDER_STATUS',
@@ -43,9 +44,15 @@ export const getBeneficiaryDoneeList = (charityId, year, pageNumber = 1, isSeeMo
     };
     dispatch({
         payload: {
-            showPlaceholder: true,
+            showPlaceholder: !(isSeeMore),
         },
         type: actionTypes.CHARITY_PLACEHOLDER_STATUS,
+    });
+    dispatch({
+        payload: {
+            showButtonLoader: isSeeMore,
+        },
+        type: actionTypes.CHARITY_BUTTON_LOADER_STATUS,
     });
     utilityApi.get(`/beneficiaryDoneeList/${charityId}`, {
         params: {
@@ -73,6 +80,12 @@ export const getBeneficiaryDoneeList = (charityId, year, pageNumber = 1, isSeeMo
                 showPlaceholder: false,
             },
             type: actionTypes.CHARITY_PLACEHOLDER_STATUS,
+        });
+        dispatch({
+            payload: {
+                showButtonLoader: false,
+            },
+            type: actionTypes.CHARITY_BUTTON_LOADER_STATUS,
         });
     });
 };

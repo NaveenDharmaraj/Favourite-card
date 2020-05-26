@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import {
     Button,
     Header,
+    Icon,
 } from 'semantic-ui-react';
 import _isEmpty from 'lodash/isEmpty';
 import {
@@ -60,6 +61,7 @@ class ReceivingOrganisations extends React.Component {
             currentPage,
             currency,
             language,
+            showButtonLoader,
             totalPages,
             transactionsLoader,
         } = this.props;
@@ -107,11 +109,15 @@ class ReceivingOrganisations extends React.Component {
                         {(currentPage < totalPages)
                             && (
                                 <div className='loadMore'>
-                                    <Button
-                                        className="blue-btn-rounded-def "
-                                        content="see more"
-                                        onClick={this.handleSeeMore}
-                                    />
+                                    {
+                                        showButtonLoader
+                                        ? <Icon name="spinner" loading />
+                                        : <Button
+                                            className="blue-bordr-btn-round-def"
+                                            content="see more"
+                                            onClick={this.handleSeeMore}
+                                        />
+                                    }
                                 </div>
                             )}
                     </Fragment>
@@ -151,6 +157,7 @@ function mapStateToProps(state) {
         currentPage: state.charity.currentPage,
         charityDetails: state.charity.charityDetails,
         donationDetails: state.charity.donationDetails,
+        showButtonLoader: state.charity.showButtonLoader,
         totalPages: state.charity.totalPages,
         transactionsLoader: state.charity.showPlaceholder,
     };

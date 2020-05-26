@@ -9,7 +9,6 @@ import {
     func,
     string,
 } from 'prop-types';
-import _orderBy from 'lodash/orderBy';
 import _isEmpty from 'lodash/isEmpty';
 import _isEqual from 'lodash/isEqual';
 import {
@@ -23,6 +22,8 @@ import {
     Divider,
     Modal,
     Loader,
+    Icon,
+    Button,
 } from 'semantic-ui-react';
 
 import TotalRevenue from '../../static/images/total_revenue.svg';
@@ -30,6 +31,10 @@ import ToalExpense from '../../static/images/total_expenses.svg';
 import {
     formatCurrency,
 } from '../../helpers/give/utils';
+import {
+    formatGraphData,
+    getChartIndex,
+} from '../../helpers/profiles/utils'
 import {
     getBeneficiaryFinance,
 } from '../../actions/charity';
@@ -41,7 +46,6 @@ import ReceivingOrganisations from './ReceivingOrganisations';
 class Charts extends React.Component {
     constructor(props) {
         super(props);
-        this.createGraphData = this.createGraphData.bind(this);
         this.getChartData = this.getChartData.bind(this);
         this.handleClick = this.handleClick.bind(this);
         this.renderSummary = this.renderSummary.bind(this);
@@ -50,8 +54,8 @@ class Charts extends React.Component {
         this.highlightBar = this.highlightBar.bind(this);
         this.chartReference = React.createRef();
         this.state = {
-            chartIndex: null,
-            graphData: {},
+            chartIndex: getChartIndex(props.beneficiaryFinance),
+            graphData: formatGraphData(props.beneficiaryFinance),
             showDoneeListModal: false,
         };
     }
@@ -66,34 +70,24 @@ class Charts extends React.Component {
         dispatch(getBeneficiaryFinance(id));
     }
 
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         const {
             beneficiaryFinance,
         } = this.props;
         const {
-            chartIndex,
-            graphData,
-        } = this.state;
+            current,
+        } = this.chartReference;
+        let viewData = {};
         if (!_isEqual(prevProps.beneficiaryFinance, beneficiaryFinance)) {
-            this.createGraphData();
+            viewData = formatGraphData(beneficiaryFinance);
+            this.setState({
+                chartIndex: viewData.yearLabel.indexOf(viewData.selectedYear),
+                graphData: viewData,
+            });
         }
-        if (!_isEqual(prevState.chartIndex, chartIndex)) {
-                this.highlightBar();
+        if(current !== null) {
+            this.highlightBar();
         }
-    }
-
-    getSelectedYear() {
-        const {
-            beneficiaryFinance,
-        } = this.props;
-        let selectedYear = null;
-        beneficiaryFinance.some((year) => {
-            if (year.expenses.find((o) => o.name === 'total_expense').value > 0) {
-                selectedYear = year.returns_year;
-                return true;
-            }
-        });
-        return selectedYear;
     }
 
     getChartData() {
@@ -169,7 +163,7 @@ class Charts extends React.Component {
             graphData,
         } = this.state;
         if (!_isEmpty(graphData)) {
-            chartInstance.reset();
+            // chartInstance.reset();
             chartInstance.update();
 
             chartInstance.getDatasetMeta(1).data[chartIndex]._model.backgroundColor = '#C995D3';
@@ -177,143 +171,6 @@ class Charts extends React.Component {
             chartInstance.getDatasetMeta(3).data[chartIndex]._model.backgroundColor = '#FEC7A9';
             chartInstance.getDatasetMeta(4).data[chartIndex]._model.backgroundColor = '#00CCD4';
             chartInstance.getDatasetMeta(5).data[chartIndex]._model.backgroundColor = '#0D00FF';
-        }
-    }
-
-    createGraphData() {
-        const {
-            beneficiaryFinance,
-        } = this.props;
-        const totalData = [];
-        const yearLabel = [];
-        const yearData = [];
-        const revenueData = [];
-        const firstData = [];
-        const secondData = [];
-        const thirdData = [];
-        const fourthData = [];
-        const fifthData = [];
-        let graphData = {};
-        let selectedYear = null;
-        if (!_isEmpty(beneficiaryFinance)) {
-            selectedYear = this.getSelectedYear();
-            const sortedData = _orderBy(beneficiaryFinance, [
-                (data) => data.returns_year,
-            ], [
-                'asc',
-            ]);
-            // const mapping = {
-            //     charitable_activities_programs: 'Charitable activities / programs',
-            //     expenditure_charity_activites: 'Expenditures on charitable activities',
-            //     fundraising: 'Fundraising',
-            //     management_admin: 'Management and administration',
-            //     other: 'Other',
-            //     poilitical_activities: 'Political activities',
-            //     prof_consult_fees: 'Professional and consulting fees',
-            //     travel_vehicle_expense: 'Travel and vehicle expenses',
-            // };
-            sortedData.map((year) => {
-                yearLabel.push(year.returns_year);
-                totalData.push({
-                    revenue_total: year.revenues[0].value,
-                    total_expense: year.expenses[0].value,
-                });
-                revenueData.push(year.revenues[0].value);
-                if (year.expenses.find((o) => o.name === 'total_expense').value > 100000) {
-                    firstData.push(year.expenses.find((o) => o.name === 'charitable_activities_programs').value);
-                    secondData.push(year.expenses.find((o) => o.name === 'management_admin').value);
-                    thirdData.push(year.expenses.find((o) => o.name === 'fundraising').value);
-                    fourthData.push(year.expenses.find((o) => o.name === 'poilitical_activities').value);
-                    fifthData.push(year.expenses.find((o) => o.name === 'other').value);
-                    yearData.push([
-                        {
-                            color: '#C995D3',
-                            text: 'Charitable activities / programs',
-                            value: year.expenses.find((o) => o.name === 'charitable_activities_programs').value,
-                        },
-                        {
-                            color: '#DF005F',
-                            text: 'Management and administration',
-                            value: year.expenses.find((o) => o.name === 'management_admin').value,
-                        },
-                        {
-                            color: '#FEC7A9',
-                            text: 'Fundraising',
-                            value: year.expenses.find((o) => o.name === 'fundraising').value,
-                        },
-                        {
-                            color: '#00CCD4',
-                            text: 'Political activities',
-                            value: year.expenses.find((o) => o.name === 'poilitical_activities').value,
-                        },
-                        {
-                            color: '#0D00FF',
-                            text: 'Other',
-                            value: year.expenses.find((o) => o.name === 'other').value,
-                        },
-                        {
-                            color: '#8DEDAE',
-                            hideGift: !(year.gifts_total > 0),
-                            text: 'Gifts to other registered charities and qualified donees',
-                            value: year.expenses.find((o) => o.name === 'gifts_to_charities_donees').value,
-                        },
-                    ]);
-                } else {
-                    firstData.push(year.expenses.find((o) => o.name === 'prof_consult_fees').value);
-                    secondData.push(year.expenses.find((o) => o.name === 'travel_vehicle_expense').value);
-                    thirdData.push(year.expenses.find((o) => o.name === 'expenditure_charity_activites').value);
-                    fourthData.push(year.expenses.find((o) => o.name === 'management_admin').value);
-                    fifthData.push(year.expenses.find((o) => o.name === 'other').value);
-                    yearData.push([
-                        {
-                            color: '#C995D3',
-                            text: 'Professional and consulting fees',
-                            value: year.expenses.find((o) => o.name === 'prof_consult_fees').value,
-                        },
-                        {
-                            color: '#DF005F',
-                            text: 'Travel and vehicle expenses',
-                            value: year.expenses.find((o) => o.name === 'travel_vehicle_expense').value,
-                        },
-                        {
-                            color: '#FEC7A9',
-                            text: 'Expenditures on charitable activities',
-                            value: year.expenses.find((o) => o.name === 'expenditure_charity_activites').value,
-                        },
-                        {
-                            color: '#00CCD4',
-                            text: 'Management and administration',
-                            value: year.expenses.find((o) => o.name === 'management_admin').value,
-                        },
-                        {
-                            color: '#0D00FF',
-                            text: 'Other',
-                            value: year.expenses.find((o) => o.name === 'other').value,
-                        },
-                        {
-                            color: '#8DEDAE',
-                            hideGift: !(year.gifts_total > 0),
-                            text: 'Gifts to other registered charities and qualified donees',
-                            value: year.expenses.find((o) => o.name === 'gifts_to_charities_donees').value,
-                        },
-                    ]);
-                }
-            });
-            graphData = {
-                fifthData,
-                firstData,
-                fourthData,
-                revenueData,
-                secondData,
-                thirdData,
-                totalData,
-                yearData,
-                yearLabel,
-            };
-            this.setState({
-                chartIndex: yearLabel.indexOf(selectedYear),
-                graphData,
-            });
         }
     }
 

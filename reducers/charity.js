@@ -91,6 +91,12 @@ const charity = (state = {}, action) => {
                 chartLoader: action.payload.chartLoader,
             };
             break;
+        case 'CHARITY_BUTTON_LOADER_STATUS':
+            newState = {
+                ...state,
+                showButtonLoader: action.payload.showButtonLoader,
+            };
+            break;
         default:
             break;
     }
