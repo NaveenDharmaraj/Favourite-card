@@ -27,8 +27,8 @@ const GiveFromCampaignModal = (props) => {
         campaignRelatedBeneficiariesCount,
         fundId,
     } = props;
-    const relatedBeneficiaryRoute = (campaignRelatedBeneficiariesCount) ? (`/give/to/charity/new?campaign_id=${campaignId}&source_account_holder_id=${fundId}`) : '';
-    const relatedGroupsRoute = (groupsWithMemberships && groupsWithMemberships.data && groupsWithMemberships.data.length > 0) ? (`/give/to/group/new?source_account_holder_id=${fundId}`) : '';
+    const relatedBeneficiaryRoute = (campaignRelatedBeneficiariesCount) ? (`/give/to/charity/new?campaign_id=${campaignId}`) : '';
+    const relatedGroupsRoute = (groupsWithMemberships && groupsWithMemberships.data && groupsWithMemberships.data.length > 0) ? (`/give/to/group/new?campaign_id=${campaignId}`) : '';
     return (
         <Modal
             className="chimp-modal likeToGiveModal"

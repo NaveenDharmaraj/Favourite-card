@@ -100,7 +100,6 @@ class Review extends React.Component {
                     giveData,
                     selectedTaxReceiptProfile,
                     type,
-                    sourceAccountHolderId,
                     groupId,
                     campaignId,
                 },
@@ -115,13 +114,11 @@ class Review extends React.Component {
             const formatMessage = this.props.t;
             let reviewData = {};
             let toURL = `/${type}/${flowSteps[0]}`;
-            if (sourceAccountHolderId) {
-                toURL = `${toURL}?source_account_holder_id=${sourceAccountHolderId}`;
-            }
+
             if (groupId) {
-                toURL = `${toURL}&group_id=${groupId}`;
+                toURL = `${toURL}?group_id=${groupId}`;
             } else if(campaignId) {
-                toURL = `${toURL}&campaign_id=${campaignId}`;
+                toURL = `${toURL}?campaign_id=${campaignId}`;
             }
             if(type === 'donations'){
                 reviewData = populateDonationReviewPage(giveData, {

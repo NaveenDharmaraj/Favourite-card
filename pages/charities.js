@@ -34,7 +34,6 @@ class Charities extends React.Component {
                 'error',
             ],
             slug: query.slug,
-            sourceAccountHolderId: query.source_account_holder_id,
             step: (query.gift) ? `${query.slug}/${query.gift}/${query.step}` : query.step,
         };
     }

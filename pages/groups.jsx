@@ -21,6 +21,7 @@ const flowSteps = [
 class Groups extends React.Component {
     static async getInitialProps({ query }) {
         return {
+            campaignId: query.campaign_id,
             groupId: query.group_id,
             namespacesRequired: [
                 'authHeader',
@@ -30,7 +31,6 @@ class Groups extends React.Component {
                 'privacyOptions',
             ],
             slug: query.slug,
-            sourceAccountHolderId: query.source_account_holder_id,
             step: (query.slug) ? `${query.slug}/${query.step}` : query.step,
         };
     }

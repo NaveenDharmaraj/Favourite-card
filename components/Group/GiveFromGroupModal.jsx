@@ -42,13 +42,13 @@ const GiveFromGroupModal = (props) => {
     let divText;
     let divClassName;
     let disabledDivText;
-    const relatedGroupsRoute = (groupsWithMemberships && groupsWithMemberships.data && groupsWithMemberships.data.length > 0) ? (`/give/to/group/new?group_id=${groupId}&source_account_holder_id=${fundId}`) : '';
+    const relatedGroupsRoute = (groupsWithMemberships && groupsWithMemberships.data && groupsWithMemberships.data.length > 0) ? (`/give/to/group/new?group_id=${groupId}`) : '';
     if (!_isEmpty(beneficiariesCount) && hasCampaignAccess) {
         modalLeftSectionDouble = (
             <Grid.Column mobile={16} tablet={16} computer={6}>
                 <div className="twogivebox">
                     <Link 
-                        route={`/give/to/charity/new?group_id=${groupId}&source_account_holder_id=${fundId}`}
+                        route={`/give/to/charity/new?group_id=${groupId}`}
                     >
                         <div className="firstgivebox">
                             <Image src={leftmodelimg} />
@@ -73,12 +73,12 @@ const GiveFromGroupModal = (props) => {
             </Grid.Column>
         );
     } else if (!_isEmpty(beneficiariesCount) && !hasCampaignAccess) {
-        giveUrl = `/give/to/charity/new?group_id=${groupId}&source_account_holder_id=${fundId}`;
+        giveUrl = `/give/to/charity/new?group_id=${groupId}`;
         bgImage = leftmodelimg;
         divText = divTextForCharity;
         divClassName = 'ModelLeftBox';
     } else if (_isEmpty(beneficiariesCount) && hasCampaignAccess) {
-        giveUrl = `/give/to/group/new?group_id=${groupId}&source_account_holder_id=${fundId}`;
+        giveUrl = `/give/to/group/new?group_id=${groupId}`;
         bgImage = leftcampaigngroup;
         divText = divTextForCampaign;
         divClassName = 'Givegroupimg';

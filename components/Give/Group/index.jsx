@@ -63,6 +63,7 @@ class Group extends React.Component {
     constructor(props) {
         super(props);
         const {
+            campaignId,
             companyDetails,
             currentUser: {
                 attributes:{
@@ -70,6 +71,7 @@ class Group extends React.Component {
                     email,
                 },
             },
+            groupId,
             paymentInstrumentsData,
             taxReceiptProfiles,
         } = props;
@@ -116,8 +118,14 @@ class Group extends React.Component {
             validity: this.intializeValidations(),
         };
         this.state.flowObject.groupFromUrl = false;
-        if(props.sourceAccountHolderId ){
-        this.state.flowObject.sourceAccountHolderId = props.sourceAccountHolderId;
+        if (!_isEmpty(groupId)
+        && Number(groupId) > 0) {
+            this.state.flowObject.groupId = groupId;
+            this.state.giveFromType = 'groups';
+        } else if (!_isEmpty(campaignId)
+            && Number(campaignId) > 0) {
+                this.state.flowObject.campaignId = campaignId;
+                this.state.giveFromType = 'campaigns'
         }
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleInputOnBlur = this.handleInputOnBlur.bind(this)
@@ -132,9 +140,10 @@ class Group extends React.Component {
             currentUser:{
                 id,
             },
-            sourceAccountHolderId,
+            groupId,
+            campaignId,
         } = this.props;
-        if (Number(sourceAccountHolderId) > 0) {
+        if (Number(groupId) > 0 || Number(campaignId) > 0) {
             getGroupsForUser(dispatch,id);
         }  
         else if (slug !== null) {
@@ -154,11 +163,13 @@ class Group extends React.Component {
                     currency,
                     giveData,
                 },
+                giveFromType,
                 groupFromUrl,
                 reviewBtnFlag,
                 reloadModalOpen,
             } = this.state;
             const {
+                campaignId,
                 companyDetails,
                 companiesAccountsData,
                 currentUser:{
@@ -175,6 +186,7 @@ class Group extends React.Component {
                     language,
                 },
                 fund,
+                groupId,
                 paymentInstrumentsData,
                 userCampaigns,
                 userGroups,
@@ -225,22 +237,6 @@ class Group extends React.Component {
             else if (!_isEmpty(userMembershipGroups)) {
                 groupFromUrl = true;
                 const groupIndex = this.state.flowObject.groupIndex;
-                if (_isEmpty(giveData.giveFrom.value) && this.props.groupId){
-                    const giveFromGroup = _.find(userGroups, {'id': this.props.groupId});
-                    if(!_isEmpty(giveFromGroup)) {
-                        giveData.giveFrom = {
-                            avatar: giveFromGroup.attributes.avatar,
-                            balance: giveFromGroup.attributes.balance,
-                            id: giveFromGroup.id,
-                            name: giveFromGroup.attributes.name,
-                            slug: giveFromGroup.attributes.slug,
-                            text: `${giveFromGroup.attributes.fundName}: ${formatCurrency(giveFromGroup.attributes.balance, language, currency)}`,
-                            type: giveFromGroup.type,
-                            value: giveFromGroup.attributes.fundId,
-                        };
-                    }
-                }
-
                 giveData.giveTo = {
                     id: userMembershipGroups.userGroups[groupIndex].id,
                     isCampaign: userMembershipGroups.userGroups[groupIndex].attributes.isCampaign,
@@ -261,11 +257,12 @@ class Group extends React.Component {
                     },
                     formatMessage
                 );
-                let privacyNameOptions = populateShareName(giveData.giveFrom.name);                
+                let privacyNameOptions = populateShareName(giveData.giveFrom.name);
+                const giveFromId = (giveFromType === 'campaigns') ? campaignId : groupId;
                 giveData = Group.initFields(
                     giveData, fund, id,
                     `${firstName} ${lastName}`, companiesAccountsData, userGroups, userCampaigns,
-                    addressToShareList, privacyNameOptions, this.props.groupId
+                    addressToShareList, privacyNameOptions, giveFromId, giveFromType, language, currency,
                 );
             }
             this.setState({
@@ -352,7 +349,7 @@ class Group extends React.Component {
      */
     // eslint-disable-next-line react/sort-comp
     static initFields(giveData, fund, id,
-        name, companiesAccountsData, userGroups, userCampaigns, addressToShareList, privacyNameOptions, fromGroupId) {
+        name, companiesAccountsData, userGroups, userCampaigns, addressToShareList, privacyNameOptions, groupId, giveFromType, language, currency) {
         if (_isEmpty(companiesAccountsData) && _isEmpty(userGroups) && _isEmpty(userCampaigns) && !giveData.userInteracted) {
             giveData.giveFrom.id = id;
             giveData.giveFrom.value = fund.id;
@@ -361,10 +358,29 @@ class Group extends React.Component {
             giveData.giveFrom.text = `${fund.attributes.name} ($${fund.attributes.balance})`;
             giveData.giveFrom.balance = fund.attributes.balance;
             giveData.giveFrom.name = name;
-        } else if (!_isEmpty(companiesAccountsData) && !_isEmpty(userGroups) && !_isEmpty(userCampaigns) && !giveData.userInteracted && _isEmpty(fromGroupId)) {
-            giveData.giveFrom = {
-                value: '',
-            };
+        } else if (!_isEmpty(companiesAccountsData) && !_isEmpty(userGroups) && !_isEmpty(userCampaigns) && !giveData.userInteracted) {
+            if (groupId){
+                const giveFromGroup = (giveFromType === 'campaigns')
+                    ? userCampaigns.find((userCampaign) => userCampaign.id === groupId)
+                    : userGroups.find((userGroup) => userGroup.id === groupId)
+                if(!_isEmpty(giveFromGroup)) {
+                    giveData.giveFrom = {
+                        avatar: giveFromGroup.attributes.avatar,
+                        balance: giveFromGroup.attributes.balance,
+                        id: giveFromGroup.id,
+                        name: giveFromGroup.attributes.name,
+                        slug: giveFromGroup.attributes.slug,
+                        text: `${giveFromGroup.attributes.fundName}: ${formatCurrency(giveFromGroup.attributes.balance, language, currency)}`,
+                        type: giveFromGroup.type,
+                        value: giveFromGroup.attributes.fundId,
+                    };
+                }
+            }
+            else {
+                giveData.giveFrom = {
+                    value: '',
+                };
+            }
         }
         if (!_isEmpty(addressToShareList) && addressToShareList.length > 0
         && !giveData.userInteracted) {

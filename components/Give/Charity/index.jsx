@@ -77,7 +77,6 @@ class Charity extends React.Component {
             donationMatchData,
             fund,
             groupId,
-            sourceAccountHolderId,
             id,
             paymentInstrumentsData,
             userCampaigns,
@@ -89,11 +88,6 @@ class Charity extends React.Component {
                 language,
             }
         } = props;
-        let currentSourceAccountHolderId = null;
-        if (!_isEmpty(sourceAccountHolderId)
-            && Number(sourceAccountHolderId) > 0) {
-            currentSourceAccountHolderId = sourceAccountHolderId;
-        }
         const paymentInstruments = (!_isEmpty(props.flowObject.giveData.giveFrom) && props.flowObject.giveData.giveFrom.type === 'companies') ? companyDetails.companyPaymentInstrumentsData : paymentInstrumentsData;
         const formatMessage = props.t;
         const flowType = _replace(props.baseUrl, /\//, '');
@@ -170,7 +164,6 @@ class Charity extends React.Component {
                 this.state.flowObject.campaignId = campaignId;
                 this.state.giveFromType = 'campaigns'
         }
-        this.state.flowObject.sourceAccountHolderId = currentSourceAccountHolderId;
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleInputChangeGiveTo = this.handleInputChangeGiveTo.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
@@ -902,7 +895,6 @@ class Charity extends React.Component {
                     noteToSelf,
                 },
                 groupFromUrl,
-                sourceAccountHolderId,
                 stepsCompleted,
                 type,
             },
@@ -916,8 +908,6 @@ class Charity extends React.Component {
             },
             validity,
         } = this.state;
-        const groupUrlEndpoint = Number(sourceAccountHolderId) > 0 ? `/give/to/group/new?source_account_holder_id=${sourceAccountHolderId}` : null;
-        const friendUrlEndpoint = `/give/to/friend/new`;
         const formatMessage = this.props.t;
         const { reviewBtnFlag } = this.state;
         let submtBtn = (reviewBtnFlag)?(
