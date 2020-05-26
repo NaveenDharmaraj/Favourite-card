@@ -51,7 +51,7 @@ class ReceivingOrganisations extends React.Component {
             },
             year,
         } = this.props;
-        dispatch(getBeneficiaryDoneeList(charityId, year,currentPage + 1,true));
+        dispatch(getBeneficiaryDoneeList(charityId, year, currentPage + 1, true));
     }
 
     render() {
@@ -96,20 +96,25 @@ class ReceivingOrganisations extends React.Component {
         return (
             transactionsLoader ? (
 
-                <PlaceholderGrid row={6} column={1} placeholderType="multiLine" />
+                <PlaceholderGrid row={5} column={1} placeholderType="multiLine" />
 
             ) : (
-                <Fragment>
-                    {viewData}
-                    {(currentPage < totalPages)
-                    && (
-                    <Button
-                        className="blue-btn-rounded-def"
-                        content="see more"
-                        onClick = {this.handleSeeMore}
-                    />
-                    )}
-                </Fragment>
+                    <Fragment>
+                        <div className='ScrollData'>
+                            {viewData}
+                        </div>
+
+                        {(currentPage < totalPages)
+                            && (
+                                <div className='loadMore'>
+                                    <Button
+                                        className="blue-btn-rounded-def "
+                                        content="see more"
+                                        onClick={this.handleSeeMore}
+                                    />
+                                </div>
+                            )}
+                    </Fragment>
                 )
         );
     }
@@ -121,7 +126,7 @@ ReceivingOrganisations.defaultProps = {
     },
     currentPage: null,
     currency: 'USD',
-    dispatch: () => {},
+    dispatch: () => { },
     donationDetails: [],
     language: 'en',
     totalPages: null,
