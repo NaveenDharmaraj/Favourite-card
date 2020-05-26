@@ -1724,6 +1724,17 @@ const populateFriendsList = (friendsList) => {
     let singleObject = {};
     if (!_.isEmpty(friendsList)) {
         friendsList.map((friend) => {
+            let location = '';
+            const city = friend.attributes.city ? friend.attributes.city : '';
+            const province = friend.attributes.province ? friend.attributes.province : '';
+
+            if (_.isEmpty(city) && !_.isEmpty(province)) {
+                location = province;
+            } else if (!_.isEmpty(city) && _.isEmpty(province)) {
+                location = city;
+            } else if (!_.isEmpty(city) && !_.isEmpty(province)) {
+                location = `${city}, ${province}`;
+            }
             singleObject = {
                 displayName: friend.attributes.display_name,
                 id: friend.attributes.user_id,
@@ -1732,7 +1743,7 @@ const populateFriendsList = (friendsList) => {
                     src: friend.attributes.avatar,
                 },
                 key: friend.attributes.user_id,
-                text: ReactHtmlParser(`<span class="textFirst">${friend.attributes.display_name}</span><span class="secondFirst"></span>`),
+                text: ReactHtmlParser(`<span class="textFirst">${friend.attributes.display_name}</span><span class="secondFirst">${location}</span>`),
                 type: friend.type,
                 value: friend.attributes.user_id,
             };
