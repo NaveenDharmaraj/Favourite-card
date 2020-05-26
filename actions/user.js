@@ -14,6 +14,7 @@ import {
 import {
     generatePayloadBodyForFollowAndUnfollow,
 } from './profile';
+import storage from '../helpers/storage';
 
 export const actionTypes = {
     GET_MATCH_POLICIES_PAYMENTINSTRUMENTS: 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS',
@@ -857,9 +858,11 @@ export const checkClaimCharityAccessCode = (accessCode) => (dispatch) => {
             fsa.payload = {
                 data: result.data,
             };
-        },
+            const beneficiaryName = result.data.attributes.beneficiaryName;
+            storage.set('charityName', beneficiaryName, 'local', this.getRemainingSessionTime() / 1000);
+            Router.pushRoute('/claim-charity/success'); 
+        }, 
     ).catch((error) => {
-        // fsa.error = error;
         const errorFsa = {
             payload: {
                 message: "That code doesn't look right or it's expired. Try again or claim without a code below",
@@ -870,6 +873,15 @@ export const checkClaimCharityAccessCode = (accessCode) => (dispatch) => {
     }).finally(() => {
         dispatch(fsa);
     });
-
     
+};
+
+function getRemainingSessionTime(beneficiaryName) {
+    const expiry = new Date(beneficiaryName * 1000);
+    const now = new Date();
+    return (expiry > now)
+        ? (expiry - now)
+        : 0;
 }
+
+

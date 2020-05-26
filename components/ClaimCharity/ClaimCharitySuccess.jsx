@@ -12,14 +12,16 @@ import accessingleft from '../../static/images/accessing2.png';
 import accessingfull from '../../static/images/accessing1.png';
 import '../../static/less/claimcharity.less';
 
-function Accessing() {
+function Accessing(props) {
     return (
         <Fragment>
             <div className="AccessingtopBanner">
                 <Container>
                     <div className="lefttopicon"></div>
                     <div className="bannerHeading">
-                        <Header as='h3'> Display_name, you’ve claimed your charity </Header>
+                        <Header as='h3'>
+                            {props.currentUser ? props.currentUser.attributes.firstName : ''}
+                        , you’ve claimed your charity </Header>
                         <p>Now you have access to your charity charity_name’s account.</p>
                         <Button className=" primary blue-btn-rounded mt-1"><b>Go to my Charity Account</b></Button>
                     </div>
