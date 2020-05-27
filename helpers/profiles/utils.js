@@ -10,12 +10,12 @@ const getSelectedYear = (beneficiaryFinance) => {
         }
     });
     return selectedYear;
-}
+};
 
 const getChartIndex = (beneficiaryFinance) => {
     const yearLabel = [];
     let selectedYear = null;
-    if(!_isEmpty(beneficiaryFinance)) {
+    if (!_isEmpty(beneficiaryFinance)) {
         selectedYear = getSelectedYear(beneficiaryFinance);
         const sortedData = _orderBy(beneficiaryFinance, [
             (data) => data.returns_year,
@@ -28,7 +28,7 @@ const getChartIndex = (beneficiaryFinance) => {
         return yearLabel.indexOf(selectedYear);
     }
     return null;
-}
+};
 
 const formatGraphData = (beneficiaryFinance) => {
     const totalData = [];
@@ -135,7 +135,7 @@ const formatGraphData = (beneficiaryFinance) => {
                 ]);
             }
         });
-        return graphData = {
+        graphData = {
             fifthData,
             firstData,
             fourthData,
@@ -149,7 +149,7 @@ const formatGraphData = (beneficiaryFinance) => {
         };
     }
     return graphData;
-}
+};
 
 export {
     formatGraphData,
