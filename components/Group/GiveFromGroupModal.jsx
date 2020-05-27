@@ -49,9 +49,7 @@ const GiveFromGroupModal = (props) => {
         modalLeftSectionDouble = (
             <Grid.Column mobile={16} tablet={16} computer={6}>
                 <div className="ModeLeftBoxTwo">
-                    <Link 
-                        route={`/give/to/charity/new?group_id=${groupId}`}
-                    >
+                    <Link route={`/give/to/charity/new?group_id=${groupId}`}>
                         <div className="ModelLeftBoxTop ">
                             <Image src={leftmodelimg} />
                             <div className="descriptiontext">
@@ -59,12 +57,14 @@ const GiveFromGroupModal = (props) => {
                             </div>
                         </div>
                     </Link>
-                    <div className="ModelLeftBoxBottom ">
-                        <Image src={leftcampaigngroup} />
-                        <div className="descriptiontext">
-                            {divTextForCampaign}
+                    <Link route={`/give/to/group/${slug}/new`}>
+                        <div className="ModelLeftBoxBottom ">
+                            <Image src={leftcampaigngroup} />
+                            <div className="descriptiontext">
+                                {divTextForCampaign}
+                            </div>
                         </div>
-                    </div>
+                    </Link>
                 </div>
             </Grid.Column>
         );
@@ -74,7 +74,7 @@ const GiveFromGroupModal = (props) => {
         divText = divTextForCharity;
         divClassName = 'ModelLeftBox';
     } else if (_isEmpty(beneficiariesCount) && hasCampaignAccess) {
-        giveUrl = `/give/to/group/new?group_id=${groupId}`;
+        giveUrl = `/give/to/group/${slug}/new`;
         bgImage = leftcampaigngroup;
         divText = divTextForCampaign;
         divClassName = 'Givegroupimg';

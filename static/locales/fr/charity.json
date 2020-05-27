@@ -16,7 +16,7 @@
     "feeAmountCoverageNote": "Couvrez {{feeAmount}} en frais de traitement par un tiers pour que l’organisme de bienfaisance reçoive le don de {{totalAmount}} en entier.",
     "giftTypeSingle": "Ceci est un don unique",
     "learnMore" : "Learn more.",
-    "donationRecurringDateNote": "Your first monthly deposit will be scheduled for {{recurringDate}}."
+    "donationRecurringDateNote": "Your first gift will be scheduled for {{recurringDate}}."
 
 }
 

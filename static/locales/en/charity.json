@@ -16,7 +16,7 @@
     "feeAmountCoverageNote": "Cover {{feeAmount}} in third-party processing fees on behalf of this charity, for a total amount of {{totalAmount}}.",
     "giftTypeSingle": "This is a one time gift",
     "learnMore" : "Learn more.",
-    "donationRecurringDateNote": "Your first monthly deposit will be scheduled for {{recurringDate}}."
+    "donationRecurringDateNote": "Your first gift will be scheduled for {{recurringDate}}."
 
 }
 
