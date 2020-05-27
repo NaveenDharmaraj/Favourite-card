@@ -990,7 +990,7 @@ class Charity extends React.Component {
                                                         />
                                                         {
                                                             (!_isEmpty(coverAmountDisplay) && coverAmountDisplay > 0) &&
-                                                            <p>
+                                                            <p className="coverFeeLabel">
                                                                 {formatMessage('coverFeeLabel', {
                                                                     amount: formatCurrency(coverAmountDisplay, language, 'USD'),
                                                                 })}

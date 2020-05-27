@@ -356,10 +356,12 @@
                          tr{
                             td{
                                 &.tableOne{
+                                    word-break: break-all;
                                     @media only screen and (min-width:768px) {
                                         width: 220px !important;
                                         padding: 29px 4px 29px 0px;
                                         vertical-align: top;
+                                        word-break: break-all;
                                     }
                                 }
                                 &.transaction-text{
@@ -512,8 +514,11 @@
         }
     }
     .ui[class*="left icon"].input>input{
-        padding-left: 1.8em!important;
+        padding-left: 2em!important;
+        font-size: 14px !important;
         padding-right: 1em!important;
+        padding-top: 12px !important;
+        padding-bottom: 12px !important;
     }
     .ui[class*="left icon"].input>i.icon {
         right: auto;
@@ -523,6 +528,11 @@
         top: -1px;
         color: #000 !important;
         font-weight: normal !important;
+    }
+    .coverFeeLabel{
+        font-size: 12px !important;
+        color: #263238 ;
+        line-height: 15px;
     }
 }
 .Frequencybottom{
@@ -1233,6 +1243,7 @@ p{
     @media only screen and (min-width: 992px){
         Width:562px !important;
     }
+
 } 
 .ui.modal>.content>.description {
 textarea {  
@@ -1241,9 +1252,12 @@ textarea {
     }
 }
 .ui[class*="left icon"].input>input{
-    padding-left: 1.8em!important;
-    padding-right: 1em!important;
-    padding-top: 11px !important;
+    padding-left: 2em!important;
+        font-size: 14px !important;
+        padding-right: 1em!important;
+        padding-top: 12px !important;
+        padding-bottom: 12px !important;
+
 }
 .ui[class*="left icon"].input>i.icon {
     right: auto;
@@ -1253,6 +1267,23 @@ textarea {
     top: -1px;
     color: #000 !important;
     font-weight: normal !important;
+}
+.coverFeeLabel{
+    font-size: 12px !important;
+    color: #263238 ;
+    line-height: 15px;
+}
+input{
+    &::placeholder{
+        color:#7F7F7F !important;
+        font-size: 14px;
+    } 
+}
+#province{
+    .default{
+        color:#7F7F7F !important;
+        font-size: 14px;
+    }  
 }
 }
 .fullboxmodelgiv{

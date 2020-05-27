@@ -21,7 +21,7 @@
     "invalidProvince": "Sélectionnez votre province ou état",
     "addressPlaceHolder": "123 rue Chemin",
     "secondAddressPlaceHolder": "Apt/suite number",
-    "postalCodePlaceHolder": "V3Z3N5",
+    "postalCodePlaceHolder": "V3Z 3N5",
     "invalidInputFormat": "Veuillez ne pas utiliser de crochets ou de barres obliques: ",
     "invalidFieldLength": "Il semble que le {fieldName} que vous avez entré soit trop long (veuillez utiliser un maximum de {length} caractères).",
     "state": "État"

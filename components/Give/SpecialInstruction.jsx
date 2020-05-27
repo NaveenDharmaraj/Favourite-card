@@ -96,7 +96,6 @@ const SpecialInstruction = (props) => {
                     handlegiftTypeButtonClick={handlegiftTypeButtonClick}
                     handleInputChange={handleInputChange}
                     language={language}
-                    showTransferDate={true}
                 />
             </Fragment>
         );

@@ -21,7 +21,6 @@ function DonationFrequency(props) {
         language,
         isGiveFlow,
         recurringDisabled,
-        showTransferDate,
     } = props;
     return (
         <>
@@ -92,17 +91,14 @@ function DonationFrequency(props) {
                                 15th of every month
                             </Button>
                         </div>
-                        {(!isGiveFlow || !!showTransferDate) && (
-                            <div className="recurringMsg  mt-1 mb-1">
-                                {formatMessage(
-                                    'donationRecurringDateNote',
-                                    { 
-                                        recurringDate: setDateForRecurring(giftType.value, formatMessage, language)
-                                    },
-                                )}
-                            </div>
-                        )
-                        }
+                        <div className="recurringMsg  mt-1 mb-1">
+                            {formatMessage(
+                                'donationRecurringDateNote',
+                                {
+                                    recurringDate: setDateForRecurring(giftType.value, formatMessage, language)
+                                },
+                            )}
+                        </div>
                         
                     </>
                 ))
