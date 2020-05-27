@@ -15,6 +15,7 @@ import {
 import getConfig from 'next/config';
 
 import { Link } from '../../routes';
+import { withTranslation } from '../../i18n';
 
 const { publicRuntimeConfig } = getConfig();
 const {
@@ -39,79 +40,80 @@ const UserDetails = (props) => {
             },
         },
         isAUthenticated,
+        t: formatMessage,
     } = props;
     let buttonLink = null;
     const charityDetails = [];
     let viewData = '';
-        if (!_isEmpty(contactName)) {
-            charityDetails.push({
-                Content: `Contact: ${contactName}`,
-                name: 'user',
-            });
-        }
-        if (!_isEmpty(phone)) {
-            charityDetails.push({
-                Content: phone,
-                name: 'phone',
-            });
-        }
-        if (!_isEmpty(email)) {
-            charityDetails.push({
-                Content: email,
-                link: `mailto:${email}`,
-                name: 'mail',
-            });
-        }
-        if (!_isEmpty(website)) {
-            charityDetails.push({
-                Content: website,
-                link: website,
-                name: 'linkify',
-            });
-        }
-        if (!_isEmpty(staffCount) && staffCount > 0) {
-            charityDetails.push({
-                Content: staffCount,
-                name: 'users',
-            });
-        }
-        if (!_isEmpty(businessNumber)) {
-            charityDetails.push({
-                Content: businessNumber,
-                name: 'briefcase',
-            });
-        }
-        if (!_isEmpty(headQuarterAddress)) {
-            charityDetails.push({
-                Content: headQuarterAddress,
-                name: 'marker',
-            });
-        }
+    if (!_isEmpty(contactName)) {
+        charityDetails.push({
+            Content: `${formatMessage('charityProfile:contactText')}: ${contactName}`,
+            name: 'user',
+        });
+    }
+    if (!_isEmpty(phone)) {
+        charityDetails.push({
+            Content: phone,
+            name: 'phone',
+        });
+    }
+    if (!_isEmpty(email)) {
+        charityDetails.push({
+            Content: email,
+            link: `mailto:${email}`,
+            name: 'mail',
+        });
+    }
+    if (!_isEmpty(website)) {
+        charityDetails.push({
+            Content: website,
+            link: website,
+            name: 'linkify',
+        });
+    }
+    if (!_isEmpty(staffCount) && staffCount > 0) {
+        charityDetails.push({
+            Content: staffCount,
+            name: 'users',
+        });
+    }
+    if (!_isEmpty(businessNumber)) {
+        charityDetails.push({
+            Content: businessNumber,
+            name: 'briefcase',
+        });
+    }
+    if (!_isEmpty(headQuarterAddress)) {
+        charityDetails.push({
+            Content: headQuarterAddress,
+            name: 'marker',
+        });
+    }
 
-    if(!_isEmpty(charityDetails)) {
+    if (!_isEmpty(charityDetails)) {
         viewData = (
             <Fragment>
-                    <List>
-                        {charityDetails.map((value) => (
-                            <List.Item>
-                                <List.Icon name={value.name} />
-                                {value.link && (
-                                    <List.Content>
-                                        <a href={value.link} target={value.name === 'linkify' ? '_blank' : '_self'}>
-                                            {value.Content}
-                                        </a>
-                                    </List.Content>
-                                )}
-                                {!value.link
-                                && (
-                                    <List.Content>
+                <List>
+                    {charityDetails.map((value) => (
+                        <List.Item>
+                            <List.Icon name={value.name} />
+                            {value.link && (
+                                <List.Content>
+                                    <a href={value.link} target={value.name === 'linkify' ? '_blank' : '_self'}>
                                         {value.Content}
-                                    </List.Content>
-                                )}
-                            </List.Item>
-                        ))}
-                    </List>
-                </Fragment>
+                                    </a>
+                                </List.Content>
+                            )}
+                            {!value.link
+                            && (
+                                <List.Content>
+                                    {value.Content}
+                                </List.Content>
+                            )}
+                        </List.Item>
+                    ))}
+                </List>
+            </Fragment>
         );
     }
 
@@ -119,13 +121,13 @@ const UserDetails = (props) => {
         if (isAUthenticated) {
             buttonLink = (
                 <Link route={(`/give/to/charity/${slug}/gift/new`)}>
-                    <Button className="blue-btn-rounded-def">Give</Button>
+                    <Button className="blue-btn-rounded-def">{formatMessage('charityProfile:give')}</Button>
                 </Link>
             );
         } else {
             buttonLink = (
                 <a href={(`${RAILS_APP_URL_ORIGIN}/send/to/charity/${slug}/gift/new`)}>
-                    <Button className="blue-btn-rounded-def">Give</Button>
+                    <Button className="blue-btn-rounded-def">{formatMessage('charityProfile:give')}</Button>
                 </a>
             );
         }
@@ -134,7 +136,7 @@ const UserDetails = (props) => {
         <div className="charityInfowrap">
             <div className="charityInfo">
                 <Header as="h4">
-                    Charity information
+                    {formatMessage('charityProfile:charityInformation')}
                 </Header>
                 {viewData}
                 <Responsive minWidth={768}>
@@ -145,10 +147,10 @@ const UserDetails = (props) => {
                 && (
                     <div className="charityInfoClaim">
                         <p>
-                        *Is this your charity? You can claim your free profile page on our platfrom.
+                            {`* ${formatMessage('charityProfile:claimCharityInfo')}`}
                         </p>
                         <a href={CLAIM_CHARITY_URL}>
-                            <Button className="blue-bordr-btn-round-def">Claim charity</Button>
+                            <Button className="blue-bordr-btn-round-def">{formatMessage('charityProfile:claimCharityButtonText')}</Button>
                         </a>
                     </div>
                 )
@@ -186,4 +188,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(UserDetails);
+export default withTranslation('charityProfile')(connect(mapStateToProps)(UserDetails));

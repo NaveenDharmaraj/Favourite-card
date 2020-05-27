@@ -102,7 +102,7 @@ class CharityDetails extends React.Component {
                                     <div className="ch_badge-group">
                                         {getCauses}
                                     </div>
-                                    <div className='ch_share'>
+                                    <div className="ch_share">
                                         <GroupShareDetails
                                             liked={following}
                                             profileId={profileId}

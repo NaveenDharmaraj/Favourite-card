@@ -16,6 +16,7 @@ import _map from 'lodash/map';
 import _property from 'lodash/property';
 import getConfig from 'next/config';
 
+import { withTranslation } from '../i18n';
 import {
     getBeneficiaryFromSlug,
 } from '../actions/charity';
@@ -47,6 +48,9 @@ class CharityProfile extends React.Component {
         }
         await reduxStore.dispatch(getBeneficiaryFromSlug(query.slug, auth0AccessToken));
         return {
+            namespacesRequired: [
+                'charityProfile',
+            ],
             slug: query.slug,
         };
     }
@@ -82,6 +86,7 @@ class CharityProfile extends React.Component {
             },
             isAUthenticated,
             redirectToDashboard,
+            t: formatMessage,
         } = this.props;
         const title = `${name} | Canadian charity | Charitable Impact`;
         /* Commenting line number from 63 to 70 with reference to PM-462
@@ -101,13 +106,13 @@ class CharityProfile extends React.Component {
             if (isAUthenticated) {
                 buttonLink = (
                     <Link route={(`/give/to/charity/${slug}/gift/new`)}>
-                        <Button className="blue-btn-rounded-def">Give</Button>
+                        <Button className="blue-btn-rounded-def">{formatMessage('charityProfile:give')}</Button>
                     </Link>
                 );
             } else {
                 buttonLink = (
                     <a href={(`${RAILS_APP_URL_ORIGIN}/send/to/charity/${slug}/gift/new`)}>
-                        <Button className="blue-btn-rounded-def">Give</Button>
+                        <Button className="blue-btn-rounded-def">{formatMessage('charityProfile:give')}</Button>
                     </a>
                 );
             }
@@ -182,4 +187,6 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(CharityProfile);
+export default withTranslation([
+    'charityProfile',
+])(connect(mapStateToProps)(CharityProfile));

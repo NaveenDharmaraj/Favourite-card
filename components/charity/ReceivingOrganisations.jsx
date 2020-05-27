@@ -22,6 +22,7 @@ import {
     getBeneficiaryDoneeList,
 } from '../../actions/charity';
 import PlaceholderGrid from '../shared/PlaceHolder';
+import { withTranslation } from '../../i18n';
 
 class ReceivingOrganisations extends React.Component {
     constructor(props) {
@@ -64,6 +65,7 @@ class ReceivingOrganisations extends React.Component {
             showButtonLoader,
             totalPages,
             transactionsLoader,
+            t: formatMessage,
         } = this.props;
         let viewData = '';
         if (!_isEmpty(doneeList)) {
@@ -101,27 +103,29 @@ class ReceivingOrganisations extends React.Component {
                 <PlaceholderGrid row={5} column={1} placeholderType="multiLine" />
 
             ) : (
-                    <Fragment>
-                        <div className='ScrollData'>
-                            {viewData}
-                        </div>
+                <Fragment>
+                    <div className="ScrollData">
+                        {viewData}
+                    </div>
 
-                        {(currentPage < totalPages)
-                            && (
-                                <div className='loadMore'>
-                                    {
-                                        showButtonLoader
+                    {(currentPage < totalPages)
+                        && (
+                            <div className="loadMore">
+                                {
+                                    showButtonLoader
                                         ? <Icon name="spinner" loading />
-                                        : <Button
-                                            className="blue-bordr-btn-round-def"
-                                            content="see more"
-                                            onClick={this.handleSeeMore}
-                                        />
-                                    }
-                                </div>
-                            )}
-                    </Fragment>
-                )
+                                        : (
+                                            <Button
+                                                className="blue-bordr-btn-round-def"
+                                                content={formatMessage('charityProfile:seeMore')}
+                                                onClick={this.handleSeeMore}
+                                            />
+                                        )
+                                }
+                            </div>
+                        )}
+                </Fragment>
+            )
         );
     }
 }
@@ -163,4 +167,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(ReceivingOrganisations);
+export default withTranslation('charityProfile')(connect(mapStateToProps)(ReceivingOrganisations));

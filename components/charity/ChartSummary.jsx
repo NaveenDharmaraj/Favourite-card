@@ -16,6 +16,7 @@ import {
 import {
     formatCurrency,
 } from '../../helpers/give/utils';
+import { withTranslation } from '../../i18n';
 
 const ChartSummary = (props) => {
     const {
@@ -24,6 +25,7 @@ const ChartSummary = (props) => {
         value,
         hideGift,
         handleClick,
+        t: formatMessage,
     } = props;
     const currency = 'USD';
     const language = 'en';
@@ -47,7 +49,7 @@ const ChartSummary = (props) => {
                                                 className="blue-bordr-btn-round-def"
                                                 onClick={handleClick}
                                             >
-                                                View gifts
+                                                {formatMessage('charityProfile:viewGiftButtonText')}
                                             </Button>
                                         </List.Content>
                                     )
@@ -80,4 +82,4 @@ ChartSummary.propTypes = {
     text: string,
 };
 
-export default ChartSummary;
+export default withTranslation('charityProfile')(ChartSummary);

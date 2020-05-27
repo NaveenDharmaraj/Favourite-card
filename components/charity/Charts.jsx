@@ -34,10 +34,11 @@ import {
 import {
     formatGraphData,
     getChartIndex,
-} from '../../helpers/profiles/utils'
+} from '../../helpers/profiles/utils';
 import {
     getBeneficiaryFinance,
 } from '../../actions/charity';
+import { withTranslation } from '../../i18n';
 
 import CharityNoDataState from './CharityNoDataState';
 import ChartSummary from './ChartSummary';
@@ -85,7 +86,7 @@ class Charts extends React.Component {
                 graphData: viewData,
             });
         }
-        if(current !== null) {
+        if (current !== null) {
             this.highlightBar();
         }
     }
@@ -111,6 +112,7 @@ class Charts extends React.Component {
                     fill: false,
                     label: 'Revenue',
                     lineTension: 0,
+                    pointRadius: 0,
                     type: 'line',
                 },
                 {
@@ -208,6 +210,7 @@ class Charts extends React.Component {
     render() {
         const {
             chartLoader,
+            t: formatMessage,
         } = this.props;
         const {
             chartIndex,
@@ -258,7 +261,7 @@ class Charts extends React.Component {
                                             }}
                                         />
                                     </Grid.Column>
-                                    <Header as="h4">{`${graphData.yearLabel[chartIndex]} total revenue and expenses summary `}</Header>
+                                    <Header as="h4">{`${graphData.yearLabel[chartIndex]} ${formatMessage('charityProfile:totalRevenueHeading')}`}</Header>
                                 </div>
                             </Grid.Column>
                         </Grid.Row>
@@ -268,7 +271,7 @@ class Charts extends React.Component {
                                     <List.Item as="h5">
                                         <Image src={TotalRevenue} />
                                         <List.Content>
-                                            Total revenue
+                                            {formatMessage('charityProfile:totalRevenueText')}
                                         </List.Content>
                                     </List.Item>
                                 </List>
@@ -288,7 +291,7 @@ class Charts extends React.Component {
                                     <List.Item as="h5">
                                         <Image src={ToalExpense} />
                                         <List.Content>
-                                            Total expenses
+                                            {formatMessage('charityProfile:totalExpenseText')}
                                         </List.Content>
                                     </List.Item>
                                 </List>
@@ -301,7 +304,7 @@ class Charts extends React.Component {
                         </Grid.Row>
                         {!_isEmpty(graphData) && this.renderSummary()}
                     </Grid>
-                    <p className="ch_footnote">* Information about revenue and expenses is provided by the Canada Revenue Agency approximately once each quarter.</p>
+                    <p className="ch_footnote">{`* ${formatMessage('charityProfile:summaryInfo')}`}</p>
                     <Modal
                         open={showDoneeListModal}
                         onClose={this.closeDoneeListModal}
@@ -310,7 +313,7 @@ class Charts extends React.Component {
                         className="chimp-modal"
                         closeIcon
                     >
-                        <Modal.Header icon="archive" content="Gifts to qualified donees" />
+                        <Modal.Header icon="archive" content={formatMessage('charityProfile:doneeListModalHeader')} />
                         <Modal.Content className="ch_ModelContent">
                             <ReceivingOrganisations
                                 year={graphData.yearLabel[chartIndex]}
@@ -320,13 +323,13 @@ class Charts extends React.Component {
                 </Fragment>
             );
         } else {
-            chartView = <CharityNoDataState />
+            chartView = <CharityNoDataState />;
         }
         return (
             <Fragment>
                 <Grid.Row>
                     <Grid.Column mobile={16} tablet={16} computer={16} className="revenue mt-1">
-                        <Header as="h3">Revenue and expenses</Header>
+                        <Header as="h3">{formatMessage('charityProfile:revenueAndExpenses')}</Header>
                         {chartLoader
                             ? (
                                 <Grid>
@@ -380,4 +383,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(Charts);
+export default withTranslation('charityProfile')(connect(mapStateToProps)(Charts));
