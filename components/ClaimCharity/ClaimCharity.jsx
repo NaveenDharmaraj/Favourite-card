@@ -40,9 +40,13 @@ class ClaimCharity extends React.Component {
     }
 
     onClaimCharityClick = () => {
-        const { dispatch } = this.props;
+        const { 
+            currentUser:{
+                id
+            },
+            dispatch } = this.props;
         const { accessCode } = this.state;
-        dispatch(checkClaimCharityAccessCode(accessCode));
+        dispatch(checkClaimCharityAccessCode(accessCode, id));
     }
 
     render() {
@@ -138,6 +142,7 @@ class ClaimCharity extends React.Component {
                                                                 <Form.Field>
                                                                     <label className="accesslabel">Access code</label>
                                                                     <Form.Field
+                                                                        error={true}
                                                                         control={Input}
                                                                         id="accessCode"
                                                                         name="accessCode"

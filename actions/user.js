@@ -839,13 +839,12 @@ export const saveUserCauses = (dispatch, userId, userCauses, discoverValue) => {
     });
 };
 
-export const checkClaimCharityAccessCode = (accessCode) => (dispatch) => {
+export const checkClaimCharityAccessCode = (accessCode, userId) => (dispatch) => {
     const fsa = {
         payload: {
         },
         type: actionTypes.CHECK_CLAIM_CHARITY_ACCESS_CODE,
     };
-    
     return coreApi.post(`/claimCharities`, {
         data: {
             type: "claimCharities",
@@ -859,8 +858,10 @@ export const checkClaimCharityAccessCode = (accessCode) => (dispatch) => {
                 data: result.data,
             };
             const beneficiaryName = result.data.attributes.beneficiaryName;
-            storage.set('charityName', beneficiaryName, 'local', this.getRemainingSessionTime() / 1000);
-            Router.pushRoute('/claim-charity/success'); 
+            storage.set('charityName', beneficiaryName, 'local', 1800000 );
+            getUser(dispatch, userId, null).then( () => {
+                Router.pushRoute('/claim-charity/success'); 
+            }) 
         }, 
     ).catch((error) => {
         const errorFsa = {
@@ -876,12 +877,5 @@ export const checkClaimCharityAccessCode = (accessCode) => (dispatch) => {
     
 };
 
-function getRemainingSessionTime(beneficiaryName) {
-    const expiry = new Date(beneficiaryName * 1000);
-    const now = new Date();
-    return (expiry > now)
-        ? (expiry - now)
-        : 0;
-}
 
 

@@ -5,14 +5,30 @@ import {
     Grid,
     Button,
     Image,
-    Segment,
 } from 'semantic-ui-react';
-
+import { connect, } from 'react-redux';
+import getConfig from 'next/config';
 import accessingleft from '../../static/images/accessing2.png';
 import accessingfull from '../../static/images/accessing1.png';
 import '../../static/less/claimcharity.less';
 
-function Accessing(props) {
+const { publicRuntimeConfig } = getConfig();
+
+const {
+    RAILS_APP_URL_ORIGIN,
+} = publicRuntimeConfig;
+
+let locationNumber = '';
+
+const Accessing = (props) => {
+    const { currentUser: {
+        attributes: {
+            firstName
+        }
+    },
+        charityName,
+        otherAccounts
+    } = props;
     return (
         <Fragment>
             <div className="AccessingtopBanner">
@@ -20,10 +36,16 @@ function Accessing(props) {
                     <div className="lefttopicon"></div>
                     <div className="bannerHeading">
                         <Header as='h3'>
-                            {props.currentUser ? props.currentUser.attributes.firstName : ''}
-                        , you’ve claimed your charity </Header>
-                        <p>Now you have access to your charity charity_name’s account.</p>
-                        <Button className=" primary blue-btn-rounded mt-1"><b>Go to my Charity Account</b></Button>
+                            {firstName}
+                            , you’ve claimed your charity </Header>
+                        <p>Now you have access to your charity {charityName} account.</p>
+                        {otherAccounts && otherAccounts.map((item) => {
+                            if (item.name === charityName) {
+                                locationNumber = item.location;
+                                return locationNumber;
+                            }
+                        }), console.log(locationNumber)}
+                        <a href={`${RAILS_APP_URL_ORIGIN}${locationNumber}`}><Button className=" primary blue-btn-rounded mt-1"><b>Go to my Charity Account</b></Button></a>
                     </div>
                 </Container>
             </div>
@@ -74,4 +96,8 @@ function Accessing(props) {
     );
 }
 
-export default Accessing;
+const mapStateToProps = (state) => ({
+    otherAccounts: state.user.otherAccounts,
+});
+
+export default (connect(mapStateToProps)(Accessing));
