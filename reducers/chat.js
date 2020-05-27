@@ -90,8 +90,28 @@ const chat = (state = {}, action) => {
             };
             break;
         case actionTypes.CURRENT_SELECTED_CONVERSATION:
+            const msgUpdate = _cloneDeep(state.messages);
+            const {
+                selectedConversation,
+            } = action.payload;
+            if (!isFalsy(selectedConversation) && selectedConversation.conversationInfo && selectedConversation.conversationInfo.info.unreadCount != 0) {
+                msgUpdate.find((msg) => {
+                    if ((selectedConversation.groupId || msg.groupId)) {
+                        if (selectedConversation.groupId == msg.groupId) {
+                            msg.conversationInfo.info.unreadCount = 0;
+                            return true;
+                        }
+                        return false;
+                    } if (selectedConversation.contactIds == msg.contactIds) {
+                        msg.conversationInfo.info.unreadCount = 0;
+                        return true;
+                    }
+                });
+            }
+
             return {
                 ...state,
+                messages: [...msgUpdate],
                 selectedConversation: action.payload.selectedConversation,
                 selectedConversationMessages: [],
             };

@@ -136,7 +136,7 @@ const loadConversationMessages = (selectedConversation, endTime = new Date().get
     }
 };
 
-const loadInboxList = (detail, messages, userDetails, userInfo) => async (dispatch) => {
+const loadInboxList = (detail, messages, userDetails, userInfo, selectedConversation = {}) => async (dispatch) => {
     const messagesRef = _cloneDeep(messages);
     const {
         resp,
@@ -153,6 +153,16 @@ const loadInboxList = (detail, messages, userDetails, userInfo) => async (dispat
                 // checking group
                 if (msg.groupId || resp.message.to) {
                     if (msg.groupId == resp.message.to) {
+                        // contentType = 10 is for actions happened in group like adding members
+                        if (resp.message.contentType !== 10) {
+                            // new message other than selected one increase the unread count
+                            if (selectedConversation.groupId != msg.groupId) {
+                                msg.conversationInfo.info.unreadCount = msg.conversationInfo.info.unreadCount ? msg.conversationInfo.info.unreadCount + 1 : 1;
+                            } else {
+                                // dummy api call to tell applogic this current selected conversation is read
+                                applozicApi.get('/message/v2/list', { params: { groupId: resp.message.to } });
+                            }
+                        }
                         dispatch(loadrecentMessage(resp, msg, messagesRef, index));
                         return true;
                     }
@@ -160,6 +170,13 @@ const loadInboxList = (detail, messages, userDetails, userInfo) => async (dispat
                 }
                 // check for user
                 if (msg.contactIds == resp.message.from) {
+                    // new message other than selected one increase the unread count
+                    if (selectedConversation.groupId || (selectedConversation.contactIds != msg.contactIds)) {
+                        msg.conversationInfo.info.unreadCount = msg.conversationInfo.info.unreadCount ? msg.conversationInfo.info.unreadCount + 1 : 1;
+                    } else {
+                        // dummy api call to tell applogic this current selected conversation is read
+                        applozicApi.get('/message/v2/list', { params: { userId: resp.message.from } });
+                    }
                     dispatch(loadrecentMessage(resp, msg, messagesRef, index));
                     return true;
                 }
@@ -182,12 +199,15 @@ const loadInboxList = (detail, messages, userDetails, userInfo) => async (dispat
                 groupFeed = {
                     [id]: response.groupFeeds[0],
                 };
+                groupFeed[response.groupFeeds[0].id].unreadCount = detail.received ? 1 : 0;
                 dispatch({
                     payload: {
                         groupFeeds: groupFeed,
                     },
                     type: actionTypes.NEW_GROUP_FEEDS,
                 });
+            } else {
+                userDetails[response.userDetails[0].userId].unreadCount = 1;
             }
 
             if (!_isEmpty(response.message) && response.message.length > 0) {

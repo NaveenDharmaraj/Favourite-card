@@ -106,7 +106,7 @@ class ChatInboxList extends React.Component {
                 }
             }
             newMsg && dispatch(addNewChatMessage(detail.resp.message));
-            await dispatch(loadInboxList(detail, messages, userDetails, userInfo));
+            await dispatch(loadInboxList(detail, messages, userDetails, userInfo, selectedConversation));
         }
     }
 

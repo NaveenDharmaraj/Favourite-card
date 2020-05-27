@@ -205,7 +205,7 @@ class ChatConversationGroupHeader extends React.Component {
             "LEAVE_GROUP": {
                 header: "Leave conversation?",
                 description: "You won't get messages from this group chat unless another member adds you back into the chat.",
-                param: { clientGroupId: selectedConversation.groupId },
+                param: { clientGroupId: selectedConversation.groupId.toString() },
                 button: 'Leave conversation',
             },
             "DELETE_GROUP": {
@@ -227,19 +227,19 @@ class ChatConversationGroupHeader extends React.Component {
             "MAKE_USER_ADMIN": {
                 header: `Make ${groupUserName} group chat admin for group name?`,
                 description: `As an administrator, ${groupUserName} will be able to manage all the members of this group chat.`,
-                param: { clientGroupId: selectedConversation.groupId, users: groupUserInfo },
+                param: { clientGroupId: selectedConversation.groupId.toString(), users: groupUserInfo },
                 button: 'Make group admin',
             },
             'REMOVE_ADMIN': {
                 header: 'Remove admin status?',
                 description: `${groupUserName} will no longer be able to manage all the members of this group chat.`,
-                param: { clientGroupId: selectedConversation.groupId, users: groupUserInfo },
+                param: { clientGroupId: selectedConversation.groupId.toString(), users: groupUserInfo },
                 button: 'Remove admin status',
             },
             'REMOVE_USER': {
                 header: `Remove ${groupUserName}?`,
                 description: `${groupUserName} will be removed from this conversation.`,
-                param: { clientGroupId: selectedConversation.groupId, userId: this.state.userId },
+                param: { clientGroupId: selectedConversation.groupId.toString(), userId: this.state.userId },
                 button: 'Remove',
             }
         } : null;
@@ -401,7 +401,7 @@ class ChatConversationGroupHeader extends React.Component {
                                 loading={this.state.buttonLoader}
                                 disabled={this.state.buttonLoader || _isEmpty(this.state.groupAddMemberValues)}
                                 className="blue-btn-rounded-def c-small"
-                                onClick={() => this.handleModalClick({ "userIds": groupAddMemberValues, "clientGroupIds": [selectedConversation.groupId] }, groupAction)}
+                                onClick={() => this.handleModalClick({ "userIds": groupAddMemberValues, "clientGroupIds": [selectedConversation.groupId.toString()] }, groupAction)}
                             >
                                 Add
                             </Button>
