@@ -68,6 +68,7 @@ ProgramAreas.defaultProps = {
             charityPrograms: [],
         }),
     }),
+    t: () => {},
 };
 
 ProgramAreas.propTypes = {
@@ -76,6 +77,7 @@ ProgramAreas.propTypes = {
             charityPrograms: array,
         }),
     }),
+    t: PropTypes.func,
 };
 
 function mapStateToProps(state) {

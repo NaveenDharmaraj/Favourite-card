@@ -167,6 +167,7 @@ UserDetails.defaultProps = {
         },
     },
     isAUthenticated: false,
+    t: () => {},
 };
 
 UserDetails.propTypes = {
@@ -177,6 +178,7 @@ UserDetails.propTypes = {
         }),
     },
     isAUthenticated: bool,
+    t: PropTypes.func,
 };
 
 function mapStateToProps(state) {

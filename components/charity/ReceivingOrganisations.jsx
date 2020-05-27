@@ -132,11 +132,13 @@ ReceivingOrganisations.defaultProps = {
     charityDetails: {
         id: null,
     },
-    currentPage: null,
     currency: 'USD',
+    currentPage: null,
     dispatch: () => { },
     donationDetails: [],
     language: 'en',
+    showButtonLoader: false,
+    t: () => {},
     totalPages: null,
     transactionsLoader: true,
 };
@@ -145,19 +147,21 @@ ReceivingOrganisations.propTypes = {
     charityDetails: PropTypes.shape({
         id: number,
     }),
-    currentPage: number,
     currency: string,
+    currentPage: number,
     dispatch: func,
     donationDetails: arrayOf(PropTypes.element),
     language: string,
+    showButtonLoader: bool,
+    t: PropTypes.func,
     totalPages: number,
     transactionsLoader: bool,
 };
 
 function mapStateToProps(state) {
     return {
-        currentPage: state.charity.currentPage,
         charityDetails: state.charity.charityDetails,
+        currentPage: state.charity.currentPage,
         donationDetails: state.charity.donationDetails,
         showButtonLoader: state.charity.showButtonLoader,
         totalPages: state.charity.totalPages,

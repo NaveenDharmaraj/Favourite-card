@@ -22,8 +22,6 @@ import {
     Divider,
     Modal,
     Loader,
-    Icon,
-    Button,
 } from 'semantic-ui-react';
 
 import totalRevenue from '../../static/images/total_revenue.svg';
@@ -363,6 +361,7 @@ Charts.defaultProps = {
     }),
     chartLoader: true,
     dispatch: () => {},
+    t: () => {},
 };
 
 Charts.propTypes = {
@@ -372,6 +371,7 @@ Charts.propTypes = {
     }),
     chartLoader: bool,
     dispatch: func,
+    t: PropTypes.func,
 };
 
 function mapStateToProps(state) {

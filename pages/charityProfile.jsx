@@ -156,6 +156,7 @@ CharityProfile.defaultProps = {
     isAUthenticated: false,
     redirectToDashboard: false,
     slug: '',
+    t: () => {},
 };
 
 CharityProfile.propTypes = {
@@ -176,6 +177,7 @@ CharityProfile.propTypes = {
     isAUthenticated: bool,
     redirectToDashboard: bool,
     slug: string,
+    t: PropTypes.func,
 };
 
 function mapStateToProps(state) {
