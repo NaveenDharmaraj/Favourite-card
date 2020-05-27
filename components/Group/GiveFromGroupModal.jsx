@@ -1,10 +1,10 @@
 import React from 'react';
 import {
-    Button,
     Modal,
     Grid,
     Image,
     Item,
+    Responsive,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import _isEmpty from 'lodash/isEmpty';
@@ -22,6 +22,7 @@ import PlaceholderGrid from '../shared/PlaceHolder';
 
 const GiveFromGroupModal = (props) => {
     const {
+        toggleGiveFromGroupModal,
         groupsWithMemberships,
         beneficiariesCount,
         groupDetails: {
@@ -33,6 +34,7 @@ const GiveFromGroupModal = (props) => {
         groupId,
         fundId,
         hasCampaignAccess,
+        isGiveFromModalOpen,
     } = props;
     const divTextForCharity = 'A charity your group supports';
     const divTextForCampaign = 'The campaign your group supports';
@@ -46,29 +48,23 @@ const GiveFromGroupModal = (props) => {
     if (!_isEmpty(beneficiariesCount) && hasCampaignAccess) {
         modalLeftSectionDouble = (
             <Grid.Column mobile={16} tablet={16} computer={6}>
-                <div className="twogivebox">
+                <div className="ModeLeftBoxTwo">
                     <Link 
                         route={`/give/to/charity/new?group_id=${groupId}`}
                     >
-                        <div className="firstgivebox">
+                        <div className="ModelLeftBoxTop ">
                             <Image src={leftmodelimg} />
-                            <div className="Givegroup">
-                                <b>
-                                    {divTextForCharity}
-                                </b>
+                            <div className="descriptiontext">
+                                {divTextForCharity}
                             </div>
                         </div>
                     </Link>
-                    <Link route={`/give/to/group/${slug}/new`}>
-                        <div className="secondgivebox">
-                            <Image src={leftcampaigngroup} />
-                            <div className="Givegroup">
-                                <b>
-                                    {divTextForCampaign}
-                                </b>
-                            </div>
+                    <div className="ModelLeftBoxBottom ">
+                        <Image src={leftcampaigngroup} />
+                        <div className="descriptiontext">
+                            {divTextForCampaign}
                         </div>
-                    </Link>
+                    </div>
                 </div>
             </Grid.Column>
         );
@@ -90,14 +86,12 @@ const GiveFromGroupModal = (props) => {
     }
     const modalLeftSectionSingle = (
         <Grid.Column mobile={16} tablet={16} computer={6}>
-            <Link 
-                route={giveUrl}
-            >
+            <Link route={giveUrl}>
                 <div className={divClassName}>
                     <Image src={bgImage} />
                     <div className="descriptiontext">
-                        <b>{divText}</b><br/>
-                        {disabledDivText}
+                        {divText}
+                        <p className="disabled-text">{disabledDivText}</p>
                     </div>
                 </div>
             </Link>
@@ -108,29 +102,71 @@ const GiveFromGroupModal = (props) => {
             className="chimp-modal likeToGiveModal"
             closeIcon
             size="small"
-            trigger={<Button className="blue-bordr-btn-round">Give from this Group</Button>}
+            open={isGiveFromModalOpen}
+            onClose={toggleGiveFromGroupModal}
             centered
             dimmer="inverted"
         >
             <Modal.Header>Give from: {groupName}</Modal.Header>
             <Modal.Content className="scrollContent">
-                {(beneficiariesCount !== undefined) ? (
-                    <Grid divided className="fullboxmodelgiv">
+                <div className="giveingGropPopupHeading">
+                    <Grid>
                         <Grid.Row>
+                            <Grid.Column mobile={16} tablet={16} computer={6}>
+                                <div className="giveboxheding">
+                                    <p>Give to:</p>
+                                </div>
+                            </Grid.Column>
+                            <Responsive minWidth={992} maxWidth={2559}>
+                                <Grid.Column mobile={16} tablet={16} computer={10}>
+                                    <div className="giveboxheding">
+                                        <p className="rightTop">Or, find someone else to give to:</p>
+                                    </div>
+                                </Grid.Column>
+                            </Responsive>
+                        </Grid.Row>
+                    </Grid>
+                </div>
+                {(beneficiariesCount !== undefined) ? (
+                    
+                    <Grid className="giveingGropPopup">
+                        <Grid.Row stretched>
                             {(!_isEmpty(beneficiariesCount) && hasCampaignAccess) ? modalLeftSectionDouble : modalLeftSectionSingle}
+
+                            <Responsive  minWidth={320} maxWidth={991}>
+                                <div className="giveingGropPopupHeading">
+                                    <Grid>
+                                        <Grid.Row>
+                                            <Grid.Column mobile={16} tablet={16} computer={10}>
+                                                <div className="giveboxheding">
+                                                    <p className="rightbottom"> Or, find someone else to give to: </p>
+                                                </div>
+                                            </Grid.Column>
+                                        </Grid.Row>
+                                    </Grid>
+                                </div>
+                            </Responsive>
                             <Grid.Column mobile={16} tablet={16} computer={10}>
-                                <div className="rightbox">
+                                <div className="rightBoxs">
                                     <Item.Group>
                                         <Link route={relatedGroupsRoute}>
-                                            <Item className={relatedGroupsRoute ? '' : 'graybox'}>
+                                            <Item className={(relatedGroupsRoute) ? '' : 'graybox'}>
                                                 <Image src={modelimg1} />
                                                 <Item.Content verticalAlign='middle'>
                                                     <Item.Description>
                                                         <p>Another Giving Group that you're a member of </p>
+                                                        {(!relatedGroupsRoute && (
+                                                            <p className="disabled-text">It looks like you're not yet a member of any other groups</p>
+                                                        ))
+                                                        }
                                                     </Item.Description>
                                                 </Item.Content>
                                             </Item>
                                         </Link>
+                                    </Item.Group>
+                                </div>
+                                <div className="rightBoxs">
+                                    <Item.Group>
                                         <Link route='/give/to/friend/new'>
                                             <Item>
                                                 <Image src={modelimg2} />
@@ -141,6 +177,10 @@ const GiveFromGroupModal = (props) => {
                                                 </Item.Content>
                                             </Item>
                                         </Link>
+                                    </Item.Group>
+                                </div>
+                                <div className="rightBoxs">
+                                    <Item.Group>
                                         <Link route='/search'>
                                             <Item>
                                                 <Image src={modelimg3} />

@@ -48,6 +48,7 @@ class GroupDetails extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            isGiveFromModalOpen: false,
             joinClicked: false,
             openLeaveModal: false,
             userJoinClicked: false,
@@ -56,6 +57,7 @@ class GroupDetails extends React.Component {
         this.handleUserJoin = this.handleUserJoin.bind(this);
         this.close = this.close.bind(this);
         this.callLeaveGroup = this.callLeaveGroup.bind(this);
+        this.toggleGiveFromGroupModal = this.toggleGiveFromGroupModal.bind(this);
     }
 
     componentDidMount() {
@@ -125,6 +127,13 @@ class GroupDetails extends React.Component {
         });
     }
 
+    toggleGiveFromGroupModal() {
+        const {
+            isGiveFromModalOpen,
+        } = this.state;
+        this.setState({ isGiveFromModalOpen: !isGiveFromModalOpen });
+    }
+
     open() {
         this.setState({
             openLeaveModal: true,
@@ -175,6 +184,7 @@ class GroupDetails extends React.Component {
             },
         } = this.props;
         const {
+            isGiveFromModalOpen,
             joinClicked,
             userJoinClicked,
             openLeaveModal,
@@ -233,13 +243,23 @@ class GroupDetails extends React.Component {
             );
             if (fundId) {
                 giveFromGroupButton = (
-                    <GiveFromGroupModal
-                        beneficiariesCount={beneficiariesCount}
-                        groupName={name}
-                        fundId={fundId}
-                        groupId={groupId}
-                        hasCampaignAccess={hasCampaignAccess}
-                    />
+                    <Fragment>
+                        <Button
+                            className="blue-bordr-btn-round"
+                            onClick={this.toggleGiveFromGroupModal}
+                        >
+                            Give from this Group
+                        </Button>
+                        <GiveFromGroupModal
+                            beneficiariesCount={beneficiariesCount}
+                            groupName={name}
+                            fundId={fundId}
+                            groupId={groupId}
+                            hasCampaignAccess={hasCampaignAccess}
+                            isGiveFromModalOpen={isGiveFromModalOpen}
+                            toggleGiveFromGroupModal={this.toggleGiveFromGroupModal}
+                        />
+                    </Fragment>
                 );
             }
         } else {

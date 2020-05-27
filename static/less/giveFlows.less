@@ -1239,6 +1239,12 @@ p{
 }
 
 /*****Modal for give From group*************/
+.noteEmail {
+    margin-bottom: -45px !important;
+}
+.field.blue-btn-rounded.btn_right.rivewbtnp2p.blue-btn-rounded button.ui.primary.button {
+    min-width:126px !important;
+}
 .popbox{
     @media only screen and (min-width: 992px){
         Width:562px !important;
@@ -1286,212 +1292,247 @@ input{
     }  
 }
 }
-.fullboxmodelgiv{
-    margin-bottom: 8px !important;
-    margin-top:-15px !important;
-    .graybox{
-        background-color: #F8F8F8;
-        cursor: default !important;
-        box-shadow: 0 2px 7px 0 rgba(135,135,135,0.3);
-        img{
-            filter: grayscale(1);
-        }
-     }
+
+
+// Style for give from modal new
+
+.giveingGropPopupHeading{
     .giveboxheding{
-        padding-bottom: 20px;
+        padding-bottom: 2px;
         margin: 0px;
+        flex-grow: unset !important;
         p{
             font-size: 14px;
             line-height: 22px;
             font-family: 'ProximaNova-Regular';
             color: @font-color;
             font-weight: 700;
+            &.rightTop{
+                margin-left:28px;
+            }
+            &.rightbottom{
+                margin-left: 15px;
+                margin-top: 35px;
+            }
         }
-    }
-    .twogivebox{
-        width: 100%;
-        position: relative;
-        &::before{
+    }}
+.giveingGropPopup{
+    margin-bottom:5px !important;
+   .ModelLeftBox{
+    background-color:#F1F6FD;
+    box-shadow: 0 2px 7px 0 rgba(135, 135, 135, 0.3);
+    width: 100%;
+    position: relative;
+    &::before{
             position: absolute;
             content: "";
-            right: -15px;
-            border: 1px solid #EAEAEA
-;
-            height: 308px;
+            right: -20px;
+            border: 1px solid #EAEAEA;
+            height: 100%;
             @media only screen and (max-width:991px) {
-               height: 0px;
-               right:opx;
+                height: 0px;
+                right:0px;
             }
         }
-        .firstgivebox{
-            background-color:#F1F6FD;
-            box-shadow: 0 2px 7px 0 rgba(135, 135, 135, 0.3);
-            width: 100%;
-            margin-bottom: 15px;
-            img{
-                padding:20px  88px 12px 88px;
-                @media only screen and (max-width:991px) {
-                    margin: auto;
-                    width: 60%;
-                }
-                @media only screen and (max-width:767px) {
-                    margin: auto;
-                    width: 50%;
-                }
-                @media only screen and (max-width:500px) {
-                    margin: auto;
-                    width: 100%;
-                }
-              }
-              .Givegroup{
-                padding: 0px 24px 16px 24px;
-                text-align: center;
-                font-family: 'ProximaNova-Regular';
-                font-weight: 600;
-              }
-              &:hover{
-                cursor: pointer;
-            }
+    img{
+        padding:46px  48px 30px 48px;
+        @media only screen and (max-width:1199px) {
+        padding:64px  48px 30px 48px;
+    }
+        @media only screen and (max-width:991px) {
+            margin: auto;
+            width:38%;
+            padding: 33px 48px 25px 48px;
         }
-        .secondgivebox{
-            background-color:#F1F6FD;
-            box-shadow: 0 2px 7px 0 rgba(135, 135, 135, 0.3);
-            width: 100%;
-            img{
-                padding:20px  78px 12px 78px;
-                @media only screen and (max-width:991px) {
-                    margin: auto;
-                    width: 60%;
-                }
-                @media only screen and (max-width:767px) {
-                    margin: auto;
-                    width: 50%;
-                }
-                @media only screen and (max-width:500px) {
-                    margin: auto;
-                    width: 100%;
-                }
-              }
-              .Givegroup{
-                padding: 0px 20px 16px 20px;
-                text-align: center;
-                font-family: 'ProximaNova-Regular';
-                font-weight: 600;
-              }
-              @media only screen and (max-width:991px) {
-                  margin-bottom: 20px;
-              }
-              &:hover{
-                cursor: pointer;
+        @media only screen and (max-width:500px) {
+            margin: auto;
+            width: 60%;
+            padding: 33px 48px 25px 48px;
+        }
+    }
+    .descriptiontext{
+        padding: 0px 37px 46px 37px;
+        text-align: center;
+        font-family: 'ProximaNova-Regular';
+        font-weight: 600;
+        p{
+        &.leftsubtext{
+            font-family: 'ProximaNova-Regular';
+            line-height: 15px;
+            font-size: 12px;
+            color: #7F7F7F;
+            margin-top: 11px;
             }
         }
     }
-    .ModelLeftBox{
-        background-color:#F1F6FD;
-        box-shadow: 0 2px 7px 0 rgba(135, 135, 135, 0.3);
-        width: 100%;
-        position: relative;
-        &::before{
+    &:hover{
+        cursor: pointer;
+    }
+   }
+   .ModelLeftBoxTop{
+    background-color:#F1F6FD;
+    box-shadow: 0 2px 7px 0 rgba(135, 135, 135, 0.3);
+    width: 100%;
+    position: relative;
+    margin-bottom: 20px;
+    &::before{
             position: absolute;
             content: "";
-            right: -15px;
+            right: -20px;
             border: 1px solid #EAEAEA;
-            height: 308px;
+            height: 100%;
             @media only screen and (max-width:991px) {
-               height: 0px;
-               right:opx;
+                height: 0px;
+                right:0px;
             }
         }
+    img{
+        padding:16px  83px 16px 83px;
+        @media only screen and (max-width:1199px) {
+            padding:16px  83px 16px 83px;
+    }
         @media only screen and (max-width:991px) {
-            margin-bottom: 20px;
+            padding: 20px;
+            width: 30%;
+            margin: auto;
         }
-        img{
-          padding:50px  48px 30px 48px;
-          @media only screen and (max-width:991px) {
-              margin: auto;
-          }
+        @media only screen and (max-width:767px) {
+            padding: 20px;
+            width: 30%;
+            margin: auto
         }
-        .descriptiontext{
-          padding: 0px 37px 30px 37px;
-          text-align: center;
-          font-family: 'ProximaNova-Regular';
-          font-weight: 600;
+        @media only screen and (max-width:600px) {
+            padding: 20px;
+            width: 60%;
+            margin: auto
         }
-        &:hover{
-            cursor: pointer;
-        }      }
-      .Givegroupimg{
-        background-color:#F1F6FD;
-        box-shadow: 0 2px 7px 0 rgba(135, 135, 135, 0.3);
-        width: 100%;
-        position: relative;
-        &::before{
+    }
+    .descriptiontext{
+        padding: 0px 37px 22px 37px;
+        text-align: center;
+        font-family: 'ProximaNova-Regular';
+        font-weight: 600;
+        p{
+        &.leftsubtext{
+            font-family: 'ProximaNova-Regular';
+            line-height: 15px;
+            font-size: 12px;
+            color: #7F7F7F;
+            margin-top: 11px;
+            }
+        }
+    }
+    &:hover{
+        cursor: pointer;
+    }
+   }
+   .ModeLeftBoxTwo{
+    position: relative;
+    &::before{
             position: absolute;
             content: "";
-            right: -15px;
+            right: -20px;
             border: 1px solid #EAEAEA;
-            height: 308px;
+            height: 100%;
             @media only screen and (max-width:991px) {
-               height: 0px;
-               right:opx;
+                height: 0px;
+                right:0px;
             }
         }
-        @media only screen and (max-width:991px) {
-            margin-bottom: 20px;
+   }
+   .ModelLeftBoxBottom{
+    background-color:#F1F6FD;
+    box-shadow: 0 2px 7px 0 rgba(135, 135, 135, 0.3);
+    width: 100%;
+    position: relative;        img{
+            padding:16px  83px 16px 83px;
+            @media only screen and (max-width:1199px) {
+                padding:16px  83px 16px 83px;
         }
-        img{
-          padding:58px  48px 30px 48px;
-          @media only screen and (max-width:991px) {
-              margin: auto;
-          }
+            @media only screen and (max-width:991px) {
+                padding: 20px;
+                width: 30%;
+                margin: auto
+            }
+            @media only screen and (max-width:767px) {
+                padding: 20px;
+                width: 30%;
+                margin: auto
+            }
+            @media only screen and (max-width:500px) {
+                padding: 20px;
+                width: 60%;
+                margin: auto
+            }
         }
-        .Givegroup{
-          padding: 16px 37px 58px 37px;
-          text-align: center;
-          font-family: 'ProximaNova-Regular';
-          font-weight: 600;
+    .descriptiontext{
+        padding: 0px 37px 22px 37px;
+        text-align: center;
+        font-family: 'ProximaNova-Regular';
+        font-weight: 600;
+        p{
+        &.leftsubtext{
+            font-family: 'ProximaNova-Regular';
+            line-height: 15px;
+            font-size: 12px;
+            color: #7F7F7F;
+            margin-top: 11px;
+            }
         }
-        &:hover{
-            cursor: pointer;
+        
+    }
+    &:hover{
+        cursor: pointer;
+    }
+   }
+   .rightBoxs{
+    padding:11px 42px 11px 22px;
+    box-shadow: 0 2px 7px 0 rgba(135,135,135,0.3);
+    border-radius: 5px;
+    margin-top: 0px;
+    margin-bottom: 20px;
+    margin-left: 10px;    &:last-child{
+        margin-bottom:0px;
+    }    img{
+        width: 58px;
+        height: 60px;
+        object-fit: contain;
         }
-      }
-      .rightbox{
-        .ui{
-          &.items{
-            .item{
-              padding:14px 18px;
-              box-shadow: 0 2px 7px 0 rgba(135,135,135,0.3);
-              border-radius: 5px;
-              margin-top: 0px;
-              margin-bottom: 20px;
-              &:last-child{
-                margin-bottom: 0px !important;
-              }
-              img{
-                width: 58px;
-                height: 60px;
-                object-fit: contain;
-              }
-              .content{
-                .description{
-                  p{
-                    font-family: 'ProximaNova-Regular';
-                    font-weight: 600;
-                  }
+        .content{
+            .description{
+                p{
+                font-family: 'ProximaNova-Regular';
+                font-weight: 600;
                 }
-              }
+                @media only screen and (max-width:767px) {
+                   text-align: center;
+                }
             }
-          }
-          &:hover{
-            cursor: pointer;
+            }
+            &:hover{
+                cursor: pointer;
+            }
+        @media only screen and (max-width:991px) {
+            margin-left:0px;
+            &:first-child{
+                margin-top:30px;
+            }
+        }   }
+   .graybox{
+    background-color: #F8F8F8 !important;
+    cursor: default !important;
+    box-shadow: 0 2px 7px 0 rgba(135,135,135,0.3);
+    img{
+        filter: grayscale(1);
+    }
+    }
+    p{
+        &.disabled-text{
+            font-family: 'ProximaNova-Regular';
+            font-size: 12px;
+            color: #7F7F7F;
+            line-height: 15px;
+            margin-top: 11px;
         }
-        }
-      }
-      
-}
-.noteEmail {
-    margin-bottom: -45px !important;
-}
-.field.blue-btn-rounded.btn_right.rivewbtnp2p.blue-btn-rounded button.ui.primary.button {
-    min-width:126px !important;
+    }
 }
