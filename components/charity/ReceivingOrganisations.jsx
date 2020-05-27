@@ -80,7 +80,7 @@ class ReceivingOrganisations extends React.Component {
                 }
                 return (
                     <div className="ch_giftPopcontent">
-                        <Header as="h6">CHARITY</Header>
+                        <Header as="h6">{formatMessage('charityProfile:charityHeader')}</Header>
                         <Header as="h3">
                             <p>
                                 {donee.donee_name}
@@ -99,9 +99,7 @@ class ReceivingOrganisations extends React.Component {
 
         return (
             transactionsLoader ? (
-
                 <PlaceholderGrid row={5} column={1} placeholderType="multiLine" />
-
             ) : (
                 <Fragment>
                     <div className="ScrollData">

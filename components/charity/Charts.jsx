@@ -26,8 +26,8 @@ import {
     Button,
 } from 'semantic-ui-react';
 
-import TotalRevenue from '../../static/images/total_revenue.svg';
-import ToalExpense from '../../static/images/total_expenses.svg';
+import totalRevenue from '../../static/images/total_revenue.svg';
+import toalExpense from '../../static/images/total_expenses.svg';
 import {
     formatCurrency,
 } from '../../helpers/give/utils';
@@ -165,7 +165,6 @@ class Charts extends React.Component {
             graphData,
         } = this.state;
         if (!_isEmpty(graphData)) {
-            // chartInstance.reset();
             chartInstance.update();
 
             chartInstance.getDatasetMeta(1).data[chartIndex]._model.backgroundColor = '#C995D3';
@@ -269,7 +268,7 @@ class Charts extends React.Component {
                             <Grid.Column mobile={11} tablet={12} computer={12}>
                                 <List>
                                     <List.Item as="h5">
-                                        <Image src={TotalRevenue} />
+                                        <Image src={totalRevenue} />
                                         <List.Content>
                                             {formatMessage('charityProfile:totalRevenueText')}
                                         </List.Content>
@@ -289,7 +288,7 @@ class Charts extends React.Component {
                             <Grid.Column mobile={11} tablet={12} computer={12}>
                                 <List>
                                     <List.Item as="h5">
-                                        <Image src={ToalExpense} />
+                                        <Image src={toalExpense} />
                                         <List.Content>
                                             {formatMessage('charityProfile:totalExpenseText')}
                                         </List.Content>

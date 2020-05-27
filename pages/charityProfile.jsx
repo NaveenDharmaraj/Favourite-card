@@ -187,6 +187,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default withTranslation([
-    'charityProfile',
-])(connect(mapStateToProps)(CharityProfile));
+export default withTranslation('charityProfile')(connect(mapStateToProps)(CharityProfile));

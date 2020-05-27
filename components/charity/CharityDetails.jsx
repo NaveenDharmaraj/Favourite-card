@@ -92,9 +92,6 @@ class CharityDetails extends React.Component {
                                     <Header as="h3">
                                         {name}
                                         <br />
-                                        {/* <span>
-                                            WHAT TO SHOW
-                                        </span> */}
                                     </Header>
                                     <Header as="p">
                                         {location}
