@@ -61,7 +61,7 @@ class Review extends React.Component {
                         return (
                                 <Table.Row>
                                     <Table.Cell className="tableOne" ><b>{formatMessage(data.name)}</b></Table.Cell>
-                                    <Table.Cell className="tableOne" >{ data.value}</Table.Cell>
+                                    <Table.Cell className="tabletwo" >{ data.value}</Table.Cell>
                                     <Table.Cell ></Table.Cell>
                                 </Table.Row>
                         )
