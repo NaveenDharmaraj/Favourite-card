@@ -6,11 +6,10 @@ import {
     Button,
 } from 'semantic-ui-react';
 import {
-    arrayOf,
-    PropTypes,
+    string,
+    number,
     bool,
     func,
-    string,
 } from 'prop-types';
 
 import {
@@ -25,6 +24,7 @@ const ChartSummary = (props) => {
         value,
         hideGift,
         handleClick,
+        showViewButton,
         t: formatMessage,
     } = props;
     const currency = 'USD';
@@ -41,7 +41,7 @@ const ChartSummary = (props) => {
                                     <div className="boxVLine" />
                                     <div className="box" style={{ backgroundColor: color }} />
                                 </div>
-                                {(typeof hideGift !== 'undefined')
+                                {showViewButton
                                     ? (
                                         <List.Content>
                                             <span>{text}</span>
@@ -74,12 +74,22 @@ const ChartSummary = (props) => {
 
 ChartSummary.defaultProps = {
     color: '',
+    handleClick: () => {},
+    hideGift: false,
+    showViewButton: false,
+    t: () => {},
     text: '',
+    value: null,
 };
 
 ChartSummary.propTypes = {
     color: string,
+    handleClick: func,
+    hideGift: bool,
+    showViewButton: bool,
+    t: func,
     text: string,
+    value: number,
 };
 
 export default withTranslation('charityProfile')(ChartSummary);

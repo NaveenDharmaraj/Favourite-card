@@ -199,6 +199,7 @@ class Charts extends React.Component {
                     value={summary.value}
                     hideGift={summary.hideGift}
                     handleClick={this.openDoneeListModal}
+                    showViewButton={summary.showViewButton}
                 />
             ))
         );
