@@ -45,6 +45,21 @@ import ReceivingOrganisations from './ReceivingOrganisations';
 class Charts extends React.Component {
     constructor(props) {
         super(props);
+        const {
+            beneficiaryFinance,
+            t: formatMessage,
+        } = props;
+        this.mapping = {
+            charitable_activities_programs: formatMessage('charityProfile:charitableActivities'),
+            expenditure_charity_activites: formatMessage('charityProfile:expenditures'),
+            fundraising: formatMessage('charityProfile:fundraising'),
+            gifts_to_charities_donees: formatMessage('charityProfile:giftsToDonee'),
+            management_admin: formatMessage('charityProfile:management'),
+            other: formatMessage('charityProfile:other'),
+            poilitical_activities: formatMessage('charityProfile:politicalActivity'),
+            prof_consult_fees: formatMessage('charityProfile:professionalFees'),
+            travel_vehicle_expense: formatMessage('charityProfile:travelExpense'),
+        };
         this.getChartData = this.getChartData.bind(this);
         this.handleClick = this.handleClick.bind(this);
         this.renderSummary = this.renderSummary.bind(this);
@@ -53,8 +68,8 @@ class Charts extends React.Component {
         this.highlightBar = this.highlightBar.bind(this);
         this.chartReference = React.createRef();
         this.state = {
-            chartIndex: getChartIndex(props.beneficiaryFinance),
-            graphData: formatGraphData(props.beneficiaryFinance),
+            chartIndex: getChartIndex(beneficiaryFinance),
+            graphData: formatGraphData(beneficiaryFinance, this.mapping),
             showDoneeListModal: false,
         };
     }
@@ -78,7 +93,7 @@ class Charts extends React.Component {
         } = this.chartReference;
         let viewData = {};
         if (!_isEqual(prevProps.beneficiaryFinance, beneficiaryFinance)) {
-            viewData = formatGraphData(beneficiaryFinance);
+            viewData = formatGraphData(beneficiaryFinance, this.mapping);
             this.setState({
                 chartIndex: viewData.yearLabel.indexOf(viewData.selectedYear),
                 graphData: viewData,

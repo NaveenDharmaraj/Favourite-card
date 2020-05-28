@@ -16,5 +16,14 @@
     "doneeListModalHeader": "Gifts to qualified donees",
     "viewGiftButtonText": "View gifts",
     "seeMore": "Load more",
-    "charityHeader": "CHARITY"
+    "charityHeader": "CHARITY",
+    "charitableActivities": "Charitable activities / programs",
+    "expenditures": "Expenditures on charitable activities",
+    "fundraising": "Fundraising",
+    "giftsToDonee": "Gifts to other registered charities and qualified donees",
+    "management": "Management and administration",
+    "other": "Other",
+    "politicalActivity": "Political activities",
+    "professionalFees": "Professional and consulting fees",
+    "travelExpense": "Travel and vehicle expenses"
 }

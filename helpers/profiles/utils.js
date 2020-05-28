@@ -30,7 +30,7 @@ const getChartIndex = (beneficiaryFinance) => {
     return null;
 };
 
-const formatGraphData = (beneficiaryFinance) => {
+const formatGraphData = (beneficiaryFinance, lang) => {
     const totalData = [];
     const yearLabel = [];
     const yearData = [];
@@ -66,42 +66,42 @@ const formatGraphData = (beneficiaryFinance) => {
                         color: '#C995D3',
                         hideGift: false,
                         showViewButton: false,
-                        text: 'Charitable activities / programs',
+                        text: lang.charitable_activities_programs,
                         value: year.expenses.find((o) => o.name === 'charitable_activities_programs').value,
                     },
                     {
                         color: '#DF005F',
                         hideGift: false,
                         showViewButton: false,
-                        text: 'Management and administration',
+                        text: lang.management_admin,
                         value: year.expenses.find((o) => o.name === 'management_admin').value,
                     },
                     {
                         color: '#FEC7A9',
                         hideGift: false,
                         showViewButton: false,
-                        text: 'Fundraising',
+                        text: lang.fundraising,
                         value: year.expenses.find((o) => o.name === 'fundraising').value,
                     },
                     {
                         color: '#00CCD4',
                         hideGift: false,
                         showViewButton: false,
-                        text: 'Political activities',
+                        text: lang.poilitical_activities,
                         value: year.expenses.find((o) => o.name === 'poilitical_activities').value,
                     },
                     {
                         color: '#0D00FF',
                         hideGift: false,
                         showViewButton: false,
-                        text: 'Other',
+                        text: lang.other,
                         value: year.expenses.find((o) => o.name === 'other').value,
                     },
                     {
                         color: '#8DEDAE',
                         hideGift: !(year.gifts_total > 0),
                         showViewButton: (year.gifts_total > 0),
-                        text: 'Gifts to other registered charities and qualified donees',
+                        text: lang.gifts_to_charities_donees,
                         value: year.expenses.find((o) => o.name === 'gifts_to_charities_donees').value,
                     },
                 ]);
@@ -116,42 +116,42 @@ const formatGraphData = (beneficiaryFinance) => {
                         color: '#C995D3',
                         hideGift: false,
                         showViewButton: false,
-                        text: 'Professional and consulting fees',
+                        text: lang.prof_consult_fees,
                         value: year.expenses.find((o) => o.name === 'prof_consult_fees').value,
                     },
                     {
                         color: '#DF005F',
                         hideGift: false,
                         showViewButton: false,
-                        text: 'Travel and vehicle expenses',
+                        text: lang.travel_vehicle_expense,
                         value: year.expenses.find((o) => o.name === 'travel_vehicle_expense').value,
                     },
                     {
                         color: '#FEC7A9',
                         hideGift: false,
                         showViewButton: false,
-                        text: 'Expenditures on charitable activities',
+                        text: lang.expenditure_charity_activites,
                         value: year.expenses.find((o) => o.name === 'expenditure_charity_activites').value,
                     },
                     {
                         color: '#00CCD4',
                         hideGift: false,
                         showViewButton: false,
-                        text: 'Management and administration',
+                        text: lang.management_admin,
                         value: year.expenses.find((o) => o.name === 'management_admin').value,
                     },
                     {
                         color: '#0D00FF',
                         hideGift: false,
                         showViewButton: false,
-                        text: 'Other',
+                        text: lang.other,
                         value: year.expenses.find((o) => o.name === 'other').value,
                     },
                     {
                         color: '#8DEDAE',
                         hideGift: !(year.gifts_total > 0),
                         showViewButton: (year.gifts_total > 0),
-                        text: 'Gifts to other registered charities and qualified donees',
+                        text: lang.gifts_to_charities_donees,
                         value: year.expenses.find((o) => o.name === 'gifts_to_charities_donees').value,
                     },
                 ]);
