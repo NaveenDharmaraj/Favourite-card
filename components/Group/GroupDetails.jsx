@@ -4,6 +4,7 @@ import React, {
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import _isEmpty from 'lodash/isEmpty';
+import _cloneDeep from 'lodash/cloneDeep';
 import {
     arrayOf,
     PropTypes,
@@ -35,6 +36,7 @@ import {
     generateDeepLink,
 } from '../../actions/profile';
 import LeaveModal from '../../components/shared/LeaveModal';
+import { groupDefaultProps } from '../../helpers/give/defaultProps';
 
 import GroupShareDetails from './GroupShareDetails';
 import GiveFromGroupModal from './GiveFromGroupModal';
@@ -43,6 +45,10 @@ const { publicRuntimeConfig } = getConfig();
 const {
     RAILS_APP_URL_ORIGIN,
 } = publicRuntimeConfig;
+
+export const actionTypes = {
+    SAVE_FLOW_OBJECT: 'SAVE_FLOW_OBJECT',
+};
 
 class GroupDetails extends React.Component {
     constructor(props) {
@@ -131,6 +137,20 @@ class GroupDetails extends React.Component {
         const {
             isGiveFromModalOpen,
         } = this.state;
+        const {
+            dispatch,
+        } = this.props;
+        if (!isGiveFromModalOpen) {
+            const defaultPropsData = _cloneDeep(groupDefaultProps);
+            const fsa = {
+                payload: {
+                    ...defaultPropsData.flowObject,
+                },
+                type: actionTypes.SAVE_FLOW_OBJECT,
+            };
+            console.log(fsa);
+            dispatch(fsa);
+        }
         this.setState({ isGiveFromModalOpen: !isGiveFromModalOpen });
     }
 

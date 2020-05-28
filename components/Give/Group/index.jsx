@@ -75,6 +75,7 @@ class Group extends React.Component {
             paymentInstrumentsData,
             taxReceiptProfiles,
         } = props;
+        console.log(props.flowObject);
         const paymentInstruments = (!_isEmpty(props.flowObject.giveData.giveFrom) && props.flowObject.giveData.giveFrom.type === 'companies') ? companyDetails.companyPaymentInstrumentsData : paymentInstrumentsData;
         const formatMessage = props.t;
         const flowType = _replace(props.baseUrl, /\//, '');
@@ -87,9 +88,12 @@ class Group extends React.Component {
                 nextStep: props.step,
             };
         }
-        else{
-                payload =  _merge({}, props.flowObject)
-            }
+        else {   
+            console.log("hererere");
+            console.log(props.flowObject);
+            payload =  _merge({}, props.flowObject)
+        }
+        console.log(_.cloneDeep(payload));
         this.state = {
             flowObject:_.cloneDeep(payload),
             benificiaryIndex: 0,
@@ -118,6 +122,7 @@ class Group extends React.Component {
             validity: this.intializeValidations(),
         };
         this.state.flowObject.groupFromUrl = false;
+        console.log(this.state.flowObject);
         if (!_isEmpty(groupId)
         && Number(groupId) > 0) {
             this.state.flowObject.groupId = groupId;
