@@ -148,7 +148,6 @@ class GroupDetails extends React.Component {
                 },
                 type: actionTypes.SAVE_FLOW_OBJECT,
             };
-            console.log(fsa);
             dispatch(fsa);
         }
         this.setState({ isGiveFromModalOpen: !isGiveFromModalOpen });

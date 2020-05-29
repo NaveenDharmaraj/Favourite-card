@@ -75,7 +75,6 @@ class Group extends React.Component {
             paymentInstrumentsData,
             taxReceiptProfiles,
         } = props;
-        console.log(props.flowObject);
         const paymentInstruments = (!_isEmpty(props.flowObject.giveData.giveFrom) && props.flowObject.giveData.giveFrom.type === 'companies') ? companyDetails.companyPaymentInstrumentsData : paymentInstrumentsData;
         const formatMessage = props.t;
         const flowType = _replace(props.baseUrl, /\//, '');
@@ -89,11 +88,8 @@ class Group extends React.Component {
             };
         }
         else {   
-            console.log("hererere");
-            console.log(props.flowObject);
             payload =  _merge({}, props.flowObject)
         }
-        console.log(_.cloneDeep(payload));
         this.state = {
             flowObject:_.cloneDeep(payload),
             benificiaryIndex: 0,
@@ -122,7 +118,6 @@ class Group extends React.Component {
             validity: this.intializeValidations(),
         };
         this.state.flowObject.groupFromUrl = false;
-        console.log(this.state.flowObject);
         if (!_isEmpty(groupId)
         && Number(groupId) > 0) {
             this.state.flowObject.groupId = groupId;
@@ -227,7 +222,7 @@ class Group extends React.Component {
             );
             const giveToOptions = populateGroupsOfUser(userMembershipGroups);
             
-            if (!_isEmpty(giveGroupDetails)) {
+            if (!_isEmpty(giveGroupDetails) && _isEmpty(giveFromType)) {
                 groupFromUrl = false;
                 giveData.giveTo = {
                     id: giveGroupDetails.id,
@@ -239,7 +234,7 @@ class Group extends React.Component {
                     value: giveGroupDetails.attributes.fundId,
                 };
             } 
-            else if (!_isEmpty(userMembershipGroups)) {
+            else if (!_isEmpty(userMembershipGroups) && !_isEmpty(giveFromType)) {
                 groupFromUrl = true;
                 const groupIndex = this.state.flowObject.groupIndex;
                 giveData.giveTo = {
