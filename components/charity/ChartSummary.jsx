@@ -92,4 +92,8 @@ ChartSummary.propTypes = {
     value: number,
 };
 
-export default withTranslation('charityProfile')(ChartSummary);
+const connectedComponent = withTranslation('charityProfile')(ChartSummary);
+export {
+    connectedComponent as default,
+    ChartSummary,
+};

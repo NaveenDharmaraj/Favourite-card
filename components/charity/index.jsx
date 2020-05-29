@@ -64,4 +64,9 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(CharityProfileWrapper);
+const connectedComponent = connect(mapStateToProps)(CharityProfileWrapper);
+export {
+    connectedComponent as default,
+    CharityProfileWrapper,
+    mapStateToProps,
+};

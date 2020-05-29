@@ -398,4 +398,9 @@ function mapStateToProps(state) {
     };
 }
 
-export default withTranslation('charityProfile')(connect(mapStateToProps)(Charts));
+const connectedComponent = withTranslation('charityProfile')(connect(mapStateToProps)(Charts));
+export {
+    connectedComponent as default,
+    Charts,
+    mapStateToProps,
+};

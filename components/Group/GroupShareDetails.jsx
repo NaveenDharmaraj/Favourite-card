@@ -168,5 +168,9 @@ function mapStateToProps(state) {
     }
 }
 
-
-export default connect(mapStateToProps)(GroupShareDetails);
+const connectedComponent = connect(mapStateToProps)(GroupShareDetails);
+export {
+    connectedComponent as default,
+    GroupShareDetails,
+    mapStateToProps,
+};

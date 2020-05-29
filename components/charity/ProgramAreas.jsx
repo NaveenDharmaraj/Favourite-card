@@ -86,4 +86,9 @@ function mapStateToProps(state) {
     };
 }
 
-export default withTranslation('charityProfile')(connect(mapStateToProps)(ProgramAreas));
+const connectedComponent = withTranslation('charityProfile')(connect(mapStateToProps)(ProgramAreas));
+export {
+    connectedComponent as default,
+    ProgramAreas,
+    mapStateToProps,
+};

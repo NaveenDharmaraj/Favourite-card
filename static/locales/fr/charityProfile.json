@@ -25,5 +25,7 @@
     "other": "Other",
     "politicalActivity": "Political activities",
     "professionalFees": "Professional and consulting fees",
-    "travelExpense": "Travel and vehicle expenses"
+    "travelExpense": "Travel and vehicle expenses",
+    "noDataHeader": "Please check back later",
+    "noDataContent": "It looks like we haven't yet received this information from the Canada Revenue Agency."
 }

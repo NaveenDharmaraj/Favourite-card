@@ -193,4 +193,9 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(CharityDetails);
+const connectedComponent = connect(mapStateToProps)(CharityDetails);
+export {
+    connectedComponent as default,
+    CharityDetails,
+    mapStateToProps,
+};
