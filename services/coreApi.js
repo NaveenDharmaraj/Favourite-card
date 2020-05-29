@@ -75,12 +75,7 @@ instance.interceptors.response.use(function (response) {
         return null;
     }
     if (status === 403 && config.params && config.params.findBySlug) {
-        statusMessageProps = {
-            heading: 'This page isn\'t available',
-            message: 'The link you followed might have been archived, or you don\'t have permission to view the page.',
-            type: 'error',
-        };
-        triggerCustomUxCriticalError(statusMessageProps, config.dispatch);
+        data[0].status = 403;
     } else if (config.uxCritical && config.dispatch) {
         triggerUxCritialErrors(data.errors || data, config.dispatch);
     }

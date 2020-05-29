@@ -43,7 +43,7 @@ class ChatMessages extends React.Component {
                     this.refs.scrollParentRef.scrollTop = this.refs.scrollParentRef.scrollHeight;
                 }
                 else if (!conversationMessagesLoader && this.refs.scrollParentRef && scrollEffect) {
-                    this.refs.scrollParentRef.scrollTop = 60;
+                    this.refs.scrollParentRef.scrollTop = 120;
                     this.setState({
                         scrollEffect: false
                     })

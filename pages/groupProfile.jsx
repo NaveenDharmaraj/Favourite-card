@@ -49,9 +49,17 @@ class GroupProfile extends React.Component {
                     isCampaign,
                 },
             },
+            redirectToPrivateGroupErrorPage,
+            redirectToDashboard,
         } = this.props;
         if (isCampaign === true) {
             Router.pushRoute(`/campaigns/${slug}`);
+        }
+        if (redirectToDashboard) {
+            Router.push('/search');
+        }
+        if (redirectToPrivateGroupErrorPage) {
+            Router.pushRoute('/group/error');
         }
         getGroupFromSlug(dispatch, slug);
     }
@@ -84,7 +92,7 @@ class GroupProfile extends React.Component {
         const desc = (!_.isEmpty(description)) ? description : title;
         const causesList = (causes.length > 0) ? _.map(causes, _.property('name')) : [];
         const keywords = (causesList.length > 0) ? _.join(_.slice(causesList, 0, 10), ', ') : '';
-        const url = `${APP_URL_ORIGIN}/charities/${slug}`;
+        const url = `${APP_URL_ORIGIN}/groups/${slug}`;
 
         if (isCampaign !== true) {
             return (
@@ -96,8 +104,8 @@ class GroupProfile extends React.Component {
                     url={url}
                 >
                     {!redirectToDashboard
-                        ? <GroupProfileWrapper {...this.props} />
-                        : Router.push('/search')}
+                        && <GroupProfileWrapper {...this.props} />
+                    }
                 </Layout>
             );
         }
@@ -120,6 +128,7 @@ GroupProfile.defaultProps = {
     },
     isAUthenticated: false,
     redirectToDashboard: false,
+    redirectToPrivateGroupErrorPage: false,
     slug: '',
 };
 
@@ -138,6 +147,7 @@ GroupProfile.propTypes = {
     },
     isAUthenticated: bool,
     redirectToDashboard: bool,
+    redirectToPrivateGroupErrorPage: bool,
     slug: string,
 };
 
@@ -146,6 +156,7 @@ function mapStateToProps(state) {
         groupDetails: state.group.groupDetails,
         isAUthenticated: state.auth.isAuthenticated,
         redirectToDashboard: state.group.redirectToDashboard,
+        redirectToPrivateGroupErrorPage: state.group.redirectToPrivateGroupErrorPage,
     };
 }
 export default connect(mapStateToProps)(GroupProfile);
