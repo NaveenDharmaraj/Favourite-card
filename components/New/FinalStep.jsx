@@ -18,6 +18,7 @@ function FinalStep(props) {
     const {
         handleSubmit,
         buttonClicked,
+        handleBack,
     } = props;
     return (
         <Fragment>
@@ -37,15 +38,36 @@ function FinalStep(props) {
                         </Header>
                     </div>
                     <Form>
-                        <div className="create-btn-wraper">
-                            <Button
-                                type="submit"
-                                disabled={buttonClicked}
-                                onClick={handleSubmit}
-                                primary
-                                content={buttonClicked ? 'Submitting' : 'Create Your Impact Account'}
-                            />
-                        </div>
+                        {handleBack ?
+                            (
+                                <div className="create-btn-wraper">
+                                    <Button
+                                        className="blue-bordr-btn-round-def"
+                                        content="Back"
+                                        onClick={handleBack}
+                                    />
+                                    <Button
+                                        type="submit"
+                                        disabled={buttonClicked}
+                                        onClick={handleSubmit}
+                                        primary
+                                        content={buttonClicked ? 'Submitting' : 'Create Your Impact Account'}
+                                    />
+                                </div>
+                            ) 
+                            :
+                            (
+                                <div className="create-btn-wraper">
+                                    <Button
+                                        type="submit"
+                                        disabled={buttonClicked}
+                                        onClick={handleSubmit}
+                                        primary
+                                        content={buttonClicked ? 'Submitting' : 'Create Your Impact Account'}
+                                    />
+                                </div>
+                            )
+                        }
                     </Form>
                 </div>
             </Grid.Column>

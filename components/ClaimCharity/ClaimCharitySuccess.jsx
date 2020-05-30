@@ -21,14 +21,22 @@ const {
 let locationNumber = '';
 
 const Accessing = (props) => {
-    const { currentUser: {
-        attributes: {
-            firstName
-        }
-    },
-        charityName,
-        otherAccounts
+    const {
+        currentUser: {
+            attributes: {
+                firstName
+            }
+        },
+        userAccesCodeData: {
+            data: {
+                attributes: {
+                    beneficiaryName,
+                    beneficiarySlug
+                }
+            }
+        }     
     } = props;
+    console.log(userAccesCodeData);
     return (
         <Fragment>
             <div className="AccessingtopBanner">
@@ -38,14 +46,14 @@ const Accessing = (props) => {
                         <Header as='h3'>
                             {firstName}
                             , you’ve claimed your charity </Header>
-                        <p>Now you have access to your charity {charityName} account.</p>
+                        <p>Now you have access to your charity {beneficiaryName} account.</p>
                         {otherAccounts && otherAccounts.map((item) => {
-                            if (item.name === charityName) {
+                            if (item.slug === beneficiarySlug) {
                                 locationNumber = item.location;
                                 return locationNumber;
                             }
-                        }), console.log(locationNumber)}
-                        <a href={`${RAILS_APP_URL_ORIGIN}${locationNumber}`}><Button className=" primary blue-btn-rounded mt-1"><b>Go to my Charity Account</b></Button></a>
+                        })}
+                        {locationNumber ? <a href={`${RAILS_APP_URL_ORIGIN}${locationNumber}`}><Button className=" primary blue-btn-rounded mt-1"><b>Go to my Charity Account</b></Button></a> : ''}
                     </div>
                 </Container>
             </div>
@@ -98,6 +106,7 @@ const Accessing = (props) => {
 
 const mapStateToProps = (state) => ({
     otherAccounts: state.user.otherAccounts,
+    userAccesCodeData: state.user.userAccesCodeData,
 });
 
 export default (connect(mapStateToProps)(Accessing));

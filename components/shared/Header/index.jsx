@@ -26,10 +26,10 @@ const {
     RAILS_APP_URL_ORIGIN,
 } = publicRuntimeConfig;
 
-const renderHeader = (onBoarding, isAuthenticated, isLogin, showHeader) => {
+const renderHeader = (onBoarding, isAuthenticated, isLogin, showHeader, { ...props }) => {
     let headerComponent = null;
     if (onBoarding) {
-        headerComponent = <OnBoardingHeader isLogin={isLogin} />;
+        headerComponent = <OnBoardingHeader isLogin={isLogin} {...props} />;
     } else if (isAuthenticated && showHeader) {
         headerComponent = <AuthHeader />;
     } else if (!isAuthenticated) {
@@ -89,11 +89,17 @@ const Header = (props) => {
                     <Menu.Item className="chimpLogo">
                         {renderLogo(currentAccount)}
                     </Menu.Item>
-                    {renderHeader(onBoarding, isAuthenticated, isLogin, showHeader)}
+                    {renderHeader(onBoarding, isAuthenticated, isLogin, showHeader, { ...props })}
                 </Menu>
             </Container>
         </Segment>
     );
+};
+
+Header.getInitialProps = async ({ query }) => {
+    return {
+        isClaimCharity: query.isClaimCharity,
+    };
 };
 
 Header.propTypes = {

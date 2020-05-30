@@ -20,8 +20,16 @@ import FirstStep from '../../../components/New/FirstStep';
 import SecondStep from '../../../components/New/SecondStep';
 import CausesSelection from '../../../components/New/CausesSelection';
 import FinalStep from '../../../components/New/FinalStep';
+import LastStep from '../../../components/New/LastStep';
 
 class Login extends React.Component {
+
+    static async getInitialProps({ query }) {
+        return {
+            isClaimCharity: query.isClaimCharity,
+        };
+    }
+
     constructor(props) {
         super(props);
         this.state = {
@@ -53,10 +61,10 @@ class Login extends React.Component {
     componentDidUpdate(prevProps) {
         if (!_.isEqual(this.props, prevProps)) {
             if (!_.isEmpty(this.props.newUserDetails) && this.state.stepIndex >= 3) {
-                if(this.props.newUserDetails && this.props.newUserDetails.email && this.props.newUserDetails.identities && this.props.newUserDetails.identities[0] && this.props.newUserDetails.identities[0].user_id){
+                if (this.props.newUserDetails && this.props.newUserDetails.email && this.props.newUserDetails.identities && this.props.newUserDetails.identities[0] && this.props.newUserDetails.identities[0].user_id) {
                     storage.set('auth0UserEmail', this.props.newUserDetails.email, 'local', null);
                     storage.set('auth0UserId', this.props.newUserDetails.identities[0].user_id, 'local', null);
-                    Router.pushRoute('/users/email-verification');    
+                    Router.pushRoute('/users/email-verification');
                 }
             }
         }
@@ -223,7 +231,7 @@ class Login extends React.Component {
             stepIndex
         } = this.state;
         this.setState({
-            stepIndex:stepIndex-1,
+            stepIndex: stepIndex - 1,
         });
     }
 
@@ -282,16 +290,32 @@ class Login extends React.Component {
             causesList,
             userExists,
             apiValidating,
+            isClaimCharity
         } = this.props;
         return (
-            <Layout onBoarding={true}>
+            <Layout onBoarding={isClaimCharity ? false : true}>
                 <div className="pageWraper">
                     <Container>
                         <div className="linebg">
                             <Grid columns={2} doubling>
                                 {
-                                    (stepIndex === 0) && (
-                                        <FirstStep
+                                    (stepIndex === 0) && !isClaimCharity ? 
+                                        (
+                                            <FirstStep
+                                                parentInputChange={this.handleInputChange}
+                                                handleSubmit={this.handleSubmit}
+                                                firstName={firstName}
+                                                handleInputOnBlur={this.handleInputOnBlur}
+                                                isButtonDisabled={this.isButtonDisabled}
+                                                lastName={lastName}
+                                                validity={validity}
+                                            />
+                                        ) :
+                                        ''
+                                }
+                                {
+                                    (stepIndex === 0) && isClaimCharity ? (
+                                        <LastStep
                                             parentInputChange={this.handleInputChange}
                                             handleSubmit={this.handleSubmit}
                                             firstName={firstName}
@@ -300,7 +324,7 @@ class Login extends React.Component {
                                             lastName={lastName}
                                             validity={validity}
                                         />
-                                    )
+                                    ) : ''
                                 }
                                 {
                                     (stepIndex === 1) && (
@@ -340,6 +364,7 @@ class Login extends React.Component {
                                             <FinalStep
                                                 handleSubmit={this.handleSubmit}
                                                 buttonClicked={buttonClicked}
+                                                handleBack={isClaimCharity ? this.handleBack : ''}
                                             />
                                         </Grid.Row>
                                     </Grid>
