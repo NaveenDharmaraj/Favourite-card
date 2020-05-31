@@ -20,7 +20,7 @@ import FirstStep from '../../../components/New/FirstStep';
 import SecondStep from '../../../components/New/SecondStep';
 import CausesSelection from '../../../components/New/CausesSelection';
 import FinalStep from '../../../components/New/FinalStep';
-import LastStep from '../../../components/New/LastStep';
+import ClaimCharityFirstStep from '../../../components/New/ClaimCharityFirstStep';
 
 class Login extends React.Component {
 
@@ -315,7 +315,7 @@ class Login extends React.Component {
                                 }
                                 {
                                     (stepIndex === 0) && isClaimCharity ? (
-                                        <LastStep
+                                        <ClaimCharityFirstStep
                                             parentInputChange={this.handleInputChange}
                                             handleSubmit={this.handleSubmit}
                                             firstName={firstName}
