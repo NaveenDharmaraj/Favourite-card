@@ -36,7 +36,6 @@ function OneLastStep(props) {
                         <Form>
                             <Form.Field>
                                 <label>First name</label>
-                                {/* <input placeholder='Your first name' className="mb-1 OneLastfield" /> */}
                                 <Form.Field
                                     control={Input}
                                     id="firstName"
@@ -62,7 +61,6 @@ function OneLastStep(props) {
                             </Form.Field>
                             <Form.Field>
                                 <label>Last name</label>
-                                {/* <input placeholder='Your last name' className="OneLastfield" /> */}
                                 <Form.Field
                                     control={Input}
                                     id="lastName"

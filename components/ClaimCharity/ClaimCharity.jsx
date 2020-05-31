@@ -28,7 +28,8 @@ class ClaimCharity extends React.Component {
         super(props)
 
         this.state = {
-            accessCode: ''
+            accessCode: '',
+            buttonClicked: false,
         }
     }
 
@@ -46,6 +47,9 @@ class ClaimCharity extends React.Component {
             },
             dispatch } = this.props;
         const { accessCode } = this.state;
+        this.setState({
+            buttonClicked: true
+        })
         dispatch(checkClaimCharityAccessCode(accessCode, id));
     }
 
@@ -159,6 +163,7 @@ class ClaimCharity extends React.Component {
                                                                 <Button
                                                                     className="primary blue-btn-rounded btnTextsize mt-2"
                                                                     onClick={this.onClaimCharityClick}
+                                                                    content={buttonClicked ? 'Submitting' : 'Claim your charity'}
                                                                 >Claim your charity</Button>
                                                             </Grid.Column>
                                                         </Grid.Row>
