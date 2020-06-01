@@ -111,14 +111,22 @@ class Review extends React.Component {
                     language,
                 },
             } = this.props;
+            const bannerClass = {
+                'donations': 'flowReviewbanner',
+                'give/to/charity': 'charityallocationbanner',
+                'give/to/friend': 'flowReviewbanner',
+                'give/to/group': 'givinggroupbanner',
+            };
             const formatMessage = this.props.t;
             let reviewData = {};
             let toURL = `/${type}/${flowSteps[0]}`;
-
+            let isGiveFrom = false;
             if (groupId) {
                 toURL = `${toURL}?group_id=${groupId}`;
+                isGiveFrom = true;
             } else if(campaignId) {
                 toURL = `${toURL}?campaign_id=${campaignId}`;
+                isGiveFrom = true;
             }
             if(type === 'donations'){
                 reviewData = populateDonationReviewPage(giveData, {
@@ -148,6 +156,7 @@ class Review extends React.Component {
                     currency,
                     formatMessage,
                     language,
+                    isGiveFrom,
                 );
             }
             const {
@@ -164,7 +173,7 @@ class Review extends React.Component {
             const refundMessage = (isRecurring) ? formatMessage('commonRecurringNonrefundable') : formatMessage('commonNonrefundable');
             return (
                 <Fragment>
-                    <div className="flowReviewbanner">
+                    <div className={bannerClass[type]}>
                         <Container>
                             <div className="flowReviewbannerText">
                                 <Header as='h2'>{headingText}</Header>
