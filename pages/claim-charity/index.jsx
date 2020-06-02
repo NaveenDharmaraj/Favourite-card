@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-
 import ClaimCharityWrapper from '../../components/ClaimCharity/ClaimCharity';
 import Layout from '../../components/shared/Layout';
 
@@ -23,4 +22,3 @@ function mapStateToProps(state) {
 }
 
 export default (connect(mapStateToProps)(ClaimCharity));
-

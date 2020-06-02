@@ -857,12 +857,10 @@ export const checkClaimCharityAccessCode = (accessCode, userId) => (dispatch) =>
             fsa.payload = {
                 data: result.data,
             };
-            const beneficiaryName = result.data.attributes.beneficiaryName;
-            storage.set('charityName', beneficiaryName, 'local', 1800000 );
             getUser(dispatch, userId, null).then( () => {
                 Router.pushRoute('/claim-charity/success'); 
             }) 
-        }, 
+        }
     ).catch((error) => {
         const errorFsa = {
             payload: {
@@ -876,6 +874,3 @@ export const checkClaimCharityAccessCode = (accessCode, userId) => (dispatch) =>
     });
     
 };
-
-
-

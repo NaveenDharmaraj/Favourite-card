@@ -21,7 +21,6 @@ import '../../static/less/claimcharity.less';
 import { connect } from 'react-redux';
 import { checkClaimCharityAccessCode } from '../../actions/user';
 
-
 class ClaimCharity extends React.Component {
 
     constructor(props) {
@@ -36,7 +35,8 @@ class ClaimCharity extends React.Component {
     handleInputChange = (event, data) => {
         const { value } = data;
         this.setState({
-            accessCode: value
+            accessCode: value,
+            buttonClicked: false,
         })
     }
 
@@ -57,6 +57,7 @@ class ClaimCharity extends React.Component {
         const {
             claimCharityErrorMessage
         } = this.props;
+        const { buttonClicked } = this.state;
         return (
             <Fragment>
                 <div className="ClaimWepper">
@@ -163,8 +164,8 @@ class ClaimCharity extends React.Component {
                                                                 <Button
                                                                     className="primary blue-btn-rounded btnTextsize mt-2"
                                                                     onClick={this.onClaimCharityClick}
-                                                                    content={buttonClicked ? 'Submitting' : 'Claim your charity'}
-                                                                >Claim your charity</Button>
+                                                                    content={(buttonClicked === true) ? 'Submitting' : 'Claim your charity'}
+                                                                />
                                                             </Grid.Column>
                                                         </Grid.Row>
                                                     </Grid>

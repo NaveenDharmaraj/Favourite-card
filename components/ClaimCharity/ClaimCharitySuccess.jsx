@@ -8,6 +8,7 @@ import {
 } from 'semantic-ui-react';
 import { connect, } from 'react-redux';
 import getConfig from 'next/config';
+import { Router } from '../../routes';
 import accessingleft from '../../static/images/accessing2.png';
 import accessingfull from '../../static/images/accessing1.png';
 import '../../static/less/claimcharity.less';
@@ -18,90 +19,132 @@ const {
     RAILS_APP_URL_ORIGIN,
 } = publicRuntimeConfig;
 
-let locationNumber = '';
+class Accessing extends React.Component {
 
-const Accessing = (props) => {
-    const {
-        currentUser: {
-            attributes: {
-                firstName
-            }
-        },
-        userAccesCodeData: {
-            data: {
-                attributes: {
-                    beneficiaryName,
-                    beneficiarySlug
+    constructor(props) {
+        super(props)
+
+        this.state = {
+
+        }
+    }
+
+    componentDidMount() {
+        const {
+            userAccesCodeData: {
+                data: {
+                    attributes: {
+                        beneficiarySlug,
+                    }
                 }
+            },
+            otherAccounts } = this.props;
+        const slugValue = otherAccounts.find((item) => item.slug === beneficiarySlug).slug;
+        if (!slugValue) {
+            Router.pushRoute('/dashboard');
+        }
+    }
+
+    goToCharityBtn = (otherAccounts, beneficiarySlug, buttonPosition) => {
+        let locationNumber = '';
+        otherAccounts && otherAccounts.map((item) => {
+            if (item.slug === beneficiarySlug) {
+                locationNumber = item.location;
+                return locationNumber;
             }
-        }     
-    } = props;
-    console.log(userAccesCodeData);
-    return (
-        <Fragment>
-            <div className="AccessingtopBanner">
-                <Container>
-                    <div className="lefttopicon"></div>
-                    <div className="bannerHeading">
-                        <Header as='h3'>
-                            {firstName}
-                            , you’ve claimed your charity </Header>
-                        <p>Now you have access to your charity {beneficiaryName} account.</p>
-                        {otherAccounts && otherAccounts.map((item) => {
-                            if (item.slug === beneficiarySlug) {
-                                locationNumber = item.location;
-                                return locationNumber;
-                            }
-                        })}
-                        {locationNumber ? <a href={`${RAILS_APP_URL_ORIGIN}${locationNumber}`}><Button className=" primary blue-btn-rounded mt-1"><b>Go to my Charity Account</b></Button></a> : ''}
-                    </div>
-                </Container>
-            </div>
-            <div className="Accessing">
-                <Container>
-                    <div className="Accessingheading">
-                        <Header as='h3'>Accessing your Charity Account</Header>
-                    </div>
-                    <div className="Accessingfullwidth">
-                        <Grid>
-                            <Grid.Row verticalAlign='middle'>
-                                <Grid.Column mobile={16} tablet={16} computer={7}>
-                                    <div className="accessingleft">
-                                        <Header as='h3'>One login for both accounts</Header>
-                                        <p>Your personal Impact Account and Charity Account are linked together. You can use the same email and password to access both accounts.</p>
-                                    </div>
-                                </Grid.Column>
-                                <Grid.Column mobile={16} tablet={16} computer={9}>
-                                    <div className="accessingrigghtImg">
-                                        <Image src={accessingleft} />
-                                    </div>
-                                </Grid.Column>
-                            </Grid.Row>
-                        </Grid>
-                    </div>
-                </Container>
-                <div className="accountseasily">
+        });
+        if (locationNumber) {
+            return (
+                <a href={`${RAILS_APP_URL_ORIGIN}${locationNumber}`}>
+                    <Button className={buttonPosition === 1 ? "primary blue-btn-rounded mt-1" : "white-btn-round textBlack"}><b>Go to my Charity Account</b></Button>
+                </a>
+            )
+        }
+        else {
+            return (
+                <Button className={buttonPosition === 1 ? "primary blue-btn-rounded mt-1" : "white-btn-round textBlack"}><b>Go to my Charity Account</b></Button>
+            )
+        }
+    }
+
+    render() {
+        const {
+            currentUser: {
+                attributes: {
+                    firstName
+                }
+            },
+            userAccesCodeData: {
+                data: {
+                    attributes: {
+                        beneficiaryName,
+                        beneficiarySlug
+                    }
+                }
+            },
+            otherAccounts,
+        } = this.props;
+        let buttonPosition;
+        return (
+            <Fragment>
+                <div className="AccessingtopBanner">
                     <Container>
-                        <div className="accountseasilyheading">
-                            <Header as='h3'>Switch between accounts easily</Header>
-                            <p>When you’re logged in, select your profile photo. Then choose “Switch account” to go between your personal Impact Account and Charity Account.</p>
+                        <div className="lefttopicon"></div>
+                        <div className="bannerHeading">
+                            <Header as='h3'>
+                                {firstName}
+                            , you’ve claimed your charity </Header>
+                            <p>Now you have access to your charity {beneficiaryName} account.</p>
+                            {this.goToCharityBtn(otherAccounts, beneficiarySlug, buttonPosition = 1)}
                         </div>
                     </Container>
-                    <div className="accountfullimg">
-                        <Image src={accessingfull} />
+                </div>
+                <div className="Accessing">
+                    <Container>
+                        <div className="Accessingheading">
+                            <Header as='h3'>Accessing your Charity Account</Header>
+                        </div>
+                        <div className="Accessingfullwidth">
+                            <Grid>
+                                <Grid.Row verticalAlign='middle'>
+                                    <Grid.Column mobile={16} tablet={16} computer={7}>
+                                        <div className="accessingleft">
+                                            <Header as='h3'>One login for both accounts</Header>
+                                            <p>Your personal Impact Account and Charity Account are linked together. You can use the same email and password to access both accounts.</p>
+                                        </div>
+                                    </Grid.Column>
+                                    <Grid.Column mobile={16} tablet={16} computer={9}>
+                                        <div className="accessingrigghtImg">
+                                            <Image src={accessingleft} />
+                                        </div>
+                                    </Grid.Column>
+                                </Grid.Row>
+                            </Grid>
+                        </div>
+                    </Container>
+                    <div className="accountseasily">
+                        <Container>
+                            <div className="accountseasilyheading">
+                                <Header as='h3'>Switch between accounts easily</Header>
+                                <p>When you’re logged in, select your profile photo. Then choose “Switch account” to go between your personal Impact Account and Charity Account.</p>
+                            </div>
+                        </Container>
+                        <div className="accountfullimg">
+                            <Image src={accessingfull} />
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div className="startCustomizing">
-                <Container>
-                    <div className="startCustomizingheading">
-                        <Header as='h3'>Start customizing your Charity Account</Header>
-                        <Button className="white-btn-round textBlack">Go to my Charity Account</Button>
-                    </div>
-                </Container>
-            </div>
-        </Fragment>
-    );
+                <div className="startCustomizing">
+                    <Container>
+                        <div className="startCustomizingheading">
+                            <Header as='h3'>Start customizing your Charity Account</Header>
+                            {this.goToCharityBtn(otherAccounts, beneficiarySlug, buttonPosition = 2)}
+                        </div>
+                    </Container>
+                </div>
+            </Fragment>
+        );
+    }
 }
 
 const mapStateToProps = (state) => ({
