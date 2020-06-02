@@ -57,6 +57,9 @@ class ClaimCharity extends React.Component {
         const {
             claimCharityErrorMessage
         } = this.props;
+        const {
+            buttonClicked
+        } = this.state;
         return (
             <Fragment>
                 <div className="ClaimWepper">
