@@ -49,6 +49,7 @@ class GroupProfile extends React.Component {
                     isCampaign,
                 },
             },
+            redirectToPrivateGroupErrorPage,
             redirectToDashboard,
         } = this.props;
         if (isCampaign === true) {
@@ -56,6 +57,9 @@ class GroupProfile extends React.Component {
         }
         if (redirectToDashboard) {
             Router.push('/search');
+        }
+        if (redirectToPrivateGroupErrorPage) {
+            Router.pushRoute('/group/error');
         }
         getGroupFromSlug(dispatch, slug);
     }
@@ -124,6 +128,7 @@ GroupProfile.defaultProps = {
     },
     isAUthenticated: false,
     redirectToDashboard: false,
+    redirectToPrivateGroupErrorPage: false,
     slug: '',
 };
 
@@ -142,6 +147,7 @@ GroupProfile.propTypes = {
     },
     isAUthenticated: bool,
     redirectToDashboard: bool,
+    redirectToPrivateGroupErrorPage: bool,
     slug: string,
 };
 
@@ -150,6 +156,7 @@ function mapStateToProps(state) {
         groupDetails: state.group.groupDetails,
         isAUthenticated: state.auth.isAuthenticated,
         redirectToDashboard: state.group.redirectToDashboard,
+        redirectToPrivateGroupErrorPage: state.group.redirectToPrivateGroupErrorPage,
     };
 }
 export default connect(mapStateToProps)(GroupProfile);
