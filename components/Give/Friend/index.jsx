@@ -119,7 +119,9 @@ class Friend extends React.Component {
             reloadModalOpen:0,
             reviewBtnFlag: false,
         };
+        console.log("constructor----group Id before if", groupId);
         if (!_isEmpty(groupId) && Number(groupId) > 0) {
+            console.log("constructor----group Id inside if", groupId);
             this.state.flowObject.groupId = groupId;
             this.state.giveFromType = 'groups';
         } else if (!_isEmpty(campaignId) && Number(campaignId) > 0) {
@@ -245,6 +247,7 @@ class Friend extends React.Component {
                     language,
                 },
             } = this.props;
+            console.log(this.state);
             const formatMessage = this.props.t;
             let paymentInstruments = paymentInstrumentsData;
             let companyPaymentInstrumentChanged = false;
@@ -273,6 +276,9 @@ class Friend extends React.Component {
             }
             const donationMatchOptions = populateDonationMatch(donationMatchData, formatMessage);
             if (!_isEmpty(fund)) {
+                console.log("campaignId", campaignId);
+                console.log("groupId", groupId);
+                console.log("giveFromType", giveFromType);
                 const giveFromId = (giveFromType === 'campaigns') ? campaignId : groupId;
                 giveData = Friend.initFields(
                     giveData, fund, id, avatar,
@@ -306,10 +312,13 @@ class Friend extends React.Component {
             giveData.giveFrom.balance = fund.attributes.balance;
             giveData.giveFrom.name = name;
         } else if (!_isEmpty(companiesAccountsData) && !_isEmpty(userGroups) && !_isEmpty(userCampaigns) && !giveData.userInteracted) {
+            console.log("giveFromType", giveFromType);
+            console.log("giveFromId", giveFromId);
             if (giveFromType) {
                 const defaultGroupFrom = (giveFromType === 'campaigns')
                 ? userCampaigns.find((userCampaign) => userCampaign.id === giveFromId)
-                : userGroups.find((userGroup) => userGroup.id === giveFromId)
+                : userGroups.find((userGroup) => userGroup.id === giveFromId);
+                console.log("defaultGroupFrom", defaultGroupFrom);
                 if (!_isEmpty(defaultGroupFrom)) {
                     giveData.giveFrom.value = defaultGroupFrom.attributes.fundId;
                     giveData.giveFrom.name = defaultGroupFrom.attributes.name;
