@@ -60,7 +60,6 @@ class Accessing extends React.Component {
     }
 
     render() {
-        debugger;
         const {
             currentUser: {
                 attributes: {
