@@ -303,6 +303,9 @@ class Friend extends React.Component {
 
     static initFields(giveData, fund, id, avatar,
         name, companiesAccountsData, userGroups, userCampaigns, giveFromId, giveFromType,) {
+        console.log((!_isEmpty(companiesAccountsData) && !_isEmpty(userGroups) && !_isEmpty(userCampaigns) && !giveData.userInteracted));
+        console.log("giveFromType", giveFromType);
+        console.log("giveFromId", giveFromId);
         if (_isEmpty(companiesAccountsData) && _isEmpty(userGroups) && _isEmpty(userCampaigns) && !giveData.userInteracted) {
             giveData.giveFrom.avatar = avatar,
             giveData.giveFrom.id = id;
@@ -312,8 +315,8 @@ class Friend extends React.Component {
             giveData.giveFrom.balance = fund.attributes.balance;
             giveData.giveFrom.name = name;
         } else if (!_isEmpty(companiesAccountsData) && !_isEmpty(userGroups) && !_isEmpty(userCampaigns) && !giveData.userInteracted) {
-            console.log("giveFromType", giveFromType);
-            console.log("giveFromId", giveFromId);
+            console.log("giveFromType iside if", giveFromType);
+            console.log("giveFromId inside if ", giveFromId);
             if (giveFromType) {
                 const defaultGroupFrom = (giveFromType === 'campaigns')
                 ? userCampaigns.find((userCampaign) => userCampaign.id === giveFromId)
