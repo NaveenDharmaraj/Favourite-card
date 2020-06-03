@@ -15,7 +15,7 @@ import {
 import '../../static/less/giveFlows.less';
 import leftmodelimg from '../../static/images/icons/leftmodelimg.png';
 import modelimg1 from '../../static/images/icons/rightmodelimg1.png';
-import modelimg2 from '../../static/images/icons/rightmodelimg2.png';
+import modelimg2 from '../../static/images/illustration-find-friends.png';
 import modelimg3 from '../../static/images/icons/rightmodelimg3.png';
 import PlaceholderGrid from '../shared/PlaceHolder';
 
@@ -139,7 +139,7 @@ class GiveFromCampaignModal extends React.Component {
                                             </div>
                                             <div className="rightBoxs">
                                                 <Item.Group>
-                                                    <Link route='/give/to/friend/new'>
+                                                    <Link route={`/give/to/friend/new?campaign_id=${campaignId}`}>
                                                         <Item>
                                                             <Image src={modelimg2} />
                                                             <Item.Content verticalAlign='middle'>

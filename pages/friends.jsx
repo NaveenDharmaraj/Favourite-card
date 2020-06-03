@@ -11,6 +11,8 @@ import Layout from '../components/shared/Layout';
 class Friends extends React.Component {
     static async getInitialProps({ query }) {
         return {
+            campaignId: query.campaign_id,
+            groupId: query.group_id,
             namespacesRequired: [
                 'authHeader',
                 'giveCommon',

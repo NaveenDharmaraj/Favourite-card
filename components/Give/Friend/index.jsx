@@ -63,12 +63,14 @@ class Friend extends React.Component {
     constructor(props) {
         super(props);
         const {
+            campaignId,
             companyDetails,
             companiesAccountsData,
             donationMatchData,
             paymentInstrumentsData,
             defaultTaxReceiptProfile,
             fund,
+            groupId,
             userAccountsFetched,
             userCampaigns,
             userGroups,
@@ -117,6 +119,13 @@ class Friend extends React.Component {
             reloadModalOpen:0,
             reviewBtnFlag: false,
         };
+        if (!_isEmpty(groupId) && Number(groupId) > 0) {
+            this.state.flowObject.groupId = groupId;
+            this.state.giveFromType = 'groups';
+        } else if (!_isEmpty(campaignId) && Number(campaignId) > 0) {
+            this.state.flowObject.campaignId = campaignId;
+            this.state.giveFromType = 'campaigns'
+        }
         dispatch({
             payload: {
                 showFriendDropDown: true,
@@ -203,9 +212,12 @@ class Friend extends React.Component {
             } = this.state;
             let {
                 flowObject: {
+                    campaignId,
                     currency,
                     giveData,
+                    groupId,
                 },
+                giveFromType,
                 reviewBtnFlag,
                 reloadModalOpen,
             } = this.state;
@@ -261,9 +273,10 @@ class Friend extends React.Component {
             }
             const donationMatchOptions = populateDonationMatch(donationMatchData, formatMessage);
             if (!_isEmpty(fund)) {
+                const giveFromId = (giveFromType === 'campaigns') ? campaignId : groupId;
                 giveData = Friend.initFields(
                     giveData, fund, id, avatar,
-                    `${firstName} ${lastName}`, companiesAccountsData, userGroups, userCampaigns,
+                    `${firstName} ${lastName}`, companiesAccountsData, userGroups, userCampaigns, giveFromId, giveFromType,
                 );
             }
             this.setState({
@@ -283,7 +296,7 @@ class Friend extends React.Component {
     }
 
     static initFields(giveData, fund, id, avatar,
-        name, companiesAccountsData, userGroups, userCampaigns) {
+        name, companiesAccountsData, userGroups, userCampaigns, giveFromId, giveFromType,) {
         if (_isEmpty(companiesAccountsData) && _isEmpty(userGroups) && _isEmpty(userCampaigns) && !giveData.userInteracted) {
             giveData.giveFrom.avatar = avatar,
             giveData.giveFrom.id = id;
@@ -293,9 +306,26 @@ class Friend extends React.Component {
             giveData.giveFrom.balance = fund.attributes.balance;
             giveData.giveFrom.name = name;
         } else if (!_isEmpty(companiesAccountsData) && !_isEmpty(userGroups) && !_isEmpty(userCampaigns) && !giveData.userInteracted) {
-            giveData.giveFrom = {
-                value: '',
-            };
+            if (giveFromType) {
+                const defaultGroupFrom = (giveFromType === 'campaigns')
+                ? userCampaigns.find((userCampaign) => userCampaign.id === giveFromId)
+                : userGroups.find((userGroup) => userGroup.id === giveFromId)
+                if (!_isEmpty(defaultGroupFrom)) {
+                    giveData.giveFrom.value = defaultGroupFrom.attributes.fundId;
+                    giveData.giveFrom.name = defaultGroupFrom.attributes.name;
+                    giveData.giveFrom.avatar = defaultGroupFrom.attributes.avatar;
+                    giveData.giveFrom.id = defaultGroupFrom.id;
+                    giveData.giveFrom.type = defaultGroupFrom.type;
+                    giveData.giveFrom.text = `${defaultGroupFrom.attributes.name} ($${defaultGroupFrom.attributes.balance})`;
+                    giveData.giveFrom.balance = defaultGroupFrom.attributes.balance;
+                    giveData.giveFrom.slug = defaultGroupFrom.attributes.slug;
+                }
+            } else {
+                giveData.giveFrom = {
+                    value: '',
+                };
+            }
+
         }
         return giveData;
     }
