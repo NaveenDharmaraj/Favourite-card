@@ -71,7 +71,7 @@ const UserDetails = (props) => {
             name: 'linkify',
         });
     }
-    if (!_isEmpty(staffCount) && staffCount > 0) {
+    if (staffCount && staffCount > 0) {
         charityDetails.push({
             Content: staffCount,
             name: 'users',
@@ -184,8 +184,6 @@ UserDetails.propTypes = {
 function mapStateToProps(state) {
     return {
         charityDetails: state.charity.charityDetails,
-        currentUser: state.user.info,
-        deepLinkUrl: state.profile.deepLinkUrl,
         isAUthenticated: state.auth.isAuthenticated,
     };
 }
