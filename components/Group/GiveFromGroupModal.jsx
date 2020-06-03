@@ -167,7 +167,7 @@ const GiveFromGroupModal = (props) => {
                                 </div>
                                 <div className="rightBoxs">
                                     <Item.Group>
-                                        <Link route='/give/to/friend/new'>
+                                        <Link route={`/give/to/friend/new?group_id=${groupId}`}>
                                             <Item>
                                                 <Image src={modelimg2} />
                                                 <Item.Content verticalAlign='middle'>

@@ -139,7 +139,7 @@ class GiveFromCampaignModal extends React.Component {
                                             </div>
                                             <div className="rightBoxs">
                                                 <Item.Group>
-                                                    <Link route='/give/to/friend/new'>
+                                                    <Link route={`/give/to/friend/new?campaign_id=${campaignId}`}>
                                                         <Item>
                                                             <Image src={modelimg2} />
                                                             <Item.Content verticalAlign='middle'>
