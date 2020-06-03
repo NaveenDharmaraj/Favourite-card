@@ -30,16 +30,8 @@ class Accessing extends React.Component {
     }
 
     componentDidMount() {
-        const {
-            userAccesCodeData: {
-                data: {
-                    attributes: {
-                        beneficiarySlug,
-                    }
-                }
-            },
-            otherAccounts } = this.props;
-        const slugValue = otherAccounts.find((item) => item.slug === beneficiarySlug).slug;
+        const { slug, otherAccounts } = this.props;
+        const slugValue = otherAccounts.find((item) => item.slug === slug).slug;
         if (!slugValue) {
             Router.pushRoute('/dashboard');
         }
@@ -68,23 +60,18 @@ class Accessing extends React.Component {
     }
 
     render() {
+        debugger;
         const {
             currentUser: {
                 attributes: {
                     firstName
                 }
             },
-            userAccesCodeData: {
-                data: {
-                    attributes: {
-                        beneficiaryName,
-                        beneficiarySlug
-                    }
-                }
-            },
+            slug,
             otherAccounts,
         } = this.props;
         let buttonPosition;
+        const charityName = otherAccounts.find((item) => item.slug === slug).name;
         return (
             <Fragment>
                 <div className="AccessingtopBanner">
@@ -94,8 +81,8 @@ class Accessing extends React.Component {
                             <Header as='h3'>
                                 {firstName}
                             , you’ve claimed your charity </Header>
-                            <p>Now you have access to your charity {beneficiaryName} account.</p>
-                            {this.goToCharityBtn(otherAccounts, beneficiarySlug, buttonPosition = 1)}
+                            <p>Now you have access to your charity {charityName} account.</p>
+                            {this.goToCharityBtn(otherAccounts, slug, buttonPosition = 1)}
                         </div>
                     </Container>
                 </div>
@@ -138,7 +125,7 @@ class Accessing extends React.Component {
                     <Container>
                         <div className="startCustomizingheading">
                             <Header as='h3'>Start customizing your Charity Account</Header>
-                            {this.goToCharityBtn(otherAccounts, beneficiarySlug, buttonPosition = 2)}
+                            {this.goToCharityBtn(otherAccounts, slug, buttonPosition = 2)}
                         </div>
                     </Container>
                 </div>
@@ -149,7 +136,6 @@ class Accessing extends React.Component {
 
 const mapStateToProps = (state) => ({
     otherAccounts: state.user.otherAccounts,
-    userAccesCodeData: state.user.userAccesCodeData,
 });
 
 export default (connect(mapStateToProps)(Accessing));

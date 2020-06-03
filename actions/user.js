@@ -857,9 +857,16 @@ export const checkClaimCharityAccessCode = (accessCode, userId) => (dispatch) =>
             fsa.payload = {
                 data: result.data,
             };
-            getUser(dispatch, userId, null).then( () => {
-                Router.pushRoute('/claim-charity/success'); 
-            }) 
+            let {
+                data: {
+                    attributes: {
+                        beneficiarySlug,
+                    }
+                }
+            } = fsa.payload;
+            getUser(dispatch, userId, null).then(() => {
+                Router.pushRoute(`/claim-charity/success?slug=${beneficiarySlug? beneficiarySlug : ''}`);
+            })
         }
     ).catch((error) => {
         const errorFsa = {
@@ -872,5 +879,5 @@ export const checkClaimCharityAccessCode = (accessCode, userId) => (dispatch) =>
     }).finally(() => {
         dispatch(fsa);
     });
-    
+
 };

@@ -164,8 +164,8 @@ class ClaimCharity extends React.Component {
                                                                 <Button
                                                                     className="primary blue-btn-rounded btnTextsize mt-2"
                                                                     onClick={this.onClaimCharityClick}
-                                                                    content={(buttonClicked === true) ? 'Submitting' : 'Claim your charity'}
-                                                                />
+                                                                    disabled={buttonClicked ? true : false }
+                                                                > Claim your charity </Button>
                                                             </Grid.Column>
                                                         </Grid.Row>
                                                     </Grid>
