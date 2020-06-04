@@ -48,6 +48,7 @@ const ChartSummary = (props) => {
                                             <Button
                                                 className="blue-bordr-btn-round-def"
                                                 onClick={handleClick}
+                                                data-test="giftButton"
                                             >
                                                 {formatMessage('charityProfile:viewGiftButtonText')}
                                             </Button>

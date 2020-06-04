@@ -117,6 +117,7 @@ class ReceivingOrganisations extends React.Component {
                                                 className="blue-bordr-btn-round-def"
                                                 content={formatMessage('charityProfile:seeMore')}
                                                 onClick={this.handleSeeMore}
+                                                data-test="profile_charity_load_more_button"
                                             />
                                         )
                                 }

@@ -26,7 +26,7 @@ class GroupShareDetails extends React.Component {
             showShareModal: false,
         }
         this.handleOnClick = this.handleOnClick.bind(this);
-        this.handleCopyLink = this.handleCopyLink.bind(this);
+        // this.handleCopyLink = this.handleCopyLink.bind(this);
         this.handleFollow = this.handleFollow.bind(this);
     }
 
@@ -77,11 +77,11 @@ class GroupShareDetails extends React.Component {
         this.closeShareModal();
     }
 
-    handleCopyLink = (e) => {
-        this.textArea.select();
-        document.execCommand('copy');
-        e.target.focus();
-    };
+    // handleCopyLink = (e) => {
+    //     this.textArea.select();
+    //     document.execCommand('copy');
+    //     e.target.focus();
+    // };
 
     closeShareModal = () => {
         this.setState({ showShareModal: false })
@@ -113,7 +113,7 @@ class GroupShareDetails extends React.Component {
                     )}
                     <Modal className="chimp-modal" onClose={this.closeShareModal} open={showShareModal} closeIcon size="tiny" trigger={
                         <List.Item as="a">
-                            <Icon className="share alternate" onClick={() => this.setState({ showShareModal: true })}></Icon>
+                            <Icon data-test="profile_shared_share_icon" className="share alternate" onClick={() => this.setState({ showShareModal: true })}></Icon>
                         </List.Item>
                     }>
                         <Modal.Header>Share this Group</Modal.Header>
@@ -145,6 +145,7 @@ class GroupShareDetails extends React.Component {
                                             <div className='shareLinkLeft'>Or share link</div>
                                             <div className='shareLinkTextBox'>
                                                 <Input
+                                                data-test="profile_shared_share_link_input"
                                                 value={inputValue}
                                                 />
                                             </div>

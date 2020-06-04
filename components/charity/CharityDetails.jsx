@@ -119,9 +119,9 @@ class CharityDetails extends React.Component {
                         <Grid.Row>
                             <Grid.Column mobile={16} tablet={16} computer={16} className="ch_paragraph">
                                 {!_isEmpty(formattedDescription)
-                                    && <p>{ReactHtmlParser(formattedDescription)}</p>}
+                                    && <p data-test="description">{ReactHtmlParser(formattedDescription)}</p>}
                                 {!_isEmpty(formattedDescriptionNew)
-                                    && <p>{ReactHtmlParser(formattedDescriptionNew)}</p>}
+                                    && <p data-test="new-description">{ReactHtmlParser(formattedDescriptionNew)}</p>}
                             </Grid.Column>
                         </Grid.Row>
                         <Divider />

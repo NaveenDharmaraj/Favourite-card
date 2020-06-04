@@ -1,8 +1,9 @@
 import React from 'react';
 import {
-    Grid, Placeholder, Segment, Table, Card, Divider
+    Grid, Placeholder, Segment, Table, Card, Divider,
 } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
+
 const columnComponent = (column, placeholderType) => {
     const columnComponents = [];
     for (let i = 0; i < column; i++) {

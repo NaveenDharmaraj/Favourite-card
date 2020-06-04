@@ -121,13 +121,13 @@ const UserDetails = (props) => {
         if (isAUthenticated) {
             buttonLink = (
                 <Link route={(`/give/to/charity/${slug}/gift/new`)}>
-                    <Button className="blue-btn-rounded-def">{formatMessage('charityProfile:give')}</Button>
+                    <Button data-test="profile_charity_give_button" className="blue-btn-rounded-def">{formatMessage('charityProfile:give')}</Button>
                 </Link>
             );
         } else {
             buttonLink = (
                 <a href={(`${RAILS_APP_URL_ORIGIN}/send/to/charity/${slug}/gift/new`)}>
-                    <Button className="blue-btn-rounded-def">{formatMessage('charityProfile:give')}</Button>
+                    <Button data-test="profile_charity_give_button" className="blue-btn-rounded-def">{formatMessage('charityProfile:give')}</Button>
                 </a>
             );
         }
@@ -150,7 +150,7 @@ const UserDetails = (props) => {
                             {`* ${formatMessage('charityProfile:claimCharityInfo')}`}
                         </p>
                         <a href={CLAIM_CHARITY_URL}>
-                            <Button className="blue-bordr-btn-round-def">{formatMessage('charityProfile:claimCharityButtonText')}</Button>
+                            <Button data-test="profile_charity_claim_charity_button" className="blue-bordr-btn-round-def">{formatMessage('charityProfile:claimCharityButtonText')}</Button>
                         </a>
                     </div>
                 )
