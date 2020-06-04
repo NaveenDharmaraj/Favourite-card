@@ -9,7 +9,10 @@
     "start": "NODE_ENV=production node server.js",
     "lint": "eslint .",
     "coverage": "jest --coverage --collectCoverageFrom=**/*.{js,jsx}",
-    "sonar": "node sonar-project.js"
+    "sonar": "node sonar-project.js",
+    "test": "jest --verbose --config ./jest.config.js",
+    "test:watch": "jest --watchAll --verbose",
+    "test:coverage": "jest --verbose --coverage"
   },
   "author": "",
   "license": "ISC",
@@ -50,12 +53,15 @@
     "semantic-ui-react": "^0.87.1"
   },
   "devDependencies": {
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.2",
     "eslint": "^5.16.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-import": "^2.18.0",
     "eslint-plugin-jsx-a11y": "^6.2.1",
     "eslint-plugin-react": "^7.14.2",
     "jest": "^24.8.0",
+    "redux-mock-store": "^1.5.4",
     "sonarqube-scanner": "^2.5.0"
   }
 }

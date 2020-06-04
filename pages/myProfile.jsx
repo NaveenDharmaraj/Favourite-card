@@ -117,7 +117,7 @@ class MyProfile extends React.Component {
         },
         {
             
-            menuItem: 'Causes you care about',
+            menuItem: 'Your causes and topics',
             render: () => {
                 return (
                     <Tab.Pane attached={false}>
