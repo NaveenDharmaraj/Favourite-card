@@ -292,14 +292,28 @@ class Login extends React.Component {
             apiValidating,
             isClaimCharity
         } = this.props;
+        console.log(this.props);
         return (
             <Layout onBoarding={isClaimCharity ? false : true}>
-                <div className="pageWraper">
+                {
+                    (stepIndex === 0) && isClaimCharity ? (
+                        <ClaimCharityFirstStep
+                            parentInputChange={this.handleInputChange}
+                            handleSubmit={this.handleSubmit}
+                            firstName={firstName}
+                            handleInputOnBlur={this.handleInputOnBlur}
+                            isButtonDisabled={this.isButtonDisabled}
+                            lastName={lastName}
+                            validity={validity}
+                        />
+                    ) : ''
+                }
+                <div className={!isClaimCharity? "pageWraper" : ''}>
                     <Container>
-                        <div className="linebg">
+                        <div className={!isClaimCharity? "linebg" : ''}>
                             <Grid columns={2} doubling>
                                 {
-                                    (stepIndex === 0) && !isClaimCharity ? 
+                                    (stepIndex === 0) && !isClaimCharity ?
                                         (
                                             <FirstStep
                                                 parentInputChange={this.handleInputChange}
@@ -312,19 +326,6 @@ class Login extends React.Component {
                                             />
                                         ) :
                                         ''
-                                }
-                                {
-                                    (stepIndex === 0) && isClaimCharity ? (
-                                        <ClaimCharityFirstStep
-                                            parentInputChange={this.handleInputChange}
-                                            handleSubmit={this.handleSubmit}
-                                            firstName={firstName}
-                                            handleInputOnBlur={this.handleInputOnBlur}
-                                            isButtonDisabled={this.isButtonDisabled}
-                                            lastName={lastName}
-                                            validity={validity}
-                                        />
-                                    ) : ''
                                 }
                                 {
                                     (stepIndex === 1) && (

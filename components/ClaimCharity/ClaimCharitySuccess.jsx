@@ -37,7 +37,7 @@ class Accessing extends React.Component {
         }
     }
 
-    goToCharityBtn = (otherAccounts, beneficiarySlug, buttonPosition) => {
+    renderGoToCharityBtn = (otherAccounts, beneficiarySlug, buttonPosition) => {
         let locationNumber = '';
         otherAccounts && otherAccounts.map((item) => {
             if (item.slug === beneficiarySlug) {
@@ -81,7 +81,7 @@ class Accessing extends React.Component {
                                 {firstName}
                             , you’ve claimed your charity </Header>
                             <p>Now you have access to your charity {charityName} account.</p>
-                            {this.goToCharityBtn(otherAccounts, slug, buttonPosition = 1)}
+                            {this.renderGoToCharityBtn(otherAccounts, slug, buttonPosition = 1)}
                         </div>
                     </Container>
                 </div>
@@ -124,7 +124,7 @@ class Accessing extends React.Component {
                     <Container>
                         <div className="startCustomizingheading">
                             <Header as='h3'>Start customizing your Charity Account</Header>
-                            {this.goToCharityBtn(otherAccounts, slug, buttonPosition = 2)}
+                            {this.renderGoToCharityBtn(otherAccounts, slug, buttonPosition = 2)}
                         </div>
                     </Container>
                 </div>

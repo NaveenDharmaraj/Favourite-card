@@ -39,7 +39,6 @@ const getWidth = () => {
     return isSSR ? 1000 : window.innerWidth
 };
 
-
 class Layout extends React.Component {
     async componentDidMount() {
         const {
@@ -114,7 +113,7 @@ class Layout extends React.Component {
         window.scrollTo(0, 0);
     };
 
-    renderLayout = (authRequired, children, isAuthenticated, onBoarding, dispatch, appErrors, isLogin, showHeader) => {
+    renderLayout = (authRequired, children, isAuthenticated, onBoarding, dispatch, appErrors, isLogin, showHeader, isClaimCharity) => {
         if (authRequired && !isAuthenticated) {
             return null;
         }
@@ -198,7 +197,7 @@ class Layout extends React.Component {
                             }
                         </Responsive>
                         <Responsive {...widthProp} minWidth={992}>
-                            <Header isAuthenticated={isAuthenticated} onBoarding={onBoarding} isLogin={isLogin} showHeader={showHeader}/>
+                            <Header isAuthenticated={isAuthenticated} onBoarding={onBoarding} isLogin={isLogin} showHeader={showHeader} isClaimCharity={isClaimCharity}/>
                                 {!_.isEmpty(appErrors) &&
                                     <Container
                                         className="app-status-messages"
@@ -225,6 +224,7 @@ class Layout extends React.Component {
             </Responsive>
         );
     }
+   
 
     render() {
         const {
@@ -239,8 +239,19 @@ class Layout extends React.Component {
         } = this.props;
 
         const showHeader = !addCauses;
+        let returnToProps, isClaimCharity;
+        if (typeof Storage !== 'undefined') {
+            returnToProps = localStorage.getItem('auth0ReturnProps');
+            returnToProps = JSON.parse(returnToProps);
+        };
+        if (returnToProps && returnToProps.returnTo === '/claim-charity') {
+            isClaimCharity = true;
+        }
+        else {
+            isClaimCharity = false;
+        }
         return (
-            this.renderLayout(authRequired, children, isAuthenticated, onBoarding, dispatch, appErrors, isLogin, showHeader)
+            this.renderLayout(authRequired, children, isAuthenticated, onBoarding, dispatch, appErrors, isLogin, showHeader, isClaimCharity)
         );
     }
 };
