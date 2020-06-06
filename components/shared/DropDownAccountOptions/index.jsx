@@ -14,6 +14,7 @@ import {
     Placeholder,
     Popup,
     Select,
+    Dropdown,
 } from 'semantic-ui-react';
 
 import {
@@ -101,42 +102,50 @@ class DropDownAccountOptions extends React.Component {
         );
         if (!_.isEmpty(dropDownData)) {
             fieldData = (
-                <Form.Field
-                    className="dropdownWithArrowParent"
-                    control={Select}
-                    error={!validity || reviewBtnFlag}
-                    id={name}
-                    name={name}
-                    onBlur={parentOnBlurChange}
-                    onChange={parentInputChange}
-                    options={dropDownData}
-                    placeholder={giveFromPlaceHolder}
-                    value={selectedValue}
-                />
+                <div className="dropdownSearch dropdownWithArrowParentnotbg medium">
+                    <Dropdown
+                        className="dropdownsearchField grouped medium"
+                        error={!validity || reviewBtnFlag}
+                        onChange={parentInputChange}
+                        onBlur={parentOnBlurChange}
+                        placeholder={giveFromPlaceHolder}
+                        fluid
+                        selection
+                        options={dropDownData}
+                        id={name}
+                        name={name}
+                        value={selectedValue}
+                        selectOnBlur={false}
+                        search
+                        selectOnNavigation={false}
+                    />
+                </div>
             );
         }
         if (!userAccountsFetched || !_.isEmpty(dropDownData)) {
             return (
                 <Fragment>
-                    <Form.Field>
-                        <label htmlFor="giveFrom">
-                            {giveFromHeader}
-                        </label>
-                        <Popup
-                            content={formatMessage('allocationsGiveFromPopup')}
-                            position="top center"
-                            trigger={(
-                                <Icon
-                                    color="blue"
-                                    name="question circle"
-                                    size="large"
-                                />
-                            )}
-                        />
-                        <p className="multipleFriendAmountFieldText">
+                    <Form.Field className="mt-2">
+                        <div className="paymentMethodDropdown mb-1-2">
+                            <label htmlFor="giveFrom">
+                                {giveFromHeader}
+                            </label>
+                            <Popup
+                                content={formatMessage('allocationsGiveFromPopup')}
+                                position="top center"
+                                trigger={(
+                                    <Icon
+                                        color="blue"
+                                        name="question circle"
+                                        size="large"
+                                    />
+                                )}
+                            />
+                            <p className="multipleFriendAmountFieldText">
                             You can give from your personal account or those you administer.
-                        </p>
-                        {fieldData}
+                            </p>
+                            {fieldData}
+                        </div>
                     </Form.Field>
                     <FormValidationErrorMessage
                         condition={!validity}
