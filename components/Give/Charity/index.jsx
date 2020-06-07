@@ -369,7 +369,7 @@ class Charity extends React.Component {
             giveData.giveFrom.text = `${fund.attributes.name} ($${fund.attributes.balance})`;
             giveData.giveFrom.balance = fund.attributes.balance;
             giveData.giveFrom.name = name;
-        } else if (!_isEmpty(companiesAccountsData) && !_isEmpty(userGroups) && !_isEmpty(userCampaigns) && !giveData.userInteracted) {
+        } else if((!_isEmpty(companiesAccountsData) || !_isEmpty(userGroups) || !_isEmpty(userCampaigns)) && !giveData.userInteracted){
             if (!_isEmpty(giveGroupBenificairyDetails) && !_isEmpty(giveGroupBenificairyDetails.benificiaryDetails)) {
                 const defaultGroupFrom = (giveFromType === 'campaigns')
                     ? userCampaigns.find((userCampaign) => userCampaign.id === groupId)
@@ -385,12 +385,11 @@ class Charity extends React.Component {
                     giveData.giveFrom.slug = defaultGroupFrom.attributes.slug;
                 }
             }
-            else {
-                giveData.giveFrom = {
-                    value: '',
-                };
-            }
 
+        } else if (!_isEmpty(companiesAccountsData) && !_isEmpty(userGroups) && !_isEmpty(userCampaigns) && !giveData.userInteracted) {
+            giveData.giveFrom = {
+                value: '',
+            };
         }
         return giveData;
     }
