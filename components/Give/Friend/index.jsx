@@ -314,7 +314,7 @@ class Friend extends React.Component {
             giveData.giveFrom.text = `${fund.attributes.name} (${fund.attributes.balance})`;
             giveData.giveFrom.balance = fund.attributes.balance;
             giveData.giveFrom.name = name;
-        } else if (!_isEmpty(companiesAccountsData) && !_isEmpty(userGroups) && !_isEmpty(userCampaigns) && !giveData.userInteracted) {
+        } else if((!_isEmpty(companiesAccountsData) || !_isEmpty(userGroups) || !_isEmpty(userCampaigns)) && !giveData.userInteracted){
             console.log("giveFromType iside if", giveFromType);
             console.log("giveFromId inside if ", giveFromId);
             if (giveFromType) {
@@ -332,12 +332,11 @@ class Friend extends React.Component {
                     giveData.giveFrom.balance = defaultGroupFrom.attributes.balance;
                     giveData.giveFrom.slug = defaultGroupFrom.attributes.slug;
                 }
-            } else {
+            }
+        } else if (!_isEmpty(companiesAccountsData) && !_isEmpty(userGroups) && !_isEmpty(userCampaigns) && !giveData.userInteracted) {
                 giveData.giveFrom = {
                     value: '',
                 };
-            }
-
         }
         return giveData;
     }
