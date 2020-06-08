@@ -25,11 +25,6 @@ import PlaceholderGrid from '../shared/PlaceHolder';
 import { withTranslation } from '../../i18n';
 
 class ReceivingOrganisations extends React.Component {
-    constructor(props) {
-        super(props);
-        this.handleSeeMore = this.handleSeeMore.bind(this);
-    }
-
     componentDidMount() {
         const {
             dispatch,
@@ -44,26 +39,13 @@ class ReceivingOrganisations extends React.Component {
         }
     }
 
-    handleSeeMore() {
-        const {
-            currentPage,
-            dispatch,
-            charityDetails: {
-                id: charityId,
-            },
-            year,
-        } = this.props;
-        dispatch(getBeneficiaryDoneeList(charityId, year, currentPage + 1, true));
-    }
-
     render() {
         const {
             donationDetails: doneeList,
-            currentPage,
             currency,
             language,
-            showButtonLoader,
-            totalPages,
+            remainingElements,
+            remainingAmount,
             transactionsLoader,
             t: formatMessage,
         } = this.props;
@@ -104,25 +86,17 @@ class ReceivingOrganisations extends React.Component {
                 <Fragment>
                     <div className="ScrollData">
                         {viewData}
+                        {(remainingElements > 20)
+                    && (
+                        <div className="loadMore">
+                            <p>
+                                {remainingElements}
+                                {formatMessage('totalOrganisations')}
+                            </p>
+                            <p>{formatCurrency(remainingAmount, language, currency)}</p>
+                        </div>
+                    )}
                     </div>
-
-                    {(currentPage < totalPages)
-                        && (
-                            <div className="loadMore">
-                                {
-                                    showButtonLoader
-                                        ? <Icon name="spinner" loading />
-                                        : (
-                                            <Button
-                                                className="blue-bordr-btn-round-def"
-                                                content={formatMessage('charityProfile:seeMore')}
-                                                onClick={this.handleSeeMore}
-                                                data-test="profile_charity_load_more_button"
-                                            />
-                                        )
-                                }
-                            </div>
-                        )}
                 </Fragment>
             )
         );
@@ -134,13 +108,12 @@ ReceivingOrganisations.defaultProps = {
         id: null,
     },
     currency: 'USD',
-    currentPage: null,
     dispatch: () => { },
     donationDetails: [],
     language: 'en',
-    showButtonLoader: false,
+    remainingAmount: 0,
+    remainingElements: 0,
     t: () => {},
-    totalPages: null,
     transactionsLoader: true,
 };
 
@@ -149,23 +122,21 @@ ReceivingOrganisations.propTypes = {
         id: number,
     }),
     currency: string,
-    currentPage: number,
     dispatch: func,
     donationDetails: arrayOf(PropTypes.element),
     language: string,
-    showButtonLoader: bool,
+    remainingAmount: number,
+    remainingElements: number,
     t: PropTypes.func,
-    totalPages: number,
     transactionsLoader: bool,
 };
 
 function mapStateToProps(state) {
     return {
         charityDetails: state.charity.charityDetails,
-        currentPage: state.charity.currentPage,
         donationDetails: state.charity.donationDetails,
-        showButtonLoader: state.charity.showButtonLoader,
-        totalPages: state.charity.totalPages,
+        remainingAmount: state.charity.remainingAmount,
+        remainingElements: state.charity.remainingElements,
         transactionsLoader: state.charity.showPlaceholder,
     };
 }

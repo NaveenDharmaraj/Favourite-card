@@ -2,7 +2,6 @@ import _isEmpty from 'lodash/isEmpty';
 import getConfig from 'next/config';
 
 import utilityApi from '../services/utilityApi';
-import graphApi from '../services/graphApi';
 import coreApi from '../services/coreApi';
 
 const { publicRuntimeConfig } = getConfig();
@@ -33,32 +32,25 @@ export const actionTypes = {
     SET_HEADQUARTER_GEOCODE: 'SET_HEADQUARTER_GEOCODE',
 };
 
-export const getBeneficiaryDoneeList = (charityId, year, pageNumber = 1, isSeeMore = false) => (dispatch) => {
+export const getBeneficiaryDoneeList = (charityId, year) => (dispatch) => {
     const fsa = {
         payload: {
             donationDetails: [],
-            totalPages: null,
-            currentPage: null,
+            remainingAmount: 0,
+            remainingElements: 0,
         },
         type: actionTypes.GET_BENEFICIARY_DONEE_LIST,
     };
     dispatch({
         payload: {
-            showPlaceholder: !(isSeeMore),
+            showPlaceholder: true,
         },
         type: actionTypes.CHARITY_PLACEHOLDER_STATUS,
     });
-    dispatch({
-        payload: {
-            showButtonLoader: isSeeMore,
-        },
-        type: actionTypes.CHARITY_BUTTON_LOADER_STATUS,
-    });
-    utilityApi.get(`/beneficiaryDoneeList/${charityId}`, {
+    return utilityApi.get(`/beneficiaryDoneeList/${charityId}`, {
         params: {
             dispatch,
             locale: 'en_ca',
-            page: pageNumber,
             returnsYear: year,
             size: 20,
             tenant_name: 'chimp',
@@ -66,11 +58,13 @@ export const getBeneficiaryDoneeList = (charityId, year, pageNumber = 1, isSeeMo
         },
     }).then(
         (result) => {
-            if (result && result._embedded && result._embedded.donee_list && !_isEmpty(result._embedded.donee_list)) {
+            if (result && result._embedded && result._embedded.donee_list
+                && !_isEmpty(result._embedded.donee_list)) {
                 fsa.payload.donationDetails = result._embedded.donee_list;
-                fsa.payload.totalPages = result.page.totalPages;
-                fsa.payload.currentPage = result.page.number;
-                fsa.payload.isSeeMore = isSeeMore;
+                if (result.page.totalElements > 20) {
+                    fsa.payload.remainingElements = result.page.totalElements - result.page.size;
+                    fsa.payload.remainingAmount = result.totalAmount.remainingAmount;
+                }
                 dispatch(fsa);
             }
         },
@@ -81,90 +75,7 @@ export const getBeneficiaryDoneeList = (charityId, year, pageNumber = 1, isSeeMo
             },
             type: actionTypes.CHARITY_PLACEHOLDER_STATUS,
         });
-        dispatch({
-            payload: {
-                showButtonLoader: false,
-            },
-            type: actionTypes.CHARITY_BUTTON_LOADER_STATUS,
-        });
     });
-};
-
-export const saveFollowStatus = (dispatch, userId, charityId) => {
-    const fsa = {
-        payload: {
-            followStatus: false,
-        },
-        type: actionTypes.SAVE_FOLLOW_STATUS,
-    };
-    graphApi.post(`/core/create/relationship`,
-        {
-            relationship: 'FOLLOWS',
-            source: {
-                entity: 'user',
-                filters: {
-                    user_id: Number(userId),
-                },
-            },
-            target: {
-                entity: 'charity',
-                filters: {
-                    charity_id: Number(charityId),
-                },
-            },
-        }).then(
-        (result) => {
-            fsa.payload.followStatus = true;
-        },
-    ).catch((error) => {
-        // console.log(error);
-    }).finally(() => dispatch(fsa));
-};
-
-export const deleteFollowStatus = (dispatch, userId, charityId) => {
-    const fsa = {
-        payload: {
-            followStatus: true,
-        },
-        type: actionTypes.SAVE_FOLLOW_STATUS,
-    };
-    graphApi.post(`/users/deleterelationship`, {
-        relationship: 'FOLLOWS',
-        source: {
-            entity: 'user',
-            filters: {
-                user_id: Number(userId),
-            },
-        },
-        target: {
-            entity: 'charity',
-            filters: {
-                charity_id: Number(charityId),
-            },
-        },
-    }).then(
-        (result) => {
-            fsa.payload.followStatus = false;
-        },
-    ).catch((error) => {
-        // console.log(error);
-    }).finally(() => dispatch(fsa));
-};
-
-export const copyDeepLink = (url, dispatch) => {
-    const fsa = {
-        payload: {
-            deepLink: {},
-        },
-        type: actionTypes.CHARITY_SAVE_DEEP_LINK,
-    };
-    utilityApi.get(url).then(
-        (result) => {
-            fsa.payload.deepLink = result.data;
-        },
-    ).catch((error) => {
-        // console.log(error);
-    }).finally(() => dispatch(fsa));
 };
 
 export const getBeneficiaryFromSlug = (slug, token = null) => async (dispatch) => {
@@ -216,34 +127,6 @@ export const getBeneficiaryFromSlug = (slug, token = null) => async (dispatch) =
     }
 };
 
-export const getGeoCoding = async (dispatch, city, isHeadQuarter) => {
-    const fsa = {
-        payload: {
-            city: [],
-        },
-    };
-    await utilityApi.post('/getZipcode', {
-        address: city,
-    }, BASIC_AUTH_HEADER).then((result) => {
-        if (result && !_isEmpty(result.data)) {
-            fsa.payload.city = result.data;
-            if (isHeadQuarter) {
-                fsa.type = actionTypes.SET_HEADQUARTER_GEOCODE;
-            } else {
-                fsa.type = actionTypes.SET_COUNTRIES_GEOCODE;
-            }
-            dispatch(fsa);
-        }
-    }).catch().finally(() => {
-        dispatch({
-            payload: {
-                mapLoader: false,
-            },
-            type: actionTypes.CHARITY_LOADER_STATUS,
-        });
-    });
-};
-
 export const getBeneficiaryFinance = (id) => async (dispatch) => {
     const fsa = {
         payload: {
@@ -265,7 +148,7 @@ export const getBeneficiaryFinance = (id) => async (dispatch) => {
             uxCritical: true,
         },
     }).then((result) => {
-        if(result.beneficiaryFinanceList && !_isEmpty(result.beneficiaryFinanceList)) {
+        if (result.beneficiaryFinanceList && !_isEmpty(result.beneficiaryFinanceList)) {
             fsa.payload.beneficiaryFinance = result.beneficiaryFinanceList;
             dispatch(fsa);
         }
