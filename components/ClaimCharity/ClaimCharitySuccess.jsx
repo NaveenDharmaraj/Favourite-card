@@ -69,9 +69,9 @@ class Accessing extends React.Component {
             slug,
             otherAccounts,
         } = this.props;
-        let buttonPosition;
-        if(otherAccounts && slug) {
-            const charityName = otherAccounts.find((item) => item.slug === slug).name;
+        let buttonPosition, charityName;
+        if(otherAccounts && slug){
+            charityName = otherAccounts.find((item) => item.slug === slug).name;
         }
         return (
             <Fragment>
@@ -82,7 +82,7 @@ class Accessing extends React.Component {
                             <Header as='h3'>
                                 {firstName}
                             , you’ve claimed your charity </Header>
-                            <p>Now you have access to your charity {charityName? charityName : ''} account.</p>
+                            <p>Now you have access to your charity {charityName ? charityName : ''} account.</p>
                             {this.renderGoToCharityBtn(otherAccounts, slug, buttonPosition = 1)}
                         </div>
                     </Container>
