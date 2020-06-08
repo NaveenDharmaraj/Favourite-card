@@ -356,20 +356,20 @@
                          tr{
                             td{
                                 &.tableOne{
-                                    word-break: break-all;
+                                    word-break: break-word;
                                     @media only screen and (min-width:768px) {
                                         width: 220px !important;
                                         padding: 29px 4px 29px 0px;
                                         vertical-align: top;
-                                        word-break: break-all;
+                                        word-break: break-word;
                                     }
                                 }
                                 &.tabletwo{
-                                    word-break: break-all;
+                                    word-break: break-word;
                                     @media only screen and (min-width:768px) {
                                         padding: 29px 4px 29px 0px;
                                         vertical-align: top;
-                                        word-break: break-all;
+                                        word-break: break-word;
                                     }
                                 }
                                 &.transaction-text{
@@ -975,8 +975,35 @@
             display: none;
         }
     }
-
-
+    .ui.active.visible.search.selection.dropdown {
+        padding-left: 46px !important;
+        padding-top: 15px;
+        &::before{
+            content: '';
+            position: absolute;
+            top: 13px;
+            left: 15px;
+            right: 0;
+            bottom: 0;
+            width: 20px;
+            height: 20px;
+            background-image: url(../images/icons/icon-search.svg) !important;
+            background-size: contain !important;
+            background-repeat: no-repeat !important;
+            background-position: center !important;
+            z-index: 99;
+        }
+    }
+    .ui.selection.active.dropdown{
+        border: 1px solid #DDDDDD !important;
+      }
+      .ui.selection.active.dropdown .menu{
+        border: 1px solid #DDDDDD !important;
+      }
+      .ui.search.dropdown.active>input.search, .ui.search.dropdown.visible>input.search{
+        padding-top: 15px;
+        padding-left: 46px;
+    }
 }
 .ui.button.fluid.floating.selection.dropdown.taxReceiptDropDown{
     text-align:left;
@@ -1676,3 +1703,5 @@ input{
   .dropdownSearch.dropdownWithArrowParentnotbg .ui.selection.dropdown.active .search{
     padding-left:44px;
   }
+ 
+ 
