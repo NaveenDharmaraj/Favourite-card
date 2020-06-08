@@ -29,6 +29,7 @@ class ClaimCharity extends React.Component {
         this.state = {
             accessCode: '',
             buttonClicked: false,
+            loader: false,
         }
     }
 
@@ -37,27 +38,32 @@ class ClaimCharity extends React.Component {
         this.setState({
             accessCode: value,
             buttonClicked: false,
+            loader: false,
         })
     }
 
     onClaimCharityClick = () => {
+        debugger;
         const { 
             currentUser:{
                 id
             },
-            dispatch } = this.props;
+            dispatch,
+        } = this.props;
         const { accessCode } = this.state;
         this.setState({
-            buttonClicked: true
+            buttonClicked: true,
+            loader: true,
         })
         dispatch(checkClaimCharityAccessCode(accessCode, id));
     }
 
     render() {
+        debugger;
         const {
             claimCharityErrorMessage
         } = this.props;
-        const { buttonClicked } = this.state;
+        const { buttonClicked, loader } = this.state;
         return (
             <Fragment>
                 <div className="ClaimWepper">
@@ -165,6 +171,7 @@ class ClaimCharity extends React.Component {
                                                                     className="primary blue-btn-rounded btnTextsize mt-2"
                                                                     onClick={this.onClaimCharityClick}
                                                                     disabled={buttonClicked ? true : false }
+                                                                    loading ={loader}
                                                                 > Claim your charity </Button>
                                                             </Grid.Column>
                                                         </Grid.Row>
