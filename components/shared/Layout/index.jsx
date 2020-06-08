@@ -173,7 +173,7 @@ class Layout extends React.Component {
                 <div>
                     <ErrorBoundary>
                         <Responsive {...widthProp} minWidth={320} maxWidth={991}>
-                            <MobileHeader isAuthenticated={isAuthenticated} onBoarding={onBoarding} isLogin={isLogin} showHeader={showHeader}>
+                            <MobileHeader isAuthenticated={isAuthenticated} onBoarding={onBoarding} isLogin={isLogin} showHeader={showHeader} isClaimCharity={isClaimCharity}>
                                 <div style={{minHeight:'60vh'}}>
                                     {children}
                                 </div>

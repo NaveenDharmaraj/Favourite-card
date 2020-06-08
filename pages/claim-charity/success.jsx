@@ -2,7 +2,6 @@ import React from 'react';
 import ClaimCharitySuccess from '../../components/ClaimCharity/ClaimCharitySuccess';
 import Layout from '../../components/shared/Layout';
 import { connect } from 'react-redux';
-import storage from '../../helpers/storage';
 
 class ClaimSuccess extends React.Component {
 

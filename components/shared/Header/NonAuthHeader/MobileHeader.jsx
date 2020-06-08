@@ -43,6 +43,7 @@ class MobileHeader extends React.Component {
     render() {
         const {
         children,
+        isClaimCharity
         // onPusherClick,
         // onToggle,
         // visible
@@ -64,7 +65,7 @@ class MobileHeader extends React.Component {
                         <Link route="/users/login">
                             <Button as="a" basic color="blue" >Login</Button>
                         </Link>
-                        <Link route="/users/new">
+                        <Link route={isClaimCharity && isClaimCharity === true ? `/users/new?isClaimCharity=${isClaimCharity}` : '/users/new'}>
                             <Button as="a" color="blue">Sign up</Button>
                         </Link>
                     </Menu.Item>
