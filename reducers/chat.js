@@ -179,6 +179,9 @@ const chat = (state = {}, action) => {
                     || (isFalsy(selectedConversationClone.groupId) && (selectedConversationClone.contactIds == msgDetail.to || selectedConversationClone.contactIds == msgDetail.from))
                 ) {
                     selectedConversationClone.createdAtTime = msgDetail.timeStamp;
+                    if (selectedConversationClone.groupId == msgDetail.to) {
+                        msgDetail.contactIds = msgDetail.from;
+                    }
                     const msgAdded = Object.assign(selectedConversationClone, msgDetail);
                     selectedConversationMessagesArray.unshift(msgAdded);
                     return {

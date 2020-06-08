@@ -61,8 +61,14 @@ const ChatMessageContent = ({
                 <div className="received_msg">
                     <div className="received_withd_msg">
                         {
-                            conversationInfo.type == 'group'
-                                ? <div className="bold">{userDetails[msg.contactIds].displayName}</div> : ''
+                            conversationInfo.type === 'group'
+                                ? (
+                                    <div className="bold">
+                                        {userDetails[msg.contactIds] && userDetails[msg.contactIds].displayName
+                                            ? userDetails[msg.contactIds].displayName : 'User'
+                                        }
+                                    </div>
+                                ) : ''
                         }
                         <p style={{ margin: 0 }}>{msg.message}</p>
                         <div className="dateTime" style={{ textAlign: 'right' }}>{timeString(msg.createdAtTime)}</div>

@@ -43,6 +43,7 @@ class ChatInboxList extends React.Component {
             userDetails,
             userInfo,
         } = this.props;
+        var groupTitleImageCheck  = true;
         if (detail.resp && detail.resp.message) {
             if (detail.resp.message.metadata && detail.resp.message.metadata.action && [
                 //'0',
@@ -54,8 +55,8 @@ class ChatInboxList extends React.Component {
                 '6',
                 '8',
             ].indexOf(detail.resp.message.metadata.action) >= 0) {
-                const param = { groupId: detail.resp.message.to };
-                loadnewUserGroupInboxMessage(param)
+                const param = { groupId: Number(detail.resp.message.to) };
+                await loadnewUserGroupInboxMessage(param)
                     .then(({ response }) => {
                         const groupId = param.groupId;
                         if (response.groupFeeds && response.groupFeeds.length > 0) {
@@ -66,14 +67,17 @@ class ChatInboxList extends React.Component {
                             // 3- leave conversation
                             // 5 and 6 change title and change image
                             // these 3 action requires change in slected conversation conversation info value
-                            ['3', '5', '6'].indexOf(detail.resp.message.metadata.action) >= 0 ? dispatch({
-                                payload: {
-                                    groupId,
-                                    groupFeed,
-                                    userInfo,
-                                },
-                                type: actionTypes.UPDATE_MESSAGES_SELECTED_CONVERSATION,
-                            }) : null;
+                            if(['3', '5', '6'].indexOf(detail.resp.message.metadata.action) >= 0){
+                                dispatch({
+                                    payload: {
+                                        groupId,
+                                        groupFeed,
+                                        userInfo,
+                                    },
+                                    type: actionTypes.UPDATE_MESSAGES_SELECTED_CONVERSATION,
+                                });
+                                groupTitleImageCheck =false;
+                            };
                             dispatch({
                                 payload: {
                                     groupFeeds: {
@@ -106,7 +110,7 @@ class ChatInboxList extends React.Component {
                 }
             }
             newMsg && dispatch(addNewChatMessage(detail.resp.message));
-            await dispatch(loadInboxList(detail, messages, userDetails, userInfo, selectedConversation));
+            groupTitleImageCheck && dispatch(loadInboxList(detail, messages, userDetails, userInfo, selectedConversation));
         }
     }
 

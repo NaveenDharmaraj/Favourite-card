@@ -46,7 +46,7 @@ class ChatHeader extends React.Component {
             type: actionTypes.NEW_GROUP_DETAILS,
         });
         const selectCurrentConversation =
-            (!compose ? null :
+            (!compose ? {} :
                 (selectedConversation && selectedConversation.key ?
                     selectedConversation :
                     (messages ? messages[0] : {})));

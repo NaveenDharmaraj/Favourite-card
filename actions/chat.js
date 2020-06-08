@@ -2,6 +2,7 @@ import _keyBy from 'lodash/keyBy';
 import _forEach from 'lodash/forEach';
 import _isEmpty from 'lodash/isEmpty';
 import _cloneDeep from 'lodash/cloneDeep';
+import axios from 'axios';
 
 import utilityApi from '../services/utilityApi';
 import graphApi from '../services/graphApi';
@@ -82,7 +83,12 @@ const loadrecentMessage = (resp, msg, messagesRef, index) => (dispatch) => {
     });
 };
 
+const { CancelToken } = axios;
+let source;
+
 const loadConversationMessages = (selectedConversation, endTime = new Date().getTime() + 2000) => (dispatch) => {
+    source && source.cancel('cancelling the request');
+    source = CancelToken.source();
     if (selectedConversation) {
         const params = {
             endTime,
@@ -97,7 +103,10 @@ const loadConversationMessages = (selectedConversation, endTime = new Date().get
             },
             type: actionTypes.CONVERSATION_MESSAGE_LOADER,
         });
-        return applozicApi.get('/message/v2/list', { params: params }).then((response) => {
+        return applozicApi.get('/message/v2/list', {
+            cancelToken: source.token,
+            params,
+        }).then((response) => {
             const selectedConversationMessages = response.response.message;
             dispatch({
                 payload: {
@@ -113,19 +122,26 @@ const loadConversationMessages = (selectedConversation, endTime = new Date().get
                 },
                 type: actionTypes.LOAD_CONVERSATION_MESSAGES_ENDTIME,
             });
+            dispatch({
+                payload: {
+                    conversationMessagesLoader: false,
+                },
+                type: actionTypes.CONVERSATION_MESSAGE_LOADER,
+            });
             // if (concatMessages) {
             //     window.dispatchEvent(new CustomEvent("onChatPageRefreshEvent", { detail: { data: messages } }));
             // }
         })
             .catch((error) => {
+                if (error && error.isCancel) {
+                    return;
+                }
                 dispatch({
                     payload: {
-                        selectedConversation: !_isEmpty(selectedConversation) ? selectedConversation : null,
+                        selectedConversation: !_isEmpty(selectedConversation) ? selectedConversation : {},
                     },
                     type: actionTypes.CURRENT_SELECTED_CONVERSATION,
                 });
-            })
-            .finally(() => {
                 dispatch({
                     payload: {
                         conversationMessagesLoader: false,
@@ -150,13 +166,13 @@ const loadInboxList = (detail, messages, userDetails, userInfo, selectedConversa
                 return true;
             }
             if (detail.received) {
-                // checking group
+                // checking group based on groupId
                 if (msg.groupId || resp.message.to) {
                     if (msg.groupId == resp.message.to) {
                         // contentType = 10 is for actions happened in group like adding members
                         if (resp.message.contentType !== 10) {
                             // new message other than selected one increase the unread count
-                            if (selectedConversation.groupId != msg.groupId) {
+                            if (selectedConversation && (selectedConversation.groupId != msg.groupId)) {
                                 msg.conversationInfo.info.unreadCount = msg.conversationInfo.info.unreadCount ? msg.conversationInfo.info.unreadCount + 1 : 1;
                             } else {
                                 // dummy api call to tell applogic this current selected conversation is read
@@ -168,10 +184,10 @@ const loadInboxList = (detail, messages, userDetails, userInfo, selectedConversa
                     }
                     return false;
                 }
-                // check for user
+                // check for user based on contactId
                 if (msg.contactIds == resp.message.from) {
                     // new message other than selected one increase the unread count
-                    if (selectedConversation.groupId || (selectedConversation.contactIds != msg.contactIds)) {
+                    if (selectedConversation && (selectedConversation.groupId || (selectedConversation.contactIds != msg.contactIds))) {
                         msg.conversationInfo.info.unreadCount = msg.conversationInfo.info.unreadCount ? msg.conversationInfo.info.unreadCount + 1 : 1;
                     } else {
                         // dummy api call to tell applogic this current selected conversation is read
@@ -207,7 +223,7 @@ const loadInboxList = (detail, messages, userDetails, userInfo, selectedConversa
                     type: actionTypes.NEW_GROUP_FEEDS,
                 });
             } else {
-                userDetails[response.userDetails[0].userId].unreadCount = 1;
+                userDetails[response.userDetails[0].userId].unreadCount = detail.received ? 1 : 0;
             }
 
             if (!_isEmpty(response.message) && response.message.length > 0) {
@@ -328,11 +344,12 @@ const loadConversationThenBlock = (response, msgId, userDetails, groupFeeds, sel
     }
     // if there is no match in userDetails and groupfeeds select the defualt first message
     if (_isEmpty(selectedConversation) && newMessgaeArr && newMessgaeArr.length > 0 && msgId != 'new') {
+        newMessgaeArr[0].conversationInfo.info.unreadCount = 0;
         selectedConversation = newMessgaeArr[0];
     }
     if ((newMessgaeArr && newMessgaeArr.length <= 0) || msgId == 'new') {
         compose = true;
-        selectedConversation = null;
+        selectedConversation = {};
     }
     if (!_isEmpty(response.response.message) && response.response.message.length > 0) {
         const endTime = response.response.message[response.response.message.length - 1].createdAtTime;

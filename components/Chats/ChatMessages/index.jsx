@@ -5,6 +5,7 @@ import _isEqual from 'lodash/isEqual';
 import _forEach from 'lodash/forEach';
 import _isEmpty from 'lodash/isEmpty';
 
+import { placeholderUser } from '../../../static/images/no-data-avatar-group-chat-profile.png';
 import { actionTypes, loadConversationMessages, setSelectedConversation } from '../../../actions/chat';
 import ChatMessageFooter from './ChatMessageFooter';
 import ChatConversationsParent from './ChatConversationsParent';
@@ -15,6 +16,7 @@ class ChatMessages extends React.Component {
         super(props);
         this.state = {
             scrollEffect: false,
+            scrollDivCount: 0,
         };
     }
 
@@ -33,7 +35,8 @@ class ChatMessages extends React.Component {
             selectedConversationMessages,
         } = this.props;
         const {
-            scrollEffect
+            scrollEffect,
+            scrollDivCount
         } = this.state;
         if (!_isEqual(this.props, prevProps)) {
             if (!_isEqual(selectedConversationMessages, prevProps.selectedConversationMessages) ||
@@ -43,7 +46,12 @@ class ChatMessages extends React.Component {
                     this.refs.scrollParentRef.scrollTop = this.refs.scrollParentRef.scrollHeight;
                 }
                 else if (!conversationMessagesLoader && this.refs.scrollParentRef && scrollEffect) {
-                    this.refs.scrollParentRef.scrollTop = 120;
+                    const $messages = this.refs.scrollParentRef;
+                    const $outerMessages = $messages.lastElementChild;
+                    const $newMessage = $outerMessages.children[selectedConversationMessages.length - (scrollDivCount+1)];
+                    const $newMessageMargin = parseInt(getComputedStyle($newMessage).marginTop) + 40;
+                    const scrollDownHeight = $newMessage.offsetTop - $newMessageMargin;
+                    this.refs.scrollParentRef.scrollTop = scrollDownHeight;
                     this.setState({
                         scrollEffect: false
                     })
@@ -117,9 +125,11 @@ class ChatMessages extends React.Component {
             dispatch,
             endTime,
             selectedConversation,
+            selectedConversationMessages,
         } = this.props;
         this.setState({ scrollEffect: true })
         if (this.refs && this.refs.scrollParentRef && this.refs.scrollParentRef.scrollTop === 0 && endTime && scroll === "scrolled") {
+            this.setState({scrollDivCount: selectedConversationMessages.length})
             dispatch(loadConversationMessages(selectedConversation, endTime))
         }
     }
@@ -254,6 +264,7 @@ class ChatMessages extends React.Component {
 
     render() {
         const {
+            compose,
             conversationMessagesLoader,
             isSmallerScreen,
             messages,
@@ -272,7 +283,7 @@ class ChatMessages extends React.Component {
                     !_isEmpty(selectedConversation) && (!isSmallerScreen || smallerScreenSection != "convList") &&
                     this.renderChatSectionAndFooter()
                 }
-                {(!mesageListLoader && _isEmpty(messages)) &&
+                {(!mesageListLoader && _isEmpty(messages) && !compose) &&
                   'No conversations to display. Click on compose to start new!'
                 }
             </Fragment>

@@ -8,6 +8,7 @@ import logger from '../helpers/logger';
 
 const { publicRuntimeConfig } = getConfig();
 
+const axiosRef = axios;
 const {
     APPLOZIC_WS_URL,
     APPLOZIC_APP_KEY
@@ -41,10 +42,14 @@ instance.interceptors.request.use(function (config) {
     return Promise.reject(error);
 });
 
-instance.interceptors.response.use(function (response) {
+instance.interceptors.response.use((response) => {
     // Do something with response data
     return response.data;
-}, function (error) {
+}, (error) => {
+    if (axiosRef.isCancel(error)) {
+        error.isCancel = true;
+        throw error;
+    }
     const {
         config,
     } = error.response;
