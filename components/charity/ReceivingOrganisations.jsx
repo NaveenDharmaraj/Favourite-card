@@ -83,22 +83,25 @@ class ReceivingOrganisations extends React.Component {
             transactionsLoader ? (
                 <PlaceholderGrid row={5} column={1} placeholderType="multiLine" />
             ) : (
-                <Fragment>
-                    <div className="ScrollData">
-                        {viewData}
-                        {(remainingElements > 20)
-                    && (
-                        <div className="loadMore">
-                            <p>
-                                {remainingElements}
-                                {formatMessage('totalOrganisations')}
-                            </p>
-                            <p>{formatCurrency(remainingAmount, language, currency)}</p>
+                    <Fragment>
+                        <div className="ScrollData">
+                            {viewData}
+                            {(remainingElements > 20)
+                                && (
+                                    <div className='Ch_total'>
+                                        <Header as='h3'>
+                                            <p>
+                                                {remainingElements} &nbsp;
+                                                 {formatMessage('totalOrganisations')}
+                                            </p>
+                                            <span>{formatCurrency(remainingAmount, language, currency)}</span>
+                                        </Header>
+
+                                    </div>
+                                )}
                         </div>
-                    )}
-                    </div>
-                </Fragment>
-            )
+                    </Fragment>
+                )
         );
     }
 }
@@ -113,7 +116,7 @@ ReceivingOrganisations.defaultProps = {
     language: 'en',
     remainingAmount: 0,
     remainingElements: 0,
-    t: () => {},
+    t: () => { },
     transactionsLoader: true,
 };
 

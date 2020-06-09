@@ -30,13 +30,14 @@
     padding: 0 30px;
 
     .ch_profileImage {
-        border       : 0.4rem solid #F5F8FC;
-        border-radius: 100%;
-        box-shadow   : 2px 2px 7px 0 rgba(105, 146, 203, 0.3);
-        overflow     : hidden;
-        margin       : -58px 0px 0 10px;
-        width        : 147px;
-        height       : 147px;
+        border          : 0.4rem solid #F5F8FC;
+        border-radius   : 100%;
+        box-shadow      : 2px 2px 7px 0 rgba(105, 146, 203, 0.3);
+        overflow        : hidden;
+        margin          : -58px 0px 0 10px;
+        width           : 147px;
+        height          : 147px;
+        background-color: #ed7f3b;
 
         .ui.image {
             width: 100%;
@@ -611,18 +612,33 @@
 }
 
 .ch_ModelContent {
-    max-height: 620px;
-    padding   : 30px 0 20px !important;
-    min-height: 598px;
+    max-height: 540px;
+    padding   : 30px 30px 20px !important;
+    overflow-y: auto;
 
     .ch_ModelPlaceholder {
-        padding   : 0 30px;
+        padding: 0 30px;
     }
 
     .ScrollData {
-        max-height: 490px;
-        overflow-y: auto;
-        padding   : 0 30px;
+
+        .Ch_total {
+            .ui.header {
+                display        : flex;
+                justify-content: space-between;
+                font-size      : 14px !important;
+                border-bottom  : 1px solid #DADADA !important;
+                padding        : 5px 0 20px;
+
+                p {
+                    margin: 0;
+                }
+
+                span {
+                    font-weight: normal;
+                }
+            }
+        }
     }
 
     .loadMore {
@@ -747,19 +763,23 @@
     }
 
     .ch_giftPopcontent {
-        margin        : 10px 10px 20px 10px;
+        margin        : 10px 0px 20px 0px;
         padding-bottom: 15px;
     }
 
     .mobHideDivider {
         display: none;
     }
-    .ui.modal>.content.ch_ModelContent{
-        padding: 30px 0 20px !important;
-        .ScrollData{
+
+    .ui.modal>.content.ch_ModelContent {
+        max-height: 525px;
+        padding: 15px 0 20px !important;
+
+        .ScrollData {
             padding: 0 20px;
         }
-        .ui.stackable.grid>.row>.column{
+
+        .ui.stackable.grid>.row>.column {
             padding: 0 !important;
         }
     }
