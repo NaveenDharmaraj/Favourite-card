@@ -179,7 +179,7 @@ class ChatMessageFooter extends React.Component {
         return (
             <div className="chatFooter">
                 <Form>
-                    <Form.Field>
+                    <Form.Field  error={profaineErrorCheck}>
                         <textarea
                             rows="1"
                             placeholder='Type a message…'
