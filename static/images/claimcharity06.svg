@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1905px" height="300px" viewBox="0 0 1905 300" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>D821E4BB-DFBE-46C4-87F4-6F2AC4D394B3</title>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="1905" height="300"></rect>
+    </defs>
+    <g id="Claim-Charity" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="claim_charity-(2)" transform="translate(232.000000, -1999.000000)">
+            <g id="block-3" transform="translate(-1.000000, 1999.000000)">
+                <g id="Do-you-have-a-claim-+-Path-2-+-Path-2-+-button/white-+-button/blue/big-+-Path-12-Mask">
+                    <g id="img/claimcharity06" transform="translate(-231.000000, 0.000000)">
+                        <mask id="mask-2" fill="white">
+                            <use xlink:href="#path-1"></use>
+                        </mask>
+                        <g id="Mask"></g>
+                        <path d="M1463.85696,341 C1500.21652,210.559347 1414.81404,151.139084 1207.6495,162.739211 C896.90269,180.139401 500.164085,308.618415 400.115908,273.058361 C300.067731,237.498307 693.749728,92.3852867 720.055556,2.24270215 C737.592775,-57.8523542 572.907589,-31.2531856 226,82.040208" id="Path-2" stroke="#A4A4A4" stroke-width="3" opacity="0.126162574" mask="url(#mask-2)"></path>
+                        <path d="M1085.02818,-34 C1083.69253,53.7521843 1129.83295,90.9884855 1223.44944,77.7089036 C1363.87417,57.7895308 1530.66593,-38.3342082 1580.7161,-17.3642081 C1630.76626,3.60579206 1467.33135,110.713262 1465.86774,171.387127 C1464.892,211.83637 1537.26942,189.71926 1683,105.035797" id="Path-2" stroke="#A4A4A4" stroke-width="3" opacity="0.126162574" mask="url(#mask-2)"></path>
+                        <path d="M884,306 C1019.78985,249.529412 1113.54687,222.955017 1165.27105,226.276817 C1216.99523,229.598616 1275.23821,256.17301 1340,306" id="Path-12" stroke="#A4A4A4" stroke-width="3" opacity="0.126162574" mask="url(#mask-2)"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

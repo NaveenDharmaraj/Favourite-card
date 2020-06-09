@@ -93,7 +93,7 @@
         content: "";
         position: absolute;
         right:-51%;
-        background-image: url(../images/claimimg.png);
+        background-image: url(../images/claimimg.svg);
         background-size: contain;
         background-position:right;
         background-repeat: no-repeat;
@@ -311,13 +311,13 @@
                   content: "";
                   position: absolute;
                   left: -270px;
-                  background-image: url(../images/icons/serchleft.png);
+                  background-image: url(../images/icons/serchleft.svg);
                   background-size: contain;
                   background-position:left;
                   background-repeat: no-repeat;
                   height: 200px;
                   width: 270px;
-                  top: 0px;
+                  top: -15px;
                   visibility: visible !important;
                   @media only screen and (max-width:767px) {
                     display: none;
@@ -388,35 +388,47 @@
       left: -48px;
       top: 260px;
     }
+    @media only screen and (max-width:400px)  {
+      width: 156px;
+      height: 172px;
+      left: -58px;
+      top: 270px;
+    }
   }
   &::after{
     position: absolute;
-    background-image: url(../images/icons/shape-4.png);
+    background-image: url(../images/icons/shape-4.svg);
     background-size: contain;
     background-position:center;
     background-repeat: no-repeat;
-    width: 275px;
-    height: 257px;
-    right: -30px;
-    top:0px;
+    width: 404px;
+    height: 422px;
+    right: -115px;
+    top: -63px;
     content: "";
     @media only screen and (max-width:1400px) {
-      width: 205px;
-      height: 217px;
-      right: -40px;
-      top: 20px;
+      width: 404px;
+    height: 422px;
+    right: -115px;
+    top: -63px;
     }
     @media only screen and (max-width:991px)  {
-      width: 185px;
-      height: 187px;
-      right: -57px;
-      top: 20px;
+      width: 342px;
+      height: 339px;
+      right: -160px;
+      top: 0px;
     }
     @media only screen and (max-width:767px)  {
-      width: 185px;
-      height: 187px;
+      width: 234px;
+      height: 232px;
       right: -137px;
       top: 50px;
+    }
+    @media only screen and (max-width:400px)  {
+      width: 214px;
+    height: 192px;
+    right: -142px;
+    top: 90px;
     }
   }
   .lefttopicon{
@@ -462,6 +474,7 @@
     @media only screen and (max-width:767px) {
       max-width: 280px;
       height: 180px;
+      text-align: left;
     }
     h3{
       &.ui{
@@ -472,6 +485,9 @@
           font-weight: bold;
           color: @font-color;
           text-align: center;
+          @media only screen and (max-width:767px) {
+            text-align: left;
+          }
         }
       }
     }
@@ -612,18 +628,41 @@
 }
 .accountfullimg{
   width: 96%;
+  .ui{
+    &.img{
+      width: 100%;
+    }
+  }
   @media only screen and (max-width:991px)  {
     width:100%;
   }
 }
 .startCustomizing{
   background-color: #90459A;
-  padding:100px;
+  padding:100px 0px 100px 0px;
+  position: relative;
+  overflow: hidden;
+  &::before{
+    background-size: cover;
+    background-position: right;
+    background-repeat: no-repeat;
+    content: "";
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    background-image: url(../images/claimcharity06.svg);
+    position: absolute;
+    min-width: 2235px;
+    left: -260px;
+  }
   @media only screen and (max-width:991px)  {
     padding:60px 0px;
   }
   .startCustomizingheading{
     text-align: center;
+    z-index: 9;
+    position: relative;
     h3{
       &.ui{
         &.header{
@@ -652,6 +691,7 @@
   @media only screen and (max-width:1024px)  {
     height: auto;
   }
+  
   &::before{
     position: absolute;
     background-image: url(../images/icons/shape-1@3x.svg);
@@ -679,22 +719,22 @@
     background-size: contain;
     background-position:center;
     background-repeat: no-repeat;
-    width: 275px;
-    height: 257px;
-    right: -30px;
-    top:0px;
+    width: 404px;
+    height: 422px;
+    right: -115px;
+    top: -63px;
     content: "";
     @media only screen and (max-width:1400px) {
-      width: 205px;
-      height: 217px;
-      right: -40px;
-      top: 20px;
+      width: 404px;
+    height: 422px;
+    right: -115px;
+    top: -63px;
     }
     @media only screen and (max-width:1024px)  {
       display: none;
     }
-   
   }
+ 
   .lefttopicon{
     background-image: url(../images/icons/shape-2@3x.svg);
     background-size: contain;
@@ -767,6 +807,16 @@
         line-height: 22px;
         color: @font-color;
         font-family: 'ProximaNova-Regular';
+        a{
+          &.login-btn{
+            background-color: transparent;
+            color: #055CE5;
+            font-weight: bold;
+            padding-left: 5px;
+            padding-right: 5px;
+            text-decoration: underline;
+          }
+        }
       }
     }
   }

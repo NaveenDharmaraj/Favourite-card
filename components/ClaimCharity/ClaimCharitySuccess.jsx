@@ -10,7 +10,7 @@ import { connect, } from 'react-redux';
 import getConfig from 'next/config';
 import { Router } from '../../routes';
 import accessingleft from '../../static/images/accessing2.png';
-import accessingfull from '../../static/images/accessing1.png';
+import accessingfull from '../../static/images/accessing1.svg';
 import '../../static/less/claimcharity.less';
 
 const { publicRuntimeConfig } = getConfig();

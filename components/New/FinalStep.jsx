@@ -42,7 +42,7 @@ function FinalStep(props) {
                             (
                                 <div className="create-btn-wraper">
                                     <Button
-                                        className="blue-bordr-btn-round-def"
+                                        className="blue-bordr-btn-round-def w-160 pt-1 pb-1"
                                         content="Back"
                                         onClick={handleBack}
                                     />
