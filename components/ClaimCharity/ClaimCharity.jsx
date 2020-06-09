@@ -43,7 +43,6 @@ class ClaimCharity extends React.Component {
     }
 
     onClaimCharityClick = () => {
-        debugger;
         const { 
             currentUser:{
                 id
@@ -59,7 +58,6 @@ class ClaimCharity extends React.Component {
     }
 
     render() {
-        debugger;
         const {
             claimCharityErrorMessage
         } = this.props;

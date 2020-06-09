@@ -876,8 +876,6 @@ export const checkClaimCharityAccessCode = (accessCode, userId) => (dispatch) =>
             type: actionTypes.CLAIM_CHARITY_ERROR_MESSAGE,
         };
         dispatch(errorFsa);
-    }).finally(() => {
-        dispatch(fsa);
     });
 
 };

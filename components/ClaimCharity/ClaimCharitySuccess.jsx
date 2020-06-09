@@ -21,14 +21,6 @@ const {
 
 class Accessing extends React.Component {
 
-    constructor(props) {
-        super(props)
-
-        this.state = {
-
-        }
-    }
-
     componentDidMount() {
         const { slug, otherAccounts } = this.props;
         const slugValue = otherAccounts.find((item) => item.slug === slug).slug;
@@ -46,14 +38,14 @@ class Accessing extends React.Component {
             }
         });
         if (locationNumber) {
-            return (
+            (
                 <a href={`${RAILS_APP_URL_ORIGIN}${locationNumber}`}>
                     <Button className={buttonPosition === 1 ? "primary blue-btn-rounded mt-1" : "white-btn-round textBlack"}><b>Go to my Charity Account</b></Button>
                 </a>
             )
         }
         else {
-            return (
+            (
                 <Button className={buttonPosition === 1 ? "primary blue-btn-rounded mt-1" : "white-btn-round textBlack"}><b>Go to my Charity Account</b></Button>
             )
         }
@@ -70,7 +62,7 @@ class Accessing extends React.Component {
             otherAccounts,
         } = this.props;
         let buttonPosition, charityName;
-        if(otherAccounts && slug){
+        if (otherAccounts && slug) {
             charityName = otherAccounts.find((item) => item.slug === slug).name;
         }
         return (

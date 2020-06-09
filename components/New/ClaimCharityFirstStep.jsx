@@ -7,7 +7,6 @@ import {
     Input,
 } from 'semantic-ui-react';
 import _ from 'lodash';
-import Layout from '../shared/Layout';
 import '../../static/less/claimcharity.less';
 import FormValidationErrorMessage from '../shared/FormValidationErrorMessage';
 

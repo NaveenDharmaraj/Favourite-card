@@ -292,7 +292,6 @@ class Login extends React.Component {
             apiValidating,
             isClaimCharity
         } = this.props;
-        console.log(this.props);
         return (
             <Layout onBoarding={isClaimCharity ? false : true}>
                 {
