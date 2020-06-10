@@ -4,7 +4,6 @@ import React, {
 import { connect } from 'react-redux';
 import _ from 'lodash';
 import _isEmpty from 'lodash/isEmpty';
-import _cloneDeep from 'lodash/cloneDeep';
 import {
     arrayOf,
     PropTypes,
