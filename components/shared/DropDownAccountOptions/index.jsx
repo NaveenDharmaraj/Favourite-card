@@ -80,6 +80,7 @@ class DropDownAccountOptions extends React.Component {
         const giveFromHeader = (type === 'donations') ? formatMessage('addingToLabel') : formatMessage('giveFromLabel');
         const giveFromPlaceHolder = (type === 'donations') ? formatMessage('destinationaccountPlaceHolder') : formatMessage('accountPlaceHolder');
         const newPlaceholder = updatePlaceHolder ? formatMessage('searchPlaceholder') : giveFromPlaceHolder;
+        let newPlaceholderValue = '';
         if (!_.isEmpty(companiesAccountsData) || !_.isEmpty(userCampaigns) || !_.isEmpty(userGroups)) {
             if (giveTo && giveTo.value && giveFromUrl) {
                 dropDownData = populateAccountOptions({
@@ -121,6 +122,7 @@ class DropDownAccountOptions extends React.Component {
             </Placeholder>
         );
         if (!_.isEmpty(dropDownData)) {
+            newPlaceholderValue = selectedValue ? selectedValue.toString() : '';
             fieldData = (
                 <div className="dropdownSearch dropdownWithArrowParentnotbg medium">
                     <Dropdown
@@ -140,7 +142,7 @@ class DropDownAccountOptions extends React.Component {
                         selectOnBlur={false}
                         search
                         selectOnNavigation={false}
-                        text={_.isEmpty(selectedValue.toString()) ? newPlaceholder : undefined}
+                        text={_.isEmpty(newPlaceholderValue) ? newPlaceholder : undefined}
                     />
                 </div>
             );
