@@ -612,13 +612,11 @@
 }
 
 .ch_ModelContent {
-    max-height: 540px;
+    max-height: 542px;
     padding   : 30px 30px 20px !important;
     overflow-y: auto;
 
-    .ch_ModelPlaceholder {
-        padding: 0 30px;
-    }
+
 
     .ScrollData {
 
@@ -773,7 +771,18 @@
 
     .ui.modal>.content.ch_ModelContent {
         max-height: 525px;
-        padding: 15px 0 20px !important;
+        padding   : 15px 0 20px !important;
+        .ui.grid > .row:nth-child(1){
+            margin-top: 13px;
+        }
+
+        .ch_ModelPlaceholder {
+            padding: 0 30px;
+
+            .ui.placeholder {
+                margin: 0 0 28px;
+            }
+        }
 
         .ScrollData {
             padding: 0 20px;
