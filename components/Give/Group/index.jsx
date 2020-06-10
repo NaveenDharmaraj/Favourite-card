@@ -358,7 +358,7 @@ class Group extends React.Component {
             giveData.giveFrom.text = `${fund.attributes.name} ($${fund.attributes.balance})`;
             giveData.giveFrom.balance = fund.attributes.balance;
             giveData.giveFrom.name = name;
-        } else if (!_isEmpty(companiesAccountsData) && !_isEmpty(userGroups) && !_isEmpty(userCampaigns) && !giveData.userInteracted) {
+        } else if((!_isEmpty(companiesAccountsData) || !_isEmpty(userGroups) || !_isEmpty(userCampaigns)) && !giveData.userInteracted){
             if (groupId){
                 const giveFromGroup = (giveFromType === 'campaigns')
                     ? userCampaigns.find((userCampaign) => userCampaign.id === groupId)
@@ -376,11 +376,10 @@ class Group extends React.Component {
                     };
                 }
             }
-            else {
-                giveData.giveFrom = {
-                    value: '',
-                };
-            }
+        } else if (!_isEmpty(companiesAccountsData) && !_isEmpty(userGroups) && !_isEmpty(userCampaigns) && !giveData.userInteracted) {
+            giveData.giveFrom = {
+                value: '',
+            };
         }
         if (!_isEmpty(addressToShareList) && addressToShareList.length > 0
         && !giveData.userInteracted) {
@@ -1030,10 +1029,9 @@ class Group extends React.Component {
                                                     <Grid.Column mobile={16} tablet={16} computer={16}>
 
                                                         <NoteTo
-                                                            allocationType="Group"// {type}
+                                                            allocationType={giveToType}
                                                             formatMessage={formatMessage}
                                                             giveFrom= {giveFrom}
-                                                            giveToType= {giveToType}
                                                             noteToCharity= {noteToCharity}
                                                             handleInputChange={this.handleInputChange}
                                                             handleInputOnBlur={this.handleInputOnBlur}

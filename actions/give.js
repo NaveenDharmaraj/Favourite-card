@@ -108,7 +108,6 @@ const createToken = (cardDetails, cardHolderName) => new Promise((resolve, rejec
 const saveDonations = (donation) => {
     const {
         giveData: {
-            automaticDonation,
             giftType,
             noteToSelf,
         },
@@ -116,7 +115,7 @@ const saveDonations = (donation) => {
     let donationUrl = '/donations';
     const donationData = setDonationData(donation);
     donationData.attributes.reason = noteToSelf;
-    if (automaticDonation) {
+    if (giftType.value !== 0) {
         donationData.attributes.dayOfMonth = giftType.value;
         donationData.type = 'recurringDonations';
         donationUrl = '/recurringDonations';

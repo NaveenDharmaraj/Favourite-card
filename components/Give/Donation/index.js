@@ -724,9 +724,9 @@ class Donation extends React.Component {
                     },
                 } = result;
                 let paymentInstruments;
-                if(giveData.giveTo.type === 'users') {
+                if(giveTo.type === 'user') {
                     paymentInstruments = this.props.paymentInstrumentsData;
-                } else if(giveData.giveTo.type === 'companies'){
+                } else if(giveTo.type === 'companies'){
                     paymentInstruments = this.props.companyDetails.companyPaymentInstrumentsData
                 }
                 let paymentList = populatePaymentInstrument(paymentInstruments,formatMessage);

@@ -494,17 +494,19 @@ class ReloadAddAmount extends React.Component {
 
     handleAddNewCreditCard() {
         const {
-            reloadObject: {
-                giveData: {
-                    creditCard,
-                },
-            },
             inValidCardNumber,
             inValidExpirationDate,
             inValidNameOnCard,
             inValidCvv,
             inValidCardNameValue,
             isDefaultCard,
+        } = this.state;
+        let {
+            reloadObject: {
+                giveData: {
+                    creditCard,
+                },
+            },
         } = this.state;
         const {
             reloadObject,

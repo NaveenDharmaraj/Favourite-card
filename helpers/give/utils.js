@@ -943,6 +943,8 @@ const setDonationAmount = (giveData, coverFeesData) => {
         donationAmount = formatAmount(donationAmount);
         if (Number(donationAmount) < 5) {
             donationAmount = formatAmount(5);
+        } else if (Number(donationAmount) > 9999) {
+            donationAmount = formatAmount(9999);
         }
     }
     return donationAmount;

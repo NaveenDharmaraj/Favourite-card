@@ -356,20 +356,20 @@
                          tr{
                             td{
                                 &.tableOne{
-                                    word-break: break-all;
+                                    word-break: break-word;
                                     @media only screen and (min-width:768px) {
                                         width: 220px !important;
                                         padding: 29px 4px 29px 0px;
                                         vertical-align: top;
-                                        word-break: break-all;
+                                        word-break: break-word;
                                     }
                                 }
                                 &.tabletwo{
-                                    word-break: break-all;
+                                    word-break: break-word;
                                     @media only screen and (min-width:768px) {
                                         padding: 29px 4px 29px 0px;
                                         vertical-align: top;
-                                        word-break: break-all;
+                                        word-break: break-word;
                                     }
                                 }
                                 &.transaction-text{
@@ -975,8 +975,35 @@
             display: none;
         }
     }
-
-
+    .ui.active.visible.search.selection.dropdown {
+        padding-left: 46px !important;
+        padding-top: 15px;
+        &::before{
+            content: '';
+            position: absolute;
+            top: 13px;
+            left: 15px;
+            right: 0;
+            bottom: 0;
+            width: 20px;
+            height: 20px;
+            background-image: url(../images/icons/icon-search.svg) !important;
+            background-size: contain !important;
+            background-repeat: no-repeat !important;
+            background-position: center !important;
+            z-index: 99;
+        }
+    }
+    .ui.selection.active.dropdown{
+        border: 1px solid #DDDDDD !important;
+      }
+      .ui.selection.active.dropdown .menu{
+        border: 1px solid #DDDDDD !important;
+      }
+      .ui.search.dropdown.active>input.search, .ui.search.dropdown.visible>input.search{
+        padding-top: 15px;
+        padding-left: 46px;
+    }
 }
 .ui.button.fluid.floating.selection.dropdown.taxReceiptDropDown{
     text-align:left;
@@ -1546,3 +1573,135 @@ input{
         }
     }
 }
+
+.dropdownSearch{
+    position: relative;
+    .dropdownsearchField{
+        &.ui{
+            &.dropdown{
+                &.icon{
+                    display: none;
+                }
+                &.search{
+                    position: relative;
+                    &.medium{
+                        height: 48px;
+                        font-size: 14px;
+                        //color:#78909C;
+                        line-height: 22px;
+                        >.text{
+                            font-size: 14px;
+                            line-height: 22px;
+                            //color:#78909C;
+                            padding: 2px 0px;
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            max-width: calc(100% - 40px);
+                            left:0px;
+                        }
+                        &.grouped{
+                            .menu{
+                                .item{
+                                    font-size: 14px;
+                                    line-height: 22px;
+                                    color: #263238;
+                                    &.disabled{
+                                        opacity: 1;
+                                        font-size: 14px;
+                                        font-family: 'ProximaNova-Regular';
+                                        font-weight: 600;
+                                        color:#263238;
+                                        border-top: 1px solid #E9E9E9;
+                                        line-height: 22px;
+                                        &:hover{
+                                            background-color: #fff;
+                                        }
+                                        &:first-child{
+                                            border-top: 0px solid transparent;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .ui.search.dropdown {
+        >input.search {
+            top: 4px;
+            left: 0px;
+            font-size: 14px;
+            line-height: 22px;
+            color: #263238;
+        }
+    }
+    .ui.dropdown {
+        .menu {
+            .active.item {
+                font-weight: normal !important;
+            }
+        }
+    }
+    .ui.selection.active.dropdown{
+        border: 1px solid #DDDDDD !important;
+      }
+      .ui.selection.active.dropdown .menu{
+        border: 1px solid #DDDDDD !important;
+      }
+}
+.dropdownWithArrowParentnotbg{
+    position: relative;
+    .ui.selection.dropdown {
+        &.active{
+            &::after{
+                z-index: 99;
+                transform: rotate(180deg);
+            }
+        }
+        &::after{
+            content: '';
+            background-image: url(../images/icons/icon-arrow-down.svg);
+            height: 7px;
+            width: 13.5px;
+            position: absolute;
+            right: 10px;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            transition: all 0.3s ease-out;
+            z-index: 2;
+            top:20px;
+            filter: invert(79%) sepia(0%) saturate(1%) hue-rotate(277deg) brightness(97%) contrast(87%);
+        }
+        i{
+            display: none;
+        }
+    }
+}
+  .ui.active.visible.fluid.search.selection.dropdown.dropdownsearchField.grouped.medium {
+    padding-left:44px;
+     &::before{
+        content: '';
+        position: absolute;
+        top: 13px;
+        left: 15px;
+        right: 0;
+        bottom: 0;
+        width: 20px;
+        height: 20px;
+        background-image: url(../images/icons/icon-search.svg) !important;
+        background-size: contain !important;
+        background-repeat: no-repeat !important;
+        background-position: center !important;
+        z-index: 99;
+    }
+  }
+  .dropdownSearch.dropdownWithArrowParentnotbg .ui.selection.dropdown.active .search{
+    padding-left:44px;
+  }
+ 
+ 
