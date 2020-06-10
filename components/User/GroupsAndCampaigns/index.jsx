@@ -221,7 +221,7 @@ class GroupsAndCampaigns extends React.Component {
         } = this.props;
         let givingGroupsMemberVisible = 0;
         let givingGroupsManageVisible = 0;
-        if (!_.isEmpty(userProfileBasicData)) {
+        if (!_.isEmpty(userProfileBasicData) && userProfileBasicData.data) {
             givingGroupsMemberVisible = userProfileBasicData.data[0].attributes.giving_group_member_visibility;
             givingGroupsManageVisible = userProfileBasicData.data[0].attributes.giving_group_manage_visibility;
         }
