@@ -135,7 +135,7 @@ export const getBeneficiaryFinance = (id) => (dispatch) => {
         },
         type: actionTypes.CHARITY_CHART_LOADER,
     });
-    utilityApi.get(`/beneficiaryfinance/${id}`, {
+    return utilityApi.get(`/beneficiaryfinance/${id}`, {
         params: {
             dispatch,
             locale: 'en_ca',
