@@ -87,9 +87,9 @@ class Group extends React.Component {
                 nextStep: props.step,
             };
         }
-        else{
-                payload =  _merge({}, props.flowObject)
-            }
+        else {   
+            payload =  _merge({}, props.flowObject)
+        }
         this.state = {
             flowObject:_.cloneDeep(payload),
             benificiaryIndex: 0,
@@ -222,7 +222,7 @@ class Group extends React.Component {
             );
             const giveToOptions = populateGroupsOfUser(userMembershipGroups);
             
-            if (!_isEmpty(giveGroupDetails)) {
+            if (!_isEmpty(giveGroupDetails) && _isEmpty(giveFromType)) {
                 groupFromUrl = false;
                 giveData.giveTo = {
                     id: giveGroupDetails.id,
@@ -234,7 +234,7 @@ class Group extends React.Component {
                     value: giveGroupDetails.attributes.fundId,
                 };
             } 
-            else if (!_isEmpty(userMembershipGroups)) {
+            else if (!_isEmpty(userMembershipGroups) && !_isEmpty(giveFromType)) {
                 groupFromUrl = true;
                 const groupIndex = this.state.flowObject.groupIndex;
                 giveData.giveTo = {
