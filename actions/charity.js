@@ -89,6 +89,7 @@ export const getBeneficiaryFromSlug = (slug, token = null) => async (dispatch) =
         const fullParams = {
             params: {
                 dispatch,
+                load_full_profile: true,
                 slug,
                 uxCritical: true,
             },
@@ -98,7 +99,7 @@ export const getBeneficiaryFromSlug = (slug, token = null) => async (dispatch) =
                 Authorization: `Bearer ${token}`,
             };
         }
-        await coreApi.get(`/beneficiaries/find_by_slug?load_full_profile=true`, {
+        await coreApi.get(`/beneficiaries/find_by_slug?`, {
             ...fullParams,
         }).then(
             (result) => {
@@ -121,7 +122,7 @@ export const getBeneficiaryFromSlug = (slug, token = null) => async (dispatch) =
     }
 };
 
-export const getBeneficiaryFinance = (id) => async (dispatch) => {
+export const getBeneficiaryFinance = (id) => (dispatch) => {
     const fsa = {
         payload: {
             beneficiaryFinance: [],
@@ -134,7 +135,7 @@ export const getBeneficiaryFinance = (id) => async (dispatch) => {
         },
         type: actionTypes.CHARITY_CHART_LOADER,
     });
-    await utilityApi.get(`/beneficiaryfinance/${id}`, {
+    utilityApi.get(`/beneficiaryfinance/${id}`, {
         params: {
             dispatch,
             locale: 'en_ca',

@@ -32,6 +32,18 @@ const charity = (state = {}, action) => {
         case 'RESET_CHARITY_STATES':
             newState = {};
             break;
+        case 'SAVE_FOLLOW_STATUS_CHARITY':
+            newState = {
+                ...state,
+                charityDetails: {
+                    ...state.charityDetails,
+                    attributes: {
+                        ...state.charityDetails.attributes,
+                        following: action.payload.followStatus,
+                    },
+                },
+            };
+            break;
         case 'GET_BENEFICIARY_FINANCE_DETAILS':
             newState = {
                 ...state,
