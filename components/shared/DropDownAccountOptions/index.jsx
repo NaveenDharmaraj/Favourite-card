@@ -24,6 +24,22 @@ import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage'
 import { withTranslation } from '../../../i18n';
 
 class DropDownAccountOptions extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            updatePlaceHolder: false,
+        };
+        this.handleDropdown = this.handleDropdown.bind(this);
+    }
+
+    handleDropdown() {
+        const {
+            updatePlaceHolder,
+        } = this.state;
+        this.setState({
+            updatePlaceHolder: !updatePlaceHolder,
+        });
+    }
 
     renderDropDownFeild() {
         const {
@@ -58,8 +74,13 @@ class DropDownAccountOptions extends React.Component {
                 lastName,
             },
         } = currentUser;
+        const {
+            updatePlaceHolder,
+        } = this.state;
         const giveFromHeader = (type === 'donations') ? formatMessage('addingToLabel') : formatMessage('giveFromLabel');
         const giveFromPlaceHolder = (type === 'donations') ? formatMessage('destinationaccountPlaceHolder') : formatMessage('accountPlaceHolder');
+        const newPlaceholder = updatePlaceHolder ? formatMessage('searchPlaceholder') : giveFromPlaceHolder;
+        let newPlaceholderValue = '';
         if (!_.isEmpty(companiesAccountsData) || !_.isEmpty(userCampaigns) || !_.isEmpty(userGroups)) {
             if (giveTo && giveTo.value && giveFromUrl) {
                 dropDownData = populateAccountOptions({
@@ -101,6 +122,7 @@ class DropDownAccountOptions extends React.Component {
             </Placeholder>
         );
         if (!_.isEmpty(dropDownData)) {
+            newPlaceholderValue = selectedValue ? selectedValue.toString() : '';
             fieldData = (
                 <div className="dropdownSearch dropdownWithArrowParentnotbg medium">
                     <Dropdown
@@ -108,6 +130,8 @@ class DropDownAccountOptions extends React.Component {
                         error={!validity || reviewBtnFlag}
                         onChange={parentInputChange}
                         onBlur={parentOnBlurChange}
+                        onOpen={this.handleDropdown}
+                        onClose={this.handleDropdown}
                         placeholder={giveFromPlaceHolder}
                         fluid
                         selection
@@ -118,6 +142,7 @@ class DropDownAccountOptions extends React.Component {
                         selectOnBlur={false}
                         search
                         selectOnNavigation={false}
+                        text={_.isEmpty(newPlaceholderValue) ? newPlaceholder : undefined}
                     />
                 </div>
             );

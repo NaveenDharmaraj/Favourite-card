@@ -42,8 +42,6 @@ const PrivacyOptions = (props) => {
                     value={nameToShare.value}
 
                 />
-
-                <br />
                 <Form.Field
                     checked={privacyShareAmount}
                     className="ui checkbox checkbox-text f-weight-n cp_chkbx"

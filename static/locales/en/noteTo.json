@@ -11,9 +11,9 @@
     "invalidNoteTextError":  "Only standard letters and numbers are allowed here",
     "givingNoteToSelfPopup": "Write a note to yourself for later—for example, a reminder of why you gave this gift. This will only be visible to you on your Dashboard.",
     "noteToSelfPlaceHolder": "Write a note to yourself.",
-    "noteToSelfLabelReview" : "Note to self",
+    "noteToSelfLabelReview" : "Note to campaign (optional)",
     "noteToSelfLabel": "Note to self (optional)",
     "donorNoteToSelfPopup": "Write a note to yourself for later—for example, a reminder of why you added this money to your account. This will only be visible to you on your Dashboard.",
-    "noteToCompanyLabel": "Note to company",
-    "noteToGroupLabel": "Note to group"
+    "noteToCompanyLabel": "Note to company (optional)",
+    "noteToGroupLabel": "Note to group (optional)"
 }
