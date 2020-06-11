@@ -125,6 +125,7 @@ class CharityProfile extends React.Component {
                     title={title}
                     description={charityDescription}
                     url={url}
+                    expandFooter
                 >
                     {!redirectToDashboard
                         && <CharityProfileWrapper {...this.props} />
