@@ -60,6 +60,14 @@ class Charts extends React.Component {
             prof_consult_fees: formatMessage('charityProfile:professionalFees'),
             travel_vehicle_expense: formatMessage('charityProfile:travelExpense'),
         };
+        this.colorArr = [
+            '#C995D3',
+            '#DF005F',
+            '#FEC7A9',
+            '#00CCD4',
+            '#0D00FF',
+            '#8DEDAE',
+        ];
         this.getChartData = this.getChartData.bind(this);
         this.handleClick = this.handleClick.bind(this);
         this.renderSummary = this.renderSummary.bind(this);
@@ -69,7 +77,7 @@ class Charts extends React.Component {
         this.chartReference = React.createRef();
         this.state = {
             chartIndex: getChartIndex(beneficiaryFinance),
-            graphData: formatGraphData(beneficiaryFinance, this.mapping),
+            graphData: formatGraphData(beneficiaryFinance, this.mapping, this.colorArr),
             showDoneeListModal: false,
         };
     }
@@ -93,7 +101,7 @@ class Charts extends React.Component {
         } = this.chartReference;
         let viewData = {};
         if (!_isEqual(prevProps.beneficiaryFinance, beneficiaryFinance)) {
-            viewData = formatGraphData(beneficiaryFinance, this.mapping);
+            viewData = formatGraphData(beneficiaryFinance, this.mapping, this.colorArr);
             this.setState({
                 chartIndex: viewData.yearLabel.indexOf(viewData.selectedYear),
                 graphData: viewData,
@@ -129,27 +137,27 @@ class Charts extends React.Component {
                     type: 'line',
                 },
                 {
-                    backgroundColor: '#C995D370',
+                    backgroundColor: this.colorArr[0].concat('70'),
                     data: firstData,
                     fill: false,
                 },
                 {
-                    backgroundColor: '#DF005F70',
+                    backgroundColor: this.colorArr[1].concat('70'),
                     data: secondData,
                     fill: false,
                 },
                 {
-                    backgroundColor: '#FEC7A970',
+                    backgroundColor: this.colorArr[2].concat('70'),
                     data: thirdData,
                     fill: false,
                 },
                 {
-                    backgroundColor: '#00CCD470',
+                    backgroundColor: this.colorArr[3].concat('70'),
                     data: fourthData,
                     fill: false,
                 },
                 {
-                    backgroundColor: '#0D00FF70',
+                    backgroundColor: this.colorArr[4].concat('70'),
                     data: fifthData,
                     fill: false,
                 },
@@ -186,11 +194,11 @@ class Charts extends React.Component {
         if (!_isEmpty(graphData)) {
             chartInstance.update();
 
-            chartInstance.getDatasetMeta(1).data[chartIndex]._model.backgroundColor = '#C995D3';
-            chartInstance.getDatasetMeta(2).data[chartIndex]._model.backgroundColor = '#DF005F';
-            chartInstance.getDatasetMeta(3).data[chartIndex]._model.backgroundColor = '#FEC7A9';
-            chartInstance.getDatasetMeta(4).data[chartIndex]._model.backgroundColor = '#00CCD4';
-            chartInstance.getDatasetMeta(5).data[chartIndex]._model.backgroundColor = '#0D00FF';
+            chartInstance.getDatasetMeta(1).data[chartIndex]._model.backgroundColor = this.colorArr[0];
+            chartInstance.getDatasetMeta(2).data[chartIndex]._model.backgroundColor = this.colorArr[1];
+            chartInstance.getDatasetMeta(3).data[chartIndex]._model.backgroundColor = this.colorArr[2];
+            chartInstance.getDatasetMeta(4).data[chartIndex]._model.backgroundColor = this.colorArr[3];
+            chartInstance.getDatasetMeta(5).data[chartIndex]._model.backgroundColor = this.colorArr[4];
         }
     }
 

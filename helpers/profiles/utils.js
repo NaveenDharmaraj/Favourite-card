@@ -13,7 +13,6 @@ const getSelectedYear = (beneficiaryFinance) => {
 };
 
 const getChartIndex = (beneficiaryFinance) => {
-    const yearLabel = [];
     let selectedYear = null;
     if (!_isEmpty(beneficiaryFinance)) {
         selectedYear = getSelectedYear(beneficiaryFinance);
@@ -22,15 +21,48 @@ const getChartIndex = (beneficiaryFinance) => {
         ], [
             'asc',
         ]);
-        sortedData.map((year) => {
-            yearLabel.push(year.returns_year);
-        });
-        return yearLabel.indexOf(selectedYear);
+        return sortedData.findIndex((obj) => obj.returns_year === selectedYear);
     }
     return null;
 };
 
-const formatGraphData = (beneficiaryFinance, lang) => {
+const createChartData = (yearData, expensesArr, langMapping, colorArr) => {
+    let finalData = {};
+    const summaryData = [];
+    const colorData = [];
+    expensesArr.map((expense, index) => {
+        const expenseValue = yearData.expenses.find((o) => o.name === expense).value;
+        if (expense === 'gifts_to_charities_donees') {
+            summaryData.push(
+                {
+                    color: colorArr[index],
+                    hideGift: !(yearData.gifts_total > 0),
+                    showViewButton: (yearData.gifts_total > 0),
+                    text: langMapping[expense],
+                    value: expenseValue,
+                },
+            );
+        } else {
+            colorData.push(expenseValue);
+            summaryData.push(
+                {
+                    color: colorArr[index],
+                    hideGift: false,
+                    showViewButton: false,
+                    text: langMapping[expense],
+                    value: expenseValue,
+                },
+            );
+        }
+    });
+    finalData = {
+        colorData,
+        summaryData,
+    };
+    return finalData;
+};
+
+const formatGraphData = (beneficiaryFinance, langMapping, colorArr) => {
     const totalData = [];
     const yearLabel = [];
     const yearData = [];
@@ -54,108 +86,36 @@ const formatGraphData = (beneficiaryFinance, lang) => {
                 revenue_total: year.revenues[0].value,
                 total_expense: year.expenses[0].value,
             });
+            let expensesArr = [];
+            let chartData = [];
             revenueData.push(year.revenues[0].value);
             if (year.expenses.find((o) => o.name === 'total_expense').value > 100000) {
-                firstData.push(year.expenses.find((o) => o.name === 'charitable_activities_programs').value);
-                secondData.push(year.expenses.find((o) => o.name === 'management_admin').value);
-                thirdData.push(year.expenses.find((o) => o.name === 'fundraising').value);
-                fourthData.push(year.expenses.find((o) => o.name === 'poilitical_activities').value);
-                fifthData.push(year.expenses.find((o) => o.name === 'other').value);
-                yearData.push([
-                    {
-                        color: '#C995D3',
-                        hideGift: false,
-                        showViewButton: false,
-                        text: lang.charitable_activities_programs,
-                        value: year.expenses.find((o) => o.name === 'charitable_activities_programs').value,
-                    },
-                    {
-                        color: '#DF005F',
-                        hideGift: false,
-                        showViewButton: false,
-                        text: lang.management_admin,
-                        value: year.expenses.find((o) => o.name === 'management_admin').value,
-                    },
-                    {
-                        color: '#FEC7A9',
-                        hideGift: false,
-                        showViewButton: false,
-                        text: lang.fundraising,
-                        value: year.expenses.find((o) => o.name === 'fundraising').value,
-                    },
-                    {
-                        color: '#00CCD4',
-                        hideGift: false,
-                        showViewButton: false,
-                        text: lang.poilitical_activities,
-                        value: year.expenses.find((o) => o.name === 'poilitical_activities').value,
-                    },
-                    {
-                        color: '#0D00FF',
-                        hideGift: false,
-                        showViewButton: false,
-                        text: lang.other,
-                        value: year.expenses.find((o) => o.name === 'other').value,
-                    },
-                    {
-                        color: '#8DEDAE',
-                        hideGift: !(year.gifts_total > 0),
-                        showViewButton: (year.gifts_total > 0),
-                        text: lang.gifts_to_charities_donees,
-                        value: year.expenses.find((o) => o.name === 'gifts_to_charities_donees').value,
-                    },
-                ]);
+                expensesArr = [
+                    'charitable_activities_programs',
+                    'management_admin',
+                    'fundraising',
+                    'poilitical_activities',
+                    'other',
+                    'gifts_to_charities_donees',
+                ];
+                chartData = createChartData(year, expensesArr, langMapping, colorArr);
             } else {
-                firstData.push(year.expenses.find((o) => o.name === 'prof_consult_fees').value);
-                secondData.push(year.expenses.find((o) => o.name === 'travel_vehicle_expense').value);
-                thirdData.push(year.expenses.find((o) => o.name === 'expenditure_charity_activites').value);
-                fourthData.push(year.expenses.find((o) => o.name === 'management_admin').value);
-                fifthData.push(year.expenses.find((o) => o.name === 'other').value);
-                yearData.push([
-                    {
-                        color: '#C995D3',
-                        hideGift: false,
-                        showViewButton: false,
-                        text: lang.prof_consult_fees,
-                        value: year.expenses.find((o) => o.name === 'prof_consult_fees').value,
-                    },
-                    {
-                        color: '#DF005F',
-                        hideGift: false,
-                        showViewButton: false,
-                        text: lang.travel_vehicle_expense,
-                        value: year.expenses.find((o) => o.name === 'travel_vehicle_expense').value,
-                    },
-                    {
-                        color: '#FEC7A9',
-                        hideGift: false,
-                        showViewButton: false,
-                        text: lang.expenditure_charity_activites,
-                        value: year.expenses.find((o) => o.name === 'expenditure_charity_activites').value,
-                    },
-                    {
-                        color: '#00CCD4',
-                        hideGift: false,
-                        showViewButton: false,
-                        text: lang.management_admin,
-                        value: year.expenses.find((o) => o.name === 'management_admin').value,
-                    },
-                    {
-                        color: '#0D00FF',
-                        hideGift: false,
-                        showViewButton: false,
-                        text: lang.other,
-                        value: year.expenses.find((o) => o.name === 'other').value,
-                    },
-                    {
-                        color: '#8DEDAE',
-                        hideGift: !(year.gifts_total > 0),
-                        showViewButton: (year.gifts_total > 0),
-                        text: lang.gifts_to_charities_donees,
-                        value: year.expenses.find((o) => o.name === 'gifts_to_charities_donees').value,
-                    },
-                ]);
+                expensesArr = [
+                    'prof_consult_fees',
+                    'travel_vehicle_expense',
+                    'expenditure_charity_activites',
+                    'management_admin',
+                    'other',
+                    'gifts_to_charities_donees',
+                ];
+                chartData = createChartData(year, expensesArr, langMapping, colorArr);
             }
+            firstData.push(chartData.colorData[0]);
+            secondData.push(chartData.colorData[1]);
+            thirdData.push(chartData.colorData[2]);
+            fourthData.push(chartData.colorData[3]);
+            fifthData.push(chartData.colorData[4]);
+            yearData.push(chartData.summaryData);
         });
         graphData = {
             fifthData,
