@@ -429,10 +429,12 @@ export const getCompanyPaymentAndTax = (dispatch, companyId) => {
                         type,
                     });
                 }
-                fsa.payload.companyPaymentInstrumentsData = [
-                    ...result[1].data,
-                ];
             });
+        }
+        if (!_.isEmpty(result[1])) {
+            fsa.payload.companyPaymentInstrumentsData = [
+                ...result[1].data,
+            ];
         }
         dispatch({
             payload: {
