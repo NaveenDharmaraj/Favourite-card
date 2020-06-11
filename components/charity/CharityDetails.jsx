@@ -21,7 +21,7 @@ import ReactHtmlParser from 'react-html-parser';
 import {
     generateDeepLink,
 } from '../../actions/profile';
-import GroupShareDetails from '../Group/GroupShareDetails';
+import ShareProfile from '../shared/ShareProfile';
 
 import ProgramAreas from './ProgramAreas';
 import Charts from './Charts';
@@ -100,7 +100,7 @@ class CharityDetails extends React.Component {
                                         {getCauses}
                                     </div>
                                     <div className="ch_share">
-                                        <GroupShareDetails
+                                        <ShareProfile
                                             liked={following}
                                             profileId={profileId}
                                             type={type}
