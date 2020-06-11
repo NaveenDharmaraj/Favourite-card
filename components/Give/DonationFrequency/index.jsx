@@ -28,7 +28,7 @@ function DonationFrequency(props) {
                 <Form.Field className="Frequencybottom">
                     <label>Frequency</label>
                     <Popup
-                        content={<div>{formatMessage('automaticDonationPopup')}</div>}
+                        content={<div>{formatMessage('giveCommon:automaticDonationPopup')}</div>}
                         position="top center"
                         trigger={(
                             <Icon
