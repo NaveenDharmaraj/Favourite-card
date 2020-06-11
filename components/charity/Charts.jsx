@@ -160,9 +160,15 @@ class Charts extends React.Component {
     }
 
     handleClick(event) {
+        const {
+            dispatch,
+        } = this.props;
         if (!_isEmpty(event)) {
             this.setState({
                 chartIndex: event[0]._index,
+            });
+            dispatch({
+                type: 'RESET_DONEE_LIST',
             });
         }
     }

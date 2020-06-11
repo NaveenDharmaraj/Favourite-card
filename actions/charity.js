@@ -45,6 +45,7 @@ export const getBeneficiaryDoneeList = (charityId, year) => (dispatch) => {
         params: {
             dispatch,
             locale: 'en_ca',
+            page: 1,
             returnsYear: year,
             size: 20,
             tenant_name: 'chimp',

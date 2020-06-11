@@ -56,6 +56,14 @@ const charity = (state = {}, action) => {
                 chartLoader: action.payload.chartLoader,
             };
             break;
+        case 'RESET_DONEE_LIST':
+            newState = {
+                ...state,
+                donationDetails: [],
+                remainingAmount: 0,
+                remainingElements: 0,
+            };
+            break;
         default:
             break;
     }
