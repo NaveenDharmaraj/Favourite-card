@@ -1440,12 +1440,11 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
     } = giveData;
 
     // Create this constant to not conflict with recipient constant.
-    console.log(isGiveFrom);
     const state = {
         buttonText: formatMessage('reviewSendGift'),
         editUrl: toURL,
         headingText: (isGiveFrom)
-            ? `${formatMessage('reviewGiveFromText')} ${giveTo.name}`
+            ? `${formatMessage('reviewGiveFromText')} ${giveFrom.name}`
             : `${formatMessage('reviewGiveToText')} ${giveTo.name}`,
         isRecurring: !(giftType.value === 0),
         mainDisplayAmount: formatCurrency(
