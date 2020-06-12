@@ -44,11 +44,11 @@ const ERRORMESSAGES = {
 const Footer = (props) => {
     const {
         isAuthenticated,
-        buttonFixedBottom,
+        isCharityPage,
     } = props;
     return (
         <div>
-            <div className={`my-footer ${buttonFixedBottom ? 'BottomfixedBtn_Footer' : ''}`}>
+            <div className={`my-footer ${isCharityPage ? 'BottomfixedBtn_Footer' : ''}`}>
                 <Container>
                     <div className="footer-search">
                         <Grid verticalAlign="middle" columns={2} centered>
@@ -182,13 +182,13 @@ const Footer = (props) => {
 };
 
 Footer.propTypes = {
-    buttonFixedBottom: bool,
     isAuthenticated: bool,
+    isCharityPage: bool,
 };
 
 Footer.defaultProps = {
-    buttonFixedBottom: false,
     isAuthenticated: false,
+    isCharityPage: false,
 };
 
 export default Footer;

@@ -58,7 +58,6 @@ class ShareProfile extends React.Component {
         } else {
             followProfile(dispatch, userId, profileId, type);
         }
-        // liked ? unfollowProfile(dispatch, userId, profileId, type) : followProfile(dispatch, userId, profileId, type);
     }
 
     handleOnClick(event, data) {

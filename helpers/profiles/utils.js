@@ -32,28 +32,19 @@ const createChartData = (yearData, expensesArr, langMapping, colorArr) => {
     const colorData = [];
     expensesArr.map((expense, index) => {
         const expenseValue = yearData.expenses.find((o) => o.name === expense).value;
-        if (expense === 'gifts_to_charities_donees') {
-            summaryData.push(
-                {
-                    color: colorArr[index],
-                    hideGift: !(yearData.gifts_total > 0),
-                    showViewButton: (yearData.gifts_total > 0),
-                    text: langMapping[expense],
-                    value: expenseValue,
-                },
-            );
-        } else {
+        const isGift = (expense === 'gifts_to_charities_donees');
+        if (!isGift) {
             colorData.push(expenseValue);
-            summaryData.push(
-                {
-                    color: colorArr[index],
-                    hideGift: false,
-                    showViewButton: false,
-                    text: langMapping[expense],
-                    value: expenseValue,
-                },
-            );
         }
+        summaryData.push(
+            {
+                color: colorArr[index],
+                hideGift: isGift ? !(yearData.gifts_total > 0) : false,
+                showViewButton: isGift ? (yearData.gifts_total > 0) : false,
+                text: langMapping[expense],
+                value: expenseValue,
+            },
+        );
     });
     finalData = {
         colorData,
