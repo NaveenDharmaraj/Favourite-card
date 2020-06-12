@@ -915,7 +915,7 @@ class Donation extends React.Component {
                                                             handlePresetAmountClick={this.handlePresetAmountClick}
                                                             validity={validity}
                                                         />
-
+                                                        <div className="give_flow_field">
                                                         <DropDownAccountOptions
                                                             formatMessage={formatMessage}
                                                             type={type}
@@ -925,6 +925,7 @@ class Donation extends React.Component {
                                                             parentInputChange={this.handleInputChange}
                                                             parentOnBlurChange={this.handleInputOnBlur}
                                                         />
+                                                        </div>
                                                         <DonationFrequency
                                                             formatMessage={formatMessage}
                                                             giftType={giveData.giftType}
@@ -1029,6 +1030,7 @@ class Donation extends React.Component {
                                             <Grid className="to_space">
                                                 <Grid.Row className="to_space">
                                                     <Grid.Column mobile={16} tablet={16} computer={16}>
+                                                        <div className="give_flow_field">
                                                         <Note
                                                             fieldName="noteToSelf"
                                                             handleOnInputChange={this.handleInputChange}
@@ -1039,9 +1041,10 @@ class Donation extends React.Component {
                                                             placeholderText={formatMessage('noteToSelfPlaceHolder')}
                                                             text={giveData.noteToSelf}
                                                         />
+                                                        </div>
                                                         <Form.Button
                                                             primary
-                                                            className="blue-btn-rounded btn_right"
+                                                            className="blue-btn-rounded btn_right rivewbtnp2p mt-1"
                                                             // className={isMobile ? 'mobBtnPadding' : 'btnPadding'}
                                                             content={formatMessage('giveCommon:reviewButton')}
                                                             disabled={disableButton}

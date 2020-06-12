@@ -150,8 +150,8 @@ class DropDownAccountOptions extends React.Component {
         if (!userAccountsFetched || !_.isEmpty(dropDownData)) {
             return (
                 <Fragment>
-                    <Form.Field className="mt-2">
-                        <div className="paymentMethodDropdown mb-1-2">
+                    <Form.Field>
+                        <div className="paymentMethodDropdown">
                             <label htmlFor="giveFrom">
                                 {giveFromHeader}
                             </label>

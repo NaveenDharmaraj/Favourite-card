@@ -829,7 +829,6 @@ class Friend extends React.Component {
                                                                 </p>
                                                                 {(showGiveToEmail || !_.isEmpty(recipients) || (typeof showDropDown !== 'undefined' && !showDropDown))
                                                                     && (
-                                                                        <div className="noteEmail">
                                                                             <Note
                                                                                 enableCharacterCount={false}
                                                                                 fieldName="recipients"
@@ -842,7 +841,6 @@ class Friend extends React.Component {
                                                                                 text={recipients.join(',')}
                                                                                 hideLabel={true}
                                                                             />
-                                                                        </div>
                                                                     )}
                                                                 <FormValidationErrorMessage
                                                                     condition={!validity.isValidEmailList}
@@ -868,6 +866,7 @@ class Friend extends React.Component {
                                                         </Fragment>
                                                     }
                                                         <Grid.Column mobile={16} tablet={12} computer={10}>
+                                                            <div className="give_flow_field">
                                                             <DonationAmountField
                                                                 amount={formatedP2PAmount}
                                                                 formatMessage={formatMessage}
@@ -877,9 +876,11 @@ class Friend extends React.Component {
                                                                 validity={validity}
                                                                 isGiveFlow
                                                             />
+                                                            </div>
                                                             <p className="multipleFriendAmountFieldText">
                                                                 {formatMessage('friends:multipleFriendAmountFieldText')}
                                                             </p>
+                                                            <div className="give_flow_field">
                                                             <DropDownAccountOptions
                                                                 type={type}
                                                                 validity={validity.isValidGiveFrom}
@@ -891,12 +892,14 @@ class Friend extends React.Component {
                                                                 reviewBtnFlag={reviewBtnFlag}
                                                             />
                                                             {this.renderReloadAddAmount()}
+                                                            </div>
                                                         </Grid.Column>
                                                 </Grid.Row>
                                             </Grid>
                                             <Grid className="to_space">
                                                 <Grid.Row className="to_space">
                                                     <Grid.Column mobile={16} tablet={16} computer={16}>
+                                                        <div className="give_flow_field">
                                                         <Note
                                                             fieldName="noteToRecipients"
                                                             formatMessage={formatMessage}
@@ -918,6 +921,7 @@ class Friend extends React.Component {
                                                             text={noteToSelf}
                                                         />
                                                         {submtBtn}
+                                                        </div>
                                                     </Grid.Column>
                                                 </Grid.Row>
                                             </Grid>

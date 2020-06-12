@@ -411,7 +411,10 @@
         font-family: 'ProximaNova-Regular';
         padding-left: 8px;
         padding-right: 8px;
+       color: #7F7F7F !important;
+       &.completed_step{
         color: #263238 !important;
+       }
     }
 }
 .ui.breadcrumb .active.section{
@@ -504,6 +507,7 @@
                 color:#263238;
                 font-weight: 600 !important;
                 font-family: 'ProximaNova-Regular';
+                margin-top:0px;
             }
         }
     }
@@ -522,7 +526,7 @@
         }
     }
     .ui[class*="left icon"].input>input{
-        padding-left: 2em!important;
+        padding-left: 1em!important;
         font-size: 14px !important;
         padding-right: 1em!important;
         padding-top: 12px !important;
@@ -541,6 +545,24 @@
         font-size: 12px !important;
         color: #263238 ;
         line-height: 15px;
+        margin-top: 15px;
+    }
+    .give_field{
+        margin-bottom: 20px !important;
+    }
+    .give_flow_field{
+        margin-top:44px !important;
+    }
+    .give_flow_field_bottom{
+        margin-bottom:44px !important;
+    }
+    .donation_Amount_Field{
+        margin: 0px !important;
+    }
+    .with-info{
+        textarea{
+           min-height: 125px !important;
+        }
     }
 }
 .Frequencybottom{
@@ -890,6 +912,9 @@
 .invisionwidth {
     width: 66px !important;
     height: 31px !important;
+    &.active{
+        background-color: #F1F6FD;
+    }
 }
 .dropdownWithArrow {
     position: relative;
@@ -1044,8 +1069,7 @@ button.ui.button.blue-btn-rounded-def.flowConfirmBtn.second_btn{
         &:first-child{
             margin-top: 0px;
         }
-        margin-top:22px !important;
-        margin-bottom: 10px !important;
+        margin-bottom: 14px !important;
         display: inline-block;
         margin-right: 6px;
         font-family:'ProximaNova-Regular';
@@ -1175,6 +1199,8 @@ p{
     }
     &.multipleFriendAmountFieldText{
         font-size: 12px;
+        margin-bottom: 14px !important;
+        margin-top: 14px;
     }
 }
 
@@ -1274,9 +1300,7 @@ p{
 }
 
 /*****Modal for give From group*************/
-.noteEmail {
-    margin-bottom: -45px !important;
-}
+
 .field.blue-btn-rounded.btn_right.rivewbtnp2p.blue-btn-rounded button.ui.primary.button {
     min-width:126px !important;
 }
@@ -1313,6 +1337,7 @@ textarea {
     font-size: 12px !important;
     color: #263238 ;
     line-height: 15px;
+    margin-top: 15px;
 }
 input{
     &::placeholder{
@@ -1703,5 +1728,6 @@ input{
   .dropdownSearch.dropdownWithArrowParentnotbg .ui.selection.dropdown.active .search{
     padding-left:44px;
   }
- 
- 
+ .give_amount .ui[class*="left icon"].input > input {
+     padding-left: 2em !important;
+ }

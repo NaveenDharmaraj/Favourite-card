@@ -1019,25 +1019,24 @@ class Charity extends React.Component {
                                                                 </Modal>
                                                             </p>
                                                         }
-                                                        <DropDownAccountOptions
-                                                            reviewBtnFlag={this.state.reviewBtnFlag}
-                                                            type={type}
-                                                            validity={validity.isValidGiveFrom}
-                                                            selectedValue={giveFrom.value}
-                                                            name="giveFrom"
-                                                            parentInputChange={this.handleInputChange}
-                                                            parentOnBlurChange={this.handleInputOnBlur}
-                                                            formatMessage={formatMessage}
-                                                        />
-
-                                                        {this.renderReloadAddAmount()}
-
+                                                        <div className="give_flow_field">
+                                                            <DropDownAccountOptions
+                                                                reviewBtnFlag={this.state.reviewBtnFlag}
+                                                                type={type}
+                                                                validity={validity.isValidGiveFrom}
+                                                                selectedValue={giveFrom.value}
+                                                                name="giveFrom"
+                                                                parentInputChange={this.handleInputChange}
+                                                                parentOnBlurChange={this.handleInputOnBlur}
+                                                                formatMessage={formatMessage}
+                                                            />
+                                                            {this.renderReloadAddAmount()}
+                                                        </div>
                                                         {this.renderSpecialInstructionComponent(
                                                             giveFrom,
                                                             giftType, giftTypeList, infoToShare, infoToShareList, formatMessage,
                                                             paymentInstrumentList, defaultTaxReceiptProfile, companyDetails,
                                                         )}
-
                                                         <DedicateType
                                                             handleInputChange={this.handleInputChange}
                                                             handleInputOnBlur={this.handleInputOnBlur}

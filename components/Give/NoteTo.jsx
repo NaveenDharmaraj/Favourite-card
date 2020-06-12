@@ -52,8 +52,8 @@ const NoteTo = (props) => {
     const labelText = labelTextIds[giveFromType];
     return (
         <Fragment>
-            <Form.Field>
-                <label htmlFor="noteToCharity" className="mt-1">
+            <Form.Field className="give_flow_field">
+                <label htmlFor="noteToCharity">
                     {formatMessage(`noteTo:include${allocationType}MessageLabel`)}
                 </label>
                 <span className="givingInfoText">
@@ -93,7 +93,7 @@ const NoteTo = (props) => {
                 condition={!validity.isValidNoteToCharityText}
                 errorMessage={formatMessage('giveCommon:errorMessages.invalidNoteTextError')}
             />
-            <Form.Field>
+            <Form.Field className="give_flow_field">
                 <label htmlFor="noteToSelf" id="noteToSelfLabel">
                     {formatMessage(`noteTo:${labelText}`)}
                 </label>
