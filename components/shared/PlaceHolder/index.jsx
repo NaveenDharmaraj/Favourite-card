@@ -1,8 +1,9 @@
 import React from 'react';
 import {
-    Grid, Placeholder, Segment, Table, Card,
+    Grid, Placeholder, Segment, Table, Card, Divider,
 } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
+
 const columnComponent = (column, placeholderType) => {
     const columnComponents = [];
     for (let i = 0; i < column; i++) {
@@ -50,7 +51,22 @@ const columnComponent = (column, placeholderType) => {
                     </div>
                 </Grid.Column>,
             );
-        } else {
+        } else if (placeholderType === 'multiLine') {
+            columnComponents.push(
+                <Grid.Column width={16}>
+                    <div className='ch_ModelPlaceholder'>
+                        <Placeholder>
+                            <Placeholder.Line length='short' />
+                            <Placeholder.Line length='full' />
+                            <Placeholder.Line length='medium' />
+                        </Placeholder>
+                        <Divider />
+                    </div>
+                </Grid.Column>,
+            );
+        }
+
+        else {
             columnComponents.push(
                 <Grid.Column>
                     <Segment raised>
@@ -99,7 +115,15 @@ const PlaceholderGrid = (props) => {
                     {columnComponent(column, placeholderType)}
                 </Grid.Row>,
             );
-        } else {
+        } else if (placeholderType === 'multiLine') {
+            placeHolderComponent.push(
+                <Grid.Row>
+                    {columnComponent(column, placeholderType)}
+                </Grid.Row>,
+            );
+        }
+
+        else {
             placeHolderComponent.push(
                 <Grid.Row>
                     {columnComponent(column)}
