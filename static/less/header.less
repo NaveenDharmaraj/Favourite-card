@@ -1,6 +1,6 @@
 @import "_mixins.less";
 body{
-
+  padding-top: 80px;
 }
 .flexbox-wraper{
   display: -webkit-box;
@@ -206,6 +206,12 @@ button,a{
       padding: 0px;
       border-bottom: 0px solid transparent;
       box-shadow: 0 1px 4px 0 rgba(209,209,209,0.5);
+      position: fixed;
+      left: 0px;
+      right:0px;
+      top: 0px;
+      background-color: #fff;
+      z-index: 99999999;
       .ui{
         &.secondary{
           &.menu{
@@ -424,6 +430,12 @@ button,a{
     &.segment{
       border-bottom: 0px solid transparent;
       box-shadow: 0 1px 4px 0 rgba(209,209,209,0.5);
+      position: fixed;
+      left: 0px;
+      right: 0px;
+      top: 0px;
+      background-color: #fff;
+      z-index: 9999999;
       .ui{
         &.secondary{
           &.menu{
@@ -466,6 +478,9 @@ button,a{
       border: 0px solid transparent !important;
       border-radius: 0px;
       margin-top: 8px !important;
+      @media only screen and (max-width:991px){
+        margin-top: -4px !important;
+      }
       >.header{
         padding: .833em 1em;
         border-bottom:1px solid @grey-lighten-2; 
@@ -594,6 +609,10 @@ button,a{
       border: 0px solid transparent !important;
       border-radius: 0px;
       margin-top: 4px !important;
+      z-index: 999999999;
+      @media only screen and (max-width:991px){
+        margin-top: -4px !important;
+      }
       >.header{
         padding: .833em 1em;
         border-bottom:1px solid @grey-lighten-2; 
@@ -1322,14 +1341,17 @@ body{
     box-shadow: none;
     border-top: 0px solid transparent;
     padding-top: 0px;
+    position: fixed;
+    z-index: 999999;
   }
   .ui{
     &.sidebar{
       &.menu{
-        margin-top: 81px !important;
+        top:80px;
+        position: fixed;
         width: 100vw;
         padding: 16.5px 0px;
-        height: calc(100% - 81px) !important;
+        z-index: 999999;
         .ui{
           &.vertical{
             &.accordion{
@@ -1508,6 +1530,15 @@ body{
       &.menu{
         box-shadow: 0 1px 4px 0 rgba(209,209,209,0.5);
         margin-bottom: 1px;
+        position: fixed;
+        left: 0;
+        right: 0;
+        background-color: #fff;
+        z-index: 99;
+        top: 0;
+        &.header_Responsive{
+          z-index: 9999;
+        }
         .item{
           &:hover{
             background-color: transparent !important;
@@ -1942,9 +1973,7 @@ body{
       }
     }
   }
-  &.logo{
-    
-  }
+ 
 }
 @media only screen and (max-width:767px){
   .xs-d-none{
@@ -2009,4 +2038,16 @@ body{
       }
     }
   }
+}
+@media only screen and (max-width:991px){
+  .c-m-login-header .ui.right.overlay.sidebar {
+  -webkit-transform: none !important;
+  transform: none !important;
+  padding-top: 0px !important;
+}
+.pushable:not(body){
+  -webkit-transform: none !important;
+  transform: none !important;
+}
+
 }

@@ -1461,8 +1461,8 @@ h4{
   }
 }
 .pageWraper{
-  padding-top: 50px;
   padding-bottom: 80px;
+  margin-top: -3px;
   .pageHeader{
     padding-bottom: 30px;
     .breadcrumb{
@@ -1723,7 +1723,7 @@ h4{
       margin-top: 30px;
     }
     .pageWraper {
-      padding-top: 30px;
+      padding-top: 0px;
       padding-bottom: 50px;
     }
     .login-form-wraper{
@@ -1780,6 +1780,12 @@ h4{
   body{
     .c-m-default-header .ui.secondary.menu{
       margin-bottom: 0px;
+      top: 0px;
+      position: fixed;
+      left: 0px;
+      right: 0px;
+      background-color: #fff;
+      z-index:9999999;
     }
   }
   .left-bg{
@@ -2430,7 +2436,7 @@ h4{
       box-shadow: 0 5px 10px 0 rgba(0,0,0,0.2);
       margin-top: 27px !important;
       @media only screen and (max-width:991px){
-        margin-top: 18px !important;
+        margin-top:-4px !important;
       }
       @media only screen and (max-width:767px) {
         min-width: 250px;	
@@ -5071,10 +5077,13 @@ i.check.circle.icon.status-icon {
   color: #FF0000;
   font-size: 1em;
   font-weight: 400;
-  display: flex;
+  display: table;
   .icon{
     &.exclamation{
       color: #FF0000;
+      display: table-cell;
+      width: 20px;
+      text-align: left;
     }
   }
 }
@@ -6813,7 +6822,7 @@ button.ui.button.blue-bordr-btn-round-def{
     &.input{
       input{
         display: inline-block;
-        width: auto !important;
+        width: 100% !important;
       }
     }
   }
@@ -7231,6 +7240,7 @@ body{
       &.large{
         &.question{
           position: relative;
+          margin-top: 5px;
           &::before{
             content: '';
             position: absolute;
@@ -7968,6 +7978,9 @@ body .userEllips{
     }
   }
 }
+.error_page{
+  margin-top:100px;
+}
 .app_logo{
   border-top: 1px solid #C0C3D4;
   margin-top: 5px;
@@ -7992,143 +8005,4 @@ body .userEllips{
         text-align: center;
       }
   }
-}
-/*********NOAvailable******************/
-.NotAvailable{
-    position: relative;
-    overflow: hidden;
-    min-height: 67vh;
-    @media only screen and (max-width:991px) and (min-width:768px){
-      min-height: 39vh;
-    }
-    @media only screen and (max-width:1366px) and (min-width:992px){
-      min-height: 43vh;
-    }
-    &::before{
-      position: absolute;
-      right: 0px;
-      background-image: url(../images/error_bg.png) !important;
-      background-size: contain !important;
-      background-repeat: no-repeat !important;
-      background-position: center !important;
-      content: "";
-      height: 714px;
-      width: 733px;
-      top: 100px;
-      @media only screen and (max-width:1366px) and (min-width:1200px){
-      height: 644px;
-      width: 434px !important;
-      }
-      @media only screen and (max-width:1199px) and (min-width:992px){
-      height: 534px;
-      width: 442px !important;
-    }
-    @media only screen and (max-width:991px) and (min-width:891px){
-    height: 364px;
-    width: 343px !important;
-  }
-  @media only screen and (max-width:890px) and (min-width:768px){
-    height: 364px;
-    width: 246px !important;
-  }
-  @media only screen and (max-width:767px) and (min-width:481px){
-    top:56%;
-    height: 346px;
-    width: 350px !important;
-  }
-  @media only screen and (max-width:480px) and (min-width:320px){
-    top:56%;
-    height: 396px;
-    width: 292px !important;
-  }
-    }
-    .ImgAvailable {
-        margin-top:58%;
-        float: right;
-        @media only screen and (max-width:1400px) {
-          float: none;
-        }
-        @media only screen and (max-width:1199px) {
-          float: right;
-        }
-        @media only screen and (max-width:1199px) {
-          margin-top:200px;
-        }
-        @media only screen and (max-width:767px) {
-        margin-top: 70px;
-        margin-bottom: 35px;
-      }
-    }
-    .AvailableText{
-      max-width:525px;
-      width: 100%;
-      margin-top: 190px;
-      margin-left:100px;
-      @media only screen and (max-width:1199px) {
-        margin-left:20px;
-      }
-      @media only screen and (max-width:992px) {
-        margin-top: 130px;
-        margin-left: 0px;
-        max-width:450px;
-      }
-      @media only screen and (max-width:767px) {
-        margin: 80px auto auto auto;
-        max-width: 550px;
-      }
-      @media only screen and (max-width:500px) {
-        max-width:380px;
-      }
-      .ui{
-        &.list{
-          @media only screen and (min-width: 768px){
-            width: 490px;
-          }
-        }
-      }
-    }
-    h1{
-      &.ui{
-        &.header{
-          font-size: 42px;
-          line-height: 52px;
-          color: @grey-darken-5;
-          font-family: 'ProximaNova-Regular';
-          font-weight: bold;
-          @media only screen and (max-width:992px) {
-            font-size:36px;
-            line-height: 44px;
-          }
-        }
-      }
-    }
-    h4{
-      &.ui{
-        &.header{
-          font-size:24px;
-          line-height:29px;
-          font-family: 'ProximaNova-medium';
-          color:@font-color;
-        }
-      }
-    }
-    .ui{
-      &.list{
-        .item{
-          font-size: 16px;
-          line-height: 20px;
-          font-family: 'ProximaNova-Regular';
-          color: @grey-darken-5;
-          a{
-            color:#0057E9;
-            text-decoration: underline;
-            font-family: 'ProximaNova-medium';
-          }
-        }
-      }
-    }
-  }
-  /*********NOAvailable******************/
-  .chimpLayout{
-  min-height: 60vh;
 }
