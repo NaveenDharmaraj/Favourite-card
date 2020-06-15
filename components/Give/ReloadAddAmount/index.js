@@ -1057,6 +1057,7 @@ class ReloadAddAmount extends React.Component {
         const {
             allocationGiftType,
             reviewBtnFlag,
+            language,
         } = this.props;
         let modalHeaderText = 'Add money';
         if (currentModalStep === 2) {
@@ -1064,7 +1065,7 @@ class ReloadAddAmount extends React.Component {
         } else if (currentModalStep === 3) {
             modalHeaderText = 'Add new tax receipt recipient';
         }
-        let formatedBalance = _.replace(formatCurrency(this.props.giveTo.balance, 'en', 'USD'), '$', '');
+        let formatedBalance = formatCurrency(this.props.giveTo.balance, language, reloadObject.currency);
         return (
             <Fragment>
                 {this.renderReloadComponent(allocationGiftType, reviewBtnFlag)}
@@ -1079,7 +1080,7 @@ class ReloadAddAmount extends React.Component {
                                 <span className="notifyDefaultIcon"></span>
                             </span>
                             <span className="noteContent">
-                                Add money to your Impact Account to send this gift.Your current Impact Account balance is <span className="amount-give">${formatedBalance}</span>
+                                Add money to your Impact Account to send this gift.Your current Impact Account balance is <span className="amount-give">{formatedBalance}</span>
                             </span>
                         </div>    
                     </div>)}
