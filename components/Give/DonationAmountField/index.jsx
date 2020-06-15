@@ -1,5 +1,4 @@
-import React, {
-} from 'react';
+import React, { useState } from 'react';
 import {
     Button,
     Form,
@@ -22,6 +21,19 @@ function DonationAmountField(props) {
         handlePresetAmountClick,
         validity,
     } = props;
+    const [
+        activeIndex,
+        setactiveIndex,
+    ] = useState(0);
+    const handleDonationPresetAmountClick = (event, data) => {
+        const { index } = data;
+        setactiveIndex(index);
+        handlePresetAmountClick(event, data);
+    };
+    const handleDonationAmountFieldInputChange = (event, data) => {
+        setactiveIndex(0);
+        handleInputChange(event, data);
+    };
     return (
         <Form.Field>
             <label htmlFor="donationAmount">
@@ -36,7 +48,7 @@ function DonationAmountField(props) {
                 name={isGiveFlow ? "giveAmount" : "donationAmount"}
                 maxLength="8"
                 onBlur={handleInputOnBlur}
-                onChange={handleInputChange}
+                onChange={handleDonationAmountFieldInputChange}
                 placeholder={formatMessage('giveCommon:amountPlaceHolder')}
                 size="large"
                 value={amount}
@@ -44,7 +56,7 @@ function DonationAmountField(props) {
             />
             <FormValidationErrorMessage
                 condition={!validity.doesAmountExist || !validity.isAmountMoreThanOneDollor
-                || !validity.isValidPositiveNumber}
+                    || !validity.isValidPositiveNumber}
                 errorMessage={formatMessage('giveCommon:errorMessages.amountLessOrInvalid', {
                     minAmount: 5,
                 })}
@@ -60,10 +72,10 @@ function DonationAmountField(props) {
                 />
             )}
             <div className="price_btn">
-                <Button className="btn-basic-outline btntext invisionwidth" type="button" size="small" value="25" onClick={handlePresetAmountClick} >$25</Button>
-                <Button className="btn-basic-outline btntext invisionwidth" type="button" size="small" value="50" onClick={handlePresetAmountClick} >$50</Button>
-                <Button className="btn-basic-outline btntext invisionwidth" type="button" size="small" value="100" onClick={handlePresetAmountClick} >$100</Button>
-                <Button className="btn-basic-outline btntext invisionwidth" type="button" size="small" value="500" onClick={handlePresetAmountClick} >$500</Button>
+                <Button active={activeIndex === 1} className="btn-basic-outline btntext invisionwidth" index={1} type="button" size="small" value="25" onClick={handleDonationPresetAmountClick}>$25</Button>
+                <Button active={activeIndex === 2} className="btn-basic-outline btntext invisionwidth" index={2} type="button" size="small" value="50" onClick={handleDonationPresetAmountClick}>$50</Button>
+                <Button active={activeIndex === 3} className="btn-basic-outline btntext invisionwidth" index={3} type="button" size="small" value="100" onClick={handleDonationPresetAmountClick}>$100</Button>
+                <Button active={activeIndex === 4} className="btn-basic-outline btntext invisionwidth" index={4} type="button" size="small" value="500" onClick={handleDonationPresetAmountClick}>$500</Button>
             </div>
         </Form.Field>
     );

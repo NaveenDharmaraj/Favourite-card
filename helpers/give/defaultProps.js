@@ -68,6 +68,7 @@ export const reloadDefaultProps = {
 
 export const beneficiaryDefaultProps = {
     flowObject: {
+        benificiaryIndex: 0,
         currency: 'USD',
         giveData: {
             coverFees: false,

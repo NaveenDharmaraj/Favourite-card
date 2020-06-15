@@ -104,7 +104,6 @@ class Charity extends React.Component {
             payload = _merge({}, props.flowObject);
         }
         this.state = {
-            benificiaryIndex: 0,
             dropDownOptions: {
                 donationMatchList: populateDonationMatch(donationMatchData, formatMessage),
                 giftTypeList: populateGiftType(formatMessage),
@@ -129,32 +128,6 @@ class Charity extends React.Component {
             reviewBtnFlag: false,
             validity: this.intializeValidations(),
         };
-        if (this.state.flowObject.giveData.giveTo.value === null) {
-            if (!_isEmpty(giveCharityDetails) && !_isEmpty(giveCharityDetails.charityDetails)) {
-                this.state.flowObject.groupFromUrl = false;
-                this.state.flowObject.giveData.giveTo = {
-                    eftEnabled: giveCharityDetails.charityDetails.attributes.eftEnabled,
-                    id: giveCharityDetails.charityDetails.id,
-                    name: giveCharityDetails.charityDetails.attributes.name,
-                    text: giveCharityDetails.charityDetails.attributes.name,
-                    type: giveCharityDetails.charityDetails.type,
-                    value: giveCharityDetails.charityDetails.attributes.fundId,
-                };
-            } else if (!_isEmpty(giveGroupBenificairyDetails)) {
-                const benIndex = this.state.benificiaryIndex;
-                this.state.flowObject.giveData.giveTo = {
-                    eftEnabled:
-                        giveGroupBenificairyDetails.benificiaryDetails[benIndex].attributes.eftEnabled,
-                    id: giveGroupBenificairyDetails.benificiaryDetails[benIndex].attributes.fundId,
-                    name: giveGroupBenificairyDetails.benificiaryDetails[benIndex].attributes.name,
-                    text: giveGroupBenificairyDetails.benificiaryDetails[benIndex].attributes.name,
-                    type: 'beneficiaries',
-                    value:
-                        giveGroupBenificairyDetails.benificiaryDetails[benIndex].attributes.fundId,
-                };
-                this.state.flowObject.groupFromUrl = true;
-            }
-        }
         if (!_isEmpty(groupId)
             && Number(groupId) > 0) {
                 this.state.flowObject.groupId = groupId;
@@ -213,11 +186,11 @@ class Charity extends React.Component {
     componentDidUpdate(prevProps) {
         if (!_isEqual(this.props, prevProps)) {
             const {
-                benificiaryIndex,
                 dropDownOptions,
             } = this.state;
             let {
                 flowObject: {
+                    benificiaryIndex,
                     currency,
                     giveData,
                 },
@@ -282,7 +255,7 @@ class Charity extends React.Component {
             );
             const giveToOptions = populateGiveToGroupsofUser(giveGroupBenificairyDetails);
             const donationMatchOptions = populateDonationMatch(donationMatchData, formatMessage);
-            if (!_isEmpty(giveCharityDetails) && !_isEmpty(giveCharityDetails.charityDetails)) {
+            if (!_isEmpty(giveCharityDetails) && !_isEmpty(giveCharityDetails.charityDetails) && _isEmpty(giveFromType)) {
                 groupFromUrl = false;
                 giveData.giveTo = {
                     avatar: giveCharityDetails.charityDetails.attributes.avatar,
@@ -293,7 +266,7 @@ class Charity extends React.Component {
                     type: giveCharityDetails.charityDetails.type,
                     value: giveCharityDetails.charityDetails.attributes.fundId,
                 };
-            } else if (!_isEmpty(giveGroupBenificairyDetails) && !_isEmpty(giveGroupBenificairyDetails.benificiaryDetails)) {
+            } else if (!_isEmpty(giveGroupBenificairyDetails) && !_isEmpty(giveGroupBenificairyDetails.benificiaryDetails) && !_isEmpty(giveFromType)) {
                 groupFromUrl = true;
                 giveData.giveTo = {
                     avatar: giveGroupBenificairyDetails.benificiaryDetails[benificiaryIndex].attributes.avatar,
@@ -336,7 +309,9 @@ class Charity extends React.Component {
                 },
                 flowObject: {
                     ...this.state.flowObject,
-                    giveData,
+                    giveData: {
+                        ...giveData,
+                    },
                     groupFromUrl,
                     slugValue: slug,
                 },
@@ -715,6 +690,7 @@ class Charity extends React.Component {
         const arrayId = options[data.options.findIndex((p) => p.value === value)].id;
         const benificiaryIndex = dataBenificairies.findIndex((p) => p.id === arrayId);
         const benificiaryData = dataBenificairies[benificiaryIndex];
+
         giveTo.id = benificiaryData.id;
         giveTo.name = benificiaryData.attributes.name;
         giveTo.text = benificiaryData.attributes.name;
@@ -722,9 +698,9 @@ class Charity extends React.Component {
         giveTo.value = value;
 
         this.setState({
-            benificiaryIndex,
             flowObject: {
                 ...this.state.flowObject,
+                benificiaryIndex,
                 giveData: {
                     ...this.state.flowObject.giveData,
                     giveTo,

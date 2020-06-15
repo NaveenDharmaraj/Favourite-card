@@ -10,7 +10,7 @@ import {
     Popup,
     Select,
 } from 'semantic-ui-react';
-import _ from 'lodash';
+import _isEmpty from 'lodash/isEmpty';
 
 import {
     canadaProvinceOptions,
@@ -24,6 +24,10 @@ function TaxReceiptProfileForm(props) {
     const handleInputChange = (e, {
         value, name,
     }) => {
+        // condition for restricting the max characters to be entered in full name input field
+        if (name === 'fullName' && !_isEmpty(value) && value.length > 250) {
+            return;
+        }
         props.parentInputChange(name, value);
     };
 
@@ -162,7 +166,7 @@ function TaxReceiptProfileForm(props) {
                                     onBlur={handleInputOnBlur}
                                     onChange={handleInputChange}
                                     placeholder={formatMessage('secondAddressPlaceHolder')}
-                                    value={_.isEmpty(addressTwo) ? '' : addressTwo}
+                                    value={_isEmpty(addressTwo) ? '' : addressTwo}
                                 />
                                 <FormValidationErrorMessage
                                     condition={!validity.isValidSecondAddress}
