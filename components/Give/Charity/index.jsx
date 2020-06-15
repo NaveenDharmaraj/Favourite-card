@@ -286,7 +286,7 @@ class Charity extends React.Component {
                 giveData = Charity.initFields(
                     giveData, fund, id, avatar,
                     `${firstName} ${lastName}`, companiesAccountsData, userGroups, userCampaigns,
-                    giveGroupBenificairyDetails, giveFromId, giveFromType,
+                    giveGroupBenificairyDetails, giveFromId, giveFromType, language, currency
                 );
             }
             this.setState({
@@ -335,7 +335,7 @@ class Charity extends React.Component {
 
     // eslint-disable-next-line react/sort-comp
     static initFields(giveData, fund, id, avatar,
-        name, companiesAccountsData, userGroups, userCampaigns, giveGroupBenificairyDetails, groupId, giveFromType) {
+        name, companiesAccountsData, userGroups, userCampaigns, giveGroupBenificairyDetails, groupId, giveFromType, language, currency) {
         if (_isEmpty(companiesAccountsData) && _isEmpty(userGroups) && _isEmpty(userCampaigns) && !giveData.userInteracted) {
             giveData.giveFrom.avatar = avatar,
                 giveData.giveFrom.id = id;
@@ -355,7 +355,7 @@ class Charity extends React.Component {
                     giveData.giveFrom.avatar = defaultGroupFrom.attributes.avatar;
                     giveData.giveFrom.id = defaultGroupFrom.id;
                     giveData.giveFrom.type = defaultGroupFrom.type;
-                    giveData.giveFrom.text = `${defaultGroupFrom.attributes.name} ($${defaultGroupFrom.attributes.balance})`;
+                    giveData.giveFrom.text = `${defaultGroupFrom.attributes.fundName}: ${formatCurrency(defaultGroupFrom.attributes.balance, language, currency)}`;
                     giveData.giveFrom.balance = defaultGroupFrom.attributes.balance;
                     giveData.giveFrom.slug = defaultGroupFrom.attributes.slug;
                 }

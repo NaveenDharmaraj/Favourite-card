@@ -1497,7 +1497,9 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
                 });
             }
         }
+        let giveToType = '';
         if (type === 'give/to/charity') {
+            giveToType = 'Charity';
             let infoToShareMessage = formatMessage('reviewGiveAnonymously');
             if (infoToShare.value !== 'anonymous') {
                 infoToShareMessage = infoToShare.text;
@@ -1518,7 +1520,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
                     ? formatMessage('reviewGiveAnonymously') : infoToShare.text;
             }
 
-            const giveToType = (giveTo.isCampaign) ? 'Campaign' : 'Group';
+            giveToType = (giveTo.isCampaign) ? 'Campaign' : 'Group';
             listingData.push({
                 name: `privacyShareGiving${giveToType}Label`,
                 value: ReactHtmlParser(privacyShareNameMessage),
@@ -1543,12 +1545,12 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
         listingData.push(dedicatedDetails);
 
         listingData.push({
-            name: (type === 'give/to/charity') ? 'reviewMessageToCharityLabel' : 'reviewMessageToGroupLabel',
+            name: `reviewMessageToLabel${giveToType}`,
             value: (!_.isEmpty(noteToCharity)) ? noteToCharity : formatMessage('reviewDefaultMessage'),
         });
 
         listingData.push({
-            name: 'reviewNoteToSelf',
+            name: `reviewNoteToSelf${giveFrom.type}`,
             value: (!_.isEmpty(noteToSelf)) ? noteToSelf : formatMessage('reviewEmptyNoteToSelf'),
         });
     }
@@ -1598,7 +1600,7 @@ const populateP2pReviewPage = (giveData, data, currency, formatMessage, language
     const listingData = [];
     listingData.push({
         name: 'reviewGiveFrom',
-        value: giveFrom.text
+        value: giveFrom.text,
     });
 
     if (emails || selectedFriendsList) {

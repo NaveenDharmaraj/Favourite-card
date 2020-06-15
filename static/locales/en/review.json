@@ -46,6 +46,10 @@
     "onFirstMessage": "1st of every month",
     "reviewFrequency": "Frequency",
     "reviewNoteToSelf": "Note to self (optional)",
+    "reviewNoteToSelfuser": "Note to self (optional)",
+    "reviewNoteToSelfcompanies": "Note to company (optional)",
+    "reviewNoteToSelfgroups": "Note to group (optional)",
+    "reviewNoteToSelfcampaigns": "Note to campaign (optional)",
     "reviewEmptyNoteToSelf": "No note added",
     "commonNonrefundable" : "This transaction is non-refundable. ",
     "commonRecurringNonrefundable" : "Completed transactions are non-refundable, but you can cancel scheduled monthly transactions before they occur.",
@@ -61,8 +65,9 @@
     "reviewInfoToCharity": "Info to share with the charity",
     "reviewGiftDedication": "Dedicate this gift (optional)",
     "reviewNoGift": "No gift dedication",
-    "reviewMessageToCharityLabel": "Message for charity (optional)",
-    "reviewMessageToGroupLabel": "Message for the Giving Group (optional)",
+    "reviewMessageToLabelGroup": "Message for the Giving Group (optional)",
+    "reviewMessageToLabelCharity": "Message for charity (optional)",
+    "reviewMessageToLabelCampaign": "Message for the Campaign admins (optional)",
     "reviewDefaultMessage": "No message added",
     "reviewP2pText": "Give to a friend",
     "reviewP2pMessage": "Message (optional)",
@@ -70,10 +75,10 @@
     "reviewP2pAmount": "Amount",
     "reviewSendGift": "Send gift",
     "reviewAddMoney": "Add money",
-    "reviewP2pGive": "Give",
-    "privacyShareOrganizersCampaignLabel": "Info to share with the Giving Campaign admins",
+    "reviewP2pGive": "Send gift",
+    "privacyShareOrganizersCampaignLabel": "Info to share with the Campaign admins",
     "privacyShareOrganizersGroupLabel": "Info to share with the Giving Group admins",
-    "privacyShareGivingCampaignLabel" :	"Info to share with the Giving Campaign members",
+    "privacyShareGivingCampaignLabel" :	"Info to share with the Campaign members",
     "privacyShareGivingGroupLabel":	"Info to share with the Giving Group members",
     "notApplicable": "N/A",
     "reviewGiftAmount": "Gift amount:",
@@ -87,9 +92,4 @@
         "privacyShareEmail": "Share my email",
         "privacyHideEmailAndPostal": "N/A"
     }
-
-
-
-
-
 }
