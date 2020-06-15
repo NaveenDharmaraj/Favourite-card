@@ -23,6 +23,7 @@ import {
 export const actionTypes = {
     
     ADD_USER_CREDIT_CARD: 'ADD_USER_CREDIT_CARD',
+    DELETE_CREDIT_CARD_MSG_POPUP_LOADER: 'DELETE_CREDIT_CARD_MSG_POPUP_LOADER',
     DELETE_USER_CREDIT_CARD: 'DELETE_USER_CREDIT_CARD',
     TRIGGER_UX_CRITICAL_ERROR: 'TRIGGER_UX_CRITICAL_ERROR',
     UPDATE_USER_BASIC_PROFILE: 'UPDATE_USER_BASIC_PROFILE',
@@ -33,6 +34,7 @@ export const actionTypes = {
     UPDATE_USER_PASSWORD: 'UPDATE_USER_PASSWORD',
     UPDATE_USER_PREFERENCES: 'UPDATE_USER_PREFERENCES',
     UPDATE_USER_PRIVACY_SETTING: 'UPDATE_USER_PRIVACY_SETTING',
+    USER_CREDIT_CARD_ACTIVE_MONTHLY_DONATIONS: 'USER_CREDIT_CARD_ACTIVE_MONTHLY_DONATIONS',
     USER_PROFILE_ACCEPT_FRIEND: 'USER_PROFILE_ACCEPT_FRIEND',
     USER_PROFILE_ADD_DUPLICATE_EMAIL_ERROR: 'USER_PROFILE_ADD_DUPLICATE_EMAIL_ERROR',
     USER_PROFILE_ADD_FRIEND: 'USER_PROFILE_ADD_FRIEND',
@@ -729,13 +731,36 @@ const editUserCreditCard = (dispatch, instrumentDetails) => {
     return editCreditCardResponse;
 };
 
-const deleteUserCreditCardDetail = async (paymentInstrumentId) => {
-    try {
-        const response = await coreApi.get(`/paymentInstruments/${Number(paymentInstrumentId)}`);
-        return response.data.attributes.activeMonthlyDonations;
-    } catch (err) {
-        // catches errors both in fetch and response.json
-    }
+const deleteUserCreditCardDetail = (paymentInstrumentId) => async (dispatch) => {
+    dispatch({
+        payload: {
+            deleteMsgPopUpLoader: true,
+        },
+        type: actionTypes.DELETE_CREDIT_CARD_MSG_POPUP_LOADER,
+    });
+    coreApi.get(`/paymentInstruments/${Number(paymentInstrumentId)}`)
+        .then((response) => {
+            dispatch({
+                payload: {
+                    deleteMsgPopUpLoader: false,
+                },
+                type: actionTypes.DELETE_CREDIT_CARD_MSG_POPUP_LOADER,
+            });
+            dispatch({
+                payload: {
+                    activeMonthlyDonations: response.data.attributes.activeMonthlyDonations,
+                },
+                type: actionTypes.USER_CREDIT_CARD_ACTIVE_MONTHLY_DONATIONS,
+            });
+        })
+        .catch((err) => {
+            dispatch({
+                payload: {
+                    deleteMsgPopUpLoader: false,
+                },
+                type: actionTypes.DELETE_CREDIT_CARD_MSG_POPUP_LOADER,
+            });
+        });
 };
 
 const deleteUserCreditCard = (dispatch, paymentInstrumentId, userId, pageNumber) => {
