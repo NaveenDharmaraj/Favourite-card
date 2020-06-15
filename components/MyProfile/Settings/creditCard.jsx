@@ -435,7 +435,7 @@ class MyCreditCards extends React.Component {
     async handleDeleteClick(cardData, deletePaymentInstrumentId) {
         const formatMessage = this.props.t;
         const cardDetails = populateCardData(cardData);
-        const cardType = cardDetails.processor ? cardDetails.processor.charAt(0).toUpperCase()+cardDetails.processor.slice(1) : '';
+        const cardType = _.startCase(cardDetails.processor);
         const activeMonthlyDonations = await deleteUserCreditCardDetail(deletePaymentInstrumentId);
         let errorMessage = formatMessage(
             'giveCommon:creditCard.deleteCreditCardMsg',
