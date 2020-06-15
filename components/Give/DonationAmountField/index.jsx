@@ -23,7 +23,7 @@ function DonationAmountField(props) {
         validity,
     } = props;
     return (
-        <Form.Field className="donation_Amount_Field">
+        <Form.Field>
             <label htmlFor="donationAmount">
                 {formatMessage('giveCommon:amountLabel')}
             </label>
@@ -40,7 +40,6 @@ function DonationAmountField(props) {
                 placeholder={formatMessage('giveCommon:amountPlaceHolder')}
                 size="large"
                 value={amount}
-                className="give_field"
                 className={`give_field ${amount ? 'give_amount' : ''}`}
             />
             <FormValidationErrorMessage
