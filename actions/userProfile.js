@@ -729,6 +729,15 @@ const editUserCreditCard = (dispatch, instrumentDetails) => {
     return editCreditCardResponse;
 };
 
+const deleteUserCreditCardDetail = async (paymentInstrumentId) => {
+    try {
+        const response = await coreApi.get(`/paymentInstruments/${Number(paymentInstrumentId)}`);
+        return response.data.attributes.activeMonthlyDonations;
+    } catch (err) {
+        // catches errors both in fetch and response.json
+    }
+};
+
 const deleteUserCreditCard = (dispatch, paymentInstrumentId, userId, pageNumber) => {
     const fsa = {
         payload: {
@@ -1400,6 +1409,7 @@ const resendUserVerifyEmail = (dispatch, userEmailId, userId) => {
 };
 
 export {
+    deleteUserCreditCardDetail,
     getUserProfileBasic,
     getUserFriendProfile,
     getUserCharitableInterests,

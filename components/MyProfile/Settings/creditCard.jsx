@@ -27,10 +27,12 @@ import {
     deleteUserCreditCard,
     saveNewCreditCard,
     setUserDefaultCard,
+    deleteUserCreditCardDetail,
 } from '../../../actions/userProfile';
 import Pagination from '../../shared/Pagination';
 import PlaceHolderGrid from '../../shared/PlaceHolder';
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
+import { populateCardData } from '../../../helpers/give/utils';
 
 const ModalStatusMessage = dynamic(() => import('../../shared/ModalStatusMessage'));
 const CreditCard = dynamic(() => import('../../shared/CreditCard'));
@@ -430,14 +432,23 @@ class MyCreditCards extends React.Component {
         }
     }
 
-    handleDeleteClick(cardData, deletePaymentInstrumentId) {
-        var res = cardData.substr(0, cardData.indexOf("'")).length;
-        var result = cardData.slice(res + 2);
-        result = result.replace('with', 'in');
+    async handleDeleteClick(cardData, deletePaymentInstrumentId) {
+        const formatMessage = this.props.t;
+        const cardDetails = populateCardData(cardData);
+        const cardType = cardDetails.processor ? cardDetails.processor.charAt(0).toUpperCase()+cardDetails.processor.slice(1) : '';
+        const activeMonthlyDonations = await deleteUserCreditCardDetail(deletePaymentInstrumentId);
+        let errorMessage = formatMessage(
+            'giveCommon:creditCard.deleteCreditCardMsg',
+            {
+                cardType,
+                truncatedPaymentId: cardDetails.truncatedPaymentId,
+            },
+        );
+        errorMessage = `${errorMessage}${Number(activeMonthlyDonations) > 0 ? formatMessage('giveCommon:creditCard.deleteCreditCardMsgActiveSubscription') : ''}`;
         this.setState({
             isDeleteMessageOpen: true,
             isDropdownOpen:false,
-            deleteConfirmCard: result,
+            deleteConfirmCard: errorMessage,
             deletePaymentInstrumentId,
         });
     }
@@ -836,7 +847,7 @@ class MyCreditCards extends React.Component {
                         <Modal.Header>Delete card?</Modal.Header>
                         <Modal.Content>
                             <Modal.Description className="font-s-16">
-                                Your {deleteConfirmCard} will be removed from your account.
+                                 {deleteConfirmCard}
                             </Modal.Description>
                             <div className="btn-wraper pt-3 text-right">
                             <Button
