@@ -91,7 +91,7 @@ function OneLastStep(props) {
                                 >
                                     Continue
                                 </Button>
-                                <p>Already have an account? <a href="#" className="login-btn">Log in</a></p>
+                                <p>Already have an account? <a href="/users/login" className="login-btn">Log in</a></p>
                             </div>
                         </Form>
                     </div>
