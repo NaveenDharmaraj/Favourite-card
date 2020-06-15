@@ -92,7 +92,7 @@ class ShareProfile extends React.Component {
             deepLinkUrl,
             disableFollow,
             liked,
-            isAUthenticated,
+            isAuthenticated,
         } = this.props;
         const {
             showShareModal,
@@ -101,7 +101,7 @@ class ShareProfile extends React.Component {
         return (
             <Fragment>
                 <List horizontal className="shareAndLike">
-                    { isAUthenticated && (
+                    { isAuthenticated && (
                         <List.Item as="a">
                             <Icon
                                 id="follow"
@@ -177,7 +177,7 @@ ShareProfile.defaultProps = {
     }),
     disableFollow: false,
     dispatch: () => {},
-    isAUthenticated: false,
+    isAuthenticated: false,
     liked: false,
     name: '',
     profileId: '',
@@ -190,7 +190,7 @@ ShareProfile.propTypes = {
     }),
     disableFollow: bool,
     dispatch: func,
-    isAUthenticated: bool,
+    isAuthenticated: bool,
     liked: bool,
     name: string,
     profileId: string,
@@ -202,7 +202,7 @@ function mapStateToProps(state) {
         currentUser: state.user.info,
         deepLinkUrl: state.profile.deepLinkUrl,
         disableFollow: state.profile.disableFollow,
-        isAUthenticated: state.auth.isAuthenticated,
+        isAuthenticated: state.auth.isAuthenticated,
     };
 }
 
