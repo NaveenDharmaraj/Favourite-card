@@ -12,8 +12,6 @@ import {
     mapStateToProps,
 } from '../../../components/charity/Charts';
 
-// import { ReceivingOrganisations } from '../../../components/charity/ReceivingOrganisations';
-
 import {
     charityDetails,
     beneficiaryFinance,
@@ -55,7 +53,6 @@ describe('Testing Chart Component', () => {
             />,
         );
         expect(wrapper.find('Bar').exists()).toBe(true);
-        // console.log('Wrap--->', wrapper.debug());
     });
     test('Testing Loader is rendered', () => {
         const wrapper = mount(
@@ -94,11 +91,8 @@ describe('Testing Chart Component', () => {
                 />
             </Provider>,
         );
-        // wrapper.setState({ showDoneeListModal: true });
-        // wrapper.find('.blue-bordr-btn-round-def').at(1).simulate('click');
         wrapper.find({ 'data-test': 'profile_charity_giftButton' }).at(1).simulate('click');
         expect(wrapper.find('ReceivingOrganisations').exists()).toBe(true);
-        // console.log('state--->', wrapper.state('showDoneeListModal'));
     });
 
     test('Testing ReceivingOrganisations modal to close on close button click', () => {
@@ -111,13 +105,9 @@ describe('Testing Chart Component', () => {
                 />
             </Provider>,
         );
-        // wrapper.setState({ showDoneeListModal: true });
-        // wrapper.find('.blue-bordr-btn-round-def').at(1).simulate('click');
         wrapper.find({ 'data-test': 'profile_charity_giftButton' }).at(1).simulate('click');
         wrapper.find('Portal').find('Icon').simulate('click');
         expect(wrapper.find('ReceivingOrganisations').exists()).toBe(false);
-        // console.log('click 2--->', wrapper.debug());
-        // console.log('state--->', wrapper.state('showDoneeListModal'));
     });
 
     test('Testing mapStateToProps', () => {

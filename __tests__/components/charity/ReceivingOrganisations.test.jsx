@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-    shallow,
     mount,
 } from 'enzyme';
 
@@ -39,7 +38,7 @@ describe('Testing ReceivingOrganisation Component', () => {
         const spyFunc = jest.spyOn(charityActions, 'getBeneficiaryDoneeList');
         const wrapper = mount(
             <ReceivingOrganisations
-                dispatch= {jest.fn()}
+                dispatch={jest.fn()}
                 donationDetails={[]}
                 charityDetails
                 year={2018}
@@ -53,7 +52,6 @@ describe('Testing ReceivingOrganisation Component', () => {
                 {...props}
             />,
         );
-        // console.log('WRAPPER --->', wrapper.debug());
         expect(wrapper.find('.Ch_total').exists()).toBe(true);
     });
     test('Testing mapStateToProps', () => {

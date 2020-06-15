@@ -16,7 +16,6 @@ import {
 describe('Charity Profile Action unit test', () => {
     let store;
     beforeEach(() => {
-        // store.clearActions();
         const middlewares = [
             thunk,
         ];
@@ -170,12 +169,6 @@ describe('Charity Profile Action unit test', () => {
                 },
                 type: 'CHARITY_PLACEHOLDER_STATUS',
             },
-            // {
-            //     payload: {
-            //         showButtonLoader: false,
-            //     },
-            //     type: 'CHARITY_BUTTON_LOADER_STATUS',
-            // },
             {
                 payload: {
                     donationDetails: donationDetails._embedded.donee_list,
@@ -190,12 +183,6 @@ describe('Charity Profile Action unit test', () => {
                 },
                 type: 'CHARITY_PLACEHOLDER_STATUS',
             },
-            // {
-            //     payload: {
-            //         showButtonLoader: false,
-            //     },
-            //     type: 'CHARITY_BUTTON_LOADER_STATUS',
-            // },
         ];
         await store.dispatch(getBeneficiaryDoneeList('87', 2018, 1, false)).then(() => {
             expect(store.getActions()).toEqual(expectedActions);

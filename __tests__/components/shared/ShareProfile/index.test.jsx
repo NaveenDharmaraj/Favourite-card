@@ -1,12 +1,11 @@
 import React from 'react';
 import {
-    shallow,
     mount,
 } from 'enzyme';
 
 import {
     deepLinkUrl,
-} from '../../charity/Data'; // /components/shared/ShareProfile
+} from '../../charity/Data';
 import {
     ShareProfile,
     mapStateToProps,

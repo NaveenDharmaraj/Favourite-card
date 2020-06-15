@@ -1,20 +1,20 @@
 import React from 'react';
 import {
-    shallow,
     mount,
 } from 'enzyme';
-import {
-    charityDetails,
-} from './Data';
 
 import {
     UserDetails,
     mapStateToProps,
 } from '../../../components/charity/UserDetails';
 
+import {
+    charityDetails,
+} from './Data';
+
 const getProps = () => ({
     charityDetails,
-    isAUthenticated: true,
+    isAuthenticated: true,
 });
 
 describe('Testing UserDetails component', () => {
@@ -23,7 +23,7 @@ describe('Testing UserDetails component', () => {
         const wrapper = mount(
             <UserDetails
                 {...props}
-            />
+            />,
         );
         expect(wrapper.find('.charityInfowrap').exists()).toBe(true);
     });
@@ -41,32 +41,34 @@ describe('Testing UserDetails component', () => {
         const wrapper = mount(
             <UserDetails
                 {...modifiedProps}
-            />
+            />,
         );
-        expect(wrapper.find('.charityInfoClaim').exists()).toBe(true)
+        expect(wrapper.find('.charityInfoClaim').exists()).toBe(true);
     });
     test('Testing button url for Login user', () => {
         const wrapper = mount(
             <UserDetails
                 {...props}
-            />
+            />,
         );
         expect(wrapper.find('Link').find(
             {
-                'href': "/charities?slug=the-canadian-red-cross-society-la-societe-canadienne-de-la-croix-rouge&gift=gift&step=new"
-        }).exists()).toBe(true);
+                'href': '/charities?slug=the-canadian-red-cross-society-la-societe-canadienne-de-la-croix-rouge&gift=gift&step=new'
+            },
+        ).exists()).toBe(true);
     });
     test('Testing button url for Public user', () => {
         const wrapper = mount(
             <UserDetails
                 {...props}
-                isAUthenticated= {false}
-            />
+                isAuthenticated={false}
+            />,
         );
         expect(wrapper.find('a').find(
             {
-                'href': "undefined/send/to/charity/the-canadian-red-cross-society-la-societe-canadienne-de-la-croix-rouge/gift/new"
-        }).exists()).toBe(true);
+                'href': 'undefined/send/to/charity/the-canadian-red-cross-society-la-societe-canadienne-de-la-croix-rouge/gift/new'
+            },
+        ).exists()).toBe(true);
     });
     test('Testing show Give button scenario', () => {
         const modifiedProps = {
@@ -75,16 +77,16 @@ describe('Testing UserDetails component', () => {
                 ...props.charityDetails,
                 attributes: {
                     ...props.charityDetails.attributes,
-                    hideGive:true,
+                    hideGive: true,
                 },
             },
         };
         const wrapper = mount(
             <UserDetails
                 {...modifiedProps}
-            />
+            />,
         );
-        expect(wrapper.find({'data-test': 'profile_charity_give_button'}).exists()).toBe(false)
+        expect(wrapper.find({ 'data-test': 'profile_charity_give_button' }).exists()).toBe(false);
     });
     test('Testing contactName does not exists', () => {
         const modifiedProps = {
@@ -93,14 +95,14 @@ describe('Testing UserDetails component', () => {
                 ...props.charityDetails,
                 attributes: {
                     ...props.charityDetails.attributes,
-                    contactName:"",
+                    contactName: '',
                 },
             },
         };
         const wrapper = mount(
             <UserDetails
                 {...modifiedProps}
-            />
+            />,
         );
         expect(wrapper.find('i').find('.user').exists()).toBe(false);
     });
@@ -111,14 +113,14 @@ describe('Testing UserDetails component', () => {
                 ...props.charityDetails,
                 attributes: {
                     ...props.charityDetails.attributes,
-                    phone:"",
+                    phone: '',
                 },
             },
         };
         const wrapper = mount(
             <UserDetails
                 {...modifiedProps}
-            />
+            />,
         );
         expect(wrapper.find('i').find('.phone').exists()).toBe(false);
     });
@@ -129,14 +131,14 @@ describe('Testing UserDetails component', () => {
                 ...props.charityDetails,
                 attributes: {
                     ...props.charityDetails.attributes,
-                    email:"",
+                    email: '',
                 },
             },
         };
         const wrapper = mount(
             <UserDetails
                 {...modifiedProps}
-            />
+            />,
         );
         expect(wrapper.find('i').find('.mail').exists()).toBe(false);
     });
@@ -147,14 +149,14 @@ describe('Testing UserDetails component', () => {
                 ...props.charityDetails,
                 attributes: {
                     ...props.charityDetails.attributes,
-                    website:"",
+                    website: '',
                 },
             },
         };
         const wrapper = mount(
             <UserDetails
                 {...modifiedProps}
-            />
+            />,
         );
         expect(wrapper.find('i').find('.linkify').exists()).toBe(false);
     });
@@ -172,7 +174,7 @@ describe('Testing UserDetails component', () => {
         const wrapper = mount(
             <UserDetails
                 {...modifiedProps}
-            />
+            />,
         );
         expect(wrapper.find('i').find('.users').exists()).toBe(false);
     });
@@ -183,7 +185,7 @@ describe('Testing UserDetails component', () => {
                 ...props.charityDetails,
                 attributes: {
                     ...props.charityDetails.attributes,
-                    businessNumber: "",
+                    businessNumber: '',
                 },
             },
         };
@@ -214,11 +216,11 @@ describe('Testing UserDetails component', () => {
     });
     test('Testing mapStateToProps', () => {
         const initialState = {
+            auth: {
+                isAuthenticated: true,
+            },
             charity: {
                 charityDetails,
-            },
-            auth: {
-                isAUthenticated: true,
             },
         };
         expect(mapStateToProps(initialState).charityDetails.id).toEqual('87');
