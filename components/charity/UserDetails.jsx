@@ -39,7 +39,7 @@ const UserDetails = (props) => {
                 headQuarterAddress,
             },
         },
-        isAUthenticated,
+        isAuthenticated,
         t: formatMessage,
     } = props;
     let buttonLink = null;
@@ -118,7 +118,7 @@ const UserDetails = (props) => {
     }
 
     if (!hideGive) {
-        if (isAUthenticated) {
+        if (isAuthenticated) {
             buttonLink = (
                 <Link route={(`/give/to/charity/${slug}/gift/new`)}>
                     <Button data-test="profile_charity_give_button" className="blue-btn-rounded-def">{formatMessage('charityProfile:give')}</Button>
@@ -166,7 +166,7 @@ UserDetails.defaultProps = {
             slug: '',
         },
     },
-    isAUthenticated: false,
+    isAuthenticated: false,
     t: () => {},
 };
 
@@ -177,14 +177,14 @@ UserDetails.propTypes = {
             slug: string,
         }),
     },
-    isAUthenticated: bool,
+    isAuthenticated: bool,
     t: PropTypes.func,
 };
 
 function mapStateToProps(state) {
     return {
         charityDetails: state.charity.charityDetails,
-        isAUthenticated: state.auth.isAuthenticated,
+        isAuthenticated: state.auth.isAuthenticated,
     };
 }
 
