@@ -731,7 +731,7 @@ const editUserCreditCard = (dispatch, instrumentDetails) => {
     return editCreditCardResponse;
 };
 
-const deleteUserCreditCardDetail = (paymentInstrumentId) => async (dispatch) => {
+const deleteUserCreditCardDetail = (paymentInstrumentId) => (dispatch) => {
     dispatch({
         payload: {
             deleteMsgPopUpLoader: true,

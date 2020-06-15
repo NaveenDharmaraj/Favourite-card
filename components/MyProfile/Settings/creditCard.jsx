@@ -502,8 +502,6 @@ class MyCreditCards extends React.Component {
                 deleteButtonClicked: false,
             });
         }
-
-
     }
 
     handleDeleteCancelClick() {
