@@ -104,7 +104,7 @@ const SpecialInstruction = (props) => {
     return (
         <Fragment>
             {repeatGift}
-            <Form.Field>
+            <Form.Field className="give_flow_field">
                 <label htmlFor="infoToShare">
                     {formatMessage('specialInstruction:infoToShareLabel')}
                 </label>
@@ -121,6 +121,7 @@ const SpecialInstruction = (props) => {
                 />
                 <Form.Field
                     control={Select}
+                    className="dropdownWithArrowParent icon"
                     id="infoToShare"
                     name="infoToShare"
                     options={infoToShareList}

@@ -24,7 +24,7 @@ function DonationFrequency(props) {
     } = props;
     return (
         <>
-            <div className="mb-1">
+            <div className="give_flow_field">
                 <Form.Field className="Frequencybottom">
                     <label>Frequency</label>
                     <Popup
@@ -69,7 +69,7 @@ function DonationFrequency(props) {
             {
                 ((giftType.value > 0) && (
                     <>
-                        <div className="mb-1-2">
+                        <div className="mt-1 mb-1">
                             <Button
                                 className={(giftType.value ===1 ? 'btn-basic-outline selected-btn': 'btn-basic-outline' )}
                                 size="small"

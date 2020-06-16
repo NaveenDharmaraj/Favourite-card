@@ -959,6 +959,7 @@ class Group extends React.Component {
                                                         {
                                                         (  !!groupFromUrl && (
                                                                 <Fragment>
+                                                                    <div className="give_flow_field_bottom">
                                                                     <Form.Field>
                                                                         <label htmlFor="giveTo">
                                                                             {formatMessage('giveToLabel')}
@@ -982,6 +983,7 @@ class Group extends React.Component {
                                                                             formatMessage('giveGroupToEqualGiveFrom')
                                                                         }
                                                                     />
+                                                                </div>
                                                                 </Fragment>
                                                                 )
                                                             )
@@ -995,6 +997,7 @@ class Group extends React.Component {
                                                             handlePresetAmountClick={this.handlePresetAmountClick}
                                                             validity={validity}
                                                         />
+                                                        <div className="give_flow_field">
                                                         { (!this.props.currentUser.userAccountsFetched || !_isEmpty(giveFromList)) && (
                                                         <DropDownAccountOptions
                                                             type="group"
@@ -1010,10 +1013,10 @@ class Group extends React.Component {
                                                         />
                                                         )}
                                                         {this.renderReloadAddAmount()}
+                                                        </div>
                                                         {this.renderRepeatGift(giveTo, giftType, giveFrom, formatMessage, language)}
                                                         {privacyOptionComponent}
-                                                        <Form.Field>
-                                                        </Form.Field>
+                                                        <Form.Field className="give_flow_field">
                                                         <DedicateType 
                                                             handleInputChange={this.handleInputChange}
                                                             handleInputOnBlur={this.handleInputOnBlur}
@@ -1021,13 +1024,13 @@ class Group extends React.Component {
                                                             dedicateValue={dedicateValue}
                                                             validity={validity}
                                                         />
-                                                                                                                                                                 </Grid.Column>
+                                                          </Form.Field>
+                                                     </Grid.Column>
                                                 </Grid.Row>
                                             </Grid>
                                             <Grid className="to_space">
                                                 <Grid.Row className="to_space">
                                                     <Grid.Column mobile={16} tablet={16} computer={16}>
-
                                                         <NoteTo
                                                             allocationType={giveToType}
                                                             formatMessage={formatMessage}

@@ -42,6 +42,9 @@ const FlowBreadcrumbs = ({
             } else if (currentStepIndex === (stepsCount - 1) && i === (stepsCount - 2)) {
                 props.active = true;
             }
+            if (currentStepIndex > stepIndex) {
+                props.className = 'completed_step';
+            }
             const breadcrumb = (
                 <Breadcrumb.Section {...props} key={messageKey}>
                     {breadcrumbArray[stepIndex]}

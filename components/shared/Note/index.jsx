@@ -100,7 +100,7 @@ const Note = ({
             )
             }
             <Form.Field
-                className="with-info mb-3"
+                className="with-info"
                 control={TextAreaWithInfo}
                 error={!isValidText(enableCharacterCount, text)}
                 name={fieldName}

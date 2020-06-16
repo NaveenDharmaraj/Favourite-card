@@ -33,23 +33,25 @@ function PaymentInstruments(props) {
         if (_.isEmpty(options) && giveTo.value > 0) {
             creditCardField = (
                 <Fragment>
-                    <label>Payment method</label>
-                    <div
-                    className="addNewCardInput mb-2"
-                    id="addFirstCreditCard"
-                    onClick={handleAddNewButtonClicked}>
-                        + Add new card
+                    <div className="give_flow_field">
+                        <label>Payment method</label>
+                        <div
+                            className="addNewCardInput mb-2"
+                            id="addFirstCreditCard"
+                            onClick={handleAddNewButtonClicked}>
+                            + Add new card
                     </div>
-                    <FormValidationErrorMessage
-                        condition={!validity.isCreditCardSelected}
-                        errorMessage={formatMessage('giveCommon:errorMessages.creditCardNotAdded')}
-                    />
+                        <FormValidationErrorMessage
+                            condition={!validity.isCreditCardSelected}
+                            errorMessage={formatMessage('giveCommon:errorMessages.creditCardNotAdded')}
+                        />
+                    </div>
                 </Fragment>
             );
         } else if (!_.isEmpty(options) && giveTo.value > 0) {
             creditCardField = (
                 <Fragment>
-                    <Form.Field>
+                    <Form.Field className="give_flow_field">
                         <label htmlFor="creditCard">
                             {formatMessage('giveCommon:creditCardLabel')}
                         </label>
@@ -84,7 +86,6 @@ function PaymentInstruments(props) {
             </Placeholder>
         );
     }
-    
     return creditCardField;
 }
 export default PaymentInstruments;

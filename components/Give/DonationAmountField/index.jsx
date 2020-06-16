@@ -52,6 +52,7 @@ function DonationAmountField(props) {
                 placeholder={formatMessage('giveCommon:amountPlaceHolder')}
                 size="large"
                 value={amount}
+                className={`give_field ${amount ? 'give_amount' : ''}`}
             />
             <FormValidationErrorMessage
                 condition={!validity.doesAmountExist || !validity.isAmountMoreThanOneDollor
@@ -70,7 +71,7 @@ function DonationAmountField(props) {
                     errorMessage={formatMessage('giveCommon:errorMessages.giveAmountGreaterThanBalance')}
                 />
             )}
-            <div className="mt-1">
+            <div className="price_btn">
                 <Button active={activeIndex === 1} className="btn-basic-outline btntext invisionwidth" index={1} type="button" size="small" value="25" onClick={handleDonationPresetAmountClick}>$25</Button>
                 <Button active={activeIndex === 2} className="btn-basic-outline btntext invisionwidth" index={2} type="button" size="small" value="50" onClick={handleDonationPresetAmountClick}>$50</Button>
                 <Button active={activeIndex === 3} className="btn-basic-outline btntext invisionwidth" index={3} type="button" size="small" value="100" onClick={handleDonationPresetAmountClick}>$100</Button>

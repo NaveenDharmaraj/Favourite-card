@@ -24,7 +24,7 @@ const PrivacyOptions = (props) => {
     const privacyShareAmountLabel = formatMessage(`privacyOptions:sharePrivacyGiftAmount`);
     return (
         <Fragment>
-            <Form.Field>
+            <Form.Field className="give_flow_field">
                 <label
                     className="privacy-header"
                     htmlFor="privacyShareName"
@@ -56,7 +56,7 @@ const PrivacyOptions = (props) => {
                 <Fragment>
                     {
                         !_.isEmpty(infoToShareList) && (
-                            <Form.Field>
+                            <Form.Field className="give_flow_field">
                                 {(!!hasCampaign) ? (
                                     <>
                                         <label htmlFor="infoToShare">
