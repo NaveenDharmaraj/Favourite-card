@@ -731,7 +731,7 @@ const editUserCreditCard = (dispatch, instrumentDetails) => {
     return editCreditCardResponse;
 };
 
-const deleteUserCreditCardDetail = (paymentInstrumentId) => (dispatch) => {
+const getPaymentInstrumentById = (paymentInstrumentId) => (dispatch) => {
     dispatch({
         payload: {
             deleteMsgPopUpLoader: true,
@@ -1434,7 +1434,7 @@ const resendUserVerifyEmail = (dispatch, userEmailId, userId) => {
 };
 
 export {
-    deleteUserCreditCardDetail,
+    getPaymentInstrumentById,
     getUserProfileBasic,
     getUserFriendProfile,
     getUserCharitableInterests,

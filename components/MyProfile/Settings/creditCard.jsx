@@ -28,7 +28,7 @@ import {
     deleteUserCreditCard,
     saveNewCreditCard,
     setUserDefaultCard,
-    deleteUserCreditCardDetail,
+    getPaymentInstrumentById,
 } from '../../../actions/userProfile';
 import Pagination from '../../shared/Pagination';
 import PlaceHolderGrid from '../../shared/PlaceHolder';
@@ -449,7 +449,6 @@ class MyCreditCards extends React.Component {
         const cardDetails = populateCardData(cardData);
         const cardType = _.startCase(cardDetails.processor);
         const formatMessage = this.props.t;
-        dispatch(deleteUserCreditCardDetail(deletePaymentInstrumentId));
         const errorMessage = formatMessage(
             'giveCommon:creditCard.deleteCreditCardMsg',
             {
@@ -457,6 +456,7 @@ class MyCreditCards extends React.Component {
                 truncatedPaymentId: cardDetails.truncatedPaymentId,
             },
         );
+        dispatch(getPaymentInstrumentById(deletePaymentInstrumentId));
         this.setState({
             isDeleteMessageOpen: true,
             isDropdownOpen:false,
