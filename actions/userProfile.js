@@ -446,6 +446,10 @@ const getMyCreditCards = (dispatch, userId, pageNumber) => {
     };
     return coreApi.get(`/users/${Number(userId)}/activePaymentInstruments?page[number]=${pageNumber}&page[size]=10&sort=-default`).then(
         (result) => {
+            if (_.isEmpty(result.data) && pageNumber > 1) {
+                getMyCreditCards(dispatch, userId, pageNumber - 1);
+                return;
+            }
             fsa.payload = {
                 count: result.meta.recordCount,
                 data: result.data,

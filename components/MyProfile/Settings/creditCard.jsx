@@ -449,7 +449,7 @@ class MyCreditCards extends React.Component {
         const cardDetails = populateCardData(cardData);
         const cardType = _.startCase(cardDetails.processor);
         const formatMessage = this.props.t;
-        const errorMessage = formatMessage(
+        const deleteConfirmMessage = formatMessage(
             'giveCommon:creditCard.deleteCreditCardMsg',
             {
                 cardType,
@@ -460,7 +460,7 @@ class MyCreditCards extends React.Component {
         this.setState({
             isDeleteMessageOpen: true,
             isDropdownOpen:false,
-            deleteConfirmCard: errorMessage,
+            deleteConfirmCard: deleteConfirmMessage,
             deletePaymentInstrumentId,
         });
     }
