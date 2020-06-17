@@ -660,7 +660,7 @@ class Friend extends React.Component {
                 taxReceiptList = !_.isEmpty(companyDetails.taxReceiptProfiles) ? companyDetails.taxReceiptProfiles : [];
                 defaultTaxReceiptProfileForReload = companyDetails.companyDefaultTaxReceiptProfile;
             }
-            let AmountToDonate = formatAmount((formatAmount(totalP2pGiveAmount)
+            let amountToDonate = formatAmount((formatAmount(totalP2pGiveAmount)
             - formatAmount(giveFrom.balance)));
             const taxReceiptsOptions = populateTaxReceipts(taxReceiptList, formatMessage);
             return (
@@ -668,7 +668,7 @@ class Friend extends React.Component {
                     defaultTaxReceiptProfile={defaultTaxReceiptProfileForReload}
                     dispatch={dispatch}
                     donationMatchData={(giveFrom.type === 'user') ? donationMatchData : {}}
-                    formatedDonationAmount={AmountToDonate}
+                    formatedDonationAmount={(amountToDonate > 9999) ? formatAmount(9999) : amountToDonate}
                     formatMessage={formatMessage}
                     allocationGiftType={giftType.value}
                     giveTo={giveFrom}
