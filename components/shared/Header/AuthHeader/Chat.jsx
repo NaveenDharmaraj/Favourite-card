@@ -19,7 +19,8 @@ class Chat extends React.Component {
             messagesList: props.messagesList || [],
             userDetails: {},
             groupFeeds: {},
-            showBackImage: false
+            showBackImage: false,
+            classForMargin:'chat-popup',
         }
         // this.onMessagesListLoad.bind(this);
         this.loadFriendsList.bind(this);
@@ -134,6 +135,15 @@ class Chat extends React.Component {
         window.addEventListener('onMessageSent', this.onMessageSent, false);
         window.addEventListener('applozicAppInitialized', this.applozicAppInitialized, false);
         window.addEventListener('onUnreadMessageCountUpdate', this.onUnreadMessageCountUpdate, false);
+        window.addEventListener('scroll', () => {
+            let classForSticky = 'chat-popup';
+            if (window.scrollY >= 57) {
+                classForSticky = 'chat-popup sticky-dropdown';
+            }
+            this.setState({
+                classForMargin: classForSticky,
+            });
+        });
         await this.loadRecentMessages();
     }
 
@@ -199,6 +209,7 @@ class Chat extends React.Component {
         let self = this;
         const {
             showBackImage,
+            classForMargin,
         } = this.state;
         const activeClass = (showBackImage) ? 'menuActive' : '';
         return (
@@ -206,7 +217,7 @@ class Chat extends React.Component {
                 position="bottom right"
                 basic
                 on='click'
-                className="chat-popup"
+                className={classForMargin}
                 onOpen={() => this.renderIconColor()}
                 onClose={() => this.renderbackImage()}
                 trigger={

@@ -13,9 +13,23 @@ import { Link } from '../../../../routes';
 class Give extends Component {
     constructor(props) {
         super(props);
-        this.state = { activeIndex: -1 }
+        this.state = { 
+            activeIndex: -1,
+        classForMargin:'give-popup' }
     }
     
+    componentDidMount() {
+        window.addEventListener('scroll', () => {
+            let classForSticky = 'give-popup';
+            if (window.scrollY >= 57) {
+                classForSticky = 'give-popup sticky-dropdown';
+            }
+            this.setState({
+                classForMargin: classForSticky,
+            });
+        });
+    }
+
     handleClick = (e, titleProps) => {
         const { index } = titleProps
         const { activeIndex } = this.state
@@ -25,13 +39,13 @@ class Give extends Component {
     }
 
     render() {
-        const { activeIndex } = this.state
+        const { activeIndex, classForMargin } = this.state
         return (
             <Popup
                 basic
                 on="click"
                 wide
-                className="give-popup"
+                className={classForMargin}
                 position="bottom right"
                 trigger={(
                     <Menu.Item className="user-img give-btn">

@@ -21,6 +21,7 @@ class Notifications extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            classForMargin: 'notification-popup',
             deletedItems: [],
             deleteTimeouts: {},
             intervalId: -1,
@@ -72,6 +73,18 @@ class Notifications extends React.Component {
         if (_isEmpty(messages)) {
             NotificationHelper.firebaseInitialLoad(userInfo, dispatch);
         }
+    }
+
+    componentDidMount() {
+        window.addEventListener('scroll', () => {
+            let classForSticky = 'notification-popup';
+            if (window.scrollY >= 57) {
+                classForSticky = 'notification-popup sticky-dropdown';
+            }
+            this.setState({
+                classForMargin: classForSticky,
+            });
+        });
     }
 
     acceptFriendRequestAsync(msg) {
@@ -273,6 +286,7 @@ class Notifications extends React.Component {
         // };
         const {
             showBackImage,
+            classForMargin,
         } = this.state;
         const activeClass = (showBackImage) ? 'menuActive' : '';
         const itemByType = this.splitNotifications(messages);
@@ -293,7 +307,7 @@ class Notifications extends React.Component {
                 position="bottom right"
                 basic
                 on="click"
-                className="notification-popup"
+                className={classForMargin}
                 onOpen={() => this.renderIconColor()}
                 onClose={() => this.renderbackImage()}
                 trigger={
