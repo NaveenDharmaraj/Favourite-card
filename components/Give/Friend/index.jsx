@@ -667,7 +667,7 @@ class Friend extends React.Component {
                 <ReloadAddAmount
                     defaultTaxReceiptProfile={defaultTaxReceiptProfileForReload}
                     dispatch={dispatch}
-                    donationMatchData={donationMatchData}
+                    donationMatchData={(giveFrom.type === 'user') ? donationMatchData : {}}
                     formatedDonationAmount={AmountToDonate}
                     formatMessage={formatMessage}
                     allocationGiftType={giftType.value}
