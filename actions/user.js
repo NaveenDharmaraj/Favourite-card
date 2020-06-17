@@ -261,12 +261,20 @@ export const chimpLogin = (token = null, options = null) => {
             },
         };
     }
+    const claimCharityAccessCode = storage.get('accessCode');
+
     if (options && typeof options === 'object') {
         params = {
             ...params,
             params: {
                 ...options,
             },
+            data: {
+                type: "claimCharities",
+                attributes: {
+                    claimToken: claimCharityAccessCode
+                }
+            }
         }
     }
     return authRorApi.post(`/auth/login`, null, params);
@@ -845,37 +853,65 @@ export const checkClaimCharityAccessCode = (accessCode, userId) => (dispatch) =>
         },
         type: actionTypes.CHECK_CLAIM_CHARITY_ACCESS_CODE,
     };
-    return coreApi.post(`/claimCharities`, {
-        data: {
-            type: "claimCharities",
-            attributes: {
-                claimToken: accessCode
-            }
-        }
-    }).then(
-        (result) => {
-            fsa.payload = {
-                data: result.data,
-            };
-            let {
-                data: {
-                    attributes: {
-                        beneficiarySlug,
-                    }
+
+    if (userId) {
+        return coreApi.post(`/claimCharities`, {
+            data: {
+                type: "claimCharities",
+                attributes: {
+                    claimToken: accessCode
                 }
-            } = fsa.payload;
-            getUser(dispatch, userId, null).then(() => {
-                Router.pushRoute(`/claim-charity/success?slug=${beneficiarySlug? beneficiarySlug : ''}`);
-            })
-        }
-    ).catch((error) => {
-        const errorFsa = {
-            payload: {
-                message: "That code doesn't look right or it's expired. Try again or claim without a code below",
-            },
-            type: actionTypes.CLAIM_CHARITY_ERROR_MESSAGE,
-        };
-        dispatch(errorFsa);
-    });
+            }
+        }).then(
+            (result) => {
+                fsa.payload = {
+                    data: result.data,
+                };
+                let {
+                    data: {
+                        attributes: {
+                            beneficiarySlug,
+                        }
+                    }
+                } = fsa.payload;
+                getUser(dispatch, userId, null).then(() => {
+                    Router.pushRoute(`/claim-charity/success?slug=${beneficiarySlug ? beneficiarySlug : ''}`);
+                })
+            }
+        ).catch(() => {
+            const errorFsa = {
+                payload: {
+                    message: "That code doesn't look right or it's expired. Try again or claim without a code below",
+                },
+                type: actionTypes.CLAIM_CHARITY_ERROR_MESSAGE,
+            };
+            dispatch(errorFsa);
+        });
+    }
+    else {
+        return coreApi.get(`/claim_charities/validate_claim_charity_token/${accessCode}`)
+            .then((res) => {
+                fsa.payload = {
+                    data: res,
+                };
+                let {
+                    data: {
+                        success
+                    }
+                } = fsa.payload;
+                if (success) {
+                    storage.set('accessToken', accessCode, 'local');
+                    Router.pushRoute('/users/login');
+                }
+            }).catch(() => {
+                const errorFsa = {
+                    payload: {
+                        message: "That code doesn't look right or it's expired. Try again or claim without a code below",
+                    },
+                    type: actionTypes.CLAIM_CHARITY_ERROR_MESSAGE,
+                };
+                dispatch(errorFsa);
+            });
+    }
 
 };

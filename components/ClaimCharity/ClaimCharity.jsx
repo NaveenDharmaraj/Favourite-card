@@ -43,18 +43,23 @@ class ClaimCharity extends React.Component {
     }
 
     onClaimCharityClick = () => {
-        const { 
-            currentUser:{
-                id
-            },
-            dispatch,
-        } = this.props;
+        const { currentUser, dispatch } = this.props;
         const { accessCode } = this.state;
         this.setState({
             buttonClicked: true,
             loader: true,
-        })
-        dispatch(checkClaimCharityAccessCode(accessCode, id));
+        });
+        if(currentUser) {
+            const { 
+                currentUser:{
+                    id
+                },
+            } = this.props;
+            dispatch(checkClaimCharityAccessCode(accessCode, id)); 
+        }
+        else {
+            dispatch(checkClaimCharityAccessCode(accessCode, null));
+        }
     }
 
     render() {
