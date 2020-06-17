@@ -38,14 +38,14 @@ class Accessing extends React.Component {
             }
         });
         if (locationNumber) {
-            (
+            return (
                 <a href={`${RAILS_APP_URL_ORIGIN}${locationNumber}`}>
                     <Button className={buttonPosition === 1 ? "primary blue-btn-rounded mt-1" : "white-btn-round textBlack"}><b>Go to my Charity Account</b></Button>
                 </a>
             )
         }
         else {
-            (
+            return (
                 <Button className={buttonPosition === 1 ? "primary blue-btn-rounded mt-1" : "white-btn-round textBlack"}><b>Go to my Charity Account</b></Button>
             )
         }
