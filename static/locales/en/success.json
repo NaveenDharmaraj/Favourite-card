@@ -1,6 +1,6 @@
 {
-    "goToYourDashboard": "Go back to your dashboard",
-    "goToCompanyDashboard": "Go to the {{companyName}} dashboard.",
+    "goToYourDashboard": "Return to your dashboard",
+    "goToCompanyDashboard": "Return to your company dashboard",
     "addMoneyFirstText": "Thank you, {{name}}",
     "addMoneySecondText": "You added {{amount}} to your Impact Account.",
     "addMoneySecondTextCompany": "You added {{amount}} to the {{companyName}} Impact Account.",

@@ -101,7 +101,7 @@ const AddMoneySuccess = (props) => {
     if (giveTo.type === 'companies') {
         taxProfileLink = `/companies/${giveTo.slug}/tax-receipts`;
         dashboardLink = `/companies/${giveTo.slug}`;
-        dashBoardButtonText = formatMessage('goToCompanyDashboard', { companyName: giveTo.name });
+        dashBoardButtonText = formatMessage('goToCompanyDashboard');
     }
     return (
         <Fragment>
@@ -132,7 +132,7 @@ const AddMoneySuccess = (props) => {
 
             <div className="text-center mt-1">
                 <Link route={dashboardLink}>
-                    <Button className="blue-btn-rounded-def flowConfirmBtn second_btn">
+                    <Button className={`blue-btn-rounded-def flowConfirmBtn second_btn ${giveTo.type === 'companies' ? 'flow_dashboard' : ''}`}>
                         {dashBoardButtonText}
                     </Button>
                 </Link>
