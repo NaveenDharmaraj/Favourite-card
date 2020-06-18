@@ -20,13 +20,22 @@ class Give extends Component {
     
     componentDidMount() {
         window.addEventListener('scroll', () => {
+            const {
+                classForMargin,
+            } = this.state;
             let classForSticky = 'give-popup';
             if (window.scrollY >= 57) {
                 classForSticky = 'give-popup sticky-dropdown';
+                if (classForMargin !== classForSticky) {
+                    this.setState({
+                        classForMargin: classForSticky,
+                    });
+                }
+            } else if (classForMargin !== classForSticky) {
+                this.setState({
+                    classForMargin: classForSticky,
+                });
             }
-            this.setState({
-                classForMargin: classForSticky,
-            });
         });
     }
 

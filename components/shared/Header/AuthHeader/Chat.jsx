@@ -136,13 +136,22 @@ class Chat extends React.Component {
         window.addEventListener('applozicAppInitialized', this.applozicAppInitialized, false);
         window.addEventListener('onUnreadMessageCountUpdate', this.onUnreadMessageCountUpdate, false);
         window.addEventListener('scroll', () => {
+            const {
+                classForMargin,
+            } = this.state;
             let classForSticky = 'chat-popup';
             if (window.scrollY >= 57) {
                 classForSticky = 'chat-popup sticky-dropdown';
+                if (classForMargin !== classForSticky) {
+                    this.setState({
+                        classForMargin: classForSticky,
+                    });
+                }
+            } else if (classForMargin !== classForSticky) {
+                this.setState({
+                    classForMargin: classForSticky,
+                });
             }
-            this.setState({
-                classForMargin: classForSticky,
-            });
         });
         await this.loadRecentMessages();
     }

@@ -77,13 +77,22 @@ class Notifications extends React.Component {
 
     componentDidMount() {
         window.addEventListener('scroll', () => {
+            const {
+                classForMargin,
+            } = this.state;
             let classForSticky = 'notification-popup';
             if (window.scrollY >= 57) {
                 classForSticky = 'notification-popup sticky-dropdown';
+                if (classForMargin !== classForSticky) {
+                    this.setState({
+                        classForMargin: classForSticky,
+                    });
+                }
+            } else if (classForMargin !== classForSticky) {
+                this.setState({
+                    classForMargin: classForSticky,
+                });
             }
-            this.setState({
-                classForMargin: classForSticky,
-            });
         });
     }
 
