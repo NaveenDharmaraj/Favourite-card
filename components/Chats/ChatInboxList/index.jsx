@@ -87,7 +87,9 @@ class ChatInboxList extends React.Component {
                                 type: actionTypes.NEW_GROUP_FEEDS,
                             })
                         }
-                    });
+                    }).catch(err=>{
+                        console.log('Inbox list loadnewUserGroupInboxMessage() action creator error',err)
+                    })
             };
             // newMsg varibale find whether the incoming event is for the current select conversation
             let newMsg = false;

@@ -9,6 +9,7 @@ import graphApi from '../services/graphApi';
 import applozicApi from '../services/applozicApi';
 import { conversationHead } from '../helpers/chat/utils';
 import { isFalsy } from '../helpers/utils';
+import logger from '../helpers/logger';
 
 const actionTypes = _keyBy([
     'LOAD_MUTE_USER_LIST',
@@ -60,10 +61,14 @@ const loadMuteUserList = () => async (dispatch) => {
     });
 };
 const loadnewUserGroupInboxMessage = async (queryParam) => {
-    const result = await applozicApi.get(`/message/v2/list`, {
-        params: queryParam,
-    });
-    return result;
+    try {
+        const result = await applozicApi.get(`/message/v2/list`, {
+            params: queryParam,
+        });
+        return result;
+    } catch (err) {
+        logger.error(`[applozicApi] loadnewUserGroupInboxMessage() action  -   ${JSON.stringify(err)}`);
+    }
 };
 
 const loadrecentMessage = (resp, msg, messagesRef, index) => (dispatch) => {
