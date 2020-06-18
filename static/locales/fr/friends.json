@@ -19,5 +19,7 @@
     "giveAmount": "{{giveAmount}}",
     "multipleFriendAmountFieldText": "For multiple friends, the amount you enter will be sent to each friend.",
     "giveToEmailsText": "Or, enter your friend's email addresses",
-    "giveToFriendText": "Give to a friend"
+    "giveToFriendText": "Give to a friend",
+    "userWithFriendsError": "Select friends or enter email address separated by comma",
+    "userWithoutFriendsError": "Enter email address separated by comma"
 }

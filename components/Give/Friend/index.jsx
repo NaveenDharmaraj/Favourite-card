@@ -822,11 +822,15 @@ class Friend extends React.Component {
                                                                 }
                                                             </Grid.Column>
                                                             <Grid.Column mobile={16} tablet={16} computer={16}>
-                                                                <p>
-                                                                    <a className="giveToEmailsText" onClick={this.handleGiveToEmail}>
-                                                                        {formatMessage('friends:giveToEmailsText')}
-                                                                    </a>
-                                                                </p>
+                                                                {showDropDown
+                                                                    && (
+                                                                        <p>
+                                                                            <a className="giveToEmailsText" onClick={this.handleGiveToEmail}>
+                                                                                {formatMessage('friends:giveToEmailsText')}
+                                                                            </a>
+                                                                        </p>
+                                                                    )
+                                                                }
                                                                 {(showGiveToEmail || !_.isEmpty(recipients) || (typeof showDropDown !== 'undefined' && !showDropDown))
                                                                     && (
                                                                             <Note
@@ -859,8 +863,12 @@ class Friend extends React.Component {
                                                                     errorMessage={formatMessage('friends:maxEmail')}
                                                                 />
                                                                 <FormValidationErrorMessage
-                                                                    condition={!validity.isRecepientSelected}
-                                                                    errorMessage="Select friends or enter email address separated by comma"
+                                                                    condition={showDropDown && !validity.isRecepientSelected}
+                                                                    errorMessage={formatMessage('friends:userWithFriendsError')}
+                                                                />
+                                                                <FormValidationErrorMessage
+                                                                    condition={!showDropDown && !validity.isRecepientSelected}
+                                                                    errorMessage={formatMessage('friends:userWithoutFriendsError')}
                                                                 />
                                                             </Grid.Column>
                                                         </Fragment>
