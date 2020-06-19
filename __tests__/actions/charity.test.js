@@ -47,6 +47,7 @@ describe('Charity Profile Action unit test', () => {
         await store.dispatch(getBeneficiaryFromSlug(
             'the-canadian-red-cross-society-la-societe-canadienne-de-la-croix-rouge',
         )).then(() => {
+            expect.assertions(1);
             expect(store.getActions()).toEqual(expectedActions);
         });
     });
@@ -76,6 +77,7 @@ describe('Charity Profile Action unit test', () => {
             'the-canadian-red-cross-society-la-societe-canadienne-de-la-croix-rouge',
             'TESTTOKEN',
         )).then(() => {
+            expect.assertions(1);
             expect(store.getActions()).toEqual(expectedActions);
         });
     });
@@ -97,6 +99,7 @@ describe('Charity Profile Action unit test', () => {
             'the-canadian-red-cross-society-la-societe-canadienne-de-la-croix-rouge',
             'TESTTOKEN',
         )).then(() => {
+            expect.assertions(1);
             expect(store.getActions()).toEqual(expectedActions);
         });
     });
@@ -129,6 +132,7 @@ describe('Charity Profile Action unit test', () => {
             },
         ];
         await store.dispatch(getBeneficiaryFinance(87)).then(() => {
+            expect.assertions(1);
             expect(store.getActions()).toEqual(expectedActions);
         });
     });
@@ -153,6 +157,7 @@ describe('Charity Profile Action unit test', () => {
             },
         ];
         await store.dispatch(getBeneficiaryFinance(87)).then(() => {
+            expect.assertions(1);
             expect(store.getActions()).toEqual(expectedActions);
         });
     });
@@ -185,6 +190,7 @@ describe('Charity Profile Action unit test', () => {
             },
         ];
         await store.dispatch(getBeneficiaryDoneeList('87', 2018, 1, false)).then(() => {
+            expect.assertions(1);
             expect(store.getActions()).toEqual(expectedActions);
         });
     });
