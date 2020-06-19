@@ -138,7 +138,7 @@ const NavBarMobile = ({
                 dimmed={false}
                 onClick={onPusherClick}
             >
-                <Menu secondary>
+                <Menu secondary className="header_Responsive">
                     <Give />
                     <Menu.Item className="logoImg">
                         <Link route={logoUrl}>
