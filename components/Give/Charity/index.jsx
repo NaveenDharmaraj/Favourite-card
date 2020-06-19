@@ -430,7 +430,9 @@ class Charity extends React.Component {
         validity = validateGiveForm('noteToSelf', giveData.noteToSelf, validity, giveData, coverFeesAmount);
         validity = validateGiveForm('noteToCharity', giveData.noteToCharity, validity, giveData, coverFeesAmount);
         validity = validateGiveForm('dedicateType', null, validity, giveData);
-        validity = validateForReload(validity, giveData.giveFrom.type, giveData.giveAmount, giveData.giveFrom.balance);
+        if(giveData.giftType.value === 0) {
+            validity = validateForReload(validity, giveData.giveFrom.type, giveData.giveAmount, giveData.giveFrom.balance);
+        }
         this.setState({
             validity,
             reviewBtnFlag: !validity.isReloadRequired
@@ -885,21 +887,21 @@ class Charity extends React.Component {
         } = this.state;
         const formatMessage = this.props.t;
         const { reviewBtnFlag } = this.state;
-        let submtBtn = (reviewBtnFlag)?(
-        <Form.Button
-            primary
-            className="blue-btn-rounded btn_right rivewbtnp2p"
-            content={formatMessage('giveCommon:reviewButtonFlag')}
-            disabled={!this.props.userAccountsFetched}
-            onClick={this.handleAddMoneyModal}
-            type="button"
-        />) : (<Form.Button
-            primary
-            className="blue-btn-rounded btn_right rivewbtnp2p"
-            content={formatMessage('giveCommon:reviewButton')}
-            disabled={!this.props.userAccountsFetched}
-            type="submit"
-        />)
+        let submtBtn = (reviewBtnFlag && giftType.value === 0)?(
+            <Form.Button
+                primary
+                className="blue-btn-rounded btn_right rivewbtnp2p"
+                content={formatMessage('giveCommon:reviewButtonFlag')}
+                disabled={!this.props.userAccountsFetched}
+                onClick={this.handleAddMoneyModal}
+                type="button"
+            />) : (<Form.Button
+                primary
+                className="blue-btn-rounded btn_right rivewbtnp2p"
+                content={formatMessage('giveCommon:reviewButton')}
+                disabled={!this.props.userAccountsFetched}
+                type="submit"
+            />);
         let giveBannerHeader;
         if(!!groupFromUrl) {
             giveBannerHeader = (giveFrom.name) ? `Give From ${giveFrom.name}` : '';

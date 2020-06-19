@@ -413,7 +413,10 @@ class Group extends React.Component {
         validity = validateGiveForm('noteToSelf', giveData.noteToSelf, validity, giveData, 0);
         validity = validateGiveForm('noteToCharity', giveData.noteToCharity, validity, giveData, 0);
         validity = validateGiveForm('dedicateType', null, validity, giveData);
-        validity = validateForReload(validity, giveData.giveFrom.type, giveData.giveAmount, giveData.giveFrom.balance);
+        if(giveData.giftType.value === 0) {
+            validity = validateForReload(validity, giveData.giveFrom.type, giveData.giveAmount, giveData.giveFrom.balance);
+        }
+        
         if (giveData.giveTo.value === giveData.giveFrom.value) {
             validity.isValidGiveTo = false;
         } else {
@@ -908,7 +911,7 @@ class Group extends React.Component {
                 />
             );
         }
-        let submtBtn = (reviewBtnFlag)?(
+        let submtBtn = (reviewBtnFlag && giftType.value === 0)?(
             <Form.Button
                 primary
                 className="blue-btn-rounded btn_right rivewbtnp2p"
@@ -922,7 +925,7 @@ class Group extends React.Component {
                 content={formatMessage('giveCommon:reviewButton')}
                 disabled={!this.props.userAccountsFetched}
                 type="submit"
-            />)
+            />);
             let giveBannerHeader;
             if(!!groupFromUrl) {
                 giveBannerHeader = (giveFrom.name) ? `Give From ${giveFrom.name}` : '';
