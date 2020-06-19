@@ -1,0 +1,668 @@
+@import "_mixins.less";
+
+.claimP2PScreen {
+  overflow: hidden;
+}
+
+.claimp2pHeader {
+  max-width: 1440px;
+  margin   : auto;
+  position : relative;
+
+
+  &::before {
+    content            : '';
+    position           : absolute;
+    width              : 745px;
+    height             : 197px;
+    top                : -75px;
+    right              : 45%;
+    background-image   : url(../images/swiggle-2.png);
+    background-repeat  : no-repeat;
+    background-size    : contain;
+    background-position: center;
+    z-index            : -1;
+  }
+
+
+  &::after {
+    content            : '';
+    position           : absolute;
+    width              : 1373px;
+    height             : 598px;
+    top                : 0px;
+    left               : 40%;
+    background-image   : url(../images/claim-bg.png);
+    background-repeat  : no-repeat;
+    background-size    : 62%;
+    background-position: top left;
+    z-index            : -1;
+  }
+
+  .swiggleImg {
+    overflow: hidden;
+    overflow: hidden;
+    width   : 100%;
+    height  : 100%;
+    position: absolute;
+    left    : 0;
+    top     : 0;
+    z-index : -1;
+
+
+  }
+
+
+  .ui {
+    &.container {
+      height  : 100%;
+      padding : 60px 0 46px;
+      position: relative;
+      overflow: hidden;
+
+      &::before {
+        content            : '';
+        position           : absolute;
+        width              : 135px;
+        height             : 127px;
+        top                : -30px;
+        right              : 20%;
+        background-image   : url(../images/banner_illustraion_2.png);
+        background-repeat  : no-repeat;
+        background-size    : contain;
+        background-position: center;
+      }
+
+      &::after {
+        content            : '';
+        position           : absolute;
+        width              : 96px;
+        height             : 128px;
+        bottom             : -55px;
+        left               : 44px;
+        background-image   : url(../images/banner_illustraion_1.png);
+        background-repeat  : no-repeat;
+        background-size    : contain;
+        background-position: center;
+      }
+
+
+      .ui.grid {
+        margin           : 0;
+        height           : 100%;
+        -webkit-box-align: center;
+        -ms-flex-align   : center;
+        align-items      : center;
+
+
+
+        .column {
+          padding  : 0 0 40px 0;
+          max-width: 344px;
+
+          &::after {
+            content            : '';
+            position           : absolute;
+            width              : 21px;
+            height             : 17px;
+            top                : 25px;
+            left               : 75px;
+            background-image   : url(../images/claimP2P-w.png);
+            background-repeat  : no-repeat;
+            background-size    : contain;
+            background-position: center;
+          }
+
+          .claimp2pUserImage {
+            width        : 75px;
+            height       : 75px;
+            border-radius: 100%;
+            margin       : auto;
+            overflow     : hidden;
+
+            .ui.image {
+              width: 100%;
+            }
+          }
+
+          .ui.header {
+            color     : @font-color;
+            margin-top: 10px;
+          }
+
+        }
+
+
+      }
+
+      p {
+        font-size  : 20px;
+        line-height: 24px;
+        color      : #5856D6;
+        font-weight: 600;
+        text-align : center;
+
+      }
+    }
+  }
+}
+
+.claimp2pImpAct {
+  background-color: #F1F6FD;
+
+  &::before {
+    content            : '';
+    position           : absolute;
+    width              : 930px;
+    height             : 579px;
+    bottom             : -210px;
+    right              : -160px;
+    background-image   : url(../images/wiggle.png);
+    background-repeat  : no-repeat;
+    background-size    : contain;
+    background-position: center;
+    z-index            : -1;
+  }
+
+  &::after {
+    content : '';
+    position: absolute;
+
+    width              : 201px;
+    height             : 188px;
+    bottom             : -50px;
+    right              : -35px;
+    background-image   : url(../images/claimpP2P_box3.svg);
+    background-repeat  : no-repeat;
+    background-size    : contain;
+    background-position: center;
+  }
+
+  .claimp2pImpActWrap {
+    max-width: 580px;
+    margin   : auto;
+    padding  : 50px 0 70px;
+
+    .ui {
+      &.header {
+        margin-bottom: 10px;
+        color        : @font-color;
+      }
+    }
+
+    .subTtle_1 {
+      font-size    : 18px;
+      text-align   : center;
+      margin-bottom: 10px;
+    }
+
+    .subTtle_2 {
+      font-size    : 14px;
+      text-align   : center;
+      margin-bottom: 10px;
+    }
+
+    .claimp2pForm {
+      padding: 40px 55px 0;
+
+      .fields {
+        margin-bottom: 0;
+      }
+
+      .field {
+        margin-bottom: 28px;
+
+        >label {
+          font-size: 14px;
+        }
+
+        &.passwordField {
+          margin-bottom: 0;
+
+          .ui {
+            &.action {
+              >input {
+                border-right: 0 !important;
+
+                &:focus {
+                  +button {
+                    border     : 1px solid #85b7d9 !important;
+                    border-left: 0 !important;
+                  }
+                }
+              }
+
+
+              .ui {
+                &.button {
+                  &.icon {
+                    background : #ffffff;
+                    border     : 1px solid rgba(34, 36, 38, .15);
+                    border-left: 0 !important;
+
+                    .icon {
+                      &.eye {
+                        position : relative;
+                        font-size: 18px;
+
+                        &::before {
+                          content            : '';
+                          position           : absolute;
+                          top                : 0px;
+                          left               : 0;
+                          bottom             : 0;
+                          right              : 0;
+                          background-image   : url(../images/icons/icon-password-unhide.svg) !important;
+                          background-repeat  : no-repeat !important;
+                          background-size    : contain !important;
+                          background-position: center !important;
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+
+      }
+
+      .passwordNote {
+        font-size: 12px;
+        margin   : 10px 0 0;
+        color    : @font-color;
+        max-width: 330px;
+      }
+    }
+
+    button {
+      &.ui {
+        &.blue-btn-rounded-def {
+          &.openImpAct {
+            width      : 100%;
+            margin     : 40px 0 10px;
+            font-weight: 600;
+            font-size  : 17px;
+            padding    : 15px 10px;
+          }
+        }
+      }
+    }
+
+    .openImpactInfo {
+      font-size : 10px;
+      color     : @font-color;
+      margin    : 0 auto;
+      max-width : 440px;
+      text-align: center;
+
+    }
+  }
+}
+
+.claimp2pHwItWrks {
+  h2 {
+    &.ui.header {
+      margin: 50px;
+    }
+  }
+
+  .ui.stackable.grid {
+
+    .column {
+      padding   : 15px 35px !important;
+      text-align: center;
+
+      div {
+        position: relative;
+        height  : 80px;
+
+        .image {
+          position: absolute;
+          left    : 0;
+          right   : 0;
+          bottom  : 0;
+          top     : 0;
+          margin  : auto;
+        }
+      }
+
+
+      .ui.header {
+        margin: 15px 0 20px;
+      }
+
+      p {
+        line-height: 22px;
+        color      : @font-color;
+      }
+    }
+  }
+
+  .ui.divider {
+    margin: 50px 35px;
+  }
+}
+
+.claimp2pWhoWer {
+  max-width: 855px;
+  margin   : auto;
+
+
+  p {
+    margin-bottom: 20px !important;
+    line-height  : 22px;
+    color        : @font-color;
+
+    &:last-child {
+      max-width: 550px;
+      margin   : 0 auto 0 !important;
+    }
+  }
+}
+
+.underline {
+  width   : 70px;
+  height  : 5px;
+  position: relative;
+  display : block;
+  margin  : 10px auto 43px;
+
+  &::after {
+    content         : '';
+    width           : 30%;
+    height          : 100%;
+    background-color: #A1C4FF;
+    position        : absolute;
+    left            : 0;
+  }
+
+  &::before {
+    content         : '';
+    width           : 60%;
+    height          : 100%;
+    background-color: #82E3E0;
+    position        : absolute;
+    right           : 0;
+  }
+}
+
+.claimp2pJoin {
+  padding: 80px 0 110px !important;
+
+  &::after {
+    content         : '';
+    background-image: url(../images/claimp2pMap.svg);
+    position        : absolute;
+    width           : 786px;
+    height          : 100%;
+    left            : 0;
+    right           : 0;
+    top             : 0;
+    bottom          : 0;
+    margin          : auto;
+    opacity         : 0.83;
+  }
+
+  >.ui {
+    &.grid {
+      position: relative;
+
+      &::after {
+        content : '';
+        position: absolute;
+        width   : 228px;
+        height  : 248px;
+        top     : -30px;
+        right   : -30px;
+        border  : 1px solid #F24040;
+        z-index : -1;
+      }
+
+      &::before {
+        content : '';
+        position: absolute;
+        width   : 228px;
+        height  : 248px;
+        bottom  : -30px;
+        left    : -30px;
+        border  : 1px solid #C79BD1;
+      }
+
+      .row {
+        background-color: #ffffff;
+        padding         : 0;
+
+        >.column {
+          padding           : 50px 0 70px;
+          -webkit-box-shadow: 0 1px 2px 0 rgba(34, 36, 38, .15);
+          box-shadow        : 0 1px 2px 0 rgba(34, 36, 38, .15);
+          border-radius     : .28571429rem;
+          border            : 1px solid rgba(34, 36, 38, .15);
+          background-color  : rgba(255, 255, 255, 0.5);
+          z-index           : 1;
+
+
+          h2.header {
+            max-width: 450px;
+            margin   : 0 auto 15px;
+          }
+
+          .underline {
+            margin: 10px auto 60px;
+
+            &::after {
+              background-color: #0935FF;
+              width           : 60%;
+            }
+
+            &::before {
+              background-color: #27CCD1;
+              width           : 30%;
+            }
+          }
+
+          .cliamp2pThreeColumn {
+            padding: 0 50px;
+
+            .column {
+              padding: 0 45px;
+
+              h2 {
+                font-size    : 50px;
+                margin-bottom: 5px;
+              }
+
+              p {
+                line-height: 22px;
+              }
+
+
+              &::after {
+                content         : '';
+                position        : absolute;
+                width           : 2px;
+                height          : 85px;
+                background-color: #C799D1;
+                right           : 0;
+                top             : 10px;
+              }
+
+              &:last-child {
+                &::after {
+                  display: none;
+                }
+              }
+            }
+          }
+        }
+
+
+      }
+    }
+  }
+}
+
+.pad-0 {
+  padding: 0 !important;
+}
+
+@media only screen and (max-width: 991px) and (min-width: 767px) {
+  .claimp2pJoin {
+    padding: 60px 40px 90px !important;
+
+    >.ui.grid .row>.column .cliamp2pThreeColumn {
+      padding: 0;
+
+      .column h2 {
+        font-size: 40px;
+      }
+    }
+
+  }
+
+
+
+}
+
+@media only screen and (max-width: 767px) {
+  .claimP2PScreen {
+    >.ui.container .ui.grid {
+      margin-left : -1rem !important;
+      margin-right: -1rem !important;
+    }
+  }
+
+  .claimp2pHeader {
+    &::before {
+      content: unset;
+    }
+
+    &::after {
+      left: 25%;
+    }
+
+    .ui.container {
+      margin: 0 !important;
+
+      &::before {
+        top  : -60px;
+        right: -20px;
+      }
+
+      &::after {
+        content: unset;
+      }
+
+      .ui.grid .column {
+        max-width: 264px;
+
+        &::after {
+          top : 0;
+          left: 35px;
+        }
+      }
+
+      p {
+        max-width: 270px;
+        margin   : auto;
+      }
+    }
+  }
+
+  .claimp2pImpAct {
+
+    &::after,
+    &::before {
+      content: unset;
+    }
+
+    .claimp2pImpActWrap {
+      padding: 50px 15px 70px;
+
+      .claimp2pForm {
+        padding: 40px 0px 0;
+
+        button.ui.blue-btn-rounded-def.openImpAct span {
+          display: none;
+        }
+      }
+    }
+  }
+
+  .claimp2pHwItWrks {
+
+    .ui.stackable.grid .column {
+      padding: 15px 45px !important;
+    }
+
+    .ui.divider {
+      margin: 40px 35px 40px;
+    }
+  }
+
+  .claimp2pWhoWer {
+    padding: 0 50px !important;
+
+    .ui.divider {
+      margin: 50px 0 60px;
+    }
+  }
+
+  .underline {
+    margin: 10px auto 30px;
+  }
+
+  .claimp2pJoin {
+    padding: 0px 35px 60px 35px !important;
+
+    &::after {
+      content: none;
+    }
+
+    >.ui.grid {
+
+      &::before,
+      &::after {
+        content: none;
+      }
+
+      .row>.column {
+        box-shadow: none;
+        border    : 0;
+        padding   : 0;
+
+        .underline {
+          margin: 10px auto 30px;
+        }
+
+        .cliamp2pThreeColumn {
+          padding: 0 30px;
+
+          .column {
+            padding: 30px 15px !important;
+
+            &::after {
+              left  : 0;
+              bottom: 0;
+              right : 0;
+              margin: auto;
+              width : 85px;
+              height: 2px;
+              top   : unset;
+            }
+          }
+
+
+        }
+
+      }
+    }
+
+
+  }
+
+
+
+}
