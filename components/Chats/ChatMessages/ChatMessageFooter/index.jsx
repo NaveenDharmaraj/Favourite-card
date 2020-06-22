@@ -5,6 +5,7 @@ import { Form, Button } from 'semantic-ui-react';
 import { sendMessageToSelectedConversation, createGroup } from '../../../../actions/chat';
 import { connect } from 'react-redux';
 import { actionTypes } from '../../../../actions/chat';
+import FormValidationErrorMessage from '../../../shared/FormValidationErrorMessage';
 const { publicRuntimeConfig } = getConfig();
 const {
     CHAT_GROUP_DEFAULT_AVATAR
@@ -14,7 +15,27 @@ class ChatMessageFooter extends React.Component {
         super(props);
         this.state = {
             textAreaContent: "",
+            disableButton: false,
+            profaineObj: {},
+            profaineErrorCheck: false
         }
+    }
+
+    componentDidMount() {
+        fetch('../../../../static/profanity/restrictWords.txt')
+            .then(res => {
+                res.text().then(response => {
+                    const profaineArr = response.split(",");
+                    const profaine = {};
+                    profaineArr.forEach((arr, i) => {
+                        const key = arr.trim();
+                        profaine[key] = i;
+                    })
+                    this.setState({
+                        profaineObj: profaine,
+                    })
+                });
+            });
     }
     handlesendMessageToSelectedConversation = (conversation, message) => {
         //send the message
@@ -78,21 +99,42 @@ class ChatMessageFooter extends React.Component {
         const {
             selectedConversation
         } = this.props;
+        const {
+            profaineObj,
+        } = this.state;
         if (!e.shiftKey && e.key === 'Enter' && e.target.value.trim() != "") {
-            if (newGroup === "newConvMessageTextRef") {
-                this.handlecreateGroup({ send: true, message: e.target.value });
-                return;
-            }
-            this.handlesendMessageToSelectedConversation(selectedConversation, e.target.value);
-            this.setState({
-                textAreaContent: ""
+            e.preventDefault();
+            const strArr = e.target.value.split(" ");
+            let profaineCheck = strArr.find(str => {
+                if (profaineObj[str]) {
+                    return true;
+                }
             });
+            if (!profaineCheck) {
+                if (newGroup === "newConvMessageTextRef") {
+                    this.handlecreateGroup({ send: true, message: e.target.value });
+                    return;
+                }
+                this.handlesendMessageToSelectedConversation(selectedConversation, e.target.value);
+                this.setState({
+                    textAreaContent: ""
+                });
+            } else {
+                this.setState({
+                    disableButton: true,
+                    profaineErrorCheck: true
+
+                })
+            }
+
         }
     };
 
     handleInputchange = (e) => {
         this.setState({
-            textAreaContent: e.target.value
+            disableButton: false,
+            profaineErrorCheck: false,
+            textAreaContent: e.target.value,
         });
     }
     onSendKeyClick = () => {
@@ -101,24 +143,43 @@ class ChatMessageFooter extends React.Component {
             selectedConversation
         } = this.props;
         const {
-            textAreaContent
+            textAreaContent,
+            profaineObj
         } = this.state;
+
         if (textAreaContent != "") {
-            if (refName == "currentConvMessageTextRef") {
-                this.handlesendMessageToSelectedConversation(selectedConversation, textAreaContent, true);
-            } else if (refName == "newConvMessageTextRef") {
-                this.handlecreateGroup({ send: true, message: textAreaContent });
+            const strArr = textAreaContent.split(" ");
+            let profaineCheck = strArr.find(str => {
+                if (profaineObj[str]) {
+                    return true;
+                }
+            });
+            if (!profaineCheck) {
+                if (refName == "currentConvMessageTextRef") {
+                    this.handlesendMessageToSelectedConversation(selectedConversation, textAreaContent, true);
+                } else if (refName == "newConvMessageTextRef") {
+                    this.handlecreateGroup({ send: true, message: textAreaContent });
+                }
+            } else {
+                this.setState({
+                    disableButton: true,
+                    profaineErrorCheck: true,
+                })
             }
         }
+
     }
     render() {
         const {
             refName,
         } = this.props;
+        const {
+            profaineErrorCheck,
+        } = this.state;
         return (
             <div className="chatFooter">
                 <Form>
-                    <Form.Field>
+                    <Form.Field  error={profaineErrorCheck}>
                         <textarea
                             rows="1"
                             placeholder='Type a message…'
@@ -130,9 +191,15 @@ class ChatMessageFooter extends React.Component {
                             circular
                             icon='paper plane outline'
                             className="sendMsgBtn"
-                            onClick={this.onSendKeyClick}>
+                            onClick={this.onSendKeyClick}
+                            disabled={this.state.disableButton}
+                        >
                         </Button>
                     </Form.Field>
+                    <FormValidationErrorMessage
+                        condition={profaineErrorCheck}
+                        errorMessage={"Please avoid using profane words"}
+                    />
                 </Form>
             </div>
         );
