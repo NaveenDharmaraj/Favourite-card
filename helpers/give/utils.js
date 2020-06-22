@@ -365,32 +365,34 @@ const populateAccountOptions = (data, translate, giveToId = null, allocationType
                 });
             }
 
-            accountOptionsArray = _.concat(accountOptionsArray, groupAccountLabel,
-                getDropDownOptionFromApiData(
-                    userGroups,
-                    null,
-                    (item) => item.attributes.fundId,
-                    (attributes) => `${attributes.fundName}: ${formatCurrency(attributes.balance, language, currency)}`,
-                    (attributes) => false,
-                    [
-                        {
-                            getValue: (attributes) => attributes.avatar,
-                            key: 'avatar',
-                        },
-                        {
-                            getValue: (attributes) => attributes.balance,
-                            key: 'balance',
-                        },
-                        {
-                            getValue: (attributes) => attributes.name,
-                            key: 'name',
-                        },
-                        {
-                            getValue: (attributes) => attributes.slug,
-                            key: 'slug',
-                        },
-                    ],
-                ));
+            if (!_.isEmpty(userGroups)) {
+                accountOptionsArray = _.concat(accountOptionsArray, groupAccountLabel,
+                    getDropDownOptionFromApiData(
+                        userGroups,
+                        null,
+                        (item) => item.attributes.fundId,
+                        (attributes) => `${attributes.fundName}: ${formatCurrency(attributes.balance, language, currency)}`,
+                        (attributes) => false,
+                        [
+                            {
+                                getValue: (attributes) => attributes.avatar,
+                                key: 'avatar',
+                            },
+                            {
+                                getValue: (attributes) => attributes.balance,
+                                key: 'balance',
+                            },
+                            {
+                                getValue: (attributes) => attributes.name,
+                                key: 'name',
+                            },
+                            {
+                                getValue: (attributes) => attributes.slug,
+                                key: 'slug',
+                            },
+                        ],
+                    ));
+            }
         }
 
         if (!_.isEmpty(userCampaigns)) {
@@ -408,33 +410,34 @@ const populateAccountOptions = (data, translate, giveToId = null, allocationType
                     },
                 });
             }
-
-            accountOptionsArray = _.concat(accountOptionsArray, campaignAccountLabel,
-                getDropDownOptionFromApiData(
-                    userCampaigns,
-                    null,
-                    (item) => item.attributes.fundId,
-                    (attributes) => `${attributes.fundName}: ${formatCurrency(attributes.balance, language, currency)}`,
-                    (attributes) => false,
-                    [
-                        {
-                            getValue: (attributes) => attributes.avatar,
-                            key: 'avatar',
-                        },
-                        {
-                            getValue: (attributes) => attributes.balance,
-                            key: 'balance',
-                        },
-                        {
-                            getValue: (attributes) => attributes.name,
-                            key: 'name',
-                        },
-                        {
-                            getValue: (attributes) => attributes.slug,
-                            key: 'slug',
-                        },
-                    ],
-                ));
+            if (!_.isEmpty(userCampaigns)) {
+                accountOptionsArray = _.concat(accountOptionsArray, campaignAccountLabel,
+                    getDropDownOptionFromApiData(
+                        userCampaigns,
+                        null,
+                        (item) => item.attributes.fundId,
+                        (attributes) => `${attributes.fundName}: ${formatCurrency(attributes.balance, language, currency)}`,
+                        (attributes) => false,
+                        [
+                            {
+                                getValue: (attributes) => attributes.avatar,
+                                key: 'avatar',
+                            },
+                            {
+                                getValue: (attributes) => attributes.balance,
+                                key: 'balance',
+                            },
+                            {
+                                getValue: (attributes) => attributes.name,
+                                key: 'name',
+                            },
+                            {
+                                getValue: (attributes) => attributes.slug,
+                                key: 'slug',
+                            },
+                        ],
+                    ));
+            }
         }
         if (!_.isEmpty(companiesAccountsData)) {
             accountOptionsArray = _.concat(accountOptionsArray, companiesAccountLabel,

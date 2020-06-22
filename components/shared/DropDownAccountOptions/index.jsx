@@ -48,8 +48,8 @@ class DropDownAccountOptions extends React.Component {
             fund,
             giveTo,
             giveFromUrl,
-            userCampaigns,
-            userGroups,
+            userAdminCampaigns,
+            userAdminGroups,
             userAccountsFetched,
             selectedValue,
             validity,
@@ -77,11 +77,13 @@ class DropDownAccountOptions extends React.Component {
         const {
             updatePlaceHolder,
         } = this.state;
+        const userGroups = _.cloneDeep(userAdminGroups);
+        const userCampaigns = _.cloneDeep(userAdminCampaigns);
         const giveFromHeader = (type === 'donations') ? formatMessage('addingToLabel') : formatMessage('giveFromLabel');
         const giveFromPlaceHolder = (type === 'donations') ? formatMessage('destinationaccountPlaceHolder') : formatMessage('accountPlaceHolder');
         const newPlaceholder = updatePlaceHolder ? formatMessage('searchPlaceholder') : giveFromPlaceHolder;
         let newPlaceholderValue = '';
-        if (!_.isEmpty(companiesAccountsData) || !_.isEmpty(userCampaigns) || !_.isEmpty(userGroups)) {
+        if (!_.isEmpty(companiesAccountsData) || !_.isEmpty(userAdminCampaigns) || !_.isEmpty(userAdminGroups)) {
             if (giveTo && giveTo.value && giveFromUrl) {
                 dropDownData = populateAccountOptions({
                     avatar,
@@ -205,8 +207,8 @@ const mapStateToProps = (state, props) => {
         currentUser: state.user.info,
         fund: state.user.fund,
         userAccountsFetched: state.user.userAccountsFetched,
-        userCampaigns: state.user.userCampaigns,
-        userGroups: state.user.userGroups,
+        userAdminCampaigns: state.user.userCampaigns,
+        userAdminGroups: state.user.userGroups,
     };
 };
 
