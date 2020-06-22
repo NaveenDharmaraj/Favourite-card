@@ -8000,3 +8000,142 @@ body .userEllips{
       }
   }
 }
+/*********NOAvailable******************/
+.NotAvailable{
+    position: relative;
+    overflow: hidden;
+    min-height: 67vh;
+    @media only screen and (max-width:991px) and (min-width:768px){
+      min-height: 39vh;
+    }
+    @media only screen and (max-width:1366px) and (min-width:992px){
+      min-height: 43vh;
+    }
+    &::before{
+      position: absolute;
+      right: 0px;
+      background-image: url(../images/error_bg.png) !important;
+      background-size: contain !important;
+      background-repeat: no-repeat !important;
+      background-position: center !important;
+      content: "";
+      height: 714px;
+      width: 733px;
+      top: 100px;
+      @media only screen and (max-width:1366px) and (min-width:1200px){
+      height: 644px;
+      width: 434px !important;
+      }
+      @media only screen and (max-width:1199px) and (min-width:992px){
+      height: 534px;
+      width: 442px !important;
+    }
+    @media only screen and (max-width:991px) and (min-width:891px){
+    height: 364px;
+    width: 343px !important;
+  }
+  @media only screen and (max-width:890px) and (min-width:768px){
+    height: 364px;
+    width: 246px !important;
+  }
+  @media only screen and (max-width:767px) and (min-width:481px){
+    top:56%;
+    height: 346px;
+    width: 350px !important;
+  }
+  @media only screen and (max-width:480px) and (min-width:320px){
+    top:56%;
+    height: 396px;
+    width: 292px !important;
+  }
+    }
+    .ImgAvailable {
+        margin-top:58%;
+        float: right;
+        @media only screen and (max-width:1400px) {
+          float: none;
+        }
+        @media only screen and (max-width:1199px) {
+          float: right;
+        }
+        @media only screen and (max-width:1199px) {
+          margin-top:200px;
+        }
+        @media only screen and (max-width:767px) {
+        margin-top: 70px;
+        margin-bottom: 35px;
+      }
+    }
+    .AvailableText{
+      max-width:525px;
+      width: 100%;
+      margin-top: 190px;
+      margin-left:100px;
+      @media only screen and (max-width:1199px) {
+        margin-left:20px;
+      }
+      @media only screen and (max-width:992px) {
+        margin-top: 130px;
+        margin-left: 0px;
+        max-width:450px;
+      }
+      @media only screen and (max-width:767px) {
+        margin: 80px auto auto auto;
+        max-width: 550px;
+      }
+      @media only screen and (max-width:500px) {
+        max-width:380px;
+      }
+      .ui{
+        &.list{
+          @media only screen and (min-width: 768px){
+            width: 490px;
+          }
+        }
+      }
+    }
+    h1{
+      &.ui{
+        &.header{
+          font-size: 42px;
+          line-height: 52px;
+          color: @grey-darken-5;
+          font-family: 'ProximaNova-Regular';
+          font-weight: bold;
+          @media only screen and (max-width:992px) {
+            font-size:36px;
+            line-height: 44px;
+          }
+        }
+      }
+    }
+    h4{
+      &.ui{
+        &.header{
+          font-size:24px;
+          line-height:29px;
+          font-family: 'ProximaNova-medium';
+          color:@font-color;
+        }
+      }
+    }
+    .ui{
+      &.list{
+        .item{
+          font-size: 16px;
+          line-height: 20px;
+          font-family: 'ProximaNova-Regular';
+          color: @grey-darken-5;
+          a{
+            color:#0057E9;
+            text-decoration: underline;
+            font-family: 'ProximaNova-medium';
+          }
+        }
+      }
+    }
+  }
+  /*********NOAvailable******************/
+  .chimpLayout{
+  min-height: 60vh;
+}
