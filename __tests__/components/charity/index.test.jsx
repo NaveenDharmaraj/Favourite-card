@@ -22,7 +22,7 @@ describe('Testing Charity Profile wrapper file', () => {
                 {...props}
             />,
         );
-        expect(wrapper.find('.ch_headerImage').exists()).toBe(true);
+        expect(wrapper.find({ 'data-test': 'CharityProfileWrapper_container_div' }).exists()).toBe(true);
     });
 
     test('testing mapstatetoprops', () => {

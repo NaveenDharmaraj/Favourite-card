@@ -32,7 +32,7 @@ describe('Testing ReceivingOrganisation Component', () => {
                 {...props}
             />,
         );
-        expect(wrapper.find('.ScrollData').exists()).toBe(true);
+        expect(wrapper.find({ 'data-test': 'receivingOrganisations_doneeList_div' }).exists()).toBe(true);
     });
     test('Testing ComponentDidMount', () => {
         const spyFunc = jest.spyOn(charityActions, 'getBeneficiaryDoneeList');
@@ -52,7 +52,7 @@ describe('Testing ReceivingOrganisation Component', () => {
                 {...props}
             />,
         );
-        expect(wrapper.find('.Ch_total').exists()).toBe(true);
+        expect(wrapper.find({ 'data-test': 'receivingOrganisations_totalAmount_div' }).exists()).toBe(true);
     });
     test('Testing mapStateToProps', () => {
         const initialState = {

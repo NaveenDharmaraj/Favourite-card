@@ -5,47 +5,42 @@ import {
 
 import ChartSummary from '../../../components/charity/ChartSummary';
 
+const getProps = () => ({
+    color: "#C995D3",
+    text: "Fundraising",
+    value: 10000,
+    hideGift: false,
+    handleClick: jest.fn(),
+    showViewButton: false,
+    t: jest.fn()
+});
+
 describe('Testing chart summary component', () => {
+    const props = getProps();
     test('Testing component rendered', () => {
         const wrapper = mount(
             <ChartSummary
-                color="#C995D3"
-                text="Fundraising"
-                value={10000}
-                hideGift={false}
-                handleClick={() => {}}
-                showViewButton={false}
-                t={() => {}}
+                {...props}
             />,
         );
-        expect(wrapper.find('.expenseRow').exists()).toBe(true);
+        expect(wrapper.find({ 'data-test': 'ChartSummary_expenses_summary_div' }).exists()).toBe(true);
     });
     test('Testing hide summary', () => {
         const wrapper = mount(
             <ChartSummary
-                color="#C995D3"
-                text="Fundraising"
-                value={10000}
+                {...props}
                 hideGift
-                handleClick={() => {}}
-                showViewButton={false}
-                t={() => {}}
             />,
         );
-        expect(wrapper.find('.expenseRow').exists()).toBe(false);
+        expect(wrapper.find({ 'data-test': 'ChartSummary_expenses_summary_div' }).exists()).toBe(false);
     });
     test('Testing gift summary', () => {
         const wrapper = mount(
             <ChartSummary
-                color="#C995D3"
-                text="Fundraising"
-                value={10000}
-                hideGift={false}
-                handleClick={() => {}}
+                {...props}
                 showViewButton
-                t={() => {}}
             />,
         );
-        expect(wrapper.find({ 'data-test': 'profile_charity_giftButton' }).exists()).toBe(true);
+        expect(wrapper.find({ 'data-test': 'ChartSummary_giftViewButton_button' }).exists()).toBe(true);
     });
 });

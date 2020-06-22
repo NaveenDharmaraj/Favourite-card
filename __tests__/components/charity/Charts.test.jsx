@@ -52,7 +52,7 @@ describe('Testing Chart Component', () => {
                 chartLoader={false}
             />,
         );
-        expect(wrapper.find('Bar').exists()).toBe(true);
+        expect(wrapper.find({ 'data-test': 'Charts_graph_div' }).exists()).toBe(true);
     });
     test('Testing Loader is rendered', () => {
         const wrapper = mount(
@@ -60,7 +60,7 @@ describe('Testing Chart Component', () => {
                 chartLoader
             />,
         );
-        expect(wrapper.find('Loader').exists()).toBe(true);
+        expect(wrapper.find({ 'data-test': 'Charts_Loader_div' }).exists()).toBe(true);
     });
     test('Testing No Data scenario', () => {
         const wrapper = mount(
@@ -68,7 +68,7 @@ describe('Testing Chart Component', () => {
                 chartLoader={false}
             />,
         );
-        expect(wrapper.find('CharityNoDataState').exists()).toBe(true);
+        expect(wrapper.find({ 'data-test': 'CharityNoDataState_no_data_table' }).exists()).toBe(true);
     });
     test('Testing ComponentDidUpdate', () => {
         const wrapper = shallow(
@@ -91,7 +91,7 @@ describe('Testing Chart Component', () => {
                 />
             </Provider>,
         );
-        wrapper.find({ 'data-test': 'profile_charity_giftButton' }).at(1).simulate('click');
+        wrapper.find({ 'data-test': 'ChartSummary_giftViewButton_button' }).at(1).simulate('click');
         expect(wrapper.find('ReceivingOrganisations').exists()).toBe(true);
     });
 
@@ -105,7 +105,7 @@ describe('Testing Chart Component', () => {
                 />
             </Provider>,
         );
-        wrapper.find({ 'data-test': 'profile_charity_giftButton' }).at(1).simulate('click');
+        wrapper.find({ 'data-test': 'ChartSummary_giftViewButton_button' }).at(1).simulate('click');
         wrapper.find('Portal').find('Icon').simulate('click');
         expect(wrapper.find('ReceivingOrganisations').exists()).toBe(false);
     });

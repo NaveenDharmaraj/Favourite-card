@@ -25,7 +25,7 @@ describe('Testing UserDetails component', () => {
                 {...props}
             />,
         );
-        expect(wrapper.find('.charityInfowrap').exists()).toBe(true);
+        expect(wrapper.find({ 'data-test': 'UserDetails_charityInfoWrapper_div' }).exists()).toBe(true);
     });
     test('Testing claimed charity scenario', () => {
         const modifiedProps = {
@@ -43,7 +43,7 @@ describe('Testing UserDetails component', () => {
                 {...modifiedProps}
             />,
         );
-        expect(wrapper.find('.charityInfoClaim').exists()).toBe(true);
+        expect(wrapper.find({ 'data-test': 'UserDetails_claimCharitybutton_button' }).exists()).toBe(true);
     });
     test('Testing button url for Login user', () => {
         const wrapper = mount(
@@ -66,7 +66,7 @@ describe('Testing UserDetails component', () => {
         );
         expect(wrapper.find('a').find(
             {
-                'href': 'undefined/send/to/charity/the-canadian-red-cross-society-la-societe-canadienne-de-la-croix-rouge/gift/new'
+                'href': 'undefined/send/to/charity/the-canadian-red-cross-society-la-societe-canadienne-de-la-croix-rouge/gift/new',
             },
         ).exists()).toBe(true);
     });
@@ -86,16 +86,16 @@ describe('Testing UserDetails component', () => {
                 {...modifiedProps}
             />,
         );
-        expect(wrapper.find({ 'data-test': 'profile_charity_give_button' }).exists()).toBe(false);
+        expect(wrapper.find({ 'data-test': 'UserDetails_giveButton_button' }).exists()).toBe(false);
     });
-    test('Testing contactName does not exists', () => {
+    test('Testing contactName', () => {
         const modifiedProps = {
             ...props,
             charityDetails: {
                 ...props.charityDetails,
                 attributes: {
                     ...props.charityDetails.attributes,
-                    contactName: '',
+                    contactName: 'test contact name',
                 },
             },
         };
@@ -104,16 +104,16 @@ describe('Testing UserDetails component', () => {
                 {...modifiedProps}
             />,
         );
-        expect(wrapper.find('i').find('.user').exists()).toBe(false);
+        expect(wrapper.find({ 'data-test': 'UserDetails_charityInformation_user' }).at(1).text()).toEqual('undefined: test contact name');
     });
-    test('testing phone number does not exists', () => {
+    test('Testing phone number', () => {
         const modifiedProps = {
             ...props,
             charityDetails: {
                 ...props.charityDetails,
                 attributes: {
                     ...props.charityDetails.attributes,
-                    phone: '',
+                    phone: '12345 67890',
                 },
             },
         };
@@ -122,16 +122,16 @@ describe('Testing UserDetails component', () => {
                 {...modifiedProps}
             />,
         );
-        expect(wrapper.find('i').find('.phone').exists()).toBe(false);
+        expect(wrapper.find({ 'data-test': 'UserDetails_charityInformation_phone' }).at(1).text()).toEqual('12345 67890');
     });
-    test('testing email address does not exists', () => {
+    test('Testing email address', () => {
         const modifiedProps = {
             ...props,
             charityDetails: {
                 ...props.charityDetails,
                 attributes: {
                     ...props.charityDetails.attributes,
-                    email: '',
+                    email: 'test@charitableimpact.com',
                 },
             },
         };
@@ -140,16 +140,16 @@ describe('Testing UserDetails component', () => {
                 {...modifiedProps}
             />,
         );
-        expect(wrapper.find('i').find('.mail').exists()).toBe(false);
+        expect(wrapper.find({ 'data-test': 'UserDetails_charityInformation_mail' }).at(1).text()).toEqual('test@charitableimpact.com');
     });
-    test('testing website address does not exists', () => {
+    test('Testing website address', () => {
         const modifiedProps = {
             ...props,
             charityDetails: {
                 ...props.charityDetails,
                 attributes: {
                     ...props.charityDetails.attributes,
-                    website: '',
+                    website: 'charitableimpact.com',
                 },
             },
         };
@@ -158,16 +158,16 @@ describe('Testing UserDetails component', () => {
                 {...modifiedProps}
             />,
         );
-        expect(wrapper.find('i').find('.linkify').exists()).toBe(false);
+        expect(wrapper.find({ 'data-test': 'UserDetails_charityInformation_linkify' }).at(1).text()).toEqual('charitableimpact.com');
     });
-    test('testing staff does not exists', () => {
+    test('Testing Staff Count', () => {
         const modifiedProps = {
             ...props,
             charityDetails: {
                 ...props.charityDetails,
                 attributes: {
                     ...props.charityDetails.attributes,
-                    staffCount: 0,
+                    staffCount: 42,
                 },
             },
         };
@@ -176,34 +176,16 @@ describe('Testing UserDetails component', () => {
                 {...modifiedProps}
             />,
         );
-        expect(wrapper.find('i').find('.users').exists()).toBe(false);
+        expect(wrapper.find({ 'data-test': 'UserDetails_charityInformation_users' }).at(1).text()).toEqual('42');
     });
-    test('testing Business Number does not exists', () => {
+    test('Testing Business Number', () => {
         const modifiedProps = {
             ...props,
             charityDetails: {
                 ...props.charityDetails,
                 attributes: {
                     ...props.charityDetails.attributes,
-                    businessNumber: '',
-                },
-            },
-        };
-        const wrapper = mount(
-            <UserDetails
-                {...modifiedProps}
-            />
-        );
-        expect(wrapper.find('i').find('.briefcase').exists()).toBe(false);
-    });
-    test('testing Headquarter Address does not exists', () => {
-        const modifiedProps = {
-            ...props,
-            charityDetails: {
-                ...props.charityDetails,
-                attributes: {
-                    ...props.charityDetails.attributes,
-                    headQuarterAddress: '',
+                    businessNumber: '1234 5678',
                 },
             },
         };
@@ -212,7 +194,25 @@ describe('Testing UserDetails component', () => {
                 {...modifiedProps}
             />,
         );
-        expect(wrapper.find('i').find('.marker').exists()).toBe(false);
+        expect(wrapper.find({ 'data-test': 'UserDetails_charityInformation_briefcase' }).at(1).text()).toEqual('1234 5678');
+    });
+    test('testing Headquarter Address', () => {
+        const modifiedProps = {
+            ...props,
+            charityDetails: {
+                ...props.charityDetails,
+                attributes: {
+                    ...props.charityDetails.attributes,
+                    headQuarterAddress: 'Vancover BC',
+                },
+            },
+        };
+        const wrapper = mount(
+            <UserDetails
+                {...modifiedProps}
+            />,
+        );
+        expect(wrapper.find({ 'data-test': 'UserDetails_charityInformation_marker' }).at(1).text()).toEqual('Vancover BC');
     });
     test('Testing mapStateToProps', () => {
         const initialState = {
