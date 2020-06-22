@@ -69,6 +69,10 @@ class SearchResultsCharities extends React.Component {
                     if (newValues && newValues.length > 0) {
                         filterobj['Charity designation'] = newValues;
                     }
+                } else if (key === 'language') {
+                    if (newValues && newValues.length > 0) {
+                        filterobj.Language = newValues;
+                    }
                 }
             });
         }
