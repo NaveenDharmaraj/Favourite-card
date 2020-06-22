@@ -27,7 +27,7 @@ const CharityProfileWrapper = (props) => {
         name,
     ];
     return (
-        <Container>
+        <Container data-test="CharityProfileWrapper_container_div">
             <div className="top-breadcrumb">
                 <BreadcrumbDetails
                     pathDetails={pathArr}

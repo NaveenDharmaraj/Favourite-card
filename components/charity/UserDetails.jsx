@@ -98,7 +98,7 @@ const UserDetails = (props) => {
                         <List.Item>
                             <List.Icon name={value.name} />
                             {value.link && (
-                                <List.Content>
+                                <List.Content data-test={`UserDetails_charityInformation_${value.name}`}>
                                     <a href={value.link} target={value.name === 'linkify' ? '_blank' : '_self'}>
                                         {value.Content}
                                     </a>
@@ -106,7 +106,7 @@ const UserDetails = (props) => {
                             )}
                             {!value.link
                             && (
-                                <List.Content>
+                                <List.Content data-test={`UserDetails_charityInformation_${value.name}`}>
                                     {value.Content}
                                 </List.Content>
                             )}
@@ -121,19 +121,19 @@ const UserDetails = (props) => {
         if (isAuthenticated) {
             buttonLink = (
                 <Link route={(`/give/to/charity/${slug}/gift/new`)}>
-                    <Button data-test="profile_charity_give_button" className="blue-btn-rounded-def">{formatMessage('charityProfile:give')}</Button>
+                    <Button data-test="UserDetails_giveButton_button" className="blue-btn-rounded-def">{formatMessage('charityProfile:give')}</Button>
                 </Link>
             );
         } else {
             buttonLink = (
                 <a href={(`${RAILS_APP_URL_ORIGIN}/send/to/charity/${slug}/gift/new`)}>
-                    <Button data-test="profile_charity_give_button" className="blue-btn-rounded-def">{formatMessage('charityProfile:give')}</Button>
+                    <Button data-test="UserDetails_giveButton_button" className="blue-btn-rounded-def">{formatMessage('charityProfile:give')}</Button>
                 </a>
             );
         }
     }
     return (
-        <div className="charityInfowrap">
+        <div className="charityInfowrap" data-test="UserDetails_charityInfoWrapper_div">
             <div className="charityInfo">
                 <Header as="h4">
                     {formatMessage('charityProfile:charityInformation')}
@@ -145,7 +145,7 @@ const UserDetails = (props) => {
             </div>
             {(!isClaimed)
                 && (
-                    <div className="charityInfoClaim">
+                    <div className="charityInfoClaim" data-test="UserDetails_claimCharitybutton_button">
                         <p>
                             {`* ${formatMessage('charityProfile:claimCharityInfo')}`}
                         </p>

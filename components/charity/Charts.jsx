@@ -253,7 +253,7 @@ class Charts extends React.Component {
                     <Grid>
                         <Grid.Row>
                             <Grid.Column mobile={16} tablet={16} computer={16}>
-                                <div className="graph">
+                                <div className="graph" data-test="Charts_graph_div">
                                     <Grid.Column>
                                         <Bar
                                             onElementsClick={this.handleClick}
@@ -363,6 +363,7 @@ class Charts extends React.Component {
                                     <Grid.Row>
                                         <Grid.Column mobile={16} tablet={16} computer={16}>
                                             <div
+                                                data-test="Charts_Loader_div"
                                                 style={{
                                                     height: '260px',
                                                     position: 'relative',

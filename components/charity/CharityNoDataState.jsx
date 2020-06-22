@@ -17,7 +17,7 @@ const CharityNoDataState = (props) => {
         t: formatMessage,
     } = props;
     return (
-        <Table basic className="ch_profileNodata">
+        <Table basic className="ch_profileNodata" data-test="CharityNoDataState_no_data_table">
             <Table.Body>
                 <Card fluid className="noData rightImg noHeader">
                     <Card.Content>
