@@ -196,11 +196,10 @@ class ChatMessageFooter extends React.Component {
                         >
                         </Button>
                     </Form.Field>
-                    {profaineErrorCheck && <FormValidationErrorMessage
+                    <FormValidationErrorMessage
                         condition={profaineErrorCheck}
                         errorMessage={"Please avoid using profane words"}
                     />
-                    }
                 </Form>
             </div>
         );
