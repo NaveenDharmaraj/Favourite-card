@@ -23,6 +23,7 @@ import _ from 'lodash';
 import '../../../static/less/header.less';
 import '../../../static/less/style.less';
 import { isValidBrowser } from '../../../helpers/utils';
+import storage from '../../../helpers/storage';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -244,7 +245,8 @@ class Layout extends React.Component {
             returnToProps = localStorage.getItem('auth0ReturnProps');
             returnToProps = JSON.parse(returnToProps);
         };
-        if (returnToProps && returnToProps.returnTo === '/claim-charity') {
+        const claimCharityAccessCode = storage.get('claimToken','local');
+        if(claimCharityAccessCode) {
             isClaimCharity = true;
         }
         else {

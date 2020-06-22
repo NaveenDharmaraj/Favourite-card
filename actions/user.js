@@ -254,6 +254,7 @@ export const wpLogin = (token = null) => {
 
 export const chimpLogin = (token = null, options = null) => {
     let params = null;
+    const claimCharityAccessCode = storage.get('claimToken','local');
     if (!_.isEmpty(token)) {
         params = {
             headers: {
@@ -261,20 +262,14 @@ export const chimpLogin = (token = null, options = null) => {
             },
         };
     }
-    const claimCharityAccessCode = storage.get('accessCode');
-
+    
     if (options && typeof options === 'object') {
         params = {
             ...params,
             params: {
                 ...options,
+                beneficiaryClaimToken: claimCharityAccessCode,
             },
-            data: {
-                type: "claimCharities",
-                attributes: {
-                    claimToken: claimCharityAccessCode
-                }
-            }
         }
     }
     return authRorApi.post(`/auth/login`, null, params);
@@ -900,7 +895,7 @@ export const checkClaimCharityAccessCode = (accessCode, userId) => (dispatch) =>
                     }
                 } = fsa.payload;
                 if (success) {
-                    storage.set('accessToken', accessCode, 'local');
+                    storage.set('claimToken', accessCode, 'local');
                     Router.pushRoute('/users/login');
                 }
             }).catch(() => {
