@@ -25,7 +25,7 @@ describe('Testing UserDetails component', () => {
                 {...props}
             />,
         );
-        expect(wrapper.find({ 'data-test': 'UserDetails_charityInfoWrapper_div' }).exists()).toBe(true);
+        expect(wrapper.find({ 'data-test': 'Charity_UserDetails_charityInfoWrapper' }).exists()).toBe(true);
     });
     test('Testing claimed charity scenario', () => {
         const modifiedProps = {
@@ -43,7 +43,7 @@ describe('Testing UserDetails component', () => {
                 {...modifiedProps}
             />,
         );
-        expect(wrapper.find({ 'data-test': 'UserDetails_claimCharitybutton_button' }).exists()).toBe(true);
+        expect(wrapper.find({ 'data-test': 'Charity_UserDetails_claimCharitybutton' }).exists()).toBe(true);
     });
     test('Testing button url for Login user', () => {
         const wrapper = mount(
@@ -86,7 +86,7 @@ describe('Testing UserDetails component', () => {
                 {...modifiedProps}
             />,
         );
-        expect(wrapper.find({ 'data-test': 'UserDetails_giveButton_button' }).exists()).toBe(false);
+        expect(wrapper.find({ 'data-test': 'Charity_UserDetails_giveButton' }).exists()).toBe(false);
     });
     test('Testing contactName', () => {
         const modifiedProps = {
@@ -104,7 +104,7 @@ describe('Testing UserDetails component', () => {
                 {...modifiedProps}
             />,
         );
-        expect(wrapper.find({ 'data-test': 'UserDetails_charityInformation_user' }).at(1).text()).toEqual('undefined: test contact name');
+        expect(wrapper.find({ 'data-test': 'Charity_UserDetails_charityInformation_user' }).at(1).text()).toEqual('undefined: test contact name');
     });
     test('Testing phone number', () => {
         const modifiedProps = {
@@ -122,7 +122,7 @@ describe('Testing UserDetails component', () => {
                 {...modifiedProps}
             />,
         );
-        expect(wrapper.find({ 'data-test': 'UserDetails_charityInformation_phone' }).at(1).text()).toEqual('12345 67890');
+        expect(wrapper.find({ 'data-test': 'Charity_UserDetails_charityInformation_phone' }).at(1).text()).toEqual('12345 67890');
     });
     test('Testing email address', () => {
         const modifiedProps = {
@@ -140,7 +140,7 @@ describe('Testing UserDetails component', () => {
                 {...modifiedProps}
             />,
         );
-        expect(wrapper.find({ 'data-test': 'UserDetails_charityInformation_mail' }).at(1).text()).toEqual('test@charitableimpact.com');
+        expect(wrapper.find({ 'data-test': 'Charity_UserDetails_charityInformation_mail' }).at(1).text()).toEqual('test@charitableimpact.com');
     });
     test('Testing website address', () => {
         const modifiedProps = {
@@ -158,7 +158,7 @@ describe('Testing UserDetails component', () => {
                 {...modifiedProps}
             />,
         );
-        expect(wrapper.find({ 'data-test': 'UserDetails_charityInformation_linkify' }).at(1).text()).toEqual('charitableimpact.com');
+        expect(wrapper.find({ 'data-test': 'Charity_UserDetails_charityInformation_linkify' }).at(1).text()).toEqual('charitableimpact.com');
     });
     test('Testing Staff Count', () => {
         const modifiedProps = {
@@ -176,7 +176,7 @@ describe('Testing UserDetails component', () => {
                 {...modifiedProps}
             />,
         );
-        expect(wrapper.find({ 'data-test': 'UserDetails_charityInformation_users' }).at(1).text()).toEqual('42');
+        expect(wrapper.find({ 'data-test': 'Charity_UserDetails_charityInformation_users' }).at(1).text()).toEqual('42');
     });
     test('Testing Business Number', () => {
         const modifiedProps = {
@@ -194,7 +194,7 @@ describe('Testing UserDetails component', () => {
                 {...modifiedProps}
             />,
         );
-        expect(wrapper.find({ 'data-test': 'UserDetails_charityInformation_briefcase' }).at(1).text()).toEqual('1234 5678');
+        expect(wrapper.find({ 'data-test': 'Charity_UserDetails_charityInformation_briefcase' }).at(1).text()).toEqual('1234 5678');
     });
     test('testing Headquarter Address', () => {
         const modifiedProps = {
@@ -212,7 +212,7 @@ describe('Testing UserDetails component', () => {
                 {...modifiedProps}
             />,
         );
-        expect(wrapper.find({ 'data-test': 'UserDetails_charityInformation_marker' }).at(1).text()).toEqual('Vancover BC');
+        expect(wrapper.find({ 'data-test': 'Charity_UserDetails_charityInformation_marker' }).at(1).text()).toEqual('Vancover BC');
     });
     test('Testing mapStateToProps', () => {
         const initialState = {

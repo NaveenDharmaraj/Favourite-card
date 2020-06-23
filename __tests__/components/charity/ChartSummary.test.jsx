@@ -23,7 +23,7 @@ describe('Testing chart summary component', () => {
                 {...props}
             />,
         );
-        expect(wrapper.find({ 'data-test': 'ChartSummary_expenses_summary_div' }).exists()).toBe(true);
+        expect(wrapper.find({ 'data-test': 'Charity_ChartSummary_expenses_summary' }).exists()).toBe(true);
     });
     test('Testing hide summary', () => {
         const wrapper = mount(
@@ -32,7 +32,7 @@ describe('Testing chart summary component', () => {
                 hideGift
             />,
         );
-        expect(wrapper.find({ 'data-test': 'ChartSummary_expenses_summary_div' }).exists()).toBe(false);
+        expect(wrapper.find({ 'data-test': 'Charity_ChartSummary_expenses_summary' }).exists()).toBe(false);
     });
     test('Testing gift summary', () => {
         const wrapper = mount(
@@ -41,6 +41,6 @@ describe('Testing chart summary component', () => {
                 showViewButton
             />,
         );
-        expect(wrapper.find({ 'data-test': 'ChartSummary_giftViewButton_button' }).exists()).toBe(true);
+        expect(wrapper.find({ 'data-test': 'Charity_ChartSummary_viewGiftButton' }).exists()).toBe(true);
     });
 });

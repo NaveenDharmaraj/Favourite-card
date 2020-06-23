@@ -21,8 +21,8 @@ describe('Testing ProgramAreas Component', () => {
                 t={jest.fn()}
             />,
         );
-        expect(wrapper.find({ 'data-test': 'ProgramAreas_programs_section_div' }).exists()).toBe(true);
-        expect(wrapper.find({ 'data-test': 'CharityNoDataState_no_data_table' }).exists()).toBe(false);
+        expect(wrapper.find({ 'data-test': 'Charity_ProgramAreas_programs_section' }).exists()).toBe(true);
+        expect(wrapper.find({ 'data-test': 'Charity_CharityNoDataState_noData' }).exists()).toBe(false);
     });
     test('Testing No data', () => {
         const wrapper = mount(
@@ -31,7 +31,7 @@ describe('Testing ProgramAreas Component', () => {
                 t={jest.fn()}
             />,
         );
-        expect(wrapper.find({ 'data-test': 'CharityNoDataState_no_data_table' }).exists()).toBe(true);
+        expect(wrapper.find({ 'data-test': 'Charity_CharityNoDataState_noData' }).exists()).toBe(true);
     });
     test('Testing mapStateToProps', () => {
         const initialState = {

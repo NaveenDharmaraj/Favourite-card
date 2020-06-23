@@ -52,7 +52,7 @@ describe('Testing Chart Component', () => {
                 chartLoader={false}
             />,
         );
-        expect(wrapper.find({ 'data-test': 'Charts_graph_div' }).exists()).toBe(true);
+        expect(wrapper.find({ 'data-test': 'Charity_Charts_graph' }).exists()).toBe(true);
     });
     test('Testing Loader is rendered', () => {
         const wrapper = mount(
@@ -60,7 +60,7 @@ describe('Testing Chart Component', () => {
                 chartLoader
             />,
         );
-        expect(wrapper.find({ 'data-test': 'Charts_Loader_div' }).exists()).toBe(true);
+        expect(wrapper.find({ 'data-test': 'Charity_Charts_Loader' }).exists()).toBe(true);
     });
     test('Testing No Data scenario', () => {
         const wrapper = mount(
@@ -68,7 +68,7 @@ describe('Testing Chart Component', () => {
                 chartLoader={false}
             />,
         );
-        expect(wrapper.find({ 'data-test': 'CharityNoDataState_no_data_table' }).exists()).toBe(true);
+        expect(wrapper.find({ 'data-test': 'Charity_CharityNoDataState_noData' }).exists()).toBe(true);
     });
     test('Testing ComponentDidUpdate', () => {
         const wrapper = shallow(
@@ -91,8 +91,8 @@ describe('Testing Chart Component', () => {
                 />
             </Provider>,
         );
-        wrapper.find({ 'data-test': 'ChartSummary_giftViewButton_button' }).at(1).simulate('click');
-        expect(wrapper.find('ReceivingOrganisations').exists()).toBe(true);
+        wrapper.find({ 'data-test': 'Charity_ChartSummary_viewGiftButton' }).at(1).simulate('click');
+        expect(wrapper.find({ 'data-test': 'Charity_ReceivingOrganisations_doneeListModal'}).exists()).toBe(true);
     });
 
     test('Testing ReceivingOrganisations modal to close on close button click', () => {
@@ -105,9 +105,9 @@ describe('Testing Chart Component', () => {
                 />
             </Provider>,
         );
-        wrapper.find({ 'data-test': 'ChartSummary_giftViewButton_button' }).at(1).simulate('click');
+        wrapper.find({ 'data-test': 'Charity_ChartSummary_viewGiftButton' }).at(1).simulate('click');
         wrapper.find('Portal').find('Icon').simulate('click');
-        expect(wrapper.find('ReceivingOrganisations').exists()).toBe(false);
+        expect(wrapper.find({ 'data-test': 'Charity_ReceivingOrganisations_doneeListModal'}).exists()).toBe(false);
     });
 
     test('Testing mapStateToProps', () => {

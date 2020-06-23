@@ -23,7 +23,7 @@ describe('Testing CharityDetails component', () => {
                 isAUthenticated
             />,
         );
-        expect(wrapper.find({ 'data-test': 'CharityDetails_wrapper_grid' }).exists()).toBe(true);
+        expect(wrapper.find({ 'data-test': 'Charity_CharityDetails_wrapper' }).exists()).toBe(true);
     });
     test('Testing component without causes', () => {
         const modifiedProps = {
@@ -41,7 +41,7 @@ describe('Testing CharityDetails component', () => {
                 {...modifiedProps}
             />,
         );
-        expect(wrapper.find({ 'data-test': 'CharityDetails_causes_span' }).length).toEqual(0);
+        expect(wrapper.find({ 'data-test': 'Charity_CharityDetails_causes' }).length).toEqual(0);
     });
     test('Testing component with causes', () => {
         const wrapper = shallow(
@@ -49,7 +49,7 @@ describe('Testing CharityDetails component', () => {
                 {...props}
             />,
         );
-        expect(wrapper.find({ 'data-test': 'CharityDetails_causes_span' }).length).toEqual(3);
+        expect(wrapper.find({ 'data-test': 'Charity_CharityDetails_causes' }).length).toEqual(3);
     });
     test('Testing component with formattedDescription and formattedDescriptionNew', () => {
         const wrapper = shallow(
@@ -57,8 +57,8 @@ describe('Testing CharityDetails component', () => {
                 {...props}
             />,
         );
-        expect(wrapper.find({ 'data-test': 'CharityDetails_description_p' }).exists()).toBe(true);
-        expect(wrapper.find({ 'data-test': 'CharityDetails_new_description_p' }).exists()).toBe(true);
+        expect(wrapper.find({ 'data-test': 'Charity_CharityDetails_description' }).exists()).toBe(true);
+        expect(wrapper.find({ 'data-test': 'Charity_CharityDetails_new_description' }).exists()).toBe(true);
     });
     test('Testing component Without formattedDescription and formattedDescriptionNew', () => {
         const modifiedProps = {
@@ -77,8 +77,8 @@ describe('Testing CharityDetails component', () => {
                 {...modifiedProps}
             />,
         );
-        expect(wrapper.find({ 'data-test': 'CharityDetails_description_p' }).exists()).toBe(false);
-        expect(wrapper.find({ 'data-test': 'CharityDetails_new_description_p' }).exists()).toBe(false);
+        expect(wrapper.find({ 'data-test': 'Charity_CharityDetails_description' }).exists()).toBe(false);
+        expect(wrapper.find({ 'data-test': 'Charity_CharityDetails_new_description' }).exists()).toBe(false);
     });
     test('Testing mapStateToProps', () => {
         const initialState = {
