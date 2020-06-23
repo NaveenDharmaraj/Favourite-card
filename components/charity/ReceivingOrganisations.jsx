@@ -84,11 +84,11 @@ class ReceivingOrganisations extends React.Component {
                 <PlaceholderGrid row={5} column={1} placeholderType="multiLine" />
             ) : (
                 <Fragment>
-                    <div className="ScrollData" data-test="receivingOrganisations_doneeList_div">
+                    <div className="ScrollData" data-test="Charity_ReceivingOrganisations_doneeListModal">
                         {viewData}
                         {(remainingElements > 20)
                             && (
-                                <div className="Ch_total" data-test="receivingOrganisations_totalAmount_div">
+                                <div className="Ch_total" data-test="Charity_ReceivingOrganisations_totalAmount">
                                     <Header as="h3">
                                         <p>
                                             {remainingElements}
