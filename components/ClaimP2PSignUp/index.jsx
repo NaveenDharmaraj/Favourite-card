@@ -4,6 +4,8 @@ import { Button, Form, Icon, Input } from 'semantic-ui-react';
 import _every from 'lodash/every';
 import _isEmpty from 'lodash/isEmpty';
 
+import { Router } from '../../routes';
+import coreApi from '../../services/coreApi';
 import FormValidationErrorMessage from '../shared/FormValidationErrorMessage';
 import { validateUserRegistrationForm } from '../../helpers/users/utils';
 const { publicRuntimeConfig } = getConfig();
@@ -15,6 +17,7 @@ class ClaimP2PSignUp extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            buttonClicked: false,
             firstName: '',
             lastName: '',
             password: '',
@@ -67,22 +70,66 @@ class ClaimP2PSignUp extends React.Component {
         this.setState(prevState => ({ pwdHide: !prevState.pwdHide }))
     }
 
-    isButtonDisabled = (params) => {
-        let validity = {};
-        params.forEach((param) => {
-            validity = validateUserRegistrationForm(param, this.state[param], validity);
-        });
-        return (_every(validity));
+    validateForm() {
+        const {
+            firstName,
+            lastName,
+            password,
+        } = this.state;
+        let validity = this.intializeValidations();
+        validity = validateUserRegistrationForm('firstName', firstName, validity);
+        validity = validateUserRegistrationForm('lastName', lastName, validity);
+        validity = validateUserRegistrationForm('password', password, validity);
+        return _every(validity);
+    }
+
+    handleSubmit(e) {
+        e.preventDefault();
+        const isValid = this.validateForm();
+        if (isValid) {
+            let {
+                firstName,
+                lastName,
+                password,
+            } = this.state;
+            const {
+                claimToken,
+                email,
+            } = this.props;
+            this.setState({
+                buttonClicked: true,
+            })
+            coreApi.post('/claimP2ps', {
+                data: {
+                    attributes: {
+                        firstName,
+                        lastName,
+                        email,
+                        password,
+                        claimToken,
+                    }
+                }
+            })
+                .then(res => {
+                   Router.push('/users/login');
+                })
+                .catch(err => {
+                     Router.push('/users/login');
+                })
+        };
+
     }
 
     render() {
         const {
+            buttonClicked,
             firstName,
             lastName,
             password,
             pwdHide,
             validity,
         } = this.state;
+        const eyeStyle = { color: pwdHide ? '#bebdbb' : '#7d7c78' }
         return (
             <Form className="claimp2pForm">
                 <Form.Group>
@@ -153,6 +200,7 @@ class ClaimP2PSignUp extends React.Component {
                                 onClick={this.handlePwdShow}
                                 className={(pwdHide) ? "" : "active"}
                                 link
+                                style={eyeStyle}
                             />
                         )}
                         width={16}
@@ -170,14 +218,13 @@ class ClaimP2PSignUp extends React.Component {
                     <span className={(validity.doesPwdhaveUpperCase) ? 'blueText' : ''}>uppercase letters (A-Z),</span><br />
                     <span className={(validity.doesPwdhaveSpecialChars) ? 'blueText' : ''}>special characters (e.g. !@#$%^&*)</span>
                 </p>
-                <Button className="blue-btn-rounded-def openImpAct" disabled={!this.isButtonDisabled(
-                    [
-                        'firstName',
-                        'lastName',
-                        'password'
-                    ]
-                )}>
-                    Open an Impact Account <span>and claim gift</span>
+                <Button
+                    className="blue-btn-rounded-def openImpAct"
+                    onClick={(e) => this.handleSubmit(e)}
+                    disabled={(!this.validateForm() || buttonClicked)}
+                    type="submit"
+                >
+                    {buttonClicked ? 'Submitting' : 'Open an Impact Account and claim gift'}
                 </Button>
                 <p className="openImpactInfo">
                     By clicking ‘Open an Impact Account and claim your gift’, you acknowlege that you have read the
