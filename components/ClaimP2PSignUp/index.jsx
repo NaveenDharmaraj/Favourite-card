@@ -111,10 +111,10 @@ class ClaimP2PSignUp extends React.Component {
                 }
             })
                 .then(res => {
-                   Router.push('/users/login');
+                    Router.push('/users/login');
                 })
                 .catch(err => {
-                     Router.push('/users/login');
+                    Router.push('/users/login');
                 })
         };
 
@@ -129,11 +129,10 @@ class ClaimP2PSignUp extends React.Component {
             pwdHide,
             validity,
         } = this.state;
-        const eyeStyle = { color: pwdHide ? '#bebdbb' : '#7d7c78' }
         return (
             <Form className="claimp2pForm">
                 <Form.Group>
-                    <Form.Field width={8}>
+                    <Form.Field width={8} className="claimP2P_field">
                         <label>First name</label>
                         <Form.Input
                             name="firstName"
@@ -156,7 +155,7 @@ class ClaimP2PSignUp extends React.Component {
                             errorMessage="First Name cannot have more than 30 characters"
                         />
                     </Form.Field>
-                    <Form.Field width={8}>
+                    <Form.Field width={8} className="claimP2P_field">
                         <label>Last name</label>
                         <Form.Input
                             placeholder="Your last name"
@@ -177,11 +176,11 @@ class ClaimP2PSignUp extends React.Component {
                     </Form.Field>
                 </Form.Group>
 
-                <Form.Field>
+                <Form.Field className="claimP2P_field">
                     <label>Email</label>
                     <Form.Input disabled placeholder="Enter your email" width={16} value="chimp@gmail.com" />
                 </Form.Field>
-                <Form.Field>
+                <Form.Field className="claimP2P_field">
                     <label>Password</label>
                     <Form.Field
                         control={Input}
@@ -200,7 +199,6 @@ class ClaimP2PSignUp extends React.Component {
                                 onClick={this.handlePwdShow}
                                 className={(pwdHide) ? "" : "active"}
                                 link
-                                style={eyeStyle}
                             />
                         )}
                         width={16}
@@ -209,15 +207,15 @@ class ClaimP2PSignUp extends React.Component {
                         condition={!validity.isPasswordNull}
                         errorMessage="Please choose a password."
                     />
+                    <p className="passwordNote">
+                        <span className={(validity.doesPwdHaveCount) ? 'blueText' : ''}>
+                            {password.length}/8 characters,
+                        </span><br />
+                        <span className={(validity.doesPwdhaveLowerCase) ? 'blueText' : ''}>lowercase letters (a-z),</span><br />
+                        <span className={(validity.doesPwdhaveUpperCase) ? 'blueText' : ''}>uppercase letters (A-Z),</span><br />
+                        <span className={(validity.doesPwdhaveSpecialChars) ? 'blueText' : ''}>special characters (e.g. !@#$%^&*)</span>
+                    </p>
                 </Form.Field>
-                <p className="font-s-12">
-                    <span className={(validity.doesPwdHaveCount) ? 'blueText' : ''}>
-                        {password.length}/8 characters,
-                </span><br />
-                    <span className={(validity.doesPwdhaveLowerCase) ? 'blueText' : ''}>lowercase letters (a-z),</span><br />
-                    <span className={(validity.doesPwdhaveUpperCase) ? 'blueText' : ''}>uppercase letters (A-Z),</span><br />
-                    <span className={(validity.doesPwdhaveSpecialChars) ? 'blueText' : ''}>special characters (e.g. !@#$%^&*)</span>
-                </p>
                 <Button
                     className="blue-btn-rounded-def openImpAct"
                     onClick={(e) => this.handleSubmit(e)}
