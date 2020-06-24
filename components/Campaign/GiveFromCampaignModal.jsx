@@ -53,7 +53,7 @@ class GiveFromCampaignModal extends React.Component {
         return (
             <Fragment>
                 <Button
-                    className="blue-bordr-btn-round"
+                    className="blue-bordr-btn-round btn-resposive"
                     onClick={this.toggleGiveFromModal}
                 >
                     Give from this Campaign

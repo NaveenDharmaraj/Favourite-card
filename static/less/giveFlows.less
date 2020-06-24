@@ -62,17 +62,6 @@
                 }
             }
         }
-        &.flow_dashboard{
-            &.ui{
-                &.button{
-                    max-width:300px;
-                    width: 100%;
-                    margin: 0px auto 20px !important;
-                    text-align: center;
-                    display: block;
-                }
-            }
-        }
     }
 }
 .flowPadding{
@@ -1738,3 +1727,73 @@ input{
  .give_amount .ui[class*="left icon"].input > input {
      padding-left: 2em !important;
  }
+.gpRightButtons{
+    &.Iconbtnright{
+        display: inline-block;
+        width: 42px;
+        height: 42px;
+        vertical-align: middle;
+        @media only screen and (max-width:991px) { 
+            margin-left: 0px;
+              margin-bottom: 0px;
+        }
+        @media only screen and (max-width:767px) {
+            margin-left: 0px;
+            text-align: center;
+        }
+        .ui{
+            &.floating{
+                &.dropdown{
+                    .icon{
+                        width: 26px !important;
+                        height: 26px !important;
+                        text-align: center;
+                        right: 4px;
+                        top: 8px;
+                        @media only screen and (max-width:991px) {
+                        right: -7px;
+                        }
+                        @media only screen and (max-width:767px) {
+                            right: -1px; 
+                        }
+                    }
+                }
+            }
+        }
+        &.icon_bg{
+            background-color: #eeeeee;
+            border-radius:50px;
+        }
+    }
+  
+}
+.button.ui.primary.button.blue-btn-rounded.btn_first{
+    margin-right: 20px;
+    @media only screen and (max-width:767px) {
+        margin-right: 0px;
+        display: block;
+        margin: auto;
+        margin-bottom: 20px;
+    }
+}
+.menu.transition.visible.give_group_menu{
+    border-radius: 0px !important;
+    margin-left: -152px !important;
+    top: 30px;
+    .item{
+        padding: 20px 73px 20px 20px !important;
+        border-bottom: 1px solid #f1edf1;
+    }
+    @media only screen and (max-width:767px) {
+        margin-left: 0px !important;
+        right: -76px !important;
+    }
+}
+button.ui.button.blue-bordr-btn-round.btn-resposive {
+    margin-right: 8px;
+    @media only screen and (max-width:767px) {
+    display: block;
+    margin: auto;
+    margin-bottom: 20px;
+    }
+}
