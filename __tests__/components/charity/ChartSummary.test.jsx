@@ -34,7 +34,7 @@ describe('Testing chart summary section', () => {
         );
         expect(wrapper.find({ 'data-test': 'Charity_ChartSummary_expenses_summary' }).exists()).toBe(false);
     });
-    it('Should hide view button for gift', () => {
+    it('Should show view button for gift', () => {
         const wrapper = mount(
             <ChartSummary
                 {...props}
