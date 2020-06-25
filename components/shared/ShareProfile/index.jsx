@@ -100,7 +100,7 @@ class ShareProfile extends React.Component {
         const inputValue = (!_isEmpty(deepLinkUrl)) ? deepLinkUrl.attributes['short-link'] : '';
         return (
             <Fragment>
-                <List horizontal className="shareAndLike">
+                <List horizontal className="shareAndLike" data-test="Shared_ShareProfile_shareSection">
                     { isAuthenticated && (
                         <List.Item as="a">
                             <Icon
@@ -109,6 +109,7 @@ class ShareProfile extends React.Component {
                                 name="heart"
                                 onClick={this.handleFollow}
                                 disabled={disableFollow}
+                                data-test="Shared_ShareProfile_likeIcon"
                             />
                         </List.Item>
                     )}
@@ -121,18 +122,19 @@ class ShareProfile extends React.Component {
                         trigger={
                             (
                                 <List.Item as="a">
-                                    <Icon data-test="profile_shared_share_icon" className="share alternate" onClick={() => this.setState({ showShareModal: true })} />
+                                    <Icon data-test="Shared_ShareProfile_share_icon" className="share alternate" onClick={() => this.setState({ showShareModal: true })} />
                                 </List.Item>
                             )
                         }
                     >
-                        <Modal.Header>Share this Group</Modal.Header>
+                        <Modal.Header data-test="Shared_ShareProfile_popup">Share this Group</Modal.Header>
                         <Modal.Content>
                             <Modal.Description>
                                 <List divided relaxed verticalAlign="middle" className="shareModalList">
                                     <List.Item
                                         id="twitter"
                                         onClick={this.handleOnClick}
+                                        data-test="Shared_ShareProfile_twitter"
                                     >
                                         <List.Icon
                                             name="twitter"
@@ -144,6 +146,7 @@ class ShareProfile extends React.Component {
                                     <List.Item
                                         id="facebook"
                                         onClick={this.handleOnClick}
+                                        data-test="Shared_ShareProfile_facebook"
                                     >
                                         <List.Icon name="facebook" />
                                         <List.Content>
@@ -155,7 +158,7 @@ class ShareProfile extends React.Component {
                                             <div className="shareLinkLeft">Or share link</div>
                                             <div className="shareLinkTextBox">
                                                 <Input
-                                                    data-test="profile_shared_share_link_input"
+                                                    data-test="Shared_ShareProfile_deeplink"
                                                     value={inputValue}
                                                 />
                                             </div>
