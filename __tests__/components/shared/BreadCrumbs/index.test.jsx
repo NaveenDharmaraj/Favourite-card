@@ -5,8 +5,8 @@ import {
 
 import BreadcrumbDetails from '../../../../components/shared/BreadCrumbs';
 
-describe('Testing BreadcrumbDetails component', () => {
-    test('Testing component rendered', () => {
+describe('Testing Breadcrumb section', () => {
+    it('Should render Breadcrumb section', () => {
         const pathArr = [
             'Explore',
             'Charities',
@@ -17,6 +17,6 @@ describe('Testing BreadcrumbDetails component', () => {
                 pathDetails={pathArr}
             />,
         );
-        expect(wrapper.find('Breadcrumb').exists()).toBe(true);
+        expect(wrapper.find({ 'data-test': 'Shared_BreadcrumbDetails_Breadcrumbsection' }).exists()).toBe(true);
     });
 });

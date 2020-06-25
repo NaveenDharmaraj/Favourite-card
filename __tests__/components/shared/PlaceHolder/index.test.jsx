@@ -5,8 +5,8 @@ import {
 
 import PlaceholderGrid from '../../../../components/shared/PlaceHolder';
 
-describe('Testing PlaceholderGrid Ccomponent', () => {
-    test('Testing Component rendered for empty type', () => {
+describe('Testing Placeholder section', () => {
+    it('Should rendered default placeholder type', () => {
         const wrapper = shallow(
             <PlaceholderGrid
                 column={1}
@@ -14,9 +14,9 @@ describe('Testing PlaceholderGrid Ccomponent', () => {
                 placeholderType=""
             />,
         );
-        expect(wrapper.find('Placeholder').exists()).toBe(true);
+        expect(wrapper.find({ 'data-test': 'Shared_Placeholder_default' }).exists()).toBe(true);
     });
-    test('Testing Component rendered for table type', () => {
+    it('Should rendered placeholder of type table', () => {
         const wrapper = shallow(
             <PlaceholderGrid
                 column={1}
@@ -24,9 +24,9 @@ describe('Testing PlaceholderGrid Ccomponent', () => {
                 placeholderType="table"
             />,
         );
-        expect(wrapper.find('TableBody').exists()).toBe(true);
+        expect(wrapper.find({ 'data-test': 'Shared_Placeholder_table' }).exists()).toBe(true);
     });
-    test('Testing Component rendered for singleCard type', () => {
+    it('Should rendered placeholder of type singleCard', () => {
         const wrapper = shallow(
             <PlaceholderGrid
                 column={1}
@@ -34,9 +34,9 @@ describe('Testing PlaceholderGrid Ccomponent', () => {
                 placeholderType="singleCard"
             />,
         );
-        expect(wrapper.find('.groupSupportsWraper').exists()).toBe(true);
+        expect(wrapper.find({ 'data-test': 'Shared_Placeholder_singlecard' }).exists()).toBe(true);
     });
-    test('Testing Component rendered for multiLine type', () => {
+    it('Should rendered placeholder of type multiLine', () => {
         const wrapper = shallow(
             <PlaceholderGrid
                 column={1}
@@ -44,6 +44,6 @@ describe('Testing PlaceholderGrid Ccomponent', () => {
                 placeholderType="multiLine"
             />,
         );
-        expect(wrapper.find('.ch_ModelPlaceholder').exists()).toBe(true);
+        expect(wrapper.find({ 'data-test': 'Shared_Placeholder_multiLine' }).exists()).toBe(true);
     });
 });
