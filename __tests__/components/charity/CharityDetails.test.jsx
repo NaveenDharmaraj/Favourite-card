@@ -16,7 +16,7 @@ const getProps = () => ({
 
 describe('Testing CharityDetails component', () => {
     const props = getProps();
-    test('Testing component rendered', () => {
+    it('Should render Charity page', () => {
         const wrapper = shallow(
             <CharityDetails
                 {...props}
@@ -25,60 +25,64 @@ describe('Testing CharityDetails component', () => {
         );
         expect(wrapper.find({ 'data-test': 'Charity_CharityDetails_wrapper' }).exists()).toBe(true);
     });
-    test('Testing component without causes', () => {
-        const modifiedProps = {
-            ...props,
-            charityDetails: {
-                ...props.charityDetails,
-                attributes: {
-                    ...props.charityDetails.attributes,
-                    causes: [],
+    describe('Testing Causes section', () => {
+        it('Should not render causes', () => {
+            const modifiedProps = {
+                ...props,
+                charityDetails: {
+                    ...props.charityDetails,
+                    attributes: {
+                        ...props.charityDetails.attributes,
+                        causes: [],
+                    },
                 },
-            },
-        };
-        const wrapper = shallow(
-            <CharityDetails
-                {...modifiedProps}
-            />,
-        );
-        expect(wrapper.find({ 'data-test': 'Charity_CharityDetails_causes' }).length).toEqual(0);
+            };
+            const wrapper = shallow(
+                <CharityDetails
+                    {...modifiedProps}
+                />,
+            );
+            expect(wrapper.find({ 'data-test': 'Charity_CharityDetails_causes' }).length).toEqual(0);
+        });
+        it('Should render causes', () => {
+            const wrapper = shallow(
+                <CharityDetails
+                    {...props}
+                />,
+            );
+            expect(wrapper.find({ 'data-test': 'Charity_CharityDetails_causes' }).length).toEqual(3);
+        });
     });
-    test('Testing component with causes', () => {
-        const wrapper = shallow(
-            <CharityDetails
-                {...props}
-            />,
-        );
-        expect(wrapper.find({ 'data-test': 'Charity_CharityDetails_causes' }).length).toEqual(3);
-    });
-    test('Testing component with formattedDescription and formattedDescriptionNew', () => {
-        const wrapper = shallow(
-            <CharityDetails
-                {...props}
-            />,
-        );
-        expect(wrapper.find({ 'data-test': 'Charity_CharityDetails_description' }).exists()).toBe(true);
-        expect(wrapper.find({ 'data-test': 'Charity_CharityDetails_new_description' }).exists()).toBe(true);
-    });
-    test('Testing component Without formattedDescription and formattedDescriptionNew', () => {
-        const modifiedProps = {
-            ...props,
-            charityDetails: {
-                ...props.charityDetails,
-                attributes: {
-                    ...props.charityDetails.attributes,
-                    formattedDescription: null,
-                    formattedDescriptionNew: null,
+    describe('Testing description section', () => {
+        it('Should render description', () => {
+            const wrapper = shallow(
+                <CharityDetails
+                    {...props}
+                />,
+            );
+            expect(wrapper.find({ 'data-test': 'Charity_CharityDetails_description' }).exists()).toBe(true);
+            expect(wrapper.find({ 'data-test': 'Charity_CharityDetails_new_description' }).exists()).toBe(true);
+        });
+        it('Should not render description', () => {
+            const modifiedProps = {
+                ...props,
+                charityDetails: {
+                    ...props.charityDetails,
+                    attributes: {
+                        ...props.charityDetails.attributes,
+                        formattedDescription: null,
+                        formattedDescriptionNew: null,
+                    },
                 },
-            },
-        };
-        const wrapper = shallow(
-            <CharityDetails
-                {...modifiedProps}
-            />,
-        );
-        expect(wrapper.find({ 'data-test': 'Charity_CharityDetails_description' }).exists()).toBe(false);
-        expect(wrapper.find({ 'data-test': 'Charity_CharityDetails_new_description' }).exists()).toBe(false);
+            };
+            const wrapper = shallow(
+                <CharityDetails
+                    {...modifiedProps}
+                />,
+            );
+            expect(wrapper.find({ 'data-test': 'Charity_CharityDetails_description' }).exists()).toBe(false);
+            expect(wrapper.find({ 'data-test': 'Charity_CharityDetails_new_description' }).exists()).toBe(false);
+        });
     });
     test('Testing mapStateToProps', () => {
         const initialState = {

@@ -15,9 +15,9 @@ const getProps = () => ({
     t: jest.fn()
 });
 
-describe('Testing chart summary component', () => {
+describe('Testing chart summary section', () => {
     const props = getProps();
-    test('Testing component rendered', () => {
+    it('Should render summary section', () => {
         const wrapper = mount(
             <ChartSummary
                 {...props}
@@ -25,7 +25,7 @@ describe('Testing chart summary component', () => {
         );
         expect(wrapper.find({ 'data-test': 'Charity_ChartSummary_expenses_summary' }).exists()).toBe(true);
     });
-    test('Testing hide summary', () => {
+    it('Should hide gift in summary section', () => {
         const wrapper = mount(
             <ChartSummary
                 {...props}
@@ -34,7 +34,7 @@ describe('Testing chart summary component', () => {
         );
         expect(wrapper.find({ 'data-test': 'Charity_ChartSummary_expenses_summary' }).exists()).toBe(false);
     });
-    test('Testing gift summary', () => {
+    it('Should hide view button for gift', () => {
         const wrapper = mount(
             <ChartSummary
                 {...props}

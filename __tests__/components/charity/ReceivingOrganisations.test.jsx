@@ -24,9 +24,9 @@ const getProps = () => ({
     year: 2018,
 });
 
-describe('Testing ReceivingOrganisation Component', () => {
+describe('Testing Doneelist Component', () => {
     const props = getProps();
-    test('Testing component render', () => {
+    it('Should render Doneelist modal', () => {
         const wrapper = mount(
             <ReceivingOrganisations
                 {...props}
@@ -34,7 +34,7 @@ describe('Testing ReceivingOrganisation Component', () => {
         );
         expect(wrapper.find({ 'data-test': 'Charity_ReceivingOrganisations_doneeListModal' }).exists()).toBe(true);
     });
-    test('Testing ComponentDidMount', () => {
+    it('Should call getBeneficiaryDoneeList on ComponentDidMount', () => {
         const spyFunc = jest.spyOn(charityActions, 'getBeneficiaryDoneeList');
         const wrapper = mount(
             <ReceivingOrganisations
@@ -46,13 +46,24 @@ describe('Testing ReceivingOrganisation Component', () => {
         );
         expect(spyFunc).toHaveBeenCalledTimes(1);
     });
-    test('Testing total amount rendered', () => {
-        const wrapper = mount(
-            <ReceivingOrganisations
-                {...props}
-            />,
-        );
-        expect(wrapper.find({ 'data-test': 'Charity_ReceivingOrganisations_totalAmount' }).exists()).toBe(true);
+    describe('Testing total amount of remaining organisations section', () => {
+        it('Should show remaining organisations', () => {
+            const wrapper = mount(
+                <ReceivingOrganisations
+                    {...props}
+                />,
+            );
+            expect(wrapper.find({ 'data-test': 'Charity_ReceivingOrganisations_totalAmount' }).exists()).toBe(true);
+        });
+        it('Should not show remaining organisations', () => {
+            const wrapper = mount(
+                <ReceivingOrganisations
+                    {...props}
+                    remainingElements={19}
+                />,
+            );
+            expect(wrapper.find({ 'data-test': 'Charity_ReceivingOrganisations_totalAmount' }).exists()).toBe(false);
+        });
     });
     test('Testing mapStateToProps', () => {
         const initialState = {

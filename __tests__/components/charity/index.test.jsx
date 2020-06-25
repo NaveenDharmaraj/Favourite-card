@@ -16,7 +16,7 @@ const getProps = () => ({
 
 describe('Testing Charity Profile wrapper file', () => {
     const props = getProps();
-    test('Testing component rendered', () => {
+    it('Should render charity profile page', () => {
         const wrapper = shallow(
             <CharityProfileWrapper
                 {...props}

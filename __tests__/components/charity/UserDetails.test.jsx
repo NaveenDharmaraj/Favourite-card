@@ -17,9 +17,9 @@ const getProps = () => ({
     isAuthenticated: true,
 });
 
-describe('Testing UserDetails component', () => {
+describe('Testing Charity Information section', () => {
     const props = getProps();
-    test('Testing component rendered', () => {
+    it('Should render Charity Information section', () => {
         const wrapper = mount(
             <UserDetails
                 {...props}
@@ -27,50 +27,72 @@ describe('Testing UserDetails component', () => {
         );
         expect(wrapper.find({ 'data-test': 'Charity_UserDetails_charityInfoWrapper' }).exists()).toBe(true);
     });
-    test('Testing claimed charity scenario', () => {
-        const modifiedProps = {
-            ...props,
-            charityDetails: {
-                ...props.charityDetails,
-                attributes: {
-                    ...props.charityDetails.attributes,
-                    isClaimed: false,
+    describe('Testing claim charity button behaviour', () => {
+        it('Should show claim charity button', () => {
+            const modifiedProps = {
+                ...props,
+                charityDetails: {
+                    ...props.charityDetails,
+                    attributes: {
+                        ...props.charityDetails.attributes,
+                        isClaimed: false,
+                    },
                 },
-            },
-        };
-        const wrapper = mount(
-            <UserDetails
-                {...modifiedProps}
-            />,
-        );
-        expect(wrapper.find({ 'data-test': 'Charity_UserDetails_claimCharitybutton' }).exists()).toBe(true);
+            };
+            const wrapper = mount(
+                <UserDetails
+                    {...modifiedProps}
+                />,
+            );
+            expect(wrapper.find({ 'data-test': 'Charity_UserDetails_claimCharitybutton' }).exists()).toBe(true);
+        });
+        it('Should not show claim charity button', () => {
+            const modifiedProps = {
+                ...props,
+                charityDetails: {
+                    ...props.charityDetails,
+                    attributes: {
+                        ...props.charityDetails.attributes,
+                        isClaimed: true,
+                    },
+                },
+            };
+            const wrapper = mount(
+                <UserDetails
+                    {...modifiedProps}
+                />,
+            );
+            expect(wrapper.find({ 'data-test': 'Charity_UserDetails_claimCharitybutton' }).exists()).toBe(false);
+        });
     });
-    test('Testing button url for Login user', () => {
-        const wrapper = mount(
-            <UserDetails
-                {...props}
-            />,
-        );
-        expect(wrapper.find('Link').find(
-            {
-                'href': '/charities?slug=the-canadian-red-cross-society-la-societe-canadienne-de-la-croix-rouge&gift=gift&step=new'
-            },
-        ).exists()).toBe(true);
+    describe('Testing Give button behaviour', () => {
+        it('Should match button url for Login user', () => {
+            const wrapper = mount(
+                <UserDetails
+                    {...props}
+                />,
+            );
+            expect(wrapper.find('Link').find(
+                {
+                    'href': '/charities?slug=the-canadian-red-cross-society-la-societe-canadienne-de-la-croix-rouge&gift=gift&step=new'
+                },
+            ).exists()).toBe(true);
+        });
+        it('Should match button url for Public user', () => {
+            const wrapper = mount(
+                <UserDetails
+                    {...props}
+                    isAuthenticated={false}
+                />,
+            );
+            expect(wrapper.find('a').find(
+                {
+                    'href': 'undefined/send/to/charity/the-canadian-red-cross-society-la-societe-canadienne-de-la-croix-rouge/gift/new',
+                },
+            ).exists()).toBe(true);
+        });
     });
-    test('Testing button url for Public user', () => {
-        const wrapper = mount(
-            <UserDetails
-                {...props}
-                isAuthenticated={false}
-            />,
-        );
-        expect(wrapper.find('a').find(
-            {
-                'href': 'undefined/send/to/charity/the-canadian-red-cross-society-la-societe-canadienne-de-la-croix-rouge/gift/new',
-            },
-        ).exists()).toBe(true);
-    });
-    test('Testing show Give button scenario', () => {
+    it('Should not show Give button', () => {
         const modifiedProps = {
             ...props,
             charityDetails: {
@@ -88,7 +110,7 @@ describe('Testing UserDetails component', () => {
         );
         expect(wrapper.find({ 'data-test': 'Charity_UserDetails_giveButton' }).exists()).toBe(false);
     });
-    test('Testing contactName', () => {
+    it('Should show contact name', () => {
         const modifiedProps = {
             ...props,
             charityDetails: {
@@ -106,7 +128,7 @@ describe('Testing UserDetails component', () => {
         );
         expect(wrapper.find({ 'data-test': 'Charity_UserDetails_charityInformation_user' }).at(1).text()).toEqual('undefined: test contact name');
     });
-    test('Testing phone number', () => {
+    it('Should show phone number', () => {
         const modifiedProps = {
             ...props,
             charityDetails: {
@@ -124,7 +146,7 @@ describe('Testing UserDetails component', () => {
         );
         expect(wrapper.find({ 'data-test': 'Charity_UserDetails_charityInformation_phone' }).at(1).text()).toEqual('12345 67890');
     });
-    test('Testing email address', () => {
+    it('Should show email address', () => {
         const modifiedProps = {
             ...props,
             charityDetails: {
@@ -142,7 +164,7 @@ describe('Testing UserDetails component', () => {
         );
         expect(wrapper.find({ 'data-test': 'Charity_UserDetails_charityInformation_mail' }).at(1).text()).toEqual('test@charitableimpact.com');
     });
-    test('Testing website address', () => {
+    it('Should show website address', () => {
         const modifiedProps = {
             ...props,
             charityDetails: {
@@ -160,7 +182,7 @@ describe('Testing UserDetails component', () => {
         );
         expect(wrapper.find({ 'data-test': 'Charity_UserDetails_charityInformation_linkify' }).at(1).text()).toEqual('charitableimpact.com');
     });
-    test('Testing Staff Count', () => {
+    it('Should show Staff Count', () => {
         const modifiedProps = {
             ...props,
             charityDetails: {
@@ -178,7 +200,7 @@ describe('Testing UserDetails component', () => {
         );
         expect(wrapper.find({ 'data-test': 'Charity_UserDetails_charityInformation_users' }).at(1).text()).toEqual('42');
     });
-    test('Testing Business Number', () => {
+    it('Should show Business Number', () => {
         const modifiedProps = {
             ...props,
             charityDetails: {
@@ -196,7 +218,7 @@ describe('Testing UserDetails component', () => {
         );
         expect(wrapper.find({ 'data-test': 'Charity_UserDetails_charityInformation_briefcase' }).at(1).text()).toEqual('1234 5678');
     });
-    test('testing Headquarter Address', () => {
+    it('Should show Headquarter Address', () => {
         const modifiedProps = {
             ...props,
             charityDetails: {

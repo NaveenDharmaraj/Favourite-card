@@ -13,8 +13,8 @@ import {
     emptyPrograms,
 } from './Data';
 
-describe('Testing ProgramAreas Component', () => {
-    test('Testing component rendered', () => {
+describe('Testing Program Areas section', () => {
+    it('Should render program areas section', () => {
         const wrapper = mount(
             <ProgramAreas
                 charityDetails={charityDetails}
@@ -24,7 +24,7 @@ describe('Testing ProgramAreas Component', () => {
         expect(wrapper.find({ 'data-test': 'Charity_ProgramAreas_programs_section' }).exists()).toBe(true);
         expect(wrapper.find({ 'data-test': 'Charity_CharityNoDataState_noData' }).exists()).toBe(false);
     });
-    test('Testing No data', () => {
+    it('Should show No data at Program Area section', () => {
         const wrapper = mount(
             <ProgramAreas
                 charityDetails={emptyPrograms}

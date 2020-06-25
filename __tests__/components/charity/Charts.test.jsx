@@ -42,9 +42,9 @@ const store = mockStore({
     },
 });
 
-describe('Testing Chart Component', () => {
+describe('Testing Chart Section', () => {
     const props = getProps();
-    test('Testing Component rendered', () => {
+    it('Should render Chart', () => {
         const wrapper = mount(
             <Charts
                 {...props}
@@ -54,7 +54,7 @@ describe('Testing Chart Component', () => {
         );
         expect(wrapper.find({ 'data-test': 'Charity_Charts_graph' }).exists()).toBe(true);
     });
-    test('Testing Loader is rendered', () => {
+    it('Should show Loader at chart section', () => {
         const wrapper = mount(
             <Charts
                 chartLoader
@@ -62,7 +62,7 @@ describe('Testing Chart Component', () => {
         );
         expect(wrapper.find({ 'data-test': 'Charity_Charts_Loader' }).exists()).toBe(true);
     });
-    test('Testing No Data scenario', () => {
+    it('Should show No Data at chart section', () => {
         const wrapper = mount(
             <Charts
                 chartLoader={false}
@@ -70,7 +70,7 @@ describe('Testing Chart Component', () => {
         );
         expect(wrapper.find({ 'data-test': 'Charity_CharityNoDataState_noData' }).exists()).toBe(true);
     });
-    test('Testing ComponentDidUpdate', () => {
+    it('Should call ComponentDidUpdate on props change', () => {
         const wrapper = shallow(
             <Charts
                 charityDetails={charityDetails}
@@ -80,34 +80,34 @@ describe('Testing Chart Component', () => {
         wrapper.setProps({ beneficiaryFinance });
         expect(wrapper.state('chartIndex')).toEqual(8);
     });
-
-    test('Testing ReceivingOrganisations render on view button click', () => {
-        const wrapper = mount(
-            <Provider store={store}>
-                <Charts
-                    {...props}
-                    isAUthenticated
-                    chartLoader={false}
-                />
-            </Provider>,
-        );
-        wrapper.find({ 'data-test': 'Charity_ChartSummary_viewGiftButton' }).at(1).simulate('click');
-        expect(wrapper.find({ 'data-test': 'Charity_ReceivingOrganisations_doneeListModal'}).exists()).toBe(true);
-    });
-
-    test('Testing ReceivingOrganisations modal to close on close button click', () => {
-        const wrapper = mount(
-            <Provider store={store}>
-                <Charts
-                    {...props}
-                    isAUthenticated
-                    chartLoader={false}
-                />
-            </Provider>,
-        );
-        wrapper.find({ 'data-test': 'Charity_ChartSummary_viewGiftButton' }).at(1).simulate('click');
-        wrapper.find('Portal').find('Icon').simulate('click');
-        expect(wrapper.find({ 'data-test': 'Charity_ReceivingOrganisations_doneeListModal'}).exists()).toBe(false);
+    describe('Testing view button functionality', () => {
+        it('Should open donee list Modal on click of view button', () => {
+            const wrapper = mount(
+                <Provider store={store}>
+                    <Charts
+                        {...props}
+                        isAUthenticated
+                        chartLoader={false}
+                    />
+                </Provider>,
+            );
+            wrapper.find({ 'data-test': 'Charity_ChartSummary_viewGiftButton' }).at(1).simulate('click');
+            expect(wrapper.find({ 'data-test': 'Charity_ReceivingOrganisations_doneeListModal'}).exists()).toBe(true);
+        });
+        it('Should close donee list modal on click of close icon', () => {
+            const wrapper = mount(
+                <Provider store={store}>
+                    <Charts
+                        {...props}
+                        isAUthenticated
+                        chartLoader={false}
+                    />
+                </Provider>,
+            );
+            wrapper.find({ 'data-test': 'Charity_ChartSummary_viewGiftButton' }).at(1).simulate('click');
+            wrapper.find('Portal').find('Icon').simulate('click');
+            expect(wrapper.find({ 'data-test': 'Charity_ReceivingOrganisations_doneeListModal'}).exists()).toBe(false);
+        });
     });
 
     test('Testing mapStateToProps', () => {
