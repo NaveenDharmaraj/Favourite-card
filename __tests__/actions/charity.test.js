@@ -74,6 +74,7 @@ describe('Charity profile actions test', () => {
                     type: 'GET_CHARITY_DETAILS_FROM_SLUG',
                 },
             ];
+            // TODO check for token in header
             await store.dispatch(getBeneficiaryFromSlug(
                 'the-canadian-red-cross-society-la-societe-canadienne-de-la-croix-rouge',
                 'TESTTOKEN',
@@ -192,37 +193,105 @@ describe('Charity profile actions test', () => {
             });
         });
     });
-    test('Testing BeneficiaryDoneeList action', async () => {
-        mockAxios.get.mockImplementationOnce(() => Promise.resolve(
-            {
-                ...donationDetails,
-            },
-        ));
-        const expectedActions = [
-            {
-                payload: {
-                    showPlaceholder: true,
+    describe('Testing doneelist data', () => {
+        it('Should dispatch doneelist with more than 20 total records', async () => {
+            mockAxios.get.mockImplementationOnce(() => Promise.resolve(
+                {
+                    ...donationDetails,
                 },
-                type: 'CHARITY_PLACEHOLDER_STATUS',
-            },
-            {
-                payload: {
-                    donationDetails: donationDetails._embedded.donee_list,
-                    remainingAmount: donationDetails.totalAmount.remainingAmount,
-                    remainingElements: donationDetails.page.totalElements - donationDetails.page.size,
+            ));
+            const expectedActions = [
+                {
+                    payload: {
+                        showPlaceholder: true,
+                    },
+                    type: 'CHARITY_PLACEHOLDER_STATUS',
                 },
-                type: 'GET_BENEFICIARY_DONEE_LIST',
-            },
-            {
-                payload: {
-                    showPlaceholder: false,
+                {
+                    payload: {
+                        donationDetails: donationDetails._embedded.donee_list,
+                        remainingAmount: donationDetails.totalAmount.remainingAmount,
+                        remainingElements: donationDetails.page.totalElements - donationDetails.page.size,
+                    },
+                    type: 'GET_BENEFICIARY_DONEE_LIST',
                 },
-                type: 'CHARITY_PLACEHOLDER_STATUS',
-            },
-        ];
-        await store.dispatch(getBeneficiaryDoneeList('87', 2018, 1, false)).then(() => {
-            expect.assertions(1);
-            expect(store.getActions()).toEqual(expectedActions);
+                {
+                    payload: {
+                        showPlaceholder: false,
+                    },
+                    type: 'CHARITY_PLACEHOLDER_STATUS',
+                },
+            ];
+            await store.dispatch(getBeneficiaryDoneeList('87', 2018, 1, false)).then(() => {
+                expect.assertions(1);
+                expect(store.getActions()).toEqual(expectedActions);
+            });
+        });
+        it('Should not dispatch doneelist with empty api data', async () => {
+            mockAxios.get.mockImplementationOnce(() => Promise.resolve(
+                {
+                    ...donationDetails,
+                    _embedded: {
+                        ...donationDetails._embedded,
+                        donee_list: [],
+                    },
+                },
+            ));
+            const expectedActions = [
+                {
+                    payload: {
+                        showPlaceholder: true,
+                    },
+                    type: 'CHARITY_PLACEHOLDER_STATUS',
+                },
+                {
+                    payload: {
+                        showPlaceholder: false,
+                    },
+                    type: 'CHARITY_PLACEHOLDER_STATUS',
+                },
+            ];
+            await store.dispatch(getBeneficiaryDoneeList('87', 2018, 1, false)).then(() => {
+                expect.assertions(1);
+                expect(store.getActions()).toEqual(expectedActions);
+            });
+        });
+        it('Should dispatch remaining amount and remaining elements as 0 for less than or equal to 20 total records', async () => {
+            mockAxios.get.mockImplementationOnce(() => Promise.resolve(
+                {
+                    ...donationDetails,
+                    page: {
+                        ...donationDetails.page,
+                        totalElements: 20,
+                    },
+                },
+            ));
+            const expectedActions = [
+                {
+                    payload: {
+                        showPlaceholder: true,
+                    },
+                    type: 'CHARITY_PLACEHOLDER_STATUS',
+                },
+                {
+                    payload: {
+                        donationDetails: donationDetails._embedded.donee_list,
+                        remainingAmount: 0,
+                        remainingElements: 0,
+                    },
+                    type: 'GET_BENEFICIARY_DONEE_LIST',
+                },
+                {
+                    payload: {
+                        showPlaceholder: false,
+                    },
+                    type: 'CHARITY_PLACEHOLDER_STATUS',
+                },
+            ];
+            await store.dispatch(getBeneficiaryDoneeList('87', 2018, 1, false)).then(() => {
+                expect.assertions(1);
+                expect(store.getActions()).toEqual(expectedActions);
+            });
         });
     });
 });
