@@ -2617,10 +2617,12 @@ h4{
     }
   }
 }
+body{
 .btn-wraper{
   margin-bottom: 2rem;
   .ui{
     &.secondary{
+      z-index: 9 !important;
       &.menu{
         position: relative;
         box-shadow: none;
@@ -2693,16 +2695,20 @@ h4{
     }
   }
 }
+}
 @media only screen and (max-width:767px) {
-  .btn-wraper{
-    .ui{
-      &.secondary{
-        &.menu{
-          box-shadow: none;
-          border:none;
-          .item{
-            min-width: 75px;
-            padding: 10px 6px;
+  body{
+    .btn-wraper{
+      .ui{
+        &.secondary{
+          z-index: 9 !important;
+          &.menu{
+            box-shadow: none;
+            border:none;
+            .item{
+              min-width: 75px;
+              padding: 10px 6px;
+            }
           }
         }
       }

@@ -1,7 +1,5 @@
 @import "_mixins.less";
-body{
-  padding-top: 80px;
-}
+
 .flexbox-wraper{
   display: -webkit-box;
   display: -ms-flexbox;
@@ -1042,6 +1040,12 @@ body{
   &.segment{
     &.c-default-header{
       padding: 0px;
+      position: fixed;
+      left: 0;
+      right: 0;
+      top: 0;
+      z-index: 9999999999;
+      background-color: #fff;
       &.vertical{
         border: 0px solid transparent;
         box-shadow: 0 1px 4px 0 rgba(209,209,209,0.5);
@@ -2060,4 +2064,15 @@ body{
 .ui.bottom.right.wide.basic.popup.transition.visible.give-popup.sticky-dropdown{
   margin-top: 17px !important;
 }
+.c-m-default-header .ui.right.overlay.sidebar {
+  -webkit-transform: none !important;
+  transform: none !important;
+}
+.c-m-default-header .ui.sidebar.menu{
+  position: fixed;
+  margin-top: 67px !important;
+}
+}
+.chimpLayout{
+  padding-top: 80px;
 }
