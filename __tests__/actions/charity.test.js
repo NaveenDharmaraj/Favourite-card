@@ -13,7 +13,7 @@ import {
     getBeneficiaryDoneeList,
 } from '../../actions/charity';
 
-describe('Charity Profile Action unit test', () => {
+describe('Charity profile actions test', () => {
     let store;
     beforeEach(() => {
         const middlewares = [
@@ -22,143 +22,174 @@ describe('Charity Profile Action unit test', () => {
         const mockStore = configureMockStore(middlewares);
         store = mockStore();
     });
-    test('Testing FindBySlug action', async () => {
-        mockAxios.get.mockImplementationOnce(() => Promise.resolve(
-            {
-                data: {
-                    ...charityDetails,
+    describe('Testing charity details data', () => {
+        it('Should dispatch charity data without Token', async () => {
+            mockAxios.get.mockImplementationOnce(() => Promise.resolve(
+                {
+                    data: {
+                        ...charityDetails,
+                    },
                 },
-            },
-        ));
-        const expectedActions = [
-            {
-                payload: {
-                    redirectToDashboard: false,
+            ));
+            const expectedActions = [
+                {
+                    payload: {
+                        redirectToDashboard: false,
+                    },
+                    type: 'CHARITY_REDIRECT_TO_DASHBOARD',
                 },
-                type: 'CHARITY_REDIRECT_TO_DASHBOARD',
-            },
-            {
-                payload: {
-                    charityDetails,
+                {
+                    payload: {
+                        charityDetails,
+                    },
+                    type: 'GET_CHARITY_DETAILS_FROM_SLUG',
                 },
-                type: 'GET_CHARITY_DETAILS_FROM_SLUG',
-            },
-        ];
-        await store.dispatch(getBeneficiaryFromSlug(
-            'the-canadian-red-cross-society-la-societe-canadienne-de-la-croix-rouge',
-        )).then(() => {
-            expect.assertions(1);
-            expect(store.getActions()).toEqual(expectedActions);
+            ];
+            await store.dispatch(getBeneficiaryFromSlug(
+                'the-canadian-red-cross-society-la-societe-canadienne-de-la-croix-rouge',
+            )).then(() => {
+                expect.assertions(1);
+                expect(store.getActions()).toEqual(expectedActions);
+            });
+        });
+        it('Should dispatch charity data with token', async () => {
+            mockAxios.get.mockImplementationOnce(() => Promise.resolve(
+                {
+                    data: {
+                        ...charityDetails,
+                    },
+                },
+            ));
+            const expectedActions = [
+                {
+                    payload: {
+                        redirectToDashboard: false,
+                    },
+                    type: 'CHARITY_REDIRECT_TO_DASHBOARD',
+                },
+                {
+                    payload: {
+                        charityDetails,
+                    },
+                    type: 'GET_CHARITY_DETAILS_FROM_SLUG',
+                },
+            ];
+            await store.dispatch(getBeneficiaryFromSlug(
+                'the-canadian-red-cross-society-la-societe-canadienne-de-la-croix-rouge',
+                'TESTTOKEN',
+            )).then(() => {
+                expect.assertions(1);
+                expect(store.getActions()).toEqual(expectedActions);
+            });
+        });
+        it('Should not dispatch charity data with empty api data', async () => {
+            mockAxios.get.mockImplementationOnce(() => Promise.resolve(
+                {
+                    data: [],
+                },
+            ));
+            const expectedActions = [
+                {
+                    payload: {
+                        redirectToDashboard: false,
+                    },
+                    type: 'CHARITY_REDIRECT_TO_DASHBOARD',
+                },
+            ];
+            await store.dispatch(getBeneficiaryFromSlug(
+                'the-canadian-red-cross-society-la-societe-canadienne-de-la-croix-rouge',
+                'TESTTOKEN',
+            )).then(() => {
+                expect.assertions(1);
+                expect(store.getActions()).toEqual(expectedActions);
+            });
+        });
+        it('Should not dispatch charity data on api ERROR', async () => {
+            const error = 'Error scenario';
+            mockAxios.get.mockImplementationOnce(() => Promise.reject(
+                error,
+            ));
+            const expectedActions = [
+                {
+                    payload: {
+                        redirectToDashboard: false,
+                    },
+                    type: 'CHARITY_REDIRECT_TO_DASHBOARD',
+                },
+                {
+                    payload: {
+                        redirectToDashboard: true,
+                    },
+                    type: 'CHARITY_REDIRECT_TO_DASHBOARD',
+                }
+            ];
+            await store.dispatch(getBeneficiaryFromSlug(
+                'the-canadian-red-cross-society-la-societe-canadienne-de-la-croix-rouge',
+                'TESTTOKEN',
+            )).then(() => {
+                expect.assertions(1);
+                expect(store.getActions()).toEqual(expectedActions);
+            });
         });
     });
-    test('Testing FindBySlug action with token', async () => {
-        mockAxios.get.mockImplementationOnce(() => Promise.resolve(
-            {
-                data: {
-                    ...charityDetails,
+    describe('Testing Beneficiary Finance data', () => {
+        it('Should dispatch Beneficiary Finance data', async () => {
+            mockAxios.get.mockImplementationOnce(() => Promise.resolve(
+                {
+                    beneficiaryFinanceList: [
+                        ...beneficiaryFinance,
+                    ],
                 },
-            },
-        ));
-        const expectedActions = [
-            {
-                payload: {
-                    redirectToDashboard: false,
+            ));
+            const expectedActions = [
+                {
+                    payload: {
+                        chartLoader: true,
+                    },
+                    type: 'CHARITY_CHART_LOADER',
                 },
-                type: 'CHARITY_REDIRECT_TO_DASHBOARD',
-            },
-            {
-                payload: {
-                    charityDetails,
+                {
+                    payload: {
+                        beneficiaryFinance,
+                    },
+                    type: 'GET_BENEFICIARY_FINANCE_DETAILS',
                 },
-                type: 'GET_CHARITY_DETAILS_FROM_SLUG',
-            },
-        ];
-        await store.dispatch(getBeneficiaryFromSlug(
-            'the-canadian-red-cross-society-la-societe-canadienne-de-la-croix-rouge',
-            'TESTTOKEN',
-        )).then(() => {
-            expect.assertions(1);
-            expect(store.getActions()).toEqual(expectedActions);
+                {
+                    payload: {
+                        chartLoader: false,
+                    },
+                    type: 'CHARITY_CHART_LOADER',
+                },
+            ];
+            await store.dispatch(getBeneficiaryFinance(87)).then(() => {
+                expect.assertions(1);
+                expect(store.getActions()).toEqual(expectedActions);
+            });
         });
-    });
-    test('Testing FindBySlug action with empty data', async () => {
-        mockAxios.get.mockImplementationOnce(() => Promise.resolve(
-            {
-                data: [],
-            },
-        ));
-        const expectedActions = [
-            {
-                payload: {
-                    redirectToDashboard: false,
+        it('Should not dispatch Beneficiary Finance data with empty api data', async () => {
+            mockAxios.get.mockImplementationOnce(() => Promise.resolve(
+                {
+                    beneficiaryFinanceList: [],
                 },
-                type: 'CHARITY_REDIRECT_TO_DASHBOARD',
-            },
-        ];
-        await store.dispatch(getBeneficiaryFromSlug(
-            'the-canadian-red-cross-society-la-societe-canadienne-de-la-croix-rouge',
-            'TESTTOKEN',
-        )).then(() => {
-            expect.assertions(1);
-            expect(store.getActions()).toEqual(expectedActions);
-        });
-    });
-    test('Testing Beneficiary Finance action', async () => {
-        mockAxios.get.mockImplementationOnce(() => Promise.resolve(
-            {
-                beneficiaryFinanceList: [
-                    ...beneficiaryFinance,
-                ],
-            },
-        ));
-        const expectedActions = [
-            {
-                payload: {
-                    chartLoader: true,
+            ));
+            const expectedActions = [
+                {
+                    payload: {
+                        chartLoader: true,
+                    },
+                    type: 'CHARITY_CHART_LOADER',
                 },
-                type: 'CHARITY_CHART_LOADER',
-            },
-            {
-                payload: {
-                    beneficiaryFinance,
+                {
+                    payload: {
+                        chartLoader: false,
+                    },
+                    type: 'CHARITY_CHART_LOADER',
                 },
-                type: 'GET_BENEFICIARY_FINANCE_DETAILS',
-            },
-            {
-                payload: {
-                    chartLoader: false,
-                },
-                type: 'CHARITY_CHART_LOADER',
-            },
-        ];
-        await store.dispatch(getBeneficiaryFinance(87)).then(() => {
-            expect.assertions(1);
-            expect(store.getActions()).toEqual(expectedActions);
-        });
-    });
-    test('Testing Beneficiary Finance action with empty data', async () => {
-        mockAxios.get.mockImplementationOnce(() => Promise.resolve(
-            {
-                beneficiaryFinanceList: [],
-            },
-        ));
-        const expectedActions = [
-            {
-                payload: {
-                    chartLoader: true,
-                },
-                type: 'CHARITY_CHART_LOADER',
-            },
-            {
-                payload: {
-                    chartLoader: false,
-                },
-                type: 'CHARITY_CHART_LOADER',
-            },
-        ];
-        await store.dispatch(getBeneficiaryFinance(87)).then(() => {
-            expect.assertions(1);
-            expect(store.getActions()).toEqual(expectedActions);
+            ];
+            await store.dispatch(getBeneficiaryFinance(87)).then(() => {
+                expect.assertions(1);
+                expect(store.getActions()).toEqual(expectedActions);
+            });
         });
     });
     test('Testing BeneficiaryDoneeList action', async () => {
