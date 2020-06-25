@@ -93,11 +93,23 @@ class ShareProfile extends React.Component {
             disableFollow,
             liked,
             isAUthenticated,
+            type,
         } = this.props;
         const {
             showShareModal,
         } = this.state;
         const inputValue = (!_isEmpty(deepLinkUrl)) ? deepLinkUrl.attributes['short-link'] : '';
+        let Profiletype = '';
+        switch (type) {
+            case 'beneficiaries':
+                Profiletype = 'Charity';
+                break;
+            case 'groups':
+                Profiletype = 'Group';
+                break;
+            default:
+                break;
+        }
         return (
             <Fragment>
                 <List horizontal className="shareAndLike">
@@ -126,7 +138,9 @@ class ShareProfile extends React.Component {
                             )
                         }
                     >
-                        <Modal.Header>Share this Group</Modal.Header>
+                        <Modal.Header>
+                            {`Share this ${Profiletype}`}
+                        </Modal.Header>
                         <Modal.Content>
                             <Modal.Description>
                                 <List divided relaxed verticalAlign="middle" className="shareModalList">
