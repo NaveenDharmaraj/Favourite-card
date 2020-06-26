@@ -20,6 +20,7 @@ import {
     followProfile,
     unfollowProfile,
 } from '../../../actions/profile';
+import { withTranslation } from '../../../i18n';
 
 const actionTypes = {
     DISABLE_COPYLINK_BUTTON: 'DISABLE_COPYLINK_BUTTON',
@@ -94,6 +95,7 @@ class ShareProfile extends React.Component {
             liked,
             isAUthenticated,
             type,
+            t: formatMessage,
         } = this.props;
         const {
             showShareModal,
@@ -139,7 +141,7 @@ class ShareProfile extends React.Component {
                         }
                     >
                         <Modal.Header>
-                            {`Share this ${Profiletype}`}
+                            {`${formatMessage('common:shareProfileHeader')} ${Profiletype}`}
                         </Modal.Header>
                         <Modal.Content>
                             <Modal.Description>
@@ -166,7 +168,7 @@ class ShareProfile extends React.Component {
                                     </List.Item>
                                     <List.Item className="shareCopyLink">
                                         <List.Content>
-                                            <div className="shareLinkLeft">Or share link</div>
+                                            <div className="shareLinkLeft">{formatMessage('common:shareLink')}</div>
                                             <div className="shareLinkTextBox">
                                                 <Input
                                                     data-test="profile_shared_share_link_input"
@@ -220,7 +222,7 @@ function mapStateToProps(state) {
     };
 }
 
-const connectedComponent = connect(mapStateToProps)(ShareProfile);
+const connectedComponent = withTranslation('common')(connect(mapStateToProps)(ShareProfile));
 export {
     connectedComponent as default,
     ShareProfile,
