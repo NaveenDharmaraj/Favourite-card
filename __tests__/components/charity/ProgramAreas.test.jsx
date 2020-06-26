@@ -14,7 +14,7 @@ import {
 } from './Data';
 
 describe('Testing Program Areas section', () => {
-    it('Should render program areas section', () => {
+    it('Should show program areas section', () => {
         const wrapper = mount(
             <ProgramAreas
                 charityDetails={charityDetails}

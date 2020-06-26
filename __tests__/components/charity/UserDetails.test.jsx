@@ -19,7 +19,7 @@ const getProps = () => ({
 
 describe('Testing Charity Information section', () => {
     const props = getProps();
-    it('Should render Charity Information section', () => {
+    it('Should show Charity Information section', () => {
         const wrapper = mount(
             <UserDetails
                 {...props}
@@ -72,7 +72,7 @@ describe('Testing Charity Information section', () => {
                     {...props}
                 />,
             );
-            expect(wrapper.find('Link').find(
+            expect(wrapper.find({ 'data-test': 'Charity_UserDetails_giveButton_loggedInUser' }).find(
                 {
                     'href': '/charities?slug=the-canadian-red-cross-society-la-societe-canadienne-de-la-croix-rouge&gift=gift&step=new'
                 },
@@ -85,7 +85,7 @@ describe('Testing Charity Information section', () => {
                     isAuthenticated={false}
                 />,
             );
-            expect(wrapper.find('a').find(
+            expect(wrapper.find({ 'data-test': 'Charity_UserDetails_giveButton_publicUser' }).find(
                 {
                     'href': 'undefined/send/to/charity/the-canadian-red-cross-society-la-societe-canadienne-de-la-croix-rouge/gift/new',
                 },

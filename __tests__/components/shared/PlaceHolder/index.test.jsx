@@ -6,7 +6,7 @@ import {
 import PlaceholderGrid from '../../../../components/shared/PlaceHolder';
 
 describe('Testing Placeholder section', () => {
-    it('Should rendered default placeholder type', () => {
+    it('Should show default placeholder type', () => {
         const wrapper = shallow(
             <PlaceholderGrid
                 column={1}
@@ -16,7 +16,7 @@ describe('Testing Placeholder section', () => {
         );
         expect(wrapper.find({ 'data-test': 'Shared_Placeholder_default' }).exists()).toBe(true);
     });
-    it('Should rendered placeholder of type table', () => {
+    it('Should show placeholder of type table', () => {
         const wrapper = shallow(
             <PlaceholderGrid
                 column={1}
@@ -26,7 +26,7 @@ describe('Testing Placeholder section', () => {
         );
         expect(wrapper.find({ 'data-test': 'Shared_Placeholder_table' }).exists()).toBe(true);
     });
-    it('Should rendered placeholder of type singleCard', () => {
+    it('Should show placeholder of type singleCard', () => {
         const wrapper = shallow(
             <PlaceholderGrid
                 column={1}
@@ -36,7 +36,7 @@ describe('Testing Placeholder section', () => {
         );
         expect(wrapper.find({ 'data-test': 'Shared_Placeholder_singlecard' }).exists()).toBe(true);
     });
-    it('Should rendered placeholder of type multiLine', () => {
+    it('Should show placeholder of type multiLine', () => {
         const wrapper = shallow(
             <PlaceholderGrid
                 column={1}

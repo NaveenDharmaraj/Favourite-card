@@ -44,7 +44,7 @@ const store = mockStore({
 
 describe('Testing Chart Section', () => {
     const props = getProps();
-    it('Should render Chart', () => {
+    it('Should show Chart', () => {
         const wrapper = mount(
             <Charts
                 {...props}

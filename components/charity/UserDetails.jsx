@@ -120,13 +120,13 @@ const UserDetails = (props) => {
     if (!hideGive) {
         if (isAuthenticated) {
             buttonLink = (
-                <Link route={(`/give/to/charity/${slug}/gift/new`)}>
+                <Link route={(`/give/to/charity/${slug}/gift/new`)} data-test="Charity_UserDetails_giveButton_loggedInUser">
                     <Button data-test="Charity_UserDetails_giveButton" className="blue-btn-rounded-def">{formatMessage('charityProfile:give')}</Button>
                 </Link>
             );
         } else {
             buttonLink = (
-                <a href={(`${RAILS_APP_URL_ORIGIN}/send/to/charity/${slug}/gift/new`)}>
+                <a href={(`${RAILS_APP_URL_ORIGIN}/send/to/charity/${slug}/gift/new`)} data-test="Charity_UserDetails_giveButton_publicUser">
                     <Button data-test="Charity_UserDetails_giveButton" className="blue-btn-rounded-def">{formatMessage('charityProfile:give')}</Button>
                 </a>
             );

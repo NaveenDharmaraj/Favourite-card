@@ -61,7 +61,7 @@ class ReceivingOrganisations extends React.Component {
                     location = `${donee.city}, ${donee.province}`;
                 }
                 return (
-                    <div className="ch_giftPopcontent">
+                    <div className="ch_giftPopcontent" data-test="Charity_ReceivingOrganisations_donee">
                         <Header as="h6">{formatMessage('charityProfile:charityHeader')}</Header>
                         <Header as="h3">
                             <p>

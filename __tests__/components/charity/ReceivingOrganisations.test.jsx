@@ -24,9 +24,9 @@ const getProps = () => ({
     year: 2018,
 });
 
-describe('Testing Doneelist Component', () => {
+describe('Testing Doneelist popup', () => {
     const props = getProps();
-    it('Should render Doneelist modal', () => {
+    it('Should show donee list popup', () => {
         const wrapper = mount(
             <ReceivingOrganisations
                 {...props}
@@ -34,7 +34,15 @@ describe('Testing Doneelist Component', () => {
         );
         expect(wrapper.find({ 'data-test': 'Charity_ReceivingOrganisations_doneeListModal' }).exists()).toBe(true);
     });
-    it('Should call getBeneficiaryDoneeList on ComponentDidMount', () => {
+    it('Should show donee lists', () => {
+        const wrapper = mount(
+            <ReceivingOrganisations
+                {...props}
+            />,
+        );
+        expect(wrapper.find({ 'data-test': 'Charity_ReceivingOrganisations_donee' }).exists()).toBe(true);
+    });
+    it('Should call api action to get donee list', () => {
         const spyFunc = jest.spyOn(charityActions, 'getBeneficiaryDoneeList');
         const wrapper = mount(
             <ReceivingOrganisations

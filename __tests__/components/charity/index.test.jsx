@@ -16,7 +16,7 @@ const getProps = () => ({
 
 describe('Testing Charity Profile wrapper file', () => {
     const props = getProps();
-    it('Should render charity profile page', () => {
+    it('Should show charity profile page', () => {
         const wrapper = shallow(
             <CharityProfileWrapper
                 {...props}
@@ -25,7 +25,7 @@ describe('Testing Charity Profile wrapper file', () => {
         expect(wrapper.find({ 'data-test': 'Charity_CharityProfileWrapper_pageWrapper' }).exists()).toBe(true);
     });
 
-    test('testing mapstatetoprops', () => {
+    test('Testing mapstatetoprops', () => {
         const initialState = {
             charity: {
                 ...props,

@@ -16,7 +16,7 @@ const getProps = () => ({
 
 describe('Testing CharityDetails component', () => {
     const props = getProps();
-    it('Should render Charity page', () => {
+    it('Should show Charity page', () => {
         const wrapper = shallow(
             <CharityDetails
                 {...props}
@@ -26,7 +26,7 @@ describe('Testing CharityDetails component', () => {
         expect(wrapper.find({ 'data-test': 'Charity_CharityDetails_wrapper' }).exists()).toBe(true);
     });
     describe('Testing Causes section', () => {
-        it('Should not render causes', () => {
+        it('Should not show causes', () => {
             const modifiedProps = {
                 ...props,
                 charityDetails: {
@@ -44,7 +44,7 @@ describe('Testing CharityDetails component', () => {
             );
             expect(wrapper.find({ 'data-test': 'Charity_CharityDetails_causes' }).length).toEqual(0);
         });
-        it('Should render causes', () => {
+        it('Should show causes', () => {
             const wrapper = shallow(
                 <CharityDetails
                     {...props}
@@ -54,7 +54,7 @@ describe('Testing CharityDetails component', () => {
         });
     });
     describe('Testing description section', () => {
-        it('Should render description', () => {
+        it('Should show description', () => {
             const wrapper = shallow(
                 <CharityDetails
                     {...props}
@@ -63,7 +63,7 @@ describe('Testing CharityDetails component', () => {
             expect(wrapper.find({ 'data-test': 'Charity_CharityDetails_description' }).exists()).toBe(true);
             expect(wrapper.find({ 'data-test': 'Charity_CharityDetails_new_description' }).exists()).toBe(true);
         });
-        it('Should not render description', () => {
+        it('Should not show description', () => {
             const modifiedProps = {
                 ...props,
                 charityDetails: {

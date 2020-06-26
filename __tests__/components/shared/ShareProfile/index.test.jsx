@@ -26,7 +26,7 @@ const getProps = () => ({
 
 describe('Testing ShareProfile section', () => {
     const props = getProps();
-    it('Should rendered share section', () => {
+    it('Should show share section', () => {
         const wrapper = mount(
             <ShareProfile
                 {...props}
@@ -76,7 +76,7 @@ describe('Testing ShareProfile section', () => {
     });
 
     describe('Testing share modal', () => {
-        it('Should render share modal with empty deeplink url', () => {
+        it('Should show share popup with empty deeplink url', () => {
             const wrapper = mount(
                 <ShareProfile
                     {...props}
@@ -101,7 +101,7 @@ describe('Testing ShareProfile section', () => {
             wrapper.find({ 'data-test': 'Shared_ShareProfile_share_icon' }).at(1).simulate('click');
             expect(wrapper.find({ 'data-test': 'Shared_ShareProfile_deeplink' }).at(0).instance().props.value).toEqual('www.charitableimpact.com');
         });
-        it('Should close share modal', () => {
+        it('Should close share popup', () => {
             const wrapper = mount(
                 <ShareProfile
                     {...props}
@@ -111,7 +111,7 @@ describe('Testing ShareProfile section', () => {
             wrapper.find('Portal').find('Icon').at(0).simulate('click');
             expect(wrapper.find({ 'data-test': 'Shared_ShareProfile_popup' }).exists()).toBe(false);
         });
-        it('Should call window open and close modal on twitter icon click', () => {
+        it('Should call window open and close popup on twitter icon click', () => {
             window.open = jest.fn();
             const wrapper = mount(
                 <ShareProfile
@@ -123,7 +123,7 @@ describe('Testing ShareProfile section', () => {
             expect(wrapper.find({ 'data-test': 'Shared_ShareProfile_popup' }).exists()).toBe(false);
             expect(window.open).toHaveBeenCalledTimes(1);
         });
-        it('Should call window open and close modal on facebook icon click', () => {
+        it('Should call window open and close popup on facebook icon click', () => {
             window.open = jest.fn();
             const wrapper = mount(
                 <ShareProfile

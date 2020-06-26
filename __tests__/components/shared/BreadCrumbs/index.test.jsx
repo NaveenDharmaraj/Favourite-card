@@ -6,7 +6,7 @@ import {
 import BreadcrumbDetails from '../../../../components/shared/BreadCrumbs';
 
 describe('Testing Breadcrumb section', () => {
-    it('Should render Breadcrumb section', () => {
+    it('Should show Breadcrumb section', () => {
         const pathArr = [
             'Explore',
             'Charities',
