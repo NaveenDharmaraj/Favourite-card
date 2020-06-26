@@ -171,12 +171,12 @@ UserDetails.defaultProps = {
 };
 
 UserDetails.propTypes = {
-    charityDetails: {
+    charityDetails: PropTypes.shape({
         attributes: PropTypes.shape({
             contactName: string,
             slug: string,
         }),
-    },
+    }),
     isAuthenticated: bool,
     t: PropTypes.func,
 };

@@ -109,7 +109,7 @@ class ReceivingOrganisations extends React.Component {
 
 ReceivingOrganisations.defaultProps = {
     charityDetails: {
-        id: null,
+        id: '',
     },
     currency: 'USD',
     dispatch: () => { },
@@ -123,11 +123,13 @@ ReceivingOrganisations.defaultProps = {
 
 ReceivingOrganisations.propTypes = {
     charityDetails: PropTypes.shape({
-        id: number,
+        id: string,
     }),
     currency: string,
     dispatch: func,
-    donationDetails: arrayOf(PropTypes.element),
+    donationDetails: PropTypes.arrayOf(
+        PropTypes.shape({}),
+    ),
     language: string,
     remainingAmount: number,
     remainingElements: number,

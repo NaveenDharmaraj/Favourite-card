@@ -179,9 +179,9 @@ CharityDetails.propTypes = {
         id: string,
         type: string,
     }),
-    currentUser: {
+    currentUser: PropTypes.shape({
         id: number,
-    },
+    }),
     dispatch: func,
     isAUthenticated: bool,
 };

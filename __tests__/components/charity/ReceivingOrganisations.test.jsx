@@ -26,7 +26,7 @@ const getProps = () => ({
 
 describe('Testing Doneelist popup', () => {
     const props = getProps();
-    it('Should show donee list popup', () => {
+    it('Should show donee list popup using api data', () => {
         const wrapper = mount(
             <ReceivingOrganisations
                 {...props}
@@ -34,7 +34,7 @@ describe('Testing Doneelist popup', () => {
         );
         expect(wrapper.find({ 'data-test': 'Charity_ReceivingOrganisations_doneeListModal' }).exists()).toBe(true);
     });
-    it('Should show donee lists', () => {
+    it('Should show donees using api data', () => {
         const wrapper = mount(
             <ReceivingOrganisations
                 {...props}
@@ -42,20 +42,20 @@ describe('Testing Doneelist popup', () => {
         );
         expect(wrapper.find({ 'data-test': 'Charity_ReceivingOrganisations_donee' }).exists()).toBe(true);
     });
-    it('Should call api action to get donee list', () => {
+    it('Should call function which in-turn call api to get donee list data', () => {
         const spyFunc = jest.spyOn(charityActions, 'getBeneficiaryDoneeList');
         const wrapper = mount(
             <ReceivingOrganisations
                 dispatch={jest.fn()}
                 donationDetails={[]}
-                charityDetails
+                charityDetails={charityDetails}
                 year={2018}
             />,
         );
         expect(spyFunc).toHaveBeenCalledTimes(1);
     });
-    describe('Testing total amount of remaining organisations section', () => {
-        it('Should show remaining organisations', () => {
+    describe('Testing total remaining organisations section in donee list popup', () => {
+        it('Should show remaining organisations if remainingElements field is having value more than 20 in api data', () => {
             const wrapper = mount(
                 <ReceivingOrganisations
                     {...props}
@@ -63,7 +63,7 @@ describe('Testing Doneelist popup', () => {
             );
             expect(wrapper.find({ 'data-test': 'Charity_ReceivingOrganisations_totalAmount' }).exists()).toBe(true);
         });
-        it('Should not show remaining organisations', () => {
+        it('Should not show remaining organisations if remainingElements field is having value less than or equal to 20 in api data', () => {
             const wrapper = mount(
                 <ReceivingOrganisations
                     {...props}

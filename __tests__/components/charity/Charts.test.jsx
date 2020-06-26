@@ -20,7 +20,9 @@ import {
 
 const getProps = () => ({
     beneficiaryFinance,
-    charityDetails,
+    charityDetails: {
+        id: '87',
+    },
     currentPage: 1,
     dispatch: jest.fn(),
     donationDetails: donationDetails._embedded.donee_list,
@@ -44,7 +46,7 @@ const store = mockStore({
 
 describe('Testing Chart Section', () => {
     const props = getProps();
-    it('Should show Chart', () => {
+    it('Should show Chart using api data', () => {
         const wrapper = mount(
             <Charts
                 {...props}
@@ -54,18 +56,20 @@ describe('Testing Chart Section', () => {
         );
         expect(wrapper.find({ 'data-test': 'Charity_Charts_graph' }).exists()).toBe(true);
     });
-    it('Should show Loader at chart section', () => {
+    it('Should show loader at chart section while calling api', () => {
         const wrapper = mount(
             <Charts
                 chartLoader
+                charityDetails={charityDetails}
             />,
         );
         expect(wrapper.find({ 'data-test': 'Charity_Charts_Loader' }).exists()).toBe(true);
     });
-    it('Should show No Data at chart section', () => {
+    it('Should show No Data at chart section for empty api response', () => {
         const wrapper = mount(
             <Charts
                 chartLoader={false}
+                charityDetails={charityDetails}
             />,
         );
         expect(wrapper.find({ 'data-test': 'Charity_CharityNoDataState_noData' }).exists()).toBe(true);
@@ -80,8 +84,8 @@ describe('Testing Chart Section', () => {
         wrapper.setProps({ beneficiaryFinance });
         expect(wrapper.state('chartIndex')).toEqual(8);
     });
-    describe('Testing view button functionality', () => {
-        it('Should open donee list Modal on click of view button', () => {
+    describe('Testing view gifts button functionality', () => {
+        it('Should open donee list popup on click of view gifts button', () => {
             const wrapper = mount(
                 <Provider store={store}>
                     <Charts
@@ -92,9 +96,9 @@ describe('Testing Chart Section', () => {
                 </Provider>,
             );
             wrapper.find({ 'data-test': 'Charity_ChartSummary_viewGiftButton' }).at(1).simulate('click');
-            expect(wrapper.find({ 'data-test': 'Charity_ReceivingOrganisations_doneeListModal'}).exists()).toBe(true);
+            expect(wrapper.find({ 'data-test': 'Charity_ReceivingOrganisations_doneeListModal' }).exists()).toBe(true);
         });
-        it('Should close donee list modal on click of close icon', () => {
+        it('Should close donee list popup on click of close icon', () => {
             const wrapper = mount(
                 <Provider store={store}>
                     <Charts

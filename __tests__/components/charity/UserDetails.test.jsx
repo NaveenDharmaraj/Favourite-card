@@ -19,7 +19,7 @@ const getProps = () => ({
 
 describe('Testing Charity Information section', () => {
     const props = getProps();
-    it('Should show Charity Information section', () => {
+    it('Should show charity information section using api data', () => {
         const wrapper = mount(
             <UserDetails
                 {...props}
@@ -28,7 +28,7 @@ describe('Testing Charity Information section', () => {
         expect(wrapper.find({ 'data-test': 'Charity_UserDetails_charityInfoWrapper' }).exists()).toBe(true);
     });
     describe('Testing claim charity button behaviour', () => {
-        it('Should show claim charity button', () => {
+        it('Should show claim charity button if isClaimed field value is false in api data', () => {
             const modifiedProps = {
                 ...props,
                 charityDetails: {
@@ -46,7 +46,7 @@ describe('Testing Charity Information section', () => {
             );
             expect(wrapper.find({ 'data-test': 'Charity_UserDetails_claimCharitybutton' }).exists()).toBe(true);
         });
-        it('Should not show claim charity button', () => {
+        it('Should not show claim charity button if isClaimed field value is true in api data', () => {
             const modifiedProps = {
                 ...props,
                 charityDetails: {
@@ -66,7 +66,7 @@ describe('Testing Charity Information section', () => {
         });
     });
     describe('Testing Give button behaviour', () => {
-        it('Should match button url for Login user', () => {
+        it('Should match button url which redirect to give to charity for Login user', () => {
             const wrapper = mount(
                 <UserDetails
                     {...props}
@@ -78,7 +78,7 @@ describe('Testing Charity Information section', () => {
                 },
             ).exists()).toBe(true);
         });
-        it('Should match button url for Public user', () => {
+        it('Should match button url which redirect to OTD for Public user', () => {
             const wrapper = mount(
                 <UserDetails
                     {...props}
@@ -91,24 +91,35 @@ describe('Testing Charity Information section', () => {
                 },
             ).exists()).toBe(true);
         });
-    });
-    it('Should not show Give button', () => {
-        const modifiedProps = {
-            ...props,
-            charityDetails: {
-                ...props.charityDetails,
-                attributes: {
-                    ...props.charityDetails.attributes,
-                    hideGive: true,
+        it('Should not show Give button if hideGive value is true in api response', () => {
+            const modifiedProps = {
+                ...props,
+                charityDetails: {
+                    ...props.charityDetails,
+                    attributes: {
+                        ...props.charityDetails.attributes,
+                        hideGive: true,
+                    },
                 },
-            },
-        };
-        const wrapper = mount(
-            <UserDetails
-                {...modifiedProps}
-            />,
-        );
-        expect(wrapper.find({ 'data-test': 'Charity_UserDetails_giveButton' }).exists()).toBe(false);
+            };
+            const wrapper = mount(
+                <UserDetails
+                    {...modifiedProps}
+                />,
+            );
+            expect(wrapper.find({ 'data-test': 'Charity_UserDetails_giveButton' }).exists()).toBe(false);
+        });
+        it('Should show Give button if hideGive value is false in api response', () => {
+            const modifiedProps = {
+                ...props,
+            };
+            const wrapper = mount(
+                <UserDetails
+                    {...modifiedProps}
+                />,
+            );
+            expect(wrapper.find({ 'data-test': 'Charity_UserDetails_giveButton' }).exists()).toBe(true);
+        });
     });
     it('Should show contact name', () => {
         const modifiedProps = {

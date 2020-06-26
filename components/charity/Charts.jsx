@@ -396,7 +396,9 @@ Charts.defaultProps = {
 };
 
 Charts.propTypes = {
-    beneficiaryFinance: arrayOf(PropTypes.element),
+    beneficiaryFinance: PropTypes.arrayOf(
+        PropTypes.shape({}),
+    ),
     charityDetails: PropTypes.shape({
         id: string,
     }),

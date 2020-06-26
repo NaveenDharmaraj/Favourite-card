@@ -26,7 +26,7 @@ describe('Testing Placeholder section', () => {
         );
         expect(wrapper.find({ 'data-test': 'Shared_Placeholder_table' }).exists()).toBe(true);
     });
-    it('Should show placeholder of type singleCard', () => {
+    it('Should show placeholder of type card', () => {
         const wrapper = shallow(
             <PlaceholderGrid
                 column={1}
@@ -36,7 +36,7 @@ describe('Testing Placeholder section', () => {
         );
         expect(wrapper.find({ 'data-test': 'Shared_Placeholder_singlecard' }).exists()).toBe(true);
     });
-    it('Should show placeholder of type multiLine', () => {
+    it('Should show placeholder of type multiple lines', () => {
         const wrapper = shallow(
             <PlaceholderGrid
                 column={1}

@@ -14,9 +14,9 @@ const getProps = () => ({
     charityDetails,
 });
 
-describe('Testing Charity Profile wrapper file', () => {
+describe('Testing Charity Profile page', () => {
     const props = getProps();
-    it('Should show charity profile page', () => {
+    it('Should show charity profile page using api data', () => {
         const wrapper = shallow(
             <CharityProfileWrapper
                 {...props}

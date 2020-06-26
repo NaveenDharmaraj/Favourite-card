@@ -22,8 +22,8 @@ describe('Charity profile actions test', () => {
         const mockStore = configureMockStore(middlewares);
         store = mockStore();
     });
-    describe('Testing charity details data', () => {
-        it('Should dispatch charity data without Token', async () => {
+    describe('Testing charity profile actions', () => {
+        it('Should load charity data without token from api data', async () => {
             mockAxios.get.mockImplementationOnce(() => Promise.resolve(
                 {
                     data: {
@@ -52,7 +52,7 @@ describe('Charity profile actions test', () => {
                 expect(store.getActions()).toEqual(expectedActions);
             });
         });
-        it('Should dispatch charity data with token', async () => {
+        it('Should load charity data with token from api data', async () => {
             mockAxios.get.mockImplementationOnce(() => Promise.resolve(
                 {
                     data: {
@@ -83,7 +83,7 @@ describe('Charity profile actions test', () => {
                 expect(store.getActions()).toEqual(expectedActions);
             });
         });
-        it('Should not dispatch charity data with empty api data', async () => {
+        it('Should not load charity data with empty api data', async () => {
             mockAxios.get.mockImplementationOnce(() => Promise.resolve(
                 {
                     data: [],
@@ -105,7 +105,7 @@ describe('Charity profile actions test', () => {
                 expect(store.getActions()).toEqual(expectedActions);
             });
         });
-        it('Should not dispatch charity data on api ERROR', async () => {
+        it('Should not load charity profile page on api ERROR', async () => {
             const error = 'Error scenario';
             mockAxios.get.mockImplementationOnce(() => Promise.reject(
                 error,
@@ -134,7 +134,7 @@ describe('Charity profile actions test', () => {
         });
     });
     describe('Testing Beneficiary Finance data', () => {
-        it('Should dispatch Beneficiary Finance data', async () => {
+        it('Should load beneficiary finance data with api data', async () => {
             mockAxios.get.mockImplementationOnce(() => Promise.resolve(
                 {
                     beneficiaryFinanceList: [
@@ -167,7 +167,7 @@ describe('Charity profile actions test', () => {
                 expect(store.getActions()).toEqual(expectedActions);
             });
         });
-        it('Should not dispatch Beneficiary Finance data with empty api data', async () => {
+        it('Should not load Beneficiary Finance data with empty api data', async () => {
             mockAxios.get.mockImplementationOnce(() => Promise.resolve(
                 {
                     beneficiaryFinanceList: [],
@@ -194,7 +194,7 @@ describe('Charity profile actions test', () => {
         });
     });
     describe('Testing doneelist data', () => {
-        it('Should dispatch doneelist with more than 20 total records', async () => {
+        it('Should show remaining organisations in doneelist popup with more than 20 total records', async () => {
             mockAxios.get.mockImplementationOnce(() => Promise.resolve(
                 {
                     ...donationDetails,
@@ -211,7 +211,7 @@ describe('Charity profile actions test', () => {
                     payload: {
                         donationDetails: donationDetails._embedded.donee_list,
                         remainingAmount: donationDetails.totalAmount.remainingAmount,
-                        remainingElements: donationDetails.page.totalElements - donationDetails.page.size,
+                        remainingElements: 34,
                     },
                     type: 'GET_BENEFICIARY_DONEE_LIST',
                 },
@@ -227,7 +227,7 @@ describe('Charity profile actions test', () => {
                 expect(store.getActions()).toEqual(expectedActions);
             });
         });
-        it('Should not dispatch doneelist with empty api data', async () => {
+        it('Should not load doneelist with empty api data', async () => {
             mockAxios.get.mockImplementationOnce(() => Promise.resolve(
                 {
                     ...donationDetails,
@@ -256,7 +256,7 @@ describe('Charity profile actions test', () => {
                 expect(store.getActions()).toEqual(expectedActions);
             });
         });
-        it('Should dispatch remaining amount and remaining elements as 0 for less than or equal to 20 total records', async () => {
+        it('Should not show remaining organisations for less than or equal to 20 total records', async () => {
             mockAxios.get.mockImplementationOnce(() => Promise.resolve(
                 {
                     ...donationDetails,

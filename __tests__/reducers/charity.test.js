@@ -6,7 +6,7 @@ import {
 } from '../components/charity/Data';
 
 describe('Testing charity profile Reducer', () => {
-    it('should match payload and state for GET_CHARITY_DETAILS_FROM_SLUG', () => {
+    it('should match payload and state for charity data', () => {
         const type = 'GET_CHARITY_DETAILS_FROM_SLUG';
         const payload = {
             charityDetails,
@@ -17,7 +17,7 @@ describe('Testing charity profile Reducer', () => {
         });
         expect(newState).toEqual(payload);
     });
-    it('Should match payload and state for GET_BENEFICIARY_DONEE_LIST', () => {
+    it('Should match payload and state for donee list data', () => {
         const type = 'GET_BENEFICIARY_DONEE_LIST';
         const payload = {
             donationDetails: donationDetails._embedded.donee_list,
@@ -30,7 +30,7 @@ describe('Testing charity profile Reducer', () => {
         });
         expect(newState).toEqual(payload);
     });
-    it('Should match payload and state for CHARITY_REDIRECT_TO_DASHBOARD', () => {
+    it('Should match payload and state on api error', () => {
         const type = 'CHARITY_REDIRECT_TO_DASHBOARD';
         const payload = {
             redirectToDashboard: false,
@@ -41,7 +41,7 @@ describe('Testing charity profile Reducer', () => {
         });
         expect(newState).toEqual(payload);
     });
-    it('Should match payload and state for CHARITY_PLACEHOLDER_STATUS', () => {
+    it('Should match payload and state for donee list popup placeholder', () => {
         const type = 'CHARITY_PLACEHOLDER_STATUS';
         const payload = {
             showPlaceholder: false,
@@ -52,7 +52,7 @@ describe('Testing charity profile Reducer', () => {
         });
         expect(newState).toEqual(payload);
     });
-    it('Should match payload and state for RESET_CHARITY_STATES', () => {
+    it('Should reset state on navigating to charity page', () => {
         const type = 'RESET_CHARITY_STATES';
         const payload = {};
         const newState = charity(undefined, {
@@ -61,7 +61,7 @@ describe('Testing charity profile Reducer', () => {
         });
         expect(newState).toEqual(payload);
     });
-    it('Should match payload and state for GET_BENEFICIARY_FINANCE_DETAILS', () => {
+    it('Should match payload and state for chart data', () => {
         const type = 'GET_BENEFICIARY_FINANCE_DETAILS';
         const payload = {
             beneficiaryFinance,
@@ -72,7 +72,7 @@ describe('Testing charity profile Reducer', () => {
         });
         expect(newState).toEqual(payload);
     });
-    it('Should match payload and state for CHARITY_CHART_LOADER', () => {
+    it('Should match payload and state for chart loader', () => {
         const type = 'CHARITY_CHART_LOADER';
         const payload = {
             chartLoader: false,

@@ -17,7 +17,7 @@ const getProps = () => ({
 
 describe('Testing chart summary section', () => {
     const props = getProps();
-    it('Should show summary section', () => {
+    it('Should show summary section using api data', () => {
         const wrapper = mount(
             <ChartSummary
                 {...props}
@@ -25,7 +25,7 @@ describe('Testing chart summary section', () => {
         );
         expect(wrapper.find({ 'data-test': 'Charity_ChartSummary_expenses_summary' }).exists()).toBe(true);
     });
-    it('Should hide gifts to other charities in summary section', () => {
+    it('Should hide gifts to other charities expense if total gift is 0', () => {
         const wrapper = mount(
             <ChartSummary
                 {...props}
@@ -34,7 +34,7 @@ describe('Testing chart summary section', () => {
         );
         expect(wrapper.find({ 'data-test': 'Charity_ChartSummary_expenses_summary' }).exists()).toBe(false);
     });
-    it('Should show view gifts button for gifts to other charities', () => {
+    it('Should show gifts to other charities and view gifts button if total gift is more than 0', () => {
         const wrapper = mount(
             <ChartSummary
                 {...props}
@@ -42,5 +42,6 @@ describe('Testing chart summary section', () => {
             />,
         );
         expect(wrapper.find({ 'data-test': 'Charity_ChartSummary_viewGiftButton' }).exists()).toBe(true);
+        expect(wrapper.find({ 'data-test': 'Charity_ChartSummary_expenses_summary' }).exists()).toBe(true);
     });
 });

@@ -14,7 +14,7 @@ import {
 } from './Data';
 
 describe('Testing Program Areas section', () => {
-    it('Should show program areas section', () => {
+    it('Should show program areas using api data', () => {
         const wrapper = mount(
             <ProgramAreas
                 charityDetails={charityDetails}
@@ -24,7 +24,7 @@ describe('Testing Program Areas section', () => {
         expect(wrapper.find({ 'data-test': 'Charity_ProgramAreas_programs_section' }).exists()).toBe(true);
         expect(wrapper.find({ 'data-test': 'Charity_CharityNoDataState_noData' }).exists()).toBe(false);
     });
-    it('Should show No data at Program Area section', () => {
+    it('Should show no data at program area section if api data is empty', () => {
         const wrapper = mount(
             <ProgramAreas
                 charityDetails={emptyPrograms}

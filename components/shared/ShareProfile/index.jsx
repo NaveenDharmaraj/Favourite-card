@@ -13,6 +13,7 @@ import {
     bool,
     func,
     string,
+    number,
 } from 'prop-types';
 import { connect } from 'react-redux';
 
@@ -176,7 +177,7 @@ class ShareProfile extends React.Component {
 
 ShareProfile.defaultProps = {
     currentUser: PropTypes.shape({
-        id: '',
+        id: null,
     }),
     disableFollow: false,
     dispatch: () => {},
@@ -189,7 +190,7 @@ ShareProfile.defaultProps = {
 
 ShareProfile.propTypes = {
     currentUser: PropTypes.shape({
-        id: string,
+        id: number,
     }),
     disableFollow: bool,
     dispatch: func,
