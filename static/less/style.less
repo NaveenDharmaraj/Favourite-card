@@ -1461,8 +1461,8 @@ h4{
   }
 }
 .pageWraper{
-  padding-top: 50px;
   padding-bottom: 80px;
+  margin-top: -3px;
   .pageHeader{
     padding-bottom: 30px;
     .breadcrumb{
@@ -1723,7 +1723,7 @@ h4{
       margin-top: 30px;
     }
     .pageWraper {
-      padding-top: 30px;
+      padding-top: 0px;
       padding-bottom: 50px;
     }
     .login-form-wraper{
@@ -1780,6 +1780,12 @@ h4{
   body{
     .c-m-default-header .ui.secondary.menu{
       margin-bottom: 0px;
+      top: 0px;
+      position: fixed;
+      left: 0px;
+      right: 0px;
+      background-color: #fff;
+      z-index:9999999;
     }
   }
   .left-bg{
@@ -2428,9 +2434,10 @@ h4{
       border: 0px solid transparent;	
       background-color: #FFFFFF;	
       box-shadow: 0 5px 10px 0 rgba(0,0,0,0.2);
-      margin-top: 27px !important;
+      margin-top: 26px !important;
+      z-index: 999999999;
       @media only screen and (max-width:991px){
-        margin-top: 18px !important;
+        margin-top:-4px !important;
       }
       @media only screen and (max-width:767px) {
         min-width: 250px;	
@@ -2610,10 +2617,12 @@ h4{
     }
   }
 }
+body{
 .btn-wraper{
   margin-bottom: 2rem;
   .ui{
     &.secondary{
+      z-index: 9 !important;
       &.menu{
         position: relative;
         box-shadow: none;
@@ -2686,16 +2695,20 @@ h4{
     }
   }
 }
+}
 @media only screen and (max-width:767px) {
-  .btn-wraper{
-    .ui{
-      &.secondary{
-        &.menu{
-          box-shadow: none;
-          border:none;
-          .item{
-            min-width: 75px;
-            padding: 10px 6px;
+  body{
+    .btn-wraper{
+      .ui{
+        &.secondary{
+          z-index: 9 !important;
+          &.menu{
+            box-shadow: none;
+            border:none;
+            .item{
+              min-width: 75px;
+              padding: 10px 6px;
+            }
           }
         }
       }
@@ -5071,10 +5084,13 @@ i.check.circle.icon.status-icon {
   color: #FF0000;
   font-size: 1em;
   font-weight: 400;
-  display: flex;
+  display: table;
   .icon{
     &.exclamation{
       color: #FF0000;
+      display: table-cell;
+      width: 20px;
+      text-align: left;
     }
   }
 }
@@ -6813,7 +6829,7 @@ button.ui.button.blue-bordr-btn-round-def{
     &.input{
       input{
         display: inline-block;
-        width: auto !important;
+        width: 100% !important;
       }
     }
   }
@@ -7231,6 +7247,7 @@ body{
       &.large{
         &.question{
           position: relative;
+          margin-top: 5px;
           &::before{
             content: '';
             position: absolute;
@@ -7967,6 +7984,9 @@ body .userEllips{
       }
     }
   }
+}
+.error_page{
+  margin-top:100px;
 }
 .app_logo{
   border-top: 1px solid #C0C3D4;
