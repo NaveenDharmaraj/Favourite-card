@@ -478,7 +478,7 @@ button,a{
       margin-top: 7px !important;
       z-index: 999999999;
       @media only screen and (max-width:991px){
-        margin-top: -4px !important;
+        margin-top: 17px !important;
       }
       >.header{
         padding: .833em 1em;
@@ -610,7 +610,7 @@ button,a{
       margin-top: 3px !important;
       z-index: 999999999;
       @media only screen and (max-width:991px){
-        margin-top: -4px !important;
+        margin-top: 17px !important;
       }
       >.header{
         padding: .833em 1em;
@@ -1536,14 +1536,13 @@ body{
       &.menu{
         box-shadow: 0 1px 4px 0 rgba(209,209,209,0.5);
         margin-bottom: 1px;
-        position: fixed;
-        left: 0;
-        right: 0;
-        background-color: #fff;
-        z-index: 99;
-        top: 0;
-        &.header_Responsive{
+        &.fixed-header{
+          position: fixed;
+          left: 0;
+          right: 0;
+          background-color: #fff;
           z-index: 9999;
+          top: 0;
         }
         .item{
           &:hover{
@@ -2072,7 +2071,4 @@ body{
   position: fixed;
   margin-top: 67px !important;
 }
-}
-.chimpLayout{
-  padding-top: 80px;
 }
