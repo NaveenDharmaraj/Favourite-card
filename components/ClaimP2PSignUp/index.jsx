@@ -99,7 +99,7 @@ class ClaimP2PSignUp extends React.Component {
             this.setState({
                 buttonClicked: true,
             })
-            coreApi.post('/claimP2ps', {
+             coreApi.post('/claimP2ps', {
                 data: {
                     attributes: {
                         firstName,
@@ -129,12 +129,16 @@ class ClaimP2PSignUp extends React.Component {
             pwdHide,
             validity,
         } = this.state;
+        const {
+            email,
+        } = this.props;
         return (
             <Form className="claimp2pForm">
                 <Form.Group>
                     <Form.Field width={8} className="claimP2P_field">
-                        <label>First name</label>
+                        <label data-test="ClaimP2PSignUp_label_firstName">First name</label>
                         <Form.Input
+                            data-test="ClaimP2PSignUp_inputFeild_firstName"
                             name="firstName"
                             placeholder="Your first name"
                             value={firstName}
@@ -156,8 +160,9 @@ class ClaimP2PSignUp extends React.Component {
                         />
                     </Form.Field>
                     <Form.Field width={8} className="claimP2P_field">
-                        <label>Last name</label>
+                        <label data-test="ClaimP2PSignUp_label_lastName">Last name</label>
                         <Form.Input
+                            data-test="ClaimP2PSignUp_inputFeild_lastName"
                             placeholder="Your last name"
                             name="lastName"
                             value={lastName}
@@ -177,13 +182,14 @@ class ClaimP2PSignUp extends React.Component {
                 </Form.Group>
 
                 <Form.Field className="claimP2P_field">
-                    <label>Email</label>
-                    <Form.Input disabled placeholder="Enter your email" width={16} value="chimp@gmail.com" />
+                    <label data-test="ClaimP2PSignUp_label_email">Email</label>
+                    <Form.Input data-test="ClaimP2PSignUp_inputFeild_email" disabled placeholder="Enter your email" width={16} value={email} />
                 </Form.Field>
                 <Form.Field className="claimP2P_field">
-                    <label>Password</label>
+                    <label data-test="ClaimP2PSignUp_label_password">Password</label>
                     <Form.Field
                         control={Input}
+                        data-test="ClaimP2PSignUp_inputFeild_password"
                         className="passwordField"
                         name="password"
                         placeholder="Choose your password"
@@ -208,15 +214,16 @@ class ClaimP2PSignUp extends React.Component {
                         errorMessage="Please choose a password."
                     />
                     <p className="passwordNote">
-                        <span className={(validity.doesPwdHaveCount) ? 'blueText' : ''}>
+                        <span data-test="ClaimP2PSignUp_passwordCount_Characters" className={(validity.doesPwdHaveCount) ? 'blueText' : ''}>
                             {password.length}/8 characters,
                         </span><br />
-                        <span className={(validity.doesPwdhaveLowerCase) ? 'blueText' : ''}>lowercase letters (a-z),</span><br />
-                        <span className={(validity.doesPwdhaveUpperCase) ? 'blueText' : ''}>uppercase letters (A-Z),</span><br />
-                        <span className={(validity.doesPwdhaveSpecialChars) ? 'blueText' : ''}>special characters (e.g. !@#$%^&*)</span>
+                        <span data-test="ClaimP2PSignUp_passwordCharacter_lowerCase" className={(validity.doesPwdhaveLowerCase) ? 'blueText' : ''}>lowercase letters (a-z),</span><br />
+                        <span data-test="ClaimP2PSignUp_passwordCharacter_upperCase" className={(validity.doesPwdhaveUpperCase) ? 'blueText' : ''}>uppercase letters (A-Z),</span><br />
+                        <span data-test="ClaimP2PSignUp_passwordCharacter_specialCase" className={(validity.doesPwdhaveSpecialChars) ? 'blueText' : ''}>special characters (e.g. !@#$%^&*)</span>
                     </p>
                 </Form.Field>
                 <Button
+                    data-test = "ClaimP2PSignUp_submit_button"
                     className="blue-btn-rounded-def openImpAct"
                     onClick={(e) => this.handleSubmit(e)}
                     disabled={(!this.validateForm() || buttonClicked)}
