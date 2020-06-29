@@ -27,8 +27,8 @@ describe('Testing Charity Information section', () => {
         );
         expect(wrapper.find({ 'data-test': 'Charity_UserDetails_charityInfoWrapper' }).exists()).toBe(true);
     });
-    describe('Testing claim charity button behaviour', () => {
-        it('Should show claim charity button if isClaimed field value is false in api data', () => {
+    describe('Testing "claim charity" button behaviour', () => {
+        it('Should show "claim charity" button if "isClaimed" field value is false in api data', () => {
             const modifiedProps = {
                 ...props,
                 charityDetails: {
@@ -46,7 +46,7 @@ describe('Testing Charity Information section', () => {
             );
             expect(wrapper.find({ 'data-test': 'Charity_UserDetails_claimCharitybutton' }).exists()).toBe(true);
         });
-        it('Should not show claim charity button if isClaimed field value is true in api data', () => {
+        it('Should not show "claim charity" button if "isClaimed" field value is true in api data', () => {
             const modifiedProps = {
                 ...props,
                 charityDetails: {
@@ -65,33 +65,27 @@ describe('Testing Charity Information section', () => {
             expect(wrapper.find({ 'data-test': 'Charity_UserDetails_claimCharitybutton' }).exists()).toBe(false);
         });
     });
-    describe('Testing Give button behaviour', () => {
-        it('Should match button url which redirect to give to charity for Login user', () => {
+    describe('Testing "Give" button behaviour', () => {
+        it('Should match "Give" button url which redirect to give to charity for Login user', () => {
             const wrapper = mount(
                 <UserDetails
                     {...props}
                 />,
             );
-            expect(wrapper.find({ 'data-test': 'Charity_UserDetails_giveButton_loggedInUser' }).find(
-                {
-                    'href': '/charities?slug=the-canadian-red-cross-society-la-societe-canadienne-de-la-croix-rouge&gift=gift&step=new'
-                },
-            ).exists()).toBe(true);
+            expect(wrapper.find({ 'data-test': 'Charity_UserDetails_giveButton_loggedInUser' }).at(0).prop('route'))
+                .toEqual('/give/to/charity/the-canadian-red-cross-society-la-societe-canadienne-de-la-croix-rouge/gift/new');
         });
-        it('Should match button url which redirect to OTD for Public user', () => {
+        it('Should match "Give" button url which redirect to OTD for Public user', () => {
             const wrapper = mount(
                 <UserDetails
                     {...props}
                     isAuthenticated={false}
                 />,
             );
-            expect(wrapper.find({ 'data-test': 'Charity_UserDetails_giveButton_publicUser' }).find(
-                {
-                    'href': 'undefined/send/to/charity/the-canadian-red-cross-society-la-societe-canadienne-de-la-croix-rouge/gift/new',
-                },
-            ).exists()).toBe(true);
+            expect(wrapper.find({ 'data-test': 'Charity_UserDetails_giveButton_publicUser' }).prop('href'))
+                .toContain('/send/to/charity/the-canadian-red-cross-society-la-societe-canadienne-de-la-croix-rouge/gift/new');
         });
-        it('Should not show Give button if hideGive value is true in api response', () => {
+        it('Should not show "Give" button if "hideGive" value is true in api response', () => {
             const modifiedProps = {
                 ...props,
                 charityDetails: {
@@ -109,7 +103,7 @@ describe('Testing Charity Information section', () => {
             );
             expect(wrapper.find({ 'data-test': 'Charity_UserDetails_giveButton' }).exists()).toBe(false);
         });
-        it('Should show Give button if hideGive value is false in api response', () => {
+        it('Should show "Give" button if "hideGive" value is false in api response', () => {
             const modifiedProps = {
                 ...props,
             };
@@ -121,7 +115,7 @@ describe('Testing Charity Information section', () => {
             expect(wrapper.find({ 'data-test': 'Charity_UserDetails_giveButton' }).exists()).toBe(true);
         });
     });
-    it('Should show contact name', () => {
+    it('Should show contact name if "contactName" attibute has value in api data', () => {
         const modifiedProps = {
             ...props,
             charityDetails: {
@@ -139,7 +133,7 @@ describe('Testing Charity Information section', () => {
         );
         expect(wrapper.find({ 'data-test': 'Charity_UserDetails_charityInformation_user' }).at(1).text()).toEqual('undefined: test contact name');
     });
-    it('Should show phone number', () => {
+    it('Should show phone number if "phone" attribute has value in api data', () => {
         const modifiedProps = {
             ...props,
             charityDetails: {
@@ -157,7 +151,7 @@ describe('Testing Charity Information section', () => {
         );
         expect(wrapper.find({ 'data-test': 'Charity_UserDetails_charityInformation_phone' }).at(1).text()).toEqual('12345 67890');
     });
-    it('Should show email address', () => {
+    it('Should show email address if "email" attribute has value in api data', () => {
         const modifiedProps = {
             ...props,
             charityDetails: {
@@ -175,7 +169,7 @@ describe('Testing Charity Information section', () => {
         );
         expect(wrapper.find({ 'data-test': 'Charity_UserDetails_charityInformation_mail' }).at(1).text()).toEqual('test@charitableimpact.com');
     });
-    it('Should show website address', () => {
+    it('Should show website address if "website" attribute has value in api data', () => {
         const modifiedProps = {
             ...props,
             charityDetails: {
@@ -193,7 +187,7 @@ describe('Testing Charity Information section', () => {
         );
         expect(wrapper.find({ 'data-test': 'Charity_UserDetails_charityInformation_linkify' }).at(1).text()).toEqual('charitableimpact.com');
     });
-    it('Should show Staff Count', () => {
+    it('Should show Staff Count if "staffCount" attribute has value in api data', () => {
         const modifiedProps = {
             ...props,
             charityDetails: {
@@ -211,7 +205,7 @@ describe('Testing Charity Information section', () => {
         );
         expect(wrapper.find({ 'data-test': 'Charity_UserDetails_charityInformation_users' }).at(1).text()).toEqual('42');
     });
-    it('Should show Business Number', () => {
+    it('Should show Business Number if "businessNumber" attribute has value in api data', () => {
         const modifiedProps = {
             ...props,
             charityDetails: {
@@ -229,7 +223,7 @@ describe('Testing Charity Information section', () => {
         );
         expect(wrapper.find({ 'data-test': 'Charity_UserDetails_charityInformation_briefcase' }).at(1).text()).toEqual('1234 5678');
     });
-    it('Should show Headquarter Address', () => {
+    it('Should show Headquarter Address if "headQuarterAddress" attribute has value in api data', () => {
         const modifiedProps = {
             ...props,
             charityDetails: {

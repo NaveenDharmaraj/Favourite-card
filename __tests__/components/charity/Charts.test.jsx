@@ -74,7 +74,7 @@ describe('Testing Chart Section', () => {
         );
         expect(wrapper.find({ 'data-test': 'Charity_CharityNoDataState_noData' }).exists()).toBe(true);
     });
-    it('Should call ComponentDidUpdate on props change', () => {
+    it('Should call ComponentDidUpdate after getting api data', () => {
         const wrapper = shallow(
             <Charts
                 charityDetails={charityDetails}
@@ -84,8 +84,8 @@ describe('Testing Chart Section', () => {
         wrapper.setProps({ beneficiaryFinance });
         expect(wrapper.state('chartIndex')).toEqual(8);
     });
-    describe('Testing view gifts button functionality', () => {
-        it('Should open donee list popup on click of view gifts button', () => {
+    describe('Testing "view gifts" button functionality', () => {
+        it('Should open donee list popup on click of "view gifts" button', () => {
             const wrapper = mount(
                 <Provider store={store}>
                     <Charts

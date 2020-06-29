@@ -25,7 +25,7 @@ describe('Testing chart summary section', () => {
         );
         expect(wrapper.find({ 'data-test': 'Charity_ChartSummary_expenses_summary' }).exists()).toBe(true);
     });
-    it('Should hide gifts to other charities expense if total gift is 0', () => {
+    it('Should hide "gifts to other charities" expense if total gift is 0', () => {
         const wrapper = mount(
             <ChartSummary
                 {...props}
@@ -34,7 +34,7 @@ describe('Testing chart summary section', () => {
         );
         expect(wrapper.find({ 'data-test': 'Charity_ChartSummary_expenses_summary' }).exists()).toBe(false);
     });
-    it('Should show gifts to other charities and view gifts button if total gift is more than 0', () => {
+    it('Should show "gifts to other charities" and "view gifts" button if total gift is more than 0', () => {
         const wrapper = mount(
             <ChartSummary
                 {...props}

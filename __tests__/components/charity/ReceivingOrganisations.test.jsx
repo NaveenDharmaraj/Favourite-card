@@ -42,7 +42,7 @@ describe('Testing Doneelist popup', () => {
         );
         expect(wrapper.find({ 'data-test': 'Charity_ReceivingOrganisations_donee' }).exists()).toBe(true);
     });
-    it('Should call function which in-turn call api to get donee list data', () => {
+    it('Should call BeneficiaryDoneeList api after mounting, to get donee list data', () => {
         const spyFunc = jest.spyOn(charityActions, 'getBeneficiaryDoneeList');
         const wrapper = mount(
             <ReceivingOrganisations

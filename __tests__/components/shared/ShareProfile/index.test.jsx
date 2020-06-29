@@ -35,7 +35,7 @@ describe('Testing ShareProfile section', () => {
         expect(wrapper.find({ 'data-test': 'Shared_ShareProfile_shareSection' }).exists()).toBe(true);
     });
     describe('Testing follow functionality', () => {
-        it('Should show unfollow status if liked value is false in api data', () => {
+        it('Should show unfollow status if "liked" value is false in api data', () => {
             const wrapper = mount(
                 <ShareProfile
                     {...props}
@@ -44,7 +44,7 @@ describe('Testing ShareProfile section', () => {
             );
             expect(wrapper.find({ 'data-test': 'Shared_ShareProfile_likeIcon' }).at(0).prop('color')).toEqual('outline');
         });
-        it('Should show follow status if liked value is true in api data', () => {
+        it('Should show follow status if "liked" value is true in api data', () => {
             const wrapper = mount(
                 <ShareProfile
                     {...props}
@@ -52,7 +52,7 @@ describe('Testing ShareProfile section', () => {
             );
             expect(wrapper.find({ 'data-test': 'Shared_ShareProfile_likeIcon' }).at(0).prop('color')).toEqual('red');
         });
-        it('Should call function which in-turn call follow api on click of follow icon', () => {
+        it('Should call followProfile api on click of follow icon', () => {
             const spyFunc = jest.spyOn(actions, 'followProfile');
             const wrapper = mount(
                 <ShareProfile
@@ -63,7 +63,7 @@ describe('Testing ShareProfile section', () => {
             wrapper.find({ 'data-test': 'Shared_ShareProfile_likeIcon' }).at(1).simulate('click');
             expect(spyFunc).toHaveBeenCalledTimes(1);
         });
-        it('Should call function which in-turn call unfollow api on click of follow icon', () => {
+        it('Should call unfollowProfile api on click of follow icon', () => {
             const spyFunc = jest.spyOn(actions, 'unfollowProfile');
             const wrapper = mount(
                 <ShareProfile
@@ -111,7 +111,7 @@ describe('Testing ShareProfile section', () => {
             wrapper.find('Portal').find('Icon').at(0).simulate('click');
             expect(wrapper.find({ 'data-test': 'Shared_ShareProfile_popup' }).exists()).toBe(false);
         });
-        it('Should call window open and close popup on click of twitter icon', () => {
+        it('Should open new window and close popup on click of twitter icon', () => {
             window.open = jest.fn();
             const wrapper = mount(
                 <ShareProfile
@@ -123,7 +123,7 @@ describe('Testing ShareProfile section', () => {
             expect(wrapper.find({ 'data-test': 'Shared_ShareProfile_popup' }).exists()).toBe(false);
             expect(window.open).toHaveBeenCalledTimes(1);
         });
-        it('Should call window open and close popup on click of facebook icon', () => {
+        it('Should open new window and close popup on click of facebook icon', () => {
             window.open = jest.fn();
             const wrapper = mount(
                 <ShareProfile

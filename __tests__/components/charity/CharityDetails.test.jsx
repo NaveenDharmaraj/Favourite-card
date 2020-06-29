@@ -29,7 +29,7 @@ describe('Testing CharityDetails section', () => {
         expect(wrapper.find({ 'data-test': 'Charity_CharityDetails_wrapper' }).exists()).toBe(true);
     });
     describe('Testing Causes section', () => {
-        it('Should not show causes if causes field is empty in the api response', () => {
+        it('Should not show causes if "causes" field is empty in the api response', () => {
             const modifiedProps = {
                 ...props,
                 charityDetails: {
@@ -47,7 +47,7 @@ describe('Testing CharityDetails section', () => {
             );
             expect(wrapper.find({ 'data-test': 'Charity_CharityDetails_causes' }).length).toEqual(0);
         });
-        it('Should show causes if causes field is having data in api response', () => {
+        it('Should show causes if "causes" field is having data in api response', () => {
             const wrapper = shallow(
                 <CharityDetails
                     {...props}
@@ -57,7 +57,7 @@ describe('Testing CharityDetails section', () => {
         });
     });
     describe('Testing description section', () => {
-        it('Should show description if formattedDescription and formattedDescriptionNew fields are having data in api response', () => {
+        it('Should show description if "formattedDescription" and "formattedDescriptionNew" fields are having data in api response', () => {
             const wrapper = shallow(
                 <CharityDetails
                     {...props}
@@ -66,7 +66,7 @@ describe('Testing CharityDetails section', () => {
             expect(wrapper.find({ 'data-test': 'Charity_CharityDetails_description' }).exists()).toBe(true);
             expect(wrapper.find({ 'data-test': 'Charity_CharityDetails_new_description' }).exists()).toBe(true);
         });
-        it('Should not show description if formattedDescription and formattedDescriptionNew fields are null in api response', () => {
+        it('Should not show description if "formattedDescription" and "formattedDescriptionNew" fields are null in api response', () => {
             const modifiedProps = {
                 ...props,
                 charityDetails: {
@@ -86,7 +86,7 @@ describe('Testing CharityDetails section', () => {
             expect(wrapper.find({ 'data-test': 'Charity_CharityDetails_description' }).exists()).toBe(false);
             expect(wrapper.find({ 'data-test': 'Charity_CharityDetails_new_description' }).exists()).toBe(false);
         });
-        it('Should show only one description if formattedDescription field has data and formattedDescriptionNew field is null in api response', () => {
+        it('Should show only one description if "formattedDescription" field has data and "formattedDescriptionNew" field is null in api response', () => {
             const modifiedProps = {
                 ...props,
                 charityDetails: {

@@ -22,7 +22,7 @@ describe('Charity profile actions test', () => {
         const mockStore = configureMockStore(middlewares);
         store = mockStore();
     });
-    describe('Testing charity profile actions', () => {
+    describe('Testing charity data', () => {
         it('Should load charity data without token from api data', async () => {
             mockAxios.get.mockImplementationOnce(() => Promise.resolve(
                 {
@@ -194,7 +194,7 @@ describe('Charity profile actions test', () => {
         });
     });
     describe('Testing doneelist data', () => {
-        it('Should show remaining organisations in doneelist popup with more than 20 total records', async () => {
+        it('Should show remaining organisations in doneelist popup if more than 20 total records', async () => {
             mockAxios.get.mockImplementationOnce(() => Promise.resolve(
                 {
                     ...donationDetails,
