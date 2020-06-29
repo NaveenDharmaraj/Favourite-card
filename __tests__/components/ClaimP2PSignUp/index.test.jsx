@@ -164,6 +164,5 @@ describe('Testing ClaimP2PSignUp component form validations', () => {
             expect(component.state().buttonClicked).toBe(true);
             expect(mockAxios.post).toHaveBeenCalledTimes(1);
         });
-
     });
 });
