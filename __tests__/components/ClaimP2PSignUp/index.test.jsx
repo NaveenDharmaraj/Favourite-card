@@ -2,6 +2,7 @@ import React from 'react';
 import {
     shallow,
 } from 'enzyme';
+import mockAxios from 'axios';
 
 import ClaimP2PSignUp from '../../../components/ClaimP2PSignUp';
 import FormValidationErrorMessage from '../../../components/shared/FormValidationErrorMessage';
@@ -27,18 +28,18 @@ describe('Testing ClaimP2PSignUp component form validations', () => {
             component.find({ 'data-test': 'ClaimP2PSignUp_inputFeild_firstName' })
                 .simulate('change',
                     {}, {
-                        name: 'firstName',
-                        value: 'chimp',
-                    });
+                    name: 'firstName',
+                    value: 'chimp',
+                });
             expect(component.find({ 'data-test': 'ClaimP2PSignUp_inputFeild_firstName' }).prop('value')).toBe('chimp');
         });
         it('Should render FormValidationErrorMessage when the input field value is having length less than 2', () => {
             component.find({ 'data-test': 'ClaimP2PSignUp_inputFeild_firstName' })
                 .simulate('blur',
                     {}, {
-                        name: 'firstName',
-                        value: 'c',
-                    });
+                    name: 'firstName',
+                    value: 'c',
+                });
             expect(component.state().validity.doesFirstNameHave2).toBe(false);
             expect(component.find(FormValidationErrorMessage).at(1).dive().find('.error-message').text()).toEqual('<Icon />First Name should have minimum 2 characters')
         });
@@ -46,9 +47,9 @@ describe('Testing ClaimP2PSignUp component form validations', () => {
             component.find({ 'data-test': 'ClaimP2PSignUp_inputFeild_firstName' })
                 .simulate('blur',
                     {}, {
-                        name: 'firstName',
-                        value: '',
-                    });
+                    name: 'firstName',
+                    value: '',
+                });
             expect(component.state().validity.isFirstNameNotNull).toBe(false);
             expect(component.find(FormValidationErrorMessage).at(0).dive().find('.error-message').text()).toEqual('<Icon />Please enter your first name')
         });
@@ -56,9 +57,9 @@ describe('Testing ClaimP2PSignUp component form validations', () => {
             component.find({ 'data-test': 'ClaimP2PSignUp_inputFeild_firstName' })
                 .simulate('blur',
                     {}, {
-                        name: 'firstName',
-                        value: '1234567891011121314151617181920chimp',
-                    });
+                    name: 'firstName',
+                    value: '1234567891011121314151617181920chimp',
+                });
             expect(component.state().validity.isFirstnameLengthInLimit).toBe(false);
             expect(component.find(FormValidationErrorMessage).at(2).dive().find('.error-message').text()).toEqual('<Icon />First Name cannot have more than 30 characters')
         });
@@ -77,18 +78,18 @@ describe('Testing ClaimP2PSignUp component form validations', () => {
             component.find({ 'data-test': 'ClaimP2PSignUp_inputFeild_lastName' })
                 .simulate('change',
                     {}, {
-                        name: 'lastName',
-                        value: 'chimp',
-                    });
+                    name: 'lastName',
+                    value: 'chimp',
+                });
             expect(component.find({ 'data-test': 'ClaimP2PSignUp_inputFeild_lastName' }).prop('value')).toBe('chimp');
         });
         it('Should render FormValidationErrorMessage when the input field value is null', () => {
             component.find({ 'data-test': 'ClaimP2PSignUp_inputFeild_lastName' })
                 .simulate('blur',
                     {}, {
-                        name: 'lastName',
-                        value: '',
-                    });
+                    name: 'lastName',
+                    value: '',
+                });
             expect(component.state().validity.isLastNameNotNull).toBe(false);
             expect(component.find(FormValidationErrorMessage).at(3).dive().find('.error-message').text()).toEqual('<Icon />Please enter your last name')
         });
@@ -96,9 +97,9 @@ describe('Testing ClaimP2PSignUp component form validations', () => {
             component.find({ 'data-test': 'ClaimP2PSignUp_inputFeild_lastName' })
                 .simulate('blur',
                     {}, {
-                        name: 'lastName',
-                        value: '1234567891011121314151617181920chimp',
-                    });
+                    name: 'lastName',
+                    value: '1234567891011121314151617181920chimp',
+                });
             expect(component.state().validity.isLastnameLengthInLimit).toBe(false);
             expect(component.find(FormValidationErrorMessage).at(4).dive().find('.error-message').text()).toEqual('<Icon />Last Name cannot have more than 30 characters')
         });
@@ -134,9 +135,9 @@ describe('Testing ClaimP2PSignUp component form validations', () => {
             component.find({ 'data-test': 'ClaimP2PSignUp_inputFeild_password' })
                 .simulate('change',
                     {}, {
-                        name: 'password',
-                        value: 'pwd',
-                    });
+                    name: 'password',
+                    value: 'pwd',
+                });
             expect(component.find('.passwordField').prop('value')).toBe('pwd');
         });
         it('Should render number of password characters in password input field value', () => {
@@ -148,10 +149,18 @@ describe('Testing ClaimP2PSignUp component form validations', () => {
         it('Should render uppercase letter in password input field value', () => {
             expect(component.find({ 'data-test': 'ClaimP2PSignUp_passwordCharacter_upperCase' }).text()).toBe('uppercase letters (A-Z),');
         });
-        it('Triggering handleSubmit function for creating new acount', async() => {
-            const fakeEvent = { preventDefault: () => console.log('preventDefault') };
-            component.setState({ firstName: 'chimp', lastName: 'test', password: 'Abc123@#1Se' });            
+        it('Triggering handleSubmit function for creating new acount and checking whether it got called', async () => {
+            mockAxios.post.mockImplementationOnce(() =>
+                Promise.resolve({
+                    data: { results:"1" }
+                })
+            );
+            expect.assertions(2)
+            const fakeEvent = { preventDefault: () => { } };
+            component.setState({ firstName: 'chimp', lastName: 'test', password: 'Abc123@#1Se' });
             component.find({ 'data-test': 'ClaimP2PSignUp_submit_button' }).simulate('click', fakeEvent);
+            expect(component.state().buttonClicked).toBe(true);
+            expect(mockAxios.post).toHaveBeenCalledTimes(1);
         });
 
     });
