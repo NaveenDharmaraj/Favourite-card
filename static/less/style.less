@@ -2030,7 +2030,7 @@ h4 {
     }
 
     .pageWraper {
-      padding-top   : 30px;
+      padding-top: 0px;
       padding-bottom: 50px;
     }
 
@@ -2096,6 +2096,14 @@ h4 {
   body {
     .c-m-default-header .ui.secondary.menu {
       margin-bottom: 0px;
+      top: 0px;
+      &.fixed-header{
+        position: fixed;
+        left: 0px;
+        right: 0px;
+        background-color: #fff;
+        z-index:9999999;
+      }
     }
   }
 
@@ -2856,20 +2864,19 @@ h4 {
     }
   }
 }
-
-.ui {
-  &.popup {
-    &.give-popup {
-      padding         : 0px;
-      min-width       : 359px;
-      border-radius   : 0px;
-      border          : 0px solid transparent;
-      background-color: #FFFFFF;
-      box-shadow      : 0 5px 10px 0 rgba(0, 0, 0, 0.2);
-      margin-top      : 27px !important;
-
-      @media only screen and (max-width:991px) {
-        margin-top: 18px !important;
+.ui{
+  &.popup{
+    &.give-popup{
+      padding: 0px;
+      min-width: 359px;	
+      border-radius: 0px;
+      border: 0px solid transparent;	
+      background-color: #FFFFFF;	
+      box-shadow: 0 5px 10px 0 rgba(0,0,0,0.2);
+      margin-top: 26px !important;
+      z-index: 999999999;
+      @media only screen and (max-width:991px){
+        margin-top: 17px !important;
       }
 
       @media only screen and (max-width:767px) {
@@ -3079,7 +3086,7 @@ h4 {
   }
 }
 
-.btn-wraper {
+.btn-wraper{
   margin-bottom: 2rem;
 
   .ui {
@@ -7982,7 +7989,7 @@ button.ui.button.blue-bordr-btn-round-def {
     &.input {
       input {
         display: inline-block;
-        width  : auto !important;
+        width: auto;
       }
     }
   }
@@ -9504,8 +9511,9 @@ body .userEllips {
     }
   }
   /*********NOAvailable******************/
-  .chimpLayout{
+.chimpLayout{
   min-height: 60vh;
+  padding-top: 80px;
 }
 .BottomfixedBtn_Footer{
   padding-bottom:60px;

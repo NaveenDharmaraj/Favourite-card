@@ -21,6 +21,7 @@ import {
     followProfile,
     unfollowProfile,
 } from '../../../actions/profile';
+import { withTranslation } from '../../../i18n';
 
 const actionTypes = {
     DISABLE_COPYLINK_BUTTON: 'DISABLE_COPYLINK_BUTTON',
@@ -94,11 +95,24 @@ class ShareProfile extends React.Component {
             disableFollow,
             liked,
             isAuthenticated,
+            type,
+            t: formatMessage,
         } = this.props;
         const {
             showShareModal,
         } = this.state;
         const inputValue = (!_isEmpty(deepLinkUrl)) ? deepLinkUrl.attributes['short-link'] : '';
+        let Profiletype = '';
+        switch (type) {
+            case 'beneficiaries':
+                Profiletype = 'Charity';
+                break;
+            case 'groups':
+                Profiletype = 'Group';
+                break;
+            default:
+                break;
+        }
         return (
             <Fragment>
                 <List horizontal className="shareAndLike" data-test="Shared_ShareProfile_shareSection">
@@ -128,7 +142,9 @@ class ShareProfile extends React.Component {
                             )
                         }
                     >
-                        <Modal.Header data-test="Shared_ShareProfile_popup">Share this Group</Modal.Header>
+                        <Modal.Header>
+                            {`${formatMessage('common:shareProfileHeader')} ${Profiletype}`}
+                        </Modal.Header>
                         <Modal.Content>
                             <Modal.Description>
                                 <List divided relaxed verticalAlign="middle" className="shareModalList">
@@ -156,7 +172,7 @@ class ShareProfile extends React.Component {
                                     </List.Item>
                                     <List.Item className="shareCopyLink">
                                         <List.Content>
-                                            <div className="shareLinkLeft">Or share link</div>
+                                            <div className="shareLinkLeft">{formatMessage('common:shareLink')}</div>
                                             <div className="shareLinkTextBox">
                                                 <Input
                                                     data-test="Shared_ShareProfile_deeplink"
@@ -210,7 +226,7 @@ function mapStateToProps(state) {
     };
 }
 
-const connectedComponent = connect(mapStateToProps)(ShareProfile);
+const connectedComponent = withTranslation('common')(connect(mapStateToProps)(ShareProfile));
 export {
     connectedComponent as default,
     ShareProfile,

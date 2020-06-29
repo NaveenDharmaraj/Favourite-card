@@ -21,6 +21,7 @@ class UserAuthView extends React.Component {
         return {
             code: query.code,
             message: query.message,
+            redirectUrl: query.returnTo,
             success: query.success,
         };
     }
@@ -28,9 +29,10 @@ class UserAuthView extends React.Component {
     componentDidMount() {
         const {
             isAuthenticated,
+            redirectUrl,
         } = this.props;
         if (isAuthenticated) {
-            Router.pushRoute('/dashboard');
+            Router.pushRoute(redirectUrl || '/dashboard');
         } else {
             auth0.returnProps = querystring.parse(
                 window.location.search.slice(1), // must skip the '?' prefix

@@ -50,6 +50,7 @@ class CharityProfile extends React.Component {
         return {
             namespacesRequired: [
                 'charityProfile',
+                'common',
             ],
             slug: query.slug,
         };
