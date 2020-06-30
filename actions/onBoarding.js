@@ -113,8 +113,8 @@ export const getUserCauses = (dispatch) => {
     });
 };
 
-export const createNewUser = (firstName, lastName, email, password, claimToken) => {
-    coreApi.post('/claimP2ps', {
+export const createNewUser = async (firstName, lastName, email, password, claimToken) => {
+    await coreApi.post('/claimP2ps', {
         data: {
             attributes: {
                 claimToken,
