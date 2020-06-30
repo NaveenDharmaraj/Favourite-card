@@ -8,7 +8,9 @@ import { Router } from '../../routes';
 import coreApi from '../../services/coreApi';
 import FormValidationErrorMessage from '../shared/FormValidationErrorMessage';
 import { validateUserRegistrationForm } from '../../helpers/users/utils';
+import { createNewUser } from '../../actions/onBoarding';
 const { publicRuntimeConfig } = getConfig();
+import { withTranslation } from '../../i18n';
 
 const {
     APP_URL_ORIGIN,
@@ -83,7 +85,7 @@ class ClaimP2PSignUp extends React.Component {
         return _every(validity);
     }
 
-    handleSubmit(e) {
+    async handleSubmit(e) {
         e.preventDefault();
         const isValid = this.validateForm();
         if (isValid) {
@@ -98,24 +100,13 @@ class ClaimP2PSignUp extends React.Component {
             } = this.props;
             this.setState({
                 buttonClicked: true,
-            })
-             coreApi.post('/claimP2ps', {
-                data: {
-                    attributes: {
-                        firstName,
-                        lastName,
-                        email,
-                        password,
-                        claimToken,
-                    }
-                }
-            })
-                .then(res => {
-                    Router.push('/users/login');
-                })
-                .catch(err => {
-                    Router.push('/users/login');
-                })
+            });
+            try {
+                await createNewUser(firstName, lastName, email, password, claimToken);
+                Router.push('/users/login');
+            } catch (err) {
+                Router.push('/users/login');
+            }
         };
 
     }
@@ -132,15 +123,16 @@ class ClaimP2PSignUp extends React.Component {
         const {
             email,
         } = this.props;
+        const formatMessage = this.props.t;
         return (
             <Form className="claimp2pForm">
                 <Form.Group>
-                    <Form.Field width={8} className="claimP2P_field">
-                        <label data-test="ClaimP2PSignUp_label_firstName">First name</label>
+                    <Form.Field width={8}>
+                        <label data-test="ClaimP2PSignUp_label_firstName">{formatMessage('claimP2P_signUp.firstNameLabel')}</label>
                         <Form.Input
                             data-test="ClaimP2PSignUp_inputFeild_firstName"
                             name="firstName"
-                            placeholder="Your first name"
+                            placeholder={formatMessage('claimP2P_signUp.firstNamePlaceholder')}
                             value={firstName}
                             onChange={this.handleInputChange}
                             onBlur={this.handleInputOnBlur}
@@ -148,22 +140,22 @@ class ClaimP2PSignUp extends React.Component {
                         />
                         <FormValidationErrorMessage
                             condition={!validity.isFirstNameNotNull}
-                            errorMessage="Please enter your first name"
+                            errorMessage={formatMessage('error:signUpValidationError.firstNameNotNull')}
                         />
                         <FormValidationErrorMessage
                             condition={!validity.doesFirstNameHave2 && validity.isFirstNameNotNull}
-                            errorMessage="First Name should have minimum 2 characters"
+                            errorMessage={formatMessage('error:signUpValidationError.firstNameHaveLength2')}
                         />
                         <FormValidationErrorMessage
                             condition={!validity.isFirstnameLengthInLimit && validity.isFirstNameNotNull}
-                            errorMessage="First Name cannot have more than 30 characters"
+                            errorMessage={formatMessage('error:signUpValidationError.firstnameLengthInLimit')}
                         />
                     </Form.Field>
-                    <Form.Field width={8} className="claimP2P_field">
-                        <label data-test="ClaimP2PSignUp_label_lastName">Last name</label>
+                    <Form.Field width={8}>
+                        <label data-test="ClaimP2PSignUp_label_lastName">{formatMessage('claimP2P_signUp.lastNameLabel')}</label>
                         <Form.Input
                             data-test="ClaimP2PSignUp_inputFeild_lastName"
-                            placeholder="Your last name"
+                            placeholder={formatMessage('claimP2P_signUp.lastNamePlaceholder')}
                             name="lastName"
                             value={lastName}
                             onChange={this.handleInputChange}
@@ -172,27 +164,27 @@ class ClaimP2PSignUp extends React.Component {
                         />
                         <FormValidationErrorMessage
                             condition={!validity.isLastNameNotNull}
-                            errorMessage="Please enter your last name"
+                            errorMessage={formatMessage('error:signUpValidationError.lastNameNotNull')}
                         />
                         <FormValidationErrorMessage
                             condition={!validity.isLastnameLengthInLimit && validity.isLastNameNotNull}
-                            errorMessage="Last Name cannot have more than 30 characters"
+                            errorMessage={formatMessage('error:signUpValidationError.lastnameLengthInLimit')}
                         />
                     </Form.Field>
                 </Form.Group>
 
-                <Form.Field className="claimP2P_field">
-                    <label data-test="ClaimP2PSignUp_label_email">Email</label>
-                    <Form.Input data-test="ClaimP2PSignUp_inputFeild_email" disabled placeholder="Enter your email" width={16} value={email} />
+                <Form.Field>
+                    <label data-test="ClaimP2PSignUp_label_email">{formatMessage('claimP2P_signUp.emailLabel')}</label>
+                    <Form.Input data-test="ClaimP2PSignUp_inputFeild_email" disabled placeholder={formatMessage('claimP2P_signUp.emailPlaceholder')} width={16} value={email} />
                 </Form.Field>
-                <Form.Field className="claimP2P_field">
-                    <label data-test="ClaimP2PSignUp_label_password">Password</label>
+                <Form.Field>
+                    <label data-test="ClaimP2PSignUp_label_password">{formatMessage('claimP2P_signUp.password')}</label>
                     <Form.Field
                         control={Input}
                         data-test="ClaimP2PSignUp_inputFeild_password"
                         className="passwordField"
                         name="password"
-                        placeholder="Choose your password"
+                        placeholder={formatMessage('claimP2P_signUp.passwordPlaceholder')}
                         type={(pwdHide) ? "password" : "input"}
                         value={password}
                         onChange={this.handleInputChange}
@@ -211,35 +203,41 @@ class ClaimP2PSignUp extends React.Component {
                     />
                     <FormValidationErrorMessage
                         condition={!validity.isPasswordNull}
-                        errorMessage="Please choose a password."
+                        errorMessage={formatMessage('error:signUpValidationError.passwordNull')}
                     />
                     <p className="passwordNote">
                         <span data-test="ClaimP2PSignUp_passwordCount_Characters" className={(validity.doesPwdHaveCount) ? 'blueText' : ''}>
-                            {password.length}/8 characters,
+                            {password.length}/{formatMessage('signUpPasswordValidation.noOfCharacter')}
                         </span><br />
-                        <span data-test="ClaimP2PSignUp_passwordCharacter_lowerCase" className={(validity.doesPwdhaveLowerCase) ? 'blueText' : ''}>lowercase letters (a-z),</span><br />
-                        <span data-test="ClaimP2PSignUp_passwordCharacter_upperCase" className={(validity.doesPwdhaveUpperCase) ? 'blueText' : ''}>uppercase letters (A-Z),</span><br />
-                        <span data-test="ClaimP2PSignUp_passwordCharacter_specialCase" className={(validity.doesPwdhaveSpecialChars) ? 'blueText' : ''}>special characters (e.g. !@#$%^&*)</span>
+                        <span data-test="ClaimP2PSignUp_passwordCharacter_lowerCase" className={(validity.doesPwdhaveLowerCase) ? 'blueText' : ''}>{formatMessage('signUpPasswordValidation.lowerCaseCharacter')}</span><br />
+                        <span data-test="ClaimP2PSignUp_passwordCharacter_upperCase" className={(validity.doesPwdhaveUpperCase) ? 'blueText' : ''}>{formatMessage('signUpPasswordValidation.upperCaseCharacter')}</span><br />
+                        <span data-test="ClaimP2PSignUp_passwordCharacter_specialCase" className={(validity.doesPwdhaveSpecialChars) ? 'blueText' : ''}>{formatMessage('signUpPasswordValidation.specialCharacter')}</span>
                     </p>
                 </Form.Field>
                 <Button
-                    data-test = "ClaimP2PSignUp_submit_button"
+                    data-test="ClaimP2PSignUp_submit_button"
                     className="blue-btn-rounded-def openImpAct"
                     onClick={(e) => this.handleSubmit(e)}
                     disabled={(!this.validateForm() || buttonClicked)}
                     type="submit"
                 >
-                    {buttonClicked ? 'Submitting' : 'Open an Impact Account and claim gift'}
+                    {buttonClicked ? formatMessage('claimP2P_signUp.submitButtonLoading') : formatMessage('claimP2P_signUp.submitButton')}
                 </Button>
                 <p className="openImpactInfo">
-                    By clicking ‘Open an Impact Account and claim your gift’, you acknowlege that you have read the
-                    <a href={`${APP_URL_ORIGIN}/privacy`} target="_blank"> Privacy Policy</a>, and agree to the
-                    <a href={`${APP_URL_ORIGIN}/terms`} target="_blank">Terms & Conditions</a> and
-                    <a href={`${APP_URL_ORIGIN}/account-agreement`} target="_blank">Account Agreement</a>.
+                    {formatMessage('openImpactInfo.info1')}
+                    <a href={`${APP_URL_ORIGIN}/privacy`} target="_blank"> {formatMessage('openImpactInfo.privacyPolicyLink')}</a>{formatMessage('openImpactInfo.info2')}
+                    <a href={`${APP_URL_ORIGIN}/terms`} target="_blank">{formatMessage('openImpactInfo.termsAndConditionLink')}</a> {formatMessage('openImpactInfo.info3')}
+                    <a href={`${APP_URL_ORIGIN}/account-agreement`} target="_blank">{formatMessage('openImpactInfo.accountAgreement')}</a>.
                 </p>
             </Form>
         )
     }
 }
 
-export default ClaimP2PSignUp;
+const withTranslationClaimP2PSignUp = withTranslation(['claimP2P', 'error'])(ClaimP2PSignUp);
+
+export {
+    withTranslationClaimP2PSignUp as default,
+    ClaimP2PSignUp,
+
+};

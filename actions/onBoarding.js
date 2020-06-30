@@ -4,6 +4,7 @@ import getConfig from 'next/config';
 
 import securityApi from '../services/securityApi';
 import graphApi from '../services/graphApi';
+import coreApi from '../services/coreApi';
 
 import {
     triggerUxCritialErrors,
@@ -109,5 +110,19 @@ export const getUserCauses = (dispatch) => {
         triggerUxCritialErrors(error.errors || error, dispatch);
     }).finally(() => {
         dispatch(fsa);
+    });
+};
+
+export const createNewUser = (firstName, lastName, email, password, claimToken) => {
+    coreApi.post('/claimP2ps', {
+        data: {
+            attributes: {
+                claimToken,
+                email,
+                firstName,
+                lastName,
+                password,
+            },
+        },
     });
 };
