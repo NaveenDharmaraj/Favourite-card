@@ -138,10 +138,12 @@ export const getBeneficiaryFinance = (id) => (dispatch) => {
     });
     return utilityApi.get(`/beneficiaryfinance/${id}`, {
         params: {
-            dispatch,
+            // dispatch,
             locale: 'en_ca',
             tenant_name: 'chimp',
-            uxCritical: true,
+            // uxCritical: true,
+            // TODO: Uncomment dispatch and uxCritical, as this is the temporary fix for CPP-6102
+            // to remove toast message on error ,ref: CPP-6140
         },
     }).then((result) => {
         if (result.beneficiaryFinanceList && !_isEmpty(result.beneficiaryFinanceList)) {
