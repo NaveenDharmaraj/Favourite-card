@@ -11,6 +11,7 @@ import {
     Dropdown,
     Checkbox,
     Table,
+    Loader,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import dynamic from 'next/dynamic';
@@ -27,10 +28,12 @@ import {
     deleteUserCreditCard,
     saveNewCreditCard,
     setUserDefaultCard,
+    getPaymentInstrumentById,
 } from '../../../actions/userProfile';
 import Pagination from '../../shared/Pagination';
 import PlaceHolderGrid from '../../shared/PlaceHolder';
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
+import { populateCardData } from '../../../helpers/give/utils';
 
 const ModalStatusMessage = dynamic(() => import('../../shared/ModalStatusMessage'));
 const CreditCard = dynamic(() => import('../../shared/CreditCard'));
@@ -110,20 +113,29 @@ class MyCreditCards extends React.Component {
 
     componentDidUpdate(prevProps) {
         const {
+            activeMonthlyDonations,
             newCreditCardApiCall,
             userCreditCardList,
         } = this.props;
         let {
+            deleteConfirmCard,
             myCreditCardListLoader,
             isAddModalOpen,
         } = this.state;
+        const formatMessage = this.props.t;
         if (!_.isEqual(userCreditCardList, prevProps.userCreditCardList)) {
             myCreditCardListLoader = false;
             this.setState({ myCreditCardListLoader });
         }
-        if(!_.isEqual(newCreditCardApiCall, prevProps.newCreditCardApiCall)) {
+        if (!_.isEqual(newCreditCardApiCall, prevProps.newCreditCardApiCall)) {
             isAddModalOpen = newCreditCardApiCall;
             this.setState({ isAddModalOpen });
+        }
+        if (!_.isEqual(activeMonthlyDonations, prevProps.activeMonthlyDonations) && activeMonthlyDonations > 0) {
+            const deleteCreditCardPopUpMsg = `${deleteConfirmCard}${formatMessage('giveCommon:creditCard.deleteCreditCardMsgActiveSubscription')}`;
+            this.setState({ 
+                deleteConfirmCard: deleteCreditCardPopUpMsg,
+             });
         }
     }
 
@@ -161,7 +173,7 @@ class MyCreditCards extends React.Component {
         }
 
         return validCC;
-    }   
+    }
 
     handleAddCardClick() {
         const {
@@ -256,10 +268,10 @@ class MyCreditCards extends React.Component {
         }
     }
 
-    handleSetPrimaryClick(event, data) {   
+    handleSetPrimaryClick(event, data) {
         let {
             isDefaultCard,
-        } = this.state;      
+        } = this.state;
         isDefaultCard = data.checked;
         this.setState({ isDefaultCard });
     }
@@ -269,7 +281,7 @@ class MyCreditCards extends React.Component {
         const cardName = paymentInstrument.attributes.description.slice(0, -17);
         const cardNameOnly = cardName.substr(0, cardName.indexOf("'"));
         const defaultCard = paymentInstrument.attributes.default ? true : false;
-        let isDefaultCardReadOnly = false; 
+        let isDefaultCardReadOnly = false;
         if (defaultCard) {
             isDefaultCardReadOnly = true;
         } else {
@@ -285,7 +297,7 @@ class MyCreditCards extends React.Component {
                 editNameOnCard: cardNameOnly,
                 editPaymetInstrumentId: paymentInstrument.id,
                 isValidExpiry: true,
-            }            
+            }
         });
     }
 
@@ -298,7 +310,7 @@ class MyCreditCards extends React.Component {
         const {
             editDetails,
         } = this.state;
-        let newValue = (!_.isEmpty(options)) ? _.find(options, { value }) : value;        
+        let newValue = (!_.isEmpty(options)) ? _.find(options, { value }) : value;
         if (editDetails[name] !== newValue) {
             editDetails[name] = newValue;
         }
@@ -422,7 +434,7 @@ class MyCreditCards extends React.Component {
             });;
             if (isDefaultCard) {
                 setUserDefaultCard(dispatch, editDetails.editPaymetInstrumentId, id, currentActivePage);
-            }            
+            }
         } else {
             this.setState({
                 editButtonClicked: false,
@@ -431,13 +443,24 @@ class MyCreditCards extends React.Component {
     }
 
     handleDeleteClick(cardData, deletePaymentInstrumentId) {
-        var res = cardData.substr(0, cardData.indexOf("'")).length;
-        var result = cardData.slice(res + 2);
-        result = result.replace('with', 'in');
+        const {
+            dispatch,
+        } = this.props;
+        const cardDetails = populateCardData(cardData);
+        const cardType = _.startCase(cardDetails.processor);
+        const formatMessage = this.props.t;
+        const deleteConfirmMessage = formatMessage(
+            'giveCommon:creditCard.deleteCreditCardMsg',
+            {
+                cardType,
+                truncatedPaymentId: cardDetails.truncatedPaymentId,
+            },
+        );
+        dispatch(getPaymentInstrumentById(deletePaymentInstrumentId));
         this.setState({
             isDeleteMessageOpen: true,
             isDropdownOpen:false,
-            deleteConfirmCard: result,
+            deleteConfirmCard: deleteConfirmMessage,
             deletePaymentInstrumentId,
         });
     }
@@ -445,7 +468,7 @@ class MyCreditCards extends React.Component {
     handleDeleteConfirmClick() {
         const {
             deletePaymentInstrumentId,
-            currentActivePage,                       
+            currentActivePage,
         } = this.state;
         const {
             dispatch,
@@ -479,8 +502,6 @@ class MyCreditCards extends React.Component {
                 deleteButtonClicked: false,
             });
         }
-        
-        
     }
 
     handleDeleteCancelClick() {
@@ -553,7 +574,7 @@ class MyCreditCards extends React.Component {
     }
 
     getStripeCreditCard(data, cardHolderName) {
-        this.setState({            
+        this.setState({
             cardHolderName,
             stripeCreditCard: data,
         });
@@ -571,7 +592,7 @@ class MyCreditCards extends React.Component {
         if (!_.isEmpty(userCreditCardList) && _.size(userCreditCardList.data) > 0) {
             cardList = userCreditCardList.data.map((data) => {
                 const lastFour = data.attributes.description.slice(-4);
-                const cardName = data.attributes.description.slice(0, -17);                
+                const cardName = data.attributes.description.slice(0, -17);
                 let processor = ''; let cardClass = '';
                 const isEnglishCard = data.attributes.description.indexOf(' ending ');
                 const selectedCardName = _.split(data.attributes.description, ' ');
@@ -579,7 +600,7 @@ class MyCreditCards extends React.Component {
                     processor = selectedCardName[selectedCardName.indexOf('ending') - 1].toLowerCase().trim();
                 } else {
                     processor = selectedCardName[0].toLowerCase().trim();
-                }                
+                }
                 if (processor.toLowerCase() === 'visa') {
                     cardClass = 'card visa';
                 } else if(processor.toLowerCase() == 'mastercard') {
@@ -594,26 +615,26 @@ class MyCreditCards extends React.Component {
                             <Dropdown className="rightBottom" icon="ellipsis horizontal">
                                 <Dropdown.Menu>
                                     <Dropdown.Item
-                                        text="Edit" 
+                                        text="Edit"
                                         open={isDropdownOpen}
                                         onOpen={this.onOpen}
                                         onClose={this.onClose}
                                         onClick={() => {this.handleEditClick(data)}}
                                     />
                                     <Dropdown.Item
-                                        text="Delete" 
+                                        text="Delete"
                                         open={isDropdownOpen}
                                         onOpen={this.onOpen}
                                         onClose={this.onClose}
                                         onClick={() => {this.handleDeleteClick(data.attributes.description, data.id)}}
-                                    /> 
+                                    />
                                 </Dropdown.Menu>
                             </Dropdown>
                         </List.Content>
                         <List.Icon name={cardClass} size="large" verticalAlign="middle" />
                         <List.Content>
                             <List.Header>{cardName}<span className="primary">{primary}</span></List.Header>
-                        <div className="cardNo"><sup>**** **** **** </sup>{lastFour}</div>
+                            <div className="cardNo"><sup>**** **** **** </sup>{lastFour}</div>
                         </List.Content>
                     </List.Item>
                 );
@@ -625,15 +646,15 @@ class MyCreditCards extends React.Component {
                     {cardList}
                 </List>
                 <div className="db-pagination right-align pt-2">
-                {
-                    !_.isEmpty(userCreditCardList) && userCreditCardList.pageCount > 1 && (
-                        <Pagination
-                            activePage={currentActivePage}
-                            totalPages={userCreditCardList.pageCount}
-                            onPageChanged={this.onPageChanged}
-                        />
-                    )
-                }
+                    {
+                        !_.isEmpty(userCreditCardList) && userCreditCardList.pageCount > 1 && (
+                            <Pagination
+                                activePage={currentActivePage}
+                                totalPages={userCreditCardList.pageCount}
+                                onPageChanged={this.onPageChanged}
+                            />
+                        )
+                    }
                 </div>
             </Fragment>
         );
@@ -663,7 +684,7 @@ class MyCreditCards extends React.Component {
             myCreditCardListLoader,
             statusMessage,
             successMessage,
-        } = this.state;        
+        } = this.state;
         const formatMessage = this.props.t;
         return (
             <div>
@@ -686,8 +707,8 @@ class MyCreditCards extends React.Component {
                                             trigger={<Button
                                                 className="success-btn-rounded-def"
                                                 onClick={this.handleAddCardClick}
-                                                >
-                                                    Add new card
+                                            >
+                                                Add new card
                                                 </Button>}>
                                             <Modal.Header>Add new card</Modal.Header>
                                             <Modal.Content>
@@ -743,7 +764,7 @@ class MyCreditCards extends React.Component {
                     <div className="settingsDetailWraper">
                         {
                             statusMessage && (
-                                <ModalStatusMessage 
+                                <ModalStatusMessage
                                     message = {!_.isEmpty(successMessage) ? successMessage : null}
                                     error = {!_.isEmpty(errorMessage) ? errorMessage : null}
                                 />
@@ -758,10 +779,10 @@ class MyCreditCards extends React.Component {
                                 )
                                 : (
                                     this.renderMyCreditCards()
-                                )}         
+                                )}
                         </div>
                     </div>
-                </div>                
+                </div>
                 <div>
                     <Modal size="tiny" dimmer="inverted" className="chimp-modal" closeIcon open={this.state.isEditModalOpen} onClose={()=>{this.setState({isEditModalOpen: false})}}>
                         <Modal.Header>Edit credit card</Modal.Header>
@@ -787,17 +808,17 @@ class MyCreditCards extends React.Component {
                                     <Form.Group widths="equal">
                                         <Form.Field>
                                             <Form.Input
-                                                    fluid
-                                                    label="Expiry"
-                                                    placeholder="MM/YYYY"
-                                                    id="expiry"
-                                                    name="expiry"
-                                                    maxLength="7"
-                                                    error={!isValidExpiry}
-                                                    onBlur={this.handleEditExpiryBlur}
-                                                    onChange={this.handleInputChange}
-                                                    onKeyUp={(e) => {this.handleKeyUp(e)}}
-                                                    value={expiry}
+                                                fluid
+                                                label="Expiry"
+                                                placeholder="MM/YYYY"
+                                                id="expiry"
+                                                name="expiry"
+                                                maxLength="7"
+                                                error={!isValidExpiry}
+                                                onBlur={this.handleEditExpiryBlur}
+                                                onChange={this.handleInputChange}
+                                                onKeyUp={(e) => {this.handleKeyUp(e)}}
+                                                value={expiry}
                                             />
                                             <FormValidationErrorMessage
                                                 condition={!isValidExpiry}
@@ -829,29 +850,33 @@ class MyCreditCards extends React.Component {
                                 </Button>
                             </div>
                         </Modal.Content>
-                    </Modal>          
+                    </Modal>
                 </div>
                 <div>
-                    <Modal size="tiny" dimmer="inverted" className="chimp-modal" closeIcon open={this.state.isDeleteMessageOpen} onClose={()=>{this.setState({isDeleteMessageOpen: false})}}>
+                    <Modal size="tiny" dimmer="inverted" className="chimp-modal" closeIcon open={this.state.isDeleteMessageOpen} onClose={() => { this.setState({ isDeleteMessageOpen: false }) }}>
                         <Modal.Header>Delete card?</Modal.Header>
                         <Modal.Content>
-                            <Modal.Description className="font-s-16">
-                                Your {deleteConfirmCard} will be removed from your account.
-                            </Modal.Description>
+                            {this.props.deleteMsgPopUpLoader ?
+                                <Loader size='small' />
+                                :
+                                <Modal.Description className="font-s-16">
+                                    {deleteConfirmCard}
+                                </Modal.Description>
+                            }
                             <div className="btn-wraper pt-3 text-right">
-                            <Button
-                                className="danger-btn-rounded-def c-small"
-                                onClick={this.handleDeleteConfirmClick}
-                                disabled={deleteButtonClicked}
-                            >
-                                Delete
+                                <Button
+                                    className="danger-btn-rounded-def c-small"
+                                    onClick={this.handleDeleteConfirmClick}
+                                    disabled={(deleteButtonClicked || this.props.deleteMsgPopUpLoader)}
+                                >
+                                    Delete
                             </Button>
-                            <Button 
-                                className="blue-bordr-btn-round-def c-small"
-                                onClick={this.handleDeleteCancelClick}
-                                disabled={deleteButtonClicked}
-                            >
-                                Cancel
+                                <Button
+                                    className="blue-bordr-btn-round-def c-small"
+                                    onClick={this.handleDeleteCancelClick}
+                                    disabled={deleteButtonClicked}
+                                >
+                                    Cancel
                             </Button>
                             </div>
                         </Modal.Content>
@@ -865,9 +890,16 @@ class MyCreditCards extends React.Component {
 function mapStateToProps(state) {
     return {
         currentUser: state.user.info,
+        activeMonthlyDonations: state.userProfile.activeMonthlyDonations,
+        deleteMsgPopUpLoader: state.userProfile.deleteMsgPopUpLoader,
         userCreditCardList: state.userProfile.userCreditCardList,
         newCreditCardApiCall: state.userProfile.newCreditCardApiCall,
     };
+}
+
+MyCreditCards.defaultProps = {
+    activeMonthlyDonations: 0,
+    deleteMsgPopUpLoader: false,
 }
 
 export default withTranslation(['giveCommon'])(connect(mapStateToProps)(MyCreditCards))
