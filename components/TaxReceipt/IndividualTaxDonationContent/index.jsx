@@ -201,7 +201,7 @@ class IndividualTaxDonationContent extends React.Component {
                         <div className="year">{donationDetail.year}</div>
                         <div>
                             {donationDetail.total}
-                            tax-receiptable donations
+                            &nbsp;tax-receiptable donations
                         </div>
                     </div>
                     <div className="rightContent">
