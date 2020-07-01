@@ -142,7 +142,7 @@ class ShareProfile extends React.Component {
                             )
                         }
                     >
-                        <Modal.Header>
+                        <Modal.Header data-test="Shared_ShareProfile_popup">
                             {`${formatMessage('common:shareProfileHeader')} ${Profiletype}`}
                         </Modal.Header>
                         <Modal.Content>

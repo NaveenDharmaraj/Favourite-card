@@ -22,6 +22,7 @@ const getProps = () => ({
     isAuthenticated: true,
     liked: true,
     type: 'beneficiaries',
+    t: jest.fn(),
 });
 
 describe('Testing ShareProfile section', () => {
