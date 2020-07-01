@@ -5,7 +5,6 @@ import _every from 'lodash/every';
 import _isEmpty from 'lodash/isEmpty';
 
 import { Router } from '../../routes';
-import coreApi from '../../services/coreApi';
 import FormValidationErrorMessage from '../shared/FormValidationErrorMessage';
 import { validateUserRegistrationForm } from '../../helpers/users/utils';
 import { createNewUser } from '../../actions/onBoarding';
