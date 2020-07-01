@@ -118,6 +118,7 @@ class MyCreditCards extends React.Component {
             userCreditCardList,
         } = this.props;
         let {
+            currentActivePage,
             deleteConfirmCard,
             myCreditCardListLoader,
             isAddModalOpen,
@@ -125,7 +126,10 @@ class MyCreditCards extends React.Component {
         const formatMessage = this.props.t;
         if (!_.isEqual(userCreditCardList, prevProps.userCreditCardList)) {
             myCreditCardListLoader = false;
-            this.setState({ myCreditCardListLoader });
+            if (userCreditCardList.updatedCurrentActivePage && (userCreditCardList.updatedCurrentActivePage !== prevProps.userCreditCardList.updatedCurrentActivePage)) {
+                currentActivePage = userCreditCardList.updatedCurrentActivePage;
+            }
+            this.setState({ currentActivePage,myCreditCardListLoader });
         }
         if (!_.isEqual(newCreditCardApiCall, prevProps.newCreditCardApiCall)) {
             isAddModalOpen = newCreditCardApiCall;
@@ -520,8 +524,10 @@ class MyCreditCards extends React.Component {
             dispatch,
         } = this.props;
         getMyCreditCards(dispatch, id, data.activePage);
+        window.scrollTo(0,0);
         this.setState({
             currentActivePage: data.activePage,
+            myCreditCardListLoader: true,
         });
     }
 

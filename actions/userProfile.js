@@ -438,7 +438,7 @@ const getTagsByText = (dispatch, userId, searchText, isSearch, pageNumber = 1, l
     });
 };
 
-const getMyCreditCards = (dispatch, userId, pageNumber) => {
+const getMyCreditCards = (dispatch, userId, pageNumber, updatedCurrentActivePage = 0) => {
     const fsa = {
         payload: {
         },
@@ -447,18 +447,22 @@ const getMyCreditCards = (dispatch, userId, pageNumber) => {
     return coreApi.get(`/users/${Number(userId)}/activePaymentInstruments?page[number]=${pageNumber}&page[size]=10&sort=-default`).then(
         (result) => {
             if (_.isEmpty(result.data) && pageNumber > 1) {
-                getMyCreditCards(dispatch, userId, pageNumber - 1);
+                getMyCreditCards(dispatch, userId, pageNumber - 1, pageNumber - 1);
                 return;
+            }
+            if (updatedCurrentActivePage > 0) {
+                fsa.payload.updatedCurrentActivePage = updatedCurrentActivePage;
             }
             fsa.payload = {
                 count: result.meta.recordCount,
                 data: result.data,
                 pageCount: result.meta.pageCount,
+                ...fsa.payload,
             };
+            dispatch(fsa);
         },
     ).catch((error) => {
         fsa.error = error;
-    }).finally(() => {
         dispatch(fsa);
     });
 };
