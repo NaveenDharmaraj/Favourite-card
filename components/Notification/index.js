@@ -4,6 +4,9 @@ import { Link, Router } from '../../routes';
 import placeholderUser from '../../static/images/no-data-avatar-user-profile.png';
 import { distanceOfTimeInWords } from '../../helpers/utils';
 import eventApi from '../../services/eventApi';
+import ReactHtmlParser from 'react-html-parser';
+import ReactDOMServer from 'react-dom/server';
+
 import {
     Button,
     Container,
@@ -158,6 +161,50 @@ class NotificationWrapper extends React.Component {
         }
     }
 
+    renderMessageComponent(messageData) {
+        // console.log(messageData);
+        if(_.isEmpty(messageData.linkData)) {
+            return (<span dangerouslySetInnerHTML={{ __html: messageData.message }}></span>);
+        } else {
+            let msg = messageData.message;
+            let splitedMessage  = _.split(messageData.message, ' ');
+            // const result = [];
+            const result  = splitedMessage.map((msg, i) => {
+            const hypelinkData = _.find(messageData.linkData, function(data) { return data.text === msg; })
+                if(hypelinkData) {
+                    console.log("heloooooooooooooooooooooooooooo");
+                    // return (
+                    //     <Link route={hypelinkData.url}>{hypelinkData.replaceValue}</Link>
+                    // )
+                    return (
+                        <Link route={hypelinkData.url}>{hypelinkData.replaceValue}</Link>
+                    )
+                } else {
+                    // return ReactHtmlParser(`${msg} `);
+                    console.log(msg);
+                    // return (<span dangerouslySetInnerHTML={{ __html: `${msg} `}}></span>);
+                    return (msg);
+                }
+            });
+            // result = flatMap(result.split(' '), function (part) {
+            // // return [part, <div>spacer</div>];
+            // console.log(part);
+            // });
+            // const result = messageData.linkData.map((hyperlink, i) => {
+            //     if(msg.includes(hyperlink.text)) {
+            //         return msg.replace(hyperlink.text, hyperlink.url);
+            //     }
+            //     return msg;
+            //     // console.log(hyperlink);
+            //     // console.log("heloooooooooooooooooooooooooooo");
+            // });
+            console.log(result);
+            return (ReactHtmlParser(<Fragment>{_.join(result, ' ')}</Fragment>))
+            // return (<Fragment>{_.join(result, ' ')}</Fragment>);
+            // return (<span dangerouslySetInnerHTML={{ __html: result.map(ReactDOMServer.renderToString).join(" ") }}></span>);
+        }
+    }
+
     listItems(messages , newClass = "") {
         if (!messages) {
             messages = [];
@@ -173,8 +220,58 @@ class NotificationWrapper extends React.Component {
         } = this.props;
         return messages.map(function (msg) {
             let messagePart;
+            let showMessage = null;
             if (msg.msg) {
                 messagePart = NotificationHelper.getMessagePart(msg, userInfo, 'en_CA');
+                // console.log(messagePart);
+                // if(_.isEmpty(messagePart.linkData)) {
+                //     let result = messagePart.message;
+                //     if (messagePart.highlighted && messagePart.highlighted.length > 0) {
+                //         let messageString = messagePart.message;
+                //         messagePart.highlighted.forEach(function (w) {
+                //             if(messageString.includes(`{{ ${w} }}`)){
+                //                 // console.log(messageString.replace(`{{ ${w} }}`, `<Fragment className='font-s-34'>${w}</Fragment>`));
+                //                 messageString = messageString.replace( `{{ ${w} }}`, `<Fragment className='font-s-34'>${w}</Fragment>`);
+                //                 console.log(messageString, w);
+                //                 result =  messageString;
+                //             } else {
+                //                 result =  messageString
+                //             }
+                //             // // let regEx = new RegExp("{{ " + w + " }}", "g");
+                //             // msgText = msgText.replace(/{{/g, "<Fragment className='font-s-34'>");
+                //             // msgText = msgText.replace(/}}/g, "</Fragment>");
+                //         });
+                //     }
+                //     // console.log(result);
+                //     showMessage = (<Fragment children={result}></Fragment>);
+                // } else {
+                //     let splitedMessage  = _.split(messagePart.message, ' ');
+                //     let result =  '';
+                //     result = splitedMessage.map((msg, i) => {
+                //     const hypelinkData = _.find(messagePart.linkData, function(data) { return data.text === msg; })
+                //         if(hypelinkData) {
+                //             console.log("heloooooooooooooooooooooooooooo");
+                //             return (
+                //                 <Link route={hypelinkData.url}>{hypelinkData.replaceValue}</Link>
+                //             )
+                //             // result.push(
+                //             //     <Link route={hypelinkData.url}>{hypelinkData.replaceValue}</Link>
+                //             // )
+                //             // result += <Link route={hypelinkData.url}>{hypelinkData.replaceValue}</Link> + " ";
+                //         } else {
+                //             // return ReactHtmlParser(`${msg} `);
+                //             console.log(msg);
+                //             // return (<span dangerouslySetInnerHTML={{ __html: `${msg} `}}></span>);
+                //             // result.push(msg);
+                //             // result += `${msg} `;
+                //         }
+                //     });
+                //     console
+                //     showMessage = (
+                //        [result]
+                //     //    <span dangerouslySetInnerHTML={{ __html: result}}></span>
+                //     )
+                // }
             } else {
                 return null;
             }
@@ -217,7 +314,10 @@ class NotificationWrapper extends React.Component {
                     </List.Content>
                     <Image avatar src={messagePart.sourceImageLink ? messagePart.sourceImageLink : placeholderUser} />
                     <List.Content>
-                        <span dangerouslySetInnerHTML={{ __html: messagePart.message }}></span>
+                        {/* <span dangerouslySetInnerHTML={{ __html: messagePart.message }}></span> */}
+                        {/* { ReactHtmlParser(messagePart.message) } */}
+                        {self.renderMessageComponent(messagePart)}
+                        {/* {showMessage} */}
                         <div className="time">{distanceOfTimeInWords(msg.createdTs)}</div>
                         <Responsive maxWidth={767}>
                             {(() => {

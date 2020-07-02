@@ -6,6 +6,7 @@ import getConfig from 'next/config';
 import { firebaseMessageFetchCompleteAction } from "../actions/firebase";
 import _ from 'lodash';
 import eventApi from '../services/eventApi';
+import { Link } from '../routes';
 const ACCEPT_FREIND_PAYLOAD = {
     "attributes": {
         "source": "web",
@@ -216,6 +217,35 @@ class NotificationHelper {
 
     static getMessagePart(msg, userInfo, localeCode) {
         let msgText = msg["msg"][localeCode];
+        const linkArray = [];
+        if(!_.isEmpty(msg.hyperlinks)) {
+            // console.log( msg.hyperlinks);
+            // msg.hyperlinks.forEach(function (hyperlink) {
+            //     console.log(hyperlink);
+            // });
+            _.map(msg.hyperlinks, function(key, linkName) {
+                let valueLink = null;
+                if (key['isWeb'] === true && msgText.includes(key['value'])){
+                    switch(key['profile_type']) {
+                        case 'user':
+                            valueLink = `/users/profile/${key['profile_id']}`;
+                            // valueLink = `<Link route="/users/profile/${key['profile_id']}"><b><a>${key['value']}</a></b></Link>`
+                            break;
+                    }
+                    if(!_.isEmpty(valueLink)){
+                        linkArray.push({
+                            text: linkName,
+                            url : valueLink,
+                            replaceValue: `${key['value']}`,
+                        }
+                        )
+                        msgText = msgText.replace(`{{ ${key['value']} }}`, linkName);
+                        console.log(msgText);
+                    }
+
+                }
+              });
+        }
         if (msg.highlighted && msg.highlighted.length > 0) {
             msg.highlighted.forEach(function (w) {
                 // let regEx = new RegExp("{{ " + w + " }}", "g");
@@ -227,11 +257,15 @@ class NotificationHelper {
             "sourceDisplayName": msg.sourceDisplayName,
             "message": msgText,
             read: msg.read,
-            sourceImageLink: msg.avatar_link
+            sourceImageLink: msg.avatar_link,
+            linkData: linkArray,
+            // highlighted: msg.highlighted,
+            // hyperlinks: msg.hyperlinks,
         };
         if (msg.sourceUserId == userInfo.id) {
             d.sourceDisplayName = "You";
         }
+        console.log(d);
         return d;
     }
 
