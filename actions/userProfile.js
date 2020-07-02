@@ -441,6 +441,7 @@ const getTagsByText = (dispatch, userId, searchText, isSearch, pageNumber = 1, l
 const getMyCreditCards = (dispatch, userId, pageNumber, updatedCurrentActivePage = 0) => {
     const fsa = {
         payload: {
+            updatedCurrentActivePage,
         },
         type: actionTypes.USER_PROFILE_CREDIT_CARDS,
     };
