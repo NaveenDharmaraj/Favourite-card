@@ -29,7 +29,7 @@
         "success": "Confirmation"
     },
     "creditCard": {
-        "deleteCreditCardMsg":"Your {{cardType}} ending in {{truncatedPaymentId}} will be removed from your account.",
+        "deleteCreditCardMsg":"Your {{cardType}} ending with {{truncatedPaymentId}} will be removed from your account.",
         "deleteCreditCardMsgActiveSubscription":"Any scheduled monthly deposits to your Impact Account from this card will be cancelled.",
         "testCreditCardListMessage": "More information on test accounts can be found at Stripe.",
         "cardNumberLabel": "Card number",

@@ -34,6 +34,7 @@ import Pagination from '../../shared/Pagination';
 import PlaceHolderGrid from '../../shared/PlaceHolder';
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
 import { populateCardData } from '../../../helpers/give/utils';
+import { validateDate } from '../../../helpers/utils';
 
 const ModalStatusMessage = dynamic(() => import('../../shared/ModalStatusMessage'));
 const CreditCard = dynamic(() => import('../../shared/CreditCard'));
@@ -113,37 +114,32 @@ class MyCreditCards extends React.Component {
 
     componentDidUpdate(prevProps) {
         const {
-            activeMonthlyDonations,
             newCreditCardApiCall,
             userCreditCardList,
         } = this.props;
         let {
-            deleteConfirmCard,
+            currentActivePage,
             myCreditCardListLoader,
             isAddModalOpen,
         } = this.state;
-        const formatMessage = this.props.t;
         if (!_.isEqual(userCreditCardList, prevProps.userCreditCardList)) {
             myCreditCardListLoader = false;
-            this.setState({ myCreditCardListLoader });
+            if (userCreditCardList.updatedCurrentActivePage > 0 && (userCreditCardList.updatedCurrentActivePage !== prevProps.userCreditCardList.updatedCurrentActivePage)) {
+                currentActivePage = userCreditCardList.updatedCurrentActivePage;
+            }
+            this.setState({ currentActivePage, myCreditCardListLoader });
         }
         if (!_.isEqual(newCreditCardApiCall, prevProps.newCreditCardApiCall)) {
             isAddModalOpen = newCreditCardApiCall;
             this.setState({ isAddModalOpen });
         }
-        if (!_.isEqual(activeMonthlyDonations, prevProps.activeMonthlyDonations) && activeMonthlyDonations > 0) {
-            const deleteCreditCardPopUpMsg = `${deleteConfirmCard}${formatMessage('giveCommon:creditCard.deleteCreditCardMsgActiveSubscription')}`;
-            this.setState({ 
-                deleteConfirmCard: deleteCreditCardPopUpMsg,
-             });
-        }
     }
 
     onOpen=()=>{
-        this.setState({isDropdownOpen:true});
+        this.setState({ isDropdownOpen: true });
     }
-    onClose=()=>{
-        this.setState({isDropdownOpen:false});
+    onClose = () => {
+        this.setState({ isDropdownOpen: false });
     }
 
     isValidCC(
@@ -354,10 +350,11 @@ class MyCreditCards extends React.Component {
             editDetails,
         } = this.state;
 
-        const expiryRegex = new RegExp(/^((0[1-9])|(1[0-2]))\/((2019)|(20[1-3][0-9]))$/);
-        editDetails.isValidExpiry = expiryRegex.test(value);
+        //const expiryRegex = new RegExp(/^((0[1-9])|(1[0-2]))\/((2019)|(20[1-3][0-9]))$/);
+        const isValid = validateDate(value);
+        editDetails.isValidExpiry = isValid;
         this.setState({
-            editButtonClicked: !expiryRegex.test(value),
+            editButtonClicked: !isValid,
             editDetails: {
                 ...this.state.editDetails,
                 ...editDetails,
@@ -376,14 +373,14 @@ class MyCreditCards extends React.Component {
                 isValidExpiry,
             }
         } = this.state;
-        const expiryRegex = new RegExp(/^((0[1-9])|(1[0-2]))\/((2019)|(20[1-3][0-9]))$/);
-        isValidExpiry = expiryRegex.test(expiry);
+        //const expiryRegex = new RegExp(/^((0[1-9])|(1[0-2]))\/((2019)|(20[1-3][0-9]))$/);
+        isValidExpiry = validateDate(expiry);
         this.setState({
             editDetails: {
                 isValidExpiry,
             }
         });
-        if(isValidExpiry) {
+        if (isValidExpiry) {
             return true;
         }
         return false;
@@ -520,8 +517,10 @@ class MyCreditCards extends React.Component {
             dispatch,
         } = this.props;
         getMyCreditCards(dispatch, id, data.activePage);
+        window.scrollTo(0, 0);
         this.setState({
             currentActivePage: data.activePage,
+            myCreditCardListLoader: true,
         });
     }
 
@@ -619,14 +618,14 @@ class MyCreditCards extends React.Component {
                                         open={isDropdownOpen}
                                         onOpen={this.onOpen}
                                         onClose={this.onClose}
-                                        onClick={() => {this.handleEditClick(data)}}
+                                        onClick={() => { this.handleEditClick(data) }}
                                     />
                                     <Dropdown.Item
                                         text="Delete"
                                         open={isDropdownOpen}
                                         onOpen={this.onOpen}
                                         onClose={this.onClose}
-                                        onClick={() => {this.handleDeleteClick(data.attributes.description, data.id)}}
+                                        onClick={() => { this.handleDeleteClick(data.attributes.description, data.id) }}
                                     />
                                 </Dropdown.Menu>
                             </Dropdown>
@@ -686,6 +685,13 @@ class MyCreditCards extends React.Component {
             successMessage,
         } = this.state;
         const formatMessage = this.props.t;
+        const {
+            activeMonthlyDonations
+        } = this.props;
+        let deleteCreditCardPopUpMsg = deleteConfirmCard;
+        if (activeMonthlyDonations > 0) {
+            deleteCreditCardPopUpMsg = `${deleteConfirmCard}${formatMessage('giveCommon:creditCard.deleteCreditCardMsgActiveSubscription')}`;
+        }
         return (
             <div>
                 <div className="userSettingsContainer">
@@ -727,7 +733,7 @@ class MyCreditCards extends React.Component {
                                                                     validateExpiraton={this.validateStripeExpirationDate}
                                                                     validateCvv={this.validateCreditCardCvv}
                                                                     validateCardName={this.validateCreditCardName}
-                                                                    formatMessage = {formatMessage}
+                                                                    formatMessage={formatMessage}
                                                                     // eslint-disable-next-line no-return-assign
                                                                     onRef={(ref) => (this.CreditCard = ref)}
                                                                 />
@@ -765,13 +771,13 @@ class MyCreditCards extends React.Component {
                         {
                             statusMessage && (
                                 <ModalStatusMessage
-                                    message = {!_.isEmpty(successMessage) ? successMessage : null}
-                                    error = {!_.isEmpty(errorMessage) ? errorMessage : null}
+                                    message={!_.isEmpty(successMessage) ? successMessage : null}
+                                    error={!_.isEmpty(errorMessage) ? errorMessage : null}
                                 />
                             )
                         }
                         <div className="userCardList border-top-0">
-                            { myCreditCardListLoader
+                            {myCreditCardListLoader
                                 ? (
                                     <Table padded unstackable className="no-border-table">
                                         <PlaceHolderGrid row={2} column={2} placeholderType="table" />
@@ -784,7 +790,7 @@ class MyCreditCards extends React.Component {
                     </div>
                 </div>
                 <div>
-                    <Modal size="tiny" dimmer="inverted" className="chimp-modal" closeIcon open={this.state.isEditModalOpen} onClose={()=>{this.setState({isEditModalOpen: false})}}>
+                    <Modal size="tiny" dimmer="inverted" className="chimp-modal" closeIcon open={this.state.isEditModalOpen} onClose={() => { this.setState({ isEditModalOpen: false }) }}>
                         <Modal.Header>Edit credit card</Modal.Header>
                         <Modal.Content>
                             <Modal.Description className="font-s-16">
@@ -810,10 +816,10 @@ class MyCreditCards extends React.Component {
                                             <Form.Input
                                                 fluid
                                                 label="Expiry"
-                                                placeholder="MM/YYYY"
+                                                placeholder="MM/YY"
                                                 id="expiry"
                                                 name="expiry"
-                                                maxLength="7"
+                                                maxLength="5"
                                                 error={!isValidExpiry}
                                                 onBlur={this.handleEditExpiryBlur}
                                                 onChange={this.handleInputChange}
@@ -860,7 +866,7 @@ class MyCreditCards extends React.Component {
                                 <Loader size='small' />
                                 :
                                 <Modal.Description className="font-s-16">
-                                    {deleteConfirmCard}
+                                    {deleteCreditCardPopUpMsg}
                                 </Modal.Description>
                             }
                             <div className="btn-wraper pt-3 text-right">
