@@ -85,7 +85,7 @@ class ClaimP2PSignUp extends React.Component {
         return _every(validity);
     }
 
-    handleSubmit(e) {
+    async handleSubmit(e) {
         e.preventDefault();
         const isValid = this.validateForm();
         if (isValid) {
@@ -102,7 +102,7 @@ class ClaimP2PSignUp extends React.Component {
             this.setState({
                 buttonClicked: true,
             });
-            dispatch(claimp2pCreateNewUser(firstName, lastName, email, password, claimToken))
+            await dispatch(claimp2pCreateNewUser(firstName, lastName, email, password, claimToken))
             .then(()=>{
                 Router.pushRoute('/users/login');
             })

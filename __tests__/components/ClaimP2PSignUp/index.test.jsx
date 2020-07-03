@@ -150,11 +150,10 @@ describe('Testing ClaimP2PSignUp component form validations', () => {
             expect(component.find({ 'data-test': 'ClaimP2PSignUp_passwordCharacter_specialCase' }).text()).toBe('signUpPasswordValidation.specialCharacter');
         });
         it('Triggering handleSubmit function for creating new acount and checking whether it got called', async () => {
-            const mockEvent = { preventDefault: () => { } };
-            const mock = jest.spyOn(ClaimP2PSignUp.prototype, 'handleSubmit');
-            mock.mockImplementation(() => {});
-            component.find({ 'data-test': 'ClaimP2PSignUp_submit_button' }).simulate('click', mockEvent);
-            expect(mock).toHaveBeenCalledTimes(1);
+            const fakeEvent = { preventDefault: () => console.log('preventDefault') };
+            component.setState({ firstName: 'chimp', lastName: 'test', password: 'Abc123@#1Se' });  
+            component.find({ 'data-test': 'ClaimP2PSignUp_submit_button' }).simulate('click', fakeEvent);
+            expect(component.state().buttonClicked).toBe(true);
         });
     });
 });
