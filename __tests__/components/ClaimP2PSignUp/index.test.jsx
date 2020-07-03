@@ -8,9 +8,10 @@ import FormValidationErrorMessage from '../../../components/shared/FormValidatio
 
 const initializeComponent = (props = {}) => shallow(<ClaimP2PSignUp {...props} />);
 describe('Testing ClaimP2PSignUp component form validations', () => {
-    const t = jest.fn().mockImplementation((key) => key)
+    const t = jest.fn().mockImplementation((key) => key);
     const props = {
         claimToken: '1234',
+        dispatch: jest.fn(),
         email: 'chimp@gmail.com',
         t,
     };
@@ -112,9 +113,6 @@ describe('Testing ClaimP2PSignUp component form validations', () => {
         it('Should render sign up email input feild', () => {
             expect(component.find({ 'data-test': 'ClaimP2PSignUp_inputFeild_email' }).prop('value')).toBe(props.email);
         });
-        it('Should render sign up email input feild placeholder', () => {
-            expect(component.find({ 'data-test': 'ClaimP2PSignUp_inputFeild_email' }).prop('placeholder')).toBe('claimP2P_signUp.emailPlaceholder');
-        });
         it('Should disable sign up email input feild', () => {
             expect(component.find({ 'data-test': 'ClaimP2PSignUp_inputFeild_email' }).prop('disabled')).toBe(true);
         });
@@ -152,16 +150,11 @@ describe('Testing ClaimP2PSignUp component form validations', () => {
             expect(component.find({ 'data-test': 'ClaimP2PSignUp_passwordCharacter_specialCase' }).text()).toBe('signUpPasswordValidation.specialCharacter');
         });
         it('Triggering handleSubmit function for creating new acount and checking whether it got called', async () => {
-          
-            const fakeEvent = { preventDefault: () => { } };
-            component.setState({
-                firstName: 'chimp',
-                lastName: 'test',
-                password: 'Abc123@#1Se'
-            });
-            component.find({ 'data-test': 'ClaimP2PSignUp_submit_button' }).simulate('click', fakeEvent);
-            expect.assertions(1);
-            expect(component.state().buttonClicked).toBe(true);
+            const mockEvent = { preventDefault: () => { } };
+            const mock = jest.spyOn(ClaimP2PSignUp.prototype, 'handleSubmit');
+            mock.mockImplementation(() => {});
+            component.find({ 'data-test': 'ClaimP2PSignUp_submit_button' }).simulate('click', mockEvent);
+            expect(mock).toHaveBeenCalledTimes(1);
         });
     });
 });

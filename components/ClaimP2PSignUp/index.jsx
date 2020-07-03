@@ -178,7 +178,7 @@ class ClaimP2PSignUp extends React.Component {
 
                     <Form.Field>
                         <label data-test="ClaimP2PSignUp_label_email">{formatMessage('claimP2P_signUp.emailLabel')}</label>
-                        <Form.Input data-test="ClaimP2PSignUp_inputFeild_email" disabled placeholder={formatMessage('claimP2P_signUp.emailPlaceholder')} width={16} value={email} />
+                        <Form.Input data-test="ClaimP2PSignUp_inputFeild_email" disabled width={16} value={email} />
                     </Form.Field>
                     <Form.Field>
                         <label data-test="ClaimP2PSignUp_label_password">{formatMessage('claimP2P_signUp.password')}</label>
