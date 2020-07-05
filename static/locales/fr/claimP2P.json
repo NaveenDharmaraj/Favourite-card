@@ -1,0 +1,49 @@
+{
+    "description": "{{senderDisplayName}} sent you {{giftAmount}} to give away to charity",
+    "thankNote": "“Thank you for helping with the bake sale the other day!”",
+    "impAccountHeader": "Claim your gift by opening an Impact Account",
+    "impAccountPara1": "It’s like an online bank account for charitable giving.",
+    "impAccountPara2": "You can add money and give to your favourite charities, all from one place. It’s free to open and we don’t charge sign-up or transaction fees for Impact Accounts.",
+    "howItWorks": {
+        "header": "How it works",
+        "findCharity": "Find charities",
+        "findCharityDesc": "Find charities that match your interests. With our powerful search tool, you can choose from thousands of registered Canadian charities.",
+        "addMoney": "Add money",
+        "addMoneyDesc": "Add to your account, then take as much time and space as you need to decide which charities to support.",
+        "give": "Give",
+        "giveDesc": "Give to your favourite charities from your account now, or save some of your charitable dollars and build your impact over time.",
+        "whoWeAre": {
+            "whoWeAreHeader": "Who we are ",
+            "whoWeAreDesc1": "Charitable Impact was created to help you create the change you want to see in the world. We’re a public foundation that operates as a donor-advised fund. This means you can manage your charitable giving from a single account, which we call the Impact Account.",
+            "whoWeAreDesc2": "Our Impact Account comes with tools that help you plan the impact you want to make. We’re here for you no matter what causes you choose to support, how much you give, or how experienced you are with your charitable giving.",
+        }
+    },
+    "join": {
+        "joinHeader": "Join the thousands of Canadians already on Charitable Impact",
+        "joindesc1Header": "$530M+",
+        "joindesc1Desc": "donated by the Charitable Impact community",
+        "joindesc2Header": "9,000+",
+        "joindesc2Desc": "have benefited from gifts sent by donors on Charitable Impact",
+        "joindesc3Header": "110,000+",
+        "joindesc3Desc": "people have given to the causes they care about using Charitable Impact"
+    },
+    "claimP2P_signUp": {
+        "firstNameLabel" : "First name",
+        "firstNamePlaceholder": "Your first name",
+        "lastNameLabel" : "Last name",
+        "lastNamePlaceholder": "Your last name",
+        "emailLabel": "Email",
+        "password": "Password",
+        "passwordPlaceholder": "Choose your password",
+        "submitButton" :"Open an Impact Account and claim gift",
+        "submitButtonLoading": "Submitting",
+    },
+    "openImpactInfo":{
+        "info1": " By clicking ‘Open an Impact Account and claim your gift’, you acknowlege that you have read the",
+        "privacyPolicyLink" : "Privacy Policy",
+        "info2" : "and agree to the",
+        "termsAndConditionLink": "Terms & Conditions",
+        "info3": "and",
+        "accountAgreement": "Account Agreement"
+    }
+}
