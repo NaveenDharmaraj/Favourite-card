@@ -67,14 +67,14 @@ class CharityDetails extends React.Component {
 
         if (!_isEmpty(causes)) {
             getCauses = causes.map((cause) => (
-                <span className="badge">
+                <span data-test="Charity_CharityDetails_causes" className="badge">
                     {cause.display_name}
                 </span>
             ));
         }
         return (
             <Grid.Row>
-                <Grid.Column mobile={16} tablet={10} computer={11} className="charity_profileWrap">
+                <Grid.Column data-test="Charity_CharityDetails_wrapper" mobile={16} tablet={10} computer={11} className="charity_profileWrap">
                     <Grid>
                         <Grid.Row>
                             <Grid.Column mobile={16} tablet={4} computer={4} className="ch_profileWrap">
@@ -119,9 +119,9 @@ class CharityDetails extends React.Component {
                         <Grid.Row>
                             <Grid.Column mobile={16} tablet={16} computer={16} className="ch_paragraph">
                                 {!_isEmpty(formattedDescription)
-                                    && <p data-test="profile_charity_description">{ReactHtmlParser(formattedDescription)}</p>}
+                                    && <p data-test="Charity_CharityDetails_description">{ReactHtmlParser(formattedDescription)}</p>}
                                 {!_isEmpty(formattedDescriptionNew)
-                                    && <p data-test="profile_charity_new-description">{ReactHtmlParser(formattedDescriptionNew)}</p>}
+                                    && <p data-test="Charity_CharityDetails_new_description">{ReactHtmlParser(formattedDescriptionNew)}</p>}
                             </Grid.Column>
                         </Grid.Row>
                         <Divider />
@@ -179,9 +179,9 @@ CharityDetails.propTypes = {
         id: string,
         type: string,
     }),
-    currentUser: {
+    currentUser: PropTypes.shape({
         id: number,
-    },
+    }),
     dispatch: func,
     isAUthenticated: bool,
 };

@@ -253,7 +253,7 @@ class Charts extends React.Component {
                     <Grid>
                         <Grid.Row>
                             <Grid.Column mobile={16} tablet={16} computer={16}>
-                                <div className="graph">
+                                <div className="graph" data-test="Charity_Charts_graph">
                                     <Grid.Column>
                                         <Bar
                                             onElementsClick={this.handleClick}
@@ -363,6 +363,7 @@ class Charts extends React.Component {
                                     <Grid.Row>
                                         <Grid.Column mobile={16} tablet={16} computer={16}>
                                             <div
+                                                data-test="Charity_Charts_Loader"
                                                 style={{
                                                     height: '260px',
                                                     position: 'relative',
@@ -395,7 +396,9 @@ Charts.defaultProps = {
 };
 
 Charts.propTypes = {
-    beneficiaryFinance: arrayOf(PropTypes.element),
+    beneficiaryFinance: PropTypes.arrayOf(
+        PropTypes.shape({}),
+    ),
     charityDetails: PropTypes.shape({
         id: string,
     }),

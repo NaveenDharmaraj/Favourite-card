@@ -13,6 +13,7 @@ import {
     bool,
     func,
     string,
+    number,
 } from 'prop-types';
 import { connect } from 'react-redux';
 
@@ -93,7 +94,7 @@ class ShareProfile extends React.Component {
             deepLinkUrl,
             disableFollow,
             liked,
-            isAUthenticated,
+            isAuthenticated,
             type,
             t: formatMessage,
         } = this.props;
@@ -114,8 +115,8 @@ class ShareProfile extends React.Component {
         }
         return (
             <Fragment>
-                <List horizontal className="shareAndLike">
-                    { isAUthenticated && (
+                <List horizontal className="shareAndLike" data-test="Shared_ShareProfile_shareSection">
+                    { isAuthenticated && (
                         <List.Item as="a">
                             <Icon
                                 id="follow"
@@ -123,6 +124,7 @@ class ShareProfile extends React.Component {
                                 name="heart"
                                 onClick={this.handleFollow}
                                 disabled={disableFollow}
+                                data-test="Shared_ShareProfile_likeIcon"
                             />
                         </List.Item>
                     )}
@@ -135,12 +137,12 @@ class ShareProfile extends React.Component {
                         trigger={
                             (
                                 <List.Item as="a">
-                                    <Icon data-test="profile_shared_share_icon" className="share alternate" onClick={() => this.setState({ showShareModal: true })} />
+                                    <Icon data-test="Shared_ShareProfile_share_icon" className="share alternate" onClick={() => this.setState({ showShareModal: true })} />
                                 </List.Item>
                             )
                         }
                     >
-                        <Modal.Header>
+                        <Modal.Header data-test="Shared_ShareProfile_popup">
                             {`${formatMessage('common:shareProfileHeader')} ${Profiletype}`}
                         </Modal.Header>
                         <Modal.Content>
@@ -149,6 +151,7 @@ class ShareProfile extends React.Component {
                                     <List.Item
                                         id="twitter"
                                         onClick={this.handleOnClick}
+                                        data-test="Shared_ShareProfile_twitter"
                                     >
                                         <List.Icon
                                             name="twitter"
@@ -160,6 +163,7 @@ class ShareProfile extends React.Component {
                                     <List.Item
                                         id="facebook"
                                         onClick={this.handleOnClick}
+                                        data-test="Shared_ShareProfile_facebook"
                                     >
                                         <List.Icon name="facebook" />
                                         <List.Content>
@@ -171,7 +175,7 @@ class ShareProfile extends React.Component {
                                             <div className="shareLinkLeft">{formatMessage('common:shareLink')}</div>
                                             <div className="shareLinkTextBox">
                                                 <Input
-                                                    data-test="profile_shared_share_link_input"
+                                                    data-test="Shared_ShareProfile_deeplink"
                                                     value={inputValue}
                                                 />
                                             </div>
@@ -189,11 +193,11 @@ class ShareProfile extends React.Component {
 
 ShareProfile.defaultProps = {
     currentUser: PropTypes.shape({
-        id: '',
+        id: null,
     }),
     disableFollow: false,
     dispatch: () => {},
-    isAUthenticated: false,
+    isAuthenticated: false,
     liked: false,
     name: '',
     profileId: '',
@@ -202,11 +206,11 @@ ShareProfile.defaultProps = {
 
 ShareProfile.propTypes = {
     currentUser: PropTypes.shape({
-        id: string,
+        id: number,
     }),
     disableFollow: bool,
     dispatch: func,
-    isAUthenticated: bool,
+    isAuthenticated: bool,
     liked: bool,
     name: string,
     profileId: string,
@@ -218,7 +222,7 @@ function mapStateToProps(state) {
         currentUser: state.user.info,
         deepLinkUrl: state.profile.deepLinkUrl,
         disableFollow: state.profile.disableFollow,
-        isAUthenticated: state.auth.isAuthenticated,
+        isAuthenticated: state.auth.isAuthenticated,
     };
 }
 

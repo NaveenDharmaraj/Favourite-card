@@ -54,7 +54,7 @@ const ProgramAreas = (props) => {
     }
     return (
         <Grid.Row>
-            <Grid.Column mobile={16} tablet={16} computer={16} className="ch_program mt-1 mb-1">
+            <Grid.Column mobile={16} tablet={16} computer={16} className="ch_program mt-1 mb-1" data-test="Charity_ProgramAreas_programs_section">
                 <Header as="h3">{formatMessage('charityProfile:programAreas')}</Header>
                 {viewData}
             </Grid.Column>

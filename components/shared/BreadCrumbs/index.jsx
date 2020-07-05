@@ -28,7 +28,7 @@ const BreadcrumbDetails = (props) => {
     };
     return (
         <Container>
-            <Breadcrumb className="c-breadcrumb">
+            <Breadcrumb className="c-breadcrumb" data-test="Shared_BreadcrumbDetails_Breadcrumbsection">
                 {renderBreadCrumbs()}
             </Breadcrumb>
         </Container>

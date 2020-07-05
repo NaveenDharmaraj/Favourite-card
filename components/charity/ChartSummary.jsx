@@ -33,7 +33,7 @@ const ChartSummary = (props) => {
         <Fragment>
             {(!hideGift)
             && (
-                <Grid.Row className="expenseRow ch_Expenses">
+                <Grid.Row className="expenseRow ch_Expenses" data-test="Charity_ChartSummary_expenses_summary">
                     <Grid.Column mobile={11} tablet={12} computer={12}>
                         <List>
                             <List.Item as="h5">
@@ -48,7 +48,7 @@ const ChartSummary = (props) => {
                                             <Button
                                                 className="blue-bordr-btn-round-def"
                                                 onClick={handleClick}
-                                                data-test="profile_charity_giftButton"
+                                                data-test="Charity_ChartSummary_viewGiftButton"
                                             >
                                                 {formatMessage('charityProfile:viewGiftButtonText')}
                                             </Button>

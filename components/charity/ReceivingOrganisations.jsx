@@ -61,7 +61,7 @@ class ReceivingOrganisations extends React.Component {
                     location = `${donee.city}, ${donee.province}`;
                 }
                 return (
-                    <div className="ch_giftPopcontent">
+                    <div className="ch_giftPopcontent" data-test="Charity_ReceivingOrganisations_donee">
                         <Header as="h6">{formatMessage('charityProfile:charityHeader')}</Header>
                         <Header as="h3">
                             <p>
@@ -84,11 +84,11 @@ class ReceivingOrganisations extends React.Component {
                 <PlaceholderGrid row={5} column={1} placeholderType="multiLine" />
             ) : (
                 <Fragment>
-                    <div className="ScrollData">
+                    <div className="ScrollData" data-test="Charity_ReceivingOrganisations_doneeListModal">
                         {viewData}
                         {(remainingElements > 20)
                             && (
-                                <div className="Ch_total">
+                                <div className="Ch_total" data-test="Charity_ReceivingOrganisations_totalAmount">
                                     <Header as="h3">
                                         <p>
                                             {remainingElements}
@@ -109,7 +109,7 @@ class ReceivingOrganisations extends React.Component {
 
 ReceivingOrganisations.defaultProps = {
     charityDetails: {
-        id: null,
+        id: '',
     },
     currency: 'USD',
     dispatch: () => { },
@@ -123,11 +123,13 @@ ReceivingOrganisations.defaultProps = {
 
 ReceivingOrganisations.propTypes = {
     charityDetails: PropTypes.shape({
-        id: number,
+        id: string,
     }),
     currency: string,
     dispatch: func,
-    donationDetails: arrayOf(PropTypes.element),
+    donationDetails: PropTypes.arrayOf(
+        PropTypes.shape({}),
+    ),
     language: string,
     remainingAmount: number,
     remainingElements: number,

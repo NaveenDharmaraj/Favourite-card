@@ -125,6 +125,8 @@ const formatGraphData = (beneficiaryFinance, langMapping, colorArr) => {
 };
 
 export {
+    createChartData,
     formatGraphData,
     getChartIndex,
+    getSelectedYear,
 };
