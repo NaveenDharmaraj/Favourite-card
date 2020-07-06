@@ -219,30 +219,31 @@ class NotificationHelper {
         let msgText = msg["msg"][localeCode];
         const linkArray = [];
         if(!_.isEmpty(msg.hyperlinks)) {
-            // console.log( msg.hyperlinks);
-            // msg.hyperlinks.forEach(function (hyperlink) {
-            //     console.log(hyperlink);
-            // });
             _.map(msg.hyperlinks, function(key, linkName) {
                 let valueLink = null;
                 if (key['isWeb'] === true && msgText.includes(key['value'])){
                     switch(key['profile_type']) {
                         case 'user':
                             valueLink = `/users/profile/${key['profile_id']}`;
-                            // valueLink = `<Link route="/users/profile/${key['profile_id']}"><b><a>${key['value']}</a></b></Link>`
+                            break;
+                        case 'charity':
+                            valueLink = `/charities/${key['profile_slug']}`;
+                            break;
+                        case 'group':
+                            valueLink = `/groups/${key['profile_slug']}`;
+                            break;
+                        case 'campaign':
+                            valueLink = `/campaigns/${key['profile_slug']}`;
                             break;
                     }
-                    if(!_.isEmpty(valueLink)){
+                    if(valueLink){
                         linkArray.push({
                             text: linkName,
                             url : valueLink,
                             replaceValue: `${key['value']}`,
-                        }
-                        )
+                        });
                         msgText = msgText.replace(`{{ ${key['value']} }}`, linkName);
-                        console.log(msgText);
                     }
-
                 }
               });
         }
@@ -260,12 +261,10 @@ class NotificationHelper {
             sourceImageLink: msg.avatar_link,
             linkData: linkArray,
             // highlighted: msg.highlighted,
-            // hyperlinks: msg.hyperlinks,
         };
         if (msg.sourceUserId == userInfo.id) {
             d.sourceDisplayName = "You";
         }
-        console.log(d);
         return d;
     }
 
