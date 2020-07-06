@@ -232,7 +232,7 @@ const isValidBrowser = (userAgent) => {
     return !isvalid;
 };
 
-const validateDate = (dateStr) => {
+const validateDate = (dateStr = '') => {
     const regExp = /^(\d\d?)\/(\d\d?)$/;
     const matches = dateStr.match(regExp);
     let isValid = !!matches;
