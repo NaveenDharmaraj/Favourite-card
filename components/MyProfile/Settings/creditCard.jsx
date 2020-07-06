@@ -189,7 +189,8 @@ class MyCreditCards extends React.Component {
         if (userCreditCardList.count === 0) {
             isDefaultCard = true;
             isDefaultCardReadOnly = true;
-        } else {
+        } else
+            isDefaultCard = false; {
             isDefaultCardReadOnly = false;
         }
         this.setState({
@@ -252,7 +253,6 @@ class MyCreditCards extends React.Component {
                     successMessage: 'Credit card saved.',
                     statusMessage: true,
                     isAddModalOpen: false,
-                    isDefaultCard: false,
                 });
             }).catch((err) => {
                 this.setState({
@@ -378,6 +378,7 @@ class MyCreditCards extends React.Component {
         isValidExpiry = validateDate(expiry);
         this.setState({
             editDetails: {
+                ...this.state.editDetails,
                 isValidExpiry,
             }
         });
