@@ -216,6 +216,18 @@ const userProfile = (state = {}, action) => {
                 showAddButtonLoader: action.payload.showAddButtonLoader,
             };
             break;
+        case 'DELETE_CREDIT_CARD_MSG_POPUP_LOADER':
+            newState = {
+                ...state,
+                deleteMsgPopUpLoader: action.payload.deleteMsgPopUpLoader,
+            };
+            break;
+        case 'USER_CREDIT_CARD_ACTIVE_MONTHLY_DONATIONS':
+            newState = {
+                ...state,
+                activeMonthlyDonations: action.payload.activeMonthlyDonations,
+            };
+            break;
         default:
             break;
     }
