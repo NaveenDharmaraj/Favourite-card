@@ -5885,11 +5885,14 @@ body {
 
 .statusMsgWraper {
   position: fixed;
-  z-index : 9999;
-  right   : 19%;
-
-  @media only screen and (max-width:991px) {
-    top: 85px;
+  z-index: 99999999;
+  right:19%;
+  margin-top: 48px;
+  @media only screen and (max-width:991px){
+    top: 0px;
+    left: calc(50% - 167.5px);
+    right: auto;
+    margin: 48px auto auto;
   }
 }
 
