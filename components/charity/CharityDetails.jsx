@@ -15,6 +15,7 @@ import {
 import getConfig from 'next/config';
 
 import { Link } from '../../routes';
+import { resetFlowObject } from '../../actions/give';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -25,6 +26,7 @@ const {
 const CharityDetails = (props) => {
     const {
         charityDetails,
+        dispatch,
         isAUthenticated,
     } = props;
     let buttonLink = null;
@@ -34,7 +36,7 @@ const CharityDetails = (props) => {
         if (isAUthenticated) {
             buttonLink = (
                 <Link route={(`/give/to/charity/${charityDetails.charityDetails.attributes.slug}/gift/new`)}>
-                    <Button primary fluid className="blue-btn-rounded">Give</Button>
+                    <Button primary fluid onClick={() => { resetFlowObject('charity', dispatch); }} className="blue-btn-rounded">Give</Button>
                 </Link>
             );
         } else {
