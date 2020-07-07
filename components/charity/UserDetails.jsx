@@ -1,262 +1,196 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
 import {
     bool,
     PropTypes,
     string,
-    func,
-    number,
 } from 'prop-types';
-import _ from 'lodash';
 import _isEmpty from 'lodash/isEmpty';
 import {
-    Grid,
     List,
     Header,
-    Container,
+    Responsive,
     Button,
 } from 'semantic-ui-react';
 import getConfig from 'next/config';
 
-import {
-    generateDeepLink,
-} from '../../actions/profile';
-import {
-    getBeneficiaryFromSlug,
-} from '../../actions/charity';
-import ShareDetails from '../shared/ShareSectionProfilePage';
+import { Link } from '../../routes';
+import { withTranslation } from '../../i18n';
 
 const { publicRuntimeConfig } = getConfig();
 const {
     CLAIM_CHARITY_URL,
+    RAILS_APP_URL_ORIGIN,
 } = publicRuntimeConfig;
 
-const createUserDetails = (valuesObject) => {
-    const data = [];
-    if (!_isEmpty(valuesObject.contactName)) {
-        data.push({
-            Content: `Contact: ${valuesObject.contactName}`,
+const UserDetails = (props) => {
+    const {
+        charityDetails: {
+            attributes: {
+                hideGive,
+                isClaimed,
+                slug,
+                businessNumber,
+                contactName,
+                phone,
+                email,
+                website,
+                staffCount,
+                headQuarterAddress,
+            },
+        },
+        isAuthenticated,
+        t: formatMessage,
+    } = props;
+    let buttonLink = null;
+    const charityDetails = [];
+    let viewData = '';
+    if (!_isEmpty(contactName)) {
+        charityDetails.push({
+            Content: `${formatMessage('charityProfile:contactText')}: ${contactName}`,
             name: 'user',
         });
     }
-    if (!_isEmpty(valuesObject.phone)) {
-        data.push({
-            Content: valuesObject.phone,
+    if (!_isEmpty(phone)) {
+        charityDetails.push({
+            Content: phone,
             name: 'phone',
         });
     }
-    if (!_isEmpty(valuesObject.email)) {
-        data.push({
-            Content: valuesObject.email,
-            link: `mailto:${valuesObject.email}`,
+    if (!_isEmpty(email)) {
+        charityDetails.push({
+            Content: email,
+            link: `mailto:${email}`,
             name: 'mail',
         });
     }
-    if (!_isEmpty(valuesObject.website)) {
-        data.push({
-            Content: valuesObject.website,
-            link: valuesObject.website,
+    if (!_isEmpty(website)) {
+        charityDetails.push({
+            Content: website,
+            link: website,
             name: 'linkify',
         });
     }
-    if (!_isEmpty(valuesObject.staffCount) && valuesObject.staffCount > 0) {
-        data.push({
-            Content: valuesObject.staffCount,
+    if (staffCount && staffCount > 0) {
+        charityDetails.push({
+            Content: staffCount,
             name: 'users',
         });
     }
-    if (!_isEmpty(valuesObject.businessNumber)) {
-        data.push({
-            Content: valuesObject.businessNumber,
+    if (!_isEmpty(businessNumber)) {
+        charityDetails.push({
+            Content: businessNumber,
             name: 'briefcase',
         });
     }
-    if (!_isEmpty(valuesObject.headQuarterAddress)) {
-        data.push({
-            Content: valuesObject.headQuarterAddress,
-            name: 'map marker alternate',
+    if (!_isEmpty(headQuarterAddress)) {
+        charityDetails.push({
+            Content: headQuarterAddress,
+            name: 'marker',
         });
     }
-    return data;
-};
 
-const detailsView = (valuesObject) => {
-    const values = createUserDetails(valuesObject);
-    return (
-        <Grid.Row>
-            <Grid.Column mobile={16} tablet={8} computer={8}>
-                <List className="charityDetailsList">
-                    {values.map((value, index) => (
-                        (value.Content && index <= 3
-                        && (
-                            <List.Item>
-                                <List.Icon name={value.name} />
-                                {value.link && (
-                                    <List.Content>
-                                        <a href={value.link} target={value.name === 'linkify' ? '_blank' : '_self'}>
-                                            {value.Content}
-                                        </a>
-                                    </List.Content>
-                                )}
-                                {!value.link
-                                && (
-                                    <List.Content>
+    if (!_isEmpty(charityDetails)) {
+        viewData = (
+            <Fragment>
+                <List>
+                    {charityDetails.map((value) => (
+                        <List.Item>
+                            <List.Icon name={value.name} />
+                            {value.link && (
+                                <List.Content data-test={`Charity_UserDetails_charityInformation_${value.name}`}>
+                                    <a href={value.link} target={value.name === 'linkify' ? '_blank' : '_self'}>
                                         {value.Content}
-                                    </List.Content>
-                                )}
-                            </List.Item>
-                        )
-                        )
-                    ))}
-                </List>
-            </Grid.Column>
-            <Grid.Column mobile={16} tablet={8} computer={8}>
-                <List className="charityDetailsList mobMarginBtm-2">
-                    {values.map((value, index) => (
-                        (value.Content && index >= 4
+                                    </a>
+                                </List.Content>
+                            )}
+                            {!value.link
                             && (
-                                <List.Item>
-                                    <List.Icon name={value.name} />
-                                    {value.link && (
-                                        <List.Content>
-                                            <a href={value.link}>
-                                                {value.Content}
-                                            </a>
-                                        </List.Content>
-                                    )}
-                                    {!value.link
-                                    && (
-                                        <List.Content>
-                                            {value.Content}
-                                        </List.Content>
-                                    )}
-                                </List.Item>
-                            )
-                        )
+                                <List.Content data-test={`Charity_UserDetails_charityInformation_${value.name}`}>
+                                    {value.Content}
+                                </List.Content>
+                            )}
+                        </List.Item>
                     ))}
                 </List>
-            </Grid.Column>
-        </Grid.Row>
+            </Fragment>
+        );
+    }
+
+    if (!hideGive) {
+        if (isAuthenticated) {
+            buttonLink = (
+                <Link route={(`/give/to/charity/${slug}/gift/new`)} data-test="Charity_UserDetails_giveButton_loggedInUser">
+                    <Button data-test="Charity_UserDetails_giveButton" className="blue-btn-rounded-def">{formatMessage('charityProfile:give')}</Button>
+                </Link>
+            );
+        } else {
+            buttonLink = (
+                <a href={(`${RAILS_APP_URL_ORIGIN}/send/to/charity/${slug}/gift/new`)} data-test="Charity_UserDetails_giveButton_publicUser">
+                    <Button data-test="Charity_UserDetails_giveButton" className="blue-btn-rounded-def">{formatMessage('charityProfile:give')}</Button>
+                </a>
+            );
+        }
+    }
+    return (
+        <div className="charityInfowrap" data-test="Charity_UserDetails_charityInfoWrapper">
+            <div className="charityInfo">
+                <Header as="h4">
+                    {formatMessage('charityProfile:charityInformation')}
+                </Header>
+                {viewData}
+                <Responsive minWidth={768}>
+                    {buttonLink}
+                </Responsive>
+            </div>
+            {(!isClaimed)
+                && (
+                    <div className="charityInfoClaim" data-test="Charity_UserDetails_claimCharitybutton">
+                        <p>
+                            {`* ${formatMessage('charityProfile:claimCharityInfo')}`}
+                        </p>
+                        <a href={CLAIM_CHARITY_URL}>
+                            <Button data-test="profile_charity_claim_charity_button" className="blue-bordr-btn-round-def">{formatMessage('charityProfile:claimCharityButtonText')}</Button>
+                        </a>
+                    </div>
+                )
+            }
+        </div>
     );
 };
 
-class UserDetails extends React.Component {
-    componentDidMount() {
-        const {
-            dispatch,
-            deepLinkUrl,
-            isAUthenticated,
-            currentUser: {
-                id: userId,
-            },
-            charityDetails: {
-                charityDetails: {
-                    id: charityId,
-                    attributes: {
-                        slug,
-                    },
-                },
-            },
-        } = this.props;
-        getBeneficiaryFromSlug(dispatch, slug);
-        let deepLinkApiUrl = `deeplink?profileType=charityprofile&profileId=${charityId}`;
-        if (isAUthenticated) {
-            deepLinkApiUrl += `&sourceId=${userId}`;
-        }
-        generateDeepLink(deepLinkApiUrl, dispatch);
-
-    }
-
-    render() {
-        const {
-            charityDetails,
-            isAUthenticated,
-            deepLinkUrl,
-            currentUser: {
-                id: userId,
-            },
-        } = this.props;
-        return (
-            <div className="profile-info-wraper pb-3">
-                <Container>
-                    <div className="profile-info-card charity">
-                        <Header as="h3">
-                            Charity information
-                        </Header>
-                        <Grid stackable>
-                            <Grid.Row>
-                                <Grid.Column mobile={16} tablet={10} computer={10}>
-                                    <Grid>
-                                        {((!_isEmpty(charityDetails.charityDetails.attributes))
-                                        && detailsView(charityDetails.charityDetails.attributes))}
-                                    </Grid>
-                                </Grid.Column>
-
-                                <ShareDetails
-                                    deepLinkUrl={deepLinkUrl}
-                                    isAuthenticated={isAUthenticated}
-                                    profileDetails={this.props.charityDetails.charityDetails}
-                                    userId={userId}
-                                />
-
-                            </Grid.Row>
-                        </Grid>
-                        {(!_isEmpty(charityDetails.charityDetails.attributes) && !charityDetails.charityDetails.attributes.isClaimed)
-                            && (
-                                <p className="mt-1">
-                                Is this your charity? Claim your charity page on Charitable Impact.
-                                    <a href={CLAIM_CHARITY_URL}>
-                                        <Button className="ml-1 blue-bordr-btn-round-def c-small">Claim charity</Button>
-                                    </a>
-                                </p>
-                            )
-                        }
-                    </div>
-                </Container>
-            </div>
-        );
-    }
-}
-
 UserDetails.defaultProps = {
     charityDetails: {
-        charityDetails: {
-            attributes: {
-                contactName: '',
-                slug: '',
-            },
+        attributes: {
+            contactName: '',
+            slug: '',
         },
     },
-    currentUser: {
-        id: null,
-    },
-    dispatch: _.noop,
-    isAUthenticated: false,
+    isAuthenticated: false,
+    t: () => {},
 };
 
 UserDetails.propTypes = {
-    charityDetails: {
-        charityDetails: {
-            attributes: PropTypes.shape({
-                contactName: string,
-                slug: string,
-            }),
-        },
-    },
-    currentUser: {
-        id: number,
-    },
-    dispatch: func,
-    isAUthenticated: bool,
+    charityDetails: PropTypes.shape({
+        attributes: PropTypes.shape({
+            contactName: string,
+            slug: string,
+        }),
+    }),
+    isAuthenticated: bool,
+    t: PropTypes.func,
 };
 
 function mapStateToProps(state) {
     return {
         charityDetails: state.charity.charityDetails,
-        currentUser: state.user.info,
-        deepLinkUrl: state.profile.deepLinkUrl,
-        isAUthenticated: state.auth.isAuthenticated,
+        isAuthenticated: state.auth.isAuthenticated,
     };
 }
 
-export default connect(mapStateToProps)(UserDetails);
+const connectedComponent = withTranslation('charityProfile')(connect(mapStateToProps)(UserDetails));
+export {
+    connectedComponent as default,
+    UserDetails,
+    mapStateToProps,
+};
