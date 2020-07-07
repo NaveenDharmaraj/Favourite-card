@@ -4,6 +4,8 @@ import {
     Button, Dropdown, Icon, Image, Label, List, Menu, Popup,
 } from 'semantic-ui-react';
 import _isEmpty from 'lodash/isEmpty';
+import _split from 'lodash/split';
+import ReactHtmlParser from 'react-html-parser';
 
 import { NotificationHelper } from '../../../../Firebase/NotificationHelper';
 import {
@@ -100,6 +102,36 @@ class Notifications extends React.Component {
         };
     }
 
+    // eslint-disable-next-line class-methods-use-this
+    renderMessageComponent(messageData) {
+        if (_isEmpty(messageData.linkData)) {
+            // eslint-disable-next-line react/no-danger
+            return (<span dangerouslySetInnerHTML={{ __html: messageData.message }} />);
+        }
+        const dataMap = {};
+        const splitedMessage = _split(messageData.message, ' ');
+        splitedMessage.map((msg, i) => {
+            messageData.linkData.filter((data) => {
+                if (msg.includes(data.text)) {
+                    dataMap[`${data.text}`] = data.replaceValue;
+                    let hyper = `<link name=${data.text} route=${data.url}>`;
+                    hyper = (splitedMessage.length - 1 === i) ? `${hyper}.` : hyper;
+                    splitedMessage.splice(i, 1, hyper);
+                }
+            });
+        });
+
+        const htmlString = splitedMessage.join(' ');
+        // eslint-disable-next-line consistent-return
+        function transform(node) {
+            if (node && node.type === 'tag' && node.name === 'link') {
+                // eslint-disable-next-line jsx-a11y/anchor-is-valid
+                return <Link route={node.attribs.route}><b className="hoverable">{dataMap[node.attribs.name]}</b></Link>;
+            }
+        }
+        return ReactHtmlParser(htmlString, { transform });
+    }
+
     renderlistItems(messages, newClass = '') {
         const {
             userInfo,
@@ -133,7 +165,7 @@ class Notifications extends React.Component {
                 <List.Item key={`notification_head_${msg._key}`} className={newClass}>
                     <Image avatar src={messagePart.sourceImageLink ? messagePart.sourceImageLink : placeholderUser} />
                     <List.Content>
-                        <span dangerouslySetInnerHTML={{ __html: messagePart.message }} />
+                        {this.renderMessageComponent(messagePart)}
                         <div className="time">{distanceOfTimeInWords(msg.createdTs)}</div>
                         <span className="more-btn">
                             <Dropdown className="rightBottom" icon="ellipsis horizontal">

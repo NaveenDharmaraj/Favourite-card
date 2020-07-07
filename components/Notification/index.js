@@ -160,30 +160,34 @@ class NotificationWrapper extends React.Component {
         }
     }
 
+    // eslint-disable-next-line class-methods-use-this
     renderMessageComponent(messageData) {
         if (_.isEmpty(messageData.linkData)) {
-            return (<span dangerouslySetInnerHTML={{ __html: messageData.message }}></span>);
-        } else {
-            let splitedMessage = _.split(messageData.message, ' ');
-            splitedMessage.map((msg, i) => {
-                messageData.linkData.filter((data) => {
-                    if (msg.includes(data.text)) {
-                        let hyper = `<link name=${data.replaceValue} route=${data.url}>`;
-                        console.log(splitedMessage.length  - 1, i);
-                        hyper = (splitedMessage.length  - 1 === i) ? `${hyper}.` : hyper;
-                        splitedMessage.splice(i, 1, hyper);
-                    }
-                });
-            });
-
-            const htmlString = splitedMessage.join(' ');
-            function transform(node, index) {
-                if (node && node.type === 'tag' && node.name === 'link') {
-                  return <Link route={node.attribs.route}><b className="hoverable">{node.attribs.name}</b></Link>;
-                }
-            }
-            return ReactHtmlParser(htmlString, {transform: transform})
+            // eslint-disable-next-line react/no-danger
+            return (<span dangerouslySetInnerHTML={{ __html: messageData.message }} />);
         }
+        const dataMap = {};
+        const splitedMessage = _.split(messageData.message, ' ');
+        splitedMessage.map((msg, i) => {
+            messageData.linkData.filter((data) => {
+                if (msg.includes(data.text)) {
+                    dataMap[`${data.text}`] = data.replaceValue;
+                    let hyper = `<link name=${data.text} route=${data.url}>`;
+                    hyper = (splitedMessage.length - 1 === i) ? `${hyper}.` : hyper;
+                    splitedMessage.splice(i, 1, hyper);
+                }
+            });
+        });
+
+        const htmlString = splitedMessage.join(' ');
+        // eslint-disable-next-line consistent-return
+        function transform(node) {
+            if (node && node.type === 'tag' && node.name === 'link') {
+                // eslint-disable-next-line jsx-a11y/anchor-is-valid
+                return <Link route={node.attribs.route}><b className="hoverable">{dataMap[node.attribs.name]}</b></Link>;
+            }
+        }
+        return ReactHtmlParser(htmlString, { transform });
     }
 
     listItems(messages , newClass = "") {
