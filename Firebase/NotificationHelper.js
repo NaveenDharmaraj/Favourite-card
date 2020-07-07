@@ -6,7 +6,6 @@ import getConfig from 'next/config';
 import { firebaseMessageFetchCompleteAction } from "../actions/firebase";
 import _ from 'lodash';
 import eventApi from '../services/eventApi';
-import { Link } from '../routes';
 const ACCEPT_FREIND_PAYLOAD = {
     "attributes": {
         "source": "web",
