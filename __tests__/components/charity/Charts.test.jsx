@@ -39,6 +39,9 @@ const middlewares = [
 const mockStore = configureMockStore(middlewares);
 const newProps = getProps();
 const store = mockStore({
+    auth: {
+        isAuthenticated: true,
+    },
     charity: {
         ...newProps,
     },
@@ -116,6 +119,9 @@ describe('Testing Chart Section', () => {
 
     test('Testing mapStateToProps', () => {
         const initialState = {
+            auth: {
+                isAuthenticated: true,
+            },
             charity: {
                 beneficiaryFinance,
                 charityDetails,

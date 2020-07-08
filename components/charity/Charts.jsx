@@ -88,8 +88,9 @@ class Charts extends React.Component {
             charityDetails: {
                 id,
             },
+            isAuthenticated,
         } = this.props;
-        dispatch(getBeneficiaryFinance(id));
+        dispatch(getBeneficiaryFinance(id, isAuthenticated));
     }
 
     componentDidUpdate(prevProps) {
@@ -392,6 +393,7 @@ Charts.defaultProps = {
     }),
     chartLoader: true,
     dispatch: () => {},
+    isAuthenticated: false,
     t: () => {},
 };
 
@@ -404,6 +406,7 @@ Charts.propTypes = {
     }),
     chartLoader: bool,
     dispatch: func,
+    isAuthenticated: bool,
     t: PropTypes.func,
 };
 
@@ -412,6 +415,7 @@ function mapStateToProps(state) {
         beneficiaryFinance: state.charity.beneficiaryFinance,
         charityDetails: state.charity.charityDetails,
         chartLoader: state.charity.chartLoader,
+        isAuthenticated: state.auth.isAuthenticated,
     };
 }
 
