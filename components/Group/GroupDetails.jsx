@@ -38,8 +38,8 @@ import {
     generateDeepLink,
 } from '../../actions/profile';
 import LeaveModal from '../../components/shared/LeaveModal';
+import ShareProfile from '../shared/ShareProfile';
 
-import GroupShareDetails from './GroupShareDetails';
 import GiveFromGroupModal from './GiveFromGroupModal';
 
 const { publicRuntimeConfig } = getConfig();
@@ -183,8 +183,10 @@ class GroupDetails extends React.Component {
                     isMember,
                     isAdmin,
                     hasCampaignAccess,
+                    liked,
                 },
                 id: groupId,
+                type,
             },
             isAuthenticated,
             currentUser: {
@@ -349,7 +351,12 @@ class GroupDetails extends React.Component {
                                                 {!joinClicked && joinButton}
                                                 {joinClicked && permissionButtons}
                                                 {isAdmin && giveFromGroupButton }
-                                                <GroupShareDetails />
+                                                <ShareProfile
+                                                    liked={liked}
+                                                    profileId={groupId}
+                                                    type={type}
+                                                    name={name}
+                                                />
                                                 {(isMember || isAdmin)
                                                 && (
                                                     <Fragment>
