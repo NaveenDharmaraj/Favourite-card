@@ -134,7 +134,8 @@ class Chat extends React.Component {
         window.addEventListener('onMessageSent', this.onMessageSent, false);
         window.addEventListener('applozicAppInitialized', this.applozicAppInitialized, false);
         window.addEventListener('onUnreadMessageCountUpdate', this.onUnreadMessageCountUpdate, false);
-        await this.loadRecentMessages();
+        //this condition prevents loading applozic services before Applozic is getting Initialized.
+        window.Applozic && await this.loadRecentMessages();
     }
 
     componentWillUnmount() {

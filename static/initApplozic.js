@@ -91,7 +91,7 @@ var events = {
 //     window.hasFocus = true;
 // }
 // window.onload = function () {
-function registerAppLozic(dispatch, id) {
+const registerAppLozic = (id) => {
     if (undefined != window.Applozic) {
         Applozic.ALApiService.login(
             {
@@ -103,7 +103,7 @@ function registerAppLozic(dispatch, id) {
                         // password: '',//Enter password here for the userId passed above, read this if you want to add additional security by verifying password from your server https://www.applozic.com/docs/configuration.html#access-token-url
                         imageLink: window.userAvatar, //User's profile picture url
                         email: window.userEmail, //optional
-                        displayName: window.userFirstName + " " + userLastName,
+                        displayName: window.userFirstName + " " + window.userLastName,
                         // contactNumber: '', //optional, pass with internationl code eg: +13109097458
                         appVersionCode: 108,
                         applicationId: window.APPLOZIC_APP_KEY, //Get your App ID from [Applozic Dashboard](https://console.applozic.com/settings/install)
@@ -140,8 +140,8 @@ function registerAppLozic(dispatch, id) {
                     });*/
                     // This method initializes socket connection
                 },
-                error: function () {
-
+                error: function (error) {
+                    console.log(error)
                 }
             }
         );
@@ -169,4 +169,6 @@ function registerAppLozic(dispatch, id) {
     m.init = function (t) { m._globals = t; }
 })(document, window.Applozic || {});*/
 
-export default registerAppLozic;
+export {
+    registerAppLozic as default,
+};
