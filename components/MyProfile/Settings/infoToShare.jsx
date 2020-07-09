@@ -12,6 +12,7 @@ import {
     getInfoToShareDropdownOptions,
 } from '../../../actions/userProfile';
 import DropDownInfoToShare from '../../shared/DropDownInfoToShare';
+import { withTranslation } from '../../../i18n';
 
 const currentPreferenceValue = {
     campaign_admins_info_to_share: 'campaign_admins_info_to_share',
@@ -21,7 +22,7 @@ const currentPreferenceValue = {
     giving_group_members_share_my_giftamount: 'giving_group_members_share_my_giftamount',
 };
 class InfoToShare extends React.Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
             giftAmountCheckbox: props.currentUser.attributes.preferences.giving_group_members_share_my_giftamount,
@@ -39,20 +40,20 @@ class InfoToShare extends React.Component {
     }
 
     handleUserPreferenceChange = (preferenceObj) => {
-        const{
+        const {
             currentUser,
             dispatch
         } = this.props;
         !_isEmpty(preferenceObj) && dispatch(updateInfoUserPreferences(currentUser.id, preferenceObj));
     }
-    
-    handleGiftAmountCheckboxClick = (event,data) => {
-        const{
+
+    handleGiftAmountCheckboxClick = (event, data) => {
+        const {
             name,
             checked
         } = data;
-        this.handleUserPreferenceChange({[name]: checked})
-        this.setState(prevState=>{
+        this.handleUserPreferenceChange({ [name]: checked })
+        this.setState(prevState => {
             return {
                 giftAmountCheckbox: !prevState.giftAmountCheckbox
             }
@@ -64,6 +65,7 @@ class InfoToShare extends React.Component {
             infoShareDropDownLoader,
             infoShareOptions,
         } = this.props;
+        const formatMessage = this.props.t;
         const {
             giftAmountCheckbox
         } = this.state;
@@ -71,16 +73,15 @@ class InfoToShare extends React.Component {
             <div className="remove-gutter">
                 <div className="userSettingsContainer">
                     <div className="settingsDetailWraper">
-                        <Header as="h4">Information to share </Header>
+                        <Header as="h4">{formatMessage('infoToShare.infoToShareHeader')}</Header>
                         <p>
-                            Choose the default options for information
-                            you’d like to share when you send gifts.
+                            {formatMessage('infoToShare.infoToShareDesc')}
                         </p>
                     </div>
                     <div className="settingsDetailWraper">
-                        <Header as="h4">Charities</Header>
+                        <Header as="h4">{formatMessage('infoToShare.charityHeader')}</Header>
                         <p>
-                            If you choose to share your name, your full name is used.
+                            {formatMessage('infoToShare.shareDesc')}
                         </p>
                         <DropDownInfoToShare
                             infoShareOptions={infoShareOptions.charityShareInfoOptions}
@@ -88,13 +89,13 @@ class InfoToShare extends React.Component {
                             preferences={currentUser.attributes.preferences}
                             currentPreferenceValue={currentPreferenceValue.charities_info_to_share}
                             handleUserPreferenceChange={this.handleUserPreferenceChange}
-                            infoShareDropDownLoader= {infoShareDropDownLoader}
+                            infoShareDropDownLoader={infoShareDropDownLoader}
                         />
                     </div>
                     <div className="settingsDetailWraper">
-                        <p className="bold">Giving Groups members</p>
+                        <p className="bold"> {formatMessage('infoToShare.givingGroupMemeberHeader')}</p>
                         <p>
-                            If you choose to share your name, your full name is used.
+                            {formatMessage('infoToShare.shareDesc')}
                         </p>
                         <DropDownInfoToShare
                             infoShareOptions={infoShareOptions.groupMemberShareInfoOptions}
@@ -102,21 +103,21 @@ class InfoToShare extends React.Component {
                             preferences={currentUser.attributes.preferences}
                             currentPreferenceValue={currentPreferenceValue.giving_group_members_info_to_share}
                             handleUserPreferenceChange={this.handleUserPreferenceChange}
-                            infoShareDropDownLoader= {infoShareDropDownLoader}
+                            infoShareDropDownLoader={infoShareDropDownLoader}
                         />
                         <div>
                             <Checkbox
-                                label="Share my gift amount"
-                                checked= {giftAmountCheckbox}
+                                label={formatMessage('infoToShare.shareMyGiftAmount')}
+                                checked={giftAmountCheckbox}
                                 name="giving_group_members_share_my_giftamount"
                                 onClick={this.handleGiftAmountCheckboxClick}
                             />
                         </div>
                     </div>
                     <div className="settingsDetailWraper">
-                        <Header as="h4">Giving Group admins</Header>
+                        <Header as="h4"> {formatMessage('infoToShare.givingGroupAdminHeader')}</Header>
                         <p>
-                            If you choose to share your name, your full name is used.
+                            {formatMessage('infoToShare.shareDesc')}
                         </p>
                         <DropDownInfoToShare
                             infoShareOptions={infoShareOptions.groupAdminShareInfoOptions}
@@ -124,13 +125,13 @@ class InfoToShare extends React.Component {
                             preferences={currentUser.attributes.preferences}
                             currentPreferenceValue={currentPreferenceValue.giving_group_admins_info_to_share}
                             handleUserPreferenceChange={this.handleUserPreferenceChange}
-                            infoShareDropDownLoader= {infoShareDropDownLoader}
+                            infoShareDropDownLoader={infoShareDropDownLoader}
                         />
                     </div>
                     <div className="settingsDetailWraper">
-                        <Header as="h4">Campaign admins</Header>
+                        <Header as="h4">{formatMessage('infoToShare.campaignHeader')}</Header>
                         <p>
-                            If you choose to share your name, your full name is used.
+                            {formatMessage('infoToShare.shareDesc')}
                         </p>
                         <DropDownInfoToShare
                             infoShareOptions={infoShareOptions.campaignAdminShareInfoOptions}
@@ -138,7 +139,7 @@ class InfoToShare extends React.Component {
                             preferences={currentUser.attributes.preferences}
                             currentPreferenceValue={currentPreferenceValue.campaign_admins_info_to_share}
                             handleUserPreferenceChange={this.handleUserPreferenceChange}
-                            infoShareDropDownLoader= {infoShareDropDownLoader}
+                            infoShareDropDownLoader={infoShareDropDownLoader}
                         />
                     </div>
                 </div>
@@ -161,7 +162,6 @@ InfoToShare.defaultProps = {
     },
     dispatch: () => { },
     infoShareOptions: {
-      
     },
 };
 
@@ -185,4 +185,4 @@ InfoToShare.propTypes = {
         })),
     }),
 };
-export default (connect(mapStateToProps)(InfoToShare));
+export default withTranslation('settings')(connect(mapStateToProps)(InfoToShare));
