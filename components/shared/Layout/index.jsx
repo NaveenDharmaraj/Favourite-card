@@ -74,8 +74,21 @@ class Layout extends React.Component {
         if(window !== 'undefined' &&  window.SetAppLogicRegister === undefined && isAuthenticated){
             window.SetAppLogicRegister = 'SetAppLogicRegister';
             let id = currentUser && currentUser.id ? currentUser.id : '';
+            const userEmail = this.props.userInfo ? this.props.userInfo.attributes.email : "";
+            const userAvatar = this.props.userInfo ? this.props.userInfo.attributes.avatar : "";
+            const userDisplayName = this.props.userInfo ? this.props.userInfo.attributes.displayName : "";
+            const userFirstName = this.props.userInfo ? this.props.userInfo.attributes.firstName : "";
+            const userLastName = this.props.userInfo ? this.props.userInfo.attributes.lastName : "";
             window.onload = function () {
-                registerAppLozic(dispatch, id);
+                window.APPLOZIC_BASE_URL= APPLOZIC_BASE_URL
+                window.APPLOZIC_WS_URL= APPLOZIC_WS_URL
+                window.APPLOZIC_APP_KEY=APPLOZIC_APP_KEY
+                window.userEmail = userEmail
+                window.userAvatar = userAvatar
+                window.userDisplayName = userDisplayName
+                window.userFirstName = userFirstName
+                window.userLastName = userLastName
+                registerAppLozic(id);
             };
         }
         if (authRequired && !isAuthenticated) {
@@ -137,11 +150,6 @@ class Layout extends React.Component {
             url,
             disableMinHeight,
         } = this.props;
-        const userEmail = this.props.userInfo ? this.props.userInfo.attributes.email : "";
-        const userAvatar = this.props.userInfo ? this.props.userInfo.attributes.avatar : "";
-        const userDisplayName = this.props.userInfo ? this.props.userInfo.attributes.displayName : "";
-        const userFirstName = this.props.userInfo ? this.props.userInfo.attributes.firstName : "";
-        const userLastName = this.props.userInfo ? this.props.userInfo.attributes.lastName : "";
         const widthProp = (!isMobile) ? {getWidth: getWidth} : {};
         return (
             <Responsive getWidth={getWidth}>
@@ -169,16 +177,6 @@ class Layout extends React.Component {
                     <script id="stripe-js" src="https://js.stripe.com/v3/" />
                     <script type="text/javascript" defer  src="https://cdn.applozic.com/applozic/applozic.chat-5.6.1.min.js"></script>
                     <script defer type="text/javascript" src ='/static/branchio.js'></script>
-                    <script type="text/javascript" defer>
-                        window.APPLOZIC_BASE_URL= "{APPLOZIC_BASE_URL}";
-                        window.APPLOZIC_WS_URL= "{APPLOZIC_WS_URL}";
-                        window.APPLOZIC_APP_KEY="{APPLOZIC_APP_KEY}";
-                        window.userEmail = "{userEmail}";
-                        window.userAvatar = "{userAvatar}";
-                        window.userDisplayName = "{userDisplayName}";
-                        window.userFirstName = "{userFirstName}";
-                        window.userLastName = "{userLastName}";
-                    </script>
                     {isAuthenticated ? <script defer  type="text/javascript" src="/static/initApplozic.js"></script> : ""}
                     {/* <script type="text/javascript" src="https://www.gstatic.com/firebasejs/5.9.4/firebase-app.js"></script> */}
                 </Head>

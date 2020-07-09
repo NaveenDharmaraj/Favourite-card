@@ -387,6 +387,13 @@ const loadConversationThenBlock = (response, msgId, userDetails, groupFeeds, sel
 };
 // eslint-disable-next-line max-len
 const loadConversations = (msgId, userDetails = {}, groupFeeds = {}, selectedConversationParam = {}, muteUserList = {}, userId = {}) => async (dispatch) => {
+    dispatch({
+        payload: {
+            mesageListLoader: true,
+            messages: [],
+        },
+        type: actionTypes.LOAD_CONVERSATION_LIST,
+    });
     recurrsiveLoadConversation()
         .then((response) => {
             loadConversationThenBlock(response, msgId, userDetails, groupFeeds, selectedConversationParam, dispatch, [], muteUserList, userId);
