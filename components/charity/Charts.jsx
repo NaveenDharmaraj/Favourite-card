@@ -32,6 +32,7 @@ import {
 import {
     formatGraphData,
     getChartIndex,
+    formatChartAmount,
 } from '../../helpers/profiles/utils';
 import {
     getBeneficiaryFinance,
@@ -241,6 +242,9 @@ class Charts extends React.Component {
         const {
             chartLoader,
             t: formatMessage,
+            i18n: {
+                language,
+            },
         } = this.props;
         const {
             chartIndex,
@@ -248,7 +252,6 @@ class Charts extends React.Component {
             showDoneeListModal,
         } = this.state;
         const currency = 'USD';
-        const language = 'en';
         let chartView = '';
         if (!chartLoader && !_isEmpty(graphData)) {
             chartView = (
@@ -264,6 +267,7 @@ class Charts extends React.Component {
                                             data={this.getChartData}
                                             width="790px"
                                             height="216px"
+                                            redraw
                                             options={{
                                                 events: [
                                                     'click',
@@ -284,6 +288,17 @@ class Charts extends React.Component {
                                                     yAxes: [
                                                         {
                                                             stacked: true,
+                                                            ticks: {
+                                                                callback: ((value) => {
+                                                                    let formattedValue = '';
+                                                                    if (value !== 0) {
+                                                                        formattedValue = `${formatChartAmount(value, language, currency)}K`;
+                                                                    } else {
+                                                                        formattedValue = `${formatChartAmount(value, language, currency)}`;
+                                                                    }
+                                                                    return formattedValue;
+                                                                }),
+                                                            },
                                                         },
                                                     ],
                                                 },

@@ -127,9 +127,20 @@ const formatGraphData = (beneficiaryFinance, langMapping, colorArr) => {
     return graphData;
 };
 
+const formatChartAmount = (value, language, currencyType) => {
+    const currencyFormat = {
+        currency: currencyType,
+        minimumFractionDigits: 0,
+        style: 'currency',
+    };
+    const formattedAmount = new Intl.NumberFormat(language, currencyFormat).format(value);
+    return formattedAmount;
+};
+
 export {
     createChartData,
     formatGraphData,
     getChartIndex,
     getSelectedYear,
+    formatChartAmount,
 };
