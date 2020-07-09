@@ -92,7 +92,7 @@ class InfoToShare extends React.Component {
                             infoShareDropDownLoader={infoShareDropDownLoader}
                         />
                     </div>
-                    <div className="settingsDetailWraper">
+                    <div className="settingsDetailWraper removeBorderBottom">
                         <p className="bold"> {formatMessage('infoToShare.givingGroupMemeberHeader')}</p>
                         <p>
                             {formatMessage('infoToShare.shareDesc')}
