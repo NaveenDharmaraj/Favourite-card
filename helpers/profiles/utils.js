@@ -1,5 +1,6 @@
 import _orderBy from 'lodash/orderBy';
 import _isEmpty from 'lodash/isEmpty';
+import _isNull from 'lodash/isNull';
 
 const getSelectedYear = (beneficiaryFinance) => {
     let selectedYear = null;
@@ -66,7 +67,7 @@ const formatGraphData = (beneficiaryFinance, langMapping, colorArr) => {
     let graphData = {};
     if (!_isEmpty(beneficiaryFinance)) {
         const selectedYear = getSelectedYear(beneficiaryFinance);
-        if (!_isEmpty(selectedYear)) {
+        if (!_isNull(selectedYear)) {
             const sortedData = _orderBy(beneficiaryFinance, [
                 (data) => data.returns_year,
             ], [
