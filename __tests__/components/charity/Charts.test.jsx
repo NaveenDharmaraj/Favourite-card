@@ -16,6 +16,7 @@ import {
     charityDetails,
     beneficiaryFinance,
     donationDetails,
+    beneficiaryFinanceZeroData,
 } from './Data';
 
 const getProps = () => ({
@@ -26,9 +27,10 @@ const getProps = () => ({
     currentPage: 1,
     dispatch: jest.fn(),
     donationDetails: donationDetails._embedded.donee_list,
-    showButtonLoader: false,
     showPlaceholder: false,
-    totalPages: 6,
+    i18n: {
+        language: 'en',
+    },
     transactionsLoader: false,
     year: 2018,
 });
@@ -62,8 +64,9 @@ describe('Testing Chart Section', () => {
     it('Should show loader at chart section while calling api', () => {
         const wrapper = mount(
             <Charts
+                {...props}
+                beneficiaryFinance={[]}
                 chartLoader
-                charityDetails={charityDetails}
             />,
         );
         expect(wrapper.find({ 'data-test': 'Charity_Charts_Loader' }).exists()).toBe(true);
@@ -71,8 +74,19 @@ describe('Testing Chart Section', () => {
     it('Should show No Data at chart section for empty api response', () => {
         const wrapper = mount(
             <Charts
+                {...props}
+                beneficiaryFinance={[]}
                 chartLoader={false}
-                charityDetails={charityDetails}
+            />,
+        );
+        expect(wrapper.find({ 'data-test': 'Charity_CharityNoDataState_noData' }).exists()).toBe(true);
+    });
+    it('Should show No Data at chart section if value of all the years having 0 in api data ', () => {
+        const wrapper = mount(
+            <Charts
+                {...props}
+                beneficiaryFinance={beneficiaryFinanceZeroData}
+                chartLoader={false}
             />,
         );
         expect(wrapper.find({ 'data-test': 'Charity_CharityNoDataState_noData' }).exists()).toBe(true);
@@ -80,7 +94,8 @@ describe('Testing Chart Section', () => {
     it('Should call ComponentDidUpdate after getting api data', () => {
         const wrapper = shallow(
             <Charts
-                charityDetails={charityDetails}
+                {...props}
+                beneficiaryFinance={[]}
                 chartLoader={false}
             />,
         );
@@ -113,7 +128,7 @@ describe('Testing Chart Section', () => {
             );
             wrapper.find({ 'data-test': 'Charity_ChartSummary_viewGiftButton' }).at(1).simulate('click');
             wrapper.find('Portal').find('Icon').simulate('click');
-            expect(wrapper.find({ 'data-test': 'Charity_ReceivingOrganisations_doneeListModal'}).exists()).toBe(false);
+            expect(wrapper.find({ 'data-test': 'Charity_ReceivingOrganisations_doneeListModal' }).exists()).toBe(false);
         });
     });
 

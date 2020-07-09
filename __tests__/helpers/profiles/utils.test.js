@@ -3,6 +3,7 @@ import {
     formatGraphData,
     getChartIndex,
     getSelectedYear,
+    formatChartAmount,
 } from '../../../helpers/profiles/utils';
 
 import * as utilData from './Data';
@@ -17,6 +18,7 @@ describe('Testing profile pages util functions', () => {
             yearData,
             expensesArr,
             finalData,
+            beneficiaryFinanceZeroData,
         } = utilData;
         it('Should return formatted data of all years for charts using api data', () => {
             expect(formatGraphData(beneficiaryFinance, langMapping, colorArr)).toEqual(graphData);
@@ -35,6 +37,12 @@ describe('Testing profile pages util functions', () => {
         });
         it('Should return null if api data is empty', () => {
             expect(getChartIndex([])).toEqual(null);
+        });
+        it('Should return formatted amount to show in chart y-axis using api response amount', () => {
+            expect(formatChartAmount(200000, 'en', 'USD')).toEqual('$200,000');
+        });
+        it('Should return empty data if value of all the years having 0 in api data', () => {
+            expect(formatGraphData(beneficiaryFinanceZeroData, langMapping, colorArr)).toEqual({});
         });
     });
 });
