@@ -162,7 +162,7 @@ describe('Charity profile actions test', () => {
                     type: 'CHARITY_CHART_LOADER',
                 },
             ];
-            await store.dispatch(getBeneficiaryFinance(87)).then(() => {
+            await store.dispatch(getBeneficiaryFinance(87, true)).then(() => {
                 expect.assertions(1);
                 expect(store.getActions()).toEqual(expectedActions);
             });
@@ -187,7 +187,7 @@ describe('Charity profile actions test', () => {
                     type: 'CHARITY_CHART_LOADER',
                 },
             ];
-            await store.dispatch(getBeneficiaryFinance(87)).then(() => {
+            await store.dispatch(getBeneficiaryFinance(87, true)).then(() => {
                 expect.assertions(1);
                 expect(store.getActions()).toEqual(expectedActions);
             });
@@ -222,7 +222,7 @@ describe('Charity profile actions test', () => {
                     type: 'CHARITY_PLACEHOLDER_STATUS',
                 },
             ];
-            await store.dispatch(getBeneficiaryDoneeList('87', 2018, 1, false)).then(() => {
+            await store.dispatch(getBeneficiaryDoneeList('87', 2018, true)).then(() => {
                 expect.assertions(1);
                 expect(store.getActions()).toEqual(expectedActions);
             });
@@ -251,7 +251,7 @@ describe('Charity profile actions test', () => {
                     type: 'CHARITY_PLACEHOLDER_STATUS',
                 },
             ];
-            await store.dispatch(getBeneficiaryDoneeList('87', 2018, 1, false)).then(() => {
+            await store.dispatch(getBeneficiaryDoneeList('87', 2018, true)).then(() => {
                 expect.assertions(1);
                 expect(store.getActions()).toEqual(expectedActions);
             });
@@ -288,7 +288,7 @@ describe('Charity profile actions test', () => {
                     type: 'CHARITY_PLACEHOLDER_STATUS',
                 },
             ];
-            await store.dispatch(getBeneficiaryDoneeList('87', 2018, 1, false)).then(() => {
+            await store.dispatch(getBeneficiaryDoneeList('87', 2018, true)).then(() => {
                 expect.assertions(1);
                 expect(store.getActions()).toEqual(expectedActions);
             });
