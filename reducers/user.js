@@ -20,6 +20,12 @@ const user = (state = {}, action) => {
                 info: Object.assign({}, action.payload.info),
             };
             break;
+        case 'UPDATE_USER_INFO_SHARE_PREFERENCES':
+            newState = {
+                ...state,
+                info: Object.assign({}, action.payload.info),
+            };
+            break;
         case 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS':
             const {
                 companiesAccountsData,
@@ -140,8 +146,8 @@ const user = (state = {}, action) => {
                 ...state,
                 favorites: {
                     data: (!_.isEmpty(state.favorites) && !_.isEmpty(state.favorites.data)) ?
-                    _.uniqWith(_.concat(state.favorites.data, action.payload.favorites.data), _.isEqual)
-                    : action.payload.favorites.data,
+                        _.uniqWith(_.concat(state.favorites.data, action.payload.favorites.data), _.isEqual)
+                        : action.payload.favorites.data,
                     pageCount: action.payload.favorites.pageCount,
                     dataCount: action.payload.favorites.dataCount,
                     currentPageNumber: action.payload.favorites.currentPageNumber,
@@ -196,7 +202,7 @@ const user = (state = {}, action) => {
         case 'UPDATE_COMPANY_BALANCE':
             const updatedCompanyDetails = action.payload.companyDetails;
             const oldCompanyDataTobeUpdated = _.cloneDeep(state.companiesAccountsData) || [];
-            const companyIndex = _.findIndex(oldCompanyDataTobeUpdated, {'id': updatedCompanyDetails.id});
+            const companyIndex = _.findIndex(oldCompanyDataTobeUpdated, { 'id': updatedCompanyDetails.id });
             oldCompanyDataTobeUpdated[companyIndex].attributes.balance = updatedCompanyDetails.attributes.balance;
             newState = {
                 ...state,

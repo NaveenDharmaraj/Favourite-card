@@ -14,6 +14,7 @@ import {
 import {
     getUser,
     savePaymentInstrument,
+    updateInfoShareUserPreferences,
 } from './user';
 import {
     triggerUxCritialErrors,
@@ -21,7 +22,7 @@ import {
 
 // eslint-disable-next-line import/exports-last
 export const actionTypes = {
-    
+
     ADD_USER_CREDIT_CARD: 'ADD_USER_CREDIT_CARD',
     DELETE_USER_CREDIT_CARD: 'DELETE_USER_CREDIT_CARD',
     TRIGGER_UX_CRITICAL_ERROR: 'TRIGGER_UX_CRITICAL_ERROR',
@@ -33,6 +34,8 @@ export const actionTypes = {
     UPDATE_USER_PASSWORD: 'UPDATE_USER_PASSWORD',
     UPDATE_USER_PREFERENCES: 'UPDATE_USER_PREFERENCES',
     UPDATE_USER_PRIVACY_SETTING: 'UPDATE_USER_PRIVACY_SETTING',
+    USER_INFO_TO_SHARE_OPTIONS: 'USER_INFO_TO_SHARE_OPTIONS',
+    USER_INFO_TO_SHARE_OPTIONS_LOADER: 'USER_INFO_TO_SHARE_OPTIONS_LOADER',
     USER_PROFILE_ACCEPT_FRIEND: 'USER_PROFILE_ACCEPT_FRIEND',
     USER_PROFILE_ADD_DUPLICATE_EMAIL_ERROR: 'USER_PROFILE_ADD_DUPLICATE_EMAIL_ERROR',
     USER_PROFILE_ADD_FRIEND: 'USER_PROFILE_ADD_FRIEND',
@@ -82,11 +85,13 @@ const getUserProfileBasic = (dispatch, email, userId, loggedInUserId) => {
         },
         type: actionTypes.USER_PROFILE_BASIC,
     };
-    graphApi.get(`/recommendation/withProfileType/user`, { params: {
-        emailid: email,
-        sourceId: Number(userId),
-        targetId: Number(loggedInUserId),
-    } }).then(
+    graphApi.get(`/recommendation/withProfileType/user`, {
+        params: {
+            emailid: email,
+            sourceId: Number(userId),
+            targetId: Number(loggedInUserId),
+        },
+    }).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -106,13 +111,15 @@ const getUserFriendProfile = (dispatch, email, userId, loggedInUserId) => {
         },
         type: actionTypes.USER_PROFILE_BASIC_FRIEND,
     };
-    graphApi.get(`/recommendation/withProfileType/user`, { params: {
-        dispatch,
-        emailid: email,
-        sourceId: Number(loggedInUserId),
-        targetId: Number(userId),
-        uxCritical: true,
-    } }).then(
+    graphApi.get(`/recommendation/withProfileType/user`, {
+        params: {
+            dispatch,
+            emailid: email,
+            sourceId: Number(loggedInUserId),
+            targetId: Number(userId),
+            uxCritical: true,
+        },
+    }).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -317,12 +324,14 @@ const getMyFriendsList = (dispatch, email, pageNumber) => {
         },
         type: actionTypes.USER_PROFILE_MY_FRIENDS,
     };
-    return graphApi.get(`/user/myfriends`, { params: {
-        'page[number]': pageNumber,
-        'page[size]': 10,
-        status: 'accepted',
-        userid: email,
-    } }).then(
+    return graphApi.get(`/user/myfriends`, {
+        params: {
+            'page[number]': pageNumber,
+            'page[size]': 10,
+            status: 'accepted',
+            userid: email,
+        },
+    }).then(
         (result) => {
             fsa.payload = {
                 count: result.meta.recordCount,
@@ -343,13 +352,15 @@ const getFriendsInvitations = (dispatch, email, pageNumber) => {
         },
         type: actionTypes.USER_PROFILE_INVITATIONS,
     };
-    return graphApi.get(`/user/myfriends`, { params: {
-        direction: 'in',
-        'page[number]': pageNumber,
-        'page[size]': 10,
-        status: 'pending',
-        userid: email,
-    } }).then(
+    return graphApi.get(`/user/myfriends`, {
+        params: {
+            direction: 'in',
+            'page[number]': pageNumber,
+            'page[size]': 10,
+            status: 'pending',
+            userid: email,
+        },
+    }).then(
         (result) => {
             fsa.payload = {
                 count: result.meta.recordCount,
@@ -494,7 +505,7 @@ const saveUserBasicProfile = (dispatch, userData, userId, email) => {
 };
 
 function searchFriendsObj(friendList, toSearch) {
-    for (var i = 0; i < friendList.data.length; i++) {
+    for (let i = 0; i < friendList.data.length; i++) {
         if (friendList.data[i].attributes.user_id === toSearch) {
             friendList.data[i].attributes.friend_status = 'PENDING_OUT';
         }
@@ -932,6 +943,29 @@ const updateUserPreferences = (dispatch, userId, preferenceColumn, preferenceVal
     });
 };
 
+const updateInfoUserPreferences = (userId, preferences) => (dispatch) => {
+    const bodyData = {
+        data: {
+            attributes: {
+                preferences,
+            },
+            id: userId,
+            type: 'users',
+        },
+        params: {
+            dispatch,
+            uxCritical: true,
+        },
+    };
+    return coreApi.patch(`/users/${userId}`, bodyData).then(
+        (result) => {
+            dispatch(updateInfoShareUserPreferences(result.data))
+        },
+    ).catch((error) => {
+        //fsa.error = error;
+    });
+};
+
 const getUserDefaultTaxReceipt = (dispatch, userid) => {
     const fsa = {
         payload: {
@@ -1190,12 +1224,14 @@ const generateDeeplinkUserProfile = (dispatch, sourceUserId, destinationUserId) 
         },
         type: actionTypes.USER_PROFILE_USERPROFILE_DEEPLINK,
     };
-    return utilityApi.get(`/deeplink`, { params: {
-        profileId: destinationUserId,
-        profileType: 'userprofile',
-        sourceId: sourceUserId,
-        webLink: true,
-    } }).then(
+    return utilityApi.get(`/deeplink`, {
+        params: {
+            profileId: destinationUserId,
+            profileType: 'userprofile',
+            sourceId: sourceUserId,
+            webLink: true,
+        },
+    }).then(
         (result) => {
             fsa.payload = {
                 data: result.data,
@@ -1399,7 +1435,75 @@ const resendUserVerifyEmail = (dispatch, userEmailId, userId) => {
     }).catch().finally();
 };
 
+const getInfoToShareDropdownOptions = (userId, infoShareDropDownLoader = false) => async (dispatch) => {
+    const fsa = {
+        payload: {
+            infoShareOptions: {
+                campaignAdminShareInfoOptions: [],
+                charityShareInfoOptions: [],
+                groupAdminShareInfoOptions: [],
+                groupMemberShareInfoOptions: [],
+            },
+        },
+        type: actionTypes.USER_INFO_TO_SHARE_OPTIONS,
+    };
+    dispatch({
+        payload: {
+            infoShareDropDownLoader,
+        },
+        type: actionTypes.USER_INFO_TO_SHARE_OPTIONS_LOADER,
+    });
+    try {
+        const charityShare = await coreApi.get(`users/${userId}/charityShare`, {
+            params: {
+                dispatch,
+                uxCritical: true,
+            },
+        });
+        const groupMemberShare = await coreApi.get(`users/${userId}/groupMemberShare`, {
+            params: {
+                dispatch,
+                uxCritical: true,
+            },
+        });
+        const groupAdminShare = await coreApi.get(`users/${userId}/groupAdminShare`, {
+            params: {
+                dispatch,
+                uxCritical: true,
+            },
+        });
+        const campaignAdminShare = await coreApi.get(`users/${userId}/campaignAdminShare`, {
+            params: {
+                dispatch,
+                uxCritical: true,
+            },
+        });
+        fsa.payload.infoShareOptions.charityShareInfoOptions = charityShare.data;
+        fsa.payload.infoShareOptions.groupMemberShareInfoOptions = groupMemberShare.data;
+        fsa.payload.infoShareOptions.groupAdminShareInfoOptions = groupAdminShare.data;
+        fsa.payload.infoShareOptions.campaignAdminShareInfoOptions = campaignAdminShare.data;
+        dispatch(fsa);
+        dispatch({
+            payload: {
+                infoShareDropDownLoader: false,
+            },
+            type: actionTypes.USER_INFO_TO_SHARE_OPTIONS_LOADER,
+        });
+    } catch (err) {
+        dispatch(fsa);
+        dispatch({
+            payload: {
+                infoShareDropDownLoader: false,
+            },
+            type: actionTypes.USER_INFO_TO_SHARE_OPTIONS_LOADER,
+        });
+    }
+
+
+};
+
 export {
+    getInfoToShareDropdownOptions,
     getUserProfileBasic,
     getUserFriendProfile,
     getUserCharitableInterests,
@@ -1444,4 +1548,5 @@ export {
     setPrimaryUserEmailAddress,
     resendUserVerifyEmail,
     searchLocationByUserInput,
+    updateInfoUserPreferences,
 };
