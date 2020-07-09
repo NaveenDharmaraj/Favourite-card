@@ -71,7 +71,7 @@ class InfoToShare extends React.Component {
         } = this.state;
         return (
             <div className="remove-gutter">
-                <div className="userSettingsContainer">
+                <div className="userSettingsContainer Informationshare">
                     <div className="settingsDetailWraper">
                         <Header as="h4">{formatMessage('infoToShare.infoToShareHeader')}</Header>
                         <p>
@@ -105,7 +105,7 @@ class InfoToShare extends React.Component {
                             handleUserPreferenceChange={this.handleUserPreferenceChange}
                             infoShareDropDownLoader={infoShareDropDownLoader}
                         />
-                        <div>
+                        <div className="cp_chkbx checkedGiftAmount checkbox-text f-weight-n">
                             <Checkbox
                                 label={formatMessage('infoToShare.shareMyGiftAmount')}
                                 checked={giftAmountCheckbox}

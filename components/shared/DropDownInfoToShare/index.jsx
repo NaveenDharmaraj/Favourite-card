@@ -45,7 +45,7 @@ const DropDownInfoToShare = ({
         } = data.options.find((opt) => opt.value === value);
         const preferenceObj = {
             [name]: key,
-            [`${name}_address`]: privacyData,
+            ...(name !== 'giving_group_members_info_to_share') && { [`${name}_address`]: privacyData },
         };
         setDropDownValue(value);
         handleUserPreferenceChange(preferenceObj);
