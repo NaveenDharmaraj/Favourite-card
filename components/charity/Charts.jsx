@@ -103,10 +103,12 @@ class Charts extends React.Component {
         let viewData = {};
         if (!_isEqual(prevProps.beneficiaryFinance, beneficiaryFinance)) {
             viewData = formatGraphData(beneficiaryFinance, this.mapping, this.colorArr);
-            this.setState({
-                chartIndex: viewData.yearLabel.indexOf(viewData.selectedYear),
-                graphData: viewData,
-            });
+            if (!_isEmpty(viewData)) {
+                this.setState({
+                    chartIndex: viewData.yearLabel.indexOf(viewData.selectedYear),
+                    graphData: viewData,
+                });
+            }
         }
         if (current !== null) {
             this.highlightBar();

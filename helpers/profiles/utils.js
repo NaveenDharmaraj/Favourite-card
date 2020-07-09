@@ -66,60 +66,62 @@ const formatGraphData = (beneficiaryFinance, langMapping, colorArr) => {
     let graphData = {};
     if (!_isEmpty(beneficiaryFinance)) {
         const selectedYear = getSelectedYear(beneficiaryFinance);
-        const sortedData = _orderBy(beneficiaryFinance, [
-            (data) => data.returns_year,
-        ], [
-            'asc',
-        ]);
-        sortedData.map((year) => {
-            yearLabel.push(year.returns_year);
-            totalData.push({
-                revenue_total: year.revenues[0].value,
-                total_expense: year.expenses[0].value,
+        if (!_isEmpty(selectedYear)) {
+            const sortedData = _orderBy(beneficiaryFinance, [
+                (data) => data.returns_year,
+            ], [
+                'asc',
+            ]);
+            sortedData.map((year) => {
+                yearLabel.push(year.returns_year);
+                totalData.push({
+                    revenue_total: year.revenues[0].value,
+                    total_expense: year.expenses[0].value,
+                });
+                let expensesArr = [];
+                let chartData = [];
+                revenueData.push(year.revenues[0].value);
+                if (year.expenses.find((o) => o.name === 'total_expense').value > 100000) {
+                    expensesArr = [
+                        'charitable_activities_programs',
+                        'management_admin',
+                        'fundraising',
+                        'poilitical_activities',
+                        'other',
+                        'gifts_to_charities_donees',
+                    ];
+                    chartData = createChartData(year, expensesArr, langMapping, colorArr);
+                } else {
+                    expensesArr = [
+                        'prof_consult_fees',
+                        'travel_vehicle_expense',
+                        'expenditure_charity_activites',
+                        'management_admin',
+                        'other',
+                        'gifts_to_charities_donees',
+                    ];
+                    chartData = createChartData(year, expensesArr, langMapping, colorArr);
+                }
+                firstData.push(chartData.colorData[0]);
+                secondData.push(chartData.colorData[1]);
+                thirdData.push(chartData.colorData[2]);
+                fourthData.push(chartData.colorData[3]);
+                fifthData.push(chartData.colorData[4]);
+                yearData.push(chartData.summaryData);
             });
-            let expensesArr = [];
-            let chartData = [];
-            revenueData.push(year.revenues[0].value);
-            if (year.expenses.find((o) => o.name === 'total_expense').value > 100000) {
-                expensesArr = [
-                    'charitable_activities_programs',
-                    'management_admin',
-                    'fundraising',
-                    'poilitical_activities',
-                    'other',
-                    'gifts_to_charities_donees',
-                ];
-                chartData = createChartData(year, expensesArr, langMapping, colorArr);
-            } else {
-                expensesArr = [
-                    'prof_consult_fees',
-                    'travel_vehicle_expense',
-                    'expenditure_charity_activites',
-                    'management_admin',
-                    'other',
-                    'gifts_to_charities_donees',
-                ];
-                chartData = createChartData(year, expensesArr, langMapping, colorArr);
-            }
-            firstData.push(chartData.colorData[0]);
-            secondData.push(chartData.colorData[1]);
-            thirdData.push(chartData.colorData[2]);
-            fourthData.push(chartData.colorData[3]);
-            fifthData.push(chartData.colorData[4]);
-            yearData.push(chartData.summaryData);
-        });
-        graphData = {
-            fifthData,
-            firstData,
-            fourthData,
-            revenueData,
-            secondData,
-            selectedYear,
-            thirdData,
-            totalData,
-            yearData,
-            yearLabel,
-        };
+            graphData = {
+                fifthData,
+                firstData,
+                fourthData,
+                revenueData,
+                secondData,
+                selectedYear,
+                thirdData,
+                totalData,
+                yearData,
+                yearLabel,
+            };
+        }
     }
     return graphData;
 };
