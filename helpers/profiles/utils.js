@@ -132,8 +132,11 @@ const formatChartAmount = (value, language, currencyType) => {
         minimumFractionDigits: 0,
         style: 'currency',
     };
-    const formattedAmount = new Intl.NumberFormat(language, currencyFormat).format(value);
-    return formattedAmount;
+    const amountFormatter = new Intl.NumberFormat(language, currencyFormat);
+    const val = value > 999
+        ? `${amountFormatter.format((value / 1000).toFixed(0))}K`
+        : amountFormatter.format(value);
+    return val;
 };
 
 export {

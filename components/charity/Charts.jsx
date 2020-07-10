@@ -289,15 +289,9 @@ class Charts extends React.Component {
                                                         {
                                                             stacked: true,
                                                             ticks: {
-                                                                callback: ((value) => {
-                                                                    let formattedValue = '';
-                                                                    if (value !== 0) {
-                                                                        formattedValue = `${formatChartAmount(value, language, currency)}K`;
-                                                                    } else {
-                                                                        formattedValue = `${formatChartAmount(value, language, currency)}`;
-                                                                    }
-                                                                    return formattedValue;
-                                                                }),
+                                                                callback: ((value) => (
+                                                                    formatChartAmount(value, language, currency)
+                                                                )),
                                                             },
                                                         },
                                                     ],
