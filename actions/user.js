@@ -900,9 +900,6 @@ export const checkClaimCharityAccessCode = (accessCode, userId) => (dispatch) =>
     else {
         return coreApi.get(`/claim_charities/validate_claim_charity_token?claimToken=${accessCode}`,BASIC_AUTH_HEADER)
             .then((res) => {
-                // fsa.payload = {
-                //     data: res,
-                // };
                 let {
                     data: {
                         success,

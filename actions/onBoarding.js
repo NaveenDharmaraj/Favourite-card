@@ -35,7 +35,7 @@ export const actionTypes = {
 
 export const saveUser = (dispatch, userDetails) => {
     return securityApi.post('/create/user', {
-        ...userDetails,
+        ...userDetails, 
     }, BASIC_AUTH_HEADER).then((result) => {
         return dispatch({
             payload: {

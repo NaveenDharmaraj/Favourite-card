@@ -3,23 +3,23 @@ import _isEmpty from 'lodash/isEmpty';
 import logger from '../helpers/logger';
 
 function getLocalStorage(name) {
-    if (name === 'claimToken' && typeof Storage !== 'undefined') {
+    if (typeof Storage !== 'undefined') {
         const itemStr = localStorage.getItem(name);
         if (!itemStr) {
             return null;
         };
-        const item = JSON.parse(itemStr);
-        const now = new Date();
-        if (now.getTime() > item.expireAfter) {
-            localStorage.removeItem(name);
-            return null;
+        if (name === 'claimToken') {
+            const item = JSON.parse(itemStr);
+            const now = new Date();
+            // if (item.expiry) {
+            if (now.getTime() > item.expiry) {
+                localStorage.removeItem(name);
+                return null;
+            }
+            return item.value;
+            // };
         }
-        else {
-            return localStorage.getItem(name);
-        }
-    }
-    else if (typeof Storage !== 'undefined') {
-        return localStorage.getItem(name);
+        return itemStr;
     }
 }
 
@@ -80,16 +80,15 @@ function get(name, type, serverCookies = null) {
 }
 
 function set(name, value, type, expiry) {
-    debugger;
     switch (type) {
         case 'cookie': writeCookies(name, value, expiry);
             break;
         case 'local':
-            if (name === 'claimToken') {
+            if (expiry) {
                 const now = new Date();
                 const item = {
                     value: value,
-                    expireAfter: now.getTime() + expiry,
+                    expiry: now.getTime() + expiry,
                 };
                 localStorage.setItem(name, JSON.stringify(item))
             }

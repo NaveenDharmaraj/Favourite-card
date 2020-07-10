@@ -214,6 +214,7 @@ class Login extends React.Component {
                 userDetails.causes = userCauses;
                 userDetails.signupSource = storage.get('signup_source', 'local');
                 userDetails.signupSourceId = storage.get('signup_source_id', 'local');
+                userDetails.claimToken = storage.get('claimToken','local');
                 saveUser(dispatch, userDetails);
             }
             if (stepIndex !== 3) {
@@ -293,6 +294,7 @@ class Login extends React.Component {
             apiValidating,
             isClaimCharity
         } = this.props;
+
         return (
             <Layout onBoarding={isClaimCharity ? false : true}>
                 {
