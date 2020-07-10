@@ -209,10 +209,11 @@ class Login extends React.Component {
                 userDetails.family_name = lastName;
                 userDetails.email = emailId;
                 userDetails.password = password;
-                userDetails.signupSource = null;
                 userDetails.longitude = null;
                 userDetails.latitude = null;
                 userDetails.causes = userCauses;
+                userDetails.signupSource = storage.get('signup_source', 'local');
+                userDetails.signupSourceId = storage.get('signup_source_id', 'local');
                 saveUser(dispatch, userDetails);
             }
             if (stepIndex !== 3) {

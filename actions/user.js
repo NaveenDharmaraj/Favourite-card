@@ -1,13 +1,14 @@
 /* eslint-disable no-else-return */
 
 import _ from 'lodash';
-
+import _isEmpty from 'lodash/isEmpty';
 import coreApi from '../services/coreApi';
 import authRorApi from '../services/authRorApi';
 import graphApi from '../services/graphApi';
 import securityApi from '../services/securityApi';
 import wpApi from '../services/wpApi';
 import { Router } from '../routes';
+import getConfig from 'next/config';
 import {
     triggerUxCritialErrors,
 } from './error';
@@ -15,6 +16,19 @@ import {
     generatePayloadBodyForFollowAndUnfollow,
 } from './profile';
 import storage from '../helpers/storage';
+
+const { publicRuntimeConfig } = getConfig();
+const {
+    BASIC_AUTH_KEY,
+} = publicRuntimeConfig;
+let BASIC_AUTH_HEADER = null;
+if (!_isEmpty(BASIC_AUTH_KEY)) {
+    BASIC_AUTH_HEADER = {
+        headers: {
+            Authorization: `Basic ${BASIC_AUTH_KEY}`,
+        },
+    };
+}
 
 export const actionTypes = {
     GET_MATCH_POLICIES_PAYMENTINSTRUMENTS: 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS',
@@ -884,18 +898,22 @@ export const checkClaimCharityAccessCode = (accessCode, userId) => (dispatch) =>
         });
     }
     else {
-        return coreApi.get(`/claim_charities/validate_claim_charity_token/${accessCode}`)
+        return coreApi.get(`/claim_charities/validate_claim_charity_token?claimToken=${accessCode}`,BASIC_AUTH_HEADER)
             .then((res) => {
-                fsa.payload = {
-                    data: res,
-                };
+                // fsa.payload = {
+                //     data: res,
+                // };
                 let {
                     data: {
-                        success
+                        success,
+                        signup_source,
+                        signup_source_id,
                     }
-                } = fsa.payload;
-                if (success) {
-                    storage.set('claimToken', accessCode, 'local');
+                } = res;
+                if (success === true) {
+                    storage.set('claimToken', accessCode, 'local', 3600000);
+                    storage.set('signup_source',signup_source, 'local');
+                    storage.set('signup_source_id',signup_source_id,'local');
                     Router.pushRoute('/users/login');
                 }
             }).catch(() => {
