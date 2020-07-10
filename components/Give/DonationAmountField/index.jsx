@@ -16,6 +16,7 @@ function DonationAmountField(props) {
         isGiveFlow,
         amount,
         formatMessage,
+        fromP2p,
         handleInputChange,
         handleInputOnBlur,
         handlePresetAmountClick,
@@ -41,11 +42,11 @@ function DonationAmountField(props) {
             </label>
             <Form.Field
                 control={Input}
-                id={isGiveFlow ? "giveAmount" : "donationAmount"}
+                id={isGiveFlow ? 'giveAmount' : 'donationAmount'}
                 error={!isValidGiftAmount(validity)}
-                icon={(amount)? "dollar": null}
+                icon={(amount) ? 'dollar' : null}
                 iconPosition="left"
-                name={isGiveFlow ? "giveAmount" : "donationAmount"}
+                name={isGiveFlow ? 'giveAmount' : 'donationAmount'}
                 maxLength="8"
                 onBlur={handleInputOnBlur}
                 onChange={handleDonationAmountFieldInputChange}
@@ -58,7 +59,7 @@ function DonationAmountField(props) {
                 condition={!validity.doesAmountExist || !validity.isAmountMoreThanOneDollor
                     || !validity.isValidPositiveNumber}
                 errorMessage={formatMessage('giveCommon:errorMessages.amountLessOrInvalid', {
-                    minAmount: 5,
+                    minAmount: (fromP2p) ? 1 : 5,
                 })}
             />
             <FormValidationErrorMessage

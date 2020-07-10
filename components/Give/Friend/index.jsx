@@ -662,6 +662,9 @@ class Friend extends React.Component {
             }
             let amountToDonate = formatAmount((formatAmount(totalP2pGiveAmount)
             - formatAmount(giveFrom.balance)));
+            if (Number(amountToDonate) < 5) {
+                amountToDonate = formatAmount(5);
+            }
             const taxReceiptsOptions = populateTaxReceipts(taxReceiptList, formatMessage);
             return (
                 <ReloadAddAmount
@@ -883,6 +886,7 @@ class Friend extends React.Component {
                                                                 handlePresetAmountClick={this.handlePresetAmountClick}
                                                                 validity={validity}
                                                                 isGiveFlow
+                                                                fromP2p
                                                             />
                                                             </div>
                                                             <p className="multipleFriendAmountFieldText">
