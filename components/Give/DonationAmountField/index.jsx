@@ -35,6 +35,13 @@ function DonationAmountField(props) {
         setactiveIndex(0);
         handleInputChange(event, data);
     };
+    const handleAmountBlur = (event, data) => {
+        if (event && event.relatedTarget && event.relatedTarget.name === 'give_amount_button') {
+            handlePresetAmountClick(event, event.relatedTarget);
+        } else {
+            handleInputOnBlur(event, data);
+        }
+    };
     return (
         <Form.Field>
             <label htmlFor="donationAmount">
@@ -48,7 +55,7 @@ function DonationAmountField(props) {
                 iconPosition="left"
                 name={isGiveFlow ? 'giveAmount' : 'donationAmount'}
                 maxLength="8"
-                onBlur={handleInputOnBlur}
+                onBlur={handleAmountBlur}
                 onChange={handleDonationAmountFieldInputChange}
                 placeholder={formatMessage('giveCommon:amountPlaceHolder')}
                 size="large"
@@ -73,10 +80,10 @@ function DonationAmountField(props) {
                 />
             )}
             <div className="price_btn">
-                <Button active={activeIndex === 1} className="btn-basic-outline btntext invisionwidth" index={1} type="button" size="small" value="25" onClick={handleDonationPresetAmountClick}>$25</Button>
-                <Button active={activeIndex === 2} className="btn-basic-outline btntext invisionwidth" index={2} type="button" size="small" value="50" onClick={handleDonationPresetAmountClick}>$50</Button>
-                <Button active={activeIndex === 3} className="btn-basic-outline btntext invisionwidth" index={3} type="button" size="small" value="100" onClick={handleDonationPresetAmountClick}>$100</Button>
-                <Button active={activeIndex === 4} className="btn-basic-outline btntext invisionwidth" index={4} type="button" size="small" value="500" onClick={handleDonationPresetAmountClick}>$500</Button>
+                <Button name="give_amount_button" active={activeIndex === 1} className="btn-basic-outline btntext invisionwidth" index={1} type="button" size="small" value="25" onClick={handleDonationPresetAmountClick}>$25</Button>
+                <Button name="give_amount_button" active={activeIndex === 2} className="btn-basic-outline btntext invisionwidth" index={2} type="button" size="small" value="50" onClick={handleDonationPresetAmountClick}>$50</Button>
+                <Button name="give_amount_button" active={activeIndex === 3} className="btn-basic-outline btntext invisionwidth" index={3} type="button" size="small" value="100" onClick={handleDonationPresetAmountClick}>$100</Button>
+                <Button name="give_amount_button" active={activeIndex === 4} className="btn-basic-outline btntext invisionwidth" index={4} type="button" size="small" value="500" onClick={handleDonationPresetAmountClick}>$500</Button>
             </div>
         </Form.Field>
     );
