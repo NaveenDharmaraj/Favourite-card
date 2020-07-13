@@ -276,7 +276,6 @@ export const chimpLogin = (token = null, options = null) => {
             },
         };
     }
-    
     if (options && typeof options === 'object') {
         params = {
             ...params,
