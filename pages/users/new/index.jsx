@@ -212,9 +212,9 @@ class Login extends React.Component {
                 userDetails.longitude = null;
                 userDetails.latitude = null;
                 userDetails.causes = userCauses;
-                userDetails.signupSource = storage.get('signup_source', 'local');
-                userDetails.signupSourceId = storage.get('signup_source_id', 'local');
-                userDetails.claimToken = storage.get('claimToken','local');
+                userDetails.signupSource = storage.getLocalStorageWithExpiry('signup_source','local');
+                userDetails.signupSourceId = storage.getLocalStorageWithExpiry('signup_source_id','local').toString();
+                userDetails.claimToken = storage.getLocalStorageWithExpiry('claimToken','local');
                 saveUser(dispatch, userDetails);
             }
             if (stepIndex !== 3) {

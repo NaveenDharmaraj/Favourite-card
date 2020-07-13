@@ -225,8 +225,6 @@ class Layout extends React.Component {
             </Responsive>
         );
     }
-   
-
     render() {
         const {
             addCauses,
@@ -245,7 +243,7 @@ class Layout extends React.Component {
             returnToProps = localStorage.getItem('auth0ReturnProps');
             returnToProps = JSON.parse(returnToProps);
         };
-        const claimCharityAccessCode = storage.get('claimToken','local');
+        const claimCharityAccessCode = storage.getLocalStorageWithExpiry('claimToken','local');
         if(claimCharityAccessCode) {
             isClaimCharity = true;
         }

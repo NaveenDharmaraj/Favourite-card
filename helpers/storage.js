@@ -4,22 +4,7 @@ import logger from '../helpers/logger';
 
 function getLocalStorage(name) {
     if (typeof Storage !== 'undefined') {
-        const itemStr = localStorage.getItem(name);
-        if (!itemStr) {
-            return null;
-        };
-        if (name === 'claimToken') {
-            const item = JSON.parse(itemStr);
-            const now = new Date();
-            // if (item.expiry) {
-            if (now.getTime() > item.expiry) {
-                localStorage.removeItem(name);
-                return null;
-            }
-            return item.value;
-            // };
-        }
-        return itemStr;
+        return localStorage.getItem(name);
     }
 }
 
@@ -83,19 +68,8 @@ function set(name, value, type, expiry) {
     switch (type) {
         case 'cookie': writeCookies(name, value, expiry);
             break;
-        case 'local':
-            if (expiry) {
-                const now = new Date();
-                const item = {
-                    value: value,
-                    expiry: now.getTime() + expiry,
-                };
-                localStorage.setItem(name, JSON.stringify(item))
-            }
-            else {
-                const val = typeof value !== 'object' ? value : JSON.stringify(value);
-                localStorage.setItem(name, val);
-            }
+        case 'local': const val = typeof value !== 'object' ? value : JSON.stringify(value);
+            localStorage.setItem(name, val);
             break;
         default:
             break;
@@ -110,9 +84,26 @@ function unset(name, type) {
         localStorage.removeItem(name);
     }
 }
+
+function getLocalStorageWithExpiry(name, type) {
+    const itemStr = get(name, type);
+    if (!itemStr) {
+        return null;
+    };
+    const item = JSON.parse(itemStr);
+    const now = new Date();
+    if (now.getTime() < item.expiry) {
+        return item.value;
+    }
+    localStorage.removeItem(name);
+    return null;
+}
+
 const storage = {
     get,
     set,
     unset,
+    getLocalStorageWithExpiry,
 };
 export default storage;
+

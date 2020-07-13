@@ -268,7 +268,7 @@ export const wpLogin = (token = null) => {
 
 export const chimpLogin = (token = null, options = null) => {
     let params = null;
-    const claimCharityAccessCode = storage.get('claimToken','local');
+    const claimCharityAccessCode = storage.getLocalStorageWithExpiry('claimToken','local');
     if (!_.isEmpty(token)) {
         params = {
             headers: {
@@ -908,9 +908,23 @@ export const checkClaimCharityAccessCode = (accessCode, userId) => (dispatch) =>
                     }
                 } = res;
                 if (success === true) {
-                    storage.set('claimToken', accessCode, 'local', 3600000);
-                    storage.set('signup_source',signup_source, 'local');
-                    storage.set('signup_source_id',signup_source_id,'local');
+                    const now = new Date();
+                    const expiry = 3600000;
+                    const claimCharityCode = {
+                        value: accessCode,
+                        expiry: now.getTime() + expiry,
+                    };
+                    const signup_sourceCode = {
+                        value: signup_source,
+                        expiry: now.getTime() + expiry,
+                    };
+                    const signup_sourceIdCode = {
+                        value: signup_source_id,
+                        expiry: now.getTime() + expiry,
+                    };
+                    storage.set('claimToken', claimCharityCode, 'local');
+                    storage.set('signup_source',signup_sourceCode, 'local');
+                    storage.set('signup_source_id',signup_sourceIdCode,'local');
                     Router.pushRoute('/users/login');
                 }
             }).catch(() => {
