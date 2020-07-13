@@ -232,6 +232,28 @@ const isValidBrowser = (userAgent) => {
     return !isvalid;
 };
 
+const validateDate = (dateStr = '') => {
+    const regExp = /^(\d\d?)\/(\d\d?)$/;
+    const matches = dateStr.match(regExp);
+    let isValid = !!matches;
+    if (matches) {
+        const date = new Date();
+        const currentYear = Number(date.getFullYear().toString().substr(2, 2));
+        const currentMonth = date.getMonth();
+        const userEnteredMonth = Number(matches[1]);
+        const userEnteredYear = Number(matches[2]);
+        if (userEnteredYear >= currentYear) {
+            if (userEnteredYear === currentYear && userEnteredMonth < currentMonth) {
+                return false;
+            }
+            isValid = userEnteredMonth <= 12 && userEnteredMonth > 0;
+        } else {
+            return false;
+        }
+    }
+    return isValid;
+};
+
 export {
     getMainNavItems,
     isFalsy,
@@ -240,4 +262,5 @@ export {
     renderTextByCharacter,
     redirectIfNotUSer,
     isValidBrowser,
+    validateDate,
 };
