@@ -287,7 +287,6 @@ class Login extends React.Component {
             buttonClicked,
             validity,
         } = this.state;
-        // console.log(validity)
         const {
             causesList,
             userExists,
