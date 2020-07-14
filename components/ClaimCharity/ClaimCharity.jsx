@@ -46,14 +46,14 @@ class ClaimCharity extends React.Component {
         const { 
             currentUser,
             dispatch,
-            isAuthenticatedUser,
+            isAuthenticated,
         } = this.props;
         const { accessCode } = this.state;
         this.setState({
             buttonClicked: true,
             loader: true,
         });
-        if(isAuthenticatedUser) {
+        if(isAuthenticated) {
             let userId = currentUser.id;
             dispatch(checkClaimCharityAccessCode(accessCode, userId)); 
         }
@@ -217,7 +217,7 @@ class ClaimCharity extends React.Component {
 function mapStateToProps(state) {
     return {
         claimCharityErrorMessage: state.user.claimCharityErrorMessage,
-        isAuthenticatedUser: state.auth.isAuthenticated,
+        isAuthenticated: state.auth.isAuthenticated,
     };
 }
 

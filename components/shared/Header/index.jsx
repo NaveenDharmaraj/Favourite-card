@@ -20,7 +20,6 @@ import { Link } from '../../../routes';
 import AuthHeader from './AuthHeader';
 import OnBoardingHeader from './OnBoarding';
 import NonAuthHeader from './NonAuthHeader';
-import storage from '../../../helpers/storage';
 
 const { publicRuntimeConfig } = getConfig();
 const {
@@ -29,16 +28,8 @@ const {
 
 const renderHeader = (onBoarding, isAuthenticated, isLogin, showHeader) => {
     let headerComponent = null;
-    let isClaimCharity;
-    const claimCharityAccessCode = storage.getLocalStorageWithExpiry('claimToken', 'local');
-    if (claimCharityAccessCode) {
-        isClaimCharity = true;
-    }
-    else {
-        isClaimCharity = false;
-    }
     if (onBoarding) {
-        headerComponent = <OnBoardingHeader isLogin={isLogin} isClaimCharity={isClaimCharity} />;
+        headerComponent = <OnBoardingHeader isLogin={isLogin} />;
     } else if (isAuthenticated && showHeader) {
         headerComponent = <AuthHeader />;
     } else if (!isAuthenticated) {

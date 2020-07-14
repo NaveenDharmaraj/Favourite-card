@@ -4,16 +4,17 @@ import {
     Menu,
 } from 'semantic-ui-react';
 import { Link } from '../../../../routes';
+import storage from '../../../../helpers/storage';
 
-const OnBoardingHeader = ( { isLogin, isClaimCharity  }) => {
-
+const OnBoardingHeader = ( { isLogin  }) => {
+    const claimCharityAccessCode = storage.getLocalStorageWithExpiry('claimToken', 'local');
     const header = (isLogin) ? (
         <Menu.Menu position="right">
             <Menu.Item>
                 Don't have an account?
             </Menu.Item>
             <Menu.Item>
-                <Link route={isClaimCharity && isClaimCharity === true ? `/users/new?isClaimCharity=${isClaimCharity}` : '/users/new'}>
+                <Link route={claimCharityAccessCode ? `/users/new?isClaimCharity=${true}` : '/users/new'}>
                     <Button basic className="outline-btn">Sign up</Button>
                 </Link>
             </Menu.Item>
