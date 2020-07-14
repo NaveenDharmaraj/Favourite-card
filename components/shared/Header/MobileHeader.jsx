@@ -15,13 +15,22 @@ import logo from '../../../static/images/CharitableImpact.svg';
 import AuthHeader from './AuthHeader/MobileHeader';
 // import OnBoardingHeader from './OnBoarding';
 import NonAuthHeader from './NonAuthHeader/MobileHeader';
+import storage from '../../../helpers/storage';
 
-const renderHeader = (onBoarding, isAuthenticated, children, showHeader, isClaimCharity) => {
+const renderHeader = (onBoarding, isAuthenticated, children, showHeader) => {
     let headerComponent = null;
+    let isClaimCharity;
+    const claimCharityAccessCode = storage.getLocalStorageWithExpiry('claimToken', 'local');
+    if (claimCharityAccessCode) {
+        isClaimCharity = true;
+    }
+    else {
+        isClaimCharity = false;
+    };
     if (onBoarding) {
         headerComponent = (
             <NonAuthHeader isClaimCharity={isClaimCharity}>
-                { children }
+                {children}
             </NonAuthHeader>
         );
     } else if (isAuthenticated && showHeader) {
@@ -66,11 +75,10 @@ const MobileHeader = (props) => {
         isAuthenticated,
         onBoarding,
         showHeader,
-        isClaimCharity,
     } = props;
     return (
         <Fragment>
-            {renderHeader(onBoarding, isAuthenticated, children, showHeader, isClaimCharity)}
+            {renderHeader(onBoarding, isAuthenticated, children, showHeader)}
         </Fragment>
     );
 };

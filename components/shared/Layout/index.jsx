@@ -23,7 +23,6 @@ import _ from 'lodash';
 import '../../../static/less/header.less';
 import '../../../static/less/style.less';
 import { isValidBrowser } from '../../../helpers/utils';
-import storage from '../../../helpers/storage';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -114,7 +113,7 @@ class Layout extends React.Component {
         window.scrollTo(0, 0);
     };
 
-    renderLayout = (authRequired, children, isAuthenticated, onBoarding, dispatch, appErrors, isLogin, showHeader, isClaimCharity) => {
+    renderLayout = (authRequired, children, isAuthenticated, onBoarding, dispatch, appErrors, isLogin, showHeader) => {
         if (authRequired && !isAuthenticated) {
             return null;
         }
@@ -174,7 +173,7 @@ class Layout extends React.Component {
                 <div>
                     <ErrorBoundary>
                         <Responsive {...widthProp} minWidth={320} maxWidth={991}>
-                            <MobileHeader isAuthenticated={isAuthenticated} onBoarding={onBoarding} isLogin={isLogin} showHeader={showHeader} isClaimCharity={isClaimCharity}>
+                            <MobileHeader isAuthenticated={isAuthenticated} onBoarding={onBoarding} isLogin={isLogin} showHeader={showHeader}>
                                 <div style={{minHeight:'60vh'}}>
                                     {children}
                                 </div>
@@ -198,7 +197,7 @@ class Layout extends React.Component {
                             }
                         </Responsive>
                         <Responsive {...widthProp} minWidth={992}>
-                            <Header isAuthenticated={isAuthenticated} onBoarding={onBoarding} isLogin={isLogin} showHeader={showHeader} isClaimCharity={isClaimCharity}/>
+                            <Header isAuthenticated={isAuthenticated} onBoarding={onBoarding} isLogin={isLogin} showHeader={showHeader}/>
                                 {!_.isEmpty(appErrors) &&
                                     <Container
                                         className="app-status-messages"
@@ -238,20 +237,13 @@ class Layout extends React.Component {
         } = this.props;
 
         const showHeader = !addCauses;
-        let returnToProps, isClaimCharity;
+        let returnToProps;
         if (typeof Storage !== 'undefined') {
             returnToProps = localStorage.getItem('auth0ReturnProps');
             returnToProps = JSON.parse(returnToProps);
         };
-        const claimCharityAccessCode = storage.getLocalStorageWithExpiry('claimToken','local');
-        if(claimCharityAccessCode) {
-            isClaimCharity = true;
-        }
-        else {
-            isClaimCharity = false;
-        }
         return (
-            this.renderLayout(authRequired, children, isAuthenticated, onBoarding, dispatch, appErrors, isLogin, showHeader, isClaimCharity)
+            this.renderLayout(authRequired, children, isAuthenticated, onBoarding, dispatch, appErrors, isLogin, showHeader)
         );
     }
 };

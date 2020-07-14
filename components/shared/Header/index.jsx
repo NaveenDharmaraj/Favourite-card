@@ -20,14 +20,23 @@ import { Link } from '../../../routes';
 import AuthHeader from './AuthHeader';
 import OnBoardingHeader from './OnBoarding';
 import NonAuthHeader from './NonAuthHeader';
+import storage from '../../../helpers/storage';
 
 const { publicRuntimeConfig } = getConfig();
 const {
     RAILS_APP_URL_ORIGIN,
 } = publicRuntimeConfig;
 
-const renderHeader = (onBoarding, isAuthenticated, isLogin, showHeader, isClaimCharity) => {
+const renderHeader = (onBoarding, isAuthenticated, isLogin, showHeader) => {
     let headerComponent = null;
+    let isClaimCharity;
+    const claimCharityAccessCode = storage.getLocalStorageWithExpiry('claimToken', 'local');
+    if (claimCharityAccessCode) {
+        isClaimCharity = true;
+    }
+    else {
+        isClaimCharity = false;
+    }
     if (onBoarding) {
         headerComponent = <OnBoardingHeader isLogin={isLogin} isClaimCharity={isClaimCharity} />;
     } else if (isAuthenticated && showHeader) {
@@ -77,7 +86,6 @@ const Header = (props) => {
         isLogin,
         onBoarding,
         showHeader,
-        isClaimCharity
     } = props;
     return (
         <Segment
@@ -90,7 +98,7 @@ const Header = (props) => {
                     <Menu.Item className="chimpLogo">
                         {renderLogo(currentAccount)}
                     </Menu.Item>
-                    {renderHeader(onBoarding, isAuthenticated, isLogin, showHeader, isClaimCharity)}
+                    {renderHeader(onBoarding, isAuthenticated, isLogin, showHeader)}
                 </Menu>
             </Container>
         </Segment>
