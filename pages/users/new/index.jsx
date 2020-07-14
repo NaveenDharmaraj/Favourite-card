@@ -209,10 +209,12 @@ class Login extends React.Component {
                 userDetails.family_name = lastName;
                 userDetails.email = emailId;
                 userDetails.password = password;
-                userDetails.signupSource = null;
                 userDetails.longitude = null;
                 userDetails.latitude = null;
                 userDetails.causes = userCauses;
+                userDetails.signupSource = storage.getLocalStorageWithExpiry('signup_source','local');
+                userDetails.signupSourceId = storage.getLocalStorageWithExpiry('signup_source_id','local').toString();
+                userDetails.claimToken = storage.getLocalStorageWithExpiry('claimToken','local');
                 saveUser(dispatch, userDetails);
             }
             if (stepIndex !== 3) {
@@ -285,13 +287,13 @@ class Login extends React.Component {
             buttonClicked,
             validity,
         } = this.state;
-        // console.log(validity)
         const {
             causesList,
             userExists,
             apiValidating,
             isClaimCharity
         } = this.props;
+
         return (
             <Layout onBoarding={isClaimCharity ? false : true}>
                 {

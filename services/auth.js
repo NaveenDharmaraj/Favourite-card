@@ -144,11 +144,11 @@ const auth0 = {
     },
 
     set wpAccessToken(token) {
-        document.cookie = "wpAccessToken" +"=" + token + ";expires=" + this.getRemainingSessionTime(token) / 1000 + ";domain=.charitableimpact.com;path=/";
+        document.cookie = "wpAccessToken" + "=" + token + ";expires=" + this.getRemainingSessionTime(token) / 1000 + ";domain=.charitableimpact.com;path=/";
     },
 
     set wpUserId(userId) {
-        document.cookie = "wpUserId" +"=" + userId + ";domain=.charitableimpact.com;path=/";
+        document.cookie = "wpUserId" + "=" + userId + ";domain=.charitableimpact.com;path=/";
     },
 
     /**
@@ -423,7 +423,7 @@ const _handleLockSuccess = async ({
     } = returnProps;
     if (!accessToken || !idToken) { return null(); }
     // Sets access token and expiry time in cookies
-    chimpLogin(accessToken, returnProps).then(async ({ currentUser }) => {
+    chimpLogin(accessToken, returnProps).then(async ({ currentUser, beneficiarySlug }) => {
         const userId = parseInt(currentUser, 10);
         if (document) {
             // console.log('setting wp access token');
@@ -450,14 +450,23 @@ const _handleLockSuccess = async ({
             dataLayerName: 'dataLayer',
         };
         addToDataLayer(tagManagerArgs);
-        Router.pushRoute(returnTo);
-    }).catch(() => {
-        let route = '/users/login';
-        if (!_isEmpty(returnTo)) {
-            route += `?returnTo=${returnTo}`;
+        if (beneficiarySlug) {
+            Router.pushRoute(`/claim-charity/success?slug=${beneficiarySlug}`);
+            await (storage.unset('claimToken', 'local'));
+            await (storage.unset('signup_source_id', 'local'));
+            await (storage.unset('signup_source', 'local'));
         }
-        Router.pushRoute(route);
-    });
+        else {
+            Router.pushRoute(returnTo);
+        }
+    })
+        .catch(() => {
+            let route = '/users/login';
+            if (!_isEmpty(returnTo)) {
+                route += `?returnTo=${returnTo}`;
+            }
+            Router.pushRoute(route);
+        });
     // After successfull login redirecting to home
     return null;
 };

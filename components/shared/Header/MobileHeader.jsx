@@ -16,12 +16,12 @@ import AuthHeader from './AuthHeader/MobileHeader';
 // import OnBoardingHeader from './OnBoarding';
 import NonAuthHeader from './NonAuthHeader/MobileHeader';
 
-const renderHeader = (onBoarding, isAuthenticated, children, showHeader, isClaimCharity) => {
+const renderHeader = (onBoarding, isAuthenticated, children, showHeader) => {
     let headerComponent = null;
     if (onBoarding) {
         headerComponent = (
-            <NonAuthHeader isClaimCharity={isClaimCharity}>
-                { children }
+            <NonAuthHeader>
+                {children}
             </NonAuthHeader>
         );
     } else if (isAuthenticated && showHeader) {
@@ -66,11 +66,10 @@ const MobileHeader = (props) => {
         isAuthenticated,
         onBoarding,
         showHeader,
-        isClaimCharity,
     } = props;
     return (
         <Fragment>
-            {renderHeader(onBoarding, isAuthenticated, children, showHeader, isClaimCharity)}
+            {renderHeader(onBoarding, isAuthenticated, children, showHeader)}
         </Fragment>
     );
 };

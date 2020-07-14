@@ -7,7 +7,7 @@ class ClaimCharity extends React.Component {
     render() {
         return (
             <div>
-                <Layout authRequired>
+                <Layout>
                     <ClaimCharityWrapper {...this.props} />
                 </Layout>
             </div>

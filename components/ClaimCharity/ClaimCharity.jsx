@@ -19,7 +19,7 @@ import customizeIcons3 from '../../static/images/icons/icon-2-1@3x.svg';
 import customizeIcons4 from '../../static/images/icons/processingfee@3x.svg';
 import '../../static/less/claimcharity.less';
 import { connect } from 'react-redux';
-import { checkClaimCharityAccessCode } from '../../actions/user';
+import { checkClaimCharityAccessCode, validateClaimCharityAccessCode } from '../../actions/user';
 
 class ClaimCharity extends React.Component {
 
@@ -44,17 +44,22 @@ class ClaimCharity extends React.Component {
 
     onClaimCharityClick = () => {
         const { 
-            currentUser:{
-                id
-            },
+            currentUser,
             dispatch,
+            isAuthenticated,
         } = this.props;
         const { accessCode } = this.state;
         this.setState({
             buttonClicked: true,
             loader: true,
-        })
-        dispatch(checkClaimCharityAccessCode(accessCode, id));
+        });
+        if(isAuthenticated) {
+            let userId = currentUser.id;
+            dispatch(checkClaimCharityAccessCode(accessCode, userId)); 
+        }
+        else {
+            dispatch(validateClaimCharityAccessCode(accessCode));
+        }
     }
 
     render() {
@@ -211,7 +216,8 @@ class ClaimCharity extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        claimCharityErrorMessage: state.user.claimCharityErrorMessage
+        claimCharityErrorMessage: state.user.claimCharityErrorMessage,
+        isAuthenticated: state.auth.isAuthenticated,
     };
 }
 
