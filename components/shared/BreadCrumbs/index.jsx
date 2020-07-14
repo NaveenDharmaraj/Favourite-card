@@ -4,8 +4,6 @@ import {
     Container,
     Breadcrumb,
 } from 'semantic-ui-react';
-import _ from 'lodash';
-
 
 const BreadcrumbDetails = (props) => {
     const {
@@ -30,7 +28,7 @@ const BreadcrumbDetails = (props) => {
     };
     return (
         <Container>
-            <Breadcrumb className="c-breadcrumb">
+            <Breadcrumb className="c-breadcrumb" data-test="Shared_BreadcrumbDetails_Breadcrumbsection">
                 {renderBreadCrumbs()}
             </Breadcrumb>
         </Container>

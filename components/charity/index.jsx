@@ -4,20 +4,20 @@ import {
     PropTypes,
     string,
 } from 'prop-types';
+import {
+    Container,
+    Grid,
+} from 'semantic-ui-react';
 
 import BreadcrumbDetails from '../shared/BreadCrumbs';
 
-import UserDetails from './UserDetails';
 import CharityDetails from './CharityDetails';
-import ProfileDetails from './ProfileDetails';
 
 const CharityProfileWrapper = (props) => {
     const {
         charityDetails: {
-            charityDetails: {
-                attributes: {
-                    name,
-                },
+            attributes: {
+                name,
             },
         },
     } = props;
@@ -27,37 +27,33 @@ const CharityProfileWrapper = (props) => {
         name,
     ];
     return (
-        <React.Fragment>
+        <Container data-test="Charity_CharityProfileWrapper_pageWrapper">
             <div className="top-breadcrumb">
                 <BreadcrumbDetails
                     pathDetails={pathArr}
                 />
             </div>
-            <div className="profile-header-image charity" />
-            <CharityDetails />
-            <UserDetails />
-            <ProfileDetails />
-        </React.Fragment>
+            <div className="ch_headerImage" />
+            <Grid className="mb-2">
+                <CharityDetails />
+            </Grid>
+        </Container>
     );
 };
 
 
 CharityProfileWrapper.defaultProps = {
     charityDetails: PropTypes.shape({
-        charityDetails: PropTypes.shape({
-            attributes: PropTypes.shape({
-                name: '',
-            }),
+        attributes: PropTypes.shape({
+            name: '',
         }),
     }),
 };
 
 CharityProfileWrapper.propTypes = {
     charityDetails: PropTypes.shape({
-        charityDetails: PropTypes.shape({
-            attributes: PropTypes.shape({
-                name: string,
-            }),
+        attributes: PropTypes.shape({
+            name: string,
         }),
     }),
 };
@@ -68,4 +64,9 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(CharityProfileWrapper);
+const connectedComponent = connect(mapStateToProps)(CharityProfileWrapper);
+export {
+    connectedComponent as default,
+    CharityProfileWrapper,
+    mapStateToProps,
+};

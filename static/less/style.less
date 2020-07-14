@@ -1780,6 +1780,14 @@ h4{
   body{
     .c-m-default-header .ui.secondary.menu{
       margin-bottom: 0px;
+      top: 0px;
+      &.fixed-header{
+        position: fixed;
+        left: 0px;
+        right: 0px;
+        background-color: #fff;
+        z-index:9999999;
+      }
     }
   }
   .left-bg{
@@ -2428,9 +2436,10 @@ h4{
       border: 0px solid transparent;	
       background-color: #FFFFFF;	
       box-shadow: 0 5px 10px 0 rgba(0,0,0,0.2);
-      margin-top: 27px !important;
+      margin-top: 26px !important;
+      z-index: 999999999;
       @media only screen and (max-width:991px){
-        margin-top: 18px !important;
+        margin-top: 17px !important;
       }
       @media only screen and (max-width:767px) {
         min-width: 250px;	
@@ -2610,6 +2619,7 @@ h4{
     }
   }
 }
+
 .btn-wraper{
   margin-bottom: 2rem;
   .ui{
@@ -2686,6 +2696,7 @@ h4{
     }
   }
 }
+
 @media only screen and (max-width:767px) {
   .btn-wraper{
     .ui{
@@ -5026,10 +5037,14 @@ body{
 }
 .statusMsgWraper{
   position: fixed;
-  z-index: 9999;
+  z-index: 99999999;
   right:19%;
+  margin-top: 48px;
   @media only screen and (max-width:991px){
-    top: 85px;
+    top: 0px;
+    left: calc(50% - 167.5px);
+    right: auto;
+    margin: 48px auto auto;
   }
 }
 .status-message-container{
@@ -6813,7 +6828,7 @@ button.ui.button.blue-bordr-btn-round-def{
     &.input{
       input{
         display: inline-block;
-        width: auto !important;
+        width: auto;
       }
     }
   }
@@ -7791,6 +7806,14 @@ span{
   }
 }
 
+.ch_ModelPlaceholder {
+  .ui {
+    &.placeholder {
+      margin: 0 0 31px;
+    }
+  }
+}
+
 .videoWrapper {
   @media only screen and (max-width: 991px) {
     position: relative;
@@ -8129,6 +8152,10 @@ body .userEllips{
     }
   }
   /*********NOAvailable******************/
-  .chimpLayout{
+.chimpLayout{
   min-height: 60vh;
+  padding-top: 80px;
+}
+.BottomfixedBtn_Footer{
+  padding-bottom:60px;
 }
