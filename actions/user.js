@@ -861,31 +861,71 @@ export const checkClaimCharityAccessCode = (accessCode, userId) => (dispatch) =>
         type: actionTypes.CHECK_CLAIM_CHARITY_ACCESS_CODE,
     };
 
-    if (userId) {
-        return coreApi.post(`/claimCharities`, {
-            data: {
-                type: "claimCharities",
-                attributes: {
-                    claimToken: accessCode
-                }
+    return coreApi.post(`/claimCharities`, {
+        data: {
+            type: "claimCharities",
+            attributes: {
+                claimToken: accessCode
             }
-        }).then(
-            (result) => {
-                fsa.payload = {
-                    data: result.data,
-                };
-                let {
-                    data: {
-                        attributes: {
-                            beneficiarySlug,
-                        }
+        }
+    }).then(
+        (result) => {
+            fsa.payload = {
+                data: result.data,
+            };
+            let {
+                data: {
+                    attributes: {
+                        beneficiarySlug,
                     }
-                } = fsa.payload;
-                getUser(dispatch, userId, null).then(() => {
-                    Router.pushRoute(`/claim-charity/success?slug=${beneficiarySlug ? beneficiarySlug : ''}`);
-                })
+                }
+            } = fsa.payload;
+            getUser(dispatch, userId, null).then(() => {
+                Router.pushRoute(`/claim-charity/success?slug=${beneficiarySlug ? beneficiarySlug : ''}`);
+            })
+        }
+    ).catch(() => {
+        const errorFsa = {
+            payload: {
+                message: "That code doesn't look right or it's expired. Try again or claim without a code below",
+            },
+            type: actionTypes.CLAIM_CHARITY_ERROR_MESSAGE,
+        };
+        dispatch(errorFsa);
+    });
+};
+
+export const validateClaimCharityAccessCode = (accessCode) => (dispatch) => {
+    return coreApi.get(`/claim_charities/validate_claim_charity_token?claimToken=${accessCode}`, BASIC_AUTH_HEADER)
+        .then(async (res) => {
+            let {
+                data: {
+                    success,
+                    signup_source,
+                    signup_source_id,
+                }
+            } = res;
+            if (success === true) {
+                const now = new Date();
+                const expiry = 3600000;
+                const claimCharityCode = {
+                    value: accessCode,
+                    expiry: now.getTime() + expiry,
+                };
+                const signup_sourceCode = {
+                    value: signup_source,
+                    expiry: now.getTime() + expiry,
+                };
+                const signup_sourceIdCode = {
+                    value: signup_source_id,
+                    expiry: now.getTime() + expiry,
+                };
+                await storage.set('claimToken', claimCharityCode, 'local');
+                await storage.set('signup_source', signup_sourceCode, 'local');
+                await storage.set('signup_source_id', signup_sourceIdCode, 'local');
+                Router.pushRoute('/users/login');
             }
-        ).catch(() => {
+        }).catch(() => {
             const errorFsa = {
                 payload: {
                     message: "That code doesn't look right or it's expired. Try again or claim without a code below",
@@ -894,46 +934,4 @@ export const checkClaimCharityAccessCode = (accessCode, userId) => (dispatch) =>
             };
             dispatch(errorFsa);
         });
-    }
-    else {
-        return coreApi.get(`/claim_charities/validate_claim_charity_token?claimToken=${accessCode}`,BASIC_AUTH_HEADER)
-            .then((res) => {
-                let {
-                    data: {
-                        success,
-                        signup_source,
-                        signup_source_id,
-                    }
-                } = res;
-                if (success === true) {
-                    const now = new Date();
-                    const expiry = 3600000;
-                    const claimCharityCode = {
-                        value: accessCode,
-                        expiry: now.getTime() + expiry,
-                    };
-                    const signup_sourceCode = {
-                        value: signup_source,
-                        expiry: now.getTime() + expiry,
-                    };
-                    const signup_sourceIdCode = {
-                        value: signup_source_id,
-                        expiry: now.getTime() + expiry,
-                    };
-                    storage.set('claimToken', claimCharityCode, 'local');
-                    storage.set('signup_source',signup_sourceCode, 'local');
-                    storage.set('signup_source_id',signup_sourceIdCode,'local');
-                    Router.pushRoute('/users/login');
-                }
-            }).catch(() => {
-                const errorFsa = {
-                    payload: {
-                        message: "That code doesn't look right or it's expired. Try again or claim without a code below",
-                    },
-                    type: actionTypes.CLAIM_CHARITY_ERROR_MESSAGE,
-                };
-                dispatch(errorFsa);
-            });
-    }
-
-};
+}
