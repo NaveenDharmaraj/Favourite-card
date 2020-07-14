@@ -133,6 +133,7 @@ class Charts extends React.Component {
                 {
                     backgroundColor: '#055CE5',
                     borderColor: '#055CE5',
+                    borderWidth: 2,
                     data: revenueData,
                     fill: false,
                     label: 'Revenue',
@@ -266,7 +267,7 @@ class Charts extends React.Component {
                                             ref={this.chartReference}
                                             data={this.getChartData}
                                             width="790px"
-                                            height="216px"
+                                            height="255px"
                                             redraw
                                             options={{
                                                 events: [
@@ -283,15 +284,26 @@ class Charts extends React.Component {
                                                                 display: false,
                                                             },
                                                             stacked: true,
+                                                            ticks: {
+                                                                fontColor: '#263238',
+                                                                fontSize: 10,
+                                                                padding: 5,
+                                                            },
                                                         },
                                                     ],
                                                     yAxes: [
                                                         {
+                                                            gridLines: {
+                                                                drawBorder: false,
+                                                            },
                                                             stacked: true,
                                                             ticks: {
                                                                 callback: ((value) => (
                                                                     formatChartAmount(value, language, currency)
                                                                 )),
+                                                                fontColor: '#263238',
+                                                                fontSize: 10,
+                                                                padding: 8,
                                                             },
                                                         },
                                                     ],
