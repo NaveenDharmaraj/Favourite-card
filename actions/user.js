@@ -1,7 +1,6 @@
 /* eslint-disable no-else-return */
 
 import _ from 'lodash';
-import _isEmpty from 'lodash/isEmpty';
 import coreApi from '../services/coreApi';
 import authRorApi from '../services/authRorApi';
 import graphApi from '../services/graphApi';
@@ -22,7 +21,7 @@ const {
     BASIC_AUTH_KEY,
 } = publicRuntimeConfig;
 let BASIC_AUTH_HEADER = null;
-if (!_isEmpty(BASIC_AUTH_KEY)) {
+if (!_.isEmpty(BASIC_AUTH_KEY)) {
     BASIC_AUTH_HEADER = {
         headers: {
             Authorization: `Basic ${BASIC_AUTH_KEY}`,
