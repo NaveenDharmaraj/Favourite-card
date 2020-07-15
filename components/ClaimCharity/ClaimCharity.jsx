@@ -165,7 +165,7 @@ class ClaimCharity extends React.Component {
                                                                 <Form>
                                                                     <label className="accesslabel">Access code</label>
                                                                     <Form.Field
-                                                                        error
+                                                                        error={claimCharityErrorMessage? true : false}
                                                                         control={Input}
                                                                         id="accessCode"
                                                                         name="accessCode"
