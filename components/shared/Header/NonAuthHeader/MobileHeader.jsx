@@ -51,7 +51,10 @@ class MobileHeader extends React.Component {
             visible,
         } = this.state;
         const { activeIndex } = this.state;
-        const claimCharityAccessCode = storage.getLocalStorageWithExpiry('claimToken', 'local');
+        let claimCharityAccessCode;
+        if (typeof Storage !== 'undefined') {
+            claimCharityAccessCode = storage.getLocalStorageWithExpiry('claimToken', 'local');
+        }
         return (
             <Sidebar.Pushable className="c-m-default-header">
                 <Sidebar
