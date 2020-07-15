@@ -79,17 +79,15 @@ class Layout extends React.Component {
             const userDisplayName = this.props.userInfo ? this.props.userInfo.attributes.displayName : "";
             const userFirstName = this.props.userInfo ? this.props.userInfo.attributes.firstName : "";
             const userLastName = this.props.userInfo ? this.props.userInfo.attributes.lastName : "";
-            window.onload = function () {
-                window.APPLOZIC_BASE_URL= APPLOZIC_BASE_URL
-                window.APPLOZIC_WS_URL= APPLOZIC_WS_URL
-                window.APPLOZIC_APP_KEY=APPLOZIC_APP_KEY
-                window.userEmail = userEmail
-                window.userAvatar = userAvatar
-                window.userDisplayName = userDisplayName
-                window.userFirstName = userFirstName
-                window.userLastName = userLastName
-                registerAppLozic(id);
-            };
+            window.APPLOZIC_BASE_URL= APPLOZIC_BASE_URL
+            window.APPLOZIC_WS_URL= APPLOZIC_WS_URL
+            window.APPLOZIC_APP_KEY=APPLOZIC_APP_KEY
+            window.userEmail = userEmail
+            window.userAvatar = userAvatar
+            window.userDisplayName = userDisplayName
+            window.userFirstName = userFirstName
+            window.userLastName = userLastName
+            registerAppLozic(id);
         }
         if (authRequired && !isAuthenticated) {
             let nextPathname;
