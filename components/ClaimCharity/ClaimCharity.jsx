@@ -11,7 +11,7 @@ import {
     List,
     Icon
 } from 'semantic-ui-react';
-
+import _isEmpty from 'lodash/isEmpty';
 import claimrLeftImg from '../../static/images/illustration.png';
 import customizeIcons1 from '../../static/images/icons/wedontsetorbenefitfromprocessingfee@3x.svg';
 import customizeIcons2 from '../../static/images/icons/icon-2@3x.svg';
@@ -19,7 +19,7 @@ import customizeIcons3 from '../../static/images/icons/icon-2-1@3x.svg';
 import customizeIcons4 from '../../static/images/icons/processingfee@3x.svg';
 import '../../static/less/claimcharity.less';
 import { connect } from 'react-redux';
-import { checkClaimCharityAccessCode, validateClaimCharityAccessCode } from '../../actions/user';
+import { checkClaimCharityAccessCode, validateClaimCharityAccessCode, claimCharityErrorCondition } from '../../actions/user';
 import FormValidationErrorMessage from '../../components/shared/FormValidationErrorMessage';
 
 class ClaimCharity extends React.Component {
@@ -35,10 +35,15 @@ class ClaimCharity extends React.Component {
     }
 
     handleInputChange = (event, data) => {
+        const {dispatch, claimCharityErrorMessage} = this.props;
         const { value } = data;
         this.setState({
             accessCode: value,
-        })
+        });
+        const errorMessage = '';
+        !_isEmpty(claimCharityErrorMessage) && dispatch(
+            claimCharityErrorCondition(errorMessage)
+        );
     }
 
     onClaimCharityClick = () => {
@@ -176,7 +181,7 @@ class ClaimCharity extends React.Component {
                                                                     <FormValidationErrorMessage
                                                                         className="mt-0"
                                                                         condition={claimCharityErrorMessage? true : false }
-                                                                        errorMessage={claimCharityErrorMessage? claimCharityErrorMessage.message : ''}
+                                                                        errorMessage={claimCharityErrorMessage? claimCharityErrorMessage : ''}
                                                                     />
                                                                 </Form>
                                                             </Grid.Column>

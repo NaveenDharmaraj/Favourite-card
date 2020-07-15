@@ -176,7 +176,7 @@ const user = (state = {}, action) => {
         case 'CLAIM_CHARITY_ERROR_MESSAGE':
             newState = {
                 ...state,
-                claimCharityErrorMessage: action.payload,
+                claimCharityErrorMessage: action.payload.claimCharityErrorMessage,
             };
             break;
         default:
