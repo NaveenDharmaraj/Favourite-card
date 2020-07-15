@@ -29,13 +29,11 @@ class ClaimCharity extends React.Component {
 
         this.state = {
             accessCode: '',
-            buttonClicked: false,
-            loader: false,
         }
     }
 
     handleInputChange = (event, data) => {
-        const {dispatch, claimCharityErrorMessage} = this.props;
+        const { dispatch, claimCharityErrorMessage } = this.props;
         const { value } = data;
         this.setState({
             accessCode: value,
@@ -57,17 +55,18 @@ class ClaimCharity extends React.Component {
             buttonClicked: true,
             loader: true,
         });
-        if(isAuthenticated) {
+        if (isAuthenticated) {
             let userId = currentUser.id;
-            dispatch(checkClaimCharityAccessCode(accessCode, userId)).then(()=> {
-                this.setState({
-                    buttonClicked: false,
-                    loader: false,
+            dispatch(checkClaimCharityAccessCode(accessCode, userId))
+                .then(() => {
+                    this.setState({
+                        buttonClicked: false,
+                        loader: false,
+                    })
                 })
-            });
         }
         else {
-            dispatch(validateClaimCharityAccessCode(accessCode)).then(()=> {
+            dispatch(validateClaimCharityAccessCode(accessCode)).then(() => {
                 this.setState({
                     buttonClicked: false,
                     loader: false,
@@ -180,7 +179,7 @@ class ClaimCharity extends React.Component {
                                                                     />
                                                                     <FormValidationErrorMessage
                                                                         className="mt-0"
-                                                                        condition={claimCharityErrorMessage? true : false }
+                                                                        condition={claimCharityErrorMessage? true : false}
                                                                         errorMessage={claimCharityErrorMessage? claimCharityErrorMessage : ''}
                                                                     />
                                                                 </Form>
