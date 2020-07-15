@@ -314,7 +314,7 @@ class Login extends React.Component {
                                     <div className="linebg">
                                         <Grid columns={2} doubling>
                                             {
-                                                (stepIndex === 0) && !isClaimCharity ?
+                                                (stepIndex === 0) && 
                                                     (
                                                         <FirstStep
                                                             parentInputChange={this.handleInputChange}
@@ -325,8 +325,7 @@ class Login extends React.Component {
                                                             lastName={lastName}
                                                             validity={validity}
                                                         />
-                                                    ) :
-                                                    ''
+                                                    ) 
                                             }
                                             {
                                                 (stepIndex === 1) && (
