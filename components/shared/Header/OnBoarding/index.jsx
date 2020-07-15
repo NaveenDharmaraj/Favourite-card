@@ -6,8 +6,11 @@ import {
 import { Link } from '../../../../routes';
 import storage from '../../../../helpers/storage';
 
-const OnBoardingHeader = ( { isLogin  }) => {
-    const claimCharityAccessCode = storage.getLocalStorageWithExpiry('claimToken', 'local');
+const OnBoardingHeader = ({ isLogin }) => {
+    let claimCharityAccessCode;
+    if (typeof Storage !== 'undefined') {
+        claimCharityAccessCode = storage.getLocalStorageWithExpiry('claimToken', 'local');
+    };
     const header = (isLogin) ? (
         <Menu.Menu position="right">
             <Menu.Item>

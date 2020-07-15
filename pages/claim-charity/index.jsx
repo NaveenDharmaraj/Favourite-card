@@ -13,18 +13,3 @@ function ClaimCharity() {
 }
 
 export default ClaimCharity;
-
-// class ClaimCharity extends React.Component {
-//     render() {
-//         return (
-//             <div>
-//                 <Layout>
-//                     <ClaimCharityWrapper {...this.props} />
-//                 </Layout>
-//             </div>
-//         )
-//     }
-// }
-
-
-// export default ClaimCharity;
