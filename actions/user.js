@@ -858,7 +858,7 @@ export const checkClaimCharityAccessCode = (accessCode, userId) => (dispatch) =>
         data: {
             type: "claimCharities",
             attributes: {
-                claimToken: accessCode
+                claimToken: accessCode,
             }
         }
     }).then(
