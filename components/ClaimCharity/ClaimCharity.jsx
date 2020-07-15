@@ -162,7 +162,7 @@ class ClaimCharity extends React.Component {
                                                     <Grid>
                                                         <Grid.Row>
                                                             <Grid.Column mobile={16} tablet={16} computer={10}>
-                                                                <Form.Field>
+                                                                <Form>
                                                                     <label className="accesslabel">Access code</label>
                                                                     <Form.Field
                                                                         error
@@ -178,7 +178,7 @@ class ClaimCharity extends React.Component {
                                                                         condition={claimCharityErrorMessage? true : false }
                                                                         errorMessage={claimCharityErrorMessage? claimCharityErrorMessage.message : ''}
                                                                     />
-                                                                </Form.Field>
+                                                                </Form>
                                                             </Grid.Column>
                                                             <Grid.Column mobile={16} tablet={12} computer={6}>
                                                                 <Button

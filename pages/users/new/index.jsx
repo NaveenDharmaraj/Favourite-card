@@ -309,7 +309,7 @@ class Login extends React.Component {
                         />
                     ) :
                         (
-                            <div className={!isClaimCharity || stepIndex !== 0 ? "pageWraper" : ''}>
+                            <div className="pageWraper">
                                 <Container>
                                     <div className="linebg">
                                         <Grid columns={2} doubling>
