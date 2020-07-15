@@ -19,7 +19,7 @@ const {
     RAILS_APP_URL_ORIGIN,
 } = publicRuntimeConfig;
 
-class Accessing extends React.Component {
+class Success extends React.Component {
 
     componentDidMount() {
         const { slug, otherAccounts } = this.props;
@@ -29,24 +29,17 @@ class Accessing extends React.Component {
         }
     }
 
-    renderGoToCharityBtn = (otherAccounts, beneficiarySlug, buttonPosition) => {
-        let locationNumber = '';
-        otherAccounts && otherAccounts.map((item) => {
-            if (item.slug === beneficiarySlug) {
-                locationNumber = item.location;
-                return locationNumber;
-            }
-        });
+    renderGoToCharityBtn = (locationNumber, buttonPosition) => {
         if (locationNumber) {
             return (
                 <a href={`${RAILS_APP_URL_ORIGIN}${locationNumber}`}>
-                    <Button className={buttonPosition === 1 ? "primary blue-btn-rounded mt-1" : "white-btn-round textBlack"}><b>Go to my Charity Account</b></Button>
+                    <Button className={buttonPosition ? "primary blue-btn-rounded mt-1" : "white-btn-round textBlack"}><b>Go to my Charity Account</b></Button>
                 </a>
             )
         }
         else {
             return (
-                <Button className={buttonPosition === 1 ? "primary blue-btn-rounded mt-1" : "white-btn-round textBlack"}><b>Go to my Charity Account</b></Button>
+                <Button className={buttonPosition ? "primary blue-btn-rounded mt-1" : "white-btn-round textBlack"}><b>Go to my Charity Account</b></Button>
             )
         }
     }
@@ -61,10 +54,12 @@ class Accessing extends React.Component {
             slug,
             otherAccounts,
         } = this.props;
-        let buttonPosition, charityName;
+        let charityName, locationNumber;
         if (otherAccounts && slug) {
-            charityName = otherAccounts.find((item) => item.slug === slug).name;
-        }
+            let charityItems = otherAccounts.find((item) => item.slug === slug);
+            charityName = charityItems.name;
+            locationNumber = charityItems.location;
+        };
         return (
             <Fragment>
                 <div className="AccessingtopBanner">
@@ -75,7 +70,7 @@ class Accessing extends React.Component {
                                 {firstName}
                             , you’ve claimed your charity </Header>
                             <p>Now you have access to your charity {charityName ? charityName : ''} account.</p>
-                            {this.renderGoToCharityBtn(otherAccounts, slug, buttonPosition = 1)}
+                            {this.renderGoToCharityBtn(locationNumber, 1)}
                         </div>
                     </Container>
                 </div>
@@ -118,7 +113,7 @@ class Accessing extends React.Component {
                     <Container>
                         <div className="startCustomizingheading">
                             <Header as='h3'>Start customizing your Charity Account</Header>
-                            {this.renderGoToCharityBtn(otherAccounts, slug, buttonPosition = 2)}
+                            {this.renderGoToCharityBtn(locationNumber)}
                         </div>
                     </Container>
                 </div>
@@ -131,4 +126,4 @@ const mapStateToProps = (state) => ({
     otherAccounts: state.user.otherAccounts,
 });
 
-export default (connect(mapStateToProps)(Accessing));
+export default (connect(mapStateToProps)(Success));

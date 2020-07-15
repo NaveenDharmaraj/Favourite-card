@@ -38,36 +38,20 @@ function FinalStep(props) {
                         </Header>
                     </div>
                     <Form>
-                        {handleBack ?
-                            (
-                                <div className="create-btn-wraper">
-                                    <Button
-                                        className="blue-bordr-btn-round-def w-160 pt-1 pb-1"
-                                        content="Back"
-                                        onClick={handleBack}
-                                    />
-                                    <Button
-                                        type="submit"
-                                        disabled={buttonClicked}
-                                        onClick={handleSubmit}
-                                        primary
-                                        content={buttonClicked ? 'Submitting' : 'Create Your Impact Account'}
-                                    />
-                                </div>
-                            ) 
-                            :
-                            (
-                                <div className="create-btn-wraper">
-                                    <Button
-                                        type="submit"
-                                        disabled={buttonClicked}
-                                        onClick={handleSubmit}
-                                        primary
-                                        content={buttonClicked ? 'Submitting' : 'Create Your Impact Account'}
-                                    />
-                                </div>
-                            )
-                        }
+                        <div className="create-btn-wraper">
+                            <Button
+                                className="blue-bordr-btn-round-def w-160 pt-1 pb-1"
+                                content="Back"
+                                onClick={handleBack}
+                            />
+                            <Button
+                                type="submit"
+                                disabled={buttonClicked}
+                                onClick={handleSubmit}
+                                primary
+                                content={buttonClicked ? 'Submitting' : 'Create Your Impact Account'}
+                            />
+                        </div>
                     </Form>
                 </div>
             </Grid.Column>

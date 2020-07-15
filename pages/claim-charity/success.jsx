@@ -1,5 +1,5 @@
 import React from 'react';
-import ClaimCharitySuccess from '../../components/ClaimCharity/ClaimCharitySuccess';
+import ClaimCharitySuccess from '../../components/ClaimCharity/Success';
 import Layout from '../../components/shared/Layout';
 import { connect } from 'react-redux';
 
