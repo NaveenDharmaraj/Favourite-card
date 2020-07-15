@@ -1,5 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import ClaimCharityWrapper from '../../components/ClaimCharity/ClaimCharity';
 import Layout from '../../components/shared/Layout';
 
@@ -15,10 +14,5 @@ class ClaimCharity extends React.Component {
     }
 }
 
-function mapStateToProps(state) {
-    return {
-        currentUser: state.user.info,
-    };
-}
 
-export default (connect(mapStateToProps)(ClaimCharity));
+export default ClaimCharity;

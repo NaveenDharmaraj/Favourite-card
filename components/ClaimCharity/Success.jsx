@@ -124,6 +124,7 @@ class Success extends React.Component {
 
 const mapStateToProps = (state) => ({
     otherAccounts: state.user.otherAccounts,
+    currentUser: state.user.info,
 });
 
 export default (connect(mapStateToProps)(Success));

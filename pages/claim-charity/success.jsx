@@ -1,7 +1,6 @@
 import React from 'react';
-import ClaimCharitySuccess from '../../components/ClaimCharity/ClaimCharitySuccess';
+import ClaimCharitySuccess from '../../components/ClaimCharity/Success';
 import Layout from '../../components/shared/Layout';
-import { connect } from 'react-redux';
 
 class ClaimSuccess extends React.Component {
 
@@ -20,10 +19,5 @@ class ClaimSuccess extends React.Component {
     }
 }
 
-function mapStateToProps(state) {
-    return {
-        currentUser: state.user.info,
-    };
-}
 
-export default (connect(mapStateToProps)(ClaimSuccess));
+export default ClaimSuccess;

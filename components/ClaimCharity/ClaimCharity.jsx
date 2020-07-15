@@ -229,6 +229,7 @@ function mapStateToProps(state) {
     return {
         claimCharityErrorMessage: state.user.claimCharityErrorMessage,
         isAuthenticated: state.auth.isAuthenticated,
+        currentUser: state.user.info,
     };
 }
 

@@ -451,10 +451,10 @@ const _handleLockSuccess = async ({
         };
         addToDataLayer(tagManagerArgs);
         if (beneficiarySlug) {
+            await (storage.unset('claimToken','local'));
+            await (storage.unset('signup_source_id','local'));
+            await (storage.unset('signup_source','local'));
             Router.pushRoute(`/claim-charity/success?slug=${beneficiarySlug}`);
-            await (storage.unset('claimToken', 'local'));
-            await (storage.unset('signup_source_id', 'local'));
-            await (storage.unset('signup_source', 'local'));
         }
         else {
             Router.pushRoute(returnTo);
