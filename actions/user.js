@@ -48,7 +48,7 @@ export const actionTypes = {
     USER_FAVORITES: 'USER_FAVORITES',
     UPDATE_FAVORITES: 'UPDATE_FAVORITES',
     ENABLE_FAVORITES_BUTTON: 'ENABLE_FAVORITES_BUTTON',
-    CHECK_CLAIM_CHARITY_ACCESS_CODE: 'CHECK_CLAIM_CHARITY_ACCESS_CODE',
+    // CHECK_CLAIM_CHARITY_ACCESS_CODE: 'CHECK_CLAIM_CHARITY_ACCESS_CODE',
     CLAIM_CHARITY_ERROR_MESSAGE: 'CLAIM_CHARITY_ERROR_MESSAGE',
 };
 
@@ -855,12 +855,6 @@ export const saveUserCauses = (dispatch, userId, userCauses, discoverValue) => {
 };
 
 export const checkClaimCharityAccessCode = (accessCode, userId) => (dispatch) => {
-    const fsa = {
-        payload: {
-        },
-        type: actionTypes.CHECK_CLAIM_CHARITY_ACCESS_CODE,
-    };
-
     return coreApi.post(`/claimCharities`, {
         data: {
             type: "claimCharities",
@@ -870,16 +864,13 @@ export const checkClaimCharityAccessCode = (accessCode, userId) => (dispatch) =>
         }
     }).then(
         (result) => {
-            fsa.payload = {
-                data: result.data,
-            };
             let {
                 data: {
                     attributes: {
                         beneficiarySlug,
                     }
                 }
-            } = fsa.payload;
+            } = result;
             getUser(dispatch, userId, null).then(() => {
                 Router.pushRoute(`/claim-charity/success?slug=${beneficiarySlug ? beneficiarySlug : ''}`);
             })

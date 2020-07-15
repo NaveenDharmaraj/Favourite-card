@@ -173,12 +173,6 @@ const user = (state = {}, action) => {
                 disableMigrationButtons: action.payload.continueButtonDisable,
             };
             break;
-        case 'CHECK_CLAIM_CHARITY_ACCESS_CODE':
-            newState = {
-                ...state,
-                userAccesCodeData: Object.assign({}, action.payload),
-            };
-            break;
         case 'CLAIM_CHARITY_ERROR_MESSAGE':
             newState = {
                 ...state,
