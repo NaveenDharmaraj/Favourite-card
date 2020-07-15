@@ -60,7 +60,6 @@ class ClaimCharity extends React.Component {
                     loader: false,
                 })
             });
-            
         }
         else {
             dispatch(validateClaimCharityAccessCode(accessCode)).then(()=> {
