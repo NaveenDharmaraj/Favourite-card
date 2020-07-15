@@ -307,75 +307,78 @@ class Login extends React.Component {
                             lastName={lastName}
                             validity={validity}
                         />
-                    ) : ''
-                }
-                <div className={!isClaimCharity || stepIndex !== 0 ? "pageWraper" : ''}>
-                    <Container>
-                        <div className={!isClaimCharity ? "linebg" : ''}>
-                            <Grid columns={2} doubling>
-                                {
-                                    (stepIndex === 0) && !isClaimCharity ?
-                                        (
-                                            <FirstStep
-                                                parentInputChange={this.handleInputChange}
-                                                handleSubmit={this.handleSubmit}
-                                                firstName={firstName}
-                                                handleInputOnBlur={this.handleInputOnBlur}
-                                                isButtonDisabled={this.isButtonDisabled}
-                                                lastName={lastName}
-                                                validity={validity}
-                                            />
-                                        ) :
-                                        ''
-                                }
-                                {
-                                    (stepIndex === 1) && (
-                                        <SecondStep
-                                            apiValidating={apiValidating}
-                                            parentInputChange={this.handleInputChange}
-                                            handleSubmit={this.handleSubmit}
-                                            handleBack={this.handleBack}
-                                            emailId={emailId}
-                                            handleInputOnBlur={this.handleInputOnBlur}
-                                            userExists={userExists}
-                                            password={password}
-                                            validity={validity}
-                                        />
-                                    )
-                                }
-                            </Grid>
-                            {
-                                (stepIndex === 2) && (
-                                    <Grid centered>
-                                        <CausesSelection
-                                            parentInputChange={this.handleInputChange}
-                                            parentHandleCauses={this.handleCauses}
-                                            handleSubmit={this.handleSubmit}
-                                            handleBack={this.handleBack}
-                                            userCauses={userCauses}
-                                            causesList={causesList}
-                                            validity={validity}
-                                        />
-                                    </Grid>
-                                )
-                            }
-                            {
-                                (stepIndex === 3) && (
-                                    <Grid columns={2} centered doubling>
-                                        <Grid.Row>
-                                            <FinalStep
-                                                handleSubmit={this.handleSubmit}
-                                                buttonClicked={buttonClicked}
-                                                handleBack={isClaimCharity ? this.handleBack : ''}
-                                            />
-                                        </Grid.Row>
-                                    </Grid>
-                                )
-                            }
+                    ) :
+                        (
+                            <div className={!isClaimCharity || stepIndex !== 0 ? "pageWraper" : ''}>
+                                <Container>
+                                    <div className="linebg">
+                                        <Grid columns={2} doubling>
+                                            {
+                                                (stepIndex === 0) && !isClaimCharity ?
+                                                    (
+                                                        <FirstStep
+                                                            parentInputChange={this.handleInputChange}
+                                                            handleSubmit={this.handleSubmit}
+                                                            firstName={firstName}
+                                                            handleInputOnBlur={this.handleInputOnBlur}
+                                                            isButtonDisabled={this.isButtonDisabled}
+                                                            lastName={lastName}
+                                                            validity={validity}
+                                                        />
+                                                    ) :
+                                                    ''
+                                            }
+                                            {
+                                                (stepIndex === 1) && (
+                                                    <SecondStep
+                                                        apiValidating={apiValidating}
+                                                        parentInputChange={this.handleInputChange}
+                                                        handleSubmit={this.handleSubmit}
+                                                        handleBack={this.handleBack}
+                                                        emailId={emailId}
+                                                        handleInputOnBlur={this.handleInputOnBlur}
+                                                        userExists={userExists}
+                                                        password={password}
+                                                        validity={validity}
+                                                    />
+                                                )
+                                            }
+                                        </Grid>
+                                        {
+                                            (stepIndex === 2) && (
+                                                <Grid centered>
+                                                    <CausesSelection
+                                                        parentInputChange={this.handleInputChange}
+                                                        parentHandleCauses={this.handleCauses}
+                                                        handleSubmit={this.handleSubmit}
+                                                        handleBack={this.handleBack}
+                                                        userCauses={userCauses}
+                                                        causesList={causesList}
+                                                        validity={validity}
+                                                    />
+                                                </Grid>
+                                            )
+                                        }
+                                        {
+                                            (stepIndex === 3) && (
+                                                <Grid columns={2} centered doubling>
+                                                    <Grid.Row>
+                                                        <FinalStep
+                                                            handleSubmit={this.handleSubmit}
+                                                            buttonClicked={buttonClicked}
+                                                            handleBack={isClaimCharity ? this.handleBack : ''}
+                                                        />
+                                                    </Grid.Row>
+                                                </Grid>
+                                            )
+                                        }
 
-                        </div>
-                    </Container>
-                </div>
+                                    </div>
+                                </Container>
+                            </div>
+                        )
+                }
+
 
             </Layout>
         );

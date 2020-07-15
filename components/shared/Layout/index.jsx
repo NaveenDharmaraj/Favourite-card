@@ -237,11 +237,6 @@ class Layout extends React.Component {
         } = this.props;
 
         const showHeader = !addCauses;
-        let returnToProps;
-        if (typeof Storage !== 'undefined') {
-            returnToProps = localStorage.getItem('auth0ReturnProps');
-            returnToProps = JSON.parse(returnToProps);
-        };
         return (
             this.renderLayout(authRequired, children, isAuthenticated, onBoarding, dispatch, appErrors, isLogin, showHeader)
         );

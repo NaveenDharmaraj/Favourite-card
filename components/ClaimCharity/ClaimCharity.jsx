@@ -20,6 +20,7 @@ import customizeIcons4 from '../../static/images/icons/processingfee@3x.svg';
 import '../../static/less/claimcharity.less';
 import { connect } from 'react-redux';
 import { checkClaimCharityAccessCode, validateClaimCharityAccessCode } from '../../actions/user';
+import FormValidationErrorMessage from '../../components/shared/FormValidationErrorMessage';
 
 class ClaimCharity extends React.Component {
 
@@ -37,13 +38,11 @@ class ClaimCharity extends React.Component {
         const { value } = data;
         this.setState({
             accessCode: value,
-            buttonClicked: false,
-            loader: false,
         })
     }
 
     onClaimCharityClick = () => {
-        const { 
+        const {
             currentUser,
             dispatch,
             isAuthenticated,
@@ -55,10 +54,21 @@ class ClaimCharity extends React.Component {
         });
         if(isAuthenticated) {
             let userId = currentUser.id;
-            dispatch(checkClaimCharityAccessCode(accessCode, userId)); 
+            dispatch(checkClaimCharityAccessCode(accessCode, userId)).then(()=> {
+                this.setState({
+                    buttonClicked: false,
+                    loader: false,
+                })
+            });
+            
         }
         else {
-            dispatch(validateClaimCharityAccessCode(accessCode));
+            dispatch(validateClaimCharityAccessCode(accessCode)).then(()=> {
+                this.setState({
+                    buttonClicked: false,
+                    loader: false,
+                })
+            });
         }
     }
 
@@ -156,7 +166,7 @@ class ClaimCharity extends React.Component {
                                                                 <Form.Field>
                                                                     <label className="accesslabel">Access code</label>
                                                                     <Form.Field
-                                                                        error={true}
+                                                                        error
                                                                         control={Input}
                                                                         id="accessCode"
                                                                         name="accessCode"
@@ -164,9 +174,11 @@ class ClaimCharity extends React.Component {
                                                                         placeholder="eg.:123A-456B-789C-012D"
                                                                         onChange={this.handleInputChange}
                                                                     />
-                                                                    {claimCharityErrorMessage ?
-                                                                        <p className="error-message"><Icon name="exclamation circle" />{claimCharityErrorMessage.message}</p>
-                                                                        : ''}
+                                                                    <FormValidationErrorMessage
+                                                                        className="mt-0"
+                                                                        condition={claimCharityErrorMessage? true : false }
+                                                                        errorMessage={claimCharityErrorMessage? claimCharityErrorMessage.message : ''}
+                                                                    />
                                                                 </Form.Field>
                                                             </Grid.Column>
                                                             <Grid.Column mobile={16} tablet={12} computer={6}>
