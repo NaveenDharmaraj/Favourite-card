@@ -880,15 +880,6 @@ export const checkClaimCharityAccessCode = (accessCode, userId) => (dispatch) =>
     });
 };
 
-export const claimCharityErrorCondition = (message) => (dispatch) =>{
-    dispatch({
-        payload: { 
-            claimCharityErrorMessage: message
-        },
-        type: actionTypes.CLAIM_CHARITY_ERROR_MESSAGE,
-    });
-}
-
 export const validateClaimCharityAccessCode = (accessCode) => (dispatch) => {
     return coreApi.get(`/claim_charities/validate_claim_charity_token?claimToken=${accessCode}`, BASIC_AUTH_HEADER)
         .then(async (res) => {
@@ -920,12 +911,16 @@ export const validateClaimCharityAccessCode = (accessCode) => (dispatch) => {
                 Router.pushRoute('/users/login');
             }
         }).catch(() => {
-            const errorFsa = {
-                payload: {
-                    message: "That code doesn't look right or it's expired. Try again or claim without a code below",
-                },
-                type: actionTypes.CLAIM_CHARITY_ERROR_MESSAGE,
-            };
-            dispatch(errorFsa);
+            const errorMessage = "That code doesn't look right or it's expired. Try again or claim without a code below";
+            dispatch(claimCharityErrorCondition(errorMessage));
         });
+}
+
+export const claimCharityErrorCondition = (message) => (dispatch) =>{
+    dispatch({
+        payload: { 
+            claimCharityErrorMessage: message
+        },
+        type: actionTypes.CLAIM_CHARITY_ERROR_MESSAGE,
+    });
 }
