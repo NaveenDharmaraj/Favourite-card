@@ -872,7 +872,7 @@ export const checkClaimCharityAccessCode = (accessCode, userId) => (dispatch) =>
             } = result;
             getUser(dispatch, userId, null).then(() => {
                 Router.pushRoute(`/claim-charity/success?slug=${beneficiarySlug ? beneficiarySlug : ''}`);
-            })
+            });
         }
     ).catch(() => {
         const errorMessage = "That code doesn't look right or it's expired. Try again or claim without a code below";
