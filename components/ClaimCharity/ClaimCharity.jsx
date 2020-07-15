@@ -9,7 +9,6 @@ import {
     Button,
     Item,
     List,
-    Icon
 } from 'semantic-ui-react';
 import _isEmpty from 'lodash/isEmpty';
 import claimrLeftImg from '../../static/images/illustration.png';
@@ -56,8 +55,7 @@ class ClaimCharity extends React.Component {
             loader: true,
         });
         if (isAuthenticated) {
-            let userId = currentUser.id;
-            dispatch(checkClaimCharityAccessCode(accessCode, userId))
+            dispatch(checkClaimCharityAccessCode(accessCode, currentUser.id))
                 .then(() => {
                     this.setState({
                         buttonClicked: false,
