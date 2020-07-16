@@ -155,7 +155,6 @@ class Chat extends React.Component {
                 });
             }
         });
-        await this.loadRecentMessages();
     }
 
     componentWillUnmount() {

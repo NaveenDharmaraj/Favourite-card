@@ -91,7 +91,8 @@ var events = {
 //     window.hasFocus = true;
 // }
 // window.onload = function () {
-const registerAppLozic = (id) => {
+const registerAppLozic = (userId) => {
+    const id = userId;
     if (undefined != window.Applozic) {
         Applozic.ALApiService.login(
             {
@@ -147,7 +148,7 @@ const registerAppLozic = (id) => {
         );
     } else {
         setTimeout(() => {
-            registerAppLozic();
+            registerAppLozic(id);
         }, 2000);
     }
 }
