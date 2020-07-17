@@ -124,6 +124,8 @@ class Layout extends React.Component {
             isMobile,
             keywords,
             url,
+            disableMinHeight,
+            isCharityPage,
         } = this.props;
         const userEmail = this.props.userInfo ? this.props.userInfo.attributes.email : "";
         const userAvatar = this.props.userInfo ? this.props.userInfo.attributes.avatar : "";
@@ -174,10 +176,10 @@ class Layout extends React.Component {
                     <ErrorBoundary>
                         <Responsive {...widthProp} minWidth={320} maxWidth={991}>
                             <MobileHeader isAuthenticated={isAuthenticated} onBoarding={onBoarding} isLogin={isLogin} showHeader={showHeader}>
-                                <div style={{minHeight:'60vh'}}>
+                                <div className={disableMinHeight ? "" : "chimpLayout"}>
                                     {children}
                                 </div>
-                                <Footer isAuthenticated={isAuthenticated}/>
+                                <Footer isAuthenticated={isAuthenticated} isCharityPage={isCharityPage} />
                             </MobileHeader>
                             {!_.isEmpty(appErrors) &&
                                 <Container
@@ -214,7 +216,7 @@ class Layout extends React.Component {
                                         </div>
                                     </Container>
                                 }
-                                <div style={{minHeight:'60vh'}}>
+                                <div className={disableMinHeight ? "" : "chimpLayout"}>
                                 {children}
                                 </div>
                                 <Footer isAuthenticated={isAuthenticated}/>

@@ -7,6 +7,7 @@ import {
 import {
     connect,
 } from 'react-redux';
+import dynamic from 'next/dynamic';
 
 import {
     getUserProfileBasic,
@@ -15,8 +16,12 @@ import Layout from '../components/shared/Layout';
 import BasicProfile from '../components/MyProfile/BasicProfile';
 import EditProfileBasic from '../components/MyProfile/EditBasicProfile';
 import EditCharitableInterest from '../components/MyProfile/EditCharitableInterest';
-import Friends from '../components/MyProfile/Friends';
-import Settings from '../components/MyProfile/Settings';
+const Friends = dynamic(() => import('../components/MyProfile/Friends'), {
+    ssr: false
+});
+const Settings = dynamic(() => import('../components/MyProfile/Settings'), {
+    ssr: false
+});
 import { Router } from '../routes';
 
 class MyProfile extends React.Component {
@@ -117,7 +122,7 @@ class MyProfile extends React.Component {
         },
         {
             
-            menuItem: 'Causes you care about',
+            menuItem: 'Your causes and topics',
             render: () => {
                 return (
                     <Tab.Pane attached={false}>
