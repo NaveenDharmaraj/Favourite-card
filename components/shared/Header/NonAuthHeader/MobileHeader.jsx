@@ -116,7 +116,7 @@ class MobileHeader extends React.Component {
                 <Sidebar.Pusher
                 onClick={this.handlePusher}
                 >
-                    <Menu secondary>
+                    <Menu secondary className="fixed-header">
                         <Menu.Item className="brand">
                         <Image src={logo} />
                         </Menu.Item>

@@ -6,36 +6,15 @@ const charity = (state = {}, action) => {
         case 'GET_BENEFICIARY_DONEE_LIST':
             newState = {
                 ...state,
-                donationDetails: Object.assign({}, state.donationDetails, action.payload),
-            };
-            break;
-        case 'CHARITY_SAVE_DEEP_LINK':
-            newState = {
-                ...state,
-                charityDeepLink: action.payload.deepLink,
+                donationDetails: Object.assign([], action.payload.donationDetails),
+                remainingAmount: action.payload.remainingAmount,
+                remainingElements: action.payload.remainingElements,
             };
             break;
         case 'GET_CHARITY_DETAILS_FROM_SLUG':
             newState = {
                 ...state,
-                charityDetails: Object.assign({}, state.charityDetails, action.payload),
-            };
-            break;
-        case 'SAVE_FOLLOW_STATUS_CHARITY':
-            newState = {
-                ...state,
-                charityDetails: {
-                    ...state.charityDetails,
-                    charityDetails: {
-                        ...state.charityDetails.charityDetails,
-                        attributes: {
-                            ...state.charityDetails.charityDetails.attributes,
-                            following: action.payload.followStatus,
-
-                        },
-                    },
-                },
-                // disableFollow: false,
+                charityDetails: Object.assign({}, state.charityDetails, action.payload.charityDetails),
             };
             break;
         case 'CHARITY_REDIRECT_TO_DASHBOARD':
@@ -50,25 +29,39 @@ const charity = (state = {}, action) => {
                 showPlaceholder: action.payload.showPlaceholder,
             };
             break;
-        case 'SET_HEADQUARTER_GEOCODE':
-            newState = {
-                ...state,
-                headQuarterData: action.payload.city,
-            };
-            break;
-        case 'SET_COUNTRIES_GEOCODE':
-            newState = {
-                ...state,
-                countriesData: action.payload.city,
-            };
-            break;
         case 'RESET_CHARITY_STATES':
             newState = {};
             break;
-        case 'CHARITY_LOADER_STATUS':
+        case 'SAVE_FOLLOW_STATUS_CHARITY':
             newState = {
                 ...state,
-                mapLoader: action.payload.mapLoader,
+                charityDetails: {
+                    ...state.charityDetails,
+                    attributes: {
+                        ...state.charityDetails.attributes,
+                        following: action.payload.followStatus,
+                    },
+                },
+            };
+            break;
+        case 'GET_BENEFICIARY_FINANCE_DETAILS':
+            newState = {
+                ...state,
+                beneficiaryFinance: action.payload.beneficiaryFinance,
+            };
+            break;
+        case 'CHARITY_CHART_LOADER':
+            newState = {
+                ...state,
+                chartLoader: action.payload.chartLoader,
+            };
+            break;
+        case 'RESET_DONEE_LIST':
+            newState = {
+                ...state,
+                donationDetails: [],
+                remainingAmount: 0,
+                remainingElements: 0,
             };
             break;
         default:
