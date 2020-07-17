@@ -62,7 +62,7 @@ class Success extends React.Component {
                             <Header as='h3'>
                                 {firstName}
                             , you’ve claimed your charity </Header>
-                            <p>Now you have access to your charity {charityName ? charityName : ''} account.</p>
+                            <p data-test="ClaimCharity_Success_charityname_text">Now you have access to your charity {charityName ? charityName : ''} account.</p>
                             {this.renderGoToCharityBtn(locationNumber, 1)}
                         </div>
                     </Container>
@@ -120,4 +120,9 @@ const mapStateToProps = (state) => ({
     currentUser: state.user.info,
 });
 
-export default (connect(mapStateToProps)(Success));
+const connectedComponent = (connect(mapStateToProps)(Success));
+export{
+    connectedComponent as default,
+    Success,
+    mapStateToProps
+};
