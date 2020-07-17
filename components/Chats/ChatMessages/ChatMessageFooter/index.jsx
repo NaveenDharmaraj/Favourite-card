@@ -106,7 +106,7 @@ class ChatMessageFooter extends React.Component {
             e.preventDefault();
             const strArr = e.target.value.split(" ");
             let profaineCheck = strArr.find(str => {
-                if (profaineObj[str]) {
+                if (!_isEmpty(str) && profaineObj[str.toLowerCase()]) {
                     return true;
                 }
             });
