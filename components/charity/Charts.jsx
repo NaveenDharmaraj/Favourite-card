@@ -411,9 +411,9 @@ class Charts extends React.Component {
 
 Charts.defaultProps = {
     beneficiaryFinance: [],
-    charityDetails: PropTypes.shape({
+    charityDetails: {
         id: '',
-    }),
+    },
     chartLoader: true,
     dispatch: () => {},
     isAuthenticated: false,

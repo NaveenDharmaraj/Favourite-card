@@ -141,8 +141,8 @@ class CharityDetails extends React.Component {
 }
 
 CharityDetails.defaultProps = {
-    charityDetails: PropTypes.shape({
-        attributes: PropTypes.shape({
+    charityDetails: {
+        attributes: {
             avatar: '',
             beneficiaryType: '',
             causes: [],
@@ -152,10 +152,10 @@ CharityDetails.defaultProps = {
             location: '',
             name: '',
             slug: '',
-        }),
+        },
         id: '',
         type: '',
-    }),
+    },
     currentUser: {
         id: null,
     },
