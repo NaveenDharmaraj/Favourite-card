@@ -28,7 +28,7 @@ describe('Test for claim token fields', () => {
     })
 
     describe('Test button field functionality', () => {
-        it('Should ', () => {
+        it('Should give buttonClicked equal to true on claim charity button click', () => {
             const props = {
                 dispatch: jest.fn().mockImplementationOnce(() => Promise.resolve()),
                 currentUser: {
