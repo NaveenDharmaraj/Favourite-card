@@ -48,9 +48,14 @@ class ChatMessages extends React.Component {
                 else if (!conversationMessagesLoader && this.refs.scrollParentRef && scrollEffect) {
                     const $messages = this.refs.scrollParentRef;
                     const $outerMessages = $messages.lastElementChild;
-                    const $newMessage = $outerMessages.children[selectedConversationMessages.length - (scrollDivCount+1)];
-                    const $newMessageMargin = parseInt(getComputedStyle($newMessage).marginTop) + 40;
-                    const scrollDownHeight = $newMessage.offsetTop - $newMessageMargin;
+                    const $newMessage = $outerMessages.children[selectedConversationMessages.length - (scrollDivCount + 1)];
+                    let newMessageMargin = 0;
+                    let scrollDownHeight = 120;
+                    if (($newMessage && $newMessage.nodeName)) {
+                        const newMessageStyle = getComputedStyle($newMessage)
+                        newMessageMargin = parseInt(newMessageStyle.marginTop) + 40;
+                        scrollDownHeight = $newMessage.offsetTop - newMessageMargin;
+                    }
                     this.refs.scrollParentRef.scrollTop = scrollDownHeight;
                     this.setState({
                         scrollEffect: false
