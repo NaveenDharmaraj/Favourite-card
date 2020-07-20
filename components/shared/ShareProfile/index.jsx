@@ -192,9 +192,9 @@ class ShareProfile extends React.Component {
 }
 
 ShareProfile.defaultProps = {
-    currentUser: PropTypes.shape({
+    currentUser: {
         id: null,
-    }),
+    },
     disableFollow: false,
     dispatch: () => {},
     isAuthenticated: false,
