@@ -167,6 +167,7 @@ class ClaimCharity extends React.Component {
                                                                 <Form>
                                                                     <label className="accesslabel">Access code</label>
                                                                     <Form.Field
+                                                                        data-test="ClaimCharity_ClaimCharity_accesscode_input"
                                                                         error={claimCharityErrorMessage? true : false}
                                                                         control={Input}
                                                                         id="accessCode"
@@ -176,6 +177,7 @@ class ClaimCharity extends React.Component {
                                                                         onChange={this.handleInputChange}
                                                                     />
                                                                     <FormValidationErrorMessage
+                                                                        data-test="ClaimCharity_ClaimCharity_errormessage_validation"
                                                                         className="mt-0"
                                                                         condition={claimCharityErrorMessage? true : false}
                                                                         errorMessage={claimCharityErrorMessage? claimCharityErrorMessage : ''}
@@ -184,6 +186,7 @@ class ClaimCharity extends React.Component {
                                                             </Grid.Column>
                                                             <Grid.Column mobile={16} tablet={12} computer={6}>
                                                                 <Button
+                                                                    data-test="ClaimCharity_ClaimCharity_claimbutton"
                                                                     className="primary blue-btn-rounded btnTextsize mt-2"
                                                                     onClick={this.onClaimCharityClick}
                                                                     disabled={buttonClicked}
@@ -235,4 +238,9 @@ function mapStateToProps(state) {
     };
 }
 
-export default (connect(mapStateToProps)(ClaimCharity));
+const connectedComponent = (connect(mapStateToProps)(ClaimCharity));
+export {
+    connectedComponent as default,
+    ClaimCharity,
+    mapStateToProps
+}
