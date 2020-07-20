@@ -32,11 +32,14 @@ import {
     leaveGroup,
 } from '../../actions/group';
 import {
+    resetFlowObject,
+} from '../../actions/give';
+import {
     generateDeepLink,
 } from '../../actions/profile';
 import LeaveModal from '../../components/shared/LeaveModal';
+import ShareProfile from '../shared/ShareProfile';
 
-import GroupShareDetails from './GroupShareDetails';
 import GiveFromGroupModal from './GiveFromGroupModal';
 
 const { publicRuntimeConfig } = getConfig();
@@ -131,6 +134,10 @@ class GroupDetails extends React.Component {
         const {
             isGiveFromModalOpen,
         } = this.state;
+        const {
+            dispatch,
+        } = this.props;
+        resetFlowObject('group', dispatch);
         this.setState({ isGiveFromModalOpen: !isGiveFromModalOpen });
     }
 
@@ -163,6 +170,7 @@ class GroupDetails extends React.Component {
         const {
             buttonLoader,
             beneficiariesCount,
+            dispatch,
             errorMessage,
             groupDetails: {
                 attributes: {
@@ -175,8 +183,10 @@ class GroupDetails extends React.Component {
                     isMember,
                     isAdmin,
                     hasCampaignAccess,
+                    liked,
                 },
                 id: groupId,
+                type,
             },
             isAuthenticated,
             currentUser: {
@@ -219,7 +229,7 @@ class GroupDetails extends React.Component {
                 && (
                     <div className="buttonWraper">
                         <Link route={`/give/to/group/${slug}/new`}>
-                            <Button primary className="blue-btn-rounded">
+                            <Button onClick={() => { resetFlowObject('group', dispatch); }} primary className="blue-btn-rounded">
                             Give
                             </Button>
                         </Link>
@@ -341,7 +351,12 @@ class GroupDetails extends React.Component {
                                                 {!joinClicked && joinButton}
                                                 {joinClicked && permissionButtons}
                                                 {isAdmin && giveFromGroupButton }
-                                                <GroupShareDetails />
+                                                <ShareProfile
+                                                    liked={liked}
+                                                    profileId={groupId}
+                                                    type={type}
+                                                    name={name}
+                                                />
                                                 {(isMember || isAdmin)
                                                 && (
                                                     <Fragment>

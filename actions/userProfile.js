@@ -24,6 +24,7 @@ import {
 export const actionTypes = {
 
     ADD_USER_CREDIT_CARD: 'ADD_USER_CREDIT_CARD',
+    DELETE_CREDIT_CARD_MSG_POPUP_LOADER: 'DELETE_CREDIT_CARD_MSG_POPUP_LOADER',
     DELETE_USER_CREDIT_CARD: 'DELETE_USER_CREDIT_CARD',
     TRIGGER_UX_CRITICAL_ERROR: 'TRIGGER_UX_CRITICAL_ERROR',
     UPDATE_USER_BASIC_PROFILE: 'UPDATE_USER_BASIC_PROFILE',
@@ -36,6 +37,7 @@ export const actionTypes = {
     UPDATE_USER_PRIVACY_SETTING: 'UPDATE_USER_PRIVACY_SETTING',
     USER_INFO_TO_SHARE_OPTIONS: 'USER_INFO_TO_SHARE_OPTIONS',
     USER_INFO_TO_SHARE_OPTIONS_LOADER: 'USER_INFO_TO_SHARE_OPTIONS_LOADER',
+    USER_CREDIT_CARD_ACTIVE_MONTHLY_DONATIONS: 'USER_CREDIT_CARD_ACTIVE_MONTHLY_DONATIONS',
     USER_PROFILE_ACCEPT_FRIEND: 'USER_PROFILE_ACCEPT_FRIEND',
     USER_PROFILE_ADD_DUPLICATE_EMAIL_ERROR: 'USER_PROFILE_ADD_DUPLICATE_EMAIL_ERROR',
     USER_PROFILE_ADD_FRIEND: 'USER_PROFILE_ADD_FRIEND',
@@ -447,23 +449,32 @@ const getTagsByText = (dispatch, userId, searchText, isSearch, pageNumber = 1, l
     });
 };
 
-const getMyCreditCards = (dispatch, userId, pageNumber) => {
+const getMyCreditCards = (dispatch, userId, pageNumber, updatedCurrentActivePage = 0) => {
     const fsa = {
         payload: {
+            updatedCurrentActivePage,
         },
         type: actionTypes.USER_PROFILE_CREDIT_CARDS,
     };
     return coreApi.get(`/users/${Number(userId)}/activePaymentInstruments?page[number]=${pageNumber}&page[size]=10&sort=-default`).then(
         (result) => {
+            if (_.isEmpty(result.data) && pageNumber > 1) {
+                getMyCreditCards(dispatch, userId, pageNumber - 1, pageNumber - 1);
+                return;
+            }
+            if (updatedCurrentActivePage > 0) {
+                fsa.payload.updatedCurrentActivePage = updatedCurrentActivePage;
+            }
             fsa.payload = {
                 count: result.meta.recordCount,
                 data: result.data,
                 pageCount: result.meta.pageCount,
+                ...fsa.payload,
             };
+            dispatch(fsa);
         },
     ).catch((error) => {
         fsa.error = error;
-    }).finally(() => {
         dispatch(fsa);
     });
 };
@@ -738,6 +749,38 @@ const editUserCreditCard = (dispatch, instrumentDetails) => {
         dispatch(fsa);
     });
     return editCreditCardResponse;
+};
+
+const getPaymentInstrumentById = (paymentInstrumentId) => (dispatch) => {
+    dispatch({
+        payload: {
+            deleteMsgPopUpLoader: true,
+        },
+        type: actionTypes.DELETE_CREDIT_CARD_MSG_POPUP_LOADER,
+    });
+    coreApi.get(`/paymentInstruments/${Number(paymentInstrumentId)}`)
+        .then((response) => {
+            dispatch({
+                payload: {
+                    deleteMsgPopUpLoader: false,
+                },
+                type: actionTypes.DELETE_CREDIT_CARD_MSG_POPUP_LOADER,
+            });
+            dispatch({
+                payload: {
+                    activeMonthlyDonations: response.data.attributes.activeMonthlyDonations,
+                },
+                type: actionTypes.USER_CREDIT_CARD_ACTIVE_MONTHLY_DONATIONS,
+            });
+        })
+        .catch((err) => {
+            dispatch({
+                payload: {
+                    deleteMsgPopUpLoader: false,
+                },
+                type: actionTypes.DELETE_CREDIT_CARD_MSG_POPUP_LOADER,
+            });
+        });
 };
 
 const deleteUserCreditCard = (dispatch, paymentInstrumentId, userId, pageNumber) => {
@@ -1504,6 +1547,7 @@ const getInfoToShareDropdownOptions = (userId, infoShareDropDownLoader = false) 
 
 export {
     getInfoToShareDropdownOptions,
+    getPaymentInstrumentById,
     getUserProfileBasic,
     getUserFriendProfile,
     getUserCharitableInterests,

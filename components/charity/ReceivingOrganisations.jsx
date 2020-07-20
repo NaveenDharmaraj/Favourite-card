@@ -1,10 +1,13 @@
-import React from 'react';
+import React, {
+    Fragment,
+} from 'react';
 import { connect } from 'react-redux';
 import {
-    Table,
+    Button,
+    Header,
+    Icon,
 } from 'semantic-ui-react';
 import _isEmpty from 'lodash/isEmpty';
-import _ from 'lodash';
 import {
     arrayOf,
     PropTypes,
@@ -19,168 +22,118 @@ import {
     getBeneficiaryDoneeList,
 } from '../../actions/charity';
 import PlaceholderGrid from '../shared/PlaceHolder';
-
-import CharityNoDataState from './CharityNoDataState';
+import { withTranslation } from '../../i18n';
 
 class ReceivingOrganisations extends React.Component {
     componentDidMount() {
         const {
             dispatch,
+            donationDetails: doneeList,
             charityDetails: {
-                charityDetails: {
-                    id: charityId,
-                },
+                id: charityId,
             },
+            year,
         } = this.props;
-        getBeneficiaryDoneeList(dispatch, charityId);
-    }
-
-    showList() {
-        const {
-            currency,
-            donationDetails: {
-                donationDetails: {
-                    _embedded: {
-                        donee_list: list,
-                    },
-                },
-            },
-            language,
-        } = this.props;
-        // TODO 'language' from withTranslation
-        return (
-            list.map((donee) => (
-                <Table.Row>
-                    <Table.Cell>{donee.donee_name}</Table.Cell>
-                    <Table.Cell className="bold">
-                        {formatCurrency(donee.gifts_total, language, currency)}
-                    </Table.Cell>
-                </Table.Row>
-            )));
+        if (_isEmpty(doneeList)) {
+            dispatch(getBeneficiaryDoneeList(charityId, year));
+        }
     }
 
     render() {
         const {
-            donationDetails: {
-                donationDetails: {
-                    page: {
-                        size,
-                        totalElements,
-                    },
-                    totalAmount: {
-                        remainingAmount,
-                        totalAmount,
-                    },
-                    _embedded: {
-                        donee_list: doneeList,
-                    },
-                },
-            },
+            donationDetails: doneeList,
             currency,
             language,
+            remainingElements,
+            remainingAmount,
             transactionsLoader,
+            t: formatMessage,
         } = this.props;
-        let remainingOrganisation = null;
-        if (totalElements && (totalElements > 20) && size) {
-            remainingOrganisation = totalElements - size;
-        }
-        let listData = <CharityNoDataState />;
-        let totalData = '';
+        let viewData = '';
         if (!_isEmpty(doneeList)) {
-            listData = (
-                <Table.Body>
-                    {this.showList()}
-                    {remainingOrganisation
-                        && (
-                            <Table.Row>
-                                <Table.Cell>{`${remainingOrganisation} other organizations`}</Table.Cell>
-                                <Table.Cell className="bold">
-                                    {formatCurrency(remainingAmount, language, currency)}
-                                </Table.Cell>
-                            </Table.Row>
-                        )
-                    }
-                </Table.Body>
-            );
-            totalData = (
-                <Table.Footer className="brdr-footer">
-                    <Table.Row>
-                        <Table.Cell>
-                            {`${totalElements} gifts to qualified organizations totalled`}
-                        </Table.Cell>
-                        <Table.Cell className="bold">
-                            {formatCurrency(totalAmount, language, currency)}
-                        </Table.Cell>
-                    </Table.Row>
-                </Table.Footer>
-            );
+            viewData = doneeList.map((donee) => {
+                let location = '';
+                if (_isEmpty(donee.city) && !_isEmpty(donee.province)) {
+                    location = donee.province;
+                } else if (!_isEmpty(donee.city) && _isEmpty(donee.province)) {
+                    location = donee.city;
+                } else if (!_isEmpty(donee.city) && !_isEmpty(donee.province)) {
+                    location = `${donee.city}, ${donee.province}`;
+                }
+                return (
+                    <div className="ch_giftPopcontent" data-test="Charity_ReceivingOrganisations_donee">
+                        <Header as="h6">{formatMessage('charityProfile:charityHeader')}</Header>
+                        <Header as="h3">
+                            <p>
+                                {donee.donee_name}
+                            </p>
+                            <span>
+                                {formatCurrency(donee.gifts_total, language, currency)}
+                            </span>
+                        </Header>
+                        <Header as="h5">
+                            {location}
+                        </Header>
+                    </div>
+                );
+            });
         }
+
         return (
-            <Table basic="very" className="no-border-table">
-                {!transactionsLoader
-                    ? listData
-                    : (<PlaceholderGrid row={3} column={2} placeholderType="table" />)
-                }
-                {(!transactionsLoader)
-                    ? totalData
-                    : (<PlaceholderGrid row={1} column={2} placeholderType="table" />)
-                }
-            </Table>
+            transactionsLoader ? (
+                <PlaceholderGrid row={5} column={1} placeholderType="multiLine" />
+            ) : (
+                <Fragment>
+                    <div className="ScrollData" data-test="Charity_ReceivingOrganisations_doneeListModal">
+                        {viewData}
+                        {(remainingElements > 20)
+                            && (
+                                <div className="Ch_total" data-test="Charity_ReceivingOrganisations_totalAmount">
+                                    <Header as="h3">
+                                        <p>
+                                            {remainingElements}
+                                            &nbsp;
+                                            {formatMessage('totalOrganisations')}
+                                        </p>
+                                        <span>{formatCurrency(remainingAmount, language, currency)}</span>
+                                    </Header>
+
+                                </div>
+                            )}
+                    </div>
+                </Fragment>
+            )
         );
     }
 }
 
 ReceivingOrganisations.defaultProps = {
     charityDetails: {
-        charityDetails: {
-            id: null,
-        },
+        id: '',
     },
     currency: 'USD',
-    dispatch: func,
-    donationDetails: {
-        donationDetails: {
-            _embedded: {
-                donee_list: [],
-            },
-            page: {
-                size: null,
-                totalElements: null,
-            },
-            totalAmount: {
-                remainingAmount: null,
-                totalAmount: null,
-            },
-        },
-    },
+    dispatch: () => { },
+    donationDetails: [],
     language: 'en',
+    remainingAmount: 0,
+    remainingElements: 0,
+    t: () => { },
     transactionsLoader: true,
 };
 
 ReceivingOrganisations.propTypes = {
     charityDetails: PropTypes.shape({
-        charityDetails: PropTypes.shape({
-            id: number,
-        }),
+        id: string,
     }),
     currency: string,
-    dispatch: _.noop,
-    donationDetails: PropTypes.shape({
-        donationDetails: PropTypes.shape({
-            _embedded: PropTypes.shape({
-                donee_list: arrayOf(PropTypes.element),
-            }),
-            page: PropTypes.shape({
-                size: number,
-                totalElements: number,
-            }),
-            totalAmount: PropTypes.shape({
-                remainingAmount: number,
-                totalAmount: number,
-            }),
-        }),
-    }),
+    dispatch: func,
+    donationDetails: PropTypes.arrayOf(
+        PropTypes.shape({}),
+    ),
     language: string,
+    remainingAmount: number,
+    remainingElements: number,
+    t: PropTypes.func,
     transactionsLoader: bool,
 };
 
@@ -188,8 +141,15 @@ function mapStateToProps(state) {
     return {
         charityDetails: state.charity.charityDetails,
         donationDetails: state.charity.donationDetails,
+        remainingAmount: state.charity.remainingAmount,
+        remainingElements: state.charity.remainingElements,
         transactionsLoader: state.charity.showPlaceholder,
     };
 }
 
-export default connect(mapStateToProps)(ReceivingOrganisations);
+const connectedComponent = withTranslation('charityProfile')(connect(mapStateToProps)(ReceivingOrganisations));
+export {
+    connectedComponent as default,
+    ReceivingOrganisations,
+    mapStateToProps,
+};

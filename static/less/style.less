@@ -1532,8 +1532,8 @@ h4{
   }
 }
 .pageWraper{
+  padding-top: 50px;
   padding-bottom: 80px;
-  margin-top: -3px;
   .pageHeader{
     padding-bottom: 30px;
     .breadcrumb{
@@ -1794,7 +1794,7 @@ h4{
       margin-top: 30px;
     }
     .pageWraper {
-      padding-top: 0px;
+      padding-top: 30px;
       padding-bottom: 50px;
     }
     .login-form-wraper{
@@ -5111,10 +5111,14 @@ body{
 }
 .statusMsgWraper{
   position: fixed;
-  z-index: 9999;
+  z-index: 99999999;
   right:19%;
+  margin-top: 48px;
   @media only screen and (max-width:991px){
-    top: 85px;
+    top: 0px;
+    left: calc(50% - 167.5px);
+    right: auto;
+    margin: 48px auto auto;
   }
 }
 .status-message-container{
@@ -7880,6 +7884,14 @@ span{
   }
 }
 
+.ch_ModelPlaceholder {
+  .ui {
+    &.placeholder {
+      margin: 0 0 31px;
+    }
+  }
+}
+
 .videoWrapper {
   @media only screen and (max-width: 991px) {
     position: relative;
@@ -8224,4 +8236,7 @@ body .userEllips{
 .chimpLayout{
   min-height: 60vh;
   padding-top: 80px;
+}
+.BottomfixedBtn_Footer{
+  padding-bottom:60px;
 }

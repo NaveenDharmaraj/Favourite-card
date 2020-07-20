@@ -10,6 +10,9 @@ import {
 import { connect } from 'react-redux';
 
 import {
+    resetFlowObject,
+} from '../../actions/give';
+import {
     Link,
 } from '../../routes';
 import '../../static/less/giveFlows.less';
@@ -32,6 +35,10 @@ class GiveFromCampaignModal extends React.Component {
         const {
             isGiveFromModalOpen,
         } = this.state;
+        const {
+            dispatch,
+        } = this.props;
+        resetFlowObject('group', dispatch);
         this.setState({
             isGiveFromModalOpen: !isGiveFromModalOpen,
         });
