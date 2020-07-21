@@ -946,7 +946,7 @@ class Group extends React.Component {
                         <Grid centered verticalAlign="middle">
                             <Grid.Row>
                                 <Grid.Column mobile={16} tablet={14} computer={12}>
-                                    <div className="flowBreadcrumb flowPadding">
+                                    <div className="flowBreadcrumb">
                                         <FlowBreadcrumbs
                                             currentStep={currentStep}
                                             formatMessage={formatMessage}

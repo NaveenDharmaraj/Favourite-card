@@ -26,7 +26,7 @@ class Friends extends React.Component {
     render() {
         return (
             <Layout authRequired={true} >
-                <div className="pageWraper">
+                <div className="pageWraperGive">
                     <GiveWrapper {...this.props} baseUrl='/give/to/friend'>
                         <Friend />
                     </GiveWrapper>
