@@ -13,8 +13,9 @@ import {
 } from '../../../actions/userProfile';
 import DropDownInfoToShare from '../../shared/DropDownInfoToShare';
 import { withTranslation } from '../../../i18n';
+import '../../../static/less/giveFlows.less';
 
-const currentPreferenceValue = {
+const currentDropDownName = {
     campaign_admins_info_to_share: 'campaign_admins_info_to_share',
     charities_info_to_share: 'charities_info_to_share',
     giving_group_admins_info_to_share: 'giving_group_admins_info_to_share',
@@ -85,9 +86,8 @@ class InfoToShare extends React.Component {
                         </p>
                         <DropDownInfoToShare
                             infoShareOptions={infoShareOptions.charityShareInfoOptions}
-                            name="charities_info_to_share"
-                            preferences={currentUser.attributes.preferences}
-                            currentPreferenceValue={currentPreferenceValue.charities_info_to_share}
+                            name={currentDropDownName.charities_info_to_share}
+                            preferences={currentUser.attributes.preferences[currentDropDownName.charities_info_to_share]}
                             handleUserPreferenceChange={this.handleUserPreferenceChange}
                             infoShareDropDownLoader={infoShareDropDownLoader}
                         />
@@ -99,17 +99,16 @@ class InfoToShare extends React.Component {
                         </p>
                         <DropDownInfoToShare
                             infoShareOptions={infoShareOptions.groupMemberShareInfoOptions}
-                            name="giving_group_members_info_to_share"
-                            preferences={currentUser.attributes.preferences}
-                            currentPreferenceValue={currentPreferenceValue.giving_group_members_info_to_share}
+                            name={currentDropDownName.giving_group_members_info_to_share}
+                            preferences={currentUser.attributes.preferences[currentDropDownName.giving_group_members_info_to_share]}
                             handleUserPreferenceChange={this.handleUserPreferenceChange}
                             infoShareDropDownLoader={infoShareDropDownLoader}
                         />
-                        <div className="cp_chkbx checkedGiftAmount checkbox-text f-weight-n">
+                        <div className="field ui checkbox checkbox-text f-weight-n cp_chkbx mt-1">
                             <Checkbox
                                 label={formatMessage('infoToShare.shareMyGiftAmount')}
                                 checked={giftAmountCheckbox}
-                                name="giving_group_members_share_my_giftamount"
+                                name={currentDropDownName.giving_group_members_share_my_giftamount}
                                 onClick={this.handleGiftAmountCheckboxClick}
                             />
                         </div>
@@ -121,9 +120,8 @@ class InfoToShare extends React.Component {
                         </p>
                         <DropDownInfoToShare
                             infoShareOptions={infoShareOptions.groupAdminShareInfoOptions}
-                            name="giving_group_admins_info_to_share"
-                            preferences={currentUser.attributes.preferences}
-                            currentPreferenceValue={currentPreferenceValue.giving_group_admins_info_to_share}
+                            name={currentDropDownName.giving_group_admins_info_to_share}
+                            preferences={currentUser.attributes.preferences[currentDropDownName.giving_group_admins_info_to_share]}
                             handleUserPreferenceChange={this.handleUserPreferenceChange}
                             infoShareDropDownLoader={infoShareDropDownLoader}
                         />
@@ -135,9 +133,8 @@ class InfoToShare extends React.Component {
                         </p>
                         <DropDownInfoToShare
                             infoShareOptions={infoShareOptions.campaignAdminShareInfoOptions}
-                            name="campaign_admins_info_to_share"
-                            preferences={currentUser.attributes.preferences}
-                            currentPreferenceValue={currentPreferenceValue.campaign_admins_info_to_share}
+                            name={currentDropDownName.campaign_admins_info_to_share}
+                            preferences={currentUser.attributes.preferences[currentDropDownName.campaign_admins_info_to_share]}
                             handleUserPreferenceChange={this.handleUserPreferenceChange}
                             infoShareDropDownLoader={infoShareDropDownLoader}
                         />

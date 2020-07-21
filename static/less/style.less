@@ -1190,67 +1190,22 @@ h4{
     .dropdownSearch{
       max-width: 477px;
       width: 100%;
-      &.dropdownWithArrowParentnotbg{
-        position: relative;
-        .ui.selection.dropdown {
+      &.dropdownWithArrowParent{
+        &.ArrowParentbtm{
+          .ui.selection.dropdown {
             &.active{
-                &::after{
-                    z-index: 99;
-                    transform: rotate(180deg);
-                }
                 .menu{
                     .item{
                       border-bottom: 1px solid #DDDDDD;
-                      padding-top: 14px !important;
-                      padding-bottom: 14px !important;
-                      font-weight: normal;
-                        &.selected{
-                            background-color: #055CE5;
-                            color: #fff;
-                            border-color: #055CE5;
-                            font-weight: normal;
-                        }
-                        .text{
-                          line-height: 20px;
-                        }
                     }
                 }
             }
-            &::after{
-                content: '';
-                background-image: url(../images/icons/icon-arrow-down.svg);
-                height: 7px;
-                width: 13.5px;
-                position: absolute;
-                right: 10px;
-                background-size: contain;
-                background-position: center;
-                background-repeat: no-repeat;
-                transition: all 0.3s ease-out;
-                z-index: 2;
-                top:17px;
-                filter: invert(79%) sepia(0%) saturate(1%) hue-rotate(277deg) brightness(97%) contrast(87%);
-            }
-            i{
-                display: none;
-            }
+          }
         }
         .text{
           line-height: 20px;
         }
       }
-    }
-    .checkedGiftAmount{
-      margin-top:18px;
-      .ui.checkbox input:checked~label:after {
-        content: '';
-        top: 4px;
-        left: 4px;
-        width: 9px;
-        height: 9px;
-        background-color: #055CE5;
-        border-radius: 2px;
-    }
     }
   }
 }

@@ -117,7 +117,7 @@ const validateGivingGoal = (givingGoal, validity) => {
     );
     return validity;
 };
-const populateDropdownInfoToShare = (infoShareOptions, preferences, currentDropDownPreference) => {
+const populateDropdownInfoToShare = (infoShareOptions, preferences) => {
     const infoToShare = {
         defaultValue: 'anonymous',
         infoToShareList: [],
@@ -131,7 +131,7 @@ const populateDropdownInfoToShare = (infoShareOptions, preferences, currentDropD
                     text: ReactHtmlParser(`<div className="attributes">Give anonymously</div>`),
                     value: `${info.privacySetting}`,
                 });
-                if (preferences && preferences[currentDropDownPreference] === info.privacySetting) {
+                if (preferences === info.privacySetting) {
                     infoToShare.defaultValue = info.privacySetting;
                 }
                 break;
@@ -140,10 +140,10 @@ const populateDropdownInfoToShare = (infoShareOptions, preferences, currentDropD
                     key: `${info.privacySetting}`,
                     privacyData: null,
                     text: ReactHtmlParser(`<div className="attributes">${info.name}</div>`),
-                    value: `${info.privacySetting}-${info.name}`,
+                    value: `${info.privacySetting}`,
                 });
-                if (preferences && preferences[currentDropDownPreference] === info.privacySetting) {
-                    infoToShare.defaultValue = `${info.privacySetting}-${info.name}`;
+                if (preferences === info.privacySetting) {
+                    infoToShare.defaultValue = `${info.privacySetting}`;
                 }
                 break;
             case 'name_email':
@@ -152,10 +152,10 @@ const populateDropdownInfoToShare = (infoShareOptions, preferences, currentDropD
                     privacyData: null,
                     text: ReactHtmlParser(`<div className="attributes">${info.name}</div>
                     <div className="attributes">${info.email}</div>`),
-                    value: `${info.privacySetting}-${info.name}${info.email}`,
+                    value: `${info.privacySetting}`,
                 });
-                if (preferences && preferences[currentDropDownPreference] === info.privacySetting) {
-                    infoToShare.defaultValue = `${info.privacySetting}-${info.name}${info.email}`;
+                if (preferences === info.privacySetting) {
+                    infoToShare.defaultValue = `${info.privacySetting}`;
                 }
                 break;
             case 'name_address_email':
@@ -167,7 +167,7 @@ const populateDropdownInfoToShare = (infoShareOptions, preferences, currentDropD
                     <div className="attributes">${info.city}, ${info.province} ${info.country}</div>`),
                     value: `${info.privacySetting}-${info.privacyData}`,
                 });
-                if (preferences && preferences[currentDropDownPreference] === info.privacySetting) {
+                if (preferences === info.privacySetting) {
                     infoToShare.defaultValue = `${info.privacySetting}-${info.privacyData}`;
                 }
                 break;

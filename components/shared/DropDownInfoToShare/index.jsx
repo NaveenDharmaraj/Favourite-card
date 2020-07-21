@@ -10,7 +10,7 @@ import { populateDropdownInfoToShare } from '../../../helpers/users/utils';
 
 
 const DropDownInfoToShare = ({
-    currentPreferenceValue, infoShareOptions, name, preferences, handleUserPreferenceChange, infoShareDropDownLoader,
+    infoShareOptions, name, preferences, handleUserPreferenceChange, infoShareDropDownLoader,
 }) => {
     const [
         options,
@@ -29,7 +29,7 @@ const DropDownInfoToShare = ({
         const {
             infoToShareList,
             defaultValue,
-        } = populateDropdownInfoToShare(infoShareOptions, preferences, currentPreferenceValue);
+        } = populateDropdownInfoToShare(infoShareOptions, preferences);
         setOptions(infoToShareList);
         setDropDownValue(defaultValue);
     }, [
@@ -51,7 +51,7 @@ const DropDownInfoToShare = ({
         handleUserPreferenceChange(preferenceObj);
     };
     return (
-        <div className={`dropdownSearch ${infoShareDropDownLoader ? '' : 'dropdownWithArrowParentnotbg'} medium`}>
+        <div className={`dropdownSearch ${infoShareDropDownLoader ? '' : 'dropdownWithArrowParent'} medium ArrowParentbtm`}>
             <Dropdown
                 className="dropdownsearchField grouped medium"
                 fluid
@@ -67,7 +67,6 @@ const DropDownInfoToShare = ({
     );
 };
 DropDownInfoToShare.defaultProps = {
-    currentPreferenceValue: '',
     infoShareDropDownLoader: false,
     infoShareOptions: [
         {
@@ -77,15 +76,16 @@ DropDownInfoToShare.defaultProps = {
         },
     ],
     name: '',
+    preferences: '',
 };
 
 DropDownInfoToShare.propTypes = {
-    currentPreferenceValue: PropTypes.string,
     infoShareDropDownLoader: PropTypes.bool,
     infoShareOptions: PropTypes.arrayOf(PropTypes.shape({
         privacySetting: PropTypes.string,
     })),
     name: PropTypes.string,
+    preferences: PropTypes.string,
 };
 
 export default DropDownInfoToShare;

@@ -1503,46 +1503,42 @@ const getInfoToShareDropdownOptions = (userId, infoShareDropDownLoader = false) 
                 uxCritical: true,
             },
         });
+        fsa.payload.infoShareOptions.charityShareInfoOptions = charityShare.data;
+    } catch (err) {}
+    try {
         const groupMemberShare = await coreApi.get(`users/${userId}/groupMemberShare`, {
             params: {
                 dispatch,
                 uxCritical: true,
             },
         });
+        fsa.payload.infoShareOptions.groupMemberShareInfoOptions = groupMemberShare.data;
+    } catch (err) {}
+    try {
         const groupAdminShare = await coreApi.get(`users/${userId}/groupAdminShare`, {
             params: {
                 dispatch,
                 uxCritical: true,
             },
         });
+        fsa.payload.infoShareOptions.groupAdminShareInfoOptions = groupAdminShare.data;
+    } catch (err) {}
+    try {
         const campaignAdminShare = await coreApi.get(`users/${userId}/campaignAdminShare`, {
             params: {
                 dispatch,
                 uxCritical: true,
             },
         });
-        fsa.payload.infoShareOptions.charityShareInfoOptions = charityShare.data;
-        fsa.payload.infoShareOptions.groupMemberShareInfoOptions = groupMemberShare.data;
-        fsa.payload.infoShareOptions.groupAdminShareInfoOptions = groupAdminShare.data;
         fsa.payload.infoShareOptions.campaignAdminShareInfoOptions = campaignAdminShare.data;
-        dispatch(fsa);
-        dispatch({
-            payload: {
-                infoShareDropDownLoader: false,
-            },
-            type: actionTypes.USER_INFO_TO_SHARE_OPTIONS_LOADER,
-        });
-    } catch (err) {
-        dispatch(fsa);
-        dispatch({
-            payload: {
-                infoShareDropDownLoader: false,
-            },
-            type: actionTypes.USER_INFO_TO_SHARE_OPTIONS_LOADER,
-        });
-    }
-
-
+    } catch (err) {}
+    dispatch(fsa);
+    dispatch({
+        payload: {
+            infoShareDropDownLoader: false,
+        },
+        type: actionTypes.USER_INFO_TO_SHARE_OPTIONS_LOADER,
+    });
 };
 
 export {
