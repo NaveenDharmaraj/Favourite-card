@@ -80,6 +80,7 @@ class Charts extends React.Component {
             chartIndex: getChartIndex(beneficiaryFinance),
             graphData: formatGraphData(beneficiaryFinance, this.mapping, this.colorArr),
             showDoneeListModal: false,
+            showAnimation: true,
         };
     }
 
@@ -179,6 +180,7 @@ class Charts extends React.Component {
         if (!_isEmpty(event)) {
             this.setState({
                 chartIndex: event[0]._index,
+                showAnimation: false,
             });
             dispatch({
                 type: 'RESET_DONEE_LIST',
@@ -251,6 +253,7 @@ class Charts extends React.Component {
             chartIndex,
             graphData,
             showDoneeListModal,
+            showAnimation,
         } = this.state;
         const currency = 'USD';
         let chartView = '';
@@ -270,11 +273,18 @@ class Charts extends React.Component {
                                             height="255px"
                                             redraw
                                             options={{
+                                                animation: {
+                                                    duration: showAnimation ? 1000 : 1,
+                                                },
                                                 events: [
                                                     'click',
+                                                    'mousemove',
                                                 ],
                                                 legend: false,
                                                 maintainAspectRatio: false,
+                                                onHover: (event, chartElement) => {
+                                                    event.target.style.cursor = chartElement[0] ? 'pointer' : '';
+                                                },
                                                 scales: {
                                                     xAxes: [
                                                         {
