@@ -317,7 +317,7 @@ class Charts extends React.Component {
                             </Grid.Column>
                         </Grid.Row>
                         <Grid.Row className="expenseHeader">
-                            <Grid.Column mobile={11} tablet={12} computer={12}>
+                            <Grid.Column mobile={8} tablet={12} computer={12}>
                                 <List>
                                     <List.Item as="h5">
                                         <Image src={totalRevenue} />
@@ -327,7 +327,7 @@ class Charts extends React.Component {
                                     </List.Item>
                                 </List>
                             </Grid.Column>
-                            <Grid.Column mobile={5} tablet={4} computer={4} textAlign="right">
+                            <Grid.Column mobile={8} tablet={4} computer={4} textAlign="right">
                                 <Header as="h5">
                                     {formatCurrency(graphData.totalData[chartIndex].revenue_total, language, currency)}
                                 </Header>
@@ -337,7 +337,7 @@ class Charts extends React.Component {
                     <Divider />
                     <Grid>
                         <Grid.Row className="expenseHeader ch_Expenses">
-                            <Grid.Column mobile={11} tablet={12} computer={12}>
+                            <Grid.Column mobile={8} tablet={12} computer={12}>
                                 <List>
                                     <List.Item as="h5">
                                         <Image src={toalExpense} />
@@ -347,7 +347,7 @@ class Charts extends React.Component {
                                     </List.Item>
                                 </List>
                             </Grid.Column>
-                            <Grid.Column mobile={5} tablet={4} computer={4} textAlign="right">
+                            <Grid.Column mobile={8} tablet={4} computer={4} textAlign="right">
                                 <Header as="h5">
                                     {formatCurrency(graphData.totalData[chartIndex].total_expense, language, currency)}
                                 </Header>

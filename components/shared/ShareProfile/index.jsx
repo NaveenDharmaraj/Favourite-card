@@ -130,6 +130,7 @@ class ShareProfile extends React.Component {
                     )}
                     <Modal
                         className="chimp-modal"
+                        dimmer="inverted"
                         onClose={this.closeShareModal}
                         open={showShareModal}
                         closeIcon
