@@ -566,7 +566,14 @@ class Charity extends React.Component {
                         giveData, dropDownOptions, this.props, type,
                     );
                     giveData = modifiedGiveData;
-                    giveData.infoToShare.value = giveData.giveFrom.type === 'user' ? preferences['charities_info_to_share'] : 'anonymous';
+                    const preferenceName = 'charities_info_to_share';
+                    if(giveData.giveFrom.type === 'user'){
+                        const preference = preferences[preferenceName].includes('address')
+                        ? `${preferences[preferenceName]}-${preferences[`${preferenceName}_address`]}` : preferences[preferenceName];
+                        giveData.infoToShare.value = preference;
+                    } else{
+                        giveData.infoToShare.value = 'anonymous';
+                    }
                     dropDownOptions = modifiedDropDownOptions;
                     const coverFeesAmount = Charity.getCoverFeesAmount(giveData, coverFeesData);
                     validity = validateGiveForm(
