@@ -240,6 +240,12 @@ const userProfile = (state = {}, action) => {
                 activeMonthlyDonations: action.payload.activeMonthlyDonations,
             };
             break;
+        case 'USER_CHARITY_INFO_TO_SHARE_OPTIONS':
+            newState = {
+                ...state,
+                charityShareInfoOptions: action.payload.charityShareInfoOptions,
+            };
+            break;
         default:
             break;
     }

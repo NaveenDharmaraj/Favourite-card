@@ -821,6 +821,28 @@ const populateGiveToGroupsofUser = (giveToGroupsData) => {
 };
 /**
 * Populate info to share drop down options
+* @param {string} accountName name of the Account selected
+* @param {requestCallback}formatMessage -The callback that handles the language translation.
+* @return {Array} drop down options array
+*/
+const populateInfoToShareAccountName = (accountName, formatMessage) => {
+    const infoToShareList = [
+        {
+            disabled: false,
+            text: ReactHtmlParser(`<span class="attributes">${formatMessage('giveCommon:infoToShareAnonymous')}</span>`),
+            value: 'anonymous',
+        },
+        {
+            disabled: false,
+            text: ReactHtmlParser(`<span class="attributes">${accountName}</span>`),
+            value: 'accountname',
+        },
+    ];
+    return infoToShareList;
+};
+
+/**
+* Populate info to share drop down options
 * @param {object[]} taxReceiptProfile tax receipt profile list
 * @param {object[]} companyDetails company deteils
 * @param {object} intl for getting intl text
@@ -1827,6 +1849,7 @@ export {
     populateDonationReviewPage,
     populateGiveReviewPage,
     populateCardData,
+    populateInfoToShareAccountName,
     formatCurrency,
     formatDateForGivingTools,
     resetP2pDataForOnInputChange,

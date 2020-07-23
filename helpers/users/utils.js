@@ -160,14 +160,14 @@ const populateDropdownInfoToShare = (infoShareOptions, preferences) => {
                 break;
             case 'name_address_email':
                 infoToShare.infoToShareList.push({
-                    key: `${info.privacySetting}`,
+                    key: `${info.privacySetting}-${info.privacyData}`,
                     privacyData: `${info.privacyData}`,
                     text: ReactHtmlParser(`<div className="attributes">${info.name}</div>
                     <div className="attributes"> ${info.address_one} ${info.address_two} </div>
                     <div className="attributes">${info.city}, ${info.province} ${info.country}</div>`),
                     value: `${info.privacySetting}-${info.privacyData}`,
                 });
-                if (preferences === info.privacySetting) {
+                if (preferences.includes(info.privacySetting)) {
                     infoToShare.defaultValue = `${info.privacySetting}-${info.privacyData}`;
                 }
                 break;
