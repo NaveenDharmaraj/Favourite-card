@@ -26,10 +26,12 @@ const DropDownInfoToShare = ({
         setDropDownValue,
     ] = useState('anonymous');
     useEffect(() => {
+        const preference = preferences[name].includes('address')
+            ? `${preferences[name]}-${preferences[`${name}_address`]}` : preferences[name];
         const {
             infoToShareList,
             defaultValue,
-        } = populateDropdownInfoToShare(infoShareOptions, preferences);
+        } = populateDropdownInfoToShare(infoShareOptions, preference);
         setOptions(infoToShareList);
         setDropDownValue(defaultValue);
     }, [
@@ -40,11 +42,11 @@ const DropDownInfoToShare = ({
             value,
         } = data;
         const {
-            key,
+            privacySetting,
             privacyData,
         } = data.options.find((opt) => opt.value === value);
         const preferenceObj = {
-            [name]: key,
+            [name]: privacySetting,
             ...(name !== 'giving_group_members_info_to_share') && { [`${name}_address`]: privacyData },
         };
         setDropDownValue(value);
@@ -75,8 +77,16 @@ DropDownInfoToShare.defaultProps = {
             value: 'anonymous',
         },
     ],
-    name: '',
-    preferences: '',
+    name: 'charities_info_to_share',
+    preferences: {
+        campaign_admins_info_to_share: '',
+        campaign_admins_info_to_share_address: '',
+        charities_info_to_share: '',
+        charities_info_to_share_address: '',
+        giving_group_admins_info_to_share: '',
+        giving_group_admins_info_to_share_address: '',
+        giving_group_members_info_to_share: '',
+    },
 };
 
 DropDownInfoToShare.propTypes = {
@@ -85,7 +95,15 @@ DropDownInfoToShare.propTypes = {
         privacySetting: PropTypes.string,
     })),
     name: PropTypes.string,
-    preferences: PropTypes.string,
+    preferences: PropTypes.shape({
+        campaign_admins_info_to_share: PropTypes.string,
+        campaign_admins_info_to_share_address: PropTypes.string,
+        charities_info_to_share: PropTypes.string,
+        charities_info_to_share_address: PropTypes.string,
+        giving_group_admins_info_to_share: PropTypes.string,
+        giving_group_admins_info_to_share_address: PropTypes.string,
+        giving_group_members_info_to_share: PropTypes.string,
+    }),
 };
 
 export default DropDownInfoToShare;

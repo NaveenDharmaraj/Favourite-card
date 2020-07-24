@@ -87,7 +87,7 @@ class InfoToShare extends React.Component {
                         <DropDownInfoToShare
                             infoShareOptions={infoShareOptions.charityShareInfoOptions}
                             name={currentDropDownName.charities_info_to_share}
-                            preferences={currentUser.attributes.preferences[currentDropDownName.charities_info_to_share]}
+                            preferences={currentUser.attributes.preferences}
                             handleUserPreferenceChange={this.handleUserPreferenceChange}
                             infoShareDropDownLoader={infoShareDropDownLoader}
                         />
@@ -100,7 +100,7 @@ class InfoToShare extends React.Component {
                         <DropDownInfoToShare
                             infoShareOptions={infoShareOptions.groupMemberShareInfoOptions}
                             name={currentDropDownName.giving_group_members_info_to_share}
-                            preferences={currentUser.attributes.preferences[currentDropDownName.giving_group_members_info_to_share]}
+                            preferences={currentUser.attributes.preferences}
                             handleUserPreferenceChange={this.handleUserPreferenceChange}
                             infoShareDropDownLoader={infoShareDropDownLoader}
                         />
@@ -121,7 +121,7 @@ class InfoToShare extends React.Component {
                         <DropDownInfoToShare
                             infoShareOptions={infoShareOptions.groupAdminShareInfoOptions}
                             name={currentDropDownName.giving_group_admins_info_to_share}
-                            preferences={currentUser.attributes.preferences[currentDropDownName.giving_group_admins_info_to_share]}
+                            preferences={currentUser.attributes.preferences}
                             handleUserPreferenceChange={this.handleUserPreferenceChange}
                             infoShareDropDownLoader={infoShareDropDownLoader}
                         />
@@ -134,7 +134,7 @@ class InfoToShare extends React.Component {
                         <DropDownInfoToShare
                             infoShareOptions={infoShareOptions.campaignAdminShareInfoOptions}
                             name={currentDropDownName.campaign_admins_info_to_share}
-                            preferences={currentUser.attributes.preferences[currentDropDownName.campaign_admins_info_to_share]}
+                            preferences={currentUser.attributes.preferences}
                             handleUserPreferenceChange={this.handleUserPreferenceChange}
                             infoShareDropDownLoader={infoShareDropDownLoader}
                         />

@@ -35,9 +35,10 @@ export const actionTypes = {
     UPDATE_USER_PASSWORD: 'UPDATE_USER_PASSWORD',
     UPDATE_USER_PREFERENCES: 'UPDATE_USER_PREFERENCES',
     UPDATE_USER_PRIVACY_SETTING: 'UPDATE_USER_PRIVACY_SETTING',
+    USER_CHARITY_INFO_TO_SHARE_OPTIONS: 'USER_CHARITY_INFO_TO_SHARE_OPTIONS',
+    USER_CREDIT_CARD_ACTIVE_MONTHLY_DONATIONS: 'USER_CREDIT_CARD_ACTIVE_MONTHLY_DONATIONS',
     USER_INFO_TO_SHARE_OPTIONS: 'USER_INFO_TO_SHARE_OPTIONS',
     USER_INFO_TO_SHARE_OPTIONS_LOADER: 'USER_INFO_TO_SHARE_OPTIONS_LOADER',
-    USER_CREDIT_CARD_ACTIVE_MONTHLY_DONATIONS: 'USER_CREDIT_CARD_ACTIVE_MONTHLY_DONATIONS',
     USER_PROFILE_ACCEPT_FRIEND: 'USER_PROFILE_ACCEPT_FRIEND',
     USER_PROFILE_ADD_DUPLICATE_EMAIL_ERROR: 'USER_PROFILE_ADD_DUPLICATE_EMAIL_ERROR',
     USER_PROFILE_ADD_FRIEND: 'USER_PROFILE_ADD_FRIEND',
@@ -1478,6 +1479,24 @@ const resendUserVerifyEmail = (dispatch, userEmailId, userId) => {
     }).catch().finally();
 };
 
+const getCharityInfoToShare = (userId) => async (dispatch) => {
+    const fsa = {
+        payload: {
+            charityShareInfoOptions: [],
+        },
+        type: actionTypes.USER_CHARITY_INFO_TO_SHARE_OPTIONS,
+    };
+    try {
+        const charityShare = await coreApi.get(`users/${userId}/charityShare`, {
+            params: {
+                dispatch,
+                uxCritical: true,
+            },
+        });
+        fsa.payload.charityShareInfoOptions = charityShare.data;
+    } catch (err) { }
+    dispatch(fsa);
+};
 const getInfoToShareDropdownOptions = (userId, infoShareDropDownLoader = false) => async (dispatch) => {
     const fsa = {
         payload: {
@@ -1542,6 +1561,7 @@ const getInfoToShareDropdownOptions = (userId, infoShareDropDownLoader = false) 
 };
 
 export {
+    getCharityInfoToShare,
     getInfoToShareDropdownOptions,
     getPaymentInstrumentById,
     getUserProfileBasic,

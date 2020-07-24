@@ -1,91 +1,64 @@
 /* eslint-disable no-else-return */
 import React, {
     Fragment,
+    useState,
+    useEffect,
 } from 'react';
 import {
-    Container,
-    Divider,
     Form,
-    Header,
     Icon,
     Popup,
     Select,
 } from 'semantic-ui-react';
-import _isEmpty from 'lodash/isEmpty';
-import { Link } from '../../routes';
+import PropTypes from 'prop-types';
+
 import CharityFrequency from '../Give/DonationFrequency';
+import { populateDropdownInfoToShare } from '../../helpers/users/utils';
+import { populateInfoToShareAccountName } from '../../helpers/give/utils';
 
 const SpecialInstruction = (props) => {
     const {
+        charityShareInfoOptions,
         formatMessage,
         giftType,
-        giftTypeList,
         giveFrom,
         handleInputChange,
-        infoToShare,
-        infoToShareList,
-        paymentInstrumentList,
-        defaultTaxReceiptProfile,
-        companyDetails,
-        companyAccountsFetched,
-        userAccountsFetched,
-        slug,
-        giveData,
+        infoDefaultValue,
         language,
         handlegiftTypeButtonClick,
     } = props;
     let repeatGift = null;
-
-    
-
-    const renderPaymentTaxErrorMsg = () => {
-        if ((userAccountsFetched && giveFrom.type === 'user') || (companyAccountsFetched && giveFrom.type === 'companies')) {
-            const taxProfile = (giveFrom.type === 'companies' && companyDetails && companyDetails.companyDefaultTaxReceiptProfile)
-                ? companyDetails.companyDefaultTaxReceiptProfile
-                : defaultTaxReceiptProfile;
-            if (_isEmpty(paymentInstrumentList) && _isEmpty(taxProfile)) {
-                const paymentLink = (giveFrom.type === 'companies')
-                    ? <a href={`/companies/${slug}/payment-profiles`}>payment method</a>
-                    : <Link route='/user/profile/settings/creditcard'>payment method</Link>;
-                const taxLink = (giveFrom.type === 'companies')
-                    ? <a href={`/companies/${slug}/tax-receipt-profiles`}>tax receipt recipient</a>
-                    : <Link route='/user/tax-receipts'>tax receipt recipient</Link>
-                return (
-                    <div className="mb-1">
-                        <Icon color="red" name="warning circle" />
-                        <span style={{ color: 'red' }}>
-                            To send a monthly gift, first add a {paymentLink} and {taxLink} to your account details. We won't charge your card without your permission.
-                        </span>
-                    </div>
-                );
-            } else if (_isEmpty(paymentInstrumentList)) {
-                const link = (giveFrom.type === 'companies')
-                    ? <a href={`/companies/${slug}/payment-profiles`}>payment method</a>
-                    : <Link route='/user/profile/settings/creditcard'>payment method</Link>
-                return (
-                    <div className="mb-1">
-                        <Icon color="red" name="warning circle" />
-                        <span style={{ color: 'red' }}>
-                            To send a monthly gift, first add a {link} to your account details. We won't charge your card without your permission.
-                        </span>
-                    </div>
-                );
-            } else if (_isEmpty(taxProfile)) {
-                const link = (giveFrom.type === 'companies')
-                    ? <a href={`/companies/${slug}/tax-receipt-profiles`}>tax receipt recipient</a>
-                    : <Link route="/user/tax-receipts">tax receipt recipient</Link>
-                return (
-                    <div className="mb-1">
-                        <Icon color="red" name="warning circle" />
-                        <span style={{ color: 'red' }}>
-                            To send a monthly gift, first add a {link} to your account details.
-                        </span>
-                    </div>
-                );
-            }
+    const [
+        options,
+        setOptions,
+    ] = useState([
+        {
+            text: 'Give anonymously',
+            value: 'anonymous',
+        },
+    ]);
+    const [
+        defautlDropDownValue,
+        setDefaultDropDownValue,
+    ] = useState(infoDefaultValue);
+    useEffect(() => {
+        if (giveFrom.type === 'user') {
+            const {
+                infoToShareList,
+                defaultValue,
+            } = populateDropdownInfoToShare(charityShareInfoOptions, infoDefaultValue);
+            setOptions(infoToShareList);
+            setDefaultDropDownValue(defaultValue);
+        } else {
+            const infoToShareList = populateInfoToShareAccountName(giveFrom.name, formatMessage);
+            setOptions(infoToShareList);
+            setDefaultDropDownValue(infoDefaultValue);
         }
-        return null;
-    };
+    }, [
+        giveFrom,
+        charityShareInfoOptions,
+    ]);
+
     if (giveFrom.type === 'user' || giveFrom.type === 'companies') {
         repeatGift = (
             <Fragment>
@@ -100,7 +73,13 @@ const SpecialInstruction = (props) => {
             </Fragment>
         );
     }
-
+    const handleSpecialInstructionInputChange = (event, data) => {
+        const {
+            value,
+        } = data;
+        setDefaultDropDownValue(value);
+        handleInputChange(event, data);
+    };
     return (
         <Fragment>
             {repeatGift}
@@ -124,20 +103,41 @@ const SpecialInstruction = (props) => {
                     className="dropdownWithArrowParent icon"
                     id="infoToShare"
                     name="infoToShare"
-                    options={infoToShareList}
-                    onChange={handleInputChange}
-                    value={infoToShare.value}
+                    options={options}
+                    onChange={handleSpecialInstructionInputChange}
+                    value={defautlDropDownValue}
                 />
             </Form.Field>
         </Fragment>
     );
 };
 SpecialInstruction.defaultProps = {
+    charityShareInfoOptions: [
+        {
+            privacySetting: 'anonymous',
+            text: 'Give anonymously',
+            value: 'anonymous',
+        },
+    ],
     giftType: {
         value: null,
     },
-    infoToShare: {
-        value: null,
+    giveFrom: {
+        name: '',
     },
+    infoDefaultValue: 'anonymous',
 };
+SpecialInstruction.propTypes = {
+    charityShareInfoOptions: PropTypes.arrayOf(PropTypes.shape({
+        privacySetting: PropTypes.string,
+    })),
+    giftType: PropTypes.shape({
+        value: PropTypes.number,
+    }),
+    giveFrom: PropTypes.shape({
+        name: PropTypes.string,
+    }),
+    infoDefaultValue: PropTypes.string,
+};
+
 export default SpecialInstruction;
