@@ -38,7 +38,7 @@ const SpecialInstruction = (props) => {
         },
     ]);
     const [
-        dropDefaultDownValue,
+        defautlDropDownValue,
         setDefaultDropDownValue,
     ] = useState(infoDefaultValue);
     useEffect(() => {
@@ -105,7 +105,7 @@ const SpecialInstruction = (props) => {
                     name="infoToShare"
                     options={options}
                     onChange={handleSpecialInstructionInputChange}
-                    value={dropDefaultDownValue}
+                    value={defautlDropDownValue}
                 />
             </Form.Field>
         </Fragment>

@@ -590,8 +590,6 @@ class Charity extends React.Component {
                     reviewBtnFlag = false;
                     reloadModalOpen = 0;
                     break;
-                case 'infoToShare':
-                    giveData.infoToShare.value = value;
                 default: break;
             }
             this.setState({
@@ -744,8 +742,12 @@ class Charity extends React.Component {
             const {
                 charityShareInfoOptions,
             } = this.props;
-            const{
-                flowObject
+            const {
+                flowObject: {
+                    giveData: {
+                        infoToShare
+                    }
+                }
             } = this.state;
             return (
                 <SpecialInstruction
@@ -756,7 +758,7 @@ class Charity extends React.Component {
                     formatMessage={formatMessage}
                     handlegiftTypeButtonClick={this.handlegiftTypeButtonClick}
                     charityShareInfoOptions={charityShareInfoOptions}
-                    infoDefaultValue={flowObject.giveData.infoToShare.value}
+                    infoDefaultValue={infoToShare.value}
                 />
             );
         }
