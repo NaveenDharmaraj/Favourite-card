@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1109px" height="70px" viewBox="0 0 1109 70" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: sketchtool 64 (101010) - https://sketch.com -->
+    <title>054DAB23-2060-48FB-8D25-FEF6F72CBBFD</title>
+    <desc>Created with sketchtool.</desc>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="1109" height="70" rx="5"></rect>
+    </defs>
+    <g id="UI-Kit" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="banners---charity" transform="translate(-50.000000, -1160.000000)">
+            <g id="img/charity" transform="translate(50.000000, 1160.000000)">
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"></use>
+                </mask>
+                <use id="Mask" fill="#F6F6F6" xlink:href="#path-1"></use>
+                <rect id="Profile-BG" fill="#F7BA4A" opacity="0.1" mask="url(#mask-2)" x="-628" y="0" width="1737" height="70"></rect>
+                <g id="Group-4" mask="url(#mask-2)">
+                    <g transform="translate(318.500000, 38.500000) scale(-1, 1) translate(-318.500000, -38.500000) translate(-356.000000, 14.000000)">
+                        <rect id="Rectangle" fill="#DB0163" x="882" y="13" width="39" height="7"></rect>
+                        <rect id="Rectangle" fill="#9B8FBB" x="688" y="2" width="20" height="7"></rect>
+                        <rect id="Rectangle" fill="#93EBB2" transform="translate(754.500000, 6.000000) scale(-1, 1) translate(-754.500000, -6.000000) " x="749" y="2" width="11" height="8"></rect>
+                        <rect id="Rectangle" fill="#F7BC5F" transform="translate(812.000000, 36.500000) scale(-1, 1) translate(-812.000000, -36.500000) " x="797" y="33" width="30" height="7"></rect>
+                        <rect id="Rectangle-Copy-17" fill="#6194E5" opacity="0.778762091" x="833" y="25" width="14" height="8"></rect>
+                        <g id="Group-4" stroke-width="1" fill="none" transform="translate(228.000000, 28.000000) scale(1, -1) translate(-228.000000, -28.000000) translate(0.000000, 7.000000)">
+                            <rect id="Rectangle" fill="#ED803B" transform="translate(245.000000, 16.418327) rotate(-180.000000) translate(-245.000000, -16.418327) " x="235" y="8.41832669" width="20" height="16"></rect>
+                            <rect id="Rectangle" fill="#F7BC5F" transform="translate(226.000000, 16.418327) rotate(-180.000000) translate(-226.000000, -16.418327) " x="224" y="8.41832669" width="4" height="16"></rect>
+                            <rect id="Rectangle" fill="#FCC7AD" x="83" y="0.737051793" width="7" height="23.9043825"></rect>
+                            <rect id="Rectangle" fill="#DB0163" x="0" y="28.5458167" width="47" height="7.96812749"></rect>
+                            <rect id="Rectangle" fill="#84ABEA" x="409" y="12.689243" width="47" height="7.96812749"></rect>
+                            <rect id="Rectangle" fill="#93EBB2" x="348" y="30.6175299" width="13" height="10.9561753"></rect>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
