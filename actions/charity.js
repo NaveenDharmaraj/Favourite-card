@@ -26,7 +26,7 @@ export const actionTypes = {
     GET_CHARITY_DETAILS_FROM_SLUG: 'GET_CHARITY_DETAILS_FROM_SLUG',
 };
 
-export const getBeneficiaryDoneeList = (charityId, year) => (dispatch) => {
+export const getBeneficiaryDoneeList = (charityId, year, isAuthenticated) => (dispatch) => {
     const fsa = {
         payload: {
             donationDetails: [],
@@ -41,7 +41,7 @@ export const getBeneficiaryDoneeList = (charityId, year) => (dispatch) => {
         },
         type: actionTypes.CHARITY_PLACEHOLDER_STATUS,
     });
-    return utilityApi.get(`/beneficiaryDoneeList/${charityId}`, {
+    let fullParams = {
         params: {
             dispatch,
             locale: 'en_ca',
@@ -51,6 +51,15 @@ export const getBeneficiaryDoneeList = (charityId, year) => (dispatch) => {
             tenant_name: 'chimp',
             uxCritical: true,
         },
+    };
+    if (!isAuthenticated) {
+        fullParams = {
+            ...fullParams,
+            ...BASIC_AUTH_HEADER,
+        };
+    }
+    return utilityApi.get(`/beneficiaryDoneeList/${charityId}`, {
+        ...fullParams,
     }).then(
         (result) => {
             if (result && result._embedded && result._embedded.donee_list
@@ -123,7 +132,7 @@ export const getBeneficiaryFromSlug = (slug, token = null) => async (dispatch) =
     }
 };
 
-export const getBeneficiaryFinance = (id) => (dispatch) => {
+export const getBeneficiaryFinance = (id, isAuthenticated) => (dispatch) => {
     const fsa = {
         payload: {
             beneficiaryFinance: [],
@@ -136,7 +145,7 @@ export const getBeneficiaryFinance = (id) => (dispatch) => {
         },
         type: actionTypes.CHARITY_CHART_LOADER,
     });
-    return utilityApi.get(`/beneficiaryfinance/${id}`, {
+    let fullParams = {
         params: {
             // dispatch,
             locale: 'en_ca',
@@ -145,6 +154,15 @@ export const getBeneficiaryFinance = (id) => (dispatch) => {
             // TODO: Uncomment dispatch and uxCritical, as this is the temporary fix for CPP-6102
             // to remove toast message on error ,ref: CPP-6140
         },
+    };
+    if (!isAuthenticated) {
+        fullParams = {
+            ...fullParams,
+            ...BASIC_AUTH_HEADER,
+        };
+    }
+    return utilityApi.get(`/beneficiaryfinance/${id}`, {
+        ...fullParams,
     }).then((result) => {
         if (result.beneficiaryFinanceList && !_isEmpty(result.beneficiaryFinanceList)) {
             fsa.payload.beneficiaryFinance = result.beneficiaryFinanceList;

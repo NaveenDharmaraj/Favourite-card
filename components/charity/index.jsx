@@ -43,11 +43,11 @@ const CharityProfileWrapper = (props) => {
 
 
 CharityProfileWrapper.defaultProps = {
-    charityDetails: PropTypes.shape({
-        attributes: PropTypes.shape({
+    charityDetails: {
+        attributes: {
             name: '',
-        }),
-    }),
+        },
+    },
 };
 
 CharityProfileWrapper.propTypes = {

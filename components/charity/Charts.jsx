@@ -32,6 +32,7 @@ import {
 import {
     formatGraphData,
     getChartIndex,
+    formatChartAmount,
 } from '../../helpers/profiles/utils';
 import {
     getBeneficiaryFinance,
@@ -79,6 +80,7 @@ class Charts extends React.Component {
             chartIndex: getChartIndex(beneficiaryFinance),
             graphData: formatGraphData(beneficiaryFinance, this.mapping, this.colorArr),
             showDoneeListModal: false,
+            showAnimation: true,
         };
     }
 
@@ -88,8 +90,9 @@ class Charts extends React.Component {
             charityDetails: {
                 id,
             },
+            isAuthenticated,
         } = this.props;
-        dispatch(getBeneficiaryFinance(id));
+        dispatch(getBeneficiaryFinance(id, isAuthenticated));
     }
 
     componentDidUpdate(prevProps) {
@@ -102,10 +105,12 @@ class Charts extends React.Component {
         let viewData = {};
         if (!_isEqual(prevProps.beneficiaryFinance, beneficiaryFinance)) {
             viewData = formatGraphData(beneficiaryFinance, this.mapping, this.colorArr);
-            this.setState({
-                chartIndex: viewData.yearLabel.indexOf(viewData.selectedYear),
-                graphData: viewData,
-            });
+            if (!_isEmpty(viewData)) {
+                this.setState({
+                    chartIndex: viewData.yearLabel.indexOf(viewData.selectedYear),
+                    graphData: viewData,
+                });
+            }
         }
         if (current !== null) {
             this.highlightBar();
@@ -129,6 +134,7 @@ class Charts extends React.Component {
                 {
                     backgroundColor: '#055CE5',
                     borderColor: '#055CE5',
+                    borderWidth: 2,
                     data: revenueData,
                     fill: false,
                     label: 'Revenue',
@@ -174,6 +180,7 @@ class Charts extends React.Component {
         if (!_isEmpty(event)) {
             this.setState({
                 chartIndex: event[0]._index,
+                showAnimation: false,
             });
             dispatch({
                 type: 'RESET_DONEE_LIST',
@@ -238,14 +245,17 @@ class Charts extends React.Component {
         const {
             chartLoader,
             t: formatMessage,
+            i18n: {
+                language,
+            },
         } = this.props;
         const {
             chartIndex,
             graphData,
             showDoneeListModal,
+            showAnimation,
         } = this.state;
         const currency = 'USD';
-        const language = 'en';
         let chartView = '';
         if (!chartLoader && !_isEmpty(graphData)) {
             chartView = (
@@ -260,13 +270,21 @@ class Charts extends React.Component {
                                             ref={this.chartReference}
                                             data={this.getChartData}
                                             width="790px"
-                                            height="216px"
+                                            height="255px"
+                                            redraw
                                             options={{
+                                                animation: {
+                                                    duration: showAnimation ? 1000 : 1,
+                                                },
                                                 events: [
                                                     'click',
+                                                    'mousemove',
                                                 ],
                                                 legend: false,
                                                 maintainAspectRatio: false,
+                                                onHover: (event, chartElement) => {
+                                                    event.target.style.cursor = chartElement[0] ? 'pointer' : '';
+                                                },
                                                 scales: {
                                                     xAxes: [
                                                         {
@@ -276,11 +294,27 @@ class Charts extends React.Component {
                                                                 display: false,
                                                             },
                                                             stacked: true,
+                                                            ticks: {
+                                                                fontColor: '#263238',
+                                                                fontSize: 10,
+                                                                padding: 5,
+                                                            },
                                                         },
                                                     ],
                                                     yAxes: [
                                                         {
+                                                            gridLines: {
+                                                                drawBorder: false,
+                                                            },
                                                             stacked: true,
+                                                            ticks: {
+                                                                callback: ((value) => (
+                                                                    formatChartAmount(value, language, currency)
+                                                                )),
+                                                                fontColor: '#263238',
+                                                                fontSize: 10,
+                                                                padding: 8,
+                                                            },
                                                         },
                                                     ],
                                                 },
@@ -293,7 +327,7 @@ class Charts extends React.Component {
                             </Grid.Column>
                         </Grid.Row>
                         <Grid.Row className="expenseHeader">
-                            <Grid.Column mobile={11} tablet={12} computer={12}>
+                            <Grid.Column mobile={8} tablet={12} computer={12}>
                                 <List>
                                     <List.Item as="h5">
                                         <Image src={totalRevenue} />
@@ -303,7 +337,7 @@ class Charts extends React.Component {
                                     </List.Item>
                                 </List>
                             </Grid.Column>
-                            <Grid.Column mobile={5} tablet={4} computer={4} textAlign="right">
+                            <Grid.Column mobile={8} tablet={4} computer={4} textAlign="right">
                                 <Header as="h5">
                                     {formatCurrency(graphData.totalData[chartIndex].revenue_total, language, currency)}
                                 </Header>
@@ -313,7 +347,7 @@ class Charts extends React.Component {
                     <Divider />
                     <Grid>
                         <Grid.Row className="expenseHeader ch_Expenses">
-                            <Grid.Column mobile={11} tablet={12} computer={12}>
+                            <Grid.Column mobile={8} tablet={12} computer={12}>
                                 <List>
                                     <List.Item as="h5">
                                         <Image src={toalExpense} />
@@ -323,7 +357,7 @@ class Charts extends React.Component {
                                     </List.Item>
                                 </List>
                             </Grid.Column>
-                            <Grid.Column mobile={5} tablet={4} computer={4} textAlign="right">
+                            <Grid.Column mobile={8} tablet={4} computer={4} textAlign="right">
                                 <Header as="h5">
                                     {formatCurrency(graphData.totalData[chartIndex].total_expense, language, currency)}
                                 </Header>
@@ -387,11 +421,12 @@ class Charts extends React.Component {
 
 Charts.defaultProps = {
     beneficiaryFinance: [],
-    charityDetails: PropTypes.shape({
+    charityDetails: {
         id: '',
-    }),
+    },
     chartLoader: true,
     dispatch: () => {},
+    isAuthenticated: false,
     t: () => {},
 };
 
@@ -404,6 +439,7 @@ Charts.propTypes = {
     }),
     chartLoader: bool,
     dispatch: func,
+    isAuthenticated: bool,
     t: PropTypes.func,
 };
 
@@ -412,6 +448,7 @@ function mapStateToProps(state) {
         beneficiaryFinance: state.charity.beneficiaryFinance,
         charityDetails: state.charity.charityDetails,
         chartLoader: state.charity.chartLoader,
+        isAuthenticated: state.auth.isAuthenticated,
     };
 }
 
