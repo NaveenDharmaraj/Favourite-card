@@ -1788,8 +1788,8 @@ h4{
         position: fixed;
         left: 0px;
         right: 0px;
-        background-color: #fff;
-        z-index:9999999;
+        background-color: #fff !important;
+        z-index:999;
       }
     }
   }
@@ -2371,6 +2371,9 @@ h4{
       }
     }
   }
+  .auth0-lock.auth0-lock.auth0-lock-opened-in-frame{
+    z-index: 99;
+  }
 }
 .no-border-bottom{
   &.segment{
@@ -2440,7 +2443,7 @@ h4{
       background-color: #FFFFFF;	
       box-shadow: 0 5px 10px 0 rgba(0,0,0,0.2);
       margin-top: 26px !important;
-      z-index: 999999999;
+      z-index: 999;
       @media only screen and (max-width:991px){
         margin-top: 17px !important;
       }
