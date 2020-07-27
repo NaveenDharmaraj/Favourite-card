@@ -211,8 +211,8 @@ class ClaimP2PSignUp extends React.Component {
                         <p className="passwordNote">
                             <span data-test="ClaimP2PSignUp_passwordCount_Characters" className={(validity.doesPwdHaveCount) ? 'blueText' : ''}>
                                 {password.length}/{formatMessage('signUpPasswordValidation.noOfCharacter')}
-                            </span><br />
-                            <span data-test="ClaimP2PSignUp_passwordCharacter_lowerCase" className={(validity.doesPwdhaveLowerCase) ? 'blueText' : ''}>{formatMessage('signUpPasswordValidation.lowerCaseCharacter')}</span><br />
+                            </span>
+                            <span data-test="ClaimP2PSignUp_passwordCharacter_lowerCase" className={(validity.doesPwdhaveLowerCase) ? 'blueText' : ''}>{formatMessage('signUpPasswordValidation.lowerCaseCharacter')}</span>
                             <span data-test="ClaimP2PSignUp_passwordCharacter_upperCase" className={(validity.doesPwdhaveUpperCase) ? 'blueText' : ''}>{formatMessage('signUpPasswordValidation.upperCaseCharacter')}</span><br />
                             <span data-test="ClaimP2PSignUp_passwordCharacter_specialCase" className={(validity.doesPwdhaveSpecialChars) ? 'blueText' : ''}>{formatMessage('signUpPasswordValidation.specialCharacter')}</span>
                         </p>
@@ -229,8 +229,8 @@ class ClaimP2PSignUp extends React.Component {
                     <p className="openImpactInfo">
                         {formatMessage('openImpactInfo.info1')}
                         <a href={`${APP_URL_ORIGIN}/privacy`} target="_blank"> {formatMessage('openImpactInfo.privacyPolicyLink')}</a>{formatMessage('openImpactInfo.info2')}
-                        <a href={`${APP_URL_ORIGIN}/terms`} target="_blank">{formatMessage('openImpactInfo.termsAndConditionLink')}</a> {formatMessage('openImpactInfo.info3')}
-                        <a href={`${APP_URL_ORIGIN}/account-agreement`} target="_blank">{formatMessage('openImpactInfo.accountAgreement')}</a>.
+                        &nbsp;<a href={`${APP_URL_ORIGIN}/terms`} target="_blank">{formatMessage('openImpactInfo.termsAndConditionLink')}</a> {formatMessage('openImpactInfo.info3')}
+                        &nbsp;<a href={`${APP_URL_ORIGIN}/account-agreement`} target="_blank">{formatMessage('openImpactInfo.accountAgreement')}</a>.
                 </p>
                 </Form>
             )
