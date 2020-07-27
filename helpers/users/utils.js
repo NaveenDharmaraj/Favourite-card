@@ -183,7 +183,7 @@ const populateDropdownInfoToShare = (infoShareOptions, preferences = {}, name = 
     if (name === 'giving_group_admins_info_to_share' && preferences.giving_group_members_info_to_share === 'name' && infoToShare.infoToShareList.length > 1) {
         infoToShare.infoToShareList.splice(0, 1);
         infoToShare.infoToShareList.push({
-            disabled: (name === 'giving_group_admins_info_to_share' && preferences.giving_group_members_info_to_share === 'name'),
+            disabled: true,
             text: ReactHtmlParser(`<div className="attributes">Give anonymously (group members can see your name, so admins can too)</div>`),
         });
     }
