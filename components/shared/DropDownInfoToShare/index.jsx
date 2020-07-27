@@ -26,16 +26,15 @@ const DropDownInfoToShare = ({
         setDropDownValue,
     ] = useState('anonymous');
     useEffect(() => {
-        const preference = preferences[name].includes('address')
-            ? `${preferences[name]}-${preferences[`${name}_address`]}` : preferences[name];
         const {
             infoToShareList,
             defaultValue,
-        } = populateDropdownInfoToShare(infoShareOptions, preference);
+        } = populateDropdownInfoToShare(infoShareOptions, preferences, name);
         setOptions(infoToShareList);
         setDropDownValue(defaultValue);
     }, [
         infoShareOptions,
+        preferences,
     ]);
     const handleChange = (event, data) => {
         const {
@@ -48,6 +47,8 @@ const DropDownInfoToShare = ({
         const preferenceObj = {
             [name]: privacySetting,
             ...(name !== 'giving_group_members_info_to_share') && { [`${name}_address`]: privacyData },
+            ...(name === 'giving_group_members_info_to_share' && privacySetting === 'name' && preferences.giving_group_admins_info_to_share === 'anonymous')
+            && { giving_group_admins_info_to_share: 'name' },
         };
         setDropDownValue(value);
         handleUserPreferenceChange(preferenceObj);

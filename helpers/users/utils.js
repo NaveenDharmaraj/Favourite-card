@@ -117,7 +117,7 @@ const validateGivingGoal = (givingGoal, validity) => {
     );
     return validity;
 };
-const populateDropdownInfoToShare = (infoShareOptions, preferences) => {
+const populateDropdownInfoToShare = (infoShareOptions, preferences = {}, name = '') => {
     const infoToShare = {
         defaultValue: 'anonymous',
         infoToShareList: [],
@@ -132,7 +132,7 @@ const populateDropdownInfoToShare = (infoShareOptions, preferences) => {
                     text: ReactHtmlParser(`<div className="attributes">Give anonymously</div>`),
                     value: `${info.privacySetting}`,
                 });
-                if (preferences === info.privacySetting) {
+                if (preferences[name] === info.privacySetting) {
                     infoToShare.defaultValue = info.privacySetting;
                 }
                 break;
@@ -144,7 +144,7 @@ const populateDropdownInfoToShare = (infoShareOptions, preferences) => {
                     text: ReactHtmlParser(`<div className="attributes">${info.name}</div>`),
                     value: `${info.privacySetting}`,
                 });
-                if (preferences === info.privacySetting) {
+                if (preferences[name] === info.privacySetting) {
                     infoToShare.defaultValue = `${info.privacySetting}`;
                 }
                 break;
@@ -157,7 +157,7 @@ const populateDropdownInfoToShare = (infoShareOptions, preferences) => {
                     <div className="attributes">${info.email}</div>`),
                     value: `${info.privacySetting}`,
                 });
-                if (preferences === info.privacySetting) {
+                if (preferences[name] === info.privacySetting) {
                     infoToShare.defaultValue = `${info.privacySetting}`;
                 }
                 break;
@@ -171,7 +171,7 @@ const populateDropdownInfoToShare = (infoShareOptions, preferences) => {
                     <div className="attributes">${info.city}, ${info.province} ${info.country}</div>`),
                     value: `${info.privacySetting}-${info.privacyData}`,
                 });
-                if (preferences === `${info.privacySetting}-${info.privacyData}`) {
+                if (preferences[`${name}_address`] === info.privacyData) {
                     infoToShare.defaultValue = `${info.privacySetting}-${info.privacyData}`;
                 }
                 break;
@@ -179,6 +179,15 @@ const populateDropdownInfoToShare = (infoShareOptions, preferences) => {
                 break;
         }
     });
+    // if the condition is getting satisfied removing the anonymous from list and adding at the last
+    if (name === 'giving_group_admins_info_to_share' && preferences.giving_group_members_info_to_share === 'name' && infoToShare.infoToShareList.length > 1) {
+        infoToShare.infoToShareList.splice(0, 1);
+        infoToShare.infoToShareList.push({
+            disabled: true,
+            text: ReactHtmlParser(`<div className="attributes">Give anonymously (group members can see your name, so admins can too)</div>`),
+        });
+    }
+
     return infoToShare;
 };
 

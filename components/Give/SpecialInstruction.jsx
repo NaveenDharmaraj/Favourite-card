@@ -45,10 +45,9 @@ const SpecialInstruction = (props) => {
         if (giveFrom.type === 'user') {
             const {
                 infoToShareList,
-                defaultValue,
-            } = populateDropdownInfoToShare(charityShareInfoOptions, infoDefaultValue);
+            } = populateDropdownInfoToShare(charityShareInfoOptions);
             setOptions(infoToShareList);
-            setDefaultDropDownValue(defaultValue);
+            setDefaultDropDownValue(infoDefaultValue);
         } else {
             const infoToShareList = populateInfoToShareAccountName(giveFrom.name, formatMessage);
             setOptions(infoToShareList);
