@@ -44,10 +44,11 @@ const DropDownInfoToShare = ({
             privacySetting,
             privacyData,
         } = data.options.find((opt) => opt.value === value);
+        debugger
         const preferenceObj = {
             [name]: privacySetting,
             ...(name !== 'giving_group_members_info_to_share') && { [`${name}_address`]: privacyData },
-            ...(name === 'giving_group_members_info_to_share' && preferences.giving_group_admins_info_to_share === 'anonymous')
+            ...(name === 'giving_group_members_info_to_share' && privacySetting === 'name' && preferences.giving_group_admins_info_to_share === 'anonymous')
             && { giving_group_admins_info_to_share: 'name' },
         };
         setDropDownValue(value);
