@@ -205,7 +205,6 @@ class NotificationWrapper extends React.Component {
         } = this.props;
         return messages.map(function (msg) {
             let messagePart;
-            let showMessage = null;
             if (msg.msg) {
                 messagePart = NotificationHelper.getMessagePart(msg, userInfo, 'en_CA');
             } else {
