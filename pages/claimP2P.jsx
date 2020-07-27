@@ -84,20 +84,28 @@ class ClaimP2P extends React.Component {
                                     </p>
                                 </Container>
                             </div>
+                            <div className="claimp2pImpActBg">
+                                <Container>
+                                    <Grid padded>
+                                        <Grid.Row className="pad-0">
+                                            <Grid.Column computer={16} tablet={16} mobile={16} className="claimp2pImpAct">
+                                                <div className="claimp2pImpActWrap">
+                                                    <Header as="h2" textAlign="center">{formatMessage('impAccountHeader')}</Header>
+                                                    <p className="subTtle_1">{formatMessage('impAccountPara1')}</p>
+                                                    <p className="subTtle_2">{formatMessage('impAccountPara2')}</p>
+                                                    <ClaimP2PSignUp
+                                                        email={invitedUserEmail}
+                                                        claimToken={claimToken}
+                                                    />
+                                                </div>
+                                            </Grid.Column>
+                                        </Grid.Row>
+                                    </Grid>
+                                </Container>
+                            </div>
                             <Container>
                                 <Grid padded>
                                     <Grid.Row className="pad-0">
-                                        <Grid.Column computer={16} tablet={16} mobile={16} className="claimp2pImpAct">
-                                            <div className="claimp2pImpActWrap">
-                                                <Header as="h2" textAlign="center">{formatMessage('impAccountHeader')}</Header>
-                                                <p className="subTtle_1">{formatMessage('impAccountPara1')}</p>
-                                                <p className="subTtle_2">{formatMessage('impAccountPara2')}</p>
-                                                <ClaimP2PSignUp
-                                                    email={invitedUserEmail}
-                                                    claimToken={claimToken}
-                                                />
-                                            </div>
-                                        </Grid.Column>
                                         <Grid.Column computer={16} tablet={16} mobile={16} className="claimp2pHwItWrks">
                                             <Header data-test="claimp2p_howItWorks_header" as="h2" textAlign="center">{formatMessage('howItWorks.header')}</Header>
                                             <Grid columns="equal" stackable>
