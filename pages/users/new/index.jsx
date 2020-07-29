@@ -213,7 +213,10 @@ class Login extends React.Component {
                 userDetails.latitude = null;
                 userDetails.causes = userCauses;
                 userDetails.signupSource = storage.getLocalStorageWithExpiry('signup_source','local');
-                userDetails.signupSourceId = storage.getLocalStorageWithExpiry('signup_source_id','local').toString();
+                const sourceId = storage.getLocalStorageWithExpiry('signup_source_id','local');
+                if(sourceId) {
+                    userDetails.signupSourceId = sourceId.toString();
+                };
                 userDetails.claimToken = storage.getLocalStorageWithExpiry('claimToken','local');
                 saveUser(dispatch, userDetails);
             }
