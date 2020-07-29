@@ -335,6 +335,7 @@ class Group extends React.Component {
             giveData.infoToShare = infoToShareList.find(opt => (
                 opt.value === preference
             ));
+            giveData.infoToShareList = infoToShareList;
         }
         if (!_isEmpty(privacyNameOptions) && privacyNameOptions.length > 0
             && !giveData.userInteracted) {
@@ -636,6 +637,23 @@ class Group extends React.Component {
                     reviewBtnFlag = false;
                     reloadModalOpen = 0;
                     break;
+                case 'nameToShare':
+                    const{
+                        giveFrom,
+                        infoToShare,
+                        infoToShareList
+                    } = giveData;
+                    if(newValue.value !== 'anonymous' && infoToShare.value === 'anonymous'){
+                        if(giveFrom.type === 'user'){
+                            giveData.infoToShare = infoToShareList.find(opt => (
+                                opt.value === 'name'
+                            ));
+                        } else{
+                            giveData.infoToShare = dropDownOptions.privacyNameOptions.find(opt => (
+                                opt.value === 'name'
+                            ));
+                        }
+                    }
                 default: break;
             }
             this.setState({

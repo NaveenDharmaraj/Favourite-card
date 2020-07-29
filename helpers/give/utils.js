@@ -823,9 +823,10 @@ const populateGiveToGroupsofUser = (giveToGroupsData) => {
 * Populate info to share drop down options
 * @param {string} accountName name of the Account selected
 * @param {function}formatMessage -The function that handles the language translation.
+* @param {boolean} disable gives info whether anonymous is disabled or not
 * @return {Array} drop down options array
 */
-const populateInfoToShareAccountName = (accountName, formatMessage) => {
+const populateInfoToShareAccountName = (accountName, formatMessage, disable = false) => {
     const infoToShareList = [
         {
             disabled: false,
@@ -838,6 +839,15 @@ const populateInfoToShareAccountName = (accountName, formatMessage) => {
             value: 'name',
         },
     ];
+    // if the condition is getting satisfied removing the anonymous from list and adding at the last
+    if (disable) {
+        infoToShareList.splice(0, 1);
+        infoToShareList.push({
+            disabled: true,
+            text: ReactHtmlParser(`<div className="attributes">Give anonymously (group members can see your name, so admins can too)</div>`),
+            value: 'anonymous',
+        });
+    }
     return infoToShareList;
 };
 
@@ -1400,7 +1410,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
                 privacyShareNameMessage.push(nameToShare.text);
                 privacyShareNameMessage.push(ReactHtmlParser(`<br/> ${formatMessage('reviewGiftAmount')} ${state.mainDisplayAmount}`));
             }
-            const privacyShareEmailMessage =  (infoToShare.value === 'anonymous') ? formatMessage('reviewGiveAnonymously') : infoToShare.text;
+            const privacyShareEmailMessage = (infoToShare.value === 'anonymous') ? formatMessage('reviewGiveAnonymously') : infoToShare.text;
             // if (giveFrom.type === 'user') {
             //     privacyShareEmailMessage = (infoToShare.value === 'anonymous')
             //         ? formatMessage('reviewGiveAnonymously') : infoToShare.text;

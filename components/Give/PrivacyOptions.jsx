@@ -48,7 +48,8 @@ const PrivacyOptions = (props) => {
             } = populateDropdownInfoToShare(groupCampaignAdminShareInfoOptions, customPreferenceObj, name);
             setInfoToShareAdminOption(infoToShareList);
         } else {
-            const infoToShareList = populateInfoToShareAccountName(giveFrom.name, formatMessage);
+            const disable = nameToShare.value === 'name';
+            const infoToShareList = populateInfoToShareAccountName(giveFrom.name, formatMessage, disable);
             setInfoToShareAdminOption(infoToShareList);
         }
     }, [
