@@ -4,6 +4,8 @@ import { Link, Router } from '../../routes';
 import placeholderUser from '../../static/images/no-data-avatar-user-profile.png';
 import { distanceOfTimeInWords } from '../../helpers/utils';
 import eventApi from '../../services/eventApi';
+import ReactHtmlParser from 'react-html-parser';
+
 import {
     Button,
     Container,
@@ -158,6 +160,36 @@ class NotificationWrapper extends React.Component {
         }
     }
 
+    // eslint-disable-next-line class-methods-use-this
+    renderMessageComponent(messageData) {
+        if (_.isEmpty(messageData.linkData)) {
+            // eslint-disable-next-line react/no-danger
+            return (<span dangerouslySetInnerHTML={{ __html: messageData.message }} />);
+        }
+        const dataMap = {};
+        const splitedMessage = _.split(messageData.message, ' ');
+        splitedMessage.map((msg, i) => {
+            messageData.linkData.filter((data) => {
+                if (msg.includes(data.text)) {
+                    dataMap[`${data.text}`] = data.replaceValue;
+                    let hyper = `<link name=${data.text} route=${data.url}>`;
+                    hyper = (splitedMessage.length - 1 === i) ? `${hyper}.` : hyper;
+                    splitedMessage.splice(i, 1, hyper);
+                }
+            });
+        });
+
+        const htmlString = splitedMessage.join(' ');
+        // eslint-disable-next-line consistent-return
+        function transform(node) {
+            if (node && node.type === 'tag' && node.name === 'link') {
+                // eslint-disable-next-line jsx-a11y/anchor-is-valid
+                return <Link route={node.attribs.route}><b className="hoverable">{dataMap[node.attribs.name]}</b></Link>;
+            }
+        }
+        return ReactHtmlParser(htmlString, { transform });
+    }
+
     listItems(messages , newClass = "") {
         if (!messages) {
             messages = [];
@@ -217,7 +249,7 @@ class NotificationWrapper extends React.Component {
                     </List.Content>
                     <Image avatar src={messagePart.sourceImageLink ? messagePart.sourceImageLink : placeholderUser} />
                     <List.Content>
-                        <span dangerouslySetInnerHTML={{ __html: messagePart.message }}></span>
+                        {self.renderMessageComponent(messagePart)}
                         <div className="time">{distanceOfTimeInWords(msg.createdTs)}</div>
                         <Responsive maxWidth={767}>
                             {(() => {
