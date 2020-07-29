@@ -229,7 +229,7 @@ const saveGroupAllocation = (allocation) => {
         privacyShareAmount,
         privacyShareEmail,
         privacyShareName,
-        privacyTrpId: privacyShareAddress ? infoToShare.id : null,
+        privacyTrpId: privacyShareAddress ? infoToShare.privacyData : null,
     };
     if (!_.isEmpty(dedicateGift.dedicateType)) {
         attributes = {
@@ -927,13 +927,14 @@ export const getCompanyTaxReceiptProfile = (dispatch, companyId) => {
 
 
 export const getGroupsFromSlug = (dispatch, slug) => {
-    return coreApi.get(`groups/find_by_slug`, {
+    const groupsFromSlugPromise = coreApi.get(`groups/find_by_slug`, {
         params: {
             dispatch,
             slug,
             uxCritical: true,
         },
-    }).then(
+    });
+    groupsFromSlugPromise.then(
         (result) => {
             dispatch({
                 payload: {
@@ -945,6 +946,7 @@ export const getGroupsFromSlug = (dispatch, slug) => {
     ).catch(() => {
         Router.pushRoute('/give/error');
     });
+    return groupsFromSlugPromise;
 };
 
 export {

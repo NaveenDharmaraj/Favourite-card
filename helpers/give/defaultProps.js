@@ -124,10 +124,10 @@ export const groupDefaultProps = {
                 value: null,
             },
             infoToShare: {
-                value: null,
+                value: 'anonymous',
             },
             nameToShare: {
-                value: 0,
+                value: 'anonymous',
             },
             noteToCharity: '',
             noteToSelf: '',

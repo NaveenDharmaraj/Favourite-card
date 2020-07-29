@@ -53,6 +53,7 @@ import ReloadAddAmount from '../ReloadAddAmount';
 import { withTranslation } from '../../../i18n';
 import { Router } from '../../../routes';
 import { getCharityInfoToShare } from '../../../actions/userProfile';
+import { populateDropdownInfoToShare } from '../../../helpers/users/utils';
 const FormValidationErrorMessage = dynamic(() => import('../../shared/FormValidationErrorMessage'));
 const NoteTo = dynamic(() => import('../NoteTo'));
 const DedicateType = dynamic(() => import('../DedicateGift'), { ssr: false });
@@ -192,6 +193,7 @@ class Charity extends React.Component {
             } = this.state;
             const {
                 campaignId,
+                charityShareInfoOptions,
                 companyDetails,
                 companiesAccountsData,
                 currentUser: {
@@ -278,7 +280,7 @@ class Charity extends React.Component {
                 giveData = Charity.initFields(
                     giveData, fund, id, avatar,
                     `${firstName} ${lastName}`, companiesAccountsData, userGroups, userCampaigns,
-                    giveGroupBenificairyDetails, giveFromId, giveFromType, language, currency
+                    giveGroupBenificairyDetails, giveFromId, giveFromType, language, currency, preferences, charityShareInfoOptions
                 );
             }
             this.setState({
@@ -317,7 +319,7 @@ class Charity extends React.Component {
 
     // eslint-disable-next-line react/sort-comp
     static initFields(giveData, fund, id, avatar,
-        name, companiesAccountsData, userGroups, userCampaigns, giveGroupBenificairyDetails, groupId, giveFromType, language, currency) {
+        name, companiesAccountsData, userGroups, userCampaigns, giveGroupBenificairyDetails, groupId, giveFromType, language, currency, preferences, charityShareInfoOptions) {
         if (_isEmpty(companiesAccountsData) && _isEmpty(userGroups) && _isEmpty(userCampaigns) && !giveData.userInteracted) {
             giveData.giveFrom.avatar = avatar,
                 giveData.giveFrom.id = id;
@@ -347,6 +349,15 @@ class Charity extends React.Component {
             giveData.giveFrom = {
                 value: '',
             };
+        }
+        if(!_isEmpty(charityShareInfoOptions) && charityShareInfoOptions.length>0){
+            const name = 'charities_info_to_share';
+            const preference = preferences[name].includes('address')
+                ? `${preferences[name]}-${preferences[`${name}_address`]}` : preferences[name];
+            const { infoToShareList } = populateDropdownInfoToShare(charityShareInfoOptions);
+            giveData.infoToShare = infoToShareList.find(opt => (
+                opt.value === preference
+            ));
         }
         return giveData;
     }

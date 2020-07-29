@@ -37,6 +37,7 @@ export const actionTypes = {
     UPDATE_USER_PRIVACY_SETTING: 'UPDATE_USER_PRIVACY_SETTING',
     USER_CHARITY_INFO_TO_SHARE_OPTIONS: 'USER_CHARITY_INFO_TO_SHARE_OPTIONS',
     USER_CREDIT_CARD_ACTIVE_MONTHLY_DONATIONS: 'USER_CREDIT_CARD_ACTIVE_MONTHLY_DONATIONS',
+    USER_GROUP_CAMPAIGN_ADMIN_INFO_TO_SHARE_OPTIONS: 'USER_GROUP_CAMPAIGN_ADMIN_INFO_TO_SHARE_OPTIONS',
     USER_INFO_TO_SHARE_OPTIONS: 'USER_INFO_TO_SHARE_OPTIONS',
     USER_INFO_TO_SHARE_OPTIONS_LOADER: 'USER_INFO_TO_SHARE_OPTIONS_LOADER',
     USER_PROFILE_ACCEPT_FRIEND: 'USER_PROFILE_ACCEPT_FRIEND',
@@ -1497,6 +1498,39 @@ const getCharityInfoToShare = (userId) => async (dispatch) => {
     } catch (err) { }
     dispatch(fsa);
 };
+
+const getGroupCampaignAdminInfoToShare = (userId, hasCampaign) => async (dispatch) => {
+    const fsa = {
+        payload: {
+            groupCampaignAdminShareInfoOptions: [],
+        },
+        type: actionTypes.USER_GROUP_CAMPAIGN_ADMIN_INFO_TO_SHARE_OPTIONS,
+    };
+    if (hasCampaign) {
+        try {
+            const campaignAdminShare = await coreApi.get(`users/${userId}/campaignAdminShare`, {
+                params: {
+                    dispatch,
+                    uxCritical: true,
+                },
+            });
+            fsa.payload.groupCampaignAdminShareInfoOptions = campaignAdminShare.data;
+            dispatch(fsa);
+        } catch (err) { }
+    } else {
+        try {
+            const groupAdminShare = await coreApi.get(`users/${userId}/groupAdminShare`, {
+                params: {
+                    dispatch,
+                    uxCritical: true,
+                },
+            });
+            fsa.payload.groupCampaignAdminShareInfoOptions = groupAdminShare.data;
+            dispatch(fsa);
+        } catch (err) { }
+    }
+};
+
 const getInfoToShareDropdownOptions = (userId, infoShareDropDownLoader = false) => async (dispatch) => {
     const fsa = {
         payload: {
@@ -1523,7 +1557,7 @@ const getInfoToShareDropdownOptions = (userId, infoShareDropDownLoader = false) 
             },
         });
         fsa.payload.infoShareOptions.charityShareInfoOptions = charityShare.data;
-    } catch (err) {}
+    } catch (err) { }
     try {
         const groupMemberShare = await coreApi.get(`users/${userId}/groupMemberShare`, {
             params: {
@@ -1532,7 +1566,7 @@ const getInfoToShareDropdownOptions = (userId, infoShareDropDownLoader = false) 
             },
         });
         fsa.payload.infoShareOptions.groupMemberShareInfoOptions = groupMemberShare.data;
-    } catch (err) {}
+    } catch (err) { }
     try {
         const groupAdminShare = await coreApi.get(`users/${userId}/groupAdminShare`, {
             params: {
@@ -1541,7 +1575,7 @@ const getInfoToShareDropdownOptions = (userId, infoShareDropDownLoader = false) 
             },
         });
         fsa.payload.infoShareOptions.groupAdminShareInfoOptions = groupAdminShare.data;
-    } catch (err) {}
+    } catch (err) { }
     try {
         const campaignAdminShare = await coreApi.get(`users/${userId}/campaignAdminShare`, {
             params: {
@@ -1550,7 +1584,7 @@ const getInfoToShareDropdownOptions = (userId, infoShareDropDownLoader = false) 
             },
         });
         fsa.payload.infoShareOptions.campaignAdminShareInfoOptions = campaignAdminShare.data;
-    } catch (err) {}
+    } catch (err) { }
     dispatch(fsa);
     dispatch({
         payload: {
@@ -1562,6 +1596,7 @@ const getInfoToShareDropdownOptions = (userId, infoShareDropDownLoader = false) 
 
 export {
     getCharityInfoToShare,
+    getGroupCampaignAdminInfoToShare,
     getInfoToShareDropdownOptions,
     getPaymentInstrumentById,
     getUserProfileBasic,
