@@ -1499,14 +1499,14 @@ const getCharityInfoToShare = (userId) => async (dispatch) => {
     dispatch(fsa);
 };
 
-const getGroupCampaignAdminInfoToShare = (userId, hasCampaign) => async (dispatch) => {
+const getGroupCampaignAdminInfoToShare = (userId, isCampaign) => async (dispatch) => {
     const fsa = {
         payload: {
             groupCampaignAdminShareInfoOptions: [],
         },
         type: actionTypes.USER_GROUP_CAMPAIGN_ADMIN_INFO_TO_SHARE_OPTIONS,
     };
-    if (hasCampaign) {
+    if (isCampaign) {
         try {
             const campaignAdminShare = await coreApi.get(`users/${userId}/campaignAdminShare`, {
                 params: {
