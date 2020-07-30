@@ -22,6 +22,7 @@ import {
 import { withRouter } from 'next/router';
 import getConfig from 'next/config';
 
+import { default as placeholderUser } from '../../../../static/images/no-data-avatar-user-profile.png';
 import { withTranslation } from '../../../../i18n';
 import { Link } from '../../../../routes';
 import IconIndividual from '../../../../static/images/chimp-icon-individual.png';
@@ -90,14 +91,14 @@ class Profile extends React.Component {
                     onClose={() => { this.setState({popupOpen: !this.state.popupOpen}); }}
                     trigger={(
                         <Menu.Item as="a" className={router.asPath.search('/user/profile') !== -1 ? 'user-img active' : 'user-img'}>
-                            <Image src={avatar} style={{ width: '35px' }} circular />
+                            <Image src={avatar || placeholderUser} style={{ width: '35px' }} circular />
                         </Menu.Item>
                     )}
                 >
                     <Popup.Header>
                         <Table>
                             <Table.Row>
-                                <Table.Cell><Image src={avatar} style={{ width: '80px' }} circular /></Table.Cell>
+                                <Table.Cell><Image src={avatar || placeholderUser} style={{ width: '80px' }} circular /></Table.Cell>
                                 <Table.Cell>
                                     {name}
                                     <List link>

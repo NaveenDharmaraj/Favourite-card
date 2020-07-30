@@ -36,6 +36,9 @@ class GroupProfile extends React.Component {
         }
         await getGroupFromSlug(reduxStore.dispatch, query.slug, auth0AccessToken);
         return {
+            namespacesRequired: [
+                'common',
+            ],
             slug: query.slug,
         };
     }

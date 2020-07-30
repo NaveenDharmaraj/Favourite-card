@@ -1,15 +1,16 @@
 import React from 'react';
 import {
-    Grid, Placeholder, Segment, Table, Card,
+    Grid, Placeholder, Segment, Table, Card, Divider,
 } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
+
 const columnComponent = (column, placeholderType) => {
     const columnComponents = [];
     for (let i = 0; i < column; i++) {
         if (placeholderType === 'table') {
             columnComponents.push(
                 <Table.Cell>
-                    <Placeholder>
+                    <Placeholder data-test="Shared_Placeholder_table">
                         <Placeholder.Line length="full" />
                     </Placeholder>
                 </Table.Cell>,
@@ -41,7 +42,7 @@ const columnComponent = (column, placeholderType) => {
             columnComponents.push(
                 <Grid.Column width={14}>
                     <div className="profile-social-wraper groupSupportsWraper">
-                        <Placeholder className="bgTransparent">
+                        <Placeholder className="bgTransparent" data-test="Shared_Placeholder_singlecard">
                             <Placeholder.Header image>
                                 <Placeholder.Line />
                                 <Placeholder.Line />
@@ -50,14 +51,31 @@ const columnComponent = (column, placeholderType) => {
                     </div>
                 </Grid.Column>,
             );
-        } else {
+        } else if (placeholderType === 'multiLine') {
+            columnComponents.push(
+                <Grid.Column width={16}>
+                    <div className="ch_ModelPlaceholder">
+                        <Placeholder data-test="Shared_Placeholder_multiLine">
+                            <Placeholder.Line length="short" />
+                            <Placeholder.Line length="full" />
+                            <Placeholder.Line length="medium" />
+                        </Placeholder>
+                        <Divider />
+                    </div>
+                </Grid.Column>,
+            );
+        }
+
+        else {
             columnComponents.push(
                 <Grid.Column>
                     <Segment raised>
-                        <Placeholder style={{
-                            height: 100,
-                            width: '100%',
-                        }}
+                        <Placeholder
+                            style={{
+                                height: 100,
+                                width: '100%',
+                            }}
+                            data-test="Shared_Placeholder_default"
                         >
                             <Placeholder image square />
                         </Placeholder>
@@ -99,7 +117,15 @@ const PlaceholderGrid = (props) => {
                     {columnComponent(column, placeholderType)}
                 </Grid.Row>,
             );
-        } else {
+        } else if (placeholderType === 'multiLine') {
+            placeHolderComponent.push(
+                <Grid.Row>
+                    {columnComponent(column, placeholderType)}
+                </Grid.Row>,
+            );
+        }
+
+        else {
             placeHolderComponent.push(
                 <Grid.Row>
                     {columnComponent(column)}

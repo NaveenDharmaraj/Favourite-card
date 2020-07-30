@@ -195,6 +195,9 @@ h4{
   }
 }
 @media only screen and (max-width: 767px){
+  .BeaconFabButtonFrame{
+    bottom: 70px !important;
+}
   body{
     .info-panel.more-btn{
       &.mb-2{
@@ -1780,6 +1783,14 @@ h4{
   body{
     .c-m-default-header .ui.secondary.menu{
       margin-bottom: 0px;
+      top: 0px;
+      &.fixed-header{
+        position: fixed;
+        left: 0px;
+        right: 0px;
+        background-color: #fff !important;
+        z-index:999;
+      }
     }
   }
   .left-bg{
@@ -2360,6 +2371,9 @@ h4{
       }
     }
   }
+  .auth0-lock.auth0-lock.auth0-lock-opened-in-frame{
+    z-index: 99;
+  }
 }
 .no-border-bottom{
   &.segment{
@@ -2428,9 +2442,10 @@ h4{
       border: 0px solid transparent;	
       background-color: #FFFFFF;	
       box-shadow: 0 5px 10px 0 rgba(0,0,0,0.2);
-      margin-top: 27px !important;
+      margin-top: 26px !important;
+      z-index: 999;
       @media only screen and (max-width:991px){
-        margin-top: 18px !important;
+        margin-top: 17px !important;
       }
       @media only screen and (max-width:767px) {
         min-width: 250px;	
@@ -2610,6 +2625,7 @@ h4{
     }
   }
 }
+
 .btn-wraper{
   margin-bottom: 2rem;
   .ui{
@@ -2686,6 +2702,7 @@ h4{
     }
   }
 }
+
 @media only screen and (max-width:767px) {
   .btn-wraper{
     .ui{
@@ -5026,10 +5043,14 @@ body{
 }
 .statusMsgWraper{
   position: fixed;
-  z-index: 9999;
+  z-index: 99999999;
   right:19%;
+  margin-top: 48px;
   @media only screen and (max-width:991px){
-    top: 85px;
+    top: 0px;
+    left: calc(50% - 167.5px);
+    right: auto;
+    margin: 48px auto auto;
   }
 }
 .status-message-container{
@@ -6813,7 +6834,7 @@ button.ui.button.blue-bordr-btn-round-def{
     &.input{
       input{
         display: inline-block;
-        width: auto !important;
+        width: auto;
       }
     }
   }
@@ -7572,16 +7593,43 @@ body{
           i{
             &.icon{
               &.heart{
-                font-size: 24px;
-                margin-left: 11px;
-                color: #dc2928;
-                &.outline{
-                  color: #4e4e4e;
-                  font-weight: 400;
-                  &:hover{
-                    color: #dc2928;
+                 position: relative;
+                  min-width: 24px;
+                  min-height: 24px;
+                  &::before{
+                    content: '';
+                    position: absolute;
+                    top: -8px;
+                    left: 0;
+                    bottom: 0;
+                    right: 0;
+                    background-image: url(../images/icons/inactive.svg) !important;
+                    background-repeat: no-repeat !important;
+                    background-size: contain !important;
+                    background-position: center !important;
                   }
-                }
+                  &.outline{
+                    &:hover{
+                      .imgColorRed();
+                    }
+                  }
+                  &.red{
+                    position: relative;
+                  min-width: 24px;
+                  min-height: 24px;
+                  &::before{
+                    content: '';
+                    position: absolute;
+                    top: -8px;
+                    left: 0;
+                    bottom: 0;
+                    right: 0;
+                    background-image: url(../images/icons/active.svg) !important;
+                    background-repeat: no-repeat !important;
+                    background-size: contain !important;
+                    background-position: center !important;
+                  }
+                  }
               }
             }
             &.icon{
@@ -7787,6 +7835,14 @@ span{
         }
       }
       
+    }
+  }
+}
+
+.ch_ModelPlaceholder {
+  .ui {
+    &.placeholder {
+      margin: 0 0 31px;
     }
   }
 }
@@ -8129,6 +8185,10 @@ body .userEllips{
     }
   }
   /*********NOAvailable******************/
-  .chimpLayout{
+.chimpLayout{
   min-height: 60vh;
+  padding-top: 80px;
+}
+.BottomfixedBtn_Footer{
+  padding-bottom:60px;
 }
