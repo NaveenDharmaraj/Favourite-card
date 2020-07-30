@@ -24,6 +24,7 @@ const PrivacyOptions = (props) => {
         privacyShareAmount,
         handleInputChange,
         hasCampaign,
+        isCampaign,
         infoToShare,
         groupCampaignAdminShareInfoOptions,
     } = props;
@@ -39,7 +40,7 @@ const PrivacyOptions = (props) => {
     ]);
     useEffect(() => {
         if (giveFrom && giveFrom.type === 'user' && !_isEmpty(groupCampaignAdminShareInfoOptions)) {
-            const name = hasCampaign ? 'campaign_admins_info_to_share' : 'giving_group_admins_info_to_share';
+            const name = isCampaign ? 'campaign_admins_info_to_share' : 'giving_group_admins_info_to_share';
             const customPreferenceObj = {
                 giving_group_members_info_to_share: nameToShare.value === 'name' ? 'name' : '',
             };
@@ -59,7 +60,7 @@ const PrivacyOptions = (props) => {
     ]);
     return (
         <Fragment>
-            {!hasCampaign && (
+            {!isCampaign && (
                 <Form.Field className="give_flow_field">
                     <label
                         className="privacy-header"
@@ -91,8 +92,11 @@ const PrivacyOptions = (props) => {
             )}
             <Form.Field className="give_flow_field">
                 <label htmlFor="infoToShare">
-                    {formatMessage(`privacyOptions:${hasCampaign ? 'forGivingCampaignLabel' : 'selectNameAndAddressLabel'}`)}
+                    {formatMessage(`privacyOptions:${isCampaign ? 'forGivingCampaignLabel' : `${hasCampaign ? 'selectNameAndAddressLabelWithCampaign' : 'selectNameAndAddressLabel'}`}`)}
                 </label>
+                {(!isCampaign && hasCampaign)
+                    && (<span className="givingInfoText">This group supports a campaign—admins of both will see the info you share.</span>)
+                }
                 <Form.Field
                     className="dropdownWithArrowParent"
                     control={Select}
@@ -108,7 +112,7 @@ const PrivacyOptions = (props) => {
 };
 
 PrivacyOptions.defaultProps = {
-    formatMessage: () => {},
+    formatMessage: () => { },
     groupCampaignAdminShareInfoOptions: [
         {
             privacySetting: 'anonymous',
@@ -116,11 +120,12 @@ PrivacyOptions.defaultProps = {
             value: 'anonymous',
         },
     ],
-    handleInputChange: () => {},
+    handleInputChange: () => { },
     hasCampaign: null,
     infoToShare: {
         value: 'anonymous',
     },
+    isCampaign: null,
     nameToShare: {
         value: 'anonymous',
     },
@@ -136,6 +141,7 @@ PrivacyOptions.propTypes = {
     infoToShare: PropTypes.shape({
         value: PropTypes.string,
     }),
+    isCampaign: PropTypes.bool,
     nameToShare: PropTypes.shape({
         value: PropTypes.string,
     }),

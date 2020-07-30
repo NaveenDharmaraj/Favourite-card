@@ -142,8 +142,7 @@ class Group extends React.Component {
             getGroupsFromSlug(dispatch, slug)
                 .then((result) => {
                     const giveGroupDetails = result.data;
-                    const hasCampaign = (giveGroupDetails.attributes.isCampaign) ? true : false;
-                    dispatch(getGroupCampaignAdminInfoToShare(id, hasCampaign));
+                    dispatch(getGroupCampaignAdminInfoToShare(id, giveGroupDetails.attributes.isCampaign));
                 })
                 .catch(err => {
                 })
@@ -327,8 +326,7 @@ class Group extends React.Component {
         }
         if (!_isEmpty(groupCampaignAdminShareInfoOptions) && groupCampaignAdminShareInfoOptions.length > 0
             && !giveData.userInteracted) {
-            const hasCampaign = (giveGroupDetails.attributes.isCampaign) ? true : false;
-            const prefernceName = hasCampaign ? 'campaign_admins_info_to_share' : 'giving_group_admins_info_to_share';
+            const prefernceName = !_isEmpty(giveGroupDetails) && giveGroupDetails.attributes.isCampaign ? 'campaign_admins_info_to_share' : 'giving_group_admins_info_to_share';
             const preference = preferences[prefernceName].includes('address')
                 ? `${preferences[prefernceName]}-${preferences[`${prefernceName}_address`]}` : preferences[prefernceName];
             const { infoToShareList } = populateDropdownInfoToShare(groupCampaignAdminShareInfoOptions);
@@ -866,7 +864,7 @@ class Group extends React.Component {
         let hasCampaign = false;
         if (!_.isEmpty(giveGroupDetails)) {
             //hasCampaign = (giveGroupDetails.attributes.campaignId) ? true : false;
-            hasCampaign = (giveGroupDetails.attributes.campaignId && giveGroupDetails.attributes.isCampaign) ? true : false;
+            hasCampaign = (giveGroupDetails.attributes.campaignId && !giveGroupDetails.attributes.isCampaign) ? true : false;
         }
         if (giveFrom.value > 0) {
             privacyOptionComponent = (
@@ -875,6 +873,7 @@ class Group extends React.Component {
                     formatMessage={formatMessage}
                     handleInputChange={this.handleInputChange}
                     hasCampaign={hasCampaign}
+                    isCampaign={(!_isEmpty(giveGroupDetails) && giveGroupDetails.attributes.isCampaign) && giveGroupDetails.attributes.isCampaign}
                     giveFrom={giveFrom}
                     giveToType={giveToType}
                     infoToShare={infoToShare}
