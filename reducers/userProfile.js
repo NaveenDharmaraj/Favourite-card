@@ -67,7 +67,7 @@ const userProfile = (state = {}, action) => {
             break;
         case 'USER_PROFILE_RECOMMENDED_TAGS':
             newState = {
-                ...state,                
+                ...state,
                 userTagsRecommendedList: Object.assign({}, action.payload),
             };
             break;
@@ -214,6 +214,36 @@ const userProfile = (state = {}, action) => {
             newState = {
                 ...state,
                 showAddButtonLoader: action.payload.showAddButtonLoader,
+            };
+            break;
+        case 'USER_INFO_TO_SHARE_OPTIONS':
+            newState = {
+                ...state,
+                infoShareOptions: action.payload.infoShareOptions,
+            };
+            break;
+        case 'USER_INFO_TO_SHARE_OPTIONS_LOADER':
+            newState = {
+                ...state,
+                infoShareDropDownLoader: action.payload.infoShareDropDownLoader,
+            };
+            break;
+        case 'DELETE_CREDIT_CARD_MSG_POPUP_LOADER':
+            newState = {
+                ...state,
+                deleteMsgPopUpLoader: action.payload.deleteMsgPopUpLoader,
+            };
+            break;
+        case 'USER_CREDIT_CARD_ACTIVE_MONTHLY_DONATIONS':
+            newState = {
+                ...state,
+                activeMonthlyDonations: action.payload.activeMonthlyDonations,
+            };
+            break;
+        case 'USER_CHARITY_INFO_TO_SHARE_OPTIONS':
+            newState = {
+                ...state,
+                charityShareInfoOptions: action.payload.charityShareInfoOptions,
             };
             break;
         default:

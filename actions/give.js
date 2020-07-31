@@ -1002,3 +1002,21 @@ export const walletTopUp = (reloadObject) => {
         });
     };
 };
+
+export const resetFlowObject = (type, dispatch) => {
+    const defaultProps = {
+        charity: beneficiaryDefaultProps,
+        donations: donationDefaultProps,
+        friend: p2pDefaultProps,
+        group: groupDefaultProps,
+    };
+    const defaultPropsData = _.cloneDeep(defaultProps[type]);
+    const payload = {
+        ...defaultPropsData.flowObject,
+    };
+    const fsa = {
+        payload,
+        type: actionTypes.SAVE_FLOW_OBJECT,
+    };
+    dispatch(fsa);
+};

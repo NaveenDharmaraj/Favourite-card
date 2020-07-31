@@ -215,15 +215,18 @@ class FindFriends extends React.Component {
                 }
                 return (
                     <List.Item>
-                        <List.Content floated="right">
-                            <Button
-                                className={btnClass}
-                                onClick={() => this.handleAddFriendClick(data, btnData)}
-                                disabled={buttonClicked || isButtonDisabled}
-                            >
-                                {friendStatus}
-                            </Button>
-                        </List.Content>
+                        {(data.attributes.friend_status !== 'MY_PROFILE')
+                        && (
+                            <List.Content floated="right">
+                                <Button
+                                    className={btnClass}
+                                    onClick={() => this.handleAddFriendClick(data, btnData)}
+                                    disabled={buttonClicked || isButtonDisabled}
+                                >
+                                    {friendStatus}
+                                </Button>
+                            </List.Content>
+                        )}
                         <Image avatar src={avatar} />
                         <List.Content>
                             <List.Header>

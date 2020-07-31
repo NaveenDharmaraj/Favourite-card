@@ -10,6 +10,9 @@ import {
 } from 'semantic-ui-react';
 import getConfig from 'next/config';
 
+import {
+    resetFlowObject,
+} from '../../../actions/give';
 import { Link } from '../../../routes';
 import GiveFromCampaignModal from '../../Campaign/GiveFromCampaignModal';
 
@@ -44,6 +47,7 @@ class ProfilePageHead extends React.Component {
         const {
             pageDetails,
             isAuthenticated,
+            dispatch,
         } = this.props;
         const {
             isDropDownClicked,
@@ -61,7 +65,7 @@ class ProfilePageHead extends React.Component {
                 buttonLink = (
                     <Fragment>
                         <Link route={(`/give/to/${profileType}/${pageDetails.attributes.slug}/new`)}>
-                            <Button primary className="blue-btn-rounded btn_first">Give</Button>
+                            <Button primary onClick={() => { resetFlowObject('group', dispatch); }} className="blue-btn-rounded btn_first">Give</Button>
                         </Link>
                         { pageDetails.attributes.isAdmin && (
                             <GiveFromCampaignModal

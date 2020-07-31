@@ -275,7 +275,7 @@ class Review extends React.Component {
                                                     <Grid.Column data-test="Give_Review_refund_text" mobile={16} tablet={6} computer={8} className="mobile_text">
                                                     {refundMessage}
                                                     </Grid.Column>
-                                                    <Grid.Column mobile={16} tablet={8} computer={7} className="mobile_btn">
+                                                    <Grid.Column mobile={16} tablet={10} computer={8} className="mobile_btn">
                                                             <Button
                                                                 className="blue-btn-rounded-def w-160 mb-1 mob_btn_edit width-full-btn"
                                                                 data-test="Give_Review_submit_button"
@@ -288,7 +288,7 @@ class Review extends React.Component {
                                                             />
                                                          <Link route={editUrl}>
                                                                 <Button
-                                                                    className="blue-bordr-btn-round-def w-120 mob_btn_edit "
+                                                                    className="blue-bordr-btn-round-def mb-1 w-120 mob_btn_edit "
                                                                     disabled={(this.state.buttonClicked)}
                                                                     data-test="Give_Review_edit_button"
                                                                 >

@@ -406,16 +406,6 @@ class Friend extends React.Component {
                     userEmail,
                 );
                 break;
-            case 'friendsList':
-                validity = validateGiveForm(
-                    'recipients',
-                    giveData.recipients,
-                    validity,
-                    giveData,
-                    coverFeesAmount,
-                    userEmail,
-                );
-                break;
             default: break;
         }
         this.setState({
@@ -467,6 +457,7 @@ class Friend extends React.Component {
         const {
             dispatch,
         } = this.props;
+        const coverFeesAmount = 0;
         const newValue = (name !== 'friendsList' && !_.isEmpty(options)) ? _.find(options, { value }) : value;
         if (giveData[name] !== newValue) {
             giveData[name] = newValue;
@@ -504,6 +495,14 @@ class Friend extends React.Component {
                     reviewBtnFlag = false;
                     reloadModalOpen = 0;
                     giveData['totalP2pGiveAmount'] = calculateP2pTotalGiveAmount((giveData.friendsList.length + giveData.recipients.length),giveData.giveAmount);
+                    validity = validateGiveForm(
+                        'recipients',
+                        giveData.recipients,
+                        validity,
+                        giveData,
+                        coverFeesAmount,
+                        userEmail,
+                    );
                     break;
                 default: break;
             }
@@ -513,14 +512,8 @@ class Friend extends React.Component {
                     ...this.state.flowObject,
                     giveData,
                 },
-                dropDownOptions: {
-                    ...this.state.dropDownOptions,
-                    dropDownOptions,
-                },
-                validity: {
-                    ...this.state.validity,
-                    validity,
-                },
+                dropDownOptions,
+                validity,
                 reviewBtnFlag,
             });
         }
@@ -662,6 +655,9 @@ class Friend extends React.Component {
             }
             let amountToDonate = formatAmount((formatAmount(totalP2pGiveAmount)
             - formatAmount(giveFrom.balance)));
+            if (Number(amountToDonate) < 5) {
+                amountToDonate = formatAmount(5);
+            }
             const taxReceiptsOptions = populateTaxReceipts(taxReceiptList, formatMessage);
             return (
                 <ReloadAddAmount
@@ -762,7 +758,7 @@ class Friend extends React.Component {
                         <Grid centered verticalAlign="middle">
                             <Grid.Row>
                                 <Grid.Column mobile={16} tablet={14} computer={12}>
-                                    <div className="flowBreadcrumb flowPadding">
+                                    <div className="flowBreadcrumb">
                                         <FlowBreadcrumbs
                                             currentStep={currentStep}
                                             formatMessage={formatMessage}
@@ -883,6 +879,7 @@ class Friend extends React.Component {
                                                                 handlePresetAmountClick={this.handlePresetAmountClick}
                                                                 validity={validity}
                                                                 isGiveFlow
+                                                                fromP2p
                                                             />
                                                             </div>
                                                             <p className="multipleFriendAmountFieldText">

@@ -176,7 +176,12 @@ export const getCampaignFromSlug = async (dispatch, slug, token = null) => {
                     // console.log(error);
                 });
                 // API call for related beneficiaries
-                coreApi.get(result.data.relationships.groupBeneficiaries.links.related).then((campaignRelatedBeneficiaries) => {
+                coreApi.get(result.data.relationships.groupBeneficiaries.links.related, {
+                    params: {
+                        dispatch,
+                        ignore401: true,
+                    },
+                }).then((campaignRelatedBeneficiaries) => {
                     dispatch({
                         payload: {
                             campaignRelatedBeneficiariesCount: campaignRelatedBeneficiaries.data.length,

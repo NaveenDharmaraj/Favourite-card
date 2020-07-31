@@ -1140,6 +1140,10 @@ h4{
   .settingsDetailWraper{
     padding: 2rem 0rem 2rem; 
     border-bottom: 1px solid @grey-lighten-2;
+    &.removeBorderBottom{
+      border-bottom: none!important;
+      padding-bottom: 0px!important;
+    }
     &.pMethodHead{
       padding-top: 3px !important;
     }
@@ -1180,6 +1184,28 @@ h4{
     p{
       line-height: 28/@rem;
       font-size: 1rem;
+    }
+  }
+  &.Informationshare{
+    .dropdownSearch{
+      max-width: 477px;
+      width: 100%;
+      &.dropdownWithArrowParent{
+        &.ArrowParentbtm{
+          .ui.selection.dropdown {
+            &.active{
+                .menu{
+                    .item{
+                      border-bottom: 1px solid #DDDDDD;
+                    }
+                }
+            }
+          }
+        }
+        .text{
+          line-height: 20px;
+        }
+      }
     }
   }
 }
@@ -1461,8 +1487,20 @@ h4{
   }
 }
 .pageWraper{
+  padding-top: 50px;
   padding-bottom: 80px;
-  margin-top: -3px;
+  .pageHeader{
+    padding-bottom: 30px;
+    .breadcrumb{
+      float: right;
+    }
+  }
+  .pageSubHeader{
+    padding-bottom: 30px;
+  }
+}
+.pageWraperGive{
+  padding-bottom: 80px;
   .pageHeader{
     padding-bottom: 30px;
     .breadcrumb{
@@ -1723,7 +1761,10 @@ h4{
       margin-top: 30px;
     }
     .pageWraper {
-      padding-top: 0px;
+      padding-top: 30px;
+      padding-bottom: 50px;
+    }
+    .pageWraperGive {
       padding-bottom: 50px;
     }
     .login-form-wraper{
@@ -5040,10 +5081,14 @@ body{
 }
 .statusMsgWraper{
   position: fixed;
-  z-index: 9999;
+  z-index: 99999999;
   right:19%;
+  margin-top: 48px;
   @media only screen and (max-width:991px){
-    top: 85px;
+    top: 0px;
+    left: calc(50% - 167.5px);
+    right: auto;
+    margin: 48px auto auto;
   }
 }
 .status-message-container{
@@ -7809,6 +7854,14 @@ span{
   }
 }
 
+.ch_ModelPlaceholder {
+  .ui {
+    &.placeholder {
+      margin: 0 0 31px;
+    }
+  }
+}
+
 .videoWrapper {
   @media only screen and (max-width: 991px) {
     position: relative;
@@ -8153,4 +8206,7 @@ body .userEllips{
 .chimpLayout{
   min-height: 60vh;
   padding-top: 80px;
+}
+.BottomfixedBtn_Footer{
+  padding-bottom:60px;
 }

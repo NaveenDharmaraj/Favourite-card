@@ -33,7 +33,6 @@ import {
     populateGiveToGroupsofUser,
     populateGiftType,
     populatePaymentInstrument,
-    populateInfoToShare,
     populateTaxReceipts,
     resetDataForGiveAmountChange,
     resetDataForAccountChange,
@@ -53,6 +52,7 @@ import FlowBreadcrumbs from '../FlowBreadcrumbs';
 import ReloadAddAmount from '../ReloadAddAmount';
 import { withTranslation } from '../../../i18n';
 import { Router } from '../../../routes';
+import { getCharityInfoToShare } from '../../../actions/userProfile';
 const FormValidationErrorMessage = dynamic(() => import('../../shared/FormValidationErrorMessage'));
 const NoteTo = dynamic(() => import('../NoteTo'));
 const DedicateType = dynamic(() => import('../DedicateGift'), { ssr: false });
@@ -108,16 +108,6 @@ class Charity extends React.Component {
                 donationMatchList: populateDonationMatch(donationMatchData, formatMessage),
                 giftTypeList: populateGiftType(formatMessage),
                 giveToList: populateGiveToGroupsofUser(giveGroupBenificairyDetails),
-                infoToShareList: populateInfoToShare(
-                    taxReceiptProfiles,
-                    companyDetails,
-                    payload.giveData.giveFrom,
-                    {
-                        displayName: `${firstName} ${lastName}`,
-                        email,
-                    },
-                    formatMessage,
-                ),
                 paymentInstrumentList: populatePaymentInstrument(paymentInstruments, formatMessage),
 
             },
@@ -130,12 +120,12 @@ class Charity extends React.Component {
         };
         if (!_isEmpty(groupId)
             && Number(groupId) > 0) {
-                this.state.flowObject.groupId = groupId;
-                this.state.giveFromType = 'groups';
+            this.state.flowObject.groupId = groupId;
+            this.state.giveFromType = 'groups';
         } else if (!_isEmpty(campaignId)
             && Number(campaignId) > 0) {
-                this.state.flowObject.campaignId = campaignId;
-                this.state.giveFromType = 'campaigns'
+            this.state.flowObject.campaignId = campaignId;
+            this.state.giveFromType = 'campaigns'
         }
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleInputChangeGiveTo = this.handleInputChangeGiveTo.bind(this);
@@ -181,6 +171,7 @@ class Charity extends React.Component {
         }
         window.scrollTo(0, 0);
         dispatch(getDonationMatchAndPaymentInstruments(id));
+        dispatch(getCharityInfoToShare(id));
     }
 
     componentDidUpdate(prevProps) {
@@ -211,6 +202,7 @@ class Charity extends React.Component {
                         email,
                         firstName,
                         lastName,
+                        preferences,
                     },
                 },
                 donationMatchData,
@@ -231,7 +223,7 @@ class Charity extends React.Component {
             let paymentInstruments = paymentInstrumentsData;
             let companyPaymentInstrumentChanged = false;
             if (giveData.giveFrom.type === 'companies' && !_isEmpty(companyDetails)) {
-                const companyIndex = _.findIndex(companiesAccountsData, {'id': giveData.giveFrom.id});
+                const companyIndex = _.findIndex(companiesAccountsData, { 'id': giveData.giveFrom.id });
                 giveData.giveFrom.balance = companiesAccountsData[companyIndex].attributes.balance;
                 giveData.giveFrom.text = `${companiesAccountsData[companyIndex].attributes.companyFundName}: ${formatCurrency(companiesAccountsData[companyIndex].attributes.balance, language, currency)}`;
                 if (_isEmpty(prevProps.companyDetails)
@@ -295,16 +287,6 @@ class Charity extends React.Component {
                     donationMatchList: donationMatchOptions,
                     giftTypeList: populateGiftType(formatMessage),
                     giveToList: giveToOptions,
-                    infoToShareList: populateInfoToShare(
-                        taxReceiptProfiles,
-                        companyDetails,
-                        giveData.giveFrom,
-                        {
-                            displayName: `${firstName} ${lastName}`,
-                            email,
-                        },
-                        formatMessage,
-                    ),
                     paymentInstrumentList: paymentInstrumentOptions,
                 },
                 flowObject: {
@@ -536,6 +518,11 @@ class Charity extends React.Component {
         } = this.state;
         const {
             coverFeesData,
+            currentUser: {
+                attributes: {
+                    preferences,
+                },
+            },
             dispatch,
         } = this.props;
         let newValue = (!_isEmpty(options)) ? _find(options, { value }) : value;
@@ -579,6 +566,14 @@ class Charity extends React.Component {
                         giveData, dropDownOptions, this.props, type,
                     );
                     giveData = modifiedGiveData;
+                    const preferenceName = 'charities_info_to_share';
+                    if(giveData.giveFrom.type === 'user'){
+                        const preference = preferences[preferenceName].includes('address')
+                        ? `${preferences[preferenceName]}-${preferences[`${preferenceName}_address`]}` : preferences[preferenceName];
+                        giveData.infoToShare.value = preference;
+                    } else{
+                        giveData.infoToShare.value = 'anonymous';
+                    }
                     dropDownOptions = modifiedDropDownOptions;
                     const coverFeesAmount = Charity.getCoverFeesAmount(giveData, coverFeesData);
                     validity = validateGiveForm(
@@ -738,31 +733,32 @@ class Charity extends React.Component {
      * @param {function} formatMessage I18 formatting.
      * @param {object} giftType gift type value.
      * @param {object[]} giftTypeList the list of gift type options.
-     * @param {object} infoToShare selected info to share.
-     * @param {object[]} infoToShareList info to share options.
      * @return {JSX} JSX representing payment fields.
      */
     renderSpecialInstructionComponent(
-        giveFrom, giftType, giftTypeList, infoToShare, infoToShareList, formatMessage
-        , paymentInstrumentList, defaultTaxReceiptProfile, companyDetails,
+        giveFrom, giftType, giftTypeList, formatMessage
     ) {
         if (!_isEmpty(giveFrom) && giveFrom.value > 0) {
+            const {
+                charityShareInfoOptions,
+            } = this.props;
+            const {
+                flowObject: {
+                    giveData: {
+                        infoToShare
+                    }
+                }
+            } = this.state;
             return (
                 <SpecialInstruction
                     giftType={giftType}
                     giftTypeList={giftTypeList}
                     giveFrom={giveFrom}
                     handleInputChange={this.handleInputChange}
-                    infoToShare={infoToShare}
-                    infoToShareList={infoToShareList}
                     formatMessage={formatMessage}
-                    paymentInstrumentList={paymentInstrumentList}
-                    defaultTaxReceiptProfile={defaultTaxReceiptProfile}
-                    companyDetails={companyDetails}
-                    companyAccountsFetched={this.props.companyAccountsFetched}
-                    userAccountsFetched={this.props.userAccountsFetched}
-                    slug={this.props.slug}
                     handlegiftTypeButtonClick={this.handlegiftTypeButtonClick}
+                    charityShareInfoOptions={charityShareInfoOptions}
+                    infoDefaultValue={infoToShare.value}
                 />
             );
         }
@@ -783,7 +779,7 @@ class Charity extends React.Component {
             companyAccountsFetched,
         } = this.props
         const {
-            dropDownOptions:{
+            dropDownOptions: {
                 paymentInstrumentList,
             },
             flowObject: {
@@ -800,39 +796,39 @@ class Charity extends React.Component {
         const formatMessage = this.props.t;
         if ((giveFrom.type === 'user' || giveFrom.type === 'companies') && (Number(giveAmount) > Number(giveFrom.balance))) {
             if ((userAccountsFetched && giveFrom.type === 'user') || (companyAccountsFetched && giveFrom.type === 'companies')) {
-            let taxReceiptList = taxReceiptProfiles;
-            let defaultTaxReceiptProfileForReload = defaultTaxReceiptProfile;
-            if (giveFrom.type === 'companies' && companyDetails) {
-                taxReceiptList = !_.isEmpty(companyDetails.taxReceiptProfiles) ? companyDetails.taxReceiptProfiles : [];
-                defaultTaxReceiptProfileForReload = companyDetails.companyDefaultTaxReceiptProfile;
-            }
-            let coverFeesData = {};
-            let AmountToDonate = setDonationAmount(giveData, coverFeesData);
-            const taxReceiptsOptions = populateTaxReceipts(taxReceiptList, formatMessage);
-            return (
-                <ReloadAddAmount
-                    defaultTaxReceiptProfile={defaultTaxReceiptProfileForReload}
-                    dispatch={dispatch}
-                    donationMatchData={(giveFrom.type === 'user') ? donationMatchData : {}}
-                    formatedDonationAmount={AmountToDonate}
-                    formatMessage={formatMessage}
-                    allocationGiftType={giftType.value}
-                    giveTo={giveData.giveFrom}
-                    language={language}
-                    paymentInstrumentOptions={paymentInstrumentList}
-                    reloadModalOpen={reloadModalOpen}
-                    reviewBtnFlag={reviewBtnFlag}
-                    taxReceiptsOptions={taxReceiptsOptions}
-                />
-            )
+                let taxReceiptList = taxReceiptProfiles;
+                let defaultTaxReceiptProfileForReload = defaultTaxReceiptProfile;
+                if (giveFrom.type === 'companies' && companyDetails) {
+                    taxReceiptList = !_.isEmpty(companyDetails.taxReceiptProfiles) ? companyDetails.taxReceiptProfiles : [];
+                    defaultTaxReceiptProfileForReload = companyDetails.companyDefaultTaxReceiptProfile;
+                }
+                let coverFeesData = {};
+                let AmountToDonate = setDonationAmount(giveData, coverFeesData);
+                const taxReceiptsOptions = populateTaxReceipts(taxReceiptList, formatMessage);
+                return (
+                    <ReloadAddAmount
+                        defaultTaxReceiptProfile={defaultTaxReceiptProfileForReload}
+                        dispatch={dispatch}
+                        donationMatchData={(giveFrom.type === 'user') ? donationMatchData : {}}
+                        formatedDonationAmount={AmountToDonate}
+                        formatMessage={formatMessage}
+                        allocationGiftType={giftType.value}
+                        giveTo={giveData.giveFrom}
+                        language={language}
+                        paymentInstrumentOptions={paymentInstrumentList}
+                        reloadModalOpen={reloadModalOpen}
+                        reviewBtnFlag={reviewBtnFlag}
+                        taxReceiptsOptions={taxReceiptsOptions}
+                    />
+                )
             } else{
                 return (
                     <Placeholder>
-                    <Placeholder.Header>
-                      <Placeholder.Line />
-                      <Placeholder.Line />
-                    </Placeholder.Header>
-                  </Placeholder>
+                        <Placeholder.Header>
+                            <Placeholder.Line />
+                            <Placeholder.Line />
+                        </Placeholder.Header>
+                    </Placeholder>
                 );
             }
 
@@ -867,7 +863,6 @@ class Charity extends React.Component {
                     giveTo,
                     giveAmount,
                     giveFrom,
-                    infoToShare,
                     noteToCharity,
                     noteToSelf,
                 },
@@ -880,14 +875,13 @@ class Charity extends React.Component {
                 giftTypeList,
                 giveFromList,
                 giveToList,
-                infoToShareList,
                 paymentInstrumentList,
             },
             validity,
         } = this.state;
         const formatMessage = this.props.t;
         const { reviewBtnFlag } = this.state;
-        let submtBtn = (reviewBtnFlag && giftType.value === 0)?(
+        let submtBtn = (reviewBtnFlag && giftType.value === 0) ? (
             <Form.Button
                 primary
                 className="blue-btn-rounded btn_right rivewbtnp2p"
@@ -922,7 +916,7 @@ class Charity extends React.Component {
                         <Grid centered verticalAlign="middle">
                             <Grid.Row>
                                 <Grid.Column mobile={16} tablet={14} computer={12}>
-                                    <div className="flowBreadcrumb flowPadding">
+                                    <div className="flowBreadcrumb">
                                         <FlowBreadcrumbs
                                             currentStep={currentStep}
                                             formatMessage={formatMessage}
@@ -934,28 +928,28 @@ class Charity extends React.Component {
                                             <Grid>
                                                 <Grid.Row>
                                                     <Grid.Column mobile={16} tablet={12} computer={10}>
-                                                    {
-                                                        !!groupFromUrl && (
-                                                            <Fragment>
-                                                                <Form.Field>
-                                                                    <label htmlFor="giveTo">
-                                                                        {formatMessage('giveToLabel')}
-                                                                    </label>
-                                                                    <Form.Field
-                                                                        className="dropdownWithArrowParent"
-                                                                        control={Select}
-                                                                        error={!validity.isValidGiveFrom}
-                                                                        id="giveToList"
-                                                                        name="giveToList"
-                                                                        onChange={this.handleInputChangeGiveTo}
-                                                                        options={giveToList}
-                                                                        placeholder="Select a Group to Give"
-                                                                        value={giveTo.value}
-                                                                    />
-                                                                </Form.Field>
-                                                            </Fragment>
-                                                        )
-                                                    }
+                                                        {
+                                                            !!groupFromUrl && (
+                                                                <Fragment>
+                                                                    <Form.Field>
+                                                                        <label htmlFor="giveTo">
+                                                                            {formatMessage('giveToLabel')}
+                                                                        </label>
+                                                                        <Form.Field
+                                                                            className="dropdownWithArrowParent"
+                                                                            control={Select}
+                                                                            error={!validity.isValidGiveFrom}
+                                                                            id="giveToList"
+                                                                            name="giveToList"
+                                                                            onChange={this.handleInputChangeGiveTo}
+                                                                            options={giveToList}
+                                                                            placeholder="Select a Group to Give"
+                                                                            value={giveTo.value}
+                                                                        />
+                                                                    </Form.Field>
+                                                                </Fragment>
+                                                            )
+                                                        }
                                                         <CharityAmountField
                                                             isGiveFlow={true}
                                                             amount={formatedCharityAmount}
@@ -1012,8 +1006,7 @@ class Charity extends React.Component {
                                                         </div>
                                                         {this.renderSpecialInstructionComponent(
                                                             giveFrom,
-                                                            giftType, giftTypeList, infoToShare, infoToShareList, formatMessage,
-                                                            paymentInstrumentList, defaultTaxReceiptProfile, companyDetails,
+                                                            giftType, giftTypeList, formatMessage
                                                         )}
                                                         <DedicateType
                                                             handleInputChange={this.handleInputChange}
@@ -1063,6 +1056,7 @@ Charity.defaultProps = Object.assign({}, beneficiaryDefaultProps);
 
 function mapStateToProps(state) {
     return {
+        charityShareInfoOptions: state.userProfile.charityShareInfoOptions,
         companiesAccountsData: state.user.companiesAccountsData,
         companyDetails: state.give.companyData,
         companyAccountsFetched: state.give.companyAccountsFetched,
