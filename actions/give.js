@@ -216,16 +216,17 @@ const saveGroupAllocation = (allocation) => {
         noteToCharity,
         noteToSelf,
         privacyShareAddress,
+        privacyShareAdminName,
         privacyShareAmount,
         privacyShareEmail,
         privacyShareName,
     } = giveData;
-
     let attributes = {
         amount: giveAmount,
         noteToGroup: noteToCharity,
         noteToSelf,
         privacyShareAddress,
+        privacyShareAdminName,
         privacyShareAmount,
         privacyShareEmail,
         privacyShareName,

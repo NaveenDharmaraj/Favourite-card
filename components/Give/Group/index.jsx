@@ -322,7 +322,7 @@ class Group extends React.Component {
             };
         }
         if (!giveData.userInteracted) {
-            giveData.privacyShareAmount = preferences['giving_group_members_share_my_giftamount'];
+            giveData.privacyShareAmount = !giveGroupDetails.attributes.isCampaign ? preferences['giving_group_members_share_my_giftamount'] : false;
         }
         if (!_isEmpty(groupCampaignAdminShareInfoOptions) && groupCampaignAdminShareInfoOptions.length > 0
             && !giveData.userInteracted) {
@@ -483,6 +483,11 @@ class Group extends React.Component {
             nextStep,
             dispatch,
             flowSteps,
+            giveGroupDetails: {
+                attributes: {
+                    isCampaign,
+                },
+            },
             stepIndex
         } = this.props;
         let {
@@ -498,7 +503,7 @@ class Group extends React.Component {
             flowObject.giveData.privacyShareAdminName = !!(infoToShare.value === 'name');
             flowObject.giveData.privacyShareEmail = !!(infoToShare.value === 'name_email');
             flowObject.giveData.privacyShareAddress = !!(infoToShare.value.includes('name_address_email'));
-            if (nameToShare.value !== 'anonymous') {
+            if (!isCampaign && nameToShare.value !== 'anonymous') {
                 flowObject.giveData.privacyShareName = true;
                 flowObject.giveData.privacyShareAdminName = true;
             } else {

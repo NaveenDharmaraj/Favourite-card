@@ -130,6 +130,7 @@ export const groupDefaultProps = {
                 privacySetting: 'anonymous',
                 value: 'anonymous',
             },
+            infoToShareList: [],
             nameToShare: {
                 value: 'anonymous',
             },
