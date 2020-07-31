@@ -272,12 +272,12 @@ class Review extends React.Component {
                                             <div className="mob_brdr_btm_none mob_shadow_btm_none btn_border">
                                                 <Grid>
                                                     <Grid.Row>
-                                                    <Grid.Column data-test="Give_Review_refund_text" mobile={16} tablet={8} computer={9} className="mobile_text">
+                                                    <Grid.Column data-test="Give_Review_refund_text" mobile={16} tablet={6} computer={8} className="mobile_text">
                                                     {refundMessage}
                                                     </Grid.Column>
                                                     <Grid.Column mobile={16} tablet={8} computer={7} className="mobile_btn">
                                                             <Button
-                                                                className="blue-btn-rounded-def w-160 mob_btn_edit width-full-btn"
+                                                                className="blue-btn-rounded-def w-160 mb-1 mob_btn_edit width-full-btn"
                                                                 data-test="Give_Review_submit_button"
                                                                 primary
                                                                 content={(!this.state.buttonClicked)
