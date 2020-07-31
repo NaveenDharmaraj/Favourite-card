@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import _isEmpty from 'lodash/isEmpty';
 import {
-    array,
     bool,
     string,
     number,
@@ -11,8 +10,6 @@ import {
 } from 'prop-types';
 import {
     Grid,
-    Image,
-    Header,
     Responsive,
     Divider,
 } from 'semantic-ui-react';
@@ -21,11 +18,10 @@ import ReactHtmlParser from 'react-html-parser';
 import {
     generateDeepLink,
 } from '../../actions/profile';
-import ShareProfile from '../shared/ShareProfile';
-
 import ProgramAreas from './ProgramAreas';
 import Charts from './Charts';
 import UserDetails from './UserDetails';
+import ProfileTitle from '../shared/ShareTitle/index';
 
 class CharityDetails extends React.Component {
     componentDidMount() {
@@ -50,65 +46,17 @@ class CharityDetails extends React.Component {
         const {
             charityDetails: {
                 attributes: {
-                    avatar,
-                    beneficiaryType,
-                    causes,
                     formattedDescription,
                     formattedDescriptionNew,
-                    following,
-                    location,
-                    name,
                 },
-                id: profileId,
-                type,
             },
         } = this.props;
-        let getCauses = null;
-
-        if (!_isEmpty(causes)) {
-            getCauses = causes.map((cause) => (
-                <span data-test="Charity_CharityDetails_causes" className="badge">
-                    {cause.display_name}
-                </span>
-            ));
-        }
         return (
             <Grid.Row>
                 <Grid.Column data-test="Charity_CharityDetails_wrapper" mobile={16} tablet={10} computer={11} className="charity_profileWrap">
                     <Grid>
                         <Grid.Row>
-                            <Grid.Column mobile={16} tablet={4} computer={4} className="ch_profileWrap">
-                                <div className="ch_profileImage">
-                                    <Image
-                                        src={avatar}
-                                    />
-                                </div>
-                            </Grid.Column>
-                            <Grid.Column mobile={16} tablet={11} computer={11} className="">
-                                <div className="ch_profileDetails">
-                                    <Header as="h5">
-                                        {beneficiaryType}
-                                    </Header>
-                                    <Header as="h3">
-                                        {name}
-                                        <br />
-                                    </Header>
-                                    <Header as="p">
-                                        {location}
-                                    </Header>
-                                    <div className="ch_badge-group">
-                                        {getCauses}
-                                    </div>
-                                    <div className="ch_share">
-                                        <ShareProfile
-                                            liked={following}
-                                            profileId={profileId}
-                                            type={type}
-                                            name={name}
-                                        />
-                                    </div>
-                                </div>
-                            </Grid.Column>
+                            <ProfileTitle />
                             <Grid.Column mobile={16} tablet={5} computer={5}>
                                 <Responsive minWidth={320} maxWidth={767}>
                                     <UserDetails />
@@ -143,18 +91,9 @@ class CharityDetails extends React.Component {
 CharityDetails.defaultProps = {
     charityDetails: {
         attributes: {
-            avatar: '',
-            beneficiaryType: '',
-            causes: [],
-            following: false,
             formattedDescription: '',
             formattedDescriptionNew: '',
-            location: '',
-            name: '',
-            slug: '',
         },
-        id: '',
-        type: '',
     },
     currentUser: {
         id: null,
@@ -166,18 +105,9 @@ CharityDetails.defaultProps = {
 CharityDetails.propTypes = {
     charityDetails: PropTypes.shape({
         attributes: PropTypes.shape({
-            avatar: string,
-            beneficiaryType: string,
-            causes: array,
-            following: bool,
             formattedDescription: string,
             formattedDescriptionNew: string,
-            location: string,
-            name: string,
-            slug: string,
         }),
-        id: string,
-        type: string,
     }),
     currentUser: PropTypes.shape({
         id: number,
