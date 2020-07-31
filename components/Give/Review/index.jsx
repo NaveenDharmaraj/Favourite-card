@@ -59,7 +59,7 @@ class Review extends React.Component {
                 <Fragment>
                     {list.map((data) => {
                         return (
-                                <Table.Row>
+                                <Table.Row data-test="Give_Review_transaction_details">
                                     <Table.Cell className="tableOne" ><b>{formatMessage(data.name)}</b></Table.Cell>
                                     <Table.Cell className="tabletwo" >{ data.value}</Table.Cell>
                                     <Table.Cell ></Table.Cell>
@@ -173,10 +173,10 @@ class Review extends React.Component {
             const refundMessage = (isRecurring) ? formatMessage('commonRecurringNonrefundable') : formatMessage('commonNonrefundable');
             return (
                 <Fragment>
-                    <div className={bannerClass[type]}>
+                    <div className={bannerClass[type]} data-test="Give_Review_banner">
                         <Container>
                             <div className="flowReviewbannerText">
-                                <Header as='h2'>{headingText}</Header>
+                                <Header as='h2' data-test="Give_Review_banner_text">{headingText}</Header>
                             </div>
                         </Container>
                     </div>
@@ -196,7 +196,7 @@ class Review extends React.Component {
                             </Grid>
                             {
                                 (!!showP2pList) && (
-                                    <div className="p2p-top-table">
+                                    <div className="p2p-top-table" data-test="Give_Review_P2P_amount_details">
                                         <Grid centered verticalAlign="middle">
                                                 <Grid.Row>
                                                     <Grid.Column mobile={16} tablet={14} computer={12}>
@@ -240,7 +240,7 @@ class Review extends React.Component {
                             }
                             {
                                 (!showP2pList) && (
-                                    <div className="single-top-table">
+                                    <div className="single-top-table" data-test="Give_Review_amount_details">
                                         <Grid centered verticalAlign="middle">
                                             <Grid.Row>
                                                 <Grid.Column mobile={16} tablet={14} computer={12}>
@@ -272,12 +272,13 @@ class Review extends React.Component {
                                             <div className="mob_brdr_btm_none mob_shadow_btm_none btn_border">
                                                 <Grid>
                                                     <Grid.Row>
-                                                    <Grid.Column mobile={16} tablet={8} computer={9} className="mobile_text">
+                                                    <Grid.Column data-test="Give_Review_refund_text" mobile={16} tablet={8} computer={9} className="mobile_text">
                                                     {refundMessage}
                                                     </Grid.Column>
                                                     <Grid.Column mobile={16} tablet={8} computer={7} className="mobile_btn">
                                                             <Button
                                                                 className="blue-btn-rounded-def w-160 mob_btn_edit width-full-btn"
+                                                                data-test="Give_Review_submit_button"
                                                                 primary
                                                                 content={(!this.state.buttonClicked)
                                                                     ? buttonText
@@ -289,6 +290,7 @@ class Review extends React.Component {
                                                                 <Button
                                                                     className="blue-bordr-btn-round-def w-120 mob_btn_edit "
                                                                     disabled={(this.state.buttonClicked)}
+                                                                    data-test="Give_Review_edit_button"
                                                                 >
                                                                     {formatMessage('reviewEdit')}
                                                                 </Button>
@@ -325,4 +327,9 @@ function mapStateToProps(state) {
     };
 }
 
-export default withTranslation(['review', 'giveCommon'])(connect(mapStateToProps)(Review));
+const connectedComponent = withTranslation(['review', 'giveCommon'])(connect(mapStateToProps)(Review));
+export {
+    connectedComponent as default,
+    Review,
+    mapStateToProps,
+}
