@@ -284,6 +284,7 @@ class Charity extends React.Component {
                 );
             }
             this.setState({
+                defaultInfoToShare: giveData.infoToShare,
                 dropDownOptions: {
                     ...dropDownOptions,
                     donationMatchList: donationMatchOptions,
@@ -517,6 +518,7 @@ class Charity extends React.Component {
             flowObject: {
                 giveData,
             },
+            defaultInfoToShare,
             dropDownOptions,
             reloadModalOpen,
             reviewBtnFlag,
@@ -577,11 +579,8 @@ class Charity extends React.Component {
                         giveData, dropDownOptions, this.props, type,
                     );
                     giveData = modifiedGiveData;
-                    const preferenceName = 'charities_info_to_share';
                     if(giveData.giveFrom.type === 'user'){
-                        const preference = preferences[preferenceName].includes('address')
-                        ? `${preferences[preferenceName]}-${preferences[`${preferenceName}_address`]}` : preferences[preferenceName];
-                        giveData.infoToShare.value = preference;
+                       giveData.infoToShare =  defaultInfoToShare;
                     } else{
                         giveData.infoToShare.value = 'anonymous';
                     }
