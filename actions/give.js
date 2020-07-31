@@ -192,8 +192,8 @@ const saveCharityAllocation = (allocation) => {
         coverFees,
         noteToCharity,
         noteToSelf,
-        privacyData: (infoToShare.id) ? infoToShare.id : null,
-        privacySetting: _.split(infoToShare.value, '|')[0],
+        privacyData: infoToShare.privacyData,
+        privacySetting: infoToShare.privacySetting,
     };
     if (!_.isEmpty(dedicateGift.dedicateType)) {
         attributes = {
