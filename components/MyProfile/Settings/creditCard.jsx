@@ -692,7 +692,7 @@ class MyCreditCards extends React.Component {
         } = this.props;
         let deleteCreditCardPopUpMsg = deleteConfirmCard;
         if (activeMonthlyDonations > 0) {
-            deleteCreditCardPopUpMsg = `${deleteConfirmCard}${formatMessage('giveCommon:creditCard.deleteCreditCardMsgActiveSubscription')}`;
+            deleteCreditCardPopUpMsg = `${deleteConfirmCard} ${formatMessage('giveCommon:creditCard.deleteCreditCardMsgActiveSubscription')}`;
         }
         return (
             <div>
