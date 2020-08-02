@@ -99,6 +99,12 @@ const give = (state = {}, action) => {
                 creditCardApiCall: action.payload.creditCardApiCall,
             };
             break;
+        case 'GET_MATCHING_DETAILS_FOR_GROUPS':
+            newState = {
+                ...state,
+                groupMatchingDetails: action.payload,
+            };
+            break;
         default:
             break;
     }

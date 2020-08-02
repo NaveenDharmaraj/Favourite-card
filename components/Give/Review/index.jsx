@@ -3,7 +3,11 @@ import React, {
   } from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import { reInitNextStep, proceed } from '../../../actions/give';
+import {
+    fetchGroupMatchAmount,
+    reInitNextStep,
+    proceed
+} from '../../../actions/give';
 import {
   populateDonationReviewPage,
   populateGiveReviewPage,
@@ -33,12 +37,30 @@ class Review extends React.Component {
         };
     }
   componentDidMount() {
-    const { dispatch, flowObject } = this.props
+    const {
+        dispatch,
+        flowObject,
+        giveGroupDetails,
+    } = this.props
     if (flowObject) {
         reInitNextStep(dispatch, flowObject)
     }
     if(flowObject && flowObject.stepsCompleted){
         Router.pushRoute('/dashboard');
+    }
+    const {
+        giveData,
+    } = flowObject
+    if(giveData.giveTo.type === 'groups' && !_.isEmpty(giveGroupDetails)) {
+        const {
+            attributes: {
+                activeMatch,
+                hasActiveMatch,
+            },
+        } = giveGroupDetails;
+        if (!_.isEmpty(activeMatch) && hasActiveMatch) {
+            dispatch(fetchGroupMatchAmount(giveData.giveAmount, giveData.giveFrom.value, giveData.giveTo.value));
+        }
     }
     window.scrollTo(0, 0);
   }
@@ -65,6 +87,7 @@ class Review extends React.Component {
             donationMatchData,
             fund,
             giveGroupDetails,
+            groupMatchingDetails,
             paymentInstrumentsData,
             companyDetails: {
                 companyPaymentInstrumentsData,
@@ -79,6 +102,7 @@ class Review extends React.Component {
         const formatMessage = this.props.t;
         let reviewData = {};
         let activeGroupMatch = null;
+        let activeMatchAmount = 0;
         if (!_.isEmpty(giveGroupDetails)) {
             const {
                 attributes: {
@@ -88,6 +112,10 @@ class Review extends React.Component {
             } = giveGroupDetails;
             if (!_.isEmpty(activeMatch) && hasActiveMatch) {
                 activeGroupMatch = activeMatch;
+                if(!_.isEmpty(groupMatchingDetails)) {
+                    activeGroupMatch = activeMatch;
+                    activeMatchAmount = Number(groupMatchingDetails.attributes.matchAvailable);
+                }
             }
         }
         let toURL = `/${type}/${flowSteps[0]}`;
@@ -112,6 +140,7 @@ class Review extends React.Component {
         } else {
             reviewData = populateGiveReviewPage(giveData, {
                 activeGroupMatch,
+                activeMatchAmount,
                 companiesAccountsData,
                 companyPaymentInstrumentsData,
                 donationMatchData,
@@ -217,6 +246,7 @@ function mapStateToProps(state) {
         companyDetails: state.give.companyData,
         userCampaigns: state.user.userCampaigns,
         userGroups: state.user.userGroups,
+        groupMatchingDetails: state.give.groupMatchingDetails,
     };
 }
 
