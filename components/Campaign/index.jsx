@@ -136,7 +136,7 @@ class CampaignProfileWrapper extends React.Component {
                                                 <ProfileTitle
                                                     avatar={avatar}
                                                     causes={causes}
-                                                    beneficiaryType={type} 
+                                                    type={type} 
                                                     location={locationDetails} 
                                                     following={liked} 
                                                     name={fundName} 

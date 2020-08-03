@@ -11,7 +11,7 @@ import ShareProfile from '../ShareProfile';
 function ProfileTitle(props) {
     const {
         avatar,
-        beneficiaryType,
+        type,
         causes,
         following,
         location,
@@ -19,9 +19,9 @@ function ProfileTitle(props) {
         profileId,
         children,
     } = props;
-    let causeName = null;
+    let causesList = null;
     if (!_isEmpty(causes)) {
-        causeName = causes.map((cause) => (
+        causesList = causes.map((cause) => (
             <span data-test="Charity_CharityDetails_causes" className="badge">
                 {cause.display_name}
             </span>
@@ -39,7 +39,7 @@ function ProfileTitle(props) {
             <Grid.Column mobile={16} tablet={11} computer={11} className="">
                 <div className="ch_profileDetails">
                     <Header as="h5">
-                        {beneficiaryType}
+                        {type}
                     </Header>
                     <Header as="h3">
                         {name}
@@ -49,13 +49,13 @@ function ProfileTitle(props) {
                         {location}
                     </Header>
                     <div className="ch_badge-group">
-                        {causeName}
+                        {causesList}
                     </div>
                     <div className="ch_share">
                         <ShareProfile
                             liked={following}
                             profileId={profileId}
-                            type={beneficiaryType}
+                            type={type}
                             name={name}
                             children={children}
                         />

@@ -66,13 +66,12 @@ class CharityDetails extends React.Component {
                         <Grid.Row>
                             <ProfileTitle
                                 avatar={avatar}
-                                beneficiaryType={beneficiaryType}
+                                type={beneficiaryType}
                                 causes={causes}
                                 following={following}
                                 location={location}
                                 name={name}
                                 profileId={profileId}
-                                type={type}
                             />
                             <Grid.Column mobile={16} tablet={5} computer={5}>
                                 <Responsive minWidth={320} maxWidth={767}>
