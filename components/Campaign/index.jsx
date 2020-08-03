@@ -117,7 +117,7 @@ class CampaignProfileWrapper extends React.Component {
         if (banner) {
             bannerStyle.backgroundImage = `url( ${banner})`;
         }
-        let locationDetails;
+        let locationDetails = '';
         if (_isEmpty(city) && !_isEmpty(province)) {
             locationDetails = province;
         } else if (!_isEmpty(city) && _isEmpty(province)) {
