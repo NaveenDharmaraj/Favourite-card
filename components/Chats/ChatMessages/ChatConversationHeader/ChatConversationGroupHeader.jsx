@@ -12,6 +12,7 @@ import { getCurrentUserRoleInGroup, getBase64 } from '../../../../helpers/chat/u
 import { storeGroupImage, handleGroupModalAction, updateSelectedConversationMuteUnmute, deleteSelectedConversation } from '../../../../actions/chat';
 import ChatModal from '../../../shared/ChatModal';
 import { actionTypes } from '../../../../actions/chat';
+import CustomSearchableInput from '../../../CustomSearchableInput';
 
 
 const newGroup = 'New Group';
@@ -68,7 +69,7 @@ class ChatConversationGroupHeader extends React.Component {
                 groupNameState,
             });
             dispatch({
-                payload:{
+                payload: {
                     newGroupName: groupNameState,
                     newGroupImageUrl,
                 },
@@ -87,7 +88,7 @@ class ChatConversationGroupHeader extends React.Component {
                 const newImage = response.data.attributes.location;
                 if (isForNewGroup) {
                     this.props.dispatch({
-                        payload:{
+                        payload: {
                             newGroupName: groupNameState,
                             newGroupImageUrl: newImage,
                         },
@@ -245,7 +246,7 @@ class ChatConversationGroupHeader extends React.Component {
         } : null;
         switch (groupAction) {
             case 'MEMBERS_LIST': return (
-                <Modal open={groupAction == 'MEMBERS_LIST'} onClose={() => this.setGroupAction(null)} size="tiny" dimmer="inverted" className="chimp-modal" closeIcon centered={false}>
+                <Modal open={groupAction == 'MEMBERS_LIST'} onClose={() => this.setGroupAction(null)} size="tiny" dimmer="inverted" className="chimp-modal" closeIcon centered={true}>
                     <Modal.Header>Members</Modal.Header>
                     <Modal.Content>
                         <Modal.Description className="font-s-16">
@@ -314,7 +315,7 @@ class ChatConversationGroupHeader extends React.Component {
                                                         </List.Content>
                                                         <Image avatar src={(userDetails[user.userId] && userDetails[user.userId].imageLink) ? userDetails[user.userId].imageLink : placeholderUser} />
                                                         <List.Content>
-                                                            <List.Header as='a'>{(userDetails[user.userId] && userDetails[user.userId].displayName)? userDetails[user.userId].displayName : "User"} {(Number(user.userId) == Number(userInfo.id) ? "(You)" : "")} {user.role == "1" ? " (Admin)" : ""}</List.Header>
+                                                            <List.Header as='a'>{(userDetails[user.userId] && userDetails[user.userId].displayName) ? userDetails[user.userId].displayName : "User"} {(Number(user.userId) == Number(userInfo.id) ? "(You)" : "")} {user.role == "1" ? " (Admin)" : ""}</List.Header>
                                                         </List.Content>
                                                     </List.Item>
                                                 )
@@ -347,7 +348,7 @@ class ChatConversationGroupHeader extends React.Component {
                     />
                 );
             case 'MEMBERS_ADD': return (
-                <Modal size="tiny" open={groupAction == 'MEMBERS_ADD'} onClose={() => this.setGroupAction(null)} dimmer="inverted" className="chimp-modal" closeIcon centered={false}>
+                <Modal size="tiny" open={groupAction == 'MEMBERS_ADD'} onClose={() => this.setGroupAction(null)} dimmer="inverted" className="chimp-modal" closeIcon centered={true}>
                     <Modal.Header>Add members</Modal.Header>
                     <Modal.Content>
                         <Modal.Description className="font-s-16">
@@ -529,6 +530,7 @@ class ChatConversationGroupHeader extends React.Component {
                             <span className="charCount">{groupNameState.length}/25</span>
                             <Button
                                 className="EditGrpName"
+                                disabled={groupNameState.length === 0}
                                 onClick={() => {
                                     compose ? this.handleNewGroupEditDone() : handleGroupModalAction({ groupId: selectedConversation.groupId, newName: groupNameState }, 'UPDATE_GROUP');
                                     this.setState({ editGroup: false });

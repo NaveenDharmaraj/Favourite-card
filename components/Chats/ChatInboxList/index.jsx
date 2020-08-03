@@ -286,7 +286,7 @@ const mapStateToProps = (state) => ({
 
 ChatInboxList.defaultProps = {
     messages: [],
-    mesageListLoader: false,
+    mesageListLoader: true,
 };
 
 ChatInboxList.propTypes = {

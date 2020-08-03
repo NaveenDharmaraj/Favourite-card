@@ -57,9 +57,18 @@ class ChatMessageFooter extends React.Component {
                     type: actionTypes.COMPOSE_SCREEN_SECTION
                 });
                 this.setState({
-                    textAreaContent: ""
+                    textAreaContent: "",
+                    disableButton: false,
                 })
-            });
+            })
+            .catch(()=>{
+                this.setState({
+                    disableButton: false,
+                }) 
+            })
+            this.setState({
+                disableButton: true,
+            })
         }
     }
     handlecreateGroup = (messageInfo) => {

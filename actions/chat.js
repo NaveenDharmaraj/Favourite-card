@@ -342,8 +342,10 @@ const loadConversationThenBlock = (response, msgId, userDetails, groupFeeds, sel
         if (userDetails[msgId]) {
             compose = true;
             // newState.newGroupMemberIds = [contactId];
+            userDetails[msgId].contactIds = msgId
             selectedConversation = userDetails[msgId];
         } else if (groupFeeds[msgId]) {
+            groupFeeds[msgId].contactIds = msgId
             selectedConversation = groupFeeds[msgId];
         }
     }

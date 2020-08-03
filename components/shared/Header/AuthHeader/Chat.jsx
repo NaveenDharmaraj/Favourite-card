@@ -7,6 +7,7 @@ import graphApi from "./../../../../services/graphApi";
 import placeholderUser from './../../../../static/images/no-data-avatar-user-profile.png';
 import placeholderGroup from './../../../../static/images/no-data-avatar-group-chat-profile.png';
 import { Link } from '../../../../routes';
+import { actionTypes } from '../../../../actions/chat';
 
 class Chat extends React.Component {
     months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -119,6 +120,13 @@ class Chat extends React.Component {
             .catch(function (error) {
                 // handle error
                 console.log(error);
+                self.props.dispatch({
+                    payload: {
+                        mesageListLoader: false,
+                        messages: [],
+                    },
+                    type: actionTypes.LOAD_CONVERSATION_LIST,
+                });
                 self.setState({ messages: [] });
             })
             .finally(function () {

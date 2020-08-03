@@ -158,6 +158,32 @@ const getCurrentUserRoleInGroup = (groupFeed, userId) => {
     return userInfo;
 };
 
+/**
+ * sort the userDetails alphabetically.
+ * @param {object[]} userDetails the list of userDetail.
+ * @return {object[]} sorted userDetails alphabetically.
+ */
+const sortUserDetails = (userDetails) => {
+    if (Object.values(userDetails).length > 0) {
+        // sort by name
+        const sortedUserDetails = Object.values(userDetails).sort((a, b) => {
+            const displayNameA = a.displayName ? a.displayName.toUpperCase() : ''; // ignore upper and lowercase
+            const displayNameB = b.displayName ? b.displayName.toUpperCase() : ''; // ignore upper and lowercase
+            if (displayNameA < displayNameB) {
+                return -1;
+            }
+            if (displayNameA > displayNameB) {
+                return 1;
+            }
+
+            // names must be equal
+            return 0;
+        });
+        return sortedUserDetails;
+    }
+    return userDetails;
+};
+
 export {
     conversationHead,
     debounceFunction,
@@ -165,5 +191,6 @@ export {
     getCurrentUserRoleInGroup,
     getDateString,
     groupMessagesByDate,
+    sortUserDetails,
     timeString,
 };

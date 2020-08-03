@@ -17,7 +17,7 @@ const IndividualChatContact = ({
     return (
         <List.Item
             as="a"
-            active={selectedConversation && msg.key === selectedConversation.key}
+            active={selectedConversation && (msg.key === selectedConversation.key)}
             key={`head_${msg.key}`}
             onClick={() => onConversationSelect(msg)}
         >
@@ -32,7 +32,7 @@ const IndividualChatContact = ({
             <Image avatar src={(conversationInfo && conversationInfo.image) && (conversationInfo.image)} />
             <List.Content>
                 <List.Header as="a">
-                    <span className={conversationInfo.info.unreadCount > 0 ? 'newMessage' : ''}>
+                    <span className={conversationInfo.info && conversationInfo.info.unreadCount > 0 ? 'newMessage' : ''}>
                         {(conversationInfo && conversationInfo.title) && conversationInfo.title}
                     </span>
                 </List.Header>

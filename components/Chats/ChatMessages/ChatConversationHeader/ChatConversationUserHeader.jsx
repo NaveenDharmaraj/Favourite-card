@@ -77,10 +77,14 @@ class ChatConversationUserHeader extends React.Component {
             showMoreOptions,
             conversationAction,
         } = this.state;
+        const name = selectedConversation && selectedConversation.contactIds && userDetails[selectedConversation.contactIds].displayName
+            ? userDetails[selectedConversation.contactIds].displayName :
+            selectedConversation && selectedConversation.contactIds && userDetails[selectedConversation.contactIds].userName ?
+                userDetails[selectedConversation.contactIds].userName : '';
         return (
             <Fragment>
                 <div className="chatWith">
-                    Message with {selectedConversation ? userDetails[selectedConversation.contactIds].displayName : ""}
+                    Message with {name}
                 </div>
                 {!compose && <div className="moreOption">
                     {conversationAction && this.renderUserModal()}
