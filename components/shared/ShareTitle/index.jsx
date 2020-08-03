@@ -17,12 +17,11 @@ function ProfileTitle(props) {
         location,
         name,
         profileId,
-        type,
         children,
     } = props;
-    let getCauses = null;
+    let causeName = null;
     if (!_isEmpty(causes)) {
-        getCauses = causes.map((cause) => (
+        causeName = causes.map((cause) => (
             <span data-test="Charity_CharityDetails_causes" className="badge">
                 {cause.display_name}
             </span>
@@ -50,13 +49,13 @@ function ProfileTitle(props) {
                         {location}
                     </Header>
                     <div className="ch_badge-group">
-                        {getCauses}
+                        {causeName}
                     </div>
                     <div className="ch_share">
                         <ShareProfile
                             liked={following}
                             profileId={profileId}
-                            type={type}
+                            type={beneficiaryType}
                             name={name}
                             children={children}
                         />

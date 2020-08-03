@@ -99,14 +99,14 @@ class CampaignProfileWrapper extends React.Component {
             campaignDetails: {
                 attributes: {
                     avatar,
-                    beneficiaryType,
                     causes,
-                    following,
-                    location,
+                    city,
+                    liked,
                     fundName,
                     groupId,
-                    type
-                }
+                    province,
+                },
+                type
             }
         } = this.props;
         let bannerStyle = {
@@ -115,6 +115,7 @@ class CampaignProfileWrapper extends React.Component {
         if (campaignDetails.attributes.banner) {
             bannerStyle.backgroundImage = `url( ${campaignDetails.attributes.banner})`;
         }
+        let locationDetails = !_.isEmpty(city) || !_.isEmpty(province) ? `${city},${province}` : '';
         return (
             <React.Fragment>
                 <div className="top-breadcrumb">
@@ -134,12 +135,11 @@ class CampaignProfileWrapper extends React.Component {
                                                 <ProfileTitle
                                                     avatar={avatar}
                                                     causes={causes}
-                                                    beneficiaryType={beneficiaryType}
-                                                    location={location}
-                                                    following={following}
-                                                    name={fundName}
-                                                    profileId={groupId}
-                                                    type={type}
+                                                    beneficiaryType={type} 
+                                                    location={locationDetails} 
+                                                    following={liked} 
+                                                    name={fundName} 
+                                                    profileId={groupId}  
                                                 >
                                                     <ProfilePageHead
                                                         pageDetails={campaignDetails}
