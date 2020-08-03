@@ -94,7 +94,6 @@ class CampaignProfileWrapper extends React.Component {
             seeMoreLoaderStatus,
             subGroupListLoader,
             isAuthenticated,
-            isAdmin,
         } = this.props;
         const {
             campaignDetails: {
@@ -153,7 +152,6 @@ class CampaignProfileWrapper extends React.Component {
                                                     <ProfilePageHead
                                                         pageDetails={campaignDetails}
                                                         isAuthenticated={isAuthenticated}
-                                                        isAdmin={isAdmin}
                                                     />
                                                 </ProfileTitle>
                                             )}
