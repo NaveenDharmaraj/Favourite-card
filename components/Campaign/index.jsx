@@ -105,6 +105,7 @@ class CampaignProfileWrapper extends React.Component {
                     fundName,
                     groupId,
                     province,
+                    banner,
                 },
                 type
             }
@@ -112,8 +113,8 @@ class CampaignProfileWrapper extends React.Component {
         let bannerStyle = {
             minHeight: '390px',
         };
-        if (campaignDetails.attributes.banner) {
-            bannerStyle.backgroundImage = `url( ${campaignDetails.attributes.banner})`;
+        if (banner) {
+            bannerStyle.backgroundImage = `url( ${banner})`;
         }
         let locationDetails = !_.isEmpty(city) || !_.isEmpty(province) ? `${city},${province}` : '';
         return (
