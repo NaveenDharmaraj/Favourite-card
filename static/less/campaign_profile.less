@@ -1,0 +1,195 @@
+@import "_mixins.less";
+//@import "../fonts/proximanova/font.css";
+
+.CampaignWapper{
+    .CampaigBanner{
+        background     : url(../images/campaign_banner.jpg) no-repeat;
+        min-height     : 240px;
+        height         : 240px;
+        background-size: cover;
+        margin-bottom  : 20px;
+        border-radius  : 5px;
+        @media only screen and (max-width:768px){
+            border-radius  :unset;
+        }
+    }
+}
+.boxcard{
+    background-color: #fff;
+    padding: 16px 0px 14px 0px;
+    width: calc(100% - 130px);
+    display: inline-block;
+    box-shadow: 0 2px 8px 0 rgba(0,0,0,0.16);
+    border-radius: 5px;
+    text-align: center;
+    @media only screen and (max-width:1199px){
+        width: calc(100% - 119px);
+    }
+    @media only screen and (max-width:991px){
+        width:100% ;
+        margin-bottom: 15px;
+    }
+    @media only screen and (max-width:767px){
+        width:48%;
+    }
+    @media only screen and (max-width:420px){
+        width:47%;
+    }
+    >i{
+        &.icon{
+            &.group{
+                margin:16px 0px 22px 0px;
+                &::before{
+                    content: url(../images/icons/group.svg);
+                    .imgColorIconGrey();
+                  }
+            }
+            &.privacy{
+                margin:16px 0px 22px 0px;
+                &::before{
+                    content: url(../images/icons/give-hand.svg);
+                    .imgColorIconGrey();
+                  }
+            }
+        }
+    }
+}
+.supportingWithsearch{
+    h3 {
+        &.ui {
+            &.header {
+                font-size: 20px;
+                color    : #263238;
+                line-height: 24px;
+                margin: 33px 0px 33px 0px !important;
+            }
+        }
+
+    }
+}
+.supportingcardWapper{
+    margin: 30px 0px;
+    .supportingcard{
+        padding:10px;
+        border: 1px solid #DEDEDE;
+        border-radius: 4px;
+        min-height: 145px;
+        margin:9px 0px;
+        .giveGroupDetails{
+            h4 {
+                &.ui {
+                    &.header {
+                        font-size: 10px;
+                        line-height   : 12px;
+                        color    :#009EA2;
+                        margin:0px 0px 5px 0px;
+                    }
+                }
+            }
+            h2{
+                &.ui {
+                    &.header {
+                        font-size: 14px;
+                        max-width: 200px;
+                        line-height   : 22px;
+                        color    :#263238;
+                        font-weight: 600;
+                        margin: 0;
+                    }
+                }
+            }
+            p{
+                font-size: 14px;
+                line-height: 22px;
+                margin: 0px;
+                color    :#263238;
+                font-family: 'ProximaNova-Regular';
+            }
+        }
+    }
+    .cardPaddingright{
+        padding-right: 10px !important;
+        @media only screen and (max-width: 767px){
+            padding-right: 15px !important;
+        }
+    }
+    .cardPaddingLeft{
+        padding-left: 10px !important;
+        @media only screen and (max-width: 767px){
+            padding-left: 15px !important;
+        }
+    }
+}
+.success-btn-rounded-def{
+    &.btnboxWidth{
+        width: 100%;
+        padding:10px 0px !important;
+        font-weight: 600;
+    }
+}
+.supportingcardShowMore{
+    margin: 32px 0px 100px 0px;
+    text-align: center;
+    @media only screen and (max-width:992px){
+        margin: 32px 0px 50px 0px;
+    }
+    .btnMore{
+        font-weight: 600;
+    }
+}
+.ch_profileDetails{
+    .CampaignBtn{
+        padding:10px 30px;
+        font-weight: 600;
+        @media only screen and (max-width:1199px){
+        padding: 10px 16px;
+        }
+        @media only screen and (max-width:992px){
+            padding:10px 30px;
+        }
+        span{
+            >i{
+                &.icon{
+                    &.edit{
+                        position: relative;
+                        &::before{
+                          content: "";
+                          background-image:url(../images/icons/edit.svg) !important;
+                          .imgColorBlue();
+                          position: absolute;
+                          width:19px;
+                          height: 19px;
+                          background-size:cover !important;
+                          background-repeat:no-repeat !important;
+                          left: -6px;
+                        }
+                      }
+                    &.bell{
+                        position: relative;
+                        &::before{
+                            content: "";
+                            background-image:url(../images/icons/give-hand.svg) !important;
+                            .imgColorBlue();
+                            position: absolute;
+                            width:19px;
+                            height: 19px;
+                            background-size:cover !important;
+                            background-repeat:no-repeat !important;
+                            left: -6px;
+                          }
+                    }
+                }
+            }
+        }
+    }
+}
+.mt-4{
+    margin-top: 60px !important;
+  }
+  .no-padding{
+      padding: 0px !important;
+  }
+  .pr-0{
+      padding-right: 0px !important;
+  }
+ 

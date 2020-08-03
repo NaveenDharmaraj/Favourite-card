@@ -97,6 +97,7 @@ class ShareProfile extends React.Component {
             isAuthenticated,
             type,
             t: formatMessage,
+            children
         } = this.props;
         const {
             showShareModal,
@@ -186,6 +187,7 @@ class ShareProfile extends React.Component {
                             </Modal.Description>
                         </Modal.Content>
                     </Modal>
+                    {children}
                 </List>
             </Fragment>
         );

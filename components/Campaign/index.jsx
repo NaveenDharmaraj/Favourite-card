@@ -9,9 +9,13 @@ import {
 } from '../../actions/profile';
 import BreadcrumbDetails from '../shared/BreadCrumbs';
 import ProfilePageHead from '../shared/ProfilePageHead';
-
+import {
+    Container,
+    Grid
+} from 'semantic-ui-react';
 import CampaignDetails from './CampaignDetails';
 import ProfileDetails from './ProfileDetails';
+import ProfileTitle from '../shared/ShareTitle';
 
 const actionTypes = {
     SEE_MORE_LOADER: 'SEE_MORE_LOADER',
@@ -91,6 +95,20 @@ class CampaignProfileWrapper extends React.Component {
             subGroupListLoader,
             isAuthenticated,
         } = this.props;
+        const {
+            campaignDetails: {
+                attributes: {
+                    avatar,
+                    beneficiaryType,
+                    causes,
+                    following,
+                    location,
+                    fundName,
+                    groupId,
+                    type
+                }
+            }
+        } = this.props;
         let bannerStyle = {
             minHeight: '390px',
         };
@@ -104,39 +122,65 @@ class CampaignProfileWrapper extends React.Component {
                         pathDetails={pathDetails}
                     />
                 </div>
-                <div className="profile-header-image campaign" style={bannerStyle} />
-                {campaignDetails && (
-                    <ProfilePageHead
-                        pageDetails={campaignDetails}
-                        isAuthenticated={isAuthenticated}
-                    />
-                )}
-                {
-                    campaignDetails && (
-                        <CampaignDetails
-                            campaignDetails={campaignDetails}
-                            isAuthenticated={isAuthenticated}
-                            deepLinkUrl={deepLinkUrl}
-                            dispatch={dispatch}
-                            disableFollow={disableFollow}
-                            userId={(currentUser && currentUser.id) ? currentUser.id: ''}
-                        />
-                    )
-                }
-                {
-                    campaignDetails && (
-                        <ProfileDetails
-                            campaignDetails={campaignDetails}
-                            campaignImageGallery={campaignImageGallery}
-                            campaignSubGroupDetails={campaignSubGroupDetails}
-                            campaignSubGroupsShowMoreUrl={campaignSubGroupsShowMoreUrl}
-                            isAuthenticated={isAuthenticated}
-                            seeMoreLoaderStatus={seeMoreLoaderStatus}
-                            subGroupListLoader={subGroupListLoader}
-                            viewMoreFn={this.viewMoreFn}
-                        />
-                    )
-                }
+                <div className="CampaignWapper">
+                    <Container>
+                        <div className='CampaigBanner ch_headerImage greenBg'></div>
+                        <Grid.Row>
+                            <Grid>
+                                <Grid.Column mobile={16} tablet={11} computer={11} >
+                                    <Grid.Row>
+                                        <Grid>
+                                            {campaignDetails && (
+                                                <ProfileTitle
+                                                    avatar={avatar}
+                                                    causes={causes}
+                                                    beneficiaryType={beneficiaryType}
+                                                    location={location}
+                                                    following={following}
+                                                    name={fundName}
+                                                    profileId={groupId}
+                                                    type={type}
+                                                >
+                                                    <ProfilePageHead
+                                                        pageDetails={campaignDetails}
+                                                        isAuthenticated={isAuthenticated}
+                                                    />
+                                                </ProfileTitle>
+                                            )}
+                                            {
+                                                campaignDetails && (
+                                                    <CampaignDetails
+                                                        campaignDetails={campaignDetails}
+                                                        isAuthenticated={isAuthenticated}
+                                                        deepLinkUrl={deepLinkUrl}
+                                                        dispatch={dispatch}
+                                                        disableFollow={disableFollow}
+                                                        userId={(currentUser && currentUser.id) ? currentUser.id : ''}
+                                                    />
+                                                )
+                                            }
+                                            {
+                                                campaignDetails && (
+                                                    <ProfileDetails
+                                                        campaignDetails={campaignDetails}
+                                                        campaignImageGallery={campaignImageGallery}
+                                                        campaignSubGroupDetails={campaignSubGroupDetails}
+                                                        campaignSubGroupsShowMoreUrl={campaignSubGroupsShowMoreUrl}
+                                                        isAuthenticated={isAuthenticated}
+                                                        seeMoreLoaderStatus={seeMoreLoaderStatus}
+                                                        subGroupListLoader={subGroupListLoader}
+                                                        viewMoreFn={this.viewMoreFn}
+                                                    />
+                                                )
+                                            }
+                                        </Grid>
+                                    </Grid.Row>
+                                </Grid.Column>
+                            </Grid>
+                        </Grid.Row>
+
+                    </Container>
+                </div>
             </React.Fragment>
         );
     }
