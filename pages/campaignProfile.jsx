@@ -132,6 +132,7 @@ function mapStateToProps(state) {
         seeMoreLoaderStatus: state.profile.seeMoreLoaderStatus,
         slugApiErrorStats: state.profile.slugApiErrorStats,
         subGroupListLoader: state.profile.subGroupListLoader,
+        isAdmin: state.user.isAdmin,
     };
 }
 

@@ -1,7 +1,7 @@
 /* eslint-disable react/no-did-update-set-state */
 /* eslint-disable react/prop-types */
 import React from 'react';
-import _ from 'lodash';
+import _isEmpty from 'lodash/isEmpty';
 
 import {
     campaignSubGroupSeeMore,
@@ -94,6 +94,7 @@ class CampaignProfileWrapper extends React.Component {
             seeMoreLoaderStatus,
             subGroupListLoader,
             isAuthenticated,
+            isAdmin,
         } = this.props;
         const {
             campaignDetails: {
@@ -116,7 +117,14 @@ class CampaignProfileWrapper extends React.Component {
         if (banner) {
             bannerStyle.backgroundImage = `url( ${banner})`;
         }
-        let locationDetails = !_.isEmpty(city) || !_.isEmpty(province) ? `${city},${province}` : '';
+        let locationDetails;
+        if (_isEmpty(city) && !_isEmpty(province)) {
+            locationDetails = province;
+        } else if (!_isEmpty(city) && _isEmpty(province)) {
+            locationDetails = city;
+        } else if (!_isEmpty(city) && !_isEmpty(province)) {
+            locationDetails = `${city}, ${province}`;
+        }
         return (
             <React.Fragment>
                 <div className="top-breadcrumb">
@@ -145,6 +153,7 @@ class CampaignProfileWrapper extends React.Component {
                                                     <ProfilePageHead
                                                         pageDetails={campaignDetails}
                                                         isAuthenticated={isAuthenticated}
+                                                        isAdmin={isAdmin}
                                                     />
                                                 </ProfileTitle>
                                             )}
