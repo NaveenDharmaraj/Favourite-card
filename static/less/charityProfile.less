@@ -24,6 +24,9 @@
     background-size: cover;
     margin-bottom  : 20px;
     border-radius  : 5px;
+    &.greenBg{
+        background     : url(../images/giving_and_campaign_group_profile_bg.png) no-repeat;
+    }
 }
 
 .ch_profileWrap {
@@ -54,6 +57,9 @@
                 text-transform: uppercase;
                 margin-bottom : 10px;
                 letter-spacing: 1px;
+                &.textGreen{
+                    color: #009E9F;
+                }
             }
         }
 
@@ -62,7 +68,6 @@
     h3 {
         &.ui {
             &.header {
-                color    : #ED803B;
                 font-size: 24px !important;
                 margin   : 0px;
                 color    : #263238;
@@ -108,6 +113,16 @@
 
                 .item {
                     margin-right: 20px;
+                    p{
+                        &.groupmembers{
+                        font-size: 10px;
+                        color: #263238;
+                        max-width: 224px;
+                        }
+                    }
+                    @media only screen and (max-width:1199px) and (min-width:992px) {
+                        margin-right: 12px;
+                    }
 
                     .icon {
                         margin-left: 0 !important
@@ -124,8 +139,307 @@
         line-height: 22px;
         margin     : 10px 0;
     }
-}
+    h3 {
+        &.ui {
+            &.header {
+                font-size: 14px !important;
+                font-weight: 600;
+                line-height: 22px;
+                color: #263238;
+                font-family: 'ProximaNova-Regular';
+            }
+        }
 
+    }
+    .GroupPrfile{
+        .item{
+            padding: 0px !important;
+            .grProfile{
+                width: 30px;
+                height: 30px;
+                border-radius: 100px;
+            }
+            .content{
+                .header {
+                    font-size: 14px !important;
+                    font-weight: normal !important;
+                    color: #263238;
+                    font-family: 'ProximaNova-Regular';
+                    line-height: 22px;
+                }
+            }
+        }
+    }
+    .GroupPurpose{
+        margin-top: 48px;
+        p {
+            font-size: 14px;
+            line-height: 22px;
+            color: #263238;
+            font-family: 'ProximaNova-Regular';
+            margin: 0px;
+        }
+        h3 {
+            &.ui {
+                &.header {
+                    font-size: 14px !important;
+                    font-weight: 600;
+                    line-height: 22px;
+                    color: #263238;
+                    font-family: 'ProximaNova-Regular';
+                    margin-bottom: 22px !important;
+                }
+            }
+    
+        }
+        &:last-child{
+            margin-bottom: 40px;
+        }
+    }
+    .GroupPurposeTop{
+        margin-top: 38px;
+    }
+}
+.GroupTab{
+    margin: 40px 0px 30px 0px;
+    .tabWapper{
+        margin-top: 28px;
+        .MatchingMessages{
+            width: 100%;
+            padding: 12px;
+            border-radius:6px;
+            background-color: #E5F5F5;
+            margin-bottom: 20px;
+            @media only screen and (max-width:992px) {
+                margin: auto;
+                text-align: center;
+            }
+            .borderprofile{
+                margin: auto;
+                text-align: center;
+            }
+            p{
+                font-size: 14px;
+                font-weight: 600;
+                font-family: 'ProximaNova-Regular';
+                color:#263238;
+                line-height: 22px;
+                span{
+                    &.textColor{
+                        color: #009E9F ;
+                    }
+                }
+            }
+        }
+        .white-btn-rounded-def{
+            &.Messagestabbtn{
+                font-size: 12px;
+                color: #263238;
+                line-height: 22px;
+                float: right;
+                padding: 0px 10px;
+                font-family: 'ProximaNova-medium';
+            }
+        }
+        .db-activity-tbl{
+            &.ui{
+                &.basic{
+                    >tbody{
+                        >tr{
+                            &.EmilyData{
+                                td{
+                                    &.date{
+                                        font-size: 12px;
+                                        line-height: 15px;
+                                        color: #263238;
+                                        font-weight: 600;
+                                        font-family: 'ProximaNova-Regular';
+                                    }
+                                }
+                                td{
+                                    &.EmilyGroup{
+                                        .list{
+                                            .item{
+                                                .imgEmily{
+                                                    width: 46px;
+                                                    height: 46px;
+                                                }
+                                                .content{
+                                                    width:88%;
+                                                    margin-left: 10px;
+                                                    .header{
+                                                     color: #263238;
+                                                     font-size: 14px;
+                                                     line-height: 22px;
+                                                     font-family: 'ProximaNova-Regular';
+                                                     span{
+                                                         &.adminEmily{
+                                                            color: #055CE5;
+                                                            font-weight: 600;                                                            ;
+                                                         }
+                                                     }
+                                                     &.EmilyAdmin{
+                                                        font-weight: 600;
+                                                     }
+                                                    }
+                                                }
+                                                .description{
+                                                    p{
+                                                        color: #263238;
+                                                        font-size: 14px;
+                                                        line-height: 22px;
+                                                        font-family: 'ProximaNova-Regular';
+                                                        font-weight: normal; 
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                td{
+                                    &.amount{
+                                        font-size: 14px;
+                                        line-height: 22px;
+                                        color: #263238;
+                                        font-weight: 600;
+                                        font-family: 'ProximaNova-Regular'; 
+                                        .btnFrinend{
+                                            padding: 7px 20px;
+                                        }
+                                    }
+                            }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .groupcreated{
+            margin-bottom: 25px;
+            .ui {
+                &.list {
+                    margin: 0px 0;
+                    .Item {
+                        .icon {
+                            position  : relative;
+                            min-width : 16px;
+                            min-height: 20px;
+            
+                            &::before {
+                                content            : '';
+                                position           : absolute;
+                                top                : 0px;
+                                left               : 0;
+                                bottom             : 0;
+                                right              : 0;
+                                background-repeat  : no-repeat !important;
+                                background-position: center !important;
+                                margin             : auto;
+                            }
+                            &.calendar{
+                                &::before{
+                                    background-image: url(../images/icons/calendar.svg) !important;
+                                    background-size : contain !important;
+                                    width           : 12px;
+                                }
+                            }
+                         }
+                    }
+                    .content{
+                        .header{
+                            font-size: 14px;
+                            font-weight: normal;
+                        }
+                    }
+                 }
+            }
+        }
+        .duringCurrent{
+            margin:35px 0px;
+            h5{
+                &.ui {
+                    &.header {
+                        font-size: 14px;
+                        line-height   : 22px;
+                        color    :#263238;
+                        font-weight: 600;
+                    }
+                }
+            }
+        }
+    .boxGroup{
+        display: inline-block;
+        width: 31%;
+        h5{
+            &.ui {
+                &.header {
+                    font-size: 14px;
+                    line-height   : 22px;
+                    color    :#263238;
+                    font-weight: 600;
+                    margin-bottom: 11px;
+                }
+            }
+        }
+    }
+    .Currentbox{
+        border-radius: 5px;
+        background-color: #FFFFFF;
+        box-shadow: 0 2px 8px 0 rgba(0,0,0,0.16);
+        height: 49px;
+        border-left: 2px solid#263238;
+        text-align: center;
+        width: 100%;
+        align-items: center;
+        display: grid;
+        font-size: 20px;
+        line-height: 22px;
+        color: #263238;
+        font-family: 'ProximaNova-Regular';
+        font-weight: 600;
+        padding: 13px 0px;
+        &.greenbox{
+            color: #009EA2 !important;
+            border-left: 2px solid#009EA2 !important;
+        }
+    }
+    .icon-boxGroup{
+        width:3%;
+        display: inline-block;
+    }
+    .ActivityPost{
+        .postinputBox{
+            .ui{
+                &.input{
+                    .button{
+                        right: 2px !important;
+                        top: -3px !important;
+                    }
+                }
+            }
+        }
+        .ActivityComment{
+            margin-top: 30px;
+            .content{
+                margin-left: 60px !important;
+                .text{
+                    font-size: 14px;
+                    line-height: 22px;
+                    span{
+                        color: #055CE5;
+                        font-weight:600;
+                    }
+                }
+                .actions{
+                    a{
+                        font-weight:600;
+                    }
+                }
+            }
+        }
+    }
+    }
+}
 .ch_program {
     .ui {
         &.table {
@@ -165,6 +479,7 @@
             }
         }
     }
+   
 }
 
 .ch_footnote {
@@ -183,9 +498,180 @@
     border-radius   : 5px;
     max-width       : 295px;
     float           : right;
-
+    &.fullwidth{
+        width: 100%;
+        margin-bottom: 15px;
+        h2 {
+            &.ui {
+                &.header {
+                    font-size : 24px;
+                    color: #263238;
+                    font-weight: 600;
+                    margin: 0px;
+                    line-height: 34px;
+                }
+            }
+        }
+        h1{
+            &.ui {
+                &.header {
+                    font-size : 28px;
+                    color: #263238;
+                    font-weight: 600;
+                    margin: 0px;
+                }
+            }
+        }
+        p{
+            font-family: 'ProximaNova-Regular';
+            color: #263238;
+            font-size: 14px;
+            line-height: 22px;
+        }
+        .goalPercent{
+            .ui{
+                &.progress{
+                    width: 100%;
+                    background-color:#D7D7D7;
+                    height: 9px;
+                    .bar{
+                        height: 9px;
+                        background-color:#009E9F;
+                    }
+                }
+            }
+        }
+        Button{
+            &.goalbtn{
+                width: 100%;
+                color:#37474F !important;
+                font-size: 12px;
+                line-height: 15px;
+                font-family: 'ProximaNova-Medium';
+                padding: 5px;
+            }
+        }
+        .lastGiftWapper{
+            width: 100%;
+            padding:18px 0px;
+            p{
+                &.lastGiftText{
+                    font-size: 10px;
+                    line-height: 18px;
+                    display: inline-block;
+                    clear:#263238;
+                    float: left;
+                    &.blueText{
+                        color: #055CE5;
+                        float: right;
+                    }
+                }
+            }
+        }
+    }
+    &.lightGreenBg{
+        background-color:#e5f5f5;
+        .charityInfo{
+            h4{
+                margin-bottom: 10px !important;
+            }
+            h5 {
+                &.ui {
+                    &.header {
+                        font-size    : 14px;
+                        line-height: 22px;
+                        font-weight: 600;
+                        color: #263238;
+                        margin-top: 10px;
+                        margin-bottom: 20px;
+                    }
+                }
+            }
+            .Expiresbtn{
+                padding: 5px;
+                float: right;
+                margin-bottom: 25px;
+                color: #263238;
+                font-size: 12px;
+                background-color: #fff;
+                border-radius: 30px;
+            }
+        }
+        .matchingFundsWapper{
+            width: 100%;
+            .matchingFundsGraff{
+                display: inline-block;
+                width: 18%;
+                float: left;
+            }
+            .matchingFundsText{
+                display: inline-block;
+                float: left;
+                width:82%;
+                h3 {
+                    &.ui {
+                        &.header {
+                            font-size    :22px !important;
+                            line-height: 27px;
+                            font-weight: 600;
+                            color: #009EA2;
+                            margin-bottom: 0px;
+                        }
+                    }
+                }
+                h5{
+                    &.ui {
+                        &.header {
+                            font-size    :13px;
+                            margin-top: 0px;
+                            line-height: 22px;
+                            font-weight: 600;
+                            color: #009EA2;
+                            margin-bottom: 10px;
+                        }
+                    }
+                }
+                .total{
+                    p{
+                        font-size: 13px;
+                        color: #263238;
+                        margin-top: 0px;
+                        line-height: 22px;
+                        font-weight: 600;
+                    }
+                }
+            }
+        }
+        p{
+            &.blueHistory{
+                color: #055CE5;
+                font-size: 10px;
+                text-align: center;
+                line-height: 18px;
+                padding: 20px 0px 0px 0px;
+            }
+        }
+    }
     .charityInfo {
         padding: 25px 25px 30px !important;
+        &.paddingcharity{
+            padding: 25px 11px 30px !important;
+            .GivingGroupPadding{
+                padding: 0px 14px;
+                .MatchingPartnerWapper{
+                    margin: 5px 0px !important;
+                    .textGreen{
+                        font-size: 10px;
+                        text-transform: uppercase;
+                        color: #009E9F;
+                        font-weight: 600;
+                        &.orange{
+                            color: #ED803B;
+                        }
+                    }
+                }
+            }
+        }
 
         h4 {
             &.ui {
@@ -195,7 +681,9 @@
                 }
             }
         }
-
+        .headingColor{
+        color: #3D525F;
+        }
         .ui {
             &.list {
                 margin: 0px 0;
@@ -604,7 +1092,8 @@
     width           : 100%;
     padding         : 10px 20px;
     background-color: #ffffff;
-    z-index:9;
+    z-index: 9;
+
     .button {
         width      : 100%;
         font-size  : 17px !important;
@@ -869,6 +1358,51 @@
                 }
 
             }
+        }
+    }
+}
+.MatchingPartnerWapper{
+    margin: 24px 0px;
+    &.margingWapper{
+        margin: 0px !important;
+    }
+    .h_profileMatching{
+        border-radius: 100%;
+        width:40px;
+        height: 40px;
+        &.borderprofile{
+            width: 50px;
+            height: 50px;
+            box-shadow: 2px 2px 7px 0 rgba(105,146,203,0.3);
+            border: 5px solid #F5F8FC;
+        }
+        img{
+            border-radius: 100%;
+            width:40px;
+            height: 40px;
+            &.profileImgMargin{
+                margin-top: 6px;
+            }
+        }
+    }
+    .MatchingPartner{
+        h3{
+            &.ui {
+                &.header {
+                    font-size    :14px !important;
+                    margin-top: 6px;
+                    line-height: 22px;
+                    font-weight: 600;
+                    color: #263238;
+                    margin-bottom: 2px;
+                    font-family: 'ProximaNova-Regular';
+                }
+            }
+        }
+        p{
+            font-family: 'ProximaNova-Regular';
+            font-size: 12px;
+            line-height: 15px;
         }
     }
 }
