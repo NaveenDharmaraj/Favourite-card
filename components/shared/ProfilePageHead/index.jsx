@@ -39,22 +39,31 @@ function ProfilePageHead(props) {
     let profileType = type;
     if (type === 'beneficiaries') {
         profileType = 'charity';
-    } else if (type === 'campaigns' || type === 'groups') {
+    } else if (type === 'groups') {
         profileType = 'group';
+    } else if(type === 'campaigns') {
+        profileType = 'campaigns';
+    };
+    let linkAddress;
+    if(profileType === 'group') {
+        linkAddress = `${RAILS_APP_URL_ORIGIN}/groups/${slug}/edit`;
+    }
+    else if(profileType === 'campaigns') {
+        linkAddress = `${RAILS_APP_URL_ORIGIN}/campaigns/${slug}/manage-basics`;
     };
     if (pageDetails.attributes) {
         if (isAuthenticated) {
-            if (profileType === 'group' && isAdmin) {
+            if (profileType === 'group' || profileType === 'campaigns' && isAdmin) {
                 buttonLink = (
                     <Fragment>
-                        <a href={(`${RAILS_APP_URL_ORIGIN}/campaigns/${slug}/manage-basics`)}>
-                            <Button className="blue-bordr-btn-round-def CampaignBtn"><span><i aria-hidden="true" class="edit icon"></i></span>Edit Campaign</Button>
+                        <a href={(linkAddress)}>
+                            <Button className="blue-bordr-btn-round-def CampaignBtn"><span><i aria-hidden="true" class="edit icon"></i></span>Edit {profileType === 'campaigns' ?'Campaign': 'Group'}</Button>
                         </a>
                         {balance > 0 ?
                             (
                                 <Link route={(`/give/to/${profileType}/${slug}/new`)}>
                                 {/* TODO need to include GiveFromCampaignModal.jsx */}
-                                    <Button className="blue-bordr-btn-round-def CampaignBtn"><span><i aria-hidden="true" class="bell icon"></i></span>Give from Campaign</Button>
+                                    <Button className="blue-bordr-btn-round-def CampaignBtn"><span><i aria-hidden="true" class="bell icon"></i></span>Give from {profileType === 'campaigns' ?'Campaign': 'Group'}</Button>
                                 </Link>
                             )
                             :
@@ -63,7 +72,7 @@ function ProfilePageHead(props) {
                                     <Popup disabled={false} content={`The current campaign balance is ${balance}`}
                                         trigger={
                                             <Button className="blue-bordr-btn-round-def CampaignBtn" disabled >
-                                                <span><i aria-hidden="true" class="bell icon"></i></span>Give from Campaign
+                                                <span><i aria-hidden="true" class="bell icon"></i></span>Give from {profileType === 'campaigns' ?'Campaign': 'Group'}
                                             </Button>
                                         } />
                                 </Link>
