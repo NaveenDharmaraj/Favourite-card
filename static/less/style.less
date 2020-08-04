@@ -6572,6 +6572,33 @@ button.ui.button.blue-bordr-btn-round-def{
   }
 }
 .inputWraper{
+  &.custom{
+    .ui{
+      &.fluid{
+        &.multiple{
+          &.selection{
+            &.dropdown{
+              .default{
+                &.text{
+                  padding: 9px 14px 7px;
+                }
+              }
+              .dropdown{
+                &.icon{
+                  display: none;
+                }
+              }
+              >.visible{
+                &.menu{
+                  display: none !important;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
   .ui{
     &.fluid{
       &.multiple{

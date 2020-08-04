@@ -572,3 +572,22 @@ button,a{
     padding-right: 0px;
   }
 }
+
+.newMessage{
+  color: #3D3D3D !important;
+  display: inline-block;
+  padding-right: 1rem;
+  position: relative;
+  &::before{
+    content: '';
+    position: absolute;
+    right: 0;
+    width: 7px;
+    height: 7px;
+    background-color: #D0021B;
+    border-radius: 100%;
+    margin: auto;
+    top: 0;
+    bottom: 0;
+  }
+}

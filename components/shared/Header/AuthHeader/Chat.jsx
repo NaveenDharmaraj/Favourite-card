@@ -109,6 +109,7 @@ class Chat extends React.Component {
                 if (!userDetails[userDetail.userId]) {
                     userDetails[userDetail.userId] = userDetail;
                 }
+                userDetails[userDetail.userId].unreadCount = userDetail.unreadCount;
             });
             let groupFeeds = self.state.groupFeeds;
             _.forEach(response.response.groupFeeds, function (groupFeed) {
@@ -254,7 +255,6 @@ class Chat extends React.Component {
                 <Popup.Content>
                     <List relaxed="very" verticalAlign='middle'>
                         {(() => {
-
                             if (self.state.messagesList && self.state.messagesList.length > 0) {
                                 return self.state.messagesList.map(function (msg) {
                                     let conversationHead = self.conversationHead(msg);
@@ -263,7 +263,7 @@ class Chat extends React.Component {
                                         <List.Content>
                                             <List.Header>
                                                 <Link route={`/chats/` + (msg.groupId ? msg.groupId : msg.contactIds)}>
-                                                    <a className="header"><span className={"name " + (conversationHead.info.unreadCount > 0 ? " newMessage" : "")}>{conversationHead.title}</span> <span className="time">{self.timeString(msg.createdAtTime, true)}</span></a>
+                                                    <a className="header"><span className={`name ${conversationHead.info.unreadCount > 0  ? "newMessage" : ""}`}>{conversationHead.title}</span> <span className="time">{self.timeString(msg.createdAtTime, true)}</span></a>
                                                 </Link>
                                             </List.Header>
                                             <List.Description>

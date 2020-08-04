@@ -12,7 +12,6 @@ import { getCurrentUserRoleInGroup, getBase64 } from '../../../../helpers/chat/u
 import { storeGroupImage, handleGroupModalAction, updateSelectedConversationMuteUnmute, deleteSelectedConversation } from '../../../../actions/chat';
 import ChatModal from '../../../shared/ChatModal';
 import { actionTypes } from '../../../../actions/chat';
-import CustomSearchableInput from '../../../CustomSearchableInput';
 
 
 const newGroup = 'New Group';
@@ -33,6 +32,7 @@ class ChatConversationGroupHeader extends React.Component {
             groupAddMemberValues: [],
             groupUserName: "",
             memberSearchText: "",
+            addMemberSearchText: "",
             newGroupImageUrl: (!_isEmpty(selectedConversation) && selectedConversation.conversationInfo)
                 && selectedConversation.conversationInfo.image ? selectedConversation.conversationInfo.image : null,
             showMoreOptions: false,
@@ -152,6 +152,7 @@ class ChatConversationGroupHeader extends React.Component {
     }
     handleGroupAddMemberChange = (e, { value }) => {
         this.setState({
+            addMemberSearchText:  value,
             groupAddMemberValues: value,
             groupAddMemberOptions: this.state.groupAddMemberOptions.filter(function (obj) {
                 return value.indexOf(obj.value) >= 0;
@@ -174,6 +175,11 @@ class ChatConversationGroupHeader extends React.Component {
                 })
             }))
         }
+    }
+    handleLocationSearchChange=(event,data)=>{
+        this.setState({
+            addMemberSearchText: event.target.value,
+        })
     }
     renderGroupModal = (groupFeed, currentUserInfo, conversationInfo) => {
         const {
@@ -352,15 +358,18 @@ class ChatConversationGroupHeader extends React.Component {
                     <Modal.Header>Add members</Modal.Header>
                     <Modal.Content>
                         <Modal.Description className="font-s-16">
-                            <div className="inputWraper">
+                            <div className="inputWraper custom">
                                 <Dropdown
                                     fluid
                                     multiple
                                     onChange={this.handleGroupAddMemberChange}
                                     options={this.state.groupAddMemberOptions}
-                                    placeholder='Type a name or multiple names'
+                                    placeholder='Add memebers'
                                     selection
+                                    search
+                                    searchQuery={this.state.addMemberSearchText}
                                     value={this.state.groupAddMemberValues}
+                                    onSearchChange={this.handleLocationSearchChange}
                                 />
                             </div>
                             <div className="swichAccounts mt-2 mb-2">
@@ -368,8 +377,14 @@ class ChatConversationGroupHeader extends React.Component {
                                     {(() => {
                                         if (selectedConversation && selectedConversation.groupId) {
                                             let groupFeed = groupFeeds[selectedConversation.groupId];
+                                            const {
+                                                addMemberSearchText
+                                            } = this.state;
                                             {
-                                                return Object.keys(userDetails).map(userId => {
+                                                return Object.values(userDetails).filter(function (user) {
+                                                    return addMemberSearchText == "" || ( userDetails[user.userId].displayName && userDetails[user.userId].displayName.toLowerCase().indexOf(addMemberSearchText.toLowerCase())) >= 0;
+                                                })
+                                                .map(({userId}) => {
                                                     let user = userDetails[userId];
                                                     if (user.userId != userInfo.id && (user.displayName || user.userName) && groupFeed.membersId.indexOf(user.userId + "") < 0) {
                                                         return (<List.Item key={"member_" + user.userId}>
