@@ -173,7 +173,7 @@ class ClaimCharity extends React.Component {
                                                                         id="accessCode"
                                                                         name="accessCode"
                                                                         className="inputBox"
-                                                                        placeholder="eg.:123A-456B-789C-012D"
+                                                                        placeholder="eg.: 123A-456B-789C-012D"
                                                                         onChange={this.handleInputChange}
                                                                     />
                                                                     <FormValidationErrorMessage
