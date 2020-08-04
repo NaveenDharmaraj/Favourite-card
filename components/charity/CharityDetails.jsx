@@ -6,6 +6,7 @@ import {
     string,
     number,
     func,
+    array,
     PropTypes,
 } from 'prop-types';
 import {
@@ -110,7 +111,7 @@ CharityDetails.defaultProps = {
         attributes: {
             avatar: '',
             beneficiaryType: '',
-            // causes: [],
+            causes: [],
             following: false,
             formattedDescription: '',
             formattedDescriptionNew: '',
@@ -132,7 +133,7 @@ CharityDetails.propTypes = {
         attributes: PropTypes.shape({
             avatar: string,
             beneficiaryType: string,
-            // causes: array,
+            causes: array,
             following: bool,
             formattedDescription: string,
             formattedDescriptionNew: string,

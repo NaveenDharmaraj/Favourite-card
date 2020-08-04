@@ -6,9 +6,7 @@ import {
     Header,
 } from 'semantic-ui-react';
 import {
-    bool,
     PropTypes,
-    string,
 } from 'prop-types';
 import ShareProfile from '../ShareProfile';
 
@@ -89,14 +87,14 @@ ProfileTitle.defaultProps = {
 };
 
 ProfileTitle.propTypes = {
-    avatar: string,
-    type: string,
-    causes: string,
-    following: bool,
-    location: string,
-    name: string,
-    profileId: string,
-    beneficiaryType: string,
+    avatar: PropTypes.string,
+    type: PropTypes.string,
+    causes: PropTypes.string,
+    following: PropTypes.bool,
+    location: PropTypes.string,
+    name: PropTypes.string,
+    profileId: PropTypes.string,
+    beneficiaryType: PropTypes.string,
 };
 
 export default ProfileTitle;  

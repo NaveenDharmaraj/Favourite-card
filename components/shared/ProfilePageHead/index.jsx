@@ -110,14 +110,14 @@ ProfilePageHead.defaultProps = {
 };
 
 ProfilePageHead.propTypes = {
-    campaignDetails: {
-        attributes: {
+    campaignDetails: PropTypes.shape({
+        attributes: PropTypes.shape({
             isAdmin: bool,
             balance: string,
             slug: string,
-        },
+        }),
         type: string
-    },
+    }),
 };
 
 function mapStateToProps(state) {
