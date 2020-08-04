@@ -23,31 +23,13 @@ const actionTypes = {
 class CampaignProfileWrapper extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            pathDetails: [
-                'Explore',
-                'Campaigns',
-            ],
-        };
         this.viewMoreFn = this.viewMoreFn.bind(this);
     }
 
     componentDidMount() {
         const {
-            pathDetails,
-        } = this.state;
-        const {
-            campaignDetails: {
-                attributes,
-            },
             deepLink,
         } = this.props;
-        if (attributes.name) {
-            pathDetails.push(attributes.name);
-        }
-        this.setState({
-            pathDetails,
-        });
         if (_.isEmpty(deepLink)) {
             const {
                 currentUser,
@@ -79,9 +61,6 @@ class CampaignProfileWrapper extends React.Component {
     }
 
     render() {
-        const {
-            pathDetails,
-        } = this.state;
         const {
             campaignDetails,
             campaignImageGallery,
@@ -124,6 +103,11 @@ class CampaignProfileWrapper extends React.Component {
         } else if (!_isEmpty(city) && !_isEmpty(province)) {
             locationDetails = `${city}, ${province}`;
         }
+        const pathDetails = [
+            'Explore',
+            'Campaigns',
+            fundName,
+        ];
         return (
             <React.Fragment>
                 <div className="top-breadcrumb">
