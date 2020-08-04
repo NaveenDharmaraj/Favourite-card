@@ -119,8 +119,6 @@ class Chat extends React.Component {
             self.setState({ messagesList: response.response.message, userDetails: userDetails, groupFeeds: groupFeeds });
         })
             .catch(function (error) {
-                // handle error
-                console.log(error);
                 self.props.dispatch({
                     payload: {
                         mesageListLoader: false,

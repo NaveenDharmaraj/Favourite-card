@@ -7,11 +7,12 @@ import axios from 'axios';
 import utilityApi from '../services/utilityApi';
 import graphApi from '../services/graphApi';
 import applozicApi from '../services/applozicApi';
-import { conversationHead } from '../helpers/chat/utils';
+import { conversationHead, defaultSelectedConversation } from '../helpers/chat/utils';
 import { isFalsy } from '../helpers/utils';
 import logger from '../helpers/logger';
 
 const actionTypes = _keyBy([
+    'CHAT_MESSAGE_ID',
     'LOAD_MUTE_USER_LIST',
     'LOAD_CONVERSATION_LIST',
     'INBOX_LIST_MESSAGES',
@@ -300,8 +301,7 @@ const recurrsiveLoadConversation = (endTime = new Date().getTime() + 2000) => {
  */
 
 // eslint-disable-next-line max-len
-const loadConversationThenBlock = (response, msgId, userDetails, groupFeeds, selectedConversation, dispatch, messagesArr = [], muteUserList, userInfo) => {
-    let compose = null;
+const loadConversationThenBlock = (response, msgId, userDetails, groupFeeds, selectedConversationParam, dispatch, messagesArr = [], muteUserList, userInfo) => {
     let newMessgaeArr = [];
     // dispatach the userDetails from response.response.userDetails based on graphApi userdetails
     userDetails = !_isEmpty(userDetails) ? userDetails : {};
@@ -325,39 +325,10 @@ const loadConversationThenBlock = (response, msgId, userDetails, groupFeeds, sel
             Object.assign(msg, converstionDetails);
         });
     }
-    // select the conversation based in groupid or contact id
-    if (Number(msgId) && newMessgaeArr && newMessgaeArr.length > 0) {
-        newMessgaeArr.find((msg) => {
-            if (msg.groupId == msgId) {
-                selectedConversation = msg;
-                return true;
-            } if (isFalsy(msg.groupId) && msg.contactIds == msgId) {
-                selectedConversation = msg;
-                return true;
-            }
-        });
-    }
-    // userdetails is thr group details is thr but no message then select the msgId from url and the compose as true.
-    if (_isEmpty(selectedConversation) && Number(msgId)) {
-        if (userDetails[msgId]) {
-            compose = true;
-            // newState.newGroupMemberIds = [contactId];
-            userDetails[msgId].contactIds = msgId
-            selectedConversation = userDetails[msgId];
-        } else if (groupFeeds[msgId]) {
-            groupFeeds[msgId].contactIds = msgId
-            selectedConversation = groupFeeds[msgId];
-        }
-    }
-    // if there is no match in userDetails and groupfeeds select the defualt first message
-    if (_isEmpty(selectedConversation) && newMessgaeArr && newMessgaeArr.length > 0 && msgId != 'new') {
-        newMessgaeArr[0].conversationInfo.info.unreadCount = 0;
-        selectedConversation = newMessgaeArr[0];
-    }
-    if ((newMessgaeArr && newMessgaeArr.length <= 0) || msgId == 'new') {
-        compose = true;
-        selectedConversation = {};
-    }
+    const {
+        compose,
+        selectedConversation,
+    } = defaultSelectedConversation(msgId, newMessgaeArr, selectedConversationParam, userDetails, groupFeeds);
     if (!_isEmpty(response.response.message) && response.response.message.length > 0) {
         const endTime = response.response.message[response.response.message.length - 1].createdAtTime;
         recurrsiveLoadConversation(endTime)
@@ -462,8 +433,6 @@ const loadFriendsList = (userInfo, msgId, muteUserList) => (dispatch) => {
             });
         });
 };
-
-
 
 const deleteConversation = (params) => {
     return applozicApi.get('/message/delete/conversation', {

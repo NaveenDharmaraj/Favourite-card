@@ -15,7 +15,7 @@ const chat = (state = {}, action) => {
             newState = {
                 ...state,
                 compose: action.payload.compose,
-                smallerScreenSection: action.payload.smallerScreenSection,
+                ...(action.payload.smallerScreenSection && { smallerScreenSection: action.payload.smallerScreenSection }),
             };
             break;
         case actionTypes.COMPOSE_HEADER_CONTACT_SELECTION:
@@ -198,6 +198,12 @@ const chat = (state = {}, action) => {
                 ...state,
                 endTime: action.payload.endTime,
             };
+        case 'CHAT_MESSAGE_ID':
+            newState = {
+                ...state,
+                currentMsgId: action.payload.msgId,
+            };
+            break;
         default:
             break;
     }
