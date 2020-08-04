@@ -822,10 +822,11 @@ const populateGiveToGroupsofUser = (giveToGroupsData) => {
 /**
 * Populate info to share drop down options
 * @param {string} accountName name of the Account selected
-* @param {requestCallback}formatMessage -The callback that handles the language translation.
+* @param {function}formatMessage -The function that handles the language translation.
+* @param {boolean} disable gives info whether anonymous is disabled or not
 * @return {Array} drop down options array
 */
-const populateInfoToShareAccountName = (accountName, formatMessage) => {
+const populateInfoToShareAccountName = (accountName, formatMessage, disable = false) => {
     const infoToShareList = [
         {
             disabled: false,
@@ -835,113 +836,17 @@ const populateInfoToShareAccountName = (accountName, formatMessage) => {
         {
             disabled: false,
             text: ReactHtmlParser(`<span class="attributes">${accountName}</span>`),
-            value: 'accountname',
+            value: 'name',
         },
     ];
-    return infoToShareList;
-};
-
-/**
-* Populate info to share drop down options
-* @param {object[]} taxReceiptProfile tax receipt profile list
-* @param {object[]} companyDetails company deteils
-* @param {object} intl for getting intl text
-* @param {object} giveFrom selected account details
-* @param {object} userDetails user details like name & email
-* @return {object[]} drop down options array
-*/
-
-const populateInfoToShare = (taxReceiptProfile,
-    companyDetails, giveFrom, userDetails, formatMessage) => {
-    //const { formatMessage } = intl;
-    let infoToShareList = null;
-    switch (giveFrom.type) {
-        case 'user':
-            const {
-                displayName,
-                email,
-            } = userDetails;
-            const userTaxProfileData = !_.isEmpty(taxReceiptProfile)
-                ? getDropDownOptionFromApiData(taxReceiptProfile, null, (item) => `name_address_email|${item.id}`,
-                    (attributes) => {
-                        return ReactHtmlParser(`<span class="attributes"><b>${attributes.fullName}</b></span>
-                        <span class="attributes">${email}</span>
-                        <span class="attributes"> ${attributes.addressOne} ${attributes.addressTwo} </span>
-                        <span class="attributes">${attributes.city}, ${attributes.province} ${attributes.postalCode}</span>`);
-                    },
-                    (attributes) => false) : null;
-            infoToShareList = [
-                {
-                    disabled: false,
-                    text: ReactHtmlParser(`<span class="attributes">${formatMessage('giveCommon:infoToShareAnonymous')}</span>`),
-                    value: 'anonymous',
-                },
-                {
-                    disabled: false,
-                    text: ReactHtmlParser(`<span class="attributes"><b>${displayName}</b></span>`),
-                    value: 'name',
-                },
-                {
-                    disabled: false,
-                    text: ReactHtmlParser(`<span class="attributes"><b>${displayName}</b></span>
-                           <span class="attributes">${email}</span>`),
-                    value: 'name_email',
-                },
-            ];
-            if (!_.isEmpty(userTaxProfileData)) {
-                infoToShareList = _.concat(
-                    infoToShareList,
-                    userTaxProfileData,
-                );
-            }
-            break;
-        case 'companies':
-            const companyTaxProfileData = (!_.isEmpty(companyDetails)
-                && !_.isEmpty(companyDetails.taxReceiptProfiles))
-                ? getDropDownOptionFromApiData(
-                    companyDetails.taxReceiptProfiles,
-                    null,
-                    (item) => `name_address_email|${item.id}`,
-                    (attributes) => {
-                        return ReactHtmlParser(`<span class="attributes"><b>${attributes.fullName}</b></span>
-                        <span class="attributes"> ${attributes.addressOne} ${attributes.addressTwo} </span>
-                        <span class="attributes">${attributes.city}, ${attributes.province} ${attributes.postalCode}</span>`);
-                    },
-                    (attributes) => false,
-                ) : null;
-            infoToShareList = [
-                {
-                    disabled: false,
-                    text: ReactHtmlParser(`<span class="attributes">${formatMessage('giveCommon:infoToShareAnonymous')}</span>`),
-                    value: 'anonymous',
-                },
-                {
-                    disabled: false,
-                    text: ReactHtmlParser(`<span class="attributes"><b>${giveFrom.name}</b></span>`),
-                    value: 'name',
-                },
-            ];
-            if (!_.isEmpty(companyTaxProfileData)) {
-                infoToShareList = _.concat(
-                    infoToShareList,
-                    companyTaxProfileData,
-                );
-            }
-            break;
-        default:
-            infoToShareList = [
-                {
-                    disabled: false,
-                    text: ReactHtmlParser(`<span class="attributes">${formatMessage('giveCommon:infoToShareAnonymous')}</span>`),
-                    value: 'anonymous',
-                },
-                {
-                    disabled: false,
-                    text: ReactHtmlParser(`<span class="attributes"><b>${giveFrom.name}</b></span>`),
-                    value: 'name',
-                },
-            ];
-            break;
+    // if the condition is getting satisfied removing the anonymous from list and adding at the last
+    if (disable) {
+        infoToShareList.splice(0, 1);
+        infoToShareList.push({
+            disabled: true,
+            text: ReactHtmlParser(`<div className="attributes">Give anonymously (group members can see your name, so admins can too)</div>`),
+            value: 'anonymous',
+        });
     }
     return infoToShareList;
 };
@@ -1018,21 +923,6 @@ const resetDataForGiveAmountChange = (giveData, dropDownOptions, coverFeesData) 
     return giveData;
 };
 
-const populateShareName = (displayName) => {
-    const privacyNameOptions = [
-        {
-            key: 'give_anonymously',
-            text: 'Give anonymously',
-            value: 0,
-        },
-        {
-            key: 'give_name',
-            text: `${displayName}`,
-            value: 1,
-        },
-    ];
-    return privacyNameOptions;
-};
 
 /**
 * Reset give page data for account change
@@ -1080,28 +970,8 @@ const resetDataForAccountChange = (giveData, dropDownOptions, props, type) => {
             formatMessage,
         );
     }
-    if (type === 'give/to/charity') {
-        giveData.infoToShare = {
-            value: 'anonymous',
-        };
-        dropDownOptions.infoToShareList = populateInfoToShare(
-            taxReceiptProfile,
-            companyDetails,
-            giveData.giveFrom,
-            {
-                displayName: `${firstName} ${lastName}`,
-                email,
-            },
-            formatMessage,
-        );
-    } else if (type === 'give/to/group') {
-        giveData.nameToShare = {
-            value: 0,
-        };
-        giveData.infoToShare = {
-            value: 'anonymous',
-        };
-        dropDownOptions.privacyNameOptions = populateShareName(giveData.giveFrom.name);
+    if (type === 'give/to/group') {
+        dropDownOptions.privacyNameOptions = populateInfoToShareAccountName(giveData.giveFrom.name, formatMessage);
         giveData.privacyShareEmail = false;
         giveData.privacyShareAddress = false;
     }
@@ -1534,23 +1404,24 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
                 value: infoToShareMessage,
             });
         } else {
-            let privacyShareNameMessage = (nameToShare.value === 0) ? formatMessage('reviewGiveAnonymously') : nameToShare.text;
+            const privacyShareNameMessage = [];
+            privacyShareNameMessage.push((nameToShare.value === 'anonymous') ? formatMessage('reviewGiveAnonymously') : nameToShare.text);
             if (privacyShareAmount) {
-                privacyShareNameMessage = `${privacyShareNameMessage} <br/> ${formatMessage('reviewGiftAmount')} ${state.mainDisplayAmount}`;
+                privacyShareNameMessage.push(ReactHtmlParser(`<br/> ${formatMessage('reviewGiftAmount')} ${state.mainDisplayAmount}`));
             }
-
-            let privacyShareEmailMessage = formatMessage('notApplicable');
-            if (giveFrom.type === 'user') {
-                privacyShareEmailMessage = (infoToShare.value === 'anonymous')
-                    ? formatMessage('reviewGiveAnonymously') : infoToShare.text;
-            }
+            const privacyShareEmailMessage = (infoToShare.value === 'anonymous') ? formatMessage('reviewGiveAnonymously') : infoToShare.text;
+            // if (giveFrom.type === 'user') {
+            //     privacyShareEmailMessage = (infoToShare.value === 'anonymous')
+            //         ? formatMessage('reviewGiveAnonymously') : infoToShare.text;
+            // }
 
             giveToType = (giveTo.isCampaign) ? 'Campaign' : 'Group';
-            listingData.push({
-                name: `privacyShareGiving${giveToType}Label`,
-                value: ReactHtmlParser(privacyShareNameMessage),
-            });
-
+            if (!giveTo.isCampaign) {
+                listingData.push({
+                    name: `privacyShareGiving${giveToType}Label`,
+                    value: privacyShareNameMessage,
+                });
+            }
             listingData.push({
                 name: `privacyShareOrganizers${giveToType}Label`,
                 value: privacyShareEmailMessage,
@@ -1633,7 +1504,7 @@ const populateP2pReviewPage = (giveData, data, currency, formatMessage, language
             state.mainDisplayImage = (recipientImage) || placeholderUser;
             state.mainDisplayText = `${formatMessage('reviewGiveToText')} ${(recipientName) || emails[0]}`;
 
-        } else if(selectedFriendsList.length === 1 &&  _.isEmpty(emails)) {
+        } else if (selectedFriendsList.length === 1 && _.isEmpty(emails)) {
             state.mainDisplayImage = (selectedFriendsList[0].avatar) || placeholderUser;
             state.mainDisplayText = `${formatMessage('reviewGiveToText')} ${(selectedFriendsList[0].displayName)}`;
         } else {
@@ -1786,7 +1657,7 @@ const populateFriendsList = (friendsList) => {
 };
 
 const validateForReload = (validity, type, giveAmount, balance) => {
-    validity.isReloadRequired =  (type === 'user' || type === 'companies') && Number(giveAmount) > Number(balance) ? false : true; 
+    validity.isReloadRequired = (type === 'user' || type === 'companies') && Number(giveAmount) > Number(balance) ? false : true;
     return validity;
 };
 
@@ -1831,8 +1702,6 @@ export {
     populatePaymentInstrument,
     populateP2pReviewPage,
     populateGiftType,
-    populateInfoToShare,
-    populateShareName,
     populateTaxReceipts,
     formatAmount,
     getDefaultCreditCard,

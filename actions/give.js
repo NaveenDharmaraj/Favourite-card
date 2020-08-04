@@ -192,8 +192,8 @@ const saveCharityAllocation = (allocation) => {
         coverFees,
         noteToCharity,
         noteToSelf,
-        privacyData: (infoToShare.id) ? infoToShare.id : null,
-        privacySetting: _.split(infoToShare.value, '|')[0],
+        privacyData: infoToShare.privacyData,
+        privacySetting: infoToShare.privacySetting,
     };
     if (!_.isEmpty(dedicateGift.dedicateType)) {
         attributes = {
@@ -216,20 +216,21 @@ const saveGroupAllocation = (allocation) => {
         noteToCharity,
         noteToSelf,
         privacyShareAddress,
+        privacyShareAdminName,
         privacyShareAmount,
         privacyShareEmail,
         privacyShareName,
     } = giveData;
-
     let attributes = {
         amount: giveAmount,
         noteToGroup: noteToCharity,
         noteToSelf,
         privacyShareAddress,
+        privacyShareAdminName,
         privacyShareAmount,
         privacyShareEmail,
         privacyShareName,
-        privacyTrpId: privacyShareAddress ? infoToShare.id : null,
+        privacyTrpId: privacyShareAddress ? infoToShare.privacyData : null,
     };
     if (!_.isEmpty(dedicateGift.dedicateType)) {
         attributes = {
@@ -927,13 +928,14 @@ export const getCompanyTaxReceiptProfile = (dispatch, companyId) => {
 
 
 export const getGroupsFromSlug = (dispatch, slug) => {
-    return coreApi.get(`groups/find_by_slug`, {
+    const groupsFromSlugPromise = coreApi.get(`groups/find_by_slug`, {
         params: {
             dispatch,
             slug,
             uxCritical: true,
         },
-    }).then(
+    });
+    groupsFromSlugPromise.then(
         (result) => {
             dispatch({
                 payload: {
@@ -945,6 +947,7 @@ export const getGroupsFromSlug = (dispatch, slug) => {
     ).catch(() => {
         Router.pushRoute('/give/error');
     });
+    return groupsFromSlugPromise;
 };
 
 export {

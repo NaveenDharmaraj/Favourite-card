@@ -89,6 +89,8 @@ export const beneficiaryDefaultProps = {
                 value: null,
             },
             infoToShare: {
+                privacyData: null,
+                privacySetting: 'anonymous',
                 value: 'anonymous',
             },
             newCreditCardId: null,
@@ -124,10 +126,13 @@ export const groupDefaultProps = {
                 value: null,
             },
             infoToShare: {
-                value: null,
+                privacyData: null,
+                privacySetting: 'anonymous',
+                value: 'anonymous',
             },
+            infoToShareList: [],
             nameToShare: {
-                value: 0,
+                value: 'anonymous',
             },
             noteToCharity: '',
             noteToSelf: '',

@@ -246,6 +246,12 @@ const userProfile = (state = {}, action) => {
                 charityShareInfoOptions: action.payload.charityShareInfoOptions,
             };
             break;
+        case 'USER_GROUP_CAMPAIGN_ADMIN_INFO_TO_SHARE_OPTIONS':
+            newState = {
+                ...state,
+                groupCampaignAdminShareInfoOptions: action.payload.groupCampaignAdminShareInfoOptions,
+            };
+            break;
         default:
             break;
     }
