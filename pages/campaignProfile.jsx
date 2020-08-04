@@ -1,9 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import {
-    array,
-    PropTypes,
-    string,
+    PropTypes
 } from 'prop-types';
 import _ from 'lodash';
 import getConfig from 'next/config';
@@ -111,14 +109,14 @@ CampaignProfile.defaultProps = {
 CampaignProfile.propTypes = {
     campaignDetails: {
         attributes: {
-            about: string,
-            avatar: string,
-            causes: array,
-            name: string,
-            slug: string,
+            about: PropTypes.string,
+            avatar: PropTypes.string,
+            causes: PropTypes.array,
+            name: PropTypes.string,
+            slug: PropTypes.string,
         },
     },
-    slug: string,
+    slug: PropTypes.string,
 };
 
 function mapStateToProps(state) {
