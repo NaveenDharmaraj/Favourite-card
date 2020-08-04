@@ -10,7 +10,6 @@ import {
     PropTypes,
     string,
 } from 'prop-types';
-
 import ShareProfile from '../ShareProfile';
 
 function ProfileTitle(props) {
@@ -33,13 +32,11 @@ function ProfileTitle(props) {
             </span>
         ));
     }
-    let charityType;
-    if(typeof beneficiaryType !== undefined ){
-        charityType = beneficiaryType;
-    }
-    else {
-        charityType= '';
-    }
+    let profileType = type;
+    if(typeof beneficiaryType !== undefined && !_isEmpty(beneficiaryType) ){
+        profileType = beneficiaryType;
+    };
+
     return (
         <Fragment>
             <Grid.Column mobile={16} tablet={4} computer={4} className="ch_profileWrap">
@@ -52,7 +49,7 @@ function ProfileTitle(props) {
             <Grid.Column mobile={16} tablet={11} computer={11} className="">
                 <div className="ch_profileDetails">
                     <Header as="h5">
-                        {charityType}
+                        {profileType}
                     </Header>
                     <Header as="h3">
                         {name}
