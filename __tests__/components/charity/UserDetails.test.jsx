@@ -131,7 +131,7 @@ describe('Testing Charity Information section', () => {
                 {...modifiedProps}
             />,
         );
-        expect(wrapper.find({ 'data-test': 'Charity_UserDetails_charityInformation_user' }).at(1).text()).toEqual('undefined: test contact name');
+        expect(wrapper.find({ 'data-test': 'Charity_UserDetails_charityInformation_user' }).at(1).text()).toEqual('test contact name');
     });
     it('Should show phone number if "phone" attribute has value in api data', () => {
         const modifiedProps = {

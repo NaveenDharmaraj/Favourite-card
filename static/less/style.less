@@ -195,6 +195,9 @@ h4{
   }
 }
 @media only screen and (max-width: 767px){
+  .BeaconFabButtonFrame{
+    bottom: 70px !important;
+}
   body{
     .info-panel.more-btn{
       &.mb-2{
@@ -1785,8 +1788,8 @@ h4{
         position: fixed;
         left: 0px;
         right: 0px;
-        background-color: #fff;
-        z-index:9999999;
+        background-color: #fff !important;
+        z-index:999;
       }
     }
   }
@@ -2368,6 +2371,9 @@ h4{
       }
     }
   }
+  .auth0-lock.auth0-lock.auth0-lock-opened-in-frame{
+    z-index: 99;
+  }
 }
 .no-border-bottom{
   &.segment{
@@ -2437,7 +2443,7 @@ h4{
       background-color: #FFFFFF;	
       box-shadow: 0 5px 10px 0 rgba(0,0,0,0.2);
       margin-top: 26px !important;
-      z-index: 999999999;
+      z-index: 999;
       @media only screen and (max-width:991px){
         margin-top: 17px !important;
       }
@@ -7587,16 +7593,43 @@ body{
           i{
             &.icon{
               &.heart{
-                font-size: 24px;
-                margin-left: 11px;
-                color: #dc2928;
-                &.outline{
-                  color: #4e4e4e;
-                  font-weight: 400;
-                  &:hover{
-                    color: #dc2928;
+                 position: relative;
+                  min-width: 24px;
+                  min-height: 24px;
+                  &::before{
+                    content: '';
+                    position: absolute;
+                    top: -8px;
+                    left: 0;
+                    bottom: 0;
+                    right: 0;
+                    background-image: url(../images/icons/inactive.svg) !important;
+                    background-repeat: no-repeat !important;
+                    background-size: contain !important;
+                    background-position: center !important;
                   }
-                }
+                  &.outline{
+                    &:hover{
+                      .imgColorRed();
+                    }
+                  }
+                  &.red{
+                    position: relative;
+                  min-width: 24px;
+                  min-height: 24px;
+                  &::before{
+                    content: '';
+                    position: absolute;
+                    top: -8px;
+                    left: 0;
+                    bottom: 0;
+                    right: 0;
+                    background-image: url(../images/icons/active.svg) !important;
+                    background-repeat: no-repeat !important;
+                    background-size: contain !important;
+                    background-position: center !important;
+                  }
+                  }
               }
             }
             &.icon{

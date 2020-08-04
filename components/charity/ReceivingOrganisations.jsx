@@ -32,10 +32,11 @@ class ReceivingOrganisations extends React.Component {
             charityDetails: {
                 id: charityId,
             },
+            isAuthenticated,
             year,
         } = this.props;
         if (_isEmpty(doneeList)) {
-            dispatch(getBeneficiaryDoneeList(charityId, year));
+            dispatch(getBeneficiaryDoneeList(charityId, year, isAuthenticated));
         }
     }
 
@@ -114,6 +115,7 @@ ReceivingOrganisations.defaultProps = {
     currency: 'USD',
     dispatch: () => { },
     donationDetails: [],
+    isAuthenticated: false,
     language: 'en',
     remainingAmount: 0,
     remainingElements: 0,
@@ -130,6 +132,7 @@ ReceivingOrganisations.propTypes = {
     donationDetails: PropTypes.arrayOf(
         PropTypes.shape({}),
     ),
+    isAuthenticated: bool,
     language: string,
     remainingAmount: number,
     remainingElements: number,
@@ -141,6 +144,7 @@ function mapStateToProps(state) {
     return {
         charityDetails: state.charity.charityDetails,
         donationDetails: state.charity.donationDetails,
+        isAuthenticated: state.auth.isAuthenticated,
         remainingAmount: state.charity.remainingAmount,
         remainingElements: state.charity.remainingElements,
         transactionsLoader: state.charity.showPlaceholder,

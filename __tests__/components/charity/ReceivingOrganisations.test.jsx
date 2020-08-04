@@ -75,6 +75,9 @@ describe('Testing Doneelist popup', () => {
     });
     test('Testing mapStateToProps', () => {
         const initialState = {
+            auth: {
+                isAuthenticated: true,
+            },
             charity: {
                 ...props,
             },
