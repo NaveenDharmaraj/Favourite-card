@@ -30,6 +30,7 @@ export const actionTypes = {
     GET_COMPANY_PAYMENT_AND_TAXRECEIPT: 'GET_COMPANY_PAYMENT_AND_TAXRECEIPT',
     GET_COMPANY_TAXRECEIPTS: 'GET_COMPANY_TAXRECEIPTS',
     GET_GROUP_FROM_SLUG: 'GET_GROUP_FROM_SLUG',
+    GET_MATCHING_DETAILS_FOR_GROUPS: 'GET_MATCHING_DETAILS_FOR_GROUPS',
     SAVE_FLOW_OBJECT: 'SAVE_FLOW_OBJECT',
     SAVE_SUCCESS_DATA: 'SAVE_SUCCESS_DATA',
     SET_COMPANY_ACCOUNT_FETCHED: 'SET_COMPANY_ACCOUNT_FETCHED',
@@ -905,6 +906,38 @@ export const getGroupsFromSlug = (dispatch, slug) => {
     ).catch(() => {
         Router.pushRoute('/give/error');
     });
+};
+
+export const fetchGroupMatchAmount = (giveAmount, giveFromFundId, giveToFundId) => (dispatch) => {
+    const bodyData = {
+        data: {
+            attributes: {
+                amount: giveAmount,
+            },
+            relationships: {
+                destinationFund: {
+                    data: {
+                        id: giveToFundId,
+                        type: 'accountHolders',
+                    },
+                },
+                fund: {
+                    data: {
+                        id: giveFromFundId,
+                        type: 'accountHolders',
+                    },
+                },
+            },
+        },
+    };
+    coreApi.post('/groupAllocations/fetchMatchAmount', bodyData).then((result) => {
+        if (result && !_.isEmpty(result.data)) {
+            dispatch({
+                payload: result.data,
+                type: actionTypes.GET_MATCHING_DETAILS_FOR_GROUPS,
+            });
+        }
+    }).catch();
 };
 
 export {

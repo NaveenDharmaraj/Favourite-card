@@ -1332,6 +1332,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
     const {
         fund,
         activeGroupMatch,
+        activeMatchAmount,
         donationMatchData,
     } = data;
     const {
@@ -1455,21 +1456,21 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
                 state.matchList = `${matchedData.displayName}${displayAmount}`;
             }
         }
-        if (!_.isEmpty(activeGroupMatch)) {
+        if (!_.isEmpty(activeGroupMatch) && activeMatchAmount > 0) {
             const {
                 company,
                 companyId,
-                maxMatchAmount,
-                balance,
+                // maxMatchAmount,
+                // balance,
             } = activeGroupMatch;
-            const maxMatchedAmount = (Number(maxMatchAmount) <= Number(balance)) ?
-                Number(maxMatchAmount) : Number(balance);
-            const activeMatchedAmount = (Number(giveAmount) > maxMatchedAmount) ?
-                maxMatchedAmount : Number(giveAmount);
+            // const maxMatchedAmount = (Number(maxMatchAmount) <= Number(balance)) ?
+            //    Number(maxMatchAmount) : Number(balance);
+            // const activeMatchedAmount = (Number(giveAmount) > maxMatchedAmount) ?
+            //    maxMatchedAmount : Number(giveAmount);
 
             const groupMatchedData = {
                 accountId: companyId,
-                amount: activeMatchedAmount,
+                amount: activeMatchAmount,
                 displayName: company,
                 type: 'company',
             };
