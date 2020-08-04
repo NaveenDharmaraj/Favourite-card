@@ -106,7 +106,6 @@ class CampaignProfileWrapper extends React.Component {
                     groupId,
                     province,
                     banner,
-                    beneficiaryType,
                 },
                 type,
             }
@@ -114,7 +113,7 @@ class CampaignProfileWrapper extends React.Component {
         let bannerStyle = {
             minHeight: '390px',
         };
-        if (banner) {
+        if (!_isEmpty(banner)) {
             bannerStyle.backgroundImage = `url( ${banner})`;
         }
         let locationDetails = '';
@@ -134,7 +133,7 @@ class CampaignProfileWrapper extends React.Component {
                 </div>
                 <div className="CampaignWapper">
                     <Container>
-                        <div className='CampaigBanner ch_headerImage greenBg'></div>
+                        <div className='ch_headerImage greenBg' style={bannerStyle}></div>
                         <Grid.Row>
                             <Grid>
                                 <Grid.Column mobile={16} tablet={11} computer={11} >

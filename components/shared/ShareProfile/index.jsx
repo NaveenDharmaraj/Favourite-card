@@ -111,6 +111,9 @@ class ShareProfile extends React.Component {
             case 'groups':
                 Profiletype = 'Group';
                 break;
+            case 'campaigns':
+                Profiletype = 'Campaign';
+                break;
             default:
                 break;
         }

@@ -37,23 +37,19 @@ function ProfilePageHead(props) {
     } = props;
     let buttonLink = null;
     let profileType = type;
+    let linkAddress;
     if (type === 'beneficiaries') {
         profileType = 'charity';
     } else if (type === 'groups') {
-        profileType = 'group';
+        profileType = 'groups';
+        linkAddress = `${RAILS_APP_URL_ORIGIN}/groups/${slug}/edit`;
     } else if(type === 'campaigns') {
         profileType = 'campaigns';
-    };
-    let linkAddress;
-    if(profileType === 'group') {
-        linkAddress = `${RAILS_APP_URL_ORIGIN}/groups/${slug}/edit`;
-    }
-    else if(profileType === 'campaigns') {
         linkAddress = `${RAILS_APP_URL_ORIGIN}/campaigns/${slug}/manage-basics`;
     };
     if (pageDetails.attributes) {
         if (isAuthenticated) {
-            if (profileType === 'group' || profileType === 'campaigns' && isAdmin) {
+            if (profileType === 'groups' || profileType === 'campaigns' && isAdmin) {
                 buttonLink = (
                     <Fragment>
                         <a href={(linkAddress)}>
@@ -62,7 +58,7 @@ function ProfilePageHead(props) {
                         {balance > 0 ?
                             (
                                 <Link route={(`/give/to/${profileType}/${slug}/new`)}>
-                                {/* TODO need to include GiveFromCampaignModal.jsx */}
+                                {/* TODO need to add  functionality for givefromgroup and givefromcampaign */}
                                     <Button className="blue-bordr-btn-round-def CampaignBtn"><span><i aria-hidden="true" class="bell icon"></i></span>Give from {profileType === 'campaigns' ?'Campaign': 'Group'}</Button>
                                 </Link>
                             )
