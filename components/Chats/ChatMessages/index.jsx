@@ -10,6 +10,7 @@ import { actionTypes, loadConversationMessages, setSelectedConversation } from '
 import ChatMessageFooter from './ChatMessageFooter';
 import ChatConversationsParent from './ChatConversationsParent';
 import ChatConversationHeader from './ChatConversationHeader';
+import { sortUserDetails } from '../../../helpers/chat/utils';
 
 class ChatMessages extends React.Component {
     constructor(props) {
@@ -72,7 +73,8 @@ class ChatMessages extends React.Component {
             userDetails,
             userInfo,
         } = this.props;
-        _forEach(userDetails, function (userDetail, userId) {
+        const sortedUserDetails = !_isEmpty(userDetails) && sortUserDetails(userDetails)
+        _forEach(sortedUserDetails, function (userDetail, userId) {
             if (userId != userInfo.id && (userDetail.displayName || userDetail.userName)) {
                 options.push({
                     key: userDetail.userId,
@@ -134,7 +136,7 @@ class ChatMessages extends React.Component {
         } = this.props;
         this.setState({ scrollEffect: true })
         if (this.refs && this.refs.scrollParentRef && this.refs.scrollParentRef.scrollTop === 0 && endTime && scroll === "scrolled") {
-            this.setState({scrollDivCount: selectedConversationMessages.length})
+            this.setState({ scrollDivCount: selectedConversationMessages.length })
             dispatch(loadConversationMessages(selectedConversation, endTime))
         }
     }
@@ -289,7 +291,11 @@ class ChatMessages extends React.Component {
                     this.renderChatSectionAndFooter()
                 }
                 {(!mesageListLoader && _isEmpty(messages) && !compose) &&
-                  'No conversations to display. Click on compose to start new!'
+                    <Fragment>
+                        <br />
+                        &nbsp;
+                        No conversations to display. Click on compose to start new!
+                     </Fragment>
                 }
             </Fragment>
         );

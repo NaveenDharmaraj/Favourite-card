@@ -7,6 +7,7 @@ import _isEmpty from 'lodash/isEmpty';
 import { loadConversationMessages } from '../../actions/chat';
 import { placeholderGroup } from '../../static/images/no-data-avatar-group-chat-profile.png';
 import { placeholderUser } from '../../static/images/no-data-avatar-user-profile.png';
+import { isFalsy } from '../utils';
 
 const { publicRuntimeConfig } = getConfig();
 const {
@@ -158,12 +159,79 @@ const getCurrentUserRoleInGroup = (groupFeed, userId) => {
     return userInfo;
 };
 
+/**
+ * sort the userDetails alphabetically.
+ * @param {object[]} userDetails the list of userDetail.
+ * @return {object[]} sorted userDetails alphabetically.
+ */
+const sortUserDetails = (userDetails) => {
+    if (Object.values(userDetails).length > 0) {
+        // sort by name
+        const sortedUserDetails = Object.values(userDetails).sort((a, b) => {
+            const displayNameA = a.displayName ? a.displayName.toUpperCase() : ''; // ignore upper and lowercase
+            const displayNameB = b.displayName ? b.displayName.toUpperCase() : ''; // ignore upper and lowercase
+            if (displayNameA < displayNameB) {
+                return -1;
+            }
+            if (displayNameA > displayNameB) {
+                return 1;
+            }
+
+            // names must be equal
+            return 0;
+        });
+        return sortedUserDetails;
+    }
+    return userDetails;
+};
+
+const defaultSelectedConversation = (msgId, newMessgaeArr, selectedConversation, userDetails, groupFeeds) => {
+    let compose = false;
+    // select the conversation based in groupid or contact id
+    if (Number(msgId) && newMessgaeArr && newMessgaeArr.length > 0) {
+        newMessgaeArr.find((msg) => {
+            if (msg.groupId == msgId) {
+                selectedConversation = msg;
+                return true;
+            } if (isFalsy(msg.groupId) && msg.contactIds == msgId) {
+                selectedConversation = msg;
+                return true;
+            }
+        });
+    }
+    // userdetails is thr group details is thr but no message then select the msgId from url and the compose as true.
+    if (_isEmpty(selectedConversation) && Number(msgId)) {
+        if (userDetails[msgId]) {
+            userDetails[msgId].contactIds = msgId
+            selectedConversation = userDetails[msgId];
+        } else if (groupFeeds[msgId]) {
+            groupFeeds[msgId].contactIds = msgId
+            selectedConversation = groupFeeds[msgId];
+        }
+    }
+    // if there is no match in userDetails and groupfeeds select the defualt first message
+    if (_isEmpty(selectedConversation) && newMessgaeArr && newMessgaeArr.length > 0 && msgId != 'new') {
+        newMessgaeArr[0].conversationInfo.info.unreadCount = 0;
+        selectedConversation = newMessgaeArr[0];
+    }
+    if ((newMessgaeArr && newMessgaeArr.length <= 0) || msgId == 'new') {
+        compose = true;
+        selectedConversation = {};
+    }
+    return {
+        compose,
+        selectedConversation,
+    };
+};
+
 export {
     conversationHead,
     debounceFunction,
+    defaultSelectedConversation,
     getBase64,
     getCurrentUserRoleInGroup,
     getDateString,
     groupMessagesByDate,
+    sortUserDetails,
     timeString,
 };

@@ -66,7 +66,6 @@ instance.interceptors.response.use(function (response) {
         method: config.method,
         url: config.url,
     };
-    let statusMessageProps = {};
     logger.error(`[CORE] API failed: ${JSON.stringify(logDNAErrorObj)}`);
     if (status === 401 && !config.ignore401 && typeof window !== 'undefined') {
         window.location.href = '/users/logout';

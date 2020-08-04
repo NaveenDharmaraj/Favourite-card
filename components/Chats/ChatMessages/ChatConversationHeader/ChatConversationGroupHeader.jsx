@@ -32,6 +32,7 @@ class ChatConversationGroupHeader extends React.Component {
             groupAddMemberValues: [],
             groupUserName: "",
             memberSearchText: "",
+            addMemberSearchText: "",
             newGroupImageUrl: (!_isEmpty(selectedConversation) && selectedConversation.conversationInfo)
                 && selectedConversation.conversationInfo.image ? selectedConversation.conversationInfo.image : null,
             showMoreOptions: false,
@@ -68,7 +69,7 @@ class ChatConversationGroupHeader extends React.Component {
                 groupNameState,
             });
             dispatch({
-                payload:{
+                payload: {
                     newGroupName: groupNameState,
                     newGroupImageUrl,
                 },
@@ -87,7 +88,7 @@ class ChatConversationGroupHeader extends React.Component {
                 const newImage = response.data.attributes.location;
                 if (isForNewGroup) {
                     this.props.dispatch({
-                        payload:{
+                        payload: {
                             newGroupName: groupNameState,
                             newGroupImageUrl: newImage,
                         },
@@ -151,6 +152,7 @@ class ChatConversationGroupHeader extends React.Component {
     }
     handleGroupAddMemberChange = (e, { value }) => {
         this.setState({
+            addMemberSearchText:  value,
             groupAddMemberValues: value,
             groupAddMemberOptions: this.state.groupAddMemberOptions.filter(function (obj) {
                 return value.indexOf(obj.value) >= 0;
@@ -173,6 +175,11 @@ class ChatConversationGroupHeader extends React.Component {
                 })
             }))
         }
+    }
+    handleLocationSearchChange=(event,data)=>{
+        this.setState({
+            addMemberSearchText: event.target.value,
+        })
     }
     renderGroupModal = (groupFeed, currentUserInfo, conversationInfo) => {
         const {
@@ -245,7 +252,7 @@ class ChatConversationGroupHeader extends React.Component {
         } : null;
         switch (groupAction) {
             case 'MEMBERS_LIST': return (
-                <Modal open={groupAction == 'MEMBERS_LIST'} onClose={() => this.setGroupAction(null)} size="tiny" dimmer="inverted" className="chimp-modal" closeIcon centered={false}>
+                <Modal open={groupAction == 'MEMBERS_LIST'} onClose={() => this.setGroupAction(null)} size="tiny" dimmer="inverted" className="chimp-modal" closeIcon centered={true}>
                     <Modal.Header>Members</Modal.Header>
                     <Modal.Content>
                         <Modal.Description className="font-s-16">
@@ -314,7 +321,7 @@ class ChatConversationGroupHeader extends React.Component {
                                                         </List.Content>
                                                         <Image avatar src={(userDetails[user.userId] && userDetails[user.userId].imageLink) ? userDetails[user.userId].imageLink : placeholderUser} />
                                                         <List.Content>
-                                                            <List.Header as='a'>{(userDetails[user.userId] && userDetails[user.userId].displayName)? userDetails[user.userId].displayName : "User"} {(Number(user.userId) == Number(userInfo.id) ? "(You)" : "")} {user.role == "1" ? " (Admin)" : ""}</List.Header>
+                                                            <List.Header as='a'>{(userDetails[user.userId] && userDetails[user.userId].displayName) ? userDetails[user.userId].displayName : "User"} {(Number(user.userId) == Number(userInfo.id) ? "(You)" : "")} {user.role == "1" ? " (Admin)" : ""}</List.Header>
                                                         </List.Content>
                                                     </List.Item>
                                                 )
@@ -347,19 +354,22 @@ class ChatConversationGroupHeader extends React.Component {
                     />
                 );
             case 'MEMBERS_ADD': return (
-                <Modal size="tiny" open={groupAction == 'MEMBERS_ADD'} onClose={() => this.setGroupAction(null)} dimmer="inverted" className="chimp-modal" closeIcon centered={false}>
+                <Modal size="tiny" open={groupAction == 'MEMBERS_ADD'} onClose={() => this.setGroupAction(null)} dimmer="inverted" className="chimp-modal" closeIcon centered={true}>
                     <Modal.Header>Add members</Modal.Header>
                     <Modal.Content>
                         <Modal.Description className="font-s-16">
-                            <div className="inputWraper">
+                            <div className="inputWraper custom">
                                 <Dropdown
                                     fluid
                                     multiple
                                     onChange={this.handleGroupAddMemberChange}
                                     options={this.state.groupAddMemberOptions}
-                                    placeholder='Type a name or multiple names'
+                                    placeholder='Add memebers'
                                     selection
+                                    search
+                                    searchQuery={this.state.addMemberSearchText}
                                     value={this.state.groupAddMemberValues}
+                                    onSearchChange={this.handleLocationSearchChange}
                                 />
                             </div>
                             <div className="swichAccounts mt-2 mb-2">
@@ -367,8 +377,14 @@ class ChatConversationGroupHeader extends React.Component {
                                     {(() => {
                                         if (selectedConversation && selectedConversation.groupId) {
                                             let groupFeed = groupFeeds[selectedConversation.groupId];
+                                            const {
+                                                addMemberSearchText
+                                            } = this.state;
                                             {
-                                                return Object.keys(userDetails).map(userId => {
+                                                return Object.values(userDetails).filter(function (user) {
+                                                    return addMemberSearchText == "" || ( userDetails[user.userId].displayName && userDetails[user.userId].displayName.toLowerCase().indexOf(addMemberSearchText.toLowerCase())) >= 0;
+                                                })
+                                                .map(({userId}) => {
                                                     let user = userDetails[userId];
                                                     if (user.userId != userInfo.id && (user.displayName || user.userName) && groupFeed.membersId.indexOf(user.userId + "") < 0) {
                                                         return (<List.Item key={"member_" + user.userId}>
@@ -529,6 +545,7 @@ class ChatConversationGroupHeader extends React.Component {
                             <span className="charCount">{groupNameState.length}/25</span>
                             <Button
                                 className="EditGrpName"
+                                disabled={groupNameState.length === 0}
                                 onClick={() => {
                                     compose ? this.handleNewGroupEditDone() : handleGroupModalAction({ groupId: selectedConversation.groupId, newName: groupNameState }, 'UPDATE_GROUP');
                                     this.setState({ editGroup: false });
