@@ -1933,3 +1933,1166 @@ export const deepLinkUrl = {
     },
     "id": "1591241969806:598b6d1d-5154-4aca-b6ee-27983967e932:52:kaz9uxvs:56748"
   }
+
+export const beneficiaryFinanceZeroData = [
+  {
+    "id": "878013390RR0001",
+    "returns_year": 2018,
+    "fiscal_period_end": 1546214400,
+    "is_current": true,
+    "months_since_last_return": 12,
+    "revenues": [
+      {
+        "name": "revenue_total",
+        "value": null
+      },
+      {
+        "name": "revenue_10_year_gifts",
+        "value": 0
+      },
+      {
+        "name": "revenue_buildings_rental",
+        "value": 0
+      },
+      {
+        "name": "revenue_enduring_property",
+        "value": 0
+      },
+      {
+        "name": "revenue_foreign_nontr",
+        "value": 0
+      },
+      {
+        "name": "revenue_foreign_tr",
+        "value": 0
+      },
+      {
+        "name": "revenue_from_charities",
+        "value": 0
+      },
+      {
+        "name": "revenue_from_gov",
+        "value": 0
+      },
+      {
+        "name": "revenue_gross_disposition",
+        "value": 0
+      },
+      {
+        "name": "revenue_memberships",
+        "value": 0
+      },
+      {
+        "name": "revenue_net_disposition",
+        "value": 0
+      },
+      {
+        "name": "revenue_non_tax_receipted_amount",
+        "value": 0
+      },
+      {
+        "name": "revenue_nontr_fundraising",
+        "value": 0
+      },
+      {
+        "name": "revenue_other",
+        "value": 0
+      },
+      {
+        "name": "revenue_prov_gov",
+        "value": 0
+      },
+      {
+        "name": "revenue_regional_gov",
+        "value": 0
+      },
+      {
+        "name": "revenue_sales",
+        "value": 0
+      },
+      {
+        "name": "revenue_specified_gifts",
+        "value": 0
+      },
+      {
+        "name": "revenue_tr",
+        "value": 0
+      }
+    ],
+    "gifts_total": 0,
+    "expenses": [
+      {
+        "name": "total_expense",
+        "value": 0
+      },
+      {
+        "name": "prof_consult_fees",
+        "value": 0
+      },
+      {
+        "name": "travel_vehicle_expense",
+        "value": 0
+      },
+      {
+        "name": "expenditure_charity_activites",
+        "value": 0
+      },
+      {
+        "name": "management_admin",
+        "value": 0
+      },
+      {
+        "name": "other",
+        "value": 0
+      },
+      {
+        "name": "gifts_to_charities_donees",
+        "value": 0
+      }
+    ]
+  },
+  {
+    "id": "878013390RR0001",
+    "returns_year": 2017,
+    "fiscal_period_end": 1514678400,
+    "is_current": false,
+    "months_since_last_return": 12,
+    "revenues": [
+      {
+        "name": "revenue_total",
+        "value": null
+      },
+      {
+        "name": "revenue_10_year_gifts",
+        "value": 0
+      },
+      {
+        "name": "revenue_buildings_rental",
+        "value": 0
+      },
+      {
+        "name": "revenue_enduring_property",
+        "value": 0
+      },
+      {
+        "name": "revenue_foreign_nontr",
+        "value": 0
+      },
+      {
+        "name": "revenue_foreign_tr",
+        "value": 0
+      },
+      {
+        "name": "revenue_from_charities",
+        "value": 0
+      },
+      {
+        "name": "revenue_from_gov",
+        "value": 0
+      },
+      {
+        "name": "revenue_gross_disposition",
+        "value": 0
+      },
+      {
+        "name": "revenue_memberships",
+        "value": 0
+      },
+      {
+        "name": "revenue_net_disposition",
+        "value": 0
+      },
+      {
+        "name": "revenue_non_tax_receipted_amount",
+        "value": 0
+      },
+      {
+        "name": "revenue_nontr_fundraising",
+        "value": 0
+      },
+      {
+        "name": "revenue_other",
+        "value": 0
+      },
+      {
+        "name": "revenue_prov_gov",
+        "value": 0
+      },
+      {
+        "name": "revenue_regional_gov",
+        "value": 0
+      },
+      {
+        "name": "revenue_sales",
+        "value": 0
+      },
+      {
+        "name": "revenue_specified_gifts",
+        "value": 0
+      },
+      {
+        "name": "revenue_tr",
+        "value": 0
+      }
+    ],
+    "gifts_total": 0,
+    "expenses": [
+      {
+        "name": "total_expense",
+        "value": 0
+      },
+      {
+        "name": "prof_consult_fees",
+        "value": 0
+      },
+      {
+        "name": "travel_vehicle_expense",
+        "value": 0
+      },
+      {
+        "name": "expenditure_charity_activites",
+        "value": 0
+      },
+      {
+        "name": "management_admin",
+        "value": 0
+      },
+      {
+        "name": "other",
+        "value": 0
+      },
+      {
+        "name": "gifts_to_charities_donees",
+        "value": 0
+      }
+    ]
+  },
+  {
+    "id": "878013390RR0001",
+    "returns_year": 2016,
+    "fiscal_period_end": 1483142400,
+    "is_current": false,
+    "months_since_last_return": 12,
+    "revenues": [
+      {
+        "name": "revenue_total",
+        "value": null
+      },
+      {
+        "name": "revenue_10_year_gifts",
+        "value": 0
+      },
+      {
+        "name": "revenue_buildings_rental",
+        "value": 0
+      },
+      {
+        "name": "revenue_enduring_property",
+        "value": 0
+      },
+      {
+        "name": "revenue_foreign_nontr",
+        "value": 0
+      },
+      {
+        "name": "revenue_foreign_tr",
+        "value": 0
+      },
+      {
+        "name": "revenue_from_charities",
+        "value": 0
+      },
+      {
+        "name": "revenue_from_gov",
+        "value": 0
+      },
+      {
+        "name": "revenue_gross_disposition",
+        "value": 0
+      },
+      {
+        "name": "revenue_memberships",
+        "value": 0
+      },
+      {
+        "name": "revenue_net_disposition",
+        "value": 0
+      },
+      {
+        "name": "revenue_non_tax_receipted_amount",
+        "value": 0
+      },
+      {
+        "name": "revenue_nontr_fundraising",
+        "value": 0
+      },
+      {
+        "name": "revenue_other",
+        "value": 0
+      },
+      {
+        "name": "revenue_prov_gov",
+        "value": 0
+      },
+      {
+        "name": "revenue_regional_gov",
+        "value": 0
+      },
+      {
+        "name": "revenue_sales",
+        "value": 0
+      },
+      {
+        "name": "revenue_specified_gifts",
+        "value": 0
+      },
+      {
+        "name": "revenue_tr",
+        "value": 0
+      }
+    ],
+    "gifts_total": 0,
+    "expenses": [
+      {
+        "name": "total_expense",
+        "value": 0
+      },
+      {
+        "name": "prof_consult_fees",
+        "value": 0
+      },
+      {
+        "name": "travel_vehicle_expense",
+        "value": 0
+      },
+      {
+        "name": "expenditure_charity_activites",
+        "value": 0
+      },
+      {
+        "name": "management_admin",
+        "value": 0
+      },
+      {
+        "name": "other",
+        "value": 0
+      },
+      {
+        "name": "gifts_to_charities_donees",
+        "value": 0
+      }
+    ]
+  },
+  {
+    "id": "878013390RR0001",
+    "returns_year": 2015,
+    "fiscal_period_end": 1451520000,
+    "is_current": false,
+    "months_since_last_return": 12,
+    "revenues": [
+      {
+        "name": "revenue_total",
+        "value": null
+      },
+      {
+        "name": "revenue_10_year_gifts",
+        "value": 0
+      },
+      {
+        "name": "revenue_buildings_rental",
+        "value": 0
+      },
+      {
+        "name": "revenue_enduring_property",
+        "value": 0
+      },
+      {
+        "name": "revenue_foreign_nontr",
+        "value": 0
+      },
+      {
+        "name": "revenue_foreign_tr",
+        "value": 0
+      },
+      {
+        "name": "revenue_from_charities",
+        "value": 0
+      },
+      {
+        "name": "revenue_from_gov",
+        "value": 0
+      },
+      {
+        "name": "revenue_gross_disposition",
+        "value": 0
+      },
+      {
+        "name": "revenue_memberships",
+        "value": 0
+      },
+      {
+        "name": "revenue_net_disposition",
+        "value": 0
+      },
+      {
+        "name": "revenue_non_tax_receipted_amount",
+        "value": 0
+      },
+      {
+        "name": "revenue_nontr_fundraising",
+        "value": 0
+      },
+      {
+        "name": "revenue_other",
+        "value": 0
+      },
+      {
+        "name": "revenue_prov_gov",
+        "value": 0
+      },
+      {
+        "name": "revenue_regional_gov",
+        "value": 0
+      },
+      {
+        "name": "revenue_sales",
+        "value": 0
+      },
+      {
+        "name": "revenue_specified_gifts",
+        "value": 0
+      },
+      {
+        "name": "revenue_tr",
+        "value": 0
+      }
+    ],
+    "gifts_total": 0,
+    "expenses": [
+      {
+        "name": "total_expense",
+        "value": 0
+      },
+      {
+        "name": "prof_consult_fees",
+        "value": 0
+      },
+      {
+        "name": "travel_vehicle_expense",
+        "value": 0
+      },
+      {
+        "name": "expenditure_charity_activites",
+        "value": 0
+      },
+      {
+        "name": "management_admin",
+        "value": 0
+      },
+      {
+        "name": "other",
+        "value": 0
+      },
+      {
+        "name": "gifts_to_charities_donees",
+        "value": 0
+      }
+    ]
+  },
+  {
+    "id": "878013390RR0001",
+    "returns_year": 2014,
+    "fiscal_period_end": 1419984000,
+    "is_current": false,
+    "months_since_last_return": 12,
+    "revenues": [
+      {
+        "name": "revenue_total",
+        "value": 56
+      },
+      {
+        "name": "revenue_10_year_gifts",
+        "value": 5000
+      },
+      {
+        "name": "revenue_buildings_rental",
+        "value": 0
+      },
+      {
+        "name": "revenue_enduring_property",
+        "value": 0
+      },
+      {
+        "name": "revenue_foreign_nontr",
+        "value": 0
+      },
+      {
+        "name": "revenue_foreign_tr",
+        "value": 0
+      },
+      {
+        "name": "revenue_from_charities",
+        "value": 0
+      },
+      {
+        "name": "revenue_from_gov",
+        "value": 0
+      },
+      {
+        "name": "revenue_gross_disposition",
+        "value": 0
+      },
+      {
+        "name": "revenue_memberships",
+        "value": 0
+      },
+      {
+        "name": "revenue_net_disposition",
+        "value": 0
+      },
+      {
+        "name": "revenue_non_tax_receipted_amount",
+        "value": 0
+      },
+      {
+        "name": "revenue_nontr_fundraising",
+        "value": 0
+      },
+      {
+        "name": "revenue_other",
+        "value": 56
+      },
+      {
+        "name": "revenue_prov_gov",
+        "value": 0
+      },
+      {
+        "name": "revenue_regional_gov",
+        "value": 0
+      },
+      {
+        "name": "revenue_sales",
+        "value": 0
+      },
+      {
+        "name": "revenue_specified_gifts",
+        "value": 0
+      },
+      {
+        "name": "revenue_tr",
+        "value": 0
+      }
+    ],
+    "gifts_total": 0,
+    "expenses": [
+      {
+        "name": "total_expense",
+        "value": 0
+      },
+      {
+        "name": "prof_consult_fees",
+        "value": 0
+      },
+      {
+        "name": "travel_vehicle_expense",
+        "value": 0
+      },
+      {
+        "name": "expenditure_charity_activites",
+        "value": 0
+      },
+      {
+        "name": "management_admin",
+        "value": 0
+      },
+      {
+        "name": "other",
+        "value": 0
+      },
+      {
+        "name": "gifts_to_charities_donees",
+        "value": 0
+      }
+    ]
+  },
+  {
+    "id": "878013390RR0001",
+    "returns_year": 2013,
+    "fiscal_period_end": 1388448000,
+    "is_current": false,
+    "months_since_last_return": null,
+    "revenues": [
+      {
+        "name": "revenue_total",
+        "value": null
+      },
+      {
+        "name": "revenue_10_year_gifts",
+        "value": 0
+      },
+      {
+        "name": "revenue_buildings_rental",
+        "value": 0
+      },
+      {
+        "name": "revenue_enduring_property",
+        "value": 0
+      },
+      {
+        "name": "revenue_foreign_nontr",
+        "value": 0
+      },
+      {
+        "name": "revenue_foreign_tr",
+        "value": 0
+      },
+      {
+        "name": "revenue_from_charities",
+        "value": 0
+      },
+      {
+        "name": "revenue_from_gov",
+        "value": 0
+      },
+      {
+        "name": "revenue_gross_disposition",
+        "value": 0
+      },
+      {
+        "name": "revenue_memberships",
+        "value": 0
+      },
+      {
+        "name": "revenue_net_disposition",
+        "value": 0
+      },
+      {
+        "name": "revenue_non_tax_receipted_amount",
+        "value": 0
+      },
+      {
+        "name": "revenue_nontr_fundraising",
+        "value": 0
+      },
+      {
+        "name": "revenue_other",
+        "value": 0
+      },
+      {
+        "name": "revenue_prov_gov",
+        "value": 0
+      },
+      {
+        "name": "revenue_regional_gov",
+        "value": 0
+      },
+      {
+        "name": "revenue_sales",
+        "value": 0
+      },
+      {
+        "name": "revenue_specified_gifts",
+        "value": 0
+      },
+      {
+        "name": "revenue_tr",
+        "value": 0
+      }
+    ],
+    "gifts_total": 0,
+    "expenses": [
+      {
+        "name": "total_expense",
+        "value": 0
+      },
+      {
+        "name": "prof_consult_fees",
+        "value": 0
+      },
+      {
+        "name": "travel_vehicle_expense",
+        "value": 0
+      },
+      {
+        "name": "expenditure_charity_activites",
+        "value": 0
+      },
+      {
+        "name": "management_admin",
+        "value": 0
+      },
+      {
+        "name": "other",
+        "value": 0
+      },
+      {
+        "name": "gifts_to_charities_donees",
+        "value": 0
+      }
+    ]
+  },
+  {
+    "id": "878013390RR0001",
+    "returns_year": 2012,
+    "fiscal_period_end": 1333152000,
+    "is_current": true,
+    "months_since_last_return": 0,
+    "revenues": [
+      {
+        "name": "revenue_total",
+        "value": 0
+      },
+      {
+        "name": "revenue_10_year_gifts",
+        "value": 0
+      },
+      {
+        "name": "revenue_buildings_rental",
+        "value": 0
+      },
+      {
+        "name": "revenue_enduring_property",
+        "value": 0
+      },
+      {
+        "name": "revenue_foreign_nontr",
+        "value": 0
+      },
+      {
+        "name": "revenue_foreign_tr",
+        "value": 0
+      },
+      {
+        "name": "revenue_from_charities",
+        "value": 0
+      },
+      {
+        "name": "revenue_from_gov",
+        "value": 0
+      },
+      {
+        "name": "revenue_gross_disposition",
+        "value": 0
+      },
+      {
+        "name": "revenue_memberships",
+        "value": 0
+      },
+      {
+        "name": "revenue_net_disposition",
+        "value": 0
+      },
+      {
+        "name": "revenue_non_tax_receipted_amount",
+        "value": 0
+      },
+      {
+        "name": "revenue_nontr_fundraising",
+        "value": 0
+      },
+      {
+        "name": "revenue_other",
+        "value": 0
+      },
+      {
+        "name": "revenue_prov_gov",
+        "value": 0
+      },
+      {
+        "name": "revenue_regional_gov",
+        "value": 0
+      },
+      {
+        "name": "revenue_sales",
+        "value": 0
+      },
+      {
+        "name": "revenue_specified_gifts",
+        "value": 0
+      },
+      {
+        "name": "revenue_tr",
+        "value": 0
+      }
+    ],
+    "expenses": [
+      {
+        "name": "total_expense",
+        "value": 0
+      },
+      {
+        "name": "prof_consult_fees",
+        "value": 0
+      },
+      {
+        "name": "travel_vehicle_expense",
+        "value": 0
+      },
+      {
+        "name": "expenditure_charity_activites",
+        "value": 0
+      },
+      {
+        "name": "management_admin",
+        "value": 0
+      },
+      {
+        "name": "other",
+        "value": 0
+      },
+      {
+        "name": "gifts_to_charities_donees",
+        "value": 0
+      }
+    ],
+    "gifts_total": 0
+  },
+  {
+    "id": "878013390RR0001",
+    "returns_year": 2011,
+    "fiscal_period_end": 1301529600,
+    "is_current": true,
+    "months_since_last_return": 0,
+    "revenues": [
+      {
+        "name": "revenue_total",
+        "value": 0
+      },
+      {
+        "name": "revenue_10_year_gifts",
+        "value": 0
+      },
+      {
+        "name": "revenue_buildings_rental",
+        "value": 0
+      },
+      {
+        "name": "revenue_enduring_property",
+        "value": 0
+      },
+      {
+        "name": "revenue_foreign_nontr",
+        "value": 0
+      },
+      {
+        "name": "revenue_foreign_tr",
+        "value": 0
+      },
+      {
+        "name": "revenue_from_charities",
+        "value": 0
+      },
+      {
+        "name": "revenue_from_gov",
+        "value": 0
+      },
+      {
+        "name": "revenue_gross_disposition",
+        "value": 0
+      },
+      {
+        "name": "revenue_memberships",
+        "value": 0
+      },
+      {
+        "name": "revenue_net_disposition",
+        "value": 0
+      },
+      {
+        "name": "revenue_non_tax_receipted_amount",
+        "value": 0
+      },
+      {
+        "name": "revenue_nontr_fundraising",
+        "value": 0
+      },
+      {
+        "name": "revenue_other",
+        "value": 0
+      },
+      {
+        "name": "revenue_prov_gov",
+        "value": 0
+      },
+      {
+        "name": "revenue_regional_gov",
+        "value": 0
+      },
+      {
+        "name": "revenue_sales",
+        "value": 0
+      },
+      {
+        "name": "revenue_specified_gifts",
+        "value": 0
+      },
+      {
+        "name": "revenue_tr",
+        "value": 0
+      }
+    ],
+    "expenses": [
+      {
+        "name": "total_expense",
+        "value": 0
+      },
+      {
+        "name": "prof_consult_fees",
+        "value": 0
+      },
+      {
+        "name": "travel_vehicle_expense",
+        "value": 0
+      },
+      {
+        "name": "expenditure_charity_activites",
+        "value": 0
+      },
+      {
+        "name": "management_admin",
+        "value": 0
+      },
+      {
+        "name": "other",
+        "value": 0
+      },
+      {
+        "name": "gifts_to_charities_donees",
+        "value": 0
+      }
+    ],
+    "gifts_total": 0
+  },
+  {
+    "id": "878013390RR0001",
+    "returns_year": 2010,
+    "fiscal_period_end": 1269993600,
+    "is_current": true,
+    "months_since_last_return": 0,
+    "revenues": [
+      {
+        "name": "revenue_total",
+        "value": 0
+      },
+      {
+        "name": "revenue_10_year_gifts",
+        "value": 0
+      },
+      {
+        "name": "revenue_buildings_rental",
+        "value": 0
+      },
+      {
+        "name": "revenue_enduring_property",
+        "value": 0
+      },
+      {
+        "name": "revenue_foreign_nontr",
+        "value": 0
+      },
+      {
+        "name": "revenue_foreign_tr",
+        "value": 0
+      },
+      {
+        "name": "revenue_from_charities",
+        "value": 0
+      },
+      {
+        "name": "revenue_from_gov",
+        "value": 0
+      },
+      {
+        "name": "revenue_gross_disposition",
+        "value": 0
+      },
+      {
+        "name": "revenue_memberships",
+        "value": 0
+      },
+      {
+        "name": "revenue_net_disposition",
+        "value": 0
+      },
+      {
+        "name": "revenue_non_tax_receipted_amount",
+        "value": 0
+      },
+      {
+        "name": "revenue_nontr_fundraising",
+        "value": 0
+      },
+      {
+        "name": "revenue_other",
+        "value": 0
+      },
+      {
+        "name": "revenue_prov_gov",
+        "value": 0
+      },
+      {
+        "name": "revenue_regional_gov",
+        "value": 0
+      },
+      {
+        "name": "revenue_sales",
+        "value": 0
+      },
+      {
+        "name": "revenue_specified_gifts",
+        "value": 0
+      },
+      {
+        "name": "revenue_tr",
+        "value": 0
+      }
+    ],
+    "expenses": [
+      {
+        "name": "total_expense",
+        "value": 0
+      },
+      {
+        "name": "prof_consult_fees",
+        "value": 0
+      },
+      {
+        "name": "travel_vehicle_expense",
+        "value": 0
+      },
+      {
+        "name": "expenditure_charity_activites",
+        "value": 0
+      },
+      {
+        "name": "management_admin",
+        "value": 0
+      },
+      {
+        "name": "other",
+        "value": 0
+      },
+      {
+        "name": "gifts_to_charities_donees",
+        "value": 0
+      }
+    ],
+    "gifts_total": 0
+  },
+  {
+    "id": "878013390RR0001",
+    "returns_year": 2009,
+    "fiscal_period_end": 1238457600,
+    "is_current": true,
+    "months_since_last_return": 0,
+    "revenues": [
+      {
+        "name": "revenue_total",
+        "value": 0
+      },
+      {
+        "name": "revenue_10_year_gifts",
+        "value": 0
+      },
+      {
+        "name": "revenue_buildings_rental",
+        "value": 0
+      },
+      {
+        "name": "revenue_enduring_property",
+        "value": 0
+      },
+      {
+        "name": "revenue_foreign_nontr",
+        "value": 0
+      },
+      {
+        "name": "revenue_foreign_tr",
+        "value": 0
+      },
+      {
+        "name": "revenue_from_charities",
+        "value": 0
+      },
+      {
+        "name": "revenue_from_gov",
+        "value": 0
+      },
+      {
+        "name": "revenue_gross_disposition",
+        "value": 0
+      },
+      {
+        "name": "revenue_memberships",
+        "value": 0
+      },
+      {
+        "name": "revenue_net_disposition",
+        "value": 0
+      },
+      {
+        "name": "revenue_non_tax_receipted_amount",
+        "value": 0
+      },
+      {
+        "name": "revenue_nontr_fundraising",
+        "value": 0
+      },
+      {
+        "name": "revenue_other",
+        "value": 0
+      },
+      {
+        "name": "revenue_prov_gov",
+        "value": 0
+      },
+      {
+        "name": "revenue_regional_gov",
+        "value": 0
+      },
+      {
+        "name": "revenue_sales",
+        "value": 0
+      },
+      {
+        "name": "revenue_specified_gifts",
+        "value": 0
+      },
+      {
+        "name": "revenue_tr",
+        "value": 0
+      }
+    ],
+    "expenses": [
+      {
+        "name": "total_expense",
+        "value": 0
+      },
+      {
+        "name": "prof_consult_fees",
+        "value": 0
+      },
+      {
+        "name": "travel_vehicle_expense",
+        "value": 0
+      },
+      {
+        "name": "expenditure_charity_activites",
+        "value": 0
+      },
+      {
+        "name": "management_admin",
+        "value": 0
+      },
+      {
+        "name": "other",
+        "value": 0
+      },
+      {
+        "name": "gifts_to_charities_donees",
+        "value": 0
+      }
+    ],
+    "gifts_total": 0
+  }
+];

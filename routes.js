@@ -18,4 +18,5 @@ module.exports = routes()
     .add('IndividualTaxDoantionsListDetails', '/user/tax-receipts/:slug', 'IndividualTaxDoantionsList')
     .add('friendsProfile', '/users/profile/:slug')
     .add('myProfileSettings', '/user/profile/:slug/:step', 'myProfile')
-    .add('myProfile', '/user/profile/:slug', 'myProfile');
+    .add('myProfile', '/user/profile/:slug', 'myProfile')
+    .add('claimP2P', '/claim/gift/:claimToken', 'claimP2P');
