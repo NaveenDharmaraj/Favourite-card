@@ -30,7 +30,7 @@ class CampaignProfileWrapper extends React.Component {
         const {
             deepLink,
         } = this.props;
-        if (_.isEmpty(deepLink)) {
+        if (_isEmpty(deepLink)) {
             const {
                 currentUser,
                 campaignDetails,
@@ -83,17 +83,18 @@ class CampaignProfileWrapper extends React.Component {
                     liked,
                     fundName,
                     groupId,
+                    name,
                     province,
                     banner,
                 },
                 type,
-            }
+            },
         } = this.props;
-        let bannerStyle = {
-            minHeight: '390px',
-        };
+        const bannerStyle = { };
+        let campaignBannerClassName = 'ch_headerImage greenBg';
         if (!_isEmpty(banner)) {
             bannerStyle.backgroundImage = `url( ${banner})`;
+            campaignBannerClassName = 'CampaigBanner ch_headerImage greenBg';
         }
         let locationDetails = '';
         if (_isEmpty(city) && !_isEmpty(province)) {
@@ -106,7 +107,7 @@ class CampaignProfileWrapper extends React.Component {
         const pathDetails = [
             'Explore',
             'Campaigns',
-            fundName,
+            name,
         ];
         return (
             <React.Fragment>
@@ -117,10 +118,13 @@ class CampaignProfileWrapper extends React.Component {
                 </div>
                 <div className="CampaignWapper">
                     <Container>
-                        <div className='ch_headerImage greenBg' style={bannerStyle}></div>
+                        <div
+                            className={campaignBannerClassName}
+                            style={bannerStyle}
+                        />
                         <Grid.Row>
                             <Grid>
-                                <Grid.Column mobile={16} tablet={11} computer={11} >
+                                <Grid.Column mobile={16} tablet={11} computer={11}>
                                     <Grid.Row>
                                         <Grid>
                                             {campaignDetails && (
@@ -128,11 +132,11 @@ class CampaignProfileWrapper extends React.Component {
                                                     avatar={avatar}
                                                     causes={causes}
                                                     // beneficiaryType={beneficiaryType}
-                                                    type={type} 
-                                                    location={locationDetails} 
-                                                    following={liked} 
-                                                    name={fundName} 
-                                                    profileId={groupId}  
+                                                    type={type}
+                                                    location={locationDetails}
+                                                    following={liked}
+                                                    name={fundName}
+                                                    profileId={groupId}
                                                 >
                                                     <ProfilePageHead
                                                         pageDetails={campaignDetails}
