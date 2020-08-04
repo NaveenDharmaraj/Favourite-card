@@ -106,8 +106,9 @@ class CampaignProfileWrapper extends React.Component {
                     groupId,
                     province,
                     banner,
+                    beneficiaryType,
                 },
-                type
+                type,
             }
         } = this.props;
         let bannerStyle = {
@@ -143,6 +144,7 @@ class CampaignProfileWrapper extends React.Component {
                                                 <ProfileTitle
                                                     avatar={avatar}
                                                     causes={causes}
+                                                    beneficiaryType={typeof beneficiaryType !== undefined ? beneficiaryType : ''}
                                                     type={type} 
                                                     location={locationDetails} 
                                                     following={liked} 
@@ -151,7 +153,6 @@ class CampaignProfileWrapper extends React.Component {
                                                 >
                                                     <ProfilePageHead
                                                         pageDetails={campaignDetails}
-                                                        isAuthenticated={isAuthenticated}
                                                     />
                                                 </ProfileTitle>
                                             )}

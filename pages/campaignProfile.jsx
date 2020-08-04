@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import {
     array,
-    func,
     PropTypes,
     string,
 } from 'prop-types';
@@ -36,6 +35,9 @@ class CampaignProfile extends React.Component {
         await getCampaignFromSlug(reduxStore.dispatch, query.slug, auth0AccessToken);
         return {
             slug: query.slug,
+            namespacesRequired: [
+                'common',
+            ],
         };
     }
 

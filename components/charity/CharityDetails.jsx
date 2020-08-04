@@ -21,7 +21,7 @@ import {
 import ProgramAreas from './ProgramAreas';
 import Charts from './Charts';
 import UserDetails from './UserDetails';
-import ProfileTitle from '../shared/ShareTitle/index';
+import ProfileTitle from '../shared/ShareTitle';
 
 class CharityDetails extends React.Component {
     componentDidMount() {
@@ -66,7 +66,8 @@ class CharityDetails extends React.Component {
                         <Grid.Row>
                             <ProfileTitle
                                 avatar={avatar}
-                                type={beneficiaryType}
+                                type={type}
+                                beneficiaryType={typeof beneficiaryType !== undefined ? beneficiaryType : ''}
                                 causes={causes}
                                 following={following}
                                 location={location}

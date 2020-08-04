@@ -5,6 +5,11 @@ import {
     Image,
     Header,
 } from 'semantic-ui-react';
+import {
+    bool,
+    PropTypes,
+    string,
+} from 'prop-types';
 
 import ShareProfile from '../ShareProfile';
 
@@ -18,6 +23,7 @@ function ProfileTitle(props) {
         name,
         profileId,
         children,
+        beneficiaryType,
     } = props;
     let causesList = null;
     if (!_isEmpty(causes)) {
@@ -39,7 +45,7 @@ function ProfileTitle(props) {
             <Grid.Column mobile={16} tablet={11} computer={11} className="">
                 <div className="ch_profileDetails">
                     <Header as="h5">
-                        {type}
+                        {beneficiaryType}
                     </Header>
                     <Header as="h3">
                         {name}
@@ -60,11 +66,33 @@ function ProfileTitle(props) {
                             children={children}
                         />
                     </div>
-                    
+
                 </div>
             </Grid.Column>
         </Fragment>
     )
+};
+
+ProfileTitle.defaultProps = {
+    avatar: '',
+    type: '',
+    causes: '',
+    following: false,
+    location: '',
+    name: '',
+    profileId: '',
+    beneficiaryType: '',
+};
+
+ProfileTitle.propTypes = {
+    avatar: string,
+    type: string,
+    causes: string,
+    following: bool,
+    location: string,
+    name: string,
+    profileId: string,
+    beneficiaryType: string,
 };
 
 export default ProfileTitle;  

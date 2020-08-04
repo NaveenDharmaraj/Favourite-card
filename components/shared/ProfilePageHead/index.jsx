@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react';
+import { connect } from 'react-redux';
 import _ from 'lodash';
 import {
     Grid,
@@ -6,6 +7,11 @@ import {
     Button,
     Popup,
 } from 'semantic-ui-react';
+import {
+    bool,
+    PropTypes,
+    string,
+} from 'prop-types';
 import getConfig from 'next/config';
 
 import { Link } from '../../../routes';
@@ -33,12 +39,12 @@ function ProfilePageHead(props) {
     let profileType = type;
     if (type === 'beneficiaries') {
         profileType = 'charity';
-    } else if (type === 'campaigns' || type === 'group') {
+    } else if (type === 'campaigns' || type === 'groups') {
         profileType = 'group';
     };
     if (pageDetails.attributes) {
         if (isAuthenticated) {
-            if (profileType === 'group' && isAdmin === true) {
+            if (profileType === 'group' && isAdmin) {
                 buttonLink = (
                     <Fragment>
                         <a href={(`${RAILS_APP_URL_ORIGIN}/campaigns/${slug}/manage-basics`)}>
@@ -47,6 +53,7 @@ function ProfilePageHead(props) {
                         {balance > 0 ?
                             (
                                 <Link route={(`/give/to/${profileType}/${slug}/new`)}>
+                                {/* TODO need to include GiveFromCampaignModal.jsx */}
                                     <Button className="blue-bordr-btn-round-def CampaignBtn"><span><i aria-hidden="true" class="bell icon"></i></span>Give from Campaign</Button>
                                 </Link>
                             )
@@ -86,4 +93,33 @@ function ProfilePageHead(props) {
     );
 }
 
-export default ProfilePageHead;
+ProfilePageHead.defaultProps = {
+    pageDetails: {
+        attributes: {
+            isAdmin: false,
+            balance: '',
+            slug: '',
+        },
+        type:''
+    },
+};
+
+ProfilePageHead.propTypes = {
+    campaignDetails: {
+        attributes: {
+            isAdmin: bool,
+            balance: string,
+            slug: string,
+        },
+        type: string
+    },
+};
+
+function mapStateToProps(state) {
+    return {
+        isAuthenticated: state.auth.isAuthenticated,
+    };
+};
+
+export default connect(mapStateToProps)(ProfilePageHead);
+
