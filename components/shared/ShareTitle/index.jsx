@@ -33,6 +33,13 @@ function ProfileTitle(props) {
             </span>
         ));
     }
+    let charityType;
+    if(typeof beneficiaryType !== undefined ){
+        charityType = beneficiaryType;
+    }
+    else {
+        charityType= '';
+    }
     return (
         <Fragment>
             <Grid.Column mobile={16} tablet={4} computer={4} className="ch_profileWrap">
@@ -45,7 +52,7 @@ function ProfileTitle(props) {
             <Grid.Column mobile={16} tablet={11} computer={11} className="">
                 <div className="ch_profileDetails">
                     <Header as="h5">
-                        {beneficiaryType}
+                        {charityType}
                     </Header>
                     <Header as="h3">
                         {name}

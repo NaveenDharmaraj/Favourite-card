@@ -67,7 +67,7 @@ class CharityDetails extends React.Component {
                             <ProfileTitle
                                 avatar={avatar}
                                 type={type}
-                                beneficiaryType={typeof beneficiaryType !== undefined ? beneficiaryType : ''}
+                                beneficiaryType={beneficiaryType}
                                 causes={causes}
                                 following={following}
                                 location={location}
