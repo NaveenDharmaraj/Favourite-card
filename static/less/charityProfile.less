@@ -849,26 +849,32 @@
         }
         .matchingFundsWapper{
             width: 100%;
+            display: flex;
             .matchingFundsGraff{
                 display: inline-block;
-                width: 18%;
-                float: left;
-                .ui{
-                    &.progress{
-                        width: 100%;
+                width:21;
+                .Progresswapper{
+                    height: 100%;
+                    .customProgress{
+                        height: 100%;
                         background-color:#D7D7D7;
-                        height: 21px;
+                        border-radius: 29.5px;
+                        width: 21px;
+                        position: relative;
                         .bar{
-                            height: 21px;
+                            width: 21px;
                             background-color:#009E9F;
+                            position: absolute;
+                            border-radius:0px 0px 29.5px 29.5px;
+                            bottom: 0px;
                         }
                     }
                 }
             }
             .matchingFundsText{
                 display: inline-block;
-                float: left;
-                width:82%;
+                width:100%;
+                padding-left: 17px;
                 h3 {
                     &.ui {
                         &.header {

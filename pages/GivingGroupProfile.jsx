@@ -99,7 +99,11 @@ function GivingGroupProfile() {
                                             <p>Between November 1, 2019 and December 31, 2019, <b>Charitable Impact</b> generously matched each gift to this group dollar for dollar. </p>
                                             <div className="matchingFundsWapper">
                                             <div className="matchingFundsGraff">
-                                                ads
+                                                <div className="Progresswapper">
+                                                <div className="customProgress">
+                                                     <div class="bar" style={{ height: '40%' }}></div>
+                                                </div>
+                                                </div>
                                             </div>
                                             <div className="matchingFundsText">
                                                 <Header as='h3'>$200.00</Header>
@@ -848,7 +852,11 @@ function GivingGroupProfile() {
                                             <p>Between November 1, 2019 and December 31, 2019, <b>Charitable Impact</b> generously matched each gift to this group dollar for dollar. </p>
                                             <div className="matchingFundsWapper">
                                             <div className="matchingFundsGraff">
-                                                 asd
+                                                <div className="Progresswapper">
+                                                <div className="customProgress">
+                                                     <div class="bar" style={{ height: '40%' }}></div>
+                                                </div>
+                                                </div>
                                             </div>
                                             <div className="matchingFundsText">
                                                 <Header as='h3'>$200.00</Header>
