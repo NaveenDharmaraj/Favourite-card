@@ -1404,10 +1404,9 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
                 value: infoToShareMessage,
             });
         } else {
-            let privacyShareNameMessage = (nameToShare.value === 'anonymous') ? formatMessage('reviewGiveAnonymously') : nameToShare.text;
+            const privacyShareNameMessage = [];
+            privacyShareNameMessage.push((nameToShare.value === 'anonymous') ? formatMessage('reviewGiveAnonymously') : nameToShare.text);
             if (privacyShareAmount) {
-                privacyShareNameMessage = [];
-                privacyShareNameMessage.push(nameToShare.text);
                 privacyShareNameMessage.push(ReactHtmlParser(`<br/> ${formatMessage('reviewGiftAmount')} ${state.mainDisplayAmount}`));
             }
             const privacyShareEmailMessage = (infoToShare.value === 'anonymous') ? formatMessage('reviewGiveAnonymously') : infoToShare.text;

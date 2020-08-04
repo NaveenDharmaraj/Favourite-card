@@ -265,9 +265,9 @@ class Group extends React.Component {
                     giveToList: giveToOptions,
                     paymentInstrumentList: paymentInstrumentOptions,
                 },
-                flowObject:{
+                flowObject: {
                     ...this.state.flowObject,
-                    giveData:{
+                    giveData: {
                         // ...this.state.flowObject.giveData,
                         ...giveData,
                     },
@@ -275,8 +275,8 @@ class Group extends React.Component {
                 },
                 reloadModalOpen,
                 reviewBtnFlag,
-            });        
-        }        
+            });
+        }
     }
 
     /**
@@ -437,13 +437,13 @@ class Group extends React.Component {
             isValidDecimalAmount: true,
             isValidGiveAmount: true,
             isValidGiveFrom: true,
-            isValidGiveTo:true,
+            isValidGiveTo: true,
             isValidNoteSelfText: true,
             isValidNoteToCharity: true,
             isValidNoteToCharityText: true,
             isValidNoteToSelf: true,
             isValidPositiveNumber: true,
-            isReloadRequired:true
+            isReloadRequired: true
         };
         return this.validity;
     }
@@ -454,7 +454,7 @@ class Group extends React.Component {
         } = data;
         let {
             flowObject: {
-                giveData 
+                giveData
             },
             validity,
         } = this.state;
@@ -491,7 +491,7 @@ class Group extends React.Component {
             stepIndex
         } = this.props;
         let {
-            giveData:{
+            giveData: {
                 infoToShare,
                 nameToShare,
             },
@@ -500,20 +500,27 @@ class Group extends React.Component {
             buttonClicked: true,
         });
         if (this.validateForm()) {
-            flowObject.giveData.privacyShareAdminName = !!(infoToShare.value === 'name');
-            flowObject.giveData.privacyShareEmail = !!(infoToShare.value === 'name_email');
-            flowObject.giveData.privacyShareAddress = !!(infoToShare.value.includes('name_address_email'));
+            flowObject.giveData.privacyShareAdminName = false
+            flowObject.giveData.privacyShareEmail = false;
+            flowObject.giveData.privacyShareAddress = false;
+            if (infoToShare.value !== 'anonymous') {
+                if (infoToShare.value === 'name') {
+                    flowObject.giveData.privacyShareAdminName = true;
+                } else if (infoToShare.value === 'name_email') {
+                    flowObject.giveData.privacyShareAdminName = true;
+                    flowObject.giveData.privacyShareEmail = true;
+                } else if (infoToShare.value.includes('name_address_email')) {
+                    flowObject.giveData.privacyShareAdminName = true;
+                    flowObject.giveData.privacyShareEmail = true;
+                    flowObject.giveData.privacyShareAddress = true;
+                }
+            }
             if (!isCampaign && nameToShare.value !== 'anonymous') {
                 flowObject.giveData.privacyShareName = true;
                 flowObject.giveData.privacyShareAdminName = true;
             } else {
                 flowObject.giveData.privacyShareName = false;
-            }   
-            // if (flowObject.giveData.giveFrom.type !== 'user') {
-            //     flowObject.giveData.infoToShare = {
-            //         value: null,
-            //     };
-            // }
+            }
             flowObject.stepsCompleted = false;
             flowObject.nextSteptoProceed = nextStep;
             dispatch(proceed(flowObject, flowSteps[stepIndex + 1], stepIndex));
@@ -524,14 +531,14 @@ class Group extends React.Component {
         }
     }
 
-    handlegiftTypeButtonClick = (e, { value }) =>{
-        this.setState({ 
+    handlegiftTypeButtonClick = (e, { value }) => {
+        this.setState({
             flowObject: {
                 ...this.state.flowObject,
-                giveData:{
+                giveData: {
                     ...this.state.flowObject.giveData,
-                    giftType:{
-                        value:value
+                    giftType: {
+                        value: value
                     },
                 },
             },
@@ -579,12 +586,12 @@ class Group extends React.Component {
             } = event;
             newValue = target.checked;
         }
-        if(name === 'inHonorOf' || name ==='inMemoryOf'){
-            if(newIndex === -1){
+        if (name === 'inHonorOf' || name === 'inMemoryOf') {
+            if (newIndex === -1) {
                 giveData.dedicateGift.dedicateType = '';
                 giveData.dedicateGift.dedicateValue = '';
             }
-            else{
+            else {
                 giveData.dedicateGift.dedicateType = name;
                 giveData.dedicateGift.dedicateValue = value;
             }
@@ -616,7 +623,7 @@ class Group extends React.Component {
                         giveData.nameToShare = defaultNameToShare
                     } else {
                         const formatMessage = this.props.t;
-                        const  defaultDropDownOption = {
+                        const defaultDropDownOption = {
                             disabled: false,
                             text: ReactHtmlParser(`<span class="attributes">${formatMessage('giveCommon:infoToShareAnonymous')}</span>`),
                             value: 'anonymous',
@@ -641,17 +648,17 @@ class Group extends React.Component {
                     reloadModalOpen = 0;
                     break;
                 case 'nameToShare':
-                    const{
+                    const {
                         giveFrom,
                         infoToShare,
                         infoToShareList
                     } = giveData;
-                    if(newValue.value !== 'anonymous' && infoToShare.value === 'anonymous'){
-                        if(giveFrom.type === 'user'){
+                    if (newValue.value !== 'anonymous' && infoToShare.value === 'anonymous') {
+                        if (giveFrom.type === 'user') {
                             giveData.infoToShare = infoToShareList.find(opt => (
                                 opt.value === 'name'
                             ));
-                        } else{
+                        } else {
                             giveData.infoToShare = dropDownOptions.privacyNameOptions.find(opt => (
                                 opt.value === 'name'
                             ));
@@ -707,7 +714,7 @@ class Group extends React.Component {
         giveTo.type = benificiaryData.type;
         giveTo.value = value;
         validity.isValidGiveTo = !((giveTo.type === giveFrom.type)
-        && (giveTo.value === giveFrom.value));
+            && (giveTo.value === giveFrom.value));
         this.setState({
             flowObject: {
                 ...this.state.flowObject,
@@ -726,7 +733,7 @@ class Group extends React.Component {
 
     handleAddMoneyModal() {
         this.setState({
-            reloadModalOpen:1,
+            reloadModalOpen: 1,
         })
     }
 
@@ -744,7 +751,7 @@ class Group extends React.Component {
             companyAccountsFetched,
         } = this.props
         const {
-            dropDownOptions:{
+            dropDownOptions: {
                 paymentInstrumentList,
             },
             flowObject: {
@@ -878,7 +885,7 @@ class Group extends React.Component {
                     formatMessage={formatMessage}
                     handleInputChange={this.handleInputChange}
                     hasCampaign={hasCampaign}
-                    isCampaign={(!_isEmpty(giveGroupDetails) && giveGroupDetails.attributes.isCampaign) && giveGroupDetails.attributes.isCampaign}
+                    isCampaign={!_isEmpty(giveGroupDetails) && giveGroupDetails.attributes.isCampaign}
                     giveFrom={giveFrom}
                     giveToType={giveToType}
                     infoToShare={infoToShare}
