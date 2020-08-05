@@ -15,7 +15,7 @@ import {
 } from 'semantic-ui-react';
 import CampaignDetails from './CampaignDetails';
 import ProfileDetails from './ProfileDetails';
-import ProfileTitle from '../shared/ShareTitle';
+import ProfileTitle from '../shared/ProfileTitle';
 
 const actionTypes = {
     SEE_MORE_LOADER: 'SEE_MORE_LOADER',
@@ -81,7 +81,6 @@ class CampaignProfileWrapper extends React.Component {
                     causes,
                     city,
                     liked,
-                    fundName,
                     groupId,
                     name,
                     province,
@@ -135,7 +134,7 @@ class CampaignProfileWrapper extends React.Component {
                                                     type={type}
                                                     location={locationDetails}
                                                     following={liked}
-                                                    name={fundName}
+                                                    name={name}
                                                     profileId={groupId}
                                                 >
                                                     <ProfilePageHead

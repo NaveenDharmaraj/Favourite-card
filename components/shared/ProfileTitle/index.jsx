@@ -31,9 +31,9 @@ function ProfileTitle(props) {
         ));
     }
     let profileType = type;
-    if(typeof beneficiaryType !== undefined && !_isEmpty(beneficiaryType) ){
+    if (typeof beneficiaryType !== 'undefined' && !_isEmpty(beneficiaryType)) {
         profileType = beneficiaryType;
-    };
+    }
 
     return (
         <Fragment>
@@ -72,8 +72,8 @@ function ProfileTitle(props) {
                 </div>
             </Grid.Column>
         </Fragment>
-    )
-};
+    );
+}
 
 ProfileTitle.defaultProps = {
     avatar: '',

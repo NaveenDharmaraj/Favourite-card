@@ -43,27 +43,25 @@ function ProfilePageHead(props) {
     } else if (type === 'groups') {
         profileType = 'groups';
         linkAddress = `${RAILS_APP_URL_ORIGIN}/groups/${slug}/edit`;
-    } else if(type === 'campaigns') {
+    } else if (type === 'campaigns') {
         profileType = 'campaigns';
         linkAddress = `${RAILS_APP_URL_ORIGIN}/campaigns/${slug}/manage-basics`;
-    };
+    }
     if (pageDetails.attributes) {
         if (isAuthenticated) {
-            if (profileType === 'groups' || profileType === 'campaigns' && isAdmin) {
+            if ((profileType === 'groups' || profileType === 'campaigns') && isAdmin) {
                 buttonLink = (
                     <Fragment>
                         <a href={(linkAddress)}>
                             <Button className="blue-bordr-btn-round-def CampaignBtn"><span><i aria-hidden="true" class="edit icon"></i></span>Edit {profileType === 'campaigns' ?'Campaign': 'Group'}</Button>
                         </a>
-                        {balance > 0 ?
-                            (
+                        {balance > 0
+                            ? (
                                 <Link route={(`/give/to/${profileType}/${slug}/new`)}>
                                 {/* TODO need to add  functionality for givefromgroup and givefromcampaign */}
                                     <Button className="blue-bordr-btn-round-def CampaignBtn"><span><i aria-hidden="true" class="bell icon"></i></span>Give from {profileType === 'campaigns' ?'Campaign': 'Group'}</Button>
                                 </Link>
-                            )
-                            :
-                            (
+                            ) : (
                                 <Link route={(`/give/to/${profileType}/${slug}/new`)}>
                                     <Popup disabled={false} content={`The current campaign balance is ${balance}`}
                                         trigger={
@@ -77,7 +75,6 @@ function ProfilePageHead(props) {
                     </Fragment>
                 );
             }
-
         }
     }
 
@@ -124,7 +121,6 @@ function mapStateToProps(state) {
     return {
         isAuthenticated: state.auth.isAuthenticated,
     };
-};
+}
 
 export default connect(mapStateToProps)(ProfilePageHead);
-

@@ -22,7 +22,7 @@ import {
 import ProgramAreas from './ProgramAreas';
 import Charts from './Charts';
 import UserDetails from './UserDetails';
-import ProfileTitle from '../shared/ShareTitle';
+import ProfileTitle from '../shared/ProfileTitle';
 
 class CharityDetails extends React.Component {
     componentDidMount() {
