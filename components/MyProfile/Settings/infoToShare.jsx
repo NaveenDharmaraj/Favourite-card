@@ -13,7 +13,6 @@ import {
 } from '../../../actions/userProfile';
 import DropDownInfoToShare from '../../shared/DropDownInfoToShare';
 import { withTranslation } from '../../../i18n';
-import '../../../static/less/giveFlows.less';
 
 const currentDropDownName = {
     campaign_admins_info_to_share: 'campaign_admins_info_to_share',
