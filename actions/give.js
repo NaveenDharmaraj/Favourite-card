@@ -229,7 +229,7 @@ const saveGroupAllocation = (allocation) => {
         privacyShareAdminName,
         privacyShareAmount,
         privacyShareEmail,
-        privacyShareName,
+        privacyShareName: giveData.giveTo.isCampaign && privacyShareAdminName ? true : privacyShareName,
         privacyTrpId: privacyShareAddress ? infoToShare.privacyData : null,
     };
     if (!_.isEmpty(dedicateGift.dedicateType)) {
