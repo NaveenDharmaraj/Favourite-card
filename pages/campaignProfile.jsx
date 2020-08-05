@@ -1,10 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import {
-    array,
-    func,
-    PropTypes,
-    string,
+    PropTypes
 } from 'prop-types';
 import _ from 'lodash';
 import getConfig from 'next/config';
@@ -16,6 +13,8 @@ import {
 import Layout from '../components/shared/Layout';
 import CampaignProfileWrapper from '../components/Campaign';
 import storage from '../helpers/storage';
+import '../static/less/campaign_profile.less';
+import '../static/less/charityProfile.less';
 
 class CampaignProfile extends React.Component {
     static async getInitialProps({
@@ -34,6 +33,9 @@ class CampaignProfile extends React.Component {
         await getCampaignFromSlug(reduxStore.dispatch, query.slug, auth0AccessToken);
         return {
             slug: query.slug,
+            namespacesRequired: [
+                'common',
+            ],
         };
     }
 
@@ -107,14 +109,14 @@ CampaignProfile.defaultProps = {
 CampaignProfile.propTypes = {
     campaignDetails: {
         attributes: {
-            about: string,
-            avatar: string,
-            causes: array,
-            name: string,
-            slug: string,
+            about: PropTypes.string,
+            avatar: PropTypes.string,
+            causes: PropTypes.array,
+            name: PropTypes.string,
+            slug: PropTypes.string,
         },
     },
-    slug: string,
+    slug: PropTypes.string,
 };
 
 function mapStateToProps(state) {
