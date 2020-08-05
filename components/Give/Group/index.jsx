@@ -322,7 +322,7 @@ class Group extends React.Component {
             };
         }
         if (!giveData.userInteracted) {
-            giveData.privacyShareAmount = !giveGroupDetails.attributes.isCampaign ? preferences['giving_group_members_share_my_giftamount'] : false;
+            giveData.privacyShareAmount = preferences['giving_group_members_share_my_giftamount'];
         }
         if (!_isEmpty(groupCampaignAdminShareInfoOptions) && groupCampaignAdminShareInfoOptions.length > 0
             && !giveData.userInteracted) {
@@ -520,6 +520,7 @@ class Group extends React.Component {
                 flowObject.giveData.privacyShareAdminName = true;
             } else {
                 flowObject.giveData.privacyShareName = false;
+                flowObject.giveData.privacyShareAmount = false;
             }
             flowObject.stepsCompleted = false;
             flowObject.nextSteptoProceed = nextStep;

@@ -70,7 +70,7 @@ const PrivacyOptions = (props) => {
                     </label>
                     <br />
                     <Form.Field
-                        className="dropdownWithArrowParent"
+                        className="infoToShareDropdown dropdownWithArrowParent"
                         control={Select}
                         id="nameToShare"
                         name="nameToShare"
@@ -98,7 +98,7 @@ const PrivacyOptions = (props) => {
                     && (<span className="givingInfoText">This group supports a campaign—admins of both will see the info you share.</span>)
                 }
                 <Form.Field
-                    className="dropdownWithArrowParent"
+                    className="infoToShareDropdown dropdownWithArrowParent"
                     control={Select}
                     id="infoToShare"
                     name="infoToShare"

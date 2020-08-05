@@ -72,7 +72,7 @@ class InfoToShare extends React.Component {
         } = this.state;
         return (
             <div className="remove-gutter">
-                <div className="userSettingsContainer Informationshare">
+                <div className="userSettingsContainer">
                     <div className="settingsDetailWraper">
                         <Header as="h4">{formatMessage('infoToShare.infoToShareHeader')}</Header>
                         <p>
