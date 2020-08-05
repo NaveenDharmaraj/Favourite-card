@@ -74,8 +74,8 @@ class ChatMessages extends React.Component {
             userInfo,
         } = this.props;
         const sortedUserDetails = !_isEmpty(userDetails) && sortUserDetails(userDetails)
-        _forEach(sortedUserDetails, function (userDetail, userId) {
-            if (userId != userInfo.id && (userDetail.displayName || userDetail.userName)) {
+        _forEach(sortedUserDetails, function (userDetail) {
+            if (userDetail.userId != userInfo.id && (userDetail.displayName || userDetail.userName)) {
                 options.push({
                     key: userDetail.userId,
                     text: userDetail.displayName ? userDetail.displayName : userDetail.userName,

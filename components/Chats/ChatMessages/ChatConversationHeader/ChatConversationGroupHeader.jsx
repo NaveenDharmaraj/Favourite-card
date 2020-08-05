@@ -186,6 +186,7 @@ class ChatConversationGroupHeader extends React.Component {
             groupAction,
             groupActionError,
             groupAddMemberValues,
+            groupName,
             groupUserInfo,
             groupUserName,
             memberSearchText,
@@ -232,7 +233,7 @@ class ChatConversationGroupHeader extends React.Component {
                 description: groupActionError,
             },
             "MAKE_USER_ADMIN": {
-                header: `Make ${groupUserName} group chat admin for group name?`,
+                header: `Make ${groupUserName} an admin for ${groupName}?`,
                 description: `As an administrator, ${groupUserName} will be able to manage all the members of this group chat.`,
                 param: { clientGroupId: selectedConversation.groupId.toString(), users: groupUserInfo },
                 button: 'Make group admin',
@@ -291,7 +292,8 @@ class ChatConversationGroupHeader extends React.Component {
                                                                                         onClick={() =>
                                                                                             this.setGroupAction("MAKE_USER_ADMIN", false, {
                                                                                                 groupUserInfo: [{ "userId": Number(user.userId), "role": "1" }],
-                                                                                                groupUserName: userDetails[user.userId].displayName || "User"
+                                                                                                groupUserName: userDetails[user.userId].displayName || "User",
+                                                                                                groupName:  groupFeeds[selectedConversation.groupId].name || 'group'
                                                                                             })}>
                                                                                         Make group admin
                                                                                          </List.Item> : ""}
@@ -364,7 +366,7 @@ class ChatConversationGroupHeader extends React.Component {
                                     multiple
                                     onChange={this.handleGroupAddMemberChange}
                                     options={this.state.groupAddMemberOptions}
-                                    placeholder='Add memebers'
+                                    placeholder='Add members'
                                     selection
                                     search
                                     searchQuery={this.state.addMemberSearchText}
