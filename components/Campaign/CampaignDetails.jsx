@@ -1,4 +1,6 @@
+
 import React, { Fragment } from 'react';
+
 // TODO place ActiveMatchBlock
 // import ActiveMatchBlock from '../shared/ActiveMatchBlock';
 import MoneyRaised from './MoneyRaised';

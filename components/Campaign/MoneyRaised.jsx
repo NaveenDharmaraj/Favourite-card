@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Header } from 'semantic-ui-react';
+
 import { formatCurrency } from '../../helpers/give/utils';
 import ProfilePageHead from '../../components/shared/ProfilePageHead';
 
