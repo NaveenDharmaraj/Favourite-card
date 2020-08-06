@@ -32,7 +32,7 @@ const ActiveMatchBlock = (props) => {
     const formattedBalance = formatCurrency(balance, language, currency);
     const formattedmaxMatchAmount = formatCurrency(maxMatchAmount, language, currency);
     const formattedtotalMatch = formatCurrency(totalMatch, language, currency);
-    const matchExpired = (balance !== '0');
+    const matchExpired = (balance === '0');
     const headingText = matchExpired ? 'Thank you for your support!' : 'Your gift will be matched!';
     return (
         <div className="charityInfowrap tabcharityInfowrap fullwidth lightGreenBg">
@@ -80,7 +80,7 @@ const ActiveMatchBlock = (props) => {
                                 <div className="matchingFundsGraff">
                                     <div className="Progresswapper">
                                         <div className="customProgress">
-                                            <div className="bar" style={{ height: '100%' }} />
+                                            <div className="bar" style={{ height: `${matchPercent}%` }} />
                                         </div>
                                     </div>
                                 </div>
