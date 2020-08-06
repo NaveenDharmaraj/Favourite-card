@@ -21,20 +21,26 @@ const {
 } = publicRuntimeConfig;
 
 const displayBlockButton = (blockButtonType, profileType, slug) => {
-    if (blockButtonType === 'give') {
-        return (
-            <a href={(`${RAILS_APP_URL_ORIGIN}/send/to/${profileType}/${slug}`)}>
-                <Button primary className="blue-btn-rounded-def">Give</Button>
-            </a>
-        )
+    let buttonLink = null;
+    switch (blockButtonType) {
+        case 'give':
+            buttonLink = (
+                <a href={(`${RAILS_APP_URL_ORIGIN}/send/to/${profileType}/${slug}`)}>
+                    <Button primary className="blue-btn-rounded-def">Give</Button>
+                </a>
+            )
+            break;
+        case 'create':
+            buttonLink = (
+                <a href={`${RAILS_APP_URL_ORIGIN}/campaigns/${slug}/step/one`}>
+                    <Button className="success-btn-rounded-def medium btnboxWidth">Create Group</Button>
+                </a>
+            )
+            break;
+        default: 
+            return null;
     }
-    if (blockButtonType === 'create') {
-        return (
-            <a href={`${RAILS_APP_URL_ORIGIN}/campaigns/${slug}/step/one`}>
-                <Button className="success-btn-rounded-def medium btnboxWidth">Create Group</Button>
-            </a>
-        )
-    }   
+    return buttonLink;  
 }
 
 function ProfilePageHead(props) {
