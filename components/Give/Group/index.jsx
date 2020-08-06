@@ -161,7 +161,14 @@ class Group extends React.Component {
             getGroupsFromSlug(dispatch, slug);
         }
         dispatch(getDonationMatchAndPaymentInstruments(id));
-
+        dispatch({
+            payload: {
+                attributes: {
+                    matchAvailable : '0',
+                },
+            },
+            type: 'GET_MATCHING_DETAILS_FOR_GROUPS',
+        });
     }
 
     componentDidUpdate(prevProps) {

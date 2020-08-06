@@ -39,7 +39,6 @@ const getWidth = () => {
     return isSSR ? 1000 : window.innerWidth
 };
 
-
 class Layout extends React.Component {
     async componentDidMount() {
         const {
@@ -227,7 +226,6 @@ class Layout extends React.Component {
             </Responsive>
         );
     }
-
     render() {
         const {
             addCauses,

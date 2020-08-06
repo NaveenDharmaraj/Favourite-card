@@ -18,6 +18,7 @@ function FinalStep(props) {
     const {
         handleSubmit,
         buttonClicked,
+        handleBack,
     } = props;
     return (
         <Fragment>
@@ -38,6 +39,11 @@ function FinalStep(props) {
                     </div>
                     <Form>
                         <div className="create-btn-wraper">
+                            <Button
+                                className="blue-bordr-btn-round-def w-160 pt-1 pb-1"
+                                content="Back"
+                                onClick={handleBack}
+                            />
                             <Button
                                 type="submit"
                                 disabled={buttonClicked}

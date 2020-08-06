@@ -145,7 +145,6 @@ class SecondStep extends React.Component {
                                     content="Back"
                                     onClick={handleBack}
                                 />
-
                             </div>
                         </Form>
                     </div>
