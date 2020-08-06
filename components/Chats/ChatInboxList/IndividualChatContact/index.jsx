@@ -4,6 +4,7 @@ import {
 } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 
+import { default as placeholderUser } from '../../../../static/images/no-data-avatar-user-profile.png';
 import { timeString } from '../../../../helpers/chat/utils';
 
 const IndividualChatContact = ({
@@ -29,7 +30,7 @@ const IndividualChatContact = ({
                     {conversationInfo.isMuted && <Icon name="mute" />}
                 </div>
             </List.Content>
-            <Image avatar src={(conversationInfo && conversationInfo.image) && (conversationInfo.image)} />
+            <Image avatar src={(conversationInfo && conversationInfo.image) ? conversationInfo.image : placeholderUser} />
             <List.Content>
                 <List.Header as="a">
                     <span className={conversationInfo.info && conversationInfo.info.unreadCount > 0 ? 'newMessage' : ''}>
