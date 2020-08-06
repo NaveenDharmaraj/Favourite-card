@@ -469,7 +469,7 @@
             }
         }
         .duringCurrent{
-            margin:35px 0px;
+            margin:20px 0px;
             h5{
                 &.ui {
                     &.header {
@@ -484,8 +484,13 @@
     .boxGroup{
         display: inline-block;
         width: 31%;
-        @media only screen and (max-width:600px) {
-            width: 48%;
+        border-radius: 6px;
+        background-color: #FFFFFF;
+        box-shadow: 0 2px 4px 0 rgba(0,0,0,0.09);
+        border: 1px solid #EEEEEE;
+        padding: 8px 9px 8px 14px;
+        @media only screen and (max-width:992px) {
+            width: 46%;
             &:last-child{
                 margin-top: 30px;
             }
@@ -507,40 +512,63 @@
                 }
             }
         }
-    }
-    .Currentbox{
-        border-radius: 5px;
-        background-color: #FFFFFF;
-        box-shadow: 0 2px 8px 0 rgba(0,0,0,0.16);
-        height: 49px;
-        border-left: 2px solid#263238;
-        text-align: center;
-        width: 100%;
-        align-items: center;
-        display: grid;
-        font-size: 20px;
-        line-height: 22px;
-        color: #263238;
-        font-family: 'ProximaNova-Regular';
-        font-weight: 600;
-        padding: 13px 0px;
-        &.greenbox{
-            color: #009EA2 !important;
-            border-left: 2px solid#009EA2 !important;
+        .Currentbox{
+            width: 80%;
+            display: inline-block;
+            h3 {
+                &.ui {
+                    &.header {
+                        font-size: 18px;
+                        line-height: 22px;
+                        color: #263238;
+                        font-family: 'ProximaNova-Regular';
+                        font-weight: 600;
+                        margin: 0px;
+                        &.green{
+                            color: #009EA2;
+                        }
+                    }
+                }
+            }
+            p{
+                font-size: 12px;
+                color: #263238;
+                line-height: 22px;
+            }
+        }
+        .Currentboxpop{
+            width: 20%;
+            display: inline-block;
+            float: right;
+            i{
+                &.icon{
+                    &.question{
+                        float: right;
+                        color: #BBBBBB;
+                        font-size: 14px;
+                        font-weight: normal;
+                        &:hover{
+                            cursor: pointer;
+                        }
+                    }
+                }
+            }
         }
     }
     .icon-boxGroup{
         width:3%;
         display: inline-block;
         text-align: center;
+        min-height: 64px;
+        vertical-align: top;
         p{
             font-size: 14px;
             color: #263238;
             font-family: 'ProximaNova-Regular';
             font-weight: 600;
             line-height: 17px;
+            margin-top: 24px;
             @media only screen and (max-width:400px) {
-                padding: 15px 0px !important;
                 font-size: 22px !important;
             }
         }
@@ -748,6 +776,56 @@
         max-width: 100%;
         margin-top: 10px;
     }
+    .boxGroup{
+        border-radius: 6px;
+        background-color: #FFFFFF;
+        box-shadow: 0 2px 4px 0 rgba(0,0,0,0.09);
+        width: 100%;
+        padding: 8px 9px 8px 14px;
+        margin-bottom: 10px;
+        .Currentbox{
+            width: 80%;
+            display: inline-block;
+            h3 {
+                &.ui {
+                    &.header {
+                        font-size: 18px;
+                        line-height: 22px;
+                        color: #263238;
+                        font-family: 'ProximaNova-Regular';
+                        font-weight: 600;
+                        margin: 0px;
+                        &.green{
+                            color: #009EA2;
+                        }
+                    }
+                }
+            }
+            p{
+                font-size: 12px;
+                color: #263238;
+                line-height: 22px;
+            }
+        }
+        .Currentboxpop{
+            width: 20%;
+            display: inline-block;
+            float: right;
+            i{
+                &.icon{
+                    &.question{
+                        float: right;
+                        color: #BBBBBB;
+                        font-size: 14px;
+                        font-weight: normal;
+                        &:hover{
+                            cursor: pointer;
+                        }
+                    }
+                }
+            }
+        }
+    }
     &.fullwidth{
         width: 100%;
         margin-bottom: 15px;
@@ -803,17 +881,17 @@
         }
         .lastGiftWapper{
             width: 100%;
-            padding:18px 0px;
+            text-align: center;
             p{
                 &.lastGiftText{
                     font-size: 10px;
                     line-height: 18px;
                     display: inline-block;
-                    clear:#263238;
-                    float: left;
+                    color:#263238;
+                    text-align: center;
+                    padding:14px 0px 0px 0px;
                     &.blueText{
                         color: #055CE5;
-                        float: right;
                     }
                 }
             }
@@ -867,6 +945,9 @@
                             position: absolute;
                             border-radius:0px 0px 29.5px 29.5px;
                             bottom: 0px;
+                            &.Progresscurve{
+                                border-radius:29.5px;
+                            }
                         }
                     }
                 }

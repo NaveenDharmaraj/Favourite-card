@@ -9,7 +9,7 @@ import {
     Divider,
     Icon,
     Input,
-    Table, Image, Card, Button, Modal, Responsive,Progress,Tab,Feed,Comment,
+    Table, Image, Card, Button, Modal, Responsive,Progress,Tab,Feed,Comment,Popup
 } from 'semantic-ui-react';
 
 import Layout from '../components/shared/Layout';
@@ -93,6 +93,56 @@ function GivingGroupProfile() {
                                                 </div>    
                                         </div>
                                     </div>
+                                    <div className='charityInfowrap fullwidth'>
+                                        <div className='charityInfo'>
+                                        <Header as='h4'>Transactions</Header> 
+                                        <div className="boxGroup">
+                                            <div className="Currentbox">
+                                                <Header as='h3'>$44,299.00</Header>
+                                                <p>All time total raised</p>
+                                            </div>
+                                            <div className="Currentboxpop">
+                                            <Popup
+                                                trigger={<Icon  name='question circle' />}
+                                                content='Veterinarians and Animal Health'
+                                                position='top right'
+                                                inverted
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="boxGroup">
+                                            <div className="Currentbox">
+                                                <Header as='h3'>$20,399.00</Header>
+                                                <p>Total given</p>
+                                            </div>
+                                            <div className="Currentboxpop">
+                                            <Popup
+                                                trigger={<Icon  name='question circle' />}
+                                                content='Veterinarians and Animal Health'
+                                                position='top right'
+                                                inverted
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="boxGroup">
+                                            <div className="Currentbox">
+                                                <Header as='h3' className="green">$77,903.00</Header>
+                                                <p>Total balance</p>
+                                            </div>
+                                            <div className="Currentboxpop">
+                                            <Popup
+                                                trigger={<Icon  name='question circle' />}
+                                                content='Veterinarians and Animal Health'
+                                                position='top right'
+                                                inverted
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="lastGiftWapper">
+                                                <p className="lastGiftText blueText">View transactions</p>
+                                        </div>
+                                        </div>
+                                    </div>
                                     <div className='charityInfowrap tabcharityInfowrap fullwidth lightGreenBg'>
                                         <div className='charityInfo'>
                                             <Header as='h4'>Thank you for your support!</Header>
@@ -101,7 +151,7 @@ function GivingGroupProfile() {
                                             <div className="matchingFundsGraff">
                                                 <div className="Progresswapper">
                                                 <div className="customProgress">
-                                                     <div class="bar" style={{ height: '40%' }}></div>
+                                                     <div class="bar Progresscurve " style={{ height: '40%' }}></div>
                                                 </div>
                                                 </div>
                                             </div>
@@ -646,30 +696,62 @@ function GivingGroupProfile() {
                                                                 </List>
                                                                 </div>
                                                                 <div className="boxGroup">
-                                                                        <Header as='h5'>Raised during current giving goal</Header>
                                                                         <div className="Currentbox">
-                                                                            $44,299.00
+                                                                            <Header as='h3'>$44,299.00</Header>
+                                                                            <p>All time total raised</p>
+                                                                        </div>
+                                                                        <div className="Currentboxpop">
+                                                                        <Popup
+                                                                            trigger={<Icon  name='question circle' />}
+                                                                            content='Veterinarians and Animal Health'
+                                                                            position='top right'
+                                                                            inverted
+                                                                            />
                                                                         </div>
                                                                     </div>
                                                                 <div className="duringCurrent">
-                                                                    <div className="boxGroup">
-                                                                        <Header as='h5'>All time total raised by the group</Header>
+                                                                <div className="boxGroup">
                                                                         <div className="Currentbox">
-                                                                            $44,299.00
+                                                                            <Header as='h3'>$44,299.00</Header>
+                                                                            <p>All time total raised</p>
+                                                                        </div>
+                                                                        <div className="Currentboxpop">
+                                                                        <Popup
+                                                                            trigger={<Icon  name='question circle' />}
+                                                                            content='Veterinarians and Animal Health'
+                                                                            position='top right'
+                                                                            inverted
+                                                                            />
                                                                         </div>
                                                                     </div>
                                                                     <div className="icon-boxGroup"><p>-</p></div>
                                                                     <div className="boxGroup">
-                                                                        <Header as='h5'>Total given to others by the group </Header>
                                                                         <div className="Currentbox">
-                                                                            $20,399.00
+                                                                            <Header as='h3'>$44,299.00</Header>
+                                                                            <p>All time total raised</p>
+                                                                        </div>
+                                                                        <div className="Currentboxpop">
+                                                                        <Popup
+                                                                            trigger={<Icon  name='question circle' />}
+                                                                            content='Veterinarians and Animal Health'
+                                                                            position='top right'
+                                                                            inverted
+                                                                            />
                                                                         </div>
                                                                     </div>
                                                                     <div className="icon-boxGroup"><p>=</p></div>
                                                                     <div className="boxGroup">
-                                                                        <Header as='h5'>Current group balance </Header>
-                                                                        <div className="Currentbox greenbox">
-                                                                            $23,900.00
+                                                                        <div className="Currentbox">
+                                                                            <Header as='h3' className="green">$44,299.00</Header>
+                                                                            <p>All time total raised</p>
+                                                                        </div>
+                                                                        <div className="Currentboxpop">
+                                                                        <Popup
+                                                                            trigger={<Icon  name='question circle' />}
+                                                                            content='Veterinarians and Animal Health'
+                                                                            position='top right'
+                                                                            inverted
+                                                                            />
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -840,10 +922,59 @@ function GivingGroupProfile() {
                                             <Button className="white-btn-rounded-def goalbtn">15 days left to reach goal</Button>
                                                 <div className="lastGiftWapper">
                                                 <p className="lastGiftText">Last gift received 1 day ago</p>
-                                                <p className="lastGiftText blueText">View transactions</p>
                                                 </div>    
                                             <Divider />
                                             <Button className=' blue-btn-rounded-def mt-1'>Give</Button>
+                                        </div>
+                                    </div>
+                                    <div className='charityInfowrap fullwidth'>
+                                        <div className='charityInfo'>
+                                        <Header as='h4'>Transactions</Header> 
+                                        <div className="boxGroup">
+                                            <div className="Currentbox">
+                                                <Header as='h3'>$44,299.00</Header>
+                                                <p>All time total raised</p>
+                                            </div>
+                                            <div className="Currentboxpop">
+                                            <Popup
+                                                trigger={<Icon  name='question circle' />}
+                                                content='Veterinarians and Animal Health'
+                                                position='top right'
+                                                inverted
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="boxGroup">
+                                            <div className="Currentbox">
+                                                <Header as='h3'>$20,399.00</Header>
+                                                <p>Total given</p>
+                                            </div>
+                                            <div className="Currentboxpop">
+                                            <Popup
+                                                trigger={<Icon  name='question circle' />}
+                                                content='Veterinarians and Animal Health'
+                                                position='top right'
+                                                inverted
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="boxGroup">
+                                            <div className="Currentbox">
+                                                <Header as='h3' className="green">$77,903.00</Header>
+                                                <p>Total balance</p>
+                                            </div>
+                                            <div className="Currentboxpop">
+                                            <Popup
+                                                trigger={<Icon  name='question circle' />}
+                                                content='Veterinarians and Animal Health'
+                                                position='top right'
+                                                inverted
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="lastGiftWapper">
+                                                <p className="lastGiftText blueText">View transactions</p>
+                                        </div>
                                         </div>
                                     </div>
                                     <div className='charityInfowrap fullwidth lightGreenBg'>
@@ -854,7 +985,7 @@ function GivingGroupProfile() {
                                             <div className="matchingFundsGraff">
                                                 <div className="Progresswapper">
                                                 <div className="customProgress">
-                                                     <div class="bar" style={{ height: '40%' }}></div>
+                                                     <div class="bar Progresscurve" style={{ height: '40%' }}></div>
                                                 </div>
                                                 </div>
                                             </div>
