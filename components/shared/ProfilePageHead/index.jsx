@@ -123,7 +123,7 @@ function ProfilePageHead(props) {
                     </Link>
                 )
             }
-            if (blockButtonType === 'create') {
+            else if (blockButtonType === 'create') {
                 buttonLink = (
                     <a href={`${RAILS_APP_URL_ORIGIN}/campaigns/${slug}/step/one`}>
                         <Button className="success-btn-rounded-def medium btnboxWidth">Create Group</Button>
