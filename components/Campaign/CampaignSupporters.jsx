@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Header } from 'semantic-ui-react';
+
 import ProfilePageHead from '../../components/shared/ProfilePageHead';
 
 const CampaignSupporters = (props) => {
