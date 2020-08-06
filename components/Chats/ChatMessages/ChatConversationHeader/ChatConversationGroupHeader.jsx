@@ -5,8 +5,8 @@ import _isEmpty from 'lodash/isEmpty';
 import { List, Popup, Image, Button, Divider, Icon, Input, Modal, Dropdown, Checkbox } from 'semantic-ui-react';
 
 import Link from '../../../shared/Link';
-import { placeholderUser } from '../../../../static/images/no-data-avatar-user-profile.png';
-import { placeholderGroup } from '../../../../static/images/no-data-avatar-group-chat-profile.png';
+import { default as placeholderUser } from '../../../../static/images/no-data-avatar-user-profile.png';
+import { default as placeholderGroup } from '../../../../static/images/no-data-avatar-group-chat-profile.png';
 import moreIcon from '../../../../static/images/icons/ellipsis.svg';
 import { getCurrentUserRoleInGroup, getBase64 } from '../../../../helpers/chat/utils';
 import { storeGroupImage, handleGroupModalAction, updateSelectedConversationMuteUnmute, deleteSelectedConversation } from '../../../../actions/chat';
@@ -580,7 +580,7 @@ class ChatConversationGroupHeader extends React.Component {
             trigger={
                 <Image
                     avatar
-                    src={!_isEmpty(conversationInfo) ? conversationInfo.image :
+                    src={!_isEmpty(conversationInfo) &&  conversationInfo.image ? conversationInfo.image :
                         newGroupImageUrl ? newGroupImageUrl : placeholderGroup}
                     onClick={() => this.setGroupAction("IMAGE_ACTION")}
                 />}
