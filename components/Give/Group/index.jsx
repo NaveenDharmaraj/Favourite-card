@@ -520,7 +520,6 @@ class Group extends React.Component {
                 flowObject.giveData.privacyShareAdminName = true;
             } else {
                 flowObject.giveData.privacyShareName = false;
-                flowObject.giveData.privacyShareAmount = false;
             }
             flowObject.stepsCompleted = false;
             flowObject.nextSteptoProceed = nextStep;
