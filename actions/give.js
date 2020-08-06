@@ -227,7 +227,7 @@ const saveGroupAllocation = (allocation) => {
         noteToSelf,
         privacyShareAddress,
         privacyShareAdminName,
-        privacyShareAmount,
+        privacyShareAmount: giveData.giveTo.isCampaign ? false : privacyShareAmount,
         privacyShareEmail,
         privacyShareName: giveData.giveTo.isCampaign && privacyShareAdminName ? true : privacyShareName,
         privacyTrpId: privacyShareAddress ? infoToShare.privacyData : null,

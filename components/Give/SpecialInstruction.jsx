@@ -99,7 +99,7 @@ const SpecialInstruction = (props) => {
                 />
                 <Form.Field
                     control={Select}
-                    className="dropdownWithArrowParent icon"
+                    className="infoToShareDropdown dropdownWithArrowParent icon"
                     id="infoToShare"
                     name="infoToShare"
                     options={options}

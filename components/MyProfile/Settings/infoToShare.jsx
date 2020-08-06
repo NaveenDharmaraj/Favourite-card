@@ -13,7 +13,6 @@ import {
 } from '../../../actions/userProfile';
 import DropDownInfoToShare from '../../shared/DropDownInfoToShare';
 import { withTranslation } from '../../../i18n';
-import '../../../static/less/giveFlows.less';
 
 const currentDropDownName = {
     campaign_admins_info_to_share: 'campaign_admins_info_to_share',
@@ -72,7 +71,7 @@ class InfoToShare extends React.Component {
         } = this.state;
         return (
             <div className="remove-gutter">
-                <div className="userSettingsContainer Informationshare">
+                <div className="userSettingsContainer">
                     <div className="settingsDetailWraper">
                         <Header as="h4">{formatMessage('infoToShare.infoToShareHeader')}</Header>
                         <p>

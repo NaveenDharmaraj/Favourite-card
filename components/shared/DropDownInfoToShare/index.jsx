@@ -54,7 +54,7 @@ const DropDownInfoToShare = ({
         handleUserPreferenceChange(preferenceObj);
     };
     return (
-        <div className={`dropdownSearch ${infoShareDropDownLoader ? '' : 'dropdownWithArrowParent'} medium ArrowParentbtm`}>
+        <div className={`infoToShareDropdown dropdownSearch ${infoShareDropDownLoader ? '' : 'dropdownWithArrowParent'} medium ArrowParentbtm`}>
             <Dropdown
                 className="dropdownsearchField grouped medium"
                 fluid
