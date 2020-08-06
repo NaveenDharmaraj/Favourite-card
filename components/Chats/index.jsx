@@ -85,6 +85,12 @@ class ChatWrapper extends React.Component {
     }
     componentWillUnmount() {
         window.removeEventListener("resize", this.resize)
+        this.props.dispatch({
+            payload: {
+                msgId: '',
+            },
+            type: actionTypes.CHAT_MESSAGE_ID
+        }) 
     }
     resize = () => {
         this.setState({
