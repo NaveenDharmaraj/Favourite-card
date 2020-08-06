@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="824px" height="449px" viewBox="0 0 824 449" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>7DE95F17-15BD-4E76-9404-3FC862DB9DA6</title>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="468" height="314" rx="3.24"></rect>
+        <filter x="-4.7%" y="-6.4%" width="109.4%" height="114.0%" filterUnits="objectBoundingBox" id="filter-2">
+            <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="7" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.120602054 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+        <rect id="path-3" x="104" y="86" width="337" height="119" rx="2.7"></rect>
+        <mask id="mask-4" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="337" height="119" fill="white">
+            <use xlink:href="#path-3"></use>
+        </mask>
+        <rect id="path-5" x="91" y="178" width="144" height="162" rx="3.6"></rect>
+        <filter x="-16.3%" y="-13.3%" width="132.6%" height="129.0%" filterUnits="objectBoundingBox" id="filter-6">
+            <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="7.5" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feComposite in="shadowBlurOuter1" in2="SourceAlpha" operator="out" result="shadowBlurOuter1"></feComposite>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.0899530157 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+        <rect id="path-7" x="286" y="114" width="223" height="241" rx="3.6"></rect>
+        <filter x="-10.5%" y="-8.9%" width="121.1%" height="119.5%" filterUnits="objectBoundingBox" id="filter-8">
+            <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="7.5" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feComposite in="shadowBlurOuter1" in2="SourceAlpha" operator="out" result="shadowBlurOuter1"></feComposite>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.0899530157 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="Claim-Charity" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="claim_charity-(1)" transform="translate(-698.000000, -310.000000)">
+            <g id="block-01" transform="translate(193.000000, 181.000000)">
+                <g id="img/claimcharity01" transform="translate(506.000000, 129.000000)">
+                    <g id="charitableimpactforcharities/section-4/dots" transform="translate(83.000000, 395.000000) rotate(90.000000) translate(-83.000000, -395.000000) translate(36.000000, 312.000000)" fill="#C799D1">
+                        <polygon id="Fill-1" points="0.451923077 1.80434783 2.25961538 1.80434783 2.25961538 0 0.451923077 0"></polygon>
+                        <polygon id="Fill-2" points="13.1057692 1.80434783 14.9134615 1.80434783 14.9134615 0 13.1057692 0"></polygon>
+                        <polygon id="Fill-3" points="26.6634615 1.80434783 28.4711538 1.80434783 28.4711538 0 26.6634615 0"></polygon>
+                        <polygon id="Fill-4" points="40.2211538 1.80434783 42.0288462 1.80434783 42.0288462 0 40.2211538 0"></polygon>
+                        <polygon id="Fill-5" points="51.9711538 1.80434783 53.7788462 1.80434783 53.7788462 0 51.9711538 0"></polygon>
+                        <polygon id="Fill-6" points="65.5288462 1.80434783 67.3365385 1.80434783 67.3365385 0 65.5288462 0"></polygon>
+                        <polygon id="Fill-7" points="79.0865385 1.80434783 80.8942308 1.80434783 80.8942308 0 79.0865385 0"></polygon>
+                        <polygon id="Fill-8" points="91.7403846 1.80434783 93.5480769 1.80434783 93.5480769 0 91.7403846 0"></polygon>
+                        <polygon id="Fill-9" points="0.451923077 14.4347826 2.25961538 14.4347826 2.25961538 12.6304348 0.451923077 12.6304348"></polygon>
+                        <polygon id="Fill-10" points="13.1057692 14.4347826 14.9134615 14.4347826 14.9134615 12.6304348 13.1057692 12.6304348"></polygon>
+                        <polygon id="Fill-11" points="26.6634615 14.4347826 28.4711538 14.4347826 28.4711538 12.6304348 26.6634615 12.6304348"></polygon>
+                        <polygon id="Fill-12" points="40.2211538 14.4347826 42.0288462 14.4347826 42.0288462 12.6304348 40.2211538 12.6304348"></polygon>
+                        <polygon id="Fill-13" points="51.9711538 14.4347826 53.7788462 14.4347826 53.7788462 12.6304348 51.9711538 12.6304348"></polygon>
+                        <polygon id="Fill-14" points="65.5288462 14.4347826 67.3365385 14.4347826 67.3365385 12.6304348 65.5288462 12.6304348"></polygon>
+                        <polygon id="Fill-15" points="79.0865385 14.4347826 80.8942308 14.4347826 80.8942308 12.6304348 79.0865385 12.6304348"></polygon>
+                        <polygon id="Fill-16" points="91.7403846 14.4347826 93.5480769 14.4347826 93.5480769 12.6304348 91.7403846 12.6304348"></polygon>
+                        <polygon id="Fill-17" points="0.451923077 27.0652174 2.25961538 27.0652174 2.25961538 25.2608696 0.451923077 25.2608696"></polygon>
+                        <polygon id="Fill-18" points="13.1057692 27.0652174 14.9134615 27.0652174 14.9134615 25.2608696 13.1057692 25.2608696"></polygon>
+                        <polygon id="Fill-19" points="26.6634615 27.0652174 28.4711538 27.0652174 28.4711538 25.2608696 26.6634615 25.2608696"></polygon>
+                        <polygon id="Fill-20" points="40.2211538 27.0652174 42.0288462 27.0652174 42.0288462 25.2608696 40.2211538 25.2608696"></polygon>
+                        <polygon id="Fill-21" points="51.9711538 27.0652174 53.7788462 27.0652174 53.7788462 25.2608696 51.9711538 25.2608696"></polygon>
+                        <polygon id="Fill-22" points="65.5288462 27.0652174 67.3365385 27.0652174 67.3365385 25.2608696 65.5288462 25.2608696"></polygon>
+                        <polygon id="Fill-23" points="79.0865385 27.0652174 80.8942308 27.0652174 80.8942308 25.2608696 79.0865385 25.2608696"></polygon>
+                        <polygon id="Fill-24" points="91.7403846 27.0652174 93.5480769 27.0652174 93.5480769 25.2608696 91.7403846 25.2608696"></polygon>
+                        <polygon id="Fill-25" points="0.451923077 39.6956522 2.25961538 39.6956522 2.25961538 37.8913043 0.451923077 37.8913043"></polygon>
+                        <polygon id="Fill-26" points="13.1057692 39.6956522 14.9134615 39.6956522 14.9134615 37.8913043 13.1057692 37.8913043"></polygon>
+                        <polygon id="Fill-27" points="26.6634615 39.6956522 28.4711538 39.6956522 28.4711538 37.8913043 26.6634615 37.8913043"></polygon>
+                        <polygon id="Fill-28" points="40.2211538 39.6956522 42.0288462 39.6956522 42.0288462 37.8913043 40.2211538 37.8913043"></polygon>
+                        <polygon id="Fill-29" points="51.9711538 39.6956522 53.7788462 39.6956522 53.7788462 37.8913043 51.9711538 37.8913043"></polygon>
+                        <polygon id="Fill-30" points="65.5288462 39.6956522 67.3365385 39.6956522 67.3365385 37.8913043 65.5288462 37.8913043"></polygon>
+                        <polygon id="Fill-31" points="79.0865385 39.6956522 80.8942308 39.6956522 80.8942308 37.8913043 79.0865385 37.8913043"></polygon>
+                        <polygon id="Fill-32" points="91.7403846 39.6956522 93.5480769 39.6956522 93.5480769 37.8913043 91.7403846 37.8913043"></polygon>
+                        <polygon id="Fill-33" points="0.451923077 51.423913 2.25961538 51.423913 2.25961538 49.6195652 0.451923077 49.6195652"></polygon>
+                        <polygon id="Fill-34" points="13.1057692 51.423913 14.9134615 51.423913 14.9134615 49.6195652 13.1057692 49.6195652"></polygon>
+                        <polygon id="Fill-35" points="26.6634615 51.423913 28.4711538 51.423913 28.4711538 49.6195652 26.6634615 49.6195652"></polygon>
+                        <polygon id="Fill-36" points="40.2211538 51.423913 42.0288462 51.423913 42.0288462 49.6195652 40.2211538 49.6195652"></polygon>
+                        <polygon id="Fill-37" points="51.9711538 51.423913 53.7788462 51.423913 53.7788462 49.6195652 51.9711538 49.6195652"></polygon>
+                        <polygon id="Fill-38" points="65.5288462 51.423913 67.3365385 51.423913 67.3365385 49.6195652 65.5288462 49.6195652"></polygon>
+                        <polygon id="Fill-39" points="79.0865385 51.423913 80.8942308 51.423913 80.8942308 49.6195652 79.0865385 49.6195652"></polygon>
+                        <polygon id="Fill-40" points="91.7403846 51.423913 93.5480769 51.423913 93.5480769 49.6195652 91.7403846 49.6195652"></polygon>
+                        <polygon id="Fill-41" points="0.451923077 64.9565217 2.25961538 64.9565217 2.25961538 63.1521739 0.451923077 63.1521739"></polygon>
+                        <polygon id="Fill-42" points="13.1057692 64.9565217 14.9134615 64.9565217 14.9134615 63.1521739 13.1057692 63.1521739"></polygon>
+                        <polygon id="Fill-43" points="26.6634615 64.9565217 28.4711538 64.9565217 28.4711538 63.1521739 26.6634615 63.1521739"></polygon>
+                        <polygon id="Fill-44" points="40.2211538 64.9565217 42.0288462 64.9565217 42.0288462 63.1521739 40.2211538 63.1521739"></polygon>
+                        <polygon id="Fill-45" points="51.9711538 64.9565217 53.7788462 64.9565217 53.7788462 63.1521739 51.9711538 63.1521739"></polygon>
+                        <polygon id="Fill-46" points="65.5288462 64.9565217 67.3365385 64.9565217 67.3365385 63.1521739 65.5288462 63.1521739"></polygon>
+                        <polygon id="Fill-47" points="79.0865385 64.9565217 80.8942308 64.9565217 80.8942308 63.1521739 79.0865385 63.1521739"></polygon>
+                        <polygon id="Fill-48" points="91.7403846 64.9565217 93.5480769 64.9565217 93.5480769 63.1521739 91.7403846 63.1521739"></polygon>
+                        <polygon id="Fill-49" points="0.451923077 78.4891304 2.25961538 78.4891304 2.25961538 76.6847826 0.451923077 76.6847826"></polygon>
+                        <polygon id="Fill-50" points="13.1057692 78.4891304 14.9134615 78.4891304 14.9134615 76.6847826 13.1057692 76.6847826"></polygon>
+                        <polygon id="Fill-51" points="26.6634615 78.4891304 28.4711538 78.4891304 28.4711538 76.6847826 26.6634615 76.6847826"></polygon>
+                        <polygon id="Fill-52" points="40.2211538 78.4891304 42.0288462 78.4891304 42.0288462 76.6847826 40.2211538 76.6847826"></polygon>
+                        <polygon id="Fill-53" points="51.9711538 78.4891304 53.7788462 78.4891304 53.7788462 76.6847826 51.9711538 76.6847826"></polygon>
+                        <polygon id="Fill-54" points="65.5288462 78.4891304 67.3365385 78.4891304 67.3365385 76.6847826 65.5288462 76.6847826"></polygon>
+                        <polygon id="Fill-55" points="79.0865385 78.4891304 80.8942308 78.4891304 80.8942308 76.6847826 79.0865385 76.6847826"></polygon>
+                        <polygon id="Fill-56" points="91.7403846 78.4891304 93.5480769 78.4891304 93.5480769 76.6847826 91.7403846 76.6847826"></polygon>
+                        <polygon id="Fill-57" points="0.451923077 89.3152174 2.25961538 89.3152174 2.25961538 87.5108696 0.451923077 87.5108696"></polygon>
+                        <polygon id="Fill-58" points="13.1057692 89.3152174 14.9134615 89.3152174 14.9134615 87.5108696 13.1057692 87.5108696"></polygon>
+                        <polygon id="Fill-59" points="26.6634615 89.3152174 28.4711538 89.3152174 28.4711538 87.5108696 26.6634615 87.5108696"></polygon>
+                        <polygon id="Fill-60" points="40.2211538 89.3152174 42.0288462 89.3152174 42.0288462 87.5108696 40.2211538 87.5108696"></polygon>
+                        <polygon id="Fill-61" points="51.9711538 89.3152174 53.7788462 89.3152174 53.7788462 87.5108696 51.9711538 87.5108696"></polygon>
+                        <polygon id="Fill-62" points="65.5288462 89.3152174 67.3365385 89.3152174 67.3365385 87.5108696 65.5288462 87.5108696"></polygon>
+                        <polygon id="Fill-63" points="79.0865385 89.3152174 80.8942308 89.3152174 80.8942308 87.5108696 79.0865385 87.5108696"></polygon>
+                        <polygon id="Fill-64" points="91.7403846 89.3152174 93.5480769 89.3152174 93.5480769 87.5108696 91.7403846 87.5108696"></polygon>
+                        <polygon id="Fill-65" points="0.451923077 102.847826 2.25961538 102.847826 2.25961538 101.043478 0.451923077 101.043478"></polygon>
+                        <polygon id="Fill-66" points="13.1057692 102.847826 14.9134615 102.847826 14.9134615 101.043478 13.1057692 101.043478"></polygon>
+                        <polygon id="Fill-67" points="26.6634615 102.847826 28.4711538 102.847826 28.4711538 101.043478 26.6634615 101.043478"></polygon>
+                        <polygon id="Fill-68" points="40.2211538 102.847826 42.0288462 102.847826 42.0288462 101.043478 40.2211538 101.043478"></polygon>
+                        <polygon id="Fill-69" points="51.9711538 102.847826 53.7788462 102.847826 53.7788462 101.043478 51.9711538 101.043478"></polygon>
+                        <polygon id="Fill-70" points="65.5288462 102.847826 67.3365385 102.847826 67.3365385 101.043478 65.5288462 101.043478"></polygon>
+                        <polygon id="Fill-71" points="79.0865385 102.847826 80.8942308 102.847826 80.8942308 101.043478 79.0865385 101.043478"></polygon>
+                        <polygon id="Fill-72" points="91.7403846 102.847826 93.5480769 102.847826 93.5480769 101.043478 91.7403846 101.043478"></polygon>
+                        <polygon id="Fill-73" points="0.451923077 116.380435 2.25961538 116.380435 2.25961538 114.576087 0.451923077 114.576087"></polygon>
+                        <polygon id="Fill-74" points="13.1057692 116.380435 14.9134615 116.380435 14.9134615 114.576087 13.1057692 114.576087"></polygon>
+                        <polygon id="Fill-75" points="26.6634615 116.380435 28.4711538 116.380435 28.4711538 114.576087 26.6634615 114.576087"></polygon>
+                        <polygon id="Fill-76" points="40.2211538 116.380435 42.0288462 116.380435 42.0288462 114.576087 40.2211538 114.576087"></polygon>
+                        <polygon id="Fill-77" points="51.9711538 116.380435 53.7788462 116.380435 53.7788462 114.576087 51.9711538 114.576087"></polygon>
+                        <polygon id="Fill-78" points="65.5288462 116.380435 67.3365385 116.380435 67.3365385 114.576087 65.5288462 114.576087"></polygon>
+                        <polygon id="Fill-79" points="79.0865385 116.380435 80.8942308 116.380435 80.8942308 114.576087 79.0865385 114.576087"></polygon>
+                        <polygon id="Fill-80" points="91.7403846 116.380435 93.5480769 116.380435 93.5480769 114.576087 91.7403846 114.576087"></polygon>
+                        <polygon id="Fill-81" points="0.451923077 128.108696 2.25961538 128.108696 2.25961538 126.304348 0.451923077 126.304348"></polygon>
+                        <polygon id="Fill-82" points="13.1057692 128.108696 14.9134615 128.108696 14.9134615 126.304348 13.1057692 126.304348"></polygon>
+                        <polygon id="Fill-83" points="26.6634615 128.108696 28.4711538 128.108696 28.4711538 126.304348 26.6634615 126.304348"></polygon>
+                        <polygon id="Fill-84" points="40.2211538 128.108696 42.0288462 128.108696 42.0288462 126.304348 40.2211538 126.304348"></polygon>
+                        <polygon id="Fill-85" points="51.9711538 128.108696 53.7788462 128.108696 53.7788462 126.304348 51.9711538 126.304348"></polygon>
+                        <polygon id="Fill-86" points="65.5288462 128.108696 67.3365385 128.108696 67.3365385 126.304348 65.5288462 126.304348"></polygon>
+                        <polygon id="Fill-87" points="79.0865385 128.108696 80.8942308 128.108696 80.8942308 126.304348 79.0865385 126.304348"></polygon>
+                        <polygon id="Fill-88" points="91.7403846 128.108696 93.5480769 128.108696 93.5480769 126.304348 91.7403846 126.304348"></polygon>
+                        <polygon id="Fill-89" points="0.451923077 140.73913 2.25961538 140.73913 2.25961538 138.934783 0.451923077 138.934783"></polygon>
+                        <polygon id="Fill-90" points="13.1057692 140.73913 14.9134615 140.73913 14.9134615 138.934783 13.1057692 138.934783"></polygon>
+                        <polygon id="Fill-91" points="26.6634615 140.73913 28.4711538 140.73913 28.4711538 138.934783 26.6634615 138.934783"></polygon>
+                        <polygon id="Fill-92" points="40.2211538 140.73913 42.0288462 140.73913 42.0288462 138.934783 40.2211538 138.934783"></polygon>
+                        <polygon id="Fill-93" points="51.9711538 140.73913 53.7788462 140.73913 53.7788462 138.934783 51.9711538 138.934783"></polygon>
+                        <polygon id="Fill-94" points="65.5288462 140.73913 67.3365385 140.73913 67.3365385 138.934783 65.5288462 138.934783"></polygon>
+                        <polygon id="Fill-95" points="79.0865385 140.73913 80.8942308 140.73913 80.8942308 138.934783 79.0865385 138.934783"></polygon>
+                        <polygon id="Fill-96" points="91.7403846 140.73913 93.5480769 140.73913 93.5480769 138.934783 91.7403846 138.934783"></polygon>
+                        <polygon id="Fill-97" points="0.451923077 153.369565 2.25961538 153.369565 2.25961538 151.565217 0.451923077 151.565217"></polygon>
+                        <polygon id="Fill-98" points="13.1057692 153.369565 14.9134615 153.369565 14.9134615 151.565217 13.1057692 151.565217"></polygon>
+                        <polygon id="Fill-99" points="26.6634615 153.369565 28.4711538 153.369565 28.4711538 151.565217 26.6634615 151.565217"></polygon>
+                        <polygon id="Fill-100" points="40.2211538 153.369565 42.0288462 153.369565 42.0288462 151.565217 40.2211538 151.565217"></polygon>
+                        <polygon id="Fill-101" points="51.9711538 153.369565 53.7788462 153.369565 53.7788462 151.565217 51.9711538 151.565217"></polygon>
+                        <polygon id="Fill-102" points="65.5288462 153.369565 67.3365385 153.369565 67.3365385 151.565217 65.5288462 151.565217"></polygon>
+                        <polygon id="Fill-103" points="79.0865385 153.369565 80.8942308 153.369565 80.8942308 151.565217 79.0865385 151.565217"></polygon>
+                        <polygon id="Fill-104" points="91.7403846 153.369565 93.5480769 153.369565 93.5480769 151.565217 91.7403846 151.565217"></polygon>
+                        <polygon id="Fill-105" points="0.451923077 166 2.25961538 166 2.25961538 164.195652 0.451923077 164.195652"></polygon>
+                        <polygon id="Fill-106" points="13.1057692 166 14.9134615 166 14.9134615 164.195652 13.1057692 164.195652"></polygon>
+                        <polygon id="Fill-107" points="26.6634615 166 28.4711538 166 28.4711538 164.195652 26.6634615 164.195652"></polygon>
+                        <polygon id="Fill-108" points="40.2211538 166 42.0288462 166 42.0288462 164.195652 40.2211538 164.195652"></polygon>
+                        <polygon id="Fill-109" points="51.9711538 166 53.7788462 166 53.7788462 164.195652 51.9711538 164.195652"></polygon>
+                        <polygon id="Fill-110" points="65.5288462 166 67.3365385 166 67.3365385 164.195652 65.5288462 164.195652"></polygon>
+                        <polygon id="Fill-111" points="79.0865385 166 80.8942308 166 80.8942308 164.195652 79.0865385 164.195652"></polygon>
+                        <polygon id="Fill-112" points="91.7403846 166 93.5480769 166 93.5480769 164.195652 91.7403846 164.195652"></polygon>
+                    </g>
+                    <rect id="charitableimpactforcharities/section-4/bar-1" fill="#F7BA4A" x="342" y="0" width="481" height="282"></rect>
+                    <g id="charitableimpactforcharities/section-4/illustration" transform="translate(67.000000, 77.000000)">
+                        <g id="Rectangle">
+                            <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
+                            <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-1"></use>
+                        </g>
+                        <use id="Rectangle" stroke="#C7C7C7" mask="url(#mask-4)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="3.6" xlink:href="#path-3"></use>
+                        <g id="Rectangle">
+                            <use fill="black" fill-opacity="1" filter="url(#filter-6)" xlink:href="#path-5"></use>
+                            <rect stroke="#E4E4E4" stroke-width="0.9" stroke-linejoin="square" fill="#FFFFFF" fill-rule="evenodd" x="91.45" y="178.45" width="143.1" height="161.1" rx="3.6"></rect>
+                        </g>
+                        <rect id="Rectangle" stroke="#C3C3C3" stroke-width="0.9" fill="#FFFFFF" x="28.45" y="87.45" width="61.1" height="61.1" rx="3.6"></rect>
+                        <g id="icon/personal-information" transform="translate(49.000000, 105.000000)" stroke="#263238" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.35">
+                            <g id="icon-personal-information">
+                                <g id="Regular">
+                                    <path d="M21.6870833,14.2494583 L14.375,21.5625 L10.78125,22.28125 L11.5,18.6875 L18.8120833,11.3744583 C19.6039493,10.5828442 20.8875507,10.5828442 21.6794167,11.3744583 L21.6870833,11.3830833 C22.0676483,11.762944 22.2815069,12.2785685 22.2815069,12.8162708 C22.2815069,13.3539732 22.0676483,13.8695977 21.6870833,14.2494583 L21.6870833,14.2494583 Z" id="Shape"></path>
+                                    <circle id="Oval" cx="7.1875" cy="4.671875" r="3.953125"></circle>
+                                    <path d="M12.78225,13.3390417 C11.339389,10.7844542 8.35398146,9.52582402 5.51770342,10.2763517 C2.68142538,11.0268793 0.709267652,13.5973661 0.718682152,16.53125" id="Shape"></path>
+                                </g>
+                            </g>
+                        </g>
+                        <circle id="Oval" fill="#C799D1" cx="272" cy="145" r="31"></circle>
+                        <circle id="Oval" fill="#009EA1" cx="205.5" cy="313.5" r="16.5"></circle>
+                        <g id="Group-2" transform="translate(262.000000, 136.000000)" fill="#663387">
+                            <rect id="Rectangle" x="8.44444444" y="0" width="2.11111111" height="19"></rect>
+                            <polygon id="Rectangle" transform="translate(9.500000, 9.500000) rotate(90.000000) translate(-9.500000, -9.500000) " points="8.44444444 2.54330237e-11 10.5555556 2.54330237e-11 10.5555556 19 8.44444444 19"></polygon>
+                        </g>
+                        <g id="icon-download" transform="translate(198.000000, 308.000000)" stroke="#82E3E0" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.35">
+                            <g id="Group-6">
+                                <line x1="7.5" y1="0.458333333" x2="7.5" y2="7.79166667" id="Stroke-1"></line>
+                                <polyline id="Stroke-3" points="4.6875 5.04166667 7.5 7.79166667 10.3125 5.04166667"></polyline>
+                                <path d="M14.53125,7.79166667 L14.53125,8.70833333 C14.53125,9.72094444 13.691875,10.5416667 12.65625,10.5416667 L2.34375,10.5416667 C1.308125,10.5416667 0.46875,9.72094444 0.46875,8.70833333 L0.46875,7.79166667" id="Stroke-4"></path>
+                            </g>
+                        </g>
+                        <text id="Monthly-Transaction" font-family="ProximaNova-Regular, Proxima Nova" font-size="9.9" font-weight="normal" fill="#353535">
+                            <tspan x="107" y="208">Monthly Transaction </tspan>
+                            <tspan x="107" y="220">Report</tspan>
+                        </text>
+                        <text id="Charitable-Impact-Fo" font-family="ProximaNova-Regular, Proxima Nova" font-size="14.4" font-weight="normal" fill="#663387">
+                            <tspan x="28" y="64">Charitable Impact Foundation</tspan>
+                        </text>
+                        <rect id="Rectangle" fill="#DADADA" x="107" y="235" width="112" height="6"></rect>
+                        <rect id="Rectangle" fill="#DADADA" x="107" y="246" width="112" height="6"></rect>
+                        <rect id="Rectangle" fill="#DADADA" x="107" y="256" width="112" height="6"></rect>
+                        <rect id="Rectangle" fill="#DADADA" x="107" y="266" width="112" height="6"></rect>
+                        <rect id="Rectangle" fill="#DADADA" x="107" y="276" width="112" height="6"></rect>
+                        <rect id="Rectangle" fill="#DADADA" x="108" y="286" width="62" height="6"></rect>
+                        <g id="Rectangle">
+                            <use fill="black" fill-opacity="1" filter="url(#filter-8)" xlink:href="#path-7"></use>
+                            <rect stroke="#E4E4E4" stroke-width="0.9" stroke-linejoin="square" fill="#FFFFFF" fill-rule="evenodd" x="286.45" y="114.45" width="222.1" height="240.1" rx="3.6"></rect>
+                        </g>
+                        <text id="Direct-Deposit" font-family="ProximaNova-Regular, Proxima Nova" font-size="9.9" font-weight="normal" fill="#353535">
+                            <tspan x="308" y="152">Direct Deposit</tspan>
+                        </text>
+                        <g id="Group-3" transform="translate(309.000000, 177.000000)">
+                            <rect id="Rectangle" stroke="#EFEFEF" stroke-width="0.9" fill="#F5F8FC" x="0.45" y="0.45" width="180.728571" height="30.0850962" rx="1.8"></rect>
+                            <text id="$" font-family="ProximaNova-Regular, Proxima Nova" font-size="9.9" font-weight="normal" fill="#353535">
+                                <tspan x="7.8" y="18.1236779">$</tspan>
+                            </text>
+                            <rect id="Rectangle" fill="#D6D9DC" x="20.0571429" y="7.74627404" width="18.9428571" height="14.3859375"></rect>
+                            <rect id="Rectangle" fill="#D6D9DC" x="41.2285714" y="7.74627404" width="5.57142857" height="14.3859375"></rect>
+                            <rect id="Rectangle" fill="#D6D9DC" x="49.0285714" y="7.74627404" width="14.4857143" height="14.3859375"></rect>
+                            <rect id="Rectangle" fill="#D6D9DC" x="65.7428571" y="7.74627404" width="33.4285714" height="14.3859375"></rect>
+                        </g>
+                        <g id="Group-3" transform="translate(309.000000, 281.000000)">
+                            <rect id="Rectangle" stroke="#EFEFEF" stroke-width="0.9" fill="#F5F8FC" x="0.45" y="0.45" width="180.728571" height="30.0850962" rx="1.8"></rect>
+                            <text id="Account-Name" font-family="ProximaNova-Regular, Proxima Nova" font-size="9.9" font-weight="normal" fill="#353535">
+                                <tspan x="7.8" y="18.1236779">Account Name</tspan>
+                            </text>
+                        </g>
+                        <rect id="Rectangle" fill="#DADADA" x="310" y="166" width="62" height="6"></rect>
+                        <rect id="Rectangle" fill="#DADADA" x="310" y="213" width="62" height="6"></rect>
+                        <rect id="Rectangle" fill="#DADADA" x="378" y="213" width="95" height="6"></rect>
+                        <g id="icon/input-field-icon-arrow-down/default" transform="translate(470.000000, 296.000000)" stroke="#BBBBBB" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.35">
+                            <path d="M6,6 L2.08039403,2.18844444 C1.97326301,2.08462222 1.97326301,1.91573333 2.08002839,1.81191111 L2.08039403,1.81155556 L6,-2" id="Stroke-1" transform="translate(4.000000, 2.000000) rotate(-90.000000) translate(-4.000000, -2.000000) "></path>
+                        </g>
+                        <circle id="Oval" fill="#DB0163" cx="17" cy="15" r="3"></circle>
+                        <circle id="Oval" fill="#F7BA4A" cx="30" cy="15" r="3"></circle>
+                        <circle id="Oval" fill="#27CCD1" cx="43" cy="15" r="3"></circle>
+                        <line x1="0" y1="25.5" x2="468" y2="25.5" id="Path-14" stroke="#EAEAEA" stroke-width="0.9"></line>
+                        <rect id="Rectangle" fill="#DADADA" x="309" y="224" width="181" height="6"></rect>
+                        <rect id="Rectangle" fill="#DADADA" x="309" y="235" width="181" height="6"></rect>
+                        <rect id="Rectangle" fill="#DADADA" x="309" y="245" width="181" height="6"></rect>
+                        <rect id="Rectangle" fill="#DADADA" x="309" y="255" width="181" height="6"></rect>
+                        <rect id="Rectangle" fill="#DADADA" x="309" y="264" width="181" height="6"></rect>
+                    </g>
+                    <path d="M275,30 L331,30 L331,69 L314,69 C292.460895,69 275,51.5391052 275,30 L275,30 L275,30 Z" id="charitableimpactforcharities/section-4/bar-2" fill="#ED803B" transform="translate(303.000000, 49.500000) scale(-1, 1) rotate(-180.000000) translate(-303.000000, -49.500000) "></path>
+                    <image id="f" x="492" y="55" width="62" height="65" xlink:href="data:image/png;base64,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"></image>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

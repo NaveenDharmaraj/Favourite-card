@@ -7,6 +7,7 @@ function getLocalStorage(name) {
         return localStorage.getItem(name);
     }
 }
+
 function getCookies(name, serverCookies = null) {
     let val = '';
     let cookies = serverCookies;
@@ -83,9 +84,26 @@ function unset(name, type) {
         localStorage.removeItem(name);
     }
 }
+
+function getLocalStorageWithExpiry(name, type) {
+    const itemStr = get(name, type);
+    if (!itemStr) {
+        return null;
+    };
+    const item = JSON.parse(itemStr);
+    const now = new Date();
+    if (now.getTime() < item.expiry) {
+        return item.value;
+    }
+    localStorage.removeItem(name);
+    return null;
+}
+
 const storage = {
     get,
     set,
     unset,
+    getLocalStorageWithExpiry,
 };
 export default storage;
+

@@ -1,19 +1,33 @@
 /* eslint-disable no-else-return */
 
 import _ from 'lodash';
-
 import coreApi from '../services/coreApi';
 import authRorApi from '../services/authRorApi';
 import graphApi from '../services/graphApi';
 import securityApi from '../services/securityApi';
 import wpApi from '../services/wpApi';
 import { Router } from '../routes';
+import getConfig from 'next/config';
 import {
     triggerUxCritialErrors,
 } from './error';
 import {
     generatePayloadBodyForFollowAndUnfollow,
 } from './profile';
+import storage from '../helpers/storage';
+
+const { publicRuntimeConfig } = getConfig();
+const {
+    BASIC_AUTH_KEY,
+} = publicRuntimeConfig;
+let BASIC_AUTH_HEADER = null;
+if (!_.isEmpty(BASIC_AUTH_KEY)) {
+    BASIC_AUTH_HEADER = {
+        headers: {
+            Authorization: `Basic ${BASIC_AUTH_KEY}`,
+        },
+    };
+}
 
 export const actionTypes = {
     GET_MATCH_POLICIES_PAYMENTINSTRUMENTS: 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS',
@@ -21,7 +35,7 @@ export const actionTypes = {
     GET_UPCOMING_TRANSACTIONS: 'GET_UPCOMING_TRANSACTIONS',
     GIVING_GROUPS_lEAVE_MODAL: 'GIVING_GROUPS_lEAVE_MODAL',
     MONTHLY_TRANSACTION_API_CALL: 'MONTHLY_TRANSACTION_API_CALL',
-    TAX_RECEIPT_PROFILES:'TAX_RECEIPT_PROFILES',
+    TAX_RECEIPT_PROFILES: 'TAX_RECEIPT_PROFILES',
     SAVE_DEEP_LINK: 'SAVE_DEEP_LINK',
     SET_USER_INFO: 'SET_USER_INFO',
     SET_USER_ACCOUNT_FETCHED: 'SET_USER_ACCOUNT_FETCHED',
@@ -31,9 +45,10 @@ export const actionTypes = {
     LEAVE_GROUP_ERROR_MESSAGE: 'LEAVE_GROUP_ERROR_MESSAGE',
     USER_GIVING_GOAL_DETAILS: 'USER_GIVING_GOAL_DETAILS',
     USER_INITIAL_FAVORITES: 'USER_INITIAL_FAVORITES',
-    USER_FAVORITES:'USER_FAVORITES',
+    USER_FAVORITES: 'USER_FAVORITES',
     UPDATE_FAVORITES: 'UPDATE_FAVORITES',
     ENABLE_FAVORITES_BUTTON: 'ENABLE_FAVORITES_BUTTON',
+    CLAIM_CHARITY_ERROR_MESSAGE: 'CLAIM_CHARITY_ERROR_MESSAGE',
 };
 
 const getAllPaginationData = async (url, params = null) => {
@@ -53,7 +68,7 @@ const checkForOnlyOneAdmin = (error) => {
         if (!_.isEmpty(checkForAdminError.meta)
             && !_.isEmpty(checkForAdminError.meta.validationCode)
             && (checkForAdminError.meta.validationCode === '1329'
-            || checkForAdminError.meta.validationCode === 1329)) {
+                || checkForAdminError.meta.validationCode === 1329)) {
             return true;
         }
     }
@@ -251,6 +266,7 @@ export const wpLogin = (token = null) => {
 
 export const chimpLogin = (token = null, options = null) => {
     let params = null;
+    const claimCharityAccessCode = storage.getLocalStorageWithExpiry('claimToken','local');
     if (!_.isEmpty(token)) {
         params = {
             headers: {
@@ -258,15 +274,16 @@ export const chimpLogin = (token = null, options = null) => {
             },
         };
     }
-    if (options && typeof options === 'object'){
+    if (options && typeof options === 'object') {
         params = {
             ...params,
-            params:{
+            params: {
                 ...options,
+                beneficiaryClaimToken: claimCharityAccessCode,
             },
         }
-    } 
-        return authRorApi.post(`/auth/login`, null, params);
+    }
+    return authRorApi.post(`/auth/login`, null, params);
 };
 
 const setDataToPayload = ({
@@ -589,7 +606,7 @@ export const leaveGroup = (dispatch, group, allData, type) => {
                 nextLink: (currentData.links.next) ? currentData.links.next : null,
                 dataCount: currentData.meta.recordCount,
             };
-            
+
             dispatch(fsa);
             dispatch({
                 payload: {
@@ -609,7 +626,7 @@ export const leaveGroup = (dispatch, group, allData, type) => {
                 type,
                 id: group.id,
                 message: error.errors[0].detail,
-                adminError:0,
+                adminError: 0,
             },
             type: actionTypes.LEAVE_GROUP_ERROR_MESSAGE,
         };
@@ -672,7 +689,7 @@ export const getUpcomingTransactions = (dispatch, url) => {
                 payload: {
                     upcomingTransactions: result.data,
                     upcomingTransactionsMeta: result.meta,
-                    
+
                 },
                 type: actionTypes.GET_UPCOMING_TRANSACTIONS,
             });
@@ -728,7 +745,7 @@ export const getFavoritesList = (dispatch, userId, pageNumber, pageSize) => {
         },
         type: actionTypes.USER_FAVORITES,
     };
-    if(pageNumber === 1) {
+    if (pageNumber === 1) {
         fsa.type = actionTypes.USER_INITIAL_FAVORITES;
     }
     const url = `user/favourites?userid=${Number(userId)}&page[number]=${pageNumber}&page[size]=${pageSize}`;
@@ -835,3 +852,75 @@ export const saveUserCauses = (dispatch, userId, userCauses, discoverValue) => {
         triggerUxCritialErrors(err.errors || err, dispatch);
     });
 };
+
+export const checkClaimCharityAccessCode = (accessCode, userId) => (dispatch) => {
+    return coreApi.post(`/claimCharities`, {
+        data: {
+            type: "claimCharities",
+            attributes: {
+                claimToken: accessCode,
+            }
+        }
+    }).then(
+        (result) => {
+            let {
+                data: {
+                    attributes: {
+                        beneficiarySlug,
+                    }
+                }
+            } = result;
+            getUser(dispatch, userId, null).then(() => {
+                Router.pushRoute(`/claim-charity/success?slug=${beneficiarySlug ? beneficiarySlug : ''}`);
+            });
+        }
+    ).catch(() => {
+        const errorMessage = "That code doesn't look right or it's expired. Try again or claim without a code below";
+        dispatch(claimCharityErrorCondition(errorMessage));
+    });
+};
+
+export const validateClaimCharityAccessCode = (accessCode) => (dispatch) => {
+    return coreApi.get(`/claim_charities/validate_claim_charity_token?claimToken=${accessCode}`, BASIC_AUTH_HEADER)
+        .then(async (res) => {
+            let {
+                data: {
+                    success,
+                    signup_source,
+                    signup_source_id,
+                }
+            } = res;
+            if (success === true) {
+                const now = new Date();
+                const expiry = 3600000;
+                const claimCharityCode = {
+                    value: accessCode,
+                    expiry: now.getTime() + expiry,
+                };
+                const signup_sourceCode = {
+                    value: signup_source,
+                    expiry: now.getTime() + expiry,
+                };
+                const signup_sourceIdCode = {
+                    value: signup_source_id,
+                    expiry: now.getTime() + expiry,
+                };
+                await storage.set('claimToken', claimCharityCode, 'local');
+                await storage.set('signup_source', signup_sourceCode, 'local');
+                await storage.set('signup_source_id', signup_sourceIdCode, 'local');
+                Router.pushRoute('/users/login');
+            }
+        }).catch(() => {
+            const errorMessage = "That code doesn't look right or it's expired. Try again or claim without a code below";
+            dispatch(claimCharityErrorCondition(errorMessage));
+        });
+}
+
+export const claimCharityErrorCondition = (message) => (dispatch) =>{
+    dispatch({
+        payload: { 
+            claimCharityErrorMessage: message
+        },
+        type: actionTypes.CLAIM_CHARITY_ERROR_MESSAGE,
+    });
+}
