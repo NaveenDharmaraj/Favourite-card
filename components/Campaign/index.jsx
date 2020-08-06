@@ -2,7 +2,6 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import _isEmpty from 'lodash/isEmpty';
-
 import {
     campaignSubGroupSeeMore,
     generateDeepLink,
@@ -11,7 +10,8 @@ import BreadcrumbDetails from '../shared/BreadCrumbs';
 import ProfilePageHead from '../shared/ProfilePageHead';
 import {
     Container,
-    Grid
+    Grid,
+    Responsive
 } from 'semantic-ui-react';
 import CampaignDetails from './CampaignDetails';
 import ProfileDetails from './ProfileDetails';
@@ -142,38 +142,47 @@ class CampaignProfileWrapper extends React.Component {
                                                     />
                                                 </ProfileTitle>
                                             )}
-                                            {
-                                                campaignDetails && (
-                                                    <CampaignDetails
-                                                        campaignDetails={campaignDetails}
-                                                        isAuthenticated={isAuthenticated}
-                                                        deepLinkUrl={deepLinkUrl}
-                                                        dispatch={dispatch}
-                                                        disableFollow={disableFollow}
-                                                        userId={(currentUser && currentUser.id) ? currentUser.id : ''}
-                                                    />
-                                                )
-                                            }
-                                            {
-                                                campaignDetails && (
-                                                    <ProfileDetails
-                                                        campaignDetails={campaignDetails}
-                                                        campaignImageGallery={campaignImageGallery}
-                                                        campaignSubGroupDetails={campaignSubGroupDetails}
-                                                        campaignSubGroupsShowMoreUrl={campaignSubGroupsShowMoreUrl}
-                                                        isAuthenticated={isAuthenticated}
-                                                        seeMoreLoaderStatus={seeMoreLoaderStatus}
-                                                        subGroupListLoader={subGroupListLoader}
-                                                        viewMoreFn={this.viewMoreFn}
-                                                    />
-                                                )
-                                            }
+                                            <Grid.Column mobile={16}>
+                                                <Responsive minWidth={320} maxWidth={767}>
+                                                    {
+                                                        campaignDetails && (
+                                                            <CampaignDetails
+                                                                campaignDetails={campaignDetails}
+                                                            />
+                                                        )
+                                                    }
+                                                </Responsive>
+                                            </Grid.Column>
                                         </Grid>
                                     </Grid.Row>
                                 </Grid.Column>
+                                <Grid.Column mobile={16} tablet={5} computer={5} >
+                                    <Responsive minWidth={768}>
+                                        {
+                                            campaignDetails && (
+                                                <CampaignDetails
+                                                    campaignDetails={campaignDetails}
+                                                />
+                                            )
+                                        }
+                                    </Responsive>
+                                </Grid.Column>
+                                {
+                                    campaignDetails && (
+                                        <ProfileDetails
+                                            campaignDetails={campaignDetails}
+                                            campaignImageGallery={campaignImageGallery}
+                                            campaignSubGroupDetails={campaignSubGroupDetails}
+                                            campaignSubGroupsShowMoreUrl={campaignSubGroupsShowMoreUrl}
+                                            isAuthenticated={isAuthenticated}
+                                            seeMoreLoaderStatus={seeMoreLoaderStatus}
+                                            subGroupListLoader={subGroupListLoader}
+                                            viewMoreFn={this.viewMoreFn}
+                                        />
+                                    )
+                                }
                             </Grid>
                         </Grid.Row>
-
                     </Container>
                 </div>
             </React.Fragment>

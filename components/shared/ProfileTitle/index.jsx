@@ -44,7 +44,7 @@ function ProfileTitle(props) {
                     />
                 </div>
             </Grid.Column>
-            <Grid.Column mobile={16} tablet={11} computer={11} className="">
+            <Grid.Column mobile={16} tablet={12} computer={12}>
                 <div className="ch_profileDetails">
                     <Header as="h5">
                         {profileType}
@@ -68,7 +68,6 @@ function ProfileTitle(props) {
                             children={children}
                         />
                     </div>
-
                 </div>
             </Grid.Column>
         </Fragment>
