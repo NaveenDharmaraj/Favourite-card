@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
-import ActiveMatchBlock from '../shared/ActiveMatchBlock';
+// TODO place ActiveMatchBlock
+// import ActiveMatchBlock from '../shared/ActiveMatchBlock';
 import MoneyRaised from './MoneyRaised';
 import CampaignSupporters from './CampaignSupporters';
 
