@@ -24,6 +24,9 @@
     background-size: cover;
     margin-bottom  : 20px;
     border-radius  : 5px;
+    &.greenBg{
+        background     : url(../images/giving_and_campaign_group_profile_bg.png) no-repeat;
+    }
 }
 
 .ch_profileWrap {
@@ -54,6 +57,9 @@
                 text-transform: uppercase;
                 margin-bottom : 10px;
                 letter-spacing: 1px;
+                &.textGreen{
+                    color: #009E9F;
+                }
             }
         }
 
@@ -62,7 +68,6 @@
     h3 {
         &.ui {
             &.header {
-                color    : #ED803B;
                 font-size: 24px !important;
                 margin   : 0px;
                 color    : #263238;
@@ -108,6 +113,16 @@
 
                 .item {
                     margin-right: 20px;
+                    p{
+                        &.groupmembers{
+                        font-size: 10px;
+                        color: #263238;
+                        max-width: 224px;
+                        }
+                    }
+                    @media only screen and (max-width:1199px) and (min-width:992px) {
+                        margin-right: 12px;
+                    }
 
                     .icon {
                         margin-left: 0 !important
@@ -118,14 +133,584 @@
         }
     }
 }
-
+.ch_shareMore{
+    .GroupPrfileAll{
+        width: 13%;
+         display: inline-block !important;
+         @media only screen and (max-width:1199px) {
+            width: 18%;
+         }
+         @media only screen and (max-width:992px) {
+            width: 25%;
+            margin: unset !important;
+            text-align: unset !important;
+         }
+         @media only screen and (max-width:767px) {
+            width: 18% !important;
+            margin: unset !important;
+            text-align: unset !important;
+         }
+         @media only screen and (max-width:565px) {
+            width: 25% !important;
+            margin: unset !important;
+            text-align: unset !important;
+         }
+         @media only screen and (max-width:430px) {
+            width:100% !important;
+            margin: unset !important;
+            text-align: unset !important;
+         }
+        a{
+            &.item{
+                margin-left:-50px !important;
+                .grProfile{
+                    width: 30px;
+                    height: 30px;
+                    border-radius: 100px;
+                    z-index: -1;
+                }
+                .RountBg{
+                    width: 30px;
+                    height: 30px;
+                    background-color: #90459A;
+                    border-radius: 100%;
+                    text-align: center;
+                    display: flex;
+                    p{
+                        font-size: 14px;
+                        line-height: 22px;
+                        font-family: 'ProximaNova-Regular';
+                        color: #fff;
+                        margin: auto;
+                    }
+                }
+            }
+        }
+    }
+    .GroupPrfileAllText{
+        width: 85%;
+        display: inline-block !important;
+        padding-left: 15px;
+        p{
+            font-size: 14px;
+            line-height: 22px;
+            font-family: 'ProximaNova-Regular';
+            display: flex;
+            align-items: center;
+            @media only screen and (max-width:430px) {
+                margin-left: -10px;
+                margin-top: 15px;
+            }
+        }
+        @media only screen and (max-width:1199px) {
+            width: 75%;
+        }
+        @media only screen and (max-width:992px) {
+            width: 72%;
+         }
+         @media only screen and (max-width:767px) {
+            width: 72% !important;
+         }
+         @media only screen and (max-width:565px) {
+            width: 75% !important;
+         }
+         @media only screen and (max-width:430px) {
+            width:100% !important;
+         }
+    }
+}
 .ch_paragraph {
     p {
         line-height: 22px;
         margin     : 10px 0;
     }
-}
+    h3 {
+        &.ui {
+            &.header {
+                font-size: 14px !important;
+                font-weight: 600;
+                line-height: 22px;
+                color: #263238;
+                font-family: 'ProximaNova-Regular';
+            }
+        }
 
+    }
+    .GroupPrfile{
+        .item{
+            padding: 0px !important;
+            .grProfile{
+                width: 30px;
+                height: 30px;
+                border-radius: 100px;
+            }
+            .content{
+                .header {
+                    font-size: 14px !important;
+                    font-weight: normal !important;
+                    color: #263238;
+                    font-family: 'ProximaNova-Regular';
+                    line-height: 22px;
+                }
+            }
+            @media only screen and (max-width:992px) {
+                margin: 15px 15px 0px 0px !important;
+            }
+        }
+    }
+    .GroupPurpose{
+        margin-top: 48px;
+        p {
+            font-size: 14px;
+            line-height: 22px;
+            color: #263238;
+            font-family: 'ProximaNova-Regular';
+            margin: 0px;
+        }
+        h3 {
+            &.ui {
+                &.header {
+                    font-size: 14px !important;
+                    font-weight: 600;
+                    line-height: 22px;
+                    color: #263238;
+                    font-family: 'ProximaNova-Regular';
+                    margin-bottom: 22px !important;
+                }
+            }
+    
+        }
+        &:last-child{
+            margin-bottom: 40px;
+        }
+    }
+    .GroupPurposeTop{
+        margin-top: 38px;
+    }
+    .ch_share{
+        .GroupPrfile{
+            @media only screen and (max-width:767px) {
+                text-align: left !important;
+            }
+        }
+    }
+}
+.GroupTab{
+    margin: 40px 0px 30px 0px;
+    .tabBottom{
+        margin-bottom: 100px;
+        @media only screen and (max-width:992px) {
+            margin-bottom: 50px;
+        }
+    }
+    .tabWapper{
+        margin-top: 28px;
+        .MatchingMessages{
+            width: 100%;
+            padding: 12px;
+            border-radius:6px;
+            background-color: #E5F5F5;
+            margin-bottom: 20px;
+            @media only screen and (max-width:992px) {
+                margin: auto;
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            .borderprofile{
+                margin: auto;
+                text-align: center;
+            }
+            p{
+                font-size: 14px;
+                font-weight: 600;
+                font-family: 'ProximaNova-Regular';
+                color:#263238;
+                line-height: 22px;
+                display: flex;
+                align-items: center;
+                height: 100%;
+                span{
+                    &.textColor{
+                        color: #009E9F ;
+                    }
+                }
+                @media only screen and (max-width:992px) {
+                    display: block;
+                }
+                @media only screen and (max-width:767px) {
+                    margin: auto;
+                    text-align: center;
+                    display: block;
+                }
+            }
+        }
+        .white-btn-rounded-def{
+            &.Messagestabbtn{
+                font-size: 12px;
+                color: #263238;
+                line-height: 22px;
+                float: right;
+                padding: 0px 10px;
+                font-family: 'ProximaNova-medium';
+                @media only screen and (max-width:767px) {
+                    float: none;
+                    text-align: center;
+                    margin: 0px !important;
+                }
+            }
+        }
+        .db-activity-tbl{
+            &.Topborder{
+                border-top: 1px solid rgba(0,0,0,.1);
+                border-bottom: 1px solid rgba(0,0,0,.1);
+                border-radius: 0px;
+            }
+            &.Bottomborder{
+                border-bottom: 1px solid rgba(0,0,0,.1);
+                border-radius: 0px;
+            }
+            &.ui{
+                &.basic{
+                    >tbody{
+                        >tr{
+                            &.EmilyData{
+                                td{
+                                    &.date{
+                                        font-size: 12px;
+                                        line-height: 15px;
+                                        color: #263238;
+                                        font-weight: 600;
+                                        font-family: 'ProximaNova-Regular';
+                                        @media only screen and (max-width:1199px) {
+                                            width: 14%;
+                                        }
+                                        @media only screen and (max-width:1199px) {
+                                            width: 20%;
+                                        }
+                                        @media only screen and (max-width:767px) {
+                                            padding: 0px;
+                                            width: 22%;
+                                        }
+                                    }
+                                }
+                                td{
+                                    &.EmilyGroup{
+                                        @media only screen and (max-width:767px) {
+                                            padding-right: 0px;
+                                        }
+                                        .list{
+                                            .item{
+                                                .imgEmily{
+                                                    width: 46px;
+                                                    height: 46px;
+                                                }
+                                                .content{
+                                                    width:88%;
+                                                    margin-left: 10px;
+                                                    @media only screen and (max-width:1199px) {
+                                                        width:66%;
+                                                    }
+                                                    @media only screen and (max-width:992px) {
+                                                        width:77% !important;
+                                                    }
+                                                    @media only screen and (max-width:767px) {
+                                                        width:70% !important;
+                                                        margin-left: 4px;
+                                                    }
+                                                    .header{
+                                                     color: #263238;
+                                                     font-size: 14px;
+                                                     line-height: 22px;
+                                                     font-family: 'ProximaNova-Regular';
+                                                     span{
+                                                         &.adminEmily{
+                                                            color: #055CE5;
+                                                            font-weight: 600;                                                            ;
+                                                         }
+                                                     }
+                                                     &.EmilyAdmin{
+                                                        font-weight: 600;
+                                                     }
+                                                    }
+                                                }
+                                                .description{
+                                                    p{
+                                                        color: #263238;
+                                                        font-size: 14px;
+                                                        line-height: 22px;
+                                                        font-family: 'ProximaNova-Regular';
+                                                        font-weight: normal; 
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                td{
+                                    &.amount{
+                                        font-size: 14px;
+                                        line-height: 22px;
+                                        color: #263238;
+                                        font-weight: 600;
+                                        font-family: 'ProximaNova-Regular'; 
+                                        @media only screen and (max-width:767px) {
+                                            padding-left:0px !important;
+                                            text-align: right;
+                                        }
+                                        .btnFrinend{
+                                            padding: 7px 20px;
+                                        }
+                                    }
+                            }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .duringCurrent{
+            margin:20px 0px;
+            h5{
+                &.ui {
+                    &.header {
+                        font-size: 14px;
+                        line-height   : 22px;
+                        color    :#263238;
+                        font-weight: 600;
+                    }
+                }
+            }
+        }
+    .boxGroup{
+        display: inline-block;
+        width: 31%;
+        border-radius: 6px;
+        background-color: #FFFFFF;
+        box-shadow: 0 2px 4px 0 rgba(0,0,0,0.09);
+        border: 1px solid #EEEEEE;
+        padding: 8px 9px 8px 14px;
+        @media only screen and (max-width:992px) {
+            width: 46%;
+            &:last-child{
+                margin-top: 30px;
+            }
+        }
+        @media only screen and (max-width:400px) {
+            width:100%;
+            &:last-child{
+                margin-top:0px;
+            }
+        }
+        h5{
+            &.ui {
+                &.header {
+                    font-size: 14px;
+                    line-height   : 22px;
+                    color    :#263238;
+                    font-weight: 600;
+                    margin-bottom: 11px;
+                }
+            }
+        }
+        .Currentbox{
+            width: 80%;
+            display: inline-block;
+            h3 {
+                &.ui {
+                    &.header {
+                        font-size: 18px;
+                        line-height: 22px;
+                        color: #263238;
+                        font-family: 'ProximaNova-Regular';
+                        font-weight: 600;
+                        margin: 0px;
+                        &.green{
+                            color: #009EA2;
+                        }
+                    }
+                }
+            }
+            p{
+                font-size: 12px;
+                color: #263238;
+                line-height: 22px;
+            }
+        }
+        .Currentboxpop{
+            width: 20%;
+            display: inline-block;
+            float: right;
+            i{
+                &.icon{
+                    &.question{
+                        float: right;
+                        color: #BBBBBB;
+                        font-size: 14px;
+                        font-weight: normal;
+                        &:hover{
+                            cursor: pointer;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .icon-boxGroup{
+        width:3%;
+        display: inline-block;
+        text-align: center;
+        min-height: 64px;
+        vertical-align: top;
+        p{
+            font-size: 14px;
+            color: #263238;
+            font-family: 'ProximaNova-Regular';
+            font-weight: 600;
+            line-height: 17px;
+            margin-top: 24px;
+            @media only screen and (max-width:400px) {
+                font-size: 22px !important;
+            }
+        }
+        @media only screen and (max-width:400px) {
+            width:100%;
+        }
+    }
+    .ActivityPost{
+        .postinputBox{
+
+            .ui{
+                &.input{
+                    .button{
+                        right: 2px !important;
+                        top: -3px !important;
+                    }
+                }
+            }
+        }
+        .ActivityComment{
+            margin-top: 30px;
+            .content{
+                margin-left: 60px !important;
+                .text{
+                    font-size: 14px;
+                    line-height: 22px;
+                    span{
+                        color: #055CE5;
+                        font-weight:600;
+                    }
+                }
+                .actions{
+                    a{
+                        font-weight:600;
+                    }
+                }
+            }
+        }
+    }
+    .members{
+         vertical-align: middle;
+        .membersNumber{
+            font-size: 14px;
+            color: #263238;
+            line-height: 22px;
+            display: flex;
+            align-items: center;
+            height: 100%;
+            i{
+                &.icon{
+                  position: relative;
+                  min-width: 26px;
+                  min-height: 20px;
+                  &::before{
+                    content: '';
+                    position: absolute;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    top: 0;
+                    background-size: contain !important;
+                    background-repeat: no-repeat !important;
+                  }
+                  &.group{
+                    &::before{
+                      background-image:url(../images/icons/group.svg) !important;
+                    }
+                  }
+                }
+        }
+        }
+        .success-btn-rounded-def{
+                i{
+                    &.icon{
+                    position: relative;
+                    min-width: 20px;
+                    min-height:20px;
+                    top: 5px;
+                    &::before{
+                        content: '';
+                        position: absolute;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        top: 0;
+                        background-size: contain !important;
+                        background-repeat: no-repeat !important;
+                    }
+                    &.addmember{
+                        &::before{
+                        background-image:url(../images/icons/add-member.svg) !important;
+                        .imgColorwhite();
+                        }
+                    }
+                    }
+            }
+            font-size: 14px;
+            font-weight: 600;
+            padding: 4px 30px 10px 30px;
+        }
+    }
+    .groupcreated{
+        margin-bottom: 25px;
+        .ui {
+            &.list {
+                margin: 0px 0;
+                .item {
+                    .icon {
+                        position  : relative;
+                        min-width : 22px;
+                        min-height: 22px;
+                        &::before {
+                            content            : '';
+                            position           : absolute;
+                            top                : 0px;
+                            left               : 0;
+                            bottom             : 0;
+                            right              : 0;
+                            background-repeat  : no-repeat !important;
+                            background-position: center !important;
+                            margin             : auto;
+                        }
+                        &.calendar{
+                            &::before{
+                                background-image: url(../images/icons/calendar.svg) !important;
+                                background-size : contain !important;
+                                width           : 22px;
+                            }
+                        }
+                     }
+                }
+                .content{
+                    .header{
+                        font-size: 14px;
+                        font-weight: normal;
+                    }
+                }
+             }
+        }
+    }
+}
+}
 .ch_program {
     .ui {
         &.table {
@@ -165,6 +750,7 @@
             }
         }
     }
+   
 }
 
 .ch_footnote {
@@ -183,9 +769,257 @@
     border-radius   : 5px;
     max-width       : 295px;
     float           : right;
-
+    &.tabcharityInfowrap{
+        float: none;
+        max-width : auto;
+        width: 100%;
+        max-width: 100%;
+        margin-top: 10px;
+    }
+    .boxGroup{
+        border-radius: 6px;
+        background-color: #FFFFFF;
+        box-shadow: 0 2px 4px 0 rgba(0,0,0,0.09);
+        width: 100%;
+        padding: 8px 9px 8px 14px;
+        margin-bottom: 10px;
+        .Currentbox{
+            width: 80%;
+            display: inline-block;
+            h3 {
+                &.ui {
+                    &.header {
+                        font-size: 18px;
+                        line-height: 22px;
+                        color: #263238;
+                        font-family: 'ProximaNova-Regular';
+                        font-weight: 600;
+                        margin: 0px;
+                        &.green{
+                            color: #009EA2;
+                        }
+                    }
+                }
+            }
+            p{
+                font-size: 12px;
+                color: #263238;
+                line-height: 22px;
+            }
+        }
+        .Currentboxpop{
+            width: 20%;
+            display: inline-block;
+            float: right;
+            i{
+                &.icon{
+                    &.question{
+                        float: right;
+                        color: #BBBBBB;
+                        font-size: 14px;
+                        font-weight: normal;
+                        &:hover{
+                            cursor: pointer;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    &.fullwidth{
+        width: 100%;
+        margin-bottom: 15px;
+        h2 {
+            &.ui {
+                &.header {
+                    font-size : 24px;
+                    color: #263238;
+                    font-weight: 600;
+                    margin: 0px;
+                    line-height: 34px;
+                }
+            }
+        }
+        h1{
+            &.ui {
+                &.header {
+                    font-size : 28px;
+                    color: #263238;
+                    font-weight: 600;
+                    margin: 0px;
+                }
+            }
+        }
+        p{
+            font-family: 'ProximaNova-Regular';
+            color: #263238;
+            font-size: 14px;
+            line-height: 22px;
+        }
+        .goalPercent{
+            .ui{
+                &.progress{
+                    width: 100%;
+                    background-color:#D7D7D7;
+                    height: 9px;
+                    .bar{
+                        height: 9px;
+                        background-color:#009E9F;
+                    }
+                }
+            }
+        }
+        Button{
+            &.goalbtn{
+                width: 100%;
+                color:#37474F !important;
+                font-size: 12px;
+                line-height: 15px;
+                font-family: 'ProximaNova-Medium';
+                padding: 5px;
+            }
+        }
+        .lastGiftWapper{
+            width: 100%;
+            text-align: center;
+            p{
+                &.lastGiftText{
+                    font-size: 10px;
+                    line-height: 18px;
+                    display: inline-block;
+                    color:#263238;
+                    text-align: center;
+                    padding:14px 0px 0px 0px;
+                    &.blueText{
+                        color: #055CE5;
+                    }
+                }
+            }
+        }
+    }
+    &.lightGreenBg{
+        background-color:#e5f5f5;
+        .charityInfo{
+            h4{
+                margin-bottom: 10px !important;
+            }
+            h5 {
+                &.ui {
+                    &.header {
+                        font-size    : 14px;
+                        line-height: 22px;
+                        font-weight: 600;
+                        color: #263238;
+                        margin-top: 10px;
+                        margin-bottom: 20px;
+                    }
+                }
+            }
+            .Expiresbtn{
+                padding: 5px;
+                float: right;
+                margin-bottom: 25px;
+                color: #263238;
+                font-size: 12px;
+                background-color: #fff;
+                border-radius: 30px;
+            }
+        }
+        .matchingFundsWapper{
+            width: 100%;
+            display: flex;
+            .matchingFundsGraff{
+                display: inline-block;
+                width:21;
+                .Progresswapper{
+                    height: 100%;
+                    .customProgress{
+                        height: 100%;
+                        background-color:#D7D7D7;
+                        border-radius: 29.5px;
+                        width: 21px;
+                        position: relative;
+                        .bar{
+                            width: 21px;
+                            background-color:#009E9F;
+                            position: absolute;
+                            border-radius:0px 0px 29.5px 29.5px;
+                            bottom: 0px;
+                            &.Progresscurve{
+                                border-radius:29.5px;
+                            }
+                        }
+                    }
+                }
+            }
+            .matchingFundsText{
+                display: inline-block;
+                width:100%;
+                padding-left: 17px;
+                h3 {
+                    &.ui {
+                        &.header {
+                            font-size    :22px !important;
+                            line-height: 27px;
+                            font-weight: 600;
+                            color: #009EA2;
+                            margin-bottom: 0px;
+                        }
+                    }
+                }
+                h5{
+                    &.ui {
+                        &.header {
+                            font-size    :13px;
+                            margin-top: 0px;
+                            line-height: 22px;
+                            font-weight: 600;
+                            color: #009EA2;
+                            margin-bottom: 10px;
+                        }
+                    }
+                }
+                .total{
+                    p{
+                        font-size: 13px;
+                        color: #263238;
+                        margin-top: 0px;
+                        line-height: 22px;
+                        font-weight: 600;
+                    }
+                }
+            }
+        }
+        p{
+            &.blueHistory{
+                color: #055CE5;
+                font-size: 10px;
+                text-align: center;
+                line-height: 18px;
+                padding: 20px 0px 0px 0px;
+            }
+        }
+    }
     .charityInfo {
         padding: 25px 25px 30px !important;
+        &.paddingcharity{
+            padding: 25px 11px 30px !important;
+            .GivingGroupPadding{
+                padding: 0px 14px;
+                .MatchingPartnerWapper{
+                    margin: 5px 0px !important;
+                    .textGreen{
+                        font-size: 10px;
+                        text-transform: uppercase;
+                        color: #009E9F;
+                        font-weight: 600;
+                        &.orange{
+                            color: #ED803B;
+                        }
+                    }
+                }
+            }
+        }
 
         h4 {
             &.ui {
@@ -195,7 +1029,9 @@
                 }
             }
         }
-
+        .headingColor{
+        color: #3D525F;
+        }
         .ui {
             &.list {
                 margin: 0px 0;
@@ -604,7 +1440,8 @@
     width           : 100%;
     padding         : 10px 20px;
     background-color: #ffffff;
-    z-index:9;
+    z-index: 9;
+
     .button {
         width      : 100%;
         font-size  : 17px !important;
@@ -869,6 +1706,54 @@
                 }
 
             }
+        }
+    }
+}
+.MatchingPartnerWapper{
+    margin: 24px 0px;
+    &.margingWapper{
+        margin: 0px !important;
+    }
+    .h_profileMatching{
+        border-radius: 100%;
+        width:40px;
+        height: 40px;
+        @media only screen and (max-width:767px) {
+            margin: auto;
+        }
+        &.borderprofile{
+            width: 50px;
+            height: 50px;
+            box-shadow: 2px 2px 7px 0 rgba(105,146,203,0.3);
+            border: 5px solid #F5F8FC;
+        }
+        img{
+            border-radius: 100%;
+            width:40px;
+            height: 40px;
+            &.profileImgMargin{
+                margin-top: 6px;
+            }
+        }
+    }
+    .MatchingPartner{
+        h3{
+            &.ui {
+                &.header {
+                    font-size    :14px !important;
+                    margin-top: 6px;
+                    line-height: 22px;
+                    font-weight: 600;
+                    color: #263238;
+                    margin-bottom: 2px;
+                    font-family: 'ProximaNova-Regular';
+                }
+            }
+        }
+        p{
+            font-family: 'ProximaNova-Regular';
+            font-size: 12px;
+            line-height: 15px;
         }
     }
 }
