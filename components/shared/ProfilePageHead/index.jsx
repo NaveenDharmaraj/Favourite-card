@@ -1,17 +1,18 @@
+
 import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
-import _ from 'lodash';
-import {
-    Button,
-    Popup,
-} from 'semantic-ui-react';
+import getConfig from 'next/config';
 import {
     bool,
     PropTypes,
     string,
 } from 'prop-types';
-import getConfig from 'next/config';
+import {
+    Button,
+    Popup,
+} from 'semantic-ui-react';
 
+import { withTranslation } from '../../../i18n';
 import { Link } from '../../../routes';
 
 const { publicRuntimeConfig } = getConfig();
@@ -19,29 +20,6 @@ const { publicRuntimeConfig } = getConfig();
 const {
     RAILS_APP_URL_ORIGIN,
 } = publicRuntimeConfig;
-
-const displayBlockButton = (blockButtonType, profileType, slug) => {
-    let buttonLink = null;
-    switch (blockButtonType) {
-        case 'give':
-            buttonLink = (
-                <a href={(`${RAILS_APP_URL_ORIGIN}/send/to/${profileType}/${slug}`)}>
-                    <Button primary className="blue-btn-rounded-def">Give</Button>
-                </a>
-            )
-            break;
-        case 'create':
-            buttonLink = (
-                <a href={`${RAILS_APP_URL_ORIGIN}/campaigns/${slug}/step/one`}>
-                    <Button className="success-btn-rounded-def medium btnboxWidth">Create Group</Button>
-                </a>
-            )
-            break;
-        default: 
-            return null;
-    }
-    return buttonLink;  
-}
 
 function ProfilePageHead(props) {
     const {
@@ -55,7 +33,7 @@ function ProfilePageHead(props) {
         },
         pageDetails,
         isAuthenticated,
-        blockButtonType,
+        t: formatMessage,
     } = props;
     let buttonLink = null;
     let profileType = '';
@@ -79,7 +57,7 @@ function ProfilePageHead(props) {
                                 <span>
                                     <i aria-hidden="true" className="edit icon" />
                                 </span>
-                                Edit
+                                {formatMessage('campaignProfile:editBtn')}
                                 {type === 'campaigns' ? 'Campaign' : 'Group'}
                             </Button>
                         </a>
@@ -91,7 +69,7 @@ function ProfilePageHead(props) {
                                         <span>
                                             <i aria-hidden="true" className="bell icon" />
                                         </span>
-                                    Give from
+                                        {formatMessage('campaignProfile:giveFromBtn')}
                                         {type === 'campaigns' ? 'Campaign' : 'Group'}
                                     </Button>
                                 </Link>
@@ -104,7 +82,7 @@ function ProfilePageHead(props) {
                                                     <span>
                                                         <i aria-hidden="true" className="bell icon" />
                                                     </span>
-                                                    Give from
+                                                    {formatMessage('campaignProfile:giveFromBtn')}
                                                     {type === 'campaigns' ? 'Campaign' : 'Group'}
                                                 </Button>
                                             )
@@ -116,26 +94,8 @@ function ProfilePageHead(props) {
                     </Fragment>
                 );
             }
-            if (blockButtonType === 'give') {
-                buttonLink = (
-                    <Link route={(`/give/to/${profileType}/${slug}/new`)}>
-                        <Button primary className="blue-btn-rounded-def">Give</Button>
-                    </Link>
-                )
-            }
-            else if (blockButtonType === 'create') {
-                buttonLink = (
-                    <a href={`${RAILS_APP_URL_ORIGIN}/campaigns/${slug}/step/one`}>
-                        <Button className="success-btn-rounded-def medium btnboxWidth">Create Group</Button>
-                    </a>
-                )
-            }
-        }
-        else {
-            buttonLink = displayBlockButton(blockButtonType, profileType, slug);
         }
     }
-
     return (
         <Fragment>
             {buttonLink}
@@ -171,4 +131,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(ProfilePageHead);
+export default withTranslation('campaignProfile')(connect(mapStateToProps)(ProfilePageHead));

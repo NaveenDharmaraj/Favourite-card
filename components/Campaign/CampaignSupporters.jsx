@@ -1,42 +1,62 @@
 
 import React from 'react';
-import { Header } from 'semantic-ui-react';
+import { Header, Button } from 'semantic-ui-react';
+import getConfig from 'next/config';
+import _isEmpty from 'lodash/isEmpty';
 
-import ProfilePageHead from '../../components/shared/ProfilePageHead';
+import { withTranslation } from '../../i18n';
+
+const { publicRuntimeConfig } = getConfig();
+
+const {
+    RAILS_APP_URL_ORIGIN,
+} = publicRuntimeConfig;
 
 const CampaignSupporters = (props) => {
     const {
-        supportingDetails,
         supportingDetails: {
             attributes: {
                 peopleInCampaign,
                 groupsCount,
+                slug,
             }
-        }
+        },
+        t: formatMessage,
+        isAuthenticated,
     } = props;
     return (
         <div className="charityInfowrap fullwidth">
             <div className="charityInfo">
-                <Header className="headingColor" as="h4">Campaign supporters</Header>
+                <Header className="headingColor" as="h4">{formatMessage('campaignProfile:campaignSupporters')}</Header>
                 <div className="boxcard mr-1">
                     <i aria-hidden="true" className="privacy icon" />
                     <Header as="h2">{peopleInCampaign}</Header>
-                    <p>People</p>
+                    <p>{formatMessage('campaignProfile:people')}</p>
                 </div>
                 <div className="boxcard">
-                    <i aria-hidden="true" className="group icon"/>
+                    <i aria-hidden="true" className="group icon" />
                     <Header as="h2">{groupsCount}</Header>
-                    <p>Giving Groups</p>
+                    <p>{formatMessage('campaignProfile:givingGroup')}</p>
                 </div>
-                <Header as="h4" className="headingColor">Support this Campaign by starting a Giving Group</Header>
-                <p>Giving Groups bring multiple people together to give. You can pool or raise money to support causes or charities together. </p>
-                <ProfilePageHead
-                    pageDetails={supportingDetails}
-                    blockButtonType="create"
-                />
+                <Header as="h4" className="headingColor">{formatMessage('campaignProfile:supportCampaign')}</Header>
+                <p>{formatMessage('campaignProfile:givingGroupPeople')}</p>
+                {!_isEmpty(isAuthenticated) && isAuthenticated ?
+                    (
+                        <a href={`${RAILS_APP_URL_ORIGIN}/campaigns/${slug}/step/one`}>
+                            <Button className="success-btn-rounded-def medium btnboxWidth">{formatMessage('campaignProfile:createGroupBtn')}</Button>
+                        </a>
+                    )
+                    :
+                    (
+                        <a href={`${RAILS_APP_URL_ORIGIN}/campaigns/${slug}/step/one`}>
+                            <Button className="success-btn-rounded-def medium btnboxWidth">{formatMessage('campaignProfile:createGroupBtn')}</Button>
+                        </a>
+                    )
+
+                }
             </div>
         </div>
     )
 }
 
-export default CampaignSupporters;
+export default withTranslation('campaignProfile')(CampaignSupporters);

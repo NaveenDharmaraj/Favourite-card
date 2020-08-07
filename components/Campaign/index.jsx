@@ -66,10 +66,6 @@ class CampaignProfileWrapper extends React.Component {
             campaignImageGallery,
             campaignSubGroupDetails,
             campaignSubGroupsShowMoreUrl,
-            currentUser,
-            deepLinkUrl,
-            dispatch,
-            disableFollow,
             seeMoreLoaderStatus,
             subGroupListLoader,
             isAuthenticated,
@@ -148,6 +144,7 @@ class CampaignProfileWrapper extends React.Component {
                                                         campaignDetails && (
                                                             <CampaignDetails
                                                                 campaignDetails={campaignDetails}
+                                                                isAuthenticated={isAuthenticated}
                                                             />
                                                         )
                                                     }
@@ -162,6 +159,7 @@ class CampaignProfileWrapper extends React.Component {
                                             campaignDetails && (
                                                 <CampaignDetails
                                                     campaignDetails={campaignDetails}
+                                                    isAuthenticated={isAuthenticated}
                                                 />
                                             )
                                         }
