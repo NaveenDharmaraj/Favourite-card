@@ -2,7 +2,6 @@
 import React from 'react';
 import { Header, Button } from 'semantic-ui-react';
 import getConfig from 'next/config';
-import _isEmpty from 'lodash/isEmpty';
 
 import { withTranslation } from '../../i18n';
 
@@ -22,7 +21,6 @@ const CampaignSupporters = (props) => {
             }
         },
         t: formatMessage,
-        isAuthenticated,
     } = props;
     return (
         <div className="charityInfowrap fullwidth">
@@ -40,20 +38,9 @@ const CampaignSupporters = (props) => {
                 </div>
                 <Header as="h4" className="headingColor">{formatMessage('campaignProfile:supportCampaign')}</Header>
                 <p>{formatMessage('campaignProfile:givingGroupPeople')}</p>
-                {!_isEmpty(isAuthenticated) && isAuthenticated ?
-                    (
-                        <a href={`${RAILS_APP_URL_ORIGIN}/campaigns/${slug}/step/one`}>
-                            <Button className="success-btn-rounded-def medium btnboxWidth">{formatMessage('campaignProfile:createGroupBtn')}</Button>
-                        </a>
-                    )
-                    :
-                    (
-                        <a href={`${RAILS_APP_URL_ORIGIN}/campaigns/${slug}/step/one`}>
-                            <Button className="success-btn-rounded-def medium btnboxWidth">{formatMessage('campaignProfile:createGroupBtn')}</Button>
-                        </a>
-                    )
-
-                }
+                <a href={`${RAILS_APP_URL_ORIGIN}/campaigns/${slug}/step/one`}>
+                    <Button className="success-btn-rounded-def medium btnboxWidth">{formatMessage('campaignProfile:createGroupBtn')}</Button>
+                </a>
             </div>
         </div>
     )

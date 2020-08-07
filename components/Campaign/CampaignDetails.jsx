@@ -19,7 +19,6 @@ const CampaignDetails = (props) => {
             />
             <CampaignSupporters
                 supportingDetails={campaignDetails}
-                isAuthenticated={isAuthenticated}
             />
             {/* TODO place ActiveMatchBlock */}
             {/* {
