@@ -5,6 +5,10 @@ import {
     Header,
     Image,
 } from 'semantic-ui-react';
+import {
+    number,
+    string,
+} from 'prop-types';
 
 import {
     formatCurrency,
@@ -16,7 +20,6 @@ const ActiveMatchBlock = (props) => {
         activeMatch: {
             balance,
             company,
-            companyId,
             matchClose,
             matchPercent,
             maxMatchAmount,
@@ -29,8 +32,9 @@ const ActiveMatchBlock = (props) => {
     const formattedBalance = formatCurrency(balance, language, currency);
     const formattedmaxMatchAmount = formatCurrency(maxMatchAmount, language, currency);
     const formattedtotalMatch = formatCurrency(totalMatch, language, currency);
-    const matchExpired = (balance === '0'); // TODO check matching expired or not
+    const matchExpired = (balance === '0');
     const headingText = matchExpired ? 'Thank you for your support!' : 'Your gift will be matched!';
+    // TODO work on avatar, matching expired or not screens, window scroll
     return (
         <div className="charityInfowrap fullwidth lightGreenBg">
             <div className="charityInfo">
@@ -85,5 +89,31 @@ const ActiveMatchBlock = (props) => {
             </div>
         </div>
     );
+};
+
+ActiveMatchBlock.defaultProps = {
+    activeMatch: {
+        balance: '',
+        company: '',
+        companyId: null,
+        matchClose: '',
+        matchPercent: null,
+        maxMatchAmount: null,
+        totalMatch: '',
+    },
+    type: '',
+};
+
+ActiveMatchBlock.propTypes = {
+    activeMatch: {
+        balance: string,
+        company: string,
+        companyId: number,
+        matchClose: string,
+        matchPercent: number,
+        maxMatchAmount: number,
+        totalMatch: string,
+    },
+    type: string,
 };
 export default ActiveMatchBlock;
