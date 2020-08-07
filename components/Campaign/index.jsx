@@ -81,11 +81,15 @@ class CampaignProfileWrapper extends React.Component {
                     name,
                     province,
                     banner,
+                    peopleInCampaign,
+                    groupsCount,
+                    slug,
+                    amountRaised,
                 },
                 type,
             },
         } = this.props;
-        const bannerStyle = { };
+        const bannerStyle = {};
         let campaignBannerClassName = 'ch_headerImage greenBg';
         if (!_isEmpty(banner)) {
             bannerStyle.backgroundImage = `url( ${banner})`;
@@ -143,7 +147,10 @@ class CampaignProfileWrapper extends React.Component {
                                                     {
                                                         campaignDetails && (
                                                             <CampaignDetails
-                                                                campaignDetails={campaignDetails}
+                                                                peopleInCampaign={peopleInCampaign}
+                                                                groupsCount={groupsCount}
+                                                                slug={slug}
+                                                                amountRaised={amountRaised}
                                                                 isAuthenticated={isAuthenticated}
                                                             />
                                                         )
@@ -158,7 +165,10 @@ class CampaignProfileWrapper extends React.Component {
                                         {
                                             campaignDetails && (
                                                 <CampaignDetails
-                                                    campaignDetails={campaignDetails}
+                                                    peopleInCampaign={peopleInCampaign}
+                                                    groupsCount={groupsCount}
+                                                    slug={slug}
+                                                    amountRaised={amountRaised}
                                                     isAuthenticated={isAuthenticated}
                                                 />
                                             )

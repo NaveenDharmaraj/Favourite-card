@@ -8,17 +8,23 @@ import CampaignSupporters from './CampaignSupporters';
 
 const CampaignDetails = (props) => {
     const {
-        campaignDetails,
+        peopleInCampaign,
+        groupsCount,
+        slug,
+        amountRaised,
         isAuthenticated
     } = props;
     return (
         <Fragment>
             <MoneyRaised
-                moneyDetails={campaignDetails}
+                amountRaised={amountRaised}
+                slug={slug}
                 isAuthenticated={isAuthenticated}
             />
             <CampaignSupporters
-                supportingDetails={campaignDetails}
+                peopleInCampaign={peopleInCampaign}
+                groupsCount={groupsCount}
+                slug={slug}
             />
             {/* TODO place ActiveMatchBlock */}
             {/* {

@@ -13,13 +13,9 @@ const {
 
 const CampaignSupporters = (props) => {
     const {
-        supportingDetails: {
-            attributes: {
-                peopleInCampaign,
-                groupsCount,
-                slug,
-            }
-        },
+        peopleInCampaign,
+        groupsCount,
+        slug,
         t: formatMessage,
     } = props;
     return (

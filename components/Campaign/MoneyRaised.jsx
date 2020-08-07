@@ -15,23 +15,15 @@ const {
 
 const MoneyRaised = (props) => {
     const {
-        moneyDetails: {
-            type,
-            attributes: {
-                amountRaised,
-                slug,
-            }
-        },
-        t: formatMessage,
+        amountRaised,
+        slug,
         isAuthenticated,
+        t: formatMessage,
     } = props;
     const currency = 'USD';
     const language = 'en';
-    let profileType = '';
-    if (type === 'campaigns') {
-        profileType = 'group';
-    }
     const formattedAmount = formatCurrency(amountRaised, language, currency);
+    const giveButton = <Button primary className="blue-btn-rounded-def">{formatMessage('campaignProfile:give')}</Button>;
     return (
         <div className="charityInfowrap fullwidth">
             <div className="charityInfo">
@@ -39,14 +31,14 @@ const MoneyRaised = (props) => {
                 <Header as="h2">{formattedAmount.slice(0, -3)}</Header>
                 {!_isEmpty(isAuthenticated) && isAuthenticated ?
                     (
-                        <Link route={(`/give/to/${profileType}/${slug}/new`)}>
-                            <Button primary className="blue-btn-rounded-def">{formatMessage('campaignProfile:give')}</Button>
+                        <Link route={(`/give/to/group/${slug}/new`)}>
+                            {giveButton}
                         </Link>
                     )
                     :
                     (
-                        <a href={(`${RAILS_APP_URL_ORIGIN}/send/to/${profileType}/${slug}`)}>
-                            <Button primary className="blue-btn-rounded-def">{formatMessage('campaignProfile:give')}</Button>
+                        <a href={(`${RAILS_APP_URL_ORIGIN}/send/to/group/${slug}`)}>
+                            {giveButton}
                         </a>
                     )
                 }
