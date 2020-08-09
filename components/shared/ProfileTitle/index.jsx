@@ -1,3 +1,4 @@
+
 import React, { Fragment } from 'react';
 import _isEmpty from 'lodash/isEmpty';
 import {
@@ -5,9 +6,8 @@ import {
     Image,
     Header,
 } from 'semantic-ui-react';
-import {
-    PropTypes,
-} from 'prop-types';
+import { PropTypes } from 'prop-types';
+
 import ShareProfile from '../ShareProfile';
 
 function ProfileTitle(props) {
@@ -44,7 +44,7 @@ function ProfileTitle(props) {
                     />
                 </div>
             </Grid.Column>
-            <Grid.Column mobile={16} tablet={11} computer={11} className="">
+            <Grid.Column mobile={16} tablet={12} computer={12}>
                 <div className="ch_profileDetails">
                     <Header as="h5">
                         {profileType}
@@ -68,7 +68,6 @@ function ProfileTitle(props) {
                             children={children}
                         />
                     </div>
-
                 </div>
             </Grid.Column>
         </Fragment>
@@ -77,24 +76,24 @@ function ProfileTitle(props) {
 
 ProfileTitle.defaultProps = {
     avatar: '',
-    type: '',
+    beneficiaryType: '',
     causes: '',
     following: false,
     location: '',
     name: '',
     profileId: '',
-    beneficiaryType: '',
+    type: '',
 };
 
 ProfileTitle.propTypes = {
     avatar: PropTypes.string,
-    type: PropTypes.string,
+    beneficiaryType: PropTypes.string,
     causes: PropTypes.string,
     following: PropTypes.bool,
     location: PropTypes.string,
     name: PropTypes.string,
     profileId: PropTypes.string,
-    beneficiaryType: PropTypes.string,
+    type: PropTypes.string,
 };
 
 export default ProfileTitle;  

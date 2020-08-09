@@ -35,6 +35,7 @@ class CampaignProfile extends React.Component {
             slug: query.slug,
             namespacesRequired: [
                 'common',
+                'campaignProfile',
             ],
         };
     }
