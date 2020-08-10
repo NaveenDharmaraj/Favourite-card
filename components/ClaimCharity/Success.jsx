@@ -32,7 +32,7 @@ class Success extends React.Component {
     renderGoToCharityBtn = (locationNumber, buttonPosition) => {
         return (
             <a href={`${RAILS_APP_URL_ORIGIN}${locationNumber}`}>
-                <Button className={buttonPosition ? "primary blue-btn-rounded mt-1" : "white-btn-round textBlack"}><b>Go to my Charity Account</b></Button>
+                <Button className={buttonPosition ? "primary blue-btn-rounded mt-1" : "white-btn-round paddingBtn"}><b>Go to my Charity Account</b></Button>
             </a>
         )
     }
