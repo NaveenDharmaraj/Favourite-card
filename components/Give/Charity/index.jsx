@@ -476,6 +476,9 @@ class Charity extends React.Component {
         }
         switch (name) {
             case 'giveFrom':
+                if(giveData.giveFrom.type === 'companies' || giveData.giveFrom.type === 'campaigns') {
+                    giveData.noteToSelf = '';
+                }
                 validity = validateGiveForm('giveAmount', giveData.giveAmount, validity, giveData, coverFeesAmount);
                 break;
             case 'inHonorOf':
@@ -583,6 +586,9 @@ class Charity extends React.Component {
                        giveData.infoToShare =  defaultInfoToShare;
                     } else{
                         giveData.infoToShare.value = 'anonymous';
+                    }
+                    if(giveData.giveFrom.type === 'companies' || giveData.giveFrom.type === 'campaigns') {
+                        giveData.noteToSelf = '';
                     }
                     dropDownOptions = modifiedDropDownOptions;
                     const coverFeesAmount = Charity.getCoverFeesAmount(giveData, coverFeesData);
