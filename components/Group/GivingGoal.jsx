@@ -51,18 +51,19 @@ const GivingGoal = (props) => {
     const currency = 'USD';
     const language = 'en';
     const hasGoal = !(fundraisingDaysRemaining === 0);
-    const formattedMoneyRaised = (balance) ? formatCurrency(totalMoneyRaised, language, currency) : '';
-    const formattedgoalAmountRaised = (hasGoal) ? formatCurrency(goalAmountRaised, language, currency) : '';
+    const formattedMoneyRaised = formatCurrency(totalMoneyRaised, language, currency);
+    const formattedgoalAmountRaised = formatCurrency(goalAmountRaised, language, currency);
     const formattedgoal = (hasGoal) ? formatCurrency(goal, language, currency) : '';
-    const daysText = (hasGoal && fundraisingDaysRemaining === 1) ? ' day left' : ' days left';
+    const daysText = (fundraisingDaysRemaining === 1) ? ' day left' : ' days left';
     let fundRaisingDuration = '';
     let lastDonationDay = '';
     let giveButton = null;
-    if (lastDonationAt !== null) {
+    let giftText = '';
+    if (lastDonationAt) {
         lastDonationDay = distanceOfTimeInWords(lastDonationAt);
+        giftText = `Last gift received ${lastDonationDay}`;
     }
-    const giftText = `Last gift received ${lastDonationDay}`;
-    if (fundraisingDaysRemaining !== null) {
+    if (hasGoal) {
         fundRaisingDuration = (
             <span className="badge white goalbtn">
                 {`${fundraisingDaysRemaining}${daysText} to reach goal`}

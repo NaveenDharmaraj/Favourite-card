@@ -34,7 +34,7 @@ const ActiveMatchBlock = (props) => {
     const formattedtotalMatch = formatCurrency(totalMatch, language, currency);
     const matchExpired = (balance === '0');
     const headingText = matchExpired ? 'Thank you for your support!' : 'Your gift will be matched!';
-    // TODO work on avatar, matching expired or not screens, window scroll
+    // TODO work on avatar, matching expired or not screens, window scroll, condition to show view matching history
     return (
         <div className="charityInfowrap fullwidth lightGreenBg">
             <div className="charityInfo">
@@ -82,7 +82,7 @@ const ActiveMatchBlock = (props) => {
                 <Button className="white-btn-rounded-def goalbtn">
                     {` Expires ${matchClose}`}
                 </Button>
-                {((type === 'groups') && !matchExpired)
+                {((type === 'groups') && !matchExpired) // TODO show only when there is matching history is available
                 && (
                     <p className="blueHistory">View matching history</p>
                 )}

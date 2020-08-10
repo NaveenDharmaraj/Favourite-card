@@ -27,7 +27,6 @@ const TransactionsBlock = (props) => {
     } = props;
     const currency = 'USD';
     const language = 'en';
-    formatCurrency(balance, language, currency);
     const transactionMapping = [
         {
             amount: formatCurrency(totalMoneyRaised, language, currency),
@@ -64,9 +63,12 @@ const TransactionsBlock = (props) => {
             <div className="charityInfo">
                 <Header as="h4">Transactions</Header>
                 {transactionList}
-                <div className="lastGiftWapper">
-                    <p className="lastGiftText blueText">View transactions</p>
-                </div>
+                {(balance && parseInt(balance, 10) > 0)
+                && (
+                    <div className="lastGiftWapper">
+                        <p className="lastGiftText blueText">View transactions</p>
+                    </div>
+                )}
             </div>
         </div>
     );
