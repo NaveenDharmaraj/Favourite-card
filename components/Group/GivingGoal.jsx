@@ -60,6 +60,7 @@ const GivingGoal = (props) => {
     let giveButton = null;
     let giftText = '';
     let goalText = '';
+    const giveButtonElement = <Button className="blue-btn-rounded-def mt-1">Give</Button>;
     if (lastDonationAt) {
         lastDonationDay = distanceOfTimeInWords(lastDonationAt);
         giftText = `Last gift received ${lastDonationDay}`;
@@ -82,7 +83,7 @@ const GivingGoal = (props) => {
             && (
                 <div className="buttonWraper">
                     <Link route={`/give/to/group/${slug}/new`}>
-                        <Button className="blue-btn-rounded-def mt-1">Give</Button>
+                        {giveButtonElement}
                     </Link>
                 </div>
             )
@@ -92,7 +93,7 @@ const GivingGoal = (props) => {
         giveButton = (
             <div className="buttonWraper">
                 <a href={(`${RAILS_APP_URL_ORIGIN}/send/to/group/${slug}`)}>
-                    <Button className="blue-btn-rounded-def mt-1">Give</Button>
+                    {giveButtonElement}
                 </a>
             </div>
         );
