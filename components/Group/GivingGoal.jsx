@@ -50,7 +50,7 @@ const GivingGoal = (props) => {
     } = props;
     const currency = 'USD';
     const language = 'en';
-    const hasGoal = !(fundraisingDaysRemaining === 0);
+    const hasGoal = !(fundraisingDaysRemaining === 0); // TODO need flag that tells goal expired or not
     const formattedMoneyRaised = formatCurrency(totalMoneyRaised, language, currency);
     const formattedgoalAmountRaised = formatCurrency(goalAmountRaised, language, currency);
     const formattedgoal = (hasGoal) ? formatCurrency(goal, language, currency) : '';
@@ -59,14 +59,20 @@ const GivingGoal = (props) => {
     let lastDonationDay = '';
     let giveButton = null;
     let giftText = '';
+    let goalText = '';
     if (lastDonationAt) {
         lastDonationDay = distanceOfTimeInWords(lastDonationAt);
         giftText = `Last gift received ${lastDonationDay}`;
     }
-    if (hasGoal) {
+    if (hasGoal) { // TODO show goal expired date scenario
+        if (goalAmountRaised === goal) {
+            goalText = 'The group has reached the goal!';
+        } else {
+            goalText = `${fundraisingDaysRemaining}${daysText} to reach goal`;
+        }
         fundRaisingDuration = (
             <span className="badge white goalbtn">
-                {`${fundraisingDaysRemaining}${daysText} to reach goal`}
+                {goalText}
             </span>
         );
     }
