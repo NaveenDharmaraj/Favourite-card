@@ -875,7 +875,7 @@ export const checkClaimCharityAccessCode = (accessCode, userId) => (dispatch) =>
             });
         }
     ).catch(() => {
-        const errorMessage = "That code doesn't look right or it's expired. Try again or claim without a code below";
+        const errorMessage = "That code doesn't look right or it's expired. Try again or claim without a code below.";
         dispatch(claimCharityErrorCondition(errorMessage));
     });
 };
@@ -908,10 +908,10 @@ export const validateClaimCharityAccessCode = (accessCode) => (dispatch) => {
                 await storage.set('claimToken', claimCharityCode, 'local');
                 await storage.set('signup_source', signup_sourceCode, 'local');
                 await storage.set('signup_source_id', signup_sourceIdCode, 'local');
-                Router.pushRoute('/users/login');
+                Router.pushRoute('/users/new?isClaimCharity=true');
             }
         }).catch(() => {
-            const errorMessage = "That code doesn't look right or it's expired. Try again or claim without a code below";
+            const errorMessage = "That code doesn't look right or it's expired. Try again or claim without a code below.";
             dispatch(claimCharityErrorCondition(errorMessage));
         });
 }
