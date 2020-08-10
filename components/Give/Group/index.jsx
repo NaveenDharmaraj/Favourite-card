@@ -137,6 +137,7 @@ class Group extends React.Component {
         dispatch(getDonationMatchAndPaymentInstruments(id));
         if (Number(groupId) > 0 || Number(campaignId) > 0) {
             getGroupsForUser(dispatch, id);
+            dispatch(getGroupCampaignAdminInfoToShare(id, false))
         }
         else if (slug !== null) {
             getGroupsFromSlug(dispatch, slug)
@@ -248,20 +249,18 @@ class Group extends React.Component {
                 };
             }
             if (!_isEmpty(fund)) {
-                let privacyNameOptions = populateInfoToShareAccountName(displayName, formatMessage);
                 const giveFromId = (giveFromType === 'campaigns') ? campaignId : groupId;
                 giveData = Group.initFields(
                     giveData, fund, id,
                     `${firstName} ${lastName}`, companiesAccountsData, userGroups, userCampaigns,
-                    groupCampaignAdminShareInfoOptions, privacyNameOptions, giveFromId, giveFromType, language, currency, preferences, giveGroupDetails
+                    groupCampaignAdminShareInfoOptions, displayName, giveFromId, giveFromType, language, currency, preferences, giveGroupDetails, formatMessage
                 );
             }
             this.setState({
                 buttonClicked: false,
-                defaultInfoToShare: giveData.infoToShare,
-                defaultNameToShare: giveData.nameToShare,
                 dropDownOptions: {
                     ...dropDownOptions,
+                    privacyNameOptions: populateInfoToShareAccountName(giveFromType === 'user' ? displayName : giveData.giveFrom.name, formatMessage),
                     giveToList: giveToOptions,
                     paymentInstrumentList: paymentInstrumentOptions,
                 },
@@ -289,7 +288,7 @@ class Group extends React.Component {
      */
     // eslint-disable-next-line react/sort-comp
     static initFields(giveData, fund, id,
-        name, companiesAccountsData, userGroups, userCampaigns, groupCampaignAdminShareInfoOptions, privacyNameOptions, groupId, giveFromType, language, currency, preferences, giveGroupDetails) {
+        name, companiesAccountsData, userGroups, userCampaigns, groupCampaignAdminShareInfoOptions, displayName, groupId, giveFromType, language, currency, preferences, giveGroupDetails, formatMessage) {
         if (_isEmpty(companiesAccountsData) && _isEmpty(userGroups) && _isEmpty(userCampaigns) && !giveData.userInteracted) {
             giveData.giveFrom.id = id;
             giveData.giveFrom.value = fund.id;
@@ -321,25 +320,46 @@ class Group extends React.Component {
                 value: '',
             };
         }
-        if (!giveData.userInteracted) {
+        if (!giveData.userInteracted && giveFromType === 'user') {
             giveData.privacyShareAmount = preferences['giving_group_members_share_my_giftamount'];
         }
         if (!_isEmpty(groupCampaignAdminShareInfoOptions) && groupCampaignAdminShareInfoOptions.length > 0
             && !giveData.userInteracted) {
-            const prefernceName = !_isEmpty(giveGroupDetails) && giveGroupDetails.attributes.isCampaign ? 'campaign_admins_info_to_share' : 'giving_group_admins_info_to_share';
+            const prefernceName = giveData.giveTo.isCampaign ? 'campaign_admins_info_to_share' : 'giving_group_admins_info_to_share';
             const preference = preferences[prefernceName].includes('address')
                 ? `${preferences[prefernceName]}-${preferences[`${prefernceName}_address`]}` : preferences[prefernceName];
             const { infoToShareList } = populateDropdownInfoToShare(groupCampaignAdminShareInfoOptions);
-            giveData.infoToShare = infoToShareList.find(opt => (
+            const defaultInfoToShare = giveData.infoToShare = infoToShareList.find(opt => (
                 opt.value === preference
             ));
+            giveData.defaultInfoToShare = defaultInfoToShare;
+            if (giveFromType === 'user') {
+                giveData.infoToShare = defaultInfoToShare
+            }
+            else {
+                giveData.infoToShare = {
+                    disabled: false,
+                    text: ReactHtmlParser(`<span class="attributes">${formatMessage('giveCommon:infoToShareAnonymous')}</span>`),
+                    value: 'anonymous',
+                };
+            }
             giveData.infoToShareList = infoToShareList;
         }
-        if (!_isEmpty(privacyNameOptions) && privacyNameOptions.length > 0
-            && !giveData.userInteracted) {
-            giveData.nameToShare = privacyNameOptions.find(opt => (
+        const privacyNameOptions = populateInfoToShareAccountName(displayName, formatMessage);
+        if (!giveData.userInteracted && !_isEmpty(privacyNameOptions)) {
+            const defaultNameToShare = privacyNameOptions.find(opt => (
                 opt.value === preferences['giving_group_members_info_to_share']
             ));
+            giveData.defaultNameToShare = defaultNameToShare;
+            if (giveFromType === 'user') {
+                giveData.nameToShare = defaultNameToShare;
+            } else {
+                giveData.infoToShare = {
+                    disabled: false,
+                    text: ReactHtmlParser(`<span class="attributes">${formatMessage('giveCommon:infoToShareAnonymous')}</span>`),
+                    value: 'anonymous',
+                };
+            }
         }
         return giveData;
     }
@@ -483,17 +503,15 @@ class Group extends React.Component {
             nextStep,
             dispatch,
             flowSteps,
-            giveGroupDetails: {
-                attributes: {
-                    isCampaign,
-                },
-            },
             stepIndex
         } = this.props;
         let {
             giveData: {
                 infoToShare,
                 nameToShare,
+                giveTo: {
+                    isCampaign,
+                }
             },
         } = flowObject;
         this.setState({
@@ -556,8 +574,6 @@ class Group extends React.Component {
             flowObject: {
                 giveData,
             },
-            defaultInfoToShare,
-            defaultNameToShare,
             dropDownOptions,
             reloadModalOpen,
             reviewBtnFlag,
@@ -568,6 +584,13 @@ class Group extends React.Component {
                 type,
             },
         } = this.state;
+        const {
+            currentUser: {
+                attributes: {
+                    preferences,
+                },
+            },
+        } = this.props;
         const {
             coverFeesData,
             dispatch,
@@ -619,8 +642,9 @@ class Group extends React.Component {
                         giveData, dropDownOptions, this.props, type
                     );
                     if (giveData.giveFrom.type === 'user') {
-                        giveData.infoToShare = defaultInfoToShare;
-                        giveData.nameToShare = defaultNameToShare
+                        giveData.infoToShare = giveData.defaultInfoToShare;
+                        giveData.nameToShare = giveData.defaultNameToShare;
+                        giveData.privacyShareAmount = preferences['giving_group_members_share_my_giftamount'];
                     } else {
                         const formatMessage = this.props.t;
                         const defaultDropDownOption = {
@@ -885,7 +909,7 @@ class Group extends React.Component {
                     formatMessage={formatMessage}
                     handleInputChange={this.handleInputChange}
                     hasCampaign={hasCampaign}
-                    isCampaign={!_isEmpty(giveGroupDetails) && giveGroupDetails.attributes.isCampaign}
+                    isCampaign={giveTo.isCampaign}
                     giveFrom={giveFrom}
                     giveToType={giveToType}
                     infoToShare={infoToShare}
