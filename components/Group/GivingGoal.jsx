@@ -92,7 +92,7 @@ const GivingGoal = (props) => {
         giveButton = (
             <div className="buttonWraper">
                 <a href={(`${RAILS_APP_URL_ORIGIN}/send/to/group/${slug}`)}>
-                    <Button primary className="blue-btn-rounded">Give</Button>
+                    <Button className="blue-btn-rounded-def mt-1">Give</Button>
                 </a>
             </div>
         );
