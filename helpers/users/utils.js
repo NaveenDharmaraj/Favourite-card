@@ -167,6 +167,7 @@ const populateDropdownInfoToShare = (infoShareOptions, preferences = {}, name = 
                     privacyData: `${info.privacyData}`,
                     privacySetting: `${info.privacySetting}`,
                     text: ReactHtmlParser(`<div className="attributes">${info.name}</div>
+                    <div className="attributes">${info.email}</div>
                     <div className="attributes"> ${info.address_one} ${info.address_two} </div>
                     <div className="attributes">${info.city}, ${info.province} ${info.country}</div>`),
                     value: `${info.privacySetting}-${info.privacyData}`,
