@@ -18,7 +18,6 @@ function ImageGallery(props) {
                 enableImageSelection={enableImageSelection}
                 margin={8}
             />
-            // document.getElementById('example-0')
         );
     }
     return (
@@ -27,7 +26,6 @@ function ImageGallery(props) {
                 <Image src={src} />
             </Grid.Column>
         </Grid.Row>
-        // document.getElementById('example-0')
     );
 }
 
