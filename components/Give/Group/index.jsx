@@ -260,7 +260,7 @@ class Group extends React.Component {
                 buttonClicked: false,
                 dropDownOptions: {
                     ...dropDownOptions,
-                    privacyNameOptions: populateInfoToShareAccountName(giveFromType === 'user' ? displayName : giveData.giveFrom.name, formatMessage),
+                    privacyNameOptions: populateInfoToShareAccountName(( giveFromType === 'groups' || giveFromType === 'campaigns') ?  giveData.giveFrom.name : displayName, formatMessage),
                     giveToList: giveToOptions,
                     paymentInstrumentList: paymentInstrumentOptions,
                 },
@@ -320,7 +320,7 @@ class Group extends React.Component {
                 value: '',
             };
         }
-        if (!giveData.userInteracted && giveFromType === 'user') {
+        if (!giveData.userInteracted && !(giveFromType === 'groups' || giveFromType === 'campaigns')) {
             giveData.privacyShareAmount = preferences['giving_group_members_share_my_giftamount'];
         }
         if (!_isEmpty(groupCampaignAdminShareInfoOptions) && groupCampaignAdminShareInfoOptions.length > 0
@@ -333,15 +333,14 @@ class Group extends React.Component {
                 opt.value === preference
             ));
             giveData.defaultInfoToShare = defaultInfoToShare;
-            if (giveFromType === 'user') {
-                giveData.infoToShare = defaultInfoToShare
-            }
-            else {
+            if ( giveFromType === 'groups' || giveFromType === 'campaigns') {
                 giveData.infoToShare = {
                     disabled: false,
                     text: ReactHtmlParser(`<span class="attributes">${formatMessage('giveCommon:infoToShareAnonymous')}</span>`),
                     value: 'anonymous',
                 };
+            } else {
+                giveData.infoToShare = defaultInfoToShare
             }
             giveData.infoToShareList = infoToShareList;
         }
@@ -351,14 +350,14 @@ class Group extends React.Component {
                 opt.value === preferences['giving_group_members_info_to_share']
             ));
             giveData.defaultNameToShare = defaultNameToShare;
-            if (giveFromType === 'user') {
-                giveData.nameToShare = defaultNameToShare;
-            } else {
+            if ( giveFromType === 'groups' || giveFromType === 'campaigns') {
                 giveData.infoToShare = {
                     disabled: false,
                     text: ReactHtmlParser(`<span class="attributes">${formatMessage('giveCommon:infoToShareAnonymous')}</span>`),
                     value: 'anonymous',
                 };
+            } else {
+                giveData.nameToShare = defaultNameToShare;
             }
         }
         return giveData;

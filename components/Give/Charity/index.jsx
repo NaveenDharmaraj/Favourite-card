@@ -284,7 +284,6 @@ class Charity extends React.Component {
                 );
             }
             this.setState({
-                defaultInfoToShare: giveData.infoToShare,
                 dropDownOptions: {
                     ...dropDownOptions,
                     donationMatchList: donationMatchOptions,
@@ -356,9 +355,19 @@ class Charity extends React.Component {
             const preference = preferences[name].includes('address')
                 ? `${preferences[name]}-${preferences[`${name}_address`]}` : preferences[name];
             const { infoToShareList } = populateDropdownInfoToShare(charityShareInfoOptions);
-            giveData.infoToShare = infoToShareList.find(opt => (
+            const defaultInfoToShare = infoToShareList.find(opt => (
                 opt.value === preference
             ));
+            giveData.defaultInfoToShare = defaultInfoToShare;
+            if ( giveFromType === 'groups' || giveFromType === 'campaigns') {
+                giveData.infoToShare = {
+                    disabled: false,
+                    text: ReactHtmlParser(`<span class="attributes">${formatMessage('giveCommon:infoToShareAnonymous')}</span>`),
+                    value: 'anonymous',
+                };
+            } else {
+                giveData.infoToShare = defaultInfoToShare
+            }
         }
         return giveData;
     }
@@ -518,7 +527,6 @@ class Charity extends React.Component {
             flowObject: {
                 giveData,
             },
-            defaultInfoToShare,
             dropDownOptions,
             reloadModalOpen,
             reviewBtnFlag,
@@ -580,7 +588,7 @@ class Charity extends React.Component {
                     );
                     giveData = modifiedGiveData;
                     if(giveData.giveFrom.type === 'user'){
-                       giveData.infoToShare =  defaultInfoToShare;
+                       giveData.infoToShare =  giveData.defaultInfoToShare;
                     } else{
                         giveData.infoToShare.value = 'anonymous';
                     }
