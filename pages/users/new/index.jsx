@@ -296,6 +296,7 @@ class Login extends React.Component {
             apiValidating,
             isClaimCharity
         } = this.props;
+        const lineBgClass = (stepIndex === 3) ? "linebg signup-last-step" : "linebg";
 
         return (
             <Layout onBoarding={isClaimCharity ? false : true}>
@@ -314,7 +315,7 @@ class Login extends React.Component {
                         (
                             <div className="pageWraper">
                                 <Container>
-                                    <div className="linebg">
+                                    <div className={lineBgClass}>
                                         <Grid columns={2} doubling>
                                             {
                                                 (stepIndex === 0) && 
