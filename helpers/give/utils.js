@@ -1445,10 +1445,12 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
             value: (!_.isEmpty(noteToCharity)) ? noteToCharity : formatMessage('reviewDefaultMessage'),
         });
 
-        listingData.push({
-            name: `reviewNoteToSelf${giveFrom.type}`,
-            value: (!_.isEmpty(noteToSelf)) ? noteToSelf : formatMessage('reviewEmptyNoteToSelf'),
-        });
+        if (giveFrom.type === 'user' || giveFrom.type === 'groups') {
+            listingData.push({
+                name: `reviewNoteToSelf${giveFrom.type}`,
+                value: (!_.isEmpty(noteToSelf)) ? noteToSelf : formatMessage('reviewEmptyNoteToSelf'),
+            });
+        }
     }
 
     state.listingData = listingData;
@@ -1532,12 +1534,15 @@ const populateP2pReviewPage = (giveData, data, currency, formatMessage, language
 
     listingData.push({
         name: 'reviewP2pMessage',
-        value: (!_.isEmpty(noteToRecipients)) ? noteToRecipients : formatMessage('reviewDefaultMessage')
+        value: (!_.isEmpty(noteToRecipients)) ? noteToRecipients : formatMessage('reviewDefaultMessage'),
     });
-    listingData.push({
-        name: 'reviewNoteToSelf',
-        value: (!_.isEmpty(noteToSelf)) ? noteToSelf : formatMessage('reviewEmptyNoteToSelf')
-    });
+
+    if (giveFrom.type === 'user' || giveFrom.type === 'groups') {
+        listingData.push({
+            name: 'reviewNoteToSelf',
+            value: (!_.isEmpty(noteToSelf)) ? noteToSelf : formatMessage('reviewEmptyNoteToSelf'),
+        });
+    }
     state.listingData = listingData;
     return (state);
 }

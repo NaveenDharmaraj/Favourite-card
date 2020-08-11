@@ -400,9 +400,9 @@ class Group extends React.Component {
         }
         switch (name) {
             case 'giveFrom':
-                // if(giveData.giveFrom.type === 'companies' || giveData.giveFrom.type === 'campaigns') {
-                //     giveData['noteToSelf'] = '';
-                // }
+                if(giveData.giveFrom.type === 'companies' || giveData.giveFrom.type === 'campaigns') {
+                    giveData['noteToSelf'] = '';
+                }
                 validity = validateGiveForm('giveAmount', giveData.giveAmount, validity, giveData, 0);
                 break;
             case 'inHonorOf':
@@ -634,9 +634,9 @@ class Group extends React.Component {
                         giveData.infoToShare = defaultDropDownOption;
                         giveData.nameToShare = defaultDropDownOption;
                     }
-                    // if(giveData.giveFrom.type === 'companies' || giveData.giveFrom.type === 'campaigns') {
-                    //     giveData.noteToSelf = '';
-                    // }
+                    if(giveData.giveFrom.type === 'companies' || giveData.giveFrom.type === 'campaigns') {
+                        giveData.noteToSelf = '';
+                    }
                     giveData = modifiedGiveData;
                     dropDownOptions = modifiedDropDownOptions;
                     validity = validateGiveForm(

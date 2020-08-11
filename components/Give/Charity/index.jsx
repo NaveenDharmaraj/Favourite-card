@@ -477,7 +477,7 @@ class Charity extends React.Component {
         switch (name) {
             case 'giveFrom':
                 if(giveData.giveFrom.type === 'companies' || giveData.giveFrom.type === 'campaigns') {
-                    giveData.noteToSelf = '';
+                    giveData['noteToSelf'] = '';
                 }
                 validity = validateGiveForm('giveAmount', giveData.giveAmount, validity, giveData, coverFeesAmount);
                 break;
