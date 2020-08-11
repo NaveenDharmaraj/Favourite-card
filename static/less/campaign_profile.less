@@ -1,6 +1,5 @@
 @import "_mixins.less";
 //@import "../fonts/proximanova/font.css";
-
 .CampaignWapper{
     .CampaigBanner{
         min-height     : 240px;
@@ -60,21 +59,89 @@
                 font-size: 20px;
                 color    : #263238;
                 line-height: 24px;
-                margin: 33px 0px 33px 0px !important;
+                margin: 33px 0px 30px 0px!important;
             }
         }
-
+    }
+}
+/******/
+.campaignSearchBanner{
+    &.search-banner{
+        padding:0px;
+        .searchbox{
+            .ui.fluid.input > input{
+                height: 40px !important;
+            }
+            .search-btn{
+                &.campaignSearch{
+                    display: flex;
+                    padding: 0px;
+                    align-items: center;
+                    justify-content: center;
+                    right: 18px;
+                    height: 30px;
+                    width: 30px;
+                    top: 5px;
+                    .search{
+                        &.icon{
+                            width: auto;
+                            height: auto;
+                            &::before{
+                                width: 15px;
+                                height: 15px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 .supportingcardWapper{
     margin: 30px 0px;
-    .supportingcard{
-        padding:10px;
-        border: 1px solid #DEDEDE;
+    .custom_Grid{
+        display: -ms-flexbox;
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+        display: flex;
+        .col-sm-6{
+            width: 100%;
+            @media only screen and (min-width: 992px){
+                &:nth-child(odd){
+                    padding-right: 20px;
+                }
+            }
+            @media only screen and (min-width: 992px){
+                -ms-flex: 0 0 50%;
+                flex: 0 0 50%;
+                max-width: 50%;
+            }
+        }
+    }
+    .campaignCard{
+      //max-height: 145px;
+       border: 1px solid #DEDEDE;
+       display: flex;
         border-radius: 4px;
-        min-height: 145px;
-        margin:9px 0px;
-        .giveGroupDetails{
+        padding:10px;
+        margin: 0px 0px 18px 0px;
+        @media only screen and (max-width: 991px){
+        max-width: 377px;
+        }
+        @media only screen and (max-width: 767px){
+            margin: 0px auto 18px;
+        }
+        .CardProfile{
+            max-width: 85px;
+            margin-right: 14px;
+            img{
+            height: 85px;
+            width: 85px;
+            border-radius: 4px;
+            object-fit: cover;
+            }
+        }
+        .CardgiveGroupDetails{
             h4 {
                 &.ui {
                     &.header {
@@ -99,23 +166,11 @@
             }
             p{
                 font-size: 14px;
-                line-height: 22px;
+                line-height: 21px;
                 margin: 0px;
                 color    :#263238;
                 font-family: 'ProximaNova-Regular';
             }
-        }
-    }
-    .cardPaddingright{
-        padding-right: 10px !important;
-        @media only screen and (max-width: 767px){
-            padding-right: 15px !important;
-        }
-    }
-    .cardPaddingLeft{
-        padding-left: 10px !important;
-        @media only screen and (max-width: 767px){
-            padding-left: 15px !important;
         }
     }
 }
@@ -127,10 +182,10 @@
     }
 }
 .supportingcardShowMore{
-    margin: 32px 0px 100px 0px;
+    margin: 30px 0px 100px 0px;
     text-align: center;
     @media only screen and (max-width:992px){
-        margin: 32px 0px 50px 0px;
+        margin: 30px 0px 50px 0px;
     }
     .btnMore{
         font-weight: 600;
@@ -184,10 +239,4 @@
 }
 .mt-4{
     margin-top: 60px !important;
-  }
-  .no-padding{
-      padding: 0px !important;
-  }
-  .pr-0{
-      padding-right: 0px !important;
   }

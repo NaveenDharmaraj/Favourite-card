@@ -8,5 +8,13 @@
     "givingGroupPeople": "Giving Groups bring multiple people together to give. You can pool or raise money to support causes or charities together. ",
     "people": "People",
     "givingGroup": "Giving Groups",
-    "createGroupBtn": "Create Group"
+    "createGroupBtn": "Create Group",
+    "profileNoDataContent": "Please check back later",
+    "profileNoDataSubHeader": "It looks like we haven’t yet received this information.",
+    "supportNoDataHeader": "Support this Campaign by creating a Giving Group",
+    "supportNoDataSubHeader": "A Giving Group is like a fundraising page where multiple people can combine forces, pool or raise money, and support causes together.",
+    "createGivingGroupBtn": "Create a Giving Group",
+    "supportCampaignHeader": "Giving Groups supporting this campaign",
+    "totalAmountRaised": "Total Raised:{{amount}}",
+    "decisionTree": "with decision tree"
 }

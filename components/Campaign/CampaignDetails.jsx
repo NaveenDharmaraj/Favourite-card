@@ -2,17 +2,20 @@
 import React, { Fragment } from 'react';
 
 // TODO place ActiveMatchBlock
-// import ActiveMatchBlock from '../shared/ActiveMatchBlock';
+import ActiveMatchBlock from '../shared/ActiveMatchBlock';
 import MoneyRaised from './MoneyRaised';
 import CampaignSupporters from './CampaignSupporters';
 
 const CampaignDetails = (props) => {
     const {
+        activeMatch,
+        hasActiveMatch,
         peopleInCampaign,
         groupsCount,
         slug,
         amountRaised,
-        isAuthenticated
+        isAuthenticated,
+        type,
     } = props;
     return (
         <Fragment>
@@ -21,21 +24,21 @@ const CampaignDetails = (props) => {
                 slug={slug}
                 isAuthenticated={isAuthenticated}
             />
+            {
+                (hasActiveMatch) ?
+                    (
+                        <ActiveMatchBlock
+                            activeMatch={activeMatch}
+                            type={type}
+                        />
+                    )
+                    : null
+            }
             <CampaignSupporters
                 peopleInCampaign={peopleInCampaign}
                 groupsCount={groupsCount}
                 slug={slug}
             />
-            {/* TODO place ActiveMatchBlock */}
-            {/* {
-                (campaignDetails.attributes.hasActiveMatch) ?
-                    (
-                        <ActiveMatchBlock
-                            entityDetails={campaignDetails}
-                        />
-                    )
-                    : null
-            } */}
         </Fragment>
     );
 };
