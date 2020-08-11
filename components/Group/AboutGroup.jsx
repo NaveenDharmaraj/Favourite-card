@@ -1,4 +1,6 @@
-import React from 'react';
+import React, {
+    Fragment,
+} from 'react';
 import { connect } from 'react-redux';
 import {
     string,
@@ -22,55 +24,62 @@ const AboutGroup = (props) => {
         },
     } = props;
     return (
-        <Grid.Row>
-            <Grid.Column mobile={16} tablet={16} computer={16} className="ch_paragraph">
-                {formattedShort
-                && (
-                    <div className="GroupPurposeTop">
-                        <p>
-                            {ReactHtmlParser(formattedShort)}
-                        </p>
-                    </div>
-                )}
-                {videoPlayerLink
+        <Fragment>
+            <Grid.Row>
+                <Grid.Column mobile={16} tablet={16} computer={16} className="ch_paragraph">
+                    {formattedShort
                     && (
-                        <div className="mb-3 videoWrapper text-center">
-                            <embed
-                                title="video"
-                                src={videoPlayerLink}
-                                className="responsiveVideo"
-                            />
+                        <div className="GroupPurposeTop">
+                            <p>
+                                {ReactHtmlParser(formattedShort)}
+                            </p>
                         </div>
                     )}
-                {formattedImpact
-                && (
-                    <div className="GroupPurpose">
-                        <Header as="h3">The Group’s Purpose</Header>
-                        <p>
-                            {ReactHtmlParser(formattedImpact)}
-                        </p>
-                    </div>
-                )}
-                {formattedHelping
-                && (
-                    <div className="GroupPurpose">
-                        <Header as="h3">How to Help</Header>
-                        <p>
-                            { ReactHtmlParser(formattedHelping) }
-                        </p>
-                    </div>
-                )}
-                {formattedAbout
-                && (
-                    <div className="GroupPurpose">
-                        <Header as="h3">About the Organizers</Header>
-                        <p>
-                            { ReactHtmlParser(formattedAbout) }
-                        </p>
-                    </div>
-                )}
-            </Grid.Column>
-        </Grid.Row>
+                    {videoPlayerLink
+                        && (
+                            <div className="mb-3 videoWrapper text-center">
+                                <embed
+                                    title="video"
+                                    src={videoPlayerLink}
+                                    className="responsiveVideo"
+                                />
+                            </div>
+                        )}
+                    {formattedImpact
+                    && (
+                        <div className="GroupPurpose">
+                            <Header as="h3">The Group’s Purpose</Header>
+                            <p>
+                                {ReactHtmlParser(formattedImpact)}
+                            </p>
+                        </div>
+                    )}
+                    {formattedHelping
+                    && (
+                        <div className="GroupPurpose">
+                            <Header as="h3">How to Help</Header>
+                            <p>
+                                { ReactHtmlParser(formattedHelping) }
+                            </p>
+                        </div>
+                    )}
+                    {formattedAbout
+                    && (
+                        <div className="GroupPurpose">
+                            <Header as="h3">About the Organizers</Header>
+                            <p>
+                                { ReactHtmlParser(formattedAbout) }
+                            </p>
+                        </div>
+                    )}
+                </Grid.Column>
+            </Grid.Row>
+            <Grid.Row>
+                <Grid.Column mobile={16} tablet={16} computer={16} className="OneGrProfileImg">
+                    <p>IMAGE GALLERY</p>
+                </Grid.Column>
+            </Grid.Row>
+        </Fragment>
     );
 };
 

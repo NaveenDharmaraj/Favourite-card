@@ -11,6 +11,10 @@ import {
 } from 'prop-types';
 import _isEmpty from 'lodash/isEmpty';
 
+import {
+    Link,
+} from '../../routes';
+
 const Admins = (props) => {
     const {
         groupAdminsDetails: {
@@ -20,12 +24,14 @@ const Admins = (props) => {
     let adminData = '';
     if (!_isEmpty(data)) {
         adminData = data.map((admin) => (
-            <List.Item as="a">
-                <Image className="grProfile" src={admin.attributes.avatar} />
-                <List.Content>
-                    <List.Header>{admin.attributes.displayName}</List.Header>
-                </List.Content>
-            </List.Item>
+            <Link route={(`/users/profile/${admin.id}`)}>
+                <List.Item as="a">
+                    <Image className="grProfile" src={admin.attributes.avatar} />
+                    <List.Content>
+                        <List.Header>{admin.attributes.displayName}</List.Header>
+                    </List.Content>
+                </List.Item>
+            </Link>
         ));
     }
     return (

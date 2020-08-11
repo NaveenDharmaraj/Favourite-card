@@ -46,7 +46,7 @@ class GroupAdmins extends React.Component {
         return (
             <Fragment>
                 <Header as="h3">Group Admins</Header>
-                {(!_isEmpty(adminsData) && adminsData.length > 3)
+                {(!_isEmpty(adminsData) && adminsData.length < 3)
                     ? <AdminsList />
                     : <Admins />
                 }
