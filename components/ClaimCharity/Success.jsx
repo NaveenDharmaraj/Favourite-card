@@ -62,7 +62,7 @@ class Success extends React.Component {
                             <Header as='h3'>
                                 {firstName}
                             , you’ve claimed your charity </Header>
-                            <p data-test="ClaimCharity_Success_charityname_text">Now you have access to your charity {charityName ? charityName : ''} account.</p>
+                            <p data-test="ClaimCharity_Success_charityname_text">Now you have access to your charity {charityName ? charityName : ''}’s account.</p>
                             {this.renderGoToCharityBtn(locationNumber, 1)}
                         </div>
                     </Container>

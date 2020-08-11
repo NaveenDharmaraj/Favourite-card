@@ -1,6 +1,5 @@
 {
     "description": "{{senderDisplayName}} sent you {{giftAmount}} to give away to charity",
-    "thankNote": "“Thank you for helping with the bake sale the other day!”",
     "impAccountHeader": "Claim your gift by opening an Impact Account",
     "impAccountPara1": "It’s like an online bank account for charitable giving.",
     "impAccountPara2": "You can add money and give to your favourite charities, all from one place. It’s free to open and we don’t charge sign-up or transaction fees for Impact Accounts.",
