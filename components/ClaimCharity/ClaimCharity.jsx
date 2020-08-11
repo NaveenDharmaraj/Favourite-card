@@ -11,7 +11,7 @@ import {
     List,
 } from 'semantic-ui-react';
 import _isEmpty from 'lodash/isEmpty';
-import claimrLeftImg from '../../static/images/illustration.png';
+import claimrLeftImg from '../../static/images/claimcharity02.svg';
 import customizeIcons1 from '../../static/images/icons/wedontsetorbenefitfromprocessingfee@3x.svg';
 import customizeIcons2 from '../../static/images/icons/icon-2@3x.svg';
 import customizeIcons3 from '../../static/images/icons/icon-2-1@3x.svg';

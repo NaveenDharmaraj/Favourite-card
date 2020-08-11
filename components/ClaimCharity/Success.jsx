@@ -9,7 +9,7 @@ import {
 import { connect, } from 'react-redux';
 import getConfig from 'next/config';
 import { Router } from '../../routes';
-import accessingleft from '../../static/images/accessing2.png';
+import accessingleft from '../../static/images/claimcharity04.svg';
 import accessingfull from '../../static/images/accessing1.svg';
 import '../../static/less/claimcharity.less';
 
