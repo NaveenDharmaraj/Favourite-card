@@ -40,7 +40,7 @@ describe('Test the existance and rendering of component elements', () => {
             ...customProps,
         };
         const component = initializeComponent(props);
-        expect(component.find({ 'data-test': 'ClaimCharity_Success_charityname_text' }).text()).toEqual('Now you have access to your charity Abundant Life Pentecostal Tabernacle account.');
+        expect(component.find({ 'data-test': 'ClaimCharity_Success_charityname_text' }).text()).toEqual('Now you have access to your charity Abundant Life Pentecostal Tabernacle’s account.');
     });
 })
 
