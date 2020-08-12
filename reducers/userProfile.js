@@ -250,6 +250,7 @@ const userProfile = (state = {}, action) => {
             newState = {
                 ...state,
                 groupCampaignAdminShareInfoOptions: action.payload.groupCampaignAdminShareInfoOptions,
+                ...(action.payload.groupMemberInfoToShare && { groupMemberInfoToShare: action.payload.groupMemberInfoToShare }),
             };
             break;
         default:

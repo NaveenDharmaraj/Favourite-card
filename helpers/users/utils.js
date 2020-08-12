@@ -117,7 +117,7 @@ const validateGivingGoal = (givingGoal, validity) => {
     );
     return validity;
 };
-const populateDropdownInfoToShare = (infoShareOptions, preferences = {}, name = '') => {
+const populateDropdownInfoToShare = (infoShareOptions = [], preferences = {}, name = '') => {
     const infoToShare = {
         defaultValue: 'anonymous',
         infoToShareList: [],
