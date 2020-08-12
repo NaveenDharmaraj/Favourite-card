@@ -73,6 +73,7 @@ class Group extends React.Component {
                 },
             },
             groupId,
+            groupMemberInfoToShare,
             paymentInstrumentsData,
             taxReceiptProfiles,
         } = props;
@@ -91,11 +92,24 @@ class Group extends React.Component {
         else {
             payload = _merge({}, props.flowObject)
         }
+        let privacyNameOptions = [];
+        if(props.flowObject.giveData.giveFrom.type){
+            if (props.flowObject.giveData.giveFrom.type === 'user' && !_isEmpty(groupMemberInfoToShare)) {
+                const {
+                    infoToShareList,
+                } = populateDropdownInfoToShare(groupMemberInfoToShare);
+                privacyNameOptions = infoToShareList;
+            } else {
+               privacyNameOptions = populateInfoToShareAccountName(props.flowObject.giveData.giveFrom.name, formatMessage);
+            }
+        }
+
         this.state = {
             flowObject: _.cloneDeep(payload),
             benificiaryIndex: 0,
             buttonClicked: false,
             dropDownOptions: {
+                privacyNameOptions,
                 paymentInstrumentList: populatePaymentInstrument(paymentInstruments),
             },
             inValidCardNameValue: true,
