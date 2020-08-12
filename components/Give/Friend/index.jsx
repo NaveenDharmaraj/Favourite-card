@@ -388,6 +388,9 @@ class Friend extends React.Component {
         }
         switch (name) {
             case 'giveFrom':
+                if(giveData.giveFrom.type === 'companies' || giveData.giveFrom.type === 'campaigns') {
+                    giveData['noteToSelf'] = '';
+                }
                 validity = validateGiveForm(
                     'giveAmount',
                     giveData.giveAmount,
@@ -475,6 +478,9 @@ class Friend extends React.Component {
                     );
                     reviewBtnFlag = false;
                     dropDownOptions = modifiedDropDownOptions;
+                    if(giveData.giveFrom.type === 'companies' || giveData.giveFrom.type === 'campaigns') {
+                        giveData['noteToSelf'] = '';
+                    }
                     if (giveData.giveFrom.type === 'companies') {
                         getCompanyPaymentAndTax(dispatch, Number(giveData.giveFrom.id));
                     }
@@ -744,6 +750,7 @@ class Friend extends React.Component {
                 disabled={!this.props.userAccountsFetched}
                 type="submit"
             />)
+        const giveFromType = (!_isEmpty(giveFrom.type)) ? giveFrom.type : 'user';
         return (
             <Fragment>
                 <div className="flowReviewbanner">
@@ -915,16 +922,18 @@ class Friend extends React.Component {
                                                             placeholderText={formatMessage('friends:noteToRecipientsPlaceholderText')}
                                                             text={noteToRecipients}
                                                         />
+                                                        {(giveFromType === 'groups' || giveFromType === 'user') && (
                                                         <Note
                                                             fieldName="noteToSelf"
                                                             formatMessage={formatMessage}
                                                             handleOnInputChange={this.handleInputChange}
                                                             handleOnInputBlur={this.handleOnInputBlur}
-                                                            labelText={formatMessage('friends:noteToSelfLabel')}
-                                                            popupText={formatMessage('friends:noteToSelfPopup')}
-                                                            placeholderText={formatMessage('friends:noteToSelfPlaceholderText')}
+                                                            labelText={formatMessage(`friends:noteToSelfLabel${giveFromType}`)}
+                                                            popupText={formatMessage(`friends:noteToSelfPopup${giveFromType}`)}
+                                                            placeholderText={formatMessage(`friends:noteToSelfPlaceholderText${giveFromType}`)}
                                                             text={noteToSelf}
                                                         />
+                                                        )}
                                                         {submtBtn}
                                                         </div>
                                                     </Grid.Column>
