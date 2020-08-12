@@ -96,7 +96,6 @@ class Group extends React.Component {
             benificiaryIndex: 0,
             buttonClicked: false,
             dropDownOptions: {
-                privacyNameOptions: populateInfoToShareAccountName(displayName, formatMessage),
                 paymentInstrumentList: populatePaymentInstrument(paymentInstruments),
             },
             inValidCardNameValue: true,
@@ -181,6 +180,7 @@ class Group extends React.Component {
                     },
                     id,
                 },
+                groupMemberInfoToShare,
                 i18n: {
                     language,
                 },
@@ -253,14 +253,16 @@ class Group extends React.Component {
                 giveData = Group.initFields(
                     giveData, fund, id,
                     `${firstName} ${lastName}`, companiesAccountsData, userGroups, userCampaigns,
-                    groupCampaignAdminShareInfoOptions, displayName, giveFromId, giveFromType, language, currency, preferences, giveGroupDetails, formatMessage
+                    groupCampaignAdminShareInfoOptions, groupMemberInfoToShare, giveFromId, giveFromType, language, currency, preferences, giveGroupDetails, formatMessage
                 );
+            }
+            if (!giveData.userInteracted && (giveFromType === 'groups' || giveFromType === 'campaigns')) {
+                dropDownOptions.privacyNameOptions = populateInfoToShareAccountName(giveData.giveFrom.name, formatMessage);
             }
             this.setState({
                 buttonClicked: false,
                 dropDownOptions: {
                     ...dropDownOptions,
-                    privacyNameOptions: populateInfoToShareAccountName(( giveFromType === 'groups' || giveFromType === 'campaigns') ?  giveData.giveFrom.name : displayName, formatMessage),
                     giveToList: giveToOptions,
                     paymentInstrumentList: paymentInstrumentOptions,
                 },
@@ -288,7 +290,7 @@ class Group extends React.Component {
      */
     // eslint-disable-next-line react/sort-comp
     static initFields(giveData, fund, id,
-        name, companiesAccountsData, userGroups, userCampaigns, groupCampaignAdminShareInfoOptions, displayName, groupId, giveFromType, language, currency, preferences, giveGroupDetails, formatMessage) {
+        name, companiesAccountsData, userGroups, userCampaigns, groupCampaignAdminShareInfoOptions, groupMemberInfoToShare, groupId, giveFromType, language, currency, preferences, giveGroupDetails, formatMessage) {
         if (_isEmpty(companiesAccountsData) && _isEmpty(userGroups) && _isEmpty(userCampaigns) && !giveData.userInteracted) {
             giveData.giveFrom.id = id;
             giveData.giveFrom.value = fund.id;
@@ -333,7 +335,7 @@ class Group extends React.Component {
                 opt.value === preference
             ));
             giveData.defaultInfoToShare = defaultInfoToShare;
-            if ( giveFromType === 'groups' || giveFromType === 'campaigns') {
+            if (giveFromType === 'groups' || giveFromType === 'campaigns') {
                 giveData.infoToShare = {
                     disabled: false,
                     text: ReactHtmlParser(`<span class="attributes">${formatMessage('giveCommon:infoToShareAnonymous')}</span>`),
@@ -344,14 +346,14 @@ class Group extends React.Component {
             }
             giveData.infoToShareList = infoToShareList;
         }
-        const privacyNameOptions = populateInfoToShareAccountName(displayName, formatMessage);
-        if (!giveData.userInteracted && !_isEmpty(privacyNameOptions)) {
-            const defaultNameToShare = privacyNameOptions.find(opt => (
+        if (!giveData.userInteracted && !giveData.giveTo.isCampaign) {
+            const { infoToShareList } = populateDropdownInfoToShare(groupMemberInfoToShare);
+            const defaultNameToShare = infoToShareList.find(opt => (
                 opt.value === preferences['giving_group_members_info_to_share']
-            ));
-            giveData.defaultNameToShare = defaultNameToShare;
-            if ( giveFromType === 'groups' || giveFromType === 'campaigns') {
-                giveData.infoToShare = {
+            )) || {};
+            giveData.defaultNameToShare = defaultNameToShare || {};
+            if (giveFromType === 'groups' || giveFromType === 'campaigns') {
+                giveData.nameToShare = {
                     disabled: false,
                     text: ReactHtmlParser(`<span class="attributes">${formatMessage('giveCommon:infoToShareAnonymous')}</span>`),
                     value: 'anonymous',
@@ -419,7 +421,7 @@ class Group extends React.Component {
         }
         switch (name) {
             case 'giveFrom':
-                if(giveData.giveFrom.type === 'companies' || giveData.giveFrom.type === 'campaigns') {
+                if (giveData.giveFrom.type === 'companies' || giveData.giveFrom.type === 'campaigns') {
                     giveData['noteToSelf'] = '';
                 }
                 validity = validateGiveForm('giveAmount', giveData.giveAmount, validity, giveData, 0);
@@ -592,6 +594,7 @@ class Group extends React.Component {
                     preferences,
                 },
             },
+            groupMemberInfoToShare,
         } = this.props;
         const {
             coverFeesData,
@@ -641,7 +644,7 @@ class Group extends React.Component {
                         modifiedDropDownOptions,
                         modifiedGiveData,
                     } = resetDataForAccountChange(
-                        giveData, dropDownOptions, this.props, type
+                        giveData, dropDownOptions, this.props, type, groupMemberInfoToShare,
                     );
                     if (giveData.giveFrom.type === 'user') {
                         giveData.infoToShare = giveData.defaultInfoToShare;
@@ -657,7 +660,7 @@ class Group extends React.Component {
                         giveData.infoToShare = defaultDropDownOption;
                         giveData.nameToShare = defaultDropDownOption;
                     }
-                    if(giveData.giveFrom.type === 'companies' || giveData.giveFrom.type === 'campaigns') {
+                    if (giveData.giveFrom.type === 'companies' || giveData.giveFrom.type === 'campaigns') {
                         giveData.noteToSelf = '';
                     }
                     giveData = modifiedGiveData;
@@ -1089,6 +1092,7 @@ const mapStateToProps = (state) => {
         currentUser: state.user.info,
         giveGroupBenificairyDetails: state.give.benificiaryForGroupDetails,
         groupCampaignAdminShareInfoOptions: state.userProfile.groupCampaignAdminShareInfoOptions,
+        groupMemberInfoToShare: state.userProfile.groupMemberInfoToShare,
         taxReceiptProfiles: state.user.taxReceiptProfiles,
         userAccountsFetched: state.user.userAccountsFetched,
         userCampaigns: state.user.userCampaigns,

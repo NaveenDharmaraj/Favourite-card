@@ -31,6 +31,7 @@ import {
 import visaIcon from '../../static/images/icons/icon-cc-visa-colour.png';
 import mastercardIcon from '../../static/images/icons/icon-cc-mastercard-colour.png';
 import expressCard from '../../static/images/icons/icon-cc-american-express-colour.png';
+import { populateDropdownInfoToShare } from '../users/utils';
 
 /**
  * Checks if giveData contains any credit card information
@@ -932,7 +933,7 @@ const resetDataForGiveAmountChange = (giveData, dropDownOptions, coverFeesData) 
 * @return {object} selected credit card option
 */
 
-const resetDataForAccountChange = (giveData, dropDownOptions, props, type) => {
+const resetDataForAccountChange = (giveData, dropDownOptions, props, type, groupMemberInfoToShare) => {
     const {
         companiesAccountsData,
         companyDetails,
@@ -971,7 +972,15 @@ const resetDataForAccountChange = (giveData, dropDownOptions, props, type) => {
         );
     }
     if (type === 'give/to/group') {
-        dropDownOptions.privacyNameOptions = populateInfoToShareAccountName(displayName, formatMessage);
+        if (giveData.giveFrom.type === 'user') {
+            const {
+                infoToShareList,
+            } = populateDropdownInfoToShare(groupMemberInfoToShare);
+            dropDownOptions.privacyNameOptions = infoToShareList;
+        } else {
+            dropDownOptions.privacyNameOptions = populateInfoToShareAccountName(giveData.giveFrom.name, formatMessage);
+        }
+        giveData.privacyShareAmount = false;
         giveData.privacyShareEmail = false;
         giveData.privacyShareAddress = false;
     }
@@ -1404,11 +1413,6 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
                 value: infoToShareMessage,
             });
         } else {
-            const privacyShareNameMessage = [];
-            privacyShareNameMessage.push((nameToShare.value === 'anonymous') ? formatMessage('reviewGiveAnonymously') : nameToShare.text);
-            if (privacyShareAmount) {
-                privacyShareNameMessage.push(ReactHtmlParser(`<br/> ${formatMessage('reviewGiftAmount')} ${state.mainDisplayAmount}`));
-            }
             const privacyShareEmailMessage = (infoToShare.value === 'anonymous') ? formatMessage('reviewGiveAnonymously') : infoToShare.text;
             // if (giveFrom.type === 'user') {
             //     privacyShareEmailMessage = (infoToShare.value === 'anonymous')
@@ -1417,6 +1421,11 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
 
             giveToType = (giveTo.isCampaign) ? 'Campaign' : 'Group';
             if (!giveTo.isCampaign) {
+                const privacyShareNameMessage = [];
+                privacyShareNameMessage.push((nameToShare.value === 'anonymous') ? formatMessage('reviewGiveAnonymously') : nameToShare.text);
+                if (privacyShareAmount) {
+                    privacyShareNameMessage.push(ReactHtmlParser(`<br/> ${formatMessage('reviewGiftAmount')} ${state.mainDisplayAmount}`));
+                }
                 listingData.push({
                     name: `privacyShareGiving${giveToType}Label`,
                     value: privacyShareNameMessage,

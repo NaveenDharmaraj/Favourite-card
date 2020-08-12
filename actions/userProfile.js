@@ -1503,6 +1503,7 @@ const getGroupCampaignAdminInfoToShare = (userId, isCampaign) => async (dispatch
     const fsa = {
         payload: {
             groupCampaignAdminShareInfoOptions: [],
+            groupMemberInfoToShare: [],
         },
         type: actionTypes.USER_GROUP_CAMPAIGN_ADMIN_INFO_TO_SHARE_OPTIONS,
     };
@@ -1525,7 +1526,14 @@ const getGroupCampaignAdminInfoToShare = (userId, isCampaign) => async (dispatch
                     uxCritical: true,
                 },
             });
+            const groupMemberShare = await coreApi.get(`users/${userId}/groupMemberShare`, {
+                params: {
+                    dispatch,
+                    uxCritical: true,
+                },
+            });
             fsa.payload.groupCampaignAdminShareInfoOptions = groupAdminShare.data;
+            fsa.payload.groupMemberInfoToShare = groupMemberShare.data;
             dispatch(fsa);
         } catch (err) { }
     }
