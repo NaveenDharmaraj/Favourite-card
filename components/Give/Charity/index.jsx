@@ -9,6 +9,7 @@ import _replace from 'lodash/replace';
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/prop-types */
 import PropTypes from 'prop-types';
+import ReactHtmlParser from 'react-html-parser';
 import {
     Container,
     Form,
@@ -280,11 +281,10 @@ class Charity extends React.Component {
                 giveData = Charity.initFields(
                     giveData, fund, id, avatar,
                     `${firstName} ${lastName}`, companiesAccountsData, userGroups, userCampaigns,
-                    giveGroupBenificairyDetails, giveFromId, giveFromType, language, currency, preferences, charityShareInfoOptions
+                    giveGroupBenificairyDetails, giveFromId, giveFromType, language, currency, preferences, charityShareInfoOptions, formatMessage
                 );
             }
             this.setState({
-                defaultInfoToShare: giveData.infoToShare,
                 dropDownOptions: {
                     ...dropDownOptions,
                     donationMatchList: donationMatchOptions,
@@ -320,7 +320,7 @@ class Charity extends React.Component {
 
     // eslint-disable-next-line react/sort-comp
     static initFields(giveData, fund, id, avatar,
-        name, companiesAccountsData, userGroups, userCampaigns, giveGroupBenificairyDetails, groupId, giveFromType, language, currency, preferences, charityShareInfoOptions) {
+        name, companiesAccountsData, userGroups, userCampaigns, giveGroupBenificairyDetails, groupId, giveFromType, language, currency, preferences, charityShareInfoOptions, formatMessage) {
         if (_isEmpty(companiesAccountsData) && _isEmpty(userGroups) && _isEmpty(userCampaigns) && !giveData.userInteracted) {
             giveData.giveFrom.avatar = avatar,
                 giveData.giveFrom.id = id;
@@ -356,9 +356,19 @@ class Charity extends React.Component {
             const preference = preferences[name].includes('address')
                 ? `${preferences[name]}-${preferences[`${name}_address`]}` : preferences[name];
             const { infoToShareList } = populateDropdownInfoToShare(charityShareInfoOptions);
-            giveData.infoToShare = infoToShareList.find(opt => (
+            const defaultInfoToShare = infoToShareList.find(opt => (
                 opt.value === preference
             ));
+            giveData.defaultInfoToShare = defaultInfoToShare;
+            if ( giveFromType === 'groups' || giveFromType === 'campaigns') {
+                giveData.infoToShare = {
+                    disabled: false,
+                    text: ReactHtmlParser(`<span class="attributes">${formatMessage('giveCommon:infoToShareAnonymous')}</span>`),
+                    value: 'anonymous',
+                };
+            } else {
+                giveData.infoToShare = defaultInfoToShare
+            }
         }
         return giveData;
     }
@@ -518,7 +528,6 @@ class Charity extends React.Component {
             flowObject: {
                 giveData,
             },
-            defaultInfoToShare,
             dropDownOptions,
             reloadModalOpen,
             reviewBtnFlag,
@@ -580,7 +589,7 @@ class Charity extends React.Component {
                     );
                     giveData = modifiedGiveData;
                     if(giveData.giveFrom.type === 'user'){
-                       giveData.infoToShare =  defaultInfoToShare;
+                       giveData.infoToShare =  giveData.defaultInfoToShare;
                     } else{
                         giveData.infoToShare.value = 'anonymous';
                     }
