@@ -3,19 +3,22 @@
 import React from 'react';
 import _isEmpty from 'lodash/isEmpty';
 import {
+    Container,
+    Grid,
+    Responsive,
+} from 'semantic-ui-react';
+
+import {
     campaignSubGroupSeeMore,
     generateDeepLink,
 } from '../../actions/profile';
 import BreadcrumbDetails from '../shared/BreadCrumbs';
 import ProfilePageHead from '../shared/ProfilePageHead';
-import {
-    Container,
-    Grid,
-    Responsive,
-} from 'semantic-ui-react';
-import CampaignDetails from './CampaignDetails';
-import ProfileDetails from './ProfileDetails';
 import ProfileTitle from '../shared/ProfileTitle';
+
+import ProfileDetails from './ProfileDetails';
+import CampaignDetails from './CampaignDetails';
+import SupportingGroups from './SupportingGroups';
 
 const actionTypes = {
     SEE_MORE_LOADER: 'SEE_MORE_LOADER',
@@ -73,6 +76,7 @@ class CampaignProfileWrapper extends React.Component {
         const {
             campaignDetails: {
                 attributes: {
+                    about,
                     avatar,
                     causes,
                     city,
@@ -87,6 +91,9 @@ class CampaignProfileWrapper extends React.Component {
                     amountRaised,
                     hasActiveMatch,
                     activeMatch,
+                    videoPlayerLink,
+                    formattedShort,
+                    formattedImpact,
                 },
                 type,
             },
@@ -162,21 +169,29 @@ class CampaignProfileWrapper extends React.Component {
                                                     }
                                                 </Responsive>
                                             </Grid.Column>
-                                            {
-                                                campaignDetails && (
+                                        </Grid>
+                                        {
+                                            campaignDetails && (
+                                                <React.Fragment>
                                                     <ProfileDetails
-                                                        campaignDetails={campaignDetails}
+                                                        about={about}
+                                                        videoPlayerLink={videoPlayerLink}
+                                                        formattedShort={formattedShort}
+                                                        formattedImpact={formattedImpact}
                                                         campaignImageGallery={campaignImageGallery}
+                                                        isAuthenticated={isAuthenticated}
+                                                    />
+                                                    <SupportingGroups
+                                                        slug={slug}
                                                         campaignSubGroupDetails={campaignSubGroupDetails}
                                                         campaignSubGroupsShowMoreUrl={campaignSubGroupsShowMoreUrl}
-                                                        isAuthenticated={isAuthenticated}
                                                         seeMoreLoaderStatus={seeMoreLoaderStatus}
                                                         subGroupListLoader={subGroupListLoader}
                                                         viewMoreFn={this.viewMoreFn}
                                                     />
-                                                )
-                                            }
-                                        </Grid>
+                                                </React.Fragment>
+                                            )
+                                        }
                                     </Grid.Row>
                                 </Grid.Column>
                                 <Grid.Column mobile={16} tablet={5} computer={5} >

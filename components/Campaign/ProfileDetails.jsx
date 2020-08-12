@@ -13,8 +13,6 @@ import { withTranslation } from '../../i18n';
 import ImageGallery from '../shared/ImageGallery';
 import noDataImg from '../../static/images/noresults.png';
 
-import SupportingGroups from './SupportingGroups';
-
 const noDataState = (formatMessage) => {
     return (
         <Card fluid className="noDataCard rightImg">
@@ -38,20 +36,10 @@ const noDataState = (formatMessage) => {
 
 function ProfileDetails(props) {
     const {
-        campaignDetails: {
-            attributes: {
-                about,
-                videoPlayerLink,
-                formattedShort,
-                formattedImpact,
-            },
-        },
-        campaignDetails,
-        campaignSubGroupDetails,
-        campaignSubGroupsShowMoreUrl,
-        seeMoreLoaderStatus,
-        subGroupListLoader,
-        viewMoreFn,
+        about,
+        videoPlayerLink,
+        formattedShort,
+        formattedImpact,
         campaignImageGallery,
         t: formatMessage,
     } = props;
@@ -121,14 +109,6 @@ function ProfileDetails(props) {
                 }
                 <Divider />
             </Grid.Row>
-            <SupportingGroups
-                campaignDetails={campaignDetails}
-                campaignSubGroupDetails={campaignSubGroupDetails}
-                campaignSubGroupsShowMoreUrl={campaignSubGroupsShowMoreUrl}
-                seeMoreLoaderStatus={seeMoreLoaderStatus}
-                subGroupListLoader={subGroupListLoader}
-                viewMoreFn={viewMoreFn}
-            />
         </div>
     );
 }

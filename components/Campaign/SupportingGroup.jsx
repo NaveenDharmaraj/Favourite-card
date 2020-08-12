@@ -1,20 +1,31 @@
 
 import React from 'react'
 import { Image, Header } from 'semantic-ui-react';
+import _isEmpty from 'lodash/isEmpty';
 
+import { renderTextByCharacter } from '../../helpers/utils';
 import { withTranslation } from '../../i18n';
 
 function SupportingGroup(props) {
     const {
         entityName,
-        location,
+        city,
+        province,
         placeholder,
         amountRaised,
         type,
-        cause,
+        causes,
         t: formatMessage,
     } = props;
     const entityShortName = renderTextByCharacter(entityName, 25);
+    let locationDetails = '';
+    if (_isEmpty(city) && !_isEmpty(province)) {
+        locationDetails = province;
+    } else if (!_isEmpty(city) && _isEmpty(province)) {
+        locationDetails = city;
+    } else if (!_isEmpty(city) && !_isEmpty(province)) {
+        locationDetails = `${city}, ${province}`;
+    }
     return (
         <div className="col-sm-6">
             <div className="campaignCard">
@@ -29,8 +40,11 @@ function SupportingGroup(props) {
                             {formatMessage('campaignProfile:decisionTree')}
                         </span>
                     </Header>
-                    <p>{cause}</p>
-                    <p>{location}</p>
+                    {causes.map((cause) => (
+                        <p>{cause.display_name}</p> 
+                    )
+                    )}
+                    <p>{locationDetails}</p>
                     <p>
                         {formatMessage('campaignProfile:totalAmountRaised', {
                             amount: amountRaised,

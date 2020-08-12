@@ -24,7 +24,7 @@ const {
 
 function SupportingGroups(props) {
     const {
-        campaignDetails,
+        slug,
         campaignSubGroupDetails,
         campaignSubGroupsShowMoreUrl,
         seeMoreLoaderStatus,
@@ -52,7 +52,7 @@ function SupportingGroups(props) {
                                         </Header.Content>
                                     </Header>
                                     <div>
-                                        <a href={`${RAILS_APP_URL_ORIGIN}/campaigns/${campaignDetails.attributes.slug}/step/one`}>
+                                        <a href={`${RAILS_APP_URL_ORIGIN}/campaigns/${slug}/step/one`}>
                                             <Button className="success-btn-rounded-def">{formatMessage('campaignProfile:createGivingGroupBtn')}</Button>
                                         </a>
                                     </div>
@@ -73,9 +73,10 @@ function SupportingGroups(props) {
                 groupCards.push(<SupportingGroup
                     entityName={subGroup.attributes.name}
                     placeholder={(groupImg) || placeholder}
-                    amountRaised={subGroup.attributes.amountRaised}
-                    location={subGroup.attributes.location}
-                    cause={subGroup.attributes.causes}
+                    amountRaised={subGroup.attributes.totalMoneyRaised}
+                    city={subGroup.attributes.city}
+                    province={subGroup.attributes.province}
+                    causes={subGroup.attributes.causes}
                     type="Giving Groups"
                 />);
             });

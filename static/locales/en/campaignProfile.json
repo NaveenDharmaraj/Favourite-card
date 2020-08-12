@@ -16,5 +16,5 @@
     "createGivingGroupBtn": "Create a Giving Group",
     "supportCampaignHeader": "Giving Groups supporting this campaign",
     "totalAmountRaised": "Total Raised:{{amount}}",
-    "decisionTree": "with decision tree"
+    "decisionTree": " with decision tree"
 }
