@@ -207,7 +207,7 @@ class ClaimCharity extends React.Component {
                     <div className="WithoutAccess">
                         <Container>
                             <div className="WithoutAccessheading">
-                                <Header as='h3'>How to claim your charity page</Header>
+                                <Header as='h3'>Without an access code</Header>
                             </div>
                             <List>
                                 <List.Item className="number">Email us at hello@charitableimpact.com with the name and registration number of the charity you wish to claim.</List.Item>

@@ -31,6 +31,7 @@
       margin-bottom:50px;
     }
     .Giftsleft{
+      max-width: 495px;
       @media only screen and (max-width:600px) {
         width: 90% !important;
       }
@@ -53,6 +54,7 @@
               line-height: 21px;
               font-weight: bold;
               color: @font-color;
+              margin-bottom: 28px;
               @media only screen and (max-width:767px) {
                 text-align: left;
               }
@@ -102,10 +104,10 @@
         width:823px;
         top:-10px;
         @media only screen and (max-width:1450px) {
-          right:-160px;
+          right:-200px;
         }
         @media only screen and (max-width:1199px) {
-          right: -190px;
+          right: -240px;
           height: 392px;
           width: 713px;
         }
@@ -219,6 +221,7 @@
           width: 100%;
           display: block;
           margin-bottom:10px;
+          font-family: 'ProximaNova-Semibold';
         }
        .inputBox{
          width: 100%;
@@ -331,6 +334,18 @@
     } 
   }
 }
+.Giftsleft .ui.items>.item>.content{
+  padding: 0px ;
+  align-items: center ;
+  display: flex ;
+  .description{
+    margin: 0px;
+    padding: 0px;
+  }
+}
+.Giftsleft .ui.items>.item>.content p {
+  margin-left:43px !important;
+}
 @media only screen and (max-width:991px) {
   .myRedDIV   {order: 2;}
   .myPinkDIV  {order: 1;}
@@ -342,15 +357,20 @@
  .Giftsleft .ui.items:not(.unstackable)>.item {
     flex-direction: row!important;
 }
+.Giftsleft .ui.items > .item > .content {
+  display: flex !important;
+  padding: 0px !important;
+}
 .Giftsleft .ui.items>.item>.content p {
-  margin-top: -15px !important;
   margin-left:17px !important;
 }
 }
 @media only screen and (max-width:480px) {
 .Giftsleft .ui.items > .item > .content p {
-  margin-top: -27px !important;
   margin-left: 17px !important;
+}
+.Giftsleft .ui.items>.item>.content{
+  padding: 0px !important;
 }
 }
 /*********************Charity Account***************/
