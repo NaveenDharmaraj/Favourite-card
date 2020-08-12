@@ -46,6 +46,7 @@ function SupportingGroup(props) {
                     }
                     )}
                     <p>{causesName}</p>
+                    <p>{locationDetails}</p>
                     <p>
                         {formatMessage('campaignProfile:totalAmountRaised', {
                             amount: amountRaised,
