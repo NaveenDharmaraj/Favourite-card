@@ -971,7 +971,7 @@ const resetDataForAccountChange = (giveData, dropDownOptions, props, type) => {
         );
     }
     if (type === 'give/to/group') {
-        dropDownOptions.privacyNameOptions = populateInfoToShareAccountName(giveData.giveFrom.name, formatMessage);
+        dropDownOptions.privacyNameOptions = populateInfoToShareAccountName(displayName, formatMessage);
         giveData.privacyShareEmail = false;
         giveData.privacyShareAddress = false;
     }
