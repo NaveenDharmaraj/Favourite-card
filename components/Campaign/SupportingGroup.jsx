@@ -26,6 +26,7 @@ function SupportingGroup(props) {
     } else if (!_isEmpty(city) && !_isEmpty(province)) {
         locationDetails = `${city}, ${province}`;
     }
+    let causesName = '';
     return (
         <div className="col-sm-6">
             <div className="campaignCard">
@@ -40,11 +41,11 @@ function SupportingGroup(props) {
                             {formatMessage('campaignProfile:decisionTree')}
                         </span>
                     </Header>
-                    {causes.map((cause) => (
-                        <p>{cause.display_name}</p> 
-                    )
+                    {causes.map((cause) => {
+                        causesName =`${cause.display_name},`
+                    }
                     )}
-                    <p>{locationDetails}</p>
+                    <p>{causesName}</p>
                     <p>
                         {formatMessage('campaignProfile:totalAmountRaised', {
                             amount: amountRaised,
