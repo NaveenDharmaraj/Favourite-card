@@ -8,6 +8,7 @@ import {
 } from 'semantic-ui-react';
 import { connect, } from 'react-redux';
 import getConfig from 'next/config';
+import _isEmpty from 'lodash/isEmpty';
 import { Router } from '../../routes';
 import accessingleft from '../../static/images/claimcharity04.svg';
 import accessingfull from '../../static/images/accessing1.svg';
@@ -41,7 +42,8 @@ class Success extends React.Component {
         const {
             currentUser: {
                 attributes: {
-                    firstName
+                    displayName,
+                    firstName,
                 }
             },
             slug,
@@ -60,7 +62,7 @@ class Success extends React.Component {
                         <div className="lefttopicon"></div>
                         <div className="bannerHeading">
                             <Header as='h3'>
-                                {firstName}
+                                {!_isEmpty(displayName) ? displayName : firstName}
                             , you’ve claimed your charity </Header>
                             <p data-test="ClaimCharity_Success_charityname_text">Now you have access to your charity {charityName ? charityName : ''}’s account.</p>
                             {this.renderGoToCharityBtn(locationNumber, 1)}
