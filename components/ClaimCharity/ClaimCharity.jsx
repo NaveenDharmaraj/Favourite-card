@@ -210,7 +210,7 @@ class ClaimCharity extends React.Component {
                                 <Header as='h3'>Without an access code</Header>
                             </div>
                             <List>
-                                <List.Item className="number">Email us at hello@charitableimpact.com with the name and registration number of the charity you wish to claim.</List.Item>
+                                <List.Item className="number">Email us at <a className="linkEmail" href={`mailto:hello@charitableimpact.com`} target='_blank'>hello@charitableimpact.com</a> with the name and registration number of the charity you wish to claim.</List.Item>
                                 <List.Item className="number serchiconleft">
                                     We complete a manual verification process in order to grant administrative privileges to the charity profile. To speed up the process, please ensure that you provide us with one of the following pieces of information:
                                 <List.List>

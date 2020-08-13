@@ -19,7 +19,7 @@
     },
 	"join": {
 		"joinHeader": "Join the thousands of Canadians already on Charitable Impact",
-		"joindesc1Header": "$530M+",
+		"joindesc1Header": "$660M+",
 		"joindesc1Desc": "donated by the Charitable Impact community",
 		"joindesc2Header": "9,000+",
 		"joindesc2Desc": "have benefited from gifts sent by donors on Charitable Impact",
@@ -34,11 +34,11 @@
 		"emailLabel": "Email",
 		"password": "Password",
 		"passwordPlaceholder": "Choose your password",
-		"submitButton": "Open an Impact Account and claim gift",
+		"submitButton": "Open Impact Account and claim gift",
 		"submitButtonLoading": "Submitting"
 	},
 	"openImpactInfo": {
-		"info1": " By clicking ‘Open an Impact Account and claim your gift’, you acknowlege that you have read the",
+		"info1": " By clicking ‘Open Impact Account and claim gift’, you acknowlege that you have read the",
 		"privacyPolicyLink": "Privacy Policy",
 		"info2": ", and agree to the",
 		"termsAndConditionLink": "Terms & Conditions",
