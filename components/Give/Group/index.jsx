@@ -22,6 +22,7 @@ import {
     Header,
     Placeholder,
     Select,
+    Modal,
 } from 'semantic-ui-react';
 import ReactHtmlParser from 'react-html-parser';
 import FormValidationErrorMessage from '../../shared/FormValidationErrorMessage';
@@ -112,6 +113,7 @@ class Group extends React.Component {
                 privacyNameOptions,
                 paymentInstrumentList: populatePaymentInstrument(paymentInstruments),
             },
+            isGiveFromModalOpen: false,
             inValidCardNameValue: true,
             inValidCardNumber: true,
             inValidCvv: true,
@@ -135,6 +137,16 @@ class Group extends React.Component {
         this.handleInputOnBlur = this.handleInputOnBlur.bind(this)
         this.handleInputChangeGiveTo = this.handleInputChangeGiveTo.bind(this);
         this.handleAddMoneyModal = this.handleAddMoneyModal.bind(this);
+        this.toggleGiveFromModal = this.toggleGiveFromModal.bind(this);
+    }
+
+    toggleGiveFromModal() {
+        const {
+            isGiveFromModalOpen,
+        } = this.state;
+        this.setState({
+            isGiveFromModalOpen: !isGiveFromModalOpen,
+        });
     }
 
     componentDidMount() {
@@ -893,6 +905,7 @@ class Group extends React.Component {
                 groupFromUrl,
                 type
             },
+            isGiveFromModalOpen,
             validity,
             dropDownOptions: {
                 giveToList,
@@ -1033,6 +1046,61 @@ class Group extends React.Component {
                                                             handlePresetAmountClick={this.handlePresetAmountClick}
                                                             validity={validity}
                                                         />
+                                                    </Grid.Column>
+                                                    <Grid.Column mobile={16}>
+                                                    <div className="noteDefault info mt-2">
+                                                        <div className="noteWraper">
+                                                            <span className="leftImg">
+                                                                <span className="notifyDefaultIcon" />
+                                                            </span>
+                                                            <span className="noteContent">
+                                                                Sponsor name will match your gift.  
+                                                                <span  className="hyperLinks-style" onClick={this.toggleGiveFromModal}> Learn more.</span>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <Modal
+                                                        className="chimp-modal matching-fund-modal"
+                                                        closeIcon
+                                                        size="tiny"
+                                                        open={isGiveFromModalOpen}
+                                                        centered
+                                                        onClose={this.toggleGiveFromModal}
+                                                        dimmer="inverted"
+                                                    >
+                                                        <Modal.Header>Your gift will be matched!</Modal.Header>
+                                                        <Modal.Content>
+                                                            <p>
+                                                            For every $1.00 you give to this group, <span className="bold">matching sponsor name</span> will match your gift with $1.00 up to <span className="bold">$max match amount</span> per gift, until the matching funds run out or expire.
+                                                            </p>
+                                                            <div className="matching-fund-modal-wrapper">
+                                                                <div className="matching-fund-modal-inner-wrapper">
+                                                                    <div className="matching-progress-wrapper">
+                                                                        <div className="matching-progress">
+                                                                            <span className="progress-inner" style={{height:"60%"}}></span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className="matching-fund-details">
+                                                                        <Header as='h4'>
+                                                                            $Amount remaining
+                                                                            <Header.Subheader>
+                                                                            matching funds remaining
+                                                                            </Header.Subheader>
+                                                                        </Header>
+                                                                        <p>
+                                                                            of $total matching funds provided <br/>
+                                                                            provided by matching_sponsor_name
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                                <div className="matching-fund-expire">
+                                                                    <span className="expire-date">Expires Dec 31, 2020</span>
+                                                                </div>
+                                                            </div>
+                                                        </Modal.Content>
+                                                    </Modal>
+                                                    </Grid.Column>
+                                                    <Grid.Column mobile={16} tablet={12} computer={10}>
                                                         <div className="give_flow_field">
                                                             {(!this.props.currentUser.userAccountsFetched || !_isEmpty(giveFromList)) && (
                                                                 <DropDownAccountOptions

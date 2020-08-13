@@ -404,7 +404,6 @@
     &.flowPadding{
         .ui{
             &.breadcrumb{
-            margin-right: -18px;
              a{
              
                 &.section{
@@ -497,7 +496,6 @@
     .ui{
         &.form{
             >.grid{
-                width: 100%;
                 label{
                     font-size: 14px !important;
                     margin-right: 6px;
@@ -563,7 +561,7 @@
         margin-bottom: 20px !important;
     }
     .give_flow_field{
-        margin-top:44px !important;
+        margin-top:40px !important;
     }
     .give_flow_field_bottom{
         margin-bottom:44px !important;
@@ -755,6 +753,21 @@
     border-radius: 4px;	
     background-color: #E3E8F0;
     padding:7px 9px 6px;
+    &.info{
+        background-color: #E5F5F5;
+        &.mt-2{
+            margin-top: 20px;
+        }
+        .noteWraper{
+            .leftImg{
+                .notifyDefaultIcon{
+                    &::before{
+                        filter: invert(61%) sepia(64%) saturate(7283%) hue-rotate(156deg) brightness(96%) contrast(103%);
+                    }
+                }
+            }
+        }
+    }
     .noteWraper{
         display: list-item;
         table-layout: fixed;
@@ -1735,5 +1748,85 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
     display: block;
     margin: auto;
     margin-bottom: 20px;
+    }
+}
+.matching-fund-modal{
+    >.content{
+        >p{
+            line-height: 22px;
+            color: #263238;
+            font-size: 14px;
+        }
+    }
+}
+.matching-fund-modal-wrapper{
+    display: flex;
+    padding-bottom: 15px;
+    .matching-fund-modal-inner-wrapper{
+        display: flex;
+        align-items: center; 
+        width: 100%;
+    }
+    .matching-progress-wrapper{
+        width: 24px;
+        .matching-progress{
+            background-color: #D7D7D7;
+            width: 24px;
+            height: 128px;
+            border-radius: 29.5px;
+            overflow: hidden;
+            position: relative;
+            .progress-inner{
+                position: absolute;
+                bottom: 0px;
+                left: 0;
+                right: 0;
+                background-color: #009E9F;
+            }
+        }
+    }
+    .matching-fund-details{
+        margin-left: 20px;
+        max-width: 300px;
+        padding-right: 10px;
+        align-items: center;
+        h4{
+            &.ui{
+                &.header{
+                    font-size: 24px;
+                    color: #009EA2;
+                    >.sub{
+                        &.header{
+                            font-size: 14px;
+                            color: #009EA2;
+                            font-family: 'ProximaNova-Semibold';
+                        }
+                    }
+                }
+            }
+        }
+        p{
+            font-size: 14px;
+            line-height: 22px;
+            color: #263238;
+            margin-top: 20px;
+            font-family: 'ProximaNova-Semibold';
+        }
+    }
+    .matching-fund-expire{
+        display: flex;
+        align-items: flex-end;
+        @media only screen and (min-width:768px) {
+            min-width: 132px;
+        }
+        .expire-date{
+            display: inline-block;
+            font-size: 12px;
+            font-family: 'ProximaNova-Medium';
+            border-radius: 12.17px;
+            background-color: #E5F5F5;
+            padding: 4px 5px;
+            text-align: center;
+        }
     }
 }
