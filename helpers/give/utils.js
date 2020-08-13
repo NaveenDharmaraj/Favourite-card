@@ -1705,6 +1705,7 @@ const getSelectedFriendList = (options, values) => {
  * @param {string} date expiry date.
  * @param {number} day tells which day of monthly allocation.
  * @param {string} name name of company giving matching policy.
+ * @param {function} formatMessage language translation function
  * @return {boolean} expired or not.
  */
 const checkMatchPolicyExpiry = (date, day, name, formatMessage) => {
@@ -1716,17 +1717,18 @@ const checkMatchPolicyExpiry = (date, day, name, formatMessage) => {
         isValidMatchPolicy: true,
         matchPolicyTitle: `${name} will match your gift.`,
     } : {
-            hasMatchingPolicy: true,
-            isValidMatchPolicy: false,
-            matchPolicyTitle: `Your gift will not be matched. The matching campaign expires on ${date} which occurs before your first monthly gift is scheduled.`,
-        }
-}
+        hasMatchingPolicy: true,
+        isValidMatchPolicy: false,
+        matchPolicyTitle: `Your gift will not be matched. The matching campaign expires on ${date} which occurs before your first monthly gift is scheduled.`,
+    };
+};
 
 
 /**
  * Validate Match policy.
  * @param {object} giveGroupDetails give group details.
- *  @param {number} giftType tells whether allocation is monthly or once.
+ * @param {number} giftType tells whether allocation is monthly or once.
+ * @param {function} formatMessage language translation function
  * @return {boolean} match policy condition.
  */
 const checkMatchPolicy = (giveGroupDetails = {}, giftType = 0, formatMessage) => {
@@ -1741,8 +1743,8 @@ const checkMatchPolicy = (giveGroupDetails = {}, giftType = 0, formatMessage) =>
             if (giftType > 0) {
                 return activeMatch.matchClose ? checkMatchPolicyExpiry(activeMatch.matchClose, giftType, activeMatch.company, formatMessage) : {
                     hasMatchingPolicy: true,
-                    isValidMatchPolicy: false,
-                    matchPolicyTitle: ' activeMatch.matchClose is not available',
+                    isValidMatchPolicy: true,
+                    matchPolicyTitle: `${activeMatch.company} will match your gift.`,
                 };
             }
             return {
