@@ -1700,7 +1700,68 @@ const getSelectedFriendList = (options, values) => {
     return selectedFriendsList;
 };
 
+/**
+ * Validate expiry date for matching policy monthly.
+ * @param {string} date expiry date.
+ * @param {number} day tells which day of monthly allocation.
+ * @param {string} name name of company giving matching policy.
+ * @return {boolean} expired or not.
+ */
+const checkMatchPolicyExpiry = (date, day, name, formatMessage) => {
+    const companyExpireDate = new Date(date).getTime();
+    const nextAllocationDate = setDateForRecurring(day, formatMessage);
+    const nextAllocationDateTime = new Date(nextAllocationDate).getTime();
+    return companyExpireDate > nextAllocationDateTime ? {
+        hasMatchingPolicy: true,
+        isValidMatchPolicy: true,
+        matchPolicyTitle: `${name} will match your gift.`,
+    } : {
+            hasMatchingPolicy: true,
+            isValidMatchPolicy: false,
+            matchPolicyTitle: `Your gift will not be matched. The matching campaign expires on ${date} which occurs before your first monthly gift is scheduled.`,
+        }
+}
+
+
+/**
+ * Validate Match policy.
+ * @param {object} giveGroupDetails give group details.
+ *  @param {number} giftType tells whether allocation is monthly or once.
+ * @return {boolean} match policy condition.
+ */
+const checkMatchPolicy = (giveGroupDetails = {}, giftType = 0, formatMessage) => {
+    if (!_.isEmpty(giveGroupDetails)) {
+        const {
+            attributes: {
+                activeMatch,
+                hasActiveMatch,
+            },
+        } = giveGroupDetails;
+        if (!_.isEmpty(activeMatch) && hasActiveMatch) {
+            if (giftType > 0) {
+                return activeMatch.matchClose ? checkMatchPolicyExpiry(activeMatch.matchClose, giftType, activeMatch.company, formatMessage) : {
+                    hasMatchingPolicy: true,
+                    isValidMatchPolicy: false,
+                    matchPolicyTitle: ' activeMatch.matchClose is not available',
+                };
+            }
+            return {
+                hasMatchingPolicy: true,
+                isValidMatchPolicy: true,
+                matchPolicyTitle: `${activeMatch.company} will match your gift.`,
+            };
+        }
+    }
+    return {
+        hasMatchingPolicy: false,
+        isValidMatchPolicy: false,
+        matchPolicyTitle: '',
+    };
+};
+
+
 export {
+    checkMatchPolicy,
     percentage,
     fullMonthNames,
     monthNamesForGivingTools,
