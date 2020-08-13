@@ -1,7 +1,7 @@
 
 import React from 'react'
 import { Image, Header } from 'semantic-ui-react';
-import _isEmpty from 'lodash/isEmpty';
+import _ from 'lodash';
 
 import { renderTextByCharacter } from '../../helpers/utils';
 import { withTranslation } from '../../i18n';
@@ -19,14 +19,16 @@ function SupportingGroup(props) {
     } = props;
     const entityShortName = renderTextByCharacter(entityName, 25);
     let locationDetails = '';
-    if (_isEmpty(city) && !_isEmpty(province)) {
+    if (_.isEmpty(city) && !_.isEmpty(province)) {
         locationDetails = province;
-    } else if (!_isEmpty(city) && _isEmpty(province)) {
+    } else if (!_.isEmpty(city) && _.isEmpty(province)) {
         locationDetails = city;
-    } else if (!_isEmpty(city) && !_isEmpty(province)) {
+    } else if (!_.isEmpty(city) && !_.isEmpty(province)) {
         locationDetails = `${city}, ${province}`;
     }
-    let causesName = '';
+    let causesNames = '';
+    const causesNameList = _.map(causes, 'display_name');
+    causesNames = causesNameList.join(',');
     return (
         <div className="col-sm-6">
             <div className="campaignCard">
@@ -41,11 +43,7 @@ function SupportingGroup(props) {
                             {formatMessage('campaignProfile:decisionTree')}
                         </span>
                     </Header>
-                    {causes.map((cause) => {
-                        causesName =`${cause.display_name},`
-                    }
-                    )}
-                    <p>{causesName}</p>
+                    <p>{causesNames}</p>
                     <p>{locationDetails}</p>
                     <p>
                         {formatMessage('campaignProfile:totalAmountRaised', {
