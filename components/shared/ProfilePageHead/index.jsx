@@ -1,4 +1,3 @@
-
 import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
 import getConfig from 'next/config';
@@ -6,6 +5,7 @@ import {
     bool,
     PropTypes,
     string,
+    func,
 } from 'prop-types';
 import {
     Button,
@@ -14,6 +14,7 @@ import {
 
 import { withTranslation } from '../../../i18n';
 import { Link } from '../../../routes';
+import GroupJoin from '../../Group/GroupJoin';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -29,7 +30,7 @@ function ProfilePageHead(props) {
                 isAdmin,
                 slug,
                 balance,
-            }
+            },
         },
         pageDetails,
         isAuthenticated,
@@ -75,10 +76,12 @@ function ProfilePageHead(props) {
                                 </Link>
                             ) : (
                                 <Link route={(`/give/to/${profileType}/${slug}/new`)}>
-                                    <Popup disabled={false} content={`The current campaign balance is ${balance}`}
+                                    <Popup
+                                        disabled={false}
+                                        content={`The current campaign balance is ${balance}`}
                                         trigger={
                                             (
-                                                <Button className="blue-bordr-btn-round-def CampaignBtn" disabled >
+                                                <Button className="blue-bordr-btn-round-def CampaignBtn" disabled>
                                                     <span>
                                                         <i aria-hidden="true" className="bell icon" />
                                                     </span>
@@ -99,30 +102,38 @@ function ProfilePageHead(props) {
     return (
         <Fragment>
             {buttonLink}
+            {(type === 'groups' && !isAdmin)
+            && (
+                <GroupJoin />
+            )}
         </Fragment>
     );
 }
 
 ProfilePageHead.defaultProps = {
+    isAuthenticated: false,
     pageDetails: {
         attributes: {
-            isAdmin: false,
             balance: '',
+            isAdmin: false,
             slug: '',
         },
-        type: ''
+        type: '',
     },
+    t: () => {},
 };
 
 ProfilePageHead.propTypes = {
-    campaignDetails: PropTypes.shape({
+    isAuthenticated: bool,
+    pageDetails: PropTypes.shape({
         attributes: PropTypes.shape({
-            isAdmin: bool,
             balance: string,
+            isAdmin: bool,
             slug: string,
         }),
-        type: string
+        type: string,
     }),
+    t: func,
 };
 
 function mapStateToProps(state) {
