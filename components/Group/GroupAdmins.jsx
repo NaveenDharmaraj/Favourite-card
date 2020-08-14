@@ -41,12 +41,13 @@ class GroupAdmins extends React.Component {
         const {
             groupAdminsDetails: {
                 data: adminsData,
+                totalCount,
             },
         } = this.props;
         return (
             <Fragment>
                 <Header as="h3">Group Admins</Header>
-                {(!_isEmpty(adminsData) && adminsData.length < 3)
+                {(!_isEmpty(adminsData) && totalCount > 3)
                     ? <AdminsList />
                     : <Admins />
                 }

@@ -15,6 +15,7 @@ const AdminsList = (props) => {
     const {
         groupAdminsDetails: {
             data,
+            totalCount,
         },
     } = props;
     const adminData = [];
@@ -29,7 +30,7 @@ const AdminsList = (props) => {
             );
             adminName.push(admin.attributes.displayName);
         });
-        remainingAdmins = (data.length - adminData.length);
+        remainingAdmins = (totalCount - adminData.length);
     }
     return (
         <div className="ch_shareMore">
