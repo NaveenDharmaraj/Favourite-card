@@ -139,10 +139,23 @@ const formatChartAmount = (value, language, currencyType) => {
     return val;
 };
 
+const getLocation = (city, province) => {
+    let location = '';
+    if (_isEmpty(city) && !_isEmpty(province)) {
+        location = province;
+    } else if (!_isEmpty(city) && _isEmpty(province)) {
+        location = city;
+    } else if (!_isEmpty(city) && !_isEmpty(province)) {
+        location = `${city}, ${province}`;
+    }
+    return location;
+};
+
 export {
     createChartData,
     formatGraphData,
     getChartIndex,
     getSelectedYear,
     formatChartAmount,
+    getLocation,
 };
