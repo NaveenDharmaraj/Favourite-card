@@ -77,6 +77,64 @@ export const actionTypes = {
     SUB_GROUP_LIST_LOADER: 'SUB_GROUP_LIST_LOADER',
 };
 
+export const getCampaignFromSearch = (id, searchKey = '', pageNumber = 1, pageSize = 6) => async (dispatch) => {
+    dispatch({
+        payload: {
+            campaignSubGroupDetails: [],
+        },
+        type: actionTypes.CLEAR_DATA_FOR_CAMPAIGNS,
+    });
+
+    dispatch({
+        payload: {
+            subGroupListLoader: true,
+        },
+        type: actionTypes.SUB_GROUP_LIST_LOADER,
+    });
+
+    let fullParams;
+    if (_.isEmpty(searchKey)) {
+        fullParams = {
+            params: {
+                dispatch,
+                ignore401: true,
+                uxCritical: true,
+                'page[number]': pageNumber,
+                'page[size]': pageSize,
+            },
+        };
+    }
+    else {
+        fullParams = {
+            params: {
+                'page[number]': pageNumber,
+                'page[size]': pageSize,
+                'filter[name]': searchKey,
+            }
+        }
+    };
+    
+    await coreApi.get(`campaigns/${id}/subGroups`, {
+        ...fullParams,
+    }).then((subGroupSearchResult) => {
+        dispatch({
+            payload: {
+                subGroupListLoader: false,
+            },
+            type: actionTypes.SUB_GROUP_LIST_LOADER,
+        });
+        dispatch({
+            payload: {
+                campaignSubGroupDetails: subGroupSearchResult,
+            },
+            type: actionTypes.GET_SUB_GROUPS_FOR_CAMPAIGN,
+        });
+    })
+        .catch((error) => {
+            // console.log(error);
+        })
+};
+
 export const getCampaignFromSlug = async (dispatch, slug, token = null) => {
     dispatch({
         payload: {
@@ -107,7 +165,7 @@ export const getCampaignFromSlug = async (dispatch, slug, token = null) => {
     await coreApi.get(`campaigns/find_by_slug`, {
         ...fullParams,
     }).then(
-        (result) => {
+        async (result) => {
             dispatch({
                 payload: {
                     subGroupListLoader: true,
@@ -131,31 +189,9 @@ export const getCampaignFromSlug = async (dispatch, slug, token = null) => {
                 fullParams.headers = {
                     Authorization: `Bearer ${token}`,
                 };
-            }
-            // API call for subgroups
-            if (result.data) {
-                coreApi.get(`${result.data.relationships.subGroups.links.related}?page[size]=6`,
-                    {
-                        ...fullParams,
-                    }).then(
-                    (subGroupResult) => {
-                        dispatch({
-                            payload: {
-                                campaignSubGroupDetails: subGroupResult,
-                            },
-                            type: actionTypes.GET_SUB_GROUPS_FOR_CAMPAIGN,
-                        });
-                        dispatch({
-                            payload: {
-                                subGroupListLoader: false,
-                            },
-                            type: actionTypes.SUB_GROUP_LIST_LOADER,
-                        });
-                    },
-                ).catch((error) => {
-                    // console.log(error);
-                });
-            }
+            };
+            await dispatch(getCampaignFromSearch(result.data.id));
+
             // API call for images
             if (result.data) {
                 coreApi.get(result.data.relationships.galleryImages.links.related,
@@ -325,44 +361,4 @@ export const campaignSubGroupSeeMore = (url, dispatch, isViewMore) => {
     ).catch((error) => {
         // console.log(error);
     });
-};
-
-export const getCampaignFromSearch = (pageNumber, searchKey) => async (dispatch) => {
-    dispatch({
-        payload: {
-            campaignSubGroupDetails: [],
-        },
-        type: actionTypes.CLEAR_DATA_FOR_CAMPAIGNS,
-    });
-
-    dispatch({
-        payload: {
-            subGroupListLoader: true,
-        },
-        type: actionTypes.SUB_GROUP_LIST_LOADER,
-    });
-
-    await coreApi.get(`campaigns/1/subGroups`, {
-        params: {
-            'page[number]': pageNumber,
-            'page[size]': 6,
-            'filter[name]': searchKey,
-        }
-    }).then((subGroupSearchResult) => {
-        dispatch({
-            payload: {
-                subGroupListLoader: false,
-            },
-            type: actionTypes.SUB_GROUP_LIST_LOADER,
-        });
-        dispatch({
-            payload: {
-                campaignSubGroupDetails: subGroupSearchResult,
-            },
-            type: actionTypes.GET_SUB_GROUPS_FOR_CAMPAIGN,
-        });
-    })
-        .catch((error) => {
-            // console.log(error);
-        })
 };

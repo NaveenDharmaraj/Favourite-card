@@ -70,7 +70,6 @@ class SupportingGroups extends React.Component {
     };
 
     searchOnChange(event) {
-        event.preventDefault();
         const {
             target: {
                 value
@@ -78,16 +77,16 @@ class SupportingGroups extends React.Component {
         } = event;
         this.setState({
             searchKey: value,
-        })
+        });
     }
 
     searchClick() {
         const { searchKey } = this.state;
         const {
-            dispatch
+            dispatch,
+            campaignId,
         } = this.props;
-        let currentPage = 1;
-        dispatch(getCampaignFromSearch(currentPage,searchKey));
+        dispatch(getCampaignFromSearch(campaignId, searchKey));
     }
 
     renderGroups(campaignSubGroupDetails, slug, formatMessage) {

@@ -96,6 +96,7 @@ class CampaignProfileWrapper extends React.Component {
                     formattedImpact,
                 },
                 type,
+                id,
             },
         } = this.props;
         const bannerStyle = {};
@@ -182,6 +183,7 @@ class CampaignProfileWrapper extends React.Component {
                                                         isAuthenticated={isAuthenticated}
                                                     />
                                                     <SupportingGroups
+                                                        campaignId={id}
                                                         slug={slug}
                                                         campaignSubGroupDetails={campaignSubGroupDetails}
                                                         campaignSubGroupsShowMoreUrl={campaignSubGroupsShowMoreUrl}
