@@ -72,7 +72,6 @@ class CampaignProfile extends React.Component {
             },
             slugApiErrorStats,
         } = this.props;
-
         const description = (!_.isEmpty(about)) ? about : name;
         const causesList = (causes.length > 0) ? _.map(causes, _.property('name')) : [];
         const keywords = (causesList.length > 0) ? _.join(_.slice(causesList, 0, 10), ', ') : '';

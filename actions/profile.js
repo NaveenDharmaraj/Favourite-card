@@ -46,7 +46,6 @@ export const generatePayloadBodyForFollowAndUnfollow = (userId, id, type) => {
             };
             relationship = 'LIKES';
             break;
-        
         default:
             break;
     }
@@ -135,7 +134,7 @@ export const getCampaignFromSlug = async (dispatch, slug, token = null) => {
             }
             // API call for subgroups
             if (result.data) {
-                coreApi.get(`${result.data.relationships.subGroups.links.related}?page[size]=9`,
+                coreApi.get(`${result.data.relationships.subGroups.links.related}?page[size]=6`,
                     {
                         ...fullParams,
                     }).then(
@@ -326,4 +325,44 @@ export const campaignSubGroupSeeMore = (url, dispatch, isViewMore) => {
     ).catch((error) => {
         // console.log(error);
     });
+};
+
+export const getCampaignFromSearch = (pageNumber, searchKey) => async (dispatch) => {
+    dispatch({
+        payload: {
+            campaignSubGroupDetails: [],
+        },
+        type: actionTypes.CLEAR_DATA_FOR_CAMPAIGNS,
+    });
+
+    dispatch({
+        payload: {
+            subGroupListLoader: true,
+        },
+        type: actionTypes.SUB_GROUP_LIST_LOADER,
+    });
+
+    await coreApi.get(`campaigns/1/subGroups`, {
+        params: {
+            'page[number]': pageNumber,
+            'page[size]': 6,
+            'filter[name]': searchKey,
+        }
+    }).then((subGroupSearchResult) => {
+        dispatch({
+            payload: {
+                subGroupListLoader: false,
+            },
+            type: actionTypes.SUB_GROUP_LIST_LOADER,
+        });
+        dispatch({
+            payload: {
+                campaignSubGroupDetails: subGroupSearchResult,
+            },
+            type: actionTypes.GET_SUB_GROUPS_FOR_CAMPAIGN,
+        });
+    })
+        .catch((error) => {
+            // console.log(error);
+        })
 };

@@ -9,12 +9,14 @@ import {
     Icon,
 } from 'semantic-ui-react';
 import getConfig from 'next/config';
-
+import { connect } from 'react-redux';
 import { withTranslation } from '../../i18n';
 import PlaceholderGrid from '../shared/PlaceHolder';
 import placeholder from '../../static/images/no-data-avatar-giving-group-profile.png';
 import SupportingGroup from '../Campaign/SupportingGroup';
 import noDataImgCampain from '../../static/images/campaignprofile_nodata_illustration.png';
+import { getCampaignFromSearch } from '../../actions/profile';
+import { mapStateToProps } from '../shared/ShareProfile';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -22,17 +24,19 @@ const {
     RAILS_APP_URL_ORIGIN,
 } = publicRuntimeConfig;
 
-function SupportingGroups(props) {
-    const {
-        slug,
-        campaignSubGroupDetails,
-        campaignSubGroupsShowMoreUrl,
-        seeMoreLoaderStatus,
-        subGroupListLoader,
-        viewMoreFn,
-        t: formatMessage,
-    } = props;
-    const noDataSupportingGroups = () => {
+class SupportingGroups extends React.Component {
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            searchKey: '',
+        };
+        this.renderGroups = this.renderGroups.bind(this);
+        this.searchClick = this.searchClick.bind(this);
+        this.searchOnChange = this.searchOnChange.bind(this);
+    }
+
+    noDataSupportingGroups = (slug, formatMessage) => {
         return (
             <Grid.Column width={16} className="c-w-100">
                 <div className="givingGroup noData mt-1 mb-2">
@@ -65,7 +69,28 @@ function SupportingGroups(props) {
         );
     };
 
-    const renderGroups = () => {
+    searchOnChange(event) {
+        event.preventDefault();
+        const {
+            target: {
+                value
+            }
+        } = event;
+        this.setState({
+            searchKey: value,
+        })
+    }
+
+    searchClick() {
+        const { searchKey } = this.state;
+        const {
+            dispatch
+        } = this.props;
+        let currentPage = 1;
+        dispatch(getCampaignFromSearch(currentPage,searchKey));
+    }
+
+    renderGroups(campaignSubGroupDetails, slug, formatMessage) {
         let groupCards = [];
         if ((typeof campaignSubGroupDetails === 'object') && (campaignSubGroupDetails.length > 0)) {
             campaignSubGroupDetails.map((subGroup) => {
@@ -81,55 +106,71 @@ function SupportingGroups(props) {
                 />);
             });
         } else {
-            groupCards = noDataSupportingGroups();
+            groupCards = this.noDataSupportingGroups(slug, formatMessage);
         }
         return groupCards;
     };
-    return (
-        <Fragment>
-            <div className="supportingWithsearch">
-                <Header as="h3">{formatMessage('campaignProfile:supportCampaignHeader')}</Header>
-            </div>
-            <div className="search-banner campaignSearchBanner">
-                <div className="searchbox">
-                    <Grid >
-                        <Grid.Row>
-                            <Grid.Column mobile={16} tablet={12} computer={8}>
-                                {/* TODO Api call on search onChange */}
-                                <Input
-                                    fluid
-                                    placeholder="Search Giving Groups"
-                                />
-                                <div className="search-btn campaignSearch">
-                                    <Icon name="search" />
-                                </div>
-                            </Grid.Column>
-                        </Grid.Row>
-                    </Grid>
+
+    render() {
+        const {
+            slug,
+            campaignSubGroupDetails,
+            campaignSubGroupsShowMoreUrl,
+            seeMoreLoaderStatus,
+            subGroupListLoader,
+            viewMoreFn,
+            t: formatMessage,
+        } = this.props;
+        const { searchKey } = this.state;
+        return (
+            <Fragment>
+                <div className="supportingWithsearch">
+                    <Header as="h3">{formatMessage('campaignProfile:supportCampaignHeader')}</Header>
                 </div>
-            </div>
-            {subGroupListLoader ? <PlaceholderGrid row={2} column={3} /> : (
-                <div className="supportingcardWapper">
-                    <div className="custom_Grid">
-                        {renderGroups()}
+                <div className="search-banner campaignSearchBanner">
+                    <div className="searchbox">
+                        <Grid >
+                            <Grid.Row>
+                                <Grid.Column mobile={16} tablet={12} computer={8}>
+                                    {/* TODO Api call on search onChange */}
+                                    <Input
+                                        fluid
+                                        placeholder="Search Giving Groups"
+                                        onChange={(event) => this.searchOnChange(event)}
+                                    />
+                                    <div className="search-btn campaignSearch">
+                                        <a onClick={this.searchClick}>
+                                            <Icon name="search" />
+                                        </a>
+                                    </div>
+                                </Grid.Column>
+                            </Grid.Row>
+                        </Grid>
                     </div>
                 </div>
-            )
-            }
-            { (campaignSubGroupsShowMoreUrl) ? (
-                <div className="supportingcardShowMore">
-                    <Button
-                        className="btnMore blue-bordr-btn-round-def"
-                        onClick={viewMoreFn}
-                        loading={!!seeMoreLoaderStatus}
-                        disabled={!!seeMoreLoaderStatus}
-                        content="Show more"
-                    />
-                </div>
-            ) : ''
-            }
-        </Fragment>
-    );
+                {subGroupListLoader ? <PlaceholderGrid row={2} column={3} /> : (
+                    <div className="supportingcardWapper">
+                        <div className="custom_Grid">
+                            {this.renderGroups(campaignSubGroupDetails, slug, formatMessage)}
+                        </div>
+                    </div>
+                )
+                }
+                {(campaignSubGroupsShowMoreUrl) ? (
+                    <div className="supportingcardShowMore">
+                        <Button
+                            className="btnMore blue-bordr-btn-round-def"
+                            onClick={viewMoreFn}
+                            loading={!!seeMoreLoaderStatus}
+                            disabled={!!seeMoreLoaderStatus}
+                            content="Show more"
+                        />
+                    </div>
+                ) : ''
+                }
+            </Fragment>
+        )
+    }
 }
 
-export default withTranslation('campaignProfile')(SupportingGroups);
+export default withTranslation('campaignProfile')(connect(mapStateToProps)(SupportingGroups));

@@ -39,9 +39,6 @@ function SupportingGroup(props) {
                     <Header as="h4">{type}</Header>
                     <Header as="h2">
                         {entityShortName}
-                        <span className="textnormal">
-                            {formatMessage('campaignProfile:decisionTree')}
-                        </span>
                     </Header>
                     <p>{causesNames}</p>
                     <p>{locationDetails}</p>
