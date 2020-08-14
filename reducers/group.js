@@ -11,67 +11,71 @@ const group = (state = {}, action) => {
             };
             break;
         case 'GET_GROUP_MEMBERS_DETAILS':
-            if (state.groupMembersDetails && state.groupMembersDetails.data && action.payload.isViewMore) {
-                newState = {
-                    ...state,
-                    groupMembersDetails: {
-                        ...state.groupMembersDetails,
-                        data: state.groupMembersDetails.data.concat(action.payload.data),
-                        nextLink: action.payload.nextLink,
-                    },
-                };
-            } else {
-                newState = {
-                    ...state,
-                    groupMembersDetails: {
-                        ...state.groupMembersDetails,
-                        data: action.payload.data,
-                        nextLink: action.payload.nextLink,
-                    },
-                };
-            }
+            // if (state.groupMembersDetails && state.groupMembersDetails.data && action.payload.isViewMore) {
+            //     newState = {
+            //         ...state,
+            //         groupMembersDetails: {
+            //             ...state.groupMembersDetails,
+            //             data: state.groupMembersDetails.data.concat(action.payload.data),
+            //             nextLink: action.payload.nextLink,
+            //             totalCount: action.payload.totalCount,
+            //         },
+            //     };
+            // } else {
+            newState = {
+                ...state,
+                groupMembersDetails: {
+                    ...state.groupMembersDetails,
+                    data: action.payload.data,
+                    pageCount: action.payload.pageCount,
+                    totalCount: action.payload.totalCount,
+                },
+            };
+            // }
             break;
         case 'GET_GROUP_ADMIN_DETAILS':
-            if (state.groupAdminsDetails && state.groupAdminsDetails.data && action.payload.isViewMore) {
-                newState = {
-                    ...state,
-                    groupAdminsDetails: {
-                        ...state.groupAdminsDetails,
-                        data: state.groupAdminsDetails.data.concat(action.payload.data),
-                        nextLink: action.payload.nextLink,
-                    },
-                };
-            } else {
-                newState = {
-                    ...state,
-                    groupAdminsDetails: {
-                        ...state.groupAdminsDetails,
-                        data: action.payload.data,
-                        nextLink: action.payload.nextLink,
-                    },
-                };
-            }
+            // if (state.groupAdminsDetails && state.groupAdminsDetails.data && action.payload.isViewMore) {
+            //     newState = {
+            //         ...state,
+            //         groupAdminsDetails: {
+            //             ...state.groupAdminsDetails,
+            //             data: state.groupAdminsDetails.data.concat(action.payload.data),
+            //             nextLink: action.payload.nextLink,
+            //             totalCount: action.payload.totalCount,
+            //         },
+            //     };
+            // } else {
+            newState = {
+                ...state,
+                groupAdminsDetails: {
+                    ...state.groupAdminsDetails,
+                    data: action.payload.data,
+                    // pageCount: action.payload.pageCount,
+                    totalCount: action.payload.totalCount,
+                },
+            };
+            // }
             break;
         case 'GET_GROUP_BENEFICIARIES':
-            if (state.groupBeneficiaries && state.groupBeneficiaries.data) {
-                newState = {
-                    ...state,
-                    groupBeneficiaries: {
-                        ...state.groupBeneficiaries,
-                        data: state.groupBeneficiaries.data.concat(action.payload.data),
-                        nextLink: action.payload.nextLink,
-                    },
-                };
-            } else {
-                newState = {
-                    ...state,
-                    groupBeneficiaries: {
-                        ...state.groupBeneficiaries,
-                        data: action.payload.data,
-                        nextLink: action.payload.nextLink,
-                    },
-                };
-            }
+            // if (state.groupBeneficiaries && state.groupBeneficiaries.data) {
+            //     newState = {
+            //         ...state,
+            //         groupBeneficiaries: {
+            //             ...state.groupBeneficiaries,
+            //             data: state.groupBeneficiaries.data.concat(action.payload.data),
+            //             nextLink: action.payload.nextLink,
+            //         },
+            //     };
+            // } else {
+            newState = {
+                ...state,
+                groupBeneficiaries: {
+                    ...state.groupBeneficiaries,
+                    data: action.payload.data,
+                    // pageCount: action.payload.pageCount,
+                },
+            };
+            // }
             break;
         case 'GET_GROUP_TRANSACTION_DETAILS':
             newState = {
@@ -141,8 +145,9 @@ const group = (state = {}, action) => {
                         groupComments: {
                             ...state.groupComments,
                             [action.payload.activityId]: action.payload.groupComments.concat(state.groupComments[action.payload.activityId]),
+                            isLoadComments: false,
+                            isReply: true,
                             loadComments: true,
-    
                         },
                     };
                 } else {
@@ -151,6 +156,8 @@ const group = (state = {}, action) => {
                         groupComments: {
                             ...state.groupComments,
                             [action.payload.activityId]: action.payload.groupComments,
+                            isLoadComments: false,
+                            isReply: true,
                             loadComments: true,
                         },
                     };
@@ -161,7 +168,10 @@ const group = (state = {}, action) => {
                     groupComments: {
                         ...state.groupComments,
                         [action.payload.activityId]: action.payload.groupComments,
+                        isLoadComments: true,
+                        isReply: false,
                         loadComments: true,
+                        totalCount: action.payload.totalCount,
                     },
     
                 };
