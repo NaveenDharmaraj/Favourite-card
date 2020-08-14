@@ -81,7 +81,7 @@ class ClaimP2P extends React.Component {
                                         </Grid.Column>
                                     </Grid>
                                     <p data-test="claimp2p_header_thanknote">
-                                        {giftMessage}
+                                        "{giftMessage}"
                                     </p>
                                 </Container>
                             </div>
