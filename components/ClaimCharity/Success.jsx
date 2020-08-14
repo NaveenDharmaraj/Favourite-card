@@ -33,7 +33,7 @@ class Success extends React.Component {
     renderGoToCharityBtn = (locationNumber, buttonPosition) => {
         return (
             <a href={`${RAILS_APP_URL_ORIGIN}${locationNumber}`}>
-                <Button className={buttonPosition ? "primary blue-btn-rounded mt-1" : "white-btn-round paddingBtn"}><b>Go to Charity Account</b></Button>
+                <Button className={buttonPosition ? "primary blue-btn-rounded btnfont mt-1" : "white-btn-round paddingBtn"}>Go to Charity Account</Button>
             </a>
         )
     }
@@ -107,7 +107,7 @@ class Success extends React.Component {
                 <div className="startCustomizing">
                     <Container>
                         <div className="startCustomizingheading">
-                            <Header as='h3'>Start customizing your Charity Account</Header>
+                            <p>Start customizing your Charity Account</p>
                             {this.renderGoToCharityBtn(locationNumber)}
                         </div>
                     </Container>
