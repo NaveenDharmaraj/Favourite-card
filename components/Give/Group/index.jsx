@@ -497,6 +497,7 @@ class Group extends React.Component {
             flowObject: {
                 giveData
             },
+            giveFromType,
             validity,
         } = this.state;
         const {
@@ -504,7 +505,7 @@ class Group extends React.Component {
         } = this.props;
         const formatMessage = this.props.t;
         if (Number(value) && Number(value) >= 1) {
-            giveData.matchingPolicyDetails = checkMatchPolicy(giveGroupDetails, giveData.giftType.value, formatMessage);
+            giveData.matchingPolicyDetails = _isEmpty(giveFromType) && checkMatchPolicy(giveGroupDetails, giveData.giftType.value, formatMessage);
         }
         const inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
         giveData.giveAmount = inputValue;
@@ -584,11 +585,12 @@ class Group extends React.Component {
         const {
             flowObject: {
                 giveData
-            }
+            },
+            giveFromType,
         } = this.state;
         const formatMessage = this.props.t;
         if (Number(giveData.giveAmount) >= 1 && Number(value) && Number(value) >= 1) {
-            giveData.matchingPolicyDetails = checkMatchPolicy(giveGroupDetails, value, formatMessage);
+            giveData.matchingPolicyDetails = _isEmpty(giveFromType) && checkMatchPolicy(giveGroupDetails, value, formatMessage);
         }
         this.setState({
             flowObject: {
@@ -615,6 +617,7 @@ class Group extends React.Component {
                 giveData,
             },
             dropDownOptions,
+            giveFromType,
             reloadModalOpen,
             reviewBtnFlag,
             validity,
@@ -714,7 +717,7 @@ class Group extends React.Component {
                 case 'giveAmount':
                     giveData['formatedGroupAmount'] = newValue;
                     if (Number(newValue) && Number(newValue) >= 1) {
-                        giveData.matchingPolicyDetails = checkMatchPolicy(giveGroupDetails, giveData.giftType.value, formatMessage);
+                        giveData.matchingPolicyDetails = _isEmpty(giveFromType) && checkMatchPolicy(giveGroupDetails, giveData.giftType.value, formatMessage);
                     } else {
                         giveData.matchingPolicyDetails = {
                             hasMatchingPolicy: false,
