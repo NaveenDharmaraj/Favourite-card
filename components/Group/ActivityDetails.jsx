@@ -10,7 +10,7 @@ import {
     Input,
     Button,
 } from 'semantic-ui-react';
-import _ from 'lodash';
+import _isEmpty from 'lodash/isEmpty';
 import {
     func,
     bool,
@@ -46,7 +46,8 @@ class ActivityDetails extends React.Component {
         this.handleLike = this.handleLike.bind(this);
         this.state = {
             commentText: '',
-            doReply: false,
+            isCommentClicked: false,
+            isReplyClicked: false,
         };
     }
 
@@ -55,11 +56,14 @@ class ActivityDetails extends React.Component {
             dispatch,
         } = this.props;
         getCommentFromActivityId(dispatch, id, url);
+        this.setState({
+            isCommentClicked: true,
+        });
     }
 
     replyClicked() {
         this.setState({
-            doReply: true,
+            isReplyClicked: true,
         });
     }
 
@@ -149,6 +153,7 @@ class ActivityDetails extends React.Component {
                             type={comment.type}
                             userId={userId}
                             commentId={comment.id}
+                            comment={comment.attributes.comment}
                         />
                     </Comment.Group>
                 ))
@@ -167,11 +172,15 @@ class ActivityDetails extends React.Component {
             name,
             description,
             createdAt,
+            comment,
             commentsCount,
             commentsLink,
             canReply,
             groupComments: {
                 loadComments,
+                isReply,
+                isLoadComments,
+                totalCount,
             },
             updateInputValue,
             type,
@@ -179,9 +188,21 @@ class ActivityDetails extends React.Component {
             disableLike,
         } = this.props;
         const {
-            doReply,
+            groupComments,
+        } = this.props;
+        const {
+            isReplyClicked,
             commentText,
+            isCommentClicked,
         } = this.state;
+        let count = commentsCount;
+        if (groupComments[id] && isReply && !isCommentClicked) {
+            count = commentsCount + groupComments[id].length;
+        } else if (groupComments[id] && isReply && isCommentClicked) {
+            count = groupComments[id].length;
+        } else if (groupComments[id] && !isReply && isLoadComments) {
+            count = totalCount;
+        }
         const time = distanceOfTimeInWords(createdAt);
         const cls = (isLiked) ? 'heart' : 'heart outline';
         return (
@@ -201,36 +222,38 @@ class ActivityDetails extends React.Component {
                 )}
                 <Comment.Avatar src={avatar} />
                 <Comment.Content>
-                    {name && <Comment.Author as="a">{name}</Comment.Author>}
-                    <Comment.Text>
-                        {description}
-                    </Comment.Text>
+                    {name
+                        ? (
+                            <Comment.Text>
+                                {`${name} said: ${comment}`}
+                            </Comment.Text>
+                        )
+                        : (
+                            <Comment.Text>
+                                {description}
+                            </Comment.Text>
+                        )}
                     <Comment.Actions>
                         <Comment.Metadata>
                             <div>{time}</div>
                         </Comment.Metadata>
-                        {(commentsCount > 0)
+                        {(count !== null && canReply)
                         && (
                             <Comment.Action
                                 onClick={() => this.onClicked(id, commentsLink)}
                             >
-                            Comments (
-                                {commentsCount}
-                            )
+                                {`${count} ${count === 1 ? 'Comment' : 'Comments'}`}
                             </Comment.Action>
                         )}
-                        {loadComments && this.renderComments()}
                         {canReply
                         && (
                             <Comment.Action
                                 onClick={() => this.replyClicked()}
                             >
-                                Reply
+                                •   Reply
                             </Comment.Action>
                         )}
-
-
-                        {doReply && canReply
+                        {isReplyClicked && canReply
                             && (
                                 <div className="postInputMainWraper">
                                     <div className="postInputWraper">
@@ -238,22 +261,23 @@ class ActivityDetails extends React.Component {
                                             value={commentText}
                                             onChange={this.updateInputValue}
                                             type="text"
-                                            placeholder="Write a post..."
+                                            placeholder="Add a comment"
                                             fluid
                                         />
                                     </div>
                                     <div className="postBtnWraper">
-                                        <Button
-                                            fluid
-                                            onClick={this.postReplyComment}
-                                            className="blue-bordr-btn-round-def postButton"
-                                        >
-                                            Reply
-                                        </Button>
+                                        {!_isEmpty(commentText)
+                                        && (
+                                            <Button
+                                                circular
+                                                onClick={this.postReplyComment}
+                                                icon="paper plane outline"
+                                            />
+                                        )}
                                     </div>
                                 </div>
                             )}
-
+                        {loadComments && this.renderComments()}
                     </Comment.Actions>
                 </Comment.Content>
             </Comment>
@@ -264,14 +288,17 @@ class ActivityDetails extends React.Component {
 ActivityDetails.defaultProps = {
     avatar: '',
     canReply: false,
+    comment: '',
     commentId: null,
     commentsCount: null,
     commentsLink: '',
     createdAt: '',
     description: '',
     disableLike: {},
-    dispatch: _.noop,
+    dispatch: () => {},
     groupComments: {
+        isLoadComments: false,
+        isReply: false,
         loadComments: false,
     },
     groupId: null,
@@ -292,6 +319,7 @@ ActivityDetails.defaultProps = {
 ActivityDetails.propTypes = {
     avatar: string,
     canReply: bool,
+    comment: string,
     commentId: number,
     commentsCount: number,
     commentsLink: string,
@@ -300,6 +328,8 @@ ActivityDetails.propTypes = {
     disableLike: PropTypes.shape({}),
     dispatch: func,
     groupComments: {
+        isLoadComments: bool,
+        isReply: bool,
         loadComments: bool,
     },
     groupId: number,

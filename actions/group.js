@@ -3,6 +3,9 @@ import _ from 'lodash';
 
 import coreApi from '../services/coreApi';
 import graphApi from '../services/graphApi';
+import eventApi from '../services/eventApi';
+
+import { Data, admin_Data } from './Data';
 
 export const actionTypes = {
     ACTIVITY_LIKE_STATUS: 'ACTIVITY_LIKE_STATUS',
@@ -112,33 +115,33 @@ export const getGroupFromSlug = async (dispatch, slug, token = null) => {
     }
 };
 
-export const getDetails = async (dispatch, id, type, url) => {
+export const getDetails = async (dispatch, id, type, pageNumber = 1) => {
     const fsa = {
         payload: {},
     };
     let newUrl = '';
-    const isViewMore = !_.isEmpty(url);
+    // const isViewMore = !_.isEmpty(url);
     const placeholderfsa = {
         payload: {},
     };
     switch (type) {
         case 'members':
             fsa.type = actionTypes.GET_GROUP_MEMBERS_DETAILS;
-            newUrl = !_.isEmpty(url) ? url : `/groups/${id}/groupMembers?page[size]=7`;
-            fsa.payload.isViewMore = isViewMore;
+            newUrl = `/groups/${id}/groupMembers?page[size]=10&page[number]=${pageNumber}`;
+            // fsa.payload.isViewMore = isViewMore;
             placeholderfsa.payload.memberPlaceholder = true;
             placeholderfsa.type = actionTypes.MEMBER_PLACEHOLDER_STATUS;
             break;
         case 'admins':
             fsa.type = actionTypes.GET_GROUP_ADMIN_DETAILS;
-            newUrl = !_.isEmpty(url) ? url : `/groups/${id}/groupAdmins?page[size]=7`;
-            fsa.payload.isViewMore = isViewMore;
+            newUrl = `/groups/${id}/groupAdmins?page[size]=10&page[number]=${pageNumber}`;
+            // fsa.payload.isViewMore = isViewMore;
             placeholderfsa.payload.adminPlaceholder = true;
             placeholderfsa.type = actionTypes.ADMIN_PLACEHOLDER_STATUS;
             break;
         case 'charitySupport':
             fsa.type = actionTypes.GET_GROUP_BENEFICIARIES;
-            newUrl = !_.isEmpty(url) ? url : `groups/${id}/groupBeneficiaries?page[size]=3`;
+            newUrl = `groups/${id}/groupBeneficiaries?page[size]=10&page[number]=${pageNumber}`;
             placeholderfsa.payload.showPlaceholder = true;
             placeholderfsa.type = actionTypes.GROUP_PLACEHOLDER_STATUS;
             break;
@@ -155,10 +158,16 @@ export const getDetails = async (dispatch, id, type, url) => {
     }).then((result) => {
         if (result && !_.isEmpty(result.data)) {
             fsa.payload.data = result.data;
-            fsa.payload.nextLink = (result.links.next) ? result.links.next : null;
+            // fsa.payload.nextLink = (result.links.next) ? result.links.next : null;
+            fsa.payload.totalCount = result.meta.recordCount;
+            fsa.payload.pageCount = result.meta.pageCount;
             dispatch(fsa);
         }
     }).catch().finally(() => {
+        // fsa.payload.data = admin_Data.data;// result.data;
+        // fsa.payload.nextLink = admin_Data.nextLink;// (result.links.next) ? result.links.next : null;
+        // fsa.payload.totalCount = admin_Data.meta.recordCount;
+        dispatch(fsa);
         switch (type) {
             case 'members':
                 placeholderfsa.payload.memberPlaceholder = false;
@@ -247,7 +256,7 @@ export const getGroupActivities = async (dispatch, id, url, isPostActivity) => {
     });
 };
 
-export const getCommentFromActivityId = async (dispatch, id, url, isReply) => {
+export const getCommentFromActivityId = async (dispatch, id, url) => {
     const fsa = {
         payload: {
             groupComments: {},
@@ -265,7 +274,8 @@ export const getCommentFromActivityId = async (dispatch, id, url, isReply) => {
         if (result && !_.isEmpty(result.data)) {
             fsa.payload.groupComments = result.data;
             fsa.payload.activityId = id;
-            fsa.payload.isReply = isReply ? isReply : false;
+            fsa.payload.isReply = false;
+            fsa.payload.totalCount = result.meta.recordCount;
         }
     }).catch().finally(() => {
         dispatch(fsa);
@@ -477,7 +487,7 @@ export const joinGroup = async (dispatch, groupSlug, groupId, loadMembers) => {
             if (result && !_.isEmpty(result.data)) {
                 fsa.payload.groupDetails = result.data;
                 getDetails(dispatch, groupId, 'members');
-                getDetails(dispatch, groupId, 'admins');
+                // getDetails(dispatch, groupId, 'admins');
             }
         },
     ).catch(() => {
@@ -597,4 +607,24 @@ export const toggleTransactionVisibility = async (dispatch, transactionId, type)
             }
         },
     ).catch().finally();
+};
+
+export const addFriendRequest = (user) => async (dispatch) => {
+    const bodyData = {
+        data: {
+            attributes: {
+                recipient_email_id: user.friendEmail,
+                recipient_user_id: Number(user.friendUserId),
+                requester_avatar_link: user.currentUserAvatar,
+                requester_display_name: user.currentUserDisplayName,
+                requester_email_id: user.currentUserEmail,
+                requester_first_name: user.currentUserFirstName,
+                requester_user_id: Number(user.currentUserId),
+                source: 'web',
+            },
+        },
+    };
+    await eventApi.post(`/friend/request`, bodyData).then((result) => {
+        console.log('result', result);
+    }).finally();
 };

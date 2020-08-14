@@ -8,6 +8,7 @@ import {
     Comment,
     Input,
     Grid,
+    Icon,
 } from 'semantic-ui-react';
 import {
     arrayOf,
@@ -151,7 +152,7 @@ class Activity extends React.Component {
         let viewData = '';
         if (!_isEmpty(data)) {
             viewData = (
-                <div className="c-comment">
+                <div className="c-comment ActivityComment">
                     <Comment.Group fluid>
                         {this.getComments()}
                     </Comment.Group>
@@ -160,28 +161,30 @@ class Activity extends React.Component {
         }
         const actionData = (
             <Grid centered>
-                <Grid.Row>
-                    <Grid.Column mobile={16} tablet={14} computer={14}>
+                <Grid.Row className="ActivityPost">
+                    <Grid.Column mobile={16} tablet={16} computer={16}>
                         {isMember
                         && (
-                            <div className="postInputMainWraper">
-                                <div className="postInputWraper">
+                            <div className="postinputBox">
+                                <div className="two-icon-brdr-btm-input">
                                     <Input
                                         value={commentText}
                                         onChange={this.updateInputValue}
                                         type="text"
-                                        placeholder="Write a post..."
+                                        placeholder="Write a message to the group…"
+                                        action
                                         fluid
                                     />
                                 </div>
-                                <div className="postBtnWraper">
-                                    <Button
-                                        fluid
-                                        onClick={this.postComment}
-                                        className="blue-bordr-btn-round-def postButton"
-                                    >
-                                    Post
-                                    </Button>
+                                <div className="postSendButton">
+                                    {(!_isEmpty(commentText))
+                                    && (
+                                        <Button
+                                            circular
+                                            icon="paper plane outline"
+                                            onClick={this.postComment}
+                                        />
+                                    )}
                                 </div>
                             </div>
                         )
