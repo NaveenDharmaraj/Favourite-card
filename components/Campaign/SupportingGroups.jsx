@@ -9,14 +9,14 @@ import {
     Icon,
 } from 'semantic-ui-react';
 import getConfig from 'next/config';
+import _isEmpty from 'lodash/isEmpty';
 import { connect } from 'react-redux';
 import { withTranslation } from '../../i18n';
 import PlaceholderGrid from '../shared/PlaceHolder';
 import placeholder from '../../static/images/no-data-avatar-giving-group-profile.png';
 import SupportingGroup from '../Campaign/SupportingGroup';
 import noDataImgCampain from '../../static/images/campaignprofile_nodata_illustration.png';
-import { getCampaignFromSearch } from '../../actions/profile';
-import { mapStateToProps } from '../shared/ShareProfile';
+import { getCampaignSupportGroups } from '../../actions/profile';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -30,6 +30,7 @@ class SupportingGroups extends React.Component {
 
         this.state = {
             searchKey: '',
+            searchClicked: false,
         };
         this.renderGroups = this.renderGroups.bind(this);
         this.searchClick = this.searchClick.bind(this);
@@ -69,12 +70,27 @@ class SupportingGroups extends React.Component {
         );
     };
 
+    campaignGroups = () => {
+        const {
+            campaignId,
+            dispatch,
+        } = this.props;
+        this.setState({
+            searchClicked: false,
+        })
+        dispatch(getCampaignSupportGroups(campaignId));
+    }
+
     searchOnChange(event) {
         const {
             target: {
                 value
             }
         } = event;
+        const { searchClicked } = this.state;
+        if (_isEmpty(value) && searchClicked) {
+            this.campaignGroups();
+        };
         this.setState({
             searchKey: value,
         });
@@ -86,7 +102,13 @@ class SupportingGroups extends React.Component {
             dispatch,
             campaignId,
         } = this.props;
-        dispatch(getCampaignFromSearch(campaignId, searchKey));
+        dispatch(getCampaignSupportGroups(campaignId, searchKey)).then(() => {
+            this.setState({
+                searchClicked: true,
+            })
+        }).catch((err) => {
+            // console.log(err);
+        })
     }
 
     renderGroups(campaignSubGroupDetails, slug, formatMessage) {
@@ -120,7 +142,6 @@ class SupportingGroups extends React.Component {
             viewMoreFn,
             t: formatMessage,
         } = this.props;
-        const { searchKey } = this.state;
         return (
             <Fragment>
                 <div className="supportingWithsearch">
@@ -172,4 +193,4 @@ class SupportingGroups extends React.Component {
     }
 }
 
-export default withTranslation('campaignProfile')(connect(mapStateToProps)(SupportingGroups));
+export default withTranslation('campaignProfile')(connect()(SupportingGroups));

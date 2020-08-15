@@ -77,14 +77,13 @@ export const actionTypes = {
     SUB_GROUP_LIST_LOADER: 'SUB_GROUP_LIST_LOADER',
 };
 
-export const getCampaignFromSearch = (id, searchKey = '', pageNumber = 1, pageSize = 6) => async (dispatch) => {
+export const getCampaignSupportGroups = (id, searchKey = '', pageNumber = 1, pageSize = 6) => async (dispatch) => {
     dispatch({
         payload: {
             campaignSubGroupDetails: [],
         },
         type: actionTypes.CLEAR_DATA_FOR_CAMPAIGNS,
     });
-
     dispatch({
         payload: {
             subGroupListLoader: true,
@@ -113,7 +112,6 @@ export const getCampaignFromSearch = (id, searchKey = '', pageNumber = 1, pageSi
             }
         }
     };
-    
     await coreApi.get(`campaigns/${id}/subGroups`, {
         ...fullParams,
     }).then((subGroupSearchResult) => {
@@ -190,7 +188,7 @@ export const getCampaignFromSlug = async (dispatch, slug, token = null) => {
                     Authorization: `Bearer ${token}`,
                 };
             };
-            await dispatch(getCampaignFromSearch(result.data.id));
+            await dispatch(getCampaignSupportGroups(result.data.id));
 
             // API call for images
             if (result.data) {
