@@ -46,6 +46,7 @@ export const generatePayloadBodyForFollowAndUnfollow = (userId, id, type) => {
             };
             relationship = 'LIKES';
             break;
+            
         default:
             break;
     }
