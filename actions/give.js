@@ -1050,7 +1050,6 @@ export const fetchGroupMatchAmount = (giveAmount, giveFromFundId, giveToFundId) 
     };
     coreApi.post('/groupAllocations/fetchMatchAmount', bodyData).then((result) => {
         if (result && !_.isEmpty(result.data)) {
-            console.log(result.data);
             const matchingData = result.data;
             matchingData.giveFromFund = giveFromFundId;
             dispatch({
