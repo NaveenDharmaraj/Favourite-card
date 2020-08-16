@@ -637,6 +637,7 @@ class Group extends React.Component {
                     preferences,
                 },
             },
+            giveGroupDetails,
             infoOptions:{
                 groupMemberInfoToShare,
                 groupCampaignAdminShareInfoOptions,

@@ -63,6 +63,8 @@ const DropDownInfoToShare = ({
                 fluid
                 selection
                 name={name}
+                selectOnBlur={false}
+                selectOnNavigation={false}
                 options={options}
                 onChange={handleChange}
                 value={dropDownValue}
