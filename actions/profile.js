@@ -122,6 +122,14 @@ export const getCampaignSupportGroups = (id, searchKey = '', pageNumber = 1, pag
             },
             type: actionTypes.SUB_GROUP_LIST_LOADER,
         });
+        if (_.isEmpty(subGroupSearchResult.data) && !_.isEmpty(searchKey)) {
+            dispatch({
+                payload: {
+                    campaignSubGroupDetails: [],
+                },
+                type: actionTypes.CLEAR_DATA_FOR_CAMPAIGNS,
+            });
+        };
         dispatch({
             payload: {
                 campaignSubGroupDetails: subGroupSearchResult,
