@@ -49,6 +49,7 @@ import {
     setDonationAmount,
     validateForReload,
     populateInfoToShareAccountName,
+    checkMatchPolicy,
 } from '../../../helpers/give/utils';
 import {
     getCompanyPaymentAndTax,
@@ -58,6 +59,7 @@ import {
 import { groupDefaultProps } from '../../../helpers/give/defaultProps';
 import { populateDropdownInfoToShare } from '../../../helpers/users/utils';
 import { getGroupCampaignAdminInfoToShare } from '../../../actions/userProfile';
+import MatchingPolicyModal from '../../shared/MatchingPolicyModal';
 
 const DedicateType = dynamic(() => import('../DedicateGift'), { ssr: false });
 
@@ -96,14 +98,14 @@ class Group extends React.Component {
             payload = _merge({}, props.flowObject)
         }
         let privacyNameOptions = [];
-        if(props.flowObject.giveData.giveFrom.type){
+        if (props.flowObject.giveData.giveFrom.type) {
             if (props.flowObject.giveData.giveFrom.type === 'user' && !_isEmpty(groupMemberInfoToShare)) {
                 const {
                     infoToShareList,
                 } = populateDropdownInfoToShare(groupMemberInfoToShare);
                 privacyNameOptions = infoToShareList;
             } else {
-               privacyNameOptions = populateInfoToShareAccountName(props.flowObject.giveData.giveFrom.name, formatMessage);
+                privacyNameOptions = populateInfoToShareAccountName(props.flowObject.giveData.giveFrom.name, formatMessage);
             }
         }
 
@@ -115,7 +117,6 @@ class Group extends React.Component {
                 privacyNameOptions,
                 paymentInstrumentList: populatePaymentInstrument(paymentInstruments),
             },
-            isGiveFromModalOpen: false,
             inValidCardNameValue: true,
             inValidCardNumber: true,
             inValidCvv: true,
@@ -139,16 +140,6 @@ class Group extends React.Component {
         this.handleInputOnBlur = this.handleInputOnBlur.bind(this)
         this.handleInputChangeGiveTo = this.handleInputChangeGiveTo.bind(this);
         this.handleAddMoneyModal = this.handleAddMoneyModal.bind(this);
-        this.toggleGiveFromModal = this.toggleGiveFromModal.bind(this);
-    }
-
-    toggleGiveFromModal() {
-        const {
-            isGiveFromModalOpen,
-        } = this.state;
-        this.setState({
-            isGiveFromModalOpen: !isGiveFromModalOpen,
-        });
     }
 
     componentDidMount() {
@@ -510,8 +501,16 @@ class Group extends React.Component {
             flowObject: {
                 giveData
             },
+            giveFromType,
             validity,
         } = this.state;
+        const {
+            giveGroupDetails
+        } = this.props;
+        const formatMessage = this.props.t;
+        if (Number(value) && Number(value) >= 1) {
+            giveData.matchingPolicyDetails = _isEmpty(giveFromType) && checkMatchPolicy(giveGroupDetails, giveData.giftType.value, formatMessage);
+        }
         const inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
         giveData.giveAmount = inputValue;
         giveData.formatedGroupAmount = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
@@ -523,7 +522,7 @@ class Group extends React.Component {
                 giveData: {
                     ...this.state.flowObject.giveData,
                     ...giveData,
-                }
+                },
             },
             validity,
         });
@@ -584,6 +583,19 @@ class Group extends React.Component {
     }
 
     handlegiftTypeButtonClick = (e, { value }) => {
+        const {
+            giveGroupDetails
+        } = this.props;
+        const {
+            flowObject: {
+                giveData
+            },
+            giveFromType,
+        } = this.state;
+        const formatMessage = this.props.t;
+        if (Number(giveData.giveAmount) >= 1 && Number(value) && Number(value) >= 1) {
+            giveData.matchingPolicyDetails = _isEmpty(giveFromType) && checkMatchPolicy(giveGroupDetails, value, formatMessage);
+        }
         this.setState({
             flowObject: {
                 ...this.state.flowObject,
@@ -609,6 +621,7 @@ class Group extends React.Component {
                 giveData,
             },
             dropDownOptions,
+            giveFromType,
             reloadModalOpen,
             reviewBtnFlag,
             validity,
@@ -629,6 +642,7 @@ class Group extends React.Component {
                 groupCampaignAdminShareInfoOptions,
             },
         } = this.props;
+        const formatMessage = this.props.t;
         const {
             coverFeesData,
             dispatch,
@@ -701,7 +715,6 @@ class Group extends React.Component {
                         }
                         giveData.privacyShareAmount = preferences['giving_group_members_share_my_giftamount'];
                     } else {
-                        const formatMessage = this.props.t;
                         const defaultDropDownOption = {
                             disabled: false,
                             text: ReactHtmlParser(`<span class="attributes">${formatMessage('giveCommon:infoToShareAnonymous')}</span>`),
@@ -726,6 +739,15 @@ class Group extends React.Component {
                     break;
                 case 'giveAmount':
                     giveData['formatedGroupAmount'] = newValue;
+                    if (Number(newValue) && Number(newValue) >= 1) {
+                        giveData.matchingPolicyDetails = _isEmpty(giveFromType) && checkMatchPolicy(giveGroupDetails, giveData.giftType.value, formatMessage);
+                    } else {
+                        giveData.matchingPolicyDetails = {
+                            hasMatchingPolicy: false,
+                            isValidMatchPolicy: false,
+                            matchPolicyTitle: '',
+                        };
+                    }
                     reviewBtnFlag = false;
                     reloadModalOpen = 0;
                     break;
@@ -920,6 +942,7 @@ class Group extends React.Component {
                     giveAmount,
                     giveTo,
                     giveFrom,
+                    matchingPolicyDetails,
                     infoToShare,
                     nameToShare,
                     noteToCharity,
@@ -929,7 +952,6 @@ class Group extends React.Component {
                 groupFromUrl,
                 type
             },
-            isGiveFromModalOpen,
             validity,
             dropDownOptions: {
                 giveToList,
@@ -1073,59 +1095,16 @@ class Group extends React.Component {
                                                             validity={validity}
                                                         />
                                                     </Grid.Column>
-                                                    <Grid.Column mobile={16}>
-                                                    <div className="noteDefault info mt-2">
-                                                        <div className="noteWraper">
-                                                            <span className="leftImg">
-                                                                <span className="notifyDefaultIcon" />
-                                                            </span>
-                                                            <span className="noteContent">
-                                                                Sponsor name will match your gift.  
-                                                                <span  className="hyperLinks-style" onClick={this.toggleGiveFromModal}> Learn more.</span>
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                    <Modal
-                                                        className="chimp-modal matching-fund-modal"
-                                                        closeIcon
-                                                        size="tiny"
-                                                        open={isGiveFromModalOpen}
-                                                        centered
-                                                        onClose={this.toggleGiveFromModal}
-                                                        dimmer="inverted"
-                                                    >
-                                                        <Modal.Header>Your gift will be matched!</Modal.Header>
-                                                        <Modal.Content>
-                                                            <p>
-                                                            For every $1.00 you give to this group, <span className="bold">matching sponsor name</span> will match your gift with $1.00 up to <span className="bold">$max match amount</span> per gift, until the matching funds run out or expire.
-                                                            </p>
-                                                            <div className="matching-fund-modal-wrapper">
-                                                                <div className="matching-fund-modal-inner-wrapper">
-                                                                    <div className="matching-progress-wrapper">
-                                                                        <div className="matching-progress">
-                                                                            <span className="progress-inner" style={{height:"60%"}}></span>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div className="matching-fund-details">
-                                                                        <Header as='h4'>
-                                                                            $Amount remaining
-                                                                            <Header.Subheader>
-                                                                            matching funds remaining
-                                                                            </Header.Subheader>
-                                                                        </Header>
-                                                                        <p>
-                                                                            of $total matching funds provided <br/>
-                                                                            provided by matching_sponsor_name
-                                                                        </p>
-                                                                    </div>
-                                                                </div>
-                                                                <div className="matching-fund-expire">
-                                                                    <span className="expire-date">Expires Dec 31, 2020</span>
-                                                                </div>
-                                                            </div>
-                                                        </Modal.Content>
-                                                    </Modal>
-                                                    </Grid.Column>
+                                                    {
+                                                        matchingPolicyDetails.hasMatchingPolicy &&
+                                                        <Grid.Column mobile={16}>
+                                                            <MatchingPolicyModal
+                                                                isCampaign={giveTo.isCampaign}
+                                                                giveGroupDetails={giveGroupDetails}
+                                                                matchingPolicyDetails ={matchingPolicyDetails}
+                                                            />
+                                                        </Grid.Column>
+                                                    }
                                                     <Grid.Column mobile={16} tablet={12} computer={10}>
                                                         <div className="give_flow_field">
                                                             {(!this.props.currentUser.userAccountsFetched || !_isEmpty(giveFromList)) && (

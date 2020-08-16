@@ -130,6 +130,11 @@ export const groupDefaultProps = {
                 privacySetting: 'anonymous',
                 value: 'anonymous',
             },
+            matchingPolicyDetails: {
+                hasMatchingPolicy: false,
+                isValidMatchPolicy : false,
+                matchPolicyTitle: '',
+            },
             infoToShareList: [],
             nameToShare: {
                 value: 'anonymous',
