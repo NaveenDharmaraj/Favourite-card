@@ -3,7 +3,11 @@ import React, {
   } from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import { reInitNextStep, proceed } from '../../../actions/give';
+import {
+    fetchGroupMatchAmount,
+    reInitNextStep,
+    proceed
+} from '../../../actions/give';
 import {
     populateDonationReviewPage,
     populateGiveReviewPage,
@@ -21,7 +25,9 @@ import {
     Table,
     Grid,
     Container,
-    Button
+    Button,
+    Popup,
+    Icon,
 } from 'semantic-ui-react';
 
 const square = { width: 175, height: 175 }
@@ -34,12 +40,34 @@ class Review extends React.Component {
     }
 
     componentDidMount() {
-        const { dispatch, flowObject } = this.props
+        const {
+            dispatch,
+            flowObject,
+            giveGroupDetails,
+            groupMatchingDetails,
+        } = this.props
         if (flowObject) {
             reInitNextStep(dispatch, flowObject)
         }
         if(flowObject && flowObject.stepsCompleted){
             Router.pushRoute('/dashboard');
+        }
+        const {
+            giveData: {
+                giveAmount,
+                giveTo,
+                giveFrom,
+                matchingPolicyDetails,
+            }
+        } = flowObject;
+        if(giveTo.type === 'groups' && !_.isEmpty(giveGroupDetails)) {
+            if(matchingPolicyDetails.isValidMatchPolicy &&
+                (_.isEmpty(groupMatchingDetails) ||
+                    (!_.isEmpty(groupMatchingDetails) && groupMatchingDetails.giveFromFund !== giveFrom.value)
+                )
+            ) {
+                    dispatch(fetchGroupMatchAmount(giveAmount, giveFrom.value, giveTo.value));
+            }
         }
         window.scrollTo(0, 0);
     }
@@ -107,6 +135,7 @@ class Review extends React.Component {
                 companiesAccountsData,
                 donationMatchData,
                 giveGroupDetails,
+                groupMatchingDetails,
                 i18n:{
                     language,
                 },
@@ -150,6 +179,7 @@ class Review extends React.Component {
             } else {
                 reviewData = populateGiveReviewPage(giveData, {
                         giveGroupDetails,
+                        groupMatchingDetails,
                         toURL,
                         type,
                     },
@@ -163,11 +193,13 @@ class Review extends React.Component {
                 editUrl,
                 buttonText,
                 headingText,
+                isGroupWithMatching,
                 isRecurring,
                 mainDisplayAmount,
                 mainDisplayImage,
                 mainDisplayText,
                 listingData,
+                toDetailsForMatching,
                 showP2pList,
             } = reviewData;
             const refundMessage = (isRecurring) ? formatMessage('commonRecurringNonrefundable') : formatMessage('commonNonrefundable');
@@ -247,7 +279,7 @@ class Review extends React.Component {
                                                     <div className="GivingGroupIcons">
                                                         <Image src={mainDisplayImage} className="Icon_Profile" centered/>
                                                         <Header as='h2'>
-                                                            {mainDisplayAmount}
+                                                            {(!isGroupWithMatching) && (mainDisplayAmount) }
                                                             <Header.Subheader>
                                                                 {mainDisplayText}
                                                             </Header.Subheader>
@@ -263,6 +295,58 @@ class Review extends React.Component {
 
                                 <Grid.Row>
                                     <Grid.Column mobile={16} tablet={14} computer={12}>
+                                        {(!!isGroupWithMatching) && (
+                                            <div className="review-top-table">
+                                                <Table unstackable basic='very' className="no-border-table">
+                                                    <Table.Body>
+                                                        <Table.Row verticalAlign='top'>
+                                                            <Table.Cell>
+                                                                {toDetailsForMatching.heading}
+                                                                <div className="note">
+                                                                {toDetailsForMatching.subHeading}
+                                                                </div>
+                                                            </Table.Cell>
+                                                            <Table.Cell textAlign='right'>{mainDisplayAmount}</Table.Cell>
+                                                        </Table.Row>
+                                                        <Table.Row>
+                                                            <Table.Cell>
+                                                                {toDetailsForMatching.matchingHeading}
+                                                                <Popup
+                                                                    content={toDetailsForMatching.popUpMessage}
+                                                                    position="bottom center"
+                                                                    className="matching-popup"
+                                                                    inverted
+                                                                    trigger={(
+                                                                        <Icon
+                                                                            color="blue"
+                                                                            name="question circle"
+                                                                            size="large"
+                                                                        />
+                                                                    )}
+                                                                />
+                                                                {
+                                                                    (toDetailsForMatching.subHeading !== '') && (
+                                                                        <div className="note">
+                                                                            {toDetailsForMatching.matchingSubHeading}
+                                                                        </div>
+                                                                    )
+                                                                }
+
+                                                            </Table.Cell>
+                                                            <Table.Cell textAlign='right'>{toDetailsForMatching.matchingAmount}</Table.Cell>
+                                                        </Table.Row>
+                                                    </Table.Body>
+                                                    <Table.Footer fullWidth>
+                                                        <Table.Row verticalAlign='top'>
+                                                            <Table.Cell>
+                                                                {toDetailsForMatching.totalHeading}
+                                                            </Table.Cell>
+                                                            <Table.Cell textAlign='right'>{toDetailsForMatching.totalAmount}</Table.Cell>
+                                                        </Table.Row>
+                                                    </Table.Footer>
+                                                </Table>
+                                            </div>
+                                        ) }
                                         <div className="GiveTable">
                                             <Table basic='very' className="no_shadow_tbl_mob">
                                                 <Table.Body>
@@ -324,6 +408,7 @@ function mapStateToProps(state) {
         fund: state.user.fund,
         giveGroupDetails: state.give.groupSlugDetails,
         companyDetails: state.give.companyData,
+        groupMatchingDetails: state.give.groupMatchingDetails,
     };
 }
 

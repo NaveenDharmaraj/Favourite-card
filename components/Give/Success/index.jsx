@@ -36,6 +36,7 @@ const Success = (props) => {
         flowObject,
         flowSteps,
         giveGroupDetails,
+        groupMatchingDetails,
         successData,
         t: formatMessage,
         i18n: {
@@ -124,6 +125,7 @@ const Success = (props) => {
                     <GroupSuccess
                         successData={successData}
                         giveGroupDetails={giveGroupDetails}
+                        groupMatchingDetails={groupMatchingDetails}
                     />
                 );
             case 'give/to/friend':
@@ -272,6 +274,7 @@ const mapStateToProps = (state) => ({
     currentUser: state.user.info,
     donationMatchData: state.user.donationMatchData,
     giveGroupDetails: state.give.groupSlugDetails,
+    groupMatchingDetails: state.give.groupMatchingDetails,
     successData: state.give.successData,
 });
 

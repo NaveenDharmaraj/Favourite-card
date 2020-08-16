@@ -118,8 +118,13 @@ const give = (state = {}, action) => {
                         ...action.payload.companyDefaultTaxReceiptProfile,
                     },
                     taxReceiptProfiles: action.payload.taxReceiptProfiles,
-                    
                 },
+            };
+            break;
+        case 'GET_MATCHING_DETAILS_FOR_GROUPS':
+            newState = {
+                ...state,
+                groupMatchingDetails: action.payload,
             };
             break;
         default:
