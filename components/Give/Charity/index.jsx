@@ -351,7 +351,7 @@ class Charity extends React.Component {
                 value: '',
             };
         }
-        if(!_isEmpty(charityShareInfoOptions) && charityShareInfoOptions.length>0){
+        if(!giveData.userInteracted && !_isEmpty(charityShareInfoOptions) && charityShareInfoOptions.length>0){
             const name = 'charities_info_to_share';
             const preference = preferences[name].includes('address')
                 ? `${preferences[name]}-${preferences[`${name}_address`]}` : preferences[name];

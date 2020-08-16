@@ -129,7 +129,7 @@ const populateDropdownInfoToShare = (infoShareOptions = [], preferences = {}, na
                     key: `${info.privacySetting}`,
                     privacyData: null,
                     privacySetting: `${info.privacySetting}`,
-                    text: ReactHtmlParser(`<div className="attributes">Give anonymously</div>`),
+                    text: ReactHtmlParser(`<div class="attributes">Give anonymously</div>`),
                     value: `${info.privacySetting}`,
                 });
                 if (preferences[name] === info.privacySetting) {
@@ -141,7 +141,7 @@ const populateDropdownInfoToShare = (infoShareOptions = [], preferences = {}, na
                     key: `${info.privacySetting}`,
                     privacyData: null,
                     privacySetting: `${info.privacySetting}`,
-                    text: ReactHtmlParser(`<div className="attributes">${info.name}</div>`),
+                    text: ReactHtmlParser(`<div class="attributes">${info.name}</div>`),
                     value: `${info.privacySetting}`,
                 });
                 if (preferences[name] === info.privacySetting) {
@@ -153,8 +153,8 @@ const populateDropdownInfoToShare = (infoShareOptions = [], preferences = {}, na
                     key: `${info.privacySetting}`,
                     privacyData: null,
                     privacySetting: `${info.privacySetting}`,
-                    text: ReactHtmlParser(`<div className="attributes">${info.name}</div>
-                    <div className="attributes">${info.email}</div>`),
+                    text: ReactHtmlParser(`<div class="attributes">${info.name}</div>
+                    <div class="attributes">${info.email}</div>`),
                     value: `${info.privacySetting}`,
                 });
                 if (preferences[name] === info.privacySetting) {
@@ -166,10 +166,10 @@ const populateDropdownInfoToShare = (infoShareOptions = [], preferences = {}, na
                     key: `${info.privacySetting}-${info.privacyData}`,
                     privacyData: `${info.privacyData}`,
                     privacySetting: `${info.privacySetting}`,
-                    text: ReactHtmlParser(`<div className="attributes">${info.name}</div>
-                    <div className="attributes">${info.email}</div>
-                    <div className="attributes"> ${info.address_one} ${info.address_two} </div>
-                    <div className="attributes">${info.city}, ${info.province} ${info.country}</div>`),
+                    text: ReactHtmlParser(`<div class="attributes">${info.name}</div>
+                    <div class="attributes">${info.email}</div>
+                    <div class="attributes"> ${info.address_one} ${info.address_two} </div>
+                    <div class="attributes">${info.city}, ${info.province} ${info.country}</div>`),
                     value: `${info.privacySetting}-${info.privacyData}`,
                 });
                 if (preferences[`${name}_address`] === info.privacyData) {
@@ -185,7 +185,7 @@ const populateDropdownInfoToShare = (infoShareOptions = [], preferences = {}, na
         infoToShare.infoToShareList.splice(0, 1);
         infoToShare.infoToShareList.push({
             disabled: true,
-            text: ReactHtmlParser(`<div className="attributes">Give anonymously (group members can see your name, so admins can too)</div>`),
+            text: ReactHtmlParser(`<div class="attributes">Give anonymously (group members can see your name, so admins can too)</div>`),
         });
     }
 

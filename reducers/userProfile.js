@@ -249,8 +249,10 @@ const userProfile = (state = {}, action) => {
         case 'USER_GROUP_CAMPAIGN_ADMIN_INFO_TO_SHARE_OPTIONS':
             newState = {
                 ...state,
-                groupCampaignAdminShareInfoOptions: action.payload.groupCampaignAdminShareInfoOptions,
-                ...(action.payload.groupMemberInfoToShare && { groupMemberInfoToShare: action.payload.groupMemberInfoToShare }),
+                infoOptions: {
+                    groupCampaignAdminShareInfoOptions: action.payload.infoOptions.groupCampaignAdminShareInfoOptions,
+                    ...(action.payload.infoOptions.groupMemberInfoToShare && { groupMemberInfoToShare: action.payload.infoOptions.groupMemberInfoToShare }),
+                },
             };
             break;
         default:
