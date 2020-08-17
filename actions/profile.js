@@ -92,30 +92,17 @@ export const getCampaignSupportGroups = (id, searchKey = '', pageNumber = 1, pag
         type: actionTypes.SUB_GROUP_LIST_LOADER,
     });
 
-    let fullParams;
-    if (_.isEmpty(searchKey)) {
-        fullParams = {
-            params: {
-                dispatch,
-                ignore401: true,
-                uxCritical: true,
-                'page[number]': pageNumber,
-                'page[size]': pageSize,
-            },
-        };
-    }
-    else {
-        fullParams = {
-            params: {
-                dispatch,
-                ignore401: true,
-                uxCritical: true,
-                'page[number]': pageNumber,
-                'page[size]': pageSize,
-                'filter[name]': searchKey,
-            }
+    const fullParams = {
+        params: {
+            dispatch,
+            ignore401: true,
+            uxCritical: true,
+            'page[number]': pageNumber,
+            'page[size]': pageSize,
+            'filter[name]': searchKey,
         }
-    };
+    }
+
     await coreApi.get(`campaigns/${id}/subGroups`, {
         ...fullParams,
     }).then((subGroupSearchResult) => {
@@ -203,6 +190,7 @@ export const getCampaignFromSlug = async (dispatch, slug, token = null) => {
             };
         };
 
+        // TODO need to move this to componentDidMount
         // API call for images
         if (result.data) {
             coreApi.get(result.data.relationships.galleryImages.links.related,

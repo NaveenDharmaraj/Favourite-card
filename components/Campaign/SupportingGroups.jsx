@@ -9,7 +9,8 @@ import {
     Icon,
 } from 'semantic-ui-react';
 import getConfig from 'next/config';
-import _ from 'lodash';
+import _isEmpty from 'lodash/isEmpty';
+import _isEqual from 'lodash/isEqual';
 import { connect } from 'react-redux';
 import { withTranslation } from '../../i18n';
 import PlaceholderGrid from '../shared/PlaceHolder';
@@ -51,7 +52,7 @@ class SupportingGroups extends React.Component {
             }
         } = event;
         const { searchData } = this.props;
-        if(_.isEmpty(value) && !_.isEqual(value,searchData)) {
+        if(_isEmpty(value) && !_isEqual(value,searchData)) {
             this.campaignGroups();
         };
         this.setState({
