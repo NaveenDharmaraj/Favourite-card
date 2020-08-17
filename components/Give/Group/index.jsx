@@ -372,7 +372,7 @@ class Group extends React.Component {
             }
             giveData.infoToShareList = infoToShareList;
         }
-        if (!giveData.userInteracted && !giveData.giveTo.isCampaign) {
+        if ((!giveData.userInteracted || _isEmpty(giveData.defaultNameToShare)) && !giveData.giveTo.isCampaign) {
             const { infoToShareList } = populateDropdownInfoToShare(groupMemberInfoToShare);
             const defaultNameToShare = infoToShareList.find(opt => (
                 opt.value === preferences['giving_group_members_info_to_share']

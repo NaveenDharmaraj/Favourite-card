@@ -129,6 +129,13 @@ PrivacyOptions.defaultProps = {
     nameToShare: {
         value: 'anonymous',
     },
+    privacyNameOptions: [
+        {
+            privacySetting: 'anonymous',
+            text: 'Give anonymously',
+            value: 'anonymous',
+        },
+    ],
 };
 
 PrivacyOptions.propTypes = {
@@ -145,6 +152,10 @@ PrivacyOptions.propTypes = {
     nameToShare: PropTypes.shape({
         value: PropTypes.string,
     }),
+    privacyNameOptions: PropTypes.arrayOf(
+        PropTypes.shape({
+        }),
+    ),
 };
 
 export default PrivacyOptions;
