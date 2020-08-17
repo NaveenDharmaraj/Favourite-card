@@ -1324,6 +1324,7 @@ const populateDonationReviewPage = (giveData, data, currency, formatMessage, lan
 const populateGiveReviewPage = (giveData, data, currency, formatMessage, language, isGiveFrom) => {
     const {
         giveGroupDetails,
+        groupMatchingDetails,
         toURL,
         type,
     } = data;
@@ -1335,6 +1336,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
         giveFrom,
         giveTo,
         nameToShare,
+        matchingPolicyDetails,
         noteToCharity,
         noteToSelf,
         privacyShareAddress,
@@ -1350,6 +1352,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
         headingText: (isGiveFrom)
             ? `${formatMessage('reviewGiveFromText')} ${giveFrom.name}`
             : `${formatMessage('reviewGiveToText')} ${giveTo.name}`,
+        isGroupWithMatching: false,
         isRecurring: !(giftType.value === 0),
         mainDisplayAmount: formatCurrency(
             Number(giveAmount),
@@ -1378,27 +1381,31 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
             value: giveFrom.text,
         });
 
-        if (!_.isEmpty(giveGroupDetails)) {
+        if (!_.isEmpty(giveGroupDetails) && (!_.isEmpty(groupMatchingDetails) && groupMatchingDetails.giveFromFund === giveFrom.value)) {
             const {
                 attributes: {
                     activeMatch,
-                    hasActiveMatch,
                 },
             } = giveGroupDetails;
-            if (!_.isEmpty(activeMatch) && hasActiveMatch) {
+            const activeMatchAmount = Number(groupMatchingDetails.attributes.matchAvailable);
+            if ((activeMatchAmount > 0) && (!_.isEmpty(matchingPolicyDetails) && matchingPolicyDetails.isValidMatchPolicy)) {
                 const {
                     company,
                     maxMatchAmount,
-                    balance,
                 } = activeMatch;
-                const maxMatchedAmount = (Number(maxMatchAmount) <= Number(balance)) ?
-                    Number(maxMatchAmount) : Number(balance);
-                const activeMatchedAmount = (Number(giveAmount) > maxMatchedAmount) ?
-                    maxMatchedAmount : Number(giveAmount);
-                listingData.push({
-                    name: 'giftToGroupMatchedBy',
-                    value: `${company}: ${formatCurrency(activeMatchedAmount, language, currency)}`,
-                });
+                const sumAmount = activeMatchAmount + Number(giveAmount);
+                state.isGroupWithMatching = true;
+                state.toDetailsForMatching = {
+                    amount: state.mainDisplayAmount,
+                    heading: `Your gift amount`,
+                    matchingAmount: formatCurrency(activeMatchAmount, language, currency),
+                    matchingHeading: (state.isRecurring) ? `Match amount requested` : `Match amount from ${company}`,
+                    matchingSubHeading: (state.isRecurring) ? `(from ${company} until funds ran out or expire)` : '',
+                    popUpMessage: `For every $1.00 you give to this ${(giveTo.isCampaign) ? 'Campaign' : 'Group'}, ${company} will match your gift with $1.00 up to ${formatCurrency(maxMatchAmount, language, currency)} per gift, until the matching funds run out or expire.`,
+                    subHeading: `(${giveFrom.text})`,
+                    totalAmount: formatCurrency(sumAmount, language, currency),
+                    totalHeading: `Total with matching`,
+                };
             }
         }
         let giveToType = '';

@@ -23,6 +23,7 @@ const GroupSuccess = (props) => {
             language,
         },
         giveGroupDetails,
+        groupMatchingDetails,
         successData,
         t: formatMessage,
     } = props;
@@ -33,6 +34,7 @@ const GroupSuccess = (props) => {
             giveTo,
             giftType,
             giveAmount,
+            matchingPolicyDetails,
         },
     } = successData;
     const {
@@ -42,28 +44,22 @@ const GroupSuccess = (props) => {
     let secondParagraph = null;
     let thirdParagh = null;
     const isNonRecurring = !!(giftType && giftType.value === 0);
-    if (!_isEmpty(giveGroupDetails)) {
+    if (!_isEmpty(groupMatchingDetails) && (!_isEmpty(matchingPolicyDetails) && matchingPolicyDetails.isValidMatchPolicy)) {
         const {
             attributes: {
                 activeMatch,
-                hasActiveMatch,
             },
         } = giveGroupDetails;
-        if (!_isEmpty(activeMatch) && hasActiveMatch) {
+        const activeMatchAmount = Number(groupMatchingDetails.attributes.matchAvailable);
+        if (activeMatchAmount > 0 && groupMatchingDetails.giveFromFund === giveFrom.value) {
             const {
                 company,
-                maxMatchAmount,
-                balance,
             } = activeMatch;
-            const maxMatchedAmount = (Number(maxMatchAmount) <= Number(balance))
-                ? Number(maxMatchAmount) : Number(balance);
-            const activeMatchedAmount = (Number(giveAmount) > maxMatchedAmount)
-                ? maxMatchedAmount : Number(giveAmount);
-            const totalAmount = Number(giveAmount) + activeMatchedAmount;
+            const totalAmount = Number(giveAmount) + activeMatchAmount;
             thirdParagh = (isNonRecurring)
                 ? formatMessage('groupMatchByText', {
                     groupName: name,
-                    matchedAmount: formatCurrency(activeMatchedAmount, language, currency),
+                    matchedAmount: formatCurrency(activeMatchAmount, language, currency),
                     matchedCompany: company,
                     totalAmount: formatCurrency(formatAmount(totalAmount), language, currency),
                 })
@@ -150,6 +146,12 @@ GroupSuccess.propTypes = {
             hasActiveMatch: PropTypes.bool,
         }),
     }),
+    groupMatchingDetails: PropTypes.shape({
+        attributes: PropTypes.shape({
+            matchAvailable: PropTypes.string,
+        }),
+        giveFromFund: PropTypes.string,
+    }),
     i18n: PropTypes.shape({
         language: PropTypes.string,
     }),
@@ -168,10 +170,14 @@ GroupSuccess.propTypes = {
                 name: PropTypes.string,
                 slug: PropTypes.string,
                 type: PropTypes.string,
+                value: PropTypes.string,
             }),
             giveTo: PropTypes.shape({
                 eftEnabled: PropTypes.bool,
                 name: PropTypes.string,
+            }),
+            matchingPolicyDetails: PropTypes.shape({
+                isValidMatchPolicy: PropTypes.bool,
             }),
         }),
         type: PropTypes.string,
@@ -189,6 +195,12 @@ GroupSuccess.defaultProps = {
             hasActiveMatch: false,
         },
     },
+    groupMatchingDetails: {
+        attributes: {
+            matchAvailable: '0.0',
+        },
+        giveFromFund: '',
+    },
     i18n: {
         language: 'en',
     },
@@ -203,10 +215,14 @@ GroupSuccess.defaultProps = {
                 name: '',
                 slug: '',
                 type: '',
+                value: '',
             },
             giveTo: {
                 eftEnabled: false,
                 name: '',
+            },
+            matchingPolicyDetails: {
+                isValidMatchPolicy: false,
             },
         },
         type: null,

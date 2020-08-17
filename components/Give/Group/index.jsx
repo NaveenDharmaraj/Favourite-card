@@ -589,7 +589,7 @@ class Group extends React.Component {
             giveFromType,
         } = this.state;
         const formatMessage = this.props.t;
-        if (Number(giveData.giveAmount) >= 1 && Number(value) && Number(value) >= 1) {
+        if (Number(giveData.giveAmount) >= 1) {
             giveData.matchingPolicyDetails = _isEmpty(giveFromType) && checkMatchPolicy(giveGroupDetails, value, formatMessage);
         }
         this.setState({
