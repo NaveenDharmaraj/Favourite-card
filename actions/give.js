@@ -1052,6 +1052,7 @@ export const fetchGroupMatchAmount = (giveAmount, giveFromFundId, giveToFundId) 
         if (result && !_.isEmpty(result.data)) {
             const matchingData = result.data;
             matchingData.giveFromFund = giveFromFundId;
+            matchingData.giveAmount = giveAmount;
             dispatch({
                 payload: matchingData,
                 type: actionTypes.GET_MATCHING_DETAILS_FOR_GROUPS,

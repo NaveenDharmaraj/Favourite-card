@@ -63,7 +63,7 @@ class Review extends React.Component {
         if(giveTo.type === 'groups' && !_.isEmpty(giveGroupDetails)) {
             if(matchingPolicyDetails.isValidMatchPolicy &&
                 (_.isEmpty(groupMatchingDetails) ||
-                    (!_.isEmpty(groupMatchingDetails) && groupMatchingDetails.giveFromFund !== giveFrom.value)
+                    (!_.isEmpty(groupMatchingDetails) && (groupMatchingDetails.giveFromFund !== giveFrom.value || groupMatchingDetails.giveAmount !== giveAmount))
                 )
             ) {
                     dispatch(fetchGroupMatchAmount(giveAmount, giveFrom.value, giveTo.value));
