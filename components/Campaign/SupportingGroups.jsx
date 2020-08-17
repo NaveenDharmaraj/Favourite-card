@@ -9,7 +9,7 @@ import {
     Icon,
 } from 'semantic-ui-react';
 import getConfig from 'next/config';
-import _isEmpty from 'lodash/isEmpty';
+import _ from 'lodash';
 import { connect } from 'react-redux';
 import { withTranslation } from '../../i18n';
 import PlaceholderGrid from '../shared/PlaceHolder';
@@ -30,21 +30,17 @@ class SupportingGroups extends React.Component {
 
         this.state = {
             searchKey: '',
-            searchClicked: false,
         };
         this.renderGroups = this.renderGroups.bind(this);
         this.searchClick = this.searchClick.bind(this);
         this.searchOnChange = this.searchOnChange.bind(this);
     }
 
-    campaignGroups = () => {
+    campaignGroups() {
         const {
             campaignId,
             dispatch,
         } = this.props;
-        this.setState({
-            searchClicked: false,
-        })
         dispatch(getCampaignSupportGroups(campaignId));
     }
 
@@ -54,8 +50,8 @@ class SupportingGroups extends React.Component {
                 value
             }
         } = event;
-        const { searchClicked } = this.state;
-        if (_isEmpty(value) && searchClicked) {
+        const { searchData } = this.props;
+        if(_.isEmpty(value) && !_.isEqual(value,searchData)) {
             this.campaignGroups();
         };
         this.setState({
@@ -69,13 +65,7 @@ class SupportingGroups extends React.Component {
             dispatch,
             campaignId,
         } = this.props;
-        dispatch(getCampaignSupportGroups(campaignId, searchKey)).then(() => {
-            this.setState({
-                searchClicked: true,
-            })
-        }).catch((err) => {
-            // console.log(err);
-        })
+        dispatch(getCampaignSupportGroups(campaignId, searchKey));
     }
 
     noDataSupportingGroups = (slug, formatMessage) => {
@@ -193,4 +183,10 @@ class SupportingGroups extends React.Component {
     }
 }
 
-export default withTranslation('campaignProfile')(connect()(SupportingGroups));
+function mapStateToProps(state) {
+    return {
+        searchData: state.profile.searchData,
+    };
+}
+
+export default withTranslation('campaignProfile')(connect(mapStateToProps)(SupportingGroups));

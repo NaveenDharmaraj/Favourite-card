@@ -9,6 +9,7 @@ import getConfig from 'next/config';
 import { Router } from '../routes';
 import {
     getCampaignFromSlug,
+    getCampaignSupportGroups,
 } from '../actions/profile';
 import Layout from '../components/shared/Layout';
 import CampaignProfileWrapper from '../components/Campaign';
@@ -43,13 +44,15 @@ class CampaignProfile extends React.Component {
     componentDidMount() {
         const {
             dispatch,
-            slug,
             slugApiErrorStats,
+            campaignDetails: {
+                id,
+            },
         } = this.props;
         if (slugApiErrorStats) {
             Router.pushRoute('/dashboard');
         } else {
-            getCampaignFromSlug(dispatch, slug);
+            dispatch(getCampaignSupportGroups(id));
         }
     }
 

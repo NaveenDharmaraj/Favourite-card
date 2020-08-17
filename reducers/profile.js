@@ -84,6 +84,12 @@ const profile = (state = {}, action) => {
                 slugApiErrorStats: action.payload.slugApiErrorStats,
             };
             break;
+        case 'STORE_SEARCH_KEY_FOR_CAMPAIGN':
+            newState = {
+                ...state,
+                searchData: action.payload.searchData,
+            };
+            break;
         default:
             break;
     }
