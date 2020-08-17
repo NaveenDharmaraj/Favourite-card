@@ -12,6 +12,9 @@ import { populateDropdownInfoToShare } from '../../../helpers/users/utils';
 const DropDownInfoToShare = ({
     infoShareOptions, name, preferences, handleUserPreferenceChange, infoShareDropDownLoader,
 }) => {
+    const {
+        defaultValue,
+    } = populateDropdownInfoToShare(infoShareOptions, preferences, name);
     const [
         options,
         setOptions,
@@ -24,7 +27,7 @@ const DropDownInfoToShare = ({
     const [
         dropDownValue,
         setDropDownValue,
-    ] = useState('anonymous');
+    ] = useState(defaultValue);
     useEffect(() => {
         const {
             infoToShareList,
@@ -60,6 +63,8 @@ const DropDownInfoToShare = ({
                 fluid
                 selection
                 name={name}
+                selectOnBlur={false}
+                selectOnNavigation={false}
                 options={options}
                 onChange={handleChange}
                 value={dropDownValue}

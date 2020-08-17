@@ -351,7 +351,7 @@ class Charity extends React.Component {
                 value: '',
             };
         }
-        if(!_isEmpty(charityShareInfoOptions) && charityShareInfoOptions.length>0){
+        if(!giveData.userInteracted && !_isEmpty(charityShareInfoOptions) && charityShareInfoOptions.length>0){
             const name = 'charities_info_to_share';
             const preference = preferences[name].includes('address')
                 ? `${preferences[name]}-${preferences[`${name}_address`]}` : preferences[name];
@@ -542,6 +542,7 @@ class Charity extends React.Component {
             },
         } = this.state;
         const {
+            charityShareInfoOptions,
             coverFeesData,
             currentUser: {
                 attributes: {
@@ -593,8 +594,24 @@ class Charity extends React.Component {
                     giveData = modifiedGiveData;
                     if(giveData.giveFrom.type === 'user'){
                        giveData.infoToShare =  giveData.defaultInfoToShare;
+                       if(_isEmpty(giveData.defaultInfoToShare)){
+                        const name = 'charities_info_to_share';
+                        const preference = preferences[name].includes('address')
+                            ? `${preferences[name]}-${preferences[`${name}_address`]}` : preferences[name];
+                        const { infoToShareList } = populateDropdownInfoToShare(charityShareInfoOptions);
+                        const defaultInfoToShare = infoToShareList.find(opt => (
+                            opt.value === preference
+                        ));
+                        giveData.defaultInfoToShare = giveData.infoToShare = defaultInfoToShare;
+                       }
                     } else{
-                        giveData.infoToShare.value = 'anonymous';
+                        const formatMessage = this.props.t;
+                        const defaultDropDownOption = {
+                            disabled: false,
+                            text: ReactHtmlParser(`<span class="attributes">${formatMessage('giveCommon:infoToShareAnonymous')}</span>`),
+                            value: 'anonymous',
+                        };
+                        giveData.infoToShare = defaultDropDownOption;
                     }
                     if(giveData.giveFrom.type === 'companies' || giveData.giveFrom.type === 'campaigns') {
                         giveData.noteToSelf = '';

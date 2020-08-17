@@ -1502,8 +1502,10 @@ const getCharityInfoToShare = (userId) => async (dispatch) => {
 const getGroupCampaignAdminInfoToShare = (userId, isCampaign) => async (dispatch) => {
     const fsa = {
         payload: {
-            groupCampaignAdminShareInfoOptions: [],
-            groupMemberInfoToShare: [],
+            infoOptions: {
+                groupCampaignAdminShareInfoOptions: [],
+                groupMemberInfoToShare: [],
+            },
         },
         type: actionTypes.USER_GROUP_CAMPAIGN_ADMIN_INFO_TO_SHARE_OPTIONS,
     };
@@ -1515,7 +1517,7 @@ const getGroupCampaignAdminInfoToShare = (userId, isCampaign) => async (dispatch
                     uxCritical: true,
                 },
             });
-            fsa.payload.groupCampaignAdminShareInfoOptions = campaignAdminShare.data;
+            fsa.payload.infoOptions.groupCampaignAdminShareInfoOptions = campaignAdminShare.data;
             dispatch(fsa);
         } catch (err) { }
     } else {
@@ -1532,8 +1534,8 @@ const getGroupCampaignAdminInfoToShare = (userId, isCampaign) => async (dispatch
                     uxCritical: true,
                 },
             });
-            fsa.payload.groupCampaignAdminShareInfoOptions = groupAdminShare.data;
-            fsa.payload.groupMemberInfoToShare = groupMemberShare.data;
+            fsa.payload.infoOptions.groupCampaignAdminShareInfoOptions = groupAdminShare.data;
+            fsa.payload.infoOptions.groupMemberInfoToShare = groupMemberShare.data;
             dispatch(fsa);
         } catch (err) { }
     }

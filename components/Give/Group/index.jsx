@@ -76,7 +76,9 @@ class Group extends React.Component {
                 },
             },
             groupId,
-            groupMemberInfoToShare,
+            infoOptions: {
+                groupMemberInfoToShare,
+            },
             paymentInstrumentsData,
             taxReceiptProfiles,
         } = props;
@@ -197,7 +199,6 @@ class Group extends React.Component {
                     },
                     id,
                 },
-                groupMemberInfoToShare,
                 i18n: {
                     language,
                 },
@@ -208,7 +209,10 @@ class Group extends React.Component {
                 userGroups,
                 taxReceiptProfiles,
                 giveGroupDetails,
-                groupCampaignAdminShareInfoOptions,
+                infoOptions:{
+                    groupMemberInfoToShare,
+                    groupCampaignAdminShareInfoOptions,
+                },
                 userMembershipGroups
             } = this.props;
             let paymentInstruments = paymentInstrumentsData;
@@ -634,7 +638,10 @@ class Group extends React.Component {
                 },
             },
             giveGroupDetails,
-            groupMemberInfoToShare,
+            infoOptions:{
+                groupMemberInfoToShare,
+                groupCampaignAdminShareInfoOptions,
+            },
         } = this.props;
         const formatMessage = this.props.t;
         const {
@@ -690,6 +697,23 @@ class Group extends React.Component {
                     if (giveData.giveFrom.type === 'user') {
                         giveData.infoToShare = giveData.defaultInfoToShare;
                         giveData.nameToShare = giveData.defaultNameToShare;
+                        if(_isEmpty(giveData.defaultInfoToShare)){
+                            const prefernceName = giveData.giveTo.isCampaign ? 'campaign_admins_info_to_share' : 'giving_group_admins_info_to_share';
+                            const preference = preferences[prefernceName].includes('address')
+                                ? `${preferences[prefernceName]}-${preferences[`${prefernceName}_address`]}` : preferences[prefernceName];
+                            const { infoToShareList } = populateDropdownInfoToShare(groupCampaignAdminShareInfoOptions);
+                            const defaultInfoToShare = giveData.infoToShare = infoToShareList.find(opt => (
+                                opt.value === preference
+                            ));
+                            giveData.defaultInfoToShare = defaultInfoToShare;
+                        }
+                        if(_isEmpty(giveData.defaultNameToShare)){
+                            const { infoToShareList } = populateDropdownInfoToShare(groupMemberInfoToShare);
+                            const defaultNameToShare = infoToShareList.find(opt => (
+                                opt.value === preferences['giving_group_members_info_to_share']
+                            )) || {};
+                            giveData.defaultNameToShare = giveData.nameToShare = defaultNameToShare || {};
+                        }
                         giveData.privacyShareAmount = preferences['giving_group_members_share_my_giftamount'];
                     } else {
                         const defaultDropDownOption = {
@@ -947,7 +971,9 @@ class Group extends React.Component {
             },
             flowSteps,
             giveGroupDetails,
-            groupCampaignAdminShareInfoOptions,
+            infoOptions:{
+                groupCampaignAdminShareInfoOptions,
+            },
             i18n: {
                 language,
             },
@@ -1142,7 +1168,17 @@ class Group extends React.Component {
     }
 }
 
-Group.defaultProps = Object.assign({}, groupDefaultProps);
+Group.defaultProps = Object.assign({}, groupDefaultProps, {
+    infoOptions: {
+        groupCampaignAdminShareInfoOptions: [],
+        groupMemberInfoToShare: [
+            {
+                text: 'Give anonymously',
+                value: 'anonymous',
+            },
+        ],
+    }
+});
 
 const mapStateToProps = (state) => {
 
@@ -1153,8 +1189,7 @@ const mapStateToProps = (state) => {
         companyAccountsFetched: state.give.companyAccountsFetched,
         currentUser: state.user.info,
         giveGroupBenificairyDetails: state.give.benificiaryForGroupDetails,
-        groupCampaignAdminShareInfoOptions: state.userProfile.groupCampaignAdminShareInfoOptions,
-        groupMemberInfoToShare: state.userProfile.groupMemberInfoToShare,
+        infoOptions: state.userProfile.infoOptions,
         taxReceiptProfiles: state.user.taxReceiptProfiles,
         userAccountsFetched: state.user.userAccountsFetched,
         userCampaigns: state.user.userCampaigns,

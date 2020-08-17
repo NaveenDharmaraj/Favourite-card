@@ -845,7 +845,7 @@ const populateInfoToShareAccountName = (accountName, formatMessage, disable = fa
         infoToShareList.splice(0, 1);
         infoToShareList.push({
             disabled: true,
-            text: ReactHtmlParser(`<div className="attributes">Give anonymously (group members can see your name, so admins can too)</div>`),
+            text: ReactHtmlParser(`<div class="attributes">Give anonymously (group members can see your name, so admins can too)</div>`),
             value: 'anonymous',
         });
     }
