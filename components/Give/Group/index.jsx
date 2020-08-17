@@ -277,8 +277,13 @@ class Group extends React.Component {
                     groupCampaignAdminShareInfoOptions, groupMemberInfoToShare, giveFromId, giveFromType, language, currency, preferences, giveGroupDetails, formatMessage
                 );
             }
-            if (!giveData.userInteracted && (giveFromType === 'groups' || giveFromType === 'campaigns')) {
-                dropDownOptions.privacyNameOptions = populateInfoToShareAccountName(giveData.giveFrom.name, formatMessage);
+            if (giveData.giveFrom.type === 'user' && !_isEmpty(groupMemberInfoToShare)) {
+                const {
+                    infoToShareList,
+                } = populateDropdownInfoToShare(groupMemberInfoToShare);
+                dropDownOptions.privacyNameOptions  = infoToShareList;
+            } else {
+                dropDownOptions.privacyNameOptions  = populateInfoToShareAccountName(giveData.giveFrom.name, formatMessage);
             }
             this.setState({
                 buttonClicked: false,
