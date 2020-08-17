@@ -169,7 +169,7 @@ const populateDropdownInfoToShare = (infoShareOptions = [], preferences = {}, na
                     text: ReactHtmlParser(`<div class="attributes">${info.name}</div>
                     <div class="attributes">${info.email}</div>
                     <div class="attributes"> ${info.address_one} ${info.address_two} </div>
-                    <div class="attributes">${info.city}, ${info.province} ${info.country}</div>`),
+                    <div class="attributes">${info.city}, ${info.province} ${info.country} ${info.postal_code}</div>`),
                     value: `${info.privacySetting}-${info.privacyData}`,
                 });
                 if (preferences[`${name}_address`] === info.privacyData) {
