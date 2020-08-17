@@ -36,20 +36,15 @@
     }
     .Giftsleft{
       max-width: 495px;
-      @media only screen and (max-width:600px) {
-        width: 90% !important;
-      }
-      @media only screen and (max-width:991px) {
-        width: 495px;
+      @media only screen and (min-width:767px) and (max-width:991px) {
+        width: 495px !important;
         padding-top: 60px;
         margin: auto;
       }
-      @media only screen and (max-width:850px) {
-        padding-top:60px;
-      }
       @media only screen and (max-width:767px) {
-        padding-top:0px !important;
         margin-bottom: 1rem;
+        padding: 60px 15px 0px 15px;
+        max-width: 100%;
       }
       .GiftsleftHeading{
         h3{
@@ -109,16 +104,17 @@
         margin-bottom: 1rem;
         margin-top: 1rem;
       }
+      @media only screen and (max-width:650px) {
+        height: 305px;
+      }
       @media only screen and (max-width:600px) {
-        height: 352px;
+        height: 252px;
       }
       @media only screen and (max-width:480px) {
-        height: 230px;
-        margin-bottom: 50px;
+        height: 208px;
       }
       @media only screen and (max-width:380px) {
-        height: 200px;
-        margin-bottom: 50px;
+        height:170px;
       }
       &::before{
         content: "";
@@ -172,6 +168,8 @@
     padding-bottom: 100px;
     @media only screen and (max-width:767px) {
       padding-bottom: 49px;
+      padding-left: 15px;
+      padding-right: 15px;
     }
     .Claimheading{
       padding-top: 100px;
@@ -185,11 +183,7 @@
       text-align: left;
       padding-top: 50px;
       padding-bottom: 30px;
-      padding-left: 20px;
       }
-      @media only screen and (max-width:600px) {
-      width: 270px;
-    }
         h3{
           &.ui{
             &.header{
@@ -209,7 +203,7 @@
               margin: auto;
               @media only screen and (max-width:767px) {
                 float: none;
-                margin: auto auto 10px auto;
+                margin: auto auto 10px -10px;
                 }
             }
           }
@@ -222,9 +216,8 @@
         padding-top:0px;
       }
       @media only screen and (max-width:767px) {
-        padding-left:38px;
         padding-top: 0px;
-        padding-right: 15px;
+        margin: auto;
       }
       .subHeading{
         h4{
@@ -251,9 +244,9 @@
           margin-bottom: 20px;
           width:100%;
         }
-        @media only screen and (max-width:550px) {
-          width: 260px;
-        }
+        // @media only screen and (max-width:550px) {
+        //   width: 260px;
+        // }
         p{
           font-size: 14px;
           line-height: 22px;
@@ -318,6 +311,8 @@
     @media only screen and (max-width:767px) {
       padding-top: 50px;
       padding-bottom:50px;
+      padding-left: 15px;
+      padding-right: 15px;
     }
     .WithoutAccessheading{
       margin-bottom: 55px;
@@ -336,9 +331,6 @@
             line-height: 21px;
             font-weight: bold;
             color: @font-color;
-            @media only screen and (max-width:767px) {
-              margin-left: 25px;
-            }
           }
         }
       }
@@ -346,14 +338,6 @@
     .ui{
       &.list{
         counter-reset: number;
-        @media only screen and (max-width:1199px) {
-          margin-left: 55px;
-          margin-right: 55px;
-        }
-        @media only screen and (max-width:767px) {
-          margin-left: 25px;
-          margin-right: 27px;
-        }
         .item{
           &.number{
             font-size: 14px;
@@ -398,7 +382,7 @@
                 }
               }
               @media only screen and (max-width:1199px) {
-                margin-left:230px !important;
+                margin-left:290px !important;
               }
               position: relative;
                 &::after{
@@ -487,6 +471,8 @@
   background-color: #F5F8FC;
   height:338px;
   overflow: hidden;
+  display: flex;
+  align-items: center;
   @media only screen and (max-width:991px)  {
     height: 269px;
   }
@@ -555,10 +541,10 @@
       right: -137px;
       top: 50px;
     }
-    @media only screen and (max-width:400px)  {
+    @media only screen and (max-width:450px)  {
       width: 214px;
     height: 192px;
-    right: -142px;
+    right: -137px;
     top: 90px;
     }
   }
@@ -594,24 +580,12 @@
     }
   }
   .bannerHeading{
-    position: absolute;
     max-height: 100%;
-    max-width:600px;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 100px;
+    width: 100%;
     margin: auto;
     text-align: center;
-    @media only screen and (max-width:991px) {
-      max-width:550px; 
-    }
     @media only screen and (max-width:767px) {
-      max-width: none;
-    }
-    @media only screen and (max-width:600px) {
-      height: 160px;
+      padding: 0px 15px;
     }
     h3{
       &.ui{
@@ -623,8 +597,6 @@
           text-align: center;
           @media only screen and (max-width:767px) {
             text-align: left;
-            padding-left: 27px;
-            padding-right: 30px;
           }
         }
       }
@@ -635,8 +607,6 @@
       color: @font-color;
       @media only screen and (max-width:767px) {
         text-align: left;
-        padding-left: 27px;
-        padding-right: 80px;
       }
     }
     Button{
@@ -649,6 +619,13 @@
       }
     } 
   }
+  .ui{
+    &.container{
+      @media only screen and (max-width:767px) {
+      width: 100% !important;
+      }
+    }
+  }
 }
 .Accessing{
   padding-top: 100px;
@@ -658,17 +635,15 @@
     padding-bottom: 60px;
   }
   @media only screen and (max-width:767px)  {
-    padding-top: 50px;
-    padding-bottom: 50px;
-    margin-left: 10px;
+    padding:50px 15px;
   }
   .Accessingheading{
     @media only screen and (max-width:767px)  {
       text-align: left !important;
-      max-width: 550px;
+      max-width: 100%;
       width: 100%;
-      margin-left: auto;
-      margin-right: auto;
+      margin-left: 0px;
+      margin-right: 0px;
       padding: 0px;
     }
     h3{
@@ -684,9 +659,6 @@
           }
           @media only screen and (max-width:767px)  {
             text-align: left;
-          }
-          @media only screen and (max-width:550px) {
-            width: 280px;
           }
         }
       }
@@ -716,7 +688,10 @@
         padding: 0px;
       }
       @media only screen and (max-width:767px)  {
+        max-width: 100%;
         border: none;
+        margin-left: 0px;
+        margin-right: 0px;
       }
       &::before{
         content: "";
@@ -779,8 +754,10 @@
         margin-bottom: 40px;
       }
       @media only screen and (max-width:767px)  {
-        margin-left: 10px;
         margin-bottom: 27px;
+        margin-left: 0px;
+        margin-right: 0px;
+        max-width: 100%;
       }
       h3{
         &.ui{
@@ -806,12 +783,24 @@
     }
     @media only screen and (max-width:767px)  {
       margin-left: 0px;
+      img{
+        width: 108%;
+        max-width: none;
+        margin-left: -15px;
+      }
     }
+    @media only screen and (max-width:500px)  {
+      width: 100%;
+      img{
+            overflow: hidden;
+            margin-left: -10px;
+      }
+    } 
     @media only screen and (max-width:450px)  {
-    width: 105%;
-    margin-left: -5px;
+    width: 100%;
     img{
           overflow: hidden;
+          margin-left: -5px;
     }
   } 
 }
