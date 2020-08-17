@@ -594,7 +594,7 @@ class Charity extends React.Component {
                     giveData = modifiedGiveData;
                     if(giveData.giveFrom.type === 'user'){
                        giveData.infoToShare =  giveData.defaultInfoToShare;
-                       if(_isEmpty(this.state.defaultInfoToShare)){
+                       if(_isEmpty(giveData.defaultInfoToShare)){
                         const name = 'charities_info_to_share';
                         const preference = preferences[name].includes('address')
                             ? `${preferences[name]}-${preferences[`${name}_address`]}` : preferences[name];
