@@ -25,6 +25,7 @@ const {
     RAILS_APP_URL_ORIGIN,
 } = publicRuntimeConfig;
 
+let timeout = '';
 class SupportingGroups extends React.Component {
     constructor(props) {
         super(props)
@@ -45,6 +46,15 @@ class SupportingGroups extends React.Component {
         dispatch(getCampaignSupportGroups(campaignId));
     }
 
+    debounceFunction = ({dispatch, campaignId, searchQuery}, delay) => {
+        if(timeout){
+            clearTimeout(timeout);
+        }
+        timeout = setTimeout(function(){
+            dispatch(getCampaignSupportGroups(campaignId, searchQuery));
+        },delay);
+    }
+
     searchOnChange(event) {
         const {
             target: {
@@ -52,7 +62,15 @@ class SupportingGroups extends React.Component {
             }
         } = event;
         const { searchData } = this.props;
-        if(_isEmpty(value) && !_isEqual(value,searchData)) {
+        if (event.target.value.length >= 4) {
+            const {
+                dispatch,
+                campaignId,
+            } = this.props;
+            const arg = { dispatch, campaignId, searchQuery: event.target.value };
+            this.debounceFunction(arg, 300);
+        };
+        if (_isEmpty(value) && !_isEqual(value, searchData)) {
             this.campaignGroups();
         };
         this.setState({
