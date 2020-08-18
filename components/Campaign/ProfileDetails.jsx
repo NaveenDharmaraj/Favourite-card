@@ -76,10 +76,10 @@ function ProfileDetails(props) {
                         (
                             <Fragment>
                                 <Grid.Column width={16}>
-                                    <p>{ReactHtmlParser(formattedShort)}</p>
+                                    {ReactHtmlParser(formattedShort)}
                                 </Grid.Column>
                                 <Grid.Column width={16}>
-                                    <p>{ReactHtmlParser(formattedImpact)}</p>
+                                    {ReactHtmlParser(formattedImpact)}
                                 </Grid.Column>
                                 <Grid>
                                     <Grid.Row>
