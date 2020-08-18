@@ -12,42 +12,35 @@
         }
     }
 }
-.boxcard{
-    background-color: #fff;
-    padding: 16px 0px 14px 0px;
-    width: calc(100% - 130px);
-    display: inline-block;
-    box-shadow: 0 2px 8px 0 rgba(0,0,0,0.16);
-    border-radius: 5px;
-    text-align: center;
-    @media only screen and (max-width:1199px){
-        width: calc(100% - 119px);
-    }
-    @media only screen and (max-width:991px){
-        width:100% ;
-        margin-bottom: 15px;
-    }
-    @media only screen and (max-width:767px){
-        width:48%;
-    }
-    @media only screen and (max-width:420px){
-        width:47%;
-    }
-    >i{
-        &.icon{
-            &.group{
-                margin:16px 0px 22px 0px;
-                &::before{
-                    content: url(../images/icons/group.svg);
-                    .imgColorIconGrey();
-                  }
-            }
-            &.privacy{
-                margin:16px 0px 22px 0px;
-                &::before{
-                    content: url(../images/icons/give-hand.svg);
-                    .imgColorIconGrey();
-                  }
+.boxcardWrapper{
+    display: flex;
+    .boxcard{
+        background-color: #fff;
+        padding: 16px 0px 14px 0px;
+        display: inline-block;
+        box-shadow: 0 2px 8px 0 rgba(0,0,0,0.16);
+        border-radius: 5px;
+        text-align: center;
+        width: 100%;
+        &:first-child{
+            margin-right: 13px;
+        }
+        >i{
+            &.icon{
+                &.group{
+                    margin:16px 0px 22px 0px;
+                    &::before{
+                        content: url(../images/icons/group.svg);
+                        .imgColorIconGrey();
+                      }
+                }
+                &.privacy{
+                    margin:16px 0px 22px 0px;
+                    &::before{
+                        content: url(../images/icons/give-hand.svg);
+                        .imgColorIconGrey();
+                      }
+                }
             }
         }
     }
@@ -169,7 +162,6 @@
                 line-height: 21px;
                 margin: 0px;
                 color    :#263238;
-                font-family: 'ProximaNova-Regular';
             }
         }
     }
@@ -242,7 +234,40 @@
   }
 
 .MyGallery{
+    .ui{
+        .row{
+            padding-top: 0px !important;
+        }
+    }
+    .ui.grid{
+        margin-top: 0px !important;
+    }
+    .ui.divider{
+        margin-top: 0px !important;
+        margin-bottom: 0px !important; 
+    }
+    .ReactGridGallery{
+        margin-left: -10px;
+        margin-bottom: 30px !important;
+        .ReactGridGallery_tile{
+            margin:10px !important;
+            .ReactGridGallery_tile-viewport{
+                width: 140px !important;
+                height: 140px !important;
+                border-radius: 4px !important;
+                img{
+                width: 100% !important;
+                height: 100%!important;
+                border-radius: 4px !important;
+                object-fit: cover !important;
+                margin: auto !important;
+                }
+            }
+        }
+    }
     .videoWrapper{
+        margin-top: 40px;
+        margin-bottom: 40px;
         embed{
             width:100%;
         }
