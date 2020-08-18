@@ -163,7 +163,7 @@ class ClaimCharity extends React.Component {
                                                 <div className="Accessinput">
                                                     <Grid>
                                                         <Grid.Row>
-                                                            <Grid.Column mobile={16} tablet={16} computer={10}>
+                                                            <Grid.Column mobile={16} tablet={16} computer={9}>
                                                                 <Form>
                                                                     <label className="accesslabel">Access code</label>
                                                                     <Form.Field
@@ -184,7 +184,7 @@ class ClaimCharity extends React.Component {
                                                                     />
                                                                 </Form>
                                                             </Grid.Column>
-                                                            <Grid.Column mobile={16} tablet={12} computer={6}>
+                                                            <Grid.Column mobile={16} tablet={12} computer={7}>
                                                                 <Button
                                                                     data-test="ClaimCharity_ClaimCharity_claimbutton"
                                                                     className="primary blue-btn-rounded btnTextsize mt-2"
