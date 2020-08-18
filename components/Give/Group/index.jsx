@@ -1175,11 +1175,18 @@ class Group extends React.Component {
 
 Group.defaultProps = Object.assign({}, groupDefaultProps, {
     infoOptions: {
-        groupCampaignAdminShareInfoOptions: [],
+        groupCampaignAdminShareInfoOptions: [
+            {
+            text: 'Give anonymously',
+            value: 'anonymous',
+            privacySetting: 'anonymous'
+            },
+        ],
         groupMemberInfoToShare: [
             {
                 text: 'Give anonymously',
                 value: 'anonymous',
+                privacySetting: 'anonymous'
             },
         ],
     }
