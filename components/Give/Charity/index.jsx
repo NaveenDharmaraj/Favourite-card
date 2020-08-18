@@ -329,7 +329,7 @@ class Charity extends React.Component {
             giveData.giveFrom.text = `${fund.attributes.name} ($${fund.attributes.balance})`;
             giveData.giveFrom.balance = fund.attributes.balance;
             giveData.giveFrom.name = name;
-        } else if((!_isEmpty(companiesAccountsData) || !_isEmpty(userGroups) || !_isEmpty(userCampaigns)) && !giveData.userInteracted){
+        } else if((!_isEmpty(companiesAccountsData) || !_isEmpty(userGroups) || !_isEmpty(userCampaigns)) && (!giveData.userInteracted || _isEmpty(giveData.giveFrom.id))){
             if (!_isEmpty(giveGroupBenificairyDetails) && !_isEmpty(giveGroupBenificairyDetails.benificiaryDetails)) {
                 const defaultGroupFrom = (giveFromType === 'campaigns')
                     ? userCampaigns.find((userCampaign) => userCampaign.id === groupId)
@@ -351,7 +351,7 @@ class Charity extends React.Component {
                 value: '',
             };
         }
-        if(!giveData.userInteracted && !_isEmpty(charityShareInfoOptions) && charityShareInfoOptions.length>0){
+        if((!giveData.userInteracted || _isEmpty(giveData.defaultInfoToShare)) && !_isEmpty(charityShareInfoOptions) && charityShareInfoOptions.length>0){
             const name = 'charities_info_to_share';
             const preference = preferences[name].includes('address')
                 ? `${preferences[name]}-${preferences[`${name}_address`]}` : preferences[name];

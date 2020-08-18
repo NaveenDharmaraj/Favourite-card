@@ -325,7 +325,7 @@ class Group extends React.Component {
             giveData.giveFrom.text = `${fund.attributes.name} ($${fund.attributes.balance})`;
             giveData.giveFrom.balance = fund.attributes.balance;
             giveData.giveFrom.name = name;
-        } else if ((!_isEmpty(companiesAccountsData) || !_isEmpty(userGroups) || !_isEmpty(userCampaigns)) && !giveData.userInteracted) {
+        } else if ((!_isEmpty(companiesAccountsData) || !_isEmpty(userGroups) || !_isEmpty(userCampaigns)) && (!giveData.userInteracted || _isEmpty(giveData.giveFrom.id))) {
             if (groupId) {
                 const giveFromGroup = (giveFromType === 'campaigns')
                     ? userCampaigns.find((userCampaign) => userCampaign.id === groupId)
@@ -352,7 +352,7 @@ class Group extends React.Component {
             giveData.privacyShareAmount = preferences['giving_group_members_share_my_giftamount'];
         }
         if (!_isEmpty(groupCampaignAdminShareInfoOptions) && groupCampaignAdminShareInfoOptions.length > 0
-            && !giveData.userInteracted) {
+            && (!giveData.userInteracted || _isEmpty(giveData.defaultInfoToShare))) {
             const prefernceName = giveData.giveTo.isCampaign ? 'campaign_admins_info_to_share' : 'giving_group_admins_info_to_share';
             const preference = preferences[prefernceName].includes('address')
                 ? `${preferences[prefernceName]}-${preferences[`${prefernceName}_address`]}` : preferences[prefernceName];
