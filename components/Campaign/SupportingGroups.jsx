@@ -62,7 +62,7 @@ class SupportingGroups extends React.Component {
             }
         } = event;
         const { searchData } = this.props;
-        if (event.target.value.length >= 4) {
+        if (value.length >= 4) {
             const {
                 dispatch,
                 campaignId,
