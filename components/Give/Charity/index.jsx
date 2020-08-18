@@ -1094,7 +1094,15 @@ Charity.propTypes = {
     stepIndex: PropTypes.number,
 };
 
-Charity.defaultProps = Object.assign({}, beneficiaryDefaultProps);
+Charity.defaultProps = Object.assign({}, beneficiaryDefaultProps, {
+    charityShareInfoOptions: [
+        {
+            text: 'Give anonymously',
+            value: 'anonymous',
+            privacySetting: 'anonymous'
+        },
+    ]
+});
 
 function mapStateToProps(state) {
     return {
