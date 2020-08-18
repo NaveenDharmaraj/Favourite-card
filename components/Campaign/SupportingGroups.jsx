@@ -62,12 +62,12 @@ class SupportingGroups extends React.Component {
             }
         } = event;
         const { searchData } = this.props;
-        if (event.target.value.length >= 4) {
+        if (value.length >= 4) {
             const {
                 dispatch,
                 campaignId,
             } = this.props;
-            const arg = { dispatch, campaignId, searchQuery: event.target.value };
+            const arg = { dispatch, campaignId, searchQuery: value };
             this.debounceFunction(arg, 300);
         };
         if (_isEmpty(value) && !_isEqual(value, searchData)) {
