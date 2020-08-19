@@ -1,7 +1,8 @@
+
 import React from 'react';
 import { connect } from 'react-redux';
 import {
-    PropTypes
+    PropTypes,
 } from 'prop-types';
 import _ from 'lodash';
 import getConfig from 'next/config';
