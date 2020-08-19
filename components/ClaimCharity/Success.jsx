@@ -8,8 +8,9 @@ import {
 } from 'semantic-ui-react';
 import { connect, } from 'react-redux';
 import getConfig from 'next/config';
+import _isEmpty from 'lodash/isEmpty';
 import { Router } from '../../routes';
-import accessingleft from '../../static/images/accessing2.png';
+import accessingleft from '../../static/images/claimcharity04.svg';
 import accessingfull from '../../static/images/accessing1.svg';
 import '../../static/less/claimcharity.less';
 
@@ -32,7 +33,7 @@ class Success extends React.Component {
     renderGoToCharityBtn = (locationNumber, buttonPosition) => {
         return (
             <a href={`${RAILS_APP_URL_ORIGIN}${locationNumber}`}>
-                <Button className={buttonPosition ? "primary blue-btn-rounded mt-1" : "white-btn-round textBlack"}><b>Go to my Charity Account</b></Button>
+                <Button className={buttonPosition ? "primary blue-btn-rounded btnfont mt-1" : "white-btn-round paddingBtn"}>Go to Charity Account</Button>
             </a>
         )
     }
@@ -41,7 +42,8 @@ class Success extends React.Component {
         const {
             currentUser: {
                 attributes: {
-                    firstName
+                    displayName,
+                    firstName,
                 }
             },
             slug,
@@ -60,9 +62,9 @@ class Success extends React.Component {
                         <div className="lefttopicon"></div>
                         <div className="bannerHeading">
                             <Header as='h3'>
-                                {firstName}
+                                {!_isEmpty(displayName) ? displayName : firstName}
                             , you’ve claimed your charity </Header>
-                            <p data-test="ClaimCharity_Success_charityname_text">Now you have access to your charity {charityName ? charityName : ''} account.</p>
+                            <p data-test="ClaimCharity_Success_charityname_text">Now you have access to your charity {charityName ? charityName : ''}’s account.</p>
                             {this.renderGoToCharityBtn(locationNumber, 1)}
                         </div>
                     </Container>
@@ -105,7 +107,7 @@ class Success extends React.Component {
                 <div className="startCustomizing">
                     <Container>
                         <div className="startCustomizingheading">
-                            <Header as='h3'>Start customizing your Charity Account</Header>
+                            <p>Start customizing your Charity Account</p>
                             {this.renderGoToCharityBtn(locationNumber)}
                         </div>
                     </Container>

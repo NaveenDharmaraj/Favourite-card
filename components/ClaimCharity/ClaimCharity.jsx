@@ -11,7 +11,7 @@ import {
     List,
 } from 'semantic-ui-react';
 import _isEmpty from 'lodash/isEmpty';
-import claimrLeftImg from '../../static/images/illustration.png';
+import claimrLeftImg from '../../static/images/claimcharity02.svg';
 import customizeIcons1 from '../../static/images/icons/wedontsetorbenefitfromprocessingfee@3x.svg';
 import customizeIcons2 from '../../static/images/icons/icon-2@3x.svg';
 import customizeIcons3 from '../../static/images/icons/icon-2-1@3x.svg';
@@ -163,7 +163,7 @@ class ClaimCharity extends React.Component {
                                                 <div className="Accessinput">
                                                     <Grid>
                                                         <Grid.Row>
-                                                            <Grid.Column mobile={16} tablet={16} computer={10}>
+                                                            <Grid.Column mobile={16} tablet={16} computer={9}>
                                                                 <Form>
                                                                     <label className="accesslabel">Access code</label>
                                                                     <Form.Field
@@ -173,7 +173,7 @@ class ClaimCharity extends React.Component {
                                                                         id="accessCode"
                                                                         name="accessCode"
                                                                         className="inputBox"
-                                                                        placeholder="eg.: 123A-456B-789C-012D"
+                                                                        placeholder="eg.: 269-showd-rasse-nebek-430"
                                                                         onChange={this.handleInputChange}
                                                                     />
                                                                     <FormValidationErrorMessage
@@ -184,7 +184,7 @@ class ClaimCharity extends React.Component {
                                                                     />
                                                                 </Form>
                                                             </Grid.Column>
-                                                            <Grid.Column mobile={16} tablet={12} computer={6}>
+                                                            <Grid.Column mobile={16} tablet={12} computer={7}>
                                                                 <Button
                                                                     data-test="ClaimCharity_ClaimCharity_claimbutton"
                                                                     className="primary blue-btn-rounded btnTextsize mt-2"
@@ -207,10 +207,10 @@ class ClaimCharity extends React.Component {
                     <div className="WithoutAccess">
                         <Container>
                             <div className="WithoutAccessheading">
-                                <Header as='h3'>How to claim your charity page</Header>
+                                <Header as='h3'>Without an access code</Header>
                             </div>
                             <List>
-                                <List.Item className="number">Email us at hello@charitableimpact.com with the name and registration number of the charity you wish to claim.</List.Item>
+                                <List.Item className="number">Email us at <a className="linkEmail" href={`mailto:hello@charitableimpact.com`} target='_blank'>hello@charitableimpact.com</a> with the name and registration number of the charity you wish to claim.</List.Item>
                                 <List.Item className="number serchiconleft">
                                     We complete a manual verification process in order to grant administrative privileges to the charity profile. To speed up the process, please ensure that you provide us with one of the following pieces of information:
                                 <List.List>
