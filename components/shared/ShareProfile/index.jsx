@@ -130,6 +130,7 @@ class ShareProfile extends React.Component {
                     )}
                     <Modal
                         className="chimp-modal"
+                        dimmer="inverted"
                         onClose={this.closeShareModal}
                         open={showShareModal}
                         closeIcon
@@ -192,9 +193,9 @@ class ShareProfile extends React.Component {
 }
 
 ShareProfile.defaultProps = {
-    currentUser: PropTypes.shape({
+    currentUser: {
         id: null,
-    }),
+    },
     disableFollow: false,
     dispatch: () => {},
     isAuthenticated: false,

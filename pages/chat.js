@@ -1,26 +1,25 @@
-import React, { cloneElement } from 'react';
-import ChatWrapper from "../components/Chat";
-// import TaxReceipt from '../components/give/TaxReceipt'
+import React from 'react';
+
+import ChatWrapper from '../components/Chats';
 import Layout from '../components/shared/Layout';
 
 class Chats extends React.Component {
     static async getInitialProps({ query }) {
         return {
+            msgId: query.msgId,
             namespacesRequired: [
                 'notification',
                 'common',
                 'success',
                 'error',
             ],
-            msgId: query.msgId
         };
     }
 
     render() {
         return (
-            <Layout authRequired={true} >
-                {/* Move below to Wrapper before git commit */}
-                <ChatWrapper {...this.props} baseUrl='/chats'></ChatWrapper>
+            <Layout authRequired>
+                <ChatWrapper {...this.props} />
             </Layout>
         );
     }

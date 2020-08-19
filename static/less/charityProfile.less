@@ -96,6 +96,7 @@
             font-size     : 10px;
             font-weight   : 600;
             line-height   : 14px;
+            font-family: 'ProximaNova-Semibold';
         }
     }
 
@@ -304,12 +305,14 @@
 
 
     .charityInfoClaim {
-        padding   : 25px 25px;
+        padding   : 25px 23px;
         border-top: 1px solid #E3E3E3;
-
+        @media only screen and (max-width:767px) {
+            padding   : 25px 25px;
+        }
         p {
             line-height  : 22px;
-            margin-bottom: 20px;
+            margin-bottom: 19px;
         }
 
         .blue-bordr-btn-round-def {
@@ -355,7 +358,9 @@
     &.expenseHeader {
         padding-top   : 20px !important;
         padding-bottom: 0 !important;
-
+        h5{
+            font-family: 'ProximaNova-Semibold';
+        }
         .ui.list .item {
             padding-bottom: 0;
 
@@ -364,11 +369,12 @@
 
     &.expenseRow {
         padding-left: 7px !important;
-
+        h5{
+            font-family: 'ProximaNova-Regular';
+        }
         &:nth-child(2) {
             .ui.list .item {
                 padding-top: 20px !important;
-
                 .boxes .boxVLine::before {
                     height: 28px;
                     top   : -1px;
@@ -602,7 +608,7 @@
     width           : 100%;
     padding         : 10px 20px;
     background-color: #ffffff;
-
+    z-index:9;
     .button {
         width      : 100%;
         font-size  : 17px !important;
@@ -649,7 +655,32 @@
     }
 
 }
-
+.charity_profileWrap{
+    .ch_program{
+        h3{
+            &.ui{
+                &.header{
+                    font-size:20px !important;
+                    font-weight: 600;
+                }
+            }
+        }
+    }
+    .revenue{
+        h3{
+            &.ui{
+                &.header{
+                    font-size:20px !important;
+                    font-weight: 600;
+                }
+            }
+        }
+        margin-bottom: 55px !important;
+        @media only screen and (max-width:767px) {
+            margin-bottom: 0px !important;
+        }
+    }
+}
 @media only screen and (max-width: 1199px) and (min-width: 992px) {
     .ch_profileWrap {
 
@@ -844,4 +875,11 @@
             }
         }
     }
+}
+@media only screen and (max-width:500px) {
+.content{
+    &.chartSummaryMobileView{
+        width:140px;
+    }
+}
 }

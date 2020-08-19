@@ -34,7 +34,7 @@ const ChartSummary = (props) => {
             {(!hideGift)
             && (
                 <Grid.Row className="expenseRow ch_Expenses" data-test="Charity_ChartSummary_expenses_summary">
-                    <Grid.Column mobile={11} tablet={12} computer={12}>
+                    <Grid.Column mobile={8} tablet={12} computer={12}>
                         <List>
                             <List.Item as="h5">
                                 <div className="boxes">
@@ -43,7 +43,7 @@ const ChartSummary = (props) => {
                                 </div>
                                 {showViewButton
                                     ? (
-                                        <List.Content>
+                                        <List.Content className="chartSummaryMobileView">
                                             <span>{text}</span>
                                             <Button
                                                 className="blue-bordr-btn-round-def"
@@ -55,14 +55,14 @@ const ChartSummary = (props) => {
                                         </List.Content>
                                     )
                                     : (
-                                        <List.Content>
+                                        <List.Content className="chartSummaryMobileView">
                                             {text}
                                         </List.Content>
                                     )}
                             </List.Item>
                         </List>
                     </Grid.Column>
-                    <Grid.Column mobile={5} tablet={4} computer={4} textAlign="right">
+                    <Grid.Column mobile={8} tablet={4} computer={4} textAlign="right">
                         <Header as="h5">
                             {formatCurrency(value, language, currency)}
                         </Header>

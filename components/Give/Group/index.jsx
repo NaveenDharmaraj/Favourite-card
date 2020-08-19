@@ -166,7 +166,6 @@ class Group extends React.Component {
                 .catch(err => {
                 })
         }
-
     }
 
     componentDidUpdate(prevProps) {

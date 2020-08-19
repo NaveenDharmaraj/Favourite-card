@@ -1,6 +1,9 @@
 .primeFont(){
     font-family: 'ProximaNova-Regular';
 }
+.primeFont-semi-bold(){
+    font-family: 'ProximaNova-Semibold';
+}
 html body{
     .primeFont();
 }
@@ -9,6 +12,18 @@ body .ui.list .list>.item .header, body .ui.list>.item .header{
 }
 
 body{
+    .settingsTab .tabular.menu.ui.vertical .item.active,.ui.secondary.pointing.menu .active.item{
+        font-family: 'ProximaNova-Semibold';
+    }
+    .changeImageWraper .subHead{
+        font-family: 'ProximaNova-Semibold';
+    }
+    .ui.form .field>label{
+        font-family: 'ProximaNova-Semibold';
+    }
+    .bold{
+        font-family: 'ProximaNova-Semibold';
+    }
     button, input, optgroup, select, textarea{
         .primeFont();
     }
@@ -16,12 +31,13 @@ body{
         .primeFont();
     }
     h1, h2, h3, h4, h5{
-        .primeFont();
-        font-weight: 600;
+        .primeFont-semi-bold();
+    }
+    .ui.table thead th{
+        .primeFont-semi-bold();
     }
     .ui.header{
-        .primeFont();
-        font-weight: 600;
+        .primeFont-semi-bold();
     }
     .ui.card>.content>.header{
         .primeFont();
@@ -30,7 +46,7 @@ body{
         .primeFont();
     }
     .ui.button{
-        .primeFont();
+        .primeFont-semi-bold();
     }
     .ui.popup>.header{
         .primeFont();

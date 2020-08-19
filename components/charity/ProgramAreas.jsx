@@ -63,11 +63,11 @@ const ProgramAreas = (props) => {
 };
 
 ProgramAreas.defaultProps = {
-    charityDetails: PropTypes.shape({
-        attributes: PropTypes.shape({
+    charityDetails: {
+        attributes: {
             charityPrograms: [],
-        }),
-    }),
+        },
+    },
     t: () => {},
 };
 
