@@ -104,7 +104,6 @@ export const getCampaignSupportGroups = (id, searchKey = '', pageNumber = 1, pag
             uxCritical: true,
             'page[number]': pageNumber,
             'page[size]': pageSize,
-            'filter[name]': searchKey,
             ...filterParam,
         }
     }
