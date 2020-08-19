@@ -46,13 +46,13 @@ class SupportingGroups extends React.Component {
         dispatch(getCampaignSupportGroups(campaignId));
     }
 
-    debounceFunction({dispatch, campaignId, searchQuery}, delay) {
-        if(timeout){
+    debounceFunction({ dispatch, campaignId, searchQuery }, delay) {
+        if (timeout) {
             clearTimeout(timeout);
         }
-        timeout = setTimeout(function(){
+        timeout = setTimeout(function () {
             dispatch(getCampaignSupportGroups(campaignId, searchQuery));
-        },delay);
+        }, delay);
     }
 
     searchOnChange(event) {
@@ -176,14 +176,13 @@ class SupportingGroups extends React.Component {
                         </Grid>
                     </div>
                 </div>
-                {subGroupListLoader ? <PlaceholderGrid row={2} column={3} /> : (
-                    <div className="supportingcardWapper">
+                <div className="supportingcardWapper">
+                    {subGroupListLoader ? <PlaceholderGrid row={2} column={3} /> : (
                         <div className="custom_Grid">
                             {this.renderGroups(campaignSubGroupDetails, slug, formatMessage)}
                         </div>
-                    </div>
-                )
-                }
+                    )}
+                </div>
                 {(campaignSubGroupsShowMoreUrl) ? (
                     <div className="supportingcardShowMore">
                         <Button
