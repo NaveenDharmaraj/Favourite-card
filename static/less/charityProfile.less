@@ -1,3 +1,4 @@
+
 @import "_mixins.less";
 
 .ch_breadcrumb {
@@ -113,6 +114,7 @@
 
                 .item {
                     margin-right: 20px;
+                    margin-bottom: 18px;
                     p{
                         &.groupmembers{
                         font-size: 10px;
@@ -220,6 +222,19 @@
     }
 }
 .ch_paragraph {
+    &.AboutProfile{
+        margin-top: 39px;
+        margin-bottom: 30px;
+        @media only screen and (max-width:992px) {
+            margin-top: 30px;
+        }
+        p{
+            margin: 0px;
+            font-size: 14px;
+            line-height: 22px;
+            color: #263238;
+        }
+    }
     p {
         line-height: 22px;
         margin     : 10px 0;

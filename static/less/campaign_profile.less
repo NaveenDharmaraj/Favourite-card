@@ -4,7 +4,7 @@
     .CampaigBanner{
         min-height     : 240px;
         height         : 240px;
-        background-size: cover;
+        background-size: 100% 100% !important;
         margin-bottom  : 20px;
         border-radius  : 5px;
         @media only screen and (max-width:768px){
@@ -186,6 +186,7 @@
 .ch_profileDetails{
     .CampaignBtn{
         padding:10px 30px;
+        margin-right: 6.8px;
         font-weight: 600;
         @media only screen and (max-width:1199px){
         padding: 10px 16px;
@@ -246,32 +247,62 @@
         margin-top: 0px !important;
         margin-bottom: 0px !important; 
     }
-    .ReactGridGallery{
-        margin-left: -10px;
-        margin-bottom: 30px !important;
-        .ReactGridGallery_tile{
-            margin:10px !important;
-            .ReactGridGallery_tile-viewport{
-                width: 140px !important;
-                height: 140px !important;
-                border-radius: 4px !important;
-                img{
-                width: 100% !important;
-                height: 100%!important;
-                border-radius: 4px !important;
-                object-fit: cover !important;
-                margin: auto !important;
+    .fullwidth_v_G{
+        margin-top: 34px;
+        @media only screen and (max-width:767px){
+        -ms-box-orient: horizontal;display: -webkit-box;
+            display: -moz-box;
+            display: -ms-flexbox;
+            display: -moz-flex;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-flex-flow: row wrap;
+            flex-flow: row wrap;
+            border-top: 1px solid #E7E7F0;
+        }
+        .GalleryWrapper{
+            @media only screen and (max-width:767px){
+            order: 2;
+            width: 100%;
+            }
+            .ReactGridGallery{
+                margin-left: -10px;
+                .ReactGridGallery_tile{
+                    margin:10px !important;
+                    .ReactGridGallery_tile-viewport{
+                        width: 140px !important;
+                        height: 140px !important;
+                        border-radius: 4px !important;
+                        img{
+                        width: 100% !important;
+                        height: 100%!important;
+                        border-radius: 4px !important;
+                        object-fit: cover !important;
+                        margin: auto !important;
+                        }
+                    }
+                }
+            }
+        }
+        .videoWrapperfull{
+            @media only screen and (max-width:767px){
+            order: 1;
+            width: 100%;
+            }
+            .videoWrapper{
+                margin-top: 40px;
+                margin-bottom: 40px;
+                @media only screen and (max-width:767px){
+                    margin-top: 30px;
+                margin-bottom: 30px;
+                }
+                embed{
+                    width:100%;
                 }
             }
         }
     }
-    .videoWrapper{
-        margin-top: 40px;
-        margin-bottom: 40px;
-        embed{
-            width:100%;
-        }
-    }
+    
     .OneGrProfileImg{
         img{
             &.ui{
@@ -284,4 +315,3 @@
         }
     }
 }
-

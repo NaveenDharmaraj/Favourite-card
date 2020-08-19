@@ -57,12 +57,13 @@ function ProfileDetails(props) {
     return (
         <div>
             <Grid.Row>
-                <Divider className="mobHideDivider mt-4" />
-                <Grid.Column width={16} className="ch_paragraph mt-2 mb-1" >
+                <Divider className="mobHideDivider mb-0 mt-4" />
+                <Grid.Column width={16} className="ch_paragraph AboutProfile" >
                     <p>{about}</p>
                 </Grid.Column>
             </Grid.Row>
-            <Grid.Row className="MyGallery">
+            <div className="MyGallery">
+            <Grid.Row>
                 {
                     (!videoPlayerLink && !formattedShort && !formattedImpact && imageArray.length === 0) ? (
                         <Grid>
@@ -81,6 +82,8 @@ function ProfileDetails(props) {
                                 <Grid.Column width={16}>
                                     {ReactHtmlParser(formattedImpact)}
                                 </Grid.Column>
+                                <div className="fullwidth_v_G">
+                                <div className="GalleryWrapper">
                                 <Grid>
                                     <Grid.Row>
                                         <Grid.Column width={16}>
@@ -91,6 +94,8 @@ function ProfileDetails(props) {
                                         </Grid.Column>
                                     </Grid.Row>
                                 </Grid>
+                                </div>
+                                <div className="videoWrapperfull">
                                 <Grid>
                                     <Grid.Row>
                                         <Grid.Column width={16}>
@@ -101,14 +106,17 @@ function ProfileDetails(props) {
                                                     className="responsiveVideo"
                                                 />
                                             </div>
+                                            <Divider className="mobHideDivider" />
                                         </Grid.Column>
                                     </Grid.Row>
                                 </Grid>
+                                </div>
+                                </div>
                             </Fragment>
                         )
                 }
-                <Divider />
             </Grid.Row>
+            </div>
         </div>
     );
 }
