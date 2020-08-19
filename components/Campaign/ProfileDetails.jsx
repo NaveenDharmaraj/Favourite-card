@@ -63,59 +63,59 @@ function ProfileDetails(props) {
                 </Grid.Column>
             </Grid.Row>
             <div className="MyGallery">
-            <Grid.Row>
-                {
-                    (!videoPlayerLink && !formattedShort && !formattedImpact && imageArray.length === 0) ? (
-                        <Grid>
-                            <Grid.Row>
-                                <Grid.Column width={16}>
-                                    {noDataState(formatMessage)}
-                                </Grid.Column>
-                            </Grid.Row>
-                        </Grid>
-                    ) :
-                        (
-                            <Fragment>
-                                <Grid.Column width={16}>
-                                    {ReactHtmlParser(formattedShort)}
-                                </Grid.Column>
-                                <Grid.Column width={16}>
-                                    {ReactHtmlParser(formattedImpact)}
-                                </Grid.Column>
-                                <div className="fullwidth_v_G">
-                                <div className="GalleryWrapper">
-                                <Grid className="fullwidth_gallery">
-                                    <Grid.Row>
-                                        <Grid.Column width={16}>
-                                            <ImageGallery
-                                                imagesArray={imageArray}
-                                                enableImageSelection={false}
-                                            />
-                                        </Grid.Column>
-                                    </Grid.Row>
-                                </Grid>
-                                </div>
-                                <div className="videoWrapperfull">
-                                <Grid>
-                                    <Grid.Row>
-                                        <Grid.Column width={16}>
-                                            <div className="videoWrapper">
-                                                <embed
-                                                    title="video"
-                                                    src={videoPlayerLink}
-                                                    className="responsiveVideo"
-                                                />
-                                            </div>
-                                            <Divider className="mobHideDivider" />
-                                        </Grid.Column>
-                                    </Grid.Row>
-                                </Grid>
-                                </div>
-                                </div>
-                            </Fragment>
-                        )
-                }
-            </Grid.Row>
+                <Grid.Row>
+                    {
+                        (!videoPlayerLink && !formattedShort && !formattedImpact && imageArray.length === 0) ? (
+                            <Grid>
+                                <Grid.Row>
+                                    <Grid.Column width={16}>
+                                        {noDataState(formatMessage)}
+                                    </Grid.Column>
+                                </Grid.Row>
+                            </Grid>
+                        ) :
+                            (
+                                <Fragment>
+                                    <Grid.Column width={16}>
+                                        {ReactHtmlParser(formattedShort)}
+                                    </Grid.Column>
+                                    <Grid.Column width={16}>
+                                        {ReactHtmlParser(formattedImpact)}
+                                    </Grid.Column>
+                                    <div className="fullwidth_v_G">
+                                        <div className="GalleryWrapper">
+                                            <Grid className="fullwidth_gallery">
+                                                <Grid.Row>
+                                                    <Grid.Column width={16}>
+                                                        <ImageGallery
+                                                            imagesArray={imageArray}
+                                                            enableImageSelection={false}
+                                                        />
+                                                    </Grid.Column>
+                                                </Grid.Row>
+                                            </Grid>
+                                        </div>
+                                        <div className="videoWrapperfull">
+                                            <Grid>
+                                                <Grid.Row>
+                                                    <Grid.Column width={16}>
+                                                        <div className="videoWrapper">
+                                                            <embed
+                                                                title="video"
+                                                                src={videoPlayerLink}
+                                                                className="responsiveVideo"
+                                                            />
+                                                        </div>
+                                                        <Divider className="mobHideDivider" />
+                                                    </Grid.Column>
+                                                </Grid.Row>
+                                            </Grid>
+                                        </div>
+                                    </div>
+                                </Fragment>
+                            )
+                    }
+                </Grid.Row>
             </div>
         </div>
     );
