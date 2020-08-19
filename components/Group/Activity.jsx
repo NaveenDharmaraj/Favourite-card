@@ -1,14 +1,12 @@
 import React, {
     Fragment,
 } from 'react';
-import _ from 'lodash';
 import _isEmpty from 'lodash/isEmpty';
 import {
     Button,
     Comment,
     Input,
     Grid,
-    Icon,
 } from 'semantic-ui-react';
 import {
     arrayOf,
@@ -61,7 +59,7 @@ class Activity extends React.Component {
                 },
                 type: actionTypes.GROUP_PLACEHOLDER_STATUS,
             });
-            getGroupActivities(dispatch, id);
+            dispatch(getGroupActivities(id));
         }
     }
 
@@ -110,7 +108,7 @@ class Activity extends React.Component {
             },
         } = this.props;
         const url = (activitiesLink) ? activitiesLink : '';
-        getGroupActivities(dispatch, id, url);
+        dispatch(getGroupActivities(id, url));
     }
 
     updateInputValue(event) {
@@ -127,7 +125,7 @@ class Activity extends React.Component {
         const {
             commentText: msg,
         } = this.state;
-        postActivity(dispatch, id, msg);
+        dispatch(postActivity(id, msg));
         this.setState({
             commentText: '',
         });
@@ -198,7 +196,7 @@ class Activity extends React.Component {
         return (
             <Fragment>
                 {commentsLoader
-                    ? <PlaceholderGrid row={1} column={1} />
+                    ? <PlaceholderGrid row={4} column={1} placeholderType="activityList" />
                     : actionData
                 }
                 {(activitiesLink)
@@ -219,26 +217,42 @@ class Activity extends React.Component {
 
 Activity.defaultProps = {
     commentsLoader: true,
-    dispatch: func,
+    dispatch: () => {},
     groupActivities: {
         data: [],
         links: {
             next: '',
         },
     },
+    groupDetails: {
+        attributes: {
+            isMember: false,
+        },
+    },
     id: null,
+    userInfo: {
+        id: '',
+    },
 };
 
 Activity.propTypes = {
     commentsLoader: bool,
-    dispatch: _.noop,
+    dispatch: func,
     groupActivities: {
         data: arrayOf(PropTypes.element),
         links: PropTypes.shape({
             next: string,
         }),
     },
+    groupDetails: {
+        attributes: {
+            isMember: bool,
+        },
+    },
     id: number,
+    userInfo: {
+        id: string,
+    },
 };
 
 function mapStateToProps(state) {

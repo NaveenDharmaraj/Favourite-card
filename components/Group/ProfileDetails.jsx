@@ -1,207 +1,169 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import {
     string,
     bool,
-    arrayOf,
-    PropTypes,
+    number,
+    func,
 } from 'prop-types';
 import {
-    Container,
     Tab,
     Grid,
 } from 'semantic-ui-react';
-import _isEmpty from 'lodash/isEmpty';
-import ReactHtmlParser from 'react-html-parser';
-
-import ImageGallery from '../shared/ImageGallery';
+import _isEqual from 'lodash/isEqual';
 
 import Activity from './Activity';
 import Members from './Members';
-import CharitySupport from './CharitySupport';
-import TransactionDetails from './TransactionDetails';
-import GroupNoDataState from './GroupNoDataState';
+// import CharitySupport from './CharitySupport';
+// import TransactionDetails from './TransactionDetails';
 
-const ProfileDetails = (props) => {
-    const {
-        isAUthenticated,
-        groupDetails: {
-            id,
-        },
-    } = props;
-    let panes = [
-        {
-            id: 'About',
-            menuItem: 'About',
-            render: () => {
-                const {
-                    galleryImages,
-                    groupDetails: {
-                        attributes: {
-                            formattedShort,
-                            videoPlayerLink,
-                            formattedImpact,
-                            formattedHelping,
-                            formattedAbout,
-                        },
-                    },
-                } = props;
-                const imageArray = [];
-                if (!_isEmpty(galleryImages)) {
-                    galleryImages.forEach((singleImage) => {
-                        const singleImagePropObj = {};
-                        singleImagePropObj.src = singleImage.attributes.originalUrl;
-                        singleImagePropObj.thumbnail = singleImage.attributes.assetUrl;
-                        singleImagePropObj.thumbnailHeight = 196;
-                        singleImagePropObj.thumbnailWidth = 196;
-                        imageArray.push(singleImagePropObj);
-                    });
-                }
-                return (
-                    <Tab.Pane attached={false}>
-                        {
-                            (_isEmpty(imageArray) && !formattedShort && !videoPlayerLink && !formattedImpact && !formattedHelping && !formattedAbout) ? (
-                                <Grid>
-                                    <GroupNoDataState
-                                        type="common"
-                                    />
-                                </Grid>
-                            ) : (
-                                <Fragment>
-                                    {formattedShort
-                                    && (
-                                        <div className="mb-3">
-                                            { ReactHtmlParser(formattedShort) }
-                                        </div>
-                                    )}
-                                    {videoPlayerLink
-                                        && (
-                                            <div className="mb-3 videoWrapper text-center">
-                                                <embed
-                                                    title="video"
-                                                    src={videoPlayerLink}
-                                                    className="responsiveVideo"
-                                                />
-                                            </div>
-                                        )}
-                                    {!_isEmpty(imageArray)
-                                        && (
-                                            <div className="clear-fix mb-3">
-                                                <div className="mb-1">
-                                                    <ImageGallery
-                                                        imagesArray={imageArray}
-                                                        enableImageSelection={false}
-                                                    />
-                                                </div>
-                                            </div>
-                                        )}
-                                    {formattedImpact
-                                        && (
-                                            <p className="clear-fix mb-3">
-                                                <div className="mb-1 bold">The Group's Purpose</div>
-                                                <p>{ ReactHtmlParser(formattedImpact) }</p>
-                                            </p>
-                                        )}
-                                    {formattedHelping
-                                        && (
-                                            <p className="clear-fix mb-3">
-                                                <div className="mb-1 bold">How to Help</div>
-                                                <p>{ ReactHtmlParser(formattedHelping) }</p>
-                                            </p>
-                                        )}
-                                    {formattedAbout
-                                        && (
-                                            <p className="clear-fix mb-3">
-                                                <div className="mb-1 bold">About the Organizers</div>
-                                                <p>{ ReactHtmlParser(formattedAbout) }</p>
-                                            </p>
-                                        )}
-                                </Fragment>
-                            )
-                        }
-                    </Tab.Pane>
-                );
-            },
-        },
-    ];
+class ProfileDetails extends React.Component {
+    constructor(props) {
+        super(props);
+        this.tabRef = React.createRef();
+        this.state = {
+            newActiveIndex: 0,
+        };
+        this.handleTabChange = this.handleTabChange.bind(this);
+    }
 
-    if (isAUthenticated) {
-        panes = panes.concat(
-            {
-                id: 'Activity',
-                menuItem: 'Activity',
-                render: () => (
-                    <Tab.Pane attached={false}>
-                        <Activity
-                            id={id}
-                        />
-                    </Tab.Pane>
-                ),
+    componentDidMount() {
+        const {
+            dispatch,
+        } = this.props;
+        const {
+            current: {
+                offsetTop,
             },
-            {
-                id: 'Members',
-                menuItem: 'Members',
-                render: () => (
-                    <Tab.Pane attached={false}>
-                        {(isAUthenticated)
-                        && (
-                            <Members />
-                        )}
-                    </Tab.Pane>
-                ),
+        } = this.tabRef;
+        dispatch({
+            payload: {
+                activeIndex: 0,
             },
-            {
-                id: 'Transactions',
-                menuItem: 'Transactions',
-                render: () => (
-                    <Tab.Pane attached={false}>
-                        {(isAUthenticated)
+            type: 'GET_GROUP_TAB_INDEX',
+        });
+        dispatch({
+            payload: {
+                scrollOffset: offsetTop,
+            },
+            type: 'GET_GROUP_TAB_OFFSET',
+        });
+    }
+
+    componentDidUpdate(prevProps) {
+        const {
+            updatedActiveIndex,
+        } = this.props;
+        if (!_isEqual(prevProps.updatedActiveIndex, updatedActiveIndex)) {
+            this.setState({
+                newActiveIndex: updatedActiveIndex,
+            });
+        }
+    }
+
+    handleTabChange(event, data) {
+        const {
+            dispatch,
+        } = this.props;
+        dispatch({
+            payload: {
+                activeIndex: data.activeIndex,
+            },
+            type: 'GET_GROUP_TAB_INDEX',
+        });
+    }
+
+    render() {
+        const {
+            isAUthenticated,
+            groupDetails: {
+                id,
+            },
+        } = this.props;
+        const {
+            newActiveIndex,
+        } = this.state;
+        let panes = [];
+        if (isAUthenticated) {
+            panes = [
+                {
+                    id: 'Activity',
+                    menuItem: 'Activity',
+                    render: () => (
+                        <Tab.Pane attached={false}>
+                            {(isAUthenticated)
                             && (
-                                <TransactionDetails
+                                <Activity
                                     id={id}
                                 />
                             )}
-                    </Tab.Pane>
-                ),
-            },
-            {
-                id: 'supports',
-                menuItem: 'Charities this group supports',
-                render: () => (
-                    <Tab.Pane attached={false}>
-                        {(isAUthenticated)
-                        && (
-                            <CharitySupport
-                                id={id}
-                            />
-                        )}
-                    </Tab.Pane>
-                ),
-            },
+                        </Tab.Pane>
+                    ),
+                },
+                {
+                    id: 'Members',
+                    menuItem: 'Members',
+                    render: () => (
+                        <Tab.Pane attached={false}>
+                            {(isAUthenticated)
+                            && (
+                                <Members />
+                            )}
+                        </Tab.Pane>
+                    ),
+                },
+                // {
+                //     id: 'Transactions',
+                //     menuItem: 'Transactions',
+                //     render: () => (
+                //         <Tab.Pane attached={false}>
+                //             {(isAUthenticated)
+                //                 && (
+                //                     <TransactionDetails
+                //                         id={id}
+                //                     />
+                //                 )}
+                //         </Tab.Pane>
+                //     ),
+                // },
+                // {
+                //     id: 'supports',
+                //     menuItem: 'Charities this group supports',
+                //     render: () => (
+                //         <Tab.Pane attached={false}>
+                //             {(isAUthenticated)
+                //             && (
+                //                 <CharitySupport
+                //                     id={id}
+                //                 />
+                //             )}
+                //         </Tab.Pane>
+                //     ),
+                // },
+            ];
+        }
+        return (
+            <Grid.Row>
+                <Grid.Column mobile={16} tablet={16} computer={16} className="GroupTab">
+                    <div className="charityTab tabBottom" ref={this.tabRef}>
+                        <Tab
+                            menu={{
+                                pointing: true,
+                                secondary: true,
+                            }}
+                            panes={panes}
+                            activeIndex={newActiveIndex}
+                            onTabChange={this.handleTabChange}
+                        />
+                    </div>
+                </Grid.Column>
+            </Grid.Row>
         );
     }
-
-    const activeIndexProp = (!isAUthenticated) ? { activeIndex: 0 } : {};
-
-    return (
-        <Container>
-            <div className="charityTab">
-                <Tab
-                    {...activeIndexProp}
-                    menu={{
-                        pointing: true,
-                        secondary: true,
-                    }}
-                    panes={panes}
-                />
-            </div>
-        </Container>
-    );
-};
-
+}
 
 ProfileDetails.defaultProps = {
-    galleryImages: [],
+    dispatch: () => {},
     groupDetails: {
         attributes: {
             formattedAbout: '',
@@ -212,10 +174,11 @@ ProfileDetails.defaultProps = {
         },
     },
     isAUthenticated: false,
+    updatedActiveIndex: 0,
 };
 
 ProfileDetails.propTypes = {
-    galleryImages: arrayOf(PropTypes.element),
+    dispatch: func,
     groupDetails: {
         attributes: {
             formattedAbout: string,
@@ -226,13 +189,14 @@ ProfileDetails.propTypes = {
         },
     },
     isAUthenticated: bool,
+    updatedActiveIndex: number,
 };
 
 function mapStateToProps(state) {
     return {
-        galleryImages: state.group.galleryImageData,
         groupDetails: state.group.groupDetails,
         isAUthenticated: state.auth.isAuthenticated,
+        updatedActiveIndex: state.group.activeIndex,
     };
 }
 

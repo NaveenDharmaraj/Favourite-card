@@ -1,4 +1,6 @@
-import React from 'react';
+import React, {
+    Fragment,
+} from 'react';
 import { connect } from 'react-redux';
 import _isEmpty from 'lodash/isEmpty';
 import {
@@ -45,7 +47,7 @@ class Members extends React.Component {
                 id: groupId,
             },
         } = this.props;
-        getDetails(dispatch, groupId, 'members');
+        dispatch(getDetails(groupId, 'members'));
     }
 
     onPageChanged(event, data) {
@@ -55,7 +57,7 @@ class Members extends React.Component {
                 id: groupId,
             },
         } = this.props;
-        getDetails(dispatch, groupId, 'members', data.activePage);
+        dispatch(getDetails(groupId, 'members', data.activePage));
         this.setState({
             currentActivePage: data.activePage,
         });
@@ -98,12 +100,15 @@ class Members extends React.Component {
         } = this.state;
         return (
             <div className="tabWapper">
-                <div className="members">
-                    <Grid.Row>
-                        <Grid>
-                            <Grid.Row>
-                                <Grid.Column mobile={8} tablet={8} computer={8}>
-                                    {!_isEmpty(membersData)
+                {!membersLoader
+                    ? (
+                        <Fragment>
+                            <div className="members">
+                                <Grid.Row>
+                                    <Grid>
+                                        <Grid.Row>
+                                            <Grid.Column mobile={8} tablet={8} computer={8}>
+                                                {!_isEmpty(membersData)
                                     && (
                                         <div className="membersNumber">
                                             <i aria-hidden="true" className="group icon" />
@@ -111,43 +116,49 @@ class Members extends React.Component {
                                                 members
                                         </div>
                                     )}
-                                </Grid.Column>
-                                {(isAdmin && !_isEmpty(membersData))
-                                && (
-                                    <Grid.Column mobile={8} tablet={8} computer={8}>
-                                        <Button
-                                            className="success-btn-rounded-def"
-                                            floated="right"
-                                            href={(`${RAILS_APP_URL_ORIGIN}/groups/${slug}/invites`)}
-                                        >
-                                            <span>
-                                                <i aria-hidden="true" className="addmember icon" />
-                                            </span>
-                                                    Invite friends
-                                        </Button>
-                                    </Grid.Column>
-                                )}
-                            </Grid.Row>
-                        </Grid>
-                    </Grid.Row>
-                </div>
-                <Table basic="very" unstackable className="db-activity-tbl Topborder">
-                    {(!_isEmpty(membersData))
-                            && this.renderMembers()}
-                </Table>
-                <div className="paginationWraper">
-                    <div className="db-pagination right-align pt-2">
-                        {
-                            !_isEmpty(membersData) && pageCount > 1 && (
-                                <Pagination
-                                    activePage={currentActivePage}
-                                    totalPages={pageCount}
-                                    onPageChanged={this.onPageChanged}
-                                />
-                            )
-                        }
-                    </div>
-                </div>
+                                            </Grid.Column>
+                                            {(isAdmin && !_isEmpty(membersData))
+                                            && (
+                                                <Grid.Column mobile={8} tablet={8} computer={8}>
+                                                    <Button
+                                                        className="success-btn-rounded-def"
+                                                        floated="right"
+                                                        href={(`${RAILS_APP_URL_ORIGIN}/groups/${slug}/invites`)}
+                                                    >
+                                                        <span>
+                                                            <i aria-hidden="true" className="addmember icon" />
+                                                        </span>
+                                                                Invite friends
+                                                    </Button>
+                                                </Grid.Column>
+                                            )}
+                                        </Grid.Row>
+                                    </Grid>
+                                </Grid.Row>
+                            </div>
+                            <Table basic="very" unstackable className="db-activity-tbl Topborder">
+                                {(!_isEmpty(membersData))
+                                        && this.renderMembers()}
+                            </Table>
+                            <div className="paginationWraper">
+                                <div className="db-pagination right-align pt-2">
+                                    {
+                                        !_isEmpty(membersData) && pageCount > 1 && (
+                                            <Pagination
+                                                activePage={currentActivePage}
+                                                totalPages={pageCount}
+                                                onPageChanged={this.onPageChanged}
+                                            />
+                                        )
+                                    }
+                                </div>
+                            </div>
+                        </Fragment>
+                    )
+                    : (
+                        <PlaceholderGrid row={4} column={1} placeholderType="activityList" />
+                    )
+                }
             </div>
         );
     }

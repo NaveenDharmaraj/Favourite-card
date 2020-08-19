@@ -48,7 +48,7 @@ class TransactionDetails extends React.Component {
             dispatch,
             id,
         } = this.props;
-        getTransactionDetails(dispatch, id);
+        dispatch(getTransactionDetails(id));
     }
 
     onPageChange(event, data) {
@@ -57,7 +57,7 @@ class TransactionDetails extends React.Component {
             dispatch,
         } = this.props;
         const url = `groups/${groupId}/activities?filter[moneyItems]=all&page[number]=${data.activePage}&page[size]=10`;
-        getTransactionDetails(dispatch, groupId, url);
+        dispatch(getTransactionDetails(groupId, url));
         this.setState({
             activePage: data.activePage,
         });
@@ -67,7 +67,7 @@ class TransactionDetails extends React.Component {
         const {
             dispatch,
         } = this.props;
-        toggleTransactionVisibility(dispatch, transactionId, event.target.id);
+        dispatch(toggleTransactionVisibility(transactionId, event.target.id));
     }
 
     render() {

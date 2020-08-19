@@ -4,15 +4,20 @@ import React, {
 import { connect } from 'react-redux';
 import {
     string,
+    PropTypes,
 } from 'prop-types';
 import {
     Grid,
     Header,
 } from 'semantic-ui-react';
 import ReactHtmlParser from 'react-html-parser';
+import _isEmpty from 'lodash/isEmpty';
+
+import ImageGallery from '../shared/ImageGallery';
 
 const AboutGroup = (props) => {
     const {
+        galleryImages,
         groupDetails: {
             attributes: {
                 formattedShort,
@@ -23,6 +28,17 @@ const AboutGroup = (props) => {
             },
         },
     } = props;
+    const imageArray = [];
+    if (!_isEmpty(galleryImages)) {
+        galleryImages.forEach((singleImage) => {
+            const singleImagePropObj = {};
+            singleImagePropObj.src = singleImage.attributes.originalUrl;
+            singleImagePropObj.thumbnail = singleImage.attributes.assetUrl;
+            singleImagePropObj.thumbnailHeight = 196;
+            singleImagePropObj.thumbnailWidth = 196;
+            imageArray.push(singleImagePropObj);
+        });
+    }
     return (
         <Fragment>
             <Grid.Row>
@@ -76,7 +92,17 @@ const AboutGroup = (props) => {
             </Grid.Row>
             <Grid.Row>
                 <Grid.Column mobile={16} tablet={16} computer={16} className="OneGrProfileImg">
-                    <p>IMAGE GALLERY</p>
+                    {!_isEmpty(imageArray)
+                                        && (
+                                            <div className="clear-fix mb-3">
+                                                <div className="mb-1">
+                                                    <ImageGallery
+                                                        imagesArray={imageArray}
+                                                        enableImageSelection={false}
+                                                    />
+                                                </div>
+                                            </div>
+                                        )}
                 </Grid.Column>
             </Grid.Row>
         </Fragment>
@@ -84,6 +110,7 @@ const AboutGroup = (props) => {
 };
 
 AboutGroup.defaultProps = {
+    galleryImages: [],
     groupDetails: {
         attributes: {
             formattedAbout: '',
@@ -96,6 +123,9 @@ AboutGroup.defaultProps = {
 };
 
 AboutGroup.propTypes = {
+    galleryImages: PropTypes.arrayOf(
+        PropTypes.shape({}),
+    ),
     groupDetails: {
         attributes: {
             formattedAbout: string,
@@ -109,6 +139,7 @@ AboutGroup.propTypes = {
 
 function mapStateToProps(state) {
     return {
+        galleryImages: state.group.galleryImageData,
         groupDetails: state.group.groupDetails,
     };
 }

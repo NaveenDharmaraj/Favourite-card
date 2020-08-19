@@ -6,7 +6,6 @@ import {
     Icon,
     Comment,
     Feed,
-    Grid,
     Input,
     Button,
 } from 'semantic-ui-react';
@@ -55,7 +54,7 @@ class ActivityDetails extends React.Component {
         const {
             dispatch,
         } = this.props;
-        getCommentFromActivityId(dispatch, id, url);
+        dispatch(getCommentFromActivityId(id, url));
         this.setState({
             isCommentClicked: true,
         });
@@ -92,7 +91,7 @@ class ActivityDetails extends React.Component {
             avatar,
             displayName,
         };
-        postComment(dispatch, groupId, eventId, msg, userDetails);
+        dispatch(postComment(groupId, eventId, msg, userDetails));
         this.setState({
             commentText: '',
         });
@@ -106,7 +105,7 @@ class ActivityDetails extends React.Component {
             groupId,
             userId,
             type,
-            commentId,
+            // commentId,
         } = this.props;
         dispatch({
             payload: {
@@ -123,9 +122,9 @@ class ActivityDetails extends React.Component {
         // }
         if (type === 'events') {
             if (isLiked) {
-                unlikeActivity(dispatch, eventId, groupId, userId);
+                dispatch(unlikeActivity(eventId, groupId, userId));
             } else {
-                likeActivity(dispatch, eventId, groupId, userId);
+                dispatch(likeActivity(eventId, groupId, userId));
             }
         }
     }
@@ -164,7 +163,6 @@ class ActivityDetails extends React.Component {
 
     render() {
         const {
-            groupId,
             id,
             isLiked,
             likesCount,
@@ -182,9 +180,7 @@ class ActivityDetails extends React.Component {
                 isLoadComments,
                 totalCount,
             },
-            updateInputValue,
             type,
-            userId,
             disableLike,
         } = this.props;
         const {
@@ -289,7 +285,7 @@ ActivityDetails.defaultProps = {
     avatar: '',
     canReply: false,
     comment: '',
-    commentId: null,
+    // commentId: null,
     commentsCount: null,
     commentsLink: '',
     createdAt: '',
@@ -320,7 +316,7 @@ ActivityDetails.propTypes = {
     avatar: string,
     canReply: bool,
     comment: string,
-    commentId: number,
+    // commentId: number,
     commentsCount: number,
     commentsLink: string,
     createdAt: string,

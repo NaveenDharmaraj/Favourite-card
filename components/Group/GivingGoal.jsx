@@ -14,6 +14,7 @@ import {
     bool,
 } from 'prop-types';
 import getConfig from 'next/config';
+import _isEmpty from 'lodash/isEmpty';
 
 import {
     Link,
@@ -37,10 +38,10 @@ const GivingGoal = (props) => {
                 balance,
                 lastDonationAt,
                 fundraisingDaysRemaining,
+                fundraisingEndDate,
                 goalAmountRaised,
                 goal,
                 fundraisingPercentage,
-                isMember,
                 isAdmin,
                 slug,
                 totalMoneyRaised,
@@ -50,44 +51,54 @@ const GivingGoal = (props) => {
     } = props;
     const currency = 'USD';
     const language = 'en';
-    const hasGoal = !(fundraisingDaysRemaining === 0); // TODO need flag that tells goal expired or not
+    const hasGoal = (fundraisingDaysRemaining > 0);
+    const hasPreviousGoal = ((fundraisingDaysRemaining === 0) && !_isEmpty(goal));
     const formattedMoneyRaised = formatCurrency(totalMoneyRaised, language, currency);
     const formattedgoalAmountRaised = formatCurrency(goalAmountRaised, language, currency);
-    const formattedgoal = (hasGoal) ? formatCurrency(goal, language, currency) : '';
+    const formattedgoal = (hasGoal || hasPreviousGoal) ? formatCurrency(goal, language, currency) : '';
     const daysText = (fundraisingDaysRemaining === 1) ? ' day left' : ' days left';
     let fundRaisingDuration = '';
     let lastDonationDay = '';
     let giveButton = null;
     let giftText = '';
     let goalText = '';
+    let canSetGoal = false;
     const giveButtonElement = <Button className="blue-btn-rounded-def mt-1">Give</Button>;
     if (lastDonationAt) {
         lastDonationDay = distanceOfTimeInWords(lastDonationAt);
         giftText = `Last gift received ${lastDonationDay}`;
     }
-    if (hasGoal) { // TODO show goal expired date scenario
-        if (goalAmountRaised === goal) {
+    if (hasGoal) {
+        if (goalAmountRaised >= goal) {
             goalText = 'The group has reached the goal!';
+            canSetGoal = isAdmin;
         } else {
             goalText = `${fundraisingDaysRemaining}${daysText} to reach goal`;
         }
-        fundRaisingDuration = (
-            <span className="badge white goalbtn">
-                {goalText}
-            </span>
-        );
+    } else if (hasPreviousGoal) {
+        goalText = `Giving goal expired on ${fundraisingEndDate}`;
     }
+    fundRaisingDuration = (
+        <span className="badge white goalbtn">
+            {goalText}
+            {canSetGoal
+            && (
+                <div>
+                    <a href={(`${RAILS_APP_URL_ORIGIN}/groups/${slug}/edit`)}>
+                    Save new Giving Goal
+                    </a>
+                </div>
+            )}
+        </span>
+    );
+
     if (isAuthenticated) {
         giveButton = (
-            (isMember || isAdmin)
-            && (
-                <div className="buttonWraper">
-                    <Link route={`/give/to/group/${slug}/new`}>
-                        {giveButtonElement}
-                    </Link>
-                </div>
-            )
-
+            <div className="buttonWraper">
+                <Link route={`/give/to/group/${slug}/new`}>
+                    {giveButtonElement}
+                </Link>
+            </div>
         );
     } else {
         giveButton = (
@@ -101,28 +112,26 @@ const GivingGoal = (props) => {
     return (
         <div className="charityInfowrap fullwidth">
             <div className="charityInfo">
-                {!hasGoal
+                {(!hasGoal && !hasPreviousGoal)
                     ? (
-                        <div className="charityInfowrap fullwidth">
-                            <div className="charityInfo">
-                                <Header as="h4">Total raised</Header>
-                                <Header as="h1">{formattedMoneyRaised}</Header>
-                                {(balance && parseInt(balance, 10) > 0)
-                                && (
-                                    <div className="lastGiftWapper">
-                                        <p className="lastGiftText">{giftText}</p>
-                                    </div>
-                                )}
-                                <Divider />
-                                {giveButton}
-                            </div>
-                        </div>
+                        <Fragment>
+                            <Header as="h4">Total raised</Header>
+                            <Header as="h1">{formattedMoneyRaised}</Header>
+                            {(balance && parseInt(balance, 10) > 0)
+                            && (
+                                <div className="lastGiftWapper">
+                                    <p className="lastGiftText">{giftText}</p>
+                                </div>
+                            )}
+                            <Divider />
+                            {giveButton}
+                        </Fragment>
                     )
                     : (
                         <Fragment>
                             <Header as="h4">Raised on current giving goal</Header>
                             <Header as="h1">{formattedgoalAmountRaised}</Header>
-                            <p>{`raised of ${formattedgoal} goal`}</p>
+                            <p>{`of ${formattedgoal} goal`}</p>
                             <div className="goalPercent">
                                 <Progress percent={fundraisingPercentage} />
                             </div>

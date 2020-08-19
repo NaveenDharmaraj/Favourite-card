@@ -1,11 +1,9 @@
 /* eslint-disable import/exports-last */
-import _ from 'lodash';
+import _isEmpty from 'lodash/isEmpty';
 
 import coreApi from '../services/coreApi';
 import graphApi from '../services/graphApi';
 import eventApi from '../services/eventApi';
-
-import { Data, admin_Data } from './Data';
 
 export const actionTypes = {
     ACTIVITY_LIKE_STATUS: 'ACTIVITY_LIKE_STATUS',
@@ -20,30 +18,24 @@ export const actionTypes = {
     GET_GROUP_GALLERY_IMAGES: 'GET_GROUP_GALLERY_IMAGES',
     GET_GROUP_MEMBERS_DETAILS: 'GET_GROUP_MEMBERS_DETAILS',
     GET_GROUP_TRANSACTION_DETAILS: 'GET_GROUP_TRANSACTION_DETAILS',
-    GROUP_REDIRECT_TO_ERROR_PAGE: 'GROUP_REDIRECT_TO_ERROR_PAGE',
-    MEMBER_PLACEHOLDER_STATUS: 'MEMBER_PLACEHOLDER_STATUS',
     GROUP_PLACEHOLDER_STATUS: 'GROUP_PLACEHOLDER_STATUS',
-    POST_NEW_ACTIVITY: 'POST_NEW_ACTIVITY',
     GROUP_REDIRECT_TO_DASHBOARD: 'GROUP_REDIRECT_TO_DASHBOARD',
-    // COMMENT_LIKE_STATUS: 'COMMENT_LIKE_STATUS',
-    LEAVE_GROUP_MODAL_ERROR_MESSAGE: 'LEAVE_GROUP_MODAL_ERROR_MESSAGE',
+    GROUP_REDIRECT_TO_ERROR_PAGE: 'GROUP_REDIRECT_TO_ERROR_PAGE',
     LEAVE_GROUP_MODAL_BUTTON_LOADER: 'LEAVE_GROUP_MODAL_BUTTON_LOADER',
+    LEAVE_GROUP_MODAL_ERROR_MESSAGE: 'LEAVE_GROUP_MODAL_ERROR_MESSAGE',
+    MEMBER_PLACEHOLDER_STATUS: 'MEMBER_PLACEHOLDER_STATUS',
+    POST_NEW_ACTIVITY: 'POST_NEW_ACTIVITY',
     TOGGLE_TRANSACTION_VISIBILITY: 'TOGGLE_TRANSACTION_VISIBILITY',
+    // COMMENT_LIKE_STATUS: 'COMMENT_LIKE_STATUS',
 };
 
-export const getGroupFromSlug = async (dispatch, slug, token = null) => {
+export const getGroupFromSlug = (slug, token = null) => async (dispatch) => {
     if (slug !== ':slug') {
         const fsa = {
             payload: {
                 groupDetails: {},
             },
             type: actionTypes.GET_GROUP_DETAILS_FROM_SLUG,
-        };
-        const galleryfsa = {
-            payload: {
-                galleryImages: [],
-            },
-            type: actionTypes.GET_GROUP_GALLERY_IMAGES,
         };
         dispatch({
             payload: {
@@ -65,7 +57,7 @@ export const getGroupFromSlug = async (dispatch, slug, token = null) => {
                 uxCritical: true,
             },
         };
-        if (!_.isEmpty(token)) {
+        if (!_isEmpty(token)) {
             fullParams.headers = {
                 Authorization: `Bearer ${token}`,
             };
@@ -74,23 +66,9 @@ export const getGroupFromSlug = async (dispatch, slug, token = null) => {
             ...fullParams,
         }).then(
             (result) => {
-                if (result && !_.isEmpty(result.data)) {
+                if (result && !_isEmpty(result.data)) {
                     fsa.payload.groupDetails = result.data;
                     dispatch(fsa);
-                    if (result.data.relationships && result.data.relationships.galleryImages) {
-                        coreApi.get(result.data.relationships.galleryImages.links.related, {
-                            params: {
-                                dispatch,
-                                ignore401: true,
-                            },
-                        })
-                            .then((galleryResult) => {
-                                if (galleryResult && !_.isEmpty(galleryResult.data)) {
-                                    galleryfsa.payload.galleryImages = galleryResult.data;
-                                    dispatch(galleryfsa);
-                                }
-                            }).catch().finally();
-                    }
                 }
             },
         ).catch((error) => {
@@ -115,12 +93,31 @@ export const getGroupFromSlug = async (dispatch, slug, token = null) => {
     }
 };
 
-export const getDetails = async (dispatch, id, type, pageNumber = 1) => {
+export const getImageGallery = (url) => (dispatch) => {
+    const galleryfsa = {
+        payload: {
+            galleryImages: [],
+        },
+        type: actionTypes.GET_GROUP_GALLERY_IMAGES,
+    };
+    coreApi.get(url, {
+        params: {
+            dispatch,
+            ignore401: true,
+        },
+    }).then((galleryResult) => {
+        if (galleryResult && !_isEmpty(galleryResult.data)) {
+            galleryfsa.payload.galleryImages = galleryResult.data;
+            dispatch(galleryfsa);
+        }
+    }).catch().finally();
+};
+
+export const getDetails = (id, type, pageNumber = 1) => async (dispatch) => {
     const fsa = {
         payload: {},
     };
     let newUrl = '';
-    // const isViewMore = !_.isEmpty(url);
     const placeholderfsa = {
         payload: {},
     };
@@ -128,14 +125,12 @@ export const getDetails = async (dispatch, id, type, pageNumber = 1) => {
         case 'members':
             fsa.type = actionTypes.GET_GROUP_MEMBERS_DETAILS;
             newUrl = `/groups/${id}/groupMembers?page[size]=10&page[number]=${pageNumber}`;
-            // fsa.payload.isViewMore = isViewMore;
             placeholderfsa.payload.memberPlaceholder = true;
             placeholderfsa.type = actionTypes.MEMBER_PLACEHOLDER_STATUS;
             break;
         case 'admins':
             fsa.type = actionTypes.GET_GROUP_ADMIN_DETAILS;
             newUrl = `/groups/${id}/groupAdmins?page[size]=10&page[number]=${pageNumber}`;
-            // fsa.payload.isViewMore = isViewMore;
             placeholderfsa.payload.adminPlaceholder = true;
             placeholderfsa.type = actionTypes.ADMIN_PLACEHOLDER_STATUS;
             break;
@@ -156,17 +151,13 @@ export const getDetails = async (dispatch, id, type, pageNumber = 1) => {
             uxCritical: true,
         },
     }).then((result) => {
-        if (result && !_.isEmpty(result.data)) {
+        if (result && !_isEmpty(result.data)) {
             fsa.payload.data = result.data;
-            // fsa.payload.nextLink = (result.links.next) ? result.links.next : null;
             fsa.payload.totalCount = result.meta.recordCount;
             fsa.payload.pageCount = result.meta.pageCount;
             dispatch(fsa);
         }
     }).catch().finally(() => {
-        // fsa.payload.data = admin_Data.data;// result.data;
-        // fsa.payload.nextLink = admin_Data.nextLink;// (result.links.next) ? result.links.next : null;
-        // fsa.payload.totalCount = admin_Data.meta.recordCount;
         dispatch(fsa);
         switch (type) {
             case 'members':
@@ -188,7 +179,7 @@ export const getDetails = async (dispatch, id, type, pageNumber = 1) => {
     });
 };
 
-export const getTransactionDetails = async (dispatch, id, url) => {
+export const getTransactionDetails = (id, url) => async (dispatch) => {
     const fsa = {
         payload: {
             groupTransactions: {},
@@ -201,7 +192,7 @@ export const getTransactionDetails = async (dispatch, id, url) => {
         },
         type: actionTypes.GROUP_PLACEHOLDER_STATUS,
     });
-    const newUrl = !_.isEmpty(url) ? url : `groups/${id}/activities?filter[moneyItems]=all&page[size]=10`;
+    const newUrl = !_isEmpty(url) ? url : `groups/${id}/activities?filter[moneyItems]=all&page[size]=10`;
     await coreApi.get(newUrl, {
         params: {
             dispatch,
@@ -209,7 +200,7 @@ export const getTransactionDetails = async (dispatch, id, url) => {
             uxCritical: true,
         },
     }).then((result) => {
-        if (result && !_.isEmpty(result.data)) {
+        if (result && !_isEmpty(result.data)) {
             fsa.payload.groupTransactions = result;
             dispatch(fsa);
         }
@@ -223,14 +214,14 @@ export const getTransactionDetails = async (dispatch, id, url) => {
     });
 };
 
-export const getGroupActivities = async (dispatch, id, url, isPostActivity) => {
+export const getGroupActivities = (id, url, isPostActivity) => async (dispatch) => {
     const fsa = {
         payload: {
             groupActivities: {},
         },
         type: actionTypes.GET_GROUP_ACTIVITY_DETAILS,
     };
-    const newUrl = !_.isEmpty(url) ? url : `groups/${id}/activities?page[size]=10`;
+    const newUrl = !_isEmpty(url) ? url : `groups/${id}/activities?page[size]=10`;
     coreApi.get(newUrl, {
         params: {
             dispatch,
@@ -238,7 +229,7 @@ export const getGroupActivities = async (dispatch, id, url, isPostActivity) => {
             uxCritical: true,
         },
     }).then((result) => {
-        if (result && !_.isEmpty(result.data)) {
+        if (result && !_isEmpty(result.data)) {
             fsa.payload.groupActivities = result;
             if (!isPostActivity) {
                 fsa.payload.nextLink = (result.links.next) ? result.links.next : null;
@@ -256,7 +247,7 @@ export const getGroupActivities = async (dispatch, id, url, isPostActivity) => {
     });
 };
 
-export const getCommentFromActivityId = async (dispatch, id, url) => {
+export const getCommentFromActivityId = (id, url) => async (dispatch) => {
     const fsa = {
         payload: {
             groupComments: {},
@@ -271,7 +262,7 @@ export const getCommentFromActivityId = async (dispatch, id, url) => {
             uxCritical: true,
         },
     }).then((result) => {
-        if (result && !_.isEmpty(result.data)) {
+        if (result && !_isEmpty(result.data)) {
             fsa.payload.groupComments = result.data;
             fsa.payload.activityId = id;
             fsa.payload.isReply = false;
@@ -282,7 +273,7 @@ export const getCommentFromActivityId = async (dispatch, id, url) => {
     });
 };
 
-export const postActivity = async (dispatch, id, msg) => {
+export const postActivity = (id, msg) => async (dispatch) => {
     const url = `groups/${id}/activities?page[size]=1`;
     coreApi.post(`/comments`,
         {
@@ -299,13 +290,13 @@ export const postActivity = async (dispatch, id, msg) => {
                 ignore401: true,
             },
         }).then((result) => {
-        if (result && !_.isEmpty(result.data)) {
-            getGroupActivities(dispatch, id, url, true);
+        if (result && !_isEmpty(result.data)) {
+            dispatch(getGroupActivities(id, url, true));
         }
     }).catch().finally();
 };
 
-export const postComment = async (dispatch, groupId, eventId, msg, user) => {
+export const postComment = (groupId, eventId, msg, user) => async (dispatch) => {
     const url = `events/${eventId}/comments?page[size]=1`;
     const fsa = {
         payload: {
@@ -329,7 +320,7 @@ export const postComment = async (dispatch, groupId, eventId, msg, user) => {
                 ignore401: true,
             },
         }).then((result) => {
-        if (result && !_.isEmpty(result.data)) {
+        if (result && !_isEmpty(result.data)) {
             fsa.payload.groupComments = [
                 {
                     attributes: {
@@ -352,7 +343,7 @@ export const postComment = async (dispatch, groupId, eventId, msg, user) => {
     }).catch().finally();
 };
 
-export const likeActivity = async (dispatch, eventId, groupId, userId) => {
+export const likeActivity = (eventId, groupId, userId) => async (dispatch) => {
     const fsa = {
         payload: {
             activityStatus: false,
@@ -373,7 +364,7 @@ export const likeActivity = async (dispatch, eventId, groupId, userId) => {
                 ignore401: true,
             },
         }).then((result) => {
-        if (result && !_.isEmpty(result.data)) {
+        if (result && !_isEmpty(result.data)) {
             fsa.payload.activityStatus = true;
             fsa.payload.eventId = eventId;
         }
@@ -384,7 +375,7 @@ export const likeActivity = async (dispatch, eventId, groupId, userId) => {
     });
 };
 
-export const unlikeActivity = async (dispatch, eventId, groupId, userId) => {
+export const unlikeActivity = (eventId, groupId, userId) => async (dispatch) => {
     const fsa = {
         payload: {
             activityStatus: true,
@@ -407,7 +398,7 @@ export const unlikeActivity = async (dispatch, eventId, groupId, userId) => {
                 ignore401: true,
             },
         }).then((result) => {
-        if (result && !_.isEmpty(result.data)) {
+        if (result && !_isEmpty(result.data)) {
             fsa.payload.activityStatus = false;
             fsa.payload.eventId = eventId;
         }
@@ -433,7 +424,7 @@ export const unlikeActivity = async (dispatch, eventId, groupId, userId) => {
 //                 user_id: Number(userId),
 //             },
 //         }).then((result) => {
-//         if (result && !_.isEmpty(result.data)) {
+//         if (result && !_isEmpty(result.data)) {
 //             fsa.payload.commentStatus = true;
 //         }
 //     }).catch().finally(() => {
@@ -460,7 +451,7 @@ export const unlikeActivity = async (dispatch, eventId, groupId, userId) => {
 //                 },
 //             },
 //         }).then((result) => {
-//         if (result && !_.isEmpty(result.data)) {
+//         if (result && !_isEmpty(result.data)) {
 //             fsa.payload.commentStatus = false;
 //         }
 //     }).catch().finally(() => {
@@ -468,7 +459,7 @@ export const unlikeActivity = async (dispatch, eventId, groupId, userId) => {
 //     });
 // };
 
-export const joinGroup = async (dispatch, groupSlug, groupId, loadMembers) => {
+export const joinGroup = (groupSlug, groupId, loadMembers) => async (dispatch) => {
     const fsa = {
         payload: {
             groupDetails: {},
@@ -484,10 +475,11 @@ export const joinGroup = async (dispatch, groupSlug, groupId, loadMembers) => {
         },
     }).then(
         (result) => {
-            if (result && !_.isEmpty(result.data)) {
+            if (result && !_isEmpty(result.data)) {
                 fsa.payload.groupDetails = result.data;
-                getDetails(dispatch, groupId, 'members');
-                // getDetails(dispatch, groupId, 'admins');
+                if (loadMembers) {
+                    dispatch(getDetails(groupId, 'members'));
+                }
             }
         },
     ).catch(() => {
@@ -497,7 +489,7 @@ export const joinGroup = async (dispatch, groupSlug, groupId, loadMembers) => {
     });
 };
 
-export const getGroupBeneficiariesCount = async (dispatch, url) => {
+export const getGroupBeneficiariesCount = (url) => async (dispatch) => {
     const fsa = {
         payload: {
             groupBeneficiariesCount: {},
@@ -512,7 +504,7 @@ export const getGroupBeneficiariesCount = async (dispatch, url) => {
                 uxCritical: true,
             },
         }).then((result) => {
-        if (result && !_.isEmpty(result.data)) {
+        if (result && !_isEmpty(result.data)) {
             fsa.payload.groupBeneficiariesCount = result.data;
         }
     }).catch().finally(() => {
@@ -521,10 +513,10 @@ export const getGroupBeneficiariesCount = async (dispatch, url) => {
 };
 
 const checkForOnlyOneAdmin = (error) => {
-    if (!_.isEmpty(error) && error.length === 1) {
+    if (!_isEmpty(error) && error.length === 1) {
         const checkForAdminError = error[0];
-        if (!_.isEmpty(checkForAdminError.meta)
-            && !_.isEmpty(checkForAdminError.meta.validationCode)
+        if (!_isEmpty(checkForAdminError.meta)
+            && !_isEmpty(checkForAdminError.meta.validationCode)
             && (checkForAdminError.meta.validationCode === '1329'
             || checkForAdminError.meta.validationCode === 1329)) {
             return true;
@@ -533,7 +525,7 @@ const checkForOnlyOneAdmin = (error) => {
     return false;
 };
 
-export const leaveGroup = async (dispatch, slug, groupId, loadMembers) => {
+export const leaveGroup = (slug, groupId, loadMembers) => async (dispatch) => {
     dispatch({
         payload: { buttonLoading: true },
         type: actionTypes.LEAVE_GROUP_MODAL_BUTTON_LOADER,
@@ -541,7 +533,7 @@ export const leaveGroup = async (dispatch, slug, groupId, loadMembers) => {
     coreApi.patch(`/groups/leave?slug=${slug}`, {
     }).then((result) => {
         if (result && result.status === 'SUCCESS') {
-            getGroupFromSlug(dispatch, slug);
+            dispatch(getGroupFromSlug(slug));
             dispatch({
                 payload: {
                     buttonLoading: false,
@@ -549,8 +541,10 @@ export const leaveGroup = async (dispatch, slug, groupId, loadMembers) => {
                 },
                 type: actionTypes.LEAVE_GROUP_MODAL_BUTTON_LOADER,
             });
-            getDetails(dispatch, groupId, 'members');
-            getDetails(dispatch, groupId, 'admins');
+            if (loadMembers) {
+                dispatch(getDetails(groupId, 'members'));
+            }
+            dispatch(getDetails(groupId, 'admins'));
         }
     }).catch((error) => {
         dispatch({
@@ -575,7 +569,7 @@ export const leaveGroup = async (dispatch, slug, groupId, loadMembers) => {
     });
 };
 
-export const toggleTransactionVisibility = async (dispatch, transactionId, type) => {
+export const toggleTransactionVisibility = (transactionId, type) => async (dispatch) => {
     const fsa = {
         payload: {},
         type: actionTypes.TOGGLE_TRANSACTION_VISIBILITY,
@@ -600,7 +594,7 @@ export const toggleTransactionVisibility = async (dispatch, transactionId, type)
             },
         }).then(
         (result) => {
-            if (result && !_.isEmpty(result.data)) {
+            if (result && !_isEmpty(result.data)) {
                 fsa.payload.data = result.data;
                 fsa.payload.transactionId = transactionId;
                 dispatch(fsa);

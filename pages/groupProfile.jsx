@@ -1,6 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import _ from 'lodash';
+import _isEmpty from 'lodash/isEmpty';
+import _map from 'lodash/map';
+import _property from 'lodash/property';
 import {
     array,
     string,
@@ -11,11 +13,13 @@ import getConfig from 'next/config';
 
 import {
     getGroupFromSlug,
+    getImageGallery,
 } from '../actions/group';
 import Layout from '../components/shared/Layout';
 import GroupProfileWrapper from '../components/Group';
 import { Router } from '../routes';
 import storage from '../helpers/storage';
+import '../static/less/charityProfile.less';
 
 const actionTypes = {
     RESET_GROUP_STATES: 'RESET_GROUP_STATES',
@@ -34,7 +38,7 @@ class GroupProfile extends React.Component {
         if (typeof window === 'undefined') {
             auth0AccessToken = storage.get('auth0AccessToken', 'cookie', req.headers.cookie);
         }
-        await getGroupFromSlug(reduxStore.dispatch, query.slug, auth0AccessToken);
+        await reduxStore.dispatch(getGroupFromSlug(query.slug, auth0AccessToken));
         return {
             namespacesRequired: [
                 'common',
@@ -51,11 +55,18 @@ class GroupProfile extends React.Component {
                 attributes: {
                     isCampaign,
                 },
+                relationships: {
+                    galleryImages: {
+                        links: {
+                            related,
+                        },
+                    },
+                },
             },
             redirectToPrivateGroupErrorPage,
             redirectToDashboard,
         } = this.props;
-        if (isCampaign === true) {
+        if (isCampaign) {
             Router.pushRoute(`/campaigns/${slug}`);
         }
         if (redirectToDashboard) {
@@ -64,7 +75,9 @@ class GroupProfile extends React.Component {
         if (redirectToPrivateGroupErrorPage) {
             Router.pushRoute('/group/error');
         }
-        getGroupFromSlug(dispatch, slug);
+        if (!_isEmpty(related)) {
+            dispatch(getImageGallery(related));
+        }
     }
 
     render() {
@@ -89,14 +102,13 @@ class GroupProfile extends React.Component {
             redirectToDashboard,
         } = this.props;
         let title = name;
-        if (!_.isEmpty(location)) {
+        if (!_isEmpty(location)) {
             title = `${name} | ${location}`;
         }
-        const desc = (!_.isEmpty(description)) ? description : title;
-        const causesList = (causes.length > 0) ? _.map(causes, _.property('name')) : [];
-        const keywords = (causesList.length > 0) ? _.join(_.slice(causesList, 0, 10), ', ') : '';
+        const desc = (!_isEmpty(description)) ? description : title;
+        const causesList = (causes.length > 0) ? _map(causes, _property('name')) : [];
+        const keywords = (causesList.length > 0) ? (causesList.slice(0, 10)).join(', ') : '';
         const url = `${APP_URL_ORIGIN}/groups/${slug}`;
-
         if (isCampaign !== true) {
             return (
                 <Layout
@@ -105,6 +117,7 @@ class GroupProfile extends React.Component {
                     title={title}
                     description={desc}
                     url={url}
+                    isProfilePage
                 >
                     {!redirectToDashboard
                         && <GroupProfileWrapper {...this.props} />
@@ -117,7 +130,7 @@ class GroupProfile extends React.Component {
 }
 
 GroupProfile.defaultProps = {
-    dispatch: func,
+    dispatch: () => {},
     groupDetails: {
         attributes: {
             avatar: '',
@@ -128,6 +141,13 @@ GroupProfile.defaultProps = {
             name: '',
             slug: '',
         },
+        relationships: {
+            galleryImages: {
+                links: {
+                    related: '',
+                },
+            },
+        },
     },
     isAUthenticated: false,
     redirectToDashboard: false,
@@ -136,7 +156,7 @@ GroupProfile.defaultProps = {
 };
 
 GroupProfile.propTypes = {
-    dispatch: _.noop,
+    dispatch: func,
     groupDetails: {
         attributes: {
             avatar: string,
@@ -146,6 +166,13 @@ GroupProfile.propTypes = {
             location: string,
             name: string,
             slug: string,
+        },
+        relationships: {
+            galleryImages: {
+                links: {
+                    related: string,
+                },
+            },
         },
     },
     isAUthenticated: bool,

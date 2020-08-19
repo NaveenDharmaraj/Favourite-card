@@ -11,12 +11,14 @@ import {
     number,
     string,
     func,
+    bool,
 } from 'prop-types';
 import _isEmpty from 'lodash/isEmpty';
 
 import {
     getDetails,
 } from '../../actions/group';
+import PlaceholderGrid from '../shared/PlaceHolder';
 
 import Admins from './Admins';
 import AdminsList from './AdminsList';
@@ -33,30 +35,42 @@ class GroupAdmins extends React.Component {
             },
         } = this.props;
         if (_isEmpty(adminData)) {
-            getDetails(dispatch, groupId, 'admins');
+            dispatch(getDetails(groupId, 'admins'));
         }
     }
 
     render() {
         const {
+            adminsLoader,
             groupAdminsDetails: {
                 data: adminsData,
                 totalCount,
             },
         } = this.props;
+        let data = '';
+        if (!_isEmpty(adminsData)) {
+            data = (
+                <Fragment>
+                    {(totalCount > 3)
+                        ? <AdminsList />
+                        : <Admins />
+                    }
+                </Fragment>
+            );
+        }
         return (
             <Fragment>
                 <Header as="h3">Group Admins</Header>
-                {(!_isEmpty(adminsData) && totalCount > 3)
-                    ? <AdminsList />
-                    : <Admins />
-                }
+                {!adminsLoader
+                    ? data
+                    : <PlaceholderGrid row={1} column={3} placeholderType="usersList" />}
             </Fragment>
         );
     }
 }
 
 GroupAdmins.defaultProps = {
+    adminsLoader: true,
     dispatch: () => {},
     groupAdminsDetails: {
         data: [],
@@ -75,6 +89,7 @@ GroupAdmins.defaultProps = {
 };
 
 GroupAdmins.propTypes = {
+    adminsLoader: bool,
     dispatch: func,
     groupAdminsDetails: {
         data: arrayOf(PropTypes.element),
@@ -94,6 +109,7 @@ GroupAdmins.propTypes = {
 
 function mapStateToProps(state) {
     return {
+        adminsLoader: state.group.adminsLoader,
         groupAdminsDetails: state.group.groupAdminsDetails,
         groupDetails: state.group.groupDetails,
     };

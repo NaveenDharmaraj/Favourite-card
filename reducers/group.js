@@ -120,7 +120,6 @@ const group = (state = {}, action) => {
                             data: action.payload.groupActivities.data,
                             nextLink: action.payload.nextLink,
                         },
-                        // groupActivities: Object.assign({}, state.groupActivities, action.payload.groupActivities),
                         loadComments: false,
                     };
                 }
@@ -132,7 +131,6 @@ const group = (state = {}, action) => {
                         data: action.payload.groupActivities.data,
                         nextLink: action.payload.nextLink,
                     },
-                    // groupActivities: Object.assign({}, state.groupActivities, action.payload.groupActivities),
                     loadComments: false,
                 };
             }
@@ -317,6 +315,18 @@ const group = (state = {}, action) => {
             newState = {
                 ...state,
                 redirectToPrivateGroupErrorPage: action.payload.redirectToErrorPage,
+            };
+            break;
+        case 'GET_GROUP_TAB_INDEX':
+            newState = {
+                ...state,
+                activeIndex: action.payload.activeIndex,
+            };
+            break;
+        case 'GET_GROUP_TAB_OFFSET':
+            newState = {
+                ...state,
+                scrollOffset: action.payload.scrollOffset,
             };
             break;
         default:

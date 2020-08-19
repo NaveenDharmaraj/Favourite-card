@@ -2,11 +2,12 @@ import React, {
     Fragment,
 } from 'react';
 import _isEmpty from 'lodash/isEmpty';
+import _isEqual from 'lodash/isEqual';
 import {
     Button,
+    Dropdown,
 } from 'semantic-ui-react';
 import {
-    PropTypes,
     bool,
     func,
     string,
@@ -26,10 +27,36 @@ class GroupJoin extends React.Component {
         super(props);
         this.state = {
             joinClicked: false,
+            showLeaveModal: false,
         };
         this.handleUserJoin = this.handleUserJoin.bind(this);
         this.handleLeaveGroup = this.handleLeaveGroup.bind(this);
         this.openLeaveModal = this.openLeaveModal.bind(this);
+        this.closeLeaveModal = this.closeLeaveModal.bind(this);
+    }
+
+    componentDidUpdate(prevProps) {
+        const {
+            closeLeaveModal,
+            groupDetails: {
+                attributes: {
+                    isMember,
+                },
+            },
+        } = this.props;
+        if (!_isEqual(this.props, prevProps)) {
+            if (closeLeaveModal) {
+                this.setState({
+                    showLeaveModal: false,
+                });
+            }
+            if ((!_isEqual(prevProps.groupDetails.attributes.isMember, isMember)
+                    && isMember)) {
+                this.setState({
+                    joinClicked: false,
+                });
+            }
+        }
     }
 
     handleUserJoin() {
@@ -44,10 +71,9 @@ class GroupJoin extends React.Component {
             groupMembersDetails,
         } = this.props;
         const loadMembers = !_isEmpty(groupMembersDetails);
-        joinGroup(dispatch, slug, groupId, loadMembers);
+        dispatch(joinGroup(slug, groupId, loadMembers));
         this.setState({
             joinClicked: true,
-            showLeaveModal: false,
         });
     }
 
@@ -63,7 +89,7 @@ class GroupJoin extends React.Component {
             groupMembersDetails,
         } = this.props;
         const loadMembers = !_isEmpty(groupMembersDetails);
-        leaveGroup(dispatch, slug, groupId, loadMembers);
+        dispatch(leaveGroup(slug, groupId, loadMembers));
     }
 
     openLeaveModal() {
@@ -91,7 +117,6 @@ class GroupJoin extends React.Component {
                     name,
                     slug,
                 },
-                id: groupId,
             },
             isAuthenticated,
         } = this.props;
@@ -99,55 +124,46 @@ class GroupJoin extends React.Component {
             joinClicked,
             showLeaveModal,
         } = this.state;
-        debugger;
         let joinButton = null;
         let leaveButton = null;
         let showError = false;
         let showMangeGroups = false;
-        if (!_isEmpty(errorMessage) && errorMessage.id === groupId) {
+        if (errorMessage && !_isEmpty(errorMessage.adminError)) {
             showError = true;
-            if (errorMessage.adminError) {
+            if (errorMessage.adminError === 1) {
                 showMangeGroups = true;
             }
         }
         if (isAuthenticated) {
             if (!isMember) {
                 joinButton = (
-                    <Button
-                        onClick={this.handleUserJoin}
-                        className="blue-bordr-btn-round-def CampaignBtn"
-                        // disabled={joinClicked}
-                    >
-                    Join group
-                    </Button>
+                    <Fragment>
+                        <Button
+                            onClick={this.handleUserJoin}
+                            className="blue-bordr-btn-round-def CampaignBtn"
+                            disabled={joinClicked}
+                        >
+                        Join group
+                        </Button>
+                        <p>
+                            Join this group to get updates, show your support, and connect with other group members.
+                        </p>
+                    </Fragment>
                 );
             } else {
                 leaveButton = (
                     <Fragment>
-                        {isMember
-                       && (
-                           <Button
-                               onClick={this.openLeaveModal}
-                               className="blue-bordr-btn-round-def CampaignBtn"
-                               // disabled={userJoinClicked}
-                           >
-                            Leave group
-                           </Button>
-                       )}
-
-                        {/* <Dropdown floating icon="setting">
-                            <Dropdown.Menu>
-                                {isMember
-                                    && (
-                                        <Dropdown.Item
-                                            text="Leave Group"
-                                            onClick={() => {
-                                                this.openLeaveModal();
-                                            }}
-                                        />
-                                    )}
-                            </Dropdown.Menu>
-                        </Dropdown> */}
+                        <a role="listitem" className="item">
+                            <Dropdown
+                                className="rightBottom"
+                                icon="ellipsis horizontal"
+                                closeOnBlur
+                            >
+                                <Dropdown.Menu>
+                                    <Dropdown.Item text="Leave group" onClick={this.openLeaveModal} />
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        </a>
                         {showLeaveModal
                         && (
                             <LeaveModal
@@ -158,7 +174,6 @@ class GroupJoin extends React.Component {
                                 id={userId}
                                 callLeaveGroup={this.handleLeaveGroup}
                                 close={this.closeLeaveModal}
-                                open={this.openLeaveModal}
                                 errorMessage={errorMessage}
                                 leaveButtonLoader={buttonLoader}
                             />
@@ -168,28 +183,29 @@ class GroupJoin extends React.Component {
             }
         } else {
             joinButton = (
-                <div className="">
-                    <Link route={`/users/login?returnTo=/groups/${slug}`}>
-                        <Button
-                            className="blue-bordr-btn-round-def"
-                        >
-                        Join
-                        </Button>
-                    </Link>
-                </div>
+                <Link route={`/users/login?returnTo=/groups/${slug}`}>
+                    <Button
+                        className="blue-bordr-btn-round-def"
+                    >
+                    Join group
+                    </Button>
+                </Link>
             );
         }
         return (
-            <div>
-                { !isMember && joinButton }
-                {isMember && leaveButton}
-            </div>
+            <Fragment>
+                {isMember
+                    ? leaveButton
+                    : joinButton
+                }
+            </Fragment>
         );
     }
 }
 
 GroupJoin.defaultProps = {
     buttonLoader: false,
+    closeLeaveModal: false,
     currentUser: {
         id: null,
     },
@@ -214,6 +230,7 @@ GroupJoin.defaultProps = {
 
 GroupJoin.propTypes = {
     buttonLoader: bool,
+    closeLeaveModal: bool,
     currentUser: {
         id: string,
     },
@@ -239,7 +256,9 @@ GroupJoin.propTypes = {
 function mapStateToProps(state) {
     return {
         buttonLoader: state.group.leaveButtonLoader,
+        closeLeaveModal: state.group.closeLeaveModal,
         currentUser: state.user.info,
+        errorMessage: state.group.errorMessage,
         groupDetails: state.group.groupDetails,
         groupMembersDetails: state.group.groupMembersDetails,
         isAuthenticated: state.auth.isAuthenticated,

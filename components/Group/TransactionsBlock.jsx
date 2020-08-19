@@ -6,6 +6,7 @@ import {
 import {
     number,
     string,
+    bool,
 } from 'prop-types';
 
 import {
@@ -24,6 +25,7 @@ const TransactionsBlock = (props) => {
                 fundraisingDaysRemaining,
             },
         },
+        isAuthenticated,
     } = props;
     const currency = 'USD';
     const language = 'en';
@@ -58,15 +60,31 @@ const TransactionsBlock = (props) => {
         return null;
     });
 
+    const updateIndex = () => {
+        const {
+            dispatch,
+            scrollOffset,
+        } = props;
+        // TODO uncomment until transaction tab ui changes are done
+
+        // dispatch({
+        //     payload: {
+        //         activeIndex: 2,
+        //     },
+        //     type: 'GET_GROUP_TAB_INDEX',
+        // });
+        // window.scrollTo(0, scrollOffset);
+    };
+
     return (
         <div className="charityInfowrap fullwidth">
             <div className="charityInfo">
                 <Header as="h4">Transactions</Header>
                 {transactionList}
-                {(balance && parseInt(balance, 10) > 0)
+                {(isAuthenticated && totalMoneyRaised && parseInt(totalMoneyRaised, 10) > 0)
                 && (
                     <div className="lastGiftWapper">
-                        <p className="lastGiftText blueText">View transactions</p>
+                        <p onClick={updateIndex} className="lastGiftText blueText">View transactionss</p>
                     </div>
                 )}
             </div>
@@ -83,6 +101,7 @@ TransactionsBlock.defaultProps = {
             totalMoneyRaised: '',
         },
     },
+    isAuthenticated: false,
 };
 
 TransactionsBlock.propTypes = {
@@ -94,12 +113,14 @@ TransactionsBlock.propTypes = {
             totalMoneyRaised: string,
         },
     },
+    isAuthenticated: bool,
 };
 
 function mapStateToProps(state) {
     return {
         groupDetails: state.group.groupDetails,
         isAuthenticated: state.auth.isAuthenticated,
+        scrollOffset: state.group.scrollOffset,
     };
 }
 

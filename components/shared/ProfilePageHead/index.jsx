@@ -59,7 +59,7 @@ function ProfilePageHead(props) {
                                     <i aria-hidden="true" className="edit icon" />
                                 </span>
                                 {formatMessage('campaignProfile:editBtn')}
-                                {type === 'campaigns' ? 'Campaign' : 'Group'}
+                                {type === 'campaigns' ? ' Campaign' : ' Group'}
                             </Button>
                         </a>
                         {balance > 0
@@ -71,7 +71,7 @@ function ProfilePageHead(props) {
                                             <i aria-hidden="true" className="bell icon" />
                                         </span>
                                         {formatMessage('campaignProfile:giveFromBtn')}
-                                        {type === 'campaigns' ? 'Campaign' : 'Group'}
+                                        {type === 'campaigns' ? ' Campaign' : ' Group'}
                                     </Button>
                                 </Link>
                             ) : (
@@ -86,7 +86,7 @@ function ProfilePageHead(props) {
                                                         <i aria-hidden="true" className="bell icon" />
                                                     </span>
                                                     {formatMessage('campaignProfile:giveFromBtn')}
-                                                    {type === 'campaigns' ? 'Campaign' : 'Group'}
+                                                    {type === 'campaigns' ? ' Campaign' : ' Group'}
                                                 </Button>
                                             )
                                         }

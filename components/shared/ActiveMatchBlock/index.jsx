@@ -8,13 +8,13 @@ import {
 import {
     number,
     string,
+    bool,
 } from 'prop-types';
-import _isEmpty from 'lodash/isEmpty';
+import { connect } from 'react-redux';
 
 import {
     formatCurrency,
 } from '../../../helpers/give/utils';
-import placeHolderImage from '../../../static/images/no-data-avatar-giving-group-profile.png';
 
 const ActiveMatchBlock = (props) => {
     const {
@@ -29,6 +29,7 @@ const ActiveMatchBlock = (props) => {
         },
         type,
         hasActiveMatch,
+        isAuthenticated,
     } = props;
     if (hasActiveMatch) {
         const currency = 'USD';
@@ -36,9 +37,9 @@ const ActiveMatchBlock = (props) => {
         const formattedBalance = formatCurrency(balance, language, currency);
         const formattedmaxMatchAmount = formatCurrency(maxMatchAmount, language, currency);
         const formattedtotalMatch = formatCurrency(totalMatch, language, currency);
-        const matchExpired = (_isEmpty(matchClose));
-        const headingText = matchExpired ? 'Thank you for your support!' : 'Your gift will be matched!';
-        // TODO work on avatar, matching expired or not screens, window scroll, condition to show view matching history
+        const headingText = 'Your gift will be matched!';
+        const canSeeMatchingHistory = (isAuthenticated && (type === 'groups'));
+        // TODO work on Thank you screens, condition to show view matching history, window scroll
         return (
             <div className="charityInfowrap fullwidth lightGreenBg">
                 <div className="charityInfo">
@@ -89,7 +90,7 @@ const ActiveMatchBlock = (props) => {
                             {` Expires ${matchClose}`}
                         </Button>
                     )}
-                    {((type === 'groups') && !matchExpired) // TODO show only when there is matching history is available
+                    {canSeeMatchingHistory
                     && (
                         <p className="blueHistory">View matching history</p>
                     )}
@@ -111,6 +112,8 @@ ActiveMatchBlock.defaultProps = {
         maxMatchAmount: null,
         totalMatch: '',
     },
+    hasActiveMatch: false,
+    isAuthenticated: false,
     type: '',
 };
 
@@ -125,6 +128,15 @@ ActiveMatchBlock.propTypes = {
         maxMatchAmount: number,
         totalMatch: string,
     },
+    hasActiveMatch: bool,
+    isAuthenticated: bool,
     type: string,
 };
-export default ActiveMatchBlock;
+
+function mapStateToProps(state) {
+    return {
+        isAuthenticated: state.auth.isAuthenticated,
+    };
+}
+
+export default connect(mapStateToProps)(ActiveMatchBlock);
