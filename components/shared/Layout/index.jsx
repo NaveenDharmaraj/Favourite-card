@@ -23,7 +23,7 @@ import _ from 'lodash';
 import '../../../static/less/header.less';
 import '../../../static/less/style.less';
 import { isValidBrowser } from '../../../helpers/utils';
-import registerAppLozic from '../../../static/initApplozic';
+import registerAppLozic from '../../../helpers/initApplozic';
 
 const { publicRuntimeConfig } = getConfig();
 
