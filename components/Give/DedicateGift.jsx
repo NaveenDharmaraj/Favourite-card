@@ -87,7 +87,7 @@ class DedicateGift extends Component {
                             checked={activeIndex === 1}
                             label="In memory of"
                             name="inMemoryOf"
-                            className="cp_chkbx round font-w-n mb-1"
+                            className="cp_chkbx round font-w-n"
                             value={dedicateValue}
                             index={1}
                             onClick={(e, data) => { this.handleOnInputChangeWrapper(e, data); }}

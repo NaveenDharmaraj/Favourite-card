@@ -27,9 +27,8 @@
                    font-size: 24px;
                    line-height: 29px;
                    color: #263238;
-                   font-family: 'ProximaNova-Regular';
-                   font-weight: 600;
-                 
+                   font-family: 'ProximaNova-Semibold';
+                   margin-bottom: 20px;
                 }
             }
         }
@@ -44,7 +43,7 @@
          font-family: 'ProximaNova-Regular';
          max-width: 550px;
          width: 100%;
-         margin:30px auto;
+         margin:0px auto 40px;
          text-align: center;
      }
     } 
@@ -223,8 +222,6 @@
                 &.header{
                   font-size: 24px;
                   color: #263238;
-                  font-family: 'ProximaNova-Regular';
-                  font-weight: 600;
                   @media only screen and (max-width:768px) {
                     font-size: 17px;  
                   }
@@ -260,8 +257,6 @@
                 &.header{
                   font-size: 24px;
                   color: #263238;
-                  font-family: 'ProximaNova-Regular';
-                  font-weight: 600;
                   @media only screen and (max-width:768px) {
                     font-size: 17px;  
                   }
@@ -297,8 +292,6 @@
                 &.header{
                   font-size: 24px;
                   color: #263238;
-                  font-family: 'ProximaNova-Regular';
-                  font-weight: 600;
                   @media only screen and (max-width:768px) {
                     font-size: 17px;  
                   }
@@ -341,21 +334,20 @@
             &.header{
                 font-size: 24px;
                 color: #263238;
-                font-family: 'ProximaNova-Regular';
-                font-weight: 600;
+                font-family: 'ProximaNova-Semibold';
                 .sub{
                   &.header{
                     font-size: 17px;
                     color: #263238;
-                    font-family: 'ProximaNova-Regular';
-                    font-weight: 600;
+                    font-family: 'ProximaNova-Semibold';
                     margin-top:10px;
                   }  
                 } 
             }
         }
-  
+    
     }
+ 
  .GiveTable{
      .ui{
          &.very{
@@ -367,8 +359,10 @@
                     tbody{
                          tr{
                             td{
+                                color: #263238;
                                 &.tableOne{
                                     word-break: break-word;
+                                    font-family: 'ProximaNova-Semibold';                                   
                                     @media only screen and (min-width:768px) {
                                         width: 220px !important;
                                         padding: 29px 4px 29px 0px;
@@ -379,7 +373,7 @@
                                 &.tabletwo{
                                     word-break: break-word;
                                     @media only screen and (min-width:768px) {
-                                        padding: 29px 4px 29px 0px;
+                                        padding: 29px 4px 29px 10px;
                                         vertical-align: top;
                                         word-break: break-word;
                                     }
@@ -396,6 +390,27 @@
          }
      }
  }
+ .p2p-top-table{
+    .send-table{
+        font-family: 'ProximaNova-Semibold';
+    }
+    .ui.table.no-border-table{
+        tbody>tr{
+            td{
+                color: #263238;
+                padding: 5px 11px;
+            }
+            &:first-child{
+                td{
+                    padding-top: 0px;
+                }    
+            }
+        }
+    }
+    .right.aligned{
+        font-family: 'ProximaNova-Semibold';
+    }
+}
 }
 
 
@@ -419,7 +434,6 @@
     }
     .ui.breadcrumb .section{
         font-size: 14px;
-        font-family: 'ProximaNova-Regular';
         padding-left: 8px;
         padding-right: 8px;
        color: #7F7F7F !important;
@@ -432,8 +446,6 @@
     color: #90459A !important;
     font-size: 14px;
     line-height: 21px;
-    font-family: 'ProximaNova-Regular';
-    font-weight: 600;
 }
 
 /*###################### Naveen #########################*/
@@ -507,6 +519,8 @@
     .btn-basic-outline{
         &.btntext{
             color: #263238;
+            font-size: 14px;
+            font-family: 'ProximaNova-Regular';
         }
     }
     h3{
@@ -562,12 +576,24 @@
     }
     .give_flow_field{
         margin-top:40px !important;
+        .price_btn{
+            margin-bottom: 10px;
+        }
+        .accordion.ui{
+            .cp_chkbx{
+                +.inputInline{
+                    margin-top: 14px;
+                }
+            }
+        }
+        
     }
     .give_flow_field_bottom{
-        margin-bottom:44px !important;
+        margin-bottom:40px !important;
     }
     .with-info{
         textarea{
+           color: #263238; 
            min-height: 125px !important;
         }
     }
@@ -1015,16 +1041,33 @@ button.ui.button.blue-btn-rounded-def.flowConfirmBtn.second_btn{
 
 }
 .flowReview{
-    .ui.form .field>label{
-        &:first-child{
-            margin-top: 0px;
+    .ui.form .field
+        >label{
+            &:first-child{
+                margin-top: 0px;
+            }
+            margin-bottom: 14px !important;
+            display: inline-block;
+            margin-right: 6px;
+            color:#263238;
         }
-        margin-bottom: 14px !important;
-        display: inline-block;
-        margin-right: 6px;
-        font-family:'ProximaNova-Regular';
-        font-weight: 600;
-    }
+        .input{
+            color:#263238;
+        }
+            .ui.selection.dropdown{
+                font-family: 'ProximaNova-Regular';
+                color:#263238;
+                &.taxReceiptDropDown{
+                    span.attributes{
+                        font-family: 'ProximaNova-Regular';
+                        line-height: 22px !important;
+                        color:#263238;
+                        b{
+                            font-family: 'ProximaNova-Semibold';
+                        }
+                    }
+                }
+            }
 }
 .to_space{
     margin-top: 0px !important;
@@ -1060,16 +1103,27 @@ span.attributes {
         box-shadow: none;
         position: relative;
     }
-    .ui.selection.dropdown .menu>.item {
-        border-bottom: 1px solid #DDDDDD;
-        padding: 18px !important;
-    }
+    .ui.selection.dropdown {
+        &.active{
+            border: 1px solid #DDDDDD !important;
+            .menu{
+                border: 1px solid #DDDDDD !important;
+                >.item {
+                    border-bottom: 1px solid #DDDDDD;
+                    padding: 18px !important;
+                }
+            }
+        }
+    }    
     .textFirst{
         display: block;
-        font-weight: 600; 
+        font-family: 'ProximaNova-Semibold';
+        color: #263238;
+        
     }
     .secondFirst{
         display: block; 
+        color: #263238;
     }
     span.text {
         display: inline-block;
@@ -1085,6 +1139,7 @@ span.attributes {
             &.label{
                 .textFirst{
                     display: inline-block !important;
+                    
                 }
                 .secondFirst{
                     display: none !important;
@@ -1097,9 +1152,29 @@ span.attributes {
             &.label{
                 .textFirst{
                     display: inline-block !important;
+                    font-size: 12px;
+                    color: #ffffff;
                 }
                 .secondFirst{
                     display: none !important;
+                }
+                .icon.delete{
+                    position: relative;
+                    width: 10px;
+                    height: 10px;
+                    opacity: 1;
+                    &::before{
+                        content: '';
+                        background-image: url(../images/icons/close.svg) !important;
+                        background-size : contain !important;
+                        width: 10px;
+                        height: 10px;
+                        position: absolute;
+                        left: 3px;
+                        top: 1px;
+                        background-repeat: no-repeat !important;
+                        filter: brightness(0) invert(1);
+                    }
                 }
             }
         } 
@@ -1140,6 +1215,7 @@ span.attributes {
     font-size: 12px;
     display: block;
     margin-bottom: 15px;
+    margin-top: -10px;
 }
 .icon.circle.blue.large.question.popupMargin-6{
     margin-left:6px !important;
@@ -1152,8 +1228,7 @@ p{
     }
     &.multipleFriendAmountFieldText{
         font-size: 12px;
-        margin-bottom: 14px !important;
-        margin-top: 14px;
+        margin-bottom: 19.5px !important;
     }
 }
 
@@ -1241,7 +1316,7 @@ p{
     }
 }
 .amount-table_text{
-    font-weight: bold;
+    font-size: 20px;
     margin-right: 10px;
     @media only screen and (max-width:767px) {
         margin-right:0px !important;
@@ -1570,7 +1645,7 @@ input{
                         >.text{
                             font-size: 14px;
                             line-height: 22px;
-                            //color:#78909C;
+                            color:#263238;
                             padding: 2px 0px;
                             white-space: nowrap;
                             overflow: hidden;
@@ -1587,8 +1662,7 @@ input{
                                     &.disabled{
                                         opacity: 1;
                                         font-size: 14px;
-                                        font-family: 'ProximaNova-Regular';
-                                        font-weight: 600;
+                                        font-family: 'ProximaNova-Semibold';
                                         color:#263238;
                                         border-top: 1px solid #E9E9E9;
                                         line-height: 22px;
@@ -1890,6 +1964,47 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
                 @media only screen and (min-width:768px) {
                     width: 340px;
                     max-width: 340px;
+                }
+            }
+        }
+    }
+}
+//add-money-moadal
+.addMoneyMoadal{
+    .header{
+        font-family: 'ProximaNova-semibold';
+        color: #263238;
+    }
+    .ui{
+        &.form{
+            >label,.field label{
+                display: inline-block;
+                margin-bottom: 10px !important;
+                font-family: 'ProximaNova-semibold';
+                font-size: 14px;
+                color: #263238;
+            }
+            .ui.selection.dropdown{
+                margin-top: 0 !important;
+                color: #263238;
+                font-family: 'ProximaNova-Regular';
+                background-color: transparent !important;
+                span.attributes{
+                    font-family: 'ProximaNova-Regular';
+                    
+                    b{
+                        font-family: 'ProximaNova-semibold';
+                    }
+                }
+                &.active{
+                    border: 1px solid #DDDDDD !important;
+                    .menu{
+                        border: 1px solid #DDDDDD !important;
+                        >.item {
+                            border-bottom: 1px solid #DDDDDD;
+                            padding: 18px !important;
+                        }
+                    }
                 }
             }
         }

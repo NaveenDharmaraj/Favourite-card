@@ -88,7 +88,7 @@ class Review extends React.Component {
                     {list.map((data) => {
                         return (
                                 <Table.Row data-test="Give_Review_transaction_details">
-                                    <Table.Cell className="tableOne" ><b>{formatMessage(data.name)}</b></Table.Cell>
+                                    <Table.Cell className="tableOne" >{formatMessage(data.name)}</Table.Cell>
                                     <Table.Cell className="tabletwo" >{ data.value}</Table.Cell>
                                     <Table.Cell ></Table.Cell>
                                 </Table.Row>
@@ -109,7 +109,7 @@ class Review extends React.Component {
                         return (
                             <Table.Row>
                                 <Table.Cell className="table-name">{data.displayName}</Table.Cell>
-                                <Table.Cell textAlign='right'><b>{data.amount}</b></Table.Cell>
+                                <Table.Cell textAlign='right'>{data.amount}</Table.Cell>
                             </Table.Row>
                         )
                     })}
@@ -236,11 +236,11 @@ class Review extends React.Component {
                                                         <Grid.Row>
                                                             <Grid.Column mobile={16} tablet={4} computer={4}>
                                                                 <div className="send-table">
-                                                                    <b>{formatMessage('reviewP2pSendTo')}</b>
+                                                                    {formatMessage('reviewP2pSendTo')}
                                                                 </div>
                                                             </Grid.Column>
                                                             <Grid.Column mobile={16} tablet={12} computer={12}>
-                                                                <Table className="no-border-table">
+                                                                <Table className="no-border-table unstackable">
                                                                     <Table.Body>
                                                                         {this.renderSendingListing(reviewData.recipients)}
                                                                     </Table.Body>
@@ -252,8 +252,8 @@ class Review extends React.Component {
                                                         <Grid>
                                                             <Grid.Row className="reviewP2ptext">
                                                                 <Grid.Column mobile={8} tablet={8} computer={8} >
-                                                                    <div className="">
-                                                                    <b>{formatMessage('reviewP2pAmount')}</b>
+                                                                    <div className="send-table">
+                                                                    {formatMessage('reviewP2pAmount')}
                                                                     </div>
                                                                 </Grid.Column>
                                                                 <Grid.Column mobile={8} tablet={8} computer={8} textAlign="right" >
