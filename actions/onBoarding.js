@@ -4,6 +4,7 @@ import getConfig from 'next/config';
 
 import securityApi from '../services/securityApi';
 import graphApi from '../services/graphApi';
+import coreApi from '../services/coreApi';
 
 import {
     triggerUxCritialErrors,
@@ -110,4 +111,23 @@ export const getUserCauses = (dispatch) => {
     }).finally(() => {
         dispatch(fsa);
     });
+};
+
+export const claimp2pCreateNewUser = (firstName, lastName, email, password, claimToken) => (dispatch) => {
+    const bodyData = {
+        data: {
+            attributes: {
+                claimToken,
+                email,
+                firstName,
+                lastName,
+                password,
+            },
+        },
+        params: {
+            dispatch,
+            uxCritical: true,
+        },
+    };
+    return coreApi.post('/claimP2ps', bodyData);
 };

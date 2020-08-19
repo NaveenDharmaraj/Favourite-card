@@ -1,6 +1,6 @@
 /**
  * @license
- * MyFonts Webfont Build ID 3799538, 2019-08-21T14:08:07-0400
+ * MyFonts Webfont Build ID 3932918, 2020-08-05T12:03:51-0400
  * 
  * The fonts listed in this notice are subject to the End User License
  * Agreement(s) entered into by the website owner. All other parties are 
@@ -8,14 +8,8 @@
  * 
  * You may obtain a valid license at the URLs below.
  * 
- * Webfont: ProximaNova-Black by Mark Simonson
- * URL: https://www.myfonts.com/fonts/marksimonson/proxima-nova/black/
- * 
  * Webfont: ProximaNova-Bold by Mark Simonson
  * URL: https://www.myfonts.com/fonts/marksimonson/proxima-nova/bold/
- * 
- * Webfont: ProximaNova-Extrabld by Mark Simonson
- * URL: https://www.myfonts.com/fonts/marksimonson/proxima-nova/extrabld/
  * 
  * Webfont: ProximaNova-Medium by Mark Simonson
  * URL: https://www.myfonts.com/fonts/marksimonson/proxima-nova/medium/
@@ -26,32 +20,36 @@
  * Webfont: ProximaNova-Regular by Mark Simonson
  * URL: https://www.myfonts.com/fonts/marksimonson/proxima-nova/regular/
  * 
+ * Webfont: ProximaNova-Semibold by Mark Simonson
+ * URL: https://www.myfonts.com/fonts/marksimonson/proxima-nova/semibold/
  * 
- * License: https://www.myfonts.com/viewlicense?type=web&buildid=3799538
- * Licensed pageviews: Unlimited
+ * 
  * Webfonts copyright: Copyright (c) Mark Simonson, 2005. All rights reserved.
  * 
- * © 2019 MyFonts Inc
+ * © 2020 MyFonts Inc
 */
 
 
 
+  
+@font-face {
+  font-family: 'ProximaNova-Medium';
+  src: url('webFonts/ProximaNova-Medium/font.woff2') format('woff2'), url('webFonts/ProximaNova-Medium/font.woff') format('woff');
+}
+@font-face {
+  font-family: 'ProximaNova-Bold';
+  src: url('webFonts/ProximaNova-Bold/font.woff2') format('woff2'), url('webFonts/ProximaNova-Bold/font.woff') format('woff');
+}
+@font-face {
+  font-family: 'ProximaNova-Regular';
+  src: url('webFonts/ProximaNova-Regular/font.woff2') format('woff2'), url('webFonts/ProximaNova-Regular/font.woff') format('woff');
+}
+@font-face {
+  font-family: 'ProximaNova-Semibold';
+  src: url('webFonts/ProximaNova-Semibold/font.woff2') format('woff2'), url('webFonts/ProximaNova-Semibold/font.woff') format('woff');
+}
+@font-face {
+  font-family: 'ProximaNova-Light';
+  src: url('webFonts/ProximaNova-Light/font.woff2') format('woff2'), url('webFonts/ProximaNova-Light/font.woff') format('woff');
+}
 
-  
-@font-face {font-family: 'ProximaNova-Black';src: url('39F9F2_0_0.eot');src: url('39F9F2_0_0.eot?#iefix') format('embedded-opentype'),url('39F9F2_0_0.woff2') format('woff2'),url('39F9F2_0_0.woff') format('woff'),url('39F9F2_0_0.ttf') format('truetype');}
- 
-  
-@font-face {font-family: 'ProximaNova-Bold';src: url('39F9F2_1_0.eot');src: url('39F9F2_1_0.eot?#iefix') format('embedded-opentype'),url('39F9F2_1_0.woff2') format('woff2'),url('39F9F2_1_0.woff') format('woff'),url('39F9F2_1_0.ttf') format('truetype');}
- 
-  
-@font-face {font-family: 'ProximaNova-Extrabld';src: url('39F9F2_2_0.eot');src: url('39F9F2_2_0.eot?#iefix') format('embedded-opentype'),url('39F9F2_2_0.woff2') format('woff2'),url('39F9F2_2_0.woff') format('woff'),url('39F9F2_2_0.ttf') format('truetype');}
- 
-  
-@font-face {font-family: 'ProximaNova-Medium';src: url('39F9F2_3_0.eot');src: url('39F9F2_3_0.eot?#iefix') format('embedded-opentype'),url('39F9F2_3_0.woff2') format('woff2'),url('39F9F2_3_0.woff') format('woff'),url('39F9F2_3_0.ttf') format('truetype');}
- 
-  
-@font-face {font-family: 'ProximaNova-Light';src: url('39F9F2_4_0.eot');src: url('39F9F2_4_0.eot?#iefix') format('embedded-opentype'),url('39F9F2_4_0.woff2') format('woff2'),url('39F9F2_4_0.woff') format('woff'),url('39F9F2_4_0.ttf') format('truetype');}
- 
-  
-@font-face {font-family: 'ProximaNova-Regular';src: url('39F9F2_5_0.eot');src: url('39F9F2_5_0.eot?#iefix') format('embedded-opentype'),url('39F9F2_5_0.woff2') format('woff2'),url('39F9F2_5_0.woff') format('woff'),url('39F9F2_5_0.ttf') format('truetype');}
- 

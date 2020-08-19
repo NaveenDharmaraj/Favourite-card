@@ -343,6 +343,7 @@
                   max-width: 80%;
                   width: 100%;
                   min-width: 100%;
+                  word-wrap: break-word;
                   p{
                     margin-bottom: 3px;
                   }
@@ -359,6 +360,7 @@
                 padding: 15px 24px;
                 border:1px solid @grey-lighten-2;
                 border-radius: 10px;
+                word-wrap: break-word;
                 .dateTime{
                   float: right;
                   margin-bottom: -9px;
@@ -568,5 +570,24 @@ button,a{
   @media only screen and (max-width:768px) {
   .eleven.wide.computer.sixteen.wide.mobile.ten.wide.tablet.column.remove-pad-left {
     padding-right: 0px;
+  }
+}
+
+.newMessage{
+  color: #3D3D3D !important;
+  display: inline-block;
+  padding-right: 1rem;
+  position: relative;
+  &::before{
+    content: '';
+    position: absolute;
+    right: 0;
+    width: 7px;
+    height: 7px;
+    background-color: #D0021B;
+    border-radius: 100%;
+    margin: auto;
+    top: 0;
+    bottom: 0;
   }
 }

@@ -69,7 +69,7 @@ class EmailVerification extends React.Component {
                 <Layout>
                     <div className="pageWraper">
                         <Container>
-                            <div className="linebg">
+                            <div className="linebg signup-last-step">
                                 <Grid columns={2}>
                                 
                                     <Grid.Row>

@@ -539,11 +539,15 @@ h4{
 .c-breadcrumb{
   &.ui{
     &.breadcrumb{
+      font-size: 12px;
       .section{
         color: @grey-darken-6;
         &.active{
           font-weight: 400;
           color: @link;
+        }
+        &:last-child{
+          font-family: 'ProximaNova-Semibold';
         }
       }
     }
@@ -1595,6 +1599,7 @@ h4{
   padding: 0px !important;
   display: inline-block !important;
   width: 190px !important;
+  font-family: 'ProximaNova-Semibold' !important;
   @media only screen and (max-width: 767px){  
     width: 100% !important;
   }
@@ -6578,6 +6583,33 @@ button.ui.button.blue-bordr-btn-round-def{
   }
 }
 .inputWraper{
+  &.custom{
+    .ui{
+      &.fluid{
+        &.multiple{
+          &.selection{
+            &.dropdown{
+              .default{
+                &.text{
+                  padding: 9px 14px 7px;
+                }
+              }
+              .dropdown{
+                &.icon{
+                  display: none;
+                }
+              }
+              >.visible{
+                &.menu{
+                  display: none !important;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
   .ui{
     &.fluid{
       &.multiple{
@@ -8191,4 +8223,12 @@ body .userEllips{
 }
 .BottomfixedBtn_Footer{
   padding-bottom:60px;
+}
+.linebg{
+  &.signup-last-step{
+    margin-bottom: 100px;
+    @media only screen and (max-width:1199px) {
+      margin-bottom: 0px;
+    }
+  }
 }
