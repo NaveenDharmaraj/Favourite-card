@@ -46,7 +46,7 @@ class SupportingGroups extends React.Component {
         dispatch(getCampaignSupportGroups(campaignId));
     }
 
-    debounceFunction = ({dispatch, campaignId, searchQuery}, delay) => {
+    debounceFunction({dispatch, campaignId, searchQuery}, delay) {
         if(timeout){
             clearTimeout(timeout);
         }
