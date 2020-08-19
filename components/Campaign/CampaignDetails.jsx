@@ -24,16 +24,11 @@ const CampaignDetails = (props) => {
                 slug={slug}
                 isAuthenticated={isAuthenticated}
             />
-            {
-                (hasActiveMatch) ?
-                    (
-                        <ActiveMatchBlock
-                            activeMatch={activeMatch}
-                            type={type}
-                        />
-                    )
-                    : null
-            }
+            <ActiveMatchBlock
+                activeMatch={activeMatch}
+                type={type}
+                hasActiveMatch={hasActiveMatch}
+            />
             <CampaignSupporters
                 peopleInCampaign={peopleInCampaign}
                 groupsCount={groupsCount}
