@@ -1,7 +1,7 @@
 
 import React, { Fragment } from 'react';
-
-import ActiveMatchBlock from '../shared/ActiveMatchBlock';
+// TODO uncomment after groups updation
+// import ActiveMatchBlock from '../shared/ActiveMatchBlock';
 
 import MoneyRaised from './MoneyRaised';
 import CampaignSupporters from './CampaignSupporters';
@@ -24,11 +24,11 @@ const CampaignDetails = (props) => {
                 slug={slug}
                 isAuthenticated={isAuthenticated}
             />
-            <ActiveMatchBlock
+            {/* <ActiveMatchBlock
                 activeMatch={activeMatch}
                 type={type}
                 hasActiveMatch={hasActiveMatch}
-            />
+            /> */}
             <CampaignSupporters
                 peopleInCampaign={peopleInCampaign}
                 groupsCount={groupsCount}
