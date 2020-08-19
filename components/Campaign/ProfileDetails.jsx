@@ -84,7 +84,7 @@ function ProfileDetails(props) {
                                 </Grid.Column>
                                 <div className="fullwidth_v_G">
                                 <div className="GalleryWrapper">
-                                <Grid>
+                                <Grid className="fullwidth_gallery">
                                     <Grid.Row>
                                         <Grid.Column width={16}>
                                             <ImageGallery

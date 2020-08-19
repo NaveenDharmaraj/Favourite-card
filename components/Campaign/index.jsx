@@ -133,7 +133,7 @@ class CampaignProfileWrapper extends React.Component {
                         />
                         <Grid.Row>
                             <Grid>
-                                <Grid.Column mobile={16} tablet={11} computer={12}>
+                                <Grid.Column mobile={16} tablet={10} computer={12}>
                                     <Grid.Row>
                                         <Grid>
                                             {campaignDetails && (
@@ -196,7 +196,7 @@ class CampaignProfileWrapper extends React.Component {
                                         }
                                     </Grid.Row>
                                 </Grid.Column>
-                                <Grid.Column mobile={16} tablet={5} computer={4} >
+                                <Grid.Column mobile={16} tablet={6} computer={4} >
                                     <Responsive minWidth={768}>
                                         {
                                             campaignDetails && (
