@@ -161,7 +161,6 @@ class SupportingGroups extends React.Component {
                         <Grid >
                             <Grid.Row>
                                 <Grid.Column mobile={16} tablet={12} computer={8}>
-                                    {/* TODO Api call on search onChange */}
                                     <Input
                                         fluid
                                         placeholder="Search Giving Groups"

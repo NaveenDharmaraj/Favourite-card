@@ -91,7 +91,12 @@ export const getCampaignSupportGroups = (id, searchKey = '', pageNumber = 1, pag
         },
         type: actionTypes.SUB_GROUP_LIST_LOADER,
     });
-
+    let filterParam;
+    if (searchKey) {
+        filterParam = {
+            'filter[name]': searchKey,
+        }
+    };
     const fullParams = {
         params: {
             dispatch,
@@ -100,9 +105,9 @@ export const getCampaignSupportGroups = (id, searchKey = '', pageNumber = 1, pag
             'page[number]': pageNumber,
             'page[size]': pageSize,
             'filter[name]': searchKey,
+            ...filterParam,
         }
     }
-
     await coreApi.get(`campaigns/${id}/subGroups`, {
         ...fullParams,
     }).then((subGroupSearchResult) => {

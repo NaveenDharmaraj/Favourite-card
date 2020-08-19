@@ -1,7 +1,7 @@
 
 import React from 'react'
 import { Image, Header } from 'semantic-ui-react';
-import _ from 'lodash';
+import _isEmpty from 'lodash/isEmpty';
 
 import { renderTextByCharacter } from '../../helpers/utils';
 import { withTranslation } from '../../i18n';
@@ -19,11 +19,11 @@ function SupportingGroup(props) {
     } = props;
     const entityShortName = renderTextByCharacter(entityName, 25);
     let locationDetails = '';
-    if (_.isEmpty(city) && !_.isEmpty(province)) {
+    if (_isEmpty(city) && !_isEmpty(province)) {
         locationDetails = province;
-    } else if (!_.isEmpty(city) && _.isEmpty(province)) {
+    } else if (!_isEmpty(city) && _isEmpty(province)) {
         locationDetails = city;
-    } else if (!_.isEmpty(city) && !_.isEmpty(province)) {
+    } else if (!_isEmpty(city) && !_isEmpty(province)) {
         locationDetails = `${city}, ${province}`;
     }
     let causesNames = '';
