@@ -216,6 +216,36 @@ class NotificationHelper {
 
     static getMessagePart(msg, userInfo, localeCode) {
         let msgText = msg["msg"][localeCode];
+        const linkArray = [];
+        if(!_.isEmpty(msg.hyperlinks)) {
+            _.map(msg.hyperlinks, function(key, linkName) {
+                let valueLink = null;
+                if (key['isWeb'] === true && msgText.includes(key['value'])){
+                    switch(key['profile_type']) {
+                        case 'user':
+                            valueLink = `/users/profile/${key['profile_id']}`;
+                            break;
+                        case 'charity':
+                            valueLink = `/charities/${key['profile_slug']}`;
+                            break;
+                        case 'group':
+                            valueLink = `/groups/${key['profile_slug']}`;
+                            break;
+                        case 'campaign':
+                            valueLink = `/campaigns/${key['profile_slug']}`;
+                            break;
+                    }
+                    if(valueLink){
+                        linkArray.push({
+                            text: linkName,
+                            url : valueLink,
+                            replaceValue: `${key['value']}`,
+                        });
+                        msgText = msgText.replace(`{{ ${key['value']} }}`, linkName);
+                    }
+                }
+              });
+        }
         if (msg.highlighted && msg.highlighted.length > 0) {
             msg.highlighted.forEach(function (w) {
                 // let regEx = new RegExp("{{ " + w + " }}", "g");
@@ -227,7 +257,9 @@ class NotificationHelper {
             "sourceDisplayName": msg.sourceDisplayName,
             "message": msgText,
             read: msg.read,
-            sourceImageLink: msg.avatar_link
+            sourceImageLink: msg.avatar_link,
+            linkData: linkArray,
+            // highlighted: msg.highlighted,
         };
         if (msg.sourceUserId == userInfo.id) {
             d.sourceDisplayName = "You";

@@ -2,5 +2,13 @@
     "errorHeading": "It looks like something went wrong.",
     "errorMessage1": "Unfortunately, we couldn't complete this transaction because of an error on our end. Please contact us before trying again: {{email}} or {{telephone}}.",
     "errorMessage2": "We're sorry for the inconvenience, and we're here to help.",
-    "errorGoToDashboard": "Go back to your dashboard"
+    "errorGoToDashboard": "Go back to your dashboard",
+    "signUpValidationError":{
+        "firstNameNotNull" : "Please enter your first name",
+        "firstNameHaveLength2": "First Name should have minimum 2 characters",
+        "firstnameLengthInLimit": "First Name cannot have more than 30 characters",
+        "lastNameNotNull": "Please enter your last name",
+        "lastnameLengthInLimit": "Last Name cannot have more than 30 characters",
+        "passwordNull": "Please choose a password."
+    }
 }

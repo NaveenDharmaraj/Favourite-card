@@ -223,6 +223,12 @@ const user = (state = {}, action) => {
                 showFriendDropDown: action.payload.showFriendDropDown,
             };
             break;
+        case 'CLAIM_CHARITY_ERROR_MESSAGE':
+            newState = {
+                ...state,
+                claimCharityErrorMessage: action.payload.claimCharityErrorMessage,
+            };
+            break;
         default:
             break;
     }

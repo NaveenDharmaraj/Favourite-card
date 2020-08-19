@@ -2,19 +2,33 @@
 /* eslint-disable no-else-return */
 
 import _ from 'lodash';
-
 import coreApi from '../services/coreApi';
 import authRorApi from '../services/authRorApi';
 import graphApi from '../services/graphApi';
 import securityApi from '../services/securityApi';
 import wpApi from '../services/wpApi';
 import { Router } from '../routes';
+import getConfig from 'next/config';
 import {
     triggerUxCritialErrors,
 } from './error';
 import {
     generatePayloadBodyForFollowAndUnfollow,
 } from './profile';
+import storage from '../helpers/storage';
+
+const { publicRuntimeConfig } = getConfig();
+const {
+    BASIC_AUTH_KEY,
+} = publicRuntimeConfig;
+let BASIC_AUTH_HEADER = null;
+if (!_.isEmpty(BASIC_AUTH_KEY)) {
+    BASIC_AUTH_HEADER = {
+        headers: {
+            Authorization: `Basic ${BASIC_AUTH_KEY}`,
+        },
+    };
+}
 
 
 export const actionTypes = {
@@ -39,6 +53,7 @@ export const actionTypes = {
     UPDATE_FAVORITES: 'UPDATE_FAVORITES',
     ENABLE_FAVORITES_BUTTON: 'ENABLE_FAVORITES_BUTTON',
     UPDATE_USER_INFO_SHARE_PREFERENCES: 'UPDATE_USER_INFO_SHARE_PREFERENCES',
+    CLAIM_CHARITY_ERROR_MESSAGE: 'CLAIM_CHARITY_ERROR_MESSAGE',
 };
 
 const getAllPaginationData = async (url, params = null) => {
@@ -256,6 +271,7 @@ export const wpLogin = (token = null) => {
 
 export const chimpLogin = (token = null, options = null) => {
     let params = null;
+    const claimCharityAccessCode = storage.getLocalStorageWithExpiry('claimToken','local');
     if (!_.isEmpty(token)) {
         params = {
             headers: {
@@ -268,6 +284,7 @@ export const chimpLogin = (token = null, options = null) => {
             ...params,
             params: {
                 ...options,
+                beneficiaryClaimToken: claimCharityAccessCode,
             },
         }
     }
@@ -884,5 +901,76 @@ export const updateInfoShareUserPreferences = (infoData) => (dispatch) => {
             info: infoData,
         },
         type: actionTypes.UPDATE_USER_INFO_SHARE_PREFERENCES,
+    });
+};
+export const checkClaimCharityAccessCode = (accessCode, userId) => (dispatch) => {
+    return coreApi.post(`/claimCharities`, {
+        data: {
+            type: "claimCharities",
+            attributes: {
+                claimToken: accessCode,
+            }
+        }
+    }).then(
+        (result) => {
+            let {
+                data: {
+                    attributes: {
+                        beneficiarySlug,
+                    }
+                }
+            } = result;
+            getUser(dispatch, userId, null).then(() => {
+                Router.pushRoute(`/claim-charity/success?slug=${beneficiarySlug ? beneficiarySlug : ''}`);
+            });
+        }
+    ).catch(() => {
+        const errorMessage = 'That code doesn\'t look right or it\'s expired. Try again or claim without a code below.';
+        dispatch(claimCharityErrorCondition(errorMessage));
+    });
+};
+
+export const validateClaimCharityAccessCode = (accessCode) => (dispatch) => {
+    return coreApi.get(`/claim_charities/validate_claim_charity_token?claimToken=${accessCode}`, BASIC_AUTH_HEADER)
+        .then(async (res) => {
+            let {
+                data: {
+                    success,
+                    signup_source,
+                    signup_source_id,
+                }
+            } = res;
+            if (success === true) {
+                const now = new Date();
+                const expiry = 3600000;
+                const claimCharityCode = {
+                    value: accessCode,
+                    expiry: now.getTime() + expiry,
+                };
+                const signup_sourceCode = {
+                    value: signup_source,
+                    expiry: now.getTime() + expiry,
+                };
+                const signup_sourceIdCode = {
+                    value: signup_source_id,
+                    expiry: now.getTime() + expiry,
+                };
+                await storage.set('claimToken', claimCharityCode, 'local');
+                await storage.set('signup_source', signup_sourceCode, 'local');
+                await storage.set('signup_source_id', signup_sourceIdCode, 'local');
+                Router.pushRoute('/users/new?isClaimCharity=true');
+            }
+        }).catch(() => {
+            const errorMessage = 'That code doesn\'t look right or it\'s expired. Try again or claim without a code below.';
+            dispatch(claimCharityErrorCondition(errorMessage));
+        });
+};
+
+export const claimCharityErrorCondition = (message) => (dispatch) =>{
+    dispatch({
+        payload: { 
+            claimCharityErrorMessage: message
+        },
+        type: actionTypes.CLAIM_CHARITY_ERROR_MESSAGE,
     });
 };

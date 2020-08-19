@@ -4,6 +4,7 @@ import {
     bool,
     PropTypes,
     string,
+    number,
 } from 'prop-types';
 import _isEmpty from 'lodash/isEmpty';
 import {
@@ -49,7 +50,7 @@ const UserDetails = (props) => {
     let viewData = '';
     if (!_isEmpty(contactName)) {
         charityDetails.push({
-            Content: `${formatMessage('charityProfile:contactText')}: ${contactName}`,
+            Content: contactName,
             name: 'user',
         });
     }
@@ -164,8 +165,16 @@ const UserDetails = (props) => {
 UserDetails.defaultProps = {
     charityDetails: {
         attributes: {
+            businessNumber: '',
             contactName: '',
+            email: '',
+            headQuarterAddress: '',
+            hideGive: false,
+            isClaimed: false,
+            phone: '',
             slug: '',
+            staffCount: null,
+            website: '',
         },
     },
     isAuthenticated: false,
@@ -175,8 +184,16 @@ UserDetails.defaultProps = {
 UserDetails.propTypes = {
     charityDetails: PropTypes.shape({
         attributes: PropTypes.shape({
+            businessNumber: string,
             contactName: string,
+            email: string,
+            headQuarterAddress: string,
+            hideGive: bool,
+            isClaimed: bool,
+            phone: string,
             slug: string,
+            staffCount: number,
+            website: string,
         }),
     }),
     isAuthenticated: bool,
