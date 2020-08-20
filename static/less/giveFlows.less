@@ -5,6 +5,12 @@
     }
     .flowSuccessImg{
         margin-top: 70px;
+        @media only screen and (max-width:991px) {
+            margin-top: 50px;
+        }
+        @media only screen and (max-width:767px) {
+            margin-top: 20px;
+        }
      img{
         margin-bottom: 40px;
         @media only screen and (max-width:767px) {
@@ -15,6 +21,9 @@
     .flowSuccessImgHeading{
         min-width: 700px;
         margin: auto;
+        @media only screen and (max-width:991px) {
+            min-width: 100%;
+        }
         @media only screen and (max-width:767px) {
             min-width: 100%;
             padding-right: 30px;
@@ -437,6 +446,9 @@
         padding-left: 8px;
         padding-right: 8px;
        color: #7F7F7F !important;
+       &:last-child{
+           padding-right: 0px;
+       }
        &.completed_step{
         color: #263238 !important;
        }
@@ -457,11 +469,41 @@
             border-radius: 5px;
             &.small{
                 height: 30px;
-                padding-top: 9px !important;
-                padding-bottom: 8px;
+                padding-top: 7px;
+                padding-bottom: 6px;
+                font-family: 'ProximaNova-Regular';
+                &:hover{
+                    font-family: 'ProximaNova-Regular';
+                }
+                +.small{
+                    margin-left: 10px;
+                }
             }
             &:hover,&:focus{
                 background-color: #F1F6FD;
+            }
+        }
+    }
+}
+.price_btn{
+    margin-bottom: 10px;
+    .btn-basic-outline{
+        &.ui{
+            &.button{
+                background-color: transparent;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                &.small{
+                    height: 30px !important;
+                    width: 65px !important;
+                    padding: 7px 10px 6px !important;
+                }
+                +.button{
+                    margin-left: 10px;
+                }
+                &:hover,&:focus{
+                    background-color: #F1F6FD;
+                }
             }
         }
     }
@@ -656,6 +698,12 @@
                                 background-color: #055CE5;
                                 color: #fff;
                                 border-color: #055CE5;
+                                span{
+                                    color: #fff;
+                                    .hyperLinks-style{
+                                        margin: 0px;
+                                    }
+                                }
                                 .image{
                                     &.ui{
                                         //filter: brightness(0) invert(1);
@@ -958,8 +1006,6 @@
     border-radius: 5px;
 }
 .invisionwidth {
-    width: 66px !important;
-    height: 31px !important;
     &.active{
         background-color: #F1F6FD!important
     }
@@ -1041,6 +1087,12 @@ button.ui.button.blue-btn-rounded-def.flowConfirmBtn.second_btn{
 
 }
 .flowReview{
+    .ui.form {
+        label{
+            display: inline-block;
+            margin-bottom: 14px !important;
+        }
+    }
     .ui.form .field
         >label{
             &:first-child{
@@ -1054,30 +1106,43 @@ button.ui.button.blue-btn-rounded-def.flowConfirmBtn.second_btn{
         .input{
             color:#263238;
         }
-            .ui.selection.dropdown{
-                font-family: 'ProximaNova-Regular';
-                color:#263238;
-                &.taxReceiptDropDown{
-                    span.attributes{
-                        font-family: 'ProximaNova-Regular';
-                        line-height: 22px !important;
-                        color:#263238;
-                        b{
-                            font-family: 'ProximaNova-Semibold';
-                        }
+        .ui.selection.dropdown{
+            font-family: 'ProximaNova-Regular';
+            color:#263238;
+            &.taxReceiptDropDown{
+                span.attributes{
+                    font-family: 'ProximaNova-Regular';
+                    line-height: 22px !important;
+                    color:#263238;
+                    b{
+                        font-family: 'ProximaNova-Semibold';
                     }
                 }
             }
+        }
 }
 .to_space{
     margin-top: 0px !important;
     padding-top: 0px !important;
+    
+}
+.give_flow_field{
+    .field {
+        &:last-child{
+            .checkbox{
+                label{
+                    margin-bottom: 0px !important;
+                }
+            }
+        }
+        
+    }
 }
 .add_space{
     margin-top:40px !important;
 }
 .label_top{
-    margin-top: 10px !important; 
+    //margin-top: 10px !important; 
 }
 .attributes{
     line-height:17px;
@@ -1216,6 +1281,9 @@ span.attributes {
     display: block;
     margin-bottom: 15px;
     margin-top: -10px;
+    .icon.circle.blue.large.question.popupMargin-6{
+        font-size: 21px;
+    }
 }
 .icon.circle.blue.large.question.popupMargin-6{
     margin-left:6px !important;
@@ -1325,6 +1393,11 @@ p{
 .hyperLinks-style{
     color: #055CE5;
     cursor: pointer;
+}
+.flowReview{
+    .field.blue-btn-rounded.btn_right.rivewbtnp2p{
+        margin-top: 40px !important;
+    }
 }
 
 /*****Modal for give From group*************/

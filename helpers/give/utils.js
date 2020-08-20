@@ -633,7 +633,7 @@ const populateTaxReceipts = (taxReceiptData, formatMessage) => {
         const newTaxReceipt = [
             {
                 disabled: false,
-                text: ReactHtmlParser('<span class="hyperLinks-style">+ Add new tax receipt</span>'),
+                text: ReactHtmlParser('<span class="hyperLinks-style">+ Add new tax receipt recipient</span>'),
                 value: 0,
             },
         ];
@@ -1432,7 +1432,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
                 const privacyShareNameMessage = [];
                 privacyShareNameMessage.push((nameToShare.value === 'anonymous') ? formatMessage('reviewGiveAnonymously') : nameToShare.text);
                 if (privacyShareAmount) {
-                    privacyShareNameMessage.push(ReactHtmlParser(`<br/> ${formatMessage('reviewGiftAmount')} ${state.mainDisplayAmount}`));
+                    privacyShareNameMessage.push(ReactHtmlParser(`${formatMessage('reviewGiftAmount')} ${state.mainDisplayAmount}`));
                 }
                 listingData.push({
                     name: `privacyShareGiving${giveToType}Label`,

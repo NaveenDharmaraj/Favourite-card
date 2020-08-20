@@ -66,7 +66,7 @@ const FlowBreadcrumbs = ({
     return (
         <Grid centered verticalAlign="middle">
             <Grid.Row>
-                    <Grid.Column mobile={16} tablet={14} computer={16}>
+                    <Grid.Column mobile={16} tablet={16} computer={16}>
                             <div className="flowBreadcrumb flowPadding">
                                 <Breadcrumb size="mini">
                                     {_.reduce(

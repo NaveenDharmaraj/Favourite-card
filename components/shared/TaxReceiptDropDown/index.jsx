@@ -24,7 +24,7 @@ function TaxReceiptDropDown(props) {
     if (!disableField) {
         if (!_.isEmpty(taxReceiptsOptions) && taxReceiptsOptions.length > 1 && giveTo.value > 0 && taxReceipt) {
             taxReceiptField = (
-                <Form.Field className="mb-2">
+                <Form.Field>
                     <div className="paymentMethodDropdown add_space">
                         <label htmlFor="">Tax receipt recipient</label>
                         <Dropdown
@@ -51,7 +51,7 @@ function TaxReceiptDropDown(props) {
                         className="addNewCardInput mb-1"
                         id="addNewTaxReceipt"
                         onClick={handleAddNewButtonClicked}>
-                        + Add new tax receipt
+                        + Add new tax receipt recipient
                     </div>
                     <FormValidationErrorMessage
                         condition={!validity.isTaxReceiptSelected}

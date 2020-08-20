@@ -19,7 +19,7 @@ import { withTranslation } from '../../../i18n';
 import { reInitNextStep } from '../../../actions/give';
 import { Link } from '../../../routes';
 // This image is dummy image since we dont have a proper image
-import successImg from '../../../static/images/give-success-screen-illustration.png';
+import successImg from '../../../static/images/give-success-screen-illustration.svg';
 import FlowBreadcrumbs from '../FlowBreadcrumbs';
 
 import AddMoneySuccess from './AddMoneySuccess';
