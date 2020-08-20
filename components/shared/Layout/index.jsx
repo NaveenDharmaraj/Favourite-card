@@ -177,6 +177,7 @@ class Layout extends React.Component {
                     <script defer type="text/javascript" src ='/static/branchio.js'></script>
                     {isAuthenticated ? <script defer  type="text/javascript" src="/static/initApplozic.js"></script> : ""}
                     {/* <script type="text/javascript" src="https://www.gstatic.com/firebasejs/5.9.4/firebase-app.js"></script> */}
+                    <script type="text/javascript" src='/static/newrelic.js'></script>
                 </Head>
                 <div>
                     <ErrorBoundary>
