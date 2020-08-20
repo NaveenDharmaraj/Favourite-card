@@ -296,32 +296,33 @@ const populateAccountOptions = (data, translate, giveToId = null, allocationType
         language,
     } = translate;
     const currency = 'USD';
+    const personalAccount = [
+        {
+            className: 'ddlGroup',
+            disabled: true,
+            text: formatMessage('personalAccountLabel'),
+            value: 'user',
+        },
+        {
+            avatar,
+            balance: fund.attributes.balance,
+            data: {
+                fundName: fund.attributes.name,
+                fundType: 'user',
+            },
+            disabled: false,
+            id,
+            name: `${firstName} ${lastName}`,
+            text: `${fund.attributes.name}: ${formatCurrency(fund.attributes.balance, language, currency)}`,
+            type: 'user',
+            value: fund.id,
+        },
+    ];
+    let accountOptionsArray = personalAccount;
     if ((!_.isEmpty(companiesAccountsData)
         || !_.isEmpty(userCampaigns)
         || !_.isEmpty(userGroups))
     ) {
-        const personalAccount = [
-            {
-                className: 'ddlGroup',
-                disabled: true,
-                text: formatMessage('personalAccountLabel'),
-                value: 'user',
-            },
-            {
-                avatar,
-                balance: fund.attributes.balance,
-                data: {
-                    fundName: fund.attributes.name,
-                    fundType: 'user',
-                },
-                disabled: false,
-                id,
-                name: `${firstName} ${lastName}`,
-                text: `${fund.attributes.name}: ${formatCurrency(fund.attributes.balance, language, currency)}`,
-                type: 'user',
-                value: fund.id,
-            },
-        ];
         const companiesAccountLabel = [
             {
                 className: 'ddlGroup',
@@ -346,8 +347,6 @@ const populateAccountOptions = (data, translate, giveToId = null, allocationType
                 value: 'campaign',
             },
         ];
-        let accountOptionsArray = personalAccount;
-
         if (!_.isEmpty(userGroups)) {
             if (!isGiveFromGroupUrl) {
                 _.remove(userGroups, {
@@ -356,7 +355,6 @@ const populateAccountOptions = (data, translate, giveToId = null, allocationType
                     },
                 });
             }
-
             // Removing the activeDonationMatch groups from the giveFrom list for group and p2p
             if (allocationType === 'give/to/friend' || allocationType === 'give/to/group') {
                 _.remove(userGroups, {
@@ -468,9 +466,8 @@ const populateAccountOptions = (data, translate, giveToId = null, allocationType
                     ],
                 ));
         }
-        return accountOptionsArray;
     }
-    return null;
+    return accountOptionsArray;
 };
 
 const populateGroupsOfUser = (giveToGroupsData) => {

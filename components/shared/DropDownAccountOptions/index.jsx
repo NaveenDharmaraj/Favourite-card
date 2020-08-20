@@ -6,14 +6,13 @@ import React, {
 import {
     connect,
 } from 'react-redux';
-import _ from 'lodash';
+import _cloneDeep from 'lodash/cloneDeep';
+import _isEmpty from 'lodash/isEmpty';
 import {
     Form,
     Icon,
-    Input,
     Placeholder,
     Popup,
-    Select,
     Dropdown,
 } from 'semantic-ui-react';
 
@@ -77,13 +76,13 @@ class DropDownAccountOptions extends React.Component {
         const {
             updatePlaceHolder,
         } = this.state;
-        const userGroups = _.cloneDeep(userAdminGroups);
-        const userCampaigns = _.cloneDeep(userAdminCampaigns);
+        const userGroups = _cloneDeep(userAdminGroups);
+        const userCampaigns = _cloneDeep(userAdminCampaigns);
         const giveFromHeader = (type === 'donations') ? formatMessage('addingToLabel') : formatMessage('giveFromLabel');
         const giveFromPlaceHolder = (type === 'donations') ? formatMessage('destinationaccountPlaceHolder') : formatMessage('accountPlaceHolder');
         const newPlaceholder = updatePlaceHolder ? formatMessage('searchPlaceholder') : giveFromPlaceHolder;
         let newPlaceholderValue = '';
-        if (!_.isEmpty(companiesAccountsData) || !_.isEmpty(userAdminCampaigns) || !_.isEmpty(userAdminGroups)) {
+        if (!_isEmpty(fund)) {
             if (giveTo && giveTo.value && giveFromUrl) {
                 dropDownData = populateAccountOptions({
                     avatar,
@@ -114,16 +113,18 @@ class DropDownAccountOptions extends React.Component {
                 });
             }
         }
-        dropDownData = !_.isEmpty(dropDownData) ? dropDownData : null;
-        let fieldData = (
-            <Placeholder>
-                <Placeholder.Header>
-                    <Placeholder.Line />
-                    <Placeholder.Line />
-                </Placeholder.Header>
-            </Placeholder>
-        );
-        if (!_.isEmpty(dropDownData)) {
+        dropDownData = !_isEmpty(dropDownData) ? dropDownData : null;
+        let fieldData = null;
+        if (!userAccountsFetched) {
+            fieldData = (
+                <Placeholder>
+                    <Placeholder.Header>
+                        <Placeholder.Line />
+                        <Placeholder.Line />
+                    </Placeholder.Header>
+                </Placeholder>
+            );
+        } else {
             newPlaceholderValue = selectedValue ? selectedValue.toString() : '';
             fieldData = (
                 <div className="dropdownSearch dropdownWithArrowParentnotbg medium">
@@ -144,44 +145,41 @@ class DropDownAccountOptions extends React.Component {
                         selectOnBlur={false}
                         search
                         selectOnNavigation={false}
-                        text={_.isEmpty(newPlaceholderValue) ? newPlaceholder : undefined}
+                        text={_isEmpty(newPlaceholderValue) ? newPlaceholder : undefined}
                     />
                 </div>
             );
         }
-        if (!userAccountsFetched || !_.isEmpty(dropDownData)) {
-            return (
-                <Fragment>
-                    <Form.Field>
-                        <div className="paymentMethodDropdown">
-                            <label htmlFor="giveFrom">
-                                {giveFromHeader}
-                            </label>
-                            <Popup
-                                content={formatMessage('allocationsGiveFromPopup')}
-                                position="top center"
-                                trigger={(
-                                    <Icon
-                                        color="blue"
-                                        name="question circle"
-                                        size="large"
-                                    />
-                                )}
-                            />
-                            <p className="multipleFriendAmountFieldText">
+        return (
+            <Fragment>
+                <Form.Field>
+                    <div className="paymentMethodDropdown">
+                        <label htmlFor="giveFrom">
+                            {giveFromHeader}
+                        </label>
+                        <Popup
+                            content={formatMessage('allocationsGiveFromPopup')}
+                            position="top center"
+                            trigger={(
+                                <Icon
+                                    color="blue"
+                                    name="question circle"
+                                    size="large"
+                                />
+                            )}
+                        />
+                        <p className="multipleFriendAmountFieldText">
                             You can give from your personal account or those you administer.
-                            </p>
-                            {fieldData}
-                        </div>
-                    </Form.Field>
-                    <FormValidationErrorMessage
-                        condition={!validity}
-                        errorMessage={formatMessage('giveCommon:blankError')}
-                    />
-                </Fragment>
-            );
-        }
-        return null;
+                        </p>
+                        {fieldData}
+                    </div>
+                </Form.Field>
+                <FormValidationErrorMessage
+                    condition={!validity}
+                    errorMessage={formatMessage('giveCommon:blankError')}
+                />
+            </Fragment>
+        );
     }
 
     render() {
