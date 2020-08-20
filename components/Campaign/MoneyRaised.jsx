@@ -1,9 +1,10 @@
 
 import React from 'react';
-import { Header, Button, Link } from 'semantic-ui-react';
+import { Header, Button } from 'semantic-ui-react';
 import getConfig from 'next/config';
 import _isEmpty from 'lodash/isEmpty';
 
+import { Link } from '../../routes';
 import { withTranslation } from '../../i18n';
 import { formatCurrency } from '../../helpers/give/utils';
 

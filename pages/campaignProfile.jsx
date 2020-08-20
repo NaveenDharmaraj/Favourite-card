@@ -1,7 +1,8 @@
+
 import React from 'react';
 import { connect } from 'react-redux';
 import {
-    PropTypes
+    PropTypes,
 } from 'prop-types';
 import _ from 'lodash';
 import getConfig from 'next/config';
@@ -9,6 +10,7 @@ import getConfig from 'next/config';
 import { Router } from '../routes';
 import {
     getCampaignFromSlug,
+    getCampaignSupportGroups,
 } from '../actions/profile';
 import Layout from '../components/shared/Layout';
 import CampaignProfileWrapper from '../components/Campaign';
@@ -43,13 +45,15 @@ class CampaignProfile extends React.Component {
     componentDidMount() {
         const {
             dispatch,
-            slug,
             slugApiErrorStats,
+            campaignDetails: {
+                id,
+            },
         } = this.props;
         if (slugApiErrorStats) {
             Router.pushRoute('/dashboard');
         } else {
-            getCampaignFromSlug(dispatch, slug);
+            dispatch(getCampaignSupportGroups(id));
         }
     }
 
@@ -72,7 +76,6 @@ class CampaignProfile extends React.Component {
             },
             slugApiErrorStats,
         } = this.props;
-
         const description = (!_.isEmpty(about)) ? about : name;
         const causesList = (causes.length > 0) ? _.map(causes, _.property('name')) : [];
         const keywords = (causesList.length > 0) ? _.join(_.slice(causesList, 0, 10), ', ') : '';

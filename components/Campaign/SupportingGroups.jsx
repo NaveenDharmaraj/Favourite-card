@@ -5,13 +5,19 @@ import {
     Header,
     Image,
     Button,
+    Input,
+    Icon,
 } from 'semantic-ui-react';
 import getConfig from 'next/config';
-
+import _isEmpty from 'lodash/isEmpty';
+import _isEqual from 'lodash/isEqual';
+import { connect } from 'react-redux';
+import { withTranslation } from '../../i18n';
 import PlaceholderGrid from '../shared/PlaceHolder';
 import placeholder from '../../static/images/no-data-avatar-giving-group-profile.png';
-import LeftImageCard from '../shared/LeftImageCard';
+import SupportingGroup from '../Campaign/SupportingGroup';
 import noDataImgCampain from '../../static/images/campaignprofile_nodata_illustration.png';
+import { getCampaignSupportGroups } from '../../actions/profile';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -19,16 +25,69 @@ const {
     RAILS_APP_URL_ORIGIN,
 } = publicRuntimeConfig;
 
-function SupportingGroups(props) {
-    const {
-        campaignDetails,
-        campaignSubGroupDetails,
-        campaignSubGroupsShowMoreUrl,
-        seeMoreLoaderStatus,
-        subGroupListLoader,
-        viewMoreFn,
-    } = props;
-    const noDataSupportingGroups = () => {
+let timeout = '';
+class SupportingGroups extends React.Component {
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            searchKey: '',
+        };
+        this.renderGroups = this.renderGroups.bind(this);
+        this.searchClick = this.searchClick.bind(this);
+        this.searchOnChange = this.searchOnChange.bind(this);
+    }
+
+    campaignGroups() {
+        const {
+            campaignId,
+            dispatch,
+        } = this.props;
+        dispatch(getCampaignSupportGroups(campaignId));
+    }
+
+    debounceFunction({ dispatch, campaignId, searchQuery }, delay) {
+        if (timeout) {
+            clearTimeout(timeout);
+        }
+        timeout = setTimeout(function () {
+            dispatch(getCampaignSupportGroups(campaignId, searchQuery));
+        }, delay);
+    }
+
+    searchOnChange(event) {
+        const {
+            target: {
+                value
+            }
+        } = event;
+        const { searchData } = this.props;
+        if (value.length >= 4) {
+            const {
+                dispatch,
+                campaignId,
+            } = this.props;
+            const arg = { dispatch, campaignId, searchQuery: value };
+            this.debounceFunction(arg, 300);
+        };
+        if (_isEmpty(value) && !_isEqual(value, searchData)) {
+            this.campaignGroups();
+        };
+        this.setState({
+            searchKey: value,
+        });
+    }
+
+    searchClick() {
+        const { searchKey } = this.state;
+        const {
+            dispatch,
+            campaignId,
+        } = this.props;
+        dispatch(getCampaignSupportGroups(campaignId, searchKey));
+    }
+
+    noDataSupportingGroups = (slug, formatMessage) => {
         return (
             <Grid.Column width={16} className="c-w-100">
                 <div className="givingGroup noData mt-1 mb-2">
@@ -41,15 +100,15 @@ function SupportingGroups(props) {
                                 <div className="givingGroupNoDataContent">
                                     <Header as="h4">
                                         <Header.Content>
-                                        Support this Campaign by creating a Giving Group
+                                            {formatMessage('campaignProfile:supportNoDataHeader')}
                                             <Header.Subheader>
-                                        A Giving Group is like a fundraising page where multiple people can combine forces, pool or raise money, and support causes together.
+                                                {formatMessage('campaignProfile:supportNoDataSubHeader')}
                                             </Header.Subheader>
                                         </Header.Content>
                                     </Header>
                                     <div>
-                                        <a href={`${RAILS_APP_URL_ORIGIN}/campaigns/${campaignDetails.attributes.slug}/step/one`}>
-                                            <Button className="success-btn-rounded-def">Create a Giving Group</Button>
+                                        <a href={`${RAILS_APP_URL_ORIGIN}/campaigns/${slug}/step/one`}>
+                                            <Button className="success-btn-rounded-def">{formatMessage('campaignProfile:createGivingGroupBtn')}</Button>
                                         </a>
                                     </div>
                                 </div>
@@ -61,49 +120,90 @@ function SupportingGroups(props) {
         );
     };
 
-    const renderGroups = () => {
+    renderGroups(campaignSubGroupDetails, slug, formatMessage) {
         let groupCards = [];
         if ((typeof campaignSubGroupDetails === 'object') && (campaignSubGroupDetails.length > 0)) {
             campaignSubGroupDetails.map((subGroup) => {
                 const groupImg = subGroup.attributes.avatar;
-                groupCards.push(<LeftImageCard
+                groupCards.push(<SupportingGroup
                     entityName={subGroup.attributes.name}
                     placeholder={(groupImg) || placeholder}
-                    location=""
-                    typeClass="chimp-lbl group"
+                    amountRaised={subGroup.attributes.totalMoneyRaised}
+                    city={subGroup.attributes.city}
+                    province={subGroup.attributes.province}
+                    causes={subGroup.attributes.causes}
                     type="Giving Groups"
-                    url={`/${subGroup.type}/${subGroup.attributes.slug}`}
                 />);
             });
         } else {
-            groupCards = noDataSupportingGroups();
+            groupCards = this.noDataSupportingGroups(slug, formatMessage);
         }
         return groupCards;
     };
-    return (
-        <Fragment>
-            { subGroupListLoader ? <PlaceholderGrid row={2} column={3} /> : (
-                <Grid stackable doubling columns={3}>
-                    <Grid.Row>
-                        {renderGroups()}
-                    </Grid.Row>
-                </Grid>
-            )
-            }
-            { (campaignSubGroupsShowMoreUrl) ? (
-                <div className="text-center mb-1 mt-1">
-                    <Button
-                        className="blue-bordr-btn-round-def"
-                        onClick={viewMoreFn}
-                        loading={!!seeMoreLoaderStatus}
-                        disabled={!!seeMoreLoaderStatus}
-                        content="View More"
-                    />
+
+    render() {
+        const {
+            slug,
+            campaignSubGroupDetails,
+            campaignSubGroupsShowMoreUrl,
+            seeMoreLoaderStatus,
+            subGroupListLoader,
+            viewMoreFn,
+            t: formatMessage,
+        } = this.props;
+        return (
+            <Fragment>
+                <div className="supportingWithsearch">
+                    <Header as="h3">{formatMessage('campaignProfile:supportCampaignHeader')}</Header>
                 </div>
-            ) : ''
-            }
-        </Fragment>
-    );
+                <div className="search-banner campaignSearchBanner">
+                    <div className="searchbox">
+                        <Grid >
+                            <Grid.Row>
+                                <Grid.Column mobile={16} tablet={12} computer={8}>
+                                    <Input
+                                        fluid
+                                        placeholder="Search Giving Groups"
+                                        onChange={(event) => this.searchOnChange(event)}
+                                    />
+                                    <div className="search-btn campaignSearch">
+                                        <a onClick={this.searchClick}>
+                                            <Icon name="search" />
+                                        </a>
+                                    </div>
+                                </Grid.Column>
+                            </Grid.Row>
+                        </Grid>
+                    </div>
+                </div>
+                <div className="supportingcardWapper">
+                    {subGroupListLoader ? <PlaceholderGrid row={2} column={3} /> : (
+                        <div className="custom_Grid">
+                            {this.renderGroups(campaignSubGroupDetails, slug, formatMessage)}
+                        </div>
+                    )}
+                </div>
+                {(campaignSubGroupsShowMoreUrl) ? (
+                    <div className="supportingcardShowMore">
+                        <Button
+                            className="btnMore blue-bordr-btn-round-def"
+                            onClick={viewMoreFn}
+                            loading={!!seeMoreLoaderStatus}
+                            disabled={!!seeMoreLoaderStatus}
+                            content="Show more"
+                        />
+                    </div>
+                ) : ''
+                }
+            </Fragment>
+        )
+    }
 }
 
-export default SupportingGroups;
+function mapStateToProps(state) {
+    return {
+        searchData: state.profile.searchData,
+    };
+}
+
+export default withTranslation('campaignProfile')(connect(mapStateToProps)(SupportingGroups));

@@ -1,3 +1,4 @@
+
 @import "_mixins.less";
 
 .ch_breadcrumb {
@@ -13,7 +14,7 @@
     }
 
     .active {
-        font-weight: 600;
+        font-family: 'ProximaNova-Semibold';
     }
 }
 
@@ -113,6 +114,7 @@
 
                 .item {
                     margin-right: 20px;
+                    margin-bottom: 18px;
                     p{
                         &.groupmembers{
                         font-size: 10px;
@@ -179,7 +181,6 @@
                     p{
                         font-size: 14px;
                         line-height: 22px;
-                        font-family: 'ProximaNova-Regular';
                         color: #fff;
                         margin: auto;
                     }
@@ -194,7 +195,6 @@
         p{
             font-size: 14px;
             line-height: 22px;
-            font-family: 'ProximaNova-Regular';
             display: flex;
             align-items: center;
             @media only screen and (max-width:430px) {
@@ -220,6 +220,19 @@
     }
 }
 .ch_paragraph {
+    &.AboutProfile{
+        margin-top: 39px;
+        margin-bottom: 30px;
+        @media only screen and (max-width:992px) {
+            margin-top: 30px;
+        }
+        p{
+            margin: 0px;
+            font-size: 14px;
+            line-height: 22px;
+            color: #263238;
+        }
+    }
     p {
         line-height: 22px;
         margin     : 10px 0;
@@ -228,10 +241,8 @@
         &.ui {
             &.header {
                 font-size: 14px !important;
-                font-weight: 600;
                 line-height: 22px;
                 color: #263238;
-                font-family: 'ProximaNova-Regular';
             }
         }
 
@@ -264,17 +275,14 @@
             font-size: 14px;
             line-height: 22px;
             color: #263238;
-            font-family: 'ProximaNova-Regular';
             margin: 0px;
         }
         h3 {
             &.ui {
                 &.header {
                     font-size: 14px !important;
-                    font-weight: 600;
                     line-height: 22px;
                     color: #263238;
-                    font-family: 'ProximaNova-Regular';
                     margin-bottom: 22px !important;
                 }
             }
@@ -322,8 +330,7 @@
             }
             p{
                 font-size: 14px;
-                font-weight: 600;
-                font-family: 'ProximaNova-Regular';
+                font-family: 'ProximaNova-Semibold';
                 color:#263238;
                 line-height: 22px;
                 display: flex;
@@ -379,8 +386,7 @@
                                         font-size: 12px;
                                         line-height: 15px;
                                         color: #263238;
-                                        font-weight: 600;
-                                        font-family: 'ProximaNova-Regular';
+                                        font-family: 'ProximaNova-Semibold';
                                         @media only screen and (max-width:1199px) {
                                             width: 14%;
                                         }
@@ -425,11 +431,11 @@
                                                      span{
                                                          &.adminEmily{
                                                             color: #055CE5;
-                                                            font-weight: 600;                                                            ;
+                                                            font-family: 'ProximaNova-Semibold';                                                           ;
                                                          }
                                                      }
                                                      &.EmilyAdmin{
-                                                        font-weight: 600;
+                                                        font-family: 'ProximaNova-Semibold';
                                                      }
                                                     }
                                                 }
@@ -438,7 +444,6 @@
                                                         color: #263238;
                                                         font-size: 14px;
                                                         line-height: 22px;
-                                                        font-family: 'ProximaNova-Regular';
                                                         font-weight: normal; 
                                                     }
                                                 }
@@ -451,8 +456,7 @@
                                         font-size: 14px;
                                         line-height: 22px;
                                         color: #263238;
-                                        font-weight: 600;
-                                        font-family: 'ProximaNova-Regular'; 
+                                        font-family: 'ProximaNova-Semibold'; 
                                         @media only screen and (max-width:767px) {
                                             padding-left:0px !important;
                                             text-align: right;
@@ -476,7 +480,6 @@
                         font-size: 14px;
                         line-height   : 22px;
                         color    :#263238;
-                        font-weight: 600;
                     }
                 }
             }
@@ -507,7 +510,6 @@
                     font-size: 14px;
                     line-height   : 22px;
                     color    :#263238;
-                    font-weight: 600;
                     margin-bottom: 11px;
                 }
             }
@@ -521,8 +523,6 @@
                         font-size: 18px;
                         line-height: 22px;
                         color: #263238;
-                        font-family: 'ProximaNova-Regular';
-                        font-weight: 600;
                         margin: 0px;
                         &.green{
                             color: #009EA2;
@@ -564,8 +564,7 @@
         p{
             font-size: 14px;
             color: #263238;
-            font-family: 'ProximaNova-Regular';
-            font-weight: 600;
+            font-family: 'ProximaNova-Semibold';
             line-height: 17px;
             margin-top: 24px;
             @media only screen and (max-width:400px) {
@@ -597,12 +596,12 @@
                     line-height: 22px;
                     span{
                         color: #055CE5;
-                        font-weight:600;
+                        font-family: 'ProximaNova-Semibold';
                     }
                 }
                 .actions{
                     a{
-                        font-weight:600;
+                        font-family: 'ProximaNova-Semibold';
                     }
                 }
             }
@@ -666,7 +665,7 @@
                     }
             }
             font-size: 14px;
-            font-weight: 600;
+            font-family: 'ProximaNova-Semibold';
             padding: 4px 30px 10px 30px;
         }
     }
@@ -767,7 +766,7 @@
 .charityInfowrap {
     background-color: #F6F6F6;
     border-radius   : 5px;
-    max-width       : 295px;
+    max-width       : 282px;
     float           : right;
     &.tabcharityInfowrap{
         float: none;
@@ -792,8 +791,7 @@
                         font-size: 18px;
                         line-height: 22px;
                         color: #263238;
-                        font-family: 'ProximaNova-Regular';
-                        font-weight: 600;
+                        font-family: 'ProximaNova-Semibold';
                         margin: 0px;
                         &.green{
                             color: #009EA2;
@@ -828,13 +826,12 @@
     }
     &.fullwidth{
         width: 100%;
-        margin-bottom: 15px;
+        margin-bottom: 16px;
         h2 {
             &.ui {
                 &.header {
                     font-size : 24px;
                     color: #263238;
-                    font-weight: 600;
                     margin: 0px;
                     line-height: 34px;
                 }
@@ -845,13 +842,11 @@
                 &.header {
                     font-size : 28px;
                     color: #263238;
-                    font-weight: 600;
                     margin: 0px;
                 }
             }
         }
         p{
-            font-family: 'ProximaNova-Regular';
             color: #263238;
             font-size: 14px;
             line-height: 22px;
@@ -875,7 +870,6 @@
                 color:#37474F !important;
                 font-size: 12px;
                 line-height: 15px;
-                font-family: 'ProximaNova-Medium';
                 padding: 5px;
             }
         }
@@ -908,7 +902,6 @@
                     &.header {
                         font-size    : 14px;
                         line-height: 22px;
-                        font-weight: 600;
                         color: #263238;
                         margin-top: 10px;
                         margin-bottom: 20px;
@@ -959,7 +952,6 @@
                         &.header {
                             font-size    :22px !important;
                             line-height: 27px;
-                            font-weight: 600;
                             color: #009EA2;
                             margin-bottom: 0px;
                         }
@@ -971,7 +963,6 @@
                             font-size    :13px;
                             margin-top: 0px;
                             line-height: 22px;
-                            font-weight: 600;
                             color: #009EA2;
                             margin-bottom: 10px;
                         }
@@ -983,7 +974,7 @@
                         color: #263238;
                         margin-top: 0px;
                         line-height: 22px;
-                        font-weight: 600;
+                        font-family: 'ProximaNova-Semibold';
                     }
                 }
             }
@@ -1010,7 +1001,7 @@
                         font-size: 10px;
                         text-transform: uppercase;
                         color: #009E9F;
-                        font-weight: 600;
+                        font-family: 'ProximaNova-Semibold';
                         &.orange{
                             color: #ED803B;
                         }
@@ -1130,7 +1121,7 @@
         .blue-btn-rounded-def {
             width      : 100%;
             font-size  : 17px !important;
-            font-weight: 600;
+            font-family: 'ProximaNova-Semibold';
             padding    : 15px 0;
             margin     : 1.5rem 0 0;
         }
@@ -1152,7 +1143,7 @@
             font-size  : 12px;
             padding    : 3px 15px 2px;
             line-height: 15px;
-            font-weight: 600;
+            font-family: 'ProximaNova-Semibold';
         }
     }
 }
@@ -1443,7 +1434,7 @@
     .button {
         width      : 100%;
         font-size  : 17px !important;
-        font-weight: 600;
+        font-family: 'ProximaNova-Semibold';
         padding    : 15px 0;
     }
 }
@@ -1492,7 +1483,6 @@
             &.ui{
                 &.header{
                     font-size:20px !important;
-                    font-weight: 600;
                 }
             }
         }
@@ -1502,7 +1492,6 @@
             &.ui{
                 &.header{
                     font-size:20px !important;
-                    font-weight: 600;
                 }
             }
         }
@@ -1741,15 +1730,12 @@
                     font-size    :14px !important;
                     margin-top: 6px;
                     line-height: 22px;
-                    font-weight: 600;
                     color: #263238;
                     margin-bottom: 2px;
-                    font-family: 'ProximaNova-Regular';
                 }
             }
         }
         p{
-            font-family: 'ProximaNova-Regular';
             font-size: 12px;
             line-height: 15px;
         }
@@ -1761,4 +1747,98 @@
         width:140px;
     }
 }
+}
+/******/
+.lodingGroupPrfile{
+    width: 16%;
+    display: inline-block;
+    ul{
+        padding: 0px;
+        margin: 0px;
+        display: flex;
+        li{
+            text-decoration: none;
+            display: inline-block;
+            list-style: none;
+            text-decoration: none;
+            width: 50px;
+            .ui{
+                &.placeholder{
+                    &.lodingImg{
+                        width: 30px;
+                        height: 30px;
+                        border-radius: 100px;
+                    }
+                }
+            }
+        }
+    }
+}
+/******/
+.AddlodingGroupPrfile{
+    width:40%;
+    display: inline-block;
+    ul{
+        padding: 0px;
+        margin: 0px;
+        display: flex;
+        li{
+            text-decoration: none;
+            display: inline-block;
+            list-style: none;
+            text-decoration: none;
+            width: 23px;
+            &:last-child{
+                width:220px; 
+                margin-left: 30px;
+            }
+            .ui{
+                &.placeholder{
+                    &.lodingImg{
+                        width: 30px;
+                        height: 30px;
+                        border-radius: 100px;
+                    }
+                }
+            }
+        }
+    }
+}
+/*******/
+.lodingActivity{
+    width:100%;
+    display: inline-block;
+    margin-top: 15px;
+    ul{
+        padding: 0px;
+        margin: 0px;
+        display: flex;
+        li{
+            text-decoration: none;
+            display: inline-block;
+            list-style: none;
+            text-decoration: none;
+            width: 52px;
+            &:last-child{
+                width:90%; 
+            }
+            .ui{
+                &.placeholder{
+                    &.lodingImg{
+                        width: 40px;
+                        height: 40px;
+                        border-radius: 100px;
+                    }
+                }
+            }
+            .loding-text{
+                width: 100%;
+                max-width: 100% !important;
+            }
+        }
+    }
+}
+/******/
+.no-box-shadow{
+    box-shadow: none !important;
 }

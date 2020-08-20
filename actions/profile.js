@@ -46,7 +46,6 @@ export const generatePayloadBodyForFollowAndUnfollow = (userId, id, type) => {
             };
             relationship = 'LIKES';
             break;
-        
         default:
             break;
     }
@@ -75,7 +74,69 @@ export const actionTypes = {
     SAVE_FOLLOW_STATUS_GROUP: 'SAVE_FOLLOW_STATUS_GROUP',
     SEE_MORE_LOADER: 'SEE_MORE_LOADER',
     SLUG_API_ERROR_STATUS: 'SLUG_API_ERROR_STATUS',
+    STORE_SEARCH_KEY_FOR_CAMPAIGN: 'STORE_SEARCH_KEY_FOR_CAMPAIGN',
     SUB_GROUP_LIST_LOADER: 'SUB_GROUP_LIST_LOADER',
+};
+
+export const getCampaignSupportGroups = (id, searchKey = '', pageNumber = 1, pageSize = 6) => async (dispatch) => {
+    dispatch({
+        payload: {
+            campaignSubGroupDetails: [],
+        },
+        type: actionTypes.CLEAR_DATA_FOR_CAMPAIGNS,
+    });
+    dispatch({
+        payload: {
+            subGroupListLoader: true,
+        },
+        type: actionTypes.SUB_GROUP_LIST_LOADER,
+    });
+    let filterParam;
+    if (searchKey) {
+        filterParam = {
+            'filter[name]': searchKey,
+        }
+    };
+    const fullParams = {
+        params: {
+            dispatch,
+            ignore401: true,
+            uxCritical: true,
+            'page[number]': pageNumber,
+            'page[size]': pageSize,
+            ...filterParam,
+        }
+    }
+    await coreApi.get(`campaigns/${id}/subGroups`, {
+        ...fullParams,
+    }).then((subGroupSearchResult) => {
+        dispatch({
+            payload: {
+                subGroupListLoader: false,
+            },
+            type: actionTypes.SUB_GROUP_LIST_LOADER,
+        });
+        dispatch({
+            payload: {
+                campaignSubGroupDetails: subGroupSearchResult,
+            },
+            type: actionTypes.GET_SUB_GROUPS_FOR_CAMPAIGN,
+        });
+        dispatch({
+            payload: {
+                searchData: searchKey,
+            },
+            type: actionTypes.STORE_SEARCH_KEY_FOR_CAMPAIGN,
+        })
+    }).catch((err) => {
+        dispatch({
+            payload: {
+                subGroupListLoader: false,
+            },
+            type: actionTypes.SUB_GROUP_LIST_LOADER,
+        });
+        // console.log(err);
+    })
 };
 
 export const getCampaignFromSlug = async (dispatch, slug, token = null) => {
@@ -107,75 +168,52 @@ export const getCampaignFromSlug = async (dispatch, slug, token = null) => {
     // return coreApi.get(`campaign/find_by_slug`, {
     await coreApi.get(`campaigns/find_by_slug`, {
         ...fullParams,
-    }).then(
-        (result) => {
-            dispatch({
-                payload: {
-                    subGroupListLoader: true,
-                },
-                type: actionTypes.SUB_GROUP_LIST_LOADER,
-            });
-            dispatch({
-                payload: {
-                    campaignDetails: result.data,
-                },
-                type: actionTypes.GET_CAMPAIGN_FROM_SLUG,
-            });
-            const fullParams = {
-                params: {
-                    dispatch,
-                    ignore401: true,
-                    uxCritical: true,
-                },
+    }).then((result) => {
+        dispatch({
+            payload: {
+                subGroupListLoader: true,
+            },
+            type: actionTypes.SUB_GROUP_LIST_LOADER,
+        });
+        dispatch({
+            payload: {
+                campaignDetails: result.data,
+            },
+            type: actionTypes.GET_CAMPAIGN_FROM_SLUG,
+        });
+        const fullParams = {
+            params: {
+                dispatch,
+                ignore401: true,
+                uxCritical: true,
+            },
+        };
+        if (!_.isEmpty(token)) {
+            fullParams.headers = {
+                Authorization: `Bearer ${token}`,
             };
-            if (!_.isEmpty(token)) {
-                fullParams.headers = {
-                    Authorization: `Bearer ${token}`,
-                };
-            }
-            // API call for subgroups
-            if (result.data) {
-                coreApi.get(`${result.data.relationships.subGroups.links.related}?page[size]=9`,
-                    {
-                        ...fullParams,
-                    }).then(
-                    (subGroupResult) => {
-                        dispatch({
-                            payload: {
-                                campaignSubGroupDetails: subGroupResult,
-                            },
-                            type: actionTypes.GET_SUB_GROUPS_FOR_CAMPAIGN,
-                        });
-                        dispatch({
-                            payload: {
-                                subGroupListLoader: false,
-                            },
-                            type: actionTypes.SUB_GROUP_LIST_LOADER,
-                        });
-                    },
+        };
+
+        // TODO need to move this to componentDidMount
+        // API call for images
+        if (result.data) {
+            coreApi.get(result.data.relationships.galleryImages.links.related,
+                {
+                    ...fullParams,
+                })
+                .then((galleryImagesResult) => {
+                    dispatch({
+                        payload: {
+                            campaignImageGallery: galleryImagesResult.data,
+                        },
+                        type: actionTypes.GET_IMAGES_FOR_CAMPAIGN,
+                    });
+                },
                 ).catch((error) => {
                     // console.log(error);
                 });
-            }
-            // API call for images
-            if (result.data) {
-                coreApi.get(result.data.relationships.galleryImages.links.related,
-                    {
-                        ...fullParams,
-                    }).then(
-                    (galleryImagesResult) => {
-                        dispatch({
-                            payload: {
-                                campaignImageGallery: galleryImagesResult.data,
-                            },
-                            type: actionTypes.GET_IMAGES_FOR_CAMPAIGN,
-                        });
-                    },
-                ).catch((error) => {
-                    // console.log(error);
-                });
-            }
-        },
+        }
+    },
     ).catch((error) => {
         // console.log(error);
         dispatch({
