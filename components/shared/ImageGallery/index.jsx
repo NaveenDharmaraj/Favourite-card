@@ -8,7 +8,7 @@ function ImageGallery(props) {
         enableImageSelection,
         imagesArray,
         imagesArray: {
-            src,
+            src
         },
     } = props;
     if (imagesArray.length > 1) {
@@ -23,7 +23,7 @@ function ImageGallery(props) {
     return (
         <Grid.Row>
             <Grid.Column mobile={16} tablet={16} computer={16} className="OneGrProfileImg">
-                <Image src={src} />
+                <Image src={imagesArray.length > 1 ? src : imagesArray[0].src} />
             </Grid.Column>
         </Grid.Row>
     );
