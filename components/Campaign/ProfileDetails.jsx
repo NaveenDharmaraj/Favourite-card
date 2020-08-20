@@ -99,7 +99,7 @@ function ProfileDetails(props) {
                                             <Grid>
                                                 <Grid.Row>
                                                     <Grid.Column width={16}>
-                                                        <div className="videoWrapper">
+                                                        <div className={imageArray.length === 1 ? 'one_video_wrapper videoWrapper' : 'videoWrapper'}>
                                                             <embed
                                                                 title="video"
                                                                 src={videoPlayerLink}
