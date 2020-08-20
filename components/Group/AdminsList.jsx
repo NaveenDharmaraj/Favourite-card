@@ -48,7 +48,7 @@ const AdminsList = (props) => {
                     <Image className="grProfile" src={admin.attributes.avatar} />
                 </List.Item>,
             );
-            adminName.push(admin.attributes.displayName);
+            adminName.push(` ${admin.attributes.displayName}`);
         });
     }
 

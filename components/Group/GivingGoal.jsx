@@ -21,6 +21,7 @@ import {
 } from '../../routes';
 import {
     formatCurrency,
+    formatDateForGivingTools,
 } from '../../helpers/give/utils';
 import {
     distanceOfTimeInWords,
@@ -76,7 +77,7 @@ const GivingGoal = (props) => {
             goalText = `${fundraisingDaysRemaining}${daysText} to reach goal`;
         }
     } else if (hasPreviousGoal) {
-        goalText = `Giving goal expired on ${fundraisingEndDate}`;
+        goalText = `Giving goal expired on ${formatDateForGivingTools(fundraisingEndDate)}`;
     }
     fundRaisingDuration = (
         <span className="badge white goalbtn">

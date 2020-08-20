@@ -26,7 +26,7 @@ const Admins = (props) => {
     let adminData = '';
     if (!_isEmpty(data)) {
         adminData = data.map((admin) => {
-            if (!isAuthenticated) {
+            if (isAuthenticated) {
                 return (
                     <Link route={(`/users/profile/${admin.id}`)}>
                         <List.Item as="a">

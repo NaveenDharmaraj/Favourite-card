@@ -112,8 +112,7 @@ class Members extends React.Component {
                                     && (
                                         <div className="membersNumber">
                                             <i aria-hidden="true" className="group icon" />
-                                            {totalCount}
-                                                members
+                                            {` ${totalCount.toLocaleString()} members`}
                                         </div>
                                     )}
                                             </Grid.Column>

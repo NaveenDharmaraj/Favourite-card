@@ -100,7 +100,7 @@ export const getImageGallery = (url) => (dispatch) => {
         },
         type: actionTypes.GET_GROUP_GALLERY_IMAGES,
     };
-    coreApi.get(url, {
+    return coreApi.get(url, {
         params: {
             dispatch,
             ignore401: true,
@@ -113,7 +113,7 @@ export const getImageGallery = (url) => (dispatch) => {
     }).catch().finally();
 };
 
-export const getDetails = (id, type, pageNumber = 1) => async (dispatch) => {
+export const getDetails = (id, type, pageNumber = 1) => (dispatch) => {
     const fsa = {
         payload: {},
     };
@@ -144,7 +144,7 @@ export const getDetails = (id, type, pageNumber = 1) => async (dispatch) => {
             break;
     }
     dispatch(placeholderfsa);
-    coreApi.get(newUrl, {
+    return coreApi.get(newUrl, {
         params: {
             dispatch,
             ignore401: true,
@@ -214,7 +214,7 @@ export const getTransactionDetails = (id, url) => async (dispatch) => {
     });
 };
 
-export const getGroupActivities = (id, url, isPostActivity) => async (dispatch) => {
+export const getGroupActivities = (id, url, isPostActivity = false) => (dispatch) => {
     const fsa = {
         payload: {
             groupActivities: {},
@@ -222,7 +222,7 @@ export const getGroupActivities = (id, url, isPostActivity) => async (dispatch) 
         type: actionTypes.GET_GROUP_ACTIVITY_DETAILS,
     };
     const newUrl = !_isEmpty(url) ? url : `groups/${id}/activities?page[size]=10`;
-    coreApi.get(newUrl, {
+    return coreApi.get(newUrl, {
         params: {
             dispatch,
             ignore401: true,
@@ -234,7 +234,7 @@ export const getGroupActivities = (id, url, isPostActivity) => async (dispatch) 
             if (!isPostActivity) {
                 fsa.payload.nextLink = (result.links.next) ? result.links.next : null;
             }
-            fsa.payload.isPostActivity = isPostActivity ? isPostActivity : false;
+            fsa.payload.isPostActivity = isPostActivity;
             dispatch(fsa);
         }
     }).catch().finally(() => {
@@ -247,15 +247,14 @@ export const getGroupActivities = (id, url, isPostActivity) => async (dispatch) 
     });
 };
 
-export const getCommentFromActivityId = (id, url) => async (dispatch) => {
+export const getCommentFromActivityId = (id, url) => (dispatch) => {
     const fsa = {
         payload: {
             groupComments: {},
         },
         type: actionTypes.GET_GROUP_COMMENTS,
     };
-
-    coreApi.get(url, {
+    return coreApi.get(url, {
         params: {
             dispatch,
             ignore401: true,
@@ -273,9 +272,9 @@ export const getCommentFromActivityId = (id, url) => async (dispatch) => {
     });
 };
 
-export const postActivity = (id, msg) => async (dispatch) => {
+export const postActivity = (id, msg) => (dispatch) => {
     const url = `groups/${id}/activities?page[size]=1`;
-    coreApi.post(`/comments`,
+    return coreApi.post(`/comments`,
         {
             data: {
                 attributes: {
@@ -296,15 +295,14 @@ export const postActivity = (id, msg) => async (dispatch) => {
     }).catch().finally();
 };
 
-export const postComment = (groupId, eventId, msg, user) => async (dispatch) => {
-    const url = `events/${eventId}/comments?page[size]=1`;
+export const postComment = (groupId, eventId, msg, user) => (dispatch) => {
     const fsa = {
         payload: {
             groupComments: [],
         },
         type: actionTypes.GET_GROUP_COMMENTS,
     };
-    coreApi.post(`/comments`,
+    return coreApi.post(`/comments`,
         {
             data: {
                 attributes: {
@@ -343,14 +341,14 @@ export const postComment = (groupId, eventId, msg, user) => async (dispatch) => 
     }).catch().finally();
 };
 
-export const likeActivity = (eventId, groupId, userId) => async (dispatch) => {
+export const likeActivity = (eventId, groupId, userId) => (dispatch) => {
     const fsa = {
         payload: {
             activityStatus: false,
         },
         type: actionTypes.ACTIVITY_LIKE_STATUS,
     };
-    graphApi.post(`core/create/commentlikes`,
+    return graphApi.post(`core/create/commentlikes`,
         {
             data: {
                 event_id: Number(eventId),
@@ -375,14 +373,14 @@ export const likeActivity = (eventId, groupId, userId) => async (dispatch) => {
     });
 };
 
-export const unlikeActivity = (eventId, groupId, userId) => async (dispatch) => {
+export const unlikeActivity = (eventId, groupId, userId) => (dispatch) => {
     const fsa = {
         payload: {
             activityStatus: true,
         },
         type: actionTypes.ACTIVITY_LIKE_STATUS,
     };
-    graphApi.delete(`core/delete/commentlikes/NODE`,
+    return graphApi.delete(`core/delete/commentlikes/NODE`,
         {
             data: {
                 filters: {
@@ -459,14 +457,14 @@ export const unlikeActivity = (eventId, groupId, userId) => async (dispatch) => 
 //     });
 // };
 
-export const joinGroup = (groupSlug, groupId, loadMembers) => async (dispatch) => {
+export const joinGroup = (groupSlug, groupId, loadMembers) => (dispatch) => {
     const fsa = {
         payload: {
             groupDetails: {},
         },
         type: actionTypes.GET_GROUP_DETAILS_FROM_SLUG,
     };
-    await coreApi.post(`/groups/join?load_full_profile=true`, {
+    return coreApi.post(`/groups/join?load_full_profile=true`, {
         slug: groupSlug,
     }, {
         params: {
@@ -489,14 +487,14 @@ export const joinGroup = (groupSlug, groupId, loadMembers) => async (dispatch) =
     });
 };
 
-export const getGroupBeneficiariesCount = (url) => async (dispatch) => {
+export const getGroupBeneficiariesCount = (url) => (dispatch) => {
     const fsa = {
         payload: {
             groupBeneficiariesCount: {},
         },
         type: actionTypes.GET_BENEFICIARIES_COUNT,
     };
-    coreApi.get(url,
+    return coreApi.get(url,
         {
             params: {
                 dispatch,
@@ -525,12 +523,12 @@ const checkForOnlyOneAdmin = (error) => {
     return false;
 };
 
-export const leaveGroup = (slug, groupId, loadMembers) => async (dispatch) => {
+export const leaveGroup = (slug, groupId, loadMembers) => (dispatch) => {
     dispatch({
         payload: { buttonLoading: true },
         type: actionTypes.LEAVE_GROUP_MODAL_BUTTON_LOADER,
     });
-    coreApi.patch(`/groups/leave?slug=${slug}`, {
+    return coreApi.patch(`/groups/leave?slug=${slug}`, {
     }).then((result) => {
         if (result && result.status === 'SUCCESS') {
             dispatch(getGroupFromSlug(slug));
@@ -569,7 +567,7 @@ export const leaveGroup = (slug, groupId, loadMembers) => async (dispatch) => {
     });
 };
 
-export const toggleTransactionVisibility = (transactionId, type) => async (dispatch) => {
+export const toggleTransactionVisibility = (transactionId, type) => (dispatch) => {
     const fsa = {
         payload: {},
         type: actionTypes.TOGGLE_TRANSACTION_VISIBILITY,
@@ -585,7 +583,7 @@ export const toggleTransactionVisibility = (transactionId, type) => async (dispa
         default:
             break;
     }
-    coreApi.patch(url,
+    return coreApi.patch(url,
         {
             params: {
                 dispatch,
@@ -603,7 +601,7 @@ export const toggleTransactionVisibility = (transactionId, type) => async (dispa
     ).catch().finally();
 };
 
-export const addFriendRequest = (user) => async (dispatch) => {
+export const addFriendRequest = (user) => (dispatch) => {
     const bodyData = {
         data: {
             attributes: {
@@ -618,7 +616,7 @@ export const addFriendRequest = (user) => async (dispatch) => {
             },
         },
     };
-    await eventApi.post(`/friend/request`, bodyData).then((result) => {
+    return eventApi.post(`/friend/request`, bodyData).then((result) => {
         console.log('result', result);
     }).finally();
 };
