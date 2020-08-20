@@ -245,6 +245,7 @@ class Group extends React.Component {
             if (!_isEmpty(giveGroupDetails) && _isEmpty(giveFromType)) {
                 groupFromUrl = false;
                 giveData.giveTo = {
+                    avatar: giveGroupDetails.attributes.avatar,
                     id: giveGroupDetails.id,
                     isCampaign: giveGroupDetails.attributes.isCampaign,
                     name: giveGroupDetails.attributes.name,
@@ -258,6 +259,7 @@ class Group extends React.Component {
                 groupFromUrl = true;
                 const groupIndex = this.state.flowObject.groupIndex;
                 giveData.giveTo = {
+                    avatar: userMembershipGroups.userGroups[groupIndex].attributes.avatar,
                     id: userMembershipGroups.userGroups[groupIndex].id,
                     isCampaign: userMembershipGroups.userGroups[groupIndex].attributes.isCampaign,
                     name: userMembershipGroups.userGroups[groupIndex].attributes.name,
@@ -815,6 +817,7 @@ class Group extends React.Component {
         const groupId = options[data.options.findIndex((p) => p.value === value)].id;
         const benificiaryIndex = dataUsers.findIndex((p) => p.id === groupId);
         const benificiaryData = dataUsers[benificiaryIndex];
+        giveTo.avatar = benificiaryData.attributes.avatar;
         giveTo.id = benificiaryData.id;
         giveTo.isCampaign = benificiaryData.attributes.isCampaign;
         giveTo.name = benificiaryData.attributes.name;

@@ -1211,7 +1211,7 @@ const getDonationMatchedData = (donationMatchId, donationAmount, donationMatchDa
     return null;
 };
 
-const populateDonationReviewPage = (giveData, data, currency, formatMessage, language) => {
+const populateDonationReviewPage = (giveData, data, displayName, currency, formatMessage, language) => {
     const {
         creditCard,
         donationAmount,
@@ -1236,7 +1236,7 @@ const populateDonationReviewPage = (giveData, data, currency, formatMessage, lan
             currency,
         ),
         mainDisplayImage: '',
-        mainDisplayText: 'To Impact Account',
+        mainDisplayText: `To ${displayName}'s Impact Account`,
     };
 
     const {
@@ -1422,6 +1422,10 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
             //     privacyShareEmailMessage = (infoToShare.value === 'anonymous')
             //         ? formatMessage('reviewGiveAnonymously') : infoToShare.text;
             // }
+            let hasCampaign = false;
+            if (!_.isEmpty(giveGroupDetails) && !isGiveFrom) {
+                hasCampaign = !!((giveGroupDetails.attributes.campaignId && !giveGroupDetails.attributes.isCampaign));
+            }
 
             giveToType = (giveTo.isCampaign) ? 'Campaign' : 'Group';
             if (!giveTo.isCampaign) {
@@ -1436,7 +1440,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
                 });
             }
             listingData.push({
-                name: `privacyShareOrganizers${giveToType}Label`,
+                name: (hasCampaign) ? `privacyShareOrganizersGroupCampaignLabel` : `privacyShareOrganizers${giveToType}Label`,
                 value: privacyShareEmailMessage,
             });
         }

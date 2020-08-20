@@ -123,6 +123,7 @@ class Review extends React.Component {
         if ( !_.isEmpty(this.props.flowObject) && this.props.flowObject.stepsCompleted !== true) {
             const {
                 currentStep,
+                currentUser,
                 flowObject: {
                     currency,
                     giveData,
@@ -146,6 +147,9 @@ class Review extends React.Component {
                 'give/to/friend': 'flowReviewbanner',
                 'give/to/group': 'givinggroupbanner',
             };
+            const displayName = (currentUser.attributes.displayName)
+                ? currentUser.attributes.displayName
+                : currentUser.attributes.firstName;
             const formatMessage = this.props.t;
             let reviewData = {};
             let toURL = `/${type}/${flowSteps[0]}`;
@@ -163,6 +167,7 @@ class Review extends React.Component {
                         donationMatchData,
                         selectedTaxReceiptProfile,
                     },
+                    displayName,
                     currency,
                     formatMessage,
                     language,

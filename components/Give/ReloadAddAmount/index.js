@@ -427,6 +427,7 @@ class ReloadAddAmount extends React.Component {
     handleReloadSubmit = () => {
         const {
             dispatch,
+            language,
             taxReceiptsOptions,
         } =this.props;
         let {
@@ -435,6 +436,8 @@ class ReloadAddAmount extends React.Component {
         let {
             giveData:{
                 taxReceipt,
+                donationAmount,
+                giveTo,
             }
         } = reloadObject;
         if(this.validateReloadAccountForm()) {
@@ -444,7 +447,10 @@ class ReloadAddAmount extends React.Component {
             reloadObject.selectedTaxReceiptProfile = _.find(taxReceiptsOptions, {
                 'id': taxReceipt.id
             });
-            dispatch(walletTopUp(reloadObject)).then(()=>{
+            const topUpAmount = formatCurrency(donationAmount, language, reloadObject.currency);
+            const succesToast = (giveTo.type === 'user') ? `${topUpAmount} has been added to your Impact Account`
+                : `${topUpAmount} has been added to ${giveTo.name}'s Account`;
+            dispatch(walletTopUp(reloadObject, succesToast)).then(()=>{
                 this.setState({
                     currentModalStep: 0,
                     reloadButtonClicked: false,

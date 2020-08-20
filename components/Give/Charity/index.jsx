@@ -476,11 +476,11 @@ class Charity extends React.Component {
             giveData['formatedCharityAmount'] = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
         }
         const coverFeesAmount = Charity.getCoverFeesAmount(giveData, coverFeesData);
-        if (Number(giveData.giveFrom.value) > 0 && Number(giveData.giveAmount) > 0) {
-            getCoverAmount(giveData.giveFrom.value, giveData.giveAmount, dispatch);
-        } else {
-            getCoverAmount(giveData.giveFrom.value, 0, dispatch);
-        }
+        // if (Number(giveData.giveFrom.value) > 0 && Number(giveData.giveAmount) > 0) {
+        //     getCoverAmount(giveData.giveFrom.value, giveData.giveAmount, dispatch);
+        // } else {
+        //     getCoverAmount(giveData.giveFrom.value, 0, dispatch);
+        // }
         if (name !== 'giftType' && name !== 'giveFrom') {
             validity = validateGiveForm(name, inputValue, validity, giveData, coverFeesAmount);
         }
@@ -1001,38 +1001,33 @@ class Charity extends React.Component {
                                                             handlePresetAmountClick={this.handlePresetAmountClick}
                                                             validity={validity}
                                                         />
-                                                        {
-                                                            (!_isEmpty(coverAmountDisplay) && coverAmountDisplay > 0) &&
-                                                            <p className="coverFeeLabel">
-                                                                {formatMessage('coverFeeLabel', {
-                                                                    amount: formatCurrency(coverAmountDisplay, language, 'USD'),
-                                                                })}
-                                                                <Modal
-                                                                    size="tiny"
-                                                                    dimmer="inverted"
-                                                                    closeIcon
-                                                                    className="chimp-modal"
-                                                                    open={this.state.showModal}
-                                                                    onClose={() => { this.setState({ showModal: false }) }}
-                                                                    trigger={
-                                                                        <a
-                                                                            onClick={() => this.setState({ showModal: true })}
-                                                                            className="link border bold"
-                                                                        >
-                                                                            &nbsp;{formatMessage('learnMore')}
-                                                                        </a>
-                                                                    }
-                                                                >
-                                                                    <Modal.Header>{formatMessage('coverFeeModalHeader')}</Modal.Header>
-                                                                    <Modal.Content className="pb-2">
-                                                                        {formatMessage('coverFeeModalContentFirst')}
-                                                                        <br /><br />
-                                                                        {formatMessage('coverFeeModalContentSecond')}
-                                                                        <br /><br />
-                                                                    </Modal.Content>
-                                                                </Modal>
-                                                            </p>
-                                                        }
+                                                        <p className="coverFeeLabel">
+                                                            {formatMessage('coverFeeLabel')}
+                                                            <Modal
+                                                                size="tiny"
+                                                                dimmer="inverted"
+                                                                closeIcon
+                                                                className="chimp-modal"
+                                                                open={this.state.showModal}
+                                                                onClose={() => { this.setState({ showModal: false }) }}
+                                                                trigger={
+                                                                    <a
+                                                                        onClick={() => this.setState({ showModal: true })}
+                                                                        className="link border bold"
+                                                                    >
+                                                                        &nbsp;{formatMessage('learnMore')}
+                                                                    </a>
+                                                                }
+                                                            >
+                                                                <Modal.Header>{formatMessage('coverFeeModalHeader')}</Modal.Header>
+                                                                <Modal.Content className="pb-2">
+                                                                    {formatMessage('coverFeeModalContentFirst')}
+                                                                    <br /><br />
+                                                                    {formatMessage('coverFeeModalContentSecond')}
+                                                                    <br /><br />
+                                                                </Modal.Content>
+                                                            </Modal>
+                                                        </p>
                                                         <div className="give_flow_field">
                                                             <DropDownAccountOptions
                                                                 reviewBtnFlag={this.state.reviewBtnFlag}

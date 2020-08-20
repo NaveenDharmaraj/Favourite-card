@@ -976,7 +976,7 @@ const fetchCompanyDetails = (dispatch, companyId) => {
 };
 
 
-export const walletTopUp = (reloadObject) => {
+export const walletTopUp = (reloadObject, successMessage) => {
     const accountDetails = {
         id: reloadObject.giveData.giveTo.id,
         type: reloadObject.giveData.giveTo.type,
@@ -990,7 +990,7 @@ export const walletTopUp = (reloadObject) => {
             }
         }).then(() => {
             const statusMessageProps = {
-                message: 'Wallet reloaded',
+                message: successMessage,
                 type: 'success',
             };
             dispatch({

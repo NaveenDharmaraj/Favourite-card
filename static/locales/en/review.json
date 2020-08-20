@@ -78,6 +78,7 @@
     "reviewP2pGive": "Send gift",
     "privacyShareOrganizersCampaignLabel": "Info to share with the Campaign admins",
     "privacyShareOrganizersGroupLabel": "Info to share with the Giving Group admins",
+    "privacyShareOrganizersGroupCampaignLabel": "Info to share with Giving Group and Campaign admins",
     "privacyShareGivingCampaignLabel" :	"Info to share with the Campaign members",
     "privacyShareGivingGroupLabel":	"Info to share with the Giving Group members",
     "notApplicable": "N/A",
