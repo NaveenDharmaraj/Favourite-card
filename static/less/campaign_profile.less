@@ -30,15 +30,30 @@
                 &.group{
                     margin:16px 0px 22px 0px;
                     &::before{
-                        content: url(../images/icons/group.svg);
+                        content: "";
+                        background-image: url(../images/icons/group.svg) !important;
+                        background-size: contain !important;
+                        background-repeat: no-repeat !important;
+                        background-position: center !important;
                         .imgColorIconGrey();
+                        height: 21.24px;
+                        width: 29.21px;
+                        display: inline-block;
                       }
                 }
                 &.privacy{
                     margin:16px 0px 22px 0px;
+                    align-items: center;
                     &::before{
-                        content: url(../images/icons/give-hand.svg);
+                        content: "";
+                        background-image: url(../images/icons/give-hand.svg) !important;
+                        background-size: contain !important;
+                        background-repeat: no-repeat !important;
+                        background-position: center !important;
                         .imgColorIconGrey();
+                        height: 24px;
+                        width: 24px;
+                        display: inline-block;
                       }
                 }
             }
@@ -292,6 +307,10 @@
                     }
                 }
             }
+            &.one_img_full{
+                width: 100% !important;
+                margin-top: 30px;
+            }
         }
         .videoWrapperfull{
             @media only screen and (max-width:767px){
@@ -319,6 +338,7 @@
                 width:100%;
                 object-fit: cover;
                 max-height: 441px;
+                height: 100%;
               }
             }
         }

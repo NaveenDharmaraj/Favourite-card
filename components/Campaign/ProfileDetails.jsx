@@ -83,7 +83,7 @@ function ProfileDetails(props) {
                                         {ReactHtmlParser(formattedImpact)}
                                     </Grid.Column>
                                     <div className="fullwidth_v_G">
-                                        <div className="GalleryWrapper">
+                                        <div className={imageArray.length === 1 ? 'one_img_full GalleryWrapper' : 'GalleryWrapper'}>
                                             <Grid className="fullwidth_gallery">
                                                 <Grid.Row>
                                                     <Grid.Column width={16}>
@@ -95,7 +95,7 @@ function ProfileDetails(props) {
                                                 </Grid.Row>
                                             </Grid>
                                         </div>
-                                        <div className="videoWrapperfull">
+                                        <div className="videoWrapperfull" style={{ display: videoPlayerLink ? '' : 'none' }}>
                                             <Grid>
                                                 <Grid.Row>
                                                     <Grid.Column width={16}>
