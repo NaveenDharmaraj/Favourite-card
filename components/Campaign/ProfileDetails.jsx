@@ -83,7 +83,7 @@ function ProfileDetails(props) {
                                         {ReactHtmlParser(formattedImpact)}
                                     </Grid.Column>
                                     <div className="fullwidth_v_G">
-                                        <div className={imageArray.length === 1 ? 'one_img_full GalleryWrapper' : 'GalleryWrapper'}>
+                                        <div className={imageArray.length === 1 ? 'one_img_full GalleryWrapper' : 'GalleryWrapper'} style={{ display: imageArray.length === 0 ? 'none' : '' }}>
                                             <Grid className="fullwidth_gallery">
                                                 <Grid.Row>
                                                     <Grid.Column width={16}>

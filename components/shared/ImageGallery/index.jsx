@@ -7,11 +7,17 @@ function ImageGallery(props) {
     const {
         enableImageSelection,
         imagesArray,
-        imagesArray: {
-            src
-        },
     } = props;
-    if (imagesArray.length > 1) {
+    if (imagesArray.length === 1) {
+        return (
+            <Grid.Row>
+                <Grid.Column mobile={16} tablet={16} computer={16} className="OneGrProfileImg">
+                    <Image src={imagesArray[0].src} />
+                </Grid.Column>
+            </Grid.Row>
+        );
+    }
+    else if (imagesArray.length > 1) {
         return (
             <Gallery
                 images={imagesArray}
@@ -20,13 +26,7 @@ function ImageGallery(props) {
             />
         );
     }
-    return (
-        <Grid.Row>
-            <Grid.Column mobile={16} tablet={16} computer={16} className="OneGrProfileImg">
-                <Image src={imagesArray.length > 1 ? src : imagesArray[0].src} />
-            </Grid.Column>
-        </Grid.Row>
-    );
+    return null;
 }
 
 export default ImageGallery;
