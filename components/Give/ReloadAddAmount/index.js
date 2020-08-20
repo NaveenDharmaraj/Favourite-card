@@ -167,6 +167,7 @@ class ReloadAddAmount extends React.Component {
             }
             if(!_.isEqual(this.props.reloadModalOpen, oldProps.reloadModalOpen)) {
                 currentModalStep = this.props.reloadModalOpen;
+                changeState = true;
             }
             if (changeState) {
                 this.setState({
