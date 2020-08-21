@@ -1276,7 +1276,7 @@ const populateDonationReviewPage = (giveData, data, displayName, currency, forma
                 value: creditCard.text,
             });
         }
-        const taxData = `${attributes.fullName} <br/> ${attributes.addressOne}  ${(attributes.addressTwo) ? attributes.addressTwo : ''} <br/> ${attributes.city}, ${attributes.province} ${attributes.postalCode}`;
+        const taxData = `<b>${attributes.fullName}</b> <br/> ${attributes.addressOne}  ${(attributes.addressTwo) ? attributes.addressTwo : ''} <br/> ${attributes.city}, ${attributes.province} ${attributes.postalCode}`;
         listingData.push({
             name: 'reviewTaxReceipt',
             value: ReactHtmlParser(taxData),
