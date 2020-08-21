@@ -792,7 +792,7 @@
         }
     }
     .dropdownSearch .dropdownsearchField.ui.dropdown.search.medium{
-        height: 40px;
+        height: 41px;
         display: flex;
         align-items: center;
         &::after{
@@ -806,7 +806,7 @@
     .ui{
         &.button{
             &.dropdown{
-                height: 40px;
+                height: 41px;
                 &.taxReceiptDropDown{
                     height: auto;
                 }
@@ -1223,6 +1223,11 @@ button.ui.button.blue-btn-rounded-def.flowConfirmBtn.second_btn{
 
 }
 .flowReview{
+    .ui.input{
+        input{
+            height: 41px;
+        }
+    }
     .ui.form {
         label{
             display: inline-block;
@@ -1418,11 +1423,17 @@ span.attributes {
             background-repeat: no-repeat;
             transition: all 0.3s ease-out;
             z-index: 2;
-            top:15px;
+            top:35%;
         }
     }
     .ui.multiple.dropdown{
-        padding: 8px 6px;
+        padding: 4px 6px;
+        min-height: 41px !important;
+        .default{
+            &.text{
+                margin-top: 8px;
+            }
+        }
     }
     .ui.dropdown>.dropdown.icon:before {
         content: '' !important;
@@ -2277,10 +2288,11 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
                         }
                         label{
                             margin-bottom: 0px !important;
+                            font-family: 'ProximaNova-Regular';
                         }
                         +.input{
                             input{
-                                height: 40px;
+                                height: 41px;
                             }
                         }
                     }
@@ -2291,8 +2303,11 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
 }
 .dropdownWithArrowParent{
     &.infoToShareDropdown{
-        .ui.selection.dropdown::after {
-            top: calc(50% - 3.5px);
+        >.ui.selection.dropdown{
+            min-height: 41px !important;
+            &::after {
+                top: calc(50% - 3.5px);
+            }
         }
     }
 } 	
