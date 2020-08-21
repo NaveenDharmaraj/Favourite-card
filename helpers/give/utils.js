@@ -225,7 +225,7 @@ const onWhatDayList = (formatMessage) => {
     return recurringDayList;
 };
 
-const createDonationMatchString = (attributes, formatMessage, language) => {
+const createDonationMatchString = (companyName, attributes, formatMessage, language) => {
     let policyPeriodText = `${attributes.policyPeriod}`;
     switch (attributes.policyPeriod) {
         case 'month':
@@ -237,7 +237,7 @@ const createDonationMatchString = (attributes, formatMessage, language) => {
         default:
             break;
     }
-    return `${attributes.displayName}: ${formatCurrency(attributes.policyMax, language, 'USD')} ${formatMessage('giveCommon:forPer')} ${policyPeriodText}`;
+    return `${companyName}: ${formatCurrency(attributes.policyMax, language, 'USD')} ${formatMessage('giveCommon:forPer')} ${policyPeriodText}`;
 
 };
 
@@ -501,11 +501,12 @@ const populateDonationMatch = (donationMatchData, formatMessage, language) => {
                         formatMessage,
                         (item) => item.attributes.employeeRoleId,
                         (attributes) => {
+                            const companyName = (!_.isEmpty(attributes.displayName) ? attributes.displayName : attributes.companyName);
                             if (attributes.policyPercentage === null
                                 || attributes.policyMax === 0) {
-                                return `${attributes.displayName} (${formatMessage('forNoMatchingPolicy')})`;
+                                return `${companyName} (${formatMessage('forNoMatchingPolicy')})`;
                             }
-                            return createDonationMatchString(attributes, formatMessage, language);
+                            return createDonationMatchString(companyName, attributes, formatMessage, language);
                         },
                         (attributes) => !!(attributes.policyPercentage === null || attributes.policyMax === 0),
                         null,

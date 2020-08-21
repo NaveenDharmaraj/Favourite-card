@@ -429,8 +429,9 @@ class Donation extends React.Component {
                                 <div className="recurringMsg">
                                     {formatMessage(
                                         'donationMatchPolicyNote', {
-                                        companyName:
-                                            donationMatchedData.attributes.companyName,
+                                        companyName: (!_.isEmpty(donationMatchedData.attributes.displayName))
+                                                ? donationMatchedData.attributes.displayName
+                                                : donationMatchedData.attributes.companyName,
                                         policyMax:
                                             formatCurrency(
                                                 donationMatchedData.attributes.policyMax,
@@ -444,8 +445,9 @@ class Donation extends React.Component {
                                     )}
                                     <br />
                                     {formatMessage('donationMatchNote', {
-                                        companyName:
-                                            donationMatchedData.attributes.companyName,
+                                        companyName: (!_.isEmpty(donationMatchedData.attributes.displayName))
+                                            ? donationMatchedData.attributes.displayName
+                                            : donationMatchedData.attributes.companyName,
                                         donationMonth: donationMonth,
                                         totalMatched:
                                             formatCurrency(
