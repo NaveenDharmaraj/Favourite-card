@@ -138,7 +138,7 @@ export const getCampaignSupportGroups = (id, searchKey = '', pageNumber = 1, pag
         // console.log(err);
     })
 };
-export const getGalleryImages = (token, id) => async (dispatch) => {
+export const getCampaignGalleryImages = (token, id) => async (dispatch) => {
     const fullParams = {
         params: {
             dispatch,

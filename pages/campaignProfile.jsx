@@ -13,7 +13,7 @@ import { Router, Link } from '../routes';
 import {
     getCampaignFromSlug,
     getCampaignSupportGroups,
-    getGalleryImages,
+    getCampaignGalleryImages,
 } from '../actions/profile';
 import Layout from '../components/shared/Layout';
 import CampaignProfileWrapper from '../components/Campaign';
@@ -62,7 +62,7 @@ class CampaignProfile extends React.Component {
             Router.pushRoute('/dashboard');
         } else {
             dispatch(getCampaignSupportGroups(id));
-            dispatch(getGalleryImages(auth0AccessToken, id));
+            dispatch(getCampaignGalleryImages(auth0AccessToken, id));
         }
     }
 
