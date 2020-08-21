@@ -76,7 +76,7 @@ const Note = ({
     hideLabel,
 }) => (
     <Fragment>
-        <Form.Field>
+        <Form.Field className="give_field">
             {!hideLabel
             && (
                 <Fragment>

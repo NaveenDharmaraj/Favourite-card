@@ -24,12 +24,12 @@ function TaxReceiptDropDown(props) {
     if (!disableField) {
         if (!_.isEmpty(taxReceiptsOptions) && taxReceiptsOptions.length > 1 && giveTo.value > 0 && taxReceipt) {
             taxReceiptField = (
-                <Form.Field>
-                    <div className="paymentMethodDropdown add_space">
+                <Form.Field className="give_flow_field">
+                    <div className="paymentMethodDropdown">
                         <label htmlFor="">Tax receipt recipient</label>
                         <Dropdown
                             button
-                            className="taxReceiptDropDown label_top mb-3"
+                            className="taxReceiptDropDown label_top"
                             name="taxReceipt"
                             icon='cardExpress'
                             floating
@@ -45,10 +45,10 @@ function TaxReceiptDropDown(props) {
             );
         } else if (_.isEmpty(taxReceiptsOptions) && giveTo.value > 0) {
             taxReceiptField = (
-                <div className="mb-2">
+                <div className="field">
                     <label>Tax receipt recipient</label>
                     <div
-                        className="addNewCardInput mb-1"
+                        className="addNewCardInput"
                         id="addNewTaxReceipt"
                         onClick={handleAddNewButtonClicked}>
                         + Add new tax receipt recipient

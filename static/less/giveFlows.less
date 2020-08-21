@@ -398,6 +398,23 @@
              }
          }
      }
+     .mobile_btn{
+         display: flex;
+         justify-content: flex-end;
+         align-items: center;
+         @media only screen and (max-width: 767px){
+            justify-content: center;
+            flex-direction: column;
+            button{
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+                &.width-full-btn{
+                    width: 100%;
+                    margin-top: 16px;
+                }
+            }
+         }    
+     }
  }
  .p2p-top-table{
     .send-table{
@@ -613,11 +630,21 @@
         line-height: 15px;
         margin-top: 15px;
     }
+    .price_btn{
+        margin-bottom: 0;
+    }
     .give_field{
         margin-bottom: 20px !important;
+        +.error-message{
+            margin-top: -10px;
+            font-size: 12px;
+        }
     }
     .give_flow_field{
         margin-top:40px !important;
+        @media only screen and (max-width: 767px){
+            margin-top:30px !important;
+        }
         .price_btn{
             margin-bottom: 10px;
         }
@@ -1322,6 +1349,9 @@ p{
 .noteDefault-bg{
     background-color: #E3E8F0;
     padding: 21px 35px 21px;
+    @media only screen and (max-width:767px) {
+        padding: 20px;
+    }
     .noteWraper{
         display: list-item;
         table-layout: fixed;
@@ -2043,13 +2073,31 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
     }
 }
 //add-money-moadal
-.addMoneyMoadal{
-    .header{
+.ui.modal.addMoneyMoadal{
+    >.header{
         font-family: 'ProximaNova-semibold';
         color: #263238;
     }
     .ui{
         &.form{
+            >.field{
+                margin-bottom: 40px;
+                @media only screen and (max-width: 767px){
+                    margin-bottom: 30px;
+                }
+                .error.field{
+                    margin-bottom: 0;
+                }
+                .error-message{
+                    margin-top: 10px;
+                    font-size: 12px;
+                }
+            }
+            .addNewCard{
+               .field .field{
+                    margin-bottom: 0;
+                }
+            }
             >label,.field label{
                 display: inline-block;
                 margin-bottom: 10px !important;
@@ -2062,6 +2110,7 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
                 color: #263238;
                 font-family: 'ProximaNova-Regular';
                 background-color: transparent !important;
+                // line-height: 22px;
                 span.attributes{
                     font-family: 'ProximaNova-Regular';
                     
@@ -2082,4 +2131,17 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
             }
         }
     }
+    .noteWraper{
+        .leftImg .notifyDefaultIcon::before{
+            height: 15px;
+        }
+        @media only screen and (max-width: 767px){
+            .noteContent{
+                padding-left: 23px;
+            }
+        }
+    }
+    textarea{
+        resize: none;
+}
 }
