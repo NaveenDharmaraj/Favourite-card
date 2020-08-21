@@ -1089,7 +1089,7 @@ class ReloadAddAmount extends React.Component {
                                 <span className="notifyDefaultIcon"></span>
                             </span>
                             <span className="noteContent">
-                                Add money to your Impact Account to send this gift.Your current Impact Account balance is <span className="amount-give">{formatedBalance}</span>
+                                Add money to your Impact Account to send this gift. Your current Impact Account balance is <span className="amount-give">{formatedBalance}</span>
                             </span>
                         </div>    
                     </div>)}
