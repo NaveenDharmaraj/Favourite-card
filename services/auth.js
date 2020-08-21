@@ -19,6 +19,7 @@ import {
 } from '../actions/user';
 import isUndefinedOrEmpty from '../helpers/object';
 import { addToDataLayer } from '../helpers/users/googleTagManager';
+import { base64Decode } from '../helpers/utils';
 
 import coreApi from './coreApi';
 
@@ -418,11 +419,12 @@ const _handleLockSuccess = async ({
     idToken,
 } = {}) => {
     let { returnProps } = auth0;
-    const {
+    let {
         returnTo,
     } = returnProps;
     if (!accessToken || !idToken) { return null(); }
     // Sets access token and expiry time in cookies
+    returnTo = base64Decode(returnTo);
     chimpLogin(accessToken, returnProps).then(async ({ currentUser, beneficiarySlug }) => {
         const userId = parseInt(currentUser, 10);
         if (document) {
@@ -455,8 +457,7 @@ const _handleLockSuccess = async ({
             await (storage.unset('signup_source_id','local'));
             await (storage.unset('signup_source','local'));
             Router.pushRoute(`/claim-charity/success?slug=${beneficiarySlug}`);
-        }
-        else {
+        } else {
             Router.pushRoute(returnTo);
         }
     })

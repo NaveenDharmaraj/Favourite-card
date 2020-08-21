@@ -95,8 +95,9 @@ class Layout extends React.Component {
                  nextPathname = window.location.pathname;
                  searchQuery = window.location.search;
             }
+            const encodedUrl = btoa(`${nextPathname}${searchQuery}`);
             let pathname = (nextPathname) ?
-            `/users/login?returnTo=${nextPathname}${searchQuery}` : '/users/login';
+            `/users/login?returnTo=${encodedUrl}` : '/users/login';
             Router.pushRoute(pathname);
         } else {
             // await NotificationHelper.getMessages(userInfo, dispatch, 1);
