@@ -803,8 +803,9 @@ class ReloadAddAmount extends React.Component {
                                 <div className="recurringMsg mb-3">
                                     {formatMessage(
                                         'accountTopUp:donationMatchPolicyNote', {
-                                        companyName:
-                                            donationMatchedData.attributes.companyName,
+                                        companyName: (!_.isEmpty(donationMatchedData.attributes.displayName))
+                                            ? donationMatchedData.attributes.displayName
+                                            : donationMatchedData.attributes.companyName,
                                         policyMax:
                                             formatCurrency(
                                                 donationMatchedData.attributes.policyMax,
@@ -818,8 +819,9 @@ class ReloadAddAmount extends React.Component {
                                     )}
                                     <br />
                                     {formatMessage('accountTopUp:donationMatchNote', {
-                                        companyName:
-                                            donationMatchedData.attributes.companyName,
+                                        companyName: (!_.isEmpty(donationMatchedData.attributes.displayName))
+                                        ? donationMatchedData.attributes.displayName
+                                        : donationMatchedData.attributes.companyName,
                                         donationMonth: donationMonth,
                                         totalMatched:
                                             formatCurrency(
@@ -1087,7 +1089,7 @@ class ReloadAddAmount extends React.Component {
                                 <span className="notifyDefaultIcon"></span>
                             </span>
                             <span className="noteContent">
-                                Add money to your Impact Account to send this gift.Your current Impact Account balance is <span className="amount-give">{formatedBalance}</span>
+                                Add money to your Impact Account to send this gift. Your current Impact Account balance is <span className="amount-give">{formatedBalance}</span>
                             </span>
                         </div>    
                     </div>)}
