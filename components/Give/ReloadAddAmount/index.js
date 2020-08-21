@@ -72,6 +72,7 @@ class ReloadAddAmount extends React.Component {
             addNewCCButtonClicked: false,
             addNewTRButtonClicked: false,
             currentModalStep: 0,
+            disableTRBDefault: true,
             isDefaultCard: false,
             isDefaultTaxReceiptChecked:!props.taxReceiptsOptions,
             inValidCardNameValue: true,
@@ -729,6 +730,7 @@ class ReloadAddAmount extends React.Component {
         attributes[name] = value;
         this.setState({
             buttonClicked: false,
+            disableTRBDefault: false,
             selectedTaxReceiptProfile: {
                 ...this.state.selectedTaxReceiptProfile,
                 attributes: {
@@ -800,11 +802,12 @@ class ReloadAddAmount extends React.Component {
                     {
                         (!_.isEmpty(donationMatchedData)) ? (
                             <Form.Field>
-                                <div className="recurringMsg mb-3">
+                                <div className="recurringMsg">
                                     {formatMessage(
                                         'accountTopUp:donationMatchPolicyNote', {
-                                        companyName:
-                                            donationMatchedData.attributes.companyName,
+                                        companyName: (!_.isEmpty(donationMatchedData.attributes.displayName))
+                                            ? donationMatchedData.attributes.displayName
+                                            : donationMatchedData.attributes.companyName,
                                         policyMax:
                                             formatCurrency(
                                                 donationMatchedData.attributes.policyMax,
@@ -818,8 +821,9 @@ class ReloadAddAmount extends React.Component {
                                     )}
                                     <br />
                                     {formatMessage('accountTopUp:donationMatchNote', {
-                                        companyName:
-                                            donationMatchedData.attributes.companyName,
+                                        companyName: (!_.isEmpty(donationMatchedData.attributes.displayName))
+                                        ? donationMatchedData.attributes.displayName
+                                        : donationMatchedData.attributes.companyName,
                                         donationMonth: donationMonth,
                                         totalMatched:
                                             formatCurrency(
@@ -849,6 +853,7 @@ class ReloadAddAmount extends React.Component {
     renderTRModal() {
         let {
             addNewTRButtonClicked,
+            disableTRBDefault,
             isDefaultTaxReceiptChecked,
             selectedTaxReceiptProfile,
             tRFormValidity,
@@ -885,7 +890,7 @@ class ReloadAddAmount extends React.Component {
                     primary 
                     onClick={() => this.handleAddNewTaxReceipt()} 
                     className="blue-btn-rounded w-120 mb-2 btn_right"
-                    disabled={addNewTRButtonClicked}
+                    disabled={addNewTRButtonClicked || disableTRBDefault}
                 >
                     Done
                 </Button>
@@ -944,7 +949,10 @@ class ReloadAddAmount extends React.Component {
                     <Button
                         className="blue-btn-rounded-def sizeBig w-180"
                         onClick={this.handleAddNewCreditCard}
-                        disabled={addNewCCButtonClicked}
+                        disabled={addNewCCButtonClicked || inValidCardNumber
+                            || inValidExpirationDate || inValidNameOnCard
+                            || inValidCvv || inValidCardNameValue
+                            }
                     >
                         Done
                     </Button>
@@ -979,7 +987,7 @@ class ReloadAddAmount extends React.Component {
                     <label htmlFor="donationAmount">
                         {formatMessage('giveCommon:amountLabel')}
                     </label>
-                        <Form.Field className="mb-3">
+                        <Form.Field>
                             <Form.Field
                                 control={Input}
                                 id={"donationAmount"}
@@ -1037,7 +1045,7 @@ class ReloadAddAmount extends React.Component {
                         />
                         <Button
                             primary
-                            className="blue-btn-rounded btn_right mb-2"
+                            className="blue-btn-rounded btn_right mb-3"
                             // className={isMobile ? 'mobBtnPadding' : 'btnPadding'}
                             content="Add money"
                             disabled={this.state.reloadButtonClicked}
@@ -1087,7 +1095,7 @@ class ReloadAddAmount extends React.Component {
                                 <span className="notifyDefaultIcon"></span>
                             </span>
                             <span className="noteContent">
-                                Add money to your Impact Account to send this gift.Your current Impact Account balance is <span className="amount-give">{formatedBalance}</span>
+                                Add money to your Impact Account to send this gift. Your current Impact Account balance is <span className="amount-give">{formatedBalance}</span>
                             </span>
                         </div>    
                     </div>)}

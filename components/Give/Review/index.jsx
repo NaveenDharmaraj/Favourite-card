@@ -364,9 +364,19 @@ class Review extends React.Component {
                                                     <Grid.Column data-test="Give_Review_refund_text" mobile={16} tablet={6} computer={8} className="mobile_text">
                                                     {refundMessage}
                                                     </Grid.Column>
-                                                    <Grid.Column mobile={16} tablet={10} computer={8} className="mobile_btn">
+                                                    <Grid.Column mobile={16} tablet={10} computer={8}>
+                                                        <div className="mobile_btn">                                                      
+                                                         <Link route={editUrl}>
+                                                                <Button
+                                                                    className="blue-bordr-btn-round-def mb-1 w-120 "
+                                                                    disabled={(this.state.buttonClicked)}
+                                                                    data-test="Give_Review_edit_button"
+                                                                >
+                                                                    {formatMessage('reviewEdit')}
+                                                                </Button>
+                                                            </Link>
                                                             <Button
-                                                                className="blue-btn-rounded-def w-160 mb-1 mob_btn_edit width-full-btn"
+                                                                className="blue-btn-rounded-def w-160 mb-1  width-full-btn"
                                                                 data-test="Give_Review_submit_button"
                                                                 primary
                                                                 content={(!this.state.buttonClicked)
@@ -375,15 +385,7 @@ class Review extends React.Component {
                                                                 disabled={(this.state.buttonClicked)}
                                                                 onClick={this.handleSubmit}
                                                             />
-                                                         <Link route={editUrl}>
-                                                                <Button
-                                                                    className="blue-bordr-btn-round-def mb-1 w-120 mob_btn_edit "
-                                                                    disabled={(this.state.buttonClicked)}
-                                                                    data-test="Give_Review_edit_button"
-                                                                >
-                                                                    {formatMessage('reviewEdit')}
-                                                                </Button>
-                                                            </Link>
+                                                            </div>
                                                     </Grid.Column>
                                                     </Grid.Row>
                                                 </Grid>

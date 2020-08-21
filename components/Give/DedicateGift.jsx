@@ -97,6 +97,7 @@ class DedicateGift extends Component {
                             className="inputInline"
                             active={activeIndex === 0 || activeIndex === 1}
                             name={currentName}
+                            placeholder="Who are you dedicating this gift to? "
                             onChange={(e, {
                                 name, newIndex, value,
                             }) => {
@@ -119,7 +120,7 @@ class DedicateGift extends Component {
                     </Accordion>
                     <FormValidationErrorMessage
                         condition={validity && !validity.isDedicateGiftEmpty}
-                        errorMessage="Field should not be empty"
+                        errorMessage="Add a note to remember who you've dedicated this gift to."
                     />
                 </div>
             </Fragment>

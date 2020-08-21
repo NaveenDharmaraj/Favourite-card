@@ -441,7 +441,7 @@ class Charity extends React.Component {
             validity,
             reviewBtnFlag: !validity.isReloadRequired
         });
-        if(!validity.isReloadRequired){
+        if (!validity.isReloadRequired || !validity.doesAmountExist){
             window.scrollTo(0,0)
         }
         return _every(validity);
@@ -664,13 +664,14 @@ class Charity extends React.Component {
             flowObject: {
                 giveData 
             },
+            reviewBtnFlag,
             validity,
         } = this.state
         const inputValue = formatAmount(parseFloat(value.replace(/,/g, '')));
         giveData.giveAmount = inputValue;
         giveData.formatedCharityAmount = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
         validity = validateGiveForm("giveAmount", inputValue, validity, giveData);
-
+        reviewBtnFlag = false;
         this.setState({
             ...this.state,
             flowObject: {
@@ -680,6 +681,7 @@ class Charity extends React.Component {
                     ...giveData,
                 }
             },
+            reviewBtnFlag,
             validity,
         });
     }

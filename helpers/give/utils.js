@@ -225,7 +225,7 @@ const onWhatDayList = (formatMessage) => {
     return recurringDayList;
 };
 
-const createDonationMatchString = (attributes, formatMessage, language) => {
+const createDonationMatchString = (companyName, attributes, formatMessage, language) => {
     let policyPeriodText = `${attributes.policyPeriod}`;
     switch (attributes.policyPeriod) {
         case 'month':
@@ -237,7 +237,7 @@ const createDonationMatchString = (attributes, formatMessage, language) => {
         default:
             break;
     }
-    return `${attributes.displayName}: ${formatCurrency(attributes.policyMax, language, 'USD')} ${formatMessage('giveCommon:forPer')} ${policyPeriodText}`;
+    return `${companyName}: ${formatCurrency(attributes.policyMax, language, 'USD')} ${formatMessage('giveCommon:forPer')} ${policyPeriodText}`;
 
 };
 
@@ -501,11 +501,12 @@ const populateDonationMatch = (donationMatchData, formatMessage, language) => {
                         formatMessage,
                         (item) => item.attributes.employeeRoleId,
                         (attributes) => {
+                            const companyName = (!_.isEmpty(attributes.displayName) ? attributes.displayName : attributes.companyName);
                             if (attributes.policyPercentage === null
                                 || attributes.policyMax === 0) {
-                                return `${attributes.displayName} (${formatMessage('forNoMatchingPolicy')})`;
+                                return `${companyName} (${formatMessage('forNoMatchingPolicy')})`;
                             }
-                            return createDonationMatchString(attributes, formatMessage, language);
+                            return createDonationMatchString(companyName, attributes, formatMessage, language);
                         },
                         (attributes) => !!(attributes.policyPercentage === null || attributes.policyMax === 0),
                         null,
@@ -1184,6 +1185,7 @@ const getDonationMatchedData = (donationMatchId, donationAmount, donationMatchDa
             attributes: {
                 automaticMatching,
                 companyName,
+                displayName,
                 policyMax,
                 policyPercentage,
                 policyPeriod,
@@ -1201,7 +1203,7 @@ const getDonationMatchedData = (donationMatchId, donationAmount, donationMatchDa
             automaticMatching,
             accountId: id,
             amount: donationMatchedAmount,
-            displayName: companyName,
+            displayName: (!_.isEmpty(displayName)) ? displayName : companyName,
             type: 'donationMatch',
             periodType: policyPeriod,
             maxMatch: policyMax,
@@ -1274,7 +1276,7 @@ const populateDonationReviewPage = (giveData, data, displayName, currency, forma
                 value: creditCard.text,
             });
         }
-        const taxData = `${attributes.fullName} <br/> ${attributes.addressOne}  ${(attributes.addressTwo) ? attributes.addressTwo : ''} <br/> ${attributes.city}, ${attributes.province} ${attributes.postalCode}`;
+        const taxData = `<b>${attributes.fullName}</b> <br/> ${attributes.addressOne}  ${(attributes.addressTwo) ? attributes.addressTwo : ''} <br/> ${attributes.city}, ${attributes.province} ${attributes.postalCode}`;
         listingData.push({
             name: 'reviewTaxReceipt',
             value: ReactHtmlParser(taxData),

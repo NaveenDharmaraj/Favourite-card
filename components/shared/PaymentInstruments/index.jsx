@@ -33,14 +33,14 @@ function PaymentInstruments(props) {
         if (_.isEmpty(options) && giveTo.value > 0) {
             creditCardField = (
                 <Fragment>
-                    <div className="give_flow_field">
+                  <div className="field give_flow_field">
                         <label>Payment method</label>
                         <div
-                            className="addNewCardInput mb-2"
+                            className="addNewCardInput"
                             id="addFirstCreditCard"
                             onClick={handleAddNewButtonClicked}>
                             + Add new card
-                    </div>
+                        </div>
                         <FormValidationErrorMessage
                             condition={!validity.isCreditCardSelected}
                             errorMessage={formatMessage('giveCommon:errorMessages.creditCardNotAdded')}
@@ -50,7 +50,7 @@ function PaymentInstruments(props) {
             );
         } else if (!_.isEmpty(options) && giveTo.value > 0) {
             creditCardField = (
-                <Fragment>
+                <Fragment>                  
                     <Form.Field className="give_flow_field">
                         <label htmlFor="creditCard">
                             {formatMessage('giveCommon:creditCardLabel')}
@@ -61,7 +61,7 @@ function PaymentInstruments(props) {
                                 name="creditCard"
                                 button
                                 icon={iconClass[creditCard.processor]}
-                                className="dropdownWithArrowParent icon creditCardDropDown mb-3"
+                                className="dropdownWithArrowParent icon creditCardDropDown"
                                 selection
                                 fluid
                                 floating

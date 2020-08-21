@@ -419,7 +419,7 @@ class Group extends React.Component {
             validity,
             reviewBtnFlag: !validity.isReloadRequired
         });
-        if(!validity.isReloadRequired){
+        if (!validity.isReloadRequired || !validity.doesAmountExist){
             window.scrollTo(0,0)
         }
         return _every(validity);
@@ -511,6 +511,7 @@ class Group extends React.Component {
                 giveData
             },
             giveFromType,
+            reviewBtnFlag,
             validity,
         } = this.state;
         const {
@@ -524,6 +525,7 @@ class Group extends React.Component {
         giveData.giveAmount = inputValue;
         giveData.formatedGroupAmount = _.replace(formatCurrency(inputValue, 'en', 'USD'), '$', '');
         validity = validateGiveForm("giveAmount", inputValue, validity, giveData);
+        reviewBtnFlag = false;
         this.setState({
             ...this.state,
             flowObject: {
@@ -533,6 +535,7 @@ class Group extends React.Component {
                     ...giveData,
                 },
             },
+            reviewBtnFlag,
             validity,
         });
     }
