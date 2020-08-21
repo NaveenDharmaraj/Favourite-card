@@ -1185,6 +1185,7 @@ const getDonationMatchedData = (donationMatchId, donationAmount, donationMatchDa
             attributes: {
                 automaticMatching,
                 companyName,
+                displayName,
                 policyMax,
                 policyPercentage,
                 policyPeriod,
@@ -1202,7 +1203,7 @@ const getDonationMatchedData = (donationMatchId, donationAmount, donationMatchDa
             automaticMatching,
             accountId: id,
             amount: donationMatchedAmount,
-            displayName: companyName,
+            displayName: (!_.isEmpty(displayName)) ? displayName : companyName,
             type: 'donationMatch',
             periodType: policyPeriod,
             maxMatch: policyMax,
