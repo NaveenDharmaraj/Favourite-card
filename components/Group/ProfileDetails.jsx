@@ -22,9 +22,6 @@ class ProfileDetails extends React.Component {
     constructor(props) {
         super(props);
         this.tabRef = React.createRef();
-        this.state = {
-            newActiveIndex: 0,
-        };
         this.handleTabChange = this.handleTabChange.bind(this);
     }
 
@@ -45,31 +42,19 @@ class ProfileDetails extends React.Component {
         });
     }
 
-    componentDidUpdate(prevProps) {
-        const {
-            updatedActiveIndex,
-        } = this.props;
-        if (!_isEqual(prevProps.updatedActiveIndex, updatedActiveIndex)) {
-            this.setState({
-                newActiveIndex: updatedActiveIndex,
-            });
-        }
-    }
-
     handleTabChange(event, data) {
         const {
             dispatch,
+            updatedActiveIndex,
         } = this.props;
-        const {
-            newActiveIndex,
-        } = this.state;
-        if (!_isEqual(newActiveIndex, data.activeIndex)) {
+        if (!_isEqual(updatedActiveIndex, data.activeIndex)) {
             dispatch({
                 payload: {
                     activeIndex: data.activeIndex,
                 },
                 type: 'GET_GROUP_TAB_INDEX',
             });
+            event.preventDefault();
         }
     }
 
@@ -79,10 +64,8 @@ class ProfileDetails extends React.Component {
             groupDetails: {
                 id,
             },
+            updatedActiveIndex,
         } = this.props;
-        const {
-            newActiveIndex,
-        } = this.state;
         let panes = [];
         if (isAUthenticated) {
             panes = [
@@ -152,7 +135,8 @@ class ProfileDetails extends React.Component {
                                 secondary: true,
                             }}
                             panes={panes}
-                            activeIndex={newActiveIndex}
+                            defaultActiveIndex={0}
+                            activeIndex={updatedActiveIndex}
                             onTabChange={this.handleTabChange}
                         />
                     </div>

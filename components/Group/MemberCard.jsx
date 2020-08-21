@@ -130,7 +130,7 @@ class MemberCard extends React.Component {
                         {!hideButton
                             && (
                                 <Button
-                                    className="blue-btn-rounded-def btnFrinend"
+                                    className={`btnFrinend ${isRequestPending ? 'blue-btn-rounded-def' : 'blue-bordr-btn-round-def'}`}
                                     disabled={addButtonClicked || isRequestPending}
                                     onClick={this.addFriend}
                                 >
