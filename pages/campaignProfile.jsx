@@ -6,11 +6,14 @@ import {
 } from 'prop-types';
 import _ from 'lodash';
 import getConfig from 'next/config';
+import { Responsive, Button } from 'semantic-ui-react';
 
-import { Router } from '../routes';
+import { withTranslation } from '../i18n';
+import { Router, Link } from '../routes';
 import {
     getCampaignFromSlug,
     getCampaignSupportGroups,
+    getCampaignGalleryImages,
 } from '../actions/profile';
 import Layout from '../components/shared/Layout';
 import CampaignProfileWrapper from '../components/Campaign';
@@ -32,7 +35,7 @@ class CampaignProfile extends React.Component {
             auth0AccessToken = storage.get('auth0AccessToken', 'cookie', req.headers.cookie);
         }
 
-        await getCampaignFromSlug(reduxStore.dispatch, query.slug, auth0AccessToken);
+        await reduxStore.dispatch(getCampaignFromSlug(query.slug, auth0AccessToken));
         return {
             slug: query.slug,
             namespacesRequired: [
@@ -49,19 +52,25 @@ class CampaignProfile extends React.Component {
             campaignDetails: {
                 id,
             },
+            req,
         } = this.props;
+        let auth0AccessToken = null;
+        if (typeof window === 'undefined') {
+            auth0AccessToken = storage.get('auth0AccessToken', 'cookie', req.headers.cookie);
+        };
         if (slugApiErrorStats) {
             Router.pushRoute('/dashboard');
         } else {
             dispatch(getCampaignSupportGroups(id));
+            dispatch(getCampaignGalleryImages(auth0AccessToken, id));
         }
     }
 
     render() {
         const { publicRuntimeConfig } = getConfig();
-
         const {
             APP_URL_ORIGIN,
+            RAILS_APP_URL_ORIGIN,
         } = publicRuntimeConfig;
 
         const {
@@ -75,22 +84,46 @@ class CampaignProfile extends React.Component {
                 },
             },
             slugApiErrorStats,
+            isAuthenticated,
+            t: formatMessage,
         } = this.props;
         const description = (!_.isEmpty(about)) ? about : name;
         const causesList = (causes.length > 0) ? _.map(causes, _.property('name')) : [];
         const keywords = (causesList.length > 0) ? _.join(_.slice(causesList, 0, 10), ', ') : '';
         const url = `${APP_URL_ORIGIN}/campaigns/${slug}`;
+        const giveButton = <Button primary className="blue-btn-rounded-def">{formatMessage('campaignProfile:give')}</Button>;
+        let buttonLink = null;
+        if (isAuthenticated) {
+            buttonLink = (
+                <Link route={(`/give/to/group/${slug}/new`)}>
+                    {giveButton}
+                </Link>
+            )
+        }
+        else {
+            buttonLink = (
+                <a href={(`${RAILS_APP_URL_ORIGIN}/send/to/group/${slug}`)}>
+                    {giveButton}
+                </a>
+            )
+        };
         if (!slugApiErrorStats) {
             return (
-                <Layout
-                    avatar={avatar}
-                    keywords={keywords}
-                    title={name}
-                    description={description}
-                    url={url}
-                >
-                    <CampaignProfileWrapper {...this.props} />
-                </Layout>
+                <div>
+                    <Layout
+                        avatar={avatar}
+                        keywords={keywords}
+                        title={name}
+                        description={description}
+                        url={url}
+                        isCharityPage
+                    >
+                        <CampaignProfileWrapper {...this.props} />
+                    </Layout>
+                    <Responsive className="ch_MobGive" maxWidth={767} minWidth={320}>
+                        {buttonLink}
+                    </Responsive>
+                </div>
             );
         }
         return null;
@@ -139,4 +172,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(CampaignProfile);
+export default withTranslation('campaignProfile')(connect(mapStateToProps)(CampaignProfile));

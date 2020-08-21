@@ -138,8 +138,37 @@ export const getCampaignSupportGroups = (id, searchKey = '', pageNumber = 1, pag
         // console.log(err);
     })
 };
+export const getCampaignGalleryImages = (token, id) => async (dispatch) => {
+    const fullParams = {
+        params: {
+            dispatch,
+            ignore401: true,
+            uxCritical: true,
+        },
+    };
+    if (!_.isEmpty(token)) {
+        fullParams.headers = {
+            Authorization: `Bearer ${token}`,
+        };
+    };
+    coreApi.get(`campaigns/${id}/galleryImages`,
+        {
+            ...fullParams,
+        })
+        .then((galleryImagesResult) => {
+            dispatch({
+                payload: {
+                    campaignImageGallery: galleryImagesResult.data,
+                },
+                type: actionTypes.GET_IMAGES_FOR_CAMPAIGN,
+            });
+        },
+        ).catch((error) => {
+            // console.log(error);
+        });
+};
 
-export const getCampaignFromSlug = async (dispatch, slug, token = null) => {
+export const getCampaignFromSlug = (slug, token = null) => async (dispatch) => {
     dispatch({
         payload: {
             slugApiErrorStats: false,
@@ -181,40 +210,7 @@ export const getCampaignFromSlug = async (dispatch, slug, token = null) => {
             },
             type: actionTypes.GET_CAMPAIGN_FROM_SLUG,
         });
-        const fullParams = {
-            params: {
-                dispatch,
-                ignore401: true,
-                uxCritical: true,
-            },
-        };
-        if (!_.isEmpty(token)) {
-            fullParams.headers = {
-                Authorization: `Bearer ${token}`,
-            };
-        };
-
-        // TODO need to move this to componentDidMount
-        // API call for images
-        if (result.data) {
-            coreApi.get(result.data.relationships.galleryImages.links.related,
-                {
-                    ...fullParams,
-                })
-                .then((galleryImagesResult) => {
-                    dispatch({
-                        payload: {
-                            campaignImageGallery: galleryImagesResult.data,
-                        },
-                        type: actionTypes.GET_IMAGES_FOR_CAMPAIGN,
-                    });
-                },
-                ).catch((error) => {
-                    // console.log(error);
-                });
-        }
-    },
-    ).catch((error) => {
+    }).catch((error) => {
         // console.log(error);
         dispatch({
             payload: {
