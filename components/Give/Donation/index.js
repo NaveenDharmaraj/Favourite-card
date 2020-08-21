@@ -992,7 +992,10 @@ class Donation extends React.Component {
                                                                         <Button
                                                                             className="blue-btn-rounded-def w-140"
                                                                             onClick={this.handleAddNewCreditCard}
-                                                                            disabled={buttonClicked}
+                                                                            disabled={buttonClicked || inValidCardNumber
+                                                                                || inValidExpirationDate || inValidNameOnCard
+                                                                                || inValidCvv || inValidCardNameValue
+                                                                            }
                                                                         >
                                                                             Done
                                                                             </Button>

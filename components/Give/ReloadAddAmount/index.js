@@ -72,6 +72,7 @@ class ReloadAddAmount extends React.Component {
             addNewCCButtonClicked: false,
             addNewTRButtonClicked: false,
             currentModalStep: 0,
+            disableTRBDefault: true,
             isDefaultCard: false,
             isDefaultTaxReceiptChecked:!props.taxReceiptsOptions,
             inValidCardNameValue: true,
@@ -729,6 +730,7 @@ class ReloadAddAmount extends React.Component {
         attributes[name] = value;
         this.setState({
             buttonClicked: false,
+            disableTRBDefault: false,
             selectedTaxReceiptProfile: {
                 ...this.state.selectedTaxReceiptProfile,
                 attributes: {
@@ -851,6 +853,7 @@ class ReloadAddAmount extends React.Component {
     renderTRModal() {
         let {
             addNewTRButtonClicked,
+            disableTRBDefault,
             isDefaultTaxReceiptChecked,
             selectedTaxReceiptProfile,
             tRFormValidity,
@@ -887,7 +890,7 @@ class ReloadAddAmount extends React.Component {
                     primary 
                     onClick={() => this.handleAddNewTaxReceipt()} 
                     className="blue-btn-rounded w-120 mb-2 btn_right"
-                    disabled={addNewTRButtonClicked}
+                    disabled={addNewTRButtonClicked || disableTRBDefault}
                 >
                     Done
                 </Button>
@@ -946,7 +949,10 @@ class ReloadAddAmount extends React.Component {
                     <Button
                         className="blue-btn-rounded-def sizeBig w-180"
                         onClick={this.handleAddNewCreditCard}
-                        disabled={addNewCCButtonClicked}
+                        disabled={addNewCCButtonClicked || inValidCardNumber
+                            || inValidExpirationDate || inValidNameOnCard
+                            || inValidCvv || inValidCardNameValue
+                            }
                     >
                         Done
                     </Button>
