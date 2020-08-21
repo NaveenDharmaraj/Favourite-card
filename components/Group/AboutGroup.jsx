@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import {
     string,
     PropTypes,
+    func,
 } from 'prop-types';
 import {
     Grid,
@@ -13,6 +14,7 @@ import {
 import ReactHtmlParser from 'react-html-parser';
 import _isEmpty from 'lodash/isEmpty';
 
+import { withTranslation } from '../../i18n';
 import ImageGallery from '../shared/ImageGallery';
 
 const AboutGroup = (props) => {
@@ -27,6 +29,7 @@ const AboutGroup = (props) => {
                 formattedAbout,
             },
         },
+        t: formatMessage,
     } = props;
     const imageArray = [];
     if (!_isEmpty(galleryImages)) {
@@ -64,7 +67,7 @@ const AboutGroup = (props) => {
                     {formattedImpact
                     && (
                         <div className="GroupPurpose">
-                            <Header as="h3">The Group’s Purpose</Header>
+                            <Header as="h3">{formatMessage('groupProfile:groupPurpose')}</Header>
                             <p>
                                 {ReactHtmlParser(formattedImpact)}
                             </p>
@@ -73,7 +76,7 @@ const AboutGroup = (props) => {
                     {formattedHelping
                     && (
                         <div className="GroupPurpose">
-                            <Header as="h3">How to Help</Header>
+                            <Header as="h3">{formatMessage('groupProfile:groupHelpText')}</Header>
                             <p>
                                 { ReactHtmlParser(formattedHelping) }
                             </p>
@@ -82,7 +85,7 @@ const AboutGroup = (props) => {
                     {formattedAbout
                     && (
                         <div className="GroupPurpose">
-                            <Header as="h3">About the Organizers</Header>
+                            <Header as="h3">{formatMessage('groupProfile:groupAboutOrg')}</Header>
                             <p>
                                 { ReactHtmlParser(formattedAbout) }
                             </p>
@@ -120,6 +123,7 @@ AboutGroup.defaultProps = {
             videoPlayerLink: '',
         },
     },
+    t: () => {},
 };
 
 AboutGroup.propTypes = {
@@ -135,6 +139,7 @@ AboutGroup.propTypes = {
             videoPlayerLink: string,
         },
     },
+    t: func,
 };
 
 function mapStateToProps(state) {
@@ -144,4 +149,11 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(AboutGroup);
+const connectedComponent = withTranslation([
+    'groupProfile',
+])(connect(mapStateToProps)(AboutGroup));
+export {
+    connectedComponent as default,
+    AboutGroup,
+    mapStateToProps,
+};

@@ -8,7 +8,6 @@ import {
     arrayOf,
     PropTypes,
     string,
-    bool,
 } from 'prop-types';
 import _isEmpty from 'lodash/isEmpty';
 
@@ -21,31 +20,19 @@ const Admins = (props) => {
         groupAdminsDetails: {
             data,
         },
-        isAuthenticated,
     } = props;
     let adminData = '';
     if (!_isEmpty(data)) {
         adminData = data.map((admin) => {
-            if (isAuthenticated) {
-                return (
-                    <Link route={(`/users/profile/${admin.id}`)}>
-                        <List.Item as="a">
-                            <Image className="grProfile" src={admin.attributes.avatar} />
-                            <List.Content>
-                                <List.Header>{admin.attributes.displayName}</List.Header>
-                            </List.Content>
-                        </List.Item>
-                    </Link>
-                );
-            }
-
             return (
-                <List.Item as="p">
-                    <Image className="grProfile" src={admin.attributes.avatar} />
-                    <List.Content>
-                        <List.Header>{admin.attributes.displayName}</List.Header>
-                    </List.Content>
-                </List.Item>
+                <Link route={(`/users/profile/${admin.id}`)}>
+                    <List.Item as="a">
+                        <Image className="grProfile" src={admin.attributes.avatar} />
+                        <List.Content>
+                            <List.Header>{admin.attributes.displayName}</List.Header>
+                        </List.Content>
+                    </List.Item>
+                </Link>
             );
         });
     }
@@ -65,7 +52,6 @@ Admins.defaultProps = {
             next: '',
         },
     },
-    isAuthenticated: false,
 };
 
 Admins.propTypes = {
@@ -75,13 +61,11 @@ Admins.propTypes = {
             next: string,
         }),
     },
-    isAuthenticated: bool,
 };
 
 function mapStateToProps(state) {
     return {
         groupAdminsDetails: state.group.groupAdminsDetails,
-        isAuthenticated: state.auth.isAuthenticated,
     };
 }
 

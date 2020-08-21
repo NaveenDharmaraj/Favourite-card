@@ -9,15 +9,23 @@ import {
     bool,
     func,
 } from 'prop-types';
+import {
+    Button,
+    Responsive,
+} from 'semantic-ui-react';
 import getConfig from 'next/config';
 
+import { withTranslation } from '../i18n';
 import {
     getGroupFromSlug,
     getImageGallery,
 } from '../actions/group';
 import Layout from '../components/shared/Layout';
 import GroupProfileWrapper from '../components/Group';
-import { Router } from '../routes';
+import {
+    Router,
+    Link,
+} from '../routes';
 import storage from '../helpers/storage';
 import '../static/less/charityProfile.less';
 
@@ -42,6 +50,7 @@ class GroupProfile extends React.Component {
         return {
             namespacesRequired: [
                 'common',
+                'groupProfile',
             ],
             slug: query.slug,
         };
@@ -85,6 +94,7 @@ class GroupProfile extends React.Component {
 
         const {
             APP_URL_ORIGIN,
+            RAILS_APP_URL_ORIGIN,
         } = publicRuntimeConfig;
 
         const {
@@ -99,7 +109,9 @@ class GroupProfile extends React.Component {
                     slug,
                 },
             },
+            isAuthenticated,
             redirectToDashboard,
+            t: formatMessage,
         } = this.props;
         let title = name;
         if (!_isEmpty(location)) {
@@ -109,20 +121,44 @@ class GroupProfile extends React.Component {
         const causesList = (causes.length > 0) ? _map(causes, _property('name')) : [];
         const keywords = (causesList.length > 0) ? (causesList.slice(0, 10)).join(', ') : '';
         const url = `${APP_URL_ORIGIN}/groups/${slug}`;
+        const giveButtonElement = <Button className="blue-btn-rounded-def mt-1">{formatMessage('common:giveButtonText')}</Button>;
+        let giveButton = null;
+        if (isAuthenticated) {
+            giveButton = (
+                <div className="buttonWraper">
+                    <Link route={`/give/to/group/${slug}/new`}>
+                        {giveButtonElement}
+                    </Link>
+                </div>
+            );
+        } else {
+            giveButton = (
+                <div className="buttonWraper">
+                    <a href={(`${RAILS_APP_URL_ORIGIN}/send/to/group/${slug}`)}>
+                        {giveButtonElement}
+                    </a>
+                </div>
+            );
+        }
         if (isCampaign !== true) {
             return (
-                <Layout
-                    avatar={avatar}
-                    keywords={keywords}
-                    title={title}
-                    description={desc}
-                    url={url}
-                    isProfilePage
-                >
-                    {!redirectToDashboard
-                        && <GroupProfileWrapper {...this.props} />
-                    }
-                </Layout>
+                <div>
+                    <Layout
+                        avatar={avatar}
+                        keywords={keywords}
+                        title={title}
+                        description={desc}
+                        url={url}
+                        isProfilePage
+                    >
+                        {!redirectToDashboard
+                            && <GroupProfileWrapper {...this.props} />
+                        }
+                    </Layout>
+                    <Responsive className="ch_MobGive" maxWidth={767} minWidth={320}>
+                        {giveButton}
+                    </Responsive>
+                </div>
             );
         }
         return null;
@@ -136,7 +172,7 @@ GroupProfile.defaultProps = {
             avatar: '',
             causes: [],
             description: '',
-            isCampaign: true,
+            isCampaign: false,
             location: '',
             name: '',
             slug: '',
@@ -149,10 +185,11 @@ GroupProfile.defaultProps = {
             },
         },
     },
-    isAUthenticated: false,
+    isAuthenticated: false,
     redirectToDashboard: false,
     redirectToPrivateGroupErrorPage: false,
     slug: '',
+    t: () => {},
 };
 
 GroupProfile.propTypes = {
@@ -175,18 +212,28 @@ GroupProfile.propTypes = {
             },
         },
     },
-    isAUthenticated: bool,
+    isAuthenticated: bool,
     redirectToDashboard: bool,
     redirectToPrivateGroupErrorPage: bool,
     slug: string,
+    t: func,
 };
 
 function mapStateToProps(state) {
     return {
         groupDetails: state.group.groupDetails,
-        isAUthenticated: state.auth.isAuthenticated,
+        isAuthenticated: state.auth.isAuthenticated,
         redirectToDashboard: state.group.redirectToDashboard,
         redirectToPrivateGroupErrorPage: state.group.redirectToPrivateGroupErrorPage,
     };
 }
-export default connect(mapStateToProps)(GroupProfile);
+
+const connectedComponent = withTranslation([
+    'common',
+    'groupProfile',
+])(connect(mapStateToProps)(GroupProfile));
+export {
+    connectedComponent as default,
+    GroupProfile,
+    mapStateToProps,
+};

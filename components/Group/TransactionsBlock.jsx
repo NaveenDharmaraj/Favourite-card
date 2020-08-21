@@ -7,11 +7,13 @@ import {
     number,
     string,
     bool,
+    func,
 } from 'prop-types';
 
 import {
     formatCurrency,
 } from '../../helpers/give/utils';
+import { withTranslation } from '../../i18n';
 
 import TransactionsCard from './TransactionsCard';
 
@@ -26,6 +28,7 @@ const TransactionsBlock = (props) => {
             },
         },
         isAuthenticated,
+        t: formatMessage,
     } = props;
     const currency = 'USD';
     const language = 'en';
@@ -33,20 +36,20 @@ const TransactionsBlock = (props) => {
         {
             amount: formatCurrency(totalMoneyRaised, language, currency),
             field: 'totalMoneyRaised',
-            headerText: 'All time total raised',
-            popupText: 'This is the total money raised since the giving group was created, including past giving goals.',
+            headerText: formatMessage('groupProfile:totalMoneyRaised'),
+            popupText: formatMessage('groupProfile:totalMoneyPopup'),
         },
         {
             amount: formatCurrency(totalMoneyGiven, language, currency),
             field: 'totalMoneyGiven',
-            headerText: 'Total given',
-            popupText: 'This is the total given to others (eg.: giving groups, campaigns and charities.',
+            headerText: formatMessage('groupProfile:totalGiven'),
+            popupText: formatMessage('groupProfile:totalGivenPopup'),
         },
         {
             amount: formatCurrency(balance, language, currency),
             field: 'balance',
-            headerText: 'Total balance',
-            popupText: 'This is how much the group currently have. All time total raised minus total given to others.',
+            headerText: formatMessage('groupProfile:totalBalance'),
+            popupText: formatMessage('groupProfile:totalBalancePopup'),
         },
     ];
     const transactionList = transactionMapping.map((transaction) => {
@@ -79,12 +82,12 @@ const TransactionsBlock = (props) => {
     return (
         <div className="charityInfowrap fullwidth">
             <div className="charityInfo">
-                <Header as="h4">Transactions</Header>
+                <Header as="h4">{formatMessage('groupProfile:transactionHeader')}</Header>
                 {transactionList}
                 {(isAuthenticated && totalMoneyRaised && parseInt(totalMoneyRaised, 10) > 0)
                 && (
                     <div className="lastGiftWapper">
-                        <p onClick={updateIndex} className="lastGiftText blueText">View transactionss</p>
+                        <p onClick={updateIndex} className="lastGiftText blueText">{formatMessage('groupProfile:viewTransaction')}</p>
                     </div>
                 )}
             </div>
@@ -93,6 +96,7 @@ const TransactionsBlock = (props) => {
 };
 
 TransactionsBlock.defaultProps = {
+    dispatch: () => {},
     groupDetails: {
         attributes: {
             balance: '',
@@ -102,9 +106,12 @@ TransactionsBlock.defaultProps = {
         },
     },
     isAuthenticated: false,
+    scrollOffset: 0,
+    t: () => {},
 };
 
 TransactionsBlock.propTypes = {
+    dispatch: func,
     groupDetails: {
         attributes: {
             balance: string,
@@ -114,6 +121,8 @@ TransactionsBlock.propTypes = {
         },
     },
     isAuthenticated: bool,
+    scrollOffset: number,
+    t: func,
 };
 
 function mapStateToProps(state) {
@@ -124,4 +133,11 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(TransactionsBlock);
+const connectedComponent = withTranslation([
+    'groupProfile',
+])(connect(mapStateToProps)(TransactionsBlock));
+export {
+    connectedComponent as default,
+    TransactionsBlock,
+    mapStateToProps,
+};

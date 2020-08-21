@@ -6,6 +6,7 @@ import {
     PropTypes,
     string,
     bool,
+    array,
 } from 'prop-types';
 import {
     Container,
@@ -40,6 +41,9 @@ const GroupProfileWrapper = (props) => {
         },
         isAuthenticated,
     } = props;
+    const {
+        groupDetails,
+    } = props;
     const pathArr = [
         'Explore',
         'Giving Groups',
@@ -70,7 +74,7 @@ const GroupProfileWrapper = (props) => {
                                             profileId={profileId}
                                         >
                                             <ProfilePageHead
-                                                pageDetails={props.groupDetails}
+                                                pageDetails={groupDetails}
                                             />
                                         </ProfileTitle>
                                     </Grid>
@@ -119,8 +123,8 @@ const GroupProfileWrapper = (props) => {
 };
 
 GroupProfileWrapper.defaultProps = {
-    groupDetails: PropTypes.shape({
-        attributes: PropTypes.shape({
+    groupDetails: {
+        attributes: {
             activeMatch: {},
             avatar: '',
             causes: [],
@@ -128,10 +132,10 @@ GroupProfileWrapper.defaultProps = {
             liked: false,
             location: '',
             name: '',
-        }),
+        },
         id: '',
         type: '',
-    }),
+    },
     isAuthenticated: false,
 };
 
@@ -140,9 +144,7 @@ GroupProfileWrapper.propTypes = {
         attributes: PropTypes.shape({
             activeMatch: PropTypes.shape({}),
             avatar: string,
-            causes: PropTypes.arrayOf(
-                PropTypes.shape({}),
-            ),
+            causes: array,
             hasActiveMatch: bool,
             liked: bool,
             location: string,
@@ -161,4 +163,9 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(GroupProfileWrapper);
+const connectedComponent = (connect(mapStateToProps)(GroupProfileWrapper));
+export {
+    connectedComponent as default,
+    GroupProfileWrapper,
+    mapStateToProps,
+};

@@ -7,15 +7,18 @@ import {
     Progress,
     Button,
     Divider,
+    Responsive,
 } from 'semantic-ui-react';
 import {
     number,
     string,
     bool,
+    func,
 } from 'prop-types';
 import getConfig from 'next/config';
 import _isEmpty from 'lodash/isEmpty';
 
+import { withTranslation } from '../../i18n';
 import {
     Link,
 } from '../../routes';
@@ -49,35 +52,40 @@ const GivingGoal = (props) => {
             },
         },
         isAuthenticated,
+        t: formatMessage,
     } = props;
     const currency = 'USD';
     const language = 'en';
     const hasGoal = (fundraisingDaysRemaining > 0);
     const hasPreviousGoal = ((fundraisingDaysRemaining === 0) && !_isEmpty(goal));
-    const formattedMoneyRaised = formatCurrency(totalMoneyRaised, language, currency);
+    const formattedtotalMoneyRaised = formatCurrency(totalMoneyRaised, language, currency);
     const formattedgoalAmountRaised = formatCurrency(goalAmountRaised, language, currency);
     const formattedgoal = (hasGoal || hasPreviousGoal) ? formatCurrency(goal, language, currency) : '';
-    const daysText = (fundraisingDaysRemaining === 1) ? ' day left' : ' days left';
+    const daysText = (fundraisingDaysRemaining === 1) ? formatMessage('groupProfile:dayLeft') : formatMessage('groupProfile:daysLeft');
     let fundRaisingDuration = '';
     let lastDonationDay = '';
     let giveButton = null;
     let giftText = '';
     let goalText = '';
     let canSetGoal = false;
-    const giveButtonElement = <Button className="blue-btn-rounded-def mt-1">Give</Button>;
+    const giveButtonElement = (
+        <Button className="blue-btn-rounded-def mt-1">
+            {formatMessage('common:giveButtonText')}
+        </Button>
+    );
     if (lastDonationAt) {
         lastDonationDay = distanceOfTimeInWords(lastDonationAt);
-        giftText = `Last gift received ${lastDonationDay}`;
+        giftText = `${formatMessage('groupProfile:lastGiftReceived')} ${lastDonationDay}`;
     }
     if (hasGoal) {
         if (goalAmountRaised >= goal) {
-            goalText = 'The group has reached the goal!';
+            goalText = formatMessage('groupProfile:reachedGoalText');
             canSetGoal = isAdmin;
         } else {
-            goalText = `${fundraisingDaysRemaining}${daysText} to reach goal`;
+            goalText = `${fundraisingDaysRemaining}${daysText} ${formatMessage('groupProfile:toReachGoalText')}`;
         }
     } else if (hasPreviousGoal) {
-        goalText = `Giving goal expired on ${formatDateForGivingTools(fundraisingEndDate)}`;
+        goalText = `${formatMessage('groupProfile:goalExpiredOnText')} ${formatDateForGivingTools(fundraisingEndDate)}`;
     }
     fundRaisingDuration = (
         <span className="badge white goalbtn">
@@ -85,8 +93,8 @@ const GivingGoal = (props) => {
             {canSetGoal
             && (
                 <div>
-                    <a href={(`${RAILS_APP_URL_ORIGIN}/groups/${slug}/edit`)}>
-                    Save new Giving Goal
+                    <a href={(`${RAILS_APP_URL_ORIGIN}/groups/${slug}/edit?accrodian=charity_and_goal`)}>
+                        {formatMessage('groupProfile:saveNewGoalText')}
                     </a>
                 </div>
             )}
@@ -116,8 +124,8 @@ const GivingGoal = (props) => {
                 {(!hasGoal && !hasPreviousGoal)
                     ? (
                         <Fragment>
-                            <Header as="h4">Total raised</Header>
-                            <Header as="h1">{formattedMoneyRaised}</Header>
+                            <Header as="h4">{formatMessage('groupProfile:totalRaised')}</Header>
+                            <Header as="h1">{formattedtotalMoneyRaised}</Header>
                             {(balance && parseInt(balance, 10) > 0)
                             && (
                                 <div className="lastGiftWapper">
@@ -125,14 +133,22 @@ const GivingGoal = (props) => {
                                 </div>
                             )}
                             <Divider />
-                            {giveButton}
+                            <Responsive minWidth={768}>
+                                {giveButton}
+                            </Responsive>
                         </Fragment>
                     )
                     : (
                         <Fragment>
-                            <Header as="h4">Raised on current giving goal</Header>
+                            <Header as="h4">{formatMessage('groupProfile:raisedGoalText')}</Header>
                             <Header as="h1">{formattedgoalAmountRaised}</Header>
-                            <p>{`of ${formattedgoal} goal`}</p>
+                            <p>
+                                {formatMessage('groupProfile:ofGoalAmount',
+                                    {
+                                        formattedgoal,
+                                    })
+                                }
+                            </p>
                             <div className="goalPercent">
                                 <Progress percent={fundraisingPercentage} />
                             </div>
@@ -141,7 +157,9 @@ const GivingGoal = (props) => {
                                 <p className="lastGiftText">{giftText}</p>
                             </div>
                             <Divider />
-                            {giveButton}
+                            <Responsive minWidth={768}>
+                                {giveButton}
+                            </Responsive>
                         </Fragment>
                     )}
             </div>
@@ -154,13 +172,18 @@ GivingGoal.defaultProps = {
         attributes: {
             balance: null,
             fundraisingDaysRemaining: null,
+            fundraisingEndDate: '',
             fundraisingPercentage: null,
             goal: '',
             goalAmountRaised: '',
+            isAdmin: false,
             lastDonationAt: '',
+            slug: '',
+            totalMoneyRaised: '',
         },
     },
     isAuthenticated: false,
+    t: () => {},
 };
 
 GivingGoal.propTypes = {
@@ -168,13 +191,18 @@ GivingGoal.propTypes = {
         attributes: {
             balance: number,
             fundraisingDaysRemaining: number,
+            fundraisingEndDate: string,
             fundraisingPercentage: number,
             goal: string,
             goalAmountRaised: string,
+            isAdmin: bool,
             lastDonationAt: string,
+            slug: string,
+            totalMoneyRaised: string,
         },
     },
     isAuthenticated: bool,
+    t: func,
 };
 
 function mapStateToProps(state) {
@@ -184,4 +212,12 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(GivingGoal);
+const connectedComponent = withTranslation([
+    'common',
+    'groupProfile',
+])(connect(mapStateToProps)(GivingGoal));
+export {
+    connectedComponent as default,
+    GivingGoal,
+    mapStateToProps,
+};

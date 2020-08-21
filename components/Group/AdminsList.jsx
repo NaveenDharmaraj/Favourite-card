@@ -13,6 +13,8 @@ import {
 } from 'prop-types';
 import _isEmpty from 'lodash/isEmpty';
 
+import { withTranslation } from '../../i18n';
+
 const AdminsList = (props) => {
     const updateIndex = () => {
         const {
@@ -36,6 +38,7 @@ const AdminsList = (props) => {
             data,
             totalCount,
         },
+        t: formatMessage,
     } = props;
     const adminData = [];
     const adminName = [];
@@ -63,7 +66,15 @@ const AdminsList = (props) => {
                 </List.Item>
             </List>
             <div className="GroupPrfileAllText">
-                <p>{`${adminName} and ${remainingAdmins} more`}</p>
+                <p>
+                    {
+                        formatMessage('groupProfile:moreGroupAdminsText',
+                            {
+                                adminName,
+                                remainingAdmins,
+                            })
+                    }
+                </p>
             </div>
         </div>
     );
@@ -78,6 +89,7 @@ AdminsList.defaultProps = {
         },
     },
     scrollOffset: 0,
+    t: () => {},
 };
 
 AdminsList.propTypes = {
@@ -89,6 +101,7 @@ AdminsList.propTypes = {
         }),
     },
     scrollOffset: number,
+    t: func,
 };
 
 function mapStateToProps(state) {
@@ -99,4 +112,9 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(AdminsList);
+const connectedComponent = withTranslation('groupProfile')(connect(mapStateToProps)(AdminsList));
+export {
+    connectedComponent as default,
+    AdminsList,
+    mapStateToProps,
+};

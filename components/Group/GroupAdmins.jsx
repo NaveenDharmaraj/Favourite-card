@@ -8,13 +8,13 @@ import {
 import {
     arrayOf,
     PropTypes,
-    number,
     string,
     func,
     bool,
 } from 'prop-types';
 import _isEmpty from 'lodash/isEmpty';
 
+import { withTranslation } from '../../i18n';
 import {
     getDetails,
 } from '../../actions/group';
@@ -46,6 +46,7 @@ class GroupAdmins extends React.Component {
                 data: adminsData,
                 totalCount,
             },
+            t: formatMessage,
         } = this.props;
         let data = '';
         if (!_isEmpty(adminsData)) {
@@ -60,7 +61,7 @@ class GroupAdmins extends React.Component {
         }
         return (
             <Fragment>
-                <Header as="h3">Group Admins</Header>
+                <Header as="h3">{formatMessage('groupProfile:groupAdmins')}</Header>
                 {!adminsLoader
                     ? data
                     : <PlaceholderGrid row={1} column={3} placeholderType="usersList" />}
@@ -79,13 +80,9 @@ GroupAdmins.defaultProps = {
         },
     },
     groupDetails: {
-        attributes: {
-            balance: '',
-            fundraisingDaysRemaining: null,
-            totalMoneyGiven: '',
-            totalMoneyRaised: '',
-        },
+        id: '',
     },
+    t: () => {},
 };
 
 GroupAdmins.propTypes = {
@@ -98,13 +95,9 @@ GroupAdmins.propTypes = {
         }),
     },
     groupDetails: {
-        attributes: {
-            balance: string,
-            fundraisingDaysRemaining: number,
-            totalMoneyGiven: string,
-            totalMoneyRaised: string,
-        },
+        id: string,
     },
+    t: func,
 };
 
 function mapStateToProps(state) {
@@ -115,4 +108,11 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(GroupAdmins);
+const connectedComponent = withTranslation([
+    'groupProfile',
+])(connect(mapStateToProps)(GroupAdmins));
+export {
+    connectedComponent as default,
+    GroupAdmins,
+    mapStateToProps,
+};
