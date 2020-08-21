@@ -419,7 +419,7 @@ class Group extends React.Component {
             validity,
             reviewBtnFlag: !validity.isReloadRequired
         });
-        if(!validity.isReloadRequired){
+        if (!validity.isReloadRequired || !validity.doesAmountExist){
             window.scrollTo(0,0)
         }
         return _every(validity);
