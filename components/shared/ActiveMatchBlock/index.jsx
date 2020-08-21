@@ -9,6 +9,7 @@ import {
     number,
     string,
     bool,
+    PropTypes,
 } from 'prop-types';
 import { connect } from 'react-redux';
 
@@ -118,7 +119,7 @@ ActiveMatchBlock.defaultProps = {
 };
 
 ActiveMatchBlock.propTypes = {
-    activeMatch: {
+    activeMatch: PropTypes.shape({
         balance: string,
         company: string,
         companyAvatar: string,
@@ -127,7 +128,7 @@ ActiveMatchBlock.propTypes = {
         matchPercent: number,
         maxMatchAmount: number,
         totalMatch: string,
-    },
+    }),
     hasActiveMatch: bool,
     isAuthenticated: bool,
     type: string,

@@ -11,6 +11,7 @@ import {
     bool,
     func,
     string,
+    PropTypes,
 } from 'prop-types';
 
 import {
@@ -162,21 +163,21 @@ MemberCard.defaultProps = {
 };
 
 MemberCard.propTypes = {
-    currentUser: {
+    currentUser: PropTypes.shape({
         id: string,
-    },
+    }),
     dispatch: func,
-    memberData: {
-        attributes: {
+    memberData: PropTypes.shape({
+        attributes: PropTypes.shape({
             avatar: string,
             city: string,
             displayName: string,
             friendStatus: string,
             isGroupAdmin: bool,
             province: string,
-        },
+        }),
         id: string,
-    },
+    }),
 };
 
 function mapStateToProps(state) {

@@ -14,6 +14,7 @@ import {
     string,
     bool,
     func,
+    PropTypes,
 } from 'prop-types';
 import getConfig from 'next/config';
 import _isEmpty from 'lodash/isEmpty';
@@ -170,7 +171,7 @@ const GivingGoal = (props) => {
 GivingGoal.defaultProps = {
     groupDetails: {
         attributes: {
-            balance: null,
+            balance: '',
             fundraisingDaysRemaining: null,
             fundraisingEndDate: '',
             fundraisingPercentage: null,
@@ -187,9 +188,9 @@ GivingGoal.defaultProps = {
 };
 
 GivingGoal.propTypes = {
-    groupDetails: {
-        attributes: {
-            balance: number,
+    groupDetails: PropTypes.shape({
+        attributes: PropTypes.shape({
+            balance: string,
             fundraisingDaysRemaining: number,
             fundraisingEndDate: string,
             fundraisingPercentage: number,
@@ -199,8 +200,8 @@ GivingGoal.propTypes = {
             lastDonationAt: string,
             slug: string,
             totalMoneyRaised: string,
-        },
-    },
+        }),
+    }),
     isAuthenticated: bool,
     t: func,
 };

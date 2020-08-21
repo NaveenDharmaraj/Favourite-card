@@ -9,10 +9,9 @@ import {
     Grid,
 } from 'semantic-ui-react';
 import {
-    arrayOf,
+    array,
     PropTypes,
     string,
-    number,
     func,
     bool,
 } from 'prop-types';
@@ -46,10 +45,12 @@ class Activity extends React.Component {
 
     componentDidMount() {
         const {
-            id,
             dispatch,
             groupActivities: {
                 data: activityData,
+            },
+            groupDetails: {
+                id: groupId,
             },
         } = this.props;
         if (_isEmpty(activityData)) {
@@ -59,13 +60,12 @@ class Activity extends React.Component {
                 },
                 type: actionTypes.GROUP_PLACEHOLDER_STATUS,
             });
-            dispatch(getGroupActivities(id));
+            dispatch(getGroupActivities(groupId));
         }
     }
 
     getComments() {
         const {
-            id: groupId,
             groupActivities: {
                 data,
             },
@@ -73,6 +73,7 @@ class Activity extends React.Component {
                 attributes: {
                     isMember,
                 },
+                id: groupId,
             },
             userInfo: {
                 id: userId,
@@ -102,13 +103,15 @@ class Activity extends React.Component {
     loadMore() {
         const {
             dispatch,
-            id,
             groupActivities: {
                 nextLink: activitiesLink,
             },
+            groupDetails: {
+                id: groupId,
+            },
         } = this.props;
-        const url = (activitiesLink) ? activitiesLink : '';
-        dispatch(getGroupActivities(id, url));
+        const url = !_isEmpty(activitiesLink) ? activitiesLink : '';
+        dispatch(getGroupActivities(groupId, url));
     }
 
     updateInputValue(event) {
@@ -120,12 +123,14 @@ class Activity extends React.Component {
     postComment() {
         const {
             dispatch,
-            id,
+            groupDetails: {
+                id: groupId,
+            },
         } = this.props;
         const {
             commentText: msg,
         } = this.state;
-        dispatch(postActivity(id, msg));
+        dispatch(postActivity(groupId, msg));
         this.setState({
             commentText: '',
         });
@@ -220,16 +225,14 @@ Activity.defaultProps = {
     dispatch: () => {},
     groupActivities: {
         data: [],
-        links: {
-            next: '',
-        },
+        nextLink: '',
     },
     groupDetails: {
         attributes: {
             isMember: false,
         },
+        id: '',
     },
-    id: null,
     userInfo: {
         id: '',
     },
@@ -238,21 +241,19 @@ Activity.defaultProps = {
 Activity.propTypes = {
     commentsLoader: bool,
     dispatch: func,
-    groupActivities: {
-        data: arrayOf(PropTypes.element),
-        links: PropTypes.shape({
-            next: string,
-        }),
-    },
-    groupDetails: {
-        attributes: {
+    groupActivities: PropTypes.shape({
+        data: array,
+        nextLink: string,
+    }),
+    groupDetails: PropTypes.shape({
+        attributes: PropTypes.shape({
             isMember: bool,
-        },
-    },
-    id: number,
-    userInfo: {
+        }),
         id: string,
-    },
+    }),
+    userInfo: PropTypes.shape({
+        id: string,
+    }),
 };
 
 function mapStateToProps(state) {

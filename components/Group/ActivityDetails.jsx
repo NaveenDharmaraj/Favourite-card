@@ -303,7 +303,7 @@ ActivityDetails.defaultProps = {
     likesCount: null,
     name: '',
     type: '',
-    userId: null,
+    userId: '',
     userInfo: {
         attributes: {
             avatar: '',
@@ -323,24 +323,24 @@ ActivityDetails.propTypes = {
     description: string,
     disableLike: PropTypes.shape({}),
     dispatch: func,
-    groupComments: {
+    groupComments: PropTypes.shape({
         isLoadComments: bool,
         isReply: bool,
         loadComments: bool,
-    },
+    }),
     groupId: number,
     id: number,
     isLiked: bool,
     likesCount: number,
     name: string,
     type: string,
-    userId: number,
-    userInfo: {
-        attributes: {
+    userId: string,
+    userInfo: PropTypes.shape({
+        attributes: PropTypes.shape({
             avatar: string,
             displayName: string,
-        },
-    },
+        }),
+    }),
 };
 
 function mapStateToProps(state) {

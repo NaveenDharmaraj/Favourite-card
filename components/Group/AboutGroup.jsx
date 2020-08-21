@@ -130,15 +130,15 @@ AboutGroup.propTypes = {
     galleryImages: PropTypes.arrayOf(
         PropTypes.shape({}),
     ),
-    groupDetails: {
-        attributes: {
+    groupDetails: PropTypes.shape({
+        attributes: PropTypes.shape({
             formattedAbout: string,
             formattedHelping: string,
             formattedImpact: string,
             formattedShort: string,
             videoPlayerLink: string,
-        },
-    },
+        }),
+    }),
     t: func,
 };
 

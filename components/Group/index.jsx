@@ -39,7 +39,6 @@ const GroupProfileWrapper = (props) => {
             id: profileId,
             type,
         },
-        isAuthenticated,
     } = props;
     const {
         groupDetails,
@@ -92,15 +91,10 @@ const GroupProfileWrapper = (props) => {
                                         </Responsive>
                                     </Grid.Column>
                                     <Divider className="mt-2" />
-                                    {isAuthenticated
-                                    && (
-                                        <Fragment>
-                                            <Grid.Column mobile={16} tablet={16} computer={16} className="ch_paragraph mt-2 mb-2">
-                                                <GroupAdmins />
-                                            </Grid.Column>
-                                            <Divider />
-                                        </Fragment>
-                                    )}
+                                    <Grid.Column mobile={16} tablet={16} computer={16} className="ch_paragraph mt-2 mb-2">
+                                        <GroupAdmins />
+                                    </Grid.Column>
+                                    <Divider />
                                 </Grid.Row>
                                 <AboutGroup />
                                 <ProfileDetails />
@@ -136,7 +130,6 @@ GroupProfileWrapper.defaultProps = {
         id: '',
         type: '',
     },
-    isAuthenticated: false,
 };
 
 GroupProfileWrapper.propTypes = {
@@ -153,13 +146,11 @@ GroupProfileWrapper.propTypes = {
         id: string,
         type: string,
     }),
-    isAuthenticated: bool,
 };
 
 function mapStateToProps(state) {
     return {
         groupDetails: state.group.groupDetails,
-        isAuthenticated: state.auth.isAuthenticated,
     };
 }
 

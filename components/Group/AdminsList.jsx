@@ -5,11 +5,11 @@ import {
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import {
-    arrayOf,
+    array,
     PropTypes,
-    string,
     number,
     func,
+    bool,
 } from 'prop-types';
 import _isEmpty from 'lodash/isEmpty';
 
@@ -20,17 +20,20 @@ const AdminsList = (props) => {
         const {
             dispatch,
             scrollOffset,
+            isAuthenticated,
         } = props;
-        dispatch({
-            payload: {
-                activeIndex: 1,
-            },
-            type: 'GET_GROUP_TAB_INDEX',
-        });
-        window.scrollTo({
-            behavior: 'smooth',
-            top: scrollOffset,
-        });
+        if (isAuthenticated) {
+            dispatch({
+                payload: {
+                    activeIndex: 1,
+                },
+                type: 'GET_GROUP_TAB_INDEX',
+            });
+            window.scrollTo({
+                behavior: 'smooth',
+                top: scrollOffset,
+            });
+        }
     };
 
     const {
@@ -84,22 +87,20 @@ AdminsList.defaultProps = {
     dispatch: () => {},
     groupAdminsDetails: {
         data: [],
-        links: {
-            next: '',
-        },
+        totalCount: null,
     },
+    isAuthenticated: false,
     scrollOffset: 0,
     t: () => {},
 };
 
 AdminsList.propTypes = {
     dispatch: func,
-    groupAdminsDetails: {
-        data: arrayOf(PropTypes.element),
-        links: PropTypes.shape({
-            next: string,
-        }),
-    },
+    groupAdminsDetails: PropTypes.shape({
+        data: array,
+        totalCount: number,
+    }),
+    isAuthenticated: bool,
     scrollOffset: number,
     t: func,
 };

@@ -179,9 +179,9 @@ Members.defaultProps = {
 
 Members.propTypes = {
     dispatch: func,
-    groupDetails: {
+    groupDetails: PropTypes.shape({
         id: number,
-    },
+    }),
     groupMembersDetails: {
         data: arrayOf(PropTypes.element),
         links: PropTypes.shape({

@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import {
     arrayOf,
     PropTypes,
-    string,
+    number,
 } from 'prop-types';
 import _isEmpty from 'lodash/isEmpty';
 
@@ -23,18 +23,16 @@ const Admins = (props) => {
     } = props;
     let adminData = '';
     if (!_isEmpty(data)) {
-        adminData = data.map((admin) => {
-            return (
-                <Link route={(`/users/profile/${admin.id}`)}>
-                    <List.Item as="a">
-                        <Image className="grProfile" src={admin.attributes.avatar} />
-                        <List.Content>
-                            <List.Header>{admin.attributes.displayName}</List.Header>
-                        </List.Content>
-                    </List.Item>
-                </Link>
-            );
-        });
+        adminData = data.map((admin) => (
+            <Link route={(`/users/profile/${admin.id}`)}>
+                <List.Item as="a">
+                    <Image className="grProfile" src={admin.attributes.avatar} />
+                    <List.Content>
+                        <List.Header>{admin.attributes.displayName}</List.Header>
+                    </List.Content>
+                </List.Item>
+            </Link>
+        ));
     }
     return (
         <div className="ch_share">
@@ -48,18 +46,14 @@ const Admins = (props) => {
 Admins.defaultProps = {
     groupAdminsDetails: {
         data: [],
-        links: {
-            next: '',
-        },
+        totalCount: null,
     },
 };
 
 Admins.propTypes = {
     groupAdminsDetails: {
         data: arrayOf(PropTypes.element),
-        links: PropTypes.shape({
-            next: string,
-        }),
+        totalCount: number,
     },
 };
 

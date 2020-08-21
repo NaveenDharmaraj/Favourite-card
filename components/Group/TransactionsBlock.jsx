@@ -8,6 +8,7 @@ import {
     string,
     bool,
     func,
+    PropTypes,
 } from 'prop-types';
 
 import {
@@ -112,14 +113,14 @@ TransactionsBlock.defaultProps = {
 
 TransactionsBlock.propTypes = {
     dispatch: func,
-    groupDetails: {
-        attributes: {
+    groupDetails: PropTypes.shape({
+        attributes: PropTypes.shape({
             balance: string,
             fundraisingDaysRemaining: number,
             totalMoneyGiven: string,
             totalMoneyRaised: string,
-        },
-    },
+        }),
+    }),
     isAuthenticated: bool,
     scrollOffset: number,
     t: func,

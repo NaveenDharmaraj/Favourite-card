@@ -6,11 +6,12 @@ import {
     Header,
 } from 'semantic-ui-react';
 import {
-    arrayOf,
+    array,
     PropTypes,
     string,
     func,
     bool,
+    number,
 } from 'prop-types';
 import _isEmpty from 'lodash/isEmpty';
 
@@ -75,9 +76,7 @@ GroupAdmins.defaultProps = {
     dispatch: () => {},
     groupAdminsDetails: {
         data: [],
-        links: {
-            next: '',
-        },
+        totalCount: null,
     },
     groupDetails: {
         id: '',
@@ -88,15 +87,13 @@ GroupAdmins.defaultProps = {
 GroupAdmins.propTypes = {
     adminsLoader: bool,
     dispatch: func,
-    groupAdminsDetails: {
-        data: arrayOf(PropTypes.element),
-        links: PropTypes.shape({
-            next: string,
-        }),
-    },
-    groupDetails: {
+    groupAdminsDetails: PropTypes.shape({
+        data: array,
+        totalCount: number,
+    }),
+    groupDetails: PropTypes.shape({
         id: string,
-    },
+    }),
     t: func,
 };
 

@@ -12,6 +12,7 @@ import {
     func,
     string,
     number,
+    PropTypes,
 } from 'prop-types';
 import { connect } from 'react-redux';
 
@@ -218,6 +219,7 @@ GroupJoin.defaultProps = {
         attributes: {
             avatar: '',
             groupType: '',
+            isMember: false,
             location: '',
             name: '',
             slug: '',
@@ -231,25 +233,26 @@ GroupJoin.defaultProps = {
 GroupJoin.propTypes = {
     buttonLoader: bool,
     closeLeaveModal: bool,
-    currentUser: {
+    currentUser: PropTypes.shape({
         id: string,
-    },
+    }),
     dispatch: func,
-    errorMessage: {
+    errorMessage: PropTypes.shape({
         adminError: number,
         id: string,
-    },
-    groupDetails: {
-        attributes: {
+    }),
+    groupDetails: PropTypes.shape({
+        attributes: PropTypes.shape({
             avatar: string,
             groupType: string,
+            isMember: bool,
             location: string,
             name: string,
             slug: string,
-        },
+        }),
         id: string,
-    },
-    groupMembersDetails: {},
+    }),
+    groupMembersDetails: PropTypes.shape({}),
     isAuthenticated: bool,
 };
 

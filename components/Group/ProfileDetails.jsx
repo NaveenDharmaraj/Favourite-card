@@ -5,6 +5,7 @@ import {
     bool,
     number,
     func,
+    PropTypes,
 } from 'prop-types';
 import {
     Tab,
@@ -38,12 +39,6 @@ class ProfileDetails extends React.Component {
         } = this.tabRef;
         dispatch({
             payload: {
-                activeIndex: 0,
-            },
-            type: 'GET_GROUP_TAB_INDEX',
-        });
-        dispatch({
-            payload: {
                 scrollOffset: offsetTop,
             },
             type: 'GET_GROUP_TAB_OFFSET',
@@ -65,12 +60,17 @@ class ProfileDetails extends React.Component {
         const {
             dispatch,
         } = this.props;
-        dispatch({
-            payload: {
-                activeIndex: data.activeIndex,
-            },
-            type: 'GET_GROUP_TAB_INDEX',
-        });
+        const {
+            newActiveIndex,
+        } = this.state;
+        if (!_isEqual(newActiveIndex, data.activeIndex)) {
+            dispatch({
+                payload: {
+                    activeIndex: data.activeIndex,
+                },
+                type: 'GET_GROUP_TAB_INDEX',
+            });
+        }
     }
 
     render() {
@@ -172,6 +172,7 @@ ProfileDetails.defaultProps = {
             formattedShort: '',
             videoPlayerLink: '',
         },
+        id: '',
     },
     isAUthenticated: false,
     updatedActiveIndex: 0,
@@ -179,15 +180,16 @@ ProfileDetails.defaultProps = {
 
 ProfileDetails.propTypes = {
     dispatch: func,
-    groupDetails: {
-        attributes: {
+    groupDetails: PropTypes.shape({
+        attributes: PropTypes.shape({
             formattedAbout: string,
             formattedHelping: string,
             formattedImpact: string,
             formattedShort: string,
             videoPlayerLink: string,
-        },
-    },
+        }),
+        id: string,
+    }),
     isAUthenticated: bool,
     updatedActiveIndex: number,
 };

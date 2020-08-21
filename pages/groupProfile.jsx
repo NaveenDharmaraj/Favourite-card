@@ -8,6 +8,7 @@ import {
     string,
     bool,
     func,
+    PropTypes,
 } from 'prop-types';
 import {
     Button,
@@ -194,8 +195,8 @@ GroupProfile.defaultProps = {
 
 GroupProfile.propTypes = {
     dispatch: func,
-    groupDetails: {
-        attributes: {
+    groupDetails: PropTypes.shape({
+        attributes: PropTypes.shape({
             avatar: string,
             causes: array,
             description: string,
@@ -203,15 +204,15 @@ GroupProfile.propTypes = {
             location: string,
             name: string,
             slug: string,
-        },
-        relationships: {
-            galleryImages: {
-                links: {
+        }),
+        relationships: PropTypes.shape({
+            galleryImages: PropTypes.shape({
+                links: PropTypes.shape({
                     related: string,
-                },
-            },
-        },
-    },
+                }),
+            }),
+        }),
+    }),
     isAuthenticated: bool,
     redirectToDashboard: bool,
     redirectToPrivateGroupErrorPage: bool,

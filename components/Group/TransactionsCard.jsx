@@ -6,6 +6,7 @@ import {
 } from 'semantic-ui-react';
 import {
     string,
+    PropTypes,
 } from 'prop-types';
 
 const TransactionsCard = (props) => {
@@ -49,12 +50,12 @@ TransactionsCard.defaultProps = {
 };
 
 TransactionsCard.propTypes = {
-    transactionDetails: {
+    transactionDetails: PropTypes.shape({
         amount: string,
         field: string,
         headerText: string,
         popupText: string,
-    },
+    }),
 };
 
 export default TransactionsCard;

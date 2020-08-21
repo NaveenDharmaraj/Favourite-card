@@ -1,4 +1,3 @@
-
 import React, { Fragment } from 'react';
 import _isEmpty from 'lodash/isEmpty';
 import {
@@ -6,7 +5,9 @@ import {
     Image,
     Header,
 } from 'semantic-ui-react';
-import { PropTypes } from 'prop-types';
+import {
+    PropTypes,
+} from 'prop-types';
 
 import ShareProfile from '../ShareProfile';
 
@@ -77,7 +78,7 @@ function ProfileTitle(props) {
 ProfileTitle.defaultProps = {
     avatar: '',
     beneficiaryType: '',
-    causes: '',
+    causes: [],
     following: false,
     location: '',
     name: '',
@@ -88,7 +89,9 @@ ProfileTitle.defaultProps = {
 ProfileTitle.propTypes = {
     avatar: PropTypes.string,
     beneficiaryType: PropTypes.string,
-    causes: PropTypes.string,
+    causes: PropTypes.arrayOf(
+        PropTypes.shape({}),
+    ),
     following: PropTypes.bool,
     location: PropTypes.string,
     name: PropTypes.string,
@@ -96,4 +99,4 @@ ProfileTitle.propTypes = {
     type: PropTypes.string,
 };
 
-export default ProfileTitle;  
+export default ProfileTitle;
