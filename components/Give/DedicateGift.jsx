@@ -120,7 +120,7 @@ class DedicateGift extends Component {
                     </Accordion>
                     <FormValidationErrorMessage
                         condition={validity && !validity.isDedicateGiftEmpty}
-                        errorMessage="Field should not be empty"
+                        errorMessage="Add a note to remember who you've dedicated this gift to."
                     />
                 </div>
             </Fragment>
