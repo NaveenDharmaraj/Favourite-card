@@ -242,7 +242,7 @@ class CreditCard extends React.Component {
         } = this.state;
         const { formatMessage } = this.props;
         return (
-            <Form.Field>
+            <Form.Field className='addNewCard'>
                 {
                     NODE_ENV !== 'production' && (
                         <Fragment>

@@ -802,7 +802,7 @@ class ReloadAddAmount extends React.Component {
                     {
                         (!_.isEmpty(donationMatchedData)) ? (
                             <Form.Field>
-                                <div className="recurringMsg mb-3">
+                                <div className="recurringMsg">
                                     {formatMessage(
                                         'accountTopUp:donationMatchPolicyNote', {
                                         companyName: (!_.isEmpty(donationMatchedData.attributes.displayName))
@@ -987,7 +987,7 @@ class ReloadAddAmount extends React.Component {
                     <label htmlFor="donationAmount">
                         {formatMessage('giveCommon:amountLabel')}
                     </label>
-                        <Form.Field className="mb-3">
+                        <Form.Field>
                             <Form.Field
                                 control={Input}
                                 id={"donationAmount"}
@@ -1045,7 +1045,7 @@ class ReloadAddAmount extends React.Component {
                         />
                         <Button
                             primary
-                            className="blue-btn-rounded btn_right mb-2"
+                            className="blue-btn-rounded btn_right mb-3"
                             // className={isMobile ? 'mobBtnPadding' : 'btnPadding'}
                             content="Add money"
                             disabled={this.state.reloadButtonClicked}
