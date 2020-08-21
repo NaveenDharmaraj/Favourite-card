@@ -92,8 +92,16 @@
 }
 .flowPadding{
     padding-top: 40px;
+    @media only screen and (max-width:767px) {
+        padding-top: 25px;
+    } 
 }
-
+.flowReview{
+    label{
+        font-weight: normal;
+        font-family: 'ProximaNova-Semibold';
+    }
+}
 .ui{
     &.table{
         &.no_shadow_tbl_mob{
@@ -155,7 +163,7 @@
 
 .flowBreadcrumb{
     @media only screen and (max-width:767px) {
-        text-align: center !important;
+        text-align: left !important;
     }
     &::after{
         content: '';
@@ -172,7 +180,7 @@
             }
             @media only screen and (max-width:767px) {
                 float: none;
-                text-align: center !important;
+                text-align: left !important;
             }
             i{
                 &.right{
@@ -206,7 +214,7 @@
 }
 /***********flowReviewbanner********/
 .givinggroupbanner{
-    background-image: url(../images/banner-add_money_give_flows-green.png)!important;
+    background-image: url(../images/banner_give-to-gg-campaign.svg)!important;
     background-size:cover !important;
     background-position: center !important;
     background-repeat: no-repeat !important;
@@ -241,7 +249,7 @@
 }
 /*******/
 .charityallocationbanner{
-    background-image: url(../images/banner-add_money_give_flows-yellow.png)!important;
+    background-image: url(../images/banner_give-to-charity.svg)!important;
     background-size:cover !important;
     background-position: center !important;
     background-repeat: no-repeat !important;
@@ -399,15 +407,60 @@
          }
      }
  }
+ .GiveTable{
+    .ui.very.basic.table{
+        &.no_shadow_tbl_mob{
+            td{
+                @media only screen and (max-width:767px) {
+                    padding-left: 0px !important;
+                    padding-right: 0px !important;
+                } 
+            }
+        }
+    }
+}
  .p2p-top-table{
+    @media only screen and (max-width:767px) {
+       margin-top: -40px;
+    } 
+    @media only screen and (min-width:768px) {
+        margin-top: 10px;
+     } 
     .send-table{
         font-family: 'ProximaNova-Semibold';
+        padding-bottom: 15px;
+        @media only screen and (max-width:767px) {
+            text-align: left;
+        } 
+    }
+    .totalAmount{
+        .send-table{
+            font-family: 'ProximaNova-Semibold';
+            @media only screen and (max-width:767px) {
+                text-align: left;
+                padding-left: 0px;
+            } 
+        }
+        &.dottedBorderline{
+            @media only screen and (max-width:767px) {
+                margin-left: -10px;
+                margin-right: -10px;
+                margin-bottom: -35px;
+                .send-table{
+                    padding-top: 30px;
+                }
+            }
+        }
     }
     .ui.table.no-border-table{
         tbody>tr{
             td{
                 color: #263238;
                 padding: 5px 11px;
+                @media only screen and (max-width:767px) {
+                    padding-left: 0px;
+                    padding-right: 0px;
+                } 
             }
             &:first-child{
                 td{
@@ -428,14 +481,21 @@
     &.flowPadding{
         .ui{
             &.breadcrumb{
+                .section{
+                    &:first-child{
+                        padding-left: 0px;
+                    }
+                }
              a{
              
                 &.section{
                     color: #BBBBBB;
                     font-size: 14px;
                     line-height: 21px;
-                    font-family: 'ProximaNova-Regular';
-                    font-weight: 600;
+                    font-family: 'ProximaNova-Semibold';
+                    &:first-child{
+                        padding-left: 0px;
+                    }
                 }
              }
             }
@@ -458,6 +518,7 @@
     color: #90459A !important;
     font-size: 14px;
     line-height: 21px;
+    font-family: 'ProximaNova-Semibold';
 }
 
 /*###################### Naveen #########################*/
@@ -547,6 +608,11 @@
     padding: 10px 15px;
 }
 .flowFirst{
+    .field{
+        textarea{
+            resize: none;
+        }
+    }
     .ui{
         &.form{
             >.grid{
@@ -571,8 +637,7 @@
                 font-size: 14px !important;
                 line-height: 17px;
                 color:#263238;
-                font-weight: 600 !important;
-                font-family: 'ProximaNova-Regular';
+                font-family: 'ProximaNova-Semibold';
                 margin-top:0px;
             }
         }
@@ -612,6 +677,16 @@
         color: #263238 ;
         line-height: 15px;
         margin-top: 15px;
+        a{
+            text-decoration: none;
+            &.link{
+                &.border{
+                    &.bold{
+                        font-family: 'ProximaNova-Regular';
+                    }
+                }
+            }
+        }
     }
     .give_field{
         margin-bottom: 20px !important;
@@ -682,13 +757,42 @@
         }
     }
 }
+
 .paymentMethodDropdown{
+    .ui.active.visible.fluid.search.selection.dropdown.dropdownsearchField.grouped.medium {
+        &::before{
+            top: 9px;
+        }
+    }
+    .dropdownSearch .dropdownsearchField.ui.dropdown.search.medium{
+        height: 40px;
+        display: flex;
+        align-items: center;
+        &::after{
+            top: 44%;
+        }
+        input{
+            top: 0;
+            bottom: 0;
+        }
+    }
     .ui{
         &.button{
             &.dropdown{
+                height: 40px;
+                &.taxReceiptDropDown{
+                    height: auto;
+                }
                 &.active{
+                    &:hover{
+                        background-color: transparent;
+                        &::before{
+                            filter: brightness(1) invert(0);
+                            z-index: 99;
+                            transform: rotate(180deg);
+                        }
+                    }
                     &::before{
-                        filter: brightness(0) invert(1);
                         z-index: 99;
                         transform: rotate(180deg);
                     }
@@ -741,6 +845,11 @@
                         }
                     }
                 }
+                &.upward{
+                    .menu{
+                       
+                    }
+                }
                 .menu{
                     margin-top: 0px !important;
                     border-color: none;
@@ -756,13 +865,13 @@
                                 line-height: 14px;
                                 &:first-child{
                                     display: block;
-                                    font-weight: bold;
+                                    font-family: 'ProximaNova-Semibold';
                                     margin-bottom: 5px;
                                 }
                                 &:last-child{
                                     display: inline-block;
                                     max-width: 200px;
-                                    font-weight: normal;
+                                    font-family: 'ProximaNova-Regular';
                                 }
                             }
                         }
@@ -994,7 +1103,7 @@
         margin-top: 20px !important;
      } 
      button{
-        font-weight: 600 !important;
+        font-family: 'ProximaNova-Semibold';
      }
 }
 .ui.small.button.btn-basic-outline.selected-btn{
@@ -1093,6 +1202,25 @@ button.ui.button.blue-btn-rounded-def.flowConfirmBtn.second_btn{
             margin-bottom: 14px !important;
         }
     }
+    .field{
+        &.blue-btn-rounded{
+            &.rivewbtnp2p{
+                &.btn_right{
+                    @media only screen and (max-width:767px) {
+                        float: none;
+                        display: block;
+                        .ui{
+                            &.primary{
+                                &.button{
+                                    width: 100%;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
     .ui.form .field
         >label{
             &:first-child{
@@ -1110,6 +1238,7 @@ button.ui.button.blue-btn-rounded-def.flowConfirmBtn.second_btn{
             font-family: 'ProximaNova-Regular';
             color:#263238;
             &.taxReceiptDropDown{
+                height: auto;
                 span.attributes{
                     font-family: 'ProximaNova-Regular';
                     line-height: 22px !important;
@@ -1128,14 +1257,11 @@ button.ui.button.blue-btn-rounded-def.flowConfirmBtn.second_btn{
 }
 .give_flow_field{
     .field {
-        &:last-child{
-            .checkbox{
-                label{
-                    margin-bottom: 0px !important;
-                }
+        .checkbox{
+            label{
+                margin-bottom: 0px !important;
             }
         }
-        
     }
 }
 .add_space{
@@ -1360,7 +1486,7 @@ p{
             width: calc(100% - 45px);
             line-height: 17px;
             .amount-give{
-                font-weight: bold;
+                font-family: 'ProximaNova-Semibold';
             }
         }
     }
@@ -1380,7 +1506,6 @@ p{
     }
     @media only screen and (max-width:767px) {
         margin-top:15px !important;
-        border: none !important;
     }
 }
 .amount-table_text{
@@ -1388,6 +1513,7 @@ p{
     margin-right: 10px;
     @media only screen and (max-width:767px) {
         margin-right:0px !important;
+        padding-top: 30px;
     }
 }
 .hyperLinks-style{
@@ -1465,9 +1591,8 @@ input{
         p{
             font-size: 14px;
             line-height: 22px;
-            font-family: 'ProximaNova-Regular';
             color: @font-color;
-            font-weight: 700;
+            font-family: 'ProximaNova-Semibold';
             &.rightTop{
                 margin-left:28px;
             }
@@ -1514,8 +1639,7 @@ input{
     .descriptiontext{
         padding: 0px 37px 46px 37px;
         text-align: center;
-        font-family: 'ProximaNova-Regular';
-        font-weight: 600;
+        font-family: 'ProximaNova-Semibold';
         p{
         &.leftsubtext{
             font-family: 'ProximaNova-Regular';
@@ -1571,8 +1695,7 @@ input{
     .descriptiontext{
         padding: 0px 37px 22px 37px;
         text-align: center;
-        font-family: 'ProximaNova-Regular';
-        font-weight: 600;
+        font-family: 'ProximaNova-Semibold';
         p{
         &.leftsubtext{
             font-family: 'ProximaNova-Regular';
@@ -1629,8 +1752,7 @@ input{
     .descriptiontext{
         padding: 0px 37px 22px 37px;
         text-align: center;
-        font-family: 'ProximaNova-Regular';
-        font-weight: 600;
+        font-family: 'ProximaNova-Semibold';
         p{
         &.leftsubtext{
             font-family: 'ProximaNova-Regular';
@@ -1664,8 +1786,7 @@ input{
         .content{
             .description{
                 p{
-                font-family: 'ProximaNova-Regular';
-                font-weight: 600;
+                    font-family: 'ProximaNova-Semibold';
                 }
                 @media only screen and (max-width:767px) {
                    text-align: center;
@@ -2080,6 +2201,36 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
                     }
                 }
             }
+        }
+    }
+}
+.field{
+    .accordion{
+        &.ui{
+            .checkbox{
+                &.ui{
+                    &.cp_chkbx{
+                        &.mb-1{
+                            margin-bottom: 20px !important;
+                        }
+                        label{
+                            margin-bottom: 0px !important;
+                        }
+                        +.input{
+                            input{
+                                height: 40px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+.dropdownWithArrowParent{
+    &.infoToShareDropdown{
+        .ui.selection.dropdown::after {
+            top: calc(50% - 3.5px);
         }
     }
 }
