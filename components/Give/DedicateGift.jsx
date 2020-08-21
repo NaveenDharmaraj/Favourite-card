@@ -97,6 +97,7 @@ class DedicateGift extends Component {
                             className="inputInline"
                             active={activeIndex === 0 || activeIndex === 1}
                             name={currentName}
+                            placeholder="Who are you dedicating this gift to? "
                             onChange={(e, {
                                 name, newIndex, value,
                             }) => {
