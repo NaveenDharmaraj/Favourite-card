@@ -1,4 +1,7 @@
-import _ from 'lodash';
+import _uniqBy from 'lodash/uniqBy';
+import _findIndex from 'lodash/findIndex';
+import _isEmpty from 'lodash/isEmpty';
+
 const group = (state = {}, action) => {
     let newState = {
         ...state,
@@ -90,7 +93,7 @@ const group = (state = {}, action) => {
                     ...state,
                     groupActivities: {
                         ...state.groupActivities,
-                        data: _.uniqBy(data,
+                        data: _uniqBy(data,
                             (e) => {
                                 return e.id;
                             }),
@@ -105,7 +108,7 @@ const group = (state = {}, action) => {
                         ...state,
                         groupActivities: {
                             ...state.groupActivities,
-                            data: _.uniqBy(data,
+                            data: _uniqBy(data,
                                 (e) => {
                                     return e.id;
                                 }),
@@ -176,7 +179,7 @@ const group = (state = {}, action) => {
             }
             break;
         case 'ACTIVITY_LIKE_STATUS':
-            const activityIndex = _.findIndex(state.groupActivities.data, (data) => data.id === action.payload.eventId);
+            const activityIndex = _findIndex(state.groupActivities.data, (data) => data.id === action.payload.eventId);
             const dataArray = state.groupActivities.data;
             dataArray[activityIndex].attributes.isLiked = action.payload.activityStatus;
             if (action.payload.activityStatus) {
@@ -283,11 +286,11 @@ const group = (state = {}, action) => {
             newState = {};
             break;
         case 'TOGGLE_TRANSACTION_VISIBILITY':
-            const transactionIndex = _.findIndex(state.groupTransactions.data, (data) => data.id === action.payload.transactionId);
+            const transactionIndex = _findIndex(state.groupTransactions.data, (data) => data.id === action.payload.transactionId);
             const transactionArray = state.groupTransactions.data;
             transactionArray[transactionIndex] = action.payload.data;
-            if (state.groupActivities && !_.isEmpty(state.groupActivities.data)) {
-                const NewActivityIndex = _.findIndex(state.groupActivities.data, (data) => data.id === action.payload.transactionId);
+            if (state.groupActivities && !_isEmpty(state.groupActivities.data)) {
+                const NewActivityIndex = _findIndex(state.groupActivities.data, (data) => data.id === action.payload.transactionId);
                 const NewActivityArray = state.groupActivities.data;
                 NewActivityArray[NewActivityIndex] = action.payload.data;
                 newState = {
