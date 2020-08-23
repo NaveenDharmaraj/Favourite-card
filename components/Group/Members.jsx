@@ -103,7 +103,7 @@ class Members extends React.Component {
                 {!membersLoader
                     ? (
                         <Fragment>
-                            <div className="members">
+                           <div className={`members ${isAdmin ? 'btn_padding' : ' '}`}>
                                 <Grid.Row>
                                     <Grid>
                                         <Grid.Row>
@@ -140,7 +140,7 @@ class Members extends React.Component {
                                         && this.renderMembers()}
                             </Table>
                             <div className="paginationWraper">
-                                <div className="db-pagination right-align pt-2">
+                                <div className="db-pagination">
                                     {
                                         !_isEmpty(membersData) && pageCount > 1 && (
                                             <Pagination
@@ -155,7 +155,13 @@ class Members extends React.Component {
                         </Fragment>
                     )
                     : (
-                        <PlaceholderGrid row={4} column={1} placeholderType="activityList" />
+                        <Grid className="mt-1">
+                            <Grid.Row>
+                                <Grid.Column width={16}>
+                                        <PlaceholderGrid row={4} column={1} placeholderType="activityList" />
+                                </Grid.Column>
+                            </Grid.Row>
+                        </Grid>
                     )
                 }
             </div>
