@@ -22,15 +22,17 @@ const CampaignSupporters = (props) => {
         <div className="charityInfowrap fullwidth">
             <div className="charityInfo">
                 <Header className="headingColor" as="h4">{formatMessage('campaignProfile:campaignSupporters')}</Header>
-                <div className="boxcard mr-1">
-                    <i aria-hidden="true" className="privacy icon" />
-                    <Header as="h2">{peopleInCampaign}</Header>
-                    <p>{formatMessage('campaignProfile:people')}</p>
-                </div>
-                <div className="boxcard">
-                    <i aria-hidden="true" className="group icon" />
-                    <Header as="h2">{groupsCount}</Header>
-                    <p>{formatMessage('campaignProfile:givingGroup')}</p>
+                <div className="boxcardWrapper">
+                    <div className="boxcard">
+                        <i aria-hidden="true" className="privacy icon" />
+                        <Header as="h2">{peopleInCampaign}</Header>
+                        <p>{formatMessage('campaignProfile:people')}</p>
+                    </div>
+                    <div className="boxcard">
+                        <i aria-hidden="true" className="group icon" />
+                        <Header as="h2">{groupsCount}</Header>
+                        <p>{formatMessage('campaignProfile:givingGroup')}</p>
+                    </div>
                 </div>
                 <Header as="h4" className="headingColor">{formatMessage('campaignProfile:supportCampaign')}</Header>
                 <p>{formatMessage('campaignProfile:givingGroupPeople')}</p>

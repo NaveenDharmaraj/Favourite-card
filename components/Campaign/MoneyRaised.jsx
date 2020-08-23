@@ -1,9 +1,10 @@
 
 import React from 'react';
-import { Header, Button, Link } from 'semantic-ui-react';
+import { Header, Button, Responsive } from 'semantic-ui-react';
 import getConfig from 'next/config';
 import _isEmpty from 'lodash/isEmpty';
 
+import { Link } from '../../routes';
 import { withTranslation } from '../../i18n';
 import { formatCurrency } from '../../helpers/give/utils';
 
@@ -29,19 +30,21 @@ const MoneyRaised = (props) => {
             <div className="charityInfo">
                 <Header as="h4">{formatMessage('campaignProfile:totalMoneyRaised')}</Header>
                 <Header as="h2">{formattedAmount.slice(0, -3)}</Header>
-                {!_isEmpty(isAuthenticated) && isAuthenticated ?
-                    (
-                        <Link route={(`/give/to/group/${slug}/new`)}>
-                            {giveButton}
-                        </Link>
-                    )
-                    :
-                    (
-                        <a href={(`${RAILS_APP_URL_ORIGIN}/send/to/group/${slug}`)}>
-                            {giveButton}
-                        </a>
-                    )
-                }
+                <Responsive minWidth={768}>
+                    {!_isEmpty(isAuthenticated) && isAuthenticated ?
+                        (
+                            <Link route={(`/give/to/group/${slug}/new`)}>
+                                {giveButton}
+                            </Link>
+                        )
+                        :
+                        (
+                            <a href={(`${RAILS_APP_URL_ORIGIN}/send/to/group/${slug}`)}>
+                                {giveButton}
+                            </a>
+                        )
+                    }
+                </Responsive>
             </div>
         </div>
     );

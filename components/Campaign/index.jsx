@@ -3,19 +3,22 @@
 import React from 'react';
 import _isEmpty from 'lodash/isEmpty';
 import {
+    Container,
+    Grid,
+    Responsive,
+} from 'semantic-ui-react';
+
+import {
     campaignSubGroupSeeMore,
     generateDeepLink,
 } from '../../actions/profile';
 import BreadcrumbDetails from '../shared/BreadCrumbs';
 import ProfilePageHead from '../shared/ProfilePageHead';
-import {
-    Container,
-    Grid,
-    Responsive
-} from 'semantic-ui-react';
-import CampaignDetails from './CampaignDetails';
-import ProfileDetails from './ProfileDetails';
 import ProfileTitle from '../shared/ProfileTitle';
+
+import ProfileDetails from './ProfileDetails';
+import CampaignDetails from './CampaignDetails';
+import SupportingGroups from './SupportingGroups';
 
 const actionTypes = {
     SEE_MORE_LOADER: 'SEE_MORE_LOADER',
@@ -73,6 +76,7 @@ class CampaignProfileWrapper extends React.Component {
         const {
             campaignDetails: {
                 attributes: {
+                    about,
                     avatar,
                     causes,
                     city,
@@ -85,8 +89,14 @@ class CampaignProfileWrapper extends React.Component {
                     groupsCount,
                     slug,
                     amountRaised,
+                    hasActiveMatch,
+                    activeMatch,
+                    videoPlayerLink,
+                    formattedShort,
+                    formattedImpact,
                 },
                 type,
+                id,
             },
         } = this.props;
         const bannerStyle = {};
@@ -123,7 +133,7 @@ class CampaignProfileWrapper extends React.Component {
                         />
                         <Grid.Row>
                             <Grid>
-                                <Grid.Column mobile={16} tablet={11} computer={11}>
+                                <Grid.Column mobile={16} tablet={10} computer={12}>
                                     <Grid.Row>
                                         <Grid>
                                             {campaignDetails && (
@@ -147,48 +157,63 @@ class CampaignProfileWrapper extends React.Component {
                                                     {
                                                         campaignDetails && (
                                                             <CampaignDetails
+                                                                activeMatch={activeMatch}
+                                                                hasActiveMatch={hasActiveMatch}
                                                                 peopleInCampaign={peopleInCampaign}
                                                                 groupsCount={groupsCount}
                                                                 slug={slug}
                                                                 amountRaised={amountRaised}
                                                                 isAuthenticated={isAuthenticated}
+                                                                type={type}
                                                             />
                                                         )
                                                     }
                                                 </Responsive>
                                             </Grid.Column>
                                         </Grid>
+                                        {
+                                            campaignDetails && (
+                                                <React.Fragment>
+                                                    <ProfileDetails
+                                                        about={about}
+                                                        videoPlayerLink={videoPlayerLink}
+                                                        formattedShort={formattedShort}
+                                                        formattedImpact={formattedImpact}
+                                                        campaignImageGallery={campaignImageGallery}
+                                                        isAuthenticated={isAuthenticated}
+                                                    />
+                                                    <SupportingGroups
+                                                        campaignId={id}
+                                                        slug={slug}
+                                                        campaignSubGroupDetails={campaignSubGroupDetails}
+                                                        campaignSubGroupsShowMoreUrl={campaignSubGroupsShowMoreUrl}
+                                                        seeMoreLoaderStatus={seeMoreLoaderStatus}
+                                                        subGroupListLoader={subGroupListLoader}
+                                                        viewMoreFn={this.viewMoreFn}
+                                                    />
+                                                </React.Fragment>
+                                            )
+                                        }
                                     </Grid.Row>
                                 </Grid.Column>
-                                <Grid.Column mobile={16} tablet={5} computer={5} >
+                                <Grid.Column mobile={16} tablet={6} computer={4} >
                                     <Responsive minWidth={768}>
                                         {
                                             campaignDetails && (
                                                 <CampaignDetails
+                                                    activeMatch={activeMatch}
+                                                    hasActiveMatch={hasActiveMatch}
                                                     peopleInCampaign={peopleInCampaign}
                                                     groupsCount={groupsCount}
                                                     slug={slug}
                                                     amountRaised={amountRaised}
                                                     isAuthenticated={isAuthenticated}
+                                                    type={type}
                                                 />
                                             )
                                         }
                                     </Responsive>
                                 </Grid.Column>
-                                {
-                                    campaignDetails && (
-                                        <ProfileDetails
-                                            campaignDetails={campaignDetails}
-                                            campaignImageGallery={campaignImageGallery}
-                                            campaignSubGroupDetails={campaignSubGroupDetails}
-                                            campaignSubGroupsShowMoreUrl={campaignSubGroupsShowMoreUrl}
-                                            isAuthenticated={isAuthenticated}
-                                            seeMoreLoaderStatus={seeMoreLoaderStatus}
-                                            subGroupListLoader={subGroupListLoader}
-                                            viewMoreFn={this.viewMoreFn}
-                                        />
-                                    )
-                                }
                             </Grid>
                         </Grid.Row>
                     </Container>
