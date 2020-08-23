@@ -54,7 +54,6 @@ class ProfileDetails extends React.Component {
                 },
                 type: 'GET_GROUP_TAB_INDEX',
             });
-            event.preventDefault();
         }
     }
 
