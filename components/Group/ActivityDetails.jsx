@@ -252,6 +252,7 @@ class ActivityDetails extends React.Component {
                         {isReplyClicked && canReply
                             && (
                                 <div className="postInputMainWraper">
+                                    <Comment.Avatar src={avatar} />
                                     <div className="postInputWraper">
                                         <Input
                                             value={commentText}

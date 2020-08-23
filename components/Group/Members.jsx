@@ -155,7 +155,7 @@ class Members extends React.Component {
                         </Fragment>
                     )
                     : (
-                        <Grid className="mt-1">
+                        <Grid className="no-margin">
                             <Grid.Row>
                                 <Grid.Column width={16}>
                                         <PlaceholderGrid row={4} column={1} placeholderType="activityList" />

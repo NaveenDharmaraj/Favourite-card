@@ -163,8 +163,9 @@ class Activity extends React.Component {
             );
         }
         const actionData = (
-            <Grid centered>
-                <Grid.Row className="ActivityPost">
+         <div className="ActivityTop">
+                <Grid centered>
+                <Grid.Row>
                     <Grid.Column mobile={16} tablet={16} computer={16}>
                         {isMember
                         && (
@@ -196,6 +197,7 @@ class Activity extends React.Component {
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
+         </div>
         );
 
         return (
