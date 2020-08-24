@@ -101,13 +101,15 @@ class GiveFromCampaignModal extends React.Component {
                                         <Grid.Column mobile={16} tablet={16} computer={6}>
                                             <Link route={relatedBeneficiaryRoute}>
                                                 <div className={(relatedBeneficiaryRoute) ? 'ModelLeftBox' : 'ModelLeftBox graybox'}>
-                                                    <Image src={leftmodelimg} />
-                                                    <div className="descriptiontext">
-                                                        A charity your Campaign supports
-                                                        {(!relatedBeneficiaryRoute && (
-                                                            <p className="disabled-text">Your Campaign hasn't yet set charities to support</p>
-                                                        ))
-                                                        }
+                                                    <div className="center-content">
+                                                        <Image src={leftmodelimg} className="charityImg"/>
+                                                        <div className="descriptiontext">
+                                                            A charity your Campaign supports
+                                                            {(!relatedBeneficiaryRoute && (
+                                                                <p className="disabled-text">Your Campaign hasn't yet set charities to support</p>
+                                                            ))
+                                                            }
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </Link>
