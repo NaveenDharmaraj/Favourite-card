@@ -59,7 +59,7 @@ class CampaignProfileWrapper extends React.Component {
                 },
                 type: actionTypes.SEE_MORE_LOADER,
             });
-            campaignSubGroupSeeMore(campaignSubGroupsShowMoreUrl, dispatch, true);
+            dispatch(campaignSubGroupSeeMore(campaignSubGroupsShowMoreUrl,true));
         }
     }
 

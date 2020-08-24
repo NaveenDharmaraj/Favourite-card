@@ -222,6 +222,7 @@ export const getCampaignFromSlug = (slug, token = null) => async (dispatch) => {
     });
 };
 
+// TODO unit test as BASIC_AUTH_HEADER is passed as parameter getting then of undefined
 export const generateDeepLink = (url, dispatch) => {
     const fsa = {
         payload: {
@@ -244,6 +245,7 @@ export const generateDeepLink = (url, dispatch) => {
     }).finally(() => dispatch(fsa));
 };
 
+// TODO unit test getting then of undefined
 export const followProfile = (dispatch, userId, entityId, type) => {
     const fsa = {
         payload: {
@@ -289,6 +291,7 @@ export const followProfile = (dispatch, userId, entityId, type) => {
     });
 };
 
+// TODO unit test getting then of undefined
 export const unfollowProfile = (dispatch, userId, entityId, type) => {
     const fsa = {
         payload: {
@@ -334,7 +337,7 @@ export const unfollowProfile = (dispatch, userId, entityId, type) => {
     });
 };
 
-export const campaignSubGroupSeeMore = (url, dispatch, isViewMore) => {
+export const campaignSubGroupSeeMore = (url, isViewMore) => (dispatch) => {
     return coreApi.get(url, {
         params: {
             dispatch,
