@@ -1,4 +1,6 @@
-import React from 'react';
+import React, {
+    Fragment,
+} from 'react';
 import { connect } from 'react-redux';
 import {
     string,
@@ -10,11 +12,13 @@ import {
 import {
     Tab,
     Grid,
+    Divider,
 } from 'semantic-ui-react';
 import _isEqual from 'lodash/isEqual';
 
 import Activity from './Activity';
 import Members from './Members';
+import DonationDetails from './DonationDetails';
 // import CharitySupport from './CharitySupport';
 // import TransactionDetails from './TransactionDetails';
 
@@ -59,21 +63,21 @@ class ProfileDetails extends React.Component {
 
     render() {
         const {
-            isAUthenticated,
+            isAuthenticated,
             groupDetails: {
                 id,
             },
             updatedActiveIndex,
         } = this.props;
         let panes = [];
-        if (isAUthenticated) {
+        if (isAuthenticated) {
             panes = [
                 {
                     id: 'Activity',
                     menuItem: 'Activity',
                     render: () => (
                         <Tab.Pane attached={false}>
-                            {(isAUthenticated)
+                            {(isAuthenticated)
                             && (
                                 <Activity
                                     id={id}
@@ -87,7 +91,7 @@ class ProfileDetails extends React.Component {
                     menuItem: 'Members',
                     render: () => (
                         <Tab.Pane attached={false}>
-                            {(isAUthenticated)
+                            {(isAuthenticated)
                             && (
                                 <Members />
                             )}
@@ -99,7 +103,7 @@ class ProfileDetails extends React.Component {
                 //     menuItem: 'Transactions',
                 //     render: () => (
                 //         <Tab.Pane attached={false}>
-                //             {(isAUthenticated)
+                //             {(isAuthenticated)
                 //                 && (
                 //                     <TransactionDetails
                 //                         id={id}
@@ -113,7 +117,7 @@ class ProfileDetails extends React.Component {
                 //     menuItem: 'Charities this group supports',
                 //     render: () => (
                 //         <Tab.Pane attached={false}>
-                //             {(isAUthenticated)
+                //             {(isAuthenticated)
                 //             && (
                 //                 <CharitySupport
                 //                     id={id}
@@ -128,16 +132,25 @@ class ProfileDetails extends React.Component {
             <Grid.Row>
                 <Grid.Column mobile={16} tablet={16} computer={16} className="GroupTab">
                     <div className="charityTab tabBottom" ref={this.tabRef}>
-                        <Tab
-                            menu={{
-                                pointing: true,
-                                secondary: true,
-                            }}
-                            panes={panes}
-                            defaultActiveIndex={0}
-                            activeIndex={updatedActiveIndex}
-                            onTabChange={this.handleTabChange}
-                        />
+                        {isAuthenticated
+                            ? (
+                                <Tab
+                                    menu={{
+                                        pointing: true,
+                                        secondary: true,
+                                    }}
+                                    panes={panes}
+                                    defaultActiveIndex={0}
+                                    activeIndex={updatedActiveIndex}
+                                    onTabChange={this.handleTabChange}
+                                />
+                            )
+                            : (
+                                <Fragment>
+                                    <Divider />
+                                    <DonationDetails />
+                                </Fragment>
+                            )}
                     </div>
                 </Grid.Column>
             </Grid.Row>
@@ -157,7 +170,7 @@ ProfileDetails.defaultProps = {
         },
         id: '',
     },
-    isAUthenticated: false,
+    isAuthenticated: false,
     updatedActiveIndex: 0,
 };
 
@@ -173,14 +186,14 @@ ProfileDetails.propTypes = {
         }),
         id: string,
     }),
-    isAUthenticated: bool,
+    isAuthenticated: bool,
     updatedActiveIndex: number,
 };
 
 function mapStateToProps(state) {
     return {
         groupDetails: state.group.groupDetails,
-        isAUthenticated: state.auth.isAuthenticated,
+        isAuthenticated: state.auth.isAuthenticated,
         updatedActiveIndex: state.group.activeIndex,
     };
 }

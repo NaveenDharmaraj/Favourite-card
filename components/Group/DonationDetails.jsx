@@ -5,24 +5,20 @@ import { connect } from 'react-redux';
 import {
     number,
     string,
-    bool,
+    func,
 } from 'prop-types';
 import {
-    Container,
+    List,
     Header,
-    Progress,
-    Grid,
+    Popup,
+    Icon,
 } from 'semantic-ui-react';
 
+import { withTranslation } from '../../i18n';
 import {
     formatCurrency,
+    formatDateForGivingTools,
 } from '../../helpers/give/utils';
-import {
-    distanceOfTimeInWords,
-} from '../../helpers/utils';
-import ActiveMatchBlock from '../shared/ActiveMatchBlock';
-
-import CampaignSupports from './CampaignSupports';
 
 const DonationDetails = (props) => {
     const {
@@ -30,100 +26,87 @@ const DonationDetails = (props) => {
         language,
         groupDetails: {
             attributes: {
-                campaignId,
+                createdAt,
                 totalMoneyRaised,
-                goal,
-                fundraisingPercentage,
                 totalMoneyGiven,
                 balance,
                 fundraisingDaysRemaining,
-                lastDonationAt,
                 goalAmountRaised,
             },
         },
+        t: formatMessage,
     } = props;
-    let lastDonationDay = '';
-    if (lastDonationAt !== null) {
-        lastDonationDay = distanceOfTimeInWords(lastDonationAt);
-    }
-    let fundRaisingDuration = '';
-    const daysText = (fundraisingDaysRemaining && fundraisingDaysRemaining === 1) ? ' day left' : ' days left';
-    if (fundraisingDaysRemaining !== null) {
-        fundRaisingDuration = (
-            <span className="badge white right">
-                {fundraisingDaysRemaining}
-                {daysText}
-            </span>
-        );
-    }
+    const formattedCreated = formatDateForGivingTools(createdAt);
     return (
-        <Container>
-            <div className="profile-info-card giving">
-                <Grid stackable>
-                    <Grid.Row verticalAlign="middle">
-                        <Grid.Column mobile={16} tablet={11} computer={11}>
-                            {(fundraisingDaysRemaining !== null && fundraisingDaysRemaining > 0)
-                            && (
-                                <Fragment>
-                                    <Header as="h2" className="font-s-34">
-                                        {formatCurrency(goalAmountRaised, language, currency)}
-                                        {fundRaisingDuration}
-                                        <Header.Subheader className="small font-s-14" style={{ marginTop: '.7rem' }}>
-                                            {`raised of
-                                            ${formatCurrency(goal, language, currency)}
-                                            goal`}
-                                        </Header.Subheader>
-                                    </Header>
-                                    <Progress className="mb-0 c-green" percent={fundraisingPercentage} size="tiny" />
-                                    {lastDonationDay
-                                    && (
-                                        <div className="small-font">
-                                            {`Last donation
-                                            ${lastDonationDay}`}
-                                        </div>
-                                    )
-                                    }
-                                </Fragment>
-                            )}
-                            <div className="pt-1 campaign-amount">
-                                <Grid stackable columns={3}>
-                                    <Grid.Row>
-                                        <Grid.Column>
-                                            <Header as="h2">
-                                                {formatCurrency(totalMoneyGiven, language, currency)}
-                                                <Header.Subheader className="small font-s-14">All time total given</Header.Subheader>
-                                            </Header>
-                                        </Grid.Column>
-                                        <Grid.Column>
-                                            <Header as="h2">
-                                                {formatCurrency(totalMoneyRaised, language, currency)}
-                                                <Header.Subheader className="small font-s-14">All time total raised</Header.Subheader>
-                                            </Header>
-                                        </Grid.Column>
-                                        <Grid.Column>
-                                            <Header as="h2">
-                                                {formatCurrency(balance, language, currency)}
-                                                <Header.Subheader className="small font-s-14">Current balance</Header.Subheader>
-                                            </Header>
-                                        </Grid.Column>
-                                    </Grid.Row>
-                                </Grid>
-                            </div>
-                        </Grid.Column>
-                        {campaignId && <CampaignSupports />}
-                    </Grid.Row>
-                </Grid>
+        <Fragment>
+            <div className="groupcreated">
+                <List verticalAlign="middle">
+                    <List.Item>
+                        <i aria-hidden="true" className="calendar icon" />
+                        <List.Content>
+                            <List.Header>
+                                {`${formatMessage('groupProfile:groupCreated')} ${formattedCreated}.`}
+                            </List.Header>
+                        </List.Content>
+                    </List.Item>
+                </List>
             </div>
-            {
-                (props.groupDetails.attributes.hasActiveMatch)
-                    ? (
-                        <ActiveMatchBlock
-                            entityDetails={props.groupDetails}
+            {(fundraisingDaysRemaining !== 0)
+            && (
+                <div className="boxGroup">
+                    <div className="Currentbox">
+                        <Header as="h3">{formatCurrency(goalAmountRaised, language, currency)}</Header>
+                        <p>{formatMessage('groupProfile:totalRaisedGoal')}</p>
+                    </div>
+                </div>
+            )}
+            <div className="duringCurrent">
+                <div className="boxGroup">
+                    <div className="Currentbox">
+                        <Header as="h3">{formatCurrency(totalMoneyRaised, language, currency)}</Header>
+                        <p>{formatMessage('groupProfile:totalMoneyRaised')}</p>
+                    </div>
+                    <div className="Currentboxpop">
+                        <Popup
+                            trigger={<Icon name="question circle" />}
+                            content={formatMessage('groupProfile:totalMoneyPopup')}
+                            position="top right"
+                            inverted
                         />
-                    )
-                    : null
-            }
-        </Container>
+                    </div>
+                </div>
+                <div className="icon-boxGroup"><p>-</p></div>
+                <div className="boxGroup">
+                    <div className="Currentbox">
+                        <Header as="h3">{formatCurrency(totalMoneyGiven, language, currency)}</Header>
+                        <p>{formatMessage('groupProfile:totalGiven')}</p>
+                    </div>
+                    <div className="Currentboxpop">
+                        <Popup
+                            trigger={<Icon name="question circle" />}
+                            content={formatMessage('groupProfile:totalGivenPopup')}
+                            position="top right"
+                            inverted
+                        />
+                    </div>
+                </div>
+                <div className="icon-boxGroup"><p>=</p></div>
+                <div className="boxGroup">
+                    <div className="Currentbox">
+                        <Header as="h3" className="green">{formatCurrency(balance, language, currency)}</Header>
+                        <p>{formatMessage('groupProfile:totalBalance')}</p>
+                    </div>
+                    <div className="Currentboxpop">
+                        <Popup
+                            trigger={<Icon name="question circle" />}
+                            content={formatMessage('groupProfile:totalBalancePopup')}
+                            position="top right"
+                            inverted
+                        />
+                    </div>
+                </div>
+            </div>
+        </Fragment>
     );
 };
 
@@ -132,14 +115,15 @@ DonationDetails.defaultProps = {
     groupDetails: {
         attributes: {
             balance: null,
+            createdAt: '',
             fundraisingDaysRemaining: null,
-            fundraisingPercentage: null,
-            goal: null,
+            goalAmountRaised: '',
             totalMoneyGiven: null,
             totalMoneyRaised: null,
         },
     },
     language: 'en',
+    t: () => {},
 };
 
 DonationDetails.propTypes = {
@@ -147,23 +131,28 @@ DonationDetails.propTypes = {
     groupDetails: {
         attributes: {
             balance: number,
+            createdAt: string,
             fundraisingDaysRemaining: number,
-            fundraisingPercentage: number,
-            goal: number,
+            goalAmountRaised: string,
             totalMoneyGiven: number,
             totalMoneyRaised: number,
         },
     },
     language: string,
+    t: func,
 };
 
 function mapStateToProps(state) {
     return {
-        currentUser: state.user.info,
-        deepLinkUrl: state.profile.deepLinkUrl,
         groupDetails: state.group.groupDetails,
-        isAuthenticated: state.auth.isAuthenticated,
     };
 }
 
-export default connect(mapStateToProps)(DonationDetails);
+const connectedComponent = withTranslation([
+    'groupProfile',
+])(connect(mapStateToProps)(DonationDetails));
+export {
+    connectedComponent as default,
+    DonationDetails,
+    mapStateToProps,
+};

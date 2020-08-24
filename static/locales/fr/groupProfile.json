@@ -21,5 +21,7 @@
     "moreGroupAdminsText": "{{adminName}} and {{remainingAdmins}} more",
     "groupPurpose": "The Group’s Purpose",
     "groupHelpText": "How to Help",
-    "groupAboutOrg": "About the Organizers"
+    "groupAboutOrg": "About the Organizers",
+    "totalRaisedGoal": "Total raised on current giving goal",
+    "groupCreated": "Group created in"
 }
