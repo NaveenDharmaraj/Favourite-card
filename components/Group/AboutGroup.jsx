@@ -45,23 +45,31 @@ const AboutGroup = (props) => {
     return (
         <Fragment>
             <Grid.Row>
-                <Grid.Column mobile={16} tablet={16} computer={16} className="ch_paragraph">
+                <Grid.Column width={16} className="ch_paragraph AboutProfile">
                     {formattedShort
-                    && (
-                        <div className="GroupPurposeTop">
-                            <p>
-                                {ReactHtmlParser(formattedShort)}
-                            </p>
-                        </div>
-                    )}
+                            && (
+                                ReactHtmlParser(formattedShort)
+                            )}
+                </Grid.Column>
+            </Grid.Row>
+            <div className="MyGallery">
+                <Grid.Row>
                     {videoPlayerLink
                         && (
-                            <div className="mb-3 videoWrapper text-center">
-                                <embed
-                                    title="video"
-                                    src={videoPlayerLink}
-                                    className="responsiveVideo"
-                                />
+                            <div className="videoWrapperfull">
+                                <Grid>
+                                    <Grid.Row>
+                                        <Grid.Column width={16}>
+                                            <div className="videoWrapper">
+                                                <embed
+                                                    title="video"
+                                                    src={videoPlayerLink}
+                                                    className="responsiveVideo"
+                                                />
+                                            </div>
+                                        </Grid.Column>
+                                    </Grid.Row>
+                                </Grid>
                             </div>
                         )}
                     {formattedImpact
@@ -91,23 +99,22 @@ const AboutGroup = (props) => {
                             </p>
                         </div>
                     )}
-                </Grid.Column>
-            </Grid.Row>
-            <Grid.Row>
-                <Grid.Column mobile={16} tablet={16} computer={16} className="OneGrProfileImg">
-                    {!_isEmpty(imageArray)
-                                        && (
-                                            <div className="clear-fix mb-3">
-                                                <div className="mb-1">
-                                                    <ImageGallery
-                                                        imagesArray={imageArray}
-                                                        enableImageSelection={false}
-                                                    />
-                                                </div>
-                                            </div>
-                                        )}
-                </Grid.Column>
-            </Grid.Row>
+                    <div className="fullwidth_v_G">
+                        <div className="GalleryWrapper">
+                            <Grid className="fullwidth_gallery">
+                                <Grid.Row>
+                                    <Grid.Column width={16}>
+                                        <ImageGallery
+                                            imagesArray={imageArray}
+                                            enableImageSelection={false}
+                                        />
+                                    </Grid.Column>
+                                </Grid.Row>
+                            </Grid>
+                        </div>
+                    </div>
+                </Grid.Row>
+            </div>
         </Fragment>
     );
 };

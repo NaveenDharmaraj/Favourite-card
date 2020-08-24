@@ -60,7 +60,7 @@ const GroupProfileWrapper = (props) => {
                     <div className="ch_headerImage greenBg" />
                     <Grid.Row>
                         <Grid>
-                            <Grid.Column mobile={16} tablet={10} computer={11}>
+                            <Grid.Column mobile={16} tablet={10} computer={12}>
                                 <Grid.Row>
                                     <Grid>
                                         <ProfileTitle
@@ -81,13 +81,11 @@ const GroupProfileWrapper = (props) => {
                                 <Grid.Row>
                                     <Grid.Column mobile={16}>
                                         <Responsive minWidth={320} maxWidth={767}>
-                                            <div className="charityInfowrap tabcharityInfowrap fullwidth">
-                                                <GroupRightColumnList
-                                                    activeMatch={activeMatch}
-                                                    type={type}
-                                                    hasActiveMatch={hasActiveMatch}
-                                                />
-                                            </div>
+                                            <GroupRightColumnList
+                                                activeMatch={activeMatch}
+                                                type={type}
+                                                hasActiveMatch={hasActiveMatch}
+                                            />
                                         </Responsive>
                                     </Grid.Column>
                                     <Divider className="mt-2" />
@@ -99,7 +97,7 @@ const GroupProfileWrapper = (props) => {
                                 <AboutGroup />
                                 <ProfileDetails />
                             </Grid.Column>
-                            <Grid.Column mobile={16} tablet={6} computer={5}>
+                            <Grid.Column mobile={16} tablet={6} computer={4}>
                                 <Responsive minWidth={767}>
                                     <GroupRightColumnList
                                         activeMatch={activeMatch}
