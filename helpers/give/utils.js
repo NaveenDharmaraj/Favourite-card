@@ -1375,11 +1375,6 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
             value: ReactHtmlParser(frequencyMessage),
         });
 
-        listingData.push({
-            name: 'reviewGiveFrom',
-            value: giveFrom.text,
-        });
-
         if (!_.isEmpty(giveGroupDetails) && (!_.isEmpty(groupMatchingDetails) && groupMatchingDetails.giveFromFund === giveFrom.value)) {
             const {
                 attributes: {
@@ -1401,12 +1396,20 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
                     matchingHeading: (state.isRecurring) ? `Match amount requested` : `Match amount from ${company}`,
                     matchingSubHeading: (state.isRecurring) ? `(from ${company} until funds ran out or expire)` : '',
                     popUpMessage: `For every $1.00 you give to this ${(giveTo.isCampaign) ? 'Campaign' : 'Group'}, ${company} will match your gift with $1.00 up to ${formatCurrency(maxMatchAmount, language, currency)} per gift, until the matching funds run out or expire.`,
-                    subHeading: `(${giveFrom.text})`,
+                    subHeading: `(From ${giveFrom.text})`,
                     totalAmount: formatCurrency(sumAmount, language, currency),
                     totalHeading: `Total with matching`,
                 };
             }
         }
+
+        if (!state.isGroupWithMatching) {
+            listingData.push({
+                name: 'reviewGiveFrom',
+                value: giveFrom.text,
+            });
+        }
+
         let giveToType = '';
         if (type === 'give/to/charity') {
             giveToType = 'Charity';

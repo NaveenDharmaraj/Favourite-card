@@ -168,9 +168,12 @@ class DropDownAccountOptions extends React.Component {
                                 />
                             )}
                         />
-                        <p className="multipleFriendAmountFieldText">
-                            You can give from your personal account or those you administer.
-                        </p>
+                        {((type !== 'donations') && (
+                            <p className="multipleFriendAmountFieldText">
+                                You can give from your personal account or those you administer.
+                            </p>
+                        ))}
+
                         {fieldData}
                     </div>
                 </Form.Field>

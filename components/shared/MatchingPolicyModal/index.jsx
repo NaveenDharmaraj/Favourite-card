@@ -92,9 +92,15 @@ const MatchingPolicyModal = ({
                                 </p>
                             </div>
                         </div>
-                        <div className="matching-fund-expire">
-                            <span className="expire-date">Expires {matchClose}</span>
-                        </div>
+                        {((matchClose) && (
+                            <div className="matching-fund-expire">
+                                <span className="expire-date">
+                                    Expires
+                                    {matchClose}
+                                </span>
+                            </div>
+                        ))}
+
                     </div>
                 </Modal.Content>
             </Modal>
