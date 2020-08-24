@@ -86,7 +86,7 @@ function TaxReceiptProfileForm(props) {
                 <React.Fragment>
                     { !!showFormData
                     && <div>
-                        <div>
+                        <div className="addRecipientForm">
                             <Form.Field>
                                 <label htmlFor="fullName">
                                     {formatMessage('fullName')}
@@ -207,7 +207,7 @@ function TaxReceiptProfileForm(props) {
                             <Grid>
                                 <Grid.Row>
                                     <Grid.Column mobile={16} tablet={8} computer={8}>
-                                        <Form.Field>
+                                        <Form.Field className="mb-1">
                                             <label htmlFor="country">
                                                 {formatMessage('country')}
                                             </label>
@@ -225,7 +225,7 @@ function TaxReceiptProfileForm(props) {
                                         </Form.Field>
                                     </Grid.Column>
                                     <Grid.Column mobile={16} tablet={8} computer={8}>
-                                        <Form.Field>
+                                        <Form.Field className="mb-1">
                                             <label htmlFor="postalCode">
                                                 {formatMessage('postalCode')}
                                             </label>
@@ -259,7 +259,7 @@ function TaxReceiptProfileForm(props) {
                                     </Grid.Column>
                                 </Grid.Row>
                             </Grid>
-                            <Form.Field className="mt-1">
+                            <Form.Field>
                                 <label htmlFor="province">
                                     {formatMessage(provinceMessage)}
                                 </label>

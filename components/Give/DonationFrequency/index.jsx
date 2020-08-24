@@ -24,8 +24,8 @@ function DonationFrequency(props) {
     } = props;
     return (
         <>
-            <div className="give_flow_field">
-                <Form.Field className="Frequencybottom">
+            <div className="give_flow_field Frequencybottom">
+                <Form.Field className="">
                     <label>Frequency</label>
                     <Popup
                         content={<div>{formatMessage('giveCommon:automaticDonationPopup')}</div>}

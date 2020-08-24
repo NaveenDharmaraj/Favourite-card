@@ -215,6 +215,9 @@ h4{
         }
       }
     }
+    ::-webkit-scrollbar{
+      width: 0px;
+    }
   }
   .ui{
     &.modals{
@@ -228,8 +231,6 @@ h4{
         .chimp-modal{
           &.ui{
             &.modal{
-              right: -10px;
-              left: 0;
               >.header{
                 padding: 2.7rem 1rem !important;
               }
@@ -8375,6 +8376,20 @@ body .userEllips{
     margin-bottom: 100px;
     @media only screen and (max-width:1199px) {
       margin-bottom: 0px;
+    }
+  }
+}
+.addRecipientForm{
+  .field{
+    .error.field{
+        margin-bottom: 0px;
+    }
+    .error-message{
+        margin-top: 10px;
+        font-size: 12px;
+    }
+    .ui.selection.dropdown{
+        line-height: 18px;
     }
   }
 }
