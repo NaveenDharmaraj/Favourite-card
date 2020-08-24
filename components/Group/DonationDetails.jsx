@@ -38,7 +38,7 @@ const DonationDetails = (props) => {
     } = props;
     const formattedCreated = formatDateForGivingTools(createdAt);
     return (
-        <Fragment>
+        <div className="tabWapper">
             <div className="groupcreated">
                 <List verticalAlign="middle">
                     <List.Item>
@@ -106,7 +106,7 @@ const DonationDetails = (props) => {
                     </div>
                 </div>
             </div>
-        </Fragment>
+        </div>
     );
 };
 
