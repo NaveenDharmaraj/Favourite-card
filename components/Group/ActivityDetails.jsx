@@ -248,7 +248,9 @@ class ActivityDetails extends React.Component {
                             <Comment.Action
                                 onClick={() => this.replyClicked()}
                             >
+                                <span className="replyDot">
                                 •
+                                </span>
                                 {formatMessage('groupProfile:reply')}
                             </Comment.Action>
                         )}
