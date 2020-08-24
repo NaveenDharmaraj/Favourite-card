@@ -17,6 +17,8 @@ import _isEmpty from 'lodash/isEmpty';
 import { withTranslation } from '../../i18n';
 import ImageGallery from '../shared/ImageGallery';
 
+import GroupNoDataState from './GroupNoDataState';
+
 const AboutGroup = (props) => {
     const {
         galleryImages,
@@ -42,79 +44,95 @@ const AboutGroup = (props) => {
             imageArray.push(singleImagePropObj);
         });
     }
+    let showNoData = false;
+    if (_isEmpty(imageArray) && !formattedShort && !videoPlayerLink && !formattedImpact
+        && !formattedHelping && !formattedAbout) {
+        showNoData = true;
+    }
     return (
         <Fragment>
-            <Grid.Row>
-                <Grid.Column width={16} className="ch_paragraph AboutProfile">
-                    {formattedShort
-                            && (
-                                ReactHtmlParser(formattedShort)
-                            )}
-                </Grid.Column>
-            </Grid.Row>
-            <div className="MyGallery">
-                <Grid.Row>
-                    {videoPlayerLink
-                        && (
-                            <div className="videoWrapperfull">
-                                <Grid>
-                                    <Grid.Row>
-                                        <Grid.Column width={16}>
-                                            <div className="videoWrapper">
-                                                <embed
-                                                    title="video"
-                                                    src={videoPlayerLink}
-                                                    className="responsiveVideo"
-                                                />
+            {(!showNoData)
+                ? (
+                    <Fragment>
+                        <Grid.Row>
+                            <Grid.Column width={16} className="ch_paragraph AboutProfile">
+                                {formattedShort
+                                        && (
+                                            ReactHtmlParser(formattedShort)
+                                        )}
+                            </Grid.Column>
+                        </Grid.Row>
+                        <div className="MyGallery">
+                            <Grid.Row>
+                                {videoPlayerLink
+                                        && (
+                                            <div className="videoWrapperfull">
+                                                <Grid>
+                                                    <Grid.Row>
+                                                        <Grid.Column width={16}>
+                                                            <div className="videoWrapper">
+                                                                <embed
+                                                                    title="video"
+                                                                    src={videoPlayerLink}
+                                                                    className="responsiveVideo"
+                                                                />
+                                                            </div>
+                                                        </Grid.Column>
+                                                    </Grid.Row>
+                                                </Grid>
                                             </div>
-                                        </Grid.Column>
-                                    </Grid.Row>
-                                </Grid>
-                            </div>
-                        )}
-                    {formattedImpact
-                    && (
-                        <div className="GroupPurpose">
-                            <Header as="h3">{formatMessage('groupProfile:groupPurpose')}</Header>
-                            <p>
-                                {ReactHtmlParser(formattedImpact)}
-                            </p>
+                                        )}
+                                {formattedImpact
+                                && (
+                                    <div className="GroupPurpose">
+                                        <Header as="h3">{formatMessage('groupProfile:groupPurpose')}</Header>
+                                        <p>
+                                            {ReactHtmlParser(formattedImpact)}
+                                        </p>
+                                    </div>
+                                )}
+                                {formattedHelping
+                                && (
+                                    <div className="GroupPurpose">
+                                        <Header as="h3">{formatMessage('groupProfile:groupHelpText')}</Header>
+                                        <p>
+                                            { ReactHtmlParser(formattedHelping) }
+                                        </p>
+                                    </div>
+                                )}
+                                {formattedAbout
+                                && (
+                                    <div className="GroupPurpose">
+                                        <Header as="h3">{formatMessage('groupProfile:groupAboutOrg')}</Header>
+                                        <p>
+                                            { ReactHtmlParser(formattedAbout) }
+                                        </p>
+                                    </div>
+                                )}
+                                <div className="fullwidth_v_G">
+                                    <div className="GalleryWrapper">
+                                        <Grid className="fullwidth_gallery">
+                                            <Grid.Row>
+                                                <Grid.Column width={16}>
+                                                    <ImageGallery
+                                                        imagesArray={imageArray}
+                                                        enableImageSelection={false}
+                                                    />
+                                                </Grid.Column>
+                                            </Grid.Row>
+                                        </Grid>
+                                    </div>
+                                </div>
+                            </Grid.Row>
                         </div>
-                    )}
-                    {formattedHelping
-                    && (
-                        <div className="GroupPurpose">
-                            <Header as="h3">{formatMessage('groupProfile:groupHelpText')}</Header>
-                            <p>
-                                { ReactHtmlParser(formattedHelping) }
-                            </p>
-                        </div>
-                    )}
-                    {formattedAbout
-                    && (
-                        <div className="GroupPurpose">
-                            <Header as="h3">{formatMessage('groupProfile:groupAboutOrg')}</Header>
-                            <p>
-                                { ReactHtmlParser(formattedAbout) }
-                            </p>
-                        </div>
-                    )}
-                    <div className="fullwidth_v_G">
-                        <div className="GalleryWrapper">
-                            <Grid className="fullwidth_gallery">
-                                <Grid.Row>
-                                    <Grid.Column width={16}>
-                                        <ImageGallery
-                                            imagesArray={imageArray}
-                                            enableImageSelection={false}
-                                        />
-                                    </Grid.Column>
-                                </Grid.Row>
-                            </Grid>
-                        </div>
-                    </div>
-                </Grid.Row>
-            </div>
+                    </Fragment>
+                ) : (
+                    <Grid.Row>
+                        <GroupNoDataState
+                            type="common"
+                        />
+                    </Grid.Row>
+                )}
         </Fragment>
     );
 };

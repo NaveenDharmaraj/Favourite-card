@@ -544,7 +544,6 @@ export const leaveGroup = (slug, groupId, loadMembers) => (dispatch) => {
             if (loadMembers) {
                 dispatch(getDetails(groupId, 'members'));
             }
-            dispatch(getDetails(groupId, 'admins'));
         }
     }).catch((error) => {
         dispatch({
