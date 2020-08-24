@@ -656,7 +656,7 @@ class ReloadAddAmount extends React.Component {
                 } = result;
                 let newtaxReceipt = getTaxReceiptById(this.props.taxReceiptsOptions, id);
                 const statusMessageProps = {
-                    message: 'New Tax receipt Added',
+                    message: 'Tax recipient added',
                     type: 'success',
                 };
                 
@@ -1076,7 +1076,7 @@ class ReloadAddAmount extends React.Component {
         } = this.props;
         let modalHeaderText = 'Add money';
         if (currentModalStep === 2) {
-            modalHeaderText = 'Add new Credit Card';
+            modalHeaderText = 'Add new card';
         } else if (currentModalStep === 3) {
             modalHeaderText = 'Add new tax receipt recipient';
         }

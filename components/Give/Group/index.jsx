@@ -1107,6 +1107,7 @@ class Group extends React.Component {
                                                             handleInputOnBlur={this.handleInputOnBlur}
                                                             handlePresetAmountClick={this.handlePresetAmountClick}
                                                             validity={validity}
+                                                            fromP2p // set minimun amount as 1
                                                         />
                                                     </Grid.Column>
                                                     {
