@@ -16,6 +16,7 @@ import {
 } from 'prop-types';
 import { connect } from 'react-redux';
 
+import { withTranslation } from '../../i18n';
 import { Link } from '../../routes';
 import {
     joinGroup,
@@ -120,6 +121,7 @@ class GroupJoin extends React.Component {
                 },
             },
             isAuthenticated,
+            t: formatMessage,
         } = this.props;
         const {
             joinClicked,
@@ -144,10 +146,10 @@ class GroupJoin extends React.Component {
                             className="blue-bordr-btn-round-def CampaignBtn"
                             disabled={joinClicked}
                         >
-                        Join group
+                            {formatMessage('groupProfile:joinGroup')}
                         </Button>
                         <p className="groupmembers">
-                            Join this group to get updates, show your support, and connect with other group members.
+                            {formatMessage('groupProfile:joinGroupText')}
                         </p>
                     </Fragment>
                 );
@@ -161,7 +163,7 @@ class GroupJoin extends React.Component {
                                 closeOnBlur
                             >
                                 <Dropdown.Menu>
-                                    <Dropdown.Item text="Leave group" onClick={this.openLeaveModal} />
+                                    <Dropdown.Item text={formatMessage('groupProfile:leaveGroup')} onClick={this.openLeaveModal} />
                                 </Dropdown.Menu>
                             </Dropdown>
                         </a>
@@ -189,11 +191,11 @@ class GroupJoin extends React.Component {
                         <Button
                             className="blue-bordr-btn-round-def"
                         >
-                        Join group
+                            {formatMessage('groupProfile:joinGroup')}
                         </Button>
                     </Link>
                     <p className="groupmembers">
-                            Join this group to get updates, show your support, and connect with other group members.
+                        {formatMessage('groupProfile:joinGroupText')}
                     </p>
                 </Fragment>
             );
@@ -233,6 +235,7 @@ GroupJoin.defaultProps = {
     },
     groupMembersDetails: {},
     isAuthenticated: false,
+    t: () => {},
 };
 
 GroupJoin.propTypes = {
@@ -259,6 +262,7 @@ GroupJoin.propTypes = {
     }),
     groupMembersDetails: PropTypes.shape({}),
     isAuthenticated: bool,
+    t: func,
 };
 
 function mapStateToProps(state) {
@@ -273,4 +277,11 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(GroupJoin);
+const connectedComponent = withTranslation([
+    'groupProfile',
+])(connect(mapStateToProps)(GroupJoin));
+export {
+    connectedComponent as default,
+    GroupJoin,
+    mapStateToProps,
+};
