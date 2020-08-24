@@ -40,6 +40,7 @@ const GiveFromGroupModal = (props) => {
     const divTextForCampaign = 'The campaign your group supports';
     let modalLeftSectionDouble;
     let giveUrl;
+    let imgClass;
     let bgImage;
     let divText;
     let divClassName;
@@ -71,16 +72,19 @@ const GiveFromGroupModal = (props) => {
     } else if (!_isEmpty(beneficiariesCount) && !hasCampaignAccess) {
         giveUrl = `/give/to/charity/new?group_id=${groupId}`;
         bgImage = leftmodelimg;
+        imgClass = "charityImg";
         divText = divTextForCharity;
         divClassName = 'ModelLeftBox';
     } else if (_isEmpty(beneficiariesCount) && hasCampaignAccess) {
         giveUrl = `/give/to/group/${slug}/new`;
+        imgClass = "grpImg";
         bgImage = leftcampaigngroup;
         divText = divTextForCampaign;
-        divClassName = 'Givegroupimg';
+        divClassName = 'Givegroupimg ModelLeftBox';
     } else if (_isEmpty(beneficiariesCount) && !hasCampaignAccess) {
         bgImage = leftmodelimg;
         divText = divTextForCharity;
+        imgClass = "charityImg";
         divClassName = 'ModelLeftBox graybox';
         disabledDivText = 'Your group hasn\'t yet set any charities to support';
     }
@@ -88,10 +92,14 @@ const GiveFromGroupModal = (props) => {
         <Grid.Column mobile={16} tablet={16} computer={6}>
             <Link route={giveUrl}>
                 <div className={divClassName}>
-                    <Image src={bgImage} />
-                    <div className="descriptiontext">
-                        {divText}
-                        <p className="disabled-text">{disabledDivText}</p>
+                    <div className="center-content">
+                        <Image src={bgImage} className={imgClass}/>
+                        <div className="descriptiontext">
+                            {divText}
+                            {((disabledDivText) && (
+                                <p className="disabled-text">{disabledDivText}</p>
+                            ))}
+                        </div>
                     </div>
                 </div>
             </Link>

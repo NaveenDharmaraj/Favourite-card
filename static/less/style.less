@@ -3986,6 +3986,16 @@ body{
     vertical-align: top;
   }
 }
+.ui.modals.dimmer{
+  .likeToGiveModal{
+    &.chimp-modal.ui.modal{
+      >.header{
+        font-size: 17px;
+        font-family: 'ProximaNova-Semibold';
+      }
+    }
+  }
+}
 .likeToGiveModal{
   .likeToGive{
     .ui{
@@ -4146,6 +4156,18 @@ body{
 }
 .gpRightButtons{
   text-align: right;
+  &.grp-btns{
+    .buttonWraper{
+      margin-right: 10px;
+    }
+    .shareAndLike{
+      &.horizontal{
+        &.list{
+          margin-left: 10px;
+        }
+      }
+    }
+  }
   >div{
     +div{
       margin-left: 5px;
@@ -8354,5 +8376,10 @@ body .userEllips{
     @media only screen and (max-width:1199px) {
       margin-bottom: 0px;
     }
+  }
+}
+body{
+  .ui.inverted.dimmer{
+      background-color: fade(#D8D8D8, 71%);
   }
 }

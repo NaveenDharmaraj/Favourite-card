@@ -1434,7 +1434,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
                 const privacyShareNameMessage = [];
                 privacyShareNameMessage.push((nameToShare.value === 'anonymous') ? formatMessage('reviewGiveAnonymously') : nameToShare.text);
                 if (privacyShareAmount) {
-                    privacyShareNameMessage.push(ReactHtmlParser(`${formatMessage('reviewGiftAmount')} ${state.mainDisplayAmount}`));
+                    privacyShareNameMessage.push(ReactHtmlParser(`<div>${formatMessage('reviewGiftAmount')} ${state.mainDisplayAmount}</div>`));
                 }
                 listingData.push({
                     name: `privacyShareGiving${giveToType}Label`,

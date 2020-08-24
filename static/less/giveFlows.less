@@ -225,7 +225,9 @@
     justify-content: center;
     align-items: center;
     @media only screen and (max-width:768px) {
-        height: 55px;
+        min-height: 55px;
+        height: unset;
+        padding: 15px 0px;
     }
     .flowReviewbannerText{
         @media only screen and (min-width:768px) {
@@ -260,7 +262,9 @@
     justify-content: center;
     align-items: center;
     @media only screen and (max-width:768px) {
-        height: 55px;
+        min-height: 55px;
+        height: unset;
+        padding: 15px 0px;
     }
     .flowReviewbannerText{
         @media only screen and (min-width:768px) {
@@ -294,8 +298,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    @media only screen and (max-width:768px) {
-        height: 55px;
+    @media only screen and (max-width:767px) {
+        background-image: url(../images/dashboard_bg.png) !important;
+        min-height: 55px;
+        height: unset;
+        padding: 15px 0px;
     }
     .flowReviewbannerText{
         @media only screen and (min-width:768px) {
@@ -338,6 +345,9 @@
     .GivingGroupIcons{
         margin:20px auto 24px auto;
         text-align: center;
+        @media only screen and (max-width:767px) {
+            margin: -15px auto 0px auto;
+        }
         img{
             &.Icon_Profile{
                 width:98px;
@@ -625,9 +635,55 @@
     padding: 10px 15px;
 }
 .flowFirst{
+    .error-message{
+        margin-top: -7px;
+        font-size: 12px; 
+    }
+    .ui{
+        &.form{
+            .field{
+                &.disabled{
+                    opacity: 1;
+                    >label{
+                        opacity: 1;
+                    }
+                    .input{
+                        &.ui{
+                            &.disabled{
+                                opacity: 1;
+                                input{
+                                    background-color: #F8F8F8;
+                                    color: #7F7F7F;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
     .field{
+        
         textarea{
             resize: none;
+            +.field-info{
+                margin-bottom: -20px;
+            }
+        }
+        .field{
+            &.dropdownWithArrowParent{
+                .ui{
+                    &.selection{
+                        &.dropdown{
+                            min-height: 41px !important; 
+                            padding: 10px 1rem;
+                            .text{
+                                line-height: 19px;
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
     .ui{
@@ -708,10 +764,32 @@
     .price_btn{
         margin-bottom: 0;
     }
+    p{
+        +.give_field{
+            +.error-message{
+                padding-top: 10px;
+            }
+        }
+        +.error-message{
+            margin-top: -11px;
+        }
+    }
+    textarea{
+        resize: none;
+    }
+    .ui.form textarea{
+        resize: none;
+    }
     .give_field{
         margin-bottom: 20px !important;
+        .field{
+            +.error-message{
+                margin-top: -14px;
+                font-size: 12px; 
+            } 
+        }
         +.error-message{
-            margin-top: -10px;
+            margin-top: -14px;
             font-size: 12px;
         }
     }
@@ -725,9 +803,16 @@
         }
         .accordion.ui{
             .cp_chkbx{
+                display: block;
+                &.mb-1{
+                    margin-bottom: 8px !important;
+                }
                 +.inputInline{
                     margin-top: 14px;
                 }
+            }
+            +.error-message{
+                margin-top: 8px;
             }
         }
         
@@ -1293,6 +1378,14 @@ button.ui.button.blue-btn-rounded-def.flowConfirmBtn.second_btn{
             label{
                 margin-bottom: 0px !important;
             }
+            &.font-w-n{
+                >label{
+                    font-family: 'ProximaNova-Regular';
+                } 
+            }
+            >label{
+                font-family: 'ProximaNova-Regular';
+            }
         }
     }
 }
@@ -1516,7 +1609,7 @@ p{
                     background-image: url(../images/icons/exclamation.svg);
                     background-repeat: no-repeat;
                     background-position: center;
-                    background-size: contain;
+                    background-size: auto; 
                 }
             }
         }
@@ -1642,15 +1735,19 @@ input{
                 margin-top: 35px;
             }
         }
-    }}
+    }
+}
 .giveingGropPopup{
     margin-bottom:5px !important;
    .ModelLeftBox{
-    background-color:#F1F6FD;
-    box-shadow: 0 2px 7px 0 rgba(135, 135, 135, 0.3);
-    width: 100%;
-    position: relative;
-    &::before{
+        background-color:#F1F6FD;
+        box-shadow: 0 2px 7px 0 rgba(135, 135, 135, 0.3);
+        width: 100%;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        &::before{
             position: absolute;
             content: "";
             right: -20px;
@@ -1661,39 +1758,32 @@ input{
                 right:0px;
             }
         }
-    img{
-        padding:46px  48px 30px 48px;
-        @media only screen and (max-width:1199px) {
-        padding:64px  48px 30px 48px;
-    }
-        @media only screen and (max-width:991px) {
-            margin: auto;
-            width:38%;
-            padding: 33px 48px 25px 48px;
+        .center-content{
+            max-width: 172.78px;
+            width: 100%;
         }
-        @media only screen and (max-width:500px) {
-            margin: auto;
-            width: 60%;
-            padding: 33px 48px 25px 48px;
+        img{
+            margin: 0px auto 30px;
+           &.charityImg{
+            max-width: 122.56px;
+           }
         }
-    }
-    .descriptiontext{
-        padding: 0px 37px 46px 37px;
-        text-align: center;
-        font-family: 'ProximaNova-Semibold';
-        p{
-        &.leftsubtext{
-            font-family: 'ProximaNova-Regular';
-            line-height: 15px;
-            font-size: 12px;
-            color: #7F7F7F;
-            margin-top: 11px;
+        .descriptiontext{
+            text-align: center;
+            font-family: 'ProximaNova-Semibold';
+            p{
+            &.leftsubtext{
+                font-family: 'ProximaNova-Regular';
+                line-height: 15px;
+                font-size: 12px;
+                color: #7F7F7F;
+                margin-top: 11px;
+                }
             }
         }
-    }
-    &:hover{
-        cursor: pointer;
-    }
+        &:hover{
+            cursor: pointer;
+        }
    }
    .ModelLeftBoxTop{
     background-color:#F1F6FD;
@@ -2075,6 +2165,9 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
 .matching-fund-modal-wrapper{
     display: flex;
     padding-bottom: 15px;
+    @media only screen and (max-width:767px) {
+        flex-direction: column;
+    }
     .matching-fund-modal-inner-wrapper{
         display: flex;
         align-items: center; 
@@ -2103,6 +2196,10 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
         max-width: 300px;
         padding-right: 10px;
         align-items: center;
+        @media only screen and (max-width:767px) {
+            max-width: 100%;
+            width: calc(100% - 46px);
+        }
         h4{
             &.ui{
                 &.header{
@@ -2129,8 +2226,8 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
     .matching-fund-expire{
         display: flex;
         align-items: flex-end;
-        @media only screen and (min-width:768px) {
-            min-width: 132px;
+        @media only screen and (max-width:767px) {
+            width: 100%;
         }
         .expire-date{
             display: inline-block;
@@ -2140,6 +2237,9 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
             background-color: #E5F5F5;
             padding: 4px 5px;
             text-align: center;
+            @media only screen and (max-width:767px) {
+                margin-top: 30px;
+            }
         }
     }
 }
@@ -2224,6 +2324,23 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
                     margin-top: 10px;
                     font-size: 12px;
                 }
+                &.disabled{
+                    opacity: 1;
+                    >label{
+                        opacity: 1;
+                    }
+                    .input{
+                        &.ui{
+                            &.disabled{
+                                opacity: 1;
+                                input{
+                                    background-color: #F8F8F8;
+                                    color: #7F7F7F;
+                                }
+                            }
+                        }
+                    }
+                }
             }
             .addNewCard{
                .field .field{
@@ -2265,7 +2382,7 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
     }
     .noteWraper{
         .leftImg .notifyDefaultIcon::before{
-            height: 15px;
+            height: 18px;
         }
         @media only screen and (max-width: 767px){
             .noteContent{
@@ -2310,4 +2427,35 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
             }
         }
     }
-} 	
+}
+.cp_chkbx{
+    &.ui{
+        &.checkbox{
+            >label{
+                font-family: 'ProximaNova-Regular';
+            }
+        }
+    }
+}
+.ui.modal.chimp-modal{
+    .content{
+        .description{
+            .field{
+                .dropdownWithArrowParent{
+                    .dropdown{
+                        &.ui{
+                            .text{
+                                line-height: 19px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+body{
+    .ui.inverted.dimmer{
+        background-color: fade(#D8D8D8, 71%);
+    }
+}
