@@ -146,7 +146,7 @@ class GroupJoin extends React.Component {
                         >
                         Join group
                         </Button>
-                        <p>
+                        <p className="groupmembers">
                             Join this group to get updates, show your support, and connect with other group members.
                         </p>
                     </Fragment>
@@ -156,8 +156,8 @@ class GroupJoin extends React.Component {
                     <Fragment>
                         <a role="listitem" className="item">
                             <Dropdown
-                                className="rightBottom"
                                 icon="ellipsis horizontal"
+                                className="dropdown_ellipsis"
                                 closeOnBlur
                             >
                                 <Dropdown.Menu>
@@ -190,6 +190,9 @@ class GroupJoin extends React.Component {
                     >
                     Join group
                     </Button>
+                    <p className="groupmembers">
+                            Join this group to get updates, show your support, and connect with other group members.
+                        </p>
                 </Link>
             );
         }
