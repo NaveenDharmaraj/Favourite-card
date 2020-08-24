@@ -9,7 +9,7 @@ import {
     Table,
 } from 'semantic-ui-react';
 import {
-    arrayOf,
+    array,
     PropTypes,
     string,
     number,
@@ -18,6 +18,7 @@ import {
 } from 'prop-types';
 import getConfig from 'next/config';
 
+import { withTranslation } from '../../i18n';
 import PlaceholderGrid from '../shared/PlaceHolder';
 import {
     getDetails,
@@ -94,6 +95,7 @@ class Members extends React.Component {
                 totalCount,
             },
             membersLoader,
+            t: formatMessage,
         } = this.props;
         const {
             currentActivePage,
@@ -103,7 +105,7 @@ class Members extends React.Component {
                 {!membersLoader
                     ? (
                         <Fragment>
-                           <div className={`members ${isAdmin ? 'btn_padding' : ' '}`}>
+                            <div className={`members ${isAdmin ? 'btn_padding' : ' '}`}>
                                 <Grid.Row>
                                     <Grid>
                                         <Grid.Row>
@@ -112,7 +114,7 @@ class Members extends React.Component {
                                     && (
                                         <div className="membersNumber">
                                             <i aria-hidden="true" className="group icon" />
-                                            {` ${totalCount.toLocaleString()} members`}
+                                            {` ${totalCount.toLocaleString()} ${formatMessage('groupProfile:membersText')}`}
                                         </div>
                                     )}
                                             </Grid.Column>
@@ -127,7 +129,7 @@ class Members extends React.Component {
                                                         <span>
                                                             <i aria-hidden="true" className="addmember icon" />
                                                         </span>
-                                                                Invite friends
+                                                        {formatMessage('groupProfile:inviteFriends')}
                                                     </Button>
                                                 </Grid.Column>
                                             )}
@@ -158,7 +160,7 @@ class Members extends React.Component {
                         <Grid className="no-margin">
                             <Grid.Row>
                                 <Grid.Column width={16}>
-                                        <PlaceholderGrid row={4} column={1} placeholderType="activityList" />
+                                    <PlaceholderGrid row={4} column={1} placeholderType="activityList" />
                                 </Grid.Column>
                             </Grid.Row>
                         </Grid>
@@ -172,29 +174,37 @@ class Members extends React.Component {
 Members.defaultProps = {
     dispatch: () => {},
     groupDetails: {
+        attributes: {
+            isAdmin: false,
+            slug: '',
+        },
         id: null,
     },
     groupMembersDetails: {
         data: [],
-        links: {
-            next: '',
-        },
+        pageCount: null,
+        totalCount: null,
     },
     membersLoader: true,
+    t: () => {},
 };
 
 Members.propTypes = {
     dispatch: func,
     groupDetails: PropTypes.shape({
+        attributes: PropTypes.shape({
+            isAdmin: bool,
+            slug: string,
+        }),
         id: number,
     }),
-    groupMembersDetails: {
-        data: arrayOf(PropTypes.element),
-        links: PropTypes.shape({
-            next: string,
-        }),
-    },
+    groupMembersDetails: PropTypes.shape({
+        data: array,
+        pageCount: number,
+        totalCount: number,
+    }),
     membersLoader: bool,
+    t: func,
 };
 
 function mapStateToProps(state) {
@@ -205,4 +215,11 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(Members);
+const connectedComponent = withTranslation([
+    'groupProfile',
+])(connect(mapStateToProps)(Members));
+export {
+    connectedComponent as default,
+    Members,
+    mapStateToProps,
+};

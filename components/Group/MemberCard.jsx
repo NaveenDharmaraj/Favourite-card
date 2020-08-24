@@ -14,6 +14,7 @@ import {
     PropTypes,
 } from 'prop-types';
 
+import { withTranslation } from '../../i18n';
 import {
     getLocation,
 } from '../../helpers/profiles/utils';
@@ -80,25 +81,33 @@ class MemberCard extends React.Component {
             currentUser: {
                 id: currentUserId,
             },
+            t: formatMessage,
         } = this.props;
         const {
             addButtonClicked,
         } = this.state;
         let hideButton = false;
         let friendStatusText = '';
-        const isBlocked = (friendStatus && friendStatus.substring(0, 7) === 'BLOCKED');
+        let disableButton = false;
+        const isUserBlocked = (friendStatus && friendStatus === 'BLOCKED_IN');
+        const isBlockedMember = (friendStatus && friendStatus === 'BLOCKED_OUT');
         const isRequestPending = (friendStatus && friendStatus.substring(0, 7) === 'PENDING');
         const isFriend = (friendStatus && friendStatus === 'ACCEPTED');
         const isCurrentUser = (currentUserId === userId);
+        const userDisplayName = isUserBlocked ? formatMessage('groupProfile:anonymousUser') : displayName;
 
-        if ((isCurrentUser || isFriend || isBlocked)) {
+        if ((isCurrentUser || isFriend || isUserBlocked)) {
             hideButton = true;
         }
 
         if (_isEmpty(friendStatus) && !addButtonClicked) {
-            friendStatusText = 'Add friend';
+            friendStatusText = formatMessage('groupProfile:addFriend');
         } else if (isRequestPending || addButtonClicked) {
-            friendStatusText = 'Pending';
+            friendStatusText = formatMessage('groupProfile:pending');
+            disableButton = true;
+        } else if (isBlockedMember) {
+            friendStatusText = formatMessage('groupProfile:blocked');
+            disableButton = true;
         }
         return (
             <Table.Body>
@@ -109,7 +118,7 @@ class MemberCard extends React.Component {
                                 <Image className="imgEmily" src={avatar} />
                                 <List.Content>
                                     <List.Header className="EmilyAdmin">
-                                        {`${displayName} ${isGroupAdmin ? `• Admin` : ''}`}
+                                        {`${userDisplayName} ${isGroupAdmin ? `• ${formatMessage('groupProfile:admin')}` : ''}`}
                                         {isGroupAdmin
                                         && (
                                             <span>
@@ -130,8 +139,8 @@ class MemberCard extends React.Component {
                         {!hideButton
                             && (
                                 <Button
-                                    className={`btnFrinend ${isRequestPending ? 'blue-btn-rounded-def' : 'blue-bordr-btn-round-def'}`}
-                                    disabled={addButtonClicked || isRequestPending}
+                                    className={`btnFrinend ${disableButton ? 'blue-btn-rounded-def' : 'blue-bordr-btn-round-def'}`}
+                                    disabled={disableButton}
                                     onClick={this.addFriend}
                                 >
                                     {friendStatusText}
@@ -146,6 +155,12 @@ class MemberCard extends React.Component {
 
 MemberCard.defaultProps = {
     currentUser: {
+        attributes: {
+            avatar: '',
+            displayName: '',
+            email: '',
+            firstName: '',
+        },
         id: '',
     },
     dispatch: () => {},
@@ -154,16 +169,24 @@ MemberCard.defaultProps = {
             avatar: '',
             city: '',
             displayName: '',
+            email: '',
             friendStatus: '',
             isGroupAdmin: false,
             province: '',
         },
         id: '',
     },
+    t: () => {},
 };
 
 MemberCard.propTypes = {
     currentUser: PropTypes.shape({
+        attributes: PropTypes.shape({
+            avatar: string,
+            displayName: string,
+            email: string,
+            firstName: string,
+        }),
         id: string,
     }),
     dispatch: func,
@@ -172,12 +195,14 @@ MemberCard.propTypes = {
             avatar: string,
             city: string,
             displayName: string,
+            email: string,
             friendStatus: string,
             isGroupAdmin: bool,
             province: string,
         }),
         id: string,
     }),
+    t: func,
 };
 
 function mapStateToProps(state) {
@@ -186,4 +211,11 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(MemberCard);
+const connectedComponent = withTranslation([
+    'groupProfile',
+])(connect(mapStateToProps)(MemberCard));
+export {
+    connectedComponent as default,
+    MemberCard,
+    mapStateToProps,
+};

@@ -19,6 +19,7 @@ import {
     connect,
 } from 'react-redux';
 
+import { withTranslation } from '../../i18n';
 import {
     getGroupActivities,
     postActivity,
@@ -148,6 +149,7 @@ class Activity extends React.Component {
                     isMember,
                 },
             },
+            t: formatMessage,
         } = this.props;
         const {
             commentText,
@@ -163,11 +165,11 @@ class Activity extends React.Component {
             );
         }
         const actionData = (
-         <div className="ActivityTop">
+            <div className="ActivityTop">
                 <Grid centered>
-                <Grid.Row>
-                    <Grid.Column mobile={16} tablet={16} computer={16}>
-                        {isMember
+                    <Grid.Row>
+                        <Grid.Column mobile={16} tablet={16} computer={16}>
+                            {isMember
                         && (
                             <div className="postinputBox">
                                 <div className="two-icon-brdr-btm-input">
@@ -175,7 +177,7 @@ class Activity extends React.Component {
                                         value={commentText}
                                         onChange={this.updateInputValue}
                                         type="text"
-                                        placeholder="Write a message to the group…"
+                                        placeholder={formatMessage('groupProfile:activityPlaceholderText')}
                                         action
                                         fluid
                                     />
@@ -192,12 +194,12 @@ class Activity extends React.Component {
                                 </div>
                             </div>
                         )
-                        }
-                        {viewData}
-                    </Grid.Column>
-                </Grid.Row>
-            </Grid>
-         </div>
+                            }
+                            {viewData}
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
+            </div>
         );
 
         return (
@@ -212,7 +214,7 @@ class Activity extends React.Component {
                         <Button
                             onClick={this.loadMore}
                             className="blue-bordr-btn-round-def w-180"
-                            content="View more"
+                            content={formatMessage('groupProfile:viewMore')}
                         />
                     </div>
                 )
@@ -235,6 +237,7 @@ Activity.defaultProps = {
         },
         id: '',
     },
+    t: () => {},
     userInfo: {
         id: '',
     },
@@ -253,6 +256,7 @@ Activity.propTypes = {
         }),
         id: string,
     }),
+    t: func,
     userInfo: PropTypes.shape({
         id: string,
     }),
@@ -266,4 +270,12 @@ function mapStateToProps(state) {
         userInfo: state.user.info,
     };
 }
-export default connect(mapStateToProps)(Activity);
+
+const connectedComponent = withTranslation([
+    'groupProfile',
+])(connect(mapStateToProps)(Activity));
+export {
+    connectedComponent as default,
+    Activity,
+    mapStateToProps,
+};

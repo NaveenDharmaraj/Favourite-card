@@ -18,6 +18,7 @@ import {
     PropTypes,
 } from 'prop-types';
 
+import { withTranslation } from '../../i18n';
 import {
     getCommentFromActivityId,
     postComment,
@@ -182,6 +183,7 @@ class ActivityDetails extends React.Component {
             },
             type,
             disableLike,
+            t: formatMessage,
         } = this.props;
         const {
             groupComments,
@@ -221,7 +223,7 @@ class ActivityDetails extends React.Component {
                     {name
                         ? (
                             <Comment.Text>
-                                {`${name} said: ${comment}`}
+                                {`${name} ${formatMessage('groupProfile:said')}: ${comment}`}
                             </Comment.Text>
                         )
                         : (
@@ -238,7 +240,7 @@ class ActivityDetails extends React.Component {
                             <Comment.Action
                                 onClick={() => this.onClicked(id, commentsLink)}
                             >
-                                {`${count} ${count === 1 ? 'Comment' : 'Comments'}`}
+                                {`${count} ${count === 1 ? formatMessage('groupProfile:comment') : formatMessage('groupProfile:comments')}`}
                             </Comment.Action>
                         )}
                         {canReply
@@ -246,7 +248,8 @@ class ActivityDetails extends React.Component {
                             <Comment.Action
                                 onClick={() => this.replyClicked()}
                             >
-                                •   Reply
+                                •
+                                {formatMessage('groupProfile:reply')}
                             </Comment.Action>
                         )}
                         {isReplyClicked && canReply
@@ -258,7 +261,7 @@ class ActivityDetails extends React.Component {
                                             value={commentText}
                                             onChange={this.updateInputValue}
                                             type="text"
-                                            placeholder="Add a comment"
+                                            placeholder={formatMessage('groupProfile:addCommentPlaceholder')}
                                             fluid
                                         />
                                     </div>
@@ -297,12 +300,14 @@ ActivityDetails.defaultProps = {
         isLoadComments: false,
         isReply: false,
         loadComments: false,
+        totalCount: null,
     },
     groupId: null,
     id: null,
     isLiked: false,
     likesCount: null,
     name: '',
+    t: () => {},
     type: '',
     userId: '',
     userInfo: {
@@ -328,12 +333,14 @@ ActivityDetails.propTypes = {
         isLoadComments: bool,
         isReply: bool,
         loadComments: bool,
+        totalCount: number,
     }),
     groupId: number,
     id: number,
     isLiked: bool,
     likesCount: number,
     name: string,
+    t: func,
     type: string,
     userId: string,
     userInfo: PropTypes.shape({
@@ -353,4 +360,11 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(ActivityDetails);
+const connectedComponent = withTranslation([
+    'groupProfile',
+])(connect(mapStateToProps)(ActivityDetails));
+export {
+    connectedComponent as default,
+    ActivityDetails,
+    mapStateToProps,
+};

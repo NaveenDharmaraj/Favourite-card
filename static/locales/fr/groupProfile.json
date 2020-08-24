@@ -23,5 +23,19 @@
     "groupHelpText": "How to Help",
     "groupAboutOrg": "About the Organizers",
     "totalRaisedGoal": "Total raised on current giving goal",
-    "groupCreated": "Group created in"
+    "groupCreated": "Group created in",
+    "membersText": "members",
+    "inviteFriends": "Invite friends",
+    "anonymousUser": "Anonymous user",
+    "addFriend": "Add friend",
+    "pending": "Pending",
+    "blocked": "Blocked",
+    "admin": "Admin",
+    "viewMore": "View more",
+    "activityPlaceholderText": "Write a message to the group…",
+    "said": "said",
+    "comment": "Comment",
+    "comments": "Comments",
+    "reply": "Reply",
+    "addCommentPlaceholder": "Add a comment"
 }
