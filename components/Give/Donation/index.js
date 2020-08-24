@@ -469,7 +469,7 @@ class Donation extends React.Component {
                 </Form.Field>
             );
         } else if (formData.giveTo.type === 'user' && _.isEmpty(options)) {
-            donationMatchField = (<Form.Input fluid label="Matching Partner" placeholder="No matching partner available" disabled />)
+            donationMatchField = (<Form.Input className="give_flow_field" fluid label="Matching Partner" placeholder="No matching partner available" disabled />)
         }
         return donationMatchField;
     }

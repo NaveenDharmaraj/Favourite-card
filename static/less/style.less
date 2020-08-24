@@ -3987,6 +3987,16 @@ body{
     vertical-align: top;
   }
 }
+.ui.modals.dimmer{
+  .likeToGiveModal{
+    &.chimp-modal.ui.modal{
+      >.header{
+        font-size: 17px;
+        font-family: 'ProximaNova-Semibold';
+      }
+    }
+  }
+}
 .likeToGiveModal{
   .likeToGive{
     .ui{
@@ -4147,6 +4157,18 @@ body{
 }
 .gpRightButtons{
   text-align: right;
+  &.grp-btns{
+    .buttonWraper{
+      margin-right: 10px;
+    }
+    .shareAndLike{
+      &.horizontal{
+        &.list{
+          margin-left: 10px;
+        }
+      }
+    }
+  }
   >div{
     +div{
       margin-left: 5px;
@@ -8359,15 +8381,20 @@ body .userEllips{
 }
 .addRecipientForm{
   .field{
-      .error.field{
-          margin-bottom: 0px;
-      }
-      .error-message{
-          margin-top: 10px;
-          font-size: 12px;
-      }
-      .ui.selection.dropdown{
-          line-height: 18px;
-      }
+    .error.field{
+        margin-bottom: 0px;
+    }
+    .error-message{
+        margin-top: 10px;
+        font-size: 12px;
+    }
+    .ui.selection.dropdown{
+        line-height: 18px;
+    }
+  }
+}
+body{
+  .ui.inverted.dimmer{
+      background-color: fade(#D8D8D8, 71%);
   }
 }

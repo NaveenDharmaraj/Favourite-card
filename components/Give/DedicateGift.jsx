@@ -81,7 +81,6 @@ class DedicateGift extends Component {
                             index={0}
                             onClick={(e, data) => { this.handleOnInputChangeWrapper(e, data); }}
                         />
-                        <br />
                         <Accordion.Title
                             as={Checkbox}
                             checked={activeIndex === 1}

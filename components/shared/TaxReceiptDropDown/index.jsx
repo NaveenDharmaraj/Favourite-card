@@ -45,7 +45,7 @@ function TaxReceiptDropDown(props) {
             );
         } else if (_.isEmpty(taxReceiptsOptions) && giveTo.value > 0) {
             taxReceiptField = (
-                <div className="field">
+                <div className="field give_flow_field">
                     <label>Tax receipt recipient</label>
                     <div
                         className="addNewCardInput"

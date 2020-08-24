@@ -345,7 +345,7 @@ class GroupDetails extends React.Component {
                                             </div>
                                         </Grid.Column>
                                         <Grid.Column mobile={16} tablet={16} computer={9}>
-                                            <div className="gpRightButtons">
+                                            <div className="gpRightButtons grp-btns">
 
                                                 {!joinClicked && giveButton}
                                                 {!joinClicked && joinButton}
