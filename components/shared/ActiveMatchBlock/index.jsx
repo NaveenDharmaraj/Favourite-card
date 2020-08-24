@@ -70,21 +70,15 @@ const ActiveMatchBlock = (props) => {
                             </div>
                         </div>
                     </div>
-                    <Grid.Row className="MatchingPartnerWapper">
-                        <Grid>
-                            <Grid.Column mobile={3} tablet={4} computer={4} className="pr-0">
+                    <div className="MatchingPartnerWapper">
                                 <div className="h_profileMatching borderprofile">
                                     <Image src={companyAvatar} />
                                 </div>
-                            </Grid.Column>
-                            <Grid.Column mobile={13} tablet={12} computer={12}>
                                 <div className="MatchingPartner">
                                     <Header as="h3">{company}</Header>
                                     <p>Matching partner</p>
                                 </div>
-                            </Grid.Column>
-                        </Grid>
-                    </Grid.Row>
+                    </div>
                     {matchClose
                     && (
                         <Button className="white-btn-rounded-def goalbtn">

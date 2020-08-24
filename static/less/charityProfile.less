@@ -345,6 +345,9 @@
 }
 .GroupTab{
     margin:51px 0px 100px 0px;
+    @media only screen and (max-width:767px) {
+        margin:30px 0px 35px 0px;   
+    }
     .tabBottom{
         margin: 0px !important;
     }
@@ -943,7 +946,7 @@
             display: flex;
             .matchingFundsGraff{
                 display: inline-block;
-                width:21;
+                width:21px;
                 .Progresswapper{
                     height: 100%;
                     .customProgress{
@@ -1720,6 +1723,8 @@
 }
 .MatchingPartnerWapper{
     margin: 24px 0px;
+    display: flex;
+    width: 100%;
     &.margingWapper{
         margin: 0px !important;
     }
@@ -1731,10 +1736,11 @@
             margin: auto;
         }
         &.borderprofile{
-            width: 50px;
+            max-width: 50px;
             height: 50px;
             box-shadow: 2px 2px 7px 0 rgba(105,146,203,0.3);
             border: 5px solid #F5F8FC;
+            width: 100%;
         }
         img{
             border-radius: 100%;
@@ -1746,6 +1752,9 @@
         }
     }
     .MatchingPartner{
+        display: inline-block;
+        width: 100%;
+        padding-left: 9.5px;
         h3{
             &.ui {
                 &.header {
@@ -1940,11 +1949,14 @@
                     margin-top: 30px;
                 margin-bottom: 30px;
                 }
-                embed{
-                    width:100%;
-                }
                 &.one_video_wrapper {
                     margin-top: 0px !important;
+                }
+            }
+            .videoWrapper{
+                embed{
+                    width:100% !important;
+                    max-width: 100% !important;
                 }
             }
         }
@@ -2114,7 +2126,7 @@
                             margin-left: 9px;
                         }
                         .postBtnWraper{
-                            width: auto;
+                            width: auto !important;
                             .ui{
                                 &.icon{
                                     color: #fff;
@@ -2146,3 +2158,11 @@
     }
 }
 /*****************/
+.videoWrapperfull{
+    .videoWrapper{
+        embed{
+            width:100% !important;
+            max-width: 100% !important;
+        }
+    }
+}
