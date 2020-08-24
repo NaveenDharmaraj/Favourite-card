@@ -328,7 +328,7 @@ class GroupDetails extends React.Component {
                             <Grid.Column mobile={16} tablet={13} computer={14}>
                                 <Grid stackable>
                                     <Grid.Row>
-                                        <Grid.Column mobile={16} tablet={16} computer={8}>
+                                        <Grid.Column mobile={16} tablet={16} computer={7}>
                                             <div className="ProfileHeaderWraper">
                                                 <Header as="h3">
                                                     {name}
@@ -344,7 +344,7 @@ class GroupDetails extends React.Component {
 
                                             </div>
                                         </Grid.Column>
-                                        <Grid.Column mobile={16} tablet={16} computer={8}>
+                                        <Grid.Column mobile={16} tablet={16} computer={9}>
                                             <div className="gpRightButtons">
 
                                                 {!joinClicked && giveButton}

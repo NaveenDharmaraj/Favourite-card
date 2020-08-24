@@ -712,7 +712,6 @@
         margin-bottom: 20px !important;
         +.error-message{
             margin-top: -10px;
-            font-size: 12px;
         }
     }
     .give_flow_field{
@@ -722,6 +721,9 @@
         }
         .price_btn{
             margin-bottom: 10px;
+        }
+        .error-message{
+            margin-top: -10px;
         }
         .accordion.ui{
             .cp_chkbx{
@@ -741,10 +743,11 @@
            min-height: 125px !important;
         }
     }
+    .error-message{
+        font-size: 12px;
+    }
 }
-.Frequencybottom{
-    margin-bottom: 0px !important;
-}
+
 .addCreditCardBtn{
     width: 126px;
     height: 40px;
@@ -1231,7 +1234,17 @@ button.ui.button.blue-btn-rounded-def.flowConfirmBtn.second_btn{
     .ui.form {
         label{
             display: inline-block;
-            margin-bottom: 14px !important;
+            margin-bottom: 10px !important;
+        }
+        .Frequencybottom{
+            >.field{
+                 margin-bottom: 0px !important;
+                 .chimpRadio{
+                     label{
+                         margin-bottom: 20px !important;
+                     }
+                 }
+            }
         }
     }
     .field{
@@ -1258,7 +1271,7 @@ button.ui.button.blue-btn-rounded-def.flowConfirmBtn.second_btn{
             &:first-child{
                 margin-top: 0px;
             }
-            margin-bottom: 14px !important;
+            margin-bottom: 10px !important;
             display: inline-block;
             margin-right: 6px;
             color:#263238;
@@ -1269,6 +1282,7 @@ button.ui.button.blue-btn-rounded-def.flowConfirmBtn.second_btn{
         .ui.selection.dropdown{
             font-family: 'ProximaNova-Regular';
             color:#263238;
+            line-height: 22px;
             &.taxReceiptDropDown{
                 height: auto;
                 span.attributes{
@@ -2031,6 +2045,24 @@ input{
             border-radius:50px;
         }
     }
+    button {
+        margin-right: 0px !important;
+        &.blue-bordr-btn-round{
+            margin-left: 15px;
+            @media only screen and (max-width: 324px){
+                margin-bottom: 22px;
+            }  
+        }
+    }
+    .shareAndLike.ui.horizontal.list{   
+        .item{
+            margin-left: 15px !important;
+            padding: 0 !important;
+            &:last-child{
+                margin-right: 15px !important;
+            }
+        }
+    }
   
 }
 .button.ui.primary.button.blue-btn-rounded.btn_first{
@@ -2204,6 +2236,18 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
         }
     }
 }
+.addNewCard{
+    .field {
+        .field{
+            margin-bottom: 0;
+        }
+        .error-message{
+            margin-top: 10px;
+            font-size: 12px;
+        }
+    }    
+ }
+
 //add-money-moadal
 .ui.modal.addMoneyMoadal{
     >.header{
@@ -2225,11 +2269,7 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
                     font-size: 12px;
                 }
             }
-            .addNewCard{
-               .field .field{
-                    margin-bottom: 0;
-                }
-            }
+         
             >label,.field label{
                 display: inline-block;
                 margin-bottom: 10px !important;
@@ -2242,7 +2282,7 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
                 color: #263238;
                 font-family: 'ProximaNova-Regular';
                 background-color: transparent !important;
-                // line-height: 22px;
+                line-height: 18px;
                 span.attributes{
                     font-family: 'ProximaNova-Regular';
                     

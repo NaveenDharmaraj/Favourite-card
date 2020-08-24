@@ -399,7 +399,7 @@ class Donation extends React.Component {
                 }
             }
             donationMatchField = (
-                <Form.Field>
+                <Form.Field className="give_flow_field">
                     <label htmlFor="donationMatch">
                         {formatMessage('donationMatchLabel')}
                     </label>
