@@ -332,6 +332,27 @@ const group = (state = {}, action) => {
                 scrollOffset: action.payload.scrollOffset,
             };
             break;
+        case 'GROUP_ADD_FRIEND_BUTTON_STATUS':
+            newState = {
+                ...state,
+                addFriendButtonStatus: {
+                    ...state.addFriendButtonStatus,
+                    [action.payload.friendUserId]: action.payload.status,
+                },
+            };
+            break;
+        case 'GROUP_MEMBER_UPDATE_FRIEND_STATUS':
+            const friendIndex = _findIndex(state.groupMembersDetails.data, (data) => data.id === action.payload.friendUserId);
+            const memberArray = state.groupMembersDetails.data;
+            memberArray[friendIndex].attributes.friendStatus = action.payload.status;
+            newState = {
+                ...state,
+                groupMembersDetails: {
+                    ...state.groupMembersDetails,
+                    data: memberArray,
+                },
+            };
+            break;
         default:
             break;
     }

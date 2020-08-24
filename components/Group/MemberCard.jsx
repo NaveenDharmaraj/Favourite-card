@@ -25,9 +25,6 @@ import {
 class MemberCard extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            addButtonClicked: false,
-        };
         this.addFriend = this.addFriend.bind(this);
     }
 
@@ -50,9 +47,6 @@ class MemberCard extends React.Component {
             },
             dispatch,
         } = this.props;
-        this.setState({
-            addButtonClicked: true,
-        });
         const user = {
             currentUserAvatar,
             currentUserDisplayName,
@@ -81,11 +75,9 @@ class MemberCard extends React.Component {
             currentUser: {
                 id: currentUserId,
             },
+            addFriendButtonStatus,
             t: formatMessage,
         } = this.props;
-        const {
-            addButtonClicked,
-        } = this.state;
         let hideButton = false;
         let friendStatusText = '';
         let disableButton = false;
@@ -100,9 +92,9 @@ class MemberCard extends React.Component {
             hideButton = true;
         }
 
-        if (_isEmpty(friendStatus) && !addButtonClicked) {
+        if (_isEmpty(friendStatus)) {
             friendStatusText = formatMessage('groupProfile:addFriend');
-        } else if (isRequestPending || addButtonClicked) {
+        } else if (isRequestPending) {
             friendStatusText = formatMessage('groupProfile:pending');
             disableButton = true;
         } else if (isBlockedMember) {
@@ -139,8 +131,8 @@ class MemberCard extends React.Component {
                         {!hideButton
                             && (
                                 <Button
-                                    className={`btnFrinend ${disableButton ? 'blue-btn-rounded-def' : 'blue-bordr-btn-round-def'}`}
-                                    disabled={disableButton}
+                                    className={`btnFrinend ${(disableButton) ? 'blue-btn-rounded-def' : 'blue-bordr-btn-round-def'}`}
+                                    disabled={disableButton || addFriendButtonStatus[userId]}
                                     onClick={this.addFriend}
                                 >
                                     {friendStatusText}
@@ -154,6 +146,7 @@ class MemberCard extends React.Component {
 }
 
 MemberCard.defaultProps = {
+    addFriendButtonStatus: [],
     currentUser: {
         attributes: {
             avatar: '',
@@ -180,6 +173,9 @@ MemberCard.defaultProps = {
 };
 
 MemberCard.propTypes = {
+    addFriendButtonStatus: PropTypes.arrayOf(
+        PropTypes.shape({}),
+    ),
     currentUser: PropTypes.shape({
         attributes: PropTypes.shape({
             avatar: string,
@@ -207,6 +203,7 @@ MemberCard.propTypes = {
 
 function mapStateToProps(state) {
     return {
+        addFriendButtonStatus: state.group.addFriendButtonStatus,
         currentUser: state.user.info,
     };
 }

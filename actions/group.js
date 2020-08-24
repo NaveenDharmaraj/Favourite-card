@@ -18,6 +18,8 @@ export const actionTypes = {
     GET_GROUP_GALLERY_IMAGES: 'GET_GROUP_GALLERY_IMAGES',
     GET_GROUP_MEMBERS_DETAILS: 'GET_GROUP_MEMBERS_DETAILS',
     GET_GROUP_TRANSACTION_DETAILS: 'GET_GROUP_TRANSACTION_DETAILS',
+    GROUP_ADD_FRIEND_BUTTON_STATUS: 'GROUP_ADD_FRIEND_BUTTON_STATUS',
+    GROUP_MEMBER_UPDATE_FRIEND_STATUS: 'GROUP_MEMBER_UPDATE_FRIEND_STATUS',
     GROUP_PLACEHOLDER_STATUS: 'GROUP_PLACEHOLDER_STATUS',
     GROUP_REDIRECT_TO_DASHBOARD: 'GROUP_REDIRECT_TO_DASHBOARD',
     GROUP_REDIRECT_TO_ERROR_PAGE: 'GROUP_REDIRECT_TO_ERROR_PAGE',
@@ -616,7 +618,29 @@ export const addFriendRequest = (user) => (dispatch) => {
             },
         },
     };
+    const statusfsa = {
+        payload: {
+            friendUserId: user.friendUserId,
+            status: true,
+        },
+        type: actionTypes.GROUP_ADD_FRIEND_BUTTON_STATUS,
+    };
+    const fsa = {
+        payload: {
+        },
+        type: actionTypes.GROUP_MEMBER_UPDATE_FRIEND_STATUS,
+    };
+
+    dispatch(statusfsa);
     return eventApi.post(`/friend/request`, bodyData).then((result) => {
-        console.log('result', result);
-    }).finally();
+        if (result && !_isEmpty(result.data) && result.data.attributes.message === 'Success') {
+            fsa.payload.friendUserId = user.friendUserId;
+            fsa.payload.status = 'PENDING_OUT';
+            dispatch(fsa);
+        }
+    }).finally(() => {
+        statusfsa.payload.friendUserId = user.friendUserId;
+        statusfsa.payload.status = false;
+        dispatch(statusfsa);
+    });
 };
