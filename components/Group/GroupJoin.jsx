@@ -184,16 +184,18 @@ class GroupJoin extends React.Component {
             }
         } else {
             joinButton = (
-                <Link route={`/users/login?returnTo=/groups/${slug}`}>
-                    <Button
-                        className="blue-bordr-btn-round-def"
-                    >
-                    Join group
-                    </Button>
+                <Fragment>
+                    <Link route={`/users/login?returnTo=/groups/${slug}`}>
+                        <Button
+                            className="blue-bordr-btn-round-def"
+                        >
+                        Join group
+                        </Button>
+                    </Link>
                     <p className="groupmembers">
                             Join this group to get updates, show your support, and connect with other group members.
-                        </p>
-                </Link>
+                    </p>
+                </Fragment>
             );
         }
         return (
