@@ -436,6 +436,8 @@ class Charity extends React.Component {
         validity = validateGiveForm('dedicateType', null, validity, giveData);
         if(giveData.giftType.value === 0) {
             validity = validateForReload(validity, giveData.giveFrom.type, giveData.giveAmount, giveData.giveFrom.balance);
+        } else {
+            validity.isReloadRequired = true;
         }
         this.setState({
             validity,
@@ -765,6 +767,7 @@ class Charity extends React.Component {
                     },
                 },
             },
+            reviewBtnFlag: false,
         })
     }
 

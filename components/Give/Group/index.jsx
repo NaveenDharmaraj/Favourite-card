@@ -408,6 +408,8 @@ class Group extends React.Component {
         validity = validateGiveForm('dedicateType', null, validity, giveData);
         if (giveData.giftType.value === 0) {
             validity = validateForReload(validity, giveData.giveFrom.type, giveData.giveAmount, giveData.giveFrom.balance);
+        } else {
+            validity.isReloadRequired = true;
         }
 
         if (giveData.giveTo.value === giveData.giveFrom.value) {
@@ -618,6 +620,7 @@ class Group extends React.Component {
                     },
                 },
             },
+            reviewBtnFlag: false,
         })
     }
 
