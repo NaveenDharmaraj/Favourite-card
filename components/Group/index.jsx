@@ -89,7 +89,7 @@ const GroupProfileWrapper = (props) => {
                                         </Responsive>
                                     </Grid.Column>
                                     <Divider className="mt-2" />
-                                    <Grid.Column mobile={16} tablet={16} computer={16} className="ch_paragraph mt-2 mb-2">
+                                    <Grid.Column mobile={16} tablet={16} computer={16} className="ch_paragraph">
                                         <GroupAdmins />
                                     </Grid.Column>
                                     <Divider />

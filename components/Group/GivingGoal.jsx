@@ -70,7 +70,7 @@ const GivingGoal = (props) => {
     let goalText = '';
     let canSetGoal = false;
     const giveButtonElement = (
-        <Button className="blue-btn-rounded-def mt-1">
+        <Button className="blue-btn-rounded-def">
             {formatMessage('common:giveButtonText')}
         </Button>
     );

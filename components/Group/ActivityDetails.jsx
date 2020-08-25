@@ -202,7 +202,7 @@ class ActivityDetails extends React.Component {
             count = totalCount;
         }
         const time = distanceOfTimeInWords(createdAt);
-        const cls = (isLiked) ? 'heart' : 'heart outline';
+        const cls = (isLiked) ? 'red heart' : 'heart';
         return (
             <Comment>
                 {type === 'events' && canReply
