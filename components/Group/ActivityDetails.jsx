@@ -1,4 +1,6 @@
-import React from 'react';
+import React, {
+    Fragment,
+} from 'react';
 import {
     connect,
 } from 'react-redux';
@@ -24,12 +26,15 @@ import {
     postComment,
     likeActivity,
     unlikeActivity,
+    joinGroup,
     // likeComment,
     // unlikeComment,
 } from '../../actions/group';
 import {
     distanceOfTimeInWords,
 } from '../../helpers/utils';
+
+import GroupJoinModal from './GroupJoinModal';
 
 const actionTypes = {
     DISABLE_LIKE_BUTTON: 'DISABLE_LIKE_BUTTON',
@@ -44,10 +49,15 @@ class ActivityDetails extends React.Component {
         this.updateInputValue = this.updateInputValue.bind(this);
         this.postReplyComment = this.postReplyComment.bind(this);
         this.handleLike = this.handleLike.bind(this);
+        this.openJoinGroupModal = this.openJoinGroupModal.bind(this);
+        this.closeJoinGroupModal = this.closeJoinGroupModal.bind(this);
+        this.handleJoinGroup = this.handleJoinGroup.bind(this);
         this.state = {
             commentText: '',
             isCommentClicked: false,
             isReplyClicked: false,
+            showJoinGroupModal: false,
+            showJoinLoader: false,
         };
     }
 
@@ -130,6 +140,46 @@ class ActivityDetails extends React.Component {
         }
     }
 
+    openJoinGroupModal() {
+        this.setState({
+            showJoinGroupModal: true,
+        });
+    }
+
+    closeJoinGroupModal() {
+        this.setState({
+            showJoinGroupModal: false,
+        });
+    }
+
+    handleJoinGroup() {
+        const {
+            dispatch,
+            groupDetails: {
+                attributes: {
+                    name,
+                    slug,
+                },
+            },
+            groupMembersDetails,
+            groupId,
+            t: formatMessage,
+        } = this.props;
+        const toastMessage = formatMessage('groupProfile:joinGroupToastMessage', {
+            name,
+        });
+        const loadMembers = !_isEmpty(groupMembersDetails);
+        this.setState({
+            showJoinLoader: true,
+        });
+        dispatch(joinGroup(slug, groupId, loadMembers, toastMessage)).then(() => {
+            this.closeJoinGroupModal();
+            this.setState({
+                showJoinLoader: false,
+            });
+        });
+    }
+
     renderComments() {
         const {
             id: eventId,
@@ -192,6 +242,8 @@ class ActivityDetails extends React.Component {
             isReplyClicked,
             commentText,
             isCommentClicked,
+            showJoinGroupModal,
+            showJoinLoader,
         } = this.state;
         let count = commentsCount;
         if (groupComments[id] && isReply && !isCommentClicked) {
@@ -204,8 +256,9 @@ class ActivityDetails extends React.Component {
         const time = distanceOfTimeInWords(createdAt);
         const cls = (isLiked) ? 'red heart' : 'heart';
         return (
-            <Comment>
-                {type === 'events' && canReply
+            <Fragment>
+                <Comment onClick={!canReply ? this.openJoinGroupModal : undefined}>
+                    {type === 'events' && canReply
                 && (
                     <Feed.Meta className="cmntLike">
                         <Feed.Like>
@@ -218,24 +271,24 @@ class ActivityDetails extends React.Component {
                         </Feed.Like>
                     </Feed.Meta>
                 )}
-                <Comment.Avatar src={avatar} />
-                <Comment.Content>
-                    {name
-                        ? (
-                            <Comment.Text>
-                                {`${name} ${formatMessage('groupProfile:said')}: ${comment}`}
-                            </Comment.Text>
-                        )
-                        : (
-                            <Comment.Text>
-                                {description}
-                            </Comment.Text>
-                        )}
-                    <Comment.Actions>
-                        <Comment.Metadata>
-                            <div>{time}</div>
-                        </Comment.Metadata>
-                        {(count !== null && canReply)
+                    <Comment.Avatar src={avatar} />
+                    <Comment.Content>
+                        {name
+                            ? (
+                                <Comment.Text>
+                                    {`${name} ${formatMessage('groupProfile:said')}: ${comment}`}
+                                </Comment.Text>
+                            )
+                            : (
+                                <Comment.Text>
+                                    {description}
+                                </Comment.Text>
+                            )}
+                        <Comment.Actions>
+                            <Comment.Metadata>
+                                <div>{time}</div>
+                            </Comment.Metadata>
+                            {(count !== null && canReply)
                         && (
                             <Comment.Action
                                 onClick={() => this.onClicked(id, commentsLink)}
@@ -243,46 +296,56 @@ class ActivityDetails extends React.Component {
                                 {`${count} ${count === 1 ? formatMessage('groupProfile:comment') : formatMessage('groupProfile:comments')}`}
                             </Comment.Action>
                         )}
-                        {canReply
-                        && (
-                            <Comment.Action
-                                onClick={() => this.replyClicked()}
-                            >
-                                <span className="replyDot">
-                                •
-                                </span>
-                                {formatMessage('groupProfile:reply')}
-                            </Comment.Action>
-                        )}
-                        {isReplyClicked && canReply
+                            {canReply
                             && (
-                                <div className="postInputMainWraper">
-                                    <Comment.Avatar src={avatar} />
-                                    <div className="postInputWraper">
-                                        <Input
-                                            value={commentText}
-                                            onChange={this.updateInputValue}
-                                            type="text"
-                                            placeholder={formatMessage('groupProfile:addCommentPlaceholder')}
-                                            fluid
-                                        />
-                                    </div>
-                                    <div className="postBtnWraper">
-                                        {!_isEmpty(commentText)
-                                        && (
-                                            <Button
-                                                circular
-                                                onClick={this.postReplyComment}
-                                                icon="paper plane outline"
-                                            />
-                                        )}
-                                    </div>
-                                </div>
+                                <Comment.Action
+                                    onClick={() => this.replyClicked()}
+                                >
+                                    <span className="replyDot">
+                                    •
+                                    </span>
+                                    {formatMessage('groupProfile:reply')}
+                                </Comment.Action>
                             )}
-                        {loadComments && this.renderComments()}
-                    </Comment.Actions>
-                </Comment.Content>
-            </Comment>
+                            {isReplyClicked && canReply
+                                && (
+                                    <div className="postInputMainWraper">
+                                        <Comment.Avatar src={avatar} />
+                                        <div className="postInputWraper">
+                                            <Input
+                                                value={commentText}
+                                                onChange={this.updateInputValue}
+                                                type="text"
+                                                placeholder={formatMessage('groupProfile:addCommentPlaceholder')}
+                                                fluid
+                                            />
+                                        </div>
+                                        <div className="postBtnWraper">
+                                            {!_isEmpty(commentText)
+                                            && (
+                                                <Button
+                                                    circular
+                                                    onClick={this.postReplyComment}
+                                                    icon="paper plane outline"
+                                                />
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+                            {loadComments && this.renderComments()}
+                        </Comment.Actions>
+                    </Comment.Content>
+                </Comment>
+                {showJoinGroupModal
+                && (
+                    <GroupJoinModal
+                        open={showJoinGroupModal}
+                        handleJoinGroup={this.handleJoinGroup}
+                        close={this.closeJoinGroupModal}
+                        showJoinLoader={showJoinLoader}
+                    />
+                )}
+            </Fragment>
         );
     }
 }
@@ -304,7 +367,14 @@ ActivityDetails.defaultProps = {
         loadComments: false,
         totalCount: null,
     },
+    groupDetails: {
+        attributes: {
+            name: '',
+            slug: '',
+        },
+    },
     groupId: null,
+    groupMembersDetails: {},
     id: null,
     isLiked: false,
     likesCount: null,
@@ -337,7 +407,14 @@ ActivityDetails.propTypes = {
         loadComments: bool,
         totalCount: number,
     }),
+    groupDetails: PropTypes.shape({
+        attributes: PropTypes.shape({
+            name: string,
+            slug: string,
+        }),
+    }),
     groupId: number,
+    groupMembersDetails: PropTypes.shape({}),
     id: number,
     isLiked: bool,
     likesCount: number,
@@ -358,6 +435,7 @@ function mapStateToProps(state) {
         disableLike: state.group.disableLike,
         groupComments: state.group.groupComments,
         groupDetails: state.group.groupDetails,
+        groupMembersDetails: state.group.groupMembersDetails,
         userInfo: state.user.info,
     };
 }
