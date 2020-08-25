@@ -7,7 +7,6 @@ import {
     List,
     Icon,
     Input,
-    Button,
 } from 'semantic-ui-react';
 import {
     PropTypes,
@@ -17,7 +16,6 @@ import {
     number,
 } from 'prop-types';
 import { connect } from 'react-redux';
-import { Link } from '../../../routes';
 
 import {
     followProfile,
