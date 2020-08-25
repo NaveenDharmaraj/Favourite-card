@@ -94,7 +94,7 @@ const GivingGoal = (props) => {
             {canSetGoal
             && (
                 <div>
-                    <a href={(`${RAILS_APP_URL_ORIGIN}/groups/${slug}/edit?accrodian=charity_and_goal`)}>
+                    <a href={(`${RAILS_APP_URL_ORIGIN}/groups/${slug}/edit?accordion=goals-settings`)}>
                         {formatMessage('groupProfile:saveNewGoalText')}
                     </a>
                 </div>
