@@ -116,7 +116,7 @@ class CampaignProfile extends React.Component {
                         title={name}
                         description={description}
                         url={url}
-                        isCharityPage
+                        isProfilePage
                     >
                         <CampaignProfileWrapper {...this.props} />
                     </Layout>
