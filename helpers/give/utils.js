@@ -1561,7 +1561,7 @@ const populateP2pReviewPage = (giveData, data, currency, formatMessage, language
 
     if (giveFrom.type === 'user' || giveFrom.type === 'groups') {
         listingData.push({
-            name: 'reviewNoteToSelf',
+            name: `reviewNoteToSelf${giveFrom.type}`,
             value: (!_.isEmpty(noteToSelf)) ? noteToSelf : formatMessage('reviewEmptyNoteToSelf'),
         });
     }
