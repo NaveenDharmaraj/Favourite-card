@@ -634,10 +634,49 @@
     cursor: pointer;
     padding: 10px 15px;
 }
+.addMoneyMoadal,.addNewCard{
+    .question{
+        &.circle{
+            &.large{
+                &.icon{
+                    &.blue{
+                        visibility: hidden;
+                    }
+                }
+            }
+        }
+    }
+}
+.chimp-modal{
+    .addRecipientForm{
+        .question{
+            &.circle{
+                &.large{
+                    &.icon{
+                        &.blue{
+                            visibility: hidden;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 .flowFirst{
     .error-message{
         margin-top: -7px;
         font-size: 12px; 
+    }
+    .question{
+        &.circle{
+            &.large{
+                &.icon{
+                    &.blue{
+                        visibility: hidden;
+                    }
+                }
+            }
+        }
     }
     .ui{
         &.form{
@@ -1317,6 +1356,18 @@ button.ui.button.blue-btn-rounded-def.flowConfirmBtn.second_btn{
             height: 41px;
         }
     }
+    .ui.active.visible.selection.dropdown{
+        .menu{
+            .active.selected.item{
+                font-family: 'ProximaNova-Regular';
+                font-weight: 400;
+                .text{
+                    font-family: 'ProximaNova-Regular';
+                    font-weight: 400;
+                }
+            }
+        }
+    }
     .ui.form {
         label{
             display: inline-block;
@@ -1325,6 +1376,13 @@ button.ui.button.blue-btn-rounded-def.flowConfirmBtn.second_btn{
         .Frequencybottom{
             >.field{
                  margin-bottom: 0px !important;
+                 &:last-child{
+                    .chimpRadio{
+                        label{
+                            margin-bottom: 0px !important;
+                        }
+                    }
+                 }
                  .chimpRadio{
                      label{
                          margin-bottom: 20px !important;
@@ -1762,6 +1820,9 @@ input{
         display: flex;
         align-items: center;
         justify-content: center;
+        @media only screen and (max-width:991px) {
+            padding: 16px 20px;
+        }
         &::before{
             position: absolute;
             content: "";
@@ -1776,16 +1837,33 @@ input{
         .center-content{
             max-width: 172.78px;
             width: 100%;
+            @media only screen and (max-width:991px) {
+                max-width: 100%;
+                display: flex;
+                align-items: center;
+            }
         }
         img{
             margin: 0px auto 30px;
+            @media only screen and (max-width:991px) {
+                margin: auto auto auto 0px;
+                max-width: 100px;
+            }
            &.charityImg{
             max-width: 122.56px;
+            @media only screen and (max-width:991px) {
+                max-width: 83.12px;
+            }
            }
         }
         .descriptiontext{
             text-align: center;
             font-family: 'ProximaNova-Semibold';
+            @media only screen and (max-width:991px) {
+                width: 100%;
+                text-align: left;
+                margin-left: 20px;
+            }
             p{
             &.leftsubtext{
                 font-family: 'ProximaNova-Regular';
@@ -1922,6 +2000,46 @@ input{
     margin-bottom: 20px;
     align-items: center;
     display: flex;
+    @media only screen and (max-width:991px) {
+        padding: 16px 20px;
+        .ui.items{
+            max-width: 100%;
+            width: 100%;
+            >.item{
+                display: flex;
+                max-width: 100%;
+                width: 100%;
+                flex-direction: row;
+                margin: 0px;
+                align-items: center;
+                .ui{
+                    &.image{
+                        -webkit-box-flex: 0;
+                        -ms-flex: 0 0 auto;
+                        flex: 0 0 auto;
+                        width: 58px !important;
+                        height: 60px;
+                        object-fit: contain;
+                    }
+                }
+                .middle.aligned.content{
+                    max-width: none;
+                    padding: 0px;
+                    text-align: left;
+                    padding-left: 20px;
+                    .description{
+                        text-align: left;
+                    }
+                }
+            }
+        }
+     }
+    .ui.items > .item > .image + .content{
+        padding-left: 20px;
+        .description{
+            margin-top: 0px;
+        }
+    }
     margin-left: 10px;    &:last-child{
         margin-bottom:0px;
     }    img{
@@ -1930,7 +2048,9 @@ input{
         object-fit: contain;
         }
         .content{
+            padding-left: 20px;
             .description{
+                margin-top: 0px;
                 p{
                     font-family: 'ProximaNova-Semibold';
                 }
@@ -1963,6 +2083,9 @@ input{
             color: #7F7F7F;
             line-height: 15px;
             margin-top: 11px;
+            @media only screen and (max-width:991px) {
+                margin-top: 2px;
+            }
         }
     }
 }
@@ -2198,7 +2321,7 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
 .matching-fund-modal-wrapper{
     display: flex;
     padding-bottom: 15px;
-    @media only screen and (max-width:767px) {
+    @media only screen and (max-width:991px) {
         flex-direction: column;
     }
     .matching-fund-modal-inner-wrapper{
@@ -2229,7 +2352,7 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
         max-width: 300px;
         padding-right: 10px;
         align-items: center;
-        @media only screen and (max-width:767px) {
+        @media only screen and (max-width:991px) {
             max-width: 100%;
             width: calc(100% - 46px);
         }
@@ -2259,7 +2382,7 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
     .matching-fund-expire{
         display: flex;
         align-items: flex-end;
-        @media only screen and (max-width:767px) {
+        @media only screen and (max-width:991px) {
             width: 100%;
         }
         .expire-date{
@@ -2270,7 +2393,7 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
             background-color: #E5F5F5;
             padding: 4px 5px;
             text-align: center;
-            @media only screen and (max-width:767px) {
+            @media only screen and (max-width:991px) {
                 margin-top: 30px;
             }
         }
