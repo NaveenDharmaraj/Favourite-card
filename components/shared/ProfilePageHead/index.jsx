@@ -71,14 +71,18 @@ function ProfilePageHead(props) {
                                             <i aria-hidden="true" className="bell icon" />
                                         </span>
                                         {formatMessage('campaignProfile:giveFromBtn')}
-                                        {type === 'campaigns' ? ' Campaign' : ' Group'}
+                                        {type === 'campaigns'
+                                            ? formatMessage('campaignProfile:campaignButtonText')
+                                            : formatMessage('campaignProfile:groupButtonText')}
                                     </Button>
                                 </Link>
                             ) : (
                                 <Link route={(`/give/to/${profileType}/${slug}/new`)}>
                                     <Popup
                                         disabled={false}
-                                        content={`The current campaign balance is ${balance}`}
+                                        content={formatMessage('campaignProfile:popupCurrentBalanceText', {
+                                            balance,
+                                        })}
                                         trigger={
                                             (
                                                 <Button className="blue-bordr-btn-round-def CampaignBtn" disabled>
@@ -86,7 +90,9 @@ function ProfilePageHead(props) {
                                                         <i aria-hidden="true" className="bell icon" />
                                                     </span>
                                                     {formatMessage('campaignProfile:giveFromBtn')}
-                                                    {type === 'campaigns' ? ' Campaign' : ' Group'}
+                                                    {type === 'campaigns'
+                                                        ? formatMessage('campaignProfile:campaignButtonText')
+                                                        : formatMessage('campaignProfile:groupButtonText')}
                                                 </Button>
                                             )
                                         }
