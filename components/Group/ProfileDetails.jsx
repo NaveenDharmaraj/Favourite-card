@@ -74,10 +74,7 @@ class ProfileDetails extends React.Component {
                     menuItem: 'Activity',
                     render: () => (
                         <Tab.Pane attached={false}>
-                            {(isAuthenticated)
-                            && (
-                                <Activity />
-                            )}
+                            <Activity />
                         </Tab.Pane>
                     ),
                 },
@@ -86,10 +83,7 @@ class ProfileDetails extends React.Component {
                     menuItem: 'Members',
                     render: () => (
                         <Tab.Pane attached={false}>
-                            {(isAuthenticated)
-                            && (
-                                <Members />
-                            )}
+                            <Members />
                         </Tab.Pane>
                     ),
                 },
