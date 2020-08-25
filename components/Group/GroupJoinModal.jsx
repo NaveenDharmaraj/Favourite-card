@@ -38,7 +38,7 @@ const GroupJoinModal = (props) => {
                 <div className="btn-wraper pt-3 text-center">
                     <Button
                         className="blue-bordr-btn-round-def c-small"
-                        content="Join group"
+                        content={formatMessage('groupProfile:joinGroup')}
                         onClick={handleJoinGroup}
                         disabled={showJoinLoader}
                     />
