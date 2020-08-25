@@ -41,7 +41,7 @@ const {
 
 const _auth0lockConfig = {
     allowPasswordAutocomplete: true,
-    allowShowPassword: false,
+    allowShowPassword: true,
     allowSignUp: false,
     auth: {
         responseType: 'token id_token',
