@@ -14,17 +14,6 @@ const group = (state = {}, action) => {
             };
             break;
         case 'GET_GROUP_MEMBERS_DETAILS':
-            // if (state.groupMembersDetails && state.groupMembersDetails.data && action.payload.isViewMore) {
-            //     newState = {
-            //         ...state,
-            //         groupMembersDetails: {
-            //             ...state.groupMembersDetails,
-            //             data: state.groupMembersDetails.data.concat(action.payload.data),
-            //             nextLink: action.payload.nextLink,
-            //             totalCount: action.payload.totalCount,
-            //         },
-            //     };
-            // } else {
             newState = {
                 ...state,
                 groupMembersDetails: {
@@ -34,51 +23,25 @@ const group = (state = {}, action) => {
                     totalCount: action.payload.totalCount,
                 },
             };
-            // }
             break;
         case 'GET_GROUP_ADMIN_DETAILS':
-            // if (state.groupAdminsDetails && state.groupAdminsDetails.data && action.payload.isViewMore) {
-            //     newState = {
-            //         ...state,
-            //         groupAdminsDetails: {
-            //             ...state.groupAdminsDetails,
-            //             data: state.groupAdminsDetails.data.concat(action.payload.data),
-            //             nextLink: action.payload.nextLink,
-            //             totalCount: action.payload.totalCount,
-            //         },
-            //     };
-            // } else {
             newState = {
                 ...state,
                 groupAdminsDetails: {
                     ...state.groupAdminsDetails,
                     data: action.payload.data,
-                    // pageCount: action.payload.pageCount,
                     totalCount: action.payload.totalCount,
                 },
             };
-            // }
             break;
         case 'GET_GROUP_BENEFICIARIES':
-            // if (state.groupBeneficiaries && state.groupBeneficiaries.data) {
-            //     newState = {
-            //         ...state,
-            //         groupBeneficiaries: {
-            //             ...state.groupBeneficiaries,
-            //             data: state.groupBeneficiaries.data.concat(action.payload.data),
-            //             nextLink: action.payload.nextLink,
-            //         },
-            //     };
-            // } else {
             newState = {
                 ...state,
                 groupBeneficiaries: {
                     ...state.groupBeneficiaries,
                     data: action.payload.data,
-                    // pageCount: action.payload.pageCount,
                 },
             };
-            // }
             break;
         case 'GET_GROUP_TRANSACTION_DETAILS':
             newState = {
