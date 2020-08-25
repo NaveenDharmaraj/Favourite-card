@@ -59,7 +59,9 @@ function ProfilePageHead(props) {
                                     <i aria-hidden="true" className="edit icon" />
                                 </span>
                                 {formatMessage('campaignProfile:editBtn')}
-                                {type === 'campaigns' ? ' Campaign' : ' Group'}
+                                {type === 'campaigns'
+                                    ? formatMessage('campaignProfile:campaignButtonText')
+                                    : formatMessage('campaignProfile:groupButtonText')}
                             </Button>
                         </a>
                         {balance > 0
