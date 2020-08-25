@@ -210,10 +210,10 @@ class Activity extends React.Component {
                 }
                 {(activitiesLink)
                 && (
-                    <div className="text-center mt-1 mb-1">
+                    <div className="text-center">
                         <Button
                             onClick={this.loadMore}
-                            className="blue-bordr-btn-round-def w-180"
+                            className="blue-bordr-btn-round-def btn_w_More"
                             content={formatMessage('groupProfile:viewMore')}
                         />
                     </div>
