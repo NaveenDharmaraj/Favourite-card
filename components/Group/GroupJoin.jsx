@@ -66,14 +66,19 @@ class GroupJoin extends React.Component {
             dispatch,
             groupDetails: {
                 attributes: {
+                    name,
                     slug,
                 },
                 id: groupId,
             },
             groupMembersDetails,
+            t: formatMessage,
         } = this.props;
+        const toastMessage = formatMessage('groupProfile:joinGroupToastMessage', {
+            name,
+        });
         const loadMembers = !_isEmpty(groupMembersDetails);
-        dispatch(joinGroup(slug, groupId, loadMembers));
+        dispatch(joinGroup(slug, groupId, loadMembers, toastMessage));
         this.setState({
             joinClicked: true,
         });

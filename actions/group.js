@@ -28,6 +28,7 @@ export const actionTypes = {
     MEMBER_PLACEHOLDER_STATUS: 'MEMBER_PLACEHOLDER_STATUS',
     POST_NEW_ACTIVITY: 'POST_NEW_ACTIVITY',
     TOGGLE_TRANSACTION_VISIBILITY: 'TOGGLE_TRANSACTION_VISIBILITY',
+    TRIGGER_UX_CRITICAL_ERROR: 'TRIGGER_UX_CRITICAL_ERROR',
     // COMMENT_LIKE_STATUS: 'COMMENT_LIKE_STATUS',
 };
 
@@ -459,12 +460,16 @@ export const unlikeActivity = (eventId, groupId, userId) => (dispatch) => {
 //     });
 // };
 
-export const joinGroup = (groupSlug, groupId, loadMembers) => (dispatch) => {
+export const joinGroup = (groupSlug, groupId, loadMembers, toastMessage) => (dispatch) => {
     const fsa = {
         payload: {
             groupDetails: {},
         },
         type: actionTypes.GET_GROUP_DETAILS_FROM_SLUG,
+    };
+    const toastMessageProps = {
+        message: toastMessage,
+        type: 'success',
     };
     return coreApi.post(`/groups/join?load_full_profile=true`, {
         slug: groupSlug,
@@ -480,6 +485,14 @@ export const joinGroup = (groupSlug, groupId, loadMembers) => (dispatch) => {
                 if (loadMembers) {
                     dispatch(getDetails(groupId, 'members'));
                 }
+                dispatch({
+                    payload: {
+                        errors: [
+                            toastMessageProps,
+                        ],
+                    },
+                    type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
+                });
             }
         },
     ).catch(() => {
