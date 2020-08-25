@@ -47,7 +47,7 @@ const AdminsList = (props) => {
     const adminName = [];
     let remainingAdmins = '';
     if (!_isEmpty(data)) {
-        remainingAdmins = (totalCount - adminData.length);
+        remainingAdmins = (totalCount - 3);
         data.slice(0, 3).map((admin) => {
             adminData.push(
                 <List.Item as="a">
