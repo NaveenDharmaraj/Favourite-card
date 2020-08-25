@@ -64,9 +64,6 @@ class ProfileDetails extends React.Component {
     render() {
         const {
             isAuthenticated,
-            groupDetails: {
-                id,
-            },
             updatedActiveIndex,
         } = this.props;
         let panes = [];
@@ -79,9 +76,7 @@ class ProfileDetails extends React.Component {
                         <Tab.Pane attached={false}>
                             {(isAuthenticated)
                             && (
-                                <Activity
-                                    id={id}
-                                />
+                                <Activity />
                             )}
                         </Tab.Pane>
                     ),
