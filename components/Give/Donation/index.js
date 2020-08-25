@@ -785,6 +785,13 @@ class Donation extends React.Component {
         const {
             dispatch,
         } = this.props;
+        const{
+            flowObject: {
+                giveData: {
+                    giveTo
+                },
+            }
+        } = this.state;
         const formatMessage = this.props.t;
 
         return dispatch(addNewTaxReceiptProfileAndLoad(flowObject, newTaxReceiptProfile, isDefaultChecked)).then((result) => {
@@ -793,7 +800,7 @@ class Donation extends React.Component {
                     id,
                 },
             } = result;
-            let newtaxReceipt = getTaxReceiptById(populateTaxReceipts(this.props.userTaxReceiptProfiles, formatMessage), id);
+            let newtaxReceipt = getTaxReceiptById(populateTaxReceipts(giveTo.type === 'companies' ? this.props.companyDetails.taxReceiptProfiles : this.props.userTaxReceiptProfiles, formatMessage), id);
             const statusMessageProps = {
                 message: 'Tax receipt recipient added',
                 type: 'success',
