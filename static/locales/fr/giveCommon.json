@@ -19,8 +19,8 @@
         "invalidLengthError": "est trop long (maximum de 1000 caractères)",
         "invalidNoteTextError":  "Seuls les lettres et les chiffres standard sont autorisés ici",
         "giveAmountGreaterThanBalance": "Désolé, vous ne pouvez pas envoyer plus d'argent qu'il n'y en a dans votre compte.",
-        "creditCardNotAdded": "Please add a Payment method",
-        "taxReceiptNotAdded": "Please add a Tax receipt"
+        "creditCardNotAdded": "Add a payment method",
+        "taxReceiptNotAdded": "Add a tax receipt recipient"
 
 
     },
