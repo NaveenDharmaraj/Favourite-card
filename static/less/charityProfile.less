@@ -123,8 +123,9 @@
 
                 .item {
                     margin-right: 22px;
-                    margin-bottom: 18px;
-                    margin-left: 0px;
+                    margin-bottom: 18px !important;
+                    margin-left: 0px !important;
+                    margin-top: auto !important;
                     @media only screen and (max-width:1199px) and (min-width:992px) {
                         margin-right: 12px;
                     }
@@ -132,42 +133,41 @@
                     .icon {
                         margin-left: 0 !important
                     }
-                    .dropdown_ellipsis{
-                        width: 42px;
-                        height: 42px;
-                        display: flex;
-                        align-items: center;
-                        align-content: center;
-                        border-radius: 50px;
-                        padding: 0px;
-                        margin: 0px;
-                        &.active{
-                            width: 42px;
-                            height: 42px;
-                            display: flex;
-                            align-items: center;
-                            align-content: center;
-                            border-radius: 50px;
-                            background-color: #F1F6FD;
-                            padding: 0px;
-                            margin: 0px;
-                        }
-                        .menu{
-                            &.transition{
-                                &.visible{
-                                    .item{
-                                        margin: 0px !important;
-                                        padding: 20px 16px !important;
-                                        font-family: 'ProximaNova-Semibold';
-                                    }
-                                }
-                            }
-                        }
-                        .horizontal{
-                            &::before{
-                                left: 11px;
-                                top: 6px;
-                            }
+                }
+            }
+        }
+    }
+}
+.ui{
+    &.dropdown{
+        &.dropdown_ellipsis{
+            display: flex;
+            width: 42px;
+            height: 42px;
+            border-radius: 100%;
+            align-items: center;
+            margin-left: -16px;
+            top: -4px;
+            &.active{
+                width: 42px;
+            height: 42px;
+            background-color:#F1F6FD;
+            border-radius: 100%;
+            align-items: center;
+            }
+            .horizontal{
+                &::before{
+                    top: 5px;
+                    left: 11px;
+                }
+            }
+            .menu{
+                &.transition{
+                    &.visible{
+                        .item{
+                            margin: 0px !important;
+                            padding: 20px 16px !important;
+                            font-family: 'ProximaNova-Semibold';
                         }
                     }
                 }
@@ -175,6 +175,7 @@
         }
     }
 }
+
 .ch_shareMore{
     display: flex;
     .GroupPrfileAll{
@@ -2022,6 +2023,9 @@
                     }
                 }
             }
+        }
+        &.hover_disabled{
+            opacity: .45;
         }
     }
 }

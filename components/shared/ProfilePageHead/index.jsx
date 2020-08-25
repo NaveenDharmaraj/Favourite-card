@@ -82,12 +82,14 @@ function ProfilePageHead(props) {
                                 <Link route={(`/give/to/${profileType}/${slug}/new`)}>
                                     <Popup
                                         disabled={false}
+                                        position="bottom center"
+                                        inverted
                                         content={formatMessage('campaignProfile:popupCurrentBalanceText', {
                                             balance,
                                         })}
                                         trigger={
                                             (
-                                                <Button className="blue-bordr-btn-round-def CampaignBtn" disabled>
+                                                <Button className="blue-bordr-btn-round-def CampaignBtn hover_disabled">
                                                     <span>
                                                         <i aria-hidden="true" className="bell icon" />
                                                     </span>
