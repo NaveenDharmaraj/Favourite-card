@@ -4,7 +4,7 @@
     "fortheCampaignLabel":"The Campaign admins will receive this message with your gift.",
     "includeCharityMessageLabel": "Message for the charity (optional)",
     "includeGroupMessageLabel": "Message for the Giving Group (optional)",
-    "includeCampaignMessageLabel": "Message for the Campaign admins (optional)",
+    "includeCampaignMessageLabel": "Message for Campaign admins (optional)",
     "allocationsForthCharityPopup": "Vous pouvez laisser savoir, au destinataire, la motivation derrière votre don, leur donner des suggestions sur la manière dont vous aimeriez que cette somme soit utilisée, leur faire savoir si vous donnez en l'honneur de quelqu'un ou simplement leur dire de continuer à faire un bon travail.",
     "generalInputPlaceHolder": "Qu'aimeriez-vous dire au destinataire?",
     "invalidLengthError": "est trop long (maximum de 1000 caractères)",

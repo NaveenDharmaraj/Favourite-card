@@ -14,7 +14,8 @@
         "decemberLabel": "December"
     },
     "errorMessages": {
-        "amountLessOrInvalid": "Please choose an amount of ${{minAmount}} or more",
+        "amountLessOrInvalid": "Enter an amount to deposit. The minimum deposit is ${{minAmount}}.",
+        "amountLessOrInvalidGivingFlows": "Enter an amount of ${{minAmount}} or more.",
         "invalidMaxAmountError":  "$9,999.00 is the maximum we can process here per transaction. For larger amounts, please get in touch with us: &nbsp <a href = \"mailto: hello@charitableimpact.com\">hello@charitableimpact.com</a> &nbsp or 1-877-531-0580.",
         "invalidLengthError": "is too long (maximum is 1000 characters)",
         "invalidNoteTextError":  "Only standard letters and numbers are allowed here",
