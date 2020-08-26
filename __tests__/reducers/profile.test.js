@@ -29,7 +29,7 @@ describe('Testing campaign profile Reducer', () => {
         expect(newState).toEqual(payload);
     });
 
-    it('Should match state with expected for campaign subgroup data', () => {
+    it('Should match state with expected data for campaign subgroup data when campaignSubGroupDetails is empty, length is zero and isViewMore is false', () => {
         const type = 'GET_SUB_GROUPS_FOR_CAMPAIGN';
         const payload = {
             campaignSubGroupDetails,
