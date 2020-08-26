@@ -21,7 +21,7 @@ const GroupJoinModal = (props) => {
 
     return (
         <Modal
-            size="tiny"
+            size="my_model"
             dimmer="inverted"
             className="chimp-modal"
             closeIcon
@@ -32,12 +32,12 @@ const GroupJoinModal = (props) => {
                 {formatMessage('groupProfile:joinGroupModalHeader')}
             </Modal.Header>
             <Modal.Content>
-                <Modal.Description className="font-s-16">
-                    {formatMessage('groupProfile:joinGroupModalDescription')}
+                <Modal.Description>
+                    <p>{formatMessage('groupProfile:joinGroupModalDescription')}</p>
                 </Modal.Description>
                 <div className="btn-wraper pt-3 text-center">
                     <Button
-                        className="blue-bordr-btn-round-def c-small"
+                        className="blue-bordr-btn-round-def btn_joinGroup"
                         content={formatMessage('groupProfile:joinGroup')}
                         onClick={handleJoinGroup}
                         disabled={showJoinLoader}

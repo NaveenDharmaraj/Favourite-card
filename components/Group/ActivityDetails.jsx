@@ -275,7 +275,7 @@ class ActivityDetails extends React.Component {
                                 </Comment.Text>
                             )
                             : (
-                                <Comment.Text>
+                                <Comment.Text className={!canReply ? 'showPointer' : ''}>
                                     {description}
                                 </Comment.Text>
                             )}

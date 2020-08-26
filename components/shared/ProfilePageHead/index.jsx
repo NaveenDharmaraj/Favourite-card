@@ -12,6 +12,9 @@ import {
     Popup,
 } from 'semantic-ui-react';
 
+import {
+    formatCurrency,
+} from '../../../helpers/give/utils';
 import { withTranslation } from '../../../i18n';
 import { Link } from '../../../routes';
 import GroupJoin from '../../Group/GroupJoin';
@@ -39,14 +42,19 @@ function ProfilePageHead(props) {
     let buttonLink = null;
     let profileType = '';
     let linkAddress;
+    let profileButtonText = '';
+    const currency = 'USD';
+    const language = 'en';
     if (type === 'beneficiaries') {
         profileType = 'charity';
     } else if (type === 'groups') {
         profileType = 'group';
         linkAddress = `${RAILS_APP_URL_ORIGIN}/groups/${slug}/edit`;
+        profileButtonText = formatMessage('campaignProfile:groupButtonText');
     } else if (type === 'campaigns') {
         profileType = 'group';
         linkAddress = `${RAILS_APP_URL_ORIGIN}/campaigns/${slug}/manage-basics`;
+        profileButtonText = formatMessage('campaignProfile:campaignButtonText');
     }
     if (pageDetails.attributes) {
         if (isAuthenticated) {
@@ -58,10 +66,7 @@ function ProfilePageHead(props) {
                                 <span>
                                     <i aria-hidden="true" className="edit icon" />
                                 </span>
-                                {formatMessage('campaignProfile:editBtn')}
-                                {type === 'campaigns'
-                                    ? formatMessage('campaignProfile:campaignButtonText')
-                                    : formatMessage('campaignProfile:groupButtonText')}
+                                {`${formatMessage('campaignProfile:editBtn')} ${profileButtonText}`}
                             </Button>
                         </a>
                         {balance > 0
@@ -72,10 +77,7 @@ function ProfilePageHead(props) {
                                         <span>
                                             <i aria-hidden="true" className="bell icon" />
                                         </span>
-                                        {formatMessage('campaignProfile:giveFromBtn')}
-                                        {type === 'campaigns'
-                                            ? formatMessage('campaignProfile:campaignButtonText')
-                                            : formatMessage('campaignProfile:groupButtonText')}
+                                        {`${formatMessage('campaignProfile:giveFromBtn')} ${profileButtonText}`}
                                     </Button>
                                 </Link>
                             ) : (
@@ -85,7 +87,8 @@ function ProfilePageHead(props) {
                                         position="bottom center"
                                         inverted
                                         content={formatMessage('campaignProfile:popupCurrentBalanceText', {
-                                            balance,
+                                            balance: formatCurrency(balance, language, currency),
+                                            Profiletype: profileButtonText,
                                         })}
                                         trigger={
                                             (
@@ -93,10 +96,7 @@ function ProfilePageHead(props) {
                                                     <span>
                                                         <i aria-hidden="true" className="bell icon" />
                                                     </span>
-                                                    {formatMessage('campaignProfile:giveFromBtn')}
-                                                    {type === 'campaigns'
-                                                        ? formatMessage('campaignProfile:campaignButtonText')
-                                                        : formatMessage('campaignProfile:groupButtonText')}
+                                                    {`${formatMessage('campaignProfile:giveFromBtn')} ${profileButtonText}`}
                                                 </Button>
                                             )
                                         }
