@@ -154,5 +154,4 @@ describe('Testing campaign profile Reducer', () => {
         });
         expect(newState).toEqual(payload);
     });
-
 })
