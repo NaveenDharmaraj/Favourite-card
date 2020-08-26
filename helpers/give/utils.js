@@ -1228,7 +1228,6 @@ const populateDonationReviewPage = (giveData, data, displayName, currency, forma
         selectedTaxReceiptProfile,
     } = data;
     const state = {
-        buttonText: formatMessage('reviewAddMoney'),
         editUrl: '/donations/new',
         headingText: formatMessage('donationHeadingText'),
         isRecurring: !(giftType.value === 0),
@@ -1240,7 +1239,7 @@ const populateDonationReviewPage = (giveData, data, displayName, currency, forma
         mainDisplayImage: '',
         mainDisplayText: `To ${displayName}'s Impact Account`,
     };
-
+    state.buttonText = (state.isRecurring) ? formatMessage('reviewConfirmMontlyMoney') : formatMessage('reviewAddMoney');
     const {
         attributes,
     } = selectedTaxReceiptProfile;
@@ -1346,7 +1345,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
 
     // Create this constant to not conflict with recipient constant.
     const state = {
-        buttonText: formatMessage('reviewSendGift'),
+        // buttonText: formatMessage('reviewSendGift'),
         editUrl: toURL,
         headingText: (isGiveFrom)
             ? `${formatMessage('reviewGiveFromText')} ${giveFrom.name}`
@@ -1362,7 +1361,7 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
         mainDisplayText: `${formatMessage('reviewGiveToText')} ${giveTo.name}`,
     };
     const listingData = [];
-
+    state.buttonText = (state.isRecurring) ? formatMessage('reviewSendGiftMonthly') : formatMessage('reviewSendGift');
     if (!_.isEmpty(giveFrom)) {
         let frequencyMessage = formatMessage('reviewSendOnce');
         if (giftType.value === 1) {
