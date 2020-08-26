@@ -152,7 +152,7 @@ class DropDownAccountOptions extends React.Component {
         }
         return (
             <Fragment>
-                <Form.Field>
+                <Form.Field className="give_field">
                     <div className="paymentMethodDropdown">
                         <label htmlFor="giveFrom">
                             {giveFromHeader}
@@ -169,7 +169,7 @@ class DropDownAccountOptions extends React.Component {
                             )}
                         />
                         {((type !== 'donations') && (
-                            <p className="multipleFriendAmountFieldText">
+                            <p className="givingInfoText">
                                 You can give from your personal account or those you administer.
                             </p>
                         ))}
