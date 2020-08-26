@@ -18,7 +18,6 @@ import _isEqual from 'lodash/isEqual';
 
 import Activity from './Activity';
 import Members from './Members';
-import DonationDetails from './DonationDetails';
 // import CharitySupport from './CharitySupport';
 // import TransactionDetails from './TransactionDetails';
 
@@ -92,12 +91,7 @@ class ProfileDetails extends React.Component {
                 //     menuItem: 'Transactions',
                 //     render: () => (
                 //         <Tab.Pane attached={false}>
-                //             {(isAuthenticated)
-                //                 && (
-                //                     <TransactionDetails
-                //                         id={id}
-                //                     />
-                //                 )}
+                //             <TransactionDetails />
                 //         </Tab.Pane>
                 //     ),
                 // },
@@ -122,7 +116,7 @@ class ProfileDetails extends React.Component {
                 <Grid.Column mobile={16} tablet={16} computer={16} className="GroupTab">
                     <div className="charityTab tabBottom" ref={this.tabRef}>
                         {isAuthenticated
-                            ? (
+                            && (
                                 <Tab
                                     menu={{
                                         pointing: true,
@@ -133,12 +127,6 @@ class ProfileDetails extends React.Component {
                                     activeIndex={updatedActiveIndex}
                                     onTabChange={this.handleTabChange}
                                 />
-                            )
-                            : (
-                                <Fragment>
-                                    <Divider />
-                                    <DonationDetails />
-                                </Fragment>
                             )}
                     </div>
                 </Grid.Column>
