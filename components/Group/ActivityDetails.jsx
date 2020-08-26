@@ -271,7 +271,7 @@ class ActivityDetails extends React.Component {
                         {name
                             ? (
                                 <Comment.Text>
-                                    {`${name} ${formatMessage('groupProfile:said')}: ${comment}`}
+                                    {`${name} said: ${comment}`}
                                 </Comment.Text>
                             )
                             : (
