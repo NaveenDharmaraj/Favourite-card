@@ -67,6 +67,7 @@ const Note = ({
     enableCharacterCount,
     fieldName,
     formatMessage,
+    fromP2P,
     handleOnInputBlur,
     handleOnInputChange,
     labelText,
@@ -83,6 +84,7 @@ const Note = ({
                     <label htmlFor={fieldName}>
                         {labelText}
                     </label>
+
                     <Popup
                         content={popupText}
                         position="top center"
@@ -96,6 +98,7 @@ const Note = ({
                             )
                         }
                     />
+                    {fromP2P && <span className="givingInfoText">Friends will receive this message with your gift.</span>}
                 </Fragment>
             )
             }
@@ -131,12 +134,14 @@ const Note = ({
 
 Note.defaultProps = {
     enableCharacterCount: true,
+    fromP2P: false,
     text: null,
 };
 
 Note.propTypes = {
     enableCharacterCount: bool,
     fieldName: string.isRequired,
+    fromP2P: bool,
     handleOnInputBlur: func.isRequired,
     handleOnInputChange: func.isRequired,
     labelText: string.isRequired,

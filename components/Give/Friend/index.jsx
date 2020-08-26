@@ -889,7 +889,6 @@ class Friend extends React.Component {
                                                                 handlePresetAmountClick={this.handlePresetAmountClick}
                                                                 validity={validity}
                                                                 isGiveFlow
-                                                                fromP2p
                                                             />
                                                             </div>
                                                             <p className="multipleFriendAmountFieldText">
@@ -924,6 +923,7 @@ class Friend extends React.Component {
                                                             popupText={formatMessage('friends:noteToRecipientsPopup')}
                                                             placeholderText={formatMessage('friends:noteToRecipientsPlaceholderText')}
                                                             text={noteToRecipients}
+                                                            fromP2P
                                                         />
                                                         {(giveFromType === 'groups' || giveFromType === 'user') && (
                                                         <Note

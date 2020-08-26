@@ -548,7 +548,7 @@ class ReloadAddAmount extends React.Component {
                     'id': id
                 });
                 const statusMessageProps = {
-                    message: 'New Credit Card Added',
+                    message: 'Payment method added',
                     type: 'success',
                 };
                 dispatch({
@@ -656,7 +656,7 @@ class ReloadAddAmount extends React.Component {
                 } = result;
                 let newtaxReceipt = getTaxReceiptById(this.props.taxReceiptsOptions, id);
                 const statusMessageProps = {
-                    message: 'Tax recipient added',
+                    message: 'Tax receipt recipient added',
                     type: 'success',
                 };
                 

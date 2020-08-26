@@ -216,7 +216,7 @@ class TaxReceiptModalComponent extends React.Component {
                                     checked={isDefaultChecked}
                                     disabled={this.props.isFirstTaxReciept}
                                     onClick={() => { this.setState({ buttonClicked: false, isDefaultChecked: !isDefaultChecked }); }}
-                                    label="Set as default tax receipt recipient"
+                                    label={this.props.isFirstTaxReciept ? "This will be your default tax receipt recipient." : "Set as default tax receipt recipient"}
                                 />
                             </div>
                             </Form.Field>

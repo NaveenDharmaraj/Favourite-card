@@ -1008,6 +1008,7 @@ class Charity extends React.Component {
                                                             handleInputOnBlur={this.handleInputOnBlur}
                                                             handlePresetAmountClick={this.handlePresetAmountClick}
                                                             validity={validity}
+                                                            fromCharity
                                                         />
                                                         <p className="coverFeeLabel">
                                                             { (!_isEmpty(coverAmountDisplay) && coverAmountDisplay > 0) ? formatMessage('coverFeeLabelWithAmount', {
