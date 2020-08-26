@@ -57,7 +57,7 @@ describe('Testing campaign profile Reducer', () => {
         expect(newState).toEqual(payload);
     });
 
-    it('Should match state with payload for deeplink url', () => {
+    it('Should match state with expected data for deeplink url', () => {
         const type = 'DEEP_LINK_URL';
         const payload = {
             deepLink,
@@ -110,7 +110,7 @@ describe('Testing campaign profile Reducer', () => {
         expect(newState).toEqual(payload);
     });
 
-    it('Should match state with payload for ', () => {
+    it('Should match state with expected data for save follow campaign status', () => {
         const type = 'SAVE_FOLLOW_STATUS_CAMPAIGN';
         const payload = {
             followStatus: true,
