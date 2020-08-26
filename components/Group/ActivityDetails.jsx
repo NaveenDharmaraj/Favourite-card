@@ -157,22 +157,17 @@ class ActivityDetails extends React.Component {
             dispatch,
             groupDetails: {
                 attributes: {
-                    name,
                     slug,
                 },
             },
             groupMembersDetails,
             groupId,
-            t: formatMessage,
         } = this.props;
-        const toastMessage = formatMessage('groupProfile:joinGroupToastMessage', {
-            name,
-        });
         const loadMembers = !_isEmpty(groupMembersDetails);
         this.setState({
             showJoinLoader: true,
         });
-        dispatch(joinGroup(slug, groupId, loadMembers, toastMessage)).then(() => {
+        dispatch(joinGroup(slug, groupId, loadMembers)).then(() => {
             this.closeJoinGroupModal();
             this.setState({
                 showJoinLoader: false,
@@ -369,7 +364,6 @@ ActivityDetails.defaultProps = {
     },
     groupDetails: {
         attributes: {
-            name: '',
             slug: '',
         },
     },
@@ -409,7 +403,6 @@ ActivityDetails.propTypes = {
     }),
     groupDetails: PropTypes.shape({
         attributes: PropTypes.shape({
-            name: string,
             slug: string,
         }),
     }),

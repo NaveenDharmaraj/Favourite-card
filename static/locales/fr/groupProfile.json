@@ -41,7 +41,6 @@
     "joinGroup": "Join group",
     "joinGroupText": "Join this group to get updates, show your support, and connect with other group members.",
     "leaveGroup": "Leave group",
-    "joinGroupToastMessage": "{{name}} added to Favourites",
     "joinGroupModalHeader": "When you join this Giving Group…",
     "joinGroupModalDescription": "You can add and like comments in the activity list, get updates from the group, and show your support."
 }

@@ -2,5 +2,6 @@
     "title": "test",
     "shareProfileHeader": "Share this",
     "shareLink": "Or share links",
-    "giveButtonText": "Give"
+    "giveButtonText": "Give",
+    "favouritesToastMessage": "{{name}} added to Favourites"
 }

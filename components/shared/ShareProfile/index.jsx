@@ -46,8 +46,10 @@ class ShareProfile extends React.Component {
             },
             dispatch,
             liked,
+            name,
             profileId,
             type,
+            t: formatMessage,
         } = this.props;
         dispatch({
             payload: {
@@ -55,10 +57,13 @@ class ShareProfile extends React.Component {
             },
             type: actionTypes.DISABLE_FOLLOW_BUTTON,
         });
+        const toastMessage = formatMessage('common:favouritesToastMessage', {
+            name,
+        });
         if (liked) {
             unfollowProfile(dispatch, userId, profileId, type);
         } else {
-            followProfile(dispatch, userId, profileId, type);
+            followProfile(dispatch, userId, profileId, type, toastMessage);
         }
     }
 
@@ -207,6 +212,7 @@ ShareProfile.defaultProps = {
     liked: false,
     name: '',
     profileId: '',
+    t: () => {},
     type: '',
 };
 
@@ -220,6 +226,7 @@ ShareProfile.propTypes = {
     liked: bool,
     name: string,
     profileId: string,
+    t: func,
     type: string,
 };
 

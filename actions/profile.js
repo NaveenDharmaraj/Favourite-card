@@ -76,6 +76,7 @@ export const actionTypes = {
     SLUG_API_ERROR_STATUS: 'SLUG_API_ERROR_STATUS',
     STORE_SEARCH_KEY_FOR_CAMPAIGN: 'STORE_SEARCH_KEY_FOR_CAMPAIGN',
     SUB_GROUP_LIST_LOADER: 'SUB_GROUP_LIST_LOADER',
+    TRIGGER_UX_CRITICAL_ERROR: 'TRIGGER_UX_CRITICAL_ERROR',
 };
 
 export const getCampaignSupportGroups = (id, searchKey = '', pageNumber = 1, pageSize = 6) => async (dispatch) => {
@@ -244,7 +245,7 @@ export const generateDeepLink = (url, dispatch) => {
     }).finally(() => dispatch(fsa));
 };
 
-export const followProfile = (dispatch, userId, entityId, type) => {
+export const followProfile = (dispatch, userId, entityId, type, toastMessage) => {
     const fsa = {
         payload: {
             followStatus: false,
@@ -255,6 +256,10 @@ export const followProfile = (dispatch, userId, entityId, type) => {
             disableFollow: false,
         },
         type: actionTypes.DISABLE_FOLLOW_BUTTON,
+    };
+    const toastMessageProps = {
+        message: toastMessage,
+        type: 'success',
     };
     // Must check types for other cases
     switch (type) {
@@ -279,6 +284,16 @@ export const followProfile = (dispatch, userId, entityId, type) => {
     }).then(
         (result) => {
             fsa.payload.followStatus = true;
+            if (type === 'groups') {
+                dispatch({
+                    payload: {
+                        errors: [
+                            toastMessageProps,
+                        ],
+                    },
+                    type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
+                });
+            }
         },
     ).catch((error) => {
         // console.log(error);
