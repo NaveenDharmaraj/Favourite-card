@@ -67,9 +67,7 @@ class DedicateGift extends Component {
         return (
             <Fragment>
                 <div className="give_flow_field">
-                    <Header as="h3" className="f-weight-n">
-                        Dedicate this gift (optional)
-                    </Header>
+                    <label>Dedicate this gift (optional)</label>
                     <Accordion>
                         <Accordion.Title
                             as={Checkbox}

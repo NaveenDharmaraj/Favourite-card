@@ -242,7 +242,8 @@
                   font-size: 24px;
                   color: #263238;
                   @media only screen and (max-width:768px) {
-                    font-size: 17px;  
+                    font-size: 17px;
+                    padding-top: 3px;
                   }
                 }
             }
@@ -279,7 +280,8 @@
                   font-size: 24px;
                   color: #263238;
                   @media only screen and (max-width:768px) {
-                    font-size: 17px;  
+                    font-size: 17px;
+                    padding-top: 3px;
                   }
                 }
             }
@@ -317,7 +319,8 @@
                   font-size: 24px;
                   color: #263238;
                   @media only screen and (max-width:768px) {
-                    font-size: 17px;  
+                    font-size: 17px;
+                    padding-top: 3px; 
                   }
                 }
             }
@@ -651,6 +654,8 @@
                 &.icon{
                     &.blue{
                         visibility: hidden;
+                        margin: 0px !important;
+                        height: 0px;
                     }
                 }
             }
@@ -665,6 +670,8 @@
                     &.icon{
                         &.blue{
                             visibility: hidden;
+                            height: 0px;
+                            margin: 0px;
                         }
                     }
                 }
@@ -683,6 +690,8 @@
                 &.icon{
                     &.blue{
                         visibility: hidden;
+                        margin: 0px;
+                        height: 0px;
                     }
                 }
             }
@@ -2582,7 +2591,7 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
         resize: none;
     }
 }
-.field{
+.give_flow_field{
     .accordion{
         &.ui{
             .checkbox{
@@ -2594,6 +2603,11 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
                         label{
                             margin-bottom: 0px !important;
                             font-family: 'ProximaNova-Regular';
+                        }
+                        &:last-child{
+                            label{
+                                margin-bottom: 0px !important;
+                            }
                         }
                         +.input{
                             input{
@@ -2645,5 +2659,61 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
 body{
     .ui.inverted.dimmer{
         background-color: fade(#D8D8D8, 71%);
+    }
+}
+.multyDropDownFilter{
+    position: relative;
+    .ui.active.multiple.search.selection.dropdown{
+        .dropdown.icon{
+            position: absolute;
+            width: 20px;
+            top: 15px;
+            bottom: 15px;
+            right: 15px;
+            background: transparent;
+            cursor: pointer;
+            z-index: 999;
+        }
+    }
+}
+.dropdownWithArrowParentnotbg{
+    .ui.selection.dropdown{
+        &.active{
+            .dropdown.icon{
+                position: absolute;
+                width: 20px;
+                top: 15px;
+                bottom: 15px;
+                right: 15px;
+                background: transparent;
+                cursor: pointer;
+                z-index: 999;
+            }
+        }
+        .dropdown.icon{
+            display: block;
+            &::before{
+                content: '';
+            }
+        }
+    }
+}
+.mobile_btn{
+    .ui.button{
+        &.w-120{
+            width: auto;
+            min-width: 120px;
+        }
+        &.w-160{
+            width: auto;
+            min-width: 160px;
+        }
+    }
+}
+@media only screen and (max-width:991px) {
+    body{
+        .ui.search.dropdown .menu{
+            max-height: 220px;
+        }
     }
 }
