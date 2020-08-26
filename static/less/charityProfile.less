@@ -2219,3 +2219,27 @@
         }
     }
 }
+.GroupTab .tabBottom .ActivityTop .ActivityComment .content .actions .ui.comments{
+    position: relative;
+    &:first-child{
+        &:after{
+          content: '';
+          display: none;
+        }
+      }
+      &:last-child{
+        &:before{
+          display: none;
+        }
+      }
+      &:before{
+        content: '';
+        position: absolute;
+        width: 1px;
+        background-color: #ddd;
+        left: 20px;
+        z-index: 0;
+        top: 50px;
+        bottom: -35px;
+      }
+    }
