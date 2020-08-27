@@ -126,7 +126,7 @@ export const getDetails = (id, type, pageNumber = 1) => (dispatch) => {
     switch (type) {
         case 'members':
             fsa.type = actionTypes.GET_GROUP_MEMBERS_DETAILS;
-            newUrl = `/groups/${id}/groupMembers?page[size]=10&page[number]=${pageNumber}`;
+            newUrl = `/groups/${id}/groupUsers?page[size]=10&page[number]=${pageNumber}`;
             placeholderfsa.payload.memberPlaceholder = true;
             placeholderfsa.type = actionTypes.MEMBER_PLACEHOLDER_STATUS;
             break;
