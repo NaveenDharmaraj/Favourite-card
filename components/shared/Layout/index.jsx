@@ -32,7 +32,8 @@ const {
     APPLOZIC_WS_URL,
     APPLOZIC_APP_KEY,
     BRANCH_IO_KEY,
-    HELP_SCOUT_KEY
+    HELP_SCOUT_KEY,
+    NEWRELIC_ENV,
 } = publicRuntimeConfig;
 
 const getWidth = () => {
@@ -177,7 +178,8 @@ class Layout extends React.Component {
                     <script defer type="text/javascript" src ='/static/branchio.js'></script>
                     {isAuthenticated ? <script defer  type="text/javascript" src="/static/initApplozic.js"></script> : ""}
                     {/* <script type="text/javascript" src="https://www.gstatic.com/firebasejs/5.9.4/firebase-app.js"></script> */}
-                    <script type="text/javascript" src='/static/newrelic.js'></script>
+                    {!_.isEmpty(NEWRELIC_ENV) ? <script type="text/javascript" src={`/static/newrelic-${NEWRELIC_ENV}.js`}></script> : "" }
+                    
                 </Head>
                 <div>
                     <ErrorBoundary>
