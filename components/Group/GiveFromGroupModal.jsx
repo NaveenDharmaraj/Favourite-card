@@ -37,7 +37,7 @@ const GiveFromGroupModal = (props) => {
         isGiveFromModalOpen,
     } = props;
     const divTextForCharity = 'A charity your group supports';
-    const divTextForCampaign = 'The campaign your group supports';
+    const divTextForCampaign = 'The Campaign your group supports';
     let modalLeftSectionDouble;
     let giveUrl;
     let imgClass;
