@@ -712,7 +712,7 @@ class ReloadAddAmount extends React.Component {
         }
         if (reviewBtnFlag) {
             return (
-                <div><p className="errorNote"><Icon name="exclamation circle" />There's not enough money in your account to send this gift.<span onClick={()=> {this.modalContentChange(1)}} className="hyperLinks-style"> Add money</span> to continue.</p></div>
+                <div><p className="error-message"><Icon name="exclamation circle" />There's not enough money in your account to send this gift.<span onClick={()=> {this.modalContentChange(1)}} className="hyperLinks-style"> Add money</span> to continue.</p></div>
             );
         }
         return null;
