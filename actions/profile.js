@@ -245,8 +245,7 @@ export const generateDeepLink = (url, dispatch) => {
     }).finally(() => dispatch(fsa));
 };
 
-// TODO unit test getting then of undefined
-export const followProfile = (dispatch, userId, entityId, type) => {
+export const followProfile = (userId, entityId, type) => (dispatch) => {
     const fsa = {
         payload: {
             followStatus: false,
@@ -273,7 +272,7 @@ export const followProfile = (dispatch, userId, entityId, type) => {
             break;
     }
     const payloadObj = generatePayloadBodyForFollowAndUnfollow(userId, entityId, type);
-    graphApi.post(`core/create/relationship`, payloadObj, {
+    return graphApi.post(`core/create/relationship`, payloadObj, {
         params: {
             dispatch,
             ignore401: true,
@@ -291,8 +290,7 @@ export const followProfile = (dispatch, userId, entityId, type) => {
     });
 };
 
-// TODO unit test getting then of undefined
-export const unfollowProfile = (dispatch, userId, entityId, type) => {
+export const unfollowProfile = (userId, entityId, type) => (dispatch) => {
     const fsa = {
         payload: {
             followStatus: true,
@@ -319,7 +317,7 @@ export const unfollowProfile = (dispatch, userId, entityId, type) => {
             break;
     }
     const payloadObj = generatePayloadBodyForFollowAndUnfollow(userId, entityId, type);
-    graphApi.post(`/users/deleterelationship`, payloadObj, {
+    return graphApi.post(`/users/deleterelationship`, payloadObj, {
         params: {
             dispatch,
             ignore401: true,

@@ -3,7 +3,7 @@ import mockAxios from 'axios';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
-import { getCampaignSupportGroups, getCampaignFromSlug, getCampaignGalleryImages, campaignSubGroupSeeMore } from '../../actions/profile';
+import { getCampaignSupportGroups, getCampaignFromSlug, getCampaignGalleryImages, campaignSubGroupSeeMore, followProfile, unfollowProfile } from '../../actions/profile';
 import { campaignSubGroupDetails, campaignDetails, campaignImageGallery } from './Data/profile_Data';
 
 describe('Champaign profile actions test', () => {
@@ -16,6 +16,7 @@ describe('Champaign profile actions test', () => {
         const mockStore = configureMockStore(middlewares);
         store = mockStore();
         mockAxios.get.mockReset();
+        mockAxios.post.mockReset();
     });
 
     describe('Testing campaign subgroup data', () => {
@@ -290,5 +291,59 @@ describe('Champaign profile actions test', () => {
             });
         });
     });
+
+    describe('Testing followProfile and unfollowProfile', () => {
+        it('Should set followStatus as true when api for followProfile is called', async () => {
+            mockAxios.post.mockImplementationOnce(() => Promise.resolve());
+            const expectedActions = [
+                {
+                    payload: {
+                        followStatus: true,
+                    },
+                    type: 'SAVE_FOLLOW_STATUS_CAMPAIGN',
+                },
+                {
+                    payload: {
+                        disableFollow: false,
+                    },
+                    type: 'DISABLE_FOLLOW_BUTTON',
+                },
+            ];
+            const userId = '111';
+            const entityId = '121';
+            const type = 'campaigns';
+            await store.dispatch(followProfile(userId, entityId, type)).then(() => {
+                expect.assertions(2);
+                expect(store.getActions()).toEqual(expectedActions);
+                expect(mockAxios.post).toHaveBeenCalledTimes(1);
+            });
+        });
+
+        it('Should set followStatus as false when api for unfollowProfile is called', async () => {
+            mockAxios.post.mockImplementationOnce(() => Promise.resolve());
+            const expectedActions = [
+                {
+                    payload: {
+                        followStatus: false,
+                    },
+                    type: 'SAVE_FOLLOW_STATUS_CAMPAIGN',
+                },
+                {
+                    payload: {
+                        disableFollow: false,
+                    },
+                    type: 'DISABLE_FOLLOW_BUTTON',
+                },
+            ];
+            const userId = '111';
+            const entityId = '121';
+            const type = 'campaigns';
+            await store.dispatch(unfollowProfile(userId, entityId, type)).then(() => {
+                expect.assertions(2);
+                expect(store.getActions()).toEqual(expectedActions);
+                expect(mockAxios.post).toHaveBeenCalledTimes(1);
+            });
+        });
+    })
 
 })
