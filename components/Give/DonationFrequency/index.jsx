@@ -107,3 +107,4 @@ function DonationFrequency(props) {
     )
 }
 export default DonationFrequency;
+export { DonationFrequency };
