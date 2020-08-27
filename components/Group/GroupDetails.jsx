@@ -258,7 +258,7 @@ class GroupDetails extends React.Component {
                             className="blue-bordr-btn-round"
                             onClick={this.toggleGiveFromGroupModal}
                         >
-                            Give from this Group
+                            Give from this group
                         </Button>
                         <GiveFromGroupModal
                             beneficiariesCount={beneficiariesCount}
