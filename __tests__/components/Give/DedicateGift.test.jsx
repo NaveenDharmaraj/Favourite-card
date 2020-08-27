@@ -42,7 +42,6 @@ describe('Test the existance and rendering of component elements', () => {
 
 describe('Test state changes on click functionality', () => {
     const props = {
-        dedicateType: 'inMemoryOf',
         dedicateValue: '',
         handleInputChange: jest.fn(),
         handleInputOnBlur: jest.fn(),
@@ -67,18 +66,7 @@ describe('Test state changes on click functionality', () => {
         }
     };
 
-    it('Should give activeIndex state equal to -1 when both activeIndex & index are equal, on dedicate type click', () => {
-        const component = initializeComponent(props);
-        const e = {};
-        const data = {
-            index: 1,
-            value: 'abc', 
-        };
-        component.find({ 'data-test': 'Give_DedicateGift_accordian_inhonor' }).simulate('click', e, data);
-        expect(component.state('activeIndex')).toEqual(-1);
-    });
-
-    it('Should give activeIndex state equal to  index value when both activeIndex & index are not equal, on dedicate type click', () => {
+    it('Should give activeIndex state equal to 0 when dedicateType inHonorOf is clicked', () => {
         const component = initializeComponent(props);
         const e = {};
         const data = {
@@ -87,5 +75,16 @@ describe('Test state changes on click functionality', () => {
         };
         component.find({ 'data-test': 'Give_DedicateGift_accordian_inhonor' }).simulate('click', e, data);
         expect(component.state('activeIndex')).toEqual(0);
+    });
+
+    it('Should give activeIndex state equal to 1 when dedicateType inMemoryOf is clicked', () => {
+        const component = initializeComponent(props);
+        const e = {};
+        const data = {
+            index: 1,
+            value: 'abc', 
+        };
+        component.find({ 'data-test': 'Give_DedicateGift_accordian_inhonor' }).simulate('click', e, data);
+        expect(component.state('activeIndex')).toEqual(1);
     });
 })
