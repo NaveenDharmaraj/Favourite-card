@@ -152,7 +152,7 @@ class DropDownAccountOptions extends React.Component {
         }
         return (
             <Fragment>
-                <Form.Field className="give_field">
+                <Form.Field>
                     <div className="paymentMethodDropdown">
                         <label htmlFor="giveFrom">
                             {giveFromHeader}
