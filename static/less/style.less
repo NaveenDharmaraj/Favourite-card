@@ -918,6 +918,8 @@ h4{
             margin-bottom: 13px;
             box-shadow: none;
             overflow-x: scroll;
+            overflow-y: hidden;
+            scrollbar-width: none;
             &::-webkit-scrollbar {
               width: 3px;
               height: 5px;
@@ -1188,7 +1190,16 @@ h4{
     }
     .ui{
       &.header{
+        font-family: 'ProximaNova-Semibold';
         margin-bottom: 1rem;
+      }
+    }
+    h4{
+      &.ui{
+        &.header{
+          font-size: 17px;
+          line-height: 15px;
+        }
       }
     }
     p{
@@ -1227,6 +1238,9 @@ h4{
               transform: rotate(180deg);
           }
           .menu{
+            @media only screen and (max-width: 767px){
+              max-height:220px;
+            }
               .item{
                   &.selected{
                       background-color: #055CE5;
@@ -5018,7 +5032,7 @@ body{
 @media only screen and (max-width:767px) {
   body{
     .charityTab .ui.segment.tab{
-      padding-bottom: 5rem;
+      //padding-bottom: 5rem;
     }
     .profile-social-wraper{
       padding-left: 0rem;
@@ -8384,5 +8398,45 @@ body .userEllips{
 body{
   .ui.inverted.dimmer{
       background-color: fade(#D8D8D8, 71%);
+  }
+}
+.charityTab{
+  &.user-profile-settings{
+    margin-bottom: 0px;
+    .settingsTab{
+      margin-bottom: -3rem;
+      >div{
+        >.ui.grid{
+          >.column{
+            padding-top: 0px;
+            padding-bottom: 0px;
+            .tabular.menu.ui{
+              margin-top: 0px;
+            }
+            .ui.segment.tab{
+              @media only screen and (min-width:1199px) {
+                min-height: 800px;
+              }
+              @media only screen and (min-width:992px) {
+                min-height: 600px;
+                padding-bottom: 100px;
+              }
+              @media only screen and (min-width:768px) {
+                min-height: 500px;
+                padding-bottom: 80px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  .ui.segment.tab.user-messaging{
+    margin-bottom: -3rem;
+    .charityTab{
+      .ui.segment.tab{
+        padding-bottom: 30px;
+      }
+    }
   }
 }
