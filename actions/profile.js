@@ -138,18 +138,13 @@ export const getCampaignSupportGroups = (id, searchKey = '', pageNumber = 1, pag
         // console.log(err);
     })
 };
-export const getCampaignGalleryImages = (token, id) => async (dispatch) => {
+export const getCampaignGalleryImages = (id) => async (dispatch) => {
     const fullParams = {
         params: {
             dispatch,
             ignore401: true,
             uxCritical: true,
         },
-    };
-    if (!_.isEmpty(token)) {
-        fullParams.headers = {
-            Authorization: `Bearer ${token}`,
-        };
     };
     coreApi.get(`campaigns/${id}/galleryImages`,
         {
@@ -222,6 +217,7 @@ export const getCampaignFromSlug = (slug, token = null) => async (dispatch) => {
     });
 };
 
+// TODO unit test as BASIC_AUTH_HEADER is passed as parameter getting then of undefined
 export const generateDeepLink = (url, dispatch) => {
     const fsa = {
         payload: {
@@ -244,7 +240,7 @@ export const generateDeepLink = (url, dispatch) => {
     }).finally(() => dispatch(fsa));
 };
 
-export const followProfile = (dispatch, userId, entityId, type) => {
+export const followProfile = (userId, entityId, type) => (dispatch) => {
     const fsa = {
         payload: {
             followStatus: false,
@@ -271,7 +267,7 @@ export const followProfile = (dispatch, userId, entityId, type) => {
             break;
     }
     const payloadObj = generatePayloadBodyForFollowAndUnfollow(userId, entityId, type);
-    graphApi.post(`core/create/relationship`, payloadObj, {
+    return graphApi.post(`core/create/relationship`, payloadObj, {
         params: {
             dispatch,
             ignore401: true,
@@ -289,7 +285,7 @@ export const followProfile = (dispatch, userId, entityId, type) => {
     });
 };
 
-export const unfollowProfile = (dispatch, userId, entityId, type) => {
+export const unfollowProfile = (userId, entityId, type) => (dispatch) => {
     const fsa = {
         payload: {
             followStatus: true,
@@ -316,7 +312,7 @@ export const unfollowProfile = (dispatch, userId, entityId, type) => {
             break;
     }
     const payloadObj = generatePayloadBodyForFollowAndUnfollow(userId, entityId, type);
-    graphApi.post(`/users/deleterelationship`, payloadObj, {
+    return graphApi.post(`/users/deleterelationship`, payloadObj, {
         params: {
             dispatch,
             ignore401: true,
@@ -334,7 +330,7 @@ export const unfollowProfile = (dispatch, userId, entityId, type) => {
     });
 };
 
-export const campaignSubGroupSeeMore = (url, dispatch, isViewMore) => {
+export const campaignSubGroupSeeMore = (url, isViewMore) => (dispatch) => {
     return coreApi.get(url, {
         params: {
             dispatch,

@@ -54,15 +54,11 @@ class CampaignProfile extends React.Component {
             },
             req,
         } = this.props;
-        let auth0AccessToken = null;
-        if (typeof window === 'undefined') {
-            auth0AccessToken = storage.get('auth0AccessToken', 'cookie', req.headers.cookie);
-        };
         if (slugApiErrorStats) {
             Router.pushRoute('/dashboard');
         } else {
             dispatch(getCampaignSupportGroups(id));
-            dispatch(getCampaignGalleryImages(auth0AccessToken, id));
+            dispatch(getCampaignGalleryImages(id));
         }
     }
 

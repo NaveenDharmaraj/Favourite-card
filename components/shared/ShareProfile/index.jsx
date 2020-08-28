@@ -56,9 +56,9 @@ class ShareProfile extends React.Component {
             type: actionTypes.DISABLE_FOLLOW_BUTTON,
         });
         if (liked) {
-            unfollowProfile(dispatch, userId, profileId, type);
+            dispatch(unfollowProfile(userId, profileId, type));
         } else {
-            followProfile(dispatch, userId, profileId, type);
+            dispatch(followProfile(userId, profileId, type));
         }
     }
 
