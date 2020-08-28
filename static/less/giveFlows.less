@@ -850,20 +850,20 @@
             } 
         }
         +.error-message{
-            margin-top: -10px;
+            margin-top: -10px !important;
             font-size: 12px;
         }
     }
     .give_flow_field{
-        margin-top:40px !important;
+        margin-top:38px !important;
         @media only screen and (max-width: 767px){
             margin-top:30px !important;
         }
         .price_btn{
             margin-bottom: 10px;
         }
-        .error-message{
-            margin-top: -10px;
+        .field+.error-message{
+            margin-top: -4px;
         }
         .accordion.ui{
             .cp_chkbx{
@@ -887,7 +887,7 @@
         
     }
     .give_flow_field_bottom{
-        margin-bottom:40px !important;
+        margin-bottom:38px !important;
         margin-top: 18px;
         @media only screen and (max-width:767px) {
             margin-bottom:30px !important;
@@ -2314,12 +2314,11 @@ input{
         .item{
             margin-left: 15px !important;
             padding: 0 !important;
-            &:last-child{
-                margin-right: 15px !important;
-            }
         }
     }
-  
+    .ui.dropdown.floating{
+        margin-left: 15px;
+    }
 }
 .button.ui.primary.button.blue-btn-rounded.btn_first{
     margin-right: 20px;

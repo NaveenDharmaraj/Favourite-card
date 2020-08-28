@@ -914,31 +914,33 @@ class Friend extends React.Component {
                                                 <Grid.Row className="to_space">
                                                     <Grid.Column mobile={16} tablet={16} computer={16}>
                                                         <div className="give_flow_field">
-                                                        <Note
-                                                            fieldName="noteToRecipients"
-                                                            formatMessage={formatMessage}
-                                                            handleOnInputChange={this.handleInputChange}
-                                                            handleOnInputBlur={this.handleOnInputBlur}
-                                                            labelText={formatMessage('friends:noteToRecipientsLabel')}
-                                                            popupText={formatMessage('friends:noteToRecipientsPopup')}
-                                                            placeholderText={formatMessage('friends:noteToRecipientsPlaceholderText')}
-                                                            text={noteToRecipients}
-                                                            fromP2P
-                                                        />
-                                                        {(giveFromType === 'groups' || giveFromType === 'user') && (
-                                                        <Note
-                                                            fieldName="noteToSelf"
-                                                            formatMessage={formatMessage}
-                                                            handleOnInputChange={this.handleInputChange}
-                                                            handleOnInputBlur={this.handleOnInputBlur}
-                                                            labelText={formatMessage(`friends:noteToSelfLabel${giveFromType}`)}
-                                                            popupText={formatMessage(`friends:noteToSelfPopup${giveFromType}`)}
-                                                            placeholderText={formatMessage(`friends:noteToSelfPlaceholderText${giveFromType}`)}
-                                                            text={noteToSelf}
-                                                        />
-                                                        )}
-                                                        {submtBtn}
+                                                            <Note
+                                                                fieldName="noteToRecipients"
+                                                                formatMessage={formatMessage}
+                                                                handleOnInputChange={this.handleInputChange}
+                                                                handleOnInputBlur={this.handleOnInputBlur}
+                                                                labelText={formatMessage('friends:noteToRecipientsLabel')}
+                                                                popupText={formatMessage('friends:noteToRecipientsPopup')}
+                                                                placeholderText={formatMessage('friends:noteToRecipientsPlaceholderText')}
+                                                                text={noteToRecipients}
+                                                                fromP2P
+                                                            />
                                                         </div>
+                                                        <div className="give_flow_field">    
+                                                            {(giveFromType === 'groups' || giveFromType === 'user') && (
+                                                            <Note
+                                                                fieldName="noteToSelf"
+                                                                formatMessage={formatMessage}
+                                                                handleOnInputChange={this.handleInputChange}
+                                                                handleOnInputBlur={this.handleOnInputBlur}
+                                                                labelText={formatMessage(`friends:noteToSelfLabel${giveFromType}`)}
+                                                                popupText={formatMessage(`friends:noteToSelfPopup${giveFromType}`)}
+                                                                placeholderText={formatMessage(`friends:noteToSelfPlaceholderText${giveFromType}`)}
+                                                                text={noteToSelf}
+                                                            />
+                                                            )}
+                                                        </div>
+                                                        {submtBtn}
                                                     </Grid.Column>
                                                 </Grid.Row>
                                             </Grid>
