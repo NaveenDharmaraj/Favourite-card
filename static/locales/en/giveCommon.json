@@ -21,8 +21,8 @@
         "invalidNoteTextError":  "Only standard letters and numbers are allowed here",
         "isAmountCoverGive": "Sorry, you can't give more money than what is in your account.",
         "giveAmountGreaterThanBalance": "Sorry, you can't give more money than what is in your account.",
-        "creditCardNotAdded": "Add a payment method",
-        "taxReceiptNotAdded": "Add a tax receipt recipient"
+        "creditCardNotAdded": "Add a payment method.",
+        "taxReceiptNotAdded": "Add a tax receipt recipient."
     },
     "breadCrumb" : {
         "new" : "Add money",
