@@ -249,8 +249,7 @@ describe('Champaign profile actions test', () => {
                 }
             ];
             const id = '21';
-            const token = '123'
-            await store.dispatch(getCampaignGalleryImages(token, id)).then(() => {
+            await store.dispatch(getCampaignGalleryImages(id)).then(() => {
                 expect.assertions(2);
                 expect(store.getActions()).toEqual(expectedActions);
                 expect(mockAxios.get).toHaveBeenCalledTimes(1);

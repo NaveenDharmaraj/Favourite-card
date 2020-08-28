@@ -138,18 +138,13 @@ export const getCampaignSupportGroups = (id, searchKey = '', pageNumber = 1, pag
         // console.log(err);
     })
 };
-export const getCampaignGalleryImages = (token, id) => async (dispatch) => {
+export const getCampaignGalleryImages = (id) => async (dispatch) => {
     const fullParams = {
         params: {
             dispatch,
             ignore401: true,
             uxCritical: true,
         },
-    };
-    if (!_.isEmpty(token)) {
-        fullParams.headers = {
-            Authorization: `Bearer ${token}`,
-        };
     };
     coreApi.get(`campaigns/${id}/galleryImages`,
         {
