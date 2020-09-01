@@ -97,7 +97,7 @@ class CharitySupport extends React.Component {
         return (
             <div className="charityInfowrap fullwidth">
                 <div className="charityInfo paddingcharity">
-                    <Header as="h4">{formatMessage('groupProfile:groupSupportsheadertext')}</Header>
+                    <Header className="heading_btm" as="h4">{formatMessage('groupProfile:groupSupportsheadertext')}</Header>
                     {campaignId
                     && (
                         <Fragment>
