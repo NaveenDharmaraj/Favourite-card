@@ -1071,6 +1071,7 @@ class ReloadAddAmount extends React.Component {
         } = this.state;
         const {
             allocationGiftType,
+            giveTo,
             reviewBtnFlag,
             language,
         } = this.props;
@@ -1081,6 +1082,9 @@ class ReloadAddAmount extends React.Component {
             modalHeaderText = 'Add new tax receipt recipient';
         }
         let formatedBalance = formatCurrency(this.props.giveTo.balance, language, reloadObject.currency);
+        const headingText = (giveTo.type === 'companies')
+            ? `Add money to your Company Account to send this gift. ${giveTo.name}'s current account balance is `
+            : 'Add money to your Impact Account to send this gift. Your current Impact Account balance is ';
         return (
             <Fragment>
                 {this.renderReloadComponent(allocationGiftType, reviewBtnFlag)}
@@ -1095,7 +1099,7 @@ class ReloadAddAmount extends React.Component {
                                 <span className="notifyDefaultIcon"></span>
                             </span>
                             <span className="noteContent">
-                                Add money to your Impact Account to send this gift. Your current Impact Account balance is <span className="amount-give">{formatedBalance}</span>
+                                {headingText} <span className="amount-give">{formatedBalance}</span>
                             </span>
                         </div>    
                     </div>)}
