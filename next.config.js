@@ -43,6 +43,7 @@ const configVars = {
         LOG_LEVEL: process.env.LOG_LEVEL,
         LOGDNA_APP_NAME: process.env.LOGDNA_APP_NAME,
         LOGDNA_PUBLIC_INGESTION_KEY: process.env.LOGDNA_PUBLIC_INGESTION_KEY,
+        NEWRELIC_ENV: process.env.NEWRELIC_ENV,
         NODE_ENV: process.env.NODE_ENV,
         RAILS_APP_URL_ORIGIN: process.env.RAILS_APP_URL_ORIGIN,
         ROR_AUTH_API_BASE: process.env.ROR_AUTH_API_BASE,
