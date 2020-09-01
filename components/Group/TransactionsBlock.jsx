@@ -83,7 +83,7 @@ const TransactionsBlock = (props) => {
     return (
         <div className="charityInfowrap fullwidth">
             <div className="charityInfo">
-                <Header as="h4">{formatMessage('groupProfile:transactionHeader')}</Header>
+                <Header as="h4" className="heading_btm">{formatMessage('groupProfile:transactionHeader')}</Header>
                 {(fundraisingDaysRemaining !== 0)
                 && (
                     <div className="groupcreated">

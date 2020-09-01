@@ -178,10 +178,10 @@ class TransactionDetails extends React.Component {
                     <Fragment>
                         <Table.Row className="EmilyData">
                             <Table.Cell className="date">{date}</Table.Cell>
-                            <Table.Cell className="EmilyGroup">
+                            <Table.Cell className="EmilyGroup full_width_text">
                                 <List verticalAlign="middle">
                                     <List.Item>
-                                        <Image size="tiny" src={transaction.attributes.imageUrl} />
+                                        <Image className="pr_Img" size="tiny" src={transaction.attributes.imageUrl} />
                                         <List.Content>
                                             <List.Header>
                                                 <span className="adminEmily">
@@ -191,7 +191,7 @@ class TransactionDetails extends React.Component {
                                             {(isChimpAdmin && transaction.attributes.canToggleName && !transaction.attributes.isOneTimeUser)
                                             && (
                                                 <Fragment>
-                                                    <a id="name" onClick={() => this.toggleVisibility(event,transaction.id)} className="mr-1">
+                                                    <a id="name" onClick={() => this.toggleVisibility(event,transaction.id)} className="linkgroupProfile">
                                                         {formatMessage('groupProfile:toggleDisplayname')}
                                                     </a>
                                                 </Fragment>
@@ -229,10 +229,11 @@ class TransactionDetails extends React.Component {
 
         return (
             <div>
-                {!_isEmpty(groupData) && isAdmin && (
+               <div className="btn_wrapper">
+               {!_isEmpty(groupData) && isAdmin && (
                     <a href={`/groups/${slug}.csv`} target="_blank">
                         <Button
-                            className="blue-bordr-btn-round"
+                            className="blue-bordr-btn-round btn_downloading"
                         >
                             {formatMessage('groupProfile:downloadData')}
                             <div className="btn-icon-line"><Image src={downloadIcon} /></div>
@@ -241,7 +242,7 @@ class TransactionDetails extends React.Component {
 
                 )
                 }
-                <Menu compact>
+                <Menu compact className="dropdownRight">
                     <Dropdown
                         value={selectedValue}
                         options={options}
@@ -250,7 +251,8 @@ class TransactionDetails extends React.Component {
                         fluid
                     />
                 </Menu>
-                <Table basic="very" unstackable className="db-activity-tbl Bottomborder">
+               </div>
+                <Table basic="very" unstackable className="db-activity-tbl Bottomborder Transactions_table">
                     {!tableListLoader ? (
                         <Table.Body>
                             {transactionData}

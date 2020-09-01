@@ -25,21 +25,15 @@ const GroupSupportCard = (props) => {
     return (
         <Link route={`/${type}/${slug}`}>
             <div className="GivingGroupPadding">
-                <Grid.Row className="MatchingPartnerWapper">
-                    <Grid>
-                        <Grid.Column mobile={3} tablet={3} computer={3} className="pr-0">
+                <div className="MatchingPartnerWapper">
                             <div className="h_profileMatching">
                                 <Image src={avatar} className="profileImgMargin" />
                             </div>
-                        </Grid.Column>
-                        <Grid.Column mobile={13} tablet={13} computer={13}>
                             <div className="MatchingPartner">
                                 <Header as="h3">{name}</Header>
                                 <p className={`textGreen ${!isCampaign ? 'orange' : ''}`}>{formatMessage('groupProfile:matchingpartner')}</p>
                             </div>
-                        </Grid.Column>
-                    </Grid>
-                </Grid.Row>
+                </div>
             </div>
         </Link>
     );
