@@ -655,45 +655,6 @@
             padding: 4px 30px 10px 30px;
         }
     }
-    .groupcreated{
-        margin-bottom: 25px;
-        .ui {
-            &.list {
-                margin: 0px 0;
-                .item {
-                    .icon {
-                        position  : relative;
-                        min-width : 22px;
-                        min-height: 22px;
-                        &::before {
-                            content            : '';
-                            position           : absolute;
-                            top                : 0px;
-                            left               : 0;
-                            bottom             : 0;
-                            right              : 0;
-                            background-repeat  : no-repeat !important;
-                            background-position: center !important;
-                            margin             : auto;
-                        }
-                        &.calendar{
-                            &::before{
-                                background-image: url(../images/icons/calendar.svg) !important;
-                                background-size : contain !important;
-                                width           : 22px;
-                            }
-                        }
-                     }
-                }
-                .content{
-                    .header{
-                        font-size: 14px;
-                        font-weight: normal;
-                    }
-                }
-             }
-        }
-    }
     .no-margin{
         margin:0px !important;
     }
@@ -912,6 +873,45 @@
                 font-size: 12px;
                 background-color: #fff;
                 border-radius: 30px;
+            }
+            .groupcreated{
+                margin-bottom: 25px;
+                .ui {
+                    &.list {
+                        margin: 0px 0;
+                        .item {
+                            .icon {
+                                position  : relative;
+                                min-width : 22px;
+                                min-height: 22px;
+                                &::before {
+                                    content            : '';
+                                    position           : absolute;
+                                    top                : 0px;
+                                    left               : 0;
+                                    bottom             : 0;
+                                    right              : 0;
+                                    background-repeat  : no-repeat !important;
+                                    background-position: center !important;
+                                    margin             : auto;
+                                }
+                                &.calendar{
+                                    &::before{
+                                        background-image: url(../images/icons/calendar.svg) !important;
+                                        background-size : contain !important;
+                                        width           : 22px;
+                                    }
+                                }
+                             }
+                        }
+                        .content{
+                            .header{
+                                font-size: 14px;
+                                font-weight: normal;
+                            }
+                        }
+                     }
+                }
             }
         }
         .matchingFundsWapper{

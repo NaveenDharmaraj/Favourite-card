@@ -61,17 +61,23 @@ class ActivityDetails extends React.Component {
         };
     }
 
-    onClicked(id, url) {
+    onClicked(id, count) {
         const {
             dispatch,
         } = this.props;
-        dispatch(getCommentFromActivityId(id, url));
+        dispatch(getCommentFromActivityId(id, count));
         this.setState({
             isCommentClicked: true,
         });
     }
 
     replyClicked() {
+        const {
+            dispatch,
+            id,
+            commentsCount,
+        } = this.props;
+        dispatch(getCommentFromActivityId(id, commentsCount));
         this.setState({
             isReplyClicked: true,
         });
@@ -218,13 +224,9 @@ class ActivityDetails extends React.Component {
             createdAt,
             comment,
             commentsCount,
-            commentsLink,
             canReply,
             groupComments: {
                 loadComments,
-                isReply,
-                isLoadComments,
-                totalCount,
             },
             type,
             disableLike,
@@ -236,17 +238,12 @@ class ActivityDetails extends React.Component {
         const {
             isReplyClicked,
             commentText,
-            isCommentClicked,
             showJoinGroupModal,
             showJoinLoader,
         } = this.state;
         let count = commentsCount;
-        if (groupComments[id] && isReply && !isCommentClicked) {
-            count = commentsCount + groupComments[id].length;
-        } else if (groupComments[id] && isReply && isCommentClicked) {
+        if (groupComments[id]) {
             count = groupComments[id].length;
-        } else if (groupComments[id] && !isReply && isLoadComments) {
-            count = totalCount;
         }
         const time = distanceOfTimeInWords(createdAt);
         const cls = (isLiked) ? 'red heart' : 'heart';
@@ -286,7 +283,7 @@ class ActivityDetails extends React.Component {
                             {(count !== null && canReply)
                         && (
                             <Comment.Action
-                                onClick={() => this.onClicked(id, commentsLink)}
+                                onClick={() => this.onClicked(id, count)}
                             >
                                 {`${count} ${count === 1 ? formatMessage('groupProfile:comment') : formatMessage('groupProfile:comments')}`}
                             </Comment.Action>
@@ -367,7 +364,7 @@ ActivityDetails.defaultProps = {
             slug: '',
         },
     },
-    groupId: null,
+    groupId: '',
     groupMembersDetails: {},
     id: null,
     isLiked: false,
@@ -406,7 +403,7 @@ ActivityDetails.propTypes = {
             slug: string,
         }),
     }),
-    groupId: number,
+    groupId: string,
     groupMembersDetails: PropTypes.shape({}),
     id: number,
     isLiked: bool,

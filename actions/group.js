@@ -8,6 +8,7 @@ import eventApi from '../services/eventApi';
 export const actionTypes = {
     ACTIVITY_LIKE_STATUS: 'ACTIVITY_LIKE_STATUS',
     ADMIN_PLACEHOLDER_STATUS: 'ADMIN_PLACEHOLDER_STATUS',
+    CHARITY_SUPPORT_PLACEHOLDER_STATUS: 'CHARITY_SUPPORT_PLACEHOLDER_STATUS',
     GET_BENEFICIARIES_COUNT: 'GET_BENEFICIARIES_COUNT',
     GET_CAMPAIGN_SUPPORTING_GROUP: 'GET_CAMPAIGN_SUPPORTING_GROUP',
     GET_GROUP_ACTIVITY_DETAILS: 'GET_GROUP_ACTIVITY_DETAILS',
@@ -126,21 +127,21 @@ export const getDetails = (id, type, pageNumber = 1) => (dispatch) => {
     switch (type) {
         case 'members':
             fsa.type = actionTypes.GET_GROUP_MEMBERS_DETAILS;
-            newUrl = `/groups/${id}/groupUsers?page[size]=10&page[number]=${pageNumber}`;
+            newUrl = `/groups/${id}/groupUsers`;
             placeholderfsa.payload.memberPlaceholder = true;
             placeholderfsa.type = actionTypes.MEMBER_PLACEHOLDER_STATUS;
             break;
         case 'admins':
             fsa.type = actionTypes.GET_GROUP_ADMIN_DETAILS;
-            newUrl = `/groups/${id}/groupAdmins?page[size]=10&page[number]=${pageNumber}`;
+            newUrl = `/groups/${id}/groupAdmins`;
             placeholderfsa.payload.adminPlaceholder = true;
             placeholderfsa.type = actionTypes.ADMIN_PLACEHOLDER_STATUS;
             break;
         case 'charitySupport':
             fsa.type = actionTypes.GET_GROUP_BENEFICIARIES;
-            newUrl = `groups/${id}/groupBeneficiaries?page[size]=10&page[number]=${pageNumber}`;
+            newUrl = `groups/${id}/groupBeneficiaries`;
             placeholderfsa.payload.showPlaceholder = true;
-            placeholderfsa.type = actionTypes.GROUP_PLACEHOLDER_STATUS;
+            placeholderfsa.type = actionTypes.CHARITY_SUPPORT_PLACEHOLDER_STATUS;
             break;
         default:
             break;
@@ -150,6 +151,8 @@ export const getDetails = (id, type, pageNumber = 1) => (dispatch) => {
         params: {
             dispatch,
             ignore401: true,
+            'page[number]': pageNumber,
+            'page[size]': 10,
             uxCritical: true,
         },
     }).then((result) => {
@@ -172,7 +175,7 @@ export const getDetails = (id, type, pageNumber = 1) => (dispatch) => {
                 break;
             case 'charitySupport':
                 placeholderfsa.payload.showPlaceholder = false;
-                placeholderfsa.type = actionTypes.GROUP_PLACEHOLDER_STATUS;
+                placeholderfsa.type = actionTypes.CHARITY_SUPPORT_PLACEHOLDER_STATUS;
                 break;
             default:
                 break;
@@ -181,7 +184,7 @@ export const getDetails = (id, type, pageNumber = 1) => (dispatch) => {
     });
 };
 
-export const getTransactionDetails = (id, url) => async (dispatch) => {
+export const getTransactionDetails = (id, type, pageNumber = 1) => async (dispatch) => {
     const fsa = {
         payload: {
             groupTransactions: {},
@@ -194,15 +197,17 @@ export const getTransactionDetails = (id, url) => async (dispatch) => {
         },
         type: actionTypes.GROUP_PLACEHOLDER_STATUS,
     });
-    const newUrl = !_isEmpty(url) ? url : `groups/${id}/activities?filter[moneyItems]=all&page[size]=10`;
-    await coreApi.get(newUrl, {
+    await coreApi.get(`groups/${id}/activities`, {
         params: {
             dispatch,
+            'filter[moneyItems]': type,
             ignore401: true,
+            'page[number]': pageNumber,
+            'page[size]': 10,
             uxCritical: true,
         },
     }).then((result) => {
-        if (result && !_isEmpty(result.data)) {
+        if (result) {
             fsa.payload.groupTransactions = result;
             dispatch(fsa);
         }
@@ -223,11 +228,12 @@ export const getGroupActivities = (id, url, isPostActivity = false) => (dispatch
         },
         type: actionTypes.GET_GROUP_ACTIVITY_DETAILS,
     };
-    const newUrl = !_isEmpty(url) ? url : `groups/${id}/activities?page[size]=10`;
+    const newUrl = !_isEmpty(url) ? url : `groups/${id}/activities`;
     return coreApi.get(newUrl, {
         params: {
             dispatch,
             ignore401: true,
+            'page[size]': 10,
             uxCritical: true,
         },
     }).then((result) => {
@@ -249,17 +255,18 @@ export const getGroupActivities = (id, url, isPostActivity = false) => (dispatch
     });
 };
 
-export const getCommentFromActivityId = (id, url) => (dispatch) => {
+export const getCommentFromActivityId = (id, commentsCount) => (dispatch) => {
     const fsa = {
         payload: {
             groupComments: {},
         },
         type: actionTypes.GET_GROUP_COMMENTS,
     };
-    return coreApi.get(url, {
+    return coreApi.get(`events/${id}/comments`, {
         params: {
             dispatch,
             ignore401: true,
+            'page[size]': commentsCount,
             uxCritical: true,
         },
     }).then((result) => {
@@ -275,7 +282,7 @@ export const getCommentFromActivityId = (id, url) => (dispatch) => {
 };
 
 export const postActivity = (id, msg) => (dispatch) => {
-    const url = `groups/${id}/activities?page[size]=1`;
+    const url = `groups/${id}/activities`;
     return coreApi.post(`/comments`,
         {
             data: {
@@ -289,6 +296,7 @@ export const postActivity = (id, msg) => (dispatch) => {
             params: {
                 dispatch,
                 ignore401: true,
+                'page[size]': 1,
             },
         }).then((result) => {
         if (result && !_isEmpty(result.data)) {
@@ -466,12 +474,13 @@ export const joinGroup = (groupSlug, groupId, loadMembers) => (dispatch) => {
         },
         type: actionTypes.GET_GROUP_DETAILS_FROM_SLUG,
     };
-    return coreApi.post(`/groups/join?load_full_profile=true`, {
+    return coreApi.post(`/groups/join`, {
         slug: groupSlug,
     }, {
         params: {
             dispatch,
             ignore401: true,
+            load_full_profile: true,
         },
     }).then(
         (result) => {
@@ -530,7 +539,10 @@ export const leaveGroup = (slug, groupId, loadMembers) => (dispatch) => {
         payload: { buttonLoading: true },
         type: actionTypes.LEAVE_GROUP_MODAL_BUTTON_LOADER,
     });
-    return coreApi.patch(`/groups/leave?slug=${slug}`, {
+    return coreApi.patch(`/groups/leave`, {
+        params: {
+            slug,
+        },
     }).then((result) => {
         if (result && result.status === 'SUCCESS') {
             dispatch(getGroupFromSlug(slug));
@@ -638,7 +650,6 @@ export const addFriendRequest = (user) => (dispatch) => {
             dispatch(fsa);
         }
     }).finally(() => {
-        statusfsa.payload.friendUserId = user.friendUserId;
         statusfsa.payload.status = false;
         dispatch(statusfsa);
     });

@@ -19,7 +19,7 @@ import _isEqual from 'lodash/isEqual';
 import Activity from './Activity';
 import Members from './Members';
 // import CharitySupport from './CharitySupport';
-// import TransactionDetails from './TransactionDetails';
+import TransactionDetails from './TransactionDetails';
 
 class ProfileDetails extends React.Component {
     constructor(props) {
@@ -86,29 +86,15 @@ class ProfileDetails extends React.Component {
                         </Tab.Pane>
                     ),
                 },
-                // {
-                //     id: 'Transactions',
-                //     menuItem: 'Transactions',
-                //     render: () => (
-                //         <Tab.Pane attached={false}>
-                //             <TransactionDetails />
-                //         </Tab.Pane>
-                //     ),
-                // },
-                // {
-                //     id: 'supports',
-                //     menuItem: 'Charities this group supports',
-                //     render: () => (
-                //         <Tab.Pane attached={false}>
-                //             {(isAuthenticated)
-                //             && (
-                //                 <CharitySupport
-                //                     id={id}
-                //                 />
-                //             )}
-                //         </Tab.Pane>
-                //     ),
-                // },
+                {
+                    id: 'Transactions',
+                    menuItem: 'Transactions',
+                    render: () => (
+                        <Tab.Pane attached={false}>
+                            <TransactionDetails />
+                        </Tab.Pane>
+                    ),
+                },
             ];
         }
         return (

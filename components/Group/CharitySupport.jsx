@@ -2,11 +2,10 @@ import React, {
     Fragment,
 } from 'react';
 import { connect } from 'react-redux';
-import _ from 'lodash';
 import _isEmpty from 'lodash/isEmpty';
 import {
-    Grid,
-    Button,
+    Header,
+    Divider,
 } from 'semantic-ui-react';
 import {
     arrayOf,
@@ -17,38 +16,16 @@ import {
     bool,
 } from 'prop-types';
 
+import { withTranslation } from '../../i18n';
 import { getDetails } from '../../actions/group';
-import LeftImageCard from '../shared/LeftImageCard';
 import PlaceholderGrid from '../shared/PlaceHolder';
 
-import GroupNoDataState from './GroupNoDataState';
+import GroupSupportCard from './GroupSupportCard';
 
 class CharitySupport extends React.Component {
-    static loadCards(data) {
-        return (
-            data.map((card) => {
-                let locationDetails = '';
-                const locationDetailsCity = (!_.isEmpty(card.attributes.city)) ? card.attributes.city : '';
-                const locationDetailsProvince = (!_.isEmpty(card.attributes.province)) ? card.attributes.province : '';
-                if (locationDetailsCity === '' && locationDetailsProvince !== '') {
-                    locationDetails = locationDetailsProvince;
-                } else if (locationDetailsCity !== '' && locationDetailsProvince === '') {
-                    locationDetails = locationDetailsCity;
-                } else if (locationDetailsCity !== '' && locationDetailsProvince !== '') {
-                    locationDetails = `${card.attributes.city}, ${card.attributes.province}`;
-                }
-                return (
-                    <LeftImageCard
-                        entityName={card.attributes.name}
-                        location={locationDetails}
-                        placeholder={card.attributes.avatar}
-                        typeClass="chimp-lbl charity"
-                        type="charity"
-                        url={`/charities/${card.attributes.slug}`}
-                    />
-                );
-            })
-        );
+    constructor(props) {
+        super(props);
+        this.showCharities = this.showCharities.bind(this);
     }
 
     componentDidMount() {
@@ -57,23 +34,40 @@ class CharitySupport extends React.Component {
             groupBeneficiaries: {
                 data: beneficiariesData,
             },
-            id: groupId,
+            groupDetails: {
+                id: groupId,
+            },
         } = this.props;
         if (_isEmpty(beneficiariesData)) {
-            getDetails(dispatch, groupId, 'charitySupport');
+            dispatch(getDetails(groupId, 'charitySupport'));
         }
     }
 
-    loadMore() {
+    showCharities() {
         const {
-            dispatch,
             groupBeneficiaries: {
-                nextLink: beneficiariesNextLink,
+                data: beneficiariesData,
             },
-            id: groupId,
         } = this.props;
-        const url = (beneficiariesNextLink) ? beneficiariesNextLink : null;
-        getDetails(dispatch, groupId, 'charitySupport', url);
+        let showDivider = false;
+        return (
+            beneficiariesData.map((data, index) => {
+                if (index > 0 && index < beneficiariesData.length) {
+                    showDivider = true;
+                }
+                return (
+                    <Fragment>
+                        {showDivider && <Divider />}
+                        <GroupSupportCard
+                            avatar={data.attributes.avatar}
+                            name={data.attributes.name}
+                            slug={data.attributes.slug}
+                            isCampaign={false}
+                        />
+                    </Fragment>
+                );
+            })
+        );
     }
 
     render() {
@@ -81,92 +75,103 @@ class CharitySupport extends React.Component {
             charityLoader,
             groupBeneficiaries: {
                 data: beneficiariesData,
-                nextLink: beneficiariesNextLink,
             },
             groupDetails: {
                 attributes: {
-                    isAdmin,
-                    slug,
+                    campaignAvatar,
+                    campaignId,
+                    campaignName,
+                    campaignSlug,
                 },
             },
+            t: formatMessage,
         } = this.props;
-        const viewData = !_isEmpty(beneficiariesData)
-            ? (
-                <Grid.Row stretched>
-                    {CharitySupport.loadCards(beneficiariesData)}
-                </Grid.Row>
-            )
-            : (
-                <GroupNoDataState
-                    type="charities"
-                    isAdmin={isAdmin}
-                    slug={slug}
-                />
+        let data = '';
+        if (!_isEmpty(beneficiariesData)) {
+            data = this.showCharities();
+        } else if (!campaignId && _isEmpty(beneficiariesData)) {
+            data = (
+                <p>{formatMessage('groupProfile:charitySupportNoDataText')}</p>
             );
-
+        }
         return (
-            <Fragment>
-                {!charityLoader ? (
-                    <Grid stackable doubling columns={3}>
-                        {viewData}
-                        {(beneficiariesNextLink)
-                        && (
-                            <div className="text-right">
-                                <Button
-                                    onClick={() => this.loadMore()}
-                                    basic
-                                    color="blue"
-                                    content="View more"
-                                />
-                            </div>
-                        )
-                        }
-                    </Grid>
-                ) : (<PlaceholderGrid row={1} column={3} placeholderType="card" />)
-                }
-            </Fragment>
+            <div className="charityInfowrap fullwidth">
+                <div className="charityInfo paddingcharity">
+                    <Header as="h4">{formatMessage('groupProfile:groupSupportsheadertext')}</Header>
+                    {campaignId
+                    && (
+                        <Fragment>
+                            <GroupSupportCard
+                                avatar={campaignAvatar}
+                                name={campaignName}
+                                slug={campaignSlug}
+                                isCampaign
+                            />
+                            {!_isEmpty(beneficiariesData)
+                            && <Divider />}
+                        </Fragment>
+                    )
+                    }
+                    {(charityLoader)
+                        ? (<PlaceholderGrid row={4} column={1} placeholderType="singleCard" />)
+                        : data}
+                </div>
+            </div>
         );
     }
 }
 
 CharitySupport.defaultProps = {
     charityLoader: true,
-    dispatch: _.noop,
+    dispatch: () => {},
     groupBeneficiaries: {
         data: [],
-        nextLink: '',
     },
     groupDetails: {
         attributes: {
-            isAdmin: false,
-            slug: '',
+            campaignAvatar: '',
+            campaignCity: '',
+            campaignId: null,
+            campaignName: '',
+            campaignSlug: '',
         },
+        id: '',
     },
-    id: null,
+    t: () => {},
 };
 
 CharitySupport.propTypes = {
     charityLoader: bool,
     dispatch: func,
-    groupBeneficiaries: {
+    groupBeneficiaries: PropTypes.shape({
         data: arrayOf(PropTypes.element),
-        nextLink: string,
-    },
-    groupDetails: {
-        attributes: {
-            isAdmin: bool,
-            slug: string,
-        },
-    },
-    id: number,
+    }),
+    groupDetails: PropTypes.shape({
+        attributes: PropTypes.shape({
+            campaignAvatar: string,
+            campaignCity: string,
+            campaignId: number,
+            campaignName: string,
+            campaignSlug: string,
+        }),
+        id: string,
+    }),
+    t: func,
 };
 
 function mapStateToProps(state) {
     return {
-        charityLoader: state.group.showPlaceholder,
+        charityLoader: state.group.charityLoader,
         groupBeneficiaries: state.group.groupBeneficiaries,
         groupDetails: state.group.groupDetails,
     };
 }
 
-export default connect(mapStateToProps)(CharitySupport);
+const connectedComponent = withTranslation([
+    'groupProfile',
+])(connect(mapStateToProps)(CharitySupport));
+export {
+    connectedComponent as default,
+    CharitySupport,
+    mapStateToProps,
+};

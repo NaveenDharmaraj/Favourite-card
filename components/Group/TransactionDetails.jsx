@@ -1,13 +1,14 @@
 import React, {
     Fragment,
 } from 'react';
-import _ from 'lodash';
 import _isEmpty from 'lodash/isEmpty';
 import {
     Button,
     Table,
     Image,
     List,
+    Dropdown,
+    Menu,
 } from 'semantic-ui-react';
 import {
     arrayOf,
@@ -21,6 +22,7 @@ import {
     connect,
 } from 'react-redux';
 
+import { withTranslation } from '../../i18n';
 import {
     getTransactionDetails,
     toggleTransactionVisibility,
@@ -38,28 +40,53 @@ class TransactionDetails extends React.Component {
     constructor(props) {
         super(props);
         this.onPageChange = this.onPageChange.bind(this);
+        this.handleFilterChange = this.handleFilterChange.bind(this);
         this.state = {
             activePage: 1,
+            selectedValue: 'all',
         };
     }
 
     componentDidMount() {
         const {
             dispatch,
-            id,
+            groupDetails: {
+                id: groupId,
+            },
         } = this.props;
-        dispatch(getTransactionDetails(id));
+        const {
+            selectedValue,
+        } = this.state;
+        dispatch(getTransactionDetails(groupId, selectedValue));
     }
 
     onPageChange(event, data) {
         const {
-            id: groupId,
             dispatch,
+            groupDetails: {
+                id: groupId,
+            },
         } = this.props;
-        const url = `groups/${groupId}/activities?filter[moneyItems]=all&page[number]=${data.activePage}&page[size]=10`;
-        dispatch(getTransactionDetails(groupId, url));
+        const {
+            selectedValue,
+        } = this.state;
+        dispatch(getTransactionDetails(groupId, selectedValue, data.activePage));
         this.setState({
             activePage: data.activePage,
+        });
+    }
+
+    handleFilterChange(event, data) {
+        const {
+            dispatch,
+            groupDetails: {
+                id: groupId,
+            },
+        } = this.props;
+        dispatch(getTransactionDetails(groupId, data.value));
+        this.setState({
+            activePage: 1,
+            selectedValue: data.value,
         });
     }
 
@@ -77,7 +104,7 @@ class TransactionDetails extends React.Component {
                 attributes: {
                     isAdmin,
                     slug,
-                }
+                },
             },
             groupTransactions: {
                 data: groupData,
@@ -87,11 +114,28 @@ class TransactionDetails extends React.Component {
             },
             isChimpAdmin,
             language,
+            t: formatMessage,
             tableListLoader,
         } = this.props;
         const {
             activePage,
+            selectedValue,
         } = this.state;
+        const options = [
+            {
+                text: formatMessage('groupProfile:allActivity'),
+                value: 'all',
+            },
+            {
+                text: formatMessage('groupProfile:giftsReceived'),
+                value: 'in',
+            },
+            {
+                text: formatMessage('groupProfile:giftsGiven'),
+                value: 'out',
+            },
+        ];
+
         let transactionData = (
             <GroupNoDataState
                 type="transactions"
@@ -122,7 +166,6 @@ class TransactionDetails extends React.Component {
                 let transactionSign = '';
                 const imageCls = 'ui image';
                 const amountStatus = transaction.attributes.showAmount ? 'hide' : 'unhide';
-
                 // TODO after Api Changes to show + or -
                 if (transaction.attributes.transactionType === 'GroupReceivedAllocationEvent') {
                     transactionSign = '+';
@@ -133,21 +176,23 @@ class TransactionDetails extends React.Component {
                 }
                 return (
                     <Fragment>
-                        <Table.Row className={rowClass}>
+                        <Table.Row className="EmilyData">
                             <Table.Cell className="date">{date}</Table.Cell>
-                            <Table.Cell>
+                            <Table.Cell className="EmilyGroup">
                                 <List verticalAlign="middle">
                                     <List.Item>
-                                        <Image className={imageCls} size="tiny" src={transaction.attributes.imageUrl} />
+                                        <Image size="tiny" src={transaction.attributes.imageUrl} />
                                         <List.Content>
                                             <List.Header>
-                                                {transaction.attributes.description}
+                                                <span className="adminEmily">
+                                                    {transaction.attributes.description}
+                                                </span>
                                             </List.Header>
                                             {(isChimpAdmin && transaction.attributes.canToggleName && !transaction.attributes.isOneTimeUser)
                                             && (
                                                 <Fragment>
                                                     <a id="name" onClick={() => this.toggleVisibility(event,transaction.id)} className="mr-1">
-                                                                toggle display of name
+                                                        {formatMessage('groupProfile:toggleDisplayname')}
                                                     </a>
                                                 </Fragment>
                                             )}
@@ -164,7 +209,7 @@ class TransactionDetails extends React.Component {
                                         </Fragment>
                                     )
                                     : (
-                                        'Hidden'
+                                        formatMessage('groupProfile:hidden')
                                     )}
                                 {(isChimpAdmin && transaction.attributes.canToggleAmount && !transaction.attributes.isOneTimeUser)
                                 && (
@@ -189,13 +234,23 @@ class TransactionDetails extends React.Component {
                         <Button
                             className="blue-bordr-btn-round"
                         >
-                            Download transaction data <div className="btn-icon-line"><Image src={downloadIcon} /></div>
+                            {formatMessage('groupProfile:downloadData')}
+                            <div className="btn-icon-line"><Image src={downloadIcon} /></div>
                         </Button>
                     </a>
 
                 )
                 }
-                <Table basic="very" className="brdr-top-btm db-activity-tbl">
+                <Menu compact>
+                    <Dropdown
+                        value={selectedValue}
+                        options={options}
+                        onChange={this.handleFilterChange}
+                        item
+                        fluid
+                    />
+                </Menu>
+                <Table basic="very" unstackable className="db-activity-tbl Bottomborder">
                     {!tableListLoader ? (
                         <Table.Body>
                             {transactionData}
@@ -225,7 +280,10 @@ class TransactionDetails extends React.Component {
 
 TransactionDetails.defaultProps = {
     currency: 'USD',
-    dispatch: func,
+    dispatch: () => {},
+    groupDetails: {
+        id: '',
+    },
     groupTransactions: {
         data: [],
         links: {
@@ -238,12 +296,16 @@ TransactionDetails.defaultProps = {
     id: null,
     isChimpAdmin: false,
     language: 'en',
+    t: () => {},
     tableListLoader: true,
 };
 
 TransactionDetails.propTypes = {
     currency: string,
-    dispatch: _.noop,
+    dispatch: func,
+    groupDetails: {
+        id: string,
+    },
     groupTransactions: {
         data: arrayOf(PropTypes.element),
         links: PropTypes.shape({
@@ -256,6 +318,7 @@ TransactionDetails.propTypes = {
     id: number,
     isChimpAdmin: bool,
     language: string,
+    t: func,
     tableListLoader: bool,
 };
 
@@ -269,4 +332,12 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(TransactionDetails);
+const connectedComponent = withTranslation([
+    'common',
+    'groupProfile',
+])(connect(mapStateToProps)(TransactionDetails));
+export {
+    connectedComponent as default,
+    TransactionDetails,
+    mapStateToProps,
+};

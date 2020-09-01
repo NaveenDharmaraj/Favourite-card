@@ -122,7 +122,7 @@ class GroupProfile extends React.Component {
         const causesList = (causes.length > 0) ? _map(causes, _property('name')) : [];
         const keywords = (causesList.length > 0) ? (causesList.slice(0, 10)).join(', ') : '';
         const url = `${APP_URL_ORIGIN}/groups/${slug}`;
-        const giveButtonElement = <Button className="blue-btn-rounded-def mt-1">{formatMessage('common:giveButtonText')}</Button>;
+        const giveButtonElement = <Button className="blue-btn-rounded-def">{formatMessage('common:giveButtonText')}</Button>;
         let giveButton = null;
         if (isAuthenticated) {
             giveButton = (

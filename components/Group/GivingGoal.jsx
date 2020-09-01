@@ -8,6 +8,7 @@ import {
     Button,
     Divider,
     Responsive,
+    List,
 } from 'semantic-ui-react';
 import {
     number,
@@ -41,6 +42,7 @@ const GivingGoal = (props) => {
         groupDetails: {
             attributes: {
                 balance,
+                createdAt,
                 lastDonationAt,
                 fundraisingDaysRemaining,
                 fundraisingEndDate,
@@ -69,6 +71,7 @@ const GivingGoal = (props) => {
     let giftText = '';
     let goalText = '';
     let canSetGoal = false;
+    const formattedCreated = formatDateForGivingTools(createdAt);
     const giveButtonElement = (
         <Button className="blue-btn-rounded-def">
             {formatMessage('common:giveButtonText')}
@@ -85,7 +88,7 @@ const GivingGoal = (props) => {
         } else {
             goalText = `${fundraisingDaysRemaining}${daysText} ${formatMessage('groupProfile:toReachGoalText')}`;
         }
-    } else if (hasPreviousGoal) {
+    } else if (hasPreviousGoal && !_isEmpty(fundraisingEndDate)) {
         goalText = `${formatMessage('groupProfile:goalExpiredOnText')} ${formatDateForGivingTools(fundraisingEndDate)}`;
     }
     fundRaisingDuration = (
@@ -125,6 +128,18 @@ const GivingGoal = (props) => {
                 {(!hasGoal && !hasPreviousGoal)
                     ? (
                         <Fragment>
+                            <div className="groupcreated">
+                                <List verticalAlign="middle">
+                                    <List.Item>
+                                        <i aria-hidden="true" className="calendar icon" />
+                                        <List.Content>
+                                            <List.Header>
+                                                {`${formatMessage('groupProfile:groupCreated')} ${formattedCreated}.`}
+                                            </List.Header>
+                                        </List.Content>
+                                    </List.Item>
+                                </List>
+                            </div>
                             <Header as="h4">{formatMessage('groupProfile:totalRaised')}</Header>
                             <Header as="h1">{formattedtotalMoneyRaised}</Header>
                             {(balance && parseInt(balance, 10) > 0)
@@ -153,7 +168,7 @@ const GivingGoal = (props) => {
                             <div className="goalPercent">
                                 <Progress percent={fundraisingPercentage} />
                             </div>
-                            {fundRaisingDuration}
+                            {!_isEmpty(fundraisingEndDate) && fundRaisingDuration}
                             <div className="lastGiftWapper">
                                 <p className="lastGiftText">{giftText}</p>
                             </div>

@@ -14,7 +14,6 @@ const TransactionsCard = (props) => {
         transactionDetails: {
             amount,
             headerText,
-            popupText,
             field,
         },
     } = props;
@@ -23,18 +22,6 @@ const TransactionsCard = (props) => {
             <div className="Currentbox">
                 <Header as="h3" className={`${(field === 'balance') ? 'green' : ''}`}>{amount}</Header>
                 <p>{headerText}</p>
-            </div>
-            <div className="Currentboxpop">
-                <Popup
-                    trigger={(
-                        <Icon
-                            name="question circle"
-                        />
-                    )}
-                    content={popupText}
-                    position="top right"
-                    inverted
-                />
             </div>
         </div>
     );
@@ -45,7 +32,6 @@ TransactionsCard.defaultProps = {
         amount: '',
         field: '',
         headerText: '',
-        popupText: '',
     },
 };
 
@@ -54,7 +40,6 @@ TransactionsCard.propTypes = {
         amount: string,
         field: string,
         headerText: string,
-        popupText: string,
     }),
 };
 

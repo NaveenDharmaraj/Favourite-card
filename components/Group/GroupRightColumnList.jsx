@@ -11,7 +11,7 @@ import ActiveMatchBlock from '../shared/ActiveMatchBlock';
 
 import GivingGoal from './GivingGoal';
 import TransactionsBlock from './TransactionsBlock';
-// import CharitySupport from './CharitySupport';
+import CharitySupport from './CharitySupport';
 
 const GroupRightColumnList = (props) => {
     const {
@@ -28,7 +28,7 @@ const GroupRightColumnList = (props) => {
                 type={type}
                 hasActiveMatch={hasActiveMatch}
             />
-            {/* <CharitySupport /> */}
+            <CharitySupport />
         </Fragment>
     );
 };

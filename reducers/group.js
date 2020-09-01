@@ -46,7 +46,7 @@ const group = (state = {}, action) => {
         case 'GET_GROUP_TRANSACTION_DETAILS':
             newState = {
                 ...state,
-                groupTransactions: Object.assign({}, state.groupTransactions, action.payload.groupTransactions),
+                groupTransactions: Object.assign({}, action.payload.groupTransactions),
             };
             break;
         case 'GET_GROUP_ACTIVITY_DETAILS':
@@ -314,6 +314,12 @@ const group = (state = {}, action) => {
                     ...state.groupMembersDetails,
                     data: memberArray,
                 },
+            };
+            break;
+        case 'CHARITY_SUPPORT_PLACEHOLDER_STATUS':
+            newState = {
+                ...state,
+                charityLoader: action.payload.showPlaceholder,
             };
             break;
         default:
