@@ -26,13 +26,13 @@ const GroupSupportCard = (props) => {
         <Link route={`/${type}/${slug}`}>
             <div className="GivingGroupPadding">
                 <div className="MatchingPartnerWapper">
-                            <div className="h_profileMatching">
-                                <Image src={avatar} className="profileImgMargin" />
-                            </div>
-                            <div className="MatchingPartner">
-                                <Header as="h3">{name}</Header>
-                                <p className={`textGreen ${!isCampaign ? 'orange' : ''}`}>{isCampaign ? formatMessage('common:campaigns') : formatMessage('common:charity')}</p>
-                            </div>
+                    <div className="h_profileMatching">
+                        <Image src={avatar} className="profileImgMargin" />
+                    </div>
+                    <div className="MatchingPartner">
+                        <Header as="h3">{name}</Header>
+                        <p className={`textGreen ${!isCampaign ? 'orange' : ''}`}>{isCampaign ? formatMessage('common:campaigns') : formatMessage('common:charity')}</p>
+                    </div>
                 </div>
             </div>
         </Link>

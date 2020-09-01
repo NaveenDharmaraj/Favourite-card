@@ -229,29 +229,28 @@ class TransactionDetails extends React.Component {
 
         return (
             <div>
-               <div className="btn_wrapper">
-               {!_isEmpty(groupData) && isAdmin && (
-                    <a href={`/groups/${slug}.csv`} target="_blank">
-                        <Button
-                            className="blue-bordr-btn-round btn_downloading"
-                        >
-                            {formatMessage('groupProfile:downloadData')}
-                            <div className="btn-icon-line"><Image src={downloadIcon} /></div>
-                        </Button>
-                    </a>
-
-                )
-                }
-                <Menu compact className="dropdownRight">
-                    <Dropdown
-                        value={selectedValue}
-                        options={options}
-                        onChange={this.handleFilterChange}
-                        item
-                        fluid
-                    />
-                </Menu>
-               </div>
+                <div className="btn_wrapper">
+                    {!_isEmpty(groupData) && isAdmin && (
+                        <a href={`/groups/${slug}.csv`} target="_blank">
+                            <Button
+                                className="blue-bordr-btn-round btn_downloading"
+                            >
+                                {formatMessage('groupProfile:downloadData')}
+                                <div className="btn-icon-line"><Image src={downloadIcon} /></div>
+                            </Button>
+                        </a>
+                    )
+                    }
+                    <Menu compact className="dropdownRight">
+                        <Dropdown
+                            value={selectedValue}
+                            options={options}
+                            onChange={this.handleFilterChange}
+                            item
+                            fluid
+                        />
+                    </Menu>
+                </div>
                 <Table basic="very" unstackable className="db-activity-tbl Bottomborder Transactions_table">
                     {!tableListLoader ? (
                         <Table.Body>
@@ -262,16 +261,18 @@ class TransactionDetails extends React.Component {
                 </Table>
                 {!_isEmpty(groupData) && pageCount > 1
                     && (
-                        <div className="db-pagination right-align pt-2">
-                            <PaginationComponent
-                                activePage={activePage}
-                                onPageChanged={this.onPageChange}
-                                totalPages={pageCount}
-                                firstItem={(activePage === 1) ? null : undefined}
-                                lastItem={(activePage === pageCount) ? null : undefined}
-                                prevItem={(activePage === 1) ? null : undefined}
-                                nextItem={(activePage === pageCount) ? null : undefined}
-                            />
+                        <div className="paginationWraper">
+                            <div className="db-pagination">
+                                <PaginationComponent
+                                    activePage={activePage}
+                                    onPageChanged={this.onPageChange}
+                                    totalPages={pageCount}
+                                    firstItem={(activePage === 1) ? null : undefined}
+                                    lastItem={(activePage === pageCount) ? null : undefined}
+                                    prevItem={(activePage === 1) ? null : undefined}
+                                    nextItem={(activePage === pageCount) ? null : undefined}
+                                />
+                            </div>
                         </div>
                     )
                 }
