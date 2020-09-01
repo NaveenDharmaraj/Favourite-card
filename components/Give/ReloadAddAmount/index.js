@@ -886,14 +886,21 @@ class ReloadAddAmount extends React.Component {
                     </div>
                     </Form.Field>
                 </Form>
-                <Button 
-                    primary 
-                    onClick={() => this.handleAddNewTaxReceipt()} 
-                    className="blue-btn-rounded w-120 mb-2 btn_right"
-                    disabled={addNewTRButtonClicked || disableTRBDefault}
-                >
-                    Done
-                </Button>
+                <div className="text-right reload-mdl-footer-btns">
+                    <Button
+                        primary
+                        onClick={() => this.handleAddNewTaxReceipt()}
+                        className="blue-btn-rounded mb-2"
+                        disabled={addNewTRButtonClicked || disableTRBDefault}
+                    >
+                        Done
+                    </Button>
+                    <Button
+                        className="blue-bordr-btn-round mb-2"
+                    >
+                        Cancel
+                    </Button>
+                </div>
             </Fragment>
         );
     }
@@ -945,9 +952,9 @@ class ReloadAddAmount extends React.Component {
                         onChange={this.handleSetPrimaryClick}
                     />
                 </Form>
-                <div className="btn-wraper pt-3 text-right">
+                <div className="text-right addNewCardMdlFooter reload-mdl-footer-btns">
                     <Button
-                        className="blue-btn-rounded-def sizeBig w-180"
+                        className="blue-btn-rounded-def"
                         onClick={this.handleAddNewCreditCard}
                         disabled={addNewCCButtonClicked || inValidCardNumber
                             || inValidExpirationDate || inValidNameOnCard
@@ -955,6 +962,11 @@ class ReloadAddAmount extends React.Component {
                             }
                     >
                         Done
+                    </Button>
+                    <Button
+                        className="blue-bordr-btn-round"
+                    >
+                        Cancel
                     </Button>
                 </div>
             </Fragment>
