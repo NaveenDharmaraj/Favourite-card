@@ -10,7 +10,7 @@
     "raisedGoalText": "Raised on current giving goal",
     "ofGoalAmount": "of {{formattedgoal}} goal",
     "transactionHeader": "Highlights",
-    "viewTransaction": "View transactions",
+    "viewTransaction": "View all gifts received and given from this group.",
     "totalMoneyRaised": "Total raised since group was created",
     "totalGiven": "Total given to charities, Campaigns, or other Givings Groups",
     "totalBalance": "Money currently available to give from this group",
