@@ -3,5 +3,8 @@
     "shareProfileHeader": "Share this",
     "shareLink": "Or share link",
     "giveButtonText": "Give",
-    "favouritesToastMessage": "{{name}} added to Favourites"
+    "favouritesToastMessage": "{{name}} added to Favourites",
+    "givingGroup": "Giving Group",
+    "campaigns": "campaign",
+    "charity": "Charity"
 }

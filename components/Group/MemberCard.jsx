@@ -14,6 +14,7 @@ import {
     PropTypes,
 } from 'prop-types';
 
+import imagePlaceholder from '../../static/images/no-data-avatar-user-profile.png';
 import { withTranslation } from '../../i18n';
 import {
     getLocation,
@@ -107,7 +108,7 @@ class MemberCard extends React.Component {
                     <Table.Cell className="EmilyGroup">
                         <List verticalAlign="middle">
                             <List.Item>
-                                <Image className="imgEmily" src={avatar} />
+                                <Image className="imgEmily" src={isUserBlocked ? imagePlaceholder : avatar} />
                                 <List.Content>
                                     <List.Header className="EmilyAdmin">
                                         {`${userDisplayName} ${isGroupAdmin ? `• ${formatMessage('groupProfile:admin')}` : ''}`}

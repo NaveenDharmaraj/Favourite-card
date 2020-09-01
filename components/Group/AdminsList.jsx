@@ -13,6 +13,7 @@ import {
 } from 'prop-types';
 import _isEmpty from 'lodash/isEmpty';
 
+import imagePlaceholder from '../../static/images/no-data-avatar-user-profile.png';
 import { withTranslation } from '../../i18n';
 
 const AdminsList = (props) => {
@@ -49,12 +50,16 @@ const AdminsList = (props) => {
     if (!_isEmpty(data)) {
         remainingAdmins = (totalCount - 3);
         data.slice(0, 3).map((admin) => {
+            let isCurrentUserBlocked = false;
+            if (admin.attributes.friendStatus === 'BLOCKED_IN') {
+                isCurrentUserBlocked = true;
+            }
             adminData.push(
                 <List.Item as="a">
-                    <Image className="grProfile" src={admin.attributes.avatar} />
+                    <Image className="grProfile" src={isCurrentUserBlocked ? imagePlaceholder : admin.attributes.avatar} />
                 </List.Item>,
             );
-            adminName.push(` ${admin.attributes.displayName}`);
+            adminName.push(isCurrentUserBlocked ? formatMessage('groupProfile:anonymousUser') : admin.attributes.displayName);
         });
     }
 

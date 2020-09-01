@@ -7,8 +7,10 @@ import {
 } from 'semantic-ui-react';
 import {
     PropTypes,
+    func,
 } from 'prop-types';
 
+import { withTranslation } from '../../../i18n';
 import ShareProfile from '../ShareProfile';
 
 function ProfileTitle(props) {
@@ -22,6 +24,7 @@ function ProfileTitle(props) {
         profileId,
         children,
         beneficiaryType,
+        t: formatMessage,
     } = props;
     let causesList = null;
     if (!_isEmpty(causes)) {
@@ -31,9 +34,15 @@ function ProfileTitle(props) {
             </span>
         ));
     }
-    let profileType = type;
+    let profileType = '';
+    let isCharityPage = false;
     if (typeof beneficiaryType !== 'undefined' && !_isEmpty(beneficiaryType)) {
         profileType = beneficiaryType;
+        isCharityPage = true;
+    } else if (type === 'groups') {
+        profileType = formatMessage('common:givingGroup');
+    } else if (type === 'campaigns') {
+        profileType = formatMessage('common:campaigns');
     }
 
     return (
@@ -46,7 +55,7 @@ function ProfileTitle(props) {
                 </div>
             </Grid.Column>
             <Grid.Column mobile={16} tablet={12} computer={12}>
-                <div className="ch_profileDetails">
+                <div className={`ch_profileDetails ${!isCharityPage ? 'groupProfileColor' : ''}`}>
                     <Header as="h5">
                         {profileType}
                     </Header>
@@ -83,6 +92,7 @@ ProfileTitle.defaultProps = {
     location: '',
     name: '',
     profileId: '',
+    t: () => {},
     type: '',
 };
 
@@ -96,7 +106,8 @@ ProfileTitle.propTypes = {
     location: PropTypes.string,
     name: PropTypes.string,
     profileId: PropTypes.string,
+    t: func,
     type: PropTypes.string,
 };
 
-export default ProfileTitle;
+export default withTranslation('common')(ProfileTitle);

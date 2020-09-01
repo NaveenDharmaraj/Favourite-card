@@ -39,7 +39,7 @@ class GroupJoin extends React.Component {
 
     componentDidUpdate(prevProps) {
         const {
-            closeLeaveModal,
+            closeModal,
             groupDetails: {
                 attributes: {
                     isMember,
@@ -47,7 +47,7 @@ class GroupJoin extends React.Component {
             },
         } = this.props;
         if (!_isEqual(this.props, prevProps)) {
-            if (closeLeaveModal) {
+            if (closeModal) {
                 this.setState({
                     showLeaveModal: false,
                 });
@@ -213,7 +213,7 @@ class GroupJoin extends React.Component {
 
 GroupJoin.defaultProps = {
     buttonLoader: false,
-    closeLeaveModal: false,
+    closeModal: false,
     currentUser: {
         id: null,
     },
@@ -240,7 +240,7 @@ GroupJoin.defaultProps = {
 
 GroupJoin.propTypes = {
     buttonLoader: bool,
-    closeLeaveModal: bool,
+    closeModal: bool,
     currentUser: PropTypes.shape({
         id: string,
     }),
@@ -268,7 +268,7 @@ GroupJoin.propTypes = {
 function mapStateToProps(state) {
     return {
         buttonLoader: state.group.leaveButtonLoader,
-        closeLeaveModal: state.group.closeLeaveModal,
+        closeModal: state.group.closeLeaveModal,
         currentUser: state.user.info,
         errorMessage: state.group.errorMessage,
         groupDetails: state.group.groupDetails,

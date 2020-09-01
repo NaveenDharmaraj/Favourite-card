@@ -114,7 +114,7 @@ class Members extends React.Component {
                                     && (
                                         <div className="membersNumber">
                                             <i aria-hidden="true" className="group icon" />
-                                            {` ${totalCount.toLocaleString()} ${formatMessage('groupProfile:membersText')}`}
+                                            {` ${totalCount.toLocaleString()} ${(totalCount > 1) ? formatMessage('groupProfile:membersText') : formatMessage('groupProfile:singleMemberText')}`}
                                         </div>
                                     )}
                                             </Grid.Column>

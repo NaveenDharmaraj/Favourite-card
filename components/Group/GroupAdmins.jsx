@@ -53,7 +53,7 @@ class GroupAdmins extends React.Component {
         if (!_isEmpty(adminsData)) {
             data = (
                 <Fragment>
-                    {(totalCount > 3)
+                    {(totalCount > 4)
                         ? <AdminsList />
                         : <Admins />
                     }

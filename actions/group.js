@@ -539,11 +539,10 @@ export const leaveGroup = (slug, groupId, loadMembers) => (dispatch) => {
         payload: { buttonLoading: true },
         type: actionTypes.LEAVE_GROUP_MODAL_BUTTON_LOADER,
     });
-    return coreApi.patch(`/groups/leave`, {
-        params: {
-            slug,
-        },
-    }).then((result) => {
+    const params = {
+        slug,
+    };
+    return coreApi.patch(`/groups/leave`, params).then((result) => {
         if (result && result.status === 'SUCCESS') {
             dispatch(getGroupFromSlug(slug));
             dispatch({

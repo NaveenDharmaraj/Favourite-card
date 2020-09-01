@@ -31,7 +31,7 @@ const GroupSupportCard = (props) => {
                             </div>
                             <div className="MatchingPartner">
                                 <Header as="h3">{name}</Header>
-                                <p className={`textGreen ${!isCampaign ? 'orange' : ''}`}>{formatMessage('groupProfile:matchingpartner')}</p>
+                                <p className={`textGreen ${!isCampaign ? 'orange' : ''}`}>{isCampaign ? formatMessage('common:campaigns') : formatMessage('common:charity')}</p>
                             </div>
                 </div>
             </div>
@@ -56,4 +56,7 @@ GroupSupportCard.propTypes = {
 };
 
 
-export default withTranslation('groupProfile')(GroupSupportCard);
+export default withTranslation([
+    'common',
+    'groupProfile',
+])(GroupSupportCard);

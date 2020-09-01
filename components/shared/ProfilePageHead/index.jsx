@@ -88,7 +88,7 @@ function ProfilePageHead(props) {
                                         inverted
                                         content={formatMessage('campaignProfile:popupCurrentBalanceText', {
                                             balance: formatCurrency(balance, language, currency),
-                                            Profiletype: profileButtonText,
+                                            Profiletype: profileButtonText.toLowerCase(),
                                         })}
                                         trigger={
                                             (

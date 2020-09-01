@@ -11,6 +11,7 @@ import {
     func,
     PropTypes,
 } from 'prop-types';
+import _isEmpty from 'lodash/isEmpty';
 
 import {
     formatCurrency,
@@ -29,6 +30,7 @@ const TransactionsBlock = (props) => {
                 balance,
                 createdAt,
                 fundraisingDaysRemaining,
+                goal,
             },
         },
         isAuthenticated,
@@ -37,6 +39,8 @@ const TransactionsBlock = (props) => {
     const currency = 'USD';
     const language = 'en';
     const formattedCreated = formatDateForGivingTools(createdAt);
+    const hasGoal = (fundraisingDaysRemaining > 0);
+    const hasPreviousGoal = ((fundraisingDaysRemaining === 0) && !_isEmpty(goal));
     const transactionMapping = [
         {
             amount: formatCurrency(totalMoneyRaised, language, currency),
@@ -55,7 +59,7 @@ const TransactionsBlock = (props) => {
         },
     ];
     const transactionList = transactionMapping.map((transaction) => {
-        if (!(transaction.field === 'totalMoneyRaised' && fundraisingDaysRemaining === 0)) {
+        if (!(transaction.field === 'totalMoneyRaised' && !hasPreviousGoal)) {
             return (
                 <TransactionsCard
                     transactionDetails={transaction}
@@ -84,7 +88,7 @@ const TransactionsBlock = (props) => {
         <div className="charityInfowrap fullwidth">
             <div className="charityInfo">
                 <Header as="h4" className="heading_btm">{formatMessage('groupProfile:transactionHeader')}</Header>
-                {(fundraisingDaysRemaining !== 0)
+                {(hasGoal || hasPreviousGoal)
                 && (
                     <div className="groupcreated">
                         <List verticalAlign="middle">

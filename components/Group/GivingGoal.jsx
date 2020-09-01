@@ -140,6 +140,7 @@ const GivingGoal = (props) => {
                                     </List.Item>
                                 </List>
                             </div>
+                            <Divider />
                             <Header as="h4">{formatMessage('groupProfile:totalRaised')}</Header>
                             <Header as="h1">{formattedtotalMoneyRaised}</Header>
                             {(balance && parseInt(balance, 10) > 0)
@@ -187,6 +188,7 @@ GivingGoal.defaultProps = {
     groupDetails: {
         attributes: {
             balance: '',
+            createdAt: '',
             fundraisingDaysRemaining: null,
             fundraisingEndDate: '',
             fundraisingPercentage: null,
@@ -206,6 +208,7 @@ GivingGoal.propTypes = {
     groupDetails: PropTypes.shape({
         attributes: PropTypes.shape({
             balance: string,
+            createdAt: string,
             fundraisingDaysRemaining: number,
             fundraisingEndDate: string,
             fundraisingPercentage: number,
