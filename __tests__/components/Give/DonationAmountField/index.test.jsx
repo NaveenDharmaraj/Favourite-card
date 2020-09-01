@@ -47,7 +47,7 @@ describe('Test input field change, onblur and button click functionality', () =>
             index: 1,
         };
         component.find({ 'data-test': 'Give_DonationAmountField_presetamount_button' }).simulate('click', event, data);
-        expect(props.handlePresetAmountClick).toHaveBeenCalledTimes(1);
+        expect(props.handlePresetAmountClick).toHaveBeenCalledWith(event, data);
     });
 
     it('Should call handleInputChange function on handleDonationAmountFieldInputChange change', () => {

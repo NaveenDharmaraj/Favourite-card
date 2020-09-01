@@ -11,11 +11,11 @@ const initializeComponent = (props = {}) => shallow(<FlowBreadcrumbs {...props} 
 describe('Test the existance and rendering of component elements', () => {
     it('Should give true if component exists', () => {
         const props = {
-            currentStep: 'pot-bellied-pals/new',
-            flowType: 'give/to/group',
+            currentStep: 'new',
+            flowType: 'give/to/friend',
             formatMessage: jest.fn(),
             steps: [
-                "pot-bellied-pals/new",
+                "new",
                 "review",
                 "success",
                 "error",
