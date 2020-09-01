@@ -113,7 +113,11 @@ class CharitySupport extends React.Component {
                     )
                     }
                     {(charityLoader)
-                        ? (<PlaceholderGrid row={4} column={1} placeholderType="singleCard" />)
+                        ? (
+                            <div className="mt-2">
+                                <PlaceholderGrid row={4} column={1} placeholderType="singleCard" />
+                            </div>
+                        )
                         : data}
                 </div>
             </div>

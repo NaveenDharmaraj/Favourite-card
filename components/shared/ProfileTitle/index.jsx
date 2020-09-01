@@ -55,8 +55,8 @@ function ProfileTitle(props) {
                 </div>
             </Grid.Column>
             <Grid.Column mobile={16} tablet={12} computer={12}>
-                <div className={`ch_profileDetails ${!isCharityPage ? 'groupProfileColor' : ''}`}>
-                    <Header as="h5">
+                <div className="ch_profileDetails">
+                    <Header as="h5" className={`ch_profileDetails ${!isCharityPage ? 'textGreen' : ''}`}>
                         {profileType}
                     </Header>
                     <Header as="h3">

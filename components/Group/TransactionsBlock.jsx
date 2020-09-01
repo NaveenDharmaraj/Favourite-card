@@ -96,7 +96,8 @@ const TransactionsBlock = (props) => {
                                 <i aria-hidden="true" className="calendar icon" />
                                 <List.Content>
                                     <List.Header>
-                                        {`${formatMessage('groupProfile:groupCreated')} ${formattedCreated}.`}
+                                        {formatMessage('groupProfile:groupCreated')}
+                                        {formattedCreated}
                                     </List.Header>
                                 </List.Content>
                             </List.Item>

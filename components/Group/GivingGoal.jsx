@@ -146,7 +146,7 @@ const GivingGoal = (props) => {
                             {(balance && parseInt(balance, 10) > 0)
                             && (
                                 <div className="lastGiftWapper">
-                                    <p className="lastGiftText">{giftText}</p>
+                                    <p className="lastGiftText lastGiftText_left">{giftText}</p>
                                 </div>
                             )}
                             <Divider />
