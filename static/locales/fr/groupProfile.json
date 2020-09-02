@@ -48,5 +48,6 @@
     "downloadData": "Download transaction data",
     "charitySupportNoDataText": "This group has not yet chosen a campaign or charity to support.",
     "groupSupportsheadertext": "This Giving Group supports...",
-    "matchingpartner": "Matching partner"
+    "matchingpartner": "Matching partner",
+    "readMore": "Read More"
 }

@@ -21,66 +21,97 @@ import ImageGallery from '../shared/ImageGallery';
 
 import GroupNoDataState from './GroupNoDataState';
 
-const AboutGroup = (props) => {
-    const {
-        galleryImages,
-        groupDetails: {
-            attributes: {
-                formattedShort,
-                videoPlayerLink,
-                formattedImpact,
-                formattedHelping,
-                formattedAbout,
-            },
-        },
-        t: formatMessage,
-    } = props;
-    const imageArray = [];
-    if (!_isEmpty(galleryImages)) {
-        galleryImages.forEach((singleImage) => {
-            const singleImagePropObj = {};
-            singleImagePropObj.src = singleImage.attributes.originalUrl;
-            singleImagePropObj.thumbnail = singleImage.attributes.assetUrl;
-            singleImagePropObj.thumbnailHeight = 196;
-            singleImagePropObj.thumbnailWidth = 196;
-            imageArray.push(singleImagePropObj);
+class AboutGroup extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            showReadMoreText: false,
+        };
+        this.handleReadMore = this.handleReadMore.bind(this);
+    }
+
+    handleReadMore () {
+        this.setState({
+            showReadMoreText: true,
         });
     }
-    let showNoData = false;
-    if (_isEmpty(imageArray) && !formattedShort && !videoPlayerLink && !formattedImpact
-        && !formattedHelping && !formattedAbout) {
-        showNoData = true;
-    }
-    return (
-        <Fragment>
-            {(!showNoData)
-                ? (
-                    <Fragment>
-                        <Grid.Row>
-                            <Grid.Column width={16} className="ch_paragraph">
-                            <Responsive minWidth={767}>
-                                <div className=" AboutProfile">
-                                {formattedShort
-                                        && (
-                                            ReactHtmlParser(formattedShort)
-                                        )}
-                                </div>
-                            </Responsive>
-                                <Responsive maxWidth={767} minWidth={320}>
-                                <div className=" AboutProfile">
-                                {formattedShort
-                                        && (
-                                            ReactHtmlParser(formattedShort)
-                                        )}
-                                        <a className="read_more">Read More</a>
-                                        </div>
-                                        <Divider className="mb-2"/>
-                                </Responsive>
-                            </Grid.Column>
-                        </Grid.Row>
-                        <div className="MyGallery">
+
+    render() {
+        const {
+            galleryImages,
+            groupDetails: {
+                attributes: {
+                    formattedShort,
+                    videoPlayerLink,
+                    formattedImpact,
+                    formattedHelping,
+                    formattedAbout,
+                },
+            },
+            t: formatMessage,
+        } = this.props;
+        const {
+            showReadMoreText,
+        } = this.state;
+        const imageArray = [];
+        if (!_isEmpty(galleryImages)) {
+            galleryImages.forEach((singleImage) => {
+                const singleImagePropObj = {};
+                singleImagePropObj.src = singleImage.attributes.originalUrl;
+                singleImagePropObj.thumbnail = singleImage.attributes.assetUrl;
+                singleImagePropObj.thumbnailHeight = 196;
+                singleImagePropObj.thumbnailWidth = 196;
+                imageArray.push(singleImagePropObj);
+            });
+        }
+        let showNoData = false;
+        if (_isEmpty(imageArray) && !formattedShort && !videoPlayerLink && !formattedImpact
+            && !formattedHelping && !formattedAbout) {
+            showNoData = true;
+        }
+        const isLargerText = (!_isEmpty(formattedShort) && (formattedShort.length > 175));
+        const initialAboutText = isLargerText ? formattedShort.substring(0, 175) : '';
+        return (
+            <Fragment>
+                {(!showNoData)
+                    ? (
+                        <Fragment>
                             <Grid.Row>
-                                {videoPlayerLink
+                                <Grid.Column width={16} className="ch_paragraph">
+                                    <Responsive minWidth={767}>
+                                        <div className=" AboutProfile">
+                                            {formattedShort
+                                                && (
+                                                    ReactHtmlParser(formattedShort)
+                                                )}
+                                        </div>
+                                    </Responsive>
+                                    <Responsive maxWidth={767} minWidth={320}>
+                                        <div className=" AboutProfile">
+                                            {(!_isEmpty(initialAboutText) && !showReadMoreText)
+                                                && (
+                                                    ReactHtmlParser(initialAboutText)
+                                                )}
+                                            {showReadMoreText
+                                            && (
+                                                ReactHtmlParser(formattedShort)
+                                            )}
+                                            {(isLargerText && !showReadMoreText)
+                                            && (
+                                                <a
+                                                    className="read_more"
+                                                    onClick={this.handleReadMore}>
+                                                    {formatMessage('groupProfile:readMore')}
+                                                </a>
+                                            )}
+                                        </div>
+                                        <Divider className="mb-2" />
+                                    </Responsive>
+                                </Grid.Column>
+                            </Grid.Row>
+                            <div className="MyGallery">
+                                <Grid.Row>
+                                    {videoPlayerLink
                                         && (
                                             <div className="videoWrapperfull">
                                                 <Grid>
@@ -98,60 +129,61 @@ const AboutGroup = (props) => {
                                                 </Grid>
                                             </div>
                                         )}
-                                {formattedImpact
-                                && (
-                                    <div className="GroupPurpose">
-                                        <Header as="h3">{formatMessage('groupProfile:groupPurpose')}</Header>
-                                        <p>
-                                            {ReactHtmlParser(formattedImpact)}
-                                        </p>
+                                    {formattedImpact
+                                    && (
+                                        <div className="GroupPurpose">
+                                            <Header as="h3">{formatMessage('groupProfile:groupPurpose')}</Header>
+                                            <p>
+                                                {ReactHtmlParser(formattedImpact)}
+                                            </p>
+                                        </div>
+                                    )}
+                                    {formattedHelping
+                                    && (
+                                        <div className="GroupPurpose">
+                                            <Header as="h3">{formatMessage('groupProfile:groupHelpText')}</Header>
+                                            <p>
+                                                { ReactHtmlParser(formattedHelping) }
+                                            </p>
+                                        </div>
+                                    )}
+                                    {formattedAbout
+                                    && (
+                                        <div className="GroupPurpose">
+                                            <Header as="h3">{formatMessage('groupProfile:groupAboutOrg')}</Header>
+                                            <p>
+                                                { ReactHtmlParser(formattedAbout) }
+                                            </p>
+                                        </div>
+                                    )}
+                                    <div className="fullwidth_v_G">
+                                        <div className="GalleryWrapper">
+                                            <Grid className="fullwidth_gallery">
+                                                <Grid.Row>
+                                                    <Grid.Column width={16}>
+                                                        <ImageGallery
+                                                            imagesArray={imageArray}
+                                                            enableImageSelection={false}
+                                                        />
+                                                    </Grid.Column>
+                                                </Grid.Row>
+                                            </Grid>
+                                        </div>
                                     </div>
-                                )}
-                                {formattedHelping
-                                && (
-                                    <div className="GroupPurpose">
-                                        <Header as="h3">{formatMessage('groupProfile:groupHelpText')}</Header>
-                                        <p>
-                                            { ReactHtmlParser(formattedHelping) }
-                                        </p>
-                                    </div>
-                                )}
-                                {formattedAbout
-                                && (
-                                    <div className="GroupPurpose">
-                                        <Header as="h3">{formatMessage('groupProfile:groupAboutOrg')}</Header>
-                                        <p>
-                                            { ReactHtmlParser(formattedAbout) }
-                                        </p>
-                                    </div>
-                                )}
-                                <div className="fullwidth_v_G">
-                                    <div className="GalleryWrapper">
-                                        <Grid className="fullwidth_gallery">
-                                            <Grid.Row>
-                                                <Grid.Column width={16}>
-                                                    <ImageGallery
-                                                        imagesArray={imageArray}
-                                                        enableImageSelection={false}
-                                                    />
-                                                </Grid.Column>
-                                            </Grid.Row>
-                                        </Grid>
-                                    </div>
-                                </div>
-                            </Grid.Row>
-                        </div>
-                    </Fragment>
-                ) : (
-                    <Grid.Row>
-                        <GroupNoDataState
-                            type="common"
-                        />
-                    </Grid.Row>
-                )}
-        </Fragment>
-    );
-};
+                                </Grid.Row>
+                            </div>
+                        </Fragment>
+                    ) : (
+                        <Grid.Row>
+                            <GroupNoDataState
+                                type="common"
+                            />
+                        </Grid.Row>
+                    )}
+            </Fragment>
+        );
+    }
+}
 
 AboutGroup.defaultProps = {
     galleryImages: [],
