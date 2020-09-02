@@ -249,7 +249,7 @@ class ActivityDetails extends React.Component {
         const cls = (isLiked) ? 'red heart' : 'heart';
         return (
             <Fragment>
-                <Comment onClick={!canReply ? this.openJoinGroupModal : undefined}>
+                <Comment onClick={(!canReply && !name) ? this.openJoinGroupModal : undefined}>
                     {type === 'events' && canReply
                 && (
                     <Feed.Meta className="cmntLike">
@@ -272,7 +272,7 @@ class ActivityDetails extends React.Component {
                                 </Comment.Text>
                             )
                             : (
-                                <Comment.Text className={!canReply ? 'showPointer' : ''}>
+                                <Comment.Text className={(!canReply && !name) ? 'showPointer' : ''}>
                                     {description}
                                 </Comment.Text>
                             )}
@@ -348,7 +348,6 @@ ActivityDetails.defaultProps = {
     comment: '',
     // commentId: null,
     commentsCount: null,
-    commentsLink: '',
     createdAt: '',
     description: '',
     disableLike: {},
@@ -387,7 +386,6 @@ ActivityDetails.propTypes = {
     comment: string,
     // commentId: number,
     commentsCount: number,
-    commentsLink: string,
     createdAt: string,
     description: string,
     disableLike: PropTypes.shape({}),

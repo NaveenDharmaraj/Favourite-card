@@ -102,9 +102,10 @@ class CharitySupport extends React.Component {
             viewButtonClicked,
         } = this.state;
         let data = '';
+        const showNoData = (!campaignId && _isEmpty(beneficiariesData));
         if (!_isEmpty(beneficiariesData)) {
             data = this.showCharities();
-        } else if (!campaignId && _isEmpty(beneficiariesData)) {
+        } else if (showNoData) {
             data = (
                 <p>{formatMessage('groupProfile:charitySupportNoDataText')}</p>
             );
@@ -154,7 +155,7 @@ class CharitySupport extends React.Component {
                                     {data}
                                 </Responsive>
                                 <Responsive maxWidth={767} minWidth={320}>
-                                    {viewButtonClicked
+                                    {(viewButtonClicked || showNoData)
                                     && (
                                         data
                                     )}
