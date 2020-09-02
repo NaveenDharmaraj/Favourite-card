@@ -297,7 +297,7 @@ const group = (state = {}, action) => {
             };
             break;
         case 'GROUP_MEMBER_UPDATE_FRIEND_STATUS':
-            const friendIndex = _findIndex(state.groupMembersDetails.data, (data) => data.id === action.payload.friendUserId);
+            const friendIndex = _findIndex(state.groupMembersDetails.data, (data) => data.id === action.payload.memberUserId);
             const memberArray = state.groupMembersDetails.data;
             memberArray[friendIndex].attributes.friendStatus = action.payload.status;
             newState = {

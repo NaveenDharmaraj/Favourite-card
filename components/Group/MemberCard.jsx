@@ -23,31 +23,58 @@ import {
     addFriendRequest,
 } from '../../actions/group';
 
-class MemberCard extends React.Component {
-    constructor(props) {
-        super(props);
-        this.addFriend = this.addFriend.bind(this);
+const MemberCard = (props) => {
+    const {
+        dispatch,
+        memberData: {
+            attributes: {
+                avatar,
+                displayName,
+                email: friendEmail,
+                friendStatus,
+                isGroupAdmin,
+                city,
+                province,
+            },
+            id: memberUserId,
+        },
+        currentUser: {
+            attributes: {
+                avatar: currentUserAvatar,
+                displayName: currentUserDisplayName,
+                email: currentUserEmail,
+                firstName: currentUserFirstName,
+            },
+            id: currentUserId,
+        },
+        addFriendButtonStatus,
+        t: formatMessage,
+    } = props;
+    let hideButton = false;
+    let friendStatusText = '';
+    let disableButton = false;
+    const isUserBlocked = (friendStatus && friendStatus === 'BLOCKED_IN');
+    const isBlockedMember = (friendStatus && friendStatus === 'BLOCKED_OUT');
+    const isRequestPending = (friendStatus && friendStatus.substring(0, 7) === 'PENDING');
+    const isFriend = (friendStatus && friendStatus === 'ACCEPTED');
+    const isCurrentUser = (currentUserId === memberUserId);
+    const userDisplayName = isUserBlocked ? formatMessage('groupProfile:anonymousUser') : displayName;
+
+    if ((isCurrentUser || isFriend || isUserBlocked)) {
+        hideButton = true;
     }
 
-    addFriend() {
-        const {
-            memberData: {
-                attributes: {
-                    email: friendEmail,
-                },
-                id: friendUserId,
-            },
-            currentUser: {
-                attributes: {
-                    avatar: currentUserAvatar,
-                    displayName: currentUserDisplayName,
-                    email: currentUserEmail,
-                    firstName: currentUserFirstName,
-                },
-                id: currentUserId,
-            },
-            dispatch,
-        } = this.props;
+    if (_isEmpty(friendStatus)) {
+        friendStatusText = formatMessage('groupProfile:addFriend');
+    } else if (isRequestPending) {
+        friendStatusText = formatMessage('groupProfile:pending');
+        disableButton = true;
+    } else if (isBlockedMember) {
+        friendStatusText = formatMessage('groupProfile:blocked');
+        disableButton = true;
+    }
+
+    const addFriend = () => {
         const user = {
             currentUserAvatar,
             currentUserDisplayName,
@@ -55,96 +82,53 @@ class MemberCard extends React.Component {
             currentUserFirstName,
             currentUserId,
             friendEmail,
-            friendUserId,
+            memberUserId,
         };
         dispatch(addFriendRequest(user));
-    }
+    };
 
-    render() {
-        const {
-            memberData: {
-                attributes: {
-                    avatar,
-                    displayName,
-                    friendStatus,
-                    isGroupAdmin,
-                    city,
-                    province,
-                },
-                id: userId,
-            },
-            currentUser: {
-                id: currentUserId,
-            },
-            addFriendButtonStatus,
-            t: formatMessage,
-        } = this.props;
-        let hideButton = false;
-        let friendStatusText = '';
-        let disableButton = false;
-        const isUserBlocked = (friendStatus && friendStatus === 'BLOCKED_IN');
-        const isBlockedMember = (friendStatus && friendStatus === 'BLOCKED_OUT');
-        const isRequestPending = (friendStatus && friendStatus.substring(0, 7) === 'PENDING');
-        const isFriend = (friendStatus && friendStatus === 'ACCEPTED');
-        const isCurrentUser = (currentUserId === userId);
-        const userDisplayName = isUserBlocked ? formatMessage('groupProfile:anonymousUser') : displayName;
-
-        if ((isCurrentUser || isFriend || isUserBlocked)) {
-            hideButton = true;
-        }
-
-        if (_isEmpty(friendStatus)) {
-            friendStatusText = formatMessage('groupProfile:addFriend');
-        } else if (isRequestPending) {
-            friendStatusText = formatMessage('groupProfile:pending');
-            disableButton = true;
-        } else if (isBlockedMember) {
-            friendStatusText = formatMessage('groupProfile:blocked');
-            disableButton = true;
-        }
-        return (
-            <Table.Body>
-                <Table.Row className="EmilyData">
-                    <Table.Cell className="EmilyGroup">
-                        <List verticalAlign="middle">
-                            <List.Item>
-                                <Image className="imgEmily" src={isUserBlocked ? imagePlaceholder : avatar} />
-                                <List.Content>
-                                    <List.Header className="EmilyAdmin">
-                                        {`${userDisplayName} ${isGroupAdmin ? `• ${formatMessage('groupProfile:admin')}` : ''}`}
-                                        {isGroupAdmin
-                                        && (
-                                            <span>
-                                                <i aria-hidden="true" className="icon star outline" />
-                                            </span>
-                                        )}
-                                    </List.Header>
-                                    <List.Description>
-                                        <p>
-                                            {getLocation(city, province)}
-                                        </p>
-                                    </List.Description>
-                                </List.Content>
-                            </List.Item>
-                        </List>
-                    </Table.Cell>
-                    <Table.Cell className="amount">
-                        {!hideButton
+    return (
+        <Table.Body>
+            <Table.Row className="EmilyData">
+                <Table.Cell className="EmilyGroup">
+                    <List verticalAlign="middle">
+                        <List.Item>
+                            <Image className="imgEmily" src={isUserBlocked ? imagePlaceholder : avatar} />
+                            <List.Content>
+                                <List.Header className="EmilyAdmin">
+                                    {`${userDisplayName} ${isGroupAdmin ? `• ${formatMessage('groupProfile:admin')}` : ''}`}
+                                    {isGroupAdmin
+                                    && (
+                                        <span>
+                                            <i aria-hidden="true" className="icon star outline" />
+                                        </span>
+                                    )}
+                                </List.Header>
+                                <List.Description>
+                                    <p>
+                                        {getLocation(city, province)}
+                                    </p>
+                                </List.Description>
+                            </List.Content>
+                        </List.Item>
+                    </List>
+                </Table.Cell>
+                <Table.Cell className="amount">
+                    {!hideButton
                             && (
                                 <Button
                                     className={`btnFrinend ${(disableButton) ? 'blue-btn-rounded-def' : 'blue-bordr-btn-round-def'}`}
-                                    disabled={disableButton || addFriendButtonStatus[userId]}
-                                    onClick={this.addFriend}
+                                    disabled={disableButton || addFriendButtonStatus[memberUserId]}
+                                    onClick={addFriend}
                                 >
                                     {friendStatusText}
                                 </Button>
                             )}
-                    </Table.Cell>
-                </Table.Row>
-            </Table.Body>
-        );
-    }
-}
+                </Table.Cell>
+            </Table.Row>
+        </Table.Body>
+    );
+};
 
 MemberCard.defaultProps = {
     addFriendButtonStatus: [],

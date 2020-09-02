@@ -617,7 +617,7 @@ export const addFriendRequest = (user) => (dispatch) => {
         data: {
             attributes: {
                 recipient_email_id: user.friendEmail,
-                recipient_user_id: Number(user.friendUserId),
+                recipient_user_id: Number(user.memberUserId),
                 requester_avatar_link: user.currentUserAvatar,
                 requester_display_name: user.currentUserDisplayName,
                 requester_email_id: user.currentUserEmail,
@@ -629,7 +629,7 @@ export const addFriendRequest = (user) => (dispatch) => {
     };
     const statusfsa = {
         payload: {
-            friendUserId: user.friendUserId,
+            friendUserId: user.memberUserId,
             status: true,
         },
         type: actionTypes.GROUP_ADD_FRIEND_BUTTON_STATUS,
@@ -643,7 +643,7 @@ export const addFriendRequest = (user) => (dispatch) => {
     dispatch(statusfsa);
     return eventApi.post(`/friend/request`, bodyData).then((result) => {
         if (result && !_isEmpty(result.data) && result.data.attributes.message === 'Success') {
-            fsa.payload.friendUserId = user.friendUserId;
+            fsa.payload.memberUserId = user.memberUserId;
             fsa.payload.status = 'PENDING_OUT';
             dispatch(fsa);
         }
