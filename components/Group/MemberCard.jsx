@@ -50,28 +50,25 @@ const MemberCard = (props) => {
         addFriendButtonStatus,
         t: formatMessage,
     } = props;
-    let hideButton = false;
+    const statusMapping = {
+        BLOCKED_OUT: formatMessage('groupProfile:blocked'),
+        default: formatMessage('groupProfile:addFriend'),
+        PENDING_IN: formatMessage('groupProfile:pending'),
+        PENDING_OUT: formatMessage('groupProfile:pending'),
+    };
     let friendStatusText = '';
-    let disableButton = false;
     const isUserBlocked = (friendStatus && friendStatus === 'BLOCKED_IN');
     const isBlockedMember = (friendStatus && friendStatus === 'BLOCKED_OUT');
     const isRequestPending = (friendStatus && friendStatus.substring(0, 7) === 'PENDING');
     const isFriend = (friendStatus && friendStatus === 'ACCEPTED');
     const isCurrentUser = (currentUserId === memberUserId);
     const userDisplayName = isUserBlocked ? formatMessage('groupProfile:anonymousUser') : displayName;
+    const disableButton = (isRequestPending | isBlockedMember);
+    const hideButton = (isCurrentUser || isFriend || isUserBlocked);
 
-    if ((isCurrentUser || isFriend || isUserBlocked)) {
-        hideButton = true;
-    }
-
-    if (_isEmpty(friendStatus)) {
-        friendStatusText = formatMessage('groupProfile:addFriend');
-    } else if (isRequestPending) {
-        friendStatusText = formatMessage('groupProfile:pending');
-        disableButton = true;
-    } else if (isBlockedMember) {
-        friendStatusText = formatMessage('groupProfile:blocked');
-        disableButton = true;
+    if (!hideButton) {
+        friendStatusText = (_isEmpty(friendStatus)
+            ? statusMapping.default : statusMapping[friendStatus]);
     }
 
     const addFriend = () => {
