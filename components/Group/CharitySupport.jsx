@@ -132,7 +132,7 @@ class CharitySupport extends React.Component {
                                         && (
                                             <Button
                                                 onClick={this.handleViewMore}
-                                                className="blue-bordr-btn-round-def"
+                                                className="blue-bordr-btn-round-def view_allbtn w-120"
                                                 content="View all"
                                             />
                                         )

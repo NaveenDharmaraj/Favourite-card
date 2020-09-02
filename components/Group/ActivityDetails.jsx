@@ -10,6 +10,7 @@ import {
     Feed,
     Input,
     Button,
+    TextArea,
 } from 'semantic-ui-react';
 import _isEmpty from 'lodash/isEmpty';
 import {
@@ -304,7 +305,7 @@ class ActivityDetails extends React.Component {
                                     <div className="postInputMainWraper">
                                         <Comment.Avatar src={avatar} />
                                         <div className="postInputWraper">
-                                            <Input
+                                            <TextArea
                                                 value={commentText}
                                                 onChange={this.updateInputValue}
                                                 type="text"
