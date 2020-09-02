@@ -28,7 +28,7 @@ const P2PSuccess = (props) => {
         name = receipientsArr.join();
         if (receipientsArr.length > 1) {
             const last = receipientsArr.pop();
-            name = `${receipientsArr.join(', ')} and ${last}`;
+            name = `${receipientsArr.join(', ')}, and ${last}`; // added extra coma for bugherd #290
         }
         secondParagraph = (giveData.giveFrom.type === 'user')
             ? formatMessage('fromToRecipient', { name })

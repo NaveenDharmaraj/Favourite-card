@@ -940,6 +940,7 @@ class Group extends React.Component {
                     handleInputChange={this.handleInputChange}
                     language={language}
                     recurringDisabled={!giveTo.recurringEnabled}
+                    isCampaign={giveTo.isCampaign}
                 />
             );
         }
