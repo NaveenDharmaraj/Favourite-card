@@ -897,6 +897,7 @@ class ReloadAddAmount extends React.Component {
                     </Button>
                     <Button
                         className="blue-bordr-btn-round mb-2"
+                        onClick={this.handleModalClose}
                     >
                         Cancel
                     </Button>
@@ -965,6 +966,7 @@ class ReloadAddAmount extends React.Component {
                     </Button>
                     <Button
                         className="blue-bordr-btn-round"
+                        onClick={this.handleModalClose}
                     >
                         Cancel
                     </Button>
@@ -1100,9 +1102,9 @@ class ReloadAddAmount extends React.Component {
         return (
             <Fragment>
                 {this.renderReloadComponent(allocationGiftType, reviewBtnFlag)}
-                <Modal closeOnDimmerClick={false} size="tiny" dimmer="inverted" className="chimp-modal popbox addMoneyMoadal " open={currentModalStep >0} onClose={this.handleModalClose}>
+                <Modal closeOnDimmerClick={false} size="tiny" dimmer="inverted" className="chimp-modal popbox addMoneyMoadal " open={currentModalStep >0} onClose={() => this.setState({currentModalStep: 0})}>
                     <Modal.Header>{modalHeaderText} 
-                        <span className="closebtn" onClick={() =>{this.handleModalClose(currentModalStep)}}>
+                        <span className="closebtn" onClick={() => this.setState({currentModalStep: 0})}>
                         </span>
                     </Modal.Header>
                     {(currentModalStep === 1) && (<div className="noteDefault-bg">
