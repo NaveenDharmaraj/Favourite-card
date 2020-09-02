@@ -6,6 +6,8 @@ import _isEmpty from 'lodash/isEmpty';
 import {
     Header,
     Divider,
+    Responsive,
+    Button,
 } from 'semantic-ui-react';
 import {
     arrayOf,
@@ -26,6 +28,10 @@ class CharitySupport extends React.Component {
     constructor(props) {
         super(props);
         this.showCharities = this.showCharities.bind(this);
+        this.handleViewMore = this.handleViewMore.bind(this);
+        this.state = {
+            viewButtonClicked: false,
+        };
     }
 
     componentDidMount() {
@@ -70,6 +76,12 @@ class CharitySupport extends React.Component {
         );
     }
 
+    handleViewMore() {
+        this.setState({
+            viewButtonClicked: true,
+        });
+    }
+
     render() {
         const {
             charityLoader,
@@ -86,6 +98,9 @@ class CharitySupport extends React.Component {
             },
             t: formatMessage,
         } = this.props;
+        const {
+            viewButtonClicked,
+        } = this.state;
         let data = '';
         if (!_isEmpty(beneficiariesData)) {
             data = this.showCharities();
@@ -108,7 +123,22 @@ class CharitySupport extends React.Component {
                                 isCampaign
                             />
                             {!_isEmpty(beneficiariesData)
-                            && <Divider />}
+                            && (
+                                <Fragment>
+                                    <Divider />
+                                    <Responsive maxWidth={767} minWidth={320}>
+                                        {!viewButtonClicked
+                                        && (
+                                            <Button
+                                                onClick={this.handleViewMore}
+                                                className="blue-bordr-btn-round-def"
+                                                content="View all"
+                                            />
+                                        )
+                                        }
+                                    </Responsive>
+                                </Fragment>
+                            )}
                         </Fragment>
                     )
                     }
@@ -118,7 +148,19 @@ class CharitySupport extends React.Component {
                                 <PlaceholderGrid row={4} column={1} placeholderType="singleCard" />
                             </div>
                         )
-                        : data}
+                        : (
+                            <Fragment>
+                                <Responsive minWidth={768}>
+                                    {data}
+                                </Responsive>
+                                <Responsive maxWidth={767} minWidth={320}>
+                                    {viewButtonClicked
+                                    && (
+                                        data
+                                    )}
+                                </Responsive>
+                            </Fragment>
+                        )}
                 </div>
             </div>
         );
