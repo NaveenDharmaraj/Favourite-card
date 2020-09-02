@@ -28,6 +28,7 @@ export const actionTypes = {
     LEAVE_GROUP_MODAL_ERROR_MESSAGE: 'LEAVE_GROUP_MODAL_ERROR_MESSAGE',
     MEMBER_PLACEHOLDER_STATUS: 'MEMBER_PLACEHOLDER_STATUS',
     POST_NEW_ACTIVITY: 'POST_NEW_ACTIVITY',
+    POST_NEW_COMMENT: 'POST_NEW_COMMENT',
     TOGGLE_TRANSACTION_VISIBILITY: 'TOGGLE_TRANSACTION_VISIBILITY',
     // COMMENT_LIKE_STATUS: 'COMMENT_LIKE_STATUS',
 };
@@ -274,8 +275,6 @@ export const getCommentFromActivityId = (id, commentsCount) => (dispatch) => {
         if (result && !_isEmpty(result.data)) {
             fsa.payload.groupComments = result.data;
             fsa.payload.activityId = id;
-            fsa.payload.isReply = false;
-            fsa.payload.totalCount = result.meta.recordCount;
         }
     }).catch().finally(() => {
         dispatch(fsa);
@@ -311,7 +310,7 @@ export const postComment = (groupId, eventId, msg, user) => (dispatch) => {
         payload: {
             groupComments: [],
         },
-        type: actionTypes.GET_GROUP_COMMENTS,
+        type: actionTypes.POST_NEW_COMMENT,
     };
     return coreApi.post(`/comments`,
         {
@@ -346,7 +345,6 @@ export const postComment = (groupId, eventId, msg, user) => (dispatch) => {
                 },
             ];
             fsa.payload.activityId = eventId;
-            fsa.payload.isReply = true;
             dispatch(fsa);
         }
     }).catch().finally();

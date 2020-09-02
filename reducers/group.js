@@ -101,45 +101,37 @@ const group = (state = {}, action) => {
                 };
             }
             break;
-        case 'GET_GROUP_COMMENTS':
-            if (action.payload.isReply) {
-                if (state.groupComments && state.groupComments[action.payload.activityId]) {
-                    newState = {
-                        ...state,
-                        groupComments: {
-                            ...state.groupComments,
-                            [action.payload.activityId]: action.payload.groupComments.concat(state.groupComments[action.payload.activityId]),
-                            isLoadComments: false,
-                            isReply: true,
-                            loadComments: true,
-                        },
-                    };
-                } else {
-                    newState = {
-                        ...state,
-                        groupComments: {
-                            ...state.groupComments,
-                            [action.payload.activityId]: action.payload.groupComments,
-                            isLoadComments: false,
-                            isReply: true,
-                            loadComments: true,
-                        },
-                    };
-                }
+        case 'POST_NEW_COMMENT':
+            if (state.groupComments && state.groupComments[action.payload.activityId]) {
+                newState = {
+                    ...state,
+                    groupComments: {
+                        ...state.groupComments,
+                        [action.payload.activityId]: action.payload.groupComments.concat(state.groupComments[action.payload.activityId]),
+                        loadComments: true,
+                    },
+                };
             } else {
                 newState = {
                     ...state,
                     groupComments: {
                         ...state.groupComments,
                         [action.payload.activityId]: action.payload.groupComments,
-                        isLoadComments: true,
-                        isReply: false,
                         loadComments: true,
-                        totalCount: action.payload.totalCount,
                     },
-    
                 };
             }
+            break;
+        case 'GET_GROUP_COMMENTS':
+            newState = {
+                ...state,
+                groupComments: {
+                    ...state.groupComments,
+                    [action.payload.activityId]: action.payload.groupComments,
+                    loadComments: true,
+                },
+
+            };
             break;
         case 'ACTIVITY_LIKE_STATUS':
             const activityIndex = _findIndex(state.groupActivities.data, (data) => data.id === action.payload.eventId);

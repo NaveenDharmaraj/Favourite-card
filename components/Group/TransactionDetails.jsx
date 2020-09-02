@@ -164,7 +164,6 @@ class TransactionDetails extends React.Component {
                 date = `${month[mm]} ${dd}, ${yyyy}`;
                 let rowClass = '';
                 let transactionSign = '';
-                const imageCls = 'ui image';
                 const amountStatus = transaction.attributes.showAmount ? 'hide' : 'unhide';
                 // TODO after Api Changes to show + or -
                 if (transaction.attributes.transactionType === 'GroupReceivedAllocationEvent') {
@@ -292,11 +291,8 @@ TransactionDetails.defaultProps = {
     },
     groupTransactions: {
         data: [],
-        links: {
-            next: '',
-        },
         meta: {
-            pageCount: '',
+            pageCount: null,
         },
     },
     id: null,
@@ -314,11 +310,8 @@ TransactionDetails.propTypes = {
     },
     groupTransactions: {
         data: arrayOf(PropTypes.element),
-        links: PropTypes.shape({
-            next: string,
-        }),
         meta: PropTypes.shape({
-            pageCount: string,
+            pageCount: number,
         }),
     },
     id: number,

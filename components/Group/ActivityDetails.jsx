@@ -353,10 +353,7 @@ ActivityDetails.defaultProps = {
     disableLike: {},
     dispatch: () => {},
     groupComments: {
-        isLoadComments: false,
-        isReply: false,
         loadComments: false,
-        totalCount: null,
     },
     groupDetails: {
         attributes: {
@@ -391,10 +388,7 @@ ActivityDetails.propTypes = {
     disableLike: PropTypes.shape({}),
     dispatch: func,
     groupComments: PropTypes.shape({
-        isLoadComments: bool,
-        isReply: bool,
         loadComments: bool,
-        totalCount: number,
     }),
     groupDetails: PropTypes.shape({
         attributes: PropTypes.shape({
