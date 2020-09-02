@@ -57,7 +57,7 @@ const GroupProfileWrapper = (props) => {
             </div>
             <div className="GivingGroupProfileWapper">
                 <Container>
-                    <div className="ch_headerImage greenBg" />
+                    <div className="ch_headerImage greenBg greenBgnew" />
                     <Grid.Row>
                         <Grid>
                             <Grid.Column mobile={16} tablet={10} computer={12}>

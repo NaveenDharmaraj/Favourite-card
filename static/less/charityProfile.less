@@ -19,14 +19,18 @@
 }
 
 .ch_headerImage {
-    background     : url(../images/charityProfile.svg) no-repeat;
+    background     : url(../images/charityProfile.svg);
     min-height     : 70px;
     height         : 70px;
-    background-size: cover;
+    background-repeat: no-repeat !important;
     margin-bottom  : 20px;
     border-radius  : 5px;
+    background-size: cover !important;
     &.greenBg{
-        background     : url(../images/giving_and_campaign_group_profile_bg.png) no-repeat;
+        background     : url(../images/giving_and_campaign_group_profile_bg.png);
+    }
+    &.greenBgnew{
+        background     : url(../images/gg_campaignbanner.svg); 
     }
 }
 
@@ -241,6 +245,31 @@
             font-size: 14px;
             line-height: 22px;
             color: #263238;
+        }
+    }
+    .AboutProfile{
+        margin-top: 39px;
+        margin-bottom: 30px;
+        @media only screen and (max-width:992px) {
+            margin-top: 30px;
+        }
+        p{
+            margin: 0px;
+            font-size: 14px;
+            line-height: 22px;
+            color: #263238;
+        }
+        a{
+            &.read_more{
+               display: none;
+               @media only screen and (max-width:767px) {
+                display: block;
+                cursor: pointer;
+                color: #055CE5;
+                font-size: 14px;
+                font-family: 'ProximaNova-Semibold';
+               }
+            }
         }
     }
     p {
@@ -841,12 +870,13 @@
                     width: 100%;
                     background-color: #f6f6f6;
                     border: 1px solid #009EA2;
-                    padding: 3.5px 4px;
                     border-radius: 50px;
+                    padding: 2.7px 3px 2.3px 3px;
+                    vertical-align: middle;
                     .bar{
-                        height: 9px;
+                        height: 7.91px;
                         background: linear-gradient(270deg, #00CDCD 0%, #009E9F 100%);
-                        min-width: auto !important;
+                        min-width: 7.91px !important;
                     }
                 }
             }
@@ -924,7 +954,7 @@
                     height: 100%;
                     .customProgress{
                         height: 100%;
-                        background-color:#D7D7D7;
+                        background-color:#f3ecf2;
                         border-radius: 29.5px;
                         width: 21px;
                         position: relative;
@@ -994,6 +1024,9 @@
     }
     .charityInfo {
         padding: 25px 25px 30px !important;
+        @media only screen and (max-width:767px) {
+            padding: 23px 23px 15px !important;
+        }
         &.paddingcharity{
             //padding: 25px 11px 30px !important;
             .GivingGroupPadding{
@@ -1010,6 +1043,11 @@
                         }
                     }
                 }
+            }
+            .view_allbtn{
+                margin: auto;
+                display: block;
+                margin-top: 4px;
             }
         }
 
@@ -1560,7 +1598,7 @@
 
     .ch_profileDetails {
         margin : 0;
-        padding: 0 5px;
+        padding: 0px;
 
         .ch_share {
             padding: 0.5rem 5px 1rem;
@@ -1708,7 +1746,7 @@
     }
 }
 .MatchingPartnerWapper{
-    margin: 24px 0px;
+    margin:16px 0px 11.5px 0px;
     display: flex;
     align-items: center;
     width: 100%;
@@ -1754,6 +1792,15 @@
         p{
             font-size: 12px;
             line-height: 15px;
+        }
+        .textGreen{
+            font-size: 10px;
+            text-transform: uppercase;
+            color: #009E9F;
+            font-family: 'ProximaNova-Semibold';
+            &.orange{
+                color: #ED803B;
+            }
         }
     }
 }
@@ -2065,6 +2112,11 @@
                                         &.icon{
                                             font-size:20px;
                                             line-height: 20px;
+                                            &::before{
+                                                position: absolute;
+                                                right: 27px;
+                                                top: 10px;
+                                            }
                                         }
                                     }
                                 }
@@ -2332,11 +2384,17 @@
                   }
               }
             }
+            @media only screen and (max-width:767px){
+                border: none;
+          }
           }
     }
     .blue-bordr-btn-round{
         &.btn_downloading{
             padding:5px 20px !important;
+            @media only screen and (max-width:400px){
+                font-size: 11px !important;
+            }
           }
     }
 }
@@ -2344,16 +2402,38 @@
     &.table {
         &.db-activity-tbl {
             &.Transactions_table{
+                @media only screen and (max-width:767px){
+                    display: block;
+                }
                 tr{
                     &.EmilyData{
+                        @media only screen and (max-width:767px){
+                        &:last-child{
+                            border-bottom: 1px solid rgba(0,0,0,.1);
+                            display: block;
+                        }
+                    }
                         td{
+                            @media only screen and (max-width:767px){
+                                padding: 0px;
+                            }
                             &.date{
                                 padding: 0px;
                                 width: 100px;
+                                @media only screen and (max-width:767px){
+                                    display: block;
+                                    border-top: 1px solid rgba(0,0,0,.1);
+                                    width: 100%;
+                                    padding-top: 19.5px;
+                                }
                             }  
                             &.full_width_text{
                                 margin: 0px;
                                 width:calc(100% - 200px);
+                                @media only screen and (max-width:767px){
+                                    width:calc(100% - 100px);
+                                    padding: 20px 0px;
+                                }
                                 .ui {
                                     &.list{
                                         .item{
@@ -2365,6 +2445,10 @@
                                             .content{
                                                 width:calc(100% - 31px);
                                                 padding-left: 18px;
+                                                @media only screen and (max-width:767px){
+                                                    padding-left: 13px;
+                                                    vertical-align: top !important;
+                                                }
                                                 .linkgroupProfile{
                                                     font-family: 'ProximaNova-Semibold';
                                                     color: #055CE5;
@@ -2374,6 +2458,10 @@
                                             }
                                         }
                                     }
+                                }
+                                @media only screen and (max-width:767px){
+                                    display: inline-block;
+                                    border: none;
                                 }
                             }
                             &.amount{
@@ -2386,6 +2474,12 @@
                                     font-family: 'ProximaNova-Semibold';
                                     color: #055CE5;
                                     line-height: 18px; 
+                                }
+                                @media only screen and (max-width:767px){
+                                    display: inline-block;
+                                    border: none;
+                                    vertical-align: top;
+                                    padding: 20px 0px;
                                 }
                             }
                         }
@@ -2434,4 +2528,12 @@
             }
          }
     }
+}
+.db-pagination .ui.pagination.menu .item.active {
+    background-color: #055CE5;
+    color: #fff;
+    font-weight: 600;
+    padding: 0px;
+    border: none;
+    border-radius: 100% !important;
 }

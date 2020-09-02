@@ -10,6 +10,8 @@ import {
 import {
     Grid,
     Header,
+    Divider,
+    Responsive,
 } from 'semantic-ui-react';
 import ReactHtmlParser from 'react-html-parser';
 import _isEmpty from 'lodash/isEmpty';
@@ -55,11 +57,25 @@ const AboutGroup = (props) => {
                 ? (
                     <Fragment>
                         <Grid.Row>
-                            <Grid.Column width={16} className="ch_paragraph AboutProfile">
+                            <Grid.Column width={16} className="ch_paragraph">
+                            <Responsive minWidth={767}>
+                                <div className=" AboutProfile">
                                 {formattedShort
                                         && (
                                             ReactHtmlParser(formattedShort)
                                         )}
+                                </div>
+                            </Responsive>
+                                <Responsive maxWidth={767} minWidth={320}>
+                                <div className=" AboutProfile">
+                                {formattedShort
+                                        && (
+                                            ReactHtmlParser(formattedShort)
+                                        )}
+                                        <a className="read_more">Read More</a>
+                                        </div>
+                                        <Divider className="mb-2"/>
+                                </Responsive>
                             </Grid.Column>
                         </Grid.Row>
                         <div className="MyGallery">
