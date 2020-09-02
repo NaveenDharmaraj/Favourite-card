@@ -712,6 +712,7 @@
                                 input{
                                     background-color: #F8F8F8;
                                     color: #7F7F7F;
+                                    font-size: 14px;
                                 }
                             }
                         }
@@ -1541,6 +1542,12 @@ span.attributes {
                 >.item {
                     border-bottom: 1px solid #DDDDDD;
                     padding: 18px !important;
+                    display: flex;
+                    align-items: center;
+                    >img,>.image{
+                        margin-bottom: 0px !important;
+                        margin-top: 0px !important;
+                    }
                 }
             }
         }
@@ -2721,6 +2728,12 @@ body{
             max-height: 220px;
         }
     }
+}
+.givetoInfoText{
+    display: block;
+    margin-top: -5px;
+    margin-bottom: 20px;
+    font-size: 12px;
 }
 .reload-mdl-footer-btns{
     .ui.button{

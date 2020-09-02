@@ -981,22 +981,24 @@ class Charity extends React.Component {
                                                         {
                                                             !!groupFromUrl && (
                                                                 <Fragment>
-                                                                    <Form.Field>
-                                                                        <label htmlFor="giveTo">
-                                                                            {formatMessage('giveToLabel')}
-                                                                        </label>
-                                                                        <Form.Field
-                                                                            className="dropdownWithArrowParent"
-                                                                            control={Select}
-                                                                            error={!validity.isValidGiveFrom}
-                                                                            id="giveToList"
-                                                                            name="giveToList"
-                                                                            onChange={this.handleInputChangeGiveTo}
-                                                                            options={giveToList}
-                                                                            placeholder="Select a Group to Give"
-                                                                            value={giveTo.value}
-                                                                        />
-                                                                    </Form.Field>
+                                                                    <div className="give_flow_field_bottom">
+                                                                        <Form.Field>
+                                                                            <label htmlFor="giveTo">
+                                                                                {formatMessage('giveToLabel')}
+                                                                            </label>
+                                                                            <Form.Field
+                                                                                className="dropdownWithArrowParent"
+                                                                                control={Select}
+                                                                                error={!validity.isValidGiveFrom}
+                                                                                id="giveToList"
+                                                                                name="giveToList"
+                                                                                onChange={this.handleInputChangeGiveTo}
+                                                                                options={giveToList}
+                                                                                placeholder="Select a Group to Give"
+                                                                                value={giveTo.value}
+                                                                            />
+                                                                        </Form.Field>
+                                                                    </div>
                                                                 </Fragment>
                                                             )
                                                         }

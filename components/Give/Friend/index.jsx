@@ -839,6 +839,25 @@ class Friend extends React.Component {
                                                                 }
                                                                 {(showGiveToEmail || !_.isEmpty(recipients) || (typeof showDropDown !== 'undefined' && !showDropDown))
                                                                     && (
+                                                                        <div>
+                                                                            <Grid>
+                                                                                <Grid.Row>
+                                                                                    <Grid.Column mobile={16} tablet={12} computer={10}>
+                                                                                        <Form.Field>
+                                                                                            <Form.Field
+                                                                                                control={Input}
+                                                                                                disabled
+                                                                                                id="recipientName"
+                                                                                                maxLength="20"
+                                                                                                name="recipientName"
+                                                                                                size="large"
+                                                                                                placeholder="You're not connected to friends on Charitable Impact yet"
+                                                                                            />
+                                                                                        </Form.Field>
+                                                                                        <span class="givetoInfoText">You can find friends to give to on Charitable Impact under your Account Settings.</span>
+                                                                                    </Grid.Column>
+                                                                                </Grid.Row>
+                                                                            </Grid>
                                                                             <Note
                                                                                 enableCharacterCount={false}
                                                                                 fieldName="recipients"
@@ -851,6 +870,7 @@ class Friend extends React.Component {
                                                                                 text={recipients.join(',')}
                                                                                 hideLabel={true}
                                                                             />
+                                                                        </div>
                                                                     )}
                                                                 <FormValidationErrorMessage
                                                                     condition={!validity.isValidEmailList}
