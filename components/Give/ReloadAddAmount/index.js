@@ -886,14 +886,22 @@ class ReloadAddAmount extends React.Component {
                     </div>
                     </Form.Field>
                 </Form>
-                <Button 
-                    primary 
-                    onClick={() => this.handleAddNewTaxReceipt()} 
-                    className="blue-btn-rounded w-120 mb-2 btn_right"
-                    disabled={addNewTRButtonClicked || disableTRBDefault}
-                >
-                    Done
-                </Button>
+                <div className="text-right reload-mdl-footer-btns">
+                    <Button
+                        primary
+                        onClick={() => this.handleAddNewTaxReceipt()}
+                        className="blue-btn-rounded mb-2"
+                        disabled={addNewTRButtonClicked || disableTRBDefault}
+                    >
+                        Done
+                    </Button>
+                    <Button
+                        className="blue-bordr-btn-round mb-2"
+                        onClick={this.handleModalClose}
+                    >
+                        Cancel
+                    </Button>
+                </div>
             </Fragment>
         );
     }
@@ -945,9 +953,9 @@ class ReloadAddAmount extends React.Component {
                         onChange={this.handleSetPrimaryClick}
                     />
                 </Form>
-                <div className="btn-wraper pt-3 text-right">
+                <div className="text-right addNewCardMdlFooter reload-mdl-footer-btns">
                     <Button
-                        className="blue-btn-rounded-def sizeBig w-180"
+                        className="blue-btn-rounded-def"
                         onClick={this.handleAddNewCreditCard}
                         disabled={addNewCCButtonClicked || inValidCardNumber
                             || inValidExpirationDate || inValidNameOnCard
@@ -955,6 +963,12 @@ class ReloadAddAmount extends React.Component {
                             }
                     >
                         Done
+                    </Button>
+                    <Button
+                        className="blue-bordr-btn-round"
+                        onClick={this.handleModalClose}
+                    >
+                        Cancel
                     </Button>
                 </div>
             </Fragment>
@@ -1088,9 +1102,9 @@ class ReloadAddAmount extends React.Component {
         return (
             <Fragment>
                 {this.renderReloadComponent(allocationGiftType, reviewBtnFlag)}
-                <Modal closeOnDimmerClick={false} size="tiny" dimmer="inverted" className="chimp-modal popbox addMoneyMoadal " open={currentModalStep >0} onClose={this.handleModalClose}>
+                <Modal closeOnDimmerClick={false} size="tiny" dimmer="inverted" className="chimp-modal popbox addMoneyMoadal " open={currentModalStep >0} onClose={() => this.setState({currentModalStep: 0})}>
                     <Modal.Header>{modalHeaderText} 
-                        <span className="closebtn" onClick={() =>{this.handleModalClose(currentModalStep)}}>
+                        <span className="closebtn" onClick={() => this.setState({currentModalStep: 0})}>
                         </span>
                     </Modal.Header>
                     {(currentModalStep === 1) && (<div className="noteDefault-bg">
