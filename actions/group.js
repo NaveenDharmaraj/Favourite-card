@@ -56,6 +56,7 @@ export const getGroupFromSlug = (slug, token = null) => async (dispatch) => {
             params: {
                 dispatch,
                 findBySlug: true,
+                load_full_profile: true,
                 slug,
                 uxCritical: true,
             },
@@ -65,7 +66,7 @@ export const getGroupFromSlug = (slug, token = null) => async (dispatch) => {
                 Authorization: `Bearer ${token}`,
             };
         }
-        await coreApi.get(`/groups/find_by_slug?load_full_profile=true`, {
+        await coreApi.get('/groups/find_by_slug', {
             ...fullParams,
         }).then(
             (result) => {
