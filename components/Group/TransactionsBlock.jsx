@@ -58,15 +58,17 @@ const TransactionsBlock = (props) => {
             headerText: formatMessage('groupProfile:totalBalance'),
         },
     ];
-    const transactionList = transactionMapping.map((transaction) => {
-        if (!(transaction.field === 'totalMoneyRaised' && !hasPreviousGoal)) {
-            return (
-                <TransactionsCard
-                    transactionDetails={transaction}
-                />
-            );
+    const transactionList = [];
+    transactionMapping.map((transaction) => {
+        if (transaction.field !== 'totalMoneyRaised') {
+            transactionList.push(<TransactionsCard
+                transactionDetails={transaction}
+            />);
+        } else if ((transaction.field === 'totalMoneyRaised' && (hasPreviousGoal || hasGoal))) {
+            transactionList.push(<TransactionsCard
+                transactionDetails={transaction}
+            />);
         }
-        return null;
     });
 
     const updateIndex = () => {
@@ -96,8 +98,7 @@ const TransactionsBlock = (props) => {
                                 <i aria-hidden="true" className="calendar icon" />
                                 <List.Content>
                                     <List.Header>
-                                        {formatMessage('groupProfile:groupCreated')}
-                                        {formattedCreated}
+                                        {`${formatMessage('groupProfile:groupCreated')} ${formattedCreated}`}
                                     </List.Header>
                                 </List.Content>
                             </List.Item>
@@ -123,6 +124,7 @@ TransactionsBlock.defaultProps = {
             balance: '',
             createdAt: '',
             fundraisingDaysRemaining: null,
+            goal: '',
             totalMoneyGiven: '',
             totalMoneyRaised: '',
         },
@@ -139,6 +141,7 @@ TransactionsBlock.propTypes = {
             balance: string,
             createdAt: string,
             fundraisingDaysRemaining: number,
+            goal: string,
             totalMoneyGiven: string,
             totalMoneyRaised: string,
         }),

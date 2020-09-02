@@ -241,15 +241,18 @@ class TransactionDetails extends React.Component {
                         </a>
                     )
                     }
-                    <Menu compact className="dropdownRight">
-                        <Dropdown
-                            value={selectedValue}
-                            options={options}
-                            onChange={this.handleFilterChange}
-                            item
-                            fluid
-                        />
-                    </Menu>
+                    {!_isEmpty(groupData)
+                    && (
+                        <Menu compact className="dropdownRight">
+                            <Dropdown
+                                value={selectedValue}
+                                options={options}
+                                onChange={this.handleFilterChange}
+                                item
+                                fluid
+                            />
+                        </Menu>
+                    )}
                 </div>
                 <Table basic="very" unstackable className="db-activity-tbl Bottomborder Transactions_table">
                     {!tableListLoader ? (

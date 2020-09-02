@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-    Grid,
     Button,
     Header,
     Image,
@@ -71,13 +70,13 @@ const ActiveMatchBlock = (props) => {
                         </div>
                     </div>
                     <div className="MatchingPartnerWapper">
-                                <div className="h_profileMatching borderprofile">
-                                    <Image src={companyAvatar} />
-                                </div>
-                                <div className="MatchingPartner">
-                                    <Header as="h3">{company}</Header>
-                                    <p>Matching partner</p>
-                                </div>
+                        <div className="h_profileMatching borderprofile">
+                            <Image src={companyAvatar} />
+                        </div>
+                        <div className="MatchingPartner">
+                            <Header as="h3">{company}</Header>
+                            <p>Matching partner</p>
+                        </div>
                     </div>
                     {matchClose
                     && (

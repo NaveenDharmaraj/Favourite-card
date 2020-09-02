@@ -54,7 +54,6 @@ class ActivityDetails extends React.Component {
         this.handleJoinGroup = this.handleJoinGroup.bind(this);
         this.state = {
             commentText: '',
-            isCommentClicked: false,
             isReplyClicked: false,
             showJoinGroupModal: false,
             showJoinLoader: false,
@@ -65,10 +64,9 @@ class ActivityDetails extends React.Component {
         const {
             dispatch,
         } = this.props;
-        dispatch(getCommentFromActivityId(id, count));
-        this.setState({
-            isCommentClicked: true,
-        });
+        if (count > 0) {
+            dispatch(getCommentFromActivityId(id, count));
+        }
     }
 
     replyClicked() {
@@ -77,7 +75,9 @@ class ActivityDetails extends React.Component {
             id,
             commentsCount,
         } = this.props;
-        dispatch(getCommentFromActivityId(id, commentsCount));
+        if (commentsCount > 0) {
+            dispatch(getCommentFromActivityId(id, commentsCount));
+        }
         this.setState({
             isReplyClicked: true,
         });

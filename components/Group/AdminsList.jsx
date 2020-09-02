@@ -59,7 +59,7 @@ const AdminsList = (props) => {
                     <Image className="grProfile" src={isCurrentUserBlocked ? imagePlaceholder : admin.attributes.avatar} />
                 </List.Item>,
             );
-            adminName.push(isCurrentUserBlocked ? formatMessage('groupProfile:anonymousUser') : admin.attributes.displayName);
+            adminName.push(isCurrentUserBlocked ? formatMessage('groupProfile:anonymousUser') : ` ${admin.attributes.displayName}`);
         });
     }
 

@@ -111,13 +111,13 @@ class ShareProfile extends React.Component {
         let Profiletype = '';
         switch (type) {
             case 'beneficiaries':
-                Profiletype = 'Charity';
+                Profiletype = 'charity';
                 break;
             case 'groups':
-                Profiletype = 'Group';
+                Profiletype = 'group';
                 break;
             case 'campaigns':
-                Profiletype = 'Campaign';
+                Profiletype = 'campaign';
                 break;
             default:
                 break;
