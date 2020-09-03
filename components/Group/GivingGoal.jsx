@@ -41,7 +41,6 @@ const GivingGoal = (props) => {
     const {
         groupDetails: {
             attributes: {
-                balance,
                 createdAt,
                 lastDonationAt,
                 fundraisingDaysRemaining,
@@ -82,7 +81,7 @@ const GivingGoal = (props) => {
         giftText = `${formatMessage('groupProfile:lastGiftReceived')} ${lastDonationDay}`;
     }
     if (hasGoal) {
-        if (goalAmountRaised >= goal) {
+        if (parseInt(goalAmountRaised, 10) >= parseInt(goal, 10)) {
             goalText = formatMessage('groupProfile:reachedGoalText');
             canSetGoal = isAdmin;
         } else {
@@ -143,7 +142,7 @@ const GivingGoal = (props) => {
                             <Divider />
                             <Header as="h4">{formatMessage('groupProfile:totalRaised')}</Header>
                             <Header as="h1">{formattedtotalMoneyRaised}</Header>
-                            {(balance && parseInt(balance, 10) > 0)
+                            {!_isEmpty(lastDonationAt)
                             && (
                                 <div className="lastGiftWapper">
                                     <p className="lastGiftText lastGiftText_left">{giftText}</p>
@@ -170,9 +169,12 @@ const GivingGoal = (props) => {
                                 <Progress percent={fundraisingPercentage} />
                             </div>
                             {!_isEmpty(fundraisingEndDate) && fundRaisingDuration}
-                            <div className="lastGiftWapper">
-                                <p className="lastGiftText">{giftText}</p>
-                            </div>
+                            {!_isEmpty(lastDonationAt)
+                            && (
+                                <div className="lastGiftWapper">
+                                    <p className="lastGiftText">{giftText}</p>
+                                </div>
+                            )}
                             <Divider />
                             <Responsive minWidth={768}>
                                 {giveButton}
@@ -187,7 +189,6 @@ const GivingGoal = (props) => {
 GivingGoal.defaultProps = {
     groupDetails: {
         attributes: {
-            balance: '',
             createdAt: '',
             fundraisingDaysRemaining: null,
             fundraisingEndDate: '',
@@ -207,7 +208,6 @@ GivingGoal.defaultProps = {
 GivingGoal.propTypes = {
     groupDetails: PropTypes.shape({
         attributes: PropTypes.shape({
-            balance: string,
             createdAt: string,
             fundraisingDaysRemaining: number,
             fundraisingEndDate: string,
