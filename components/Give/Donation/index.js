@@ -880,6 +880,7 @@ class Donation extends React.Component {
             },
             userTaxReceiptProfiles,
         } = this.props;
+        console.log(this.props.currentAccount);
         const formatMessage = this.props.t;
         const donationMatchOptions = populateDonationMatch(donationMatchData, formatMessage, language);
         let paymentInstruments = paymentInstrumentsData;
@@ -1085,6 +1086,7 @@ Donation.defaultProps = {
 
 const mapStateToProps = (state) => {
     return {
+        currentAccount: state.user.currentAccount,
         companyDetails: state.give.companyData,
         currentUser: state.user.info,
         userTaxReceiptProfiles: state.user.taxReceiptProfiles,
