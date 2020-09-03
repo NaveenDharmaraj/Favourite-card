@@ -55,10 +55,10 @@ class CharitySupport extends React.Component {
                 data: beneficiariesData,
             },
         } = this.props;
-        let showDivider = false;
         return (
             beneficiariesData.map((data, index) => {
-                if (index > 0 && index < beneficiariesData.length) {
+                let showDivider = false;
+                if (index > 0) {
                     showDivider = true;
                 }
                 return (
@@ -113,7 +113,9 @@ class CharitySupport extends React.Component {
         return (
             <div className="charityInfowrap fullwidth">
                 <div className="charityInfo paddingcharity">
-                    <Header className="heading_btm" as="h4">{formatMessage('groupProfile:groupSupportsheadertext')}</Header>
+                    <Header className="heading_btm" as="h4">
+                        {formatMessage('groupProfile:groupSupportsheadertext')}
+                    </Header>
                     {campaignId
                     && (
                         <Fragment>
