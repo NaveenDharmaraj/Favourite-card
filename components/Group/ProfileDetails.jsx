@@ -43,6 +43,12 @@ class ProfileDetails extends React.Component {
             },
             type: 'GET_GROUP_TAB_OFFSET',
         });
+        dispatch({
+            payload: {
+                activeIndex: 0,
+            },
+            type: 'GET_GROUP_TAB_INDEX',
+        });
     }
 
     handleTabChange(event, data) {
@@ -109,7 +115,6 @@ class ProfileDetails extends React.Component {
                                         secondary: true,
                                     }}
                                     panes={panes}
-                                    defaultActiveIndex={0}
                                     activeIndex={updatedActiveIndex}
                                     onTabChange={this.handleTabChange}
                                 />
