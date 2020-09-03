@@ -85,6 +85,7 @@ class ActivityDetails extends React.Component {
     }
 
     updateInputValue(event) {
+        event.currentTarget.style.cssText = `height: ${event.currentTarget.scrollHeight}px`;
         this.setState({
             commentText: event.target.value,
         });
@@ -304,13 +305,15 @@ class ActivityDetails extends React.Component {
                                 && (
                                     <div className="postInputMainWraper">
                                         <Comment.Avatar src={avatar} />
-                                        <div className="postInputWraper">
+                                        <div className="postInputWraperTop">
                                             <TextArea
                                                 value={commentText}
                                                 onChange={this.updateInputValue}
                                                 type="text"
                                                 placeholder={formatMessage('groupProfile:addCommentPlaceholder')}
                                                 fluid
+                                                rows={1}
+                                                className="comment_Textarea"
                                             />
                                         </div>
                                         <div className="postBtnWraper">

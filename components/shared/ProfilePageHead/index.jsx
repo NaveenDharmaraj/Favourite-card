@@ -60,7 +60,7 @@ function ProfilePageHead(props) {
         if (isAuthenticated) {
             if ((type === 'groups' || type === 'campaigns') && isAdmin) {
                 buttonLink = (
-                    <Fragment>
+                    <span className="btn_wrapperTop">
                         <a href={(linkAddress)}>
                             <Button className="blue-bordr-btn-round-def CampaignBtn">
                                 <span>
@@ -104,7 +104,7 @@ function ProfilePageHead(props) {
                                 </Link>
                             )
                         }
-                    </Fragment>
+                    </span>
                 );
             }
         }

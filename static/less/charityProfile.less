@@ -2044,6 +2044,10 @@
         @media only screen and (max-width:992px){
             padding:10px 30px;
         }
+        @media only screen and (max-width:400px){
+            padding:8px 15px;
+            margin-right: 4.8px;
+        }
         span{
             >i{
                 &.icon{
@@ -2158,7 +2162,7 @@
                         }
                     }
                     .postInputMainWraper{
-                        border-top: 1px solid #EEEEEE;
+                        //border-top: 1px solid #EEEEEE;
                         padding-top:28.5px;
                         margin-top: 20px;
                         display: flex;
@@ -2167,6 +2171,22 @@
                             margin: 0px;
                             padding-bottom:35px;
                             margin-left: 9px;
+                            .comment_Textarea{
+                                resize: none;
+                                width: 100%;
+                                min-height: 41px;
+                                border: 1px solid #DDDDDD;
+                                border-radius: 5px;
+                                padding:12.5px 16.5px 11.5px 16.5px;
+                                font-size: 14px;
+                                color: #263238;
+                                line-height: 17px;
+                                max-height: 250px;
+                                &::placeholder{
+                                    color: #7F7F7F;
+                                    font-size: 14px;
+                                }
+                            }
                         }
                         .postBtnWraper{
                             width: auto !important;
@@ -2347,10 +2367,8 @@
         &.dropdown{}
     }
 }
-
-
-
 .btn_wrapper{
+    clear: both;
     .dropdownRight{
         box-shadow: none;
         border: none;
@@ -2485,6 +2503,13 @@
                         }
                     }
                 }
+                .card{
+                    &.noDataCard{
+                        &.rightImg{
+                            margin:1rem 0px ;
+                        }
+                    }
+                }
             }
                 
         }
@@ -2536,4 +2561,9 @@
     padding: 0px;
     border: none;
     border-radius: 100% !important;
+}
+.btn_wrapperTop{
+    @media only screen and (max-width:767px){
+    display: block;
+    }
 }
