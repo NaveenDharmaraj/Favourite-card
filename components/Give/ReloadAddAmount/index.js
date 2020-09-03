@@ -451,7 +451,7 @@ class ReloadAddAmount extends React.Component {
             });
             const topUpAmount = formatCurrency(donationAmount, language, reloadObject.currency);
             const succesToast = (giveTo.type === 'user') ? `${topUpAmount} has been added to your Impact Account`
-                : `${topUpAmount} has been added to ${giveTo.name}'s Account`;
+                : `${topUpAmount} has been added to ${giveTo.name}'s Company Account`;
             dispatch(walletTopUp(reloadObject, succesToast)).then(()=>{
                 this.setState({
                     currentModalStep: 0,
