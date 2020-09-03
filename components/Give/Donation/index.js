@@ -93,6 +93,7 @@ class Donation extends React.Component {
             buttonClicked: false,
             flowObject: { ...flowObject, },
             disableButton: !props.userAccountsFetched,
+            disableCreditCard: true,
             inValidCardNameValue: true,
             inValidCardNumber: true,
             inValidCvv: true,
@@ -572,7 +573,10 @@ class Donation extends React.Component {
      * @return {void}
      */
     validateStripeCreditCardNo(inValidCardNumber) {
-        this.setState({ inValidCardNumber });
+        this.setState({ 
+            inValidCardNumber,
+            disableCreditCard: false,
+        });
     }
 
     /**
@@ -581,7 +585,10 @@ class Donation extends React.Component {
      * @return {void}
      */
     validateStripeExpirationDate(inValidExpirationDate) {
-        this.setState({ inValidExpirationDate });
+        this.setState({ 
+            inValidExpirationDate,
+            disableCreditCard: false,
+        });
     }
 
     /**
@@ -590,7 +597,10 @@ class Donation extends React.Component {
      * @return {void}
      */
     validateCreditCardCvv(inValidCvv) {
-        this.setState({ inValidCvv });
+        this.setState({ 
+            disableCreditCard: false,
+            inValidCvv
+         });
     }
 
     /**     
@@ -748,6 +758,7 @@ class Donation extends React.Component {
                     type: 'TRIGGER_UX_CRITICAL_ERROR',
                 });
                 this.setState({
+                    disableCreditCard: true,
                     isCreditCardModalOpen: false,
                     flowObject: {
                         ...this.state.flowObject,
@@ -771,6 +782,7 @@ class Donation extends React.Component {
 
     handleCCAddClose() {
         this.setState({
+            disableCreditCard: true,
             isCreditCardModalOpen: false
         });
     }
@@ -847,12 +859,17 @@ class Donation extends React.Component {
             },
         })
     }
-
+    handleOnChangeCardName= () => {
+        this.setState({
+            disableCreditCard: false,
+        })
+    }
     render() {
         const {
             buttonClicked,
             disableButton,
             dispatch,
+            disableCreditCard,
             flowObject,
             inValidCardNumber,
             inValidExpirationDate,
@@ -977,6 +994,7 @@ class Donation extends React.Component {
                                                                                         validateExpiraton={this.validateStripeExpirationDate}
                                                                                         validateCvv={this.validateCreditCardCvv}
                                                                                         validateCardName={this.validateCreditCardName}
+                                                                                        handleOnChangeCardName={this.handleOnChangeCardName}
                                                                                         formatMessage={formatMessage}
                                                                                         // eslint-disable-next-line no-return-assign
                                                                                         onRef={(ref) => (this.CreditCard = ref)}
@@ -999,10 +1017,7 @@ class Donation extends React.Component {
                                                                         <Button
                                                                             className="blue-btn-rounded-def w-140"
                                                                             onClick={this.handleAddNewCreditCard}
-                                                                            disabled={buttonClicked || inValidCardNumber
-                                                                                || inValidExpirationDate || inValidNameOnCard
-                                                                                || inValidCvv || inValidCardNameValue
-                                                                            }
+                                                                            disabled={buttonClicked || disableCreditCard}
                                                                         >
                                                                             Done
                                                                             </Button>

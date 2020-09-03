@@ -205,6 +205,11 @@ class Friend extends React.Component {
             reloadModalOpen:1,
         })
     }
+    handleReloadModalClose = () => {
+        this.setState({
+            reloadModalOpen:0,
+        });
+    }
     componentDidUpdate(prevProps) {
         if (!_isEqual(this.props, prevProps)) {
             const {
@@ -682,6 +687,7 @@ class Friend extends React.Component {
                     reloadModalOpen={reloadModalOpen}
                     reviewBtnFlag={reviewBtnFlag}
                     taxReceiptsOptions={taxReceiptsOptions}
+                    handleParentModalState={this.handleReloadModalClose}
                 />
             )
             } else{

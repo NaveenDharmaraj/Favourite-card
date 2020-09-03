@@ -875,7 +875,11 @@ class Group extends React.Component {
             reloadModalOpen: 1,
         })
     }
-
+    handleReloadModalClose = () => {
+        this.setState({
+            reloadModalOpen:0,
+        });
+    }
     renderReloadAddAmount = () => {
         let {
             defaultTaxReceiptProfile,
@@ -930,6 +934,7 @@ class Group extends React.Component {
                         reloadModalOpen={reloadModalOpen}
                         reviewBtnFlag={reviewBtnFlag}
                         taxReceiptsOptions={taxReceiptsOptions}
+                        handleParentModalState={this.handleReloadModalClose}
                     />
                 )
             } else {

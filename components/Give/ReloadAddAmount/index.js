@@ -1086,6 +1086,7 @@ class ReloadAddAmount extends React.Component {
         const {
             allocationGiftType,
             giveTo,
+            handleParentModalState,
             reviewBtnFlag,
             language,
         } = this.props;
@@ -1104,7 +1105,10 @@ class ReloadAddAmount extends React.Component {
                 {this.renderReloadComponent(allocationGiftType, reviewBtnFlag)}
                 <Modal closeOnDimmerClick={false} size="tiny" dimmer="inverted" className="chimp-modal popbox addMoneyMoadal " open={currentModalStep >0} onClose={() => this.setState({currentModalStep: 0})}>
                     <Modal.Header>{modalHeaderText} 
-                        <span className="closebtn" onClick={() => this.setState({currentModalStep: 0})}>
+                        <span className="closebtn" onClick={() => {
+                            this.setState({currentModalStep: 0})
+                            handleParentModalState()
+                            }}>
                         </span>
                     </Modal.Header>
                     {(currentModalStep === 1) && (<div className="noteDefault-bg">
@@ -1126,5 +1130,9 @@ class ReloadAddAmount extends React.Component {
             </Fragment>
         );
     }
+}
+
+ReloadAddAmount.defaultProps = {
+    handleParentModalState: () => {}
 }
 export default ReloadAddAmount;

@@ -776,7 +776,11 @@ class Charity extends React.Component {
             reloadModalOpen:1,
         })
     }
-
+    handleReloadModalClose = () => {
+        this.setState({
+            reloadModalOpen:0,
+        });
+    }
     /**
      * Render the SpecialInstruction component.
      * @param {object} giveFrom give from field data.
@@ -869,6 +873,7 @@ class Charity extends React.Component {
                         reloadModalOpen={reloadModalOpen}
                         reviewBtnFlag={reviewBtnFlag}
                         taxReceiptsOptions={taxReceiptsOptions}
+                        handleParentModalState={this.handleReloadModalClose}
                     />
                 )
             } else{
