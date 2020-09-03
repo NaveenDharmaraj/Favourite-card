@@ -1,8 +1,6 @@
 import React from 'react';
 import {
     Header,
-    Popup,
-    Icon,
 } from 'semantic-ui-react';
 import {
     string,
