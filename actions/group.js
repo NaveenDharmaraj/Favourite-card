@@ -235,7 +235,7 @@ export const getGroupActivities = (id, url, isPostActivity = false) => (dispatch
         params: {
             dispatch,
             ignore401: true,
-            'page[size]': 10,
+            'page[size]': isPostActivity ? 1 : 10,
             uxCritical: true,
         },
     }).then((result) => {
@@ -248,12 +248,14 @@ export const getGroupActivities = (id, url, isPostActivity = false) => (dispatch
             dispatch(fsa);
         }
     }).catch().finally(() => {
-        dispatch({
-            payload: {
-                showPlaceholder: false,
-            },
-            type: actionTypes.GROUP_PLACEHOLDER_STATUS,
-        });
+        if (typeof url === 'undefined') {
+            dispatch({
+                payload: {
+                    showPlaceholder: false,
+                },
+                type: actionTypes.GROUP_PLACEHOLDER_STATUS,
+            });
+        }
     });
 };
 
@@ -282,7 +284,7 @@ export const getCommentFromActivityId = (id, commentsCount) => (dispatch) => {
 };
 
 export const postActivity = (id, msg) => (dispatch) => {
-    const url = `groups/${id}/activities`;
+    const url = '';
     return coreApi.post(`/comments`,
         {
             data: {
@@ -296,7 +298,6 @@ export const postActivity = (id, msg) => (dispatch) => {
             params: {
                 dispatch,
                 ignore401: true,
-                'page[size]': 1,
             },
         }).then((result) => {
         if (result && !_isEmpty(result.data)) {
