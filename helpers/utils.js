@@ -254,16 +254,7 @@ const validateDate = (dateStr = '') => {
     return isValid;
 };
 
-const base64Decode = (str) => {
-    try {
-        return atob(str);
-    } catch (err) {
-        return str;
-    }
-};
-
 export {
-    base64Decode,
     getMainNavItems,
     isFalsy,
     distanceOfTimeInWords,

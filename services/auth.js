@@ -19,7 +19,6 @@ import {
 } from '../actions/user';
 import isUndefinedOrEmpty from '../helpers/object';
 import { addToDataLayer } from '../helpers/users/googleTagManager';
-import { base64Decode } from '../helpers/utils';
 
 import coreApi from './coreApi';
 
@@ -419,12 +418,11 @@ const _handleLockSuccess = async ({
     idToken,
 } = {}) => {
     let { returnProps } = auth0;
-    let {
+    const {
         returnTo,
     } = returnProps;
     if (!accessToken || !idToken) { return null(); }
     // Sets access token and expiry time in cookies
-    returnTo = base64Decode(returnTo);
     chimpLogin(accessToken, returnProps).then(async ({ currentUser, beneficiarySlug }) => {
         const userId = parseInt(currentUser, 10);
         if (document) {
