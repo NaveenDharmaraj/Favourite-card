@@ -22,6 +22,7 @@ class Groups extends React.Component {
     static async getInitialProps({ query }) {
         return {
             campaignId: query.campaign_id,
+            groupCampaignId: query.groupCampaign_id,
             groupId: query.group_id,
             namespacesRequired: [
                 'authHeader',

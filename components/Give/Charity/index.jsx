@@ -776,7 +776,11 @@ class Charity extends React.Component {
             reloadModalOpen:1,
         })
     }
-
+    handleReloadModalClose = () => {
+        this.setState({
+            reloadModalOpen:0,
+        });
+    }
     /**
      * Render the SpecialInstruction component.
      * @param {object} giveFrom give from field data.
@@ -869,6 +873,7 @@ class Charity extends React.Component {
                         reloadModalOpen={reloadModalOpen}
                         reviewBtnFlag={reviewBtnFlag}
                         taxReceiptsOptions={taxReceiptsOptions}
+                        handleParentModalState={this.handleReloadModalClose}
                     />
                 )
             } else{
@@ -981,22 +986,24 @@ class Charity extends React.Component {
                                                         {
                                                             !!groupFromUrl && (
                                                                 <Fragment>
-                                                                    <Form.Field>
-                                                                        <label htmlFor="giveTo">
-                                                                            {formatMessage('giveToLabel')}
-                                                                        </label>
-                                                                        <Form.Field
-                                                                            className="dropdownWithArrowParent"
-                                                                            control={Select}
-                                                                            error={!validity.isValidGiveFrom}
-                                                                            id="giveToList"
-                                                                            name="giveToList"
-                                                                            onChange={this.handleInputChangeGiveTo}
-                                                                            options={giveToList}
-                                                                            placeholder="Select a Group to Give"
-                                                                            value={giveTo.value}
-                                                                        />
-                                                                    </Form.Field>
+                                                                    <div className="give_flow_field_bottom">
+                                                                        <Form.Field>
+                                                                            <label htmlFor="giveTo">
+                                                                                {formatMessage('giveToLabel')}
+                                                                            </label>
+                                                                            <Form.Field
+                                                                                className="dropdownWithArrowParent"
+                                                                                control={Select}
+                                                                                error={!validity.isValidGiveFrom}
+                                                                                id="giveToList"
+                                                                                name="giveToList"
+                                                                                onChange={this.handleInputChangeGiveTo}
+                                                                                options={giveToList}
+                                                                                placeholder="Select a Group to Give"
+                                                                                value={giveTo.value}
+                                                                            />
+                                                                        </Form.Field>
+                                                                    </div>
                                                                 </Fragment>
                                                             )
                                                         }

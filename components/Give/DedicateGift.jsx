@@ -91,7 +91,8 @@ class DedicateGift extends Component {
                         />
                         <Accordion.Content
                             as={Input}
-                            className="inputInline"
+                            className="inputInline field"
+                            error={validity && !validity.isDedicateGiftEmpty}
                             active={activeIndex === 0 || activeIndex === 1}
                             name={currentName}
                             placeholder="Who are you dedicating this gift to? "

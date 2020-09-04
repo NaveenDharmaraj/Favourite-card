@@ -1,4 +1,21 @@
 @import "_mixins.less";
+body{
+    .ui.form input:not([type]), .ui.form input[type="date"], .ui.form input[type="datetime-local"], .ui.form input[type="email"], .ui.form input[type="file"], .ui.form input[type="number"], .ui.form input[type="password"], .ui.form input[type="search"], .ui.form input[type="tel"], .ui.form input[type="text"], .ui.form input[type="time"], .ui.form input[type="url"]{
+        font-size: 14px;
+    }
+    .ui.selection.dropdown{
+        font-size: 14px;
+    }
+    .ui.modals.dimmer .chimp-modal.ui.modal > .header{
+        font-size: 17px;
+        font-family: 'ProximaNova-Semibold';
+    }
+}
+.addRecipientForm{
+    .ui.form input:not([type]), .ui.form input[type="date"], .ui.form input[type="datetime-local"], .ui.form input[type="email"], .ui.form input[type="file"], .ui.form input[type="number"], .ui.form input[type="password"], .ui.form input[type="search"], .ui.form input[type="tel"], .ui.form input[type="text"], .ui.form input[type="time"], .ui.form input[type="url"]{
+        min-height: 40px;
+    }
+}
 .flowSuccess{
     @media only screen and (min-width: 1199px){
         min-height: 685px;
@@ -712,6 +729,7 @@
                                 input{
                                     background-color: #F8F8F8;
                                     color: #7F7F7F;
+                                    font-size: 14px;
                                 }
                             }
                         }
@@ -806,7 +824,7 @@
     .coverFeeLabel{
         font-size: 12px !important;
         color: #263238 ;
-        line-height: 15px;
+        line-height: 12px;
         margin-top: 15px;
         a{
             text-decoration: none;
@@ -1345,6 +1363,11 @@
 
 .ui.button.fluid.floating.selection.dropdown.taxReceiptDropDown{
     text-align:left;
+    @media only screen and (max-width:767px) {
+        >.menu{
+            min-height: 240px;
+        }
+    }
     &:before{
         top:40%;
     }
@@ -1541,6 +1564,12 @@ span.attributes {
                 >.item {
                     border-bottom: 1px solid #DDDDDD;
                     padding: 18px !important;
+                    display: flex;
+                    align-items: center;
+                    >img,>.image{
+                        margin-bottom: 0px !important;
+                        margin-top: 0px !important;
+                    }
                 }
             }
         }
@@ -1649,11 +1678,13 @@ span.attributes {
 .givingInfoText{
     font-family: 'ProximaNova-Regular';
     font-size: 12px;
+    line-height: 12px;
     display: block;
     margin-bottom: 15px;
     margin-top: -3px;
     .icon.circle.blue.large.question.popupMargin-6{
         font-size: 21px;
+        display: none;
     }
 }
 .icon.circle.blue.large.question.popupMargin-6{
@@ -1811,7 +1842,7 @@ textarea {
 .coverFeeLabel{
     font-size: 12px !important;
     color: #263238 ;
-    line-height: 15px;
+    line-height: 12px;
     margin-top: 15px;
 }
 input{
@@ -2721,6 +2752,12 @@ body{
             max-height: 220px;
         }
     }
+}
+.givetoInfoText{
+    display: block;
+    margin-top: -6px;
+    margin-bottom: 20px;
+    font-size: 12px;
 }
 .reload-mdl-footer-btns{
     .ui.button{

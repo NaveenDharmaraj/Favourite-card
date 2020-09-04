@@ -75,6 +75,7 @@ class Group extends React.Component {
                     email,
                 },
             },
+            groupCampaignId,
             groupId,
             infoOptions: {
                 groupMemberInfoToShare,
@@ -135,7 +136,10 @@ class Group extends React.Component {
             && Number(campaignId) > 0) {
             this.state.flowObject.campaignId = campaignId;
             this.state.giveFromType = 'campaigns'
-        }
+        } else if (!_isEmpty(groupCampaignId)
+        && Number(groupCampaignId) > 0) {
+        this.state.flowObject.groupCampaignId = groupCampaignId;
+    }
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleInputOnBlur = this.handleInputOnBlur.bind(this)
         this.handleInputChangeGiveTo = this.handleInputChangeGiveTo.bind(this);
@@ -275,7 +279,8 @@ class Group extends React.Component {
                 giveData = Group.initFields(
                     giveData, fund, id,
                     `${firstName} ${lastName}`, companiesAccountsData, userGroups, userCampaigns,
-                    groupCampaignAdminShareInfoOptions, groupMemberInfoToShare, giveFromId, giveFromType, language, currency, preferences, giveGroupDetails, formatMessage
+                    groupCampaignAdminShareInfoOptions, groupMemberInfoToShare, giveFromId, giveFromType, language, currency, preferences, giveGroupDetails, formatMessage,
+                    this.props.groupCampaignId,
                 );
             }
             if (giveData.giveFrom.type === 'user' && !_isEmpty(groupMemberInfoToShare)) {
@@ -317,8 +322,9 @@ class Group extends React.Component {
      */
     // eslint-disable-next-line react/sort-comp
     static initFields(giveData, fund, id,
-        name, companiesAccountsData, userGroups, userCampaigns, groupCampaignAdminShareInfoOptions, groupMemberInfoToShare, groupId, giveFromType, language, currency, preferences, giveGroupDetails, formatMessage) {
-        if (_isEmpty(companiesAccountsData) && _isEmpty(userGroups) && _isEmpty(userCampaigns) && !giveData.userInteracted) {
+        name, companiesAccountsData, userGroups, userCampaigns, groupCampaignAdminShareInfoOptions, groupMemberInfoToShare, groupId, giveFromType, language,
+        currency, preferences, giveGroupDetails, formatMessage, groupCampaignId) {
+            if (_isEmpty(companiesAccountsData) && _isEmpty(userGroups) && _isEmpty(userCampaigns) && !giveData.userInteracted) {
             giveData.giveFrom.id = id;
             giveData.giveFrom.value = fund.id;
             giveData.giveFrom.type = 'user';
@@ -343,13 +349,25 @@ class Group extends React.Component {
                         value: giveFromGroup.attributes.fundId,
                     };
                 }
+            }else if(groupCampaignId){
+                const giveFromGroupCampaign = userGroups.find((userGroup) => userGroup.id === groupCampaignId)
+                giveData.giveFrom = {
+                    avatar: giveFromGroupCampaign.attributes.avatar,
+                    balance: giveFromGroupCampaign.attributes.balance,
+                    id: giveFromGroupCampaign.id,
+                    name: giveFromGroupCampaign.attributes.name,
+                    slug: giveFromGroupCampaign.attributes.slug,
+                    text: `${giveFromGroupCampaign.attributes.fundName}: ${formatCurrency(giveFromGroupCampaign.attributes.balance, language, currency)}`,
+                    type: giveFromGroupCampaign.type,
+                    value: giveFromGroupCampaign.attributes.fundId,
+                };
             }
         } else if (!_isEmpty(companiesAccountsData) && !_isEmpty(userGroups) && !_isEmpty(userCampaigns) && !giveData.userInteracted) {
             giveData.giveFrom = {
                 value: '',
             };
         }
-        if (!giveData.userInteracted && !(giveFromType === 'groups' || giveFromType === 'campaigns')) {
+        if (!giveData.userInteracted && !(giveFromType === 'groups' || giveFromType === 'campaigns' || !_isEmpty(groupCampaignId))) {
             giveData.privacyShareAmount = preferences['giving_group_members_share_my_giftamount'];
         }
         if (!_isEmpty(groupCampaignAdminShareInfoOptions) && groupCampaignAdminShareInfoOptions.length > 0
@@ -362,7 +380,7 @@ class Group extends React.Component {
                 opt.value === preference
             ));
             giveData.defaultInfoToShare = defaultInfoToShare;
-            if (giveFromType === 'groups' || giveFromType === 'campaigns') {
+            if (giveFromType === 'groups' || giveFromType === 'campaigns' || !_isEmpty(groupCampaignId)) {
                 giveData.infoToShare = {
                     disabled: false,
                     text: ReactHtmlParser(`<span class="attributes">${formatMessage('giveCommon:infoToShareAnonymous')}</span>`),
@@ -857,7 +875,11 @@ class Group extends React.Component {
             reloadModalOpen: 1,
         })
     }
-
+    handleReloadModalClose = () => {
+        this.setState({
+            reloadModalOpen:0,
+        });
+    }
     renderReloadAddAmount = () => {
         let {
             defaultTaxReceiptProfile,
@@ -912,6 +934,7 @@ class Group extends React.Component {
                         reloadModalOpen={reloadModalOpen}
                         reviewBtnFlag={reviewBtnFlag}
                         taxReceiptsOptions={taxReceiptsOptions}
+                        handleParentModalState={this.handleReloadModalClose}
                     />
                 )
             } else {

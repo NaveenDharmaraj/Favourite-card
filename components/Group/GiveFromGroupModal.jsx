@@ -58,7 +58,7 @@ const GiveFromGroupModal = (props) => {
                             </div>
                         </div>
                     </Link>
-                    <Link route={`/give/to/group/${slug}/new`}>
+                    <Link route={`/give/to/group/${slug}/new?groupCampaign_id=${groupId}`}>
                         <div className="ModelLeftBoxBottom ">
                             <Image src={leftcampaigngroup} />
                             <div className="descriptiontext">

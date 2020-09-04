@@ -130,6 +130,7 @@ class Review extends React.Component {
                     selectedTaxReceiptProfile,
                     type,
                     groupId,
+                    groupCampaignId,
                     campaignId,
                 },
                 flowSteps,
@@ -159,6 +160,9 @@ class Review extends React.Component {
                 isGiveFrom = true;
             } else if(campaignId) {
                 toURL = `${toURL}?campaign_id=${campaignId}`;
+                isGiveFrom = true;
+            } else if(groupCampaignId) {
+                toURL = `${toURL}?groupCampaign_id=${groupCampaignId}`;
                 isGiveFrom = true;
             }
             if(type === 'donations'){

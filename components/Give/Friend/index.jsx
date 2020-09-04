@@ -205,6 +205,11 @@ class Friend extends React.Component {
             reloadModalOpen:1,
         })
     }
+    handleReloadModalClose = () => {
+        this.setState({
+            reloadModalOpen:0,
+        });
+    }
     componentDidUpdate(prevProps) {
         if (!_isEqual(this.props, prevProps)) {
             const {
@@ -682,6 +687,7 @@ class Friend extends React.Component {
                     reloadModalOpen={reloadModalOpen}
                     reviewBtnFlag={reviewBtnFlag}
                     taxReceiptsOptions={taxReceiptsOptions}
+                    handleParentModalState={this.handleReloadModalClose}
                 />
             )
             } else{
@@ -826,6 +832,24 @@ class Friend extends React.Component {
                                                                         />
                                                                     )
                                                                 }
+                                                                {!showDropDown
+                                                                    && (
+                                                                        <div className="disabled-giveto">
+                                                                            <Form.Field>
+                                                                                <Form.Field
+                                                                                    control={Input}
+                                                                                    disabled
+                                                                                    id="recipientName"
+                                                                                    maxLength="20"
+                                                                                    name="recipientName"
+                                                                                    size="large"
+                                                                                    placeholder="You're not connected to friends on Charitable Impact yet"
+                                                                                />
+                                                                            </Form.Field>
+                                                                            <span class="givetoInfoText">You can find friends to give to on Charitable Impact under your Account Settings.</span>
+                                                                        </div>
+                                                                    )
+                                                                }
                                                             </Grid.Column>
                                                             <Grid.Column mobile={16} tablet={16} computer={16}>
                                                                 {showDropDown
@@ -839,18 +863,18 @@ class Friend extends React.Component {
                                                                 }
                                                                 {(showGiveToEmail || !_.isEmpty(recipients) || (typeof showDropDown !== 'undefined' && !showDropDown))
                                                                     && (
-                                                                            <Note
-                                                                                enableCharacterCount={false}
-                                                                                fieldName="recipients"
-                                                                                formatMessage={formatMessage}
-                                                                                handleOnInputChange={this.handleInputChange}
-                                                                                handleOnInputBlur={this.handleOnInputBlur}
-                                                                                labelText={formatMessage('friends:recipientsLabel')}
-                                                                                popupText={formatMessage('friends:recipientsPopup')}
-                                                                                placeholderText={formatMessage('friends:recipientsPlaceholderText')}
-                                                                                text={recipients.join(',')}
-                                                                                hideLabel={true}
-                                                                            />
+                                                                        <Note
+                                                                            enableCharacterCount={false}
+                                                                            fieldName="recipients"
+                                                                            formatMessage={formatMessage}
+                                                                            handleOnInputChange={this.handleInputChange}
+                                                                            handleOnInputBlur={this.handleOnInputBlur}
+                                                                            labelText={formatMessage('friends:recipientsLabel')}
+                                                                            popupText={formatMessage('friends:recipientsPopup')}
+                                                                            placeholderText={formatMessage('friends:recipientsPlaceholderText')}
+                                                                            text={recipients.join(',')}
+                                                                            hideLabel={true}
+                                                                        />
                                                                     )}
                                                                 <FormValidationErrorMessage
                                                                     condition={!validity.isValidEmailList}
