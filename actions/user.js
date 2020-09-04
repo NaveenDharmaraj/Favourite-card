@@ -366,7 +366,6 @@ export const getUser = (dispatch, userId, token = null) => {
                 const includedData = _.concat(
                     userData.included, allData[1], allData[2], allData[3], allData[4],
                 );
-                console.log(includedData);
                 if (!_.isEmpty(includedData)) {
                     const accounts = [];
                     const contexts = [];
