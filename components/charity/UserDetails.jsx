@@ -20,7 +20,6 @@ import { withTranslation } from '../../i18n';
 
 const { publicRuntimeConfig } = getConfig();
 const {
-    CLAIM_CHARITY_URL,
     RAILS_APP_URL_ORIGIN,
 } = publicRuntimeConfig;
 
@@ -150,9 +149,9 @@ const UserDetails = (props) => {
                         <p>
                             {`* ${formatMessage('charityProfile:claimCharityInfo')}`}
                         </p>
-                        <a href={CLAIM_CHARITY_URL}>
+                        <Link route="/claim-charity">
                             <Button data-test="profile_charity_claim_charity_button" className="blue-bordr-btn-round-def">{formatMessage('charityProfile:claimCharityButtonText')}</Button>
-                        </a>
+                        </Link>
                     </div>
                 )
             }

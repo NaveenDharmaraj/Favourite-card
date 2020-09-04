@@ -40,7 +40,7 @@ const {
 
 const _auth0lockConfig = {
     allowPasswordAutocomplete: true,
-    allowShowPassword: false,
+    allowShowPassword: true,
     allowSignUp: false,
     auth: {
         responseType: 'token id_token',
@@ -455,8 +455,7 @@ const _handleLockSuccess = async ({
             await (storage.unset('signup_source_id','local'));
             await (storage.unset('signup_source','local'));
             Router.pushRoute(`/claim-charity/success?slug=${beneficiarySlug}`);
-        }
-        else {
+        } else {
             Router.pushRoute(returnTo);
         }
     })
