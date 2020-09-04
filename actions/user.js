@@ -426,7 +426,6 @@ export const getUser = (dispatch, userId, token = null) => {
             // console.log(JSON.stringify(error));
             isAuthenticated = false;
         }).finally(() => {
-            console.log(fsa);
             dispatch({
                 payload: {
                     isAuthenticated,
