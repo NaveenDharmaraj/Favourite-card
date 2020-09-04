@@ -69,7 +69,7 @@ describe('Testing ClaimP2P component when userInfo is not empty', () => {
             expect(component.find({ 'data-test': 'claimp2p_header_description' }).exists()).toBe(true);
         });
         it('Should render the users thank note', () => {
-            expect(component.find({ 'data-test': 'claimp2p_header_thanknote' }).text()).toBe('thank you');
+            expect(component.find({ 'data-test': 'claimp2p_header_thanknote' }).text()).toBe('"thank you"');
         });
     });
     describe('Testing Claim P2P Sign up contents', () => {

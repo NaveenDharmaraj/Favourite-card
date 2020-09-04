@@ -1,6 +1,7 @@
 const express = require('express');
 const next = require('next');
 const routes = require('./routes');
+const frameguard = require('frameguard');
 const app = next({dev: process.env.NODE_ENV !== 'production'});
 const nextI18NextMiddleware = require('next-i18next/middleware');
 const nextI18next = require('./i18n');
@@ -17,6 +18,7 @@ app.prepare().then(() => {
             nxt();
         }
     };
+    server.use(frameguard({ action: 'SAMEORIGIN' }));
     server.use(handleTrailingSlashes);
     server.use(nextI18NextMiddleware(nextI18next));
     server.use(handler);
