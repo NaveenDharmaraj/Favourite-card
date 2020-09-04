@@ -30,7 +30,7 @@ class AboutGroup extends React.Component {
         this.handleReadMore = this.handleReadMore.bind(this);
     }
 
-    handleReadMore () {
+    handleReadMore() {
         this.setState({
             showReadMoreText: true,
         });

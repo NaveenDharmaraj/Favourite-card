@@ -1,6 +1,4 @@
-import React, {
-    Fragment,
-} from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import {
     string,
@@ -8,18 +6,19 @@ import {
     number,
     func,
     PropTypes,
+    array,
 } from 'prop-types';
 import {
     Tab,
     Grid,
-    Divider,
 } from 'semantic-ui-react';
 import _isEqual from 'lodash/isEqual';
+import _isEmpty from 'lodash/isEmpty';
 
 import Activity from './Activity';
 import Members from './Members';
-// import CharitySupport from './CharitySupport';
 import TransactionDetails from './TransactionDetails';
+import MatchingHistory from './MatchingHistory';
 
 class ProfileDetails extends React.Component {
     constructor(props) {
@@ -68,6 +67,9 @@ class ProfileDetails extends React.Component {
 
     render() {
         const {
+            groupMatchingHistory: {
+                data: matchHistory,
+            },
             isAuthenticated,
             updatedActiveIndex,
         } = this.props;
@@ -102,6 +104,21 @@ class ProfileDetails extends React.Component {
                     ),
                 },
             ];
+            if (!_isEmpty(matchHistory)) {
+                const matchingHistoryTab = {
+                    id: 'matchingHistory',
+                    menuItem: 'Matching History',
+                    render: () => (
+                        <Tab.Pane attached={false}>
+                            <MatchingHistory />
+                        </Tab.Pane>
+                    ),
+                };
+                panes = [
+                    ...panes,
+                    matchingHistoryTab,
+                ];
+            }
         }
         return (
             <Grid.Row>
@@ -137,6 +154,9 @@ ProfileDetails.defaultProps = {
             videoPlayerLink: '',
         },
     },
+    groupMatchingHistory: {
+        data: [],
+    },
     isAuthenticated: false,
     updatedActiveIndex: 0,
 };
@@ -152,6 +172,9 @@ ProfileDetails.propTypes = {
             videoPlayerLink: string,
         }),
     }),
+    groupMatchingHistory: PropTypes.shape({
+        data: array,
+    }),
     isAuthenticated: bool,
     updatedActiveIndex: number,
 };
@@ -159,6 +182,7 @@ ProfileDetails.propTypes = {
 function mapStateToProps(state) {
     return {
         groupDetails: state.group.groupDetails,
+        groupMatchingHistory: state.group.groupMatchingHistory,
         isAuthenticated: state.auth.isAuthenticated,
         updatedActiveIndex: state.group.activeIndex,
     };

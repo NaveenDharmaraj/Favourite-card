@@ -20,6 +20,7 @@ import { withTranslation } from '../i18n';
 import {
     getGroupFromSlug,
     getImageGallery,
+    getMatchingHistory,
 } from '../actions/group';
 import Layout from '../components/shared/Layout';
 import GroupProfileWrapper from '../components/Group';
@@ -65,6 +66,7 @@ class GroupProfile extends React.Component {
                 attributes: {
                     isCampaign,
                 },
+                id: groupId,
                 relationships: {
                     galleryImages: {
                         links: {
@@ -76,6 +78,9 @@ class GroupProfile extends React.Component {
             redirectToPrivateGroupErrorPage,
             redirectToDashboard,
         } = this.props;
+        if (!_isEmpty(groupId)) {
+            dispatch(getMatchingHistory(groupId));
+        }
         if (isCampaign) {
             Router.pushRoute(`/campaigns/${slug}`);
         }
@@ -178,6 +183,7 @@ GroupProfile.defaultProps = {
             name: '',
             slug: '',
         },
+        id: '',
         relationships: {
             galleryImages: {
                 links: {
@@ -205,6 +211,7 @@ GroupProfile.propTypes = {
             name: string,
             slug: string,
         }),
+        id: string,
         relationships: PropTypes.shape({
             galleryImages: PropTypes.shape({
                 links: PropTypes.shape({

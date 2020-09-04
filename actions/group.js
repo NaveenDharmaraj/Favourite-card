@@ -20,6 +20,7 @@ export const actionTypes = {
     GET_GROUP_MEMBERS_DETAILS: 'GET_GROUP_MEMBERS_DETAILS',
     GET_GROUP_TRANSACTION_DETAILS: 'GET_GROUP_TRANSACTION_DETAILS',
     GROUP_ADD_FRIEND_BUTTON_STATUS: 'GROUP_ADD_FRIEND_BUTTON_STATUS',
+    GROUP_MATCHING_HISTORY: 'GROUP_MATCHING_HISTORY',
     GROUP_MEMBER_UPDATE_FRIEND_STATUS: 'GROUP_MEMBER_UPDATE_FRIEND_STATUS',
     GROUP_PLACEHOLDER_STATUS: 'GROUP_PLACEHOLDER_STATUS',
     GROUP_REDIRECT_TO_DASHBOARD: 'GROUP_REDIRECT_TO_DASHBOARD',
@@ -652,4 +653,27 @@ export const addFriendRequest = (user) => (dispatch) => {
         statusfsa.payload.status = false;
         dispatch(statusfsa);
     });
+};
+
+export const getMatchingHistory = (groupId) => (dispatch) => {
+    const fsa = {
+        payload: {
+            groupMatchingHistory: [],
+        },
+        type: actionTypes.GROUP_MATCHING_HISTORY,
+    };
+    return coreApi.get(`/groups/${groupId}/matching_histories`, {
+        params: {
+            dispatch,
+            ignore401: true,
+            uxCritical: true,
+        },
+    }).then((result) => {
+        if (result && result.data) {
+            fsa.payload.data = result.data;
+            fsa.payload.totalMatch = result.recordCount;
+            fsa.payload.pageCount = result.pageCount;
+            dispatch(fsa);
+        }
+    }).catch().finally();
 };

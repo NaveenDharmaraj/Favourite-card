@@ -33,6 +33,7 @@ import {
 import PaginationComponent from '../shared/Pagination';
 import PlaceholderGrid from '../shared/PlaceHolder';
 import downloadIcon from '../../static/images/icons/icon-download.svg';
+import imagePlaceholder from '../../static/images/no-data-avatar-user-profile.png';
 
 import GroupNoDataState from './GroupNoDataState';
 
@@ -173,6 +174,7 @@ class TransactionDetails extends React.Component {
                     transactionSign = '-';
                     rowClass = 'allocation';
                 }
+                const imageUrl = (transaction.attributes.showName ? transaction.attributes.imageUrl : imagePlaceholder);
                 return (
                     <Fragment>
                         <Table.Row className="EmilyData">
@@ -180,7 +182,7 @@ class TransactionDetails extends React.Component {
                             <Table.Cell className="EmilyGroup full_width_text">
                                 <List verticalAlign="middle">
                                     <List.Item>
-                                        <Image className="pr_Img" size="tiny" src={transaction.attributes.imageUrl} />
+                                        <Image className="pr_Img" size="tiny" src={imageUrl} />
                                         <List.Content>
                                             <List.Header>
                                                 <span className="adminEmily">

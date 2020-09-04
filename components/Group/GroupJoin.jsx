@@ -215,7 +215,7 @@ GroupJoin.defaultProps = {
     buttonLoader: false,
     closeModal: false,
     currentUser: {
-        id: null,
+        id: '',
     },
     dispatch: () => {},
     errorMessage: {

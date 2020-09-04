@@ -314,6 +314,17 @@ const group = (state = {}, action) => {
                 charityLoader: action.payload.showPlaceholder,
             };
             break;
+        case 'GROUP_MATCHING_HISTORY':
+            newState = {
+                ...state,
+                groupMatchingHistory: {
+                    ...state.groupMatchingHistory,
+                    data: action.payload.data,
+                    pageCount: action.payload.pageCount,
+                    totalMatch: action.payload.totalMatch,
+                },
+            };
+            break;
         default:
             break;
     }
