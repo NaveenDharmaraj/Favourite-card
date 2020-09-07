@@ -40,15 +40,52 @@ const props = {
 };
 
 describe('Test input field change, onblur and button click functionality', () => {
-    it('Should call handlePresetAmountClick function on handleDonationPresetAmountClick button click', () => {
-        const component = initializeComponent(props);
-        const event = {};
-        const data = {
-            index: 1,
-        };
-        component.find({ 'data-test': 'Give_DonationAmountField_presetamount_button' }).simulate('click', event, data);
-        expect(props.handlePresetAmountClick).toHaveBeenCalledWith(event, data);
-    });
+    
+    describe('Test to check handlePresetAmountClick function call on handleDonationPresetAmountClick button click', () => {
+        it('Should call handlePresetAmountClick function with data value 25', () => {
+            const component = initializeComponent(props);
+            const event = {};
+            const data = {
+                index: 1,
+                value: 25,
+            };
+            component.find({ 'data-test': 'Give_DonationAmountField_presetamount25_button' }).simulate('click', event, data);
+            expect(props.handlePresetAmountClick).toHaveBeenCalledWith(event, data);
+        });
+
+        it('Should call handlePresetAmountClick function with data value 50', () => {
+            const component = initializeComponent(props);
+            const event = {};
+            const data = {
+                index: 1,
+                value: 50,
+            };
+            component.find({ 'data-test': 'Give_DonationAmountField_presetamount50_button' }).simulate('click', event, data);
+            expect(props.handlePresetAmountClick).toHaveBeenCalledWith(event, data);
+        });
+
+        it('Should call handlePresetAmountClick function with data value 100', () => {
+            const component = initializeComponent(props);
+            const event = {};
+            const data = {
+                index: 1,
+                value: 100,
+            };
+            component.find({ 'data-test': 'Give_DonationAmountField_presetamount100_button' }).simulate('click', event, data);
+            expect(props.handlePresetAmountClick).toHaveBeenCalledWith(event, data);
+        });
+
+        it('Should call handlePresetAmountClick function with data value 500', () => {
+            const component = initializeComponent(props);
+            const event = {};
+            const data = {
+                index: 1,
+                value: 500,
+            };
+            component.find({ 'data-test': 'Give_DonationAmountField_presetamount500_button' }).simulate('click', event, data);
+            expect(props.handlePresetAmountClick).toHaveBeenCalledWith(event, data);
+        });
+    })
 
     it('Should call handleInputChange function on handleDonationAmountFieldInputChange change', () => {
         const component = initializeComponent(props);
