@@ -75,7 +75,9 @@ const MatchingPolicyModal = ({
                         <div className="matching-fund-modal-inner-wrapper">
                             <div className="matching-progress-wrapper">
                                 <div className="matching-progress">
-                                    <span className="progress-inner" style={{ height: `${matchPercent}%` }} />
+                                    <div className="progress-inner-wrapper">
+                                        <span className="progress-inner" style={{ height: `calc(100% - ${matchPercent}%)` }} />
+                                    </div>
                                 </div>
                             </div>
                             <div className="matching-fund-details">
