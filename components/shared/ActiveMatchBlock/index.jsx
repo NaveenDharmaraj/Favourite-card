@@ -80,7 +80,9 @@ const ActiveMatchBlock = (props) => {
                         <div className="matchingFundsGraff">
                             <div className="Progresswapper">
                                 <div className="customProgress">
-                                    <div className="bar" style={{ height: `${100 - matchPercent}%` }} />
+                                    <div className="bar">
+                                    <span className="progress-inner" style={{ height: `calc(100% - ${matchPercent}%)` }} />
+                                    </div>
                                 </div>
                             </div>
                         </div>

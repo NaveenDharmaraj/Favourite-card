@@ -68,34 +68,31 @@ const ExpiredMatchBlock = (props) => {
                     <b>
                         {companyName}
                     </b>
+                    &nbsp;
                     {formatMessage('groupProfile:expiredMatchedText')}
                 </p>
                 <div className="matchingFundsWapper">
                     {hasFundLeft
                         ? (
-                            <div className="matchingFundsText">
+                            <div className="matchingFundsText no_padding">
                                 <Header as="h3">{formattedTotalMatch}</Header>
                                 <div className="total">
                                     <p>
                                         {formatMessage('groupProfile:expiredMatchProvidedText', {
                                             formattedTotalFund,
-                                        })}
-                                        <b>
+                                        })}     &nbsp;
                                             {companyName}
-                                        </b>
                                     </p>
                                 </div>
                             </div>
                         )
                         : (
-                            <div className="matchingFundsText">
+                            <div className="matchingFundsText no_padding">
                                 <Header as="h3">{formattedTotalMatch}</Header>
                                 <div className="total">
                                     <p>
-                                        {formatMessage('groupProfile:expireMatchedByText')}
-                                        <b>
+                                        {formatMessage('groupProfile:expireMatchedByText')} &nbsp;
                                             {companyName}
-                                        </b>
                                     </p>
                                 </div>
                             </div>

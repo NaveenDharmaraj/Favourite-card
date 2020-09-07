@@ -360,14 +360,22 @@
     .tabWapper{
         .MatchingMessages{
             width: 100%;
-            padding: 12px;
+            padding: 20px;
             border-radius:6px;
-            background-color: #E5F5F5;
+            background-color: #f3ecf3;
             margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            &:first-child{
+                margin-top:28px;
+            }
             @media only screen and (max-width:992px) {
                 margin: auto;
                 text-align: center;
                 margin-bottom: 20px;
+            }
+            @media only screen and (max-width:500px) {
+                display: block;
             }
             .borderprofile{
                 margin: auto;
@@ -383,7 +391,8 @@
                 height: 100%;
                 span{
                     &.textColor{
-                        color: #009E9F ;
+                        color: #90459A ;
+                        display: contents;
                     }
                 }
                 @media only screen and (max-width:992px) {
@@ -395,14 +404,35 @@
                     display: block;
                 }
             }
+            .MatchingPartnerWapper{
+                width: 50px;
+                @media only screen and (max-width:500px) {
+                    display: inline-block;
+                }
+            }
+            .MessagestwapperText{
+                width: calc(100% - 220px);
+                padding-left: 20px;
+                padding-right: 15px;
+                @media only screen and (max-width:992px) {
+                    padding-left: 10px;
+                padding-right: 10px;
+                }
+                @media only screen and (max-width:500px) {
+                   width: 100%;
+                   margin-top: 10px;
+                   margin-bottom: 10px;
+                }
+            }
         }
         .white-btn-rounded-def{
             &.Messagestabbtn{
                 font-size: 12px;
                 color: #263238;
                 line-height: 22px;
-                float: right;
-                padding: 0px 10px;
+                padding: 5px 10px;
+                background-color: #fff;
+                border-radius:12.17px;
                 font-family: 'ProximaNova-medium';
                 @media only screen and (max-width:767px) {
                     float: none;
@@ -556,7 +586,7 @@
                         font-size: 18px;
                         line-height: 22px;
                         color: #263238;
-                        margin: 0px;
+                        margin: 0px 0px 4px 0px;
                         &.green{
                             color: #009EA2 !important;
                         }
@@ -566,7 +596,7 @@
             p{
                 font-size: 12px;
                 color: #263238;
-                line-height: 22px;
+                line-height: 15px;
             }
         }
         .Currentboxpop{
@@ -805,7 +835,7 @@
                         font-size: 18px;
                         line-height: 22px;
                         color: #263238;
-                        margin: 0px;
+                        margin: 0px 0px 4px 0px;
                         &.green{
                             color: #009EA2 !important;
                         }
@@ -815,7 +845,7 @@
             p{
                 font-size: 12px;
                 color: #263238;
-                line-height: 22px;
+                line-height: 15px;
             }
         }
         .Currentboxpop{
@@ -888,7 +918,7 @@
                 line-height: 15px;
                 padding: 5px;
                 text-align: center;
-                border-radius: 20px;
+                border-radius:12.17px;
                 a{
                     font-size: 10px;
                     font-family: 'ProximaNova-Semibold';
@@ -908,6 +938,7 @@
                     &.blueText{
                         color: #055CE5;
                         cursor: pointer;
+                        font-family: 'ProximaNova-Semibold';
                     }
                     &.lastGiftText_left{
                         display: block;
@@ -951,10 +982,11 @@
                 display: inline-block;
                 width:21px;
                 .Progresswapper{
+                    width: 21px;
                     height: 100%;
                     .customProgress{
                         height: 100%;
-                        background-color:#f3ecf2;
+                        background-color:transparent;
                         border-radius: 29.5px;
                         width: 21px;
                         position: relative;
@@ -962,15 +994,23 @@
                         overflow: hidden;
                         .bar{
                             width: 15px;
-                            background: linear-gradient(180deg, #C37BCA 0%, #90459A 100%);
                             position: absolute;
-                            border-radius:0px 0px 29.5px 29.5px;
                             bottom: 2px;
                             margin: auto;
                             left: 2px;
                             right: 2px;
-                            &.Progresscurve{
-                                border-radius:29.5px;
+                            border-radius:29.5px;
+                            overflow: hidden;
+                            height: calc(100% - 4px);
+                            .progress-inner{
+                                background: linear-gradient(180deg, #C37BCA 0%, #90459A 100%);
+                                position: absolute;
+                                bottom: 0px;
+                                left: 0;
+                                right: 0;
+                                &.Progresscurve{
+                                    border-radius:29.5px;
+                                }
                             }
                         }
                     }
@@ -980,6 +1020,18 @@
                 display: inline-block;
                 width:100%;
                 padding-left: 17px;
+                &.no_padding{
+                    padding: 0px !important;
+                    .total{
+                        p{
+                            font-size: 13px;
+                            color: #90459A;
+                            margin-top: 0px;
+                            line-height: 22px;
+                            font-family: 'ProximaNova-Semibold';
+                        }
+                    }
+                }
                 h3 {
                     &.ui {
                         &.header {
@@ -1019,6 +1071,8 @@
                 text-align: center;
                 line-height: 18px;
                 padding: 20px 0px 0px 0px;
+                cursor: pointer;
+                font-family: 'ProximaNova-Semibold';
             }
         }
     }
@@ -2371,11 +2425,12 @@
     }
 }
 .btn_wrapper{
-    clear: both;
+    display: flex;
+    align-items: center;
     .dropdownRight{
         box-shadow: none;
         border: none;
-        float: right;
+        margin-left: auto !important;
         .dropdown{
             &.icon{
                 &::before{
@@ -2395,6 +2450,9 @@
                     transform: rotate(0deg);
                     transition: all 0.3s ease-out;
                   }
+                  @media only screen and (max-width:767px){
+                   display: block;
+              }
             }
           }
           .active{

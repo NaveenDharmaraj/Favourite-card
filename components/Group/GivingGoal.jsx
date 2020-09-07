@@ -175,8 +175,9 @@ const GivingGoal = (props) => {
                                     <p className="lastGiftText">{giftText}</p>
                                 </div>
                             )}
-                            <Divider />
+                          
                             <Responsive minWidth={768}>
+                            <Divider />
                                 {giveButton}
                             </Responsive>
                         </Fragment>

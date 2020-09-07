@@ -32,32 +32,28 @@ const MatchingHistoryCard = (props) => {
     const currency = 'USD';
     return (
         <div className="MatchingMessages">
-            <Grid.Row>
-                <Grid>
-                    <Grid.Column mobile={16} tablet={2} computer={2} className="MatchingPartnerWapper margingWapper">
+                    <div className="MatchingPartnerWapper margingWapper">
                         <div className="h_profileMatching borderprofile">
                             <Image src={companyAvatar} />
                         </div>
-                    </Grid.Column>
-                    <Grid.Column mobile={16} tablet={8} computer={8}>
+                    </div>
+                    <div className="MessagestwapperText">
                         <p>
                             {formatMessage('groupProfile:totalMatchText', {
                                 totalMatched: formatCurrency(totalMatched, language, currency),
                             })}
-                            <span className="textColor">
+                            <span className="textColor"> &nbsp;
                                 {` ${companyName}.`}
                             </span>
                         </p>
-                    </Grid.Column>
-                    <Grid.Column mobile={16} tablet={6} computer={6} className="Messagestwapper">
-                        <Button className="white-btn-rounded-def Messagestabbtn mt-1">
+                    </div>
+                    <div className="Messagestwapper">
+                        <span className="white-btn-rounded-def Messagestabbtn">
                             {
                                 `${formatDateForGivingTools(startDate)}
                             – ${formatDateForGivingTools(endDate)}`}
-                        </Button>
-                    </Grid.Column>
-                </Grid>
-            </Grid.Row>
+                        </span>
+                    </div>
         </div>
     );
 };
