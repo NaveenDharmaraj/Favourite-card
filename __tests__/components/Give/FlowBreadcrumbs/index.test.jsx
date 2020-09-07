@@ -1,12 +1,12 @@
 
 import React from 'react';
 import {
-    shallow,
+    mount,
 } from 'enzyme';
 
 import { FlowBreadcrumbs } from '../../../../components/Give/FlowBreadcrumbs';
 
-const initializeComponent = (props = {}) => shallow(<FlowBreadcrumbs {...props} />);
+const initializeComponent = (props = {}) => mount(<FlowBreadcrumbs {...props} />);
 
 describe('Test the existance and rendering of component elements', () => {
     it('Should give true if component exists', () => {
@@ -23,6 +23,22 @@ describe('Test the existance and rendering of component elements', () => {
         };
         const component = initializeComponent(props);
         expect(component.exists()).toBe(true);
-    })
+    });
+
+    it('Should give prop flowType equal to donations when component is rendered', () => {
+        const props = {
+            currentStep: 'new',
+            flowType: 'donations',
+            formatMessage: jest.fn(),
+            steps: [
+                "new",
+                "review",
+                "success",
+                "error",
+            ],
+        };
+        const component = initializeComponent(props);
+        expect(component.find('FlowBreadcrumbs').prop('flowType')).toEqual('donations');
+    });
 })
 
