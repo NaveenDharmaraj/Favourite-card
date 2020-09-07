@@ -39,6 +39,9 @@ const GroupProfileWrapper = (props) => {
             id: profileId,
             type,
         },
+        groupMatchingHistory: {
+            data: matchHistory,
+        },
     } = props;
     const {
         groupDetails,
@@ -85,6 +88,7 @@ const GroupProfileWrapper = (props) => {
                                                 activeMatch={activeMatch}
                                                 type={type}
                                                 hasActiveMatch={hasActiveMatch}
+                                                matchHistory={matchHistory}
                                             />
                                         </Responsive>
                                     </Grid.Column>
@@ -103,6 +107,7 @@ const GroupProfileWrapper = (props) => {
                                         activeMatch={activeMatch}
                                         type={type}
                                         hasActiveMatch={hasActiveMatch}
+                                        matchHistory={matchHistory}
                                     />
                                 </Responsive>
                             </Grid.Column>
@@ -128,6 +133,9 @@ GroupProfileWrapper.defaultProps = {
         id: '',
         type: '',
     },
+    groupMatchingHistory: {
+        data: [],
+    },
 };
 
 GroupProfileWrapper.propTypes = {
@@ -144,11 +152,15 @@ GroupProfileWrapper.propTypes = {
         id: string,
         type: string,
     }),
+    groupMatchingHistory: PropTypes.shape({
+        data: array,
+    }),
 };
 
 function mapStateToProps(state) {
     return {
         groupDetails: state.group.groupDetails,
+        groupMatchingHistory: state.group.groupMatchingHistory,
     };
 }
 

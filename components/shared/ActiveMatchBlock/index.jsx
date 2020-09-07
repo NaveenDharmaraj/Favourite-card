@@ -9,9 +9,11 @@ import {
     string,
     bool,
     PropTypes,
+    func,
 } from 'prop-types';
 import { connect } from 'react-redux';
 
+import { withTranslation } from '../../../i18n';
 import {
     formatCurrency,
 } from '../../../helpers/give/utils';
@@ -29,7 +31,9 @@ const ActiveMatchBlock = (props) => {
         },
         type,
         hasActiveMatch,
+        hasMatchingHistory,
         isAuthenticated,
+        t: formatMessage,
     } = props;
     if (hasActiveMatch) {
         const currency = 'USD';
@@ -37,19 +41,40 @@ const ActiveMatchBlock = (props) => {
         const formattedBalance = formatCurrency(balance, language, currency);
         const formattedmaxMatchAmount = formatCurrency(maxMatchAmount, language, currency);
         const formattedtotalMatch = formatCurrency(totalMatch, language, currency);
-        const headingText = 'Your gift will be matched!';
-        const canSeeMatchingHistory = (isAuthenticated && (type === 'groups'));
-        // TODO work on Thank you screens, condition to show view matching history, window scroll
+        const canSeeMatchingHistory = (isAuthenticated && (type === 'groups') && hasMatchingHistory);
+        const updateIndex = () => {
+            const {
+                dispatch,
+                scrollOffset,
+            } = props;
+
+            dispatch({
+                payload: {
+                    activeIndex: 3,
+                },
+                type: 'GET_GROUP_TAB_INDEX',
+            });
+            window.scrollTo(0, scrollOffset);
+        };
+
         return (
             <div className="charityInfowrap fullwidth lightGreenBg">
                 <div className="charityInfo">
-                    <Header as="h4">{headingText}</Header>
+                    <Header as="h4">{formatMessage('groupProfile:matchTextHeading')}</Header>
                     <p>
-                        For every $1.00 you give to this group,
-                        <b>{company}</b>
-                        &nbsp;will match your gift with $1.00 up to&nbsp;
-                        <b>{formattedmaxMatchAmount}</b>
-                        &nbsp;per gift.
+                        {formatMessage('groupProfile:matchGiveGroupText')}
+                        <b>
+                            &nbsp;
+                            {company}
+                            &nbsp;
+                        </b>
+                        {formatMessage('groupProfile:matchGiftText')}
+                        <p>
+                            {formatMessage('groupProfile:matchMaxMatchText',
+                                {
+                                    formattedmaxMatchAmount,
+                                })}
+                        </p>
                     </p>
                     <div className="matchingFundsWapper">
                         <div className="matchingFundsGraff">
@@ -61,10 +86,16 @@ const ActiveMatchBlock = (props) => {
                         </div>
                         <div className="matchingFundsText">
                             <Header as="h3">{formattedBalance}</Header>
-                            <Header as="h5"> matching funds remaining</Header>
+                            <Header as="h5">
+                                {formatMessage('groupProfile:matchFundRemaining')}
+                            </Header>
                             <div className="total">
                                 <p>
-                                    {` of ${formattedtotalMatch} provided by ${company}`}
+                                    {formatMessage('groupProfile:matchProvidedText',
+                                        {
+                                            company,
+                                            formattedtotalMatch,
+                                        })}
                                 </p>
                             </div>
                         </div>
@@ -75,18 +106,18 @@ const ActiveMatchBlock = (props) => {
                         </div>
                         <div className="MatchingPartner">
                             <Header as="h3">{company}</Header>
-                            <p>Matching partner</p>
+                            <p>{formatMessage('groupProfile:matchingPartner')}</p>
                         </div>
                     </div>
                     {matchClose
                     && (
                         <Button className="white-btn-rounded-def goalbtn">
-                            {` Expires ${matchClose}`}
+                            {` ${formatMessage('groupProfile:matchExpires')} ${matchClose}`}
                         </Button>
                     )}
                     {canSeeMatchingHistory
                     && (
-                        <p className="blueHistory">View matching history</p>
+                        <p onClick={updateIndex} className="blueHistory">{formatMessage('groupProfile:viewMatchHistoryLink')}</p>
                     )}
                 </div>
             </div>
@@ -106,8 +137,12 @@ ActiveMatchBlock.defaultProps = {
         maxMatchAmount: null,
         totalMatch: '',
     },
+    dispatch: () => {},
     hasActiveMatch: false,
+    hasMatchingHistory: false,
     isAuthenticated: false,
+    scrollOffset: 0,
+    t: () => {},
     type: '',
 };
 
@@ -122,15 +157,27 @@ ActiveMatchBlock.propTypes = {
         maxMatchAmount: number,
         totalMatch: string,
     }),
+    dispatch: func,
     hasActiveMatch: bool,
+    hasMatchingHistory: bool,
     isAuthenticated: bool,
+    scrollOffset: number,
+    t: func,
     type: string,
 };
 
 function mapStateToProps(state) {
     return {
         isAuthenticated: state.auth.isAuthenticated,
+        scrollOffset: state.group.scrollOffset,
     };
 }
 
-export default connect(mapStateToProps)(ActiveMatchBlock);
+const connectedComponent = withTranslation([
+    'groupProfile',
+])(connect(mapStateToProps)(ActiveMatchBlock));
+export {
+    connectedComponent as default,
+    ActiveMatchBlock,
+    mapStateToProps,
+};

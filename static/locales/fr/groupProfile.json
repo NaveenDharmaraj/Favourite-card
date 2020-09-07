@@ -50,5 +50,18 @@
     "groupSupportsheadertext": "This Giving Group supports...",
     "matchingpartner": "Matching partner",
     "readMore": "Read More",
-    "totalMatchText": "A total of {{totalMatched}} was matched by"
+    "totalMatchText": "A total of {{totalMatched}} was matched by",
+    "matchTextHeading": "Your gift will be matched!",
+    "matchGiveGroupText": "When you give to this group,",
+    "matchGiftText": "will match your gift $1.00 for $1.00.",
+    "matchMaxMatchText": "Gifts to this group will be matched up to a maximum of {{formattedmaxMatchAmount}} per donor until matching funds run out or expire.",
+    "matchFundRemaining": "matching funds remaining",
+    "matchProvidedText": "of {{formattedtotalMatch}} provided by {{company}}",
+    "matchExpires": "Expires",
+    "viewMatchHistoryLink": "View matching history",
+    "expiredMatchThankstext": "Thank you for your support!",
+    "matchingDaysBetweenText": "Between {{startDate}} and {{endDate}},",
+    "expiredMatchedText": "generously matched each gift to this group dollar for dollar.",
+    "expiredMatchProvidedText": "of {{formattedTotalFund}} provided was matched by",
+    "expireMatchedByText": "was matched by"
 }
