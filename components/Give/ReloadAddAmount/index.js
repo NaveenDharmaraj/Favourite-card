@@ -693,8 +693,11 @@ class ReloadAddAmount extends React.Component {
         }
     }
 
-    renderReloadComponent(allocationGiftType, reviewBtnFlag) {
+    renderReloadComponent(allocationGiftType, reviewBtnFlag, giveType) {
         if (allocationGiftType === 0 && !reviewBtnFlag) {
+            const messageContent = (giveType === 'companies')
+                ? `Company` : `Impact`
+
             return (
                 // eslint-disable-next-line react/jsx-filename-extension
                 <div className="noteDefault">
@@ -704,7 +707,7 @@ class ReloadAddAmount extends React.Component {
                         </span>
                         <span className="noteContent">
                             <span onClick={()=> {this.modalContentChange(1)}} className="hyperLinks-style">Reload </span>
-                            your Impact Account to send this gift.
+                            your {messageContent} Account to send this gift.
                         </span>
                     </div>
                 </div>
@@ -1102,7 +1105,7 @@ class ReloadAddAmount extends React.Component {
             : 'Add money to your Impact Account to send this gift. Your current Impact Account balance is ';
         return (
             <Fragment>
-                {this.renderReloadComponent(allocationGiftType, reviewBtnFlag)}
+                {this.renderReloadComponent(allocationGiftType, reviewBtnFlag, giveTo.type)}
                 <Modal closeOnDimmerClick={false} size="tiny" dimmer="inverted" className="chimp-modal popbox addMoneyMoadal " open={currentModalStep >0} onClose={() => this.setState({currentModalStep: 0})}>
                     <Modal.Header>{modalHeaderText} 
                         <span className="closebtn" onClick={() => {
