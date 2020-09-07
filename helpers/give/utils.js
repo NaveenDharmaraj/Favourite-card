@@ -370,8 +370,11 @@ const populateAccountOptions = (data, translate, giveToId = null, allocationType
                         userGroups,
                         null,
                         (item) => item.attributes.fundId,
-                        (attributes) => `${attributes.fundName}: ${formatCurrency(attributes.balance, language, currency)}`,
-                        (attributes) => false,
+                        (attributes) => ((attributes.hasActiveMatch)
+                            ? ReactHtmlParser(`<div>${attributes.fundName}: ${formatCurrency(attributes.balance, language, currency)}
+                            </div>You cannot give from this group until matching expires`)
+                            : `${attributes.fundName}: ${formatCurrency(attributes.balance, language, currency)}`),
+                        (attributes) => attributes.hasActiveMatch,
                         [
                             {
                                 getValue: (attributes) => attributes.avatar,
@@ -415,8 +418,11 @@ const populateAccountOptions = (data, translate, giveToId = null, allocationType
                         userCampaigns,
                         null,
                         (item) => item.attributes.fundId,
-                        (attributes) => `${attributes.fundName}: ${formatCurrency(attributes.balance, language, currency)}`,
-                        (attributes) => false,
+                        (attributes) => ((attributes.hasActiveMatch)
+                            ? ReactHtmlParser(`<div>${attributes.fundName}: ${formatCurrency(attributes.balance, language, currency)}
+                            </div>You cannot give from this Campaign until matching expires`)
+                            : `${attributes.fundName}: ${formatCurrency(attributes.balance, language, currency)}`),
+                        (attributes) => attributes.hasActiveMatch,
                         [
                             {
                                 getValue: (attributes) => attributes.avatar,
