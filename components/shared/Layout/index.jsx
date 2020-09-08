@@ -24,6 +24,7 @@ import '../../../static/less/header.less';
 import '../../../static/less/style.less';
 import { isValidBrowser } from '../../../helpers/utils';
 import registerAppLozic from '../../../helpers/initApplozic';
+import { getApplozicConfig } from '../../../actions/chat';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -59,19 +60,19 @@ class Layout extends React.Component {
             branch.init(BRANCH_IO_KEY);
         }
         // if the user didnt setup any causes then redirect to causes selection page
-        if  (!_.isEmpty(userInfo) && !addCauses) {
+        if (!_.isEmpty(userInfo) && !addCauses) {
             const {
                 attributes: {
                     skipCauseSelection,
                 }
             } = userInfo;
-            if(!skipCauseSelection || skipCauseSelection === null) {
+            if (!skipCauseSelection || skipCauseSelection === null) {
                 Router.pushRoute('/user/causes');
             }
         }
 
         //SetAppLogicRegister is used for initializing  registerAppLozic once.
-        if(window !== 'undefined' &&  window.SetAppLogicRegister === undefined && isAuthenticated){
+        if (window !== 'undefined' && window.SetAppLogicRegister === undefined && isAuthenticated) {
             window.SetAppLogicRegister = 'SetAppLogicRegister';
             let id = currentUser && currentUser.id ? currentUser.id : '';
             const userEmail = this.props.userInfo ? this.props.userInfo.attributes.email : "";
@@ -79,58 +80,62 @@ class Layout extends React.Component {
             const userDisplayName = this.props.userInfo ? this.props.userInfo.attributes.displayName : "";
             const userFirstName = this.props.userInfo ? this.props.userInfo.attributes.firstName : "";
             const userLastName = this.props.userInfo ? this.props.userInfo.attributes.lastName : "";
-            window.APPLOZIC_BASE_URL= APPLOZIC_BASE_URL
-            window.APPLOZIC_WS_URL= APPLOZIC_WS_URL
-            window.APPLOZIC_APP_KEY=APPLOZIC_APP_KEY
             window.userEmail = userEmail
             window.userAvatar = userAvatar
             window.userDisplayName = userDisplayName
             window.userFirstName = userFirstName
-            window.userLastName = userLastName
-            registerAppLozic(id);
+            window.userLastName = userLastName;
+            try {
+                const applozicConfig = await dispatch(getApplozicConfig())
+                window.APPLOZIC_BASE_URL = applozicConfig['APPLOZIC_BASE_URL']
+                window.APPLOZIC_WS_URL = applozicConfig['APPLOZIC_WS_URL']
+                window.APPLOZIC_APP_KEY = applozicConfig['APPLOZIC_APP_KEY'];
+                registerAppLozic(id);
+            }
+            catch (err) { }
         }
         if (authRequired && !isAuthenticated) {
             let nextPathname;
             let searchQuery;
-            if(typeof window !== 'undefined'){
-                 nextPathname = window.location.pathname;
-                 searchQuery = window.location.search;
+            if (typeof window !== 'undefined') {
+                nextPathname = window.location.pathname;
+                searchQuery = window.location.search;
             }
             const encodedUrl = encodeURIComponent(`${nextPathname}${searchQuery}`);
             let pathname = (nextPathname) ?
-            `/users/login?returnTo=${encodedUrl}` : '/users/login';
+                `/users/login?returnTo=${encodedUrl}` : '/users/login';
             Router.pushRoute(pathname);
         } else {
             // await NotificationHelper.getMessages(userInfo, dispatch, 1);
         }
-        !function(e,t,n){function a(){var e=t.getElementsByTagName("script")[0],n=t.createElement("script");n.type="text/javascript",n.async=!0,n.src="https://beacon-v2.helpscout.net",e.parentNode.insertBefore(n,e)}if(e.Beacon=n=function(t,n,a){e.Beacon.readyQueue.push({method:t,options:n,data:a})},n.readyQueue=[],"complete"===t.readyState)return a();e.attachEvent?e.attachEvent("onload",a):e.addEventListener("load",a,!1)}(window,document,window.Beacon||function(){});
+        !function (e, t, n) { function a() { var e = t.getElementsByTagName("script")[0], n = t.createElement("script"); n.type = "text/javascript", n.async = !0, n.src = "https://beacon-v2.helpscout.net", e.parentNode.insertBefore(n, e) } if (e.Beacon = n = function (t, n, a) { e.Beacon.readyQueue.push({ method: t, options: n, data: a }) }, n.readyQueue = [], "complete" === t.readyState) return a(); e.attachEvent ? e.attachEvent("onload", a) : e.addEventListener("load", a, !1) }(window, document, window.Beacon || function () { });
 
-        if(window && window.Beacon) {
+        if (window && window.Beacon) {
             window.Beacon('init', HELP_SCOUT_KEY);
-            if(currentUser){
+            if (currentUser) {
                 Beacon("identify", {
                     name: currentUser.attributes.displayName,
                     email: currentUser.attributes.email,
-                  });
+                });
             }
             Beacon('session-data', {
                 'currentPage': window.location.href,
             })
-            if(document){
+            if (document) {
                 Beacon('event', {
                     type: 'page-viewed',
                     url: window.location.href,
                     title: document.title,
                 })
             }
-              
-                
+
+
             Beacon('config', {
                 "labels": {
                     "suggestedForYou": "Answers to common questions",
                     "responseTime": "One of our team members will get back to you shortly.",
                     "messageSubmitLabel": "Send message"
-                  }
+                }
             });
         }
         window.scrollTo(0, 0);
@@ -140,7 +145,7 @@ class Layout extends React.Component {
         if (authRequired && !isAuthenticated) {
             return null;
         }
-        const{
+        const {
             avatar,
             title,
             description,
@@ -150,20 +155,20 @@ class Layout extends React.Component {
             disableMinHeight,
             isCharityPage,
         } = this.props;
-        const widthProp = (!isMobile) ? {getWidth: getWidth} : {};
+        const widthProp = (!isMobile) ? { getWidth: getWidth } : {};
         return (
             <Responsive getWidth={getWidth}>
                 <Head>
                     <title>
-                       {title}
+                        {title}
                     </title>
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-                    <meta name="description" content={description.substring(0, 150)}/>
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                    <meta name="description" content={description.substring(0, 150)} />
                     <meta name="keywords" content={keywords} />
                     <meta property="og:title" content={title} />
                     <meta property="og:url" content={url} />
                     <meta property="og:image" content={avatar} />
-                    <meta property="og:description" content={description.substring(0, 150)}/>
+                    <meta property="og:description" content={description.substring(0, 150)} />
                     <link rel="icon" type="image/x-icon" href="https://d1wjn4fmcgu4dn.cloudfront.net/web/favicon.ico" />
                     <link rel="manifest" href="/static/Manifest.json" />
                     <link
@@ -175,12 +180,12 @@ class Layout extends React.Component {
                         href="/static/fonts/proximanova/font.css"
                     />
                     <script id="stripe-js" src="https://js.stripe.com/v3/" />
-                    <script type="text/javascript" defer  src="https://cdn.applozic.com/applozic/applozic.chat-5.6.1.min.js"></script>
-                    <script defer type="text/javascript" src ='/static/branchio.js'></script>
-                    {isAuthenticated ? <script defer  type="text/javascript" src="/static/initApplozic.js"></script> : ""}
+                    <script type="text/javascript" defer src="https://cdn.applozic.com/applozic/applozic.chat-5.6.1.min.js"></script>
+                    <script defer type="text/javascript" src='/static/branchio.js'></script>
+                    {isAuthenticated ? <script defer type="text/javascript" src="/static/initApplozic.js"></script> : ""}
                     {/* <script type="text/javascript" src="https://www.gstatic.com/firebasejs/5.9.4/firebase-app.js"></script> */}
-                    {!_.isEmpty(NEWRELIC_ENV) ? <script type="text/javascript" src={`/static/newrelic-${NEWRELIC_ENV}.js`}></script> : "" }
-                    
+                    {!_.isEmpty(NEWRELIC_ENV) ? <script type="text/javascript" src={`/static/newrelic-${NEWRELIC_ENV}.js`}></script> : ""}
+
                 </Head>
                 <div>
                     <ErrorBoundary>
@@ -196,25 +201,6 @@ class Layout extends React.Component {
                                     className="app-status-messages"
                                 >
                                     <div className="statusMsgWraper">
-                                    {_.map(appErrors, (err) => (
-                                        <StatusMessage
-                                            key={err.heading}
-                                            error={err}
-                                            dispatch={dispatch}
-                                            {...err}
-                                        />
-                                    ))}
-                                    </div>
-                                </Container>
-                            }
-                        </Responsive>
-                        <Responsive {...widthProp} minWidth={992}>
-                            <Header isAuthenticated={isAuthenticated} onBoarding={onBoarding} isLogin={isLogin} showHeader={showHeader}/>
-                                {!_.isEmpty(appErrors) &&
-                                    <Container
-                                        className="app-status-messages"
-                                    >
-                                        <div className="statusMsgWraper">
                                         {_.map(appErrors, (err) => (
                                             <StatusMessage
                                                 key={err.heading}
@@ -223,13 +209,32 @@ class Layout extends React.Component {
                                                 {...err}
                                             />
                                         ))}
-                                        </div>
-                                    </Container>
-                                }
-                                <div className={disableMinHeight ? "" : "chimpLayout"}>
+                                    </div>
+                                </Container>
+                            }
+                        </Responsive>
+                        <Responsive {...widthProp} minWidth={992}>
+                            <Header isAuthenticated={isAuthenticated} onBoarding={onBoarding} isLogin={isLogin} showHeader={showHeader} />
+                            {!_.isEmpty(appErrors) &&
+                                <Container
+                                    className="app-status-messages"
+                                >
+                                    <div className="statusMsgWraper">
+                                        {_.map(appErrors, (err) => (
+                                            <StatusMessage
+                                                key={err.heading}
+                                                error={err}
+                                                dispatch={dispatch}
+                                                {...err}
+                                            />
+                                        ))}
+                                    </div>
+                                </Container>
+                            }
+                            <div className={disableMinHeight ? "" : "chimpLayout"}>
                                 {children}
-                                </div>
-                                <Footer isAuthenticated={isAuthenticated}/>
+                            </div>
+                            <Footer isAuthenticated={isAuthenticated} />
                         </Responsive>
                     </ErrorBoundary>
                 </div>
@@ -257,7 +262,7 @@ class Layout extends React.Component {
 
 Layout.defaultProps = {
     addCauses: false,
-    description : ' Charitable Impact',
+    description: ' Charitable Impact',
     title: ' Charitable Impact',
 };
 

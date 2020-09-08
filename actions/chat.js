@@ -7,11 +7,13 @@ import axios from 'axios';
 import utilityApi from '../services/utilityApi';
 import graphApi from '../services/graphApi';
 import applozicApi from '../services/applozicApi';
+import securityApi from '../services/securityApi';
 import { conversationHead, defaultSelectedConversation } from '../helpers/chat/utils';
 import { isFalsy } from '../helpers/utils';
 import logger from '../helpers/logger';
 
 const actionTypes = _keyBy([
+    'APPLICATION_ENV_CONFIG_VARIABLES',
     'CHAT_MESSAGE_ID',
     'LOAD_MUTE_USER_LIST',
     'LOAD_CONVERSATION_LIST',
@@ -31,6 +33,28 @@ const actionTypes = _keyBy([
     'CONVERSATION_MESSAGE_LOADER',
 ]);
 
+const getApplozicConfig = () => async (dispatch) => {
+    try {
+        const ApplozicConfig = await securityApi.post('/paramStore/readParams', {
+            envName: '/dev/',
+            appName: "/webclient/",
+            nameSpace: "/secrets/",
+            ssmKey: ["APPLOZIC_APP_KEY", "APPLOZIC_BASE_URL", "APPLOZIC_WS_URL"]
+        });
+        let applozicConfig = {};
+        ApplozicConfig.data.filter((item) => {
+            applozicConfig = {
+                ...applozicConfig,
+                [`${item.attributes.key}`]: item.attributes.value,
+            };
+        });
+        dispatch({
+            payload: applozicConfig,
+            type: 'APPLICATION_ENV_CONFIG_VARIABLES',
+        });
+        return applozicConfig;
+    } catch (err) { }
+};
 const setSelectedConversation = (msg, newgroupId = true) => (dispatch) => {
     dispatch({
         payload: {
@@ -574,6 +598,7 @@ export {
     createGroup,
     deleteConversation,
     deleteSelectedConversation,
+    getApplozicConfig,
     handleGroupModalAction,
     handleUserModalAction,
     leaveGroup,
