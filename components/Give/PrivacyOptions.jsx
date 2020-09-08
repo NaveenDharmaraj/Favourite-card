@@ -50,7 +50,8 @@ const PrivacyOptions = (props) => {
             setInfoToShareAdminOption(infoToShareList);
         } else {
             const disable = nameToShare.value === 'name';
-            const infoToShareList = populateInfoToShareAccountName(giveFrom.name, formatMessage, disable);
+            const name = (giveFrom.type === 'companies' && giveFrom.displayName) ? giveFrom.displayName : giveFrom.name;
+            const infoToShareList = populateInfoToShareAccountName(name, formatMessage, disable);
             setInfoToShareAdminOption(infoToShareList);
         }
     }, [

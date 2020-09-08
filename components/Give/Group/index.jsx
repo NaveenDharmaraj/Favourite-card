@@ -106,7 +106,9 @@ class Group extends React.Component {
                 } = populateDropdownInfoToShare(groupMemberInfoToShare);
                 privacyNameOptions = infoToShareList;
             } else {
-                privacyNameOptions = populateInfoToShareAccountName(props.flowObject.giveData.giveFrom.name, formatMessage);
+                const name = (props.flowObject.giveData.giveFrom.type === 'companies' && props.flowObject.giveData.giveFrom.displayName) ? props.flowObject.giveData.giveFrom.displayName 
+                             : props.flowObject.giveData.giveFrom.name;
+                privacyNameOptions = populateInfoToShareAccountName(name, formatMessage);
             }
         }
 
@@ -289,7 +291,8 @@ class Group extends React.Component {
                 } = populateDropdownInfoToShare(groupMemberInfoToShare);
                 dropDownOptions.privacyNameOptions  = infoToShareList;
             } else {
-                dropDownOptions.privacyNameOptions  = populateInfoToShareAccountName(giveData.giveFrom.name, formatMessage);
+                const name = (giveData.giveFrom.type === 'companies' && giveData.giveFrom.displayName) ? giveData.giveFrom.displayName : giveData.giveFrom.name;
+                dropDownOptions.privacyNameOptions  = populateInfoToShareAccountName(name, formatMessage);
             }
             this.setState({
                 buttonClicked: false,

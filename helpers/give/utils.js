@@ -469,6 +469,10 @@ const populateAccountOptions = (data, translate, giveToId = null, allocationType
                             getValue: (attributes) => attributes.slug,
                             key: 'slug',
                         },
+                        {
+                            getValue: (attributes) => attributes.displayName,
+                            key: 'displayName',
+                        },
                     ],
                 ));
         }
@@ -982,7 +986,8 @@ const resetDataForAccountChange = (giveData, dropDownOptions, props, type, group
             } = populateDropdownInfoToShare(groupMemberInfoToShare);
             dropDownOptions.privacyNameOptions = infoToShareList;
         } else {
-            dropDownOptions.privacyNameOptions = populateInfoToShareAccountName(giveData.giveFrom.name, formatMessage);
+            const name = (giveData.giveFrom.type === 'companies' && giveData.giveFrom.displayName) ? giveData.giveFrom.displayName : giveData.giveFrom.name;
+            dropDownOptions.privacyNameOptions = populateInfoToShareAccountName(name, formatMessage);
         }
         giveData.privacyShareAmount = false;
         giveData.privacyShareEmail = false;
