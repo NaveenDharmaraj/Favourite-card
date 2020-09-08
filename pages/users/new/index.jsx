@@ -218,6 +218,7 @@ class Login extends React.Component {
                     userDetails.signupSourceId = sourceId.toString();
                 };
                 userDetails.claimToken = storage.getLocalStorageWithExpiry('claimToken','local');
+                userDetails.referrer = document.referrer;
                 saveUser(dispatch, userDetails);
             }
             if (stepIndex !== 3) {

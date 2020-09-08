@@ -5,7 +5,7 @@ import base64 from "base-64";
 
 import storage from '../helpers/storage';
 import logger from '../helpers/logger';
-import registerAppLozic from '../static/initApplozic';
+import registerAppLozic from '../helpers/initApplozic';
 
 const { publicRuntimeConfig } = getConfig();
 

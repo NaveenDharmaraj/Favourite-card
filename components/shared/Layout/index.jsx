@@ -23,7 +23,7 @@ import _ from 'lodash';
 import '../../../static/less/header.less';
 import '../../../static/less/style.less';
 import { isValidBrowser } from '../../../helpers/utils';
-import registerAppLozic from '../../../static/initApplozic';
+import registerAppLozic from '../../../helpers/initApplozic';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -32,7 +32,8 @@ const {
     APPLOZIC_WS_URL,
     APPLOZIC_APP_KEY,
     BRANCH_IO_KEY,
-    HELP_SCOUT_KEY
+    HELP_SCOUT_KEY,
+    NEWRELIC_ENV,
 } = publicRuntimeConfig;
 
 const getWidth = () => {
@@ -95,8 +96,9 @@ class Layout extends React.Component {
                  nextPathname = window.location.pathname;
                  searchQuery = window.location.search;
             }
+            const encodedUrl = encodeURIComponent(`${nextPathname}${searchQuery}`);
             let pathname = (nextPathname) ?
-            `/users/login?returnTo=${nextPathname}${searchQuery}` : '/users/login';
+            `/users/login?returnTo=${encodedUrl}` : '/users/login';
             Router.pushRoute(pathname);
         } else {
             // await NotificationHelper.getMessages(userInfo, dispatch, 1);
@@ -177,6 +179,8 @@ class Layout extends React.Component {
                     <script defer type="text/javascript" src ='/static/branchio.js'></script>
                     {isAuthenticated ? <script defer  type="text/javascript" src="/static/initApplozic.js"></script> : ""}
                     {/* <script type="text/javascript" src="https://www.gstatic.com/firebasejs/5.9.4/firebase-app.js"></script> */}
+                    {!_.isEmpty(NEWRELIC_ENV) ? <script type="text/javascript" src={`/static/newrelic-${NEWRELIC_ENV}.js`}></script> : "" }
+                    
                 </Head>
                 <div>
                     <ErrorBoundary>

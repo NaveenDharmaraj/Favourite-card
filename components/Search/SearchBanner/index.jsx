@@ -59,7 +59,7 @@ class SearchBanner extends React.Component {
         } = this.props;
         let route = `/search?result_type=${searchType}`;
         if (!_isEmpty(searchWord)) {
-            const content = encodeURI(searchWord);
+            const content = encodeURIComponent(searchWord);
             route = `/search?search=${content}&result_type=${searchType}`;
         }
 
