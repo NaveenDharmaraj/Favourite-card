@@ -7,7 +7,6 @@ import axios from 'axios';
 import utilityApi from '../services/utilityApi';
 import graphApi from '../services/graphApi';
 import applozicApi from '../services/applozicApi';
-import securityApi from '../services/securityApi';
 import { conversationHead, defaultSelectedConversation } from '../helpers/chat/utils';
 import { isFalsy } from '../helpers/utils';
 import logger from '../helpers/logger';
