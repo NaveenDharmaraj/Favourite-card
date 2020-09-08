@@ -30,6 +30,7 @@ if (!_.isEmpty(BASIC_AUTH_KEY)) {
 }
 
 export const actionTypes = {
+    APPLICATION_ENV_CONFIG_VARIABLES: 'APPLICATION_ENV_CONFIG_VARIABLES',
     GET_MATCH_POLICIES_PAYMENTINSTRUMENTS: 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS',
     GET_USERS_GROUPS: 'GET_USERS_GROUPS',
     GET_UPCOMING_TRANSACTIONS: 'GET_UPCOMING_TRANSACTIONS',
@@ -923,4 +924,29 @@ export const claimCharityErrorCondition = (message) => (dispatch) =>{
         },
         type: actionTypes.CLAIM_CHARITY_ERROR_MESSAGE,
     });
-}
+};
+
+export const getParamStoreConfig = (params = []) => async (dispatch) => {
+    try {
+        const paramStoreConfigResponse = await securityApi.post('/paramStore/readParams', {
+            appName: '/webclient/',
+            envName: '/dev/',
+            nameSpace: '/secrets/',
+            ssmKey: [
+                ...params,
+            ],
+        });
+        let paramStoreConfigObj = {};
+        paramStoreConfigResponse.data.filter((item) => {
+            paramStoreConfigObj = {
+                ...paramStoreConfigObj,
+                [`${item.attributes.key}`]: item.attributes.value,
+            };
+        });
+        dispatch({
+            payload: paramStoreConfigObj,
+            type: 'APPLICATION_ENV_CONFIG_VARIABLES',
+        });
+        return paramStoreConfigObj;
+    } catch (err) { }
+};

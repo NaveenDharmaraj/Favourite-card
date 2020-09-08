@@ -24,7 +24,7 @@ import '../../../static/less/header.less';
 import '../../../static/less/style.less';
 import { isValidBrowser } from '../../../helpers/utils';
 import registerAppLozic from '../../../helpers/initApplozic';
-import { getApplozicConfig } from '../../../actions/chat';
+import { getParamStoreConfig } from '../../../actions/user';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -86,7 +86,7 @@ class Layout extends React.Component {
             window.userFirstName = userFirstName
             window.userLastName = userLastName;
             try {
-                const applozicConfig = await dispatch(getApplozicConfig())
+                const applozicConfig = await dispatch(getParamStoreConfig(["APPLOZIC_APP_KEY", "APPLOZIC_BASE_URL", "APPLOZIC_WS_URL"]))
                 window.APPLOZIC_BASE_URL = applozicConfig['APPLOZIC_BASE_URL']
                 window.APPLOZIC_WS_URL = applozicConfig['APPLOZIC_WS_URL']
                 window.APPLOZIC_APP_KEY = applozicConfig['APPLOZIC_APP_KEY'];
