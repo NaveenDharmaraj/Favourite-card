@@ -113,7 +113,7 @@ const ActiveMatchBlock = (props) => {
                     </div>
                     {matchClose
                     && (
-                        <Button className="white-btn-rounded-def goalbtn">
+                        <Button className="white-btn-rounded-def goalbtn golbtnDon">
                             {` ${formatMessage('groupProfile:matchExpires')} ${matchClose}`}
                         </Button>
                     )}
