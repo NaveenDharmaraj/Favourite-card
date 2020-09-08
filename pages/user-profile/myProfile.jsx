@@ -26,7 +26,7 @@ function MyProfile() {
                     <Header>Managed Giving Groups</Header>
                     <PrivacySettings iconName='globe'/>
                 </div>
-                <div className="cardwrap">
+                {/* <div className="cardwrap">
                     <Card>
                         <Card.Content>
                             <div className="cardPrflImg">
@@ -87,6 +87,34 @@ function MyProfile() {
                             <a className="edit">Edit</a>
                         </Card.Content>
                     </Card>               
+                </div> 
+                <div className='seeMoreBtnWrap'>
+                    <Button className='blue-bordr-btn-round-def'>See more</Button>
+                    <p>Showing 24 of 301</p>
+                </div>*/}
+
+                <div className="ggManage noData">
+                    <Grid verticalAlign="middle">
+                        <Grid.Row>
+                            <Grid.Column mobile={16} tablet={6} computer={6}>
+                              <Image src='../static/images/givinggroupsyoumanage_nodata_illustration.png' className="noDataLeftImg" />
+                            </Grid.Column>
+                            <Grid.Column mobile={16} tablet={10} computer={10}>
+                                <div className="givingGroupNoDataContent">
+                                    <Header as="h4">
+                                        <Header.Content>
+                                        Groups you manage will appear here
+                                        </Header.Content>
+                                    </Header>
+                                    <div>
+                                        <a href=''>
+                                            <Button className="success-btn-rounded-def">Create a Giving Group</Button>
+                                        </a>
+                                    </div>
+                                </div>
+                            </Grid.Column>
+                        </Grid.Row>
+                    </Grid>
                 </div>
             </div>
         );
@@ -99,6 +127,29 @@ function MyProfile() {
                     <Header>Joined Giving Groups</Header>
                     <PrivacySettings iconName='users'/>
                 </div>
+                <div className="ggJoin noData">
+                    <Grid verticalAlign="middle">
+                        <Grid.Row>
+                            <Grid.Column mobile={16} tablet={6} computer={6}>
+                                <Image src='../static/images/givinggroupsyoujoined_nodata_illustration.png' className="noDataLeftImg" />
+                            </Grid.Column>
+                            <Grid.Column mobile={16} tablet={10} computer={10}>
+                                <div className="givingGroupNoDataContent">
+                                    <Header as="h4">
+                                        <Header.Content>
+                                        Groups you've joined will appear here
+                                        </Header.Content>
+                                    </Header>
+                                    <div>
+                                        <a href="">
+                                            <Button className="white-btn-rounded-def">Find a Giving Group</Button>
+                                        </a>
+                                    </div>
+                                </div>
+                            </Grid.Column>
+                        </Grid.Row>
+                    </Grid>
+                </div>
             </div>
         );
     };
@@ -109,6 +160,29 @@ function MyProfile() {
                <div className="tabHeader">
                     <Header>Favourites</Header>
                     <PrivacySettings iconName='globe'/>
+                </div>
+                <div className="ggJoin ggFavorite noData">
+                    <Grid verticalAlign="middle">
+                        <Grid.Row>
+                            <Grid.Column mobile={16} tablet={6} computer={6}>
+                                <Image src='../static/images/givinggroupsyoujoined_nodata_illustration.png' className="noDataLeftImg" />
+                            </Grid.Column>
+                            <Grid.Column mobile={16} tablet={10} computer={10}>
+                                <div className="givingGroupNoDataContent">
+                                    <Header as="h4">
+                                        <Header.Content>
+                                             Your favourite charities and Giving Groups will appear here
+                                        </Header.Content>
+                                    </Header>
+                                    <div>
+                                        <a href="">
+                                            <Button className="white-btn-rounded-def">Find a charity or Giving Group </Button>
+                                        </a>
+                                    </div>
+                                </div>
+                            </Grid.Column>
+                        </Grid.Row>
+                    </Grid>
                 </div>
             </div>
         );

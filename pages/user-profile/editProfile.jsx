@@ -26,7 +26,7 @@ class EditProfile extends React.Component {
                 open={this.state.showModal}
                 onClose={()=>{this.setState({showModal: false})}}
                 trigger={
-                    <Button className='blue-bordr-btn-round-def m-w-85' onClick={() => this.setState({ showModal: true })}>
+                    <Button className='blue-bordr-btn-round-def' onClick={() => this.setState({ showModal: true })}>
                         Edit profile
                     </Button>
                 }

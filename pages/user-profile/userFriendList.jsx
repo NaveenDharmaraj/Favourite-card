@@ -8,16 +8,16 @@ import {
     Icon,
     Grid,
     Input,
+    Dropdown
 } from 'semantic-ui-react';
 
 import Layout from '../../components/shared/Layout';
-import PrivacySettings from './privacySettings';
-import GivingGoal_CauseAndTopics from './givingGoal_CauseandTopics';
-import EditProfile from './editProfile';
 import '../../static/less/userProfile.less';
 
 function UserFriendList() {
-
+    const pendingTrigger = (
+        <Button className='blue-bordr-btn-round-def'>Pending</Button>
+      )
     return (
         <Layout>
             <Container>
@@ -128,11 +128,11 @@ function UserFriendList() {
                                                         <List.Description >Vancouver, BC</List.Description>
                                                     </List.Content>
                                                     <List.Content floated="right">
-                                                        <Button
-                                                            className="blue-btn-rounded-def c-small"
-                                                        >
-                                                            Message
-                                                        </Button>
+                                                        <Dropdown trigger={pendingTrigger} className='userProfile_drpbtn' icon='chevron down' direction='left'>
+                                                            <Dropdown.Menu >
+                                                                <Dropdown.Item text='Cancel friend request' />
+                                                            </Dropdown.Menu>
+                                                        </Dropdown>
                                                     </List.Content>
                                                 </List.Item>
                                                 <List.Item>
@@ -145,7 +145,7 @@ function UserFriendList() {
                                                         <Button
                                                             className="blue-btn-rounded-def c-small"
                                                         >
-                                                            Message
+                                                            Add friend
                                                         </Button>
                                                     </List.Content>
                                                 </List.Item>

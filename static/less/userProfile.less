@@ -13,6 +13,7 @@
     display: -ms-flexbox;
     display: flex;
     align-items: flex-start;
+    padding-bottom: 100px;
     .userleftColumn{
       width: 100%;
       .userdetailsWrap{
@@ -25,8 +26,8 @@
           box-shadow      : 2px 2px 7px 0 rgba(105, 146, 203, 0.3);
           overflow        : hidden;
           margin          : -58px 47px 0 10px;
-          width           : 147px;
-          height          : 147px;
+          width           : 140px;
+          height          : 140px;
           background-color: #ece5ed;
 
           .ui.image {
@@ -68,12 +69,14 @@
             margin-bottom: 20px;
           }
           .userButtonsWrap{
-            >.ui.button{
-              margin-bottom: 10px;
+            .ui.button{
+              margin: 0 10px 0px 0;
+              padding: 8.2px 29.5px 8.2px 29.5px;
+              line-height: 22px;
             }
             .threeDotBtn{
               position: relative;
-              bottom: 5px;
+              bottom: 0px;
             }
           }
         }
@@ -142,7 +145,22 @@
         }
       }
       .ui.button.blue-bordr-btn-round-def{
-        padding: 7px 21px;
+        padding: 7.2px 19.5px;
+      }
+    }
+    .noData.ggManage{
+      padding: 15px 0;
+      overflow: hidden;
+      .noDataLeftImg.ui.image{
+        margin-left: -50px;
+      }
+    }
+    .ggJoin.noData{
+      overflow: hidden;
+      padding: 10px 0;
+      .noDataLeftImg.ui.image{
+        max-width: 349px;
+        margin-left: -85px;
       }
     }
     @media only screen and (min-width:767px) and (max-width:992px) {
@@ -156,9 +174,40 @@
         max-width: 220px;
         margin-left: 20px;
       }
+      .noData.ggManage .noDataLeftImg.ui.image{
+        margin-left: -140px;
+      }
+      .ggJoin.noData .noDataLeftImg.ui.image{
+        margin-left: -150px;
+      }
+    }
+    @media only screen and (max-width:992px) {
+      .userleftColumn{
+        .userdetailsWrap{
+          .user_profileDetails{
+            .userButtonsWrap{
+              .m-w-100{
+                width: 100%;
+                padding: 8px 21px;
+                margin-bottom: 10px !important;
+                &.userProfile_drpbtn{
+                  padding: 0;
+                  .ui.button{
+                    width: 100%;
+                  }
+                }
+                +.ui.button{
+                  width: 85%;
+                }
+              }
+            }
+          }
+        }
+      }
     }
     @media only screen and (max-width:767px) {
       display: block;
+      padding-bottom: 50px;
       .userleftColumn{
         .userdetailsWrap{
           display: block;
@@ -171,9 +220,16 @@
               .m-w-100{
                 width: 100%;
                 padding: 8px 21px;
-              }
-              .m-w-85{
-                width: 85%;
+                margin-bottom: 10px;
+                &.userProfile_drpbtn{
+                  padding: 0;
+                  .ui.button{
+                    width: 100%;
+                  }
+                }
+                +.ui.button{
+                  width: 85%;
+                }
               }
             }
           }
@@ -186,6 +242,59 @@
               margin: 0 20px 0 0;
             }
           }
+        }
+      }
+      .noData.ggManage{
+        padding: 40px 0;
+        position: relative;
+        &::after{
+          content: '';
+          background-image: url(../images/dotimage_1.png) !important;
+          background-size: contain !important;
+          width: 185px;
+          height: 37px;
+          position: absolute;
+          left: -90px;
+          bottom: 20px;
+          background-repeat: no-repeat !important;
+        }
+        &::before{
+          content: '';
+          background-image: url(../images/shapes-8.png) !important;
+          background-size: contain !important;
+          width: 152px;
+          height: 95px;
+          position: absolute;
+          right: 20px;
+          top: 0px;
+          background-repeat: no-repeat !important;
+        }
+        .row{
+          z-index: 1;
+        }
+        .noDataLeftImg.ui.image{
+          display:none
+        }
+      }
+      .ggJoin.noData{
+        padding: 40px 0;
+        position: relative;
+        &::after{
+          content: '';
+          background-image: url(../images/dotimage_2.png) !important;
+          background-size: contain !important;
+          width: 170px;
+          height: 37px;
+          position: absolute;
+          right: -10px;
+          bottom: 20px;
+          background-repeat: no-repeat !important;
+        }
+        .row{
+          z-index: 1;
+        }
+        .noDataLeftImg.ui.image{
+          display:none
         }
       }
     }
@@ -202,8 +311,8 @@
         box-shadow      : 2px 2px 7px 0 rgba(105, 146, 203, 0.3);
         overflow        : hidden;
         margin          : 10px 30px 0 0px;
-        width           : 130px;
-        height          : 130px;
+        width           : 140px;
+        height          : 140px;
         background-color: #ece5ed;
 
         .ui.image {
@@ -510,15 +619,11 @@
         top: 0;
         bottom: 0;
         left: 0;
-        right: 0;
-    
-        }
-  
+        right: 0;   
+      }
   }
-
 }
-.user-badge-group
-{
+.user-badge-group{
   margin: 20px 0 7px;
   .ui.button.user_badgeButton{
     padding: 8px 18px;
@@ -537,7 +642,6 @@
   &.threeDotBtn{
     position: relative;
     padding: 8px 18px;
-    margin-left: 5px;
     border-radius: 20px;
     .dropdown.icon{
       position: absolute;
@@ -571,6 +675,26 @@
       }
     }
   }
+  .ui.button{
+    padding: 8.2px 52.73px 8.2px 30px !important;
+    +.icon{
+      position: absolute;
+      right: 30px;
+      margin: 0;
+      top: 9px;
+    }
+    &.blue-bordr-btn-round-def{
+      +.icon{
+        color: #055CE5;
+      }
+    }
+    &.blue-btn-rounded-def{
+      +.icon{
+        color: #ffffff;
+      }
+    }
+  }
+  
 }
 .userprfleTab{
   margin-top: 42px;
@@ -598,6 +722,7 @@
   }
 }
 .userPrfl_tabSec{
+
   .tabHeader{
     display: flex;
     align-items: center;
@@ -660,11 +785,22 @@
       }
     }
   }
+  .seeMoreBtnWrap{
+    margin-top: 10px;
+    text-align: center;
+    .ui.button{
+      width: 175px;
+      margin-bottom: 10px;
+    }
+  }
   @media only screen and (max-width:1199px) {
     .cardwrap{
       .ui.card{
         max-width: 300px;
       }
+    }
+    .seeMoreBtnWrap{
+      margin-top: 0px;
     }
   }
   @media only screen and (min-width:767px) and (max-width:992px) {
@@ -675,6 +811,7 @@
     }
   }
   @media only screen and (max-width:767px) {
+    margin-top: 30px;
     .tabHeader{
       padding: 28px 0 20px;
       border-top: 1px solid #E7E7F0;
@@ -687,7 +824,6 @@
   }
 }
 .userfriendsWrap{
-  padding-bottom: 120px;
   h3.ui.header{
     font-size: 24px !important;
     color: #263238;
@@ -709,7 +845,7 @@
   }
   .ui.list.users_List{
     margin: 0;
-    .item{
+    >.item{
       padding: 20px 0 !important;
       border-top: 1px solid #E7E7F0;
       display: flex;
@@ -720,8 +856,8 @@
       }
       .content{
         padding-left: 13px;
-        width: 40%;
-        a.header,{
+        width: 50%;
+        a.header{
           color: #263238 !important;
           margin-bottom: 2px;
         }
@@ -732,7 +868,14 @@
           display: flex;
           align-items: center;  
           justify-content: flex-end;
-          .icon{
+          .userProfile_drpbtn.ui.dropdown .ui.button{
+            padding: 7px 50px 7px 22px;
+            +.icon{
+              right: 20px;
+              top: 7px;
+            }
+          }
+          .icon.trash{
             margin-left: 10px;
             font-size: 19px;
             color: #7F7F7F;
@@ -741,8 +884,12 @@
         }
       }
       .ui.button {
+        margin-right: 0;
         &.blue-bordr-btn-round-def.c-small{
-          padding: 8px 30px;
+          padding: 7.2px 29.2px;
+        }
+        &.blue-btn-rounded-def.c-small{
+          padding: 7.2px 29.4px;
         }
       }
     }
@@ -758,7 +905,6 @@
     }
   }
   @media only screen and (max-width:767px) {
-    padding-bottom: 50px;
     h3.ui.header{
       padding: 28px 0 30px;
     }
@@ -803,17 +949,17 @@
       }
       &.globe{
         &::before{
-          background-image: url(../images//icons/icon_globe.svg) !important;
+          background-image: url(../images/icons/icon_globe.svg) !important;
         }
       }
       &.users{
         &::before{
-          background-image: url(../images//icons/group.svg) !important;
+          background-image: url(../images/icons/group.svg) !important;
         }
       }
       &.lock{
         &::before{
-          background-image: url(../images//icons/privacy.svg) !important;
+          background-image: url(../images/icons/privacy.svg) !important;
         }
       } 
     }
@@ -859,17 +1005,17 @@
             }
             &.globe{
               &::before{
-                background-image: url(../images//icons/icon_globe.svg) !important;
+                background-image: url(../images/icons/icon_globe.svg) !important;
               }
             }
             &.users{
               &::before{
-                background-image: url(../images//icons/group.svg) !important;
+                background-image: url(../images/icons/group.svg) !important;
               }
             }
             &.lock{
               &::before{
-                background-image: url(../images//icons/privacy.svg) !important;
+                background-image: url(../images/icons/privacy.svg) !important;
               }
             } 
           }
@@ -884,6 +1030,26 @@
         }
         }
       }
+    }
+  }
+}
+.nodata-friendsprfl{
+  text-align: center;
+  padding: 21px;
+  background-color: #F1F6FD;
+  border-radius: 5px;
+}
+.block-unfriend-Modal-buttons{
+  text-align: right;
+  margin: 28px 0 15px;
+  .ui.button{
+    &.red-btn-rounded-def{
+      color: #ffffff;
+      background-color: #F24040;
+      border-radius: 2rem;
+      border: 1px solid #F24040;
+      font-size: 14px;
+      margin-right: 10px;
     }
   }
 }
