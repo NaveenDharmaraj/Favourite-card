@@ -2,7 +2,7 @@ import React, {
     useState, useEffect,
 } from 'react';
 import {
-    Dropdown,
+    Dropdown, Placeholder,
 } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
 
@@ -58,18 +58,28 @@ const DropDownInfoToShare = ({
     };
     return (
         <div className={`infoToShareDropdown dropdownSearch ${infoShareDropDownLoader ? '' : 'dropdownWithArrowParent'} medium ArrowParentbtm`}>
-            <Dropdown
-                className="dropdownsearchField grouped medium"
-                fluid
-                selection
-                name={name}
-                selectOnBlur={false}
-                selectOnNavigation={false}
-                options={options}
-                onChange={handleChange}
-                value={dropDownValue}
-                loading={infoShareDropDownLoader}
-            />
+            {infoShareDropDownLoader ? (
+                <Placeholder>
+                    <Placeholder.Header>
+                        <Placeholder.Line />
+                        <Placeholder.Line />
+                    </Placeholder.Header>
+                </Placeholder>
+            ) : (
+                <Dropdown
+                    className="dropdownsearchField grouped medium"
+                    fluid
+                    selection
+                    name={name}
+                    selectOnBlur={false}
+                    selectOnNavigation={false}
+                    options={options}
+                    onChange={handleChange}
+                    value={dropDownValue}
+                    loading={infoShareDropDownLoader}
+                />
+            )
+            }
         </div>
 
     );

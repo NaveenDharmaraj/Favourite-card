@@ -360,7 +360,8 @@ class Charity extends React.Component {
                                 name,
                                 companyFundId,
                                 companyFundName,
-                                slug
+                                slug,
+                                displayName
                             },
                             type,
                             id
@@ -373,6 +374,7 @@ class Charity extends React.Component {
                         giveData.giveFrom.text = `${companyFundName} (${formatCurrency(balance, language, currency)})`;
                         giveData.giveFrom.balance = balance;
                         giveData.giveFrom.slug = slug;
+                        giveData.giveFrom.displayName = displayName;
                         return true;
                      }
                     })

@@ -68,6 +68,7 @@ class DedicateGift extends Component {
             <Fragment>
                 <div className="give_flow_field">
                     <label>Dedicate this gift (optional)</label>
+                    <span className="givingInfoText">Only you will see this in your Account Details.</span>
                     <Accordion>
                         <Accordion.Title
                             as={Checkbox}

@@ -49,7 +49,8 @@ const SpecialInstruction = (props) => {
             setOptions(infoToShareList);
             setDefaultDropDownValue(infoDefaultValue);
         } else {
-            const infoToShareList = populateInfoToShareAccountName(giveFrom.name, formatMessage);
+            const name = (giveFrom.type === 'companies' && giveFrom.displayName) ? giveFrom.displayName : giveFrom.name;
+            const infoToShareList = populateInfoToShareAccountName(name, formatMessage);
             setOptions(infoToShareList);
             setDefaultDropDownValue(infoDefaultValue);
         }

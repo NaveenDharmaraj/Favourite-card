@@ -65,7 +65,7 @@
     "reviewInfoToCharity": "Info to share with the charity",
     "reviewGiftDedication": "Dedicate this gift (optional)",
     "reviewNoGift": "No gift dedication",
-    "reviewMessageToLabelGroup": "Message for Giving Group (optional)",
+    "reviewMessageToLabelGroup": "Message for the Giving Group (optional)",
     "reviewMessageToLabelCharity": "Message for charity (optional)",
     "reviewMessageToLabelCampaign": "Message for Campaign admins (optional)",
     "reviewDefaultMessage": "No message added",

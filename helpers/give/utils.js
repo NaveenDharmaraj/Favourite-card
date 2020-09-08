@@ -370,8 +370,11 @@ const populateAccountOptions = (data, translate, giveToId = null, allocationType
                         userGroups,
                         null,
                         (item) => item.attributes.fundId,
-                        (attributes) => `${attributes.fundName}: ${formatCurrency(attributes.balance, language, currency)}`,
-                        (attributes) => false,
+                        (attributes) => ((attributes.hasActiveMatch)
+                            ? ReactHtmlParser(`<div>${attributes.fundName}: ${formatCurrency(attributes.balance, language, currency)}
+                            </div>You cannot give from this group until matching expires`)
+                            : `${attributes.fundName}: ${formatCurrency(attributes.balance, language, currency)}`),
+                        (attributes) => attributes.hasActiveMatch,
                         [
                             {
                                 getValue: (attributes) => attributes.avatar,
@@ -415,8 +418,11 @@ const populateAccountOptions = (data, translate, giveToId = null, allocationType
                         userCampaigns,
                         null,
                         (item) => item.attributes.fundId,
-                        (attributes) => `${attributes.fundName}: ${formatCurrency(attributes.balance, language, currency)}`,
-                        (attributes) => false,
+                        (attributes) => ((attributes.hasActiveMatch)
+                            ? ReactHtmlParser(`<div>${attributes.fundName}: ${formatCurrency(attributes.balance, language, currency)}
+                            </div>You cannot give from this Campaign until matching expires`)
+                            : `${attributes.fundName}: ${formatCurrency(attributes.balance, language, currency)}`),
+                        (attributes) => attributes.hasActiveMatch,
                         [
                             {
                                 getValue: (attributes) => attributes.avatar,
@@ -462,6 +468,10 @@ const populateAccountOptions = (data, translate, giveToId = null, allocationType
                         {
                             getValue: (attributes) => attributes.slug,
                             key: 'slug',
+                        },
+                        {
+                            getValue: (attributes) => attributes.displayName,
+                            key: 'displayName',
                         },
                     ],
                 ));
@@ -976,7 +986,8 @@ const resetDataForAccountChange = (giveData, dropDownOptions, props, type, group
             } = populateDropdownInfoToShare(groupMemberInfoToShare);
             dropDownOptions.privacyNameOptions = infoToShareList;
         } else {
-            dropDownOptions.privacyNameOptions = populateInfoToShareAccountName(giveData.giveFrom.name, formatMessage);
+            const name = (giveData.giveFrom.type === 'companies' && giveData.giveFrom.displayName) ? giveData.giveFrom.displayName : giveData.giveFrom.name;
+            dropDownOptions.privacyNameOptions = populateInfoToShareAccountName(name, formatMessage);
         }
         giveData.privacyShareAmount = false;
         giveData.privacyShareEmail = false;

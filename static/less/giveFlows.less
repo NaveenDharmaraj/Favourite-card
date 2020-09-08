@@ -318,7 +318,6 @@ body{
     justify-content: center;
     align-items: center;
     @media only screen and (max-width:767px) {
-        background-image: url(../images/dashboard_bg.png) !important;
         min-height: 55px;
         height: unset;
         padding: 15px 0px;
@@ -2197,11 +2196,16 @@ input{
                                     border: 0px solid transparent;
                                     &.disabled{
                                         opacity: 1;
+                                        color: #BBBBBB;
                                         font-size: 14px;
-                                        font-family: 'ProximaNova-Semibold';
-                                        color:#263238;
-                                        border-top: 1px solid #E9E9E9;
-                                        line-height: 22px;
+                                        line-height: 17px;
+                                        &.ddlGroup{
+                                            font-size: 14px;
+                                            font-family: 'ProximaNova-Semibold';
+                                            color:#263238;
+                                            border-top: 1px solid #E9E9E9;
+                                            line-height: 22px;
+                                        }
                                         &:hover{
                                             background-color: #fff;
                                         }
@@ -2399,23 +2403,36 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
     .matching-fund-modal-inner-wrapper{
         display: flex;
         align-items: center; 
-        width: 100%;
+        width: 72%;
     }
     .matching-progress-wrapper{
-        width: 24px;
+        width: 21px;
+        height: 100%;
         .matching-progress{
-            background-color: #D7D7D7;
-            width: 24px;
-            height: 128px;
+            height: 100%;
+            background-color:transparent;
             border-radius: 29.5px;
-            overflow: hidden;
+            width: 21px;
             position: relative;
-            .progress-inner{
+            border: 1px solid #90459A;
+            overflow: hidden;
+            .progress-inner-wrapper{
+                width: 15px;
                 position: absolute;
-                bottom: 0px;
-                left: 0;
-                right: 0;
-                background-color: #009E9F;
+                bottom: 2px;
+                margin: auto;
+                left: 2px;
+                right: 2px;
+                border-radius:29.5px;
+                overflow: hidden;
+                height: calc(100% - 4px);
+                .progress-inner{
+                    background: linear-gradient(180deg, #C37BCA 0%, #90459A 100%);
+                    position: absolute;
+                    bottom: 0px;
+                    left: 0;
+                    right: 0;
+                }
             }
         }
     }
@@ -2432,11 +2449,11 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
             &.ui{
                 &.header{
                     font-size: 24px;
-                    color: #009EA2;
+                    color: #90459A;
                     >.sub{
                         &.header{
                             font-size: 14px;
-                            color: #009EA2;
+                            color: #90459A;
                             font-family: 'ProximaNova-Semibold';
                         }
                     }
@@ -2462,7 +2479,7 @@ button.ui.button.blue-bordr-btn-round.btn-resposive {
             font-size: 12px;
             font-family: 'ProximaNova-Medium';
             border-radius: 12.17px;
-            background-color: #E5F5F5;
+            background-color: fade(#90459A, 10%);
             padding: 4px 5px;
             text-align: center;
             @media only screen and (max-width:991px) {
