@@ -263,7 +263,8 @@
             &.read_more{
                display: none;
                @media only screen and (max-width:767px) {
-                display: block;
+                display: inline-block;
+                margin-left: 3px;
                 cursor: pointer;
                 color: #055CE5;
                 font-size: 14px;
@@ -1875,6 +1876,15 @@
 .lodingGroupPrfile{
     width: 16%;
     display: inline-block;
+    margin-left: 15px;
+    margin-bottom: 10px;
+    @media only screen and (max-width:767px) {
+        width: 23%;
+    display: inline-block;
+    margin-left: 15px;
+    margin-bottom: 20px;
+    margin-top: 15px;
+    }
     ul{
         padding: 0px;
         margin: 0px;
@@ -2487,11 +2497,22 @@
             @media only screen and (max-width:767px){
                 border: none;
           }
+          .text{
+            font-family: 'ProximaNova-Semibold' !important;
+            font-weight: initial !important;
+            color: #333333;
           }
           .item{
-            span.text{
+            border-radius: 0px !important;
+          }
+          }
+          .item{
+            border-radius: 6px !important;
+            background-color: #EEEEEE !important;
+            .text{
                 font-family: 'ProximaNova-Semibold';
                 font-size: 14px;
+                color: #333333;
             }
           }
           .ui.dropdown .menu{
@@ -2499,6 +2520,7 @@
               right:0px;
             }
           }
+          
     }
     .blue-bordr-btn-round{
         &.btn_downloading{

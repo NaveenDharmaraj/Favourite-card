@@ -88,6 +88,10 @@ class AboutGroup extends React.Component {
                                     </Responsive>
                                     <Responsive maxWidth={767} minWidth={320}>
                                         <div className=" AboutProfile">
+                                        {(!isLargerText && !_isEmpty(formattedShort))
+                                            && (
+                                                ReactHtmlParser(formattedShort)
+                                            )}
                                             {(!_isEmpty(initialAboutText) && !showReadMoreText)
                                                 && (
                                                     ReactHtmlParser(initialAboutText)
