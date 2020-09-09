@@ -234,7 +234,6 @@ function MyProfile() {
                                          <Dropdown className='userProfile_drpbtn threeDotBtn' direction='left'>
                                             <Dropdown.Menu >
                                                 <Dropdown.Item text='Copy profile URL' />
-                                                <Dropdown.Item text='Block' />
                                             </Dropdown.Menu>
                                         </Dropdown>
                                     </div>

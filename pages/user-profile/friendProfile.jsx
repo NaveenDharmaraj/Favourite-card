@@ -209,7 +209,7 @@ class FriendProfile extends React.Component  {
                                                             <p>They won't be able to find your profile or message you on Charitable Impact. We won't let them know you blocked them.</p>
                                                             <div className='block-unfriend-Modal-buttons'>
                                                                 <Button className='red-btn-rounded-def'>Block</Button>
-                                                                <Button className='blue-bordr-btn-round-def'>Cancel</Button>
+                                                                <Button className='blue-bordr-btn-round-def' onClick={() => this.setState({ showModal: false })}>Cancel</Button>
                                                             </div>
                                                         </Modal.Content>
                                                     </Modal>                                        

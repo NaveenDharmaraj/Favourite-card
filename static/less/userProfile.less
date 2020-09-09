@@ -109,8 +109,7 @@
       >p{
         font-size: 14.2px;
         margin: 5px 0 18px;
-        font-family: 'ProximaNova-Regular';
-        font-weight: 600;
+        font-family: 'ProximaNova-Medium';
       }
       .ui.progress{
         margin-bottom: 0;
@@ -215,7 +214,7 @@
             margin: -58px auto 30px;
           }
           .user_profileDetails{
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             .userButtonsWrap{
               .m-w-100{
                 width: 100%;
@@ -297,6 +296,11 @@
           display:none
         }
       }
+    }
+  }
+  @media only screen and (max-width:767px) {
+    .userHeaderBanner {
+      margin: -12px -20px 20px;
     }
   }
 }
@@ -549,11 +553,9 @@
             margin: 0 0 10px 0;
             height: 35px;
             &::after{
-              left: 0;
               bottom: -0.5px;
             }
             &::before{
-              left: 0;
               top: -0.5px;
             }
           }
