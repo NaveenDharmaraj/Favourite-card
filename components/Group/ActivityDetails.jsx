@@ -279,6 +279,7 @@ class ActivityDetails extends React.Component {
                                 </Comment.Text>
                             )}
                         <Comment.Actions>
+                            <div className="metadataWrapper">
                             <Comment.Metadata>
                                 <div>{time}</div>
                             </Comment.Metadata>
@@ -301,6 +302,7 @@ class ActivityDetails extends React.Component {
                                     {formatMessage('groupProfile:reply')}
                                 </Comment.Action>
                             )}
+                             </div>
                             {isReplyClicked && canReply
                                 && (
                                     <div className="postInputMainWraper">

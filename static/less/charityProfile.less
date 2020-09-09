@@ -411,7 +411,7 @@
                 }
             }
             .MessagestwapperText{
-                width: calc(100% - 220px);
+                width: calc(100% - 250px);
                 padding-left: 20px;
                 padding-right: 15px;
                 @media only screen and (max-width:992px) {
@@ -423,6 +423,9 @@
                    margin-top: 10px;
                    margin-bottom: 10px;
                 }
+            }
+            .Messagestwapper{
+                width: 200px;
             }
         }
         .white-btn-rounded-def{
@@ -2148,7 +2151,7 @@
 .GroupTab{
     .tabBottom{
         .ActivityTop{
-            padding-top:15px;
+            padding-top:9.5px;
             .postinputBox{
                 display: flex;
                 margin-bottom: 30px;
@@ -2190,14 +2193,29 @@
                 .comment{
                     .content{
                         padding-right: 0px !important;
+                        border-bottom: 0px !important;
+                        padding-bottom:0px;
                     }
                 }
                 .content{
+                    .metadataWrapper{
+                        border-bottom: 1px solid #EEEEEE;
+                        padding-bottom: 20px;
+                        padding-top: 4px;
+                        >a{
+                            color:#055CE5;
+                            font-size:12px;
+                        }
+                    }
                     .actions{
+                        padding: 0px;
                             .ui{
                                 &.comments{ 
-                                  margin: 0px; 
-                                  padding-left: 0px; 
+                                  margin:0px; 
+                                  padding-left: 0px;
+                                  &:last-child{
+                                      padding-bottom: 0px;
+                                  }
                                 }
                             }
                     }
@@ -2220,7 +2238,7 @@
                     }
                     .postInputMainWraper{
                         //border-top: 1px solid #EEEEEE;
-                        padding-top:28.5px;
+                       // padding-top:28.5px;
                         margin-top: 20px;
                         display: flex;
                         .postInputWraper{
