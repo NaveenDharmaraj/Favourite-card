@@ -173,7 +173,7 @@ class Group extends React.Component {
                 .catch(err => {
                 })
         }
-        if(currentAccount.accountType === 'company'){
+        if(_isEmpty(this.state.giveFromType) && currentAccount.accountType === 'company'){
             getCompanyPaymentAndTax(dispatch, Number(currentAccount.id));
         }
     }
@@ -369,7 +369,7 @@ class Group extends React.Component {
                     type: giveFromGroupCampaign.type,
                     value: giveFromGroupCampaign.attributes.fundId,
                 };
-            } else if(currentAccount.accountType === 'company'){
+            } else if(_isEmpty(giveFromType) && currentAccount.accountType === 'company'){
                 companiesAccountsData.find(company => {
                     if(currentAccount.id == company.id) {
                         const {

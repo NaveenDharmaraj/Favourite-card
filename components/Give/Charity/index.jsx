@@ -172,7 +172,7 @@ class Charity extends React.Component {
         } else {
             Router.pushRoute('/dashboard');
         }
-        if(currentAccount.accountType === 'company'){
+        if(_isEmpty(giveFromType) && currentAccount.accountType === 'company'){
             getCompanyPaymentAndTax(dispatch, Number(currentAccount.id));
         }
         window.scrollTo(0, 0);
@@ -350,7 +350,7 @@ class Charity extends React.Component {
                     giveData.giveFrom.slug = defaultGroupFrom.attributes.slug;
                 }
             }
-            if(currentAccount.accountType === 'company'){
+            if(_isEmpty(giveFromType) && currentAccount.accountType === 'company'){
                 companiesAccountsData.find(company => {
                     if(currentAccount.id == company.id) {
                         const {

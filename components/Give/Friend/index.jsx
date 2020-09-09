@@ -199,7 +199,7 @@ class Friend extends React.Component {
                 type: 'USER_FRIEND_EMAIL',
             });
         }
-        if(currentAccount.accountType === 'company'){
+        if(_isEmpty(this.state.giveFromType) && currentAccount.accountType === 'company'){
             getCompanyPaymentAndTax(dispatch, Number(currentAccount.id));
         }
         dispatch(getDonationMatchAndPaymentInstruments(id));
@@ -331,7 +331,7 @@ class Friend extends React.Component {
                     giveData.giveFrom.slug = defaultGroupFrom.attributes.slug;
                 }
             }
-            if(currentAccount.accountType === 'company'){
+            if(currentAccount.accountType === 'company' && _isEmpty(giveFromType)){
                 companiesAccountsData.find(company => {
                     if(currentAccount.id == company.id) {
                         const {
