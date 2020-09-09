@@ -141,6 +141,7 @@ class Charity extends React.Component {
     componentDidMount() {
         const {
             campaignId,
+            currentAccount,
             currentUser: {
                 id,
             },
@@ -171,6 +172,9 @@ class Charity extends React.Component {
         } else {
             Router.pushRoute('/dashboard');
         }
+        if(currentAccount.accountType === 'company'){
+            getCompanyPaymentAndTax(dispatch, Number(currentAccount.id));
+        }
         window.scrollTo(0, 0);
         dispatch(getDonationMatchAndPaymentInstruments(id));
         dispatch(getCharityInfoToShare(id));
@@ -197,6 +201,7 @@ class Charity extends React.Component {
                 charityShareInfoOptions,
                 companyDetails,
                 companiesAccountsData,
+                currentAccount,
                 currentUser: {
                     id,
                     attributes: {
@@ -281,7 +286,7 @@ class Charity extends React.Component {
                 giveData = Charity.initFields(
                     giveData, fund, id, avatar,
                     `${firstName} ${lastName}`, companiesAccountsData, userGroups, userCampaigns,
-                    giveGroupBenificairyDetails, giveFromId, giveFromType, language, currency, preferences, charityShareInfoOptions, formatMessage
+                    giveGroupBenificairyDetails, giveFromId, giveFromType, language, currency, preferences, charityShareInfoOptions, formatMessage, currentAccount,
                 );
             }
             this.setState({
@@ -320,7 +325,7 @@ class Charity extends React.Component {
 
     // eslint-disable-next-line react/sort-comp
     static initFields(giveData, fund, id, avatar,
-        name, companiesAccountsData, userGroups, userCampaigns, giveGroupBenificairyDetails, groupId, giveFromType, language, currency, preferences, charityShareInfoOptions, formatMessage) {
+        name, companiesAccountsData, userGroups, userCampaigns, giveGroupBenificairyDetails, groupId, giveFromType, language, currency, preferences, charityShareInfoOptions, formatMessage, currentAccount) {
         if (_isEmpty(companiesAccountsData) && _isEmpty(userGroups) && _isEmpty(userCampaigns) && !giveData.userInteracted) {
             giveData.giveFrom.avatar = avatar,
                 giveData.giveFrom.id = id;
@@ -345,7 +350,35 @@ class Charity extends React.Component {
                     giveData.giveFrom.slug = defaultGroupFrom.attributes.slug;
                 }
             }
-
+            if(currentAccount.accountType === 'company'){
+                companiesAccountsData.find(company => {
+                    if(currentAccount.id == company.id) {
+                        const {
+                            attributes: {
+                                avatar,
+                                balance, 
+                                name,
+                                companyFundId,
+                                companyFundName,
+                                slug,
+                                displayName
+                            },
+                            type,
+                            id
+                        } = company;
+                        giveData.giveFrom.value = companyFundId;
+                        giveData.giveFrom.name = name;
+                        giveData.giveFrom.avatar = avatar;
+                        giveData.giveFrom.id = id;
+                        giveData.giveFrom.type = type;
+                        giveData.giveFrom.text = `${companyFundName} (${formatCurrency(balance, language, currency)})`;
+                        giveData.giveFrom.balance = balance;
+                        giveData.giveFrom.slug = slug;
+                        giveData.giveFrom.displayName = displayName;
+                        return true;
+                     }
+                    })
+            }
         } else if (!_isEmpty(companiesAccountsData) && !_isEmpty(userGroups) && !_isEmpty(userCampaigns) && !giveData.userInteracted) {
             giveData.giveFrom = {
                 value: '',
@@ -360,7 +393,7 @@ class Charity extends React.Component {
                 opt.value === preference
             ));
             giveData.defaultInfoToShare = defaultInfoToShare;
-            if ( giveFromType === 'groups' || giveFromType === 'campaigns') {
+            if ( giveFromType === 'groups' || giveFromType === 'campaigns' || currentAccount.accountType === 'company') {
                 giveData.infoToShare = {
                     disabled: false,
                     text: ReactHtmlParser(`<span class="attributes">${formatMessage('giveCommon:infoToShareAnonymous')}</span>`),
@@ -1126,6 +1159,7 @@ function mapStateToProps(state) {
         companyAccountsFetched: state.give.companyAccountsFetched,
         coverAmountDisplay: state.give.coverAmountDisplay,
         coverFeesData: state.give.coverFeesData,
+        currentAccount: state.user.currentAccount,
         currentUser: state.user.info,
         giveCharityDetails: state.give.charityDetails,
         giveGroupBenificairyDetails: state.give.benificiaryForGroupDetails,

@@ -152,6 +152,7 @@ class Group extends React.Component {
         const {
             slug,
             dispatch,
+            currentAccount,
             currentUser: {
                 id,
             },
@@ -171,6 +172,9 @@ class Group extends React.Component {
                 })
                 .catch(err => {
                 })
+        }
+        if(currentAccount.accountType === 'company'){
+            getCompanyPaymentAndTax(dispatch, Number(currentAccount.id));
         }
     }
 
@@ -193,6 +197,7 @@ class Group extends React.Component {
                 campaignId,
                 companyDetails,
                 companiesAccountsData,
+                currentAccount,
                 currentUser: {
                     attributes: {
                         displayName,
@@ -282,7 +287,7 @@ class Group extends React.Component {
                     giveData, fund, id,
                     `${firstName} ${lastName}`, companiesAccountsData, userGroups, userCampaigns,
                     groupCampaignAdminShareInfoOptions, groupMemberInfoToShare, giveFromId, giveFromType, language, currency, preferences, giveGroupDetails, formatMessage,
-                    this.props.groupCampaignId,
+                    this.props.groupCampaignId, currentAccount,
                 );
             }
             if (giveData.giveFrom.type === 'user' && !_isEmpty(groupMemberInfoToShare)) {
@@ -326,7 +331,7 @@ class Group extends React.Component {
     // eslint-disable-next-line react/sort-comp
     static initFields(giveData, fund, id,
         name, companiesAccountsData, userGroups, userCampaigns, groupCampaignAdminShareInfoOptions, groupMemberInfoToShare, groupId, giveFromType, language,
-        currency, preferences, giveGroupDetails, formatMessage, groupCampaignId) {
+        currency, preferences, giveGroupDetails, formatMessage, groupCampaignId, currentAccount) {
             if (_isEmpty(companiesAccountsData) && _isEmpty(userGroups) && _isEmpty(userCampaigns) && !giveData.userInteracted) {
             giveData.giveFrom.id = id;
             giveData.giveFrom.value = fund.id;
@@ -364,6 +369,34 @@ class Group extends React.Component {
                     type: giveFromGroupCampaign.type,
                     value: giveFromGroupCampaign.attributes.fundId,
                 };
+            } else if(currentAccount.accountType === 'company'){
+                companiesAccountsData.find(company => {
+                    if(currentAccount.id == company.id) {
+                        const {
+                            attributes: {
+                                avatar,
+                                balance, 
+                                name,
+                                companyFundId,
+                                companyFundName,
+                                slug,
+                                displayName
+                            },
+                            type,
+                            id
+                        } = company;
+                        giveData.giveFrom.value = companyFundId;
+                        giveData.giveFrom.name = name;
+                        giveData.giveFrom.avatar = avatar;
+                        giveData.giveFrom.id = id;
+                        giveData.giveFrom.type = type;
+                        giveData.giveFrom.text = `${companyFundName} (${formatCurrency(balance, language, currency)})`;
+                        giveData.giveFrom.balance = balance;
+                        giveData.giveFrom.slug = slug;
+                        giveData.giveFrom.displayName = displayName;
+                        return true;
+                     }
+                    })
             }
         } else if (!_isEmpty(companiesAccountsData) && !_isEmpty(userGroups) && !_isEmpty(userCampaigns) && !giveData.userInteracted) {
             giveData.giveFrom = {
@@ -383,7 +416,7 @@ class Group extends React.Component {
                 opt.value === preference
             ));
             giveData.defaultInfoToShare = defaultInfoToShare;
-            if (giveFromType === 'groups' || giveFromType === 'campaigns' || !_isEmpty(groupCampaignId)) {
+            if (giveFromType === 'groups' || giveFromType === 'campaigns' || !_isEmpty(groupCampaignId) || currentAccount.accountType === 'company') {
                 giveData.infoToShare = {
                     disabled: false,
                     text: ReactHtmlParser(`<span class="attributes">${formatMessage('giveCommon:infoToShareAnonymous')}</span>`),
@@ -400,7 +433,7 @@ class Group extends React.Component {
                 opt.value === preferences['giving_group_members_info_to_share']
             )) || {};
             giveData.defaultNameToShare = defaultNameToShare || {};
-            if (giveFromType === 'groups' || giveFromType === 'campaigns') {
+            if (giveFromType === 'groups' || giveFromType === 'campaigns' || currentAccount.accountType === 'company') {
                 giveData.nameToShare = {
                     disabled: false,
                     text: ReactHtmlParser(`<span class="attributes">${formatMessage('giveCommon:infoToShareAnonymous')}</span>`),
@@ -1237,6 +1270,7 @@ const mapStateToProps = (state) => {
         companiesAccountsData: state.user.companiesAccountsData,
         companyDetails: state.give.companyData,
         companyAccountsFetched: state.give.companyAccountsFetched,
+        currentAccount: state.user.currentAccount,
         currentUser: state.user.info,
         giveGroupBenificairyDetails: state.give.benificiaryForGroupDetails,
         infoOptions: state.userProfile.infoOptions,

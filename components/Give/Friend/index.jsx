@@ -171,6 +171,7 @@ class Friend extends React.Component {
 
     componentDidMount() {
         const {
+            currentAccount,
             currentUser: {
                 id,
             },
@@ -197,6 +198,9 @@ class Friend extends React.Component {
                 },
                 type: 'USER_FRIEND_EMAIL',
             });
+        }
+        if(currentAccount.accountType === 'company'){
+            getCompanyPaymentAndTax(dispatch, Number(currentAccount.id));
         }
         dispatch(getDonationMatchAndPaymentInstruments(id));
     }
@@ -230,6 +234,7 @@ class Friend extends React.Component {
             const {
                 companyDetails,
                 companiesAccountsData,
+                currentAccount,
                 currentUser: {
                     id,
                     attributes: {
@@ -281,7 +286,7 @@ class Friend extends React.Component {
                 const giveFromId = (giveFromType === 'campaigns') ? campaignId : groupId;
                 giveData = Friend.initFields(
                     giveData, fund, id, avatar,
-                    `${firstName} ${lastName}`, companiesAccountsData, userGroups, userCampaigns, giveFromId, giveFromType, language, currency
+                    `${firstName} ${lastName}`, companiesAccountsData, userGroups, userCampaigns, giveFromId, giveFromType, language, currency, currentAccount
                 );
             }
             this.setState({
@@ -301,7 +306,7 @@ class Friend extends React.Component {
     }
 
     static initFields(giveData, fund, id, avatar,
-        name, companiesAccountsData, userGroups, userCampaigns, giveFromId, giveFromType, language, currency) {
+        name, companiesAccountsData, userGroups, userCampaigns, giveFromId, giveFromType, language, currency, currentAccount) {
         if (_isEmpty(companiesAccountsData) && _isEmpty(userGroups) && _isEmpty(userCampaigns) && !giveData.userInteracted) {
             giveData.giveFrom.avatar = avatar,
             giveData.giveFrom.id = id;
@@ -325,6 +330,33 @@ class Friend extends React.Component {
                     giveData.giveFrom.balance = defaultGroupFrom.attributes.balance;
                     giveData.giveFrom.slug = defaultGroupFrom.attributes.slug;
                 }
+            }
+            if(currentAccount.accountType === 'company'){
+                companiesAccountsData.find(company => {
+                    if(currentAccount.id == company.id) {
+                        const {
+                            attributes: {
+                                avatar,
+                                balance, 
+                                name,
+                                companyFundId,
+                                companyFundName,
+                                slug
+                            },
+                            type,
+                            id
+                        } = company;
+                        giveData.giveFrom.value = companyFundId;
+                        giveData.giveFrom.name = name;
+                        giveData.giveFrom.avatar = avatar;
+                        giveData.giveFrom.id = id;
+                        giveData.giveFrom.type = type;
+                        giveData.giveFrom.text = `${companyFundName} (${formatCurrency(balance, language, currency)})`;
+                        giveData.giveFrom.balance = balance;
+                        giveData.giveFrom.slug = slug;
+                        return true;
+                     }
+                    })
             }
         } else if (!_isEmpty(companiesAccountsData) && !_isEmpty(userGroups) && !_isEmpty(userCampaigns) && !giveData.userInteracted) {
             giveData.giveFrom = {
@@ -987,6 +1019,7 @@ function mapStateToProps(state) {
         companiesAccountsData: state.user.companiesAccountsData,
         companyDetails: state.give.companyData,
         companyAccountsFetched: state.give.companyAccountsFetched,
+        currentAccount: state.user.currentAccount,
         currentUser: state.user.info,
         donationMatchData: state.user.donationMatchData,
         fund: state.user.fund,

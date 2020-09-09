@@ -127,9 +127,13 @@ class Donation extends React.Component {
             dispatch,
             currentUser: {
                 id,
-            }
+            },
+            currentAccount,
         } = this.props;
         dispatch(getDonationMatchAndPaymentInstruments(id, 'donations'));
+        if(currentAccount.accountType === 'company'){
+            getCompanyPaymentAndTax(dispatch, Number(currentAccount.id));
+        }
     }
 
     intializeValidations() {
@@ -484,6 +488,9 @@ class Donation extends React.Component {
             giveData,
         } = flowObject
         const {
+            companiesAccountsData,
+            companyDetails,
+            currentAccount,
             i18n: {
                 language,
             },
@@ -551,6 +558,49 @@ class Donation extends React.Component {
                 }
                 doSetState = true;
             }
+        }
+        // If the selected account is company by then pre-selecting the company account from giveTo dropdown
+        if(!_isEmpty(this.props.companyDetails) && !_isEmpty(currentAccount) && currentAccount.accountType === 'company' && giveData.giveTo.value === null && !_isEmpty(companiesAccountsData)){
+        companiesAccountsData.find(company => {
+            if(currentAccount.id == company.id) {
+                const {
+                    attributes: {
+                        avatar,
+                        balance, 
+                        name,
+                        companyFundId,
+                        companyFundName,
+                        slug
+                    },
+                    type,
+                    id
+                } = company;
+                giveData.giveTo = {
+                    avatar,
+                    balance,
+                    disabled: false,
+                    id: id,
+                    name,
+                    text: `${companyFundName} (${formatCurrency(balance, language, currency)})`,
+                    type,
+                    slug,
+                    value: companyFundId,
+                };
+                giveData.creditCard = getDefaultCreditCard(
+                    populatePaymentInstrument(
+                        companyDetails.companyPaymentInstrumentsData,
+                        formatMessage
+                    ));
+                giveData.taxReceipt = getTaxReceiptById(
+                    populateTaxReceipts(
+                        companyDetails.taxReceiptProfiles,
+                        formatMessage),
+                    companyDetails.companyDefaultTaxReceiptProfile.id
+                );
+                doSetState = true;
+                return true;
+             }
+            })
         }
         if (doSetState) {
             this.setState({
@@ -1100,6 +1150,7 @@ Donation.defaultProps = {
 
 const mapStateToProps = (state) => {
     return {
+        currentAccount: state.user.currentAccount,
         companyDetails: state.give.companyData,
         currentUser: state.user.info,
         userTaxReceiptProfiles: state.user.taxReceiptProfiles,

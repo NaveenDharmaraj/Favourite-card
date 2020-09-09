@@ -379,8 +379,10 @@ export const getUser = (dispatch, userId, token = null) => {
                             const { roleType } = attributes;
                             const entityType = _.snakeCase(roleType).split('_')[0];
                             if (entityType.slice(-1) === 'y') {
+                                const typeOfAccount = (entityType === 'beneficiary') ? 'charity' : entityType;
                                 contexts.push({
-                                    accountType: (entityType === 'beneficiary') ? 'charity' : entityType,
+                                    accountId: (typeOfAccount === 'company') ? attributes.companyId : null,
+                                    accountType: typeOfAccount,
                                     entityId: attributes[`${entityType}Id`],
                                     roleId: id,
                                 });
@@ -410,6 +412,7 @@ export const getUser = (dispatch, userId, token = null) => {
                         if (!_.isEmpty(account)) {
                             account.location = `/contexts/${roleId}`;
                             account.accountType = context.accountType;
+                            account.id = context.accountId;
                             if (roleId == activeRoleId) {
                                 fsa.payload.currentAccount = account;
                             } else {
