@@ -91,7 +91,7 @@ const GivingGoal = (props) => {
         goalText = `${formatMessage('groupProfile:goalExpiredOnText')} ${formatDateForGivingTools(fundraisingEndDate)}`;
     }
     fundRaisingDuration = (
-        <span className="badge white goalbtn">
+        <span className="badge white goalbtn topgoalbtn">
             {goalText}
             {canSetGoal
             && (
@@ -140,7 +140,7 @@ const GivingGoal = (props) => {
                                 </List>
                             </div>
                             <Divider />
-                            <Header as="h4">{formatMessage('groupProfile:totalRaised')}</Header>
+                            <Header className="totalMoneyRaised" as="h4">{formatMessage('groupProfile:totalMoneyRaised')}</Header>
                             <Header as="h1">{formattedtotalMoneyRaised}</Header>
                             {!_isEmpty(lastDonationAt)
                             && (

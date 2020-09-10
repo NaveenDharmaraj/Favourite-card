@@ -160,20 +160,23 @@ class AboutGroup extends React.Component {
                                             </p>
                                         </div>
                                     )}
-                                    <div className="fullwidth_v_G">
-                                        <div className="GalleryWrapper">
-                                            <Grid className="fullwidth_gallery">
-                                                <Grid.Row>
-                                                    <Grid.Column width={16}>
-                                                        <ImageGallery
-                                                            imagesArray={imageArray}
-                                                            enableImageSelection={false}
-                                                        />
-                                                    </Grid.Column>
-                                                </Grid.Row>
-                                            </Grid>
+                                    {!_isEmpty(imageArray)
+                                    && (
+                                        <div className="fullwidth_v_G">
+                                            <div className="GalleryWrapper">
+                                                <Grid className="fullwidth_gallery">
+                                                    <Grid.Row>
+                                                        <Grid.Column width={16}>
+                                                            <ImageGallery
+                                                                imagesArray={imageArray}
+                                                                enableImageSelection={false}
+                                                            />
+                                                        </Grid.Column>
+                                                    </Grid.Row>
+                                                </Grid>
+                                            </div>
                                         </div>
-                                    </div>
+                                    )}
                                 </Grid.Row>
                             </div>
                         </Fragment>
