@@ -49,6 +49,8 @@
 
         .ui.image {
             width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
     }
 }
@@ -130,13 +132,14 @@
 
                 .item {
                     margin-right: 22px;
-                    margin-bottom: 18px !important;
                     margin-left: 0px !important;
                     margin-top: auto !important;
                     @media only screen and (max-width:1199px) and (min-width:992px) {
                         margin-right: 12px;
                     }
-
+                    @media only screen and (max-width:992px) {
+                    margin-bottom: 18px !important;
+                }
                     .icon {
                         margin-left: 0 !important
                     }
@@ -920,7 +923,8 @@
                 color:#37474F !important;
                 font-size: 10px;
                 line-height: 15px;
-                padding: 5px;
+                padding:4px 5px;
+                margin:0px;
                 text-align: center;
                 border-radius:12.17px;
                 a{
@@ -928,7 +932,7 @@
                     font-family: 'ProximaNova-Semibold';
                 }
                 &.golbtnDon{
-                    font-size: 12px; 
+                    font-size: 12px;
                 }
             }
         .lastGiftWapper{
@@ -941,7 +945,7 @@
                     display: inline-block;
                     color:#263238;
                     text-align: center;
-                    padding:14px 0px 0px 0px;
+                    padding:12px 0px 0px 0px;
                     &.blueText{
                         color: #055CE5;
                         cursor: pointer;
@@ -985,6 +989,7 @@
         .matchingFundsWapper{
             width: 100%;
             display: flex;
+            padding-top: 5px;
             .matchingFundsGraff{
                 display: inline-block;
                 width:21px;
@@ -1077,7 +1082,6 @@
                 font-size: 10px;
                 text-align: center;
                 line-height: 18px;
-                padding: 20px 0px 0px 0px;
                 cursor: pointer;
                 font-family: 'ProximaNova-Semibold';
             }
@@ -1807,7 +1811,7 @@
     }
 }
 .MatchingPartnerWapper{
-    margin:16px 0px 11.5px 0px;
+    margin:20px 0px;
     display: flex;
     align-items: center;
     width: 100%;
@@ -2681,4 +2685,7 @@
     @media only screen and (max-width:767px){
     display: block;
     }
+}
+.ui.button.white-btn-rounded-def.goalbtn.golbtnDon+.blueHistory{
+
 }
