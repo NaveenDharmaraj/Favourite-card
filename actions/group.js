@@ -541,6 +541,8 @@ export const leaveGroup = (slug, groupId, loadMembers) => (dispatch) => {
         type: actionTypes.LEAVE_GROUP_MODAL_BUTTON_LOADER,
     });
     const params = {
+        dispatch,
+        ignore401: true,
         slug,
     };
     return coreApi.patch(`/groups/leave`, params).then((result) => {
@@ -643,8 +645,13 @@ export const addFriendRequest = (user) => (dispatch) => {
     };
 
     dispatch(statusfsa);
-    return eventApi.post(`/friend/request`, bodyData).then((result) => {
-        if (result && !_isEmpty(result.data) && result.data.attributes.message === 'Success') {
+    return eventApi.post(`/friend/request`, bodyData, {
+        params: {
+            dispatch,
+            ignore401: true,
+        },
+    }).then((result) => {
+        if (result && !_isEmpty(result.data)) {
             fsa.payload.memberUserId = user.memberUserId;
             fsa.payload.status = 'PENDING_OUT';
             dispatch(fsa);

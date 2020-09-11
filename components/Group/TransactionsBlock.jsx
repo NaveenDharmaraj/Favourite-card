@@ -60,11 +60,8 @@ const TransactionsBlock = (props) => {
     ];
     const transactionList = [];
     transactionMapping.map((transaction) => {
-        if (transaction.field !== 'totalMoneyRaised') {
-            transactionList.push(<TransactionsCard
-                transactionDetails={transaction}
-            />);
-        } else if ((transaction.field === 'totalMoneyRaised' && (hasPreviousGoal || hasGoal))) {
+        if (transaction.field !== 'totalMoneyRaised'
+                || (transaction.field === 'totalMoneyRaised' && (hasPreviousGoal || hasGoal))) {
             transactionList.push(<TransactionsCard
                 transactionDetails={transaction}
             />);

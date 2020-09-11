@@ -37,30 +37,6 @@ class GroupJoin extends React.Component {
         this.closeLeaveModal = this.closeLeaveModal.bind(this);
     }
 
-    componentDidUpdate(prevProps) {
-        const {
-            closeModal,
-            groupDetails: {
-                attributes: {
-                    isMember,
-                },
-            },
-        } = this.props;
-        if (!_isEqual(this.props, prevProps)) {
-            if (closeModal) {
-                this.setState({
-                    showLeaveModal: false,
-                });
-            }
-            if ((!_isEqual(prevProps.groupDetails.attributes.isMember, isMember)
-                    && isMember)) {
-                this.setState({
-                    joinClicked: false,
-                });
-            }
-        }
-    }
-
     handleUserJoin() {
         const {
             dispatch,
@@ -73,9 +49,13 @@ class GroupJoin extends React.Component {
             groupMembersDetails,
         } = this.props;
         const loadMembers = !_isEmpty(groupMembersDetails);
-        dispatch(joinGroup(slug, groupId, loadMembers));
         this.setState({
             joinClicked: true,
+        });
+        dispatch(joinGroup(slug, groupId, loadMembers)).then(() => {
+            this.setState({
+                joinClicked: false,
+            });
         });
     }
 
@@ -91,7 +71,9 @@ class GroupJoin extends React.Component {
             groupMembersDetails,
         } = this.props;
         const loadMembers = !_isEmpty(groupMembersDetails);
-        dispatch(leaveGroup(slug, groupId, loadMembers));
+        dispatch(leaveGroup(slug, groupId, loadMembers)).then(() => {
+            this.closeLeaveModal();
+        });
     }
 
     openLeaveModal() {
@@ -213,7 +195,6 @@ class GroupJoin extends React.Component {
 
 GroupJoin.defaultProps = {
     buttonLoader: false,
-    closeModal: false,
     currentUser: {
         id: '',
     },
@@ -240,7 +221,6 @@ GroupJoin.defaultProps = {
 
 GroupJoin.propTypes = {
     buttonLoader: bool,
-    closeModal: bool,
     currentUser: PropTypes.shape({
         id: string,
     }),
@@ -268,7 +248,6 @@ GroupJoin.propTypes = {
 function mapStateToProps(state) {
     return {
         buttonLoader: state.group.leaveButtonLoader,
-        closeModal: state.group.closeLeaveModal,
         currentUser: state.user.info,
         errorMessage: state.group.errorMessage,
         groupDetails: state.group.groupDetails,
