@@ -19,7 +19,6 @@ export const actionTypes = {
     GET_GROUP_GALLERY_IMAGES: 'GET_GROUP_GALLERY_IMAGES',
     GET_GROUP_MEMBERS_DETAILS: 'GET_GROUP_MEMBERS_DETAILS',
     GET_GROUP_TRANSACTION_DETAILS: 'GET_GROUP_TRANSACTION_DETAILS',
-    GROUP_ADD_FRIEND_BUTTON_STATUS: 'GROUP_ADD_FRIEND_BUTTON_STATUS',
     GROUP_MATCHING_HISTORY: 'GROUP_MATCHING_HISTORY',
     GROUP_MEMBER_UPDATE_FRIEND_STATUS: 'GROUP_MEMBER_UPDATE_FRIEND_STATUS',
     GROUP_PLACEHOLDER_STATUS: 'GROUP_PLACEHOLDER_STATUS',
@@ -631,20 +630,11 @@ export const addFriendRequest = (user) => (dispatch) => {
             },
         },
     };
-    const statusfsa = {
-        payload: {
-            friendUserId: user.memberUserId,
-            status: true,
-        },
-        type: actionTypes.GROUP_ADD_FRIEND_BUTTON_STATUS,
-    };
     const fsa = {
         payload: {
         },
         type: actionTypes.GROUP_MEMBER_UPDATE_FRIEND_STATUS,
     };
-
-    dispatch(statusfsa);
     return eventApi.post(`/friend/request`, bodyData, {
         params: {
             dispatch,
@@ -656,9 +646,6 @@ export const addFriendRequest = (user) => (dispatch) => {
             fsa.payload.status = 'PENDING_OUT';
             dispatch(fsa);
         }
-    }).finally(() => {
-        statusfsa.payload.status = false;
-        dispatch(statusfsa);
     });
 };
 
