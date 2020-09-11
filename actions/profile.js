@@ -280,16 +280,14 @@ export const followProfile = (userId, entityId, type, toastMessage) => (dispatch
     }).then(
         (result) => {
             fsa.payload.followStatus = true;
-            if (type === 'groups') {
-                dispatch({
-                    payload: {
-                        errors: [
-                            toastMessageProps,
-                        ],
-                    },
-                    type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
-                });
-            }
+            dispatch({
+                payload: {
+                    errors: [
+                        toastMessageProps,
+                    ],
+                },
+                type: actionTypes.TRIGGER_UX_CRITICAL_ERROR,
+            });
         },
     ).catch((error) => {
         // console.log(error);
