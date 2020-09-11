@@ -5,7 +5,6 @@ import getConfig from 'next/config';
 import { firebaseMessageFetchCompleteAction } from "../actions/firebase";
 import _ from 'lodash';
 import eventApi from '../services/eventApi';
-import { getParamStoreConfig } from "../actions/user";
 const ACCEPT_FREIND_PAYLOAD = {
     "attributes": {
         "source": "web",
@@ -76,7 +75,7 @@ class NotificationHelper {
 
     static firebaseInitialLoad = async (userInfo, dispatch, firebaseConfig) => {
         const limit = 10;
-        await NotificationHelper.get(userInfo, firebaseConfig);
+        NotificationHelper.get(userInfo, firebaseConfig);
         let userRef = Firebase.database().ref("/organisation/chimp/users/" + userInfo.id);
         let lastSyncTime = null;
         userRef.on("value", snapshot => {
