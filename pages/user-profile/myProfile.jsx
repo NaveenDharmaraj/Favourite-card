@@ -8,7 +8,9 @@ import {
     Card,
     Dropdown,
     Tab,
-    Responsive
+    Responsive,
+    Placeholder,
+    Segment,
 } from 'semantic-ui-react';
 
 import Layout from '../../components/shared/Layout';
@@ -87,11 +89,86 @@ function MyProfile() {
                             <a className="edit">Edit</a>
                         </Card.Content>
                     </Card>               
-                </div> 
+                </div>  */}
+                <div className="cardwrap">
+                    <Card>
+                        <Card.Content>
+                            <Placeholder>
+                                <Placeholder.Header image>
+                                    <Placeholder.Line  length='full' />
+                                    <Placeholder.Line length='short'/>
+                                    <Placeholder.Line length='medium' />
+                                    <Placeholder.Line length='long' />
+                                </Placeholder.Header>
+                            </Placeholder>
+                        </Card.Content>
+                    </Card>  
+                    <Card>
+                        <Card.Content>
+                            <Placeholder>
+                                <Placeholder.Header image>
+                                    <Placeholder.Line  length='full' />
+                                    <Placeholder.Line length='short'/>
+                                    <Placeholder.Line length='medium' />
+                                    <Placeholder.Line length='long' />
+                                </Placeholder.Header>
+                            </Placeholder>
+                        </Card.Content>
+                    </Card>
+                    <Card>
+                        <Card.Content>
+                            <Placeholder>
+                                <Placeholder.Header image>
+                                    <Placeholder.Line  length='full' />
+                                    <Placeholder.Line length='short'/>
+                                    <Placeholder.Line length='medium' />
+                                    <Placeholder.Line length='long' />
+                                </Placeholder.Header>
+                            </Placeholder>
+                        </Card.Content>
+                    </Card>
+                    <Card>
+                        <Card.Content>
+                            <Placeholder>
+                                <Placeholder.Header image>
+                                    <Placeholder.Line  length='full' />
+                                    <Placeholder.Line length='short'/>
+                                    <Placeholder.Line length='medium' />
+                                    <Placeholder.Line length='long' />
+                                </Placeholder.Header>
+                            </Placeholder>
+                        </Card.Content>
+                    </Card>
+                    <Card>
+                        <Card.Content>
+                            <Placeholder>
+                                <Placeholder.Header image>
+                                    <Placeholder.Line  length='full' />
+                                    <Placeholder.Line length='short'/>
+                                    <Placeholder.Line length='medium' />
+                                    <Placeholder.Line length='long' />
+                                </Placeholder.Header>
+                            </Placeholder>
+                        </Card.Content>
+                    </Card>
+                    <Card>
+                        <Card.Content>
+                            <Placeholder>
+                                <Placeholder.Header image>
+                                    <Placeholder.Line  length='full' />
+                                    <Placeholder.Line length='short'/>
+                                    <Placeholder.Line length='medium' />
+                                    <Placeholder.Line length='long' />
+                                </Placeholder.Header>
+                            </Placeholder>
+                        </Card.Content>
+                    </Card>
+                     
+                </div>    
                 <div className='seeMoreBtnWrap'>
                     <Button className='blue-bordr-btn-round-def'>See more</Button>
                     <p>Showing 24 of 301</p>
-                </div>*/}
+                </div>
 
                 <div className="ggManage noData">
                     <Grid verticalAlign="middle">
@@ -165,7 +242,7 @@ function MyProfile() {
                     <Grid verticalAlign="middle">
                         <Grid.Row>
                             <Grid.Column mobile={16} tablet={6} computer={6}>
-                                <Image src='../static/images/givinggroupsyoujoined_nodata_illustration.png' className="noDataLeftImg" />
+                                <Image src='../static/images/favourites-illo-desktop.png' className="noDataLeftImg" />
                             </Grid.Column>
                             <Grid.Column mobile={16} tablet={10} computer={10}>
                                 <div className="givingGroupNoDataContent">
@@ -206,7 +283,7 @@ function MyProfile() {
             <Tab.Pane>
                <Favourites/>
             </Tab.Pane> },
-      ]
+    ]
     return (
         <Layout>
             <Container>
@@ -219,6 +296,11 @@ function MyProfile() {
                                     <Image src='../static/images/no-data-avatar-charity-profile.png' />
                                 </div>               
                                 <div className='user_profileDetails'>
+                                    <Placeholder fluid>
+                                        <Placeholder.Line length='short'/>
+                                        <Placeholder.Line length='medium'/>
+                                        <Placeholder.Line length='full'/>
+                                    </Placeholder>
                                     <Header className="usrName">Tammy Tuba</Header>
                                     <div className="userCity_friends">
                                         <p>Vancouver, BC</p>
@@ -228,6 +310,7 @@ function MyProfile() {
                                         </div>
                                     </div>
                                     <p className='textAboutuser'>Hi I'm Tammy! I use this account to give to others and to charities, to help make a bit of a difference. Have a great day.</p>
+                                   
                                     <div className="userButtonsWrap">
                                         <Button className='blue-bordr-btn-round-def m-w-100'>View what others see</Button>
                                         <EditProfile/>
@@ -236,7 +319,7 @@ function MyProfile() {
                                                 <Dropdown.Item text='Copy profile URL' />
                                             </Dropdown.Menu>
                                         </Dropdown>
-                                    </div>
+                                    </div> 
                                 </div>
                             </div> 
                             <Responsive minWidth={768}>

@@ -8,7 +8,8 @@ import {
     Icon,
     Grid,
     Input,
-    Dropdown
+    Dropdown,
+    Placeholder
 } from 'semantic-ui-react';
 
 import Layout from '../../components/shared/Layout';
@@ -90,6 +91,30 @@ function UserFriendList() {
                                                         <Icon className="trash alternate outline"></Icon>
                                                     </List.Content>
                                                 </List.Item>
+                                                <List.Item>
+                                                     <Placeholder>
+                                                        <Placeholder.Header image>
+                                                            <Placeholder.Line />
+                                                            <Placeholder.Line />
+                                                        </Placeholder.Header>
+                                                    </Placeholder>
+                                                </List.Item>
+                                                <List.Item>
+                                                     <Placeholder>
+                                                        <Placeholder.Header image>
+                                                            <Placeholder.Line />
+                                                            <Placeholder.Line />
+                                                        </Placeholder.Header>
+                                                    </Placeholder>
+                                                </List.Item>
+                                                <List.Item>
+                                                     <Placeholder>
+                                                        <Placeholder.Header image>
+                                                            <Placeholder.Line />
+                                                            <Placeholder.Line />
+                                                        </Placeholder.Header>
+                                                    </Placeholder>
+                                                </List.Item>
                                             </List>
                                         </div>
                                         <div className='friendsSearch'>
@@ -148,6 +173,30 @@ function UserFriendList() {
                                                             Add friend
                                                         </Button>
                                                     </List.Content>
+                                                </List.Item>
+                                                <List.Item>
+                                                     <Placeholder>
+                                                        <Placeholder.Header image>
+                                                            <Placeholder.Line />
+                                                            <Placeholder.Line />
+                                                        </Placeholder.Header>
+                                                    </Placeholder>
+                                                </List.Item>
+                                                <List.Item>
+                                                     <Placeholder>
+                                                        <Placeholder.Header image>
+                                                            <Placeholder.Line />
+                                                            <Placeholder.Line />
+                                                        </Placeholder.Header>
+                                                    </Placeholder>
+                                                </List.Item>
+                                                <List.Item>
+                                                     <Placeholder>
+                                                        <Placeholder.Header image>
+                                                            <Placeholder.Line />
+                                                            <Placeholder.Line />
+                                                        </Placeholder.Header>
+                                                    </Placeholder>
                                                 </List.Item>
                                             </List>
                                     </div>

@@ -10,6 +10,7 @@ import {
     Tab,
     Responsive,
     Modal,
+    Icon,
 } from 'semantic-ui-react';
 
 import Layout from '../../components/shared/Layout';
@@ -155,8 +156,47 @@ class FriendProfile extends React.Component  {
         const respondtoTrigger = (
             <Button className='blue-btn-rounded-def'>Respond to friend request</Button>
         )
+        const options = [
+            {
+              key: 'Public',
+              text: <span className='text'><Icon className='globe'/> Public</span>,
+              value: 'Public',
+            },
+            {
+              key: 'Friends',
+              text: <span className='text'><Icon className='users'/> Friends</span>,
+              value: 'Friends',
+            },
+        
+        ]
         return (
             <Layout>
+                <div className='previewHeader'>
+                    <Container>
+                        <Grid>
+                            <Grid.Row>
+                                <Grid.Column computer={8} tablet={8} mobile={16}>
+                                <Header as='h4'>
+                                    <Header.Content>
+                                        <div>This is how your profile looks to:</div>
+                                        <Dropdown
+                                            inline
+                                            options={options}
+                                            defaultValue={options[0].value}
+                                            icon='chevron down'
+                                        />
+                                    </Header.Content>
+                                </Header>
+                                </Grid.Column>
+                                <Grid.Column computer={8} tablet={8} mobile={16}>
+                                    <div className='returnPrfl'>
+                                        <Button className='white-btn-rounded-def'>Return to personal profile view</Button>
+                                    </div>
+                                </Grid.Column>
+                            </Grid.Row>
+                        </Grid>
+                    </Container>
+                </div>
                 <Container>
                     <div className="userProfileScreen">
                         <div className="userHeaderBanner"></div>
@@ -177,12 +217,12 @@ class FriendProfile extends React.Component  {
                                         <p className='textAboutuser'>Hi I'm Tammy! I use this account to give to others and to charities, to help make a bit of a difference. Have a great day.</p>
                                         <div className="userButtonsWrap">
                                             {/* <Button className='blue-btn-rounded-def'>Add friend</Button> */}
-                                            <Button className='blue-btn-rounded-def'>Message</Button>
-                                            {/* <Dropdown trigger={pendingTrigger} className='userProfile_drpbtn' icon='chevron down'>
+                                            {/* <Button className='blue-btn-rounded-def'>Message</Button> */}
+                                            <Dropdown trigger={pendingTrigger} className='userProfile_drpbtn' icon='chevron down' direction='left'>
                                                 <Dropdown.Menu >
                                                     <Dropdown.Item text='Cancel friend request' />
                                                 </Dropdown.Menu>
-                                            </Dropdown> */}
+                                            </Dropdown>
                                             {/* <Dropdown trigger={respondtoTrigger} className='userProfile_drpbtn m-w-100' icon='chevron down' direction='left'>
                                                 <Dropdown.Menu >
                                                     <Dropdown.Item text='Accept' />

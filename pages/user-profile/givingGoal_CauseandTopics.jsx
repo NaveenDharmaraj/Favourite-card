@@ -3,7 +3,9 @@ import {
     Progress,
     Header,
     Grid,
-    Button
+    Button,
+    Segment,
+    Placeholder
 } from 'semantic-ui-react';
 import PrivacySettings from './privacySettings';
 import EditCauseAndTopics from './editCauseAndTopics';
@@ -16,6 +18,16 @@ class GivingGoal_CauseAndTopics extends React.Component {
     render() {
         return (
             <Fragment>
+                <Segment>
+                    <Placeholder>
+                        <Placeholder.Paragraph>
+                            <Placeholder.Line length='full' />
+                            <Placeholder.Line length='short' />
+                            <Placeholder.Line length='full' />
+                            <Placeholder.Line length='full' />
+                        </Placeholder.Paragraph>
+                    </Placeholder>
+                </Segment>
                 <div className="givingGoalWrap">
                     <Grid>
                         <Grid.Row>
@@ -31,7 +43,19 @@ class GivingGoal_CauseAndTopics extends React.Component {
                     <p>contributed to your <span>'{'$Amount'}'</span> goal this year</p>
                     <Progress percent={33}/>
                 </div>
-                    <div className="cause_topicsWrap">
+                <Segment>
+                    <Placeholder>
+                        <Placeholder.Paragraph>
+                            <Placeholder.Line length='full' />
+                            <Placeholder.Line length='short' />
+                            <Placeholder.Line length='full' />
+                            <Placeholder.Line length='long' />
+                            <Placeholder.Line length='medium' />
+                            <Placeholder.Line length='long' />
+                        </Placeholder.Paragraph>
+                    </Placeholder>
+                </Segment>
+                <div className="cause_topicsWrap">
                     <Grid>
                         <Grid.Row>
                             <Grid.Column computer={12} mobile={13} tablet={11}>
@@ -46,6 +70,20 @@ class GivingGoal_CauseAndTopics extends React.Component {
                         </Grid.Row>
                     </Grid>
                     <div className="user-badge-group">
+                        <Button className="user_badgeButton active">Addiction</Button>
+                        <Button className="user_badgeButton active">Clothing-bank</Button>
+                        <Button className="user_badgeButton active">Climate</Button>
+                        <Button className="user_badgeButton active">Early-childhood</Button>
+                        <Button className="user_badgeButton active">Ball-sports</Button>
+                        <Button className="user_badgeButton active">Civil</Button>
+                        <Button className="user_badgeButton active">Counselling</Button>
+                        <Button className="user_badgeButton active">Addiction</Button>
+                        <Button className="user_badgeButton active">Clothing-bank</Button>
+                        <Button className="user_badgeButton active">Climate</Button>
+                        <Button className="user_badgeButton active">Early-childhood</Button>
+                        <Button className="user_badgeButton active">Ball-sports</Button>
+                        <Button className="user_badgeButton active">Civil</Button>
+                        <Button className="user_badgeButton active">Counselling</Button>
                         <Button className="user_badgeButton active">Addiction</Button>
                         <Button className="user_badgeButton active">Clothing-bank</Button>
                         <Button className="user_badgeButton active">Climate</Button>

@@ -1,4 +1,4 @@
-// @import "_mixins.less";
+@import "_mixins.less";
 .userProfileScreen{
   .userHeaderBanner {
     background: url(../images/user_profile_banner.svg) no-repeat;
@@ -38,7 +38,7 @@
           flex: 1;
           .usrName{
             font-size: 24px;
-            color:#263238;
+            color:@font-color;
             line-height: 29px;
             margin-bottom: 7px;
           }
@@ -48,7 +48,7 @@
             display: flex;
             align-items: center;
             font-size: 14px;
-            color:#263238;
+            color:@font-color;
             margin-bottom: 22px;
             p{
               padding-right: 48px;
@@ -78,6 +78,18 @@
               position: relative;
               bottom: 0px;
             }
+            .userProfile_drpbtn{
+              margin-right: 10px;
+              .ui.button{
+                margin-right: 0;
+              }
+            }
+          }
+          .ui.placeholder{
+            margin-bottom: 22px;
+            .line.full{
+              padding-top: 22px;
+            }
           }
         }
       }  
@@ -89,35 +101,56 @@
         max-width: 282px;
         margin-left: 45px;
       }
+      .ui.segment{
+        border-radius: 10px;
+        margin:0 0 20px;
+        .ui.placeholder{
+          .paragraph .line{
+            &:first-child{
+              padding-top: 10px;
+            }
+            padding-top: 25px;
+          }
+        }
+      }
     }
     .givingGoalWrap{
-      background-color: #F4EDF5;
+      background-color: #F6F6F6;
       border-radius: 10px;
       padding: 20px;
       margin-bottom: 20px;
       .ui.grid{
         .ui.header{
           font-size: 17px;
-          color: #263238;
+          color: @font-color;
         }
       }
       >.ui.header{       
-        margin: 20px 0 0px;
-        font-size: 24px; 
-        color: #263238;     
+        margin: 10px 0 0px;
+        font-size: 28px; 
+        color: @font-color;     
       }
       >p{
         font-size: 14.2px;
-        margin: 5px 0 18px;
-        font-family: 'ProximaNova-Medium';
+        margin: 5px 0 10px;
+        line-height: 22px;
+        span{
+          .primeFont-semi-bold()
+        }
       }
       .ui.progress{
         margin-bottom: 0;
-        background-color: #FFFFFF;
+        background-color: transparent;
+        border: 1px solid #009EA2;
+        border-radius: 20px;
+        height: 15px;
+        display: flex;
+        align-items: center;
+        padding: 0 3px;
         .bar{
-          height: 7px;
+          height: 7.9px;
           border-radius: 5px;
-          background-color: #44C1C8;
+          background-color: #009EA2;
         }
       }
     }
@@ -132,15 +165,31 @@
           align-items: flex-start;
           .ui.header{
             font-size: 17px;
-            color: #263238;
+            color: @font-color;
             margin: 0 10px 0 0;
             line-height: 17px;
           }
           .editModalTrigger{
-            font-family: 'ProximaNova-Semibold';
-            color:#055CE5;
+            .primeFont-semi-bold();
+            color:@blueButton;
             cursor: pointer;
           }
+        }
+      }
+      .user-badge-group{
+        margin: 20px 0;
+        max-height: 334px;
+        overflow: auto;
+        &::-webkit-scrollbar {
+          appearance: none;
+          width: 5px;
+        }
+        &::-webkit-scrollbar-track {
+          background: #E3E8F0;
+          border-radius: 2.5px;
+        }
+        &::-webkit-scrollbar-thumb{
+          background: #78909C;
         }
       }
       .ui.button.blue-bordr-btn-round-def{
@@ -160,6 +209,16 @@
       .noDataLeftImg.ui.image{
         max-width: 349px;
         margin-left: -85px;
+      }
+    }
+    .ggFavorite.noData{
+      background-color: #FFB9B9;
+      background-image: url('../images/favourites-nodataBg.svg');
+      background-size: cover;
+      background-repeat: no-repeat;
+      .noDataLeftImg.ui.image {
+        max-width: 290px;
+        margin-left: 25px;
       }
     }
     @media only screen and (min-width:767px) and (max-width:992px) {
@@ -230,6 +289,9 @@
                   width: 85%;
                 }
               }
+              .userProfile_drpbtn.ui.dropdown:not(.threeDotBtn) .menu{
+                left: 0 !important;
+              }
             }
           }
         }
@@ -248,12 +310,12 @@
         position: relative;
         &::after{
           content: '';
-          background-image: url(../images/dotImage_1.png) !important;
+          background-image: url(../images/manage_giving_groups_illo_mobile.png) !important;
           background-size: contain !important;
           width: 185px;
           height: 37px;
           position: absolute;
-          left: -90px;
+          left: -75px;
           bottom: 20px;
           background-repeat: no-repeat !important;
         }
@@ -280,13 +342,34 @@
         position: relative;
         &::after{
           content: '';
-          background-image: url(../images/dotImage_2.png) !important;
+          background-image: url(../images/joined_giving_groups_illo_mobile.png) !important;
           background-size: contain !important;
           width: 170px;
-          height: 37px;
+          height: 47px;
           position: absolute;
-          right: -10px;
-          bottom: 20px;
+          right: 0px;
+          bottom: 10px;
+          background-repeat: no-repeat !important;
+        }
+        .row{
+          z-index: 1;
+        }
+        .noDataLeftImg.ui.image{
+          display:none
+        }
+      }
+      .ggFavorite.noData{
+        padding: 30px 0;
+        position: relative;
+        &::after{
+          content: '';
+          background-image: url(../images/favourites_giving_groups_illo_mobile.png) !important;
+          background-size: contain !important;
+          width: 197px;
+          height: 30px;
+          position: absolute;
+          left: 0px;
+          bottom: 0px;
           background-repeat: no-repeat !important;
         }
         .row{
@@ -332,8 +415,8 @@
           }
         }
         .remvephoto{
-          font-family: 'ProximaNova-Semibold';
-          color: #7F7F7F;
+          .primeFont-semi-bold();
+          color: @greyNew;
           font-size: 14px;
           display: block;
           cursor: pointer;
@@ -348,7 +431,7 @@
           margin-bottom: 6px;
         }
         >.input{
-          color: #263238;
+          color: @font-color;
         }
         >.label-info{
           font-size: 12px;
@@ -363,16 +446,16 @@
         text-align: right;
         margin-top: 8px;
         font-size: 12px;
-        color: #263238;
+        color: @font-color;
       }
       .price_btn{
         margin-top: 10px;
         .ui.button.basic{
-          font-family: 'ProximaNova-Regular';
+          .primeFont();
           height: 30px ;
           width: 65px ;
           padding: 7px 10px 6px ;      
-          color: #263238 !important;
+          color: @font-color !important;
           margin-right: 10px; 
         }
       }
@@ -440,8 +523,8 @@
             max-width: 180px;
             height: 60px;
             width: 100%;
-            color: #263238 !important;
-            font-family: 'ProximaNova-Regular';
+            color: @font-color !important;
+            .primeFont();
             font-weight: 500;
             background-color: transparent !important;
             margin: 0 18px 18px 0;
@@ -457,7 +540,7 @@
               border-radius: 2.5px 0px 0px 0px;
               opacity: 0;
               transition: all 0.3s ease;
-              background-color: #90459A;
+              background-color: @purple;
             }
             &::after {
               content: '';
@@ -472,7 +555,7 @@
               background-color: #C39CCE;
             }
             &.active{
-              border:1px solid #90459A;
+              border:1px solid @purple;
               &::before,&::after{
                 opacity: 1;
               }
@@ -513,6 +596,18 @@
       .EditTopicseeMore{
         .icon{
           margin-right:10px ;
+          position: relative;
+          &::before{
+            content: '';
+            background-image: url(../images/icons/icon_blue_open-tab.svg) !important;
+            background-size: contain !important;
+            width: 19px;
+            height: 19px;
+            position: absolute;
+            right: 0px;
+            top: 0px;
+            background-repeat: no-repeat !important;
+          }
         }
       }
       .footInfo{
@@ -537,7 +632,7 @@
     .header-note{
       display: block;
       font-size: 14px;
-      font-family: 'ProximaNova-Regular';
+      .primeFont();
       font-weight: 500;
       margin-top: 5px;
     }
@@ -594,7 +689,7 @@
   .ui.input.searchInput{
     input{
       height: 35px;
-      color: #263238;
+      color: @font-color;
     }
   }
   .search-btn{
@@ -630,13 +725,13 @@
   .ui.button.user_badgeButton{
     padding: 8px 18px;
     border-radius: 17px;
-    color: #263238;
+    color: @font-color;
     margin: 0 13px 13px 0;
     font-size: 12px;
     background-color: #DDE8FA;
     &.active{
       color: #ffffff;
-      background-color: #90459A;
+      background-color: @purple;
     }
   }
 }
@@ -669,7 +764,7 @@
   .menu{
     min-width: 245px;
     .item{
-      border-top: 1px solid #E7E7F0;
+      border-top: 1px solid @border-light;
       padding: 13px 15px !important;
       color: #262626;
       &:first-child{
@@ -683,11 +778,11 @@
       position: absolute;
       right: 30px;
       margin: 0;
-      top: 9px;
+      top: 11px;
     }
     &.blue-bordr-btn-round-def{
       +.icon{
-        color: #055CE5;
+        color: @blueButton;
       }
     }
     &.blue-btn-rounded-def{
@@ -702,19 +797,22 @@
   margin-top: 42px;
   .ui.secondary.pointing.menu{
     margin-bottom: 30px; 
-    border-bottom: 1px solid #E7E7F0;
+    border-bottom: 1px solid @border-light;
     .item{
       font-size: 16px;
       color: #262626;
       padding: 0 15px 15px;
       margin: 0;
       &.active{
-        font-family: 'ProximaNova-Semibold';
+        .primeFont-semi-bold();
         color: #663387;
         border-color:#663387;
       }
       &:first-child{
         padding-left: 6px;
+      }
+      &:active{
+        border-color: transparent;
       }
     }
   }
@@ -733,7 +831,7 @@
       font-size: 20px;
       margin-right: 13px;
       margin-bottom: 0;
-      color: #263238;
+      color: @font-color;
     }
   }
   .cardwrap{
@@ -768,10 +866,11 @@
             &.charityClr{
               color: #ED803B;
             }
+
           }
           h4{
             font-size: 14px;
-            color: #263238;
+            color: @font-color;
             margin: 0 0 5px;
             line-height: 22px;
           }
@@ -780,9 +879,24 @@
           }
         }
         .edit{
-          font-family: 'ProximaNova-Semibold';
-          color:#055CE5;
+          .primeFont-semi-bold();
+          color:@blueButton;
           font-size: 14px;
+        }
+        .ui.placeholder{
+          width: 100%;
+          .image.header {
+            .line{
+              margin-left: 6em;
+              padding-top: 20px;
+              &:first-child{
+                padding-top: 0px;
+              }
+            }
+            &::after{
+              height: 0px;
+            }
+          }  
         }
       }
     }
@@ -791,8 +905,13 @@
     margin-top: 10px;
     text-align: center;
     .ui.button{
-      width: 175px;
+      width: 120px;
       margin-bottom: 10px;
+    }
+    @media only screen and (max-width:767px) {
+      .ui.button{
+        width: 175px;
+      }
     }
   }
   @media only screen and (max-width:1199px) {
@@ -816,7 +935,7 @@
     margin-top: 30px;
     .tabHeader{
       padding: 28px 0 20px;
-      border-top: 1px solid #E7E7F0;
+      border-top: 1px solid @border-light;
     }
     .cardwrap{
       .ui.card{
@@ -828,15 +947,15 @@
 .userfriendsWrap{
   h3.ui.header{
     font-size: 24px !important;
-    color: #263238;
+    color: @font-color;
     padding: 38px 0;
     margin: 40px 0 0;
-    border-top: 1px solid #E7E7F0;
-    border-bottom: 1px solid #E7E7F0;
+    border-top: 1px solid @border-light;
+    border-bottom: 1px solid @border-light;
   }
   h4.ui.header{
     font-size: 20px !important;
-    color: #263238;
+    color: @font-color;
     padding: 40px 0 30px;
     margin: 0;
   }
@@ -844,12 +963,15 @@
     background-color: #F1F6FD;
     margin: -1px 0 0 -55px;
     padding:0 55px 26px 55px;
+    .ui.placeholder, .ui.placeholder .image.header::after, .ui.placeholder .line, .ui.placeholder .line::after, .ui.placeholder > ::before{
+      background-color: #F1F6FD;
+    }
   }
   .ui.list.users_List{
     margin: 0;
     >.item{
       padding: 20px 0 !important;
-      border-top: 1px solid #E7E7F0;
+      border-top: 1px solid @border-light;
       display: flex;
       align-items: center;
       .ui.avatar.image{
@@ -860,11 +982,11 @@
         padding-left: 13px;
         width: 50%;
         a.header{
-          color: #263238 !important;
+          color: @font-color !important;
           margin-bottom: 2px;
         }
         .description{
-          color: #263238 !important;
+          color: @font-color !important;
         }
         &.right.floated{
           display: flex;
@@ -880,8 +1002,21 @@
           .icon.trash{
             margin-left: 10px;
             font-size: 19px;
-            color: #7F7F7F;
+            color: @greyNew;
             margin-right: 0;
+            cursor: pointer;
+            position: relative;
+            &::before{
+              content: '';
+              background-image: url(../images/icons/icon_gray_delete.svg) !important;
+              background-size: contain !important;
+              width: 19px;
+              height: 19px;
+              position: absolute;
+              right: 0px;
+              top: 0px;
+              background-repeat: no-repeat !important;
+            }
           }
         }
       }
@@ -894,6 +1029,9 @@
           padding: 7.2px 29.4px;
         }
       }
+      .ui.placeholder{
+        width: 100%;
+        margin-bottom: 0;      }
     }
   }
   .friendsSearch{
@@ -978,7 +1116,7 @@
     >.header{
       padding: 10px 15px;
       font-size: 14px;
-      color:#263238;
+      color:@font-color;
       border-bottom: 1px solid rgba(34,36,38,.15);;
     }
     .content{
@@ -1024,7 +1162,7 @@
         } 
         &:hover,&.active{
           a.header{
-          color:#90459A !important;
+          color:@purple !important;
           }
           .icon{
             filter: invert(36%) sepia(13%) saturate(2607%) hue-rotate(246deg) brightness(92%) contrast(92%);
@@ -1047,11 +1185,145 @@
   .ui.button{
     &.red-btn-rounded-def{
       color: #ffffff;
-      background-color: #F24040;
+      background-color: @chimpRed;
       border-radius: 2rem;
-      border: 1px solid #F24040;
+      border: 1px solid @chimpRed;
       font-size: 14px;
       margin-right: 10px;
     }
   }
+}
+.previewHeader{
+  width: 100%;
+  background-color: @purple;
+  .ui.container{
+    height: 100%;
+    .ui.grid{
+      margin-top: 0;
+      margin-bottom: 0;
+      height: 100%;
+      .row{
+        align-items: center;
+        padding: 10px 0;
+        .ui.header .content{
+          font-size: 14px;
+          color: @white;
+          display: flex;
+          align-items: center;
+          >div{
+            line-height: 22px;
+          }
+          .ui.dropdown{
+            margin-left: 10px;
+            >.text .icon{
+              position: relative;
+              top: 3px;
+            }
+            .icon{
+              &:not(.down){
+              filter: invert(100%) sepia(5%) saturate(1034%) hue-rotate(232deg) brightness(400%) contrast(100%);      
+                margin-right: 4px;
+                font-size: 18px;
+                &::before{
+                  content: '' !important;
+                  position: absolute;
+                  top: 0;
+                  bottom: 0;
+                  left: 0;
+                  right: 0;
+                  background-position: center !important;
+                  background-size: contain !important;
+                  background-repeat: no-repeat !important;
+                }
+                &.globe{
+                  &::before{
+                    background-image: url(../images/icons/icon_globe.svg) !important;
+                  }
+                }
+                &.users{
+                  &::before{
+                    background-image: url(../images/icons/group.svg) !important;
+                  }
+                }
+              }
+              &.down{
+                font-size: 10px;
+                margin-left: 10px;
+                transition: 0.5s;
+                transform-origin: bottom;
+              }
+            }
+            .menu{
+              background-color: @purple;
+              border: 0;
+              box-shadow: none;
+              border-radius: 0;
+              border-bottom-left-radius: 5px;
+              border-bottom-right-radius: 5px;
+              overflow: hidden;
+              margin-top: 10px;
+              left: -15px;
+              min-width: 120px;
+              width: 100%;
+              .item{
+                color: @white;
+                .primeFont();
+                &.active.selected{
+                  display: none;
+                }
+                &:hover{
+                  background-color: @purple;
+                }
+                .text{
+                  display: flex;
+                  align-items: center;
+                  .icon{
+                    margin-right: 8px;
+                  }
+                }
+              }
+            }
+            &.active{
+              .down{
+                transform: rotateZ(180deg);
+              }
+            }
+          }
+        }
+        .returnPrfl{
+          text-align: right;
+          .ui.button{
+            &.white-btn-rounded-def{
+              padding: 7.2px 21px;
+            }
+          }
+        }
+      
+      }
+    }
+  }
+  @media only screen and (max-width:767px) {
+    margin-top: -12px;
+    .ui.container .ui.grid {
+      .row{
+        padding: 14px 0;
+        .returnPrfl{
+          text-align: center;
+          position: fixed;
+          bottom: 0;
+          width: 100%;
+          background: #90459a;
+          padding: 7.2px;
+          z-index: 1;
+          left: 0;
+        }
+      }
+    }   
+    +.ui.container{
+      .userProfileScreen .userHeaderBanner{
+        margin-top: 0px;
+      }
+    }
+  }
+  
 }
