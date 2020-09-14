@@ -81,6 +81,7 @@ class DropDownAccountOptions extends React.Component {
         const giveFromHeader = (type === 'donations') ? formatMessage('addingToLabel') : formatMessage('giveFromLabel');
         const giveFromPlaceHolder = (type === 'donations') ? formatMessage('destinationaccountPlaceHolder') : formatMessage('accountPlaceHolder');
         const newPlaceholder = updatePlaceHolder ? formatMessage('searchPlaceholder') : giveFromPlaceHolder;
+        const errorMessage = (type === 'donations') ? formatMessage('giveCommon:blankError') : formatMessage('giveCommon:allocationBlankError');
         let newPlaceholderValue = '';
         if (!_isEmpty(fund)) {
             if (giveTo && giveTo.value && giveFromUrl) {
@@ -179,7 +180,7 @@ class DropDownAccountOptions extends React.Component {
                 </Form.Field>
                 <FormValidationErrorMessage
                     condition={!validity}
-                    errorMessage={formatMessage('giveCommon:blankError')}
+                    errorMessage={errorMessage}
                 />
             </Fragment>
         );

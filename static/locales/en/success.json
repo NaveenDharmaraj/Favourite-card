@@ -3,7 +3,7 @@
     "goToCompanyDashboard": "Return to your company dashboard",
     "addMoneyFirstText": "Thank you, {{name}}",
     "addMoneySecondText": "You added {{amount}} to your Impact Account.",
-    "addMoneySecondTextCompany": "You added {{amount}} to {{companyName}} Impact Account.",
+    "addMoneySecondTextCompany": "You added {{amount}} to {{companyName}}'s Company Account.",
     "addMoneyDonationMatchedAutoText": " In addition, {{matchedAmount}} was matched by {{donationCompany}}, for a total of {{totalAmount}} added to your Impact Account.",
     "addMoneyDonationMatchedManualText": " In addition, you requested a {{matchedAmount}} match from {{donationCompany}}. When their administrator accepts your request, any matched funds will also appear in your account.",
     "addMoneyThirdText": "You can give these charitable dollars to others, including charities and Giving Groups, whenever you choose.",

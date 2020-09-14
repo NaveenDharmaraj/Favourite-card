@@ -50,6 +50,7 @@
         "invalidCvv": "Enter the card's CVV security code."
     },
     "blankError":  "Doit être rempli",
+    "allocationBlankError": "Select an account to give from",
     "amountLabel": "Montant",
     "amountPlaceHolder": "Enter a custom amount",
     "noteRemainingChars1000": "{{currentCount}} sur {{maximum}} caractères restants",
