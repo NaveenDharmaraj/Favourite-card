@@ -1,7 +1,6 @@
 import React, {
     Fragment,
 } from 'react';
-import _ from 'lodash';
 import _isEmpty from 'lodash/isEmpty';
 import {
     Button,
@@ -10,10 +9,9 @@ import {
     Grid,
 } from 'semantic-ui-react';
 import {
-    arrayOf,
+    array,
     PropTypes,
     string,
-    number,
     func,
     bool,
 } from 'prop-types';
@@ -21,6 +19,7 @@ import {
     connect,
 } from 'react-redux';
 
+import { withTranslation } from '../../i18n';
 import {
     getGroupActivities,
     postActivity,
@@ -47,10 +46,12 @@ class Activity extends React.Component {
 
     componentDidMount() {
         const {
-            id,
             dispatch,
             groupActivities: {
                 data: activityData,
+            },
+            groupDetails: {
+                id: groupId,
             },
         } = this.props;
         if (_isEmpty(activityData)) {
@@ -60,13 +61,12 @@ class Activity extends React.Component {
                 },
                 type: actionTypes.GROUP_PLACEHOLDER_STATUS,
             });
-            getGroupActivities(dispatch, id);
+            dispatch(getGroupActivities(groupId));
         }
     }
 
     getComments() {
         const {
-            id: groupId,
             groupActivities: {
                 data,
             },
@@ -74,6 +74,7 @@ class Activity extends React.Component {
                 attributes: {
                     isMember,
                 },
+                id: groupId,
             },
             userInfo: {
                 id: userId,
@@ -103,13 +104,15 @@ class Activity extends React.Component {
     loadMore() {
         const {
             dispatch,
-            id,
             groupActivities: {
                 nextLink: activitiesLink,
             },
+            groupDetails: {
+                id: groupId,
+            },
         } = this.props;
-        const url = (activitiesLink) ? activitiesLink : '';
-        getGroupActivities(dispatch, id, url);
+        const url = !_isEmpty(activitiesLink) ? activitiesLink : '';
+        dispatch(getGroupActivities(groupId, url));
     }
 
     updateInputValue(event) {
@@ -121,12 +124,14 @@ class Activity extends React.Component {
     postComment() {
         const {
             dispatch,
-            id,
+            groupDetails: {
+                id: groupId,
+            },
         } = this.props;
         const {
             commentText: msg,
         } = this.state;
-        postActivity(dispatch, id, msg);
+        dispatch(postActivity(groupId, msg));
         this.setState({
             commentText: '',
         });
@@ -144,6 +149,7 @@ class Activity extends React.Component {
                     isMember,
                 },
             },
+            t: formatMessage,
         } = this.props;
         const {
             commentText,
@@ -151,7 +157,7 @@ class Activity extends React.Component {
         let viewData = '';
         if (!_isEmpty(data)) {
             viewData = (
-                <div className="c-comment">
+                <div className="c-comment ActivityComment">
                     <Comment.Group fluid>
                         {this.getComments()}
                     </Comment.Group>
@@ -159,52 +165,56 @@ class Activity extends React.Component {
             );
         }
         const actionData = (
-            <Grid centered>
-                <Grid.Row>
-                    <Grid.Column mobile={16} tablet={14} computer={14}>
-                        {isMember
+            <div className="ActivityTop">
+                <Grid centered>
+                    <Grid.Row>
+                        <Grid.Column mobile={16} tablet={16} computer={16}>
+                            {isMember
                         && (
-                            <div className="postInputMainWraper">
-                                <div className="postInputWraper">
+                            <div className="postinputBox">
+                                <div className="two-icon-brdr-btm-input">
                                     <Input
                                         value={commentText}
                                         onChange={this.updateInputValue}
                                         type="text"
-                                        placeholder="Write a post..."
+                                        placeholder={formatMessage('groupProfile:activityPlaceholderText')}
+                                        action
                                         fluid
                                     />
                                 </div>
-                                <div className="postBtnWraper">
-                                    <Button
-                                        fluid
-                                        onClick={this.postComment}
-                                        className="blue-bordr-btn-round-def postButton"
-                                    >
-                                    Post
-                                    </Button>
+                                <div className="postSendButton">
+                                    {(!_isEmpty(commentText))
+                                    && (
+                                        <Button
+                                            circular
+                                            icon="paper plane outline"
+                                            onClick={this.postComment}
+                                        />
+                                    )}
                                 </div>
                             </div>
                         )
-                        }
-                        {viewData}
-                    </Grid.Column>
-                </Grid.Row>
-            </Grid>
+                            }
+                            {viewData}
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
+            </div>
         );
 
         return (
             <Fragment>
                 {commentsLoader
-                    ? <PlaceholderGrid row={1} column={1} />
+                    ? <PlaceholderGrid row={4} column={1} placeholderType="activityList" />
                     : actionData
                 }
                 {(activitiesLink)
                 && (
-                    <div className="text-center mt-1 mb-1">
+                    <div className="text-center">
                         <Button
                             onClick={this.loadMore}
-                            className="blue-bordr-btn-round-def w-180"
-                            content="View more"
+                            className="blue-bordr-btn-round-def btn_w_More"
+                            content={formatMessage('groupProfile:viewMore')}
                         />
                     </div>
                 )
@@ -216,26 +226,40 @@ class Activity extends React.Component {
 
 Activity.defaultProps = {
     commentsLoader: true,
-    dispatch: func,
+    dispatch: () => {},
     groupActivities: {
         data: [],
-        links: {
-            next: '',
-        },
+        nextLink: '',
     },
-    id: null,
+    groupDetails: {
+        attributes: {
+            isMember: false,
+        },
+        id: '',
+    },
+    t: () => {},
+    userInfo: {
+        id: '',
+    },
 };
 
 Activity.propTypes = {
     commentsLoader: bool,
-    dispatch: _.noop,
-    groupActivities: {
-        data: arrayOf(PropTypes.element),
-        links: PropTypes.shape({
-            next: string,
+    dispatch: func,
+    groupActivities: PropTypes.shape({
+        data: array,
+        nextLink: string,
+    }),
+    groupDetails: PropTypes.shape({
+        attributes: PropTypes.shape({
+            isMember: bool,
         }),
-    },
-    id: number,
+        id: string,
+    }),
+    t: func,
+    userInfo: PropTypes.shape({
+        id: string,
+    }),
 };
 
 function mapStateToProps(state) {
@@ -246,4 +270,12 @@ function mapStateToProps(state) {
         userInfo: state.user.info,
     };
 }
-export default connect(mapStateToProps)(Activity);
+
+const connectedComponent = withTranslation([
+    'groupProfile',
+])(connect(mapStateToProps)(Activity));
+export {
+    connectedComponent as default,
+    Activity,
+    mapStateToProps,
+};

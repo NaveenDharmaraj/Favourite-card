@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-    Grid,
     Button,
     Header,
     Image,
@@ -8,112 +7,179 @@ import {
 import {
     number,
     string,
+    bool,
+    PropTypes,
+    func,
 } from 'prop-types';
+import { connect } from 'react-redux';
 
+import { withTranslation } from '../../../i18n';
 import {
     formatCurrency,
 } from '../../../helpers/give/utils';
-import placeHolderImage from '../../../static/images/no-data-avatar-giving-group-profile.png';
 
 const ActiveMatchBlock = (props) => {
     const {
         activeMatch: {
             balance,
             company,
+            companyAvatar,
             matchClose,
             matchPercent,
             maxMatchAmount,
             totalMatch,
         },
         type,
+        hasActiveMatch,
+        hasMatchingHistory,
+        isAuthenticated,
+        t: formatMessage,
     } = props;
-    const currency = 'USD';
-    const language = 'en';
-    const formattedBalance = formatCurrency(balance, language, currency);
-    const formattedmaxMatchAmount = formatCurrency(maxMatchAmount, language, currency);
-    const formattedtotalMatch = formatCurrency(totalMatch, language, currency);
-    const matchExpired = (balance === '0');
-    const headingText = matchExpired ? 'Thank you for your support!' : 'Your gift will be matched!';
-    // TODO work on avatar, matching expired or not screens, window scroll, condition to show view matching history
-    return (
-        <div className="charityInfowrap fullwidth lightGreenBg">
-            <div className="charityInfo">
-                <Header as="h4">{headingText}</Header>
-                <p>
-                    For every $1.00 you give to this group,
-                    <b>{company}</b>
-                    &nbsp;will match your gift with $1.00 up to&nbsp;
-                    <b>{formattedmaxMatchAmount}</b>
-                    &nbsp;per gift.
-                </p>
-                <div className="matchingFundsWapper">
-                    <div className="matchingFundsGraff">
-                        <div className="Progresswapper">
-                            <div className="customProgress">
-                                <div className="bar" style={{ height: `${matchPercent}%` }} />
+    if (hasActiveMatch) {
+        const currency = 'USD';
+        const language = 'en';
+        const formattedBalance = formatCurrency(balance, language, currency);
+        const formattedmaxMatchAmount = formatCurrency(maxMatchAmount, language, currency);
+        const formattedtotalMatch = formatCurrency(totalMatch, language, currency);
+        const canSeeMatchingHistory = (isAuthenticated && (type === 'groups') && hasMatchingHistory);
+        const updateIndex = () => {
+            const {
+                dispatch,
+                scrollOffset,
+            } = props;
+
+            dispatch({
+                payload: {
+                    activeIndex: 3,
+                },
+                type: 'GET_GROUP_TAB_INDEX',
+            });
+            window.scrollTo(0, scrollOffset);
+        };
+
+        return (
+            <div className="charityInfowrap fullwidth lightGreenBg">
+                <div className="charityInfo">
+                    <Header as="h4">{formatMessage('groupProfile:matchTextHeading')}</Header>
+                    <p>
+                        {formatMessage('groupProfile:matchGiveGroupText')}
+                        <b>
+                            &nbsp;
+                            {company}
+                            &nbsp;
+                        </b>
+                        {formatMessage('groupProfile:matchGiftText')}
+                        <p>
+                            {formatMessage('groupProfile:matchMaxMatchText',
+                                {
+                                    formattedmaxMatchAmount,
+                                })}
+                        </p>
+                    </p>
+                    <div className="matchingFundsWapper">
+                        <div className="matchingFundsGraff">
+                            <div className="Progresswapper">
+                                <div className="customProgress">
+                                    <div className="bar">
+                                    <span className="progress-inner" style={{ height: `calc(100% - ${matchPercent}%)` }} />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="matchingFundsText">
+                            <Header as="h3">{formattedBalance}</Header>
+                            <Header as="h5">
+                                {formatMessage('groupProfile:matchFundRemaining')}
+                            </Header>
+                            <div className="total">
+                                <p>
+                                    {formatMessage('groupProfile:matchProvidedText',
+                                        {
+                                            company,
+                                            formattedtotalMatch,
+                                        })}
+                                </p>
                             </div>
                         </div>
                     </div>
-                    <div className="matchingFundsText">
-                        <Header as="h3">{formattedBalance}</Header>
-                        <Header as="h5"> matching funds remaining</Header>
-                        <div className="total">
-                            <p>
-                                {` of ${formattedtotalMatch} provided by ${company}`}
-                            </p>
+                    <div className="MatchingPartnerWapper">
+                        <div className="h_profileMatching borderprofile">
+                            <Image src={companyAvatar} />
+                        </div>
+                        <div className="MatchingPartner">
+                            <Header as="h3">{company}</Header>
+                            <p>{formatMessage('groupProfile:matchingPartner')}</p>
                         </div>
                     </div>
+                    {matchClose
+                    && (
+                        <Button className="white-btn-rounded-def goalbtn golbtnDon">
+                            {` ${formatMessage('groupProfile:matchExpires')} ${matchClose}`}
+                        </Button>
+                    )}
+                    {canSeeMatchingHistory
+                    && (
+                        <p onClick={updateIndex} className="blueHistory">{formatMessage('groupProfile:viewMatchHistoryLink')}</p>
+                    )}
                 </div>
-                <Grid.Row className="MatchingPartnerWapper">
-                    <Grid>
-                        <Grid.Column mobile={3} tablet={4} computer={4} className="pr-0">
-                            <div className="h_profileMatching borderprofile">
-                                <Image src={placeHolderImage} />
-                            </div>
-                        </Grid.Column>
-                        <Grid.Column mobile={13} tablet={12} computer={12}>
-                            <div className="MatchingPartner">
-                                <Header as="h3">{company}</Header>
-                                <p>Matching partner</p>
-                            </div>
-                        </Grid.Column>
-                    </Grid>
-                </Grid.Row>
-                <Button className="white-btn-rounded-def goalbtn">
-                    {` Expires ${matchClose}`}
-                </Button>
-                {((type === 'groups') && !matchExpired) // TODO show only when there is matching history is available
-                && (
-                    <p className="blueHistory">View matching history</p>
-                )}
             </div>
-        </div>
-    );
+        );
+    }
+    return null;
 };
 
 ActiveMatchBlock.defaultProps = {
     activeMatch: {
         balance: '',
         company: '',
+        companyAvatar: '',
         companyId: null,
         matchClose: '',
         matchPercent: null,
         maxMatchAmount: null,
         totalMatch: '',
     },
+    dispatch: () => {},
+    hasActiveMatch: false,
+    hasMatchingHistory: false,
+    isAuthenticated: false,
+    scrollOffset: 0,
+    t: () => {},
     type: '',
 };
 
 ActiveMatchBlock.propTypes = {
-    activeMatch: {
+    activeMatch: PropTypes.shape({
         balance: string,
         company: string,
+        companyAvatar: string,
         companyId: number,
         matchClose: string,
         matchPercent: number,
         maxMatchAmount: number,
         totalMatch: string,
-    },
+    }),
+    dispatch: func,
+    hasActiveMatch: bool,
+    hasMatchingHistory: bool,
+    isAuthenticated: bool,
+    scrollOffset: number,
+    t: func,
     type: string,
 };
-export default ActiveMatchBlock;
+
+function mapStateToProps(state) {
+    return {
+        isAuthenticated: state.auth.isAuthenticated,
+        scrollOffset: state.group.scrollOffset,
+    };
+}
+
+const connectedComponent = withTranslation([
+    'groupProfile',
+])(connect(mapStateToProps)(ActiveMatchBlock));
+export {
+    connectedComponent as default,
+    ActiveMatchBlock,
+    mapStateToProps,
+};

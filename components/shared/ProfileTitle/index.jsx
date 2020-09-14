@@ -1,4 +1,3 @@
-
 import React, { Fragment } from 'react';
 import _isEmpty from 'lodash/isEmpty';
 import {
@@ -6,8 +5,12 @@ import {
     Image,
     Header,
 } from 'semantic-ui-react';
-import { PropTypes } from 'prop-types';
+import {
+    PropTypes,
+    func,
+} from 'prop-types';
 
+import { withTranslation } from '../../../i18n';
 import ShareProfile from '../ShareProfile';
 
 function ProfileTitle(props) {
@@ -21,6 +24,7 @@ function ProfileTitle(props) {
         profileId,
         children,
         beneficiaryType,
+        t: formatMessage,
     } = props;
     let causesList = null;
     if (!_isEmpty(causes)) {
@@ -30,9 +34,15 @@ function ProfileTitle(props) {
             </span>
         ));
     }
-    let profileType = type;
+    let profileType = '';
+    let isCharityPage = false;
     if (typeof beneficiaryType !== 'undefined' && !_isEmpty(beneficiaryType)) {
         profileType = beneficiaryType;
+        isCharityPage = true;
+    } else if (type === 'groups') {
+        profileType = formatMessage('common:givingGroup');
+    } else if (type === 'campaigns') {
+        profileType = formatMessage('common:campaigns');
     }
 
     return (
@@ -46,7 +56,7 @@ function ProfileTitle(props) {
             </Grid.Column>
             <Grid.Column mobile={16} tablet={12} computer={12}>
                 <div className="ch_profileDetails">
-                    <Header as="h5">
+                    <Header as="h5" className={`ch_profileDetails ${!isCharityPage ? 'textGreen' : ''}`}>
                         {profileType}
                     </Header>
                     <Header as="h3">
@@ -77,23 +87,27 @@ function ProfileTitle(props) {
 ProfileTitle.defaultProps = {
     avatar: '',
     beneficiaryType: '',
-    causes: '',
+    causes: [],
     following: false,
     location: '',
     name: '',
     profileId: '',
+    t: () => {},
     type: '',
 };
 
 ProfileTitle.propTypes = {
     avatar: PropTypes.string,
     beneficiaryType: PropTypes.string,
-    causes: PropTypes.string,
+    causes: PropTypes.arrayOf(
+        PropTypes.shape({}),
+    ),
     following: PropTypes.bool,
     location: PropTypes.string,
     name: PropTypes.string,
     profileId: PropTypes.string,
+    t: func,
     type: PropTypes.string,
 };
 
-export default ProfileTitle;  
+export default withTranslation('common')(ProfileTitle);

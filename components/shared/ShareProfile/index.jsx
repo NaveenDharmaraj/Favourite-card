@@ -46,8 +46,10 @@ class ShareProfile extends React.Component {
             },
             dispatch,
             liked,
+            name,
             profileId,
             type,
+            t: formatMessage,
         } = this.props;
         dispatch({
             payload: {
@@ -55,10 +57,13 @@ class ShareProfile extends React.Component {
             },
             type: actionTypes.DISABLE_FOLLOW_BUTTON,
         });
+        const toastMessage = formatMessage('common:favouritesToastMessage', {
+            name,
+        });
         if (liked) {
             dispatch(unfollowProfile(userId, profileId, type));
         } else {
-            dispatch(followProfile(userId, profileId, type));
+            dispatch(followProfile(userId, profileId, type, toastMessage));
         }
     }
 
@@ -106,13 +111,13 @@ class ShareProfile extends React.Component {
         let Profiletype = '';
         switch (type) {
             case 'beneficiaries':
-                Profiletype = 'Charity';
+                Profiletype = 'charity';
                 break;
             case 'groups':
-                Profiletype = 'Group';
+                Profiletype = 'group';
                 break;
             case 'campaigns':
-                Profiletype = 'Campaign';
+                Profiletype = 'campaign';
                 break;
             default:
                 break;
@@ -207,6 +212,7 @@ ShareProfile.defaultProps = {
     liked: false,
     name: '',
     profileId: '',
+    t: () => {},
     type: '',
 };
 
@@ -220,6 +226,7 @@ ShareProfile.propTypes = {
     liked: bool,
     name: string,
     profileId: string,
+    t: func,
     type: string,
 };
 

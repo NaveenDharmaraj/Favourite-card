@@ -1,13 +1,14 @@
 import React, {
     Fragment,
 } from 'react';
-import _ from 'lodash';
 import _isEmpty from 'lodash/isEmpty';
 import {
     Button,
     Table,
     Image,
     List,
+    Dropdown,
+    Menu,
 } from 'semantic-ui-react';
 import {
     arrayOf,
@@ -21,6 +22,7 @@ import {
     connect,
 } from 'react-redux';
 
+import { withTranslation } from '../../i18n';
 import {
     getTransactionDetails,
     toggleTransactionVisibility,
@@ -31,6 +33,7 @@ import {
 import PaginationComponent from '../shared/Pagination';
 import PlaceholderGrid from '../shared/PlaceHolder';
 import downloadIcon from '../../static/images/icons/icon-download.svg';
+import imagePlaceholder from '../../static/images/no-data-avatar-user-profile.png';
 
 import GroupNoDataState from './GroupNoDataState';
 
@@ -38,28 +41,53 @@ class TransactionDetails extends React.Component {
     constructor(props) {
         super(props);
         this.onPageChange = this.onPageChange.bind(this);
+        this.handleFilterChange = this.handleFilterChange.bind(this);
         this.state = {
             activePage: 1,
+            selectedValue: 'all',
         };
     }
 
     componentDidMount() {
         const {
             dispatch,
-            id,
+            groupDetails: {
+                id: groupId,
+            },
         } = this.props;
-        getTransactionDetails(dispatch, id);
+        const {
+            selectedValue,
+        } = this.state;
+        dispatch(getTransactionDetails(groupId, selectedValue));
     }
 
     onPageChange(event, data) {
         const {
-            id: groupId,
             dispatch,
+            groupDetails: {
+                id: groupId,
+            },
         } = this.props;
-        const url = `groups/${groupId}/activities?filter[moneyItems]=all&page[number]=${data.activePage}&page[size]=10`;
-        getTransactionDetails(dispatch, groupId, url);
+        const {
+            selectedValue,
+        } = this.state;
+        dispatch(getTransactionDetails(groupId, selectedValue, data.activePage));
         this.setState({
             activePage: data.activePage,
+        });
+    }
+
+    handleFilterChange(event, data) {
+        const {
+            dispatch,
+            groupDetails: {
+                id: groupId,
+            },
+        } = this.props;
+        dispatch(getTransactionDetails(groupId, data.value));
+        this.setState({
+            activePage: 1,
+            selectedValue: data.value,
         });
     }
 
@@ -67,7 +95,7 @@ class TransactionDetails extends React.Component {
         const {
             dispatch,
         } = this.props;
-        toggleTransactionVisibility(dispatch, transactionId, event.target.id);
+        dispatch(toggleTransactionVisibility(transactionId, event.target.id));
     }
 
     render() {
@@ -77,7 +105,7 @@ class TransactionDetails extends React.Component {
                 attributes: {
                     isAdmin,
                     slug,
-                }
+                },
             },
             groupTransactions: {
                 data: groupData,
@@ -87,11 +115,28 @@ class TransactionDetails extends React.Component {
             },
             isChimpAdmin,
             language,
+            t: formatMessage,
             tableListLoader,
         } = this.props;
         const {
             activePage,
+            selectedValue,
         } = this.state;
+        const options = [
+            {
+                text: formatMessage('groupProfile:allActivity'),
+                value: 'all',
+            },
+            {
+                text: formatMessage('groupProfile:giftsReceived'),
+                value: 'in',
+            },
+            {
+                text: formatMessage('groupProfile:giftsGiven'),
+                value: 'out',
+            },
+        ];
+
         let transactionData = (
             <GroupNoDataState
                 type="transactions"
@@ -120,9 +165,7 @@ class TransactionDetails extends React.Component {
                 date = `${month[mm]} ${dd}, ${yyyy}`;
                 let rowClass = '';
                 let transactionSign = '';
-                const imageCls = 'ui image';
                 const amountStatus = transaction.attributes.showAmount ? 'hide' : 'unhide';
-
                 // TODO after Api Changes to show + or -
                 if (transaction.attributes.transactionType === 'GroupReceivedAllocationEvent') {
                     transactionSign = '+';
@@ -131,23 +174,26 @@ class TransactionDetails extends React.Component {
                     transactionSign = '-';
                     rowClass = 'allocation';
                 }
+                const imageUrl = (transaction.attributes.showName ? transaction.attributes.imageUrl : imagePlaceholder);
                 return (
                     <Fragment>
-                        <Table.Row className={rowClass}>
+                        <Table.Row className="EmilyData">
                             <Table.Cell className="date">{date}</Table.Cell>
-                            <Table.Cell>
+                            <Table.Cell className="EmilyGroup full_width_text">
                                 <List verticalAlign="middle">
                                     <List.Item>
-                                        <Image className={imageCls} size="tiny" src={transaction.attributes.imageUrl} />
+                                        <Image className="pr_Img" size="tiny" src={imageUrl} />
                                         <List.Content>
                                             <List.Header>
-                                                {transaction.attributes.description}
+                                                <span className="adminEmily">
+                                                    {transaction.attributes.description}
+                                                </span>
                                             </List.Header>
                                             {(isChimpAdmin && transaction.attributes.canToggleName && !transaction.attributes.isOneTimeUser)
                                             && (
                                                 <Fragment>
-                                                    <a id="name" onClick={() => this.toggleVisibility(event,transaction.id)} className="mr-1">
-                                                                toggle display of name
+                                                    <a id="name" onClick={() => this.toggleVisibility(event,transaction.id)} className="linkgroupProfile">
+                                                        {formatMessage('groupProfile:toggleDisplayname')}
                                                     </a>
                                                 </Fragment>
                                             )}
@@ -164,7 +210,7 @@ class TransactionDetails extends React.Component {
                                         </Fragment>
                                     )
                                     : (
-                                        'Hidden'
+                                        formatMessage('groupProfile:hidden')
                                     )}
                                 {(isChimpAdmin && transaction.attributes.canToggleAmount && !transaction.attributes.isOneTimeUser)
                                 && (
@@ -184,18 +230,32 @@ class TransactionDetails extends React.Component {
 
         return (
             <div>
-                {!_isEmpty(groupData) && isAdmin && (
-                    <a href={`/groups/${slug}.csv`} target="_blank">
-                        <Button
-                            className="blue-bordr-btn-round"
-                        >
-                            Download transaction data <div className="btn-icon-line"><Image src={downloadIcon} /></div>
-                        </Button>
-                    </a>
-
-                )
-                }
-                <Table basic="very" className="brdr-top-btm db-activity-tbl">
+                <div className="btn_wrapper">
+                    {!_isEmpty(groupData) && isAdmin && (
+                        <a href={`/groups/${slug}.csv`} target="_blank">
+                            <Button
+                                className="blue-bordr-btn-round btn_downloading"
+                            >
+                                {formatMessage('groupProfile:downloadData')}
+                                <div className="btn-icon-line"><Image src={downloadIcon} /></div>
+                            </Button>
+                        </a>
+                    )
+                    }
+                    {!_isEmpty(groupData)
+                    && (
+                        <Menu compact className="dropdownRight">
+                            <Dropdown
+                                value={selectedValue}
+                                options={options}
+                                onChange={this.handleFilterChange}
+                                item
+                                fluid
+                            />
+                        </Menu>
+                    )}
+                </div>
+                <Table basic="very" unstackable className="db-activity-tbl Bottomborder Transactions_table">
                     {!tableListLoader ? (
                         <Table.Body>
                             {transactionData}
@@ -205,16 +265,18 @@ class TransactionDetails extends React.Component {
                 </Table>
                 {!_isEmpty(groupData) && pageCount > 1
                     && (
-                        <div className="db-pagination right-align pt-2">
-                            <PaginationComponent
-                                activePage={activePage}
-                                onPageChanged={this.onPageChange}
-                                totalPages={pageCount}
-                                firstItem={(activePage === 1) ? null : undefined}
-                                lastItem={(activePage === pageCount) ? null : undefined}
-                                prevItem={(activePage === 1) ? null : undefined}
-                                nextItem={(activePage === pageCount) ? null : undefined}
-                            />
+                        <div className="paginationWraper">
+                            <div className="db-pagination">
+                                <PaginationComponent
+                                    activePage={activePage}
+                                    onPageChanged={this.onPageChange}
+                                    totalPages={pageCount}
+                                    firstItem={(activePage === 1) ? null : undefined}
+                                    lastItem={(activePage === pageCount) ? null : undefined}
+                                    prevItem={(activePage === 1) ? null : undefined}
+                                    nextItem={(activePage === pageCount) ? null : undefined}
+                                />
+                            </div>
                         </div>
                     )
                 }
@@ -225,37 +287,39 @@ class TransactionDetails extends React.Component {
 
 TransactionDetails.defaultProps = {
     currency: 'USD',
-    dispatch: func,
+    dispatch: () => {},
+    groupDetails: {
+        id: '',
+    },
     groupTransactions: {
         data: [],
-        links: {
-            next: '',
-        },
         meta: {
-            pageCount: '',
+            pageCount: null,
         },
     },
     id: null,
     isChimpAdmin: false,
     language: 'en',
+    t: () => {},
     tableListLoader: true,
 };
 
 TransactionDetails.propTypes = {
     currency: string,
-    dispatch: _.noop,
+    dispatch: func,
+    groupDetails: {
+        id: string,
+    },
     groupTransactions: {
         data: arrayOf(PropTypes.element),
-        links: PropTypes.shape({
-            next: string,
-        }),
         meta: PropTypes.shape({
-            pageCount: string,
+            pageCount: number,
         }),
     },
     id: number,
     isChimpAdmin: bool,
     language: string,
+    t: func,
     tableListLoader: bool,
 };
 
@@ -269,4 +333,12 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(TransactionDetails);
+const connectedComponent = withTranslation([
+    'common',
+    'groupProfile',
+])(connect(mapStateToProps)(TransactionDetails));
+export {
+    connectedComponent as default,
+    TransactionDetails,
+    mapStateToProps,
+};

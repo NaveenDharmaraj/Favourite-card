@@ -1,7 +1,7 @@
 {
     "give": "Give",
-    "editBtn": "Edit",
-    "giveFromBtn": "Give from",
+    "editBtn": "Edit ",
+    "giveFromBtn": "Give from ",
     "totalMoneyRaised": "Total money raised",
     "campaignSupporters": "Campaign supporters",
     "supportCampaign": "Support this Campaign by starting a Giving Group",
@@ -15,5 +15,8 @@
     "supportNoDataSubHeader": "A Giving Group is like a fundraising page where multiple people can combine forces, pool or raise money, and support causes together.",
     "createGivingGroupBtn": "Create a Giving Group",
     "supportCampaignHeader": "Giving Groups supporting this campaign",
-    "totalAmountRaised": "Total Raised: {{amount}}"
+    "totalAmountRaised": "Total Raised: {{amount}}",
+    "popupCurrentBalanceText": "The current {{Profiletype}} balance is {{balance}}.",
+    "campaignButtonText": "Campaign",
+    "groupButtonText": "Group"
 }

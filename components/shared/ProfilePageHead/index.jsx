@@ -1,4 +1,3 @@
-
 import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
 import getConfig from 'next/config';
@@ -6,14 +5,19 @@ import {
     bool,
     PropTypes,
     string,
+    func,
 } from 'prop-types';
 import {
     Button,
     Popup,
 } from 'semantic-ui-react';
 
+import {
+    formatCurrency,
+} from '../../../helpers/give/utils';
 import { withTranslation } from '../../../i18n';
 import { Link } from '../../../routes';
+import GroupJoin from '../../Group/GroupJoin';
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -29,7 +33,7 @@ function ProfilePageHead(props) {
                 isAdmin,
                 slug,
                 balance,
-            }
+            },
         },
         pageDetails,
         isAuthenticated,
@@ -38,27 +42,31 @@ function ProfilePageHead(props) {
     let buttonLink = null;
     let profileType = '';
     let linkAddress;
+    let profileButtonText = '';
+    const currency = 'USD';
+    const language = 'en';
     if (type === 'beneficiaries') {
         profileType = 'charity';
     } else if (type === 'groups') {
         profileType = 'group';
         linkAddress = `${RAILS_APP_URL_ORIGIN}/groups/${slug}/edit`;
+        profileButtonText = formatMessage('campaignProfile:groupButtonText');
     } else if (type === 'campaigns') {
         profileType = 'group';
         linkAddress = `${RAILS_APP_URL_ORIGIN}/campaigns/${slug}/manage-basics`;
+        profileButtonText = formatMessage('campaignProfile:campaignButtonText');
     }
     if (pageDetails.attributes) {
         if (isAuthenticated) {
             if ((type === 'groups' || type === 'campaigns') && isAdmin) {
                 buttonLink = (
-                    <Fragment>
+                    <span className="btn_wrapperTop">
                         <a href={(linkAddress)}>
                             <Button className="blue-bordr-btn-round-def CampaignBtn">
                                 <span>
                                     <i aria-hidden="true" className="edit icon" />
                                 </span>
-                                {formatMessage('campaignProfile:editBtn')}
-                                {type === 'campaigns' ? 'Campaign' : 'Group'}
+                                {`${formatMessage('campaignProfile:editBtn')} ${profileButtonText}`}
                             </Button>
                         </a>
                         {balance > 0
@@ -69,21 +77,26 @@ function ProfilePageHead(props) {
                                         <span>
                                             <i aria-hidden="true" className="bell icon" />
                                         </span>
-                                        {formatMessage('campaignProfile:giveFromBtn')}
-                                        {type === 'campaigns' ? 'Campaign' : 'Group'}
+                                        {`${formatMessage('campaignProfile:giveFromBtn')} ${profileButtonText}`}
                                     </Button>
                                 </Link>
                             ) : (
                                 <Link route={(`/give/to/${profileType}/${slug}/new`)}>
-                                    <Popup disabled={false} content={`The current campaign balance is ${balance}`}
+                                    <Popup
+                                        disabled={false}
+                                        position="bottom center"
+                                        inverted
+                                        content={formatMessage('campaignProfile:popupCurrentBalanceText', {
+                                            balance: formatCurrency(balance, language, currency),
+                                            Profiletype: profileButtonText.toLowerCase(),
+                                        })}
                                         trigger={
                                             (
-                                                <Button className="blue-bordr-btn-round-def CampaignBtn" disabled >
+                                                <Button className="blue-bordr-btn-round-def CampaignBtn hover_disabled">
                                                     <span>
                                                         <i aria-hidden="true" className="bell icon" />
                                                     </span>
-                                                    {formatMessage('campaignProfile:giveFromBtn')}
-                                                    {type === 'campaigns' ? 'Campaign' : 'Group'}
+                                                    {`${formatMessage('campaignProfile:giveFromBtn')} ${profileButtonText}`}
                                                 </Button>
                                             )
                                         }
@@ -91,7 +104,7 @@ function ProfilePageHead(props) {
                                 </Link>
                             )
                         }
-                    </Fragment>
+                    </span>
                 );
             }
         }
@@ -99,30 +112,38 @@ function ProfilePageHead(props) {
     return (
         <Fragment>
             {buttonLink}
+            {(type === 'groups' && !isAdmin)
+            && (
+                <GroupJoin />
+            )}
         </Fragment>
     );
 }
 
 ProfilePageHead.defaultProps = {
+    isAuthenticated: false,
     pageDetails: {
         attributes: {
-            isAdmin: false,
             balance: '',
+            isAdmin: false,
             slug: '',
         },
-        type: ''
+        type: '',
     },
+    t: () => {},
 };
 
 ProfilePageHead.propTypes = {
-    campaignDetails: PropTypes.shape({
+    isAuthenticated: bool,
+    pageDetails: PropTypes.shape({
         attributes: PropTypes.shape({
-            isAdmin: bool,
             balance: string,
+            isAdmin: bool,
             slug: string,
         }),
-        type: string
+        type: string,
     }),
+    t: func,
 };
 
 function mapStateToProps(state) {
