@@ -12,12 +12,19 @@ import { withTranslation } from '../i18n';
 import { Router, Link } from '../routes';
 import {
     getCampaignFromSlug,
+    getCampaignBeneficiariesCount,
     getCampaignSupportGroups,
     getCampaignGalleryImages,
 } from '../actions/profile';
 import Layout from '../components/shared/Layout';
 import CampaignProfileWrapper from '../components/Campaign';
 import storage from '../helpers/storage';
+import {
+    getGroupsAndCampaigns,
+} from '../actions/user';
+import {
+    resetFlowObject,
+} from '../actions/give';
 import '../static/less/campaign_profile.less';
 import '../static/less/charityProfile.less';
 
@@ -47,6 +54,7 @@ class CampaignProfile extends React.Component {
 
     componentDidMount() {
         const {
+            currentUser,
             dispatch,
             slugApiErrorStats,
             campaignDetails: {
@@ -57,6 +65,10 @@ class CampaignProfile extends React.Component {
         if (slugApiErrorStats) {
             Router.pushRoute('/dashboard');
         } else {
+            if (currentUser && currentUser.id) {
+                getGroupsAndCampaigns(dispatch, `/users/${currentUser.id}/groupsWithOnlyMemberships?sort=-id`, 'groupsWithMemberships', false);
+            }
+            dispatch(getCampaignBeneficiariesCount(id));
             dispatch(getCampaignSupportGroups(id));
             dispatch(getCampaignGalleryImages(id));
         }
@@ -70,6 +82,7 @@ class CampaignProfile extends React.Component {
         } = publicRuntimeConfig;
 
         const {
+            dispatch,
             campaignDetails: {
                 attributes: {
                     about,
@@ -87,22 +100,21 @@ class CampaignProfile extends React.Component {
         const causesList = (causes.length > 0) ? _.map(causes, _.property('name')) : [];
         const keywords = (causesList.length > 0) ? _.join(_.slice(causesList, 0, 10), ', ') : '';
         const url = `${APP_URL_ORIGIN}/campaigns/${slug}`;
-        const giveButton = <Button primary className="blue-btn-rounded-def">{formatMessage('campaignProfile:give')}</Button>;
+        const giveButton = <Button onClick={() => { resetFlowObject('group', dispatch); }} primary className="blue-btn-rounded-def">{formatMessage('campaignProfile:give')}</Button>;
         let buttonLink = null;
         if (isAuthenticated) {
             buttonLink = (
                 <Link route={(`/give/to/group/${slug}/new`)}>
                     {giveButton}
                 </Link>
-            )
-        }
-        else {
+            );
+        } else {
             buttonLink = (
                 <a href={(`${RAILS_APP_URL_ORIGIN}/send/to/group/${slug}`)}>
                     {giveButton}
                 </a>
-            )
-        };
+            );
+        }
         if (!slugApiErrorStats) {
             return (
                 <div>

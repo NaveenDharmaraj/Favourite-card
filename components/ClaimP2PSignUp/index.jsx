@@ -211,8 +211,8 @@ class ClaimP2PSignUp extends React.Component {
                         <p className="passwordNote">
                             <span data-test="ClaimP2PSignUp_passwordCount_Characters" className={(validity.doesPwdHaveCount) ? 'blueText' : ''}>
                                 {password.length}/{formatMessage('signUpPasswordValidation.noOfCharacter')}
-                            </span>
-                            <span data-test="ClaimP2PSignUp_passwordCharacter_lowerCase" className={(validity.doesPwdhaveLowerCase) ? 'blueText' : ''}>{formatMessage('signUpPasswordValidation.lowerCaseCharacter')}</span>
+                            </span><br />
+                            <span data-test="ClaimP2PSignUp_passwordCharacter_lowerCase" className={(validity.doesPwdhaveLowerCase) ? 'blueText' : ''}>{formatMessage('signUpPasswordValidation.lowerCaseCharacter')}</span><br />
                             <span data-test="ClaimP2PSignUp_passwordCharacter_upperCase" className={(validity.doesPwdhaveUpperCase) ? 'blueText' : ''}>{formatMessage('signUpPasswordValidation.upperCaseCharacter')}</span><br />
                             <span data-test="ClaimP2PSignUp_passwordCharacter_specialCase" className={(validity.doesPwdhaveSpecialChars) ? 'blueText' : ''}>{formatMessage('signUpPasswordValidation.specialCharacter')}</span>
                         </p>
@@ -222,6 +222,7 @@ class ClaimP2PSignUp extends React.Component {
                         className="blue-btn-rounded-def openImpAct"
                         onClick={(e) => this.handleSubmit(e)}
                         disabled={(!this.validateForm() || buttonClicked)}
+                        loading ={buttonClicked}
                         type="submit"
                     >
                         {buttonClicked ? formatMessage('claimP2P_signUp.submitButtonLoading') : formatMessage('claimP2P_signUp.submitButton')}

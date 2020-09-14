@@ -29,6 +29,12 @@ import {
     Link,
 } from '../routes';
 import storage from '../helpers/storage';
+import {
+    getGroupsAndCampaigns,
+} from '../actions/user';
+import {
+    resetFlowObject,
+} from '../actions/give';
 import '../static/less/charityProfile.less';
 
 const actionTypes = {
@@ -60,6 +66,7 @@ class GroupProfile extends React.Component {
 
     componentDidMount() {
         const {
+            currentUser,
             dispatch,
             slug,
             groupDetails: {
@@ -90,6 +97,9 @@ class GroupProfile extends React.Component {
         if (redirectToPrivateGroupErrorPage) {
             Router.pushRoute('/group/error');
         }
+        if (currentUser && currentUser.id) {
+            getGroupsAndCampaigns(dispatch, `/users/${currentUser.id}/groupsWithOnlyMemberships?sort=-id`, 'groupsWithMemberships', false);
+        }
         if (!_isEmpty(related)) {
             dispatch(getImageGallery(related));
         }
@@ -104,6 +114,7 @@ class GroupProfile extends React.Component {
         } = publicRuntimeConfig;
 
         const {
+            dispatch,
             groupDetails: {
                 attributes: {
                     avatar,
@@ -127,7 +138,7 @@ class GroupProfile extends React.Component {
         const causesList = (causes.length > 0) ? _map(causes, _property('name')) : [];
         const keywords = (causesList.length > 0) ? (causesList.slice(0, 10)).join(', ') : '';
         const url = `${APP_URL_ORIGIN}/groups/${slug}`;
-        const giveButtonElement = <Button className="blue-btn-rounded-def">{formatMessage('common:giveButtonText')}</Button>;
+        const giveButtonElement = <Button onClick={() => { resetFlowObject('group', dispatch); }} className="blue-btn-rounded-def">{formatMessage('common:giveButtonText')}</Button>;
         let giveButton = null;
         if (isAuthenticated) {
             giveButton = (
@@ -229,6 +240,7 @@ GroupProfile.propTypes = {
 
 function mapStateToProps(state) {
     return {
+        currentUser: state.user.info,
         groupDetails: state.group.groupDetails,
         isAuthenticated: state.auth.isAuthenticated,
         redirectToDashboard: state.group.redirectToDashboard,

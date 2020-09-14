@@ -7,7 +7,7 @@ import {
     Button,
 } from "semantic-ui-react";
 import getConfig from 'next/config';
-
+import storage from '../../../../helpers/storage';
 import { Link } from '../../../../routes';
 import logo from '../../../../static/images/CharitableImpact.png';
 import searchIcon from '../../../../static/images/icons/icon-search.svg';
@@ -50,7 +50,11 @@ class MobileHeader extends React.Component {
         const {
             visible,
         } = this.state;
-        const { activeIndex } = this.state
+        const { activeIndex } = this.state;
+        let claimCharityAccessCode;
+        if (typeof Storage !== 'undefined') {
+            claimCharityAccessCode = storage.getLocalStorageWithExpiry('claimToken', 'local');
+        }
         return (
             <Sidebar.Pushable className="c-m-default-header">
                 <Sidebar
@@ -64,7 +68,7 @@ class MobileHeader extends React.Component {
                         <Link route="/users/login">
                             <Button as="a" basic color="blue" >Login</Button>
                         </Link>
-                        <Link route="/users/new">
+                        <Link route={claimCharityAccessCode ? `/users/new?isClaimCharity=${true}` : '/users/new'}>
                             <Button as="a" color="blue">Sign up</Button>
                         </Link>
                     </Menu.Item>

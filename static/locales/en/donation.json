@@ -2,7 +2,7 @@
     "automaticDonationLabel": "Repeat monthly",
     "automaticDonationPopup": "Adding money monthly is a great way to make sure you always have charitable dollars on hand when you decide to give.",
     "recurringMontlyDonationLabel": "Automatically add this amount each month.",
-    "donationRecurringDateNote": "Your first monthly deposit will be scheduled for {{recurringDate}}.",
+    "donationRecurringDateNote": "Money will be added to your Impact Account starting on {{recurringDate}}.",
     "recurringMonthlyFirstLabel": "Add money on the 1st of every month",
     "recurringMonthlyFifteenLabel": "Add money on the 15th of every month",
     "noteToSelfLabel" : "Note to self (optional)",

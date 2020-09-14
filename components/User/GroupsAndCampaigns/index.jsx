@@ -130,7 +130,7 @@ class GroupsAndCampaigns extends React.Component {
                                                 </Header.Content>
                                             </Header>
                                             <div>
-                                                <a href={`${RAILS_APP_URL_ORIGIN}/groups/new`}>
+                                                <a href={`${RAILS_APP_URL_ORIGIN}/groups/step/one`}>
                                                     <Button className="success-btn-rounded-def">Create a Giving Group</Button>
                                                 </a>
                                             </div>
@@ -187,7 +187,7 @@ class GroupsAndCampaigns extends React.Component {
                                                 </Header.Content>
                                             </Header>
                                             <div>
-                                                <a href={`${RAILS_APP_URL_ORIGIN}/groups/new`}>
+                                                <a href={`${RAILS_APP_URL_ORIGIN}/groups/step/one`}>
                                                     <Button className="success-btn-rounded-def">Create a Giving Group</Button>
                                                 </a>
                                             </div>
@@ -221,7 +221,7 @@ class GroupsAndCampaigns extends React.Component {
         } = this.props;
         let givingGroupsMemberVisible = 0;
         let givingGroupsManageVisible = 0;
-        if (!_.isEmpty(userProfileBasicData)) {
+        if (!_.isEmpty(userProfileBasicData) && userProfileBasicData.data) {
             givingGroupsMemberVisible = userProfileBasicData.data[0].attributes.giving_group_member_visibility;
             givingGroupsManageVisible = userProfileBasicData.data[0].attributes.giving_group_manage_visibility;
         }
@@ -245,7 +245,7 @@ class GroupsAndCampaigns extends React.Component {
                                             <Button fluid className="success-btn-rounded-def">Learn how to start a Giving Group</Button>
                                         </a>
                                         ) : (
-                                        <a href={`${RAILS_APP_URL_ORIGIN}/groups/new`}>
+                                        <a href={`${RAILS_APP_URL_ORIGIN}/groups/step/one`}>
                                             <Button fluid className="success-btn-rounded-def">Create a new Giving Group</Button>
                                         </a>
                                     )

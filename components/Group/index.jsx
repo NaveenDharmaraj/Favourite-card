@@ -3,6 +3,7 @@ import React, {
 } from 'react';
 import { connect } from 'react-redux';
 import {
+    func,
     PropTypes,
     string,
     bool,
@@ -14,6 +15,7 @@ import {
     Responsive,
     Divider,
 } from 'semantic-ui-react';
+import _isEmpty from 'lodash/isEmpty';
 
 import BreadcrumbDetails from '../shared/BreadCrumbs';
 import ProfileTitle from '../shared/ProfileTitle';
@@ -26,6 +28,10 @@ import GroupRightColumnList from './GroupRightColumnList';
 
 const GroupProfileWrapper = (props) => {
     const {
+        dispatch,
+        groupBeneficiaries: {
+            data,
+        },
         groupDetails: {
             attributes: {
                 activeMatch,
@@ -43,6 +49,7 @@ const GroupProfileWrapper = (props) => {
             data: matchHistory,
         },
     } = props;
+    const beneficiariesCount = !_isEmpty(data) ? data : null;
     const {
         groupDetails,
     } = props;
@@ -76,7 +83,9 @@ const GroupProfileWrapper = (props) => {
                                             profileId={profileId}
                                         >
                                             <ProfilePageHead
+                                                beneficiariesCount={beneficiariesCount}
                                                 pageDetails={groupDetails}
+                                                dispatch={dispatch}
                                             />
                                         </ProfileTitle>
                                     </Grid>
@@ -120,6 +129,10 @@ const GroupProfileWrapper = (props) => {
 };
 
 GroupProfileWrapper.defaultProps = {
+    dispatch: () => {},
+    groupBeneficiaries: {
+        data: [],
+    },
     groupDetails: {
         attributes: {
             activeMatch: {},
@@ -139,6 +152,10 @@ GroupProfileWrapper.defaultProps = {
 };
 
 GroupProfileWrapper.propTypes = {
+    dispatch: func,
+    groupBeneficiaries: PropTypes.shape({
+        data: array,
+    }),
     groupDetails: PropTypes.shape({
         attributes: PropTypes.shape({
             activeMatch: PropTypes.shape({}),
@@ -159,6 +176,7 @@ GroupProfileWrapper.propTypes = {
 
 function mapStateToProps(state) {
     return {
+        groupBeneficiaries: state.group.groupBeneficiaries,
         groupDetails: state.group.groupDetails,
         groupMatchingHistory: state.group.groupMatchingHistory,
     };
