@@ -66,7 +66,7 @@ class DedicateGift extends Component {
         } = this.props;
         return (
             <Fragment>
-                <div className="give_flow_field">
+                <div className="give_flow_field dedicate-flow">
                     <label>Dedicate this gift (optional)</label>
                     <span className="givingInfoText">Only you will see this in your Account Details.</span>
                     <Accordion>

@@ -41,6 +41,7 @@ import {
     setDonationAmount,
     validateGiveForm,
     validateForReload,
+    findingErrorElement,
 } from '../../../helpers/give/utils';
 import {
     getCoverAmount,
@@ -476,10 +477,12 @@ class Charity extends React.Component {
             validity,
             reviewBtnFlag: !validity.isReloadRequired
         });
-        if (!validity.isReloadRequired || !validity.doesAmountExist){
-            window.scrollTo(0,0)
+        const validationsResponse = _every(validity);
+        if (!validationsResponse) {
+            const errorNode = findingErrorElement(validity, 'allocation');
+            !_isEmpty(errorNode) && document.querySelector(`${errorNode}`).scrollIntoView({behavior: "smooth", block: "center"});
         }
-        return _every(validity);
+        return validationsResponse;
     }
 
     /**

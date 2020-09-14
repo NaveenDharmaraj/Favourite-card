@@ -63,7 +63,7 @@ function DonationAmountField(props) {
                 placeholder={formatMessage('giveCommon:amountPlaceHolder')}
                 size="large"
                 value={amount}
-                className={`give_field ${amount ? 'give_amount' : ''}`}
+                className={`give_field ${amount ? 'give_amount' : ''} amountField`}
             />
             <FormValidationErrorMessage
                 condition={!validity.doesAmountExist || !validity.isAmountMoreThanOneDollor

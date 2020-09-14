@@ -1740,10 +1740,10 @@ const checkMatchPolicyExpiry = (date, day, name, formatMessage) => {
         isValidMatchPolicy: true,
         matchPolicyTitle: `${name} will match your gift.`,
     } : {
-        hasMatchingPolicy: true,
-        isValidMatchPolicy: false,
-        matchPolicyTitle: `Your gift will not be matched. The matching campaign expires on ${date} which occurs before your first monthly gift is scheduled.`,
-    };
+            hasMatchingPolicy: true,
+            isValidMatchPolicy: false,
+            matchPolicyTitle: `Your gift will not be matched. The matching campaign expires on ${date} which occurs before your first monthly gift is scheduled.`,
+        };
 };
 
 
@@ -1784,11 +1784,56 @@ const checkMatchPolicy = (giveGroupDetails = {}, giftType = 0, formatMessage) =>
     };
 };
 
+/**
+* Determine whether the supplied field is valid.
+* @param  {object} validity    validition properties of taxereceipt profile
+* @param  {string} type tells about the type of giving flow
+* @return {string} return value of particular element in which error occured.
+*/
+const findingErrorElement = (validity, type) => {
+    switch (type) {
+        case 'donation':
+            if (!isValidGiftAmount(validity)) {
+                return '.amountField';
+            } if (!validity.isValidAddingToSource) {
+                return '.giveFromAccount';
+            } if (!validity.isCreditCardSelected) {
+                return '.credit-card';
+            } if (!validity.isTaxReceiptSelected) {
+                return '.new-tax-receipt';
+            } if (!validity.isNoteToSelfValid) {
+                return '.noteToSelf';
+            }
+            break;
+        case 'allocation':
+            if ((typeof validity.isValidGiveTo === "boolean") && !validity.isValidGiveTo) {
+                return '.group-to-give';
+            } if (typeof validity.isValidEmailList === "boolean" && (!validity.isValidEmailList
+                || !validity.isRecipientListUnique || !validity.isRecipientHaveSenderEmail
+                || !validity.isNumberOfEmailsLessThanMax || !validity.isRecepientSelected
+            )) {
+                return '.friends-error'
+            }
+            if (!isValidGiftAmount(validity) || !validity.isAmountCoverGive) {
+                return '.amountField';
+            } if (!validity.isValidGiveFrom || !validity.isReloadRequired) {
+                return '.giveFromAccount';
+            }
+            if ((typeof validity.isDedicateGiftEmpty === "boolean") && !validity.isDedicateGiftEmpty) {
+                return '.dedicate-flow';
+            } if (!validity.isValidNoteToCharity || !validity.isValidNoteToSelf) {
+                return '.noteToSelf';
+            } 
+            return '';
+        default: break;
+    }
+};
 
 export {
     checkMatchPolicy,
     percentage,
     fullMonthNames,
+    findingErrorElement,
     monthNamesForGivingTools,
     validateTaxReceiptProfileForm,
     onWhatDayList,

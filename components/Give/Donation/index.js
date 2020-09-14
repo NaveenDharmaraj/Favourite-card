@@ -64,6 +64,7 @@ import {
     validateDonationForm,
     fullMonthNames,
     formatCurrency,
+    findingErrorElement,
 } from '../../../helpers/give/utils';
 
 import CreditCard from '../../shared/CreditCard';
@@ -217,7 +218,12 @@ class Donation extends React.Component {
         validity = validateDonationForm('taxReceipt', taxReceipt, validity );
         validity = validateDonationForm('creditCard', creditCard, validity);
         this.setState({ validity });
-        return _.every(validity);
+        const validationsResponse = _.every(validity);
+        if (!validationsResponse) {
+            const errorNode = findingErrorElement(validity, 'donation');
+            !_isEmpty(errorNode) && document.querySelector(`${errorNode}`).scrollIntoView({behavior: "smooth", block: "center"});
+        }
+        return validationsResponse;
     }
 
     handleInputChange = (event, data) => {

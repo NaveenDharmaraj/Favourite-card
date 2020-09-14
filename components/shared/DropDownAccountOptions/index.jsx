@@ -127,7 +127,7 @@ class DropDownAccountOptions extends React.Component {
         } else {
             newPlaceholderValue = selectedValue ? selectedValue.toString() : '';
             fieldData = (
-                <div className="dropdownSearch dropdownWithArrowParentnotbg medium">
+                <div className="dropdownSearch dropdownWithArrowParentnotbg medium giveFromAccount">
                     <Dropdown
                         className="dropdownsearchField grouped medium"
                         error={!validity || reviewBtnFlag}

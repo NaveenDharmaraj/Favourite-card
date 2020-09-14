@@ -50,6 +50,7 @@ import {
     validateForReload,
     populateInfoToShareAccountName,
     checkMatchPolicy,
+    findingErrorElement,
 } from '../../../helpers/give/utils';
 import {
     getCompanyPaymentAndTax,
@@ -475,10 +476,12 @@ class Group extends React.Component {
             validity,
             reviewBtnFlag: !validity.isReloadRequired
         });
-        if (!validity.isReloadRequired || !validity.doesAmountExist){
-            window.scrollTo(0,0)
+        const validationsResponse = _every(validity);
+        if (!validationsResponse) {
+            const errorNode = findingErrorElement(validity, 'allocation');
+            !_isEmpty(errorNode) && document.querySelector(`${errorNode}`).scrollIntoView({behavior: "smooth", block: "center"});
         }
-        return _every(validity);
+        return validationsResponse;
     }
 
     handleInputOnBlur(event, data) {
@@ -1139,7 +1142,7 @@ class Group extends React.Component {
                                                                                 {formatMessage('giveToLabel')}
                                                                             </label>
                                                                             <Form.Field
-                                                                                className="dropdownWithArrowParent"
+                                                                                className="dropdownWithArrowParent group-to-give"
                                                                                 control={Select}
                                                                                 error={!validity.isValidGiveTo}
                                                                                 id="giveToList"

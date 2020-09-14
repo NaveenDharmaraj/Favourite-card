@@ -36,7 +36,7 @@ function PaymentInstruments(props) {
                   <div className="field give_flow_field">
                         <label>Payment method</label>
                         <div
-                            className="addNewCardInput"
+                            className="addNewCardInput credit-card"
                             id="addFirstCreditCard"
                             onClick={handleAddNewButtonClicked}>
                             + Add new card

@@ -37,6 +37,7 @@ import {
     getSelectedFriendList,
     validateForReload,
     calculateP2pTotalGiveAmount,
+    findingErrorElement,
 } from '../../../helpers/give/utils';
 import { getDonationMatchAndPaymentInstruments } from '../../../actions/user';
 import {
@@ -619,10 +620,12 @@ class Friend extends React.Component {
             validity,
             reviewBtnFlag: !validity.isReloadRequired,
         });
-        if (!validity.isReloadRequired || !validity.doesAmountExist){
-            window.scrollTo(0,0)
+        const validationsResponse = _.every(validity);
+        if (!validationsResponse) {
+            const errorNode = findingErrorElement(validity, 'allocation');
+            !_isEmpty(errorNode) && document.querySelector(`${errorNode}`).scrollIntoView({behavior: "smooth", block: "center"});
         }
-        return _.every(validity);
+        return validationsResponse;
     }
 
     handleGiveToEmail() {
@@ -820,7 +823,7 @@ class Friend extends React.Component {
                                                 <Grid.Row>
                                                     {
                                                         (emailMasked) &&
-                                                        <Grid.Column mobile={16} tablet={12} computer={10}>
+                                                        <Grid.Column className="friends-error" mobile={16} tablet={12} computer={10}>
                                                             <Form.Field>
                                                                 <label htmlFor="recipientName">
                                                                     {formatMessage('friends:recipientsLabel')}
@@ -840,7 +843,7 @@ class Friend extends React.Component {
                                                     {
                                                         (!emailMasked) &&
                                                         <Fragment>
-                                                            <Grid.Column mobile={16} tablet={12} computer={10}>
+                                                            <Grid.Column className="friends-error" mobile={16} tablet={12} computer={10}>
                                                                 <label htmlFor="recipients">
                                                                     {formatMessage('friends:recipientsLabel')}
                                                                 </label>
