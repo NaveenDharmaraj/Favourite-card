@@ -230,24 +230,6 @@ export const getCampaignFromSlug = (slug, token = null) => async (dispatch) => {
             },
             type: actionTypes.GET_CAMPAIGN_FROM_SLUG,
         });
-        if (result.data) {
-            // API call for related beneficiaries
-            coreApi.get(result.data.relationships.groupBeneficiaries.links.related, {
-                params: {
-                    dispatch,
-                    ignore401: true,
-                },
-            }).then((campaignRelatedBeneficiaries) => {
-                dispatch({
-                    payload: {
-                        campaignRelatedBeneficiariesCount: campaignRelatedBeneficiaries.data.length,
-                    },
-                    type: actionTypes.GET_RELATED_BENEFICIARIES_COUNT_FOR_CAMPAIGN,
-                });
-            }).catch((error) => {
-                // console.log(error);
-            });
-        }
     }).catch((error) => {
         // console.log(error);
         dispatch({
