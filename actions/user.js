@@ -19,6 +19,9 @@ import storage from '../helpers/storage';
 const { publicRuntimeConfig } = getConfig();
 const {
     BASIC_AUTH_KEY,
+    PARAMSTORE_APP_NAME,
+    PARAMSTORE_ENV_NAME,
+    PARAMSTORE_NAME_SPACE
 } = publicRuntimeConfig;
 let BASIC_AUTH_HEADER = null;
 if (!_.isEmpty(BASIC_AUTH_KEY)) {
@@ -929,9 +932,9 @@ export const claimCharityErrorCondition = (message) => (dispatch) =>{
 export const getParamStoreConfig = (params = []) => async (dispatch) => {
     try {
         const paramStoreConfigResponse = await securityApi.post('/paramStore/readParams', {
-            appName: '/webclient/',
-            envName: '/dev/',
-            nameSpace: '/secrets/',
+            appName: PARAMSTORE_APP_NAME,
+            envName: PARAMSTORE_ENV_NAME,
+            nameSpace: PARAMSTORE_NAME_SPACE,
             ssmKey: [
                 ...params,
             ],

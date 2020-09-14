@@ -25,13 +25,11 @@ import '../../../static/less/style.less';
 import { isValidBrowser } from '../../../helpers/utils';
 import registerAppLozic from '../../../helpers/initApplozic';
 import { getParamStoreConfig } from '../../../actions/user';
+import configObj from '../configEnv';
 
 const { publicRuntimeConfig } = getConfig();
 
 const {
-    APPLOZIC_BASE_URL,
-    APPLOZIC_WS_URL,
-    APPLOZIC_APP_KEY,
     BRANCH_IO_KEY,
     HELP_SCOUT_KEY,
     NEWRELIC_ENV,
@@ -87,6 +85,7 @@ class Layout extends React.Component {
             window.userLastName = userLastName;
             try {
                 const applozicConfig = await dispatch(getParamStoreConfig(["APPLOZIC_APP_KEY", "APPLOZIC_BASE_URL", "APPLOZIC_WS_URL"]))
+                configObj.envVariable = applozicConfig;
                 window.APPLOZIC_BASE_URL = applozicConfig['APPLOZIC_BASE_URL']
                 window.APPLOZIC_WS_URL = applozicConfig['APPLOZIC_WS_URL']
                 window.APPLOZIC_APP_KEY = applozicConfig['APPLOZIC_APP_KEY'];
