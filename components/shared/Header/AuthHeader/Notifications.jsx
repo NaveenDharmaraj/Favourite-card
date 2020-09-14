@@ -18,6 +18,7 @@ import eventApi from '../../../../services/eventApi';
 import {
     updateUserPreferences,
 } from '../../../../actions/userProfile';
+import { getParamStoreConfig } from '../../../../actions/user';
 
 class Notifications extends React.Component {
     constructor(props) {
@@ -66,18 +67,28 @@ class Notifications extends React.Component {
         });
     }
 
-    componentWillMount() {
+    async componentDidMount() {
         const {
+            config,
             messages,
             userInfo,
             dispatch,
         } = this.props;
-        if (_isEmpty(messages)) {
-            NotificationHelper.firebaseInitialLoad(userInfo, dispatch);
+        if (_isEmpty(messages) && _isEmpty(config.FIREBASE_API_KEY)) {
+            const firebaseConfigResponse = await dispatch(getParamStoreConfig(['FIREBASE_API_KEY', 'FIREBASE_AUTH_DOMAIN', 'FIREBASE_DATABASE_URL',
+            'FIREBASE_PROJECT_ID', 'FIREBASE_STORAGE_BUCKET', 'FIREBASE_MSG_SENDER_ID', 'FIREBASE_APP_ID'
+            ]));
+            const firebaseConfig = {
+                apiKey: firebaseConfigResponse.FIREBASE_API_KEY,
+                authDomain: firebaseConfigResponse.FIREBASE_AUTH_DOMAIN,
+                databaseURL: firebaseConfigResponse.FIREBASE_DATABASE_URL,
+                projectId: firebaseConfigResponse.FIREBASE_PROJECT_ID,
+                storageBucket: firebaseConfigResponse.FIREBASE_STORAGE_BUCKET,
+                messagingSenderId: firebaseConfigResponse.FIREBASE_MSG_SENDER_ID || '745841700240',
+                appId: firebaseConfigResponse.FIREBASE_APP_ID
+            };
+            NotificationHelper.firebaseInitialLoad(userInfo, dispatch, firebaseConfig);
         }
-    }
-
-    componentDidMount() {
         window.addEventListener('scroll', () => {
             const {
                 classForMargin,
@@ -172,7 +183,7 @@ class Notifications extends React.Component {
             } else {
                 return null;
             }
-            if (this.state.deletedItems.indexOf(msg['id']) >= 0) {
+            if (this.state.deletedItems.indexOf(msg.id) >= 0) {
                 return list.push(
                     <List.Item key={`notification_msg_${msg._key}`} className="new">
                         <div className="blankImage" />
@@ -228,7 +239,7 @@ class Notifications extends React.Component {
             }
             case 'sendThankYou': {
                 // let thankyouNote = ctaOptions.msg[this.state.localeCode];
-                const userId = ctaOptions['user_id'];
+                const userId = ctaOptions.user_id;
                 Router.pushRoute(`/chats/${userId}`);
                 break;
             }
@@ -249,12 +260,12 @@ class Notifications extends React.Component {
                 break;
             }
             case 'goToGivingGroup': {
-                const givingGroupSlug = ctaOptions['group_slug'];
+                const givingGroupSlug = ctaOptions.group_slug;
                 Router.pushRoute(`/groups/${givingGroupSlug}`);
                 break;
             }
             case 'sayCongrats': {
-                const userId = ctaOptions['user_id'];
+                const userId = ctaOptions.user_id;
                 Router.pushRoute(`/chats/${userId}`);
                 break;
             }
@@ -263,7 +274,7 @@ class Notifications extends React.Component {
                 break;
             }
             case 'viewProfile': {
-                const userId = ctaOptions['user_id'];
+                const userId = ctaOptions.user_id;
                 Router.pushRoute(`/users/profile/${userId}`);
                 break;
             }
@@ -381,6 +392,7 @@ function mapStateToProps(state) {
         fr: 'fr_CA',
     };
     return {
+        config: state.firebase.config,
         messages: state.firebase.messages,
         lastSyncTime: state.firebase.lastSyncTime,
         localeCode: localeCodes[state.user.info.attributes.language ? state.user.info.attributes.language : 'en'],
@@ -388,5 +400,9 @@ function mapStateToProps(state) {
         userInfo: state.user.info,
     };
 }
-
+Notifications.defaultProps = {
+    config: {
+        FIREBASE_API_KEY: '',
+    },
+};
 export default withTranslation('notification')(connect(mapStateToProps)(Notifications));
