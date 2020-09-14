@@ -17,6 +17,7 @@ import getConfig from 'next/config';
 
 import { Link } from '../../routes';
 import { withTranslation } from '../../i18n';
+import { resetFlowObject } from '../../actions/give';
 
 const { publicRuntimeConfig } = getConfig();
 const {
@@ -39,6 +40,7 @@ const UserDetails = (props) => {
                 headQuarterAddress,
             },
         },
+        dispatch,
         isAuthenticated,
         t: formatMessage,
     } = props;
@@ -121,7 +123,7 @@ const UserDetails = (props) => {
         if (isAuthenticated) {
             buttonLink = (
                 <Link route={(`/give/to/charity/${slug}/gift/new`)} data-test="Charity_UserDetails_giveButton_loggedInUser">
-                    <Button data-test="Charity_UserDetails_giveButton" className="blue-btn-rounded-def">{formatMessage('charityProfile:give')}</Button>
+                    <Button data-test="Charity_UserDetails_giveButton" className="blue-btn-rounded-def" onClick={() => { resetFlowObject('charity', dispatch); }}>{formatMessage('charityProfile:give')}</Button>
                 </Link>
             );
         } else {

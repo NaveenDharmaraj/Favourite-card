@@ -1,3 +1,4 @@
+/* eslint-disable import/exports-last */
 /* eslint-disable no-else-return */
 
 import _ from 'lodash';
@@ -29,7 +30,9 @@ if (!_.isEmpty(BASIC_AUTH_KEY)) {
     };
 }
 
+
 export const actionTypes = {
+    GET_FRIENDS_LIST: 'GET_FRIENDS_LIST',
     GET_MATCH_POLICIES_PAYMENTINSTRUMENTS: 'GET_MATCH_POLICIES_PAYMENTINSTRUMENTS',
     GET_USERS_GROUPS: 'GET_USERS_GROUPS',
     GET_UPCOMING_TRANSACTIONS: 'GET_UPCOMING_TRANSACTIONS',
@@ -39,6 +42,7 @@ export const actionTypes = {
     SAVE_DEEP_LINK: 'SAVE_DEEP_LINK',
     SET_USER_INFO: 'SET_USER_INFO',
     SET_USER_ACCOUNT_FETCHED: 'SET_USER_ACCOUNT_FETCHED',
+    SHOW_FRIENDS_DROPDOWN: 'SHOW_FRIENDS_DROPDOWN',
     UPDATE_USER_FUND: 'UPDATE_USER_FUND',
     GIVING_GROUPS_AND_CAMPAIGNS: 'GIVING_GROUPS_AND_CAMPAIGNS',
     DISABLE_GROUP_SEE_MORE: 'DISABLE_GROUP_SEE_MORE',
@@ -48,6 +52,7 @@ export const actionTypes = {
     USER_FAVORITES: 'USER_FAVORITES',
     UPDATE_FAVORITES: 'UPDATE_FAVORITES',
     ENABLE_FAVORITES_BUTTON: 'ENABLE_FAVORITES_BUTTON',
+    UPDATE_USER_INFO_SHARE_PREFERENCES: 'UPDATE_USER_INFO_SHARE_PREFERENCES',
     CLAIM_CHARITY_ERROR_MESSAGE: 'CLAIM_CHARITY_ERROR_MESSAGE',
 };
 
@@ -374,8 +379,10 @@ export const getUser = (dispatch, userId, token = null) => {
                             const { roleType } = attributes;
                             const entityType = _.snakeCase(roleType).split('_')[0];
                             if (entityType.slice(-1) === 'y') {
+                                const typeOfAccount = (entityType === 'beneficiary') ? 'charity' : entityType;
                                 contexts.push({
-                                    accountType: (entityType === 'beneficiary') ? 'charity' : entityType,
+                                    accountId: (typeOfAccount === 'company') ? attributes.companyId : null,
+                                    accountType: typeOfAccount,
                                     entityId: attributes[`${entityType}Id`],
                                     roleId: id,
                                 });
@@ -405,6 +412,7 @@ export const getUser = (dispatch, userId, token = null) => {
                         if (!_.isEmpty(account)) {
                             account.location = `/contexts/${roleId}`;
                             account.accountType = context.accountType;
+                            account.id = context.accountId;
                             if (roleId == activeRoleId) {
                                 fsa.payload.currentAccount = account;
                             } else {
@@ -580,8 +588,6 @@ export const getGroupsAndCampaigns = (dispatch, url, type, appendData = true, pr
         dispatch(fsa);
     });
 };
-
-
 
 export const leaveGroup = (dispatch, group, allData, type) => {
     const fsa = {
@@ -853,6 +859,53 @@ export const saveUserCauses = (dispatch, userId, userCauses, discoverValue) => {
     });
 };
 
+export const getAllFriendsList = async (userId, pageNumber = 1) => {
+    const result = await graphApi.get(`user/myfriends`, {
+        params: {
+            'page[number]': pageNumber,
+            'page[size]': 100,
+            status: 'accepted',
+            userid: userId,
+        },
+    });
+    const dataArray = result.data;
+    if (pageNumber < result.meta.pageCount) {
+        return dataArray.concat(await getAllFriendsList(userId, pageNumber + 1));
+    }
+    return dataArray;
+};
+
+export const getFriendsList = (userId) => {
+    return async (dispatch) => {
+        const fsa = {
+            payload: {
+                friendsList: [],
+            },
+            type: actionTypes.GET_FRIENDS_LIST,
+        };
+        const friendsList = await (getAllFriendsList(userId));
+        if (!_.isEmpty(friendsList)) {
+            fsa.payload.friendsList = friendsList;
+            dispatch(fsa);
+        } else {
+            dispatch({
+                payload: {
+                    showFriendDropDown: false,
+                },
+                type: actionTypes.SHOW_FRIENDS_DROPDOWN,
+            });
+        }
+    };
+};
+
+export const updateInfoShareUserPreferences = (infoData) => (dispatch) => {
+    dispatch({
+        payload: {
+            info: infoData,
+        },
+        type: actionTypes.UPDATE_USER_INFO_SHARE_PREFERENCES,
+    });
+};
 export const checkClaimCharityAccessCode = (accessCode, userId) => (dispatch) => {
     return coreApi.post(`/claimCharities`, {
         data: {
@@ -875,7 +928,7 @@ export const checkClaimCharityAccessCode = (accessCode, userId) => (dispatch) =>
             });
         }
     ).catch(() => {
-        const errorMessage = "That code doesn't look right or it's expired. Try again or claim without a code below.";
+        const errorMessage = 'That code doesn\'t look right or it\'s expired. Try again or claim without a code below.';
         dispatch(claimCharityErrorCondition(errorMessage));
     });
 };
@@ -911,10 +964,10 @@ export const validateClaimCharityAccessCode = (accessCode) => (dispatch) => {
                 Router.pushRoute('/users/new?isClaimCharity=true');
             }
         }).catch(() => {
-            const errorMessage = "That code doesn't look right or it's expired. Try again or claim without a code below.";
+            const errorMessage = 'That code doesn\'t look right or it\'s expired. Try again or claim without a code below.';
             dispatch(claimCharityErrorCondition(errorMessage));
         });
-}
+};
 
 export const claimCharityErrorCondition = (message) => (dispatch) =>{
     dispatch({
@@ -923,4 +976,4 @@ export const claimCharityErrorCondition = (message) => (dispatch) =>{
         },
         type: actionTypes.CLAIM_CHARITY_ERROR_MESSAGE,
     });
-}
+};
