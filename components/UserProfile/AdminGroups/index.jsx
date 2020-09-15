@@ -4,11 +4,19 @@ import _ from 'lodash';
 import {
     Container,
     Header,
-    Grid,
+    Card,
 } from 'semantic-ui-react';
 import {
     connect,
 } from 'react-redux';
+import _isEmpty from 'lodash/isEmpty';
+import {
+    array,
+    func,
+    string,
+    number,
+    PropTypes,
+} from 'prop-types';
 
 import {
     getUserAdminGroup,
@@ -17,7 +25,20 @@ import placeholderGroup from '../../../static/images/no-data-avatar-giving-group
 import PlaceholderGrid from '../../shared/PlaceHolder';
 import LeftImageCard from '../../shared/LeftImageCard';
 
+import ProfileCard from '../../shared/ProfileCard';
+import {
+    getLocation,
+} from '../../../helpers/profiles/utils';
+
 class UserAdminGroupList extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            show: false,
+        };
+        this.showAdminCard = this.showAdminCard.bind(this);
+    }
+
     componentDidMount() {
         const {
             currentUser: {
@@ -29,94 +50,68 @@ class UserAdminGroupList extends React.Component {
         getUserAdminGroup(dispatch, friendUserId, id);
     }
 
-    componentWillUnmount() {
+    showAdminCard() {
         const {
-            dispatch,
-        } = this.props;
-        dispatch({
-            payload: {
+            userProfileAdminGroupData: {
+                data: adminData,
             },
-            type: 'USER_PROFILE_ADMIN_GROUP',
-        });
-    }
-
-    userAdminGroupList() {
-        const {
-            userProfileAdminGroupData,
         } = this.props;
-        let adminGroupList = 'Nothing to show here yet.';
-        if (userProfileAdminGroupData
-            && userProfileAdminGroupData.data
-            && _.size(userProfileAdminGroupData.data) > 0) {
-            adminGroupList = userProfileAdminGroupData.data.map((data) => {
-                const entityName = data.attributes.name;
-                let locationDetails = '';
-                const locationDetailsCity = (!_.isEmpty(data.attributes.city)) ? data.attributes.city : '';
-                const locationDetailsProvince = (!_.isEmpty(data.attributes.province)) ? data.attributes.province : '';
-                if (locationDetailsCity === '' && locationDetailsProvince !== '') {
-                    locationDetails = locationDetailsProvince;
-                } else if (locationDetailsCity !== '' && locationDetailsProvince === '') {
-                    locationDetails = locationDetailsCity;
-                } else if (locationDetailsCity !== '' && locationDetailsProvince !== '') {
-                    locationDetails = `${data.attributes.city}, ${data.attributes.province}`;
-                }
-                const url = `/groups/${data.attributes.slug}`;
-                const groupImage = (!_.isEmpty(data.attributes.avatar)) ? data.attributes.avatar : placeholderGroup;
-                return (
-                    <LeftImageCard
-                        entityName={entityName}
-                        location={locationDetails}
-                        placeholder={groupImage}
-                        typeClass="chimp-lbl group"
-                        type="giving group"
-                        url={url}
-                    />
+        const adminArray = [];
+        if (!_isEmpty(adminData)) {
+            adminData.map((admin) => {
+                adminArray.push(
+                    <ProfileCard
+                        avatar={admin.attributes.avatar}
+                        type="Giving Group"
+                        name={admin.attributes.name}
+                        causes={admin.attributes.groupType}
+                        location={getLocation(admin.attributes.city, admin.attributes.province)}
+                    />,
                 );
             });
         }
-        return (
-            <Grid columns="equal" stackable doubling columns={3}>
-                <Grid.Row>
-                    {
-                        !_.isEmpty(userProfileAdminGroupData) && (_.size(userProfileAdminGroupData.data) > 0) && (
-                            <React.Fragment>
-                                {adminGroupList}
-                            </React.Fragment>
-                        )
-                    }
-                    {
-                        !_.isEmpty(userProfileAdminGroupData) && (_.size(userProfileAdminGroupData.data) === 0) && (
-                            <Grid.Column>
-                                {adminGroupList}
-                            </Grid.Column>
-                        )
-                    }
-                </Grid.Row>
-            </Grid>
-        );
+        return adminArray;
     }
 
     render() {
         const {
-            friendFirstName,
-            userProfileAdminGroupData,
+            userProfileAdminGroupData: {
+                data: adminData,
+            },
             userProfileAdminGroupsLoadStatus,
         } = this.props;
         return (
-            <div className="pb-3">
-                <Container>
-                    <Header as="h4" className="underline">
-                        {friendFirstName}
-                        's Giving Groups
-                    </Header>
-                    { (_.isEmpty(userProfileAdminGroupData) && userProfileAdminGroupsLoadStatus) ? <PlaceholderGrid row={1} column={3} /> : (
-                        this.userAdminGroupList()
+            <div className="userPrfl_tabSec">
+                <div className="tabHeader">
+                    <Header>Managed Giving Groups</Header>
+                </div>
+                {!_isEmpty(adminData)
+                    ? (
+                        <div className="cardwrap">
+                            {this.showAdminCard()}
+                        </div>
+                    )
+                    : (
+                        <div className="nodata-friendsprfl">
+                    Nothing to show here yet
+                        </div>
                     )}
-                </Container>
             </div>
         );
     }
 }
+
+UserAdminGroupList.defaultProps = {
+    userProfileAdminGroupData: {
+        data: [],
+    },
+};
+
+UserAdminGroupList.propTypes = {
+    userProfileAdminGroupData: PropTypes.shape({
+        data: array,
+    }),
+};
 
 function mapStateToProps(state) {
     return {

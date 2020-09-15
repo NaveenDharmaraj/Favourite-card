@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import _isEmpty from 'lodash/isEmpty';
 
 import graphApi from '../services/graphApi';
 import searchApi from '../services/searchApi';
@@ -104,28 +105,29 @@ const getUserProfileBasic = (dispatch, email, userId, loggedInUserId) => {
 const getUserFriendProfile = (dispatch, email, userId, loggedInUserId) => {
     const fsa = {
         payload: {
-            email,
+            data: [],
         },
         type: actionTypes.USER_PROFILE_BASIC_FRIEND,
     };
-    graphApi.get(`/recommendation/withProfileType/user`, { params: {
-        dispatch,
-        emailid: email,
-        sourceId: Number(loggedInUserId),
-        targetId: Number(userId),
-        uxCritical: true,
-    } }).then(
+    graphApi.get(`/recommendation/withProfileType/user`, {
+        params: {
+            dispatch,
+            emailid: email,
+            sourceId: Number(loggedInUserId),
+            targetId: Number(userId),
+            uxCritical: true,
+        },
+    }).then(
         (result) => {
-            fsa.payload = {
-                data: result.data,
-            };
+            if (result && !_isEmpty(result.data)) {
+                fsa.payload.data = result.data;
+                dispatch(fsa);
+            }
         },
     ).catch((error) => {
         Router.back();
         fsa.error = error;
-    }).finally(() => {
-        dispatch(fsa);
-    });
+    }).finally();
 };
 
 const getUserCharitableInterests = (dispatch, userId) => {

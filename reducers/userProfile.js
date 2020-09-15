@@ -14,13 +14,13 @@ const userProfile = (state = {}, action) => {
         case 'USER_PROFILE_BASIC_FRIEND':
             newState = {
                 ...state,
-                userFriendProfileData: Object.assign({}, action.payload),
+                userFriendProfileData: Object.assign({}, action.payload.data[0]),
             };
             break;
         case 'USER_PROFILE_CHARITABLE_INTERESTS':
             newState = {
                 ...state,
-                userProfileCharitableData: Object.assign({}, action.payload),
+                userProfileCausesData: Object.assign({}, action.payload),
             };
             break;
         case 'USER_PROFILE_MEMBER_GROUP':

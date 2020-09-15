@@ -10,9 +10,22 @@ import {
     connect,
 } from 'react-redux';
 
+import _isEmpty from 'lodash/isEmpty';
+import {
+    array,
+    func,
+    string,
+    number,
+    PropTypes,
+} from 'prop-types';
+
 import {
     getUserMemberGroup,
 } from '../../../actions/userProfile';
+import {
+    getLocation,
+} from '../../../helpers/profiles/utils';
+import ProfileCard from '../../shared/ProfileCard';
 import placeholderGroup from '../../../static/images/no-data-avatar-giving-group-profile.png';
 import PlaceholderGrid from '../../shared/PlaceHolder';
 import LeftImageCard from '../../shared/LeftImageCard';
@@ -29,94 +42,79 @@ class UserMemberGroupList extends React.Component {
         getUserMemberGroup(dispatch, friendUserId, id);
     }
 
-    componentWillUnmount() {
-        const {
-            dispatch,
-        } = this.props;
-        dispatch({
-            payload: {
-            },
-            type: 'USER_PROFILE_MEMBER_GROUP',
-        });
-    }
+    // componentWillUnmount() {
+    //     const {
+    //         dispatch,
+    //     } = this.props;
+    //     dispatch({
+    //         payload: {
+    //         },
+    //         type: 'USER_PROFILE_MEMBER_GROUP',
+    //     });
+    // }
 
-    userMemberGroupList() {
+    showMemberCard() {
         const {
-            userProfileMemberGroupData,
+            userProfileMemberGroupData: {
+                data: memberData,
+            },
         } = this.props;
-        let memberGroupList = 'Nothing to show here yet.';
-        if (userProfileMemberGroupData
-            && userProfileMemberGroupData.data
-            && _.size(userProfileMemberGroupData.data) > 0) {
-            memberGroupList = userProfileMemberGroupData.data.map((data) => {
-                const entityName = data.attributes.name;
-                let locationDetails = '';
-                const locationDetailsCity = (!_.isEmpty(data.attributes.city)) ? data.attributes.city : '';
-                const locationDetailsProvince = (!_.isEmpty(data.attributes.province)) ? data.attributes.province : '';
-                if (locationDetailsCity === '' && locationDetailsProvince !== '') {
-                    locationDetails = locationDetailsProvince;
-                } else if (locationDetailsCity !== '' && locationDetailsProvince === '') {
-                    locationDetails = locationDetailsCity;
-                } else if (locationDetailsCity !== '' && locationDetailsProvince !== '') {
-                    locationDetails = `${data.attributes.city}, ${data.attributes.province}`;
-                }
-                const type = 'giving group';
-                const typeClass = 'chimp-lbl group';
-                const url = `/groups/${data.attributes.slug}`;
-                const groupImage = (!_.isEmpty(data.attributes.avatar)) ? data.attributes.avatar : placeholderGroup;
-                return (
-                    <LeftImageCard
-                        entityName={entityName}
-                        location={locationDetails}
-                        placeholder={groupImage}
-                        typeClass={typeClass}
-                        type={type}
-                        url={url}
-                    />
+        const memberArray = [];
+        if (!_isEmpty(memberData)) {
+            memberData.map((admin) => {
+                memberArray.push(
+                    <ProfileCard
+                        avatar={admin.attributes.avatar}
+                        type="Giving Group"
+                        name={admin.attributes.name}
+                        causes={admin.attributes.groupType}
+                        location={getLocation(admin.attributes.city, admin.attributes.province)}
+                    />,
                 );
             });
         }
-        return (
-            <Grid columns="equal" stackable doubling columns={3}>
-                <Grid.Row>
-                    {
-                        !_.isEmpty(userProfileMemberGroupData) && (_.size(userProfileMemberGroupData.data) > 0) && (
-                            <React.Fragment>
-                                {memberGroupList}
-                            </React.Fragment>
-                        )
-                    }
-                    {
-                        !_.isEmpty(userProfileMemberGroupData) && (_.size(userProfileMemberGroupData.data) === 0) && (
-                            <Grid.Column>
-                                {memberGroupList}
-                            </Grid.Column>
-                        )
-                    }
-                </Grid.Row>
-            </Grid>
-        );
+        return memberArray;
     }
 
     render() {
         const {
-            userProfileMemberGroupData,
+            userProfileMemberGroupData: {
+                data: memberData,
+            },
             userProfileMemberGroupsLoadStatus,
         } = this.props;
         return (
-            <div className="pb-3">
-                <Container>
-                    <Header as="h4" className="underline">
-                    Joined Groups
-                    </Header>
-                    { (_.isEmpty(userProfileMemberGroupData) && userProfileMemberGroupsLoadStatus) ? <PlaceholderGrid row={1} column={3} /> : (
-                        this.userMemberGroupList()
+            <div className='userPrfl_tabSec'>
+                <div className="tabHeader">
+                    <Header>Joined Giving Groups</Header>
+                </div>
+                {!_isEmpty(memberData)
+                    ? (
+                        <div className="cardwrap">
+                            {this.showMemberCard()}
+                        </div>
+                    )
+                    : (
+                        <div className="nodata-friendsprfl">
+                    Nothing to show here yet
+                        </div>
                     )}
-                </Container>
             </div>
         );
     }
 }
+
+UserMemberGroupList.defaultProps = {
+    userProfileMemberGroupData: {
+        data: [],
+    },
+};
+
+UserMemberGroupList.propTypes = {
+    userProfileMemberGroupData: PropTypes.shape({
+        data: array,
+    }),
+};
 
 function mapStateToProps(state) {
     return {

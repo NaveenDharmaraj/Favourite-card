@@ -139,10 +139,42 @@ const formatChartAmount = (value, language, currencyType) => {
     return val;
 };
 
+const getLocation = (city, province) => {
+    let location = '';
+    if (_isEmpty(city) && !_isEmpty(province)) {
+        location = province;
+    } else if (!_isEmpty(city) && _isEmpty(province)) {
+        location = city;
+    } else if (!_isEmpty(city) && !_isEmpty(province)) {
+        location = `${city}, ${province}`;
+    }
+    return location;
+};
+
+const getPrivacyType = (visibility) => {
+    let type = '';
+    switch (visibility) {
+        case 0:
+            type = 'globe';
+            break;
+        case 1:
+            type = 'users';
+            break;
+        case 2:
+            type = 'lock';
+            break;
+        default:
+            break;
+    }
+    return type;
+};
+
 export {
     createChartData,
     formatGraphData,
     getChartIndex,
     getSelectedYear,
     formatChartAmount,
+    getLocation,
+    getPrivacyType,
 };
