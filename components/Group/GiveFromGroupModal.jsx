@@ -157,8 +157,8 @@ const GiveFromGroupModal = (props) => {
                             <Grid.Column mobile={16} tablet={16} computer={10}>
                                 <div className="rightBoxs">
                                     <Item.Group>
-                                        <Link route={relatedGroupsRoute}>
-                                            <Item className={(relatedGroupsRoute) ? '' : 'graybox'}>
+                                        <Link route={`/give/to/group/new?group_id=${groupId}`}>
+                                            <Item className={(relatedGroupsRoute) ? '' : 'graybox isDisabled'}>
                                                 <Image src={modelimg1} />
                                                 <Item.Content verticalAlign='middle'>
                                                     <Item.Description>

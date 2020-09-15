@@ -66,10 +66,10 @@ const GiveFromCampaignModal = (props) => {
                             <Grid className="giveingGropPopup">
                                 <Grid.Row stretched>
                                     <Grid.Column mobile={16} tablet={16} computer={6}>
-                                        <Link route={relatedBeneficiaryRoute}>
-                                            <div className={(relatedBeneficiaryRoute) ? 'ModelLeftBox' : 'ModelLeftBox graybox'}>
+                                        <Link route={`/give/to/charity/new?campaign_id=${campaignId}`} >
+                                            <div className={(relatedBeneficiaryRoute) ? 'ModelLeftBox' : 'ModelLeftBox graybox isDisabled'}>
                                                 <div className="center-content">
-                                                    <Image src={leftmodelimg} className="charityImg"/>
+                                                    <Image src={leftmodelimg} className="charityImg" />
                                                     <div className="descriptiontext">
                                                         A charity your Campaign supports
                                                         {(!relatedBeneficiaryRoute && (
@@ -97,10 +97,10 @@ const GiveFromCampaignModal = (props) => {
                                     <Grid.Column mobile={16} tablet={16} computer={10}>
                                         <div className="rightBoxs">
                                             <Item.Group>
-                                                <Link route={relatedGroupsRoute}>
-                                                    <Item className={(relatedGroupsRoute) ? '' : 'graybox'}>
+                                                <Link route={`/give/to/group/new?campaign_id=${campaignId}`}>
+                                                    <Item className={(relatedGroupsRoute) ? '' : 'graybox isDisabled'}>
                                                         <Image src={modelimg1} />
-                                                        <Item.Content verticalAlign='middle'>
+                                                        <Item.Content verticalAlign="middle">
                                                             <Item.Description>
                                                                 <p>A Giving Group that you're a member of </p>
                                                                 {(!relatedGroupsRoute && (
