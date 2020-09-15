@@ -19,6 +19,7 @@ import {
     updateUserPreferences,
 } from '../../../../actions/userProfile';
 import { getParamStoreConfig } from '../../../../actions/user';
+import firebaseConfig from '../../../../Firebase/config';
 
 class Notifications extends React.Component {
     constructor(props) {
@@ -74,20 +75,11 @@ class Notifications extends React.Component {
             userInfo,
             dispatch,
         } = this.props;
-        if (_isEmpty(messages) && _isEmpty(config.FIREBASE_API_KEY)) {
-            const firebaseConfigResponse = await dispatch(getParamStoreConfig(['FIREBASE_API_KEY', 'FIREBASE_AUTH_DOMAIN', 'FIREBASE_DATABASE_URL',
-            'FIREBASE_PROJECT_ID', 'FIREBASE_STORAGE_BUCKET', 'FIREBASE_MSG_SENDER_ID', 'FIREBASE_APP_ID'
-            ]));
-            const firebaseConfig = {
-                apiKey: firebaseConfigResponse.FIREBASE_API_KEY,
-                authDomain: firebaseConfigResponse.FIREBASE_AUTH_DOMAIN,
-                databaseURL: firebaseConfigResponse.FIREBASE_DATABASE_URL,
-                projectId: firebaseConfigResponse.FIREBASE_PROJECT_ID,
-                storageBucket: firebaseConfigResponse.FIREBASE_STORAGE_BUCKET,
-                messagingSenderId: firebaseConfigResponse.FIREBASE_MSG_SENDER_ID || '745841700240',
-                appId: firebaseConfigResponse.FIREBASE_APP_ID
-            };
-            NotificationHelper.firebaseInitialLoad(userInfo, dispatch, firebaseConfig);
+        if (_isEmpty(messages) && _isEmpty(firebaseConfig.firebaseEnvs)) {
+            const params = Object.values(firebaseConfig.firebaseEnvKeys) || [];
+            const firebaseConfigResponse = await dispatch(getParamStoreConfig(params));
+            firebaseConfig.firebaseConfigGetSet = firebaseConfigResponse;
+            NotificationHelper.firebaseInitialLoad(userInfo, dispatch);
         }
         window.addEventListener('scroll', () => {
             const {
