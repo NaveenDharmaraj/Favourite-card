@@ -128,7 +128,7 @@ class UserCauses extends React.Component {
                         </div>
                     )
                     : (
-                        <p>Nothing to show here yet.</p>
+                        <p className='nodata'>Nothing to show here yet.</p>
                     )}
                 {(!_isEmpty(dataArray) && dataArray.length > 10 && !viewButtonClicked)
                 && (
