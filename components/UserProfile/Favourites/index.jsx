@@ -24,7 +24,9 @@ import {
 
 import {
     getLocation,
+    getPrivacyType,
 } from '../../../helpers/profiles/utils';
+import ProfilePrivacySettings from '../../shared/ProfilePrivacySettings';
 import placeholderCharity from '../../../static/images/no-data-avatar-charity-profile.png';
 import placeholderGroup from '../../../static/images/no-data-avatar-giving-group-profile.png';
 import PlaceholderGrid from '../../shared/PlaceHolder';
@@ -142,15 +144,29 @@ class FavouritesList extends React.Component {
 
     render() {
         const {
+            userFriendProfileData: {
+                attributes: {
+                    favourites_visibility,
+                    profile_type,
+                },
+            },
             userProfileFavouritesLoadStatus,
             userProfileFavouritesData: {
                 data: favouritesData,
             },
         } = this.props;
+        const isMyProfile = (profile_type === 'my_profile');
+        const currentPrivacyType = getPrivacyType(favourites_visibility);
         return (
             <div className="userPrfl_tabSec">
                 <div className="tabHeader">
                     <Header>Favourites</Header>
+                    {isMyProfile && !_isEmpty(currentPrivacyType)
+                        && (
+                            <ProfilePrivacySettings
+                                iconName={currentPrivacyType}
+                            />
+                        )}
                 </div>
                 {!_isEmpty(favouritesData)
                     ? (
@@ -169,12 +185,24 @@ class FavouritesList extends React.Component {
 }
 
 FavouritesList.defaultProps = {
+    userFriendProfileData: {
+        attributes: {
+            favourites_visibility: null,
+            profile_type: '',
+        },
+    },
     userProfileFavouritesData: {
         data: [],
     },
 };
 
 FavouritesList.propTypes = {
+    userFriendProfileData: PropTypes.shape({
+        attributes: PropTypes.shape({
+            favourites_visibility: number,
+            profile_type: string,
+        }),
+    }),
     userProfileFavouritesData: PropTypes.shape({
         data: array,
     }),
@@ -183,6 +211,7 @@ FavouritesList.propTypes = {
 function mapStateToProps(state) {
     return {
         currentUser: state.user.info,
+        userFriendProfileData: state.userProfile.userFriendProfileData,
         userProfileFavouritesData: state.userProfile.userProfileFavouritesData,
         userProfileFavouritesLoadStatus: state.userProfile.userProfileFavouritesLoadStatus,
     };

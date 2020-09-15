@@ -66,8 +66,6 @@ const UserGoal = (props) => {
                                 iconName={currentPrivacyType}
                             />
                         )}
-                        {/* TODO Provacy settings component */}
-                        {/* <PrivacySettings iconName='lock'/> */}
                     </Grid.Column>
                 </Grid.Row>
             </Grid>

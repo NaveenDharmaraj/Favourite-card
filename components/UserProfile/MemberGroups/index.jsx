@@ -24,8 +24,10 @@ import {
 } from '../../../actions/userProfile';
 import {
     getLocation,
+    getPrivacyType,
 } from '../../../helpers/profiles/utils';
 import ProfileCard from '../../shared/ProfileCard';
+import ProfilePrivacySettings from '../../shared/ProfilePrivacySettings';
 import placeholderGroup from '../../../static/images/no-data-avatar-giving-group-profile.png';
 import PlaceholderGrid from '../../shared/PlaceHolder';
 import LeftImageCard from '../../shared/LeftImageCard';
@@ -78,15 +80,29 @@ class UserMemberGroupList extends React.Component {
 
     render() {
         const {
+            userFriendProfileData: {
+                attributes: {
+                    giving_group_member_visibility,
+                    profile_type,
+                },
+            },
             userProfileMemberGroupData: {
                 data: memberData,
             },
             userProfileMemberGroupsLoadStatus,
         } = this.props;
+        const isMyProfile = (profile_type === 'my_profile');
+        const currentPrivacyType = getPrivacyType(giving_group_member_visibility);
         return (
             <div className='userPrfl_tabSec'>
                 <div className="tabHeader">
                     <Header>Joined Giving Groups</Header>
+                    {isMyProfile && !_isEmpty(currentPrivacyType)
+                        && (
+                            <ProfilePrivacySettings
+                                iconName={currentPrivacyType}
+                            />
+                        )}
                 </div>
                 {!_isEmpty(memberData)
                     ? (
@@ -105,12 +121,24 @@ class UserMemberGroupList extends React.Component {
 }
 
 UserMemberGroupList.defaultProps = {
+    userFriendProfileData: {
+        attributes: {
+            giving_group_member_visibility: null,
+            profile_type: '',
+        },
+    },
     userProfileMemberGroupData: {
         data: [],
     },
 };
 
 UserMemberGroupList.propTypes = {
+    userFriendProfileData: PropTypes.shape({
+        attributes: PropTypes.shape({
+            giving_group_member_visibility: number,
+            profile_type: string,
+        }),
+    }),
     userProfileMemberGroupData: PropTypes.shape({
         data: array,
     }),
@@ -119,6 +147,7 @@ UserMemberGroupList.propTypes = {
 function mapStateToProps(state) {
     return {
         currentUser: state.user.info,
+        userFriendProfileData: state.userProfile.userFriendProfileData,
         userProfileMemberGroupData: state.userProfile.userProfileMemberGroupData,
         userProfileMemberGroupsLoadStatus: state.userProfile.userProfileMemberGroupsLoadStatus,
     };
