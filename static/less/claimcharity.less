@@ -1,0 +1,1015 @@
+@import "_mixins.less";
+//@import "../fonts/proximanova/font.css";
+
+.ClaimWepper{
+  overflow: hidden;
+  .Claimheading{
+    padding-top: 100px;
+    padding-bottom: 100px;
+    text-align: center;
+    @media only screen and (max-width:1199px) {
+      padding-top: 60px;
+      padding-bottom: 60px;
+    }
+    @media only screen and (max-width:767px) {
+      padding-top: 49px;
+      padding-bottom: 50px;
+    }
+      h3{
+        &.ui{
+          &.header{
+            font-size: 24px !important;
+            line-height: 29px;
+            font-weight: bold;
+            color: @font-color;
+          }
+        }
+      }
+  }
+  .giftsFaster{
+    margin-bottom: 100px;
+    @media only screen and (max-width:1199px) {
+      margin-bottom:50px;
+    }
+    @media only screen and (max-width:991px) {
+      margin-bottom:50px;
+    }
+    .Giftsleft{
+      max-width: 495px;
+      @media only screen and (min-width:767px) and (max-width:991px) {
+        width: 495px !important;
+        padding-top: 60px;
+        margin: auto;
+      }
+      @media only screen and (max-width:767px) {
+        margin-bottom: 1rem;
+        padding: 60px 15px 0px 15px;
+        max-width: 100%;
+      }
+      .GiftsleftHeading{
+        h3{
+          &.ui{
+            &.header{
+              font-size: 20px !important;
+              line-height: 24px;
+              font-weight: bold;
+              color: @font-color;
+              margin-bottom: 28px;
+              @media only screen and (max-width:1199px) {
+                line-height: 21px;
+              }
+              @media only screen and (max-width:767px) {
+                text-align: left;
+                line-height: 24px;
+              }
+            }
+          }
+          @media only screen and (max-width:650px) {
+            margin-bottom:0px;
+          }
+          @media only screen and (max-width:850px) {
+            margin-bottom:30px;
+          }
+        }
+        @media only screen and (max-width:991px) {
+          text-align: center;
+          margin-bottom: 30px;
+        }
+        @media only screen and (max-width:767px) {
+          text-align: center;
+          margin-bottom: 24px;
+        }
+      }
+      .ui{
+        &.items{
+          .item{
+            margin-bottom:30px;
+            &:last-child{
+              margin-bottom:0px;
+            }
+            @media only screen and (max-width:767px) {
+              margin-bottom:20px;
+            }
+          }
+        }
+      }
+    }
+    .RightImg{
+      position: relative;
+      height:442px;
+      @media only screen and (max-width:1199px) {
+        height: 415px;
+      }
+      @media only screen and (max-width:991px) {
+        margin-bottom: 1rem;
+        margin-top: 1rem;
+      }
+      @media only screen and (max-width:650px) {
+        height: 305px;
+      }
+      @media only screen and (max-width:600px) {
+        height: 252px;
+      }
+      @media only screen and (max-width:480px) {
+        height: 208px;
+      }
+      @media only screen and (max-width:380px) {
+        height:170px;
+      }
+      &::before{
+        content: "";
+        position: absolute;
+        right:-51%;
+        background-image: url(../images/claimimg.svg);
+        background-size: contain;
+        background-position:right;
+        background-repeat: no-repeat;
+        height:442px;
+        width:823px;
+        top:-10px;
+        @media only screen and (max-width:1450px) {
+          right:-200px;
+        }
+        @media only screen and (max-width:1199px) {
+          right: -240px;
+          height: 392px;
+          width: 713px;
+        }
+        @media only screen and (max-width:991px) {
+          right: -125px;
+          height: 452px;
+          width: 850px;
+      }
+      @media only screen and (max-width:650px) {
+        right: -20px;
+        height: 350px;
+        width: 570px; 
+      }
+      @media only screen and (max-width:600px) {
+        right: -20px;
+        height: 290px;
+        width: 470px;
+      }
+      @media only screen and (max-width:480px) {
+        right: -20px;
+        height: 240px;
+        width: 410px;
+      }
+      @media only screen and (max-width:380px) {
+        right: -20px;
+        height: 200px;
+        width:350px;
+      }
+      }
+    }
+  }
+  .claimBg{
+    background-color: #F5F8FC;
+    padding-bottom: 100px;
+    @media only screen and (max-width:767px) {
+      padding-bottom: 49px;
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+    .Claimheading{
+      padding-top: 100px;
+      padding-bottom: 80px;
+      text-align: center;
+      @media only screen and (max-width:1199px) {
+        padding-top: 60px;
+        padding-bottom: 60px;
+      }
+      @media only screen and (max-width:767px) {
+      text-align: left;
+      padding-top: 50px;
+      padding-bottom: 30px;
+      }
+        h3{
+          &.ui{
+            &.header{
+              font-size: 24px !important;
+              line-height: 29px;
+              font-weight: bold;
+              color: @font-color;
+            }
+          }
+        }
+    }
+    .LeftImg{
+        margin: auto;
+        img{
+          &.ui{
+            &.image{
+              margin: auto;
+              @media only screen and (max-width:767px) {
+                float: none;
+                margin: auto auto 10px -10px;
+                }
+            }
+          }
+        }
+    }
+    .accessRight{
+      margin-left: -15px;
+      padding-top: 55px;
+      @media only screen and (max-width:1199px) {
+        padding-top:0px;
+      }
+      @media only screen and (max-width:767px) {
+        padding-top: 0px;
+        margin: auto;
+      }
+      .subHeading{
+        h4{
+          &.ui{
+            &.header{
+              font-size: 20px;
+              line-height: 24px;
+              color: @font-color;
+              font-weight:600;
+            }
+          }
+        }
+      }
+      .subText{
+        margin-top: 27px;
+        margin-bottom: 39px;
+        @media only screen and (max-width:1199px) {
+          margin-top: 20px;
+          margin-bottom: 20px;
+        }
+        @media only screen and (max-width:991px){
+          width: 258px;
+        }
+        @media only screen and (max-width:767px) {
+          margin-top: 17px;
+          margin-bottom: 20px;
+          width:100%;
+        }
+        p{
+          font-size: 14px;
+          line-height: 22px;
+          color: @font-color;
+        }
+      }
+      .Accessinput{
+        .accesslabel{
+          width: 100%;
+          display: block;
+          margin-bottom:9.5px;
+          font-family: 'ProximaNova-Semibold';
+        }
+       .inputBox{
+         width: 100%;
+         .ui{
+           &.input{
+              width: 100%;
+              height:50px;
+              @media only screen and (max-width:1199px) {
+                width:100%;
+              }
+              @media only screen and (max-width:991px) {
+                width: 289px;
+              }
+              @media only screen and (max-width:767px) {
+                width: 100%;
+              }
+           }
+         } 
+       }
+       p{
+        &.error-message{
+          color: #FF0000;
+          font-size: 12px;
+          line-height: 15px;
+          margin-top: 10px;
+        }
+      }
+      .btnTextsize{
+        font-size: 17px;
+        font-family: 'ProximaNova-Semibold';
+        width: 217px;
+        @media only screen and (max-width:1199px) and (min-width:768px){
+          width: 186px !important;
+        }
+        @media only screen and (max-width:991px) {
+          margin-top: 9.5px !important;
+        }
+        @media only screen and (max-width:767px) {
+          margin-top: 9.5px !important;
+          width:100% !important;
+        }
+      }
+      }
+    }
+  }
+  .WithoutAccess{
+    padding-top: 100px;
+    padding-bottom: 100px;
+    @media only screen and (max-width:1199px) {
+      padding-top: 60px;
+      padding-bottom:60px;
+    }
+    @media only screen and (max-width:767px) {
+      padding-top: 50px;
+      padding-bottom:50px;
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+    .WithoutAccessheading{
+      margin-bottom: 55px;
+      @media only screen and (max-width:1199px) {
+        margin-left: 55px;
+        margin-bottom: 30px;
+      }
+      @media only screen and (max-width:767px) {
+        margin-bottom: 18px;
+        margin-left: 0px;
+      }
+      h3{
+        &.ui{
+          &.header{
+            font-size: 20px !important;
+            line-height: 21px;
+            font-weight: bold;
+            color: @font-color;
+          }
+        }
+      }
+    }
+    .ui{
+      &.list{
+        counter-reset: number;
+        .item{
+          &.number{
+            font-size: 14px;
+            line-height: 22px;
+            color: @font-color;
+            position: relative;
+            margin-bottom: 60px;
+            padding-left: 80px;
+            &:last-child{
+              margin-bottom:0px;
+            }
+            @media only screen and (max-width:1199px) {
+              margin-bottom: 30px;
+            }
+            @media only screen and (max-width:767px) {
+              margin-bottom:12px;
+            }
+            &::before{
+              counter-increment: number;
+              content: "0" counter(number) ".";
+              position: absolute;
+              color: #c799d1;
+              font-size: 50px;
+              line-height: 50px;
+              top:-20px;
+              left: 0px;
+              font-family: 'ProximaNova-Semibold';
+              text-align: right;
+              height: 61px;
+              width: 60px;
+              @media only screen and (max-width:1199px) {
+                top:0px;
+              }
+            }
+            &.serchiconleft{
+              margin-left:280px !important;
+              .list{
+                padding-left: 0px;
+                padding-top: 26px;
+                @media only screen and (max-width:991px) {
+                  padding-top: 20px;
+                }
+              }
+              @media only screen and (max-width:1199px) {
+                margin-left:290px !important;
+              }
+              position: relative;
+                &::after{
+                  content: "";
+                  position: absolute;
+                  left: -270px;
+                  background-image: url(../images/icons/serchleft.svg);
+                  background-size: contain;
+                  background-position:left;
+                  background-repeat: no-repeat;
+                  height: 200px;
+                  width: 270px;
+                  top: -15px;
+                  visibility: visible !important;
+                  @media only screen and (max-width:767px) {
+                    display: none;
+                  }
+                  @media only screen and (max-width:1199px) {
+                    height:223px;
+                    width: 238px;
+                    top: 28px;
+                  }
+                }
+                @media only screen and (max-width:767px) {
+                  margin-left: 0px !important;
+                }
+            }
+            a{
+              &.linkEmail{
+                font-family: 'ProximaNova-Semibold';
+                color:#0B5BE5;
+              }
+            }
+          }
+        }
+      }
+    } 
+  }
+}
+.Giftsleft .ui.items>.item>.content{
+  padding: 0px ;
+  align-items: center ;
+  display: flex ;
+  .description{
+    margin: 0px;
+    padding: 0px;
+    p{
+      font-size: 14px;
+    }
+  }
+}
+.Giftsleft .ui.items>.item>.content p {
+  margin-left:43px !important;
+}
+@media only screen and (max-width:991px) {
+  .myRedDIV   {order: 2;}
+  .myPinkDIV  {order: 1;}
+  .Giftsleft .ui.items>.item>.content p {
+    margin-left:43px !important;
+  }
+}
+@media only screen and (max-width:767px) {
+ .Giftsleft .ui.items:not(.unstackable)>.item {
+    flex-direction: row!important;
+}
+.Giftsleft .ui.items > .item > .content {
+  display: flex !important;
+  padding: 0px !important;
+}
+.Giftsleft .ui.items>.item>.content p {
+  margin-left:17px !important;
+}
+}
+@media only screen and (max-width:480px) {
+.Giftsleft .ui.items > .item > .content p {
+  margin-left: 17px !important;
+}
+.Giftsleft .ui.items>.item>.content{
+  padding: 0px !important;
+}
+}
+/*********************Charity Account***************/
+.AccessingtopBanner{
+  width: 100%;
+  position: relative;
+  background-color: #F5F8FC;
+  height:338px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  @media only screen and (max-width:991px)  {
+    height: 269px;
+  }
+  &::before{
+    position: absolute;
+    background-image: url(../images/icons/shape-1@3x.svg);
+    background-size: contain;
+    background-position:center;
+    background-repeat: no-repeat;
+    width: 216px;
+    height: 286px;
+    left: -6px;
+    top:-3px;
+    content: "";
+    @media only screen and (max-width:1400px)  {
+      width: 186px;
+      height: 242px;
+      left: -23px;
+      top: 0px;
+    }
+    @media only screen and (max-width:991px)  {
+      width: 146px;
+      height: 172px;
+      left: -43px;
+      top: 60px;
+    }
+    @media only screen and (max-width:767px)  {
+      width: 156px;
+      height: 112px;
+      left: -48px;
+      top: 200px;
+    }
+    @media only screen and (max-width:400px)  {
+      width: 106px;
+      height: 172px;
+      left: -28px;
+      top: 180px;
+    }
+  }
+  &::after{
+    position: absolute;
+    background-image: url(../images/icons/shape-4.svg);
+    background-size: contain;
+    background-position:center;
+    background-repeat: no-repeat;
+    width: 404px;
+    height: 422px;
+    right: -115px;
+    top: -63px;
+    content: "";
+    @media only screen and (max-width:1400px) {
+      width: 404px;
+    height: 422px;
+    right: -115px;
+    top: -63px;
+    }
+    @media only screen and (max-width:991px)  {
+      width: 312px;
+      height: 266px;
+      right: -152px;
+      top: 0px;
+    }
+    @media only screen and (max-width:767px)  {
+      width: 234px;
+      height: 232px;
+      right: -137px;
+      top: 50px;
+    }
+    @media only screen and (max-width:450px)  {
+      width: 214px;
+    height: 192px;
+    right: -137px;
+    top: 90px;
+    }
+  }
+  .lefttopicon{
+    background-image: url(../images/icons/shape-2@3x.svg);
+    background-size: contain;
+    background-position:center;
+    background-repeat: no-repeat;
+    width: 257px;
+    height: 240px;
+    position: absolute;
+    top: -70px;
+    overflow: hidden;
+    @media only screen and (max-width:1400px) {
+      width: 197px;
+      height: 210px;
+      position: absolute;
+      top: -69px;
+      overflow: hidden;
+      left: 210px;
+    }
+    @media only screen and (max-width:991px)  {
+      top: -69px;
+      left: -60px;
+      transform: rotate(270deg);
+    }
+    @media only screen and (max-width:767px)  {
+      top: -37px;
+    left: -60px;
+    width: 157px;
+    height: 110px;
+    transform: none;
+    }
+  }
+  .bannerHeading{
+    max-height: 100%;
+    width: 100%;
+    margin: auto;
+    text-align: center;
+    @media only screen and (max-width:767px) {
+      padding: 0px 15px;
+    }
+    h3{
+      &.ui{
+        &.header{
+          font-size: 24px !important;
+          line-height: 29px;
+          font-weight: bold;
+          color: @font-color;
+          text-align: center;
+          @media only screen and (max-width:767px) {
+            text-align: left;
+          }
+        }
+      }
+    }
+    p{
+      font-size: 14px;
+      line-height: 22px;
+      color: @font-color;
+      @media only screen and (max-width:767px) {
+        text-align: left;
+      }
+    }
+    Button{
+      &.btnfont{
+        font-family: 'ProximaNova-Semibold';
+        width:224px;
+        @media only screen and (max-width:767px) {
+        margin-top: 0px !important;
+        }
+      }
+    } 
+  }
+  .ui{
+    &.container{
+      @media only screen and (max-width:767px) {
+      width: 100% !important;
+      }
+    }
+  }
+}
+.Accessing{
+  padding-top: 100px;
+  padding-bottom: 100px;
+  @media only screen and (max-width:991px)  {
+    padding-top: 60px;
+    padding-bottom: 60px;
+  }
+  @media only screen and (max-width:767px)  {
+    padding:50px 15px;
+  }
+  .Accessingheading{
+    @media only screen and (max-width:767px)  {
+      text-align: left !important;
+      max-width: 100%;
+      width: 100%;
+      margin-left: 0px;
+      margin-right: 0px;
+      padding: 0px;
+    }
+    h3{
+      &.ui{
+        &.header{
+          font-size: 24px !important;
+          line-height: 29px;
+          font-weight: bold;
+          color: @font-color;
+          text-align: center;
+          @media only screen and (max-width:991px)  {
+            text-align: center;
+          }
+          @media only screen and (max-width:767px)  {
+            text-align: left;
+          }
+        }
+      }
+    }
+  }
+  .Accessingfullwidth{
+    margin-top: 100px;
+    @media only screen and (max-width:991px)  {
+      margin-top: 60px;  
+    }
+    @media only screen and (max-width:767px)  {
+      margin-top: 20px; 
+    }
+    .accessingleft{
+      position: relative;
+      background-color: white;
+      border-left: 5px solid #FCC7AD;
+      padding:18px;
+      border-radius:4px;
+      width: 447px;
+      @media only screen and (max-width:991px)  {
+        border: none;
+        max-width: 550px;
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 0px;
+      }
+      @media only screen and (max-width:767px)  {
+        max-width: 100%;
+        border: none;
+        margin-left: 0px;
+        margin-right: 0px;
+      }
+      &::before{
+        content: "";
+        position: absolute;
+        left: -5px;
+        top: 0;
+        bottom: 50%;
+        width: 5px;
+        background-color: #DB0163;
+        border-radius: 0.25rem 0rem 0rem 0rem;
+        @media only screen and (max-width:991px)  {
+          display: none;
+        }
+      }
+      h3{
+        &.ui{
+          &.header{
+            font-size: 20px !important;
+            line-height: 24px;
+            font-weight: bold;
+            color: @font-color;
+            @media only screen and (max-width:991px)  {
+              margin-bottom: 30px;
+            }
+            @media only screen and (max-width:767px)  {
+              margin-bottom: 28px;
+            }
+          }
+        }
+      }
+      p{
+        font-size: 14px;
+        line-height: 22px;
+        color: @font-color;
+        @media only screen and (max-width:991px)  {
+          margin-bottom: 24px;
+        }
+        @media only screen and (max-width:767px)  {
+          margin-bottom: 28px;
+        }
+      }
+    }
+  }
+  .accountseasily{
+    margin-top: 100px;
+    @media only screen and (max-width:991px)  {
+      margin-top: 50px;
+    }
+    .accountseasilyheading{
+      width: 500px;
+      margin: auto;
+      margin-bottom: 46px;
+      @media only screen and (max-width:991px)  {
+        max-width: 550px;
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
+        padding-left: 0px;
+        padding-right: 0px;
+        margin-bottom: 40px;
+      }
+      @media only screen and (max-width:767px)  {
+        margin-bottom: 27px;
+        margin-left: 0px;
+        margin-right: 0px;
+        max-width: 100%;
+      }
+      h3{
+        &.ui{
+          &.header{
+            font-size: 20px !important;
+            line-height: 24px;
+            font-weight: bold;
+            color: @font-color;
+          }
+        }
+      }
+      p{
+        font-size: 14px;
+        line-height: 22px;
+        color: @font-color;
+      }
+    }
+  }
+  
+  .accessingrigghtImg{
+    @media only screen and (max-width:991px)  {
+      margin-left: 74px;
+    }
+    @media only screen and (max-width:767px)  {
+      margin-left: 0px;
+      img{
+        width: 108%;
+        max-width: none;
+        margin-left: -15px;
+      }
+    }
+    @media only screen and (max-width:500px)  {
+      width: 100%;
+      img{
+            overflow: hidden;
+            margin-left: -10px;
+      }
+    } 
+    @media only screen and (max-width:450px)  {
+    width: 100%;
+    img{
+          overflow: hidden;
+          margin-left: -5px;
+    }
+  } 
+}
+}
+.accountfullimg{
+  width: 96%;
+  img{
+    &.ui{
+      &.image{
+        width: 100%;
+      }
+    }
+  }
+  @media only screen and (max-width:991px) and (min-width:768px) {
+    max-width: 550px;
+    margin: auto;
+    width: 100%;
+    img{
+      &.ui{
+        &.image{
+          width: 991px;
+          max-width: none;
+          margin-left: -40%;
+        }
+      }
+    }
+  }
+  @media only screen and (max-width:767px)  {
+    margin-left: -20px;
+    width: 105%;
+  }
+}
+.startCustomizing{
+  background-color: #90459A;
+  padding:100px 0px 102px 0px;
+  position: relative;
+  overflow: hidden;
+  &::before{
+    background-size: cover;
+    background-position: right;
+    background-repeat: no-repeat;
+    content: "";
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    background-image: url(../images/claimcharity06.svg);
+    position: absolute;
+    min-width: 2235px;
+    left: -260px;
+  }
+  @media only screen and (max-width:991px)  {
+    padding:60px 0px;
+  }
+  .startCustomizingheading{
+    text-align: center;
+    z-index: 9;
+    position: relative;
+    p{
+          font-size: 30px !important;
+          line-height: 37px;
+          color:white;
+          font-weight: normal;
+          margin-bottom:20px;
+        }
+  }
+  .paddingBtn{
+    min-width: 197px;
+    min-height: 41px;
+    padding: 0px !important;
+    border-radius: 20.5px !important;
+    font-family: 'ProximaNova-Semibold' !important;
+  }
+}
+/***********/
+.OneLastStepBanner{
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  height: 700px;
+  @media only screen and (max-width:1024px)  {
+    height: auto;
+  }
+  
+  &::before{
+    position: absolute;
+    background-image: url(../images/icons/shape-1@3x.svg);
+    background-size: contain;
+    background-position:center;
+    background-repeat: no-repeat;
+    width: 216px;
+    height: 286px;
+    left: -6px;
+    top:-3px;
+    content: "";
+    @media only screen and (max-width:1400px)  {
+      width: 186px;
+      height: 242px;
+      left: -23px;
+      top: 0px;
+    }
+    @media only screen and (max-width:1024px)  {
+     display: none;
+    }
+  }
+  &::after{
+    position: absolute;
+    background-image: url(../images/icons/shape-4.svg);
+    background-size: contain;
+    background-position:center;
+    background-repeat: no-repeat;
+    width: 404px;
+    height: 422px;
+    right: -115px;
+    top: -63px;
+    content: "";
+    @media only screen and (max-width:1400px) {
+      width: 404px;
+    height: 422px;
+    right: -115px;
+    top: -63px;
+    }
+    @media only screen and (max-width:1024px)  {
+      display: none;
+    }
+  }
+ 
+  .lefttopicon{
+    background-image: url(../images/icons/shape-2@3x.svg);
+    background-size: contain;
+    background-position:center;
+    background-repeat: no-repeat;
+    width: 257px;
+    height: 240px;
+    position: absolute;
+    top: -70px;
+    overflow: hidden;
+    @media only screen and (max-width:1400px) {
+      width: 197px;
+      height: 210px;
+      position: absolute;
+      top: -69px;
+      overflow: hidden;
+      left: 210px;
+    }
+    @media only screen and (max-width:1024px)  {
+     display: none;
+    }
+  }
+  .onelaststepwapper{
+    width: 480px;
+    margin:100px auto auto auto;
+    @media only screen and (max-width:650px)  {
+      width:90%;
+    }
+    .OneLastStepHeading{
+      text-align: center;
+      h3{
+        &.ui{
+          &.header{
+            font-size: 20px !important;
+            line-height: 24px;
+            font-weight: bold;
+            color: @font-color;
+          }
+        }
+      }
+      
+    }
+    .Onelaststepsubhesding{
+      text-align: center;
+      margin-top: 30px;
+      margin-bottom: 50px;
+      p{
+        font-size: 14px;
+        line-height: 22px;
+        color: @font-color;
+      }
+    }
+    input{
+      &.OneLastfield{
+        height: 41px !important;
+        &::placeholder{
+          color: #7F7F7F;
+        }
+      }
+    }
+    .OneLastbtn{
+      text-align: center;
+      margin-top: 28px;
+      margin-bottom: 150px;
+      p{
+        margin-top: 50px;
+        font-size: 14px;
+        line-height: 22px;
+        color: @font-color;
+        a{
+          &.login-btn{
+            background-color: transparent;
+            color: #055CE5;
+            font-weight: bold;
+            padding-left: 5px;
+            padding-right: 5px;
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+  }
+}

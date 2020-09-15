@@ -2,21 +2,16 @@ import React, { cloneElement, Fragment } from 'react';
 import dynamic from 'next/dynamic';
 import {connect} from 'react-redux'
 import _ from 'lodash';
-import {
-    Header,
-    Grid,
-    Breadcrumb,
-} from 'semantic-ui-react';
-import {actionTypes} from '../../actions/give';
-import FlowBreadcrumbs from './FlowBreadcrumbs';
 import { withTranslation } from '../../i18n';
 import {Router} from '../../routes';
-const TaxReceipt = dynamic(() => import('./TaxReceipt'));
+import '../../static/less/giveFlows.less';
+
+// const TaxReceipt = dynamic(() => import('./TaxReceipt'));
 const Review = dynamic(() => import('./Review'));
-const Success = dynamic(() => import('./Success'));
+const Success = dynamic(() => import('../Give/Success/index'));
 const Error = dynamic(() => import('./Error'));
 
-const flowStepsDefault = ['new', 'tax-receipt-profile', 'review', 'success', 'error']
+const flowStepsDefault = ['new', 'review', 'success', 'error']
 
 const renderChildWithProps = (props, stepIndex, flowSteps) => {
     switch (props.step) {
@@ -25,6 +20,7 @@ const renderChildWithProps = (props, stepIndex, flowSteps) => {
                 <div>
                 { cloneElement(props.children, {
                     ...props,
+                    currentStep: props.step,
                     flowSteps,
                     dispatch: props.dispatch,
                     flowObject: props.flowObject,
@@ -34,22 +30,10 @@ const renderChildWithProps = (props, stepIndex, flowSteps) => {
                 }) }
                 </div>
             );
-        case "tax-receipt-profile" :
-            if(!_.isEmpty(props.flowObject)){
-                return (<TaxReceipt
-                    dispatch={props.dispatch}
-                    flowObject={props.flowObject}
-                    flowSteps={flowSteps}
-                    stepIndex={_.indexOf(flowSteps, props.step)}
-                />);
-            }
-            else if (typeof window !== 'undefined'){
-                Router.pushRoute('/dashboard');
-            }
-            break;
         case "review" :
             if(!_.isEmpty(props.flowObject)){
                 return (<Review
+                    currentStep={props.step}
                     dispatch={props.dispatch}
                     flowObject={props.flowObject}
                     flowSteps={flowSteps}
@@ -63,9 +47,11 @@ const renderChildWithProps = (props, stepIndex, flowSteps) => {
             break;
         case "success" :
             if(!_.isEmpty(props.flowObject)){
-                return (<Success 
+                return (<Success
+                    currentStep={props.step}
                     dispatch={props.dispatch}
                     flowObject={props.flowObject}
+                    flowSteps={flowSteps}
                 />);
             }
             else if (typeof window !== 'undefined'){
@@ -101,21 +87,6 @@ class Give extends React.Component {
             flowSteps,
         } = this.state;
         if(flowObject && !_.isEmpty(flowObject.nextStep) && flowObject.nextStep!==nextProps.step) {
-            if (
-                (!_.isEmpty(flowObject.selectedTaxReceiptProfile)
-                || (_.isEmpty(flowObject.selectedTaxReceiptProfile)
-                    && (flowObject.giveData.creditCard.value === null))
-                )
-                && flowObject.nextStep === 'tax-receipt-profile'
-            ) {
-                return dispatch({
-                    payload: {
-                        ...flowObject,
-                        nextStep: flowSteps[2]
-                    },
-                    type: actionTypes.SAVE_FLOW_OBJECT,
-                });
-            }
             const  routeUrl = `${nextProps.baseUrl}/${flowObject.nextStep}`;
             Router.pushRoute(routeUrl);
         }
@@ -132,45 +103,8 @@ class Give extends React.Component {
     }
 
     render() {
-        const {
-            baseUrl,
-            step,
-        } = this.props;
-        const {
-            flowSteps,
-        } = this.state;
-        const formatMessage = this.props.t;
-        const breadcrumbArray = [
-            (baseUrl === '/donations') ? formatMessage('breadCrumb.new') : formatMessage('breadCrumb.give'),
-            formatMessage('breadCrumb.taxReceipt'),
-            formatMessage('breadCrumb.review'),
-            formatMessage('breadCrumb.success'),
-        ]
         return (
             <Fragment>
-                <div className="pageHeader">
-                    <Grid columns={2} verticalAlign='middle'>
-                        <Grid.Row>
-                            <Grid.Column >
-                                {(step !== 'error') &&
-                                    <Header as='h2'>
-                                        {breadcrumbArray[_.indexOf(flowSteps, step)]}
-                                    </Header>
-                                }
-                            </Grid.Column>
-                            <Grid.Column >
-                                <FlowBreadcrumbs
-                                    currentStep={step}
-                                    formatMessage={formatMessage}
-                                    steps={flowSteps}
-                                    breadcrumbArray={breadcrumbArray}
-
-                                />
-                            </Grid.Column>
-                        </Grid.Row>
-                    </Grid>
-                    </div>
-                    
                 {renderChildWithProps(this.props, this.state.stepIndex, this.state.flowSteps)}
             </Fragment>
         );

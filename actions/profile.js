@@ -68,6 +68,7 @@ export const actionTypes = {
     DISABLE_FOLLOW_BUTTON: 'DISABLE_FOLLOW_BUTTON',
     GET_CAMPAIGN_FROM_SLUG: 'GET_CAMPAIGN_FROM_SLUG',
     GET_IMAGES_FOR_CAMPAIGN: 'GET_IMAGES_FOR_CAMPAIGN',
+    GET_RELATED_BENEFICIARIES_COUNT_FOR_CAMPAIGN: 'GET_RELATED_BENEFICIARIES_COUNT_FOR_CAMPAIGN',
     GET_SUB_GROUPS_FOR_CAMPAIGN: 'GET_SUB_GROUPS_FOR_CAMPAIGN',
     SAVE_FOLLOW_STATUS_CAMPAIGN: 'SAVE_FOLLOW_STATUS_CAMPAIGN',
     SAVE_FOLLOW_STATUS_CHARITY: 'SAVE_FOLLOW_STATUS_CHARITY',
@@ -106,8 +107,8 @@ export const getCampaignSupportGroups = (id, searchKey = '', pageNumber = 1, pag
             'page[number]': pageNumber,
             'page[size]': pageSize,
             ...filterParam,
-        }
-    }
+        },
+    };
     await coreApi.get(`campaigns/${id}/subGroups`, {
         ...fullParams,
     }).then((subGroupSearchResult) => {
@@ -128,7 +129,7 @@ export const getCampaignSupportGroups = (id, searchKey = '', pageNumber = 1, pag
                 searchData: searchKey,
             },
             type: actionTypes.STORE_SEARCH_KEY_FOR_CAMPAIGN,
-        })
+        });
     }).catch((err) => {
         dispatch({
             payload: {
@@ -137,7 +138,7 @@ export const getCampaignSupportGroups = (id, searchKey = '', pageNumber = 1, pag
             type: actionTypes.SUB_GROUP_LIST_LOADER,
         });
         // console.log(err);
-    })
+    });
 };
 export const getCampaignGalleryImages = (id) => async (dispatch) => {
     const fullParams = {
@@ -158,8 +159,31 @@ export const getCampaignGalleryImages = (id) => async (dispatch) => {
                 },
                 type: actionTypes.GET_IMAGES_FOR_CAMPAIGN,
             });
+        }).catch((error) => {
+            // console.log(error);
+        });
+};
+
+export const getCampaignBeneficiariesCount = (id) => async (dispatch) => {
+    const fullParams = {
+        params: {
+            dispatch,
+            ignore401: true,
+            uxCritical: true,
         },
-        ).catch((error) => {
+    };
+    coreApi.get(`campaigns/${id}/groupBeneficiaries`,
+        {
+            ...fullParams,
+        })
+        .then((campaignRelatedBeneficiaries) => {
+            dispatch({
+                payload: {
+                    campaignRelatedBeneficiariesCount: campaignRelatedBeneficiaries.data.length,
+                },
+                type: actionTypes.GET_RELATED_BENEFICIARIES_COUNT_FOR_CAMPAIGN,
+            });
+        }).catch((error) => {
             // console.log(error);
         });
 };

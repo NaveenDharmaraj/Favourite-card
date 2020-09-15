@@ -215,6 +215,9 @@ h4{
         }
       }
     }
+    ::-webkit-scrollbar{
+      width: 0px;
+    }
   }
   .ui{
     &.modals{
@@ -539,11 +542,15 @@ h4{
 .c-breadcrumb{
   &.ui{
     &.breadcrumb{
+      font-size: 12px;
       .section{
         color: @grey-darken-6;
         &.active{
           font-weight: 400;
           color: @link;
+        }
+        &:last-child{
+          font-family: 'ProximaNova-Semibold';
         }
       }
     }
@@ -911,6 +918,8 @@ h4{
             margin-bottom: 13px;
             box-shadow: none;
             overflow-x: scroll;
+            overflow-y: hidden;
+            scrollbar-width: none;
             &::-webkit-scrollbar {
               width: 3px;
               height: 5px;
@@ -1143,6 +1152,10 @@ h4{
   .settingsDetailWraper{
     padding: 2rem 0rem 2rem; 
     border-bottom: 1px solid @grey-lighten-2;
+    &.removeBorderBottom{
+      border-bottom: none!important;
+      padding-bottom: 0px!important;
+    }
     &.pMethodHead{
       padding-top: 3px !important;
     }
@@ -1177,13 +1190,118 @@ h4{
     }
     .ui{
       &.header{
+        font-family: 'ProximaNova-Semibold';
         margin-bottom: 1rem;
+      }
+    }
+    h4{
+      &.ui{
+        &.header{
+          font-size: 17px;
+          line-height: 15px;
+        }
       }
     }
     p{
       line-height: 28/@rem;
       font-size: 1rem;
     }
+  }
+}
+.infoToShareDropdown{
+  &.dropdownSearch{
+    max-width: 477px;
+    width: 100%;
+  }
+  &.dropdownWithArrowParent{
+      .ui.selection.dropdown {
+        &.active{
+            .menu{
+                .item{
+                  border-bottom: 1px solid #DDDDDD;
+                }
+            }
+        }
+      }
+    .text{
+      line-height: 20px;
+    }
+  }
+}
+.dropdownWithArrowParent{
+  position: relative;
+  .ui.selection.dropdown {
+      &.active{
+          &::after{
+              // filter: brightness(0) invert(1);
+              z-index: 99;
+              transform: rotate(180deg);
+          }
+          .menu{
+            @media only screen and (max-width: 767px){
+              max-height:220px;
+            }
+              .item{
+                  &.selected{
+                      background-color: #055CE5;
+                      color: #fff;
+                      border-color: #055CE5;
+                      .image{
+                          &.ui{
+                              //filter: brightness(0) invert(1);
+                          }
+                      }
+                  }
+              }
+          }
+      }
+      &::after{
+          content: '';
+          background-image: url(../images/icons/icon-arrow-down.svg);
+          height: 7px;
+          width: 13.5px;
+          position: absolute;
+          right: 10px;
+          background-size: contain;
+          background-position: center;
+          background-repeat: no-repeat;
+          transition: all 0.3s ease-out;
+          z-index: 2;
+          top:17px;
+          filter: invert(79%) sepia(0%) saturate(1%) hue-rotate(277deg) brightness(97%) contrast(87%);
+      }
+      i{
+          display: none;
+      }
+  }
+  .ui.active.visible.search.selection.dropdown {
+      padding-left: 46px !important;
+      padding-top: 15px;
+      &::before{
+          content: '';
+          position: absolute;
+          top: 13px;
+          left: 15px;
+          right: 0;
+          bottom: 0;
+          width: 20px;
+          height: 20px;
+          background-image: url(../images/icons/icon-search.svg) !important;
+          background-size: contain !important;
+          background-repeat: no-repeat !important;
+          background-position: center !important;
+          z-index: 99;
+      }
+  }
+  .ui.selection.active.dropdown{
+      border: 1px solid #DDDDDD !important;
+    }
+    .ui.selection.active.dropdown .menu{
+      border: 1px solid #DDDDDD !important;
+    }
+    .ui.search.dropdown.active>input.search, .ui.search.dropdown.visible>input.search{
+      padding-top: 15px;
+      padding-left: 46px;
   }
 }
 .inviteSettings{
@@ -1476,6 +1594,18 @@ h4{
     padding-bottom: 30px;
   }
 }
+.pageWraperGive{
+  padding-bottom: 80px;
+  .pageHeader{
+    padding-bottom: 30px;
+    .breadcrumb{
+      float: right;
+    }
+  }
+  .pageSubHeader{
+    padding-bottom: 30px;
+  }
+}
 .reviewWraper{
   background-color: @grey-lighten-4;
   padding: 2rem;
@@ -1595,6 +1725,7 @@ h4{
   padding: 0px !important;
   display: inline-block !important;
   width: 190px !important;
+  font-family: 'ProximaNova-Semibold' !important;
   @media only screen and (max-width: 767px){  
     width: 100% !important;
   }
@@ -1727,6 +1858,9 @@ h4{
     }
     .pageWraper {
       padding-top: 30px;
+      padding-bottom: 50px;
+    }
+    .pageWraperGive {
       padding-bottom: 50px;
     }
     .login-form-wraper{
@@ -3867,6 +4001,16 @@ body{
     vertical-align: top;
   }
 }
+.ui.modals.dimmer{
+  .likeToGiveModal{
+    &.chimp-modal.ui.modal{
+      >.header{
+        font-size: 17px;
+        font-family: 'ProximaNova-Semibold';
+      }
+    }
+  }
+}
 .likeToGiveModal{
   .likeToGive{
     .ui{
@@ -4888,7 +5032,7 @@ body{
 @media only screen and (max-width:767px) {
   body{
     .charityTab .ui.segment.tab{
-      padding-bottom: 5rem;
+      //padding-bottom: 5rem;
     }
     .profile-social-wraper{
       padding-left: 0rem;
@@ -4911,6 +5055,9 @@ body{
         }
       }
     }
+  }
+  .ProfileHeaderWraper{
+    text-align: center;
   }
 }
 @media only screen and (min-width:767px) and (max-width:991px){
@@ -5092,10 +5239,13 @@ i.check.circle.icon.status-icon {
   color: #FF0000;
   font-size: 1em;
   font-weight: 400;
-  display: flex;
+  display: table;
   .icon{
     &.exclamation{
       color: #FF0000;
+      display: table-cell;
+      width: 20px;
+      text-align: left;
     }
   }
 }
@@ -6578,6 +6728,33 @@ button.ui.button.blue-bordr-btn-round-def{
   }
 }
 .inputWraper{
+  &.custom{
+    .ui{
+      &.fluid{
+        &.multiple{
+          &.selection{
+            &.dropdown{
+              .default{
+                &.text{
+                  padding: 9px 14px 7px;
+                }
+              }
+              .dropdown{
+                &.icon{
+                  display: none;
+                }
+              }
+              >.visible{
+                &.menu{
+                  display: none !important;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
   .ui{
     &.fluid{
       &.multiple{
@@ -6834,7 +7011,7 @@ button.ui.button.blue-bordr-btn-round-def{
     &.input{
       input{
         display: inline-block;
-        width: auto;
+        width: 100% !important;
       }
     }
   }
@@ -7252,6 +7429,7 @@ body{
       &.large{
         &.question{
           position: relative;
+          margin-top: 5px;
           &::before{
             content: '';
             position: absolute;
@@ -8024,6 +8202,9 @@ body .userEllips{
     }
   }
 }
+.error_page{
+  margin-top:100px;
+}
 .app_logo{
   border-top: 1px solid #C0C3D4;
   margin-top: 5px;
@@ -8191,4 +8372,78 @@ body .userEllips{
 }
 .BottomfixedBtn_Footer{
   padding-bottom:60px;
+}
+.linebg{
+  &.signup-last-step{
+    margin-bottom: 100px;
+    @media only screen and (max-width:1199px) {
+      margin-bottom: 0px;
+    }
+  }
+}
+.addRecipientForm{
+  .field{
+    .error.field{
+        margin-bottom: 0px;
+    }
+    .error-message{
+        margin-top: 10px;
+        font-size: 12px;
+    }
+    .ui.selection.dropdown{
+        line-height: 18px;
+        @media only screen and (max-width:991px) {
+          min-width: auto;
+        }
+    }
+  }
+}
+body{
+  .ui.inverted.dimmer{
+      background-color: fade(#D8D8D8, 71%);
+  }
+}
+.charityTab{
+  &.user-profile-settings{
+    margin-bottom: 0px;
+    .settingsTab{
+      margin-bottom: -3rem;
+      >div{
+        >.ui.grid{
+          >.column{
+            padding-top: 0px;
+            padding-bottom: 0px;
+            .tabular.menu.ui{
+              margin-top: 0px;
+            }
+            .ui.segment.tab{
+              @media only screen and (min-width:1199px) {
+                min-height: 800px;
+              }
+              @media only screen and (min-width:992px) {
+                min-height: 600px;
+                padding-bottom: 100px;
+              }
+              @media only screen and (min-width:768px) {
+                min-height: 500px;
+                padding-bottom: 80px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  .ui.segment.tab.user-messaging{
+    margin-bottom: -3rem;
+    .charityTab{
+      .ui.segment.tab{
+        padding-bottom: 30px;
+      }
+    }
+  }
+}
+
+.isDisabled {
+  pointer-events: none;
 }

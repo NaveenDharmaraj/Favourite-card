@@ -20,8 +20,16 @@ import FirstStep from '../../../components/New/FirstStep';
 import SecondStep from '../../../components/New/SecondStep';
 import CausesSelection from '../../../components/New/CausesSelection';
 import FinalStep from '../../../components/New/FinalStep';
+import ClaimCharityFirstStep from '../../../components/New/ClaimCharityFirstStep';
 
 class Login extends React.Component {
+
+    static async getInitialProps({ query }) {
+        return {
+            isClaimCharity: query.isClaimCharity,
+        };
+    }
+
     constructor(props) {
         super(props);
         this.state = {
@@ -53,10 +61,10 @@ class Login extends React.Component {
     componentDidUpdate(prevProps) {
         if (!_.isEqual(this.props, prevProps)) {
             if (!_.isEmpty(this.props.newUserDetails) && this.state.stepIndex >= 3) {
-                if(this.props.newUserDetails && this.props.newUserDetails.email && this.props.newUserDetails.identities && this.props.newUserDetails.identities[0] && this.props.newUserDetails.identities[0].user_id){
+                if (this.props.newUserDetails && this.props.newUserDetails.email && this.props.newUserDetails.identities && this.props.newUserDetails.identities[0] && this.props.newUserDetails.identities[0].user_id) {
                     storage.set('auth0UserEmail', this.props.newUserDetails.email, 'local', null);
                     storage.set('auth0UserId', this.props.newUserDetails.identities[0].user_id, 'local', null);
-                    Router.pushRoute('/users/email-verification');    
+                    Router.pushRoute('/users/email-verification');
                 }
             }
         }
@@ -201,10 +209,16 @@ class Login extends React.Component {
                 userDetails.family_name = lastName;
                 userDetails.email = emailId;
                 userDetails.password = password;
-                userDetails.signupSource = null;
                 userDetails.longitude = null;
                 userDetails.latitude = null;
                 userDetails.causes = userCauses;
+                userDetails.signupSource = storage.getLocalStorageWithExpiry('signup_source','local');
+                const sourceId = storage.getLocalStorageWithExpiry('signup_source_id','local');
+                if(sourceId) {
+                    userDetails.signupSourceId = sourceId.toString();
+                };
+                userDetails.claimToken = storage.getLocalStorageWithExpiry('claimToken','local');
+                userDetails.referrer = document.referrer;
                 saveUser(dispatch, userDetails);
             }
             if (stepIndex !== 3) {
@@ -223,7 +237,7 @@ class Login extends React.Component {
             stepIndex
         } = this.state;
         this.setState({
-            stepIndex:stepIndex-1,
+            stepIndex: stepIndex - 1,
         });
     }
 
@@ -277,78 +291,98 @@ class Login extends React.Component {
             buttonClicked,
             validity,
         } = this.state;
-        // console.log(validity)
         const {
             causesList,
             userExists,
             apiValidating,
+            isClaimCharity
         } = this.props;
-        return (
-            <Layout onBoarding={true}>
-                <div className="pageWraper">
-                    <Container>
-                        <div className="linebg">
-                            <Grid columns={2} doubling>
-                                {
-                                    (stepIndex === 0) && (
-                                        <FirstStep
-                                            parentInputChange={this.handleInputChange}
-                                            handleSubmit={this.handleSubmit}
-                                            firstName={firstName}
-                                            handleInputOnBlur={this.handleInputOnBlur}
-                                            isButtonDisabled={this.isButtonDisabled}
-                                            lastName={lastName}
-                                            validity={validity}
-                                        />
-                                    )
-                                }
-                                {
-                                    (stepIndex === 1) && (
-                                        <SecondStep
-                                            apiValidating={apiValidating}
-                                            parentInputChange={this.handleInputChange}
-                                            handleSubmit={this.handleSubmit}
-                                            handleBack={this.handleBack}
-                                            emailId={emailId}
-                                            handleInputOnBlur={this.handleInputOnBlur}
-                                            userExists={userExists}
-                                            password={password}
-                                            validity={validity}
-                                        />
-                                    )
-                                }
-                            </Grid>
-                            {
-                                (stepIndex === 2) && (
-                                    <Grid centered>
-                                        <CausesSelection
-                                            parentInputChange={this.handleInputChange}
-                                            parentHandleCauses={this.handleCauses}
-                                            handleSubmit={this.handleSubmit}
-                                            handleBack={this.handleBack}
-                                            userCauses={userCauses}
-                                            causesList={causesList}
-                                            validity={validity}
-                                        />
-                                    </Grid>
-                                )
-                            }
-                            {
-                                (stepIndex === 3) && (
-                                    <Grid columns={2} centered doubling>
-                                        <Grid.Row>
-                                            <FinalStep
-                                                handleSubmit={this.handleSubmit}
-                                                buttonClicked={buttonClicked}
-                                            />
-                                        </Grid.Row>
-                                    </Grid>
-                                )
-                            }
+        const lineBgClass = (stepIndex === 3) ? "linebg signup-last-step" : "linebg";
 
-                        </div>
-                    </Container>
-                </div>
+        return (
+            <Layout onBoarding={isClaimCharity ? false : true}>
+                {
+                    (stepIndex === 0) && isClaimCharity ? (
+                        <ClaimCharityFirstStep
+                            parentInputChange={this.handleInputChange}
+                            handleSubmit={this.handleSubmit}
+                            firstName={firstName}
+                            handleInputOnBlur={this.handleInputOnBlur}
+                            isButtonDisabled={this.isButtonDisabled}
+                            lastName={lastName}
+                            validity={validity}
+                        />
+                    ) :
+                        (
+                            <div className="pageWraper">
+                                <Container>
+                                    <div className={lineBgClass}>
+                                        <Grid columns={2} doubling>
+                                            {
+                                                (stepIndex === 0) && 
+                                                    (
+                                                        <FirstStep
+                                                            parentInputChange={this.handleInputChange}
+                                                            handleSubmit={this.handleSubmit}
+                                                            firstName={firstName}
+                                                            handleInputOnBlur={this.handleInputOnBlur}
+                                                            isButtonDisabled={this.isButtonDisabled}
+                                                            lastName={lastName}
+                                                            validity={validity}
+                                                        />
+                                                    ) 
+                                            }
+                                            {
+                                                (stepIndex === 1) && (
+                                                    <SecondStep
+                                                        apiValidating={apiValidating}
+                                                        parentInputChange={this.handleInputChange}
+                                                        handleSubmit={this.handleSubmit}
+                                                        handleBack={this.handleBack}
+                                                        emailId={emailId}
+                                                        handleInputOnBlur={this.handleInputOnBlur}
+                                                        userExists={userExists}
+                                                        password={password}
+                                                        validity={validity}
+                                                    />
+                                                )
+                                            }
+                                        </Grid>
+                                        {
+                                            (stepIndex === 2) && (
+                                                <Grid centered>
+                                                    <CausesSelection
+                                                        parentInputChange={this.handleInputChange}
+                                                        parentHandleCauses={this.handleCauses}
+                                                        handleSubmit={this.handleSubmit}
+                                                        handleBack={this.handleBack}
+                                                        userCauses={userCauses}
+                                                        causesList={causesList}
+                                                        validity={validity}
+                                                    />
+                                                </Grid>
+                                            )
+                                        }
+                                        {
+                                            (stepIndex === 3) && (
+                                                <Grid columns={2} centered doubling>
+                                                    <Grid.Row>
+                                                        <FinalStep
+                                                            handleSubmit={this.handleSubmit}
+                                                            buttonClicked={buttonClicked}
+                                                            handleBack={isClaimCharity ? this.handleBack : ''}
+                                                        />
+                                                    </Grid.Row>
+                                                </Grid>
+                                            )
+                                        }
+
+                                    </div>
+                                </Container>
+                            </div>
+                        )
+                }
+
 
             </Layout>
         );

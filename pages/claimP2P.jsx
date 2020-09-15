@@ -52,11 +52,14 @@ class ClaimP2P extends React.Component {
                 avatar,
                 senderDisplayName,
                 giftAmount,
+                giftMessage,
                 invitedUserEmail,
+                senderFullName,
             },
             userInfo,
         } = this.props;
         const formatMessage = this.props.t;
+        const userName = !_isEmpty(senderDisplayName) ? senderDisplayName : senderFullName;
         return (
             <Fragment>
                 {!_isEmpty(userInfo) && (
@@ -73,14 +76,14 @@ class ClaimP2P extends React.Component {
                                             <Header as="h2" data-test="claimp2p_header_description">
                                                 {formatMessage('description', {
                                                     giftAmount,
-                                                    senderDisplayName,
+                                                    userName,
                                                 })}
 
                                             </Header>
                                         </Grid.Column>
                                     </Grid>
                                     <p data-test="claimp2p_header_thanknote">
-                                        {formatMessage('thankNote')}
+                                        "{giftMessage}"
                                     </p>
                                 </Container>
                             </div>
@@ -188,8 +191,10 @@ ClaimP2P.defaultProps = {
     userInfo: {
         avatar: '',
         giftAmount: '',
+        giftMessage: '',
         invitedUserEmail: '',
         senderDisplayName: '',
+        senderFullName: '',
     },
 };
 
@@ -198,8 +203,10 @@ ClaimP2P.propTypes = {
     userInfo: PropTypes.shape({
         avatar: PropTypes.string,
         giftAmount: PropTypes.string,
+        giftMessage: PropTypes.string,
         invitedUserEmail: PropTypes.string,
         senderDisplayName: PropTypes.string,
+        senderFullName: PropTypes.string,
     }),
 };
 

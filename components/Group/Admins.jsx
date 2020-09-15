@@ -34,9 +34,9 @@ const Admins = (props) => {
             }
             return (
                 <Link
-                    {...(!isCurrentUserBlocked && { route: `/users/profile/${admin.id}` })}
+                    route={`/users/profile/${admin.id}` }
                 >
-                    <List.Item {...(!isCurrentUserBlocked && { as: 'a' })}>
+                    <List.Item {...(!isCurrentUserBlocked && { as: 'a' })} className={(isCurrentUserBlocked) ? '' : 'isDisabled'}>
                         <Image className="grProfile" src={isCurrentUserBlocked ? imagePlaceholder : admin.attributes.avatar} />
                         <List.Content>
                             <List.Header>{isCurrentUserBlocked ? formatMessage('groupProfile:anonymousUser') : admin.attributes.displayName}</List.Header>

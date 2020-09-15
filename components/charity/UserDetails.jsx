@@ -17,10 +17,10 @@ import getConfig from 'next/config';
 
 import { Link } from '../../routes';
 import { withTranslation } from '../../i18n';
+import { resetFlowObject } from '../../actions/give';
 
 const { publicRuntimeConfig } = getConfig();
 const {
-    CLAIM_CHARITY_URL,
     RAILS_APP_URL_ORIGIN,
 } = publicRuntimeConfig;
 
@@ -40,6 +40,7 @@ const UserDetails = (props) => {
                 headQuarterAddress,
             },
         },
+        dispatch,
         isAuthenticated,
         t: formatMessage,
     } = props;
@@ -122,7 +123,7 @@ const UserDetails = (props) => {
         if (isAuthenticated) {
             buttonLink = (
                 <Link route={(`/give/to/charity/${slug}/gift/new`)} data-test="Charity_UserDetails_giveButton_loggedInUser">
-                    <Button data-test="Charity_UserDetails_giveButton" className="blue-btn-rounded-def">{formatMessage('charityProfile:give')}</Button>
+                    <Button data-test="Charity_UserDetails_giveButton" className="blue-btn-rounded-def" onClick={() => { resetFlowObject('charity', dispatch); }}>{formatMessage('charityProfile:give')}</Button>
                 </Link>
             );
         } else {
@@ -150,9 +151,9 @@ const UserDetails = (props) => {
                         <p>
                             {`* ${formatMessage('charityProfile:claimCharityInfo')}`}
                         </p>
-                        <a href={CLAIM_CHARITY_URL}>
+                        <Link route="/claim-charity">
                             <Button data-test="profile_charity_claim_charity_button" className="blue-bordr-btn-round-def">{formatMessage('charityProfile:claimCharityButtonText')}</Button>
-                        </a>
+                        </Link>
                     </div>
                 )
             }

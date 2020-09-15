@@ -98,6 +98,7 @@ class CampaignProfileWrapper extends React.Component {
                 type,
                 id,
             },
+            dispatch,
         } = this.props;
         const bannerStyle = {};
         let campaignBannerClassName = 'ch_headerImage greenBg';
@@ -149,6 +150,7 @@ class CampaignProfileWrapper extends React.Component {
                                                 >
                                                     <ProfilePageHead
                                                         pageDetails={campaignDetails}
+                                                        dispatch={dispatch}
                                                     />
                                                 </ProfileTitle>
                                             )}

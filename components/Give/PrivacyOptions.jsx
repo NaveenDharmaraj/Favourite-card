@@ -1,162 +1,162 @@
-import _ from 'lodash';
 import React, {
     Fragment,
+    useState,
+    useEffect,
 } from 'react';
+import _isEmpty from 'lodash/isEmpty';
 import {
     Checkbox,
-    Divider,
     Form,
-    Header,
     Select,
 } from 'semantic-ui-react';
+import PropTypes from 'prop-types';
+
+import { populateDropdownInfoToShare } from '../../helpers/users/utils';
+import { populateInfoToShareAccountName } from '../../helpers/give/utils';
 
 const PrivacyOptions = (props) => {
     const {
         formatMessage,
         giveFrom,
         giveToType,
-        privacyShareAddress,
+        nameToShare,
+        privacyNameOptions,
         privacyShareAmount,
-        privacyShareEmail,
-        privacyShareName,
         handleInputChange,
+        hasCampaign,
+        isCampaign,
         infoToShare,
-        infoToShareList,
-        showSupportMessage,
+        groupCampaignAdminShareInfoOptions,
     } = props;
-    let privacyShareAddressLabel = null;
-    let privacyShareEmailLabel = null;
-    let privacyShareNameLabel = null;
-    const privacyEmail = formatMessage('privacyOptions:privacyDataEmail');
-    const privacyPostal = formatMessage('privacyOptions:privacyDataPostal');
-    const privacyShareAmountLabel = formatMessage(`privacyOptions:share${giveToType}PrivacyGiftAmount`);
-    const myGiveFromType = (giveFrom.type !== 'user') ? formatMessage(`privacyOptions:my${giveFrom.type}`) : '';
-
-    const showGgAndCampaignMsg = (showSupportMessage && giveToType === 'Group');
-    switch (giveFrom.type) {
-        case 'user':
-            privacyShareNameLabel = formatMessage(`privacyOptions:share${giveToType}UserName`);
-            privacyShareEmailLabel = (showGgAndCampaignMsg)
-                ? formatMessage(`privacyOptions:shareGgAndCampaignPrivacyPostal`, { privacyData: privacyEmail })
-                : formatMessage(`privacyOptions:share${giveToType}PrivacyPostal`, { privacyData: privacyEmail });
-            privacyShareAddressLabel = (showGgAndCampaignMsg)
-                ? formatMessage(`privacyOptions:shareGgAndCampaignPrivacyPostal`, { privacyData: privacyPostal })
-                : formatMessage(`privacyOptions:share${giveToType}PrivacyPostal`, { privacyData: privacyPostal })
-            break;
-        case 'companies':
-            privacyShareNameLabel = formatMessage(`privacyOptions:share${giveToType}PrivacyName`, { giveFrom: myGiveFromType });
-            break;
-        case 'groups':
-            privacyShareNameLabel = formatMessage(`privacyOptions:share${giveToType}PrivacyName`, { giveFrom: myGiveFromType });
-            break;
-        case 'campaigns':
-            privacyShareNameLabel = formatMessage(`privacyOptions:share${giveToType}PrivacyName`, { giveFrom: myGiveFromType });
-            break;
-        default: break;
-    }
+    const privacyShareAmountLabel = formatMessage(`privacyOptions:sharePrivacyGiftAmount`);
+    const [
+        infoToShareAdminOption,
+        setInfoToShareAdminOption,
+    ] = useState([
+        {
+            text: 'Give anonymously',
+            value: 'anonymous',
+        },
+    ]);
+    useEffect(() => {
+        if (giveFrom && giveFrom.type === 'user' && !_isEmpty(groupCampaignAdminShareInfoOptions)) {
+            const name = isCampaign ? 'campaign_admins_info_to_share' : 'giving_group_admins_info_to_share';
+            const customPreferenceObj = {
+                giving_group_members_info_to_share: nameToShare.value === 'name' ? 'name' : '',
+            };
+            const {
+                infoToShareList,
+            } = populateDropdownInfoToShare(groupCampaignAdminShareInfoOptions, customPreferenceObj, name);
+            setInfoToShareAdminOption(infoToShareList);
+        } else {
+            const disable = nameToShare.value === 'name';
+            const name = (giveFrom.type === 'companies' && giveFrom.displayName) ? giveFrom.displayName : giveFrom.name;
+            const infoToShareList = populateInfoToShareAccountName(name, formatMessage, disable);
+            setInfoToShareAdminOption(infoToShareList);
+        }
+    }, [
+        giveFrom,
+        groupCampaignAdminShareInfoOptions,
+        nameToShare,
+    ]);
     return (
         <Fragment>
-            <Form.Field>
-                <Divider className="dividerMargin" />
-            </Form.Field>
-            <Form.Field>
-                <Header as="h3" className="f-weight-n">{formatMessage('privacyOptions:privacyOptionsLabel')}</Header>
-            </Form.Field>
-            <Form.Field>
-                <label
-                    className="privacy-header"
-                    htmlFor="privacyShareName"
-                >
-                    {formatMessage(`privacyOptions:forGiving${giveToType}Label`)}
-                </label>
-                <br />
-                <Form.Field
-                    checked={privacyShareName}
-                    className="ui checkbox checkbox-text f-weight-n"
-                    control={Checkbox}
-                    id="privacyShareName"
-                    label={privacyShareNameLabel}
-                    name="privacyShareName"
-                    onChange={handleInputChange}
-                />
-                <br />
-                <Form.Field
-                    checked={privacyShareAmount}
-                    className="ui checkbox checkbox-text f-weight-n"
-                    control={Checkbox}
-                    id="privacyShareAmount"
-                    label={privacyShareAmountLabel}
-                    name="privacyShareAmount"
-                    onChange={handleInputChange}
-                />
-            </Form.Field>
-            {(giveFrom.type === 'user') && (
+            {!isCampaign && (
+                <Form.Field className="give_flow_field">
+                    <label
+                        className="privacy-header"
+                        htmlFor="privacyShareName"
+                    >
+                        {formatMessage('privacyOptions:forGivingGroupLabel')}
+                    </label>
+                    <br />
+                    <Form.Field
+                        className="infoToShareDropdown dropdownWithArrowParent"
+                        control={Select}
+                        id="nameToShare"
+                        name="nameToShare"
+                        onChange={handleInputChange}
+                        options={privacyNameOptions}
+                        value={nameToShare.value}
 
-                <Fragment>
-                    <Form.Field>
-                        <label
-                            className="privacy-header"
-                            htmlFor="privacyShareEmail"
-                        >
-                            { (!showGgAndCampaignMsg) && (
-                                    formatMessage(`privacyOptions:forGiving${giveToType}OrganizersLabel`)
-                                )
-                            }
-                            {
-                                (showGgAndCampaignMsg) && (
-                                    <Fragment>
-                                        { formatMessage(`privacyOptions:forGivingGroupAndCampaignOrganizersLabel`) }
-                                        <div className="font-w-normal mb-1-2">This group supports a campaign—organizers of both will see the info you share.</div>
-                                    </Fragment>
-                                )
-                            }
-                        </label>
-                        <br />
-                        <Form.Field
-                            checked={privacyShareEmail}
-                            className="ui checkbox checkbox-text f-weight-n"
-                            control={Checkbox}
-                            id="privacyShareEmail"
-                            label={privacyShareEmailLabel}
-                            name="privacyShareEmail"
-                            onChange={handleInputChange}
-                        />
-                        <br />
-                        {/* {true && ( */}
-                        { !_.isEmpty(infoToShareList) && infoToShareList.length > 0 && (
-                            <Form.Field
-                                checked={privacyShareAddress}
-                                className="ui checkbox checkbox-text f-weight-n"
-                                control={Checkbox}
-                                id="privacyShareAddress"
-                                label={privacyShareAddressLabel}
-                                name="privacyShareAddress"
-                                onChange={handleInputChange}
-                            />
-                        )}
-                    </Form.Field>
-                    {
-                        !_.isEmpty(infoToShareList) && !!privacyShareAddress && (
-                            <Form.Field>
-                                <label htmlFor="infoToShare">
-                                    {formatMessage('privacyOptions:selectNameAndAddressLabel')}
-                                </label>
-                                <Form.Field
-                                    control={Select}
-                                    id="infoToShare"
-                                    name="infoToShare"
-                                    options={infoToShareList}
-                                    onChange={handleInputChange}
-                                    value={infoToShare.value}
-                                />
-                            </Form.Field>
-                        )
-                    }
-                </Fragment>
-            )
-            }
+                    />
+                    <Form.Field
+                        checked={privacyShareAmount}
+                        className="ui checkbox checkbox-text f-weight-n cp_chkbx"
+                        control={Checkbox}
+                        id="privacyShareAmount"
+                        label={privacyShareAmountLabel}
+                        name="privacyShareAmount"
+                        onChange={handleInputChange}
+                    />
+                </Form.Field>
+            )}
+            <Form.Field className="give_flow_field">
+                <label htmlFor="infoToShare">
+                    {formatMessage(`privacyOptions:${isCampaign ? 'forGivingCampaignLabel' : `${hasCampaign ? 'selectNameAndAddressLabelWithCampaign' : 'selectNameAndAddressLabel'}`}`)}
+                </label>
+                {(!isCampaign && hasCampaign)
+                    && (<span className="givingInfoText">This group supports a campaign—admins of both will see the info you share.</span>)
+                }
+                <Form.Field
+                    className="infoToShareDropdown dropdownWithArrowParent"
+                    control={Select}
+                    id="infoToShare"
+                    name="infoToShare"
+                    options={infoToShareAdminOption}
+                    onChange={handleInputChange}
+                    value={infoToShare.value}
+                />
+            </Form.Field>
         </Fragment>
     );
+};
+
+PrivacyOptions.defaultProps = {
+    formatMessage: () => { },
+    groupCampaignAdminShareInfoOptions: [
+        {
+            privacySetting: 'anonymous',
+            text: 'Give anonymously',
+            value: 'anonymous',
+        },
+    ],
+    handleInputChange: () => { },
+    hasCampaign: null,
+    infoToShare: {
+        value: 'anonymous',
+    },
+    isCampaign: null,
+    nameToShare: {
+        value: 'anonymous',
+    },
+    privacyNameOptions: [
+        {
+            privacySetting: 'anonymous',
+            text: 'Give anonymously',
+            value: 'anonymous',
+        },
+    ],
+};
+
+PrivacyOptions.propTypes = {
+    formatMessage: PropTypes.func,
+    groupCampaignAdminShareInfoOptions: PropTypes.arrayOf(PropTypes.shape({
+        privacySetting: PropTypes.string,
+    })),
+    handleInputChange: PropTypes.func,
+    hasCampaign: PropTypes.bool,
+    infoToShare: PropTypes.shape({
+        value: PropTypes.string,
+    }),
+    isCampaign: PropTypes.bool,
+    nameToShare: PropTypes.shape({
+        value: PropTypes.string,
+    }),
+    privacyNameOptions: PropTypes.arrayOf(
+        PropTypes.shape({
+        }),
+    ),
 };
 
 export default PrivacyOptions;

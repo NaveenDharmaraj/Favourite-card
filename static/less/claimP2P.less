@@ -2,6 +2,31 @@
 
 .claimP2PScreen {
   overflow: hidden;
+  .underline {
+    width   : 70px;
+    height  : 5px;
+    position: relative;
+    display : block;
+    margin  : 10px auto 43px;
+
+    &::after {
+      content         : '';
+      width           : 30%;
+      height          : 100%;
+      background-color: #A1C4FF;
+      position        : absolute;
+      left            : 0;
+    }
+
+    &::before {
+      content         : '';
+      width           : 60%;
+      height          : 100%;
+      background-color: #82E3E0;
+      position        : absolute;
+      right           : 0;
+    }
+  }
 }
 
 .claimp2pHeader {
@@ -324,7 +349,7 @@
             font-weight: 600;
             font-size  : 17px;
             padding    : 15px 10px;
-            opacity: 1 !important;
+            //opacity: 1 !important;
           }
         }
       }
@@ -403,31 +428,6 @@
   }
 }
 
-.underline {
-  width   : 70px;
-  height  : 5px;
-  position: relative;
-  display : block;
-  margin  : 10px auto 43px;
-
-  &::after {
-    content         : '';
-    width           : 30%;
-    height          : 100%;
-    background-color: #A1C4FF;
-    position        : absolute;
-    left            : 0;
-  }
-
-  &::before {
-    content         : '';
-    width           : 60%;
-    height          : 100%;
-    background-color: #82E3E0;
-    position        : absolute;
-    right           : 0;
-  }
-}
 
 .claimp2pJoin {
   padding: 80px 0 110px !important;

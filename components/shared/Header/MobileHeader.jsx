@@ -21,7 +21,7 @@ const renderHeader = (onBoarding, isAuthenticated, children, showHeader) => {
     if (onBoarding) {
         headerComponent = (
             <NonAuthHeader>
-                { children }
+                {children}
             </NonAuthHeader>
         );
     } else if (isAuthenticated && showHeader) {
