@@ -3,6 +3,7 @@ import _ from 'lodash';
 import {
     Container,
     Tab,
+    Header,
 } from 'semantic-ui-react';
 import {
     connect,
@@ -169,7 +170,7 @@ class MyProfile extends React.Component {
         }
         return (
             <Layout authRequired>
-                <BasicProfile userData={userData} avatar={userAvatar}/>
+                {/* <BasicProfile userData={userData} avatar={userAvatar}/>
                 <div className="pb-3">
                     <Container>
                         <div className="charityTab n-border">
@@ -184,7 +185,13 @@ class MyProfile extends React.Component {
                             />
                         </div>
                     </Container>
-                </div>
+                </div> */}
+                <Container>
+                    <div className='account-settings-wrap'>
+                        <Header>Account settings</Header>
+                        <Settings settingName={this.props.settingName} />
+                    </div>
+                </Container>
             </Layout>
         );
     }
