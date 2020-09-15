@@ -61,11 +61,7 @@ class Review extends React.Component {
             }
         } = flowObject;
         if(giveTo.type === 'groups' && !_.isEmpty(giveGroupDetails)) {
-            if(matchingPolicyDetails.isValidMatchPolicy &&
-                (_.isEmpty(groupMatchingDetails) ||
-                    (!_.isEmpty(groupMatchingDetails) && (groupMatchingDetails.giveFromFund !== giveFrom.value || groupMatchingDetails.giveAmount !== giveAmount))
-                )
-            ) {
+            if(matchingPolicyDetails.isValidMatchPolicy) {
                     dispatch(fetchGroupMatchAmount(giveAmount, giveFrom.value, giveTo.value));
             }
         }

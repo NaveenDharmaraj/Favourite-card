@@ -1391,7 +1391,14 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
                     activeMatch,
                 },
             } = giveGroupDetails;
-            const activeMatchAmount = Number(groupMatchingDetails.attributes.matchAvailable);
+
+            const {
+                attributes: {
+                    matchAvailable,
+                    availableFund,
+                },
+            } = groupMatchingDetails;
+            const activeMatchAmount = Number(matchAvailable);
             if ((activeMatchAmount > 0) && (!_.isEmpty(matchingPolicyDetails) && matchingPolicyDetails.isValidMatchPolicy)) {
                 const {
                     company,
@@ -1403,13 +1410,21 @@ const populateGiveReviewPage = (giveData, data, currency, formatMessage, languag
                     amount: state.mainDisplayAmount,
                     heading: `Your gift amount`,
                     matchingAmount: formatCurrency(activeMatchAmount, language, currency),
-                    matchingHeading: (state.isRecurring) ? `Match amount requested` : `Match amount from ${company}`,
-                    matchingSubHeading: (state.isRecurring) ? `(from ${company} until funds ran out or expire)` : '',
-                    popUpMessage: `For every $1.00 you give to this ${(giveTo.isCampaign) ? 'Campaign' : 'Group'}, ${company} will match your gift with $1.00 up to ${formatCurrency(maxMatchAmount, language, currency)} per gift, until the matching funds run out or expire.`,
+                    matchingHeading: (state.isRecurring) ? `Match amount from ${company} today` : `Match amount from ${company}`,
+                    matchingSubHeading: (state.isRecurring) ? `(continues until matching funds run out or expire)` : '',
+                    popUpMessage: `For every $1.00 you give to this ${(giveTo.isCampaign) ? 'Campaign' : 'Group'}, ${company} will match your gift with $1.00 up to maximum of ${formatCurrency(maxMatchAmount, language, currency)} per donor, until the matching funds run out or expire.`,
                     subHeading: `(From ${giveFrom.text})`,
                     totalAmount: formatCurrency(sumAmount, language, currency),
                     totalHeading: `Total with matching`,
                 };
+
+                if (Number(giveAmount) > activeMatchAmount) {
+                    if ((maxMatchAmount === activeMatchAmount) || (activeMatchAmount === Number(availableFund))) {
+                        state.toDetailsForMatching.popUpMessage = 'Your gift is only being partially matched because not enough matching funds remain. Matching is available until the funds ran out or expire.';
+                    } else if (maxMatchAmount > activeMatchAmount) {
+                        state.toDetailsForMatching.popUpMessage = `Your gift is only being partially matched because previous gifts you've sent to this ${(giveTo.isCampaign) ? 'Campaign' : 'Group'} have already been matched. The maximum match amount is ${formatCurrency(maxMatchAmount, language, currency)} per donor.`
+                    }
+                }
             }
         }
 
