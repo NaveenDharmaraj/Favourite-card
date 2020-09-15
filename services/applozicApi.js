@@ -6,7 +6,7 @@ import base64 from "base-64";
 import storage from '../helpers/storage';
 import logger from '../helpers/logger';
 import registerAppLozic from '../helpers/initApplozic';
-import configObj from '../components/shared/configEnv';
+import configObj from '../helpers/configEnv';
 
 
 const axiosRef = axios;
@@ -55,6 +55,6 @@ instance.interceptors.response.use((response) => {
     logger.error(`[APPLOZIC] API failed: ${JSON.stringify(logDNAErrorObj)}`);
     return Promise.reject(error.response.data);
 });
-const APPLOZIC_ENV = configObj.envVariable || {};
-instance.APPLOZIC_APP_KEY = APPLOZIC_ENV.APPLOZIC_APP_KEY;
+// const APPLOZIC_ENV = configObj.envVariable || {};
+// instance.APPLOZIC_APP_KEY = APPLOZIC_ENV.APPLOZIC_APP_KEY;
 export default instance;

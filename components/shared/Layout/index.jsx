@@ -25,7 +25,7 @@ import '../../../static/less/style.less';
 import { isValidBrowser } from '../../../helpers/utils';
 import registerAppLozic from '../../../helpers/initApplozic';
 import { getParamStoreConfig } from '../../../actions/user';
-import configObj from '../configEnv';
+import configObj from '../../../helpers/configEnv';
 
 const { publicRuntimeConfig } = getConfig();
 
