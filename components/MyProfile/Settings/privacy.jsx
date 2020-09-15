@@ -8,6 +8,7 @@ import {
     List,
     Checkbox,
     Table,
+    Form,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 import Link from 'next/link';
@@ -127,7 +128,8 @@ class Privacy extends React.Component {
                 }
                 return (
                     <List.Item>
-                        <List.Content floated="right">
+                        <List.Content floated="right" className='blockDateSec'>
+                            <span>Blocked on January 9, 2019</span>
                             <Button
                                 className="blue-bordr-btn-round-def c-small"
                                 onClick={() => this.handleFriendUnblockClick(data.attributes.user_id)}
@@ -164,34 +166,63 @@ class Privacy extends React.Component {
             blockedUserListLoader,
             discoverability,
         } = this.state;
+        const options = [
+            { key: 'Puplic', text: 'Puplic', value: 'Puplic' },
+            { key: 'Friends', text: 'Friends', value: 'Friends' },
+            { key: 'Only me', text: 'Only me', value: 'Only me' },
+          ]
+          
         return (
             <div className="remove-gutter">
                 <div className="userSettingsContainer">
-                        <div className="settingsDetailWraper">
-                            <Header as="h4">Discoverability </Header>
-                             <p>Choose whether people can search for your personal profile on Charitable Impact.</p>
-                        </div>
-                        <div className="settingsDetailWraper">
+                <div class="settingsDetailWraper heading"><h4 class="ui header mb-0">Privacy & security </h4></div>
+                    <div className="settingsDetailWraper">
+                        <Header as="h4">Discoverability </Header>
+                            <p>Choose whether people can search for your personal profile on Charitable Impact.</p>
                             <List divided verticalAlign="middle" className="userList">
-                                <List.Item>
-                                    <List.Content floated="right">
-                                    <Checkbox
-                                        toggle
-                                        className="c-chkBox right"
-                                        id="discoverability"
-                                        name="discoverability"
-                                        checked={discoverability}
-                                        onChange={this.handleUserPreferenceChange}
-                                    />
-                                    </List.Content>
-                                    <List.Content>
-                                    <List.Description>
-                                        Show name and appear in search results
-                                    </List.Description>
-                                    </List.Content>
-                                </List.Item>
-                            </List>
+                            <List.Item>
+                                <List.Content floated="right">
+                                <Checkbox
+                                    toggle
+                                    className="c-chkBox right"
+                                    id="discoverability"
+                                    name="discoverability"
+                                    checked={discoverability}
+                                    onChange={this.handleUserPreferenceChange}
+                                />
+                                </List.Content>
+                                <List.Content>
+                                <List.Description>
+                                    Show name and appear in search results
+                                </List.Description>
+                                </List.Content>
+                            </List.Item>
+                        </List>
+                    </div>
+                    <div className="settingsDetailWraper">
+                        <Header as="h4">Profile settings</Header>
+                        <p>Choose what to share on your personal profile.</p>
+                        <div className='privacyDropdown'>
+                            <label>Your friends list</label>
+                            <Form.Select options={options} placeholder='Select' />
                         </div>
+                        <div className='privacyDropdown'>
+                            <label>Causes</label>
+                            <Form.Select options={options} placeholder='Select' />
+                        </div>
+                        <div className='privacyDropdown'>
+                            <label>Managed Giving Groups</label>
+                            <Form.Select options={options} placeholder='Select' />
+                        </div>
+                        <div className='privacyDropdown'>
+                            <label>Joined Giving Groups</label>
+                            <Form.Select options={options} placeholder='Select' />
+                        </div>
+                        <div className='privacyDropdown'>
+                            <label>Favourites</label>
+                            <Form.Select options={options} placeholder='Select' />
+                        </div>
+                    </div>
                     <div className="settingsDetailWraper">
                         <Header as="h4">Blocked users</Header>
                         {
