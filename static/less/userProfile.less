@@ -78,7 +78,7 @@
               position: relative;
               bottom: 0px;
             }
-            .userProfile_drpbtn{
+            .userProfile_drpbtn:not(.threeDotBtn){
               margin-right: 10px;
               .ui.button{
                 margin-right: 0;
@@ -150,7 +150,8 @@
         .bar{
           height: 7.9px;
           border-radius: 5px;
-          background-color: #009EA2;
+          background-image: linear-gradient(to right, #00CDCD, #009E9F);
+          min-width: 8px;
         }
       }
     }
@@ -850,7 +851,9 @@
         display: flex;
         align-items: flex-start;
         .cardPrflImg{
-          width: 85px;
+          min-width: 85px;
+          max-width: 85px;
+          width: 100%;
           border-radius: 5px;
           overflow: hidden;
           
@@ -928,6 +931,9 @@
     .cardwrap{
       .ui.card{
         max-width: 228px;
+        .content .cardPrflImg{
+          min-width: 50px;
+        }
       }
     }
   }
