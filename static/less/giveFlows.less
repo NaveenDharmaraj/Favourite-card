@@ -1137,11 +1137,10 @@ body{
     }
 }
 .noteDefault{
-    border-radius: 4px;	
     background-color: #E3E8F0;
-    padding:7px 9px 6px;
+    padding:10px 16px 9px;
     &.info{
-        background-color: #E5F5F5;
+        background-color: fade(#90459A, 10%);
         &.mt-2{
             margin-top: 20px;
         }
@@ -1149,7 +1148,7 @@ body{
             .leftImg{
                 .notifyDefaultIcon{
                     &::before{
-                        filter: invert(61%) sepia(64%) saturate(7283%) hue-rotate(156deg) brightness(96%) contrast(103%);
+                        .imgColorPurple();
                     }
                 }
             }
