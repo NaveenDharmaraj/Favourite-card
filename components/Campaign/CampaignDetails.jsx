@@ -1,7 +1,9 @@
 
 import React, { Fragment } from 'react';
-// TODO uncomment after groups updation
-// import ActiveMatchBlock from '../shared/ActiveMatchBlock';
+import _isEmpty from 'lodash/isEmpty';
+
+import ActiveMatchBlock from '../shared/ActiveMatchBlock';
+import ExpiredMatchBlock from '../../components/Group/ExpiredMatchBlock';
 
 import MoneyRaised from './MoneyRaised';
 import CampaignSupporters from './CampaignSupporters';
@@ -16,7 +18,9 @@ const CampaignDetails = (props) => {
         amountRaised,
         isAuthenticated,
         type,
+        matchHistory,
     } = props;
+    const hasMatchingHistory = !_isEmpty(matchHistory);
     return (
         <Fragment>
             <MoneyRaised
@@ -24,11 +28,20 @@ const CampaignDetails = (props) => {
                 slug={slug}
                 isAuthenticated={isAuthenticated}
             />
-            {/* <ActiveMatchBlock
-                activeMatch={activeMatch}
-                type={type}
-                hasActiveMatch={hasActiveMatch}
-            /> */}
+            {hasActiveMatch
+                && (
+                    <ActiveMatchBlock
+                        activeMatch={activeMatch}
+                        type={type}
+                        hasActiveMatch={hasActiveMatch}
+                    />
+                )}
+            {(!hasActiveMatch && hasMatchingHistory)
+                && (
+                    <ExpiredMatchBlock
+                        matchHistory={matchHistory[0]}
+                    />
+                )}
             <CampaignSupporters
                 peopleInCampaign={peopleInCampaign}
                 groupsCount={groupsCount}
