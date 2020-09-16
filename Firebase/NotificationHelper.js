@@ -1,10 +1,10 @@
 // import { Firebase } from "./init";
 import * as Firebase from "firebase/app";
 import 'firebase/database';
-import getConfig from 'next/config';
 import { firebaseMessageFetchCompleteAction } from "../actions/firebase";
 import _ from 'lodash';
 import eventApi from '../services/eventApi';
+import firebaseConfig from "./config";
 const ACCEPT_FREIND_PAYLOAD = {
     "attributes": {
         "source": "web",
@@ -17,22 +17,18 @@ const ACCEPT_FREIND_PAYLOAD = {
         "friend_request_event_id": "",
     }
 };
-const { publicRuntimeConfig } = getConfig();
-const {
-    FIREBASE_PUBLIC_API_KEY
-} = publicRuntimeConfig;
 
 class NotificationHelper {
     static instance = null;
     static currentPage = null;
     messaging = null;
     userInfo = null;
-    constructor(userInfo, firebaseConfig={}) {
+    constructor(userInfo) {
         let fbHelper = this;
         try { Firebase.getInstance() } catch (err) {
             try {
                 if (!Firebase.apps.length) {
-                    Firebase.initializeApp(firebaseConfig);
+                    Firebase.initializeApp(firebaseConfig.firebaseEnvs);
                 } else {
                     Firebase.app();
                 }
@@ -43,9 +39,9 @@ class NotificationHelper {
         // fbHelper.messaging = Firebase.messaging();
         // fbHelper.userInfo = userInfo;
     }
-    static get(userInfo, firebaseConfig={}) {
+    static get(userInfo) {
         if (NotificationHelper.instance == null || NotificationHelper.instance.messaging == null) {
-            NotificationHelper.instance = new NotificationHelper(userInfo, firebaseConfig);
+            NotificationHelper.instance = new NotificationHelper(userInfo);
         }
         return NotificationHelper.instance;
     }
@@ -73,9 +69,9 @@ class NotificationHelper {
         });
     }
 
-    static firebaseInitialLoad = async (userInfo, dispatch, firebaseConfig) => {
+    static firebaseInitialLoad = async (userInfo, dispatch) => {
         const limit = 10;
-        NotificationHelper.get(userInfo, firebaseConfig);
+        NotificationHelper.get(userInfo);
         let userRef = Firebase.database().ref("/organisation/chimp/users/" + userInfo.id);
         let lastSyncTime = null;
         userRef.on("value", snapshot => {
